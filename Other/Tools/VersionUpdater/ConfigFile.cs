@@ -12,6 +12,7 @@ namespace VersionUpdater
 		public List<string> GitSearchPaths { get; set; }
 		public string NuSpecRootDir { get; set; }
 		public string SolutionPath { get; set; }
+		public string InstallerPackageConfigPath { get; set; }
 
 		public void Save(string filePath)
 		{

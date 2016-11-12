@@ -24,12 +24,6 @@
     <DocumentationFile>Duality.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Debug\Duality.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <DebugType>full</DebugType>
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -42,14 +36,6 @@
     <Optimize>true</Optimize>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\Duality.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <Prefer32Bit>false</Prefer32Bit>
@@ -123,7 +109,7 @@
     <Compile Include="Components\ICmpInterfaces\ICmpUpdatable.cs" />
     <Compile Include="Components\Physics\CollisionFilterData.cs" />
     <Compile Include="Components\Physics\CollisionFilter.cs" />
-    <Compile Include="Components\Physics\RayCastCallback.cs" />
+    <Compile Include="Components\Physics\RaycastCallback.cs" />
     <Compile Include="Components\Physics\CollisionCategory.cs" />
     <Compile Include="Components\Physics\BodyType.cs" />
     <Compile Include="Components\Physics\RayCastData.cs" />
@@ -434,7 +420,6 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir  "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)"
 copy "$(TargetDir)Duality.xml" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)"</PostBuildEvent>

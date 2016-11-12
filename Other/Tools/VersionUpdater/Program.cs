@@ -25,6 +25,8 @@ namespace VersionUpdater
 			public string NuSpecFilePath;
 			public string NuSpecPackageId;
 			public Version NuSpecVersion;
+			public List<string> NuSpecDependencies;
+			public bool IsDefaultPackage;
 
 			public override string ToString()
 			{
@@ -377,6 +379,7 @@ namespace VersionUpdater
 			string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 			config.NuSpecRootDir = GetAbsoluteConfigPath(relativeBaseDir, config.NuSpecRootDir);
 			config.SolutionPath = GetAbsoluteConfigPath(relativeBaseDir, config.SolutionPath);
+			config.InstallerPackageConfigPath = GetAbsoluteConfigPath(relativeBaseDir, config.InstallerPackageConfigPath);
 			for (int i = 0; i < config.GitSearchPaths.Count; i++)
 			{
 				config.GitSearchPaths[i] = config.GitSearchPaths[i].Replace("{LocalAppData}", localAppDataPath);
@@ -448,9 +451,13 @@ namespace VersionUpdater
 					// If it does, it probably belongs to this project. Retrieve some data and stop searching.
 					XElement elemId = nuspecDoc.Descendants("id").FirstOrDefault();
 					XElement elemVersion = nuspecDoc.Descendants("version").FirstOrDefault();
+					XElement elemDependencies = nuspecDoc.Descendants("dependencies").FirstOrDefault();
 					info.NuSpecFilePath = nuspecFilePath;
 					info.NuSpecPackageId = elemId.Value.Trim();
 					info.NuSpecVersion = Version.Parse(elemVersion.Value.Trim());
+					info.NuSpecDependencies = (elemDependencies != null) ? 
+						elemDependencies.Elements("dependency").Attributes("id").Select(a => a.Value).ToList() : 
+						new List<string>();
 					break;
 				}
 
@@ -460,6 +467,28 @@ namespace VersionUpdater
 
 				// Otherwise, keep it for later
 				projectInfoList.Add(info);
+			}
+
+			// Read the installer package config to flag packages as default
+			if (File.Exists(config.InstallerPackageConfigPath))
+			{
+				XDocument installerConfig = XDocument.Load(config.InstallerPackageConfigPath);
+				XElement elemPackages = installerConfig.Descendants("Packages").FirstOrDefault();
+				foreach (XElement elemPackageItem in elemPackages.Elements("Package"))
+				{
+					XAttribute attribId = elemPackageItem.Attribute("id");
+					if (attribId == null) continue;
+
+					string id = attribId.Value;
+					foreach (ProjectInfo projectInfo in projectInfoList)
+					{
+						if (projectInfo.NuSpecPackageId == id)
+						{
+							projectInfo.IsDefaultPackage = true;
+							break;
+						}
+					}
+				}
 			}
 
 			projectInfoList.Sort((a, b) => string.Compare(a.NuSpecPackageId, b.NuSpecPackageId));
@@ -562,15 +591,26 @@ namespace VersionUpdater
 				foreach (ProjectInfo project in allProjects)
 				{
 					bool isAffectedByCommit = false;
+
+					// Determine projects that are located inside this project's root directory
+					ProjectInfo[] subProjects = allProjects
+						.Where(p => p != project && IsPathLocatedIn(p.ProjectRootDir, project.ProjectRootDir))
+						.ToArray();
+
+					// Are files of this project modified?
 					List<string> localModifiedFiles = new List<string>();
 					foreach (string filePath in commit.FilePaths)
 					{
-						if (IsPathLocatedIn(filePath, project.ProjectRootDir))
-						{
-							isAffectedByCommit = true;
-							localModifiedFiles.Add(filePath);
-						}
+						// Not located in this project? Skip.
+						if (!IsPathLocatedIn(filePath, project.ProjectRootDir)) continue;
+						// Located in a sub-project? Skip.
+						if (subProjects.Any(p => IsPathLocatedIn(filePath, p.ProjectRootDir))) continue;
+
+						isAffectedByCommit = true;
+						localModifiedFiles.Add(filePath);
 					}
+
+					// Skip all projects that are not affected by the commit at all
 					if (!isAffectedByCommit) continue;
 
 					// Retrieve the change log information about this project
@@ -599,6 +639,37 @@ namespace VersionUpdater
 					}
 				}
 			}
+
+			// For every non-default project, check if there was a non-default-project dependency
+			// modified and add a version bump change. This will make sure sample projects
+			// will always depend on the latest released version of their core and editor projects.
+			foreach (ProjectInfo dependency in changesPerProject.Keys.ToArray())
+			{
+				if (dependency.IsDefaultPackage) continue;
+
+				foreach (ProjectInfo dependent in allProjects)
+				{
+					if (dependent.IsDefaultPackage)
+						continue;
+					if (!dependent.NuSpecDependencies.Contains(dependency.NuSpecPackageId))
+						continue;
+					if (changesPerProject.ContainsKey(dependent))
+						continue;
+
+					// Create a new change info for the dependent project
+					ProjectChangeInfo changeInfo;
+					changeInfo = new ProjectChangeInfo
+					{
+						Project = dependent
+					};
+					changesPerProject.Add(dependent, changeInfo);
+
+					// Add a dummy change log about this project
+					changeInfo.Titles.Add("Updated Dependencies");
+					changeInfo.ChangeLog.Add(string.Format("#CHANGE: Updated {0} dependency", dependency.NuSpecPackageId));
+				}
+			}
+
 			return changesPerProject.Values.ToList();
 		}
 		private static void RetrieveUpdateModes(ConfigFile config, IEnumerable<ProjectChangeInfo> changes)
