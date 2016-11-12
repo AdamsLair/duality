@@ -5,6 +5,7 @@
 obj/
 bin/
 Backup/
+packages/
 */Thumbs.db
 */logfile.txt
 */perflog.txt
