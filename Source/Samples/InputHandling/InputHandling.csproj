@@ -58,11 +58,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DualityPrimitives\DualityPrimitives.csproj">
+    <ProjectReference Include="..\..\Core\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Duality\Duality.csproj">
+    <ProjectReference Include="..\..\Core\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
     </ProjectReference>

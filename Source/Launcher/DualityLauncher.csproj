@@ -52,7 +52,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Duality\Backend\DefaultPluginLoader.cs">
+    <Compile Include="..\Core\Duality\Backend\DefaultPluginLoader.cs">
       <Link>DefaultPluginLoader.cs</Link>
     </Compile>
     <Compile Include="ConsoleLogOutput.cs" />
@@ -62,11 +62,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DualityPrimitives\DualityPrimitives.csproj">
+    <ProjectReference Include="..\Core\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Duality\Duality.csproj">
+    <ProjectReference Include="..\Core\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
     </ProjectReference>
@@ -80,9 +80,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\"
-copy "$(TargetPath)" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\"
-copy "$(TargetPath).config" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\"</PostBuildEvent>
+    <PostBuildEvent>mkdir  "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\"
+copy "$(TargetPath)" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\"
+copy "$(TargetPath).config" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

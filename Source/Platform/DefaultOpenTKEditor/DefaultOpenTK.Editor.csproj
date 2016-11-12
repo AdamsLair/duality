@@ -60,15 +60,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DualityEditor\DualityEditor.csproj">
+    <ProjectReference Include="..\..\Editor\DualityEditor\DualityEditor.csproj">
       <Project>{9fb9f397-fd39-460c-a9ad-b4780d19945f}</Project>
       <Name>DualityEditor</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DualityPrimitives\DualityPrimitives.csproj">
+    <ProjectReference Include="..\..\Core\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Duality\Duality.csproj">
+    <ProjectReference Include="..\..\Core\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
     </ProjectReference>
@@ -79,12 +79,12 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenTK.GLControl.dll" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
-mkdir  "$(SolutionDir)UnitTesting\DualityEditorTests\bin\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)UnitTesting\DualityEditorTests\bin\Plugins"
-copy "$(TargetDir)OpenTK.GLControl.dll" "$(SolutionDir)UnitTesting\DualityEditorTests\bin\Plugins"</PostBuildEvent>
+    <PostBuildEvent>mkdir "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetDir)OpenTK.GLControl.dll" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+mkdir  "$(SolutionDir)..\Test\Editor\bin\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)..\Test\Editor\bin\Plugins"
+copy "$(TargetDir)OpenTK.GLControl.dll" "$(SolutionDir)..\Test\Editor\bin\Plugins"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

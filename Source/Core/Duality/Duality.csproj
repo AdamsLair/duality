@@ -42,11 +42,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FarseerDuality, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdamsLair.FarseerDuality.4.1.1\lib\portable45-net45+win8+wpa81\FarseerDuality.dll</HintPath>
+      <HintPath>..\..\packages\AdamsLair.FarseerDuality.4.1.1\lib\portable45-net45+win8+wpa81\FarseerDuality.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NVorbis, Version=0.7.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdamsLair.NVorbis.0.7.5\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\NVorbis.dll</HintPath>
+      <HintPath>..\..\packages\AdamsLair.NVorbis.0.7.5\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\NVorbis.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -414,15 +414,15 @@
     <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconXmlSerializer.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DualityPrimitives\DualityPrimitives.csproj">
+    <ProjectReference Include="..\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)"
-copy "$(TargetDir)Duality.xml" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)"</PostBuildEvent>
+    <PostBuildEvent>mkdir  "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)"
+copy "$(TargetDir)Duality.xml" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

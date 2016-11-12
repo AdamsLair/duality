@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Duality\Backend\DefaultPluginLoader.cs">
+    <Compile Include="..\..\..\Source\Core\Duality\Backend\DefaultPluginLoader.cs">
       <Link>DefaultPluginLoader.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
