@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Documentation</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Docs.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/Docs.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

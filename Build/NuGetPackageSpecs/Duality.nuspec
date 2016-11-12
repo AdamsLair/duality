@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -25,8 +25,8 @@
     </references>
   </metadata>
   <files>
-    <file src="..\Duality\bin\Release\Duality.dll" target="lib" />
-    <file src="..\Duality\bin\Release\Duality.pdb" target="lib" />
-    <file src="..\Duality\bin\Release\Duality.xml" target="lib" />
+    <file src="..\..\Source\Core\Duality\bin\Release\Duality.dll" target="lib" />
+    <file src="..\..\Source\Core\Duality\bin\Release\Duality.pdb" target="lib" />
+    <file src="..\..\Source\Core\Duality\bin\Release\Duality.xml" target="lib" />
   </files>
 </package>

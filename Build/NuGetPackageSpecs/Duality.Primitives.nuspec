@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Primitives</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Primitives.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/Primitives.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -18,8 +18,8 @@
     </references>
   </metadata>
   <files>
-    <file src="..\DualityPrimitives\bin\Release\DualityPrimitives.dll" target="lib" />
-    <file src="..\DualityPrimitives\bin\Release\DualityPrimitives.pdb" target="lib" />
-    <file src="..\DualityPrimitives\bin\Release\DualityPrimitives.xml" target="lib" />
+    <file src="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.dll" target="lib" />
+    <file src="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.pdb" target="lib" />
+    <file src="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.xml" target="lib" />
   </files>
 </package>

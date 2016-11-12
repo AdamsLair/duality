@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Custom ParticleSystem Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/ParticleSystemSample.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/ParticleSystemSample.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -20,10 +20,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\SampleProjects\ParticleSystem\Content\Plugins\ParticleSystem.core.dll" target="lib" />
-    <file src="..\SampleProjects\ParticleSystem\Content\Plugins\ParticleSystem.core.xml" target="lib" />
-    <file src="..\SampleProjects\ParticleSystem\Content\Data\**\*.res" target="content" />
-    <file src="..\SampleProjects\ParticleSystem\**\*.cs" target="source" exclude="..\SampleProjects\ParticleSystem\Content\**\*.*;..\SampleProjects\ParticleSystem\obj\**\*.*" />
-    <file src="..\SampleProjects\ParticleSystem\ParticleSystem.csproj" target="source" />
+    <file src="..\..\Source\Samples\ParticleSystem\Content\Plugins\ParticleSystem.core.dll" target="lib" />
+    <file src="..\..\Source\Samples\ParticleSystem\Content\Plugins\ParticleSystem.core.xml" target="lib" />
+    <file src="..\..\Source\Samples\ParticleSystem\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Source\Samples\ParticleSystem\**\*.cs" target="source" exclude="..\..\Source\Samples\ParticleSystem\Content\**\*.*;..\..\Source\Samples\ParticleSystem\obj\**\*.*" />
+    <file src="..\..\Source\Samples\ParticleSystem\ParticleSystem.csproj" target="source" />
   </files>
 </package>

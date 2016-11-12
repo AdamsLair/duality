@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Launcher</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -20,8 +20,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\DualityLauncher\bin\Release\DualityLauncher.exe" target="lib" />
-    <file src="..\DualityLauncher\bin\Release\DualityLauncher.exe.config" target="lib" />
-    <file src="..\DualityLauncher\bin\Release\DualityLauncher.pdb" target="lib" />
+    <file src="..\..\Source\Launcher\bin\Release\DualityLauncher.exe" target="lib" />
+    <file src="..\..\Source\Launcher\bin\Release\DualityLauncher.exe.config" target="lib" />
+    <file src="..\..\Source\Launcher\bin\Release\DualityLauncher.pdb" target="lib" />
   </files>
 </package>

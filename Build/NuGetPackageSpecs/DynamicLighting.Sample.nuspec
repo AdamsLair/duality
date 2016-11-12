@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>DynamicLighting Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/DynamicLighting.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/DynamicLighting.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -21,8 +21,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\DualityPlugins\DynamicLighting\Sample\bin\Release\DynamicLighting.Sample.core.dll" target="lib" />
-    <file src="..\DualityPlugins\DynamicLighting\Sample\bin\Release\DynamicLighting.Sample.core.xml" target="lib" />
-    <file src="..\DualityPlugins\DynamicLighting\Sample\Testbed\Data\**\*.res" target="content" />
+    <file src="..\..\Source\Plugins\DynamicLighting\Sample\bin\Release\DynamicLighting.Sample.core.dll" target="lib" />
+    <file src="..\..\Source\Plugins\DynamicLighting\Sample\bin\Release\DynamicLighting.Sample.core.xml" target="lib" />
+    <file src="..\..\Source\Plugins\DynamicLighting\Sample\Testbed\Data\**\*.res" target="content" />
   </files>
 </package>

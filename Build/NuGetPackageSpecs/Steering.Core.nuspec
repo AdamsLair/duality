@@ -6,7 +6,7 @@
     <authors>Daniel Herb, Fedja Adam</authors>
     <owners>Daniel Herb, Fedja Adam</owners>
     <title>Steering Behaviours</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Steering.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/Steering.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -19,8 +19,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\DualityPlugins\Steering\bin\Release\Steering.core.dll" target="lib" />
-    <file src="..\DualityPlugins\Steering\bin\Release\Steering.core.pdb" target="lib" />
-    <file src="..\DualityPlugins\Steering\bin\Release\Steering.core.xml" target="lib" />
+    <file src="..\..\Source\Plugins\Steering\Core\bin\Release\Steering.core.dll" target="lib" />
+    <file src="..\..\Source\Plugins\Steering\Core\bin\Release\Steering.core.pdb" target="lib" />
+    <file src="..\..\Source\Plugins\Steering\Core\bin\Release\Steering.core.xml" target="lib" />
   </files>
 </package>

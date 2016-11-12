@@ -6,7 +6,7 @@
     <authors>Pilati Alessandro</authors>
     <owners>Pilati Alessandro</owners>
     <title>Basic Menu Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/BasicMenuSample.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/BasicMenuSample.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -21,10 +21,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\SampleProjects\BasicMenu\Content\Plugins\BasicMenu.core.dll" target="lib" />
-    <file src="..\SampleProjects\BasicMenu\Content\Plugins\BasicMenu.core.xml" target="lib" />
-    <file src="..\SampleProjects\BasicMenu\Content\Data\**\*.res" target="content" />
-    <file src="..\SampleProjects\BasicMenu\**\*.cs" target="source" exclude="..\SampleProjects\BasicMenu\Content\**\*.*;..\SampleProjects\BasicMenu\obj\**\*.*" />
-    <file src="..\SampleProjects\BasicMenu\BasicMenu.csproj" target="source" />
+    <file src="..\..\Source\Samples\BasicMenu\Content\Plugins\BasicMenu.core.dll" target="lib" />
+    <file src="..\..\Source\Samples\BasicMenu\Content\Plugins\BasicMenu.core.xml" target="lib" />
+    <file src="..\..\Source\Samples\BasicMenu\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Source\Samples\BasicMenu\**\*.cs" target="source" exclude="..\..\Source\Samples\BasicMenu\Content\**\*.*;..\..\Source\Samples\BasicMenu\obj\**\*.*" />
+    <file src="..\..\Source\Samples\BasicMenu\BasicMenu.csproj" target="source" />
   </files>
 </package>

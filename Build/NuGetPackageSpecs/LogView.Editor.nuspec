@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Log View</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/LogView.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/LogView.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -21,7 +21,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\DualityEditorPlugins\LogView\bin\Release\LogView.editor.dll" target="lib" />
-    <file src="..\DualityEditorPlugins\LogView\bin\Release\LogView.editor.pdb" target="lib" />
+    <file src="..\..\Source\Plugins\EditorModules\LogView\bin\Release\LogView.editor.dll" target="lib" />
+    <file src="..\..\Source\Plugins\EditorModules\LogView\bin\Release\LogView.editor.pdb" target="lib" />
   </files>
 </package>

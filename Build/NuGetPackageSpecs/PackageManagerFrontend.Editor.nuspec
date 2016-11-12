@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Package Manager Frontend</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/PackageManager.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/PackageManager.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -22,7 +22,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\DualityEditorPlugins\PackageManagerFrontend\bin\Release\PackageManagerFrontend.editor.dll" target="lib" />
-    <file src="..\DualityEditorPlugins\PackageManagerFrontend\bin\Release\PackageManagerFrontend.editor.pdb" target="lib" />
+    <file src="..\..\Source\Plugins\EditorModules\PackageManagerFrontend\bin\Release\PackageManagerFrontend.editor.dll" target="lib" />
+    <file src="..\..\Source\Plugins\EditorModules\PackageManagerFrontend\bin\Release\PackageManagerFrontend.editor.pdb" target="lib" />
   </files>
 </package>

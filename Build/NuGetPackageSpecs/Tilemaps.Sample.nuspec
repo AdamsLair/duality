@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -22,8 +22,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\DualityPlugins\Tilemaps\Sample\bin\Release\Tilemaps.Sample.core.dll" target="lib" />
-    <file src="..\DualityPlugins\Tilemaps\Sample\bin\Release\Tilemaps.Sample.core.xml" target="lib" />
-    <file src="..\DualityPlugins\Tilemaps\Sample\Testbed\Data\**\*.res" target="content" />
+    <file src="..\..\Source\Plugins\Tilemaps\Sample\bin\Release\Tilemaps.Sample.core.dll" target="lib" />
+    <file src="..\..\Source\Plugins\Tilemaps\Sample\bin\Release\Tilemaps.Sample.core.xml" target="lib" />
+    <file src="..\..\Source\Plugins\Tilemaps\Sample\Testbed\Data\**\*.res" target="content" />
   </files>
 </package>

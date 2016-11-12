@@ -6,7 +6,7 @@
     <authors>Pilati Alessandro</authors>
     <owners>Pilati Alessandro</owners>
     <title>Flap-Or-Die Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Game.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/Game.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -21,10 +21,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\SampleProjects\FlapOrDie\Content\Plugins\FlapOrDie.core.dll" target="lib" />
-    <file src="..\SampleProjects\FlapOrDie\Content\Plugins\FlapOrDie.core.xml" target="lib" />
-    <file src="..\SampleProjects\FlapOrDie\Content\Data\**\*.res" target="content" />
-    <file src="..\SampleProjects\FlapOrDie\**\*.cs" target="source" exclude="..\SampleProjects\FlapOrDie\Content\**\*.*;..\SampleProjects\FlapOrDie\obj\**\*.*" />
-    <file src="..\SampleProjects\FlapOrDie\FlapOrDie.csproj" target="source" />
+    <file src="..\..\Source\Samples\FlapOrDie\Content\Plugins\FlapOrDie.core.dll" target="lib" />
+    <file src="..\..\Source\Samples\FlapOrDie\Content\Plugins\FlapOrDie.core.xml" target="lib" />
+    <file src="..\..\Source\Samples\FlapOrDie\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Source\Samples\FlapOrDie\**\*.cs" target="source" exclude="..\..\Source\Samples\FlapOrDie\Content\**\*.*;..\..\Source\Samples\FlapOrDie\obj\**\*.*" />
+    <file src="..\..\Source\Samples\FlapOrDie\FlapOrDie.csproj" target="source" />
   </files>
 </package>

@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Dual Stick Space Shooter Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Game.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/Game.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -21,10 +21,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\SampleProjects\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.dll" target="lib" />
-    <file src="..\SampleProjects\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.xml" target="lib" />
-    <file src="..\SampleProjects\DualStickSpaceShooter\Content\Data\**\*.res" target="content" />
-    <file src="..\SampleProjects\DualStickSpaceShooter\**\*.cs" target="source" exclude="..\SampleProjects\DualStickSpaceShooter\Content\**\*.*;..\SampleProjects\DualStickSpaceShooter\obj\**\*.*" />
-    <file src="..\SampleProjects\DualStickSpaceShooter\DualStickSpaceShooter.csproj" target="source" />
+    <file src="..\..\Source\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.dll" target="lib" />
+    <file src="..\..\Source\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.xml" target="lib" />
+    <file src="..\..\Source\Samples\DualStickSpaceShooter\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Source\Samples\DualStickSpaceShooter\**\*.cs" target="source" exclude="..\..\Source\Samples\DualStickSpaceShooter\Content\**\*.*;..\..\Source\Samples\DualStickSpaceShooter\obj\**\*.*" />
+    <file src="..\..\Source\Samples\DualStickSpaceShooter\DualStickSpaceShooter.csproj" target="source" />
   </files>
 </package>

@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Editor)</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -22,7 +22,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\DualityEditorPlugins\Tilemaps\bin\Release\Tilemaps.editor.dll" target="lib" />
-    <file src="..\DualityEditorPlugins\Tilemaps\bin\Release\Tilemaps.editor.pdb" target="lib" />
+    <file src="..\..\Source\Plugins\Tilemaps\Editor\bin\Release\Tilemaps.editor.dll" target="lib" />
+    <file src="..\..\Source\Plugins\Tilemaps\Editor\bin\Release\Tilemaps.editor.pdb" target="lib" />
   </files>
 </package>

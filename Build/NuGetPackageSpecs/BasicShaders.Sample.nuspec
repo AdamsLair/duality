@@ -6,7 +6,7 @@
     <authors>Pilati Alessandro, Fedja Adam</authors>
     <owners>Pilati Alessandro, Fedja Adam</owners>
     <title>Basic Shaders Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/BasicShadersSample.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/BasicShadersSample.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -20,6 +20,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\SampleProjects\BasicShaders\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Source\Samples\BasicShaders\Content\Data\**\*.res" target="content" />
   </files>
 </package>

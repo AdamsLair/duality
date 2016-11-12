@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>DotNetFramework Backend</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/DotNetFrameworkBackend.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/DotNetFrameworkBackend.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -25,7 +25,7 @@
 #CHANGE: Adjusted unit tests.</releaseNotes>
   </metadata>
   <files>
-    <file src="..\Backend\DotNetFramework\bin\Release\DotNetFrameworkBackend.core.dll" target="lib" />
-    <file src="..\Backend\DotNetFramework\bin\Release\DotNetFrameworkBackend.core.pdb" target="lib" />
+    <file src="..\..\Source\Platform\DotNetFramework\bin\Release\DotNetFrameworkBackend.core.dll" target="lib" />
+    <file src="..\..\Source\Platform\DotNetFramework\bin\Release\DotNetFrameworkBackend.core.pdb" target="lib" />
   </files>
 </package>

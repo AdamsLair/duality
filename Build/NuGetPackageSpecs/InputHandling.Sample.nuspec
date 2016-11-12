@@ -6,7 +6,7 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Input Handling Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/InputHandlingSample.png</iconUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/InputHandlingSample.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -22,10 +22,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\SampleProjects\InputHandling\Content\Plugins\InputHandling.core.dll" target="lib" />
-    <file src="..\SampleProjects\InputHandling\Content\Plugins\InputHandling.core.xml" target="lib" />
-    <file src="..\SampleProjects\InputHandling\Content\Data\**\*.res" target="content" />
-    <file src="..\SampleProjects\InputHandling\**\*.cs" target="source" exclude="..\SampleProjects\InputHandling\Content\**\*.*;..\SampleProjects\InputHandling\obj\**\*.*" />
-    <file src="..\SampleProjects\InputHandling\InputHandling.csproj" target="source" />
+    <file src="..\..\Source\Samples\InputHandling\Content\Plugins\InputHandling.core.dll" target="lib" />
+    <file src="..\..\Source\Samples\InputHandling\Content\Plugins\InputHandling.core.xml" target="lib" />
+    <file src="..\..\Source\Samples\InputHandling\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Source\Samples\InputHandling\**\*.cs" target="source" exclude="..\..\Source\Samples\InputHandling\Content\**\*.*;..\..\Source\Samples\InputHandling\obj\**\*.*" />
+    <file src="..\..\Source\Samples\InputHandling\InputHandling.csproj" target="source" />
   </files>
 </package>
