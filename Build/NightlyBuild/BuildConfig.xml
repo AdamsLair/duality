@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <ConfigFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SolutionPath>..\..\Source\Duality.sln</SolutionPath>
+  <SolutionPath>..\..\Duality.sln</SolutionPath>
   <BuildResultDir>..\..\Source\Editor\DualityEditor\bin\Release</BuildResultDir>
   <DocSolutionPath>..\Documentation\Documentation.shfbproj</DocSolutionPath>
   <AdditionalFileDir>AdditionalFiles</AdditionalFileDir>
-  <NUnitBinDir>..\..\Source\packages\NUnit.Runners.2.6.4\tools</NUnitBinDir>
+  <NUnitBinDir>..\..\packages\NUnit.Runners.2.6.4\tools</NUnitBinDir>
   <UnitTestProjectDir>..\..\Test\</UnitTestProjectDir>
   <NuGetPath>nuget.exe</NuGetPath>
   <NuGetPackageSpecsDir>..\NuGetPackageSpecs</NuGetPackageSpecsDir>
