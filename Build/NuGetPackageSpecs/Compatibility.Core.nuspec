@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Plugins.Compatibility</id>
+    <version>2.0.1</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
+    <title>Backwards Compatibility</title>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Compatibility.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Defines helper classes to retain backwards compatibility with older Duality versions.</summary>
+    <description>Defines helper classes to retain backwards compatibility with older Duality versions.</description>
+    <tags>Duality Core Plugin Compatibility</tags>
+    <releaseNotes>Removed old pre-V2 Compatibility Classes
+#REMOVE: Removed some old serialization error handlers that are most certainly no longer needed.</releaseNotes>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.3.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\Source\Plugins\Compatibility\bin\Release\Compatibility.core.dll" target="lib" />
+    <file src="..\..\Source\Plugins\Compatibility\bin\Release\Compatibility.core.pdb" target="lib" />
+  </files>
+</package>

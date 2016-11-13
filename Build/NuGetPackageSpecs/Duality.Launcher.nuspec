@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Launcher</id>
+    <version>2.3.0</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
+    <title>Duality Launcher</title>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>The default launcher application for Duality games.</summary>
+    <description>The default launcher application for Duality games.</description>
+    <tags>Duality Launcher</tags>
+    <releaseNotes>Removed Non-Anonymous Assembly Load
+#CHANGE: To avoid potential race conditions in resolving dependencies and loading Assemblies, loading them in non-anonymous mode is no longer supported. All assemblies are now loaded anonymously.</releaseNotes>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.8.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\Source\Launcher\bin\Release\DualityLauncher.exe" target="lib" />
+    <file src="..\..\Source\Launcher\bin\Release\DualityLauncher.exe.config" target="lib" />
+    <file src="..\..\Source\Launcher\bin\Release\DualityLauncher.pdb" target="lib" />
+  </files>
+</package>

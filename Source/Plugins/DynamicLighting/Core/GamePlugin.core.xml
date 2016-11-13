@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DynamicLighting.core</name>
+    </assembly>
+    <members>
+        <member name="P:DynamicLighting.LightingSpriteRenderer.VertexTranslucency">
+            <summary>
+            [GET / SET] Specifies the objects translucency for Light when using vertex lighting.
+            A very translucent object (1.0) is affected from Lights behind it as well as from Lights in front of it.
+            Non-translucent objects (0.0) are only affected by Lights in front of them.
+            </summary>
+        </member>
+        <member name="T:DynamicLighting.Light">
+            <summary>
+            A source of light. Supported light types are directional, ambient, point and spot.
+            To create directional or ambient lights, add this Component to a GameObject without Transform.
+            </summary>
+        </member>
+        <member name="P:DynamicLighting.Light.Direction">
+            <summary>
+            [GET / SET] The direction this Light points to. Used in spot and directional light. Set this to zero
+            in order to create a point light.
+            </summary>
+        </member>
+        <member name="P:DynamicLighting.Light.Color">
+            <summary>
+            [GET / SET] The Lights main color.
+            </summary>
+        </member>
+        <member name="P:DynamicLighting.Light.Intensity">
+            <summary>
+            [GET / SET] The Lights intensity.
+            </summary>
+        </member>
+        <member name="P:DynamicLighting.Light.AmbientColor">
+            <summary>
+            [GET / SET] The Lights ambient color value. Ambient light is used as base value in directional lighting.
+            </summary>
+        </member>
+        <member name="P:DynamicLighting.Light.AmbientIntensity">
+            <summary>
+            [GET / SET] The Lights ambient intensity. Ambient light is used as base value in directional lighting.
+            </summary>
+        </member>
+        <member name="P:DynamicLighting.Light.Range">
+            <summary>
+            [GET / SET] The Lights range. Only applies to point and spot lights.
+            </summary>
+        </member>
+        <member name="P:DynamicLighting.Light.SpotFocus">
+            <summary>
+            [GET / SET] The Lights spot focus. The higher this value is, the smaller the spot radius.
+            </summary>
+        </member>
+        <member name="T:DynamicLighting.DynamicLightingCorePlugin">
+            <summary>
+            Defines the dynamic lighting core plugin.
+            </summary>
+        </member>
+    </members>
+</doc>

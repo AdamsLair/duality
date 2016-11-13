@@ -1,0 +1,32 @@
+### Section for configuring automatic properties.
+[auto-props]
+### The format of the entries is:
+###   file-name-pattern = propname[=value][;propname[=value]...]
+### The file-name-pattern can contain wildcards (such as '*' and
+### '?').  All entries which match (case-insensitively) will be
+### applied to the file.  Note that auto-props functionality
+### must be enabled, which is typically done by setting the
+### 'enable-auto-props' option.
+# *.c = svn:eol-style=native
+# *.cpp = svn:eol-style=native
+# *.h = svn:keywords=Author Date Id Rev URL;svn:eol-style=native
+# *.dsp = svn:eol-style=CRLF
+# *.dsw = svn:eol-style=CRLF
+# *.sh = svn:eol-style=native;svn:executable
+*.txt = svn:eol-style=native;svn:keywords=Author Date Id Rev URL;
+*.png = svn:mime-type=image/png
+*.jpg = svn:mime-type=image/jpeg
+*.bmp = svn:mime-type=image/bmp
+*.gif = svn:mime-type=image/gif
+*.htm = svn:mime-type=text/html
+*.html = svn:mime-type=text/html
+*.htmls = svn:mime-type=text/html
+*.zip = svn:mime-type=application/zip
+*.pdf = svn:mime-type=application/pdf
+*.ogg = svn:mime-type=audio/ogg
+*.mp3 = svn:mime-type=audio/mpeg
+*.wav = svn:mime-type=audio/vnd.wave
+*.pdf = svn:mime-type=application/pdf
+*.pdf = svn:mime-type=application/pdf
+*.pdf = svn:mime-type=application/pdf
+# Makefile = svn:eol-style=native

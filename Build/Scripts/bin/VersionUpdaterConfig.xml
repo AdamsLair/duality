@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<ConfigFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SolutionPath>../../../Duality.sln</SolutionPath>
+  <NuSpecRootDir>../../NuGetPackageSpecs</NuSpecRootDir>
+  <InstallerPackageConfigPath>../../NightlyBuild/AdditionalFiles/PackageConfig.xml</InstallerPackageConfigPath>
+  <GitSearchPaths>
+    <string>{LocalAppData}/Atlassian/SourceTree/git_local/bin</string>
+  </GitSearchPaths>
+</ConfigFile>

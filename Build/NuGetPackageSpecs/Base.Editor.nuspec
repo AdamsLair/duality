@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Editor.Plugins.Base</id>
+    <version>2.2.3</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
+    <title>Editor Base Infrastructure</title>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/EditorBase.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Provides basic infrastructure for the Duality editor, such as PropertyEditors and Importers.</summary>
+    <description>Provides basic infrastructure for the Duality editor, such as PropertyEditors and Importers.</description>
+    <tags>Duality Editor Plugin PropertyEditor Importer Preview EditorAction DataConverter</tags>
+    <releaseNotes>Fixes crash after creating a texture from an empty pixmap (
+#406)</releaseNotes>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.7.12" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.6.9" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\Source\Plugins\EditorBase\bin\Release\EditorBase.editor.dll" target="lib" />
+    <file src="..\..\Source\Plugins\EditorBase\bin\Release\EditorBase.editor.pdb" target="lib" />
+  </files>
+</package>

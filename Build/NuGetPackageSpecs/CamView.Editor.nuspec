@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Editor.Plugins.CamView</id>
+    <version>2.3.7</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
+    <title>Camera View</title>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/CameraView.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>A basic Camera View editor module.</summary>
+    <description>A basic Camera View editor module.</description>
+    <tags>Duality Editor Plugin CamView</tags>
+    <releaseNotes>CamView Visibility Filter Icon, Refactored CamView, CamView Bugfixes
+#ADD: The visibility filter icon in the Camera View now changes based on whether or not by-type visibility filtering is active.
+#CHANGE: Moved object visibility code into a new GameObjectTypeFilter class.
+#CHANGE: Removed direct Type dependency from CamView object visibility filtering and replaced it with an internal list of type IDs while keeping Type-based public API.
+#CHANGE: Removed direct Type dependency from CamViewState object visibility filtering and replaced it with a list of type IDs.</releaseNotes>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.8.2" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.7.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\Source\Plugins\EditorModules\CamView\bin\Release\CamView.editor.dll" target="lib" />
+    <file src="..\..\Source\Plugins\EditorModules\CamView\bin\Release\CamView.editor.pdb" target="lib" />
+  </files>
+</package>

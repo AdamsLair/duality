@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{22D59FE7-3A2C-4415-9610-6F9C7B68594A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Duality.Editor.Plugins.Tilemaps</RootNamespace>
+    <AssemblyName>Tilemaps.editor</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Debug\Tilemaps.editor.xml</DocumentationFile>
+    <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Tilemaps.editor.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\AdamsLair.WinForms.1.1.9\lib\net45\AdamsLair.WinForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Aga.Controls, Version=1.7.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\AdamsLair.TreeViewAdv.1.7.6.0\lib\net20\Aga.Controls.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\AdamsLair.DockPanelSuite.2.8.1.0\lib\net20\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CamViewStates\TilemapToolSettings.cs" />
+    <Compile Include="CamViewStates\TilemapTools\AutoTilePaintMode.cs" />
+    <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
+    <Compile Include="DataConverters\ComponentFromTileset.cs" />
+    <Compile Include="DataConverters\TilesetFromPixmap.cs" />
+    <Compile Include="EditorActions\OpenTilemapEditor.cs" />
+    <Compile Include="EditorActions\SetupTilemapForEditing.cs" />
+    <Compile Include="EditorActions\OpenTilemapSetupDialog.cs" />
+    <Compile Include="EditorActions\OpenTileset.cs" />
+    <Compile Include="EditorActions\OpenTilemapResizeDialog.cs" />
+    <Compile Include="EditorActions\PixmapToTileset.cs" />
+    <Compile Include="Modules\TilemapSetupDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\TilemapSetupDialog.Designer.cs">
+      <DependentUpon>TilemapSetupDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\TilemapResizeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\TilemapResizeDialog.Designer.cs">
+      <DependentUpon>TilemapResizeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\SourcePaletteTilesetView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Modules\TilesetViewPaintTileData.cs" />
+    <Compile Include="Modules\TilesetViewPaintTilesEventArgs.cs" />
+    <Compile Include="Modules\TilesetEditorLayerNodeControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Modules\TilesetEditorLayerNode.cs" />
+    <Compile Include="Modules\TilesetEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\TilesetEditor.Designer.cs">
+      <DependentUpon>TilesetEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\TilesetViewTileIndexChangeEventArgs.cs" />
+    <Compile Include="PreviewGenerators\TilesetPreviewGenerator.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="TileDrawSources\PatternTileDrawSource.cs" />
+    <Compile Include="TilesetEditorModes\AutoTileTilesetEditorMode.cs" />
+    <Compile Include="UndoRedoActions\AddTilesetConfigLayerAction.cs" />
+    <Compile Include="UndoRedoActions\EditTilesetAutoTileItemAction.cs" />
+    <Compile Include="UndoRedoActions\ResizeTilemapAction.cs" />
+    <Compile Include="UndoRedoActions\EditTilesetTileInputAction.cs" />
+    <Compile Include="Utility\TilemapsEditorSelectionParser.cs" />
+    <Compile Include="Modules\TilemapToolSourcePalette.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\TilemapToolSourcePalette.Designer.cs">
+      <DependentUpon>TilemapToolSourcePalette.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\TilesetView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TileDrawSources\TilemapTileDrawSource.cs" />
+    <Compile Include="TileDrawSources\DummyTileDrawSource.cs" />
+    <Compile Include="TileDrawSources\ITileDrawSource.cs" />
+    <Compile Include="CamViewStates\TilemapTools\SelectTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\FillTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\OvalTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\RectTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\BrushTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\NoTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\ITilemapToolEnvironment.cs" />
+    <Compile Include="CamViewStates\TilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapEditorCamViewState.cs" />
+    <Compile Include="EditorPlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\TilemapsResCache.cs" />
+    <Compile Include="Properties\TilemapsRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TilemapsRes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\TilemapsSetupUtility.cs" />
+    <Compile Include="Utility\TilemapsReflectionInfo.cs" />
+    <Compile Include="TilesetEditorModes\DepthInfoTilesetEditorMode.cs" />
+    <Compile Include="TilesetEditorModes\CollisionInfoTilesetEditorMode.cs" />
+    <Compile Include="TilesetEditorModes\TilesetSelectionChangedEventArgs.cs" />
+    <Compile Include="TilesetEditorModes\LayerSelectionChangedEventArgs.cs" />
+    <Compile Include="TilesetEditorModes\LayerEditingCaps.cs" />
+    <Compile Include="TilesetEditorModes\VisualLayerTilesetEditorMode.cs" />
+    <Compile Include="TilesetEditorModes\TilesetEditorMode.cs" />
+    <Compile Include="UndoRedoActions\RevertTilesetChangesAction.cs" />
+    <Compile Include="UndoRedoActions\ApplyTilesetChangesAction.cs" />
+    <Compile Include="UndoRedoActions\RemoveTilesetConfigLayerAction.cs" />
+    <Compile Include="UndoRedoActions\EditTilemapActionType.cs" />
+    <Compile Include="UndoRedoActions\EditTilemapAction.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Editor\DualityEditor\DualityEditor.csproj">
+      <Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
+      <Name>DualityEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Tilemaps.Core.csproj">
+      <Project>{2f7d1f9d-0803-4e13-85a6-0af56ac05431}</Project>
+      <Name>Tilemaps.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Core\Primitives\DualityPrimitives.csproj">
+      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
+      <Name>DualityPrimitives</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Core\Duality\Duality.csproj">
+      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+      <Name>Duality</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\EditorModules\CamView\CamView.Editor.csproj">
+      <Project>{e67350ed-2676-492a-9fbe-a08b5fbf3726}</Project>
+      <Name>CamView.Editor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Modules\TilemapSetupDialog.resx">
+      <DependentUpon>TilemapSetupDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\TilemapResizeDialog.resx">
+      <DependentUpon>TilemapResizeDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\TilemapToolSourcePalette.resx">
+      <DependentUpon>TilemapToolSourcePalette.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\TilesetEditor.resx">
+      <DependentUpon>TilesetEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\TilemapsRes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TilemapsRes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EmbeddedResources\IconTileBrush.png" />
+    <None Include="EmbeddedResources\IconTileFill.png" />
+    <None Include="EmbeddedResources\IconTileRect.png" />
+    <None Include="EmbeddedResources\IconTileSelect.png" />
+    <None Include="EmbeddedResources\CursorTileBrush.png" />
+    <None Include="EmbeddedResources\CursorTileFill.png" />
+    <None Include="EmbeddedResources\CursorTileOval.png" />
+    <None Include="EmbeddedResources\CursorTileRect.png" />
+    <None Include="EmbeddedResources\IconResize.png" />
+    <None Include="EmbeddedResources\IconTilesetEditor.png" />
+    <None Include="EmbeddedResources\IconTilesetCollisionInfo.png" />
+    <None Include="EmbeddedResources\IconTilesetVisualLayers.png" />
+    <None Include="EmbeddedResources\IconAdd.png" />
+    <None Include="EmbeddedResources\IconDelete.png" />
+    <None Include="EmbeddedResources\IconTilePalette.ico" />
+    <None Include="EmbeddedResources\IconTilesetEditor.ico" />
+    <None Include="EmbeddedResources\IconTilesetDepthInfo.png" />
+    <None Include="EmbeddedResources\IconTilesetCollisionLayer.png" />
+    <Content Include="EmbeddedResources\IconHideIndices.png" />
+    <Content Include="EmbeddedResources\IconRevealIndices.png" />
+    <Content Include="EmbeddedResources\IconSetup.png" />
+    <None Include="EmbeddedResources\IconSetupBig.png" />
+    <Content Include="EmbeddedResources\IconShowIndices.png" />
+    <Content Include="EmbeddedResources\IconTilesetAutoTile.png" />
+    <Content Include="EmbeddedResources\IconTilesetAutoTileLayer.png" />
+    <Content Include="EmbeddedResources\IconTilesetDepthFlatTile.png" />
+    <Content Include="EmbeddedResources\IconTilesetDepthLayer.png" />
+    <Content Include="EmbeddedResources\IconTilesetDepthVertical.png" />
+    <Content Include="EmbeddedResources\IconTilesetDepthVerticalTile.png" />
+    <Content Include="EmbeddedResources\IconTilesetSingleVisualLayer.png" />
+    <None Include="EmbeddedResources\TilesetCollisionBit.png" />
+    <None Include="EmbeddedResources\TilesetCollisionDiagDown.png" />
+    <None Include="EmbeddedResources\TilesetCollisionDiagUp.png" />
+    <None Include="EmbeddedResources\TilesetCollisionHorizontal.png" />
+    <None Include="EmbeddedResources\TilesetCollisionVertical.png" />
+    <Content Include="EmbeddedResources\TilesetViewBrightness.png" />
+    <None Include="EmbeddedResources\IconTilePalette.png" />
+    <None Include="EmbeddedResources\CursorPick.png" />
+    <None Include="EmbeddedResources\IconPick.png" />
+    <Content Include="EmbeddedResources\IconTileOval.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir  "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetDir)$(TargetName).xml" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
