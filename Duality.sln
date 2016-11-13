@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duality", "Source\Core\Duality\Duality.csproj", "{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityEditor", "Source\Editor\DualitySource\Editor\DualityEditor.csproj", "{9FB9F397-FD39-460C-A9AD-B4780D19945F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityEditor", "Source\Editor\DualityEditor\DualityEditor.csproj", "{9FB9F397-FD39-460C-A9AD-B4780D19945F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorBase.Editor", "Source\Plugins\EditorBase\EditorBase.Editor.csproj", "{D0C5CAAD-1344-4E8F-BD8B-B26F81672F4B}"
 EndProject
@@ -13,18 +13,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityLauncher", "Source\L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelpAdvisor.Editor", "Source\Plugins\EditorModules\HelpAdvisor\HelpAdvisor.Editor.csproj", "{C8DB64F9-9FBD-456F-A8AB-BC3478DFAA85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting.Core", "Source\Plugins\DynamicLighting\Source\Core\DynamicLighting.Core.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting.Core", "Source\Plugins\DynamicLighting\Core\DynamicLighting.Core.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D821AFB9-BCC9-4025-9A9C-798E2BC546AB} = {D821AFB9-BCC9-4025-9A9C-798E2BC546AB}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting.Editor", "Source\Plugins\DynamicLighting\Source\Editor\DynamicLighting.Editor.csproj", "{3518ECDE-DC59-472A-AB91-7AEF884C6DDA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting.Editor", "Source\Plugins\DynamicLighting\Editor\DynamicLighting.Editor.csproj", "{3518ECDE-DC59-472A-AB91-7AEF884C6DDA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compatibility.Core", "Source\Plugins\Compatibility\Compatibility.Core.csproj", "{FDA21F0F-1646-4E41-A1FC-1C3F05694CE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityTests", "Test\Source\Core\DualityTests.csproj", "{0C1B88A8-4FF3-43D3-9BC6-E71DBB561075}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityTests", "Test\Core\DualityTests.csproj", "{0C1B88A8-4FF3-43D3-9BC6-E71DBB561075}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering.Core", "Source\Plugins\Steering\Source\Core\Steering.Core.csproj", "{0130132B-C38D-463E-90AC-5D389E934FAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering.Core", "Source\Plugins\Steering\Core\Steering.Core.csproj", "{0130132B-C38D-463E-90AC-5D389E934FAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogView.Editor", "Source\Plugins\EditorModules\LogView\LogView.Editor.csproj", "{B45A8DA4-C597-4AE2-83B2-D79C89EE70C3}"
 EndProject
@@ -50,11 +50,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualStickSpaceShooter", "Sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityPrimitives", "Source\Core\Primitives\DualityPrimitives.csproj", "{C87A6A2F-E537-48FA-A789-3C54CF29CC09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultOpenTK.Editor", "Platform\DefaultOpenTKSource\Editor\DefaultOpenTK.Editor.csproj", "{FDA91F3F-1621-4E41-A1FC-2C3F45754CE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultOpenTK.Editor", "Source\Platform\DefaultOpenTKEditor\DefaultOpenTK.Editor.csproj", "{FDA91F3F-1621-4E41-A1FC-2C3F45754CE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetFramework.Core", "Platform\DotNetFramework\DotNetFramework.Core.csproj", "{FDA91F3F-1626-4E41-A1FC-2C3F45754CE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetFramework.Core", "Source\Platform\DotNetFramework\DotNetFramework.Core.csproj", "{FDA91F3F-1626-4E41-A1FC-2C3F45754CE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultOpenTK.Core", "Platform\DefaultOpenTK\DefaultOpenTK.Core.csproj", "{35045E2E-7748-4D1D-BE05-BF72A19C295F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultOpenTK.Core", "Source\Platform\DefaultOpenTK\DefaultOpenTK.Core.csproj", "{35045E2E-7748-4D1D-BE05-BF72A19C295F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{FC08D0D6-612E-4AD2-950C-8E9BA895D5D1}"
 EndProject
@@ -86,13 +86,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Steering", "Steering", "{A3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platform", "Platform", "{34618774-B865-4BAC-A890-925704761500}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityEditorTests", "Test\Source\Editor\DualityEditorTests.csproj", "{79641106-CC10-428D-883F-6F968E0F78CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityEditorTests", "Test\Editor\DualityEditorTests.csproj", "{79641106-CC10-428D-883F-6F968E0F78CA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tilemaps", "Tilemaps", "{F5F3C4FF-9B64-4873-AE84-4C323B670EA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tilemaps.Core", "Source\Plugins\Tilemaps\Source\Core\Tilemaps.Core.csproj", "{2F7D1F9D-0803-4E13-85A6-0AF56AC05431}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tilemaps.Core", "Source\Plugins\Tilemaps\Core\Tilemaps.Core.csproj", "{2F7D1F9D-0803-4E13-85A6-0AF56AC05431}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tilemaps.Editor", "Source\Plugins\Tilemaps\Source\Editor\Tilemaps.Editor.csproj", "{22D59FE7-3A2C-4415-9610-6F9C7B68594A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tilemaps.Editor", "Source\Plugins\Tilemaps\Editor\Tilemaps.Editor.csproj", "{22D59FE7-3A2C-4415-9610-6F9C7B68594A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tilemaps.Sample", "Source\Plugins\Tilemaps\Sample\Tilemaps.Sample.csproj", "{D014227E-3E69-4C8B-984A-1519AA35C1AD}"
 EndProject
