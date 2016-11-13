@@ -46,7 +46,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering.Sample", "Plugins\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting.Sample", "Plugins\DynamicLighting\Sample\DynamicLighting.Sample.csproj", "{4F4C0027-A152-4D0F-ACD7-F39986EDCD6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualStickSpaceShooter", "Samples\DualStickSpaceShooter\DualStickSpaceShooter.csproj", "{54376712-DBFA-4EF3-A8BA-B1D44A2DA97E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualStickSpaceShooter", "..\Samples\DualStickSpaceShooter\DualStickSpaceShooter.csproj", "{54376712-DBFA-4EF3-A8BA-B1D44A2DA97E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityPrimitives", "Core\Primitives\DualityPrimitives.csproj", "{C87A6A2F-E537-48FA-A789-3C54CF29CC09}"
 EndProject
@@ -64,19 +64,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{9D21
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Launcher", "Launcher", "{2F8B8ADF-0BBE-4D8F-AABC-A46E9A5CF6CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraController", "Samples\CameraController\CameraController.csproj", "{3FC49A5C-EDF1-4AE6-9EF6-6635296102EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraController", "..\Samples\CameraController\CameraController.csproj", "{3FC49A5C-EDF1-4AE6-9EF6-6635296102EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicMenu", "Samples\BasicMenu\BasicMenu.csproj", "{D3F86677-EB30-450B-8AAC-81F0FBDC19B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicMenu", "..\Samples\BasicMenu\BasicMenu.csproj", "{D3F86677-EB30-450B-8AAC-81F0FBDC19B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputHandling", "Samples\InputHandling\InputHandling.csproj", "{9EF413B4-0416-45FF-9A8D-85CC21C4C15B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputHandling", "..\Samples\InputHandling\InputHandling.csproj", "{9EF413B4-0416-45FF-9A8D-85CC21C4C15B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicShaders", "Samples\BasicShaders\BasicShaders.csproj", "{24BD25E6-C512-4359-A6BC-DAA155568C58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicShaders", "..\Samples\BasicShaders\BasicShaders.csproj", "{24BD25E6-C512-4359-A6BC-DAA155568C58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlapOrDie", "Samples\FlapOrDie\FlapOrDie.csproj", "{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlapOrDie", "..\Samples\FlapOrDie\FlapOrDie.csproj", "{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioHandling", "Samples\AudioHandling\AudioHandling.csproj", "{A16AF3AA-B690-4ADD-90DC-D5A90190AD0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioHandling", "..\Samples\AudioHandling\AudioHandling.csproj", "{A16AF3AA-B690-4ADD-90DC-D5A90190AD0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleSystem", "Samples\ParticleSystem\ParticleSystem.csproj", "{025EAC49-A10B-4116-B26B-72EB36CE7944}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleSystem", "..\Samples\ParticleSystem\ParticleSystem.csproj", "{025EAC49-A10B-4116-B26B-72EB36CE7944}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{F7B868F5-0B5D-497C-BA40-FA08DD3EB07D}"
 EndProject
