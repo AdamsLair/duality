@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>..\packages\NUnit.Runners.2.6.4\tools\nunit.exe</StartProgram>
+    <StartArguments>/run "../../../Test/Duality.nunit"</StartArguments>
+    <StartWorkingDirectory>..\packages\NUnit.Runners.2.6.4\tools\</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>..\packages\NUnit.Runners.2.6.4\tools\nunit.exe</StartProgram>
+    <StartArguments>/run "../../../Test/Duality.nunit"</StartArguments>
+    <StartWorkingDirectory>..\packages\NUnit.Runners.2.6.4\tools\</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0C1B88A8-4FF3-43D3-9BC6-E71DBB561075}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Duality.Tests</RootNamespace>
+    <AssemblyName>DualityTests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <TargetFrameworkProfile />
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>0649, 0169, 0067</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>0649, 0169, 0067</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Source\Core\Duality\Backend\DefaultPluginLoader.cs">
+      <Link>DefaultPluginLoader.cs</Link>
+    </Compile>
+    <Compile Include="Cloning\HelperObjects\ExplicitCloneTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\InterfaceFieldTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\IdentityTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\ComplexDelegateTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\TestMemberInfoData.cs" />
+    <Compile Include="Cloning\HelperObjects\TestStructInvestigate.cs" />
+    <Compile Include="Cloning\HelperObjects\SimpleDelegateTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\TestComponent.cs" />
+    <Compile Include="Cloning\HelperObjects\OwnedObject.cs" />
+    <Compile Include="Cloning\HelperObjects\ReferencedObject.cs" />
+    <Compile Include="Cloning\HelperObjects\WeakReferenceTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\OwnershipTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\SkipFieldTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\TestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\TestData.cs" />
+    <Compile Include="Cloning\HelperObjects\TestResource.cs" />
+    <Compile Include="Cloning\SpecificCloningTest.cs" />
+    <Compile Include="Components\RigidBodyTest.cs" />
+    <Compile Include="ExtMethodsPixelData.cs" />
+    <Compile Include="Serialization\TestObjects\MismatchedComponent.cs" />
+    <Compile Include="Serialization\TestObjects\NonExistentComponent.cs" />
+    <Compile Include="Serialization\TestObjects\SomeEnum.cs" />
+    <Compile Include="Serialization\TestObjects\TestObject.cs" />
+    <Compile Include="Serialization\TestObjects\TestData.cs" />
+    <Compile Include="Serialization\TestObjects\MemberInfoTestObject.cs" />
+    <Compile Include="TestingLogOutput.cs" />
+    <Compile Include="IO\PathOpTest.cs" />
+    <Compile Include="PluginManager\MockPlugin.cs" />
+    <Compile Include="PluginManager\MockPluginManager.cs" />
+    <Compile Include="PluginManager\PluginManagerTest.cs" />
+    <Compile Include="PluginManager\MockCorePlugin.cs" />
+    <Compile Include="Properties\TestRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestRes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ExplicitReferenceAttributeTest.cs" />
+    <Compile Include="Resources\ResourceTest.cs" />
+    <Compile Include="Resources\PrefabTest.cs" />
+    <Compile Include="Serialization\TestObjects\NullDefaultTestObject.cs" />
+    <Compile Include="PluginManager\MockAssembly.cs" />
+    <Compile Include="PluginManager\MockPluginLoader.cs" />
+    <Compile Include="PluginManager\CorePluginManagerTest.cs" />
+    <Compile Include="TestCategory.cs" />
+    <Compile Include="TestHelper.cs" />
+    <Compile Include="Cloning\CloneProviderTest.cs" />
+    <Compile Include="Components\ICmpInitializableTest.cs" />
+    <Compile Include="Components\InitializableEventReceiver.cs" />
+    <Compile Include="CorePlugin.cs" />
+    <Compile Include="GlobalSetup.cs" />
+    <Compile Include="Drawing\CanvasTest.cs" />
+    <Compile Include="Utility\ExtMethodsMemberInfoTest.cs" />
+    <Compile Include="Utility\RectTest.cs" />
+    <Compile Include="Utility\ExtMethodsTypeInfoTest.cs" />
+    <Compile Include="Utility\ObjectCreatorTest.cs" />
+    <Compile Include="Utility\ReflectionHelperTest.cs" />
+    <Compile Include="Utility\GenericOperatorTest.cs" />
+    <Compile Include="Utility\GridTest.cs" />
+    <Compile Include="IO\Streams\NonClosingStreamWrapperTest.cs" />
+    <Compile Include="IO\Streams\SubStreamWrapperTest.cs" />
+    <Compile Include="Utility\RawListTest.cs" />
+    <Compile Include="InitDualityAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\SceneTest.cs" />
+    <Compile Include="Serialization\SerializerTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Source\Core\Primitives\DualityPrimitives.csproj">
+      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
+      <Name>DualityPrimitives</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Source\Core\Duality\Duality.csproj">
+      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+      <Name>Duality</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\TestRes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>TestRes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EmbeddedResources\CanvasTestNothing.png" />
+    <None Include="EmbeddedResources\SerializerTestMismatchedComponentBinarySerializerData.dat" />
+    <None Include="EmbeddedResources\SerializerTestMismatchedComponentXmlSerializerData.dat" />
+    <None Include="EmbeddedResources\SerializerTestNonExistentComponentBinarySerializerData.dat" />
+    <None Include="EmbeddedResources\SerializerTestNonExistentComponentXmlSerializerData.dat" />
+    <None Include="EmbeddedResources\SerializerTestOldBinarySerializerData.dat" />
+    <None Include="EmbeddedResources\SerializerTestOldXmlSerializerData.dat" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EmbeddedResources\CanvasTestRedSquare.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EmbeddedResources\CanvasTestDiagonalLine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EmbeddedResources\CanvasTestAllShapes.png" />
+    <Content Include="EmbeddedResources\CanvasTestAllShapesTransformed.png" />
+    <Content Include="EmbeddedResources\TexCoordUV.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(SolutionDir)Source\Core\Duality\bin\$(ConfigurationName)\*.*" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

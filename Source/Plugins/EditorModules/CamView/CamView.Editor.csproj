@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E67350ED-2676-492A-9FBE-A08B5FBF3726}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Duality.Editor.Plugins.CamView</RootNamespace>
+    <AssemblyName>CamView.editor</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Debug\CamView.editor.xml</DocumentationFile>
+    <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\CamView.editor.xml</DocumentationFile>
+    <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\AdamsLair.WinForms.1.1.9\lib\net45\AdamsLair.WinForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\packages\AdamsLair.DockPanelSuite.2.8.1.0\lib\net20\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CamViewLayers\GridLayerData.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorAxisLock.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorAction.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorSelObj.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorCamViewState.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelLoopShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyLikeShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelCircleShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelBody.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\ChainRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\PolyLikeRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\LoopRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\PolygonRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\IRigidBodyEditorToolEnvironment.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\CircleRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\NoRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\SceneEditor\SelObj\SceneEditorSelGameObj.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Modules\CamView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\CamView.Designer.cs">
+      <DependentUpon>CamView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\CamViewClient.cs" />
+    <Compile Include="CamViewLayers\CamViewLayer.cs" />
+    <Compile Include="CamViewLayers\BackPlateCamViewLayer.cs" />
+    <Compile Include="CamViewLayers\GridCamViewLayer.cs" />
+    <Compile Include="CamViewLayers\RigidBodyJointCamViewLayer.cs" />
+    <Compile Include="CamViewLayers\RigidBodyShapeCamViewLayer.cs" />
+    <Compile Include="CamViewStates\CamViewState.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelChainShape.cs" />
+    <Compile Include="CamViewPlugin.cs" />
+    <Compile Include="CamViewStates\GameViewCamViewState.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorCamViewState.cs" />
+    <Compile Include="CamViewStates\SceneEditor\SceneEditorCamViewState.cs" />
+    <Compile Include="Modules\GameObjectTypeFilter.cs" />
+    <Compile Include="Modules\EditingGuide.cs" />
+    <Compile Include="Modules\GridSizeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\GridSizeDialog.Designer.cs">
+      <DependentUpon>GridSizeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\CamViewRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CamViewRes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\CamViewResCache.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UndoRedoActions\CamViewObjAction.cs" />
+    <Compile Include="UndoRedoActions\CreateRigidBodyShapeAction.cs" />
+    <Compile Include="UndoRedoActions\DeleteRigidBodyShapeAction.cs" />
+    <Compile Include="UndoRedoActions\DropGameObjectInSceneAction.cs" />
+    <Compile Include="UndoRedoActions\RigidBodyShapeAction.cs" />
+    <Compile Include="UndoRedoActions\ScaleCamViewObjAction.cs" />
+    <Compile Include="UndoRedoActions\RotateCamViewObjAction.cs" />
+    <Compile Include="UndoRedoActions\MoveCamViewObjAction.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Editor\DualityEditor\DualityEditor.csproj">
+      <Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
+      <Name>DualityEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Core\Primitives\DualityPrimitives.csproj">
+      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
+      <Name>DualityPrimitives</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Core\Duality\Duality.csproj">
+      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+      <Name>Duality</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Modules\CamView.resx">
+      <DependentUpon>CamView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\GridSizeDialog.resx">
+      <DependentUpon>GridSizeDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\CamViewRes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>CamViewRes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="EmbeddedResources\ObjectVisibility.png" />
+    <Content Include="EmbeddedResources\ObjectVisibilityFiltered.png" />
+    <Content Include="EmbeddedResources\SnapToGrid.png" />
+    <None Include="EmbeddedResources\shape_perspective.png" />
+    <None Include="EmbeddedResources\curArrowCreateCircle.png" />
+    <None Include="EmbeddedResources\curArrowCreatePolygon.png" />
+    <None Include="EmbeddedResources\curArrowCreateEdge.png" />
+    <None Include="EmbeddedResources\curArrowCreateLoop.png" />
+    <Content Include="EmbeddedResources\eye.ico" />
+    <None Include="EmbeddedResources\iconCmpCircleCollider.png" />
+    <None Include="EmbeddedResources\iconCmpRectCollider.png" />
+    <None Include="EmbeddedResources\layers.png" />
+    <None Include="EmbeddedResources\iconCmpEdgeCollider.png" />
+    <None Include="EmbeddedResources\iconCmpLoopCollider.png" />
+    <None Include="EmbeddedResources\magnifier_one.png" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir  "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetDir)$(TargetName).xml" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

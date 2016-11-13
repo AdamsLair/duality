@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <!-- The configuration and platform will be used to determine which
+         assemblies to include from solution and project documentation
+         sources -->
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{37086745-bff5-4106-8e42-6b9fa14fd18d}</ProjectGuid>
+    <SHFBSchemaVersion>1.9.9.0</SHFBSchemaVersion>
+    <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual
+         Studio adds them anyway -->
+    <AssemblyName>Documentation</AssemblyName>
+    <RootNamespace>Documentation</RootNamespace>
+    <Name>Documentation</Name>
+    <!-- SHFB properties -->
+    <OutputPath>.\Help\</OutputPath>
+    <HtmlHelpName>DDoc</HtmlHelpName>
+    <Language>en-US</Language>
+    <DocumentationSources>
+      <DocumentationSource sourceFile="..\..\Source\Core\Duality\bin\Release\Duality.dll" />
+      <DocumentationSource sourceFile="..\..\Source\Core\Duality\bin\Release\Duality.xml" />
+      <DocumentationSource sourceFile="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.dll" />
+      <DocumentationSource sourceFile="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.xml" />
+    </DocumentationSources>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
+    <HelpTitle>Duality Documentation</HelpTitle>
+    <SyntaxFilters>C#</SyntaxFilters>
+    <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
+    <PresentationStyle>VS2013</PresentationStyle>
+    <PlugInConfigurations>
+    </PlugInConfigurations>
+    <ApiFilter>
+      <Filter entryType="Namespace" fullName="DualityEditor" isExposed="False" />
+      <Filter entryType="Namespace" fullName="DualityEditor.Controls" isExposed="False" />
+      <Filter entryType="Namespace" fullName="DualityEditor.Controls.PropertyEditors" isExposed="False" />
+      <Filter entryType="Namespace" fullName="DualityEditor.Controls.ToolStrip" isExposed="False" />
+      <Filter entryType="Namespace" fullName="DualityEditor.EditorRes" isExposed="False" />
+      <Filter entryType="Namespace" fullName="DualityEditor.Forms" isExposed="False" />
+      <Filter entryType="Namespace" fullName="DualityLauncher" isExposed="False" />
+      <Filter entryType="Namespace" fullName="EditorBase" isExposed="False" />
+      <Filter entryType="Namespace" fullName="EditorBase.PluginRes" isExposed="False" />
+      <Filter entryType="Namespace" fullName="EditorBase.PropertyEditors" isExposed="False" />
+      <Filter entryType="Namespace" fullName="HelpAdvisor" isExposed="False" />
+      <Filter entryType="Namespace" fullName="HelpAdvisor.PluginRes" isExposed="False" />
+      <Filter entryType="Namespace" fullName="ResourceHacker" isExposed="False" />
+      <Filter entryType="Namespace" fullName="ResourceHacker.PropertyEditors" isExposed="False" />
+      <Filter entryType="Namespace" fullName="TestPlugin" isExposed="False" />
+      <Filter entryType="Namespace" fullName="DualityEditor" isExposed="False" />
+    </ApiFilter>
+    <VisibleItems>InheritedMembers, Protected, SealedProtected</VisibleItems>
+    <ComponentConfigurations>
+      <ComponentConfig id="Code Block Component" enabled="True">
+        <component id="Code Block Component">
+  <basePath value="{@HtmlEncProjectFolder}" />
+  <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
+  <allowMissingSource value="false" />
+  <removeRegionMarkers value="false" />
+  <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="cs" tabSize="0" numberLines="true" outlining="false" keepSeeTags="false" defaultTitle="true" />
+</component>
+      </ComponentConfig>
+    </ComponentConfigurations>
+    <NamingMethod>MemberName</NamingMethod>
+    <IndentHtml>True</IndentHtml>
+    <HelpAttributes />
+    <NamespaceSummaries />
+    <BuildLogFile />
+    <HtmlHelp1xCompilerPath />
+    <HtmlHelp2xCompilerPath />
+    <SandcastlePath />
+    <WorkingPath />
+    <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
+    <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
+    <KeepLogFile>True</KeepLogFile>
+    <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
+    <CppCommentsFixup>False</CppCommentsFixup>
+    <CleanIntermediates>True</CleanIntermediates>
+    <SdkLinkTarget>Blank</SdkLinkTarget>
+    <RootNamespaceContainer>False</RootNamespaceContainer>
+    <Preliminary>False</Preliminary>
+    <ContentPlacement>AboveNamespaces</ContentPlacement>
+    <MaximumGroupParts>2</MaximumGroupParts>
+    <NamespaceGrouping>True</NamespaceGrouping>
+  </PropertyGroup>
+  <!-- There are no properties for these groups.  AnyCPU needs to appear in
+       order for Visual Studio to perform the build.  The others are optional
+       common platform types that may appear. -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Win32' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Win32' ">
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FarseerOpenTK">
+      <HintPath>..\..\Source\Core\Duality\bin\Release\FarseerOpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK">
+      <HintPath>..\..\Source\Core\Duality\bin\Release\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl">
+      <HintPath>..\..\Source\Core\Duality\bin\Release\OpenTK.GLControl.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <!-- Import the SHFB build targets -->
+  <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />
+</Project>

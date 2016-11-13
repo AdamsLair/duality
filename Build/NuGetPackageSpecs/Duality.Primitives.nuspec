@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Primitives</id>
+    <version>2.0.0</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
+    <title>Duality Primitives</title>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Primitives.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>A set of primitive classes that are used by Duality.</summary>
+    <description>A set of primitive classes that are used by Duality and some of its dependencies.</description>
+    <tags></tags>
+    <references>
+      <reference file="DualityPrimitives.dll" />
+    </references>
+  </metadata>
+  <files>
+    <file src="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.dll" target="lib" />
+    <file src="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.pdb" target="lib" />
+    <file src="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.xml" target="lib" />
+  </files>
+</package>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality</id>
+    <version>2.8.2</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
+    <title>Duality Core</title>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>The Duality engine core.</summary>
+    <description>The Duality engine core.</description>
+    <tags>Duality Core</tags>
+    <releaseNotes>ContentRef Tweaks
+#CHANGE: Simplified ContentRef.IsRuntimeResource implementation to not depend on the IsLoaded getter.</releaseNotes>
+    <dependencies>
+      <dependency id="AdamsLair.Duality.Primitives" version="2.0.0" />
+      <dependency id="AdamsLair.NVorbis" version="0.7.5" />
+      <dependency id="AdamsLair.FarseerDuality" version="4.1.1" />
+    </dependencies>
+    <references>
+      <reference file="Duality.dll" />
+    </references>
+  </metadata>
+  <files>
+    <file src="..\..\Source\Core\Duality\bin\Release\Duality.dll" target="lib" />
+    <file src="..\..\Source\Core\Duality\bin\Release\Duality.pdb" target="lib" />
+    <file src="..\..\Source\Core\Duality\bin\Release\Duality.xml" target="lib" />
+  </files>
+</package>

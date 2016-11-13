@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Editor.Plugins.ProjectView</id>
+    <version>2.0.9</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
+    <title>Project View</title>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/ProjectView.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Provides an overview of project Resources and allows importing new Assets.</summary>
+    <description>Provides an overview of project Resources and allows importing new Assets.</description>
+    <tags>Duality Editor Plugin ProjectView</tags>
+    <releaseNotes>Project View Performance
+#CHANGE: Reduced the number of Project View redraws when the modified state of a Resource changes by actually checking whether it changed since the last redraw.</releaseNotes>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.7.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.6.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\Source\Plugins\EditorModules\ProjectView\bin\Release\ProjectView.editor.dll" target="lib" />
+    <file src="..\..\Source\Plugins\EditorModules\ProjectView\bin\Release\ProjectView.editor.pdb" target="lib" />
+  </files>
+</package>

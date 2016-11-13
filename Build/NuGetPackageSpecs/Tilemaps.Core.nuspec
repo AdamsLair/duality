@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Plugins.Tilemaps</id>
+    <version>1.1.7</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
+    <title>Tilemaps (Core)</title>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Defines core Resources and Components for using tilemaps with Duality.</summary>
+    <description>Defines core Resources and Components for using tilemaps with Duality.</description>
+    <tags>Duality Core Plugin Tilemaps</tags>
+    <releaseNotes>TilemapCollider Bugfixes
+#FIX: Fixed a NullReferenceException when attempting to build collision shapes for a Tilemap with an unavailable Tileset.</releaseNotes>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.8.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\Source\Plugins\Tilemaps\Core\bin\Release\Tilemaps.core.dll" target="lib" />
+    <file src="..\..\Source\Plugins\Tilemaps\Core\bin\Release\Tilemaps.core.pdb" target="lib" />
+    <file src="..\..\Source\Plugins\Tilemaps\Core\bin\Release\Tilemaps.core.xml" target="lib" />
+  </files>
+</package>
