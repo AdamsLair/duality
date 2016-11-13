@@ -33,3 +33,4 @@ Samples/**/Content/Source/Code/
 !Build/Scripts/bin/
 Source/Core/Duality/Duality.xml
 Source/Editor/DualityEditor/DualityEditor.xml
+Build/Documentation/Help/Working/
