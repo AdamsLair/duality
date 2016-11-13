@@ -2,14 +2,14 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityUpdater.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)DualityEditor\bin\Debug\</StartWorkingDirectory>
+    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\DualityUpdater.exe</StartProgram>
+    <StartWorkingDirectory>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\</StartWorkingDirectory>
     <StartArguments>ApplyUpdate.xml DualityEditor.exe</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)DualityEditor\bin\Release\DualityUpdater.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)DualityEditor\bin\Release\</StartWorkingDirectory>
+    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Release\DualityUpdater.exe</StartProgram>
+    <StartWorkingDirectory>$(SolutionDir)Source\Editor\DualityEditor\bin\Release\</StartWorkingDirectory>
     <StartArguments>ApplyUpdate.xml DualityEditor.exe</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
@@ -64,8 +64,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\"
-copy "$(TargetPath)" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\"</PostBuildEvent>
+    <PostBuildEvent>mkdir  "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\"
+copy "$(TargetPath)" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

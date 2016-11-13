@@ -2,12 +2,12 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
+    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
     <StartWorkingDirectory>$(SolutionDir)DualityPlugins\Tilemaps\Sample\Testbed\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
+    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
     <StartWorkingDirectory>$(SolutionDir)DualityPlugins\Tilemaps\Sample\Testbed\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>

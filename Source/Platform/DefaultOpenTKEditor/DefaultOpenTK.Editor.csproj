@@ -39,11 +39,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK, Version=1.1.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AdamsLair.OpenTK.1.1.6.0\lib\net20\OpenTK.dll</HintPath>
+      <HintPath>..\..\..\packages\AdamsLair.OpenTK.1.1.6.0\lib\net20\OpenTK.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OpenTK.GLControl, Version=1.1.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AdamsLair.OpenTK.GLControl.1.1.6.0\lib\net20\OpenTK.GLControl.dll</HintPath>
+      <HintPath>..\..\..\packages\AdamsLair.OpenTK.GLControl.1.1.6.0\lib\net20\OpenTK.GLControl.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -79,12 +79,12 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenTK.GLControl.dll" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-mkdir  "$(SolutionDir)..\Test\Editor\bin\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)..\Test\Editor\bin\Plugins"
-copy "$(TargetDir)OpenTK.GLControl.dll" "$(SolutionDir)..\Test\Editor\bin\Plugins"</PostBuildEvent>
+    <PostBuildEvent>mkdir "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetDir)OpenTK.GLControl.dll" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+mkdir  "$(SolutionDir)Test\Editor\bin\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)Test\Editor\bin\Plugins"
+copy "$(TargetDir)OpenTK.GLControl.dll" "$(SolutionDir)Test\Editor\bin\Plugins"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

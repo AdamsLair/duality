@@ -3,14 +3,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DualityPackageExcludeParentElement />
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)SampleProjects\ParticleSystem\Content\</StartWorkingDirectory>
+    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
+    <StartWorkingDirectory>$(SolutionDir)Samples\ParticleSystem\Content\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DualityPackageExcludeParentElement />
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)SampleProjects\ParticleSystem\Content\</StartWorkingDirectory>
+    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
+    <StartWorkingDirectory>$(SolutionDir)Samples\ParticleSystem\Content\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>

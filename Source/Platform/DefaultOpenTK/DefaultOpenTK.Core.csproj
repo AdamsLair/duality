@@ -39,7 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK, Version=1.1.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AdamsLair.OpenTK.1.1.6.0\lib\net20\OpenTK.dll</HintPath>
+      <HintPath>..\..\..\packages\AdamsLair.OpenTK.1.1.6.0\lib\net20\OpenTK.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -90,26 +90,26 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenTK.dll" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenALSoft32.dll" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenALSoft64.dll" "$(SolutionDir)Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-mkdir  "$(SolutionDir)..\Test\Core\bin\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)..\Test\Core\bin\Plugins"
-copy "$(TargetDir)OpenTK.dll" "$(SolutionDir)..\Test\Core\bin\Plugins"
-copy "$(TargetDir)OpenALSoft32.dll" "$(SolutionDir)..\Test\Core\bin\Plugins"
-copy "$(TargetDir)OpenALSoft64.dll" "$(SolutionDir)..\Test\Core\bin\Plugins"
-mkdir  "$(SolutionDir)..\Test\Editor\bin\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)..\Test\Editor\bin\Plugins"
-copy "$(TargetDir)OpenTK.dll" "$(SolutionDir)..\Test\Editor\bin\Plugins"
-copy "$(TargetDir)OpenALSoft32.dll" "$(SolutionDir)..\Test\Editor\bin\Plugins"
-copy "$(TargetDir)OpenALSoft64.dll" "$(SolutionDir)..\Test\Editor\bin\Plugins"
-mkdir  "$(SolutionDir)..\Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)..\Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenTK.dll" "$(SolutionDir)..\Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenALSoft32.dll" "$(SolutionDir)..\Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenALSoft64.dll" "$(SolutionDir)..\Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
+    <PostBuildEvent>mkdir  "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetDir)OpenTK.dll" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetDir)OpenALSoft32.dll" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetDir)OpenALSoft64.dll" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
+mkdir  "$(SolutionDir)Test\Core\bin\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)Test\Core\bin\Plugins"
+copy "$(TargetDir)OpenTK.dll" "$(SolutionDir)Test\Core\bin\Plugins"
+copy "$(TargetDir)OpenALSoft32.dll" "$(SolutionDir)Test\Core\bin\Plugins"
+copy "$(TargetDir)OpenALSoft64.dll" "$(SolutionDir)Test\Core\bin\Plugins"
+mkdir  "$(SolutionDir)Test\Editor\bin\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)Test\Editor\bin\Plugins"
+copy "$(TargetDir)OpenTK.dll" "$(SolutionDir)Test\Editor\bin\Plugins"
+copy "$(TargetDir)OpenALSoft32.dll" "$(SolutionDir)Test\Editor\bin\Plugins"
+copy "$(TargetDir)OpenALSoft64.dll" "$(SolutionDir)Test\Editor\bin\Plugins"
+mkdir  "$(SolutionDir)Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetDir)OpenTK.dll" "$(SolutionDir)Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetDir)OpenALSoft32.dll" "$(SolutionDir)Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetDir)OpenALSoft64.dll" "$(SolutionDir)Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
