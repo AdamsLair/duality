@@ -17,7 +17,7 @@ before_build:
   - nuget restore Source\Duality.sln
   
 build:
-  project: Source\Duality.sln
+  project: Duality.sln
   verbosity: minimal
   
 test:
