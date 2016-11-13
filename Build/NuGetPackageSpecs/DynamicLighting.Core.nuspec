@@ -1,8 +1,8 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.DynamicLighting</id>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>DynamicLighting (Core)</title>
@@ -13,10 +13,10 @@
     <summary>Introduces a naive implementation of dynamic lighting Components.</summary>
     <description>Introduces a naive implementation of dynamic lighting Components. Although this can be used in an actual game, this package mainly serves as an example on how to implement dynamic lighting functionality in a custom Duality plugin. You can find the full source code online.</description>
     <tags>Duality Core Plugin Rendering Lighting Component</tags>
-    <releaseNotes>SpriteRenderer Flip
-#ADD: SpriteRenderers can now be flipped horizontally and vertically.</releaseNotes>
+    <releaseNotes>Improved Project Structure (
+#437)</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.1.6" />
+      <dependency id="AdamsLair.Duality" version="2.8.3" />
     </dependencies>
   </metadata>
   <files>
