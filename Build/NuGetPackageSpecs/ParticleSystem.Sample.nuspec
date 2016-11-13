@@ -6,8 +6,8 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Custom ParticleSystem Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/ParticleSystemSample.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/ParticleSystemSample.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Implements and showcases a custom Particle System in Duality.</summary>

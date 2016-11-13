@@ -6,8 +6,8 @@
     <authors>Pilati Alessandro, Fedja Adam</authors>
     <owners>Pilati Alessandro, Fedja Adam</owners>
     <title>Basic Shaders Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/master/Build/NuGetPackageSpecs/Icons/BasicShadersSample.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/BasicShadersSample.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Demonstrates how to use shaders in Duality.</summary>
