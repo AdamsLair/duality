@@ -21,10 +21,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.dll" target="lib" />
-    <file src="..\..\Source\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.xml" target="lib" />
-    <file src="..\..\Source\Samples\DualStickSpaceShooter\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Source\Samples\DualStickSpaceShooter\**\*.cs" target="source" exclude="..\..\Source\Samples\DualStickSpaceShooter\Content\**\*.*;..\..\Source\Samples\DualStickSpaceShooter\obj\**\*.*" />
-    <file src="..\..\Source\Samples\DualStickSpaceShooter\DualStickSpaceShooter.csproj" target="source" />
+    <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.dll" target="lib" />
+    <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.xml" target="lib" />
+    <file src="..\..\Samples\DualStickSpaceShooter\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\DualStickSpaceShooter\**\*.cs" target="source" exclude="..\..\Source\Samples\DualStickSpaceShooter\Content\**\*.*;..\..\Source\Samples\DualStickSpaceShooter\obj\**\*.*" />
+    <file src="..\..\Samples\DualStickSpaceShooter\DualStickSpaceShooter.csproj" target="source" />
   </files>
 </package>

@@ -20,10 +20,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Samples\AudioHandling\Content\Plugins\AudioHandling.core.dll" target="lib" />
-    <file src="..\..\Source\Samples\AudioHandling\Content\Plugins\AudioHandling.core.xml" target="lib" />
-    <file src="..\..\Source\Samples\AudioHandling\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Source\Samples\AudioHandling\**\*.cs" target="source" exclude="..\..\Source\Samples\AudioHandling\Content\**\*.*;..\..\Source\Samples\AudioHandling\obj\**\*.*" />
-    <file src="..\..\Source\Samples\AudioHandling\AudioHandling.csproj" target="source" />
+    <file src="..\..\Samples\AudioHandling\Content\Plugins\AudioHandling.core.dll" target="lib" />
+    <file src="..\..\Samples\AudioHandling\Content\Plugins\AudioHandling.core.xml" target="lib" />
+    <file src="..\..\Samples\AudioHandling\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\AudioHandling\**\*.cs" target="source" exclude="..\..\Source\Samples\AudioHandling\Content\**\*.*;..\..\Source\Samples\AudioHandling\obj\**\*.*" />
+    <file src="..\..\Samples\AudioHandling\AudioHandling.csproj" target="source" />
   </files>
 </package>

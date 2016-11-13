@@ -21,10 +21,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Samples\FlapOrDie\Content\Plugins\FlapOrDie.core.dll" target="lib" />
-    <file src="..\..\Source\Samples\FlapOrDie\Content\Plugins\FlapOrDie.core.xml" target="lib" />
-    <file src="..\..\Source\Samples\FlapOrDie\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Source\Samples\FlapOrDie\**\*.cs" target="source" exclude="..\..\Source\Samples\FlapOrDie\Content\**\*.*;..\..\Source\Samples\FlapOrDie\obj\**\*.*" />
-    <file src="..\..\Source\Samples\FlapOrDie\FlapOrDie.csproj" target="source" />
+    <file src="..\..\Samples\FlapOrDie\Content\Plugins\FlapOrDie.core.dll" target="lib" />
+    <file src="..\..\Samples\FlapOrDie\Content\Plugins\FlapOrDie.core.xml" target="lib" />
+    <file src="..\..\Samples\FlapOrDie\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\FlapOrDie\**\*.cs" target="source" exclude="..\..\Source\Samples\FlapOrDie\Content\**\*.*;..\..\Source\Samples\FlapOrDie\obj\**\*.*" />
+    <file src="..\..\Samples\FlapOrDie\FlapOrDie.csproj" target="source" />
   </files>
 </package>

@@ -20,6 +20,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Samples\BasicShaders\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\BasicShaders\Content\Data\**\*.res" target="content" />
   </files>
 </package>

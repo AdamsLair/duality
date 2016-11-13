@@ -21,10 +21,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Samples\BasicMenu\Content\Plugins\BasicMenu.core.dll" target="lib" />
-    <file src="..\..\Source\Samples\BasicMenu\Content\Plugins\BasicMenu.core.xml" target="lib" />
-    <file src="..\..\Source\Samples\BasicMenu\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Source\Samples\BasicMenu\**\*.cs" target="source" exclude="..\..\Source\Samples\BasicMenu\Content\**\*.*;..\..\Source\Samples\BasicMenu\obj\**\*.*" />
-    <file src="..\..\Source\Samples\BasicMenu\BasicMenu.csproj" target="source" />
+    <file src="..\..\Samples\BasicMenu\Content\Plugins\BasicMenu.core.dll" target="lib" />
+    <file src="..\..\Samples\BasicMenu\Content\Plugins\BasicMenu.core.xml" target="lib" />
+    <file src="..\..\Samples\BasicMenu\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\BasicMenu\**\*.cs" target="source" exclude="..\..\Source\Samples\BasicMenu\Content\**\*.*;..\..\Source\Samples\BasicMenu\obj\**\*.*" />
+    <file src="..\..\Samples\BasicMenu\BasicMenu.csproj" target="source" />
   </files>
 </package>

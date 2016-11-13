@@ -20,10 +20,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Samples\CameraController\Content\Plugins\CameraController.core.dll" target="lib" />
-    <file src="..\..\Source\Samples\CameraController\Content\Plugins\CameraController.core.xml" target="lib" />
-    <file src="..\..\Source\Samples\CameraController\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Source\Samples\CameraController\**\*.cs" target="source" exclude="..\..\Source\Samples\CameraController\Content\**\*.*;..\..\Source\Samples\CameraController\obj\**\*.*" />
-    <file src="..\..\Source\Samples\CameraController\CameraController.csproj" target="source" />
+    <file src="..\..\Samples\CameraController\Content\Plugins\CameraController.core.dll" target="lib" />
+    <file src="..\..\Samples\CameraController\Content\Plugins\CameraController.core.xml" target="lib" />
+    <file src="..\..\Samples\CameraController\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\CameraController\**\*.cs" target="source" exclude="..\..\Source\Samples\CameraController\Content\**\*.*;..\..\Source\Samples\CameraController\obj\**\*.*" />
+    <file src="..\..\Samples\CameraController\CameraController.csproj" target="source" />
   </files>
 </package>
