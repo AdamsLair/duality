@@ -21,6 +21,8 @@
     <DocumentationSources>
       <DocumentationSource sourceFile="..\..\Source\Core\Duality\bin\Release\Duality.dll" />
       <DocumentationSource sourceFile="..\..\Source\Core\Duality\bin\Release\Duality.xml" />
+      <DocumentationSource sourceFile="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.dll" />
+      <DocumentationSource sourceFile="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.xml" />
     </DocumentationSources>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <HelpTitle>Duality Documentation</HelpTitle>
