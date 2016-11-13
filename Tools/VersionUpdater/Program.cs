@@ -265,20 +265,23 @@ namespace VersionUpdater
 						string.Join(", ", changeInfo.Titles.Take(3)) + 
 						Environment.NewLine + 
 						string.Join(Environment.NewLine, changeInfo.ChangeLog);
-					foreach (XElement dependencyElement in dependenciesElement.Descendants("dependency"))
+					if (dependenciesElement != null)
 					{
-						XAttribute idAttrib = dependencyElement.Attribute("id");
-						XAttribute versionAttrib = dependencyElement.Attribute("version");
-						if (idAttrib == null) continue;
-						if (versionAttrib == null) continue;
+						foreach (XElement dependencyElement in dependenciesElement.Descendants("dependency"))
+						{
+							XAttribute idAttrib = dependencyElement.Attribute("id");
+							XAttribute versionAttrib = dependencyElement.Attribute("version");
+							if (idAttrib == null) continue;
+							if (versionAttrib == null) continue;
 
-						ProjectInfo dependency = allProjects.FirstOrDefault(p => string.Equals(p.NuSpecPackageId, idAttrib.Value, StringComparison.InvariantCultureIgnoreCase));
-						if (dependency == null) continue;
+							ProjectInfo dependency = allProjects.FirstOrDefault(p => string.Equals(p.NuSpecPackageId, idAttrib.Value, StringComparison.InvariantCultureIgnoreCase));
+							if (dependency == null) continue;
 
-						versionAttrib.Value = string.Format("{0}.{1}.{2}", 
-							dependency.NuSpecVersion.Major,
-							dependency.NuSpecVersion.Minor,
-							dependency.NuSpecVersion.Build);
+							versionAttrib.Value = string.Format("{0}.{1}.{2}", 
+								dependency.NuSpecVersion.Major,
+								dependency.NuSpecVersion.Minor,
+								dependency.NuSpecVersion.Build);
+						}
 					}
 
 					nuspecDoc.Save(changeInfo.Project.NuSpecFilePath);

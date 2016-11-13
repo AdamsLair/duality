@@ -1,8 +1,8 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.BasicShaders</id>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <authors>Pilati Alessandro, Fedja Adam</authors>
     <owners>Pilati Alessandro, Fedja Adam</owners>
     <title>Basic Shaders Sample</title>
@@ -13,10 +13,11 @@
     <summary>Demonstrates how to use shaders in Duality.</summary>
     <description>This package contains a sample Scene that uses some very basic shaders to render sprites.</description>
     <tags>Duality Sample Plugin Shaders Rendering</tags>
-    <releaseNotes>Initial v2.0 Release</releaseNotes>
+    <releaseNotes>Improved Project Structure (
+#437)</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.0.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.0.0" />
+      <dependency id="AdamsLair.Duality" version="2.8.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.7.7" />
     </dependencies>
   </metadata>
   <files>
