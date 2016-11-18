@@ -10,19 +10,20 @@
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <summary>A sample project to show how to use Steering Behaviours.</summary>
-    <description>A sample project to show how to use Steering Behaviours.</description>
+    <summary>Introduces a Steering Agent Component that allows for objects to evade each other.</summary>
+    <description>Introduces a Steering Agent Component that allows for objects to evade each other.</description>
     <tags>Duality Sample Plugin Steering Component AI</tags>
     <releaseNotes>Improved Project Structure (
 #437)</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Plugins.Steering" version="2.0.1" />
       <dependency id="AdamsLair.Duality" version="2.8.3" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\Steering\Sample\bin\Release\Steering.Sample.core.dll" target="lib" />
-    <file src="..\..\Source\Plugins\Steering\Sample\bin\Release\Steering.Sample.core.xml" target="lib" />
-    <file src="..\..\Source\Plugins\Steering\Sample\Testbed\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\Steering\Content\Plugins\Steering.core.dll" target="lib" />
+    <file src="..\..\Samples\Steering\Content\Plugins\Steering.core.xml" target="lib" />
+    <file src="..\..\Samples\Steering\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\Steering\**\*.cs" target="source" exclude="..\..\Samples\Steering\Content\**\*.*;..\..\Samples\Steering\obj\**\*.*" />
+    <file src="..\..\Samples\Steering\Steering.csproj" target="source" />
   </files>
 </package>
