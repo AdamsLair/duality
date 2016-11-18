@@ -24,7 +24,7 @@
     <file src="..\..\Samples\FlapOrDie\Content\Plugins\FlapOrDie.core.dll" target="lib" />
     <file src="..\..\Samples\FlapOrDie\Content\Plugins\FlapOrDie.core.xml" target="lib" />
     <file src="..\..\Samples\FlapOrDie\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Samples\FlapOrDie\**\*.cs" target="source" exclude="..\..\Source\Samples\FlapOrDie\Content\**\*.*;..\..\Source\Samples\FlapOrDie\obj\**\*.*" />
+    <file src="..\..\Samples\FlapOrDie\**\*.cs" target="source" exclude="..\..\Samples\FlapOrDie\Content\**\*.*;..\..\Samples\FlapOrDie\obj\**\*.*" />
     <file src="..\..\Samples\FlapOrDie\FlapOrDie.csproj" target="source" />
   </files>
 </package>

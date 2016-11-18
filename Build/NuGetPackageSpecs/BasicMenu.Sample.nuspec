@@ -24,7 +24,7 @@
     <file src="..\..\Samples\BasicMenu\Content\Plugins\BasicMenu.core.dll" target="lib" />
     <file src="..\..\Samples\BasicMenu\Content\Plugins\BasicMenu.core.xml" target="lib" />
     <file src="..\..\Samples\BasicMenu\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Samples\BasicMenu\**\*.cs" target="source" exclude="..\..\Source\Samples\BasicMenu\Content\**\*.*;..\..\Source\Samples\BasicMenu\obj\**\*.*" />
+    <file src="..\..\Samples\BasicMenu\**\*.cs" target="source" exclude="..\..\Samples\BasicMenu\Content\**\*.*;..\..\Samples\BasicMenu\obj\**\*.*" />
     <file src="..\..\Samples\BasicMenu\BasicMenu.csproj" target="source" />
   </files>
 </package>

@@ -24,7 +24,7 @@
     <file src="..\..\Samples\ParticleSystem\Content\Plugins\ParticleSystem.core.dll" target="lib" />
     <file src="..\..\Samples\ParticleSystem\Content\Plugins\ParticleSystem.core.xml" target="lib" />
     <file src="..\..\Samples\ParticleSystem\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Samples\ParticleSystem\**\*.cs" target="source" exclude="..\..\Source\Samples\ParticleSystem\Content\**\*.*;..\..\Source\Samples\ParticleSystem\obj\**\*.*" />
+    <file src="..\..\Samples\ParticleSystem\**\*.cs" target="source" exclude="..\..\Samples\ParticleSystem\Content\**\*.*;..\..\Samples\ParticleSystem\obj\**\*.*" />
     <file src="..\..\Samples\ParticleSystem\ParticleSystem.csproj" target="source" />
   </files>
 </package>

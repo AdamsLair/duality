@@ -24,7 +24,7 @@
     <file src="..\..\Samples\InputHandling\Content\Plugins\InputHandling.core.dll" target="lib" />
     <file src="..\..\Samples\InputHandling\Content\Plugins\InputHandling.core.xml" target="lib" />
     <file src="..\..\Samples\InputHandling\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Samples\InputHandling\**\*.cs" target="source" exclude="..\..\Source\Samples\InputHandling\Content\**\*.*;..\..\Source\Samples\InputHandling\obj\**\*.*" />
+    <file src="..\..\Samples\InputHandling\**\*.cs" target="source" exclude="..\..\Samples\InputHandling\Content\**\*.*;..\..\Samples\InputHandling\obj\**\*.*" />
     <file src="..\..\Samples\InputHandling\InputHandling.csproj" target="source" />
   </files>
 </package>
