@@ -385,12 +385,13 @@ namespace Duality.Updater
 				// Add a new project reference to the solution
 				int projectIndex = solutionLines.LastIndexOf("EndProject");
 				if (projectIndex == -1) projectIndex = solutionLines.Count - 1;
-				string newProjectLine = string.Format("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"", 
-					projectTypeGuid, 
+				string newProjectLine = string.Format("Project(\"{{{0}}}\") = \"{1}\", \"{2}\", \"{{{3}}}\"", 
+					projectTypeGuid.ToString().ToUpperInvariant(), 
 					Path.GetFileNameWithoutExtension(projectFile), 
 					solutionRelativeProjectPath, 
-					projectGuid);
-				bool alreadyIntegrated = solutionLines.Any(line => line.IndexOf(newProjectLine, StringComparison.InvariantCultureIgnoreCase) != -1);
+					projectGuid.ToString().ToUpperInvariant());
+				bool alreadyIntegrated = solutionLines.Any(line => 
+					line.IndexOf(solutionRelativeProjectPath, StringComparison.InvariantCultureIgnoreCase) != -1);
 				if (!alreadyIntegrated)
 				{
 					solutionLines.Insert(projectIndex + 1, newProjectLine);
