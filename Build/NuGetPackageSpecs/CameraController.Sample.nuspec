@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.CameraController</id>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Camera Controller Sample</title>
@@ -13,8 +13,8 @@
     <summary>Demonstrates various camera controller Components.</summary>
     <description>This package contains a testbed for camera controller Components and various sample implementations.</description>
     <tags>Duality Sample Plugin Camera</tags>
-    <releaseNotes>Improved Project Structure (
-#437)</releaseNotes>
+    <releaseNotes>Fixed Sample NuSpecs
+#FIX: Fixed a broken exclude path for sample packages after the recent project structure update.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.8.3" />
       <dependency id="AdamsLair.Duality.Editor" version="2.7.7" />
@@ -24,7 +24,7 @@
     <file src="..\..\Samples\CameraController\Content\Plugins\CameraController.core.dll" target="lib" />
     <file src="..\..\Samples\CameraController\Content\Plugins\CameraController.core.xml" target="lib" />
     <file src="..\..\Samples\CameraController\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Samples\CameraController\**\*.cs" target="source" exclude="..\..\Source\Samples\CameraController\Content\**\*.*;..\..\Source\Samples\CameraController\obj\**\*.*" />
+    <file src="..\..\Samples\CameraController\**\*.cs" target="source" exclude="..\..\Samples\CameraController\Content\**\*.*;..\..\Samples\CameraController\obj\**\*.*" />
     <file src="..\..\Samples\CameraController\CameraController.csproj" target="source" />
   </files>
 </package>
