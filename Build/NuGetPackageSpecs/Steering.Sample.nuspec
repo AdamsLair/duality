@@ -24,6 +24,7 @@
     <file src="..\..\Samples\Steering\Content\Plugins\Steering.core.xml" target="lib" />
     <file src="..\..\Samples\Steering\Content\Data\**\*.res" target="content" />
     <file src="..\..\Samples\Steering\**\*.cs" target="source" exclude="..\..\Samples\Steering\Content\**\*.*;..\..\Samples\Steering\obj\**\*.*" />
+    <file src="..\..\Samples\Steering\**\*.png" target="source" exclude="..\..\Samples\Steering\Content\**\*.*;..\..\Samples\Steering\obj\**\*.*" />
     <file src="..\..\Samples\Steering\Steering.csproj" target="source" />
   </files>
 </package>
