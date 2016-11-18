@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>AdamsLair.Duality.Plugins.Steering.Sample</id>
+    <id>AdamsLair.Duality.Samples.Steering</id>
     <version>2.0.1</version>
     <authors>Daniel Herb, Fedja Adam</authors>
     <owners>Daniel Herb, Fedja Adam</owners>
