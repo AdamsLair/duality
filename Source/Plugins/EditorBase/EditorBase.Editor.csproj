@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>$(SolutionDir)Build\Output\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,7 +29,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>$(SolutionDir)Build\Output\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -38,10 +38,11 @@
   <ItemGroup>
     <Reference Include="AdamsLair.WinForms, Version=1.1.9.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\AdamsLair.WinForms.1.1.9\lib\net45\AdamsLair.WinForms.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PopupControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\AdamsLair.WinForms.PopupControl.1.0.0.0\lib\net40\PopupControl.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -143,14 +144,17 @@
     <ProjectReference Include="..\..\Editor\DualityEditor\DualityEditor.csproj">
       <Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
       <Name>DualityEditor</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
