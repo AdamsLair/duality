@@ -21,7 +21,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\EditorModules\LogView\bin\Release\LogView.editor.dll" target="lib" />
-    <file src="..\..\Source\Plugins\EditorModules\LogView\bin\Release\LogView.editor.pdb" target="lib" />
+    <file src="..\Output\Plugins\LogView.editor.dll" target="lib" />
+    <file src="..\Output\Plugins\LogView.editor.pdb" target="lib" />
   </files>
 </package>

@@ -21,7 +21,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\EditorModules\ProjectView\bin\Release\ProjectView.editor.dll" target="lib" />
-    <file src="..\..\Source\Plugins\EditorModules\ProjectView\bin\Release\ProjectView.editor.pdb" target="lib" />
+    <file src="..\Output\Plugins\ProjectView.editor.dll" target="lib" />
+    <file src="..\Output\Plugins\ProjectView.editor.pdb" target="lib" />
   </files>
 </package>

@@ -21,7 +21,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\EditorModules\CamView\bin\Release\CamView.editor.dll" target="lib" />
-    <file src="..\..\Source\Plugins\EditorModules\CamView\bin\Release\CamView.editor.pdb" target="lib" />
+    <file src="..\Output\Plugins\CamView.editor.dll" target="lib" />
+    <file src="..\Output\Plugins\CamView.editor.pdb" target="lib" />
   </files>
 </package>

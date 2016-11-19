@@ -25,8 +25,8 @@
     </references>
   </metadata>
   <files>
-    <file src="..\..\Source\Core\Duality\bin\Release\Duality.dll" target="lib" />
-    <file src="..\..\Source\Core\Duality\bin\Release\Duality.pdb" target="lib" />
-    <file src="..\..\Source\Core\Duality\bin\Release\Duality.xml" target="lib" />
+    <file src="..\Output\Duality.dll" target="lib" />
+    <file src="..\Output\Duality.pdb" target="lib" />
+    <file src="..\Output\Duality.xml" target="lib" />
   </files>
 </package>

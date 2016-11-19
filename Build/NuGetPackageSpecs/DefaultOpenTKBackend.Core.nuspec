@@ -21,9 +21,9 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Platform\DefaultOpenTK\bin\Release\DefaultOpenTKBackend.core.dll" target="lib" />
-    <file src="..\..\Source\Platform\DefaultOpenTK\bin\Release\DefaultOpenTKBackend.core.pdb" target="lib" />
-    <file src="..\..\Source\Platform\DefaultOpenTK\bin\Release\OpenALSoft32.dll" target="lib" />
-    <file src="..\..\Source\Platform\DefaultOpenTK\bin\Release\OpenALSoft64.dll" target="lib" />
+    <file src="..\Output\Plugins\DefaultOpenTKBackend.core.dll" target="lib" />
+    <file src="..\Output\Plugins\DefaultOpenTKBackend.core.pdb" target="lib" />
+    <file src="..\Output\Plugins\OpenALSoft32.dll" target="lib" />
+    <file src="..\Output\Plugins\OpenALSoft64.dll" target="lib" />
   </files>
 </package>

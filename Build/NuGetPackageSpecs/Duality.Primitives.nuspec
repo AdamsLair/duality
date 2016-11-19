@@ -20,8 +20,8 @@
 #437)</releaseNotes>
   </metadata>
   <files>
-    <file src="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.dll" target="lib" />
-    <file src="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.pdb" target="lib" />
-    <file src="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.xml" target="lib" />
+    <file src="..\Output\DualityPrimitives.dll" target="lib" />
+    <file src="..\Output\DualityPrimitives.pdb" target="lib" />
+    <file src="..\Output\DualityPrimitives.xml" target="lib" />
   </files>
 </package>

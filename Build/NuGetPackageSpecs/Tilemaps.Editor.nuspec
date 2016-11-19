@@ -22,7 +22,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\Tilemaps\Editor\bin\Release\Tilemaps.editor.dll" target="lib" />
-    <file src="..\..\Source\Plugins\Tilemaps\Editor\bin\Release\Tilemaps.editor.pdb" target="lib" />
+    <file src="..\Output\Plugins\Tilemaps.editor.dll" target="lib" />
+    <file src="..\Output\Plugins\Tilemaps.editor.pdb" target="lib" />
   </files>
 </package>

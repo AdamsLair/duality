@@ -20,7 +20,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\Compatibility\bin\Release\Compatibility.core.dll" target="lib" />
-    <file src="..\..\Source\Plugins\Compatibility\bin\Release\Compatibility.core.pdb" target="lib" />
+    <file src="..\Output\Plugins\Compatibility.core.dll" target="lib" />
+    <file src="..\Output\Plugins\Compatibility.core.pdb" target="lib" />
   </files>
 </package>

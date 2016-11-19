@@ -21,7 +21,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\EditorModules\PackageManagerFrontend\bin\Release\PackageManagerFrontend.editor.dll" target="lib" />
-    <file src="..\..\Source\Plugins\EditorModules\PackageManagerFrontend\bin\Release\PackageManagerFrontend.editor.pdb" target="lib" />
+    <file src="..\Output\Plugins\PackageManagerFrontend.editor.dll" target="lib" />
+    <file src="..\Output\Plugins\PackageManagerFrontend.editor.pdb" target="lib" />
   </files>
 </package>
