@@ -136,7 +136,7 @@ namespace NightlyBuilder
 							Path.Combine(config.NUnitBinDir, "nunit-console.exe"), 
 							nunitProjectFile,
 							resultFile), 
-						verbose: false);
+						verbose: true);
 
 					if (File.Exists(resultFile))
 					{
