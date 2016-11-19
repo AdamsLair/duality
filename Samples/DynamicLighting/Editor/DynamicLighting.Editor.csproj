@@ -1,5 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DualityPackageExcludeParentElement />
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
+    <StartWorkingDirectory>$(SolutionDir)Samples\DynamicLighting\Content\</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DualityPackageExcludeParentElement />
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
+    <StartWorkingDirectory>$(SolutionDir)Samples\DynamicLighting\Content\</StartWorkingDirectory>
+  </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -47,7 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Editor\DualityEditor\DualityEditor.csproj">
+    <ProjectReference Include="..\..\..\Source\Editor\DualityEditor\DualityEditor.csproj">
       <Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
       <Name>DualityEditor</Name>
     </ProjectReference>
@@ -55,25 +67,19 @@
       <Project>{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}</Project>
       <Name>DynamicLighting.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\Primitives\DualityPrimitives.csproj">
+    <ProjectReference Include="..\..\..\Source\Core\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\Duality\Duality.csproj">
+    <ProjectReference Include="..\..\..\Source\Core\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
+    <DualityPackageExcludeParentElement />
+    <PostBuildEvent>mkdir "$(ProjectDir)..\Content\Plugins"
+copy "$(TargetPath)" "$(ProjectDir)..\Content\Plugins"</PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
