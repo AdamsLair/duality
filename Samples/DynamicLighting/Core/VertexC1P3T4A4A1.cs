@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+using Duality;
 using Duality.Drawing;
 using Duality.Resources;
 
-namespace Duality.Plugins.DynamicLighting
+namespace DynamicLighting
 {
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexC1P3T4A4A1 : IVertexData

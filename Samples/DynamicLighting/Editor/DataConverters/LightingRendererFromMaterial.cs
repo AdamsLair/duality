@@ -4,12 +4,11 @@ using System.Linq;
 
 using Duality;
 using Duality.Resources;
-using Duality.Plugins.DynamicLighting;
 
 using Duality.Editor;
 using Duality.Editor.Properties;
 
-namespace Duality.Editor.Plugins.DynamicLighting.DataConverters
+namespace DynamicLighting.DataConverters
 {
 	public class LightingRendererFromMaterial : DataConverter
 	{

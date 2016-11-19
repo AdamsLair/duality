@@ -5,9 +5,9 @@ using Duality.Resources;
 using Duality.Editor;
 using Duality.Properties;
 using Duality.Drawing;
-using Duality.Plugins.DynamicLighting.Properties;
+using DynamicLighting.Properties;
 
-namespace Duality.Plugins.DynamicLighting
+namespace DynamicLighting
 {
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(DynLightResNames.IconResourceLightingTechnique)]

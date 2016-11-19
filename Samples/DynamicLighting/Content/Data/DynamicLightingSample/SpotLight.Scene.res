@@ -168,7 +168,7 @@
                     <Z dataType="Float">0</Z>
                   </velAbs>
                 </item>
-                <item dataType="Struct" type="Duality.Plugins.DynamicLighting.LightingSpriteRenderer" id="2641404349">
+                <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="2641404349">
                   <active dataType="Bool">true</active>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -202,7 +202,7 @@
               <body>
                 <keys dataType="Array" type="System.Type[]" id="1638342256">
                   <item dataType="ObjectRef">1996527504</item>
-                  <item dataType="Type" id="3493388604" value="Duality.Plugins.DynamicLighting.LightingSpriteRenderer" />
+                  <item dataType="Type" id="3493388604" value="DynamicLighting.LightingSpriteRenderer" />
                 </keys>
                 <values dataType="Array" type="Duality.Component[]" id="3715048174">
                   <item dataType="ObjectRef">2794196586</item>
@@ -260,7 +260,7 @@
                     <Z dataType="Float">0</Z>
                   </velAbs>
                 </item>
-                <item dataType="Struct" type="Duality.Plugins.DynamicLighting.LightingSpriteRenderer" id="2080947339">
+                <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="2080947339">
                   <active dataType="Bool">true</active>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -352,7 +352,7 @@
                     <Z dataType="Float">0</Z>
                   </velAbs>
                 </item>
-                <item dataType="Struct" type="Duality.Plugins.DynamicLighting.LightingSpriteRenderer" id="2899987420">
+                <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="2899987420">
                   <active dataType="Bool">true</active>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -444,7 +444,7 @@
                     <Z dataType="Float">0</Z>
                   </velAbs>
                 </item>
-                <item dataType="Struct" type="Duality.Plugins.DynamicLighting.LightingSpriteRenderer" id="1838477519">
+                <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="1838477519">
                   <active dataType="Bool">true</active>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -536,7 +536,7 @@
                     <Z dataType="Float">0</Z>
                   </velAbs>
                 </item>
-                <item dataType="Struct" type="Duality.Plugins.DynamicLighting.LightingSpriteRenderer" id="3934557467">
+                <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="3934557467">
                   <active dataType="Bool">true</active>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -628,7 +628,7 @@
                     <Z dataType="Float">0</Z>
                   </velAbs>
                 </item>
-                <item dataType="Struct" type="Duality.Plugins.DynamicLighting.LightingSpriteRenderer" id="2326617287">
+                <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="2326617287">
                   <active dataType="Bool">true</active>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -752,7 +752,7 @@
                     <Z dataType="Float">0</Z>
                   </velAbs>
                 </item>
-                <item dataType="Struct" type="Duality.Plugins.DynamicLighting.Light" id="3820515322">
+                <item dataType="Struct" type="DynamicLighting.Light" id="3820515322">
                   <active dataType="Bool">true</active>
                   <ambientColor dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -786,7 +786,7 @@
               <body>
                 <keys dataType="Array" type="System.Type[]" id="2348392765">
                   <item dataType="ObjectRef">1996527504</item>
-                  <item dataType="Type" id="2534779430" value="Duality.Plugins.DynamicLighting.Light" />
+                  <item dataType="Type" id="2534779430" value="DynamicLighting.Light" />
                 </keys>
                 <values dataType="Array" type="Duality.Component[]" id="3485692088">
                   <item dataType="ObjectRef">412134203</item>
@@ -844,7 +844,7 @@
                     <Z dataType="Float">0</Z>
                   </velAbs>
                 </item>
-                <item dataType="Struct" type="Duality.Plugins.DynamicLighting.Light" id="2078044378">
+                <item dataType="Struct" type="DynamicLighting.Light" id="2078044378">
                   <active dataType="Bool">true</active>
                   <ambientColor dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -968,7 +968,7 @@
                     <Z dataType="Float">0</Z>
                   </velAbs>
                 </item>
-                <item dataType="Struct" type="Duality.Plugins.DynamicLighting.LightingSpriteRenderer" id="2009866415">
+                <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="2009866415">
                   <active dataType="Bool">true</active>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -1060,7 +1060,7 @@
                     <Z dataType="Float">0</Z>
                   </velAbs>
                 </item>
-                <item dataType="Struct" type="Duality.Plugins.DynamicLighting.LightingSpriteRenderer" id="562909269">
+                <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="562909269">
                   <active dataType="Bool">true</active>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -1152,7 +1152,7 @@
                     <Z dataType="Float">0</Z>
                   </velAbs>
                 </item>
-                <item dataType="Struct" type="Duality.Plugins.DynamicLighting.LightingSpriteRenderer" id="1993847917">
+                <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="1993847917">
                   <active dataType="Bool">true</active>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>

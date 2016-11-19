@@ -6,9 +6,9 @@ using Duality.Components.Renderers;
 using Duality.Drawing;
 using Duality.Resources;
 using Duality.Properties;
-using Duality.Plugins.DynamicLighting.Properties;
+using DynamicLighting.Properties;
 
-namespace Duality.Plugins.DynamicLighting
+namespace DynamicLighting
 {
 	/// <summary>
 	/// Renders an animated sprite using dynamic lighting, either per-vertex or per-pixel, depending on the DrawTechnique that is used.
