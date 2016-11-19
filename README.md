@@ -16,6 +16,12 @@ You can find the latest binary release [here](http://dualitybin.adamslair.net/).
 | release | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/release?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/release) |
 | 1.x     | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/1.x?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/1.x)    |
 
+### Building From Source
+
+If you want to build Duality yourself, you can do so using Visual Studio or MonoDevelop by simply opening `Duality.sln` and selecting "Build Solution". If you're on a non-Windows system, you will only be able to build core projects and have to unload any editor projects first. When building Duality from the command line, make sure to call `nuget restore Duality.sln` first, so the required packages can be restored.
+
+All framework build results will be located in the shared `Build/Output` folder. Sample project build results will be in their respective `Content/Plugins` subdirectories.
+
 ### Contributing
 
 We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://github.com/AdamsLair/duality/wiki/How-to-Contribute).
