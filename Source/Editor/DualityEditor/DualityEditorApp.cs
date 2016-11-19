@@ -334,13 +334,6 @@ namespace Duality.Editor
 			if (Terminating != null)
 				Terminating(null, EventArgs.Empty);
 
-			// If this was our first session, it ends now. This will be saved as userdata
-			firstEditorSession = false;
-
-			// Save UserData
-			DualityEditorApp.SaveUserData();
-			DualityApp.SaveAppData();
-
 			// Unregister events
 			EditorHintImageAttribute.ImageResolvers -= EditorHintImageResolver;
 			DualityApp.PluginManager.PluginsReady -= DualityApp_PluginsReady;
@@ -428,7 +421,7 @@ namespace Duality.Editor
 			}
 		}
 
-		private static void SaveUserData()
+		public static void SaveUserData()
 		{
 			Log.Editor.Write("Saving user data...");
 			Log.Editor.PushIndent();
@@ -448,7 +441,7 @@ namespace Duality.Editor
 							editorAppElement.SetElementValue("Backups", backupsEnabled);
 							editorAppElement.SetElementValue("Autosaves", autosaveFrequency);
 							editorAppElement.SetElementValue("LauncherPath", launcherApp);
-							editorAppElement.SetElementValue("FirstSession", firstEditorSession);
+							editorAppElement.SetElementValue("FirstSession", false);
 							editorAppElement.SetElementValue("ActiveDocumentIndex", mainForm.ActiveDocumentIndex);
 						}
 						if (!editorAppElement.IsEmpty)
