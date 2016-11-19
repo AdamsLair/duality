@@ -4,7 +4,7 @@
     <DualityPackageExcludeParentElement />
     <StartAction>Program</StartAction>
     <StartProgram>$(SolutionDir)Build\Output\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>..\Content\</StartWorkingDirectory>
+    <StartWorkingDirectory>..\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
