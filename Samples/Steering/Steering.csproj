@@ -83,17 +83,4 @@
     <EmbeddedResource Include="EmbeddedResources\CmpIconAgent.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <PropertyGroup>
-    <DualityPackageExcludeParentElement />
-    <PostBuildEvent>mkdir "$(ProjectDir)Content\Plugins"
-copy "$(TargetPath)" "$(ProjectDir)Content\Plugins"
-copy "$(TargetDir)$(TargetName).xml" "$(ProjectDir)Content\Plugins"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

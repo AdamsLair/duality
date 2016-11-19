@@ -77,9 +77,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <DualityPackageExcludeParentElement />
-    <PostBuildEvent>mkdir "$(ProjectDir)..\Content\Plugins"
-copy "$(TargetPath)" "$(ProjectDir)..\Content\Plugins"</PostBuildEvent>
-  </PropertyGroup>
 </Project>

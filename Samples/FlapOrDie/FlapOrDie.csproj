@@ -74,10 +74,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <PropertyGroup>
-    <DualityPackageExcludeParentElement />
-    <PostBuildEvent>mkdir "$(ProjectDir)Content\Plugins"
-copy "$(TargetPath)" "$(ProjectDir)Content\Plugins"
-copy "$(TargetDir)$(TargetName).xml" "$(ProjectDir)Content\Plugins"</PostBuildEvent>
-  </PropertyGroup>
 </Project>

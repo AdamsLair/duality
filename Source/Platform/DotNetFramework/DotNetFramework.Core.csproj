@@ -60,21 +60,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-mkdir  "$(SolutionDir)Test\Core\bin\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Test\Core\bin\Plugins"
-mkdir  "$(SolutionDir)Test\Editor\bin\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Test\Editor\bin\Plugins"
-mkdir  "$(SolutionDir)Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
