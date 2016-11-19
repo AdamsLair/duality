@@ -19,10 +19,10 @@
     <HtmlHelpName>DDoc</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\Source\Core\Duality\bin\Release\Duality.dll" />
-      <DocumentationSource sourceFile="..\..\Source\Core\Duality\bin\Release\Duality.xml" />
-      <DocumentationSource sourceFile="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.dll" />
-      <DocumentationSource sourceFile="..\..\Source\Core\Primitives\bin\Release\DualityPrimitives.xml" />
+      <DocumentationSource sourceFile="..\Output\Duality.dll" />
+      <DocumentationSource sourceFile="..\Output\Duality.xml" />
+      <DocumentationSource sourceFile="..\Output\DualityPrimitives.dll" />
+      <DocumentationSource sourceFile="..\Output\DualityPrimitives.xml" />
     </DocumentationSources>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <HelpTitle>Duality Documentation</HelpTitle>
@@ -53,12 +53,12 @@
     <ComponentConfigurations>
       <ComponentConfig id="Code Block Component" enabled="True">
         <component id="Code Block Component">
-  <basePath value="{@HtmlEncProjectFolder}" />
-  <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
-  <allowMissingSource value="false" />
-  <removeRegionMarkers value="false" />
-  <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="cs" tabSize="0" numberLines="true" outlining="false" keepSeeTags="false" defaultTitle="true" />
-</component>
+          <basePath value="{@HtmlEncProjectFolder}" />
+          <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
+          <allowMissingSource value="false" />
+          <removeRegionMarkers value="false" />
+          <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="cs" tabSize="0" numberLines="true" outlining="false" keepSeeTags="false" defaultTitle="true" />
+        </component>
       </ComponentConfig>
     </ComponentConfigurations>
     <NamingMethod>MemberName</NamingMethod>
@@ -104,13 +104,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FarseerOpenTK">
-      <HintPath>..\..\Source\Core\Duality\bin\Release\FarseerOpenTK.dll</HintPath>
+      <HintPath>..\Output\FarseerOpenTK.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK">
-      <HintPath>..\..\Source\Core\Duality\bin\Release\OpenTK.dll</HintPath>
+      <HintPath>..\Output\Plugins\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK.GLControl">
-      <HintPath>..\..\Source\Core\Duality\bin\Release\OpenTK.GLControl.dll</HintPath>
+      <HintPath>..\Output\Plugins\OpenTK.GLControl.dll</HintPath>
     </Reference>
   </ItemGroup>
   <!-- Import the SHFB build targets -->

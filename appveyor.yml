@@ -22,8 +22,7 @@ build:
   
 test:
   assemblies:
-    - 'Test\Core\**\*.dll'
-    - 'Test\Editor\**\*.dll'
+    - 'Build\Output\*Tests.dll'
   categories:
     except:
       - Rendering   # AppVeyor VMs don't have GPU access.
