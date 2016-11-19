@@ -18,9 +18,9 @@ You can find the latest binary release [here](http://dualitybin.adamslair.net/).
 
 ### Building From Source
 
-If you want to build Duality yourself, you can do so using Visual Studio or MonoDevelop by simply opening `Duality.sln` and selecting "Build Solution". If you're on a non-Windows system, you will only be able to build core projects and have to unload any editor projects first. When building Duality from the command line, make sure to call `nuget restore Duality.sln` first, so the required packages can be restored.
+If you want to build Duality yourself, you can do so using Visual Studio or MonoDevelop by simply opening `Duality.sln` and selecting "Build Solution". On non-Windows systems, you will be able to build core projects only and have to unload any editor projects first. When building Duality from the command line, make sure to call `nuget restore Duality.sln` first, so the required packages can be restored.
 
-All framework build results will be located in the shared `Build/Output` folder. Sample project build results will be in their respective `Content/Plugins` subdirectories. To launch any of the included sample projects after building Duality, select it as a startup project in your IDE. Otherwise, you can use either `DualityEditor` or `DualityLauncher` as a startup project.
+All framework build results will be located in the shared `Build/Output` folder. Sample project build results will be separate, and located in their respective `Content/Plugins` subdirectories. To launch any of the included sample projects after building Duality, select it as a startup project in your IDE. Otherwise, you can use either `DualityEditor` or `DualityLauncher` as a startup project.
 
 ### Contributing
 
