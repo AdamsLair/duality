@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>AdamsLair.Duality.Plugins.DynamicLighting.Sample</id>
-    <version>2.0.1</version>
+    <id>AdamsLair.Duality.Samples.DynamicLighting</id>
+    <version>2.0.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>DynamicLighting Sample</title>
@@ -10,20 +10,28 @@
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <summary>A sample project to show how to use Dynamic Lighting.</summary>
-    <description>A sample project to show how to use Dynamic Lighting.</description>
+    <summary>Introduces a naive implementation of dynamic lighting Components.</summary>
+    <description>Introduces a naive implementation of dynamic lighting Components.</description>
     <tags>Duality Sample Plugin Rendering Lighting Component</tags>
-    <releaseNotes>Improved Project Structure (
-#437)</releaseNotes>
+    <releaseNotes>Renamed DynamicLighting Namespace, Udpated DynamicLighting Projects, Moved DynamicLighting Plugin
+#CHANGE: Renamed the main namespace of the DynamicLighting sample plugins in both source code and resource files.
+#CHANGE: Updated DynamicLighting project files and the main solution file to reflect path changes.
+#CHANGE: Moved DynamicLighting plugin to the samples folder.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Plugins.DynamicLighting" version="2.0.2" />
-      <dependency id="AdamsLair.Duality.Editor.Plugins.DynamicLighting" version="2.0.2" />
       <dependency id="AdamsLair.Duality" version="2.8.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.7.9" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\DynamicLighting\Sample\bin\Release\DynamicLighting.Sample.core.dll" target="lib" />
-    <file src="..\..\Source\Plugins\DynamicLighting\Sample\bin\Release\DynamicLighting.Sample.core.xml" target="lib" />
-    <file src="..\..\Source\Plugins\DynamicLighting\Sample\Testbed\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\DynamicLighting\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\DynamicLighting\Core\bin\Release\DynamicLighting.core.dll" target="lib" />
+    <file src="..\..\Samples\DynamicLighting\Core\bin\Release\DynamicLighting.core.xml" target="lib" />
+    <file src="..\..\Samples\DynamicLighting\Core\**\*.cs" target="source\Core" exclude="..\..\Samples\DynamicLighting\Core\obj\**\*.*" />
+    <file src="..\..\Samples\DynamicLighting\Core\**\*.png" target="source\Core" exclude="..\..\Samples\DynamicLighting\Core\obj\**\*.*" />
+    <file src="..\..\Samples\DynamicLighting\Core\DynamicLighting.Core.csproj" target="source\Core" />
+    <file src="..\..\Samples\DynamicLighting\Editor\bin\Release\DynamicLighting.editor.dll" target="lib" />
+    <file src="..\..\Samples\DynamicLighting\Editor\**\*.cs" target="source\Editor" exclude="..\..\Samples\DynamicLighting\Editor\obj\**\*.*" />
+    <file src="..\..\Samples\DynamicLighting\Editor\**\*.png" target="source\Editor" exclude="..\..\Samples\DynamicLighting\Editor\obj\**\*.*" />
+    <file src="..\..\Samples\DynamicLighting\Editor\DynamicLighting.Editor.csproj" target="source\Editor" />
   </files>
 </package>
