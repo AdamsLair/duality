@@ -14,10 +14,6 @@ Samples/**/Content/Plugins/*.core.dll
 Samples/**/Content/Plugins/*.editor.dll
 Samples/**/PackageConfig.xml
 Samples/**/Content/Source/Code/
-**/Sample/**/Plugins/*.core.dll
-**/Sample/**/Plugins/*.editor.dll
-**/Sample/**/PackageConfig.xml
-**/Sample/**/Source/Code/
 *.core.xml
 *.editor.xml
 *.core.pdb
