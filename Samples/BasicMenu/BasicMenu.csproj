@@ -1,16 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+  <PropertyGroup>
     <DualityPackageExcludeParentElement />
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)Samples\BasicMenu\Content\</StartWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DualityPackageExcludeParentElement />
-    <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)Samples\BasicMenu\Content\</StartWorkingDirectory>
+    <StartProgram>$(SolutionDir)Build\Output\DualityEditor.exe</StartProgram>
+    <StartWorkingDirectory>..\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -33,7 +27,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>Content\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -44,7 +38,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>Content\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -71,17 +65,13 @@
     <ProjectReference Include="..\..\Source\Core\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Source\Core\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <PropertyGroup>
-    <DualityPackageExcludeParentElement />
-    <PostBuildEvent>mkdir "$(ProjectDir)Content\Plugins"
-copy "$(TargetPath)" "$(ProjectDir)Content\Plugins"
-copy "$(TargetDir)$(TargetName).xml" "$(ProjectDir)Content\Plugins"</PostBuildEvent>
-  </PropertyGroup>
 </Project>

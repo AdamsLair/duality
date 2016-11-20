@@ -19,7 +19,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <DocumentationFile>Duality.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
@@ -29,7 +29,7 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DocumentationFile>Duality.xml</DocumentationFile>
@@ -420,15 +420,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)"
-copy "$(TargetDir)Duality.xml" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

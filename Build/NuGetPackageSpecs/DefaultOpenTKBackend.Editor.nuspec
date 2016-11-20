@@ -24,7 +24,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Platform\DefaultOpenTKEditor\bin\Release\DefaultOpenTKBackend.editor.dll" target="lib" />
-    <file src="..\..\Source\Platform\DefaultOpenTKEditor\bin\Release\DefaultOpenTKBackend.editor.pdb" target="lib" />
+    <file src="..\Output\Plugins\DefaultOpenTKBackend.editor.dll" target="lib" />
+    <file src="..\Output\Plugins\DefaultOpenTKBackend.editor.pdb" target="lib" />
   </files>
 </package>

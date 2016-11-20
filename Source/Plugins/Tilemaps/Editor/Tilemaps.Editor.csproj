@@ -20,18 +20,18 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>$(SolutionDir)Build\Output\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>bin\Debug\Tilemaps.editor.xml</DocumentationFile>
+    <DocumentationFile>Tilemaps.editor.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>$(SolutionDir)Build\Output\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -42,11 +42,11 @@
   <ItemGroup>
     <Reference Include="AdamsLair.WinForms, Version=1.1.9.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\packages\AdamsLair.WinForms.1.1.9\lib\net45\AdamsLair.WinForms.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Aga.Controls, Version=1.7.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\packages\AdamsLair.TreeViewAdv.1.7.6.0\lib\net20\Aga.Controls.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -55,7 +55,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.8.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\packages\AdamsLair.DockPanelSuite.2.8.1.0\lib\net20\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -159,22 +159,27 @@
     <ProjectReference Include="..\..\..\Editor\DualityEditor\DualityEditor.csproj">
       <Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
       <Name>DualityEditor</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Core\Tilemaps.Core.csproj">
       <Project>{2f7d1f9d-0803-4e13-85a6-0af56ac05431}</Project>
       <Name>Tilemaps.Core</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Core\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Core\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\EditorModules\CamView\CamView.Editor.csproj">
       <Project>{e67350ed-2676-492a-9fbe-a08b5fbf3726}</Project>
       <Name>CamView.Editor</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -245,16 +250,4 @@
     <Content Include="EmbeddedResources\IconTileOval.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)$(TargetName).xml" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

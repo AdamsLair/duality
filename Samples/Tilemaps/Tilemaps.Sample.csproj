@@ -1,14 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+  <PropertyGroup>
+    <DualityPackageExcludeParentElement />
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)DualityPlugins\Tilemaps\Sample\Testbed\</StartWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)Source\Editor\DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)DualityPlugins\Tilemaps\Sample\Testbed\</StartWorkingDirectory>
+    <StartProgram>$(SolutionDir)Build\Output\DualityEditor.exe</StartProgram>
+    <StartWorkingDirectory>..\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -18,7 +14,7 @@
     <ProjectGuid>{D014227E-3E69-4C8B-984A-1519AA35C1AD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Duality.Plugins.Tilemaps.Sample</RootNamespace>
+    <RootNamespace>Duality.Samples.Tilemaps</RootNamespace>
     <AssemblyName>Tilemaps.Sample.core</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\..\..\..\</SolutionDir>
@@ -31,7 +27,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>Content\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -42,7 +38,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>Content\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -65,30 +61,21 @@
     <Compile Include="RpgLike\ActorRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Primitives\DualityPrimitives.csproj">
+    <ProjectReference Include="..\..\Source\Core\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
+      <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\Duality\Duality.csproj">
+    <ProjectReference Include="..\..\Source\Core\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
+      <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Core\Tilemaps.Core.csproj">
+    <ProjectReference Include="..\..\Source\Plugins\Tilemaps\Core\Tilemaps.Core.csproj">
       <Project>{2f7d1f9d-0803-4e13-85a6-0af56ac05431}</Project>
       <Name>Tilemaps.Core</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>mkdir "$(ProjectDir)Testbed\Plugins"
-copy "$(TargetPath)" "$(ProjectDir)Testbed\Plugins"
-copy "$(TargetDir)$(TargetName).xml" "$(ProjectDir)Testbed\Plugins"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

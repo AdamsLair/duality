@@ -21,7 +21,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\EditorModules\HelpAdvisor\bin\Release\HelpAdvisor.editor.dll" target="lib" />
-    <file src="..\..\Source\Plugins\EditorModules\HelpAdvisor\bin\Release\HelpAdvisor.editor.pdb" target="lib" />
+    <file src="..\Output\Plugins\HelpAdvisor.editor.dll" target="lib" />
+    <file src="..\Output\Plugins\HelpAdvisor.editor.pdb" target="lib" />
   </files>
 </package>

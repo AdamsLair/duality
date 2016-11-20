@@ -819,18 +819,24 @@ namespace Duality.Editor.Plugins.CamView
 
 		internal void SaveUserData(XElement node)
 		{
-			Camera nativeCamera = this.nativeCamObj.GetComponent<Camera>();
+			Camera nativeCamera = 
+				this.nativeCamObj != null ? 
+				this.nativeCamObj.GetComponent<Camera>() : 
+				null;
 
-			node.SetElementValue("Perspective", nativeCamera.Perspective);
-			node.SetElementValue("FocusDist", nativeCamera.FocusDist);
-			XElement bgColorElement = new XElement("BackgroundColor");
+			if (nativeCamera != null)
 			{
-				bgColorElement.SetElementValue("R", nativeCamera.ClearColor.R);
-				bgColorElement.SetElementValue("G", nativeCamera.ClearColor.G);
-				bgColorElement.SetElementValue("B", nativeCamera.ClearColor.B);
-				bgColorElement.SetElementValue("A", nativeCamera.ClearColor.A);
+				node.SetElementValue("Perspective", nativeCamera.Perspective);
+				node.SetElementValue("FocusDist", nativeCamera.FocusDist);
+				XElement bgColorElement = new XElement("BackgroundColor");
+				{
+					bgColorElement.SetElementValue("R", nativeCamera.ClearColor.R);
+					bgColorElement.SetElementValue("G", nativeCamera.ClearColor.G);
+					bgColorElement.SetElementValue("B", nativeCamera.ClearColor.B);
+					bgColorElement.SetElementValue("A", nativeCamera.ClearColor.A);
+				}
+				node.Add(bgColorElement);
 			}
-			node.Add(bgColorElement);
 
 			XElement snapToGridSizeElement = new XElement("SnapToGridSize");
 			node.Add(snapToGridSizeElement);

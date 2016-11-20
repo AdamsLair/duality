@@ -20,8 +20,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Launcher\bin\Release\DualityLauncher.exe" target="lib" />
-    <file src="..\..\Source\Launcher\bin\Release\DualityLauncher.exe.config" target="lib" />
-    <file src="..\..\Source\Launcher\bin\Release\DualityLauncher.pdb" target="lib" />
+    <file src="..\Output\DualityLauncher.exe" target="lib" />
+    <file src="..\Output\DualityLauncher.exe.config" target="lib" />
+    <file src="..\Output\DualityLauncher.pdb" target="lib" />
   </files>
 </package>

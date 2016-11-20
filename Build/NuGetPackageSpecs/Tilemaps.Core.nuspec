@@ -20,8 +20,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\Tilemaps\Core\bin\Release\Tilemaps.core.dll" target="lib" />
-    <file src="..\..\Source\Plugins\Tilemaps\Core\bin\Release\Tilemaps.core.pdb" target="lib" />
-    <file src="..\..\Source\Plugins\Tilemaps\Core\bin\Release\Tilemaps.core.xml" target="lib" />
+    <file src="..\Output\Plugins\Tilemaps.core.dll" target="lib" />
+    <file src="..\Output\Plugins\Tilemaps.core.pdb" target="lib" />
+    <file src="..\Output\Plugins\Tilemaps.core.xml" target="lib" />
   </files>
 </package>

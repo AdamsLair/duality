@@ -21,7 +21,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\EditorModules\ObjectInspector\bin\Release\ObjectInspector.editor.dll" target="lib" />
-    <file src="..\..\Source\Plugins\EditorModules\ObjectInspector\bin\Release\ObjectInspector.editor.pdb" target="lib" />
+    <file src="..\Output\Plugins\ObjectInspector.editor.dll" target="lib" />
+    <file src="..\Output\Plugins\ObjectInspector.editor.pdb" target="lib" />
   </files>
 </package>

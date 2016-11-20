@@ -1,16 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+  <PropertyGroup>
     <StartAction>Program</StartAction>
-    <StartProgram>..\packages\NUnit.Runners.2.6.4\tools\nunit.exe</StartProgram>
-    <StartArguments>/run "../../../Test/Duality.nunit"</StartArguments>
-    <StartWorkingDirectory>..\packages\NUnit.Runners.2.6.4\tools\</StartWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <StartAction>Program</StartAction>
-    <StartProgram>..\packages\NUnit.Runners.2.6.4\tools\nunit.exe</StartProgram>
-    <StartArguments>/run "../../../Test/Duality.nunit"</StartArguments>
-    <StartWorkingDirectory>..\packages\NUnit.Runners.2.6.4\tools\</StartWorkingDirectory>
+    <StartProgram>$(SolutionDir)packages\NUnit.Runners.2.6.4\tools\nunit.exe</StartProgram>
+    <StartArguments>/run "$(SolutionDir)Test\Duality.nunit"</StartArguments>
+    <StartWorkingDirectory>$(SolutionDir)packages\NUnit.Runners.2.6.4\tools\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -32,7 +26,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -42,7 +36,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -168,15 +162,8 @@
     <Content Include="EmbeddedResources\CanvasTestAllShapesTransformed.png" />
     <Content Include="EmbeddedResources\TexCoordUV.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)Source\Core\Duality\bin\$(ConfigurationName)\*.*" "$(TargetDir)"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -7,9 +7,9 @@ using Duality.Components;
 using Duality.Editor;
 using Duality.Plugins.Tilemaps;
 using Duality.Plugins.Tilemaps.Properties;
-using Duality.Plugins.Tilemaps.Sample.RpgLike.Properties;
+using Duality.Samples.Tilemaps.RpgLike.Properties;
 
-namespace Duality.Plugins.Tilemaps.Sample.RpgLike
+namespace Duality.Samples.Tilemaps.RpgLike
 {
 	/// <summary>
 	/// Describes an animation that can be used by an <see cref="ActorAnimator"/> to animate an <see cref="ActorRenderer"/>.

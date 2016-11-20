@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>$(SolutionDir)Build\Output\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,7 +30,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>$(SolutionDir)Build\Output\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -53,28 +53,13 @@
     <ProjectReference Include="..\..\Core\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Source\Editor\DualityEditor\bin\$(ConfigurationName)\Plugins"
-mkdir  "$(SolutionDir)Test\Core\bin\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Test\Core\bin\Plugins"
-mkdir  "$(SolutionDir)Test\Editor\bin\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Test\Editor\bin\Plugins"
-mkdir  "$(SolutionDir)Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)Tools\VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

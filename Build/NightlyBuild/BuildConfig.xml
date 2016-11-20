@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ConfigFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SolutionPath>..\..\Duality.sln</SolutionPath>
-  <BuildResultDir>..\..\Source\Editor\DualityEditor\bin\Release</BuildResultDir>
+  <BuildResultDir>..\Output</BuildResultDir>
   <DocSolutionPath>..\Documentation\Documentation.shfbproj</DocSolutionPath>
   <AdditionalFileDir>AdditionalFiles</AdditionalFileDir>
   <NUnitBinDir>..\..\packages\NUnit.Runners.2.6.4\tools</NUnitBinDir>
@@ -28,6 +28,7 @@
     <string>*.vshost.*</string>
     <string>logfile*</string>
     <string>perflog*</string>
+    <string>userdata.dat</string>
     <string>defaultuserdata.dat</string>
     <string>designtimedata.dat</string>
     <string>appdata.dat</string>
@@ -39,7 +40,7 @@
     <string>WeifenLuo.WinFormsUI.Docking.pdb</string>
     <string>Windows7.DesktopIntegration.xml</string>
     <string>OpenAL32.dll</string>
-	<!-- Since we have Package Management now, omit a lot more: -->
+	<!-- Since we have Package Management now, omit a lot more -->
     <string>Plugins</string>
     <string>AdamsLair.WinForms.*</string>
     <string>Aga.Controls.*</string>
@@ -60,5 +61,10 @@
     <string>OpenTK.GLControl.*</string>
     <string>PopupControl.*</string>
     <string>WeifenLuo.WinFormsUI.Docking.*</string>
+	<!-- Added items after switching to a shared build output directory -->
+    <string>*Tests.dll</string>
+    <string>*Tests.pdb</string>
+    <string>nunit.framework.dll</string>
+    <string>nunit.framework.xml</string>
   </FileCopyBlackList>
 </ConfigFile>

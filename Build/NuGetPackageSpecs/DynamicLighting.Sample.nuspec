@@ -24,12 +24,12 @@
   </metadata>
   <files>
     <file src="..\..\Samples\DynamicLighting\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Samples\DynamicLighting\Core\bin\Release\DynamicLighting.core.dll" target="lib" />
-    <file src="..\..\Samples\DynamicLighting\Core\bin\Release\DynamicLighting.core.xml" target="lib" />
+    <file src="..\..\Samples\DynamicLighting\Content\Plugins\DynamicLighting.core.dll" target="lib" />
+    <file src="..\..\Samples\DynamicLighting\Content\Plugins\DynamicLighting.core.xml" target="lib" />
+    <file src="..\..\Samples\DynamicLighting\Content\Plugins\DynamicLighting.editor.dll" target="lib" />
     <file src="..\..\Samples\DynamicLighting\Core\**\*.cs" target="source\Core" exclude="..\..\Samples\DynamicLighting\Core\obj\**\*.*" />
     <file src="..\..\Samples\DynamicLighting\Core\**\*.png" target="source\Core" exclude="..\..\Samples\DynamicLighting\Core\obj\**\*.*" />
     <file src="..\..\Samples\DynamicLighting\Core\DynamicLighting.Core.csproj" target="source\Core" />
-    <file src="..\..\Samples\DynamicLighting\Editor\bin\Release\DynamicLighting.editor.dll" target="lib" />
     <file src="..\..\Samples\DynamicLighting\Editor\**\*.cs" target="source\Editor" exclude="..\..\Samples\DynamicLighting\Editor\obj\**\*.*" />
     <file src="..\..\Samples\DynamicLighting\Editor\**\*.png" target="source\Editor" exclude="..\..\Samples\DynamicLighting\Editor\obj\**\*.*" />
     <file src="..\..\Samples\DynamicLighting\Editor\DynamicLighting.Editor.csproj" target="source\Editor" />
