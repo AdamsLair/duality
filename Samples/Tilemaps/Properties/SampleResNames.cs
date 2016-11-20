@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Duality.Plugins.Tilemaps.Properties;
 
-namespace Duality.Plugins.Tilemaps.Sample.RpgLike.Properties
+namespace Duality.Samples.Tilemaps.RpgLike.Properties
 {
 	/// <summary>
 	/// This static class contains constant string representations of certain resource names.

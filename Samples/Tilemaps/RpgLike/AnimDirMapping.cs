@@ -6,7 +6,7 @@ using Duality;
 using Duality.Components;
 using Duality.Editor;
 
-namespace Duality.Plugins.Tilemaps.Sample.RpgLike
+namespace Duality.Samples.Tilemaps.RpgLike
 {
 	/// <summary>
 	/// Maps a names animation direction to a sprite sheet index that represents

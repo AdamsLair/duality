@@ -5,7 +5,7 @@ using System.Text;
 
 using Duality;
 
-namespace Duality.Plugins.Tilemaps.Sample
+namespace Duality.Samples.Tilemaps
 {
     public class TilemapsSampleCorePlugin : CorePlugin {}
 }

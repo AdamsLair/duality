@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>AdamsLair.Duality.Plugins.Tilemaps.Sample</id>
+    <id>AdamsLair.Duality.Samples.Tilemaps</id>
     <version>1.1.11</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
@@ -22,8 +22,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\Plugins\Tilemaps\Sample\Testbed\Plugins\Tilemaps.Sample.core.dll" target="lib" />
-    <file src="..\..\Source\Plugins\Tilemaps\Sample\Testbed\Plugins\Tilemaps.Sample.core.xml" target="lib" />
-    <file src="..\..\Source\Plugins\Tilemaps\Sample\Testbed\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.dll" target="lib" />
+    <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.xml" target="lib" />
+    <file src="..\..\Samples\Tilemaps\Content\Data\**\*.res" target="content" />
   </files>
 </package>

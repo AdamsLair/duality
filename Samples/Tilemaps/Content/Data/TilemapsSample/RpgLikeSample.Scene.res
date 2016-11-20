@@ -69,7 +69,7 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3761029062</gameobj>
           </item>
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.CameraController" id="1844544486">
+          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.CameraController" id="1844544486">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3761029062</gameobj>
             <smoothness dataType="Float">1</smoothness>
@@ -95,7 +95,7 @@
                     <vel dataType="Struct" type="Duality.Vector3" />
                     <velAbs dataType="Struct" type="Duality.Vector3" />
                   </item>
-                  <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" id="3907431145">
+                  <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="3907431145">
                     <active dataType="Bool">true</active>
                     <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                       <A dataType="Byte">255</A>
@@ -158,69 +158,69 @@
                       <_version dataType="Int">1</_version>
                     </shapes>
                   </item>
-                  <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.CharacterController" id="479935388">
+                  <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.CharacterController" id="479935388">
                     <acceleration dataType="Float">0.15</acceleration>
                     <active dataType="Bool">true</active>
                     <gameobj dataType="ObjectRef">1593919710</gameobj>
                     <speed dataType="Float">3.5</speed>
                     <targetMovement dataType="Struct" type="Duality.Vector2" />
                   </item>
-                  <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimator" id="2170487535">
+                  <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorAnimator" id="2170487535">
                     <active dataType="Bool">true</active>
                     <activeAnim />
-                    <activeLoopMode dataType="Enum" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimator+LoopMode" name="Loop" value="2" />
-                    <animations dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimation]]" id="301622227">
-                      <_items dataType="Array" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimation[]" id="118561382" length="4">
-                        <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimation" id="2771520384">
+                    <activeLoopMode dataType="Enum" type="Duality.Samples.Tilemaps.RpgLike.ActorAnimator+LoopMode" name="Loop" value="2" />
+                    <animations dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Samples.Tilemaps.RpgLike.ActorAnimation]]" id="301622227">
+                      <_items dataType="Array" type="Duality.Samples.Tilemaps.RpgLike.ActorAnimation[]" id="118561382" length="4">
+                        <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorAnimation" id="2771520384">
                           <duration dataType="Float">2</duration>
                           <frameCount dataType="Int">1</frameCount>
                           <name dataType="String">Idle</name>
-                          <preferredLoopMode dataType="Enum" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimator+LoopMode" name="PingPong" value="3" />
-                          <startFrame dataType="Array" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping[]" id="2235101596">
-                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                          <preferredLoopMode dataType="Enum" type="Duality.Samples.Tilemaps.RpgLike.ActorAnimator+LoopMode" name="PingPong" value="3" />
+                          <startFrame dataType="Array" type="Duality.Samples.Tilemaps.RpgLike.AnimDirMapping[]" id="2235101596">
+                            <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.AnimDirMapping">
                               <Angle dataType="Float">180</Angle>
                               <Direction dataType="String">Down</Direction>
                               <SpriteSheetIndex dataType="Int">4</SpriteSheetIndex>
                             </item>
-                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                            <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.AnimDirMapping">
                               <Angle dataType="Float">270</Angle>
                               <Direction dataType="String">Left</Direction>
                               <SpriteSheetIndex dataType="Int">7</SpriteSheetIndex>
                             </item>
-                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                            <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.AnimDirMapping">
                               <Angle dataType="Float">90</Angle>
                               <Direction dataType="String">Right</Direction>
                               <SpriteSheetIndex dataType="Int">10</SpriteSheetIndex>
                             </item>
-                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                            <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.AnimDirMapping">
                               <Angle dataType="Float">0</Angle>
                               <Direction dataType="String">Up</Direction>
                               <SpriteSheetIndex dataType="Int">13</SpriteSheetIndex>
                             </item>
                           </startFrame>
                         </item>
-                        <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimation" id="1460458702">
+                        <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorAnimation" id="1460458702">
                           <duration dataType="Float">0.5</duration>
                           <frameCount dataType="Int">3</frameCount>
                           <name dataType="String">Walk</name>
-                          <preferredLoopMode dataType="Enum" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimator+LoopMode" name="PingPong" value="3" />
-                          <startFrame dataType="Array" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping[]" id="2299729234">
-                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                          <preferredLoopMode dataType="Enum" type="Duality.Samples.Tilemaps.RpgLike.ActorAnimator+LoopMode" name="PingPong" value="3" />
+                          <startFrame dataType="Array" type="Duality.Samples.Tilemaps.RpgLike.AnimDirMapping[]" id="2299729234">
+                            <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.AnimDirMapping">
                               <Angle dataType="Float">180</Angle>
                               <Direction dataType="String">Down</Direction>
                               <SpriteSheetIndex dataType="Int">3</SpriteSheetIndex>
                             </item>
-                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                            <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.AnimDirMapping">
                               <Angle dataType="Float">270</Angle>
                               <Direction dataType="String">Left</Direction>
                               <SpriteSheetIndex dataType="Int">6</SpriteSheetIndex>
                             </item>
-                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                            <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.AnimDirMapping">
                               <Angle dataType="Float">90</Angle>
                               <Direction dataType="String">Right</Direction>
                               <SpriteSheetIndex dataType="Int">9</SpriteSheetIndex>
                             </item>
-                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                            <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.AnimDirMapping">
                               <Angle dataType="Float">0</Angle>
                               <Direction dataType="String">Up</Direction>
                               <SpriteSheetIndex dataType="Int">12</SpriteSheetIndex>
@@ -245,10 +245,10 @@
                 <body>
                   <keys dataType="Array" type="System.Object[]" id="3864501218">
                     <item dataType="Type" id="4219969168" value="Duality.Components.Transform" />
-                    <item dataType="Type" id="3361562350" value="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" />
+                    <item dataType="Type" id="3361562350" value="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" />
                     <item dataType="Type" id="794497900" value="Duality.Components.Physics.RigidBody" />
-                    <item dataType="Type" id="1223005970" value="Duality.Plugins.Tilemaps.Sample.RpgLike.CharacterController" />
-                    <item dataType="Type" id="3118878792" value="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimator" />
+                    <item dataType="Type" id="1223005970" value="Duality.Samples.Tilemaps.RpgLike.CharacterController" />
+                    <item dataType="Type" id="3118878792" value="Duality.Samples.Tilemaps.RpgLike.ActorAnimator" />
                   </keys>
                   <values dataType="Array" type="System.Object[]" id="3342871690">
                     <item dataType="ObjectRef">3954234642</item>
@@ -303,7 +303,7 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" id="3136659935">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="3136659935">
                             <active dataType="Bool">true</active>
                             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                               <A dataType="Byte">255</A>
@@ -366,7 +366,7 @@
                               <_version dataType="Int">1</_version>
                             </shapes>
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.MoveableObjectPhysics" id="611422666">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="611422666">
                             <active dataType="Bool">true</active>
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3013493237">
@@ -764,7 +764,7 @@
                             <item dataType="ObjectRef">4219969168</item>
                             <item dataType="ObjectRef">3361562350</item>
                             <item dataType="ObjectRef">794497900</item>
-                            <item dataType="Type" id="260043600" value="Duality.Plugins.Tilemaps.Sample.RpgLike.MoveableObjectPhysics" />
+                            <item dataType="Type" id="260043600" value="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" />
                           </keys>
                           <values dataType="Array" type="System.Object[]" id="878902474">
                             <item dataType="ObjectRef">3183463432</item>
@@ -816,7 +816,7 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" id="2757188714">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="2757188714">
                             <active dataType="Bool">true</active>
                             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                               <A dataType="Byte">255</A>
@@ -879,7 +879,7 @@
                               <_version dataType="Int">1</_version>
                             </shapes>
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.MoveableObjectPhysics" id="231951445">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="231951445">
                             <active dataType="Bool">true</active>
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
@@ -949,7 +949,7 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" id="2501373737">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="2501373737">
                             <active dataType="Bool">true</active>
                             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                               <A dataType="Byte">255</A>
@@ -1012,7 +1012,7 @@
                               <_version dataType="Int">1</_version>
                             </shapes>
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.MoveableObjectPhysics" id="4271103764">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="4271103764">
                             <active dataType="Bool">true</active>
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
@@ -1082,7 +1082,7 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" id="2183008572">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="2183008572">
                             <active dataType="Bool">true</active>
                             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                               <A dataType="Byte">255</A>
@@ -1145,7 +1145,7 @@
                               <_version dataType="Int">1</_version>
                             </shapes>
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.MoveableObjectPhysics" id="3952738599">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="3952738599">
                             <active dataType="Bool">true</active>
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
@@ -1215,7 +1215,7 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" id="3188618400">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="3188618400">
                             <active dataType="Bool">true</active>
                             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                               <A dataType="Byte">255</A>
@@ -1278,7 +1278,7 @@
                               <_version dataType="Int">1</_version>
                             </shapes>
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.MoveableObjectPhysics" id="663381131">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="663381131">
                             <active dataType="Bool">true</active>
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
@@ -1348,7 +1348,7 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" id="1114677725">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="1114677725">
                             <active dataType="Bool">true</active>
                             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                               <A dataType="Byte">255</A>
@@ -1411,7 +1411,7 @@
                               <_version dataType="Int">1</_version>
                             </shapes>
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.MoveableObjectPhysics" id="2884407752">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="2884407752">
                             <active dataType="Bool">true</active>
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
@@ -1481,7 +1481,7 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" id="176699577">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="176699577">
                             <active dataType="Bool">true</active>
                             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                               <A dataType="Byte">255</A>
@@ -1544,7 +1544,7 @@
                               <_version dataType="Int">1</_version>
                             </shapes>
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.MoveableObjectPhysics" id="1946429604">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="1946429604">
                             <active dataType="Bool">true</active>
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
@@ -1614,7 +1614,7 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" id="3862389221">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="3862389221">
                             <active dataType="Bool">true</active>
                             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                               <A dataType="Byte">255</A>
@@ -1677,7 +1677,7 @@
                               <_version dataType="Int">1</_version>
                             </shapes>
                           </item>
-                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.MoveableObjectPhysics" id="1337151952">
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="1337151952">
                             <active dataType="Bool">true</active>
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
@@ -1759,7 +1759,7 @@
             <item dataType="ObjectRef">4219969168</item>
             <item dataType="Type" id="1128403856" value="Duality.Components.Camera" />
             <item dataType="Type" id="3457661678" value="Duality.Components.SoundListener" />
-            <item dataType="Type" id="3352197740" value="Duality.Plugins.Tilemaps.Sample.RpgLike.CameraController" />
+            <item dataType="Type" id="3352197740" value="Duality.Samples.Tilemaps.RpgLike.CameraController" />
           </keys>
           <values dataType="Array" type="System.Object[]" id="105870730">
             <item dataType="ObjectRef">1826376698</item>
@@ -1787,7 +1787,7 @@
       <children />
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="367255378">
         <_items dataType="Array" type="Duality.Component[]" id="2959980880" length="4">
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.Player" id="1378947066">
+          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.Player" id="1378947066">
             <active dataType="Bool">true</active>
             <character dataType="ObjectRef">479935388</character>
             <gameobj dataType="ObjectRef">3851204924</gameobj>
@@ -1800,7 +1800,7 @@
         <header />
         <body>
           <keys dataType="Array" type="System.Object[]" id="4114983048">
-            <item dataType="Type" id="1898588012" value="Duality.Plugins.Tilemaps.Sample.RpgLike.Player" />
+            <item dataType="Type" id="1898588012" value="Duality.Samples.Tilemaps.RpgLike.Player" />
           </keys>
           <values dataType="Array" type="System.Object[]" id="527819742">
             <item dataType="ObjectRef">1378947066</item>

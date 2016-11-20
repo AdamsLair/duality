@@ -10,7 +10,7 @@ using Duality.Drawing;
 using Duality.Resources;
 using Duality.Plugins.Tilemaps;
 
-namespace Duality.Plugins.Tilemaps.Sample
+namespace Duality.Samples.Tilemaps
 {
 	[EditorHintCategory("Test")]
 	[RequiredComponent(typeof(Transform))]

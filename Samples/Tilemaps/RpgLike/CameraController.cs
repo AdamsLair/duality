@@ -9,9 +9,9 @@ using Duality.Components.Physics;
 using Duality.Editor;
 using Duality.Plugins.Tilemaps;
 using Duality.Plugins.Tilemaps.Properties;
-using Duality.Plugins.Tilemaps.Sample.RpgLike.Properties;
+using Duality.Samples.Tilemaps.RpgLike.Properties;
 
-namespace Duality.Plugins.Tilemaps.Sample.RpgLike
+namespace Duality.Samples.Tilemaps.RpgLike
 {
 	/// <summary>
 	/// Moves the camera to follow an object, but keeps it within the constraints

@@ -9,9 +9,9 @@ using Duality.Components.Physics;
 using Duality.Editor;
 using Duality.Plugins.Tilemaps;
 using Duality.Plugins.Tilemaps.Properties;
-using Duality.Plugins.Tilemaps.Sample.RpgLike.Properties;
+using Duality.Samples.Tilemaps.RpgLike.Properties;
 
-namespace Duality.Plugins.Tilemaps.Sample.RpgLike
+namespace Duality.Samples.Tilemaps.RpgLike
 {
 	/// <summary>
 	/// Applies friction physics to an otherwise passive, moveable object.
