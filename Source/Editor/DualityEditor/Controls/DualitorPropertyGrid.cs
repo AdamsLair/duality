@@ -130,9 +130,9 @@ namespace Duality.Editor.Controls
 				createDialog.ShowNamespaces = objectType == typeof(object);
 				DialogResult result = createDialog.ShowDialog();
 				if (result == DialogResult.OK)
-				{
 					obj = createDialog.SelectedType.GetTypeInfo().CreateInstanceOf();
-				}
+				else
+					return null;
 			}
 
 			return obj ?? base.CreateObjectInstance(objectType);
