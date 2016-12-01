@@ -689,17 +689,24 @@ namespace Duality.Editor.PackageManagement
 		}
 		private IEnumerable<NuGet.IPackage> GetRepositoryPackages(string id)
 		{
+			// Quickly check if we have this result in our cache already
 			NuGet.IPackage[] result;
 			lock (this.cacheLock)
 			{
-				if (!this.repositoryPackageCache.TryGetValue(id, out result))
-				{
-					result = this.repository
-						.FindPackagesById(id)
-						.Where(p => p.IsReleaseVersion())
-						.ToArray();
-					this.repositoryPackageCache[id] = result;
-				}
+				if (this.repositoryPackageCache.TryGetValue(id, out result))
+					return result;
+			}
+			
+			// Otherwise, query the repository for all packages with this id
+			result = this.repository
+				.FindPackagesById(id)
+				.Where(p => p.IsReleaseVersion())
+				.ToArray();
+
+			// Update the cache with our new results
+			lock (this.cacheLock)
+			{
+				this.repositoryPackageCache[id] = result;
 			}
 			return result;
 		}
