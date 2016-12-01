@@ -608,47 +608,12 @@ namespace Duality.Editor.PackageManagement
 			// Transform results into Duality package representation
 			foreach (NuGet.IPackage package in query)
 			{
-				// Do some additional checks that can't fit into the query itself
-				if (!package.IsListed()) continue;
-				if (!package.IsReleaseVersion()) continue;
-				if (package.Version != new SemanticVersion(package.Version.Version)) continue;
-
-				// Check if we can find that exact package using an indexed lookup.
-				// Sometimes, a package is available on NuGet when enumerating, but
-				// not yet indexed, leading to all sorts of issues during install.
-				// The safest way to handle this is to not acknowledge the existence
-				// of any package that isn't indexed yet.
-				NuGet.IPackage latestIndexedPackage = package;
-				NuGet.IPackage[] indexedPackages = this.GetRepositoryPackages(package.Id).ToArray();
-				bool isIndexed = Array.FindIndex(indexedPackages, p => p.Version == package.Version) != -1;
-				if (!isIndexed)
-				{
-					// Reset the package we're using and invalidate the cache
-					latestIndexedPackage = null;
-					lock (this.cacheLock)
-					{ 
-						this.repositoryPackageCache.Remove(package.Id);
-					}
-
-					// Retrieve the latest listed release version of that package
-					Array.Sort(indexedPackages, (a, b) => b.Version > a.Version ? 1 : -1);
-					foreach (NuGet.IPackage indexedPackage in indexedPackages)
-					{ 
-						if (!indexedPackage.IsListed()) continue;
-						if (!indexedPackage.IsReleaseVersion()) continue;
-						if (indexedPackage.Version != new SemanticVersion(indexedPackage.Version.Version)) continue;
-						latestIndexedPackage = indexedPackage;
-						break;
-					}
-
-					// If there is not a single version of the package indexed and available yet,
-					// skip it entirely.
-					if (latestIndexedPackage == null)
-						continue;
-				}
+				// Filter out all packages that shouldn't be presented to the user. This
+				// includes pre-release and unlisted packages.
+				if (!this.IsUserAvailable(package)) continue;
 
 				// Create a Duality package representation for all query hits
-				PackageInfo info = this.CreatePackageInfo(latestIndexedPackage);
+				PackageInfo info = this.CreatePackageInfo(package);
 				yield return info;
 			}
 		}
@@ -673,10 +638,22 @@ namespace Duality.Editor.PackageManagement
 				// Nothing found? Query online then.
 				try
 				{
+					// First try an indexed lookup. This may fail for freshly released packages.
 					foreach (NuGet.IPackage package in this.GetRepositoryPackages(packageRef.Id))
 					{
 						if (package.Version.Version == packageRef.Version)
 							return package;
+					}
+
+					// If that fails, enumerate all packages and select the one we need
+					IQueryable<NuGet.IPackage> query = 
+						this.repository.GetPackages()
+						.Where(p => p.Id == packageRef.Id);
+					foreach (NuGet.IPackage package in query)
+					{
+						if (!this.IsUserAvailable(package)) continue;
+						if (package.Version.Version != packageRef.Version) continue;
+						return package;
 					}
 				}
 				catch (Exception)
@@ -687,25 +664,24 @@ namespace Duality.Editor.PackageManagement
 			// Find the newest available version online
 			else
 			{
-				NuGet.IPackage[] data = null;
 				try
 				{
-					IEnumerable<NuGet.IPackage> query = this.GetRepositoryPackages(packageRef.Id);
-					data = query.ToArray();
+					// Enumerate all package versions - do not rely on an indexed
+					// lookup to get the latest, as the index might not be up-to-date.
+					IQueryable<NuGet.IPackage> query = 
+						this.repository.GetPackages()
+						.Where(p => p.Id == packageRef.Id)
+						.OrderByDescending(p => p.Version);
+					foreach (NuGet.IPackage package in query)
+					{
+						if (!this.IsUserAvailable(package)) continue;
+						return package;
+					}
 				}
 				catch (Exception)
 				{
 					return null;
 				}
-
-				var packageQuery = data.Where(p => p.IsListed() && p.IsReleaseVersion());
-
-				NuGet.IPackage newestPackage = packageQuery
-					.OrderByDescending(p => p.Version.Version)
-					.FirstOrDefault();
-
-				if (newestPackage != null)
-					return newestPackage;
 			}
 
 			// Nothing was found
@@ -726,6 +702,14 @@ namespace Duality.Editor.PackageManagement
 				}
 			}
 			return result;
+		}
+		private bool IsUserAvailable(NuGet.IPackage package)
+		{
+			// Filter unlisted, non-release and special versions
+			if (!package.IsReleaseVersion()) return false;
+			if (!package.IsListed()) return false;
+			if (package.Version != new SemanticVersion(package.Version.Version)) return false;
+			return true;
 		}
 
 		private void RetrieveLocalPackageInfo()
