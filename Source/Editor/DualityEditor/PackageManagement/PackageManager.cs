@@ -1007,10 +1007,22 @@ namespace Duality.Editor.PackageManagement
 			string sourceBaseDir = Path.Combine(this.sourceTargetDir, folderFriendlyPackageName);
 			if (!isPluginPackage || !isDualityPackage) binaryBaseDir = "";
 
-			foreach (var f in package.GetFiles()
-				.Where(f => f.TargetFramework == null || f.TargetFramework.Version < Environment.Version)
-				.OrderByDescending(f => f.TargetFramework == null ? new Version() : f.TargetFramework.Version)
-				.OrderByDescending(f => f.TargetFramework == null))
+			IPackageFile[] packageFiles;
+			try
+			{
+				packageFiles = package.GetFiles()
+					.Where(f => f.TargetFramework == null || f.TargetFramework.Version < Environment.Version)
+					.OrderByDescending(f => f.TargetFramework == null ? new Version() : f.TargetFramework.Version)
+					.OrderByDescending(f => f.TargetFramework == null)
+					.ToArray();
+			}
+			catch (DirectoryNotFoundException)
+			{
+				// We'll run into this exception when uninstalling a package without any files.
+				return fileMapping;
+			}
+
+			foreach (IPackageFile f in packageFiles)
 			{
 				// Determine where the file needs to go
 				string targetPath = f.EffectivePath;
