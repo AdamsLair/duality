@@ -646,10 +646,14 @@ namespace Duality.Editor.PackageManagement
 						return package;
 					}
 
-					// If that fails, enumerate all packages and select the one we need
+					// If that fails, enumerate all packages and select the one we need.
+					//
+					// Note: Make sure to include OrderByDescending. Without it, non-indexed
+					// packages will not be returned from the query.
 					IQueryable<NuGet.IPackage> query = 
 						this.repository.GetPackages()
-						.Where(p => p.Id == packageRef.Id);
+						.Where(p => p.Id == packageRef.Id)
+						.OrderByDescending(p => p.Version);
 					foreach (NuGet.IPackage package in query)
 					{
 						if (!package.IsReleaseVersion()) continue;
@@ -662,6 +666,8 @@ namespace Duality.Editor.PackageManagement
 					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
 					return null;
 				}
+
+				return null;
 			}
 			// Find the newest available, listed version online.
 			else
@@ -670,6 +676,9 @@ namespace Duality.Editor.PackageManagement
 				{
 					// Enumerate all package versions - do not rely on an indexed
 					// lookup to get the latest, as the index might not be up-to-date.
+					//
+					// Note: Make sure to include OrderByDescending. Without it, non-indexed
+					// packages will not be returned from the query.
 					IQueryable<NuGet.IPackage> query = 
 						this.repository.GetPackages()
 						.Where(p => p.Id == packageRef.Id)
@@ -685,10 +694,9 @@ namespace Duality.Editor.PackageManagement
 					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
 					return null;
 				}
-			}
 
-			// Nothing was found
-			return null;
+				return null;
+			}
 		}
 		private IEnumerable<NuGet.IPackage> GetRepositoryPackages(string id)
 		{
