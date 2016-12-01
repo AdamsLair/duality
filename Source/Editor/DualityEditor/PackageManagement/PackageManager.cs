@@ -625,7 +625,7 @@ namespace Duality.Editor.PackageManagement
 		
 		private NuGet.IPackage FindPackageInfo(PackageName packageRef)
 		{
-			// Find a direct version match
+			// Find a specific version. We're not looking for listed packages only.
 			if (packageRef.Version != null)
 			{
 				// Query locally first, since we're looking for a specific version number anyway.
@@ -641,8 +641,9 @@ namespace Duality.Editor.PackageManagement
 					// First try an indexed lookup. This may fail for freshly released packages.
 					foreach (NuGet.IPackage package in this.GetRepositoryPackages(packageRef.Id))
 					{
-						if (package.Version.Version == packageRef.Version)
-							return package;
+						if (!package.IsReleaseVersion()) continue;
+						if (package.Version.Version != packageRef.Version) continue;
+						return package;
 					}
 
 					// If that fails, enumerate all packages and select the one we need
@@ -651,17 +652,18 @@ namespace Duality.Editor.PackageManagement
 						.Where(p => p.Id == packageRef.Id);
 					foreach (NuGet.IPackage package in query)
 					{
-						if (!this.IsUserAvailable(package)) continue;
+						if (!package.IsReleaseVersion()) continue;
 						if (package.Version.Version != packageRef.Version) continue;
 						return package;
 					}
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
+					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
 					return null;
 				}
 			}
-			// Find the newest available version online
+			// Find the newest available, listed version online.
 			else
 			{
 				try
@@ -678,8 +680,9 @@ namespace Duality.Editor.PackageManagement
 						return package;
 					}
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
+					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
 					return null;
 				}
 			}
@@ -700,7 +703,6 @@ namespace Duality.Editor.PackageManagement
 			// Otherwise, query the repository for all packages with this id
 			result = this.repository
 				.FindPackagesById(id)
-				.Where(p => p.IsReleaseVersion())
 				.ToArray();
 
 			// Update the cache with our new results
