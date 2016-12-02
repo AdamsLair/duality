@@ -21,6 +21,7 @@ namespace VersionUpdater
 		{
 			public string ProjectFilePath;
 			public string ProjectRootDir;
+			public List<string> OutputFilePaths;
 			public string AssemblyInfoFilePath;
 			public string NuSpecFilePath;
 			public string NuSpecPackageId;
@@ -418,8 +419,41 @@ namespace VersionUpdater
 				ProjectInfo info = new ProjectInfo
 				{
 					ProjectFilePath = projectFile,
-					ProjectRootDir = Path.GetDirectoryName(projectFile)
+					ProjectRootDir = Path.GetDirectoryName(projectFile),
+					OutputFilePaths = new List<string>()
 				};
+
+				// Parse the project file to determine output paths
+				{
+					XDocument projectDoc = XDocument.Load(projectFile);
+					string projectDocNs = projectDoc.Root.GetDefaultNamespace().NamespaceName;
+					HashSet<string> outputDirs = new HashSet<string>();
+					HashSet<string> outputNames = new HashSet<string>();
+					foreach (XElement outPathElement in projectDoc.Descendants(XName.Get("OutputPath", projectDocNs)))
+					{
+						string path = outPathElement.Value;
+						path = path.Replace("$(SolutionDir)", solutionDir + Path.DirectorySeparatorChar);
+						if (!Path.IsPathRooted(path))
+							path = Path.Combine(info.ProjectRootDir, path);
+						outputDirs.Add(path);
+					}
+					foreach (XElement outPathElement in projectDoc.Descendants(XName.Get("AssemblyName", projectDocNs)))
+					{
+						string name = outPathElement.Value;
+						outputNames.Add(name);
+					}
+					string[] extensions = new string[] { ".exe", ".dll" };
+					foreach (string dir in outputDirs)
+					foreach (string name in outputNames)
+					foreach (string ext in extensions)
+					{ 
+						string path = Path.Combine(dir, name) + ext;
+						if (File.Exists(path))
+						{
+							info.OutputFilePaths.Add(path);
+						}
+					}
+				}
 
 				// Determine the project's AssemblyInfo file
 				info.AssemblyInfoFilePath = Directory.EnumerateFiles(info.ProjectRootDir, "AssemblyInfo.cs", SearchOption.AllDirectories)
@@ -434,7 +468,8 @@ namespace VersionUpdater
 					XDocument nuspecDoc = pair.Value;
 
 					// Does it reference any file from this projects directory structure?
-					bool anyFileInProjectRoot = false;
+					// Does it reference any file from the projects build output?
+					bool anyFileReferenced = false;
 					foreach (XElement fileElement in nuspecDoc.Descendants("file"))
 					{
 						XAttribute srcAttrib = fileElement.Attribute("src");
@@ -445,11 +480,28 @@ namespace VersionUpdater
 						string filePathBase = Path.Combine(nuspecFileDir, relativePathWithoutWildcards);
 						if (IsPathLocatedIn(filePathBase, info.ProjectRootDir))
 						{
-							anyFileInProjectRoot = true;
+							anyFileReferenced = true;
 							break;
 						}
+
+						foreach (string buildOutputPath in info.OutputFilePaths)
+						{
+							bool pathEquals = string.Equals(
+								Path.GetFullPath(filePathBase), 
+								Path.GetFullPath(buildOutputPath), 
+								StringComparison.InvariantCultureIgnoreCase);
+							if (pathEquals)
+							{
+								anyFileReferenced = true;
+								break;
+							}
+						}
+						if (anyFileReferenced) break;
 					}
-					if (!anyFileInProjectRoot) continue;
+
+					// Skip unrelated projects
+					if (!anyFileReferenced)
+						continue;
 
 					// If it does, it probably belongs to this project. Retrieve some data and stop searching.
 					XElement elemId = nuspecDoc.Descendants("id").FirstOrDefault();
