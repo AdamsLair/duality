@@ -683,19 +683,32 @@ namespace Duality.Editor.PackageManagement
 						this.repository.GetPackages()
 						.Where(p => p.Id == packageRef.Id)
 						.OrderByDescending(p => p.Version);
+
+					// Note: IQueryable LINQ expressions will actually be transformed into
+					// queries that are executed server-side. Unfortunately for us, the server
+					// will order versions as if they were strings, meaning that 1.0.10 < 1.0.9.
+					// To fix this, we'll have to iterate over them all and find the highest one
+					// manually. We'll still include the OrderByDescending, so we avoid running
+					// into a supposed caching mechanism that doesn't return non-indexed packages
+					// and appears to be active when just filtering by ID.
+					Version latestVersion = new Version(0, 0);
+					NuGet.IPackage latestPackage = null;
 					foreach (NuGet.IPackage package in query)
 					{
 						if (!this.IsUserAvailable(package)) continue;
-						return package;
+						if (package.Version.Version > latestVersion)
+						{
+							latestVersion = package.Version.Version;
+							latestPackage = package;
+						}
 					}
+					return latestPackage;
 				}
 				catch (Exception e)
 				{
 					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
 					return null;
 				}
-
-				return null;
 			}
 		}
 		private IEnumerable<NuGet.IPackage> GetRepositoryPackages(string id)
