@@ -310,19 +310,22 @@ namespace Duality.Updater
 				foreach (var element in csproj.Descendants("ProjectReference", true))
 				{
 					string projectPath = element.Attribute("Include", true).Value;
-					string assemblyFileName = Path.GetFileNameWithoutExtension(projectPath) + ".dll";
+					string assemblyFileNameDll = Path.GetFileNameWithoutExtension(projectPath) + ".dll";
+					string assemblyFileNameExe = Path.GetFileNameWithoutExtension(projectPath) + ".exe";
 					string assemblyPath = null;
-					if (File.Exists(assemblyFileName))
+					if (File.Exists(assemblyFileNameDll))
 					{
-						assemblyPath = assemblyFileName;
+						assemblyPath = assemblyFileNameDll;
+					}
+					else if (File.Exists(assemblyFileNameExe))
+					{
+						assemblyPath = assemblyFileNameExe;
 					}
 					else
 					{
-						foreach (string file in Directory.EnumerateFiles(pluginDirectory, assemblyFileName, SearchOption.AllDirectories))
-						{
-							assemblyPath = file;
-							break;
-						}
+						assemblyPath = 
+							Directory.EnumerateFiles(pluginDirectory, assemblyFileNameDll, SearchOption.AllDirectories).FirstOrDefault() ??
+							Directory.EnumerateFiles(pluginDirectory, assemblyFileNameExe, SearchOption.AllDirectories).FirstOrDefault();
 					}
 					if (!string.IsNullOrEmpty(assemblyPath) && File.Exists(assemblyPath))
 					{
