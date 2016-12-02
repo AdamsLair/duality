@@ -537,11 +537,9 @@ namespace VersionUpdater
 					string id = attribId.Value;
 					foreach (ProjectInfo projectInfo in projectInfoList)
 					{
+						// Note: Could be multiple projects being used in a single nuspec!
 						if (projectInfo.NuSpecPackageId == id)
-						{
 							projectInfo.IsDefaultPackage = true;
-							break;
-						}
 					}
 				}
 			}
