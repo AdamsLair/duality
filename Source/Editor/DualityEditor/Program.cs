@@ -143,10 +143,15 @@ namespace Duality.Editor
 			yield return null;
 
 			// Uninstall all "shadow" Duality packages that are installed, but not registered
+			Log.Editor.Write("Uninstalling unregistered packages...");
+			Log.Editor.PushIndent();
 			manager.UninstallNonRegisteredPackages();
+			Log.Editor.PopIndent();
 			yield return null;
 
 			// Iterate over previously reigstered local packages and verify / install them.
+			Log.Editor.Write("Verifying registered packages...");
+			Log.Editor.PushIndent();
 			foreach (LocalPackage package in packagesToVerify)
 			{
 				// Update the task dialog's UI
@@ -172,6 +177,7 @@ namespace Duality.Editor
 				workerInterface.Progress += 0.5f / packagesToVerify.Length;
 				yield return null;
 			}
+			Log.Editor.PopIndent();
 
 			yield break;
 		}
