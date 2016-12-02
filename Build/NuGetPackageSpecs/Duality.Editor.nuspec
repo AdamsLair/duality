@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>2.7.9</version>
+    <version>2.7.10</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,9 +13,17 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>Updater Tweaks
-#CHANGE: More robust project integration check on solution files. 
-#CHANGE: Adjusted solution file matches VS solution format more closely.</releaseNotes>
+    <releaseNotes>Package Self-Install Logging, PackageManager Bugfixes, PackageManager Bugfixes
+#ADD: Added some logs for package self-install operations at editor startup.
+#FIX: Fixed a bug that caused retrieving the latest available package failing on higher version numbers due to server-side sorting somehow happening based on string comparison.
+#FIX: Worked around a bug in NuGet.Core that causes an exception when uninstalling a package without any files.
+#FIX: Worked around inconsistent behaviour in NuGet server / repository queries.
+#CHANGE: Finding packages with specific versions is no longer restricted to listed packages. 
+#ADD: Added log warnings when an exception is thrown while attempting to retrieve a package.
+#CHANGE: Improved package manager startup performance by avoiding lock states during the initial queries.
+#CHANGE: Replaced previous query verification with a query fallback to improve performance and assume the more common case of a package being indexed to be the default.
+#CHANGE: When querying available packages, the package manager now checks every one of them for being indexed first and falls back to the latest indexed version, if it is not.
+#FIX: Fixed a bug where cancelling object creation in the Create Object dialog would result in the base class object being created anyway.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.8.3" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />

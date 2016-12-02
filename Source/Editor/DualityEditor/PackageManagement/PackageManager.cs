@@ -608,10 +608,9 @@ namespace Duality.Editor.PackageManagement
 			// Transform results into Duality package representation
 			foreach (NuGet.IPackage package in query)
 			{
-				// Do some additional checks that can't fit into the query itself
-				if (!package.IsListed()) continue;
-				if (!package.IsReleaseVersion()) continue;
-				if (package.Version != new SemanticVersion(package.Version.Version)) continue;
+				// Filter out all packages that shouldn't be presented to the user. This
+				// includes pre-release and unlisted packages.
+				if (!this.IsUserAvailable(package)) continue;
 
 				// Create a Duality package representation for all query hits
 				PackageInfo info = this.CreatePackageInfo(package);
@@ -626,7 +625,7 @@ namespace Duality.Editor.PackageManagement
 		
 		private NuGet.IPackage FindPackageInfo(PackageName packageRef)
 		{
-			// Find a direct version match
+			// Find a specific version. We're not looking for listed packages only.
 			if (packageRef.Version != null)
 			{
 				// Query locally first, since we're looking for a specific version number anyway.
@@ -639,59 +638,108 @@ namespace Duality.Editor.PackageManagement
 				// Nothing found? Query online then.
 				try
 				{
+					// First try an indexed lookup. This may fail for freshly released packages.
 					foreach (NuGet.IPackage package in this.GetRepositoryPackages(packageRef.Id))
 					{
-						if (package.Version.Version == packageRef.Version)
-							return package;
+						if (!package.IsReleaseVersion()) continue;
+						if (package.Version.Version != packageRef.Version) continue;
+						return package;
+					}
+
+					// If that fails, enumerate all packages and select the one we need.
+					//
+					// Note: Make sure to include OrderByDescending. Without it, non-indexed
+					// packages will not be returned from the query.
+					IQueryable<NuGet.IPackage> query = 
+						this.repository.GetPackages()
+						.Where(p => p.Id == packageRef.Id)
+						.OrderByDescending(p => p.Version);
+					foreach (NuGet.IPackage package in query)
+					{
+						if (!package.IsReleaseVersion()) continue;
+						if (package.Version.Version != packageRef.Version) continue;
+						return package;
 					}
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
+					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
 					return null;
 				}
+
+				return null;
 			}
-			// Find the newest available version online
+			// Find the newest available, listed version online.
 			else
 			{
-				NuGet.IPackage[] data = null;
 				try
 				{
-					IEnumerable<NuGet.IPackage> query = this.GetRepositoryPackages(packageRef.Id);
-					data = query.ToArray();
+					// Enumerate all package versions - do not rely on an indexed
+					// lookup to get the latest, as the index might not be up-to-date.
+					//
+					// Note: Make sure to include OrderByDescending. Without it, non-indexed
+					// packages will not be returned from the query.
+					IQueryable<NuGet.IPackage> query = 
+						this.repository.GetPackages()
+						.Where(p => p.Id == packageRef.Id)
+						.OrderByDescending(p => p.Version);
+
+					// Note: IQueryable LINQ expressions will actually be transformed into
+					// queries that are executed server-side. Unfortunately for us, the server
+					// will order versions as if they were strings, meaning that 1.0.10 < 1.0.9.
+					// To fix this, we'll have to iterate over them all and find the highest one
+					// manually. We'll still include the OrderByDescending, so we avoid running
+					// into a supposed caching mechanism that doesn't return non-indexed packages
+					// and appears to be active when just filtering by ID.
+					Version latestVersion = new Version(0, 0);
+					NuGet.IPackage latestPackage = null;
+					foreach (NuGet.IPackage package in query)
+					{
+						if (!this.IsUserAvailable(package)) continue;
+						if (package.Version.Version > latestVersion)
+						{
+							latestVersion = package.Version.Version;
+							latestPackage = package;
+						}
+					}
+					return latestPackage;
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
+					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
 					return null;
 				}
-
-				var packageQuery = data.Where(p => p.IsListed() && p.IsReleaseVersion());
-
-				NuGet.IPackage newestPackage = packageQuery
-					.OrderByDescending(p => p.Version.Version)
-					.FirstOrDefault();
-
-				if (newestPackage != null)
-					return newestPackage;
 			}
-
-			// Nothing was found
-			return null;
 		}
 		private IEnumerable<NuGet.IPackage> GetRepositoryPackages(string id)
 		{
+			// Quickly check if we have this result in our cache already
 			NuGet.IPackage[] result;
 			lock (this.cacheLock)
 			{
-				if (!this.repositoryPackageCache.TryGetValue(id, out result))
-				{
-					result = this.repository
-						.FindPackagesById(id)
-						.Where(p => p.IsReleaseVersion())
-						.ToArray();
-					this.repositoryPackageCache[id] = result;
-				}
+				if (this.repositoryPackageCache.TryGetValue(id, out result))
+					return result;
+			}
+			
+			// Otherwise, query the repository for all packages with this id
+			result = this.repository
+				.FindPackagesById(id)
+				.ToArray();
+
+			// Update the cache with our new results
+			lock (this.cacheLock)
+			{
+				this.repositoryPackageCache[id] = result;
 			}
 			return result;
+		}
+		private bool IsUserAvailable(NuGet.IPackage package)
+		{
+			// Filter unlisted, non-release and special versions
+			if (!package.IsReleaseVersion()) return false;
+			if (!package.IsListed()) return false;
+			if (package.Version != new SemanticVersion(package.Version.Version)) return false;
+			return true;
 		}
 
 		private void RetrieveLocalPackageInfo()
@@ -972,10 +1020,22 @@ namespace Duality.Editor.PackageManagement
 			string sourceBaseDir = Path.Combine(this.sourceTargetDir, folderFriendlyPackageName);
 			if (!isPluginPackage || !isDualityPackage) binaryBaseDir = "";
 
-			foreach (var f in package.GetFiles()
-				.Where(f => f.TargetFramework == null || f.TargetFramework.Version < Environment.Version)
-				.OrderByDescending(f => f.TargetFramework == null ? new Version() : f.TargetFramework.Version)
-				.OrderByDescending(f => f.TargetFramework == null))
+			IPackageFile[] packageFiles;
+			try
+			{
+				packageFiles = package.GetFiles()
+					.Where(f => f.TargetFramework == null || f.TargetFramework.Version < Environment.Version)
+					.OrderByDescending(f => f.TargetFramework == null ? new Version() : f.TargetFramework.Version)
+					.OrderByDescending(f => f.TargetFramework == null)
+					.ToArray();
+			}
+			catch (DirectoryNotFoundException)
+			{
+				// We'll run into this exception when uninstalling a package without any files.
+				return fileMapping;
+			}
+
+			foreach (IPackageFile f in packageFiles)
 			{
 				// Determine where the file needs to go
 				string targetPath = f.EffectivePath;

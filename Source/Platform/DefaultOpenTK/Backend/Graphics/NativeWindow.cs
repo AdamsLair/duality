@@ -20,7 +20,8 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			private NativeWindow parent;
 
-			public InternalWindow(NativeWindow parent, int w, int h, GraphicsMode mode, string title, GameWindowFlags flags) : base(w, h, mode, title, flags)
+			public InternalWindow(NativeWindow parent, int w, int h, GraphicsMode mode, string title, GameWindowFlags flags)
+				: base(w, h, mode, title, flags)
 			{
 				this.parent = parent;
 			}
@@ -42,9 +43,9 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 		}
 
-		private InternalWindow	internalWindow;
-		private RefreshMode		refreshMode;
-		private Stopwatch		frameLimiterWatch = new Stopwatch();
+		private InternalWindow internalWindow;
+		private RefreshMode refreshMode;
+		private Stopwatch frameLimiterWatch = new Stopwatch();
 
 		public bool IsMultisampled
 		{
@@ -81,14 +82,14 @@ namespace Duality.Backend.DefaultOpenTK
 
 			Log.Core.Write(
 				"Window Specification: " + Environment.NewLine +
-				"  Buffers: {0}"         + Environment.NewLine +
-				"  Samples: {1}"         + Environment.NewLine +
-				"  ColorFormat: {2}"     + Environment.NewLine +
-				"  AccumFormat: {3}"     + Environment.NewLine +
-				"  Depth: {4}"           + Environment.NewLine +
-				"  Stencil: {5}"         + Environment.NewLine +
-				"  VSync: {6}"           + Environment.NewLine +
-				"  SwapInterval: {7}", 
+				"  Buffers: {0}" + Environment.NewLine +
+				"  Samples: {1}" + Environment.NewLine +
+				"  ColorFormat: {2}" + Environment.NewLine +
+				"  AccumFormat: {3}" + Environment.NewLine +
+				"  Depth: {4}" + Environment.NewLine +
+				"  Stencil: {5}" + Environment.NewLine +
+				"  VSync: {6}" + Environment.NewLine +
+				"  SwapInterval: {7}",
 				this.internalWindow.Context.GraphicsMode.Buffers,
 				this.internalWindow.Context.GraphicsMode.Samples,
 				this.internalWindow.Context.GraphicsMode.ColorFormat,
@@ -166,7 +167,7 @@ namespace Duality.Backend.DefaultOpenTK
 				DualityApp.Keyboard.Source = null;
 			DualityApp.UserDataChanged -= this.OnUserDataChanged;
 		}
-		
+
 		private void OnUserDataChanged(object sender, EventArgs e)
 		{
 			// Early-out, if no display is connected / available anyway
@@ -175,38 +176,66 @@ namespace Duality.Backend.DefaultOpenTK
 			switch (DualityApp.UserData.GfxMode)
 			{
 				case ScreenMode.Window:
+					if (this.internalWindow.WindowState != WindowState.Normal ||
+						this.internalWindow.WindowBorder != WindowBorder.Resizable)
+					{
+						this.internalWindow.WindowState = WindowState.Normal;
+						this.internalWindow.WindowBorder = WindowBorder.Resizable;
+						DisplayDevice.Default.RestoreResolution();
+					}
+					break;
+
 				case ScreenMode.FixedWindow:
-					this.internalWindow.WindowState = WindowState.Normal;
-					this.internalWindow.WindowBorder = WindowBorder.Fixed;
-					this.internalWindow.ClientSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
-					DisplayDevice.Default.RestoreResolution();
+					if (this.internalWindow.WindowState != WindowState.Normal ||
+						this.internalWindow.WindowBorder != WindowBorder.Fixed ||
+						this.internalWindow.ClientSize.Width != DualityApp.UserData.GfxWidth ||
+						this.internalWindow.ClientSize.Height != DualityApp.UserData.GfxHeight)
+					{
+						this.internalWindow.WindowState = WindowState.Normal;
+						this.internalWindow.WindowBorder = WindowBorder.Fixed;
+						this.internalWindow.ClientSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
+						DisplayDevice.Default.RestoreResolution();
+					}
 					break;
 
 				case ScreenMode.FullWindow:
-					this.internalWindow.ClientSize = new Size(DisplayDevice.Default.Width, DisplayDevice.Default.Height);
-					this.internalWindow.WindowState = WindowState.Fullscreen;
-					this.internalWindow.WindowBorder = WindowBorder.Hidden;
-					DisplayDevice.Default.RestoreResolution();
+					if (this.internalWindow.WindowState != WindowState.Fullscreen ||
+						this.internalWindow.WindowBorder != WindowBorder.Hidden ||
+						this.internalWindow.ClientSize.Width != DisplayDevice.Default.Width ||
+						this.internalWindow.ClientSize.Height != DisplayDevice.Default.Height)
+					{
+						this.internalWindow.ClientSize = new Size(DisplayDevice.Default.Width, DisplayDevice.Default.Height);
+						this.internalWindow.WindowState = WindowState.Fullscreen;
+						this.internalWindow.WindowBorder = WindowBorder.Hidden;
+						DisplayDevice.Default.RestoreResolution();
+					}
 					break;
 
 				case ScreenMode.Native:
 				case ScreenMode.Fullscreen:
-					this.internalWindow.WindowState = WindowState.Fullscreen;
-					this.internalWindow.WindowBorder = WindowBorder.Hidden;
-					this.internalWindow.ClientSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
-					DisplayDevice.Default.ChangeResolution(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight, DisplayDevice.Default.BitsPerPixel, DisplayDevice.Default.RefreshRate);
+					if (this.internalWindow.WindowState != WindowState.Fullscreen ||
+						this.internalWindow.WindowBorder != WindowBorder.Hidden ||
+						this.internalWindow.ClientSize.Width != DualityApp.UserData.GfxWidth ||
+						this.internalWindow.ClientSize.Height != DualityApp.UserData.GfxHeight)
+					{
+						this.internalWindow.WindowState = WindowState.Fullscreen;
+						this.internalWindow.WindowBorder = WindowBorder.Hidden;
+						this.internalWindow.ClientSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
+						DisplayDevice.Default.ChangeResolution(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight, DisplayDevice.Default.BitsPerPixel, DisplayDevice.Default.RefreshRate);
+					}
 					break;
 
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
 
+			this.internalWindow.Cursor = DualityApp.UserData.SystemCursorVisible ? MouseCursor.Default : MouseCursor.Empty;
 			DualityApp.TargetResolution = new Vector2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
 		}
 		private void OnResize(EventArgs e)
 		{
 			DualityApp.TargetResolution = new Vector2(
-				this.internalWindow.ClientSize.Width, 
+				this.internalWindow.ClientSize.Width,
 				this.internalWindow.ClientSize.Height);
 		}
 		private void OnUpdateFrame(FrameEventArgs e)
@@ -216,7 +245,7 @@ namespace Duality.Backend.DefaultOpenTK
 				this.internalWindow.Close();
 				return;
 			}
-			
+
 			// Give the processor a rest if we have the time, don't use 100% CPU even without VSync
 			if (this.frameLimiterWatch.IsRunning && this.refreshMode == RefreshMode.ManualSync)
 			{
