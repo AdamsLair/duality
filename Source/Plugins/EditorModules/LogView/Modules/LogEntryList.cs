@@ -520,11 +520,12 @@ namespace Duality.Editor.Plugins.LogView
 					e.Graphics.DrawString(logEntry.Message, this.Font, foregroundBrush, textRect, messageFormat);
 					if (showTimestamp)
 					{
+						DateTime localTime = logEntry.TimeStamp.ToLocalTime();
 						e.Graphics.DrawString(
 							string.Format("{0:00}:{1:00}:{2:00}", 
-								logEntry.TimeStamp.Hour, 
-								logEntry.TimeStamp.Minute,
-								logEntry.TimeStamp.Second), 
+								localTime.Hour, 
+								localTime.Minute,
+								localTime.Second), 
 							this.Font, foregroundBrushAlpha, 
 							new Rectangle(timeTextRect.Right - timeStampWidth, timeTextRect.Y, timeStampWidth, timeTextRect.Height), 
 							messageFormatTimestamp);

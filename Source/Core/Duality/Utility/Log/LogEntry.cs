@@ -32,7 +32,7 @@ namespace Duality
 			get { return this.message; }
 		}
 		/// <summary>
-		/// [GET] The messages timestamp.
+		/// [GET] The messages timestamp in UTC.
 		/// </summary>
 		public DateTime TimeStamp
 		{
@@ -50,7 +50,7 @@ namespace Duality
 		{
 			this.type = type;
 			this.message = msg;
-			this.timeStamp = DateTime.Now;
+			this.timeStamp = DateTime.UtcNow;
 			this.frameStamp = Time.FrameCount;
 		}
 
