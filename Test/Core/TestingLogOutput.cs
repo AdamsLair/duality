@@ -65,5 +65,7 @@ namespace Duality.Tests
 			else if (entry.Type == LogMessageType.Warning)
 				this.lastWarningMessage = entry.Message;
 		}
+		void ILogOutput.PushIndent() { }
+		void ILogOutput.PopIndent() { }
 	}
 }

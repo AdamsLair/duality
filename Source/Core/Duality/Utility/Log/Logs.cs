@@ -41,11 +41,9 @@ namespace Duality
 		[System.Diagnostics.DebuggerNonUserCode]
 		static Logs()
 		{
-			Log.SharedState state = new Log.SharedState();
-
-			logGame   = new Log("Game", state);
-			logCore   = new Log("Core", state);
-			logEditor = new Log("Edit", state);
+			logGame   = new Log("Game");
+			logCore   = new Log("Core");
+			logEditor = new Log("Edit");
 		}
 
 		public static void AddGlobalOutput(ILogOutput output)

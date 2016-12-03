@@ -14,6 +14,7 @@ namespace Duality.Editor
 	/// </remarks>
 	public class EditorLogOutput : ILogOutput
 	{
+		private int indent = 0;
 		private RawList<EditorLogEntry> entries = new RawList<EditorLogEntry>();
 		private RawList<EditorLogEntry> schedule = new RawList<EditorLogEntry>();
 		private object syncObj = new object();
@@ -31,16 +32,6 @@ namespace Duality.Editor
 			}
 		}
 		
-		/// <inheritdoc />
-		public void Write(LogEntry entry, object context, Log source)
-		{
-			EditorLogEntry extendedEntry = new EditorLogEntry(entry, context, source);
-			lock (this.syncObj)
-			{
-				this.schedule.Add(extendedEntry);
-			}
-		}
-
 		private void Synchronize()
 		{
 			if (this.schedule.Count == 0) return;
@@ -53,6 +44,23 @@ namespace Duality.Editor
 					this.entries.Data, oldCount, this.schedule.Count);
 				this.schedule.Clear();
 			}
+		}
+
+		void ILogOutput.Write(LogEntry entry, object context, Log source)
+		{
+			EditorLogEntry extendedEntry = new EditorLogEntry(entry, context, source, this.indent);
+			lock (this.syncObj)
+			{
+				this.schedule.Add(extendedEntry);
+			}
+		}
+		void ILogOutput.PushIndent()
+		{
+			this.indent++;
+		}
+		void ILogOutput.PopIndent()
+		{
+			this.indent--;
 		}
 	}
 }

@@ -16,7 +16,6 @@ namespace Duality
 		private string         message;
 		private DateTime       timeStamp;
 		private int            frameStamp;
-		private int            indent;
 
 		/// <summary>
 		/// [GET] The messages type.
@@ -46,19 +45,11 @@ namespace Duality
 		{
 			get { return this.frameStamp; }
 		}
-		/// <summary>
-		/// [GET] The desired indentation level for this log message when displaying it.
-		/// </summary>
-		public int Indent
-		{
-			get { return this.indent; }
-		}
 
-		public LogEntry(LogMessageType type, string msg, int indent)
+		public LogEntry(LogMessageType type, string msg)
 		{
 			this.type = type;
 			this.message = msg;
-			this.indent = indent;
 			this.timeStamp = DateTime.Now;
 			this.frameStamp = Time.FrameCount;
 		}

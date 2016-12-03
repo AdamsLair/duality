@@ -9,10 +9,15 @@ namespace Duality
 	public class TextWriterLogOutput : ILogOutput
 	{
 		private	TextWriter target = null;
+		private int indent = 0;
 
 		public TextWriter Target
 		{
 			get { return this.target; }
+		}
+		public int Indent
+		{
+			get { return this.indent; }
 		}
 
 		public TextWriterLogOutput(TextWriter target)
@@ -23,7 +28,6 @@ namespace Duality
 		/// <inheritdoc />
 		public virtual void Write(LogEntry entry, object context, Log source)
 		{
-			int indent = entry.Indent;
 			string prefix = source.Prefix ?? "";
 			string[] lines = entry.Message.Split(new[] { '\n', '\r', '\0' }, StringSplitOptions.RemoveEmptyEntries);
 			for (int i = 0; i < lines.Length; i++)
@@ -33,19 +37,19 @@ namespace Duality
 					switch (entry.Type)
 					{
 						case LogMessageType.Message:
-							lines[i] = prefix + "Msg: " + new string(' ', indent * 2) + lines[i];
+							lines[i] = prefix + "Msg: " + new string(' ', this.indent * 2) + lines[i];
 							break;
 						case LogMessageType.Warning:
-							lines[i] = prefix + "Wrn: " + new string(' ', indent * 2) + lines[i];
+							lines[i] = prefix + "Wrn: " + new string(' ', this.indent * 2) + lines[i];
 							break;
 						case LogMessageType.Error:
-							lines[i] = prefix + "ERR: " + new string(' ', indent * 2) + lines[i];
+							lines[i] = prefix + "ERR: " + new string(' ', this.indent * 2) + lines[i];
 							break;
 					}
 				}
 				else
 				{
-					lines[i] = new string(' ', prefix.Length + 5 + indent * 2) + lines[i];
+					lines[i] = new string(' ', prefix.Length + 5 + this.indent * 2) + lines[i];
 				}
 
 				this.WriteLine(source, entry.Type, lines[i], context);
@@ -61,6 +65,17 @@ namespace Duality
 		protected virtual void WriteLine(Log source, LogMessageType type, string formattedLine, object context)
 		{
 			this.target.WriteLine(formattedLine);
+		}
+
+		/// <inheritdoc />
+		public void PushIndent()
+		{
+			this.indent++;
+		}
+		/// <inheritdoc />
+		public void PopIndent()
+		{
+			this.indent--;
 		}
 	}
 }

@@ -49,7 +49,7 @@ namespace Duality.Editor.Plugins.LogView
 			}
 			public int Indent
 			{
-				get { return this.log.Content.Indent; }
+				get { return this.log.Indent; }
 			}
 			public Image TypeIcon
 			{
@@ -100,7 +100,7 @@ namespace Duality.Editor.Plugins.LogView
 					case LogMessageType.Warning: appendTo.Append("Warning: "); break;
 					case LogMessageType.Error:   appendTo.Append("Error:   "); break;
 				}
-				appendTo.Append(' ', this.log.Content.Indent * 4);
+				appendTo.Append(' ', this.log.Indent * 4);
 				appendTo.Append(this.log.Content.Message);
 			}
 			public string GetFullText()

@@ -12,28 +12,10 @@ namespace Duality
 	/// </summary>
 	public sealed class Log
 	{
-		/// <summary>
-		/// Holds a Logs state values.
-		/// </summary>
-		public class SharedState
-		{
-			private int indent = 0;
-
-			/// <summary>
-			/// [GET / SET] The Logs indent value.
-			/// </summary>
-			public int Indent
-			{
-				get { return this.indent; }
-				internal set { this.indent = value; }
-			}
-		}
-
-
-		private List<ILogOutput> strOut = null;
-		private SharedState      state  = null;
+		private List<ILogOutput> output = null;
 		private string           name   = "Log";
 		private string           prefix = "[Log] ";
+
 
 		/// <summary>
 		/// [GET] The Log's name
@@ -50,39 +32,25 @@ namespace Duality
 			get { return this.prefix; }
 		}
 		/// <summary>
-		/// [GET] The Log's current indent level.
-		/// </summary>
-		public int Indent
-		{
-			get { return this.state.Indent; }
-		}
-		/// <summary>
 		/// [GET] Enumerates all the output writers of this log.
 		/// </summary>
 		public IEnumerable<ILogOutput> Outputs
 		{
-			get { return this.strOut; }
+			get { return this.output; }
 		}
+
 
 		/// <summary>
 		/// Creates a new Log.
 		/// </summary>
 		/// <param name="name">The Logs name.</param>
-		/// <param name="stateHolder">The Logs state value holder that may be shared with other Logs.</param>
 		/// <param name="output">It will be initially connected to the specified outputs.</param>
-		public Log(string name, SharedState stateHolder, params ILogOutput[] output)
+		public Log(string name, params ILogOutput[] output)
 		{
-			this.state = stateHolder;
 			this.name = name;
 			this.prefix = "[" + name + "] ";
-			this.strOut = new List<ILogOutput>(output);
+			this.output = new List<ILogOutput>(output);
 		}
-		/// <summary>
-		/// Creates a new Log.
-		/// </summary>
-		/// <param name="name">The Logs name</param>
-		/// <param name="output">It will be initially connected to the specified outputs.</param>
-		public Log(string name, params ILogOutput[] output) : this(name, new SharedState(), output) {}
 
 		/// <summary>
 		/// Adds an output to write log entries to.
@@ -90,7 +58,7 @@ namespace Duality
 		/// <param name="writer"></param>
 		public void AddOutput(ILogOutput writer)
 		{
-			this.strOut.Add(writer);
+			this.output.Add(writer);
 		}
 		/// <summary>
 		/// Removes a certain output.
@@ -98,7 +66,7 @@ namespace Duality
 		/// <param name="writer"></param>
 		public void RemoveOutput(ILogOutput writer)
 		{
-			this.strOut.Remove(writer);
+			this.output.Remove(writer);
 		}
 
 		/// <summary>
@@ -106,14 +74,16 @@ namespace Duality
 		/// </summary>
 		public void PushIndent()
 		{
-			this.state.Indent++;
+			foreach (ILogOutput target in this.output)
+				target.PushIndent();
 		}
 		/// <summary>
 		/// Decreases the current log entry indent.
 		/// </summary>
 		public void PopIndent()
 		{
-			this.state.Indent--;
+			foreach (ILogOutput target in this.output)
+				target.PopIndent();
 		}
 
 		private void Write(LogMessageType type, string msg, object context)
@@ -131,12 +101,12 @@ namespace Duality
 			}
 
 			// Forward the message to all outputs
-			LogEntry entry = new LogEntry(type, msg, this.state.Indent);
-			foreach (ILogOutput log in this.strOut)
+			LogEntry entry = new LogEntry(type, msg);
+			foreach (ILogOutput target in this.output)
 			{
 				try
 				{
-					log.Write(entry, context, this);
+					target.Write(entry, context, this);
 				}
 				catch (Exception)
 				{

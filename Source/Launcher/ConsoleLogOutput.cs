@@ -96,7 +96,7 @@ namespace Duality.Launcher
 		private bool IsHighlightLine(Log source, string line)
 		{
 			// If it's an indented line, don't highlight it
-			if (source.Indent != 0) return false;
+			if (this.Indent != 0) return false;
 
 			// If the line ends with three dots, assume that it's the header of a series of actions
 			if (line.EndsWith("...")) return true;
