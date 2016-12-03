@@ -486,9 +486,6 @@ namespace Duality.Tests.Serialization
 			};
 			Pixmap[] targetData = new Pixmap[sourceData.Length];
 
-			TestingLogOutput logWatcher = new TestingLogOutput();
-			Logs.AddGlobalOutput(logWatcher);
-
 			// Save and load resources into a memory stream sequentially.
 			// We expect no errors.
 			using (MemoryStream stream = new MemoryStream())
