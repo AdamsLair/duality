@@ -37,11 +37,11 @@ namespace Duality
     public struct Vector2 : IEquatable<Vector2>
     {
         /// <summary>
-        /// Defines a unit-length Vector2 that points towards the X-axis.
+        /// Defines a unit-length Vector2 that points along the X-axis.
         /// </summary>
         public static readonly Vector2 UnitX = new Vector2(1, 0);
         /// <summary>
-        /// Defines a unit-length Vector2 that points towards the Y-axis.
+        /// Defines a unit-length Vector2 that points along the Y-axis.
         /// </summary>
         public static readonly Vector2 UnitY = new Vector2(0, 1);
         /// <summary>
@@ -169,15 +169,21 @@ namespace Duality
 		{
 			get
 			{
-				if (index == 0) return X;
-				else if (index == 1) return Y;
-				throw new IndexOutOfRangeException("You tried to access this vector at index: " + index);
+				switch (index)
+				{
+					case 0: return this.X;
+					case 1: return this.Y;
+					default: throw new IndexOutOfRangeException("Vector2 access at index: " + index);
+				}
 			}
 			set
 			{
-				if (index == 0) X = value;
-				else if (index == 1) Y = value;
-				else throw new IndexOutOfRangeException("You tried to set this vector at index: " + index);
+				switch (index)
+				{
+					case 0: this.X = value; return;
+					case 1: this.Y = value; return;
+					default: throw new IndexOutOfRangeException("Vector2 access at index: " + index);
+				}
 			}
 		}
 
