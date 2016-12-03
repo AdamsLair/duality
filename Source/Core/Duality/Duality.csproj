@@ -192,7 +192,6 @@
     <Compile Include="Utility\IReadOnlyGrid.cs" />
     <Compile Include="Utility\Grid.cs" />
     <Compile Include="Utility\Log\ILogOutput.cs" />
-    <Compile Include="Utility\Log\EditorLogEntry.cs" />
     <Compile Include="Utility\Log\Logs.cs" />
     <Compile Include="Utility\Log\LogFormat.cs" />
     <Compile Include="Utility\Log\LogMessageType.cs" />
@@ -302,7 +301,6 @@
     <Compile Include="DualityApp.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Utility\GameObjectManager.cs" />
-    <Compile Include="Utility\Log\EditorLogOutput.cs" />
     <Compile Include="Utility\Log\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.cs" />
