@@ -67,8 +67,8 @@ namespace Duality
 		public static void InitDefaultContent()
 		{
 			if (defaultContentInitialized) return;
-			Log.Core.Write("Initializing default content...");
-			Log.Core.PushIndent();
+			Logs.Core.Write("Initializing default content...");
+			Logs.Core.PushIndent();
 
 			var oldResLib = resLibrary.Values.ToArray();
 
@@ -91,8 +91,8 @@ namespace Duality
 			}
 
 			defaultContentInitialized = true;
-			Log.Core.Write("...done!");
-			Log.Core.PopIndent();
+			Logs.Core.Write("...done!");
+			Logs.Core.PopIndent();
 		}
 		/// <summary>
 		/// Initializes Dualitys embedded default content.
@@ -100,8 +100,8 @@ namespace Duality
 		public static void DisposeDefaultContent()
 		{
 			if (!defaultContentInitialized) return;
-			Log.Core.Write("Disposing default content..");
-			Log.Core.PushIndent();
+			Logs.Core.Write("Disposing default content..");
+			Logs.Core.PushIndent();
 
 			foreach (Resource r in defaultContent.ToArray())
 			{
@@ -111,8 +111,8 @@ namespace Duality
 			defaultContent.Clear();
 
 			defaultContentInitialized = false;
-			Log.Core.PopIndent();
-			Log.Core.Write("..done");
+			Logs.Core.PopIndent();
+			Logs.Core.Write("..done");
 		}
 		/// <summary>
 		/// Returns whether or not the specified path points to Duality default content.
@@ -422,7 +422,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("An error occurred in custom ResourceResolve code: {0}", LogFormat.Exception(e));
+				Logs.Core.WriteError("An error occurred in custom ResourceResolve code: {0}", LogFormat.Exception(e));
 			}
 
 			if (args.Handled)
@@ -443,8 +443,8 @@ namespace Duality
 		{
 			if (string.IsNullOrEmpty(path) || IsDefaultContentPath(path) || !FileOp.Exists(path)) return null;
 
-			Log.Core.Write("Loading Resource '{0}'", path);
-			Log.Core.PushIndent();
+			Logs.Core.Write("Loading Resource '{0}'", path);
+			Logs.Core.PushIndent();
 
 			// Load the Resource and register it
 			Resource res = Resource.Load<Resource>(path, r => 
@@ -455,7 +455,7 @@ namespace Duality
 				if (r != null) AddContent(path, r);
 			});
 
-			Log.Core.PopIndent();
+			Logs.Core.PopIndent();
 			return res;
 		}
 	}

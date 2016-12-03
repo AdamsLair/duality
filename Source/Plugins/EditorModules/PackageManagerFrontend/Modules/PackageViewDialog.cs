@@ -759,7 +759,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			}
 			catch (Exception e)
 			{
-				Log.Editor.WriteError("An error occurred while processing Package '{0}', Version {1}: {2}", 
+				Logs.Editor.WriteError("An error occurred while processing Package '{0}', Version {1}: {2}", 
 					data.Package.Id, 
 					data.Package.Version, 
 					LogFormat.Exception(e));
@@ -795,7 +795,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteError("An error occurred while updating Package '{0}', Version {1}: {2}", 
+					Logs.Editor.WriteError("An error occurred while updating Package '{0}', Version {1}: {2}", 
 						package.Id, 
 						package.Version, 
 						LogFormat.Exception(e));

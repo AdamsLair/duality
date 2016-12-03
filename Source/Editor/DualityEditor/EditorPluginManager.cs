@@ -32,7 +32,7 @@ namespace Duality.Editor
 		/// </summary>
 		internal EditorPluginManager()
 		{
-			this.PluginLog = Log.Editor;
+			this.PluginLog = Logs.Editor;
 		}
 
 		/// <summary>

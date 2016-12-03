@@ -80,7 +80,7 @@ namespace Duality.Backend.DefaultOpenTK
 				this.internalWindow.Cursor = MouseCursor.Empty;
 			this.internalWindow.VSync = (options.RefreshMode != RefreshMode.VSync) ? VSyncMode.Off : VSyncMode.On;
 
-			Log.Core.Write(
+			Logs.Core.Write(
 				"Window Specification: " + Environment.NewLine +
 				"  Buffers: {0}" + Environment.NewLine +
 				"  Samples: {1}" + Environment.NewLine +
@@ -118,7 +118,7 @@ namespace Duality.Backend.DefaultOpenTK
 			// just because of an icon. Log the error and continue.
 			catch (Exception e)
 			{
-				Log.Core.WriteError(
+				Logs.Core.WriteError(
 					"There was an exception while trying to extract the " +
 					"window icon from the game's main executable '{0}'. This is " +
 					"uncritical, but still an error: {1}",

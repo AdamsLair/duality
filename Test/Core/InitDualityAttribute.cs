@@ -40,10 +40,10 @@ namespace Duality.Tests
 			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);
 
 			// Add some Console logs manually for NUnit
-			if (!Log.Core.Outputs.OfType<TextWriterLogOutput>().Any(o => o.Target == Console.Out))
+			if (!Logs.Core.Outputs.OfType<TextWriterLogOutput>().Any(o => o.Target == Console.Out))
 			{
 				if (this.consoleLogOutput == null) this.consoleLogOutput = new TextWriterLogOutput(Console.Out);
-				Log.AddGlobalOutput(this.consoleLogOutput);
+				Logs.AddGlobalOutput(this.consoleLogOutput);
 			}
 
 			// Initialize Duality
@@ -79,7 +79,7 @@ namespace Duality.Tests
 			Console.WriteLine("----- Beginning Duality environment teardown -----");
 			
 			// Remove NUnit Console logs
-			Log.RemoveGlobalOutput(this.consoleLogOutput);
+			Logs.RemoveGlobalOutput(this.consoleLogOutput);
 			this.consoleLogOutput = null;
 
 			if (this.dummyWindow != null)

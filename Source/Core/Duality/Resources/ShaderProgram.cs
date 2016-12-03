@@ -161,7 +161,7 @@ namespace Duality.Resources
 			catch (Exception e)
 			{
 				this.fields = new ShaderFieldInfo[0];
-				Log.Core.WriteError("Error loading ShaderProgram {0}:{2}{1}", this.FullName, LogFormat.Exception(e), Environment.NewLine);
+				Logs.Core.WriteError("Error loading ShaderProgram {0}:{2}{1}", this.FullName, LogFormat.Exception(e), Environment.NewLine);
 			}
 
 			// Even if we failed, we tried to compile it. Don't do it again and again.

@@ -203,7 +203,7 @@ namespace Duality.Editor.Forms
 			}
 			catch (Exception e)
 			{
-				Log.Editor.WriteError("Failed to perform task: {0}", LogFormat.Exception(e));
+				Logs.Editor.WriteError("Failed to perform task: {0}", LogFormat.Exception(e));
 				workInterface.Error = e;
 			}
 		}

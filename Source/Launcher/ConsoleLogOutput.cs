@@ -65,9 +65,9 @@ namespace Duality.Launcher
 
 		private void SetConsoleBackColor(Log source)
 		{
-			if      (source == Log.Core)   Console.BackgroundColor = ConsoleColor.DarkBlue;
-			else if (source == Log.Game)   Console.BackgroundColor = ConsoleColor.DarkCyan;
-			else if (source == Log.Editor) Console.BackgroundColor = ConsoleColor.DarkMagenta;
+			if      (source == Logs.Core)   Console.BackgroundColor = ConsoleColor.DarkBlue;
+			else if (source == Logs.Game)   Console.BackgroundColor = ConsoleColor.DarkCyan;
+			else if (source == Logs.Editor) Console.BackgroundColor = ConsoleColor.DarkMagenta;
 			else                           Console.BackgroundColor = ConsoleColor.Black;
 		}
 		private void SetDarkConsoleColor(LogMessageType type)

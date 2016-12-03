@@ -133,7 +133,7 @@ namespace Duality.Editor.UndoRedoActions
 				if (e is TargetInvocationException) e = e.InnerException;
 				if (indices != null && indices.Length > 0)
 				{
-					Log.Editor.WriteError(
+					Logs.Editor.WriteError(
 						"An error occurred trying to set property {0}.{1}[{2}] with value '{3}': {4}", 
 						LogFormat.Type(this.targetProperty.DeclaringType),
 						this.targetProperty.Name, 
@@ -143,7 +143,7 @@ namespace Duality.Editor.UndoRedoActions
 				}
 				else
 				{
-					Log.Editor.WriteError(
+					Logs.Editor.WriteError(
 						"An error occurred trying to set property {0}.{1} with value '{2}': {3}", 
 						LogFormat.Type(this.targetProperty.DeclaringType),
 						this.targetProperty.Name, 
@@ -165,7 +165,7 @@ namespace Duality.Editor.UndoRedoActions
 				if (e is TargetInvocationException) e = e.InnerException;
 				if (indices != null && indices.Length > 0)
 				{
-					Log.Editor.WriteError(
+					Logs.Editor.WriteError(
 						"An error occurred trying to get property {0}.{1}[{2}]: {3}", 
 						LogFormat.Type(this.targetProperty.DeclaringType),
 						this.targetProperty.Name, 
@@ -174,7 +174,7 @@ namespace Duality.Editor.UndoRedoActions
 				}
 				else
 				{
-					Log.Editor.WriteError(
+					Logs.Editor.WriteError(
 						"An error occurred trying to get property {0}.{1}: {2}", 
 						LogFormat.Type(this.targetProperty.DeclaringType),
 						this.targetProperty.Name, 

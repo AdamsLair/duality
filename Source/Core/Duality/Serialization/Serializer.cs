@@ -225,7 +225,7 @@ namespace Duality.Serialization
 		private	Stream	stream			= null;
 		private	bool	opInProgress	= false;
 		private	bool	disposed		= false;
-		private	Log		log				= Log.Core;
+		private	Log		log				= Logs.Core;
 
 		
 		/// <summary>
@@ -810,7 +810,7 @@ namespace Duality.Serialization
 				}
 				catch (Exception e)
 				{
-					Log.Core.WriteError(
+					Logs.Core.WriteError(
 						"An error occurred while asking {0} whether it matched the format of a certain Stream: {1}",
 						LogFormat.Type(serializer.GetType()),
 						LogFormat.Exception(e));
@@ -1030,7 +1030,7 @@ namespace Duality.Serialization
 				}
 				catch (Exception e)
 				{
-					Log.Core.WriteError("An error occurred while trying to perform a serialization fallback: {0}", LogFormat.Exception(e));
+					Logs.Core.WriteError("An error occurred while trying to perform a serialization fallback: {0}", LogFormat.Exception(e));
 				}
 			}
 			return false;

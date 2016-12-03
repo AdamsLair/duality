@@ -381,7 +381,7 @@ namespace Duality.Components
 				(this.pickingBuffer[baseIndex + 2] << 0);
 			if (rendererId > this.pickingMap.Count)
 			{
-				Log.Core.WriteWarning("Unexpected picking result: {0}", ColorRgba.FromIntArgb(rendererId));
+				Logs.Core.WriteWarning("Unexpected picking result: {0}", ColorRgba.FromIntArgb(rendererId));
 				return null;
 			}
 			else if (rendererId != 0)
@@ -437,7 +437,7 @@ namespace Duality.Components
 					if (rendererId != rendererIdLast)
 					{
 						if (rendererId - 1 > this.pickingMap.Count)
-							Log.Core.WriteWarning("Unexpected picking result: {0}", ColorRgba.FromIntArgb(rendererId));
+							Logs.Core.WriteWarning("Unexpected picking result: {0}", ColorRgba.FromIntArgb(rendererId));
 						else if (rendererId != 0 && !(this.pickingMap[rendererId - 1] as Component).Disposed)
 							result.Add(this.pickingMap[rendererId - 1]);
 						rendererIdLast = rendererId;
@@ -553,7 +553,7 @@ namespace Duality.Components
 				}
 				catch (Exception e)
 				{
-					Log.Core.WriteError("There was an error while {0} was collecting drawcalls: {1}", this.ToString(), LogFormat.Exception(e));
+					Logs.Core.WriteError("There was an error while {0} was collecting drawcalls: {1}", this.ToString(), LogFormat.Exception(e));
 				}
 				this.drawDevice.Render(p.ClearFlags, p.ClearColor, p.ClearDepth);
 			}

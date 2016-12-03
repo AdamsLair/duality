@@ -64,8 +64,8 @@ namespace Duality.Editor.Plugins.LogView
 			{
 				get
 				{
-					if (this.log.Source == Log.Game) return Properties.LogViewResCache.IconLogGame;
-					if (this.log.Source == Log.Editor) return Properties.LogViewResCache.IconLogEditor;
+					if (this.log.Source == Logs.Game) return Properties.LogViewResCache.IconLogGame;
+					if (this.log.Source == Logs.Editor) return Properties.LogViewResCache.IconLogEditor;
 					return Properties.LogViewResCache.IconLogCore;
 				}
 			}
@@ -82,9 +82,9 @@ namespace Duality.Editor.Plugins.LogView
 				if (this.log.Type == LogMessageType.Message && (filter & MessageFilter.TypeMessage) == MessageFilter.None) return false;
 				if (this.log.Type == LogMessageType.Warning && (filter & MessageFilter.TypeWarning) == MessageFilter.None) return false;
 				if (this.log.Type == LogMessageType.Error && (filter & MessageFilter.TypeError) == MessageFilter.None) return false;
-				if (this.log.Source == Log.Core && (filter & MessageFilter.SourceCore) == MessageFilter.None) return false;
-				if (this.log.Source == Log.Editor && (filter & MessageFilter.SourceEditor) == MessageFilter.None) return false;
-				if (this.log.Source == Log.Game && (filter & MessageFilter.SourceGame) == MessageFilter.None) return false;
+				if (this.log.Source == Logs.Core && (filter & MessageFilter.SourceCore) == MessageFilter.None) return false;
+				if (this.log.Source == Logs.Editor && (filter & MessageFilter.SourceEditor) == MessageFilter.None) return false;
+				if (this.log.Source == Logs.Game && (filter & MessageFilter.SourceGame) == MessageFilter.None) return false;
 				return true;
 			}
 			public void GetFullText(StringBuilder appendTo)
@@ -292,14 +292,14 @@ namespace Duality.Editor.Plugins.LogView
 		{
 			if (this.boundToDualityLogs) return;
 
-			Log.AddGlobalOutput(this);
+			Logs.AddGlobalOutput(this);
 			this.UpdateFromDataLog(DualityEditorApp.GlobalLogData);
 		}
 		public void UnbindFromDualityLogs()
 		{
 			if (!this.boundToDualityLogs) return;
 
-			Log.RemoveGlobalOutput(this);
+			Logs.RemoveGlobalOutput(this);
 		}
 		
 		public void SetFilterFlag(MessageFilter flag, bool isSet)

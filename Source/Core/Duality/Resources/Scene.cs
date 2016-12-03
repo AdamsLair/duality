@@ -204,7 +204,7 @@ namespace Duality.Resources
 			{
 				switchToTarget = null;
 				switchToScheduled = false;
-				Log.Core.WriteWarning(
+				Logs.Core.WriteWarning(
 					"Potential Scene redirect loop detected: When performing previously " +
 					"scheduled switch to Scene '{0}', a awitch to Scene '{1}' was immediately scheduled. " +
 					"The second switch will not be performed to avoid entering a loop. Please " +

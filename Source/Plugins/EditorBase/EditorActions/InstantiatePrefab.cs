@@ -28,7 +28,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 			}
 			catch (Exception exception)
 			{
-				Log.Editor.WriteError("An error occurred instanciating Prefab {1}: {0}", 
+				Logs.Editor.WriteError("An error occurred instanciating Prefab {1}: {0}", 
 					LogFormat.Exception(exception),
 					prefab != null ? prefab.Path : "null");
 			}

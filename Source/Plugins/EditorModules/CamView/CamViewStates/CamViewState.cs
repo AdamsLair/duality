@@ -709,7 +709,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			catch (Exception exception)
 			{
-				Log.Editor.WriteError("An error occurred during CamView {1} rendering. The current DrawDevice state may be compromised. Exception: {0}", LogFormat.Exception(exception), this.CameraComponent.ToString());
+				Logs.Editor.WriteError("An error occurred during CamView {1} rendering. The current DrawDevice state may be compromised. Exception: {0}", LogFormat.Exception(exception), this.CameraComponent.ToString());
 			}
 			
 			// Make sure the rendered result ends up on screen

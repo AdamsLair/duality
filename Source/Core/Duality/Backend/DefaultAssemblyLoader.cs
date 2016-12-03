@@ -119,7 +119,7 @@ namespace Duality.Backend
 					else if (Environment.OSVersion.Version >= new Version(5, 0, 0))
 						osFriendlyName = "Windows 2000";
 				}
-				Log.Core.Write(
+				Logs.Core.Write(
 					"Environment Info: " + Environment.NewLine +
 					"  Current Directory: {0}" + Environment.NewLine +
 					"  Command Line: {1}" + Environment.NewLine +
@@ -162,14 +162,14 @@ namespace Duality.Backend
 			// Admit that we didn't find anything.
 			if (args.RequestingAssembly != null)
 			{
-				Log.Core.WriteWarning(
+				Logs.Core.WriteWarning(
 					"Can't resolve Assembly '{0}' (as requested by '{1}'): None of the available assembly paths matches the requested name.",
 					args.Name,
 					LogFormat.Assembly(args.RequestingAssembly));
 			}
 			else
 			{
-				Log.Core.WriteWarning(
+				Logs.Core.WriteWarning(
 					"Can't resolve Assembly '{0}': None of the available assembly paths matches the requested name.",
 					args.Name);
 			}
@@ -180,7 +180,7 @@ namespace Duality.Backend
 			if (this.AssemblyLoaded != null)
 				this.AssemblyLoaded(this, new AssemblyLoadedEventArgs(args.LoadedAssembly));
 
-			Log.Core.Write("Assembly loaded: {0}", LogFormat.Assembly(args.LoadedAssembly));
+			Logs.Core.Write("Assembly loaded: {0}", LogFormat.Assembly(args.LoadedAssembly));
 		}
 	}
 }

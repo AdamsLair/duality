@@ -228,7 +228,7 @@ namespace Duality.Editor
 			Type originalType = target;
 			target = ResTypeFromRefType(target);
 
-			//Log.Editor.Write("Convert to {0}", target.Name);
+			//Logs.Editor.Write("Convert to {0}", target.Name);
 			bool fittingDataFound = false;
 
 			// Check if there already is fitting data available
@@ -280,14 +280,14 @@ namespace Duality.Editor
 				converters.StableSort((c1, c2) => (c2.Converter.Priority - c1.Converter.Priority) * 10000 + (c1.Complexity - c2.Complexity));
 				foreach (var c in converters)
 				{
-					//Log.Editor.Write("using {0}", s.GetType().Name);
-					//Log.Editor.PushIndent();
-					//Log.Editor.Write("before: {0}", this.Result.ToString(o => string.Format("{0} {1}", o.GetType().Name, o), ", "));
+					//Logs.Editor.Write("using {0}", s.GetType().Name);
+					//Logs.Editor.PushIndent();
+					//Logs.Editor.Write("before: {0}", this.Result.ToString(o => string.Format("{0} {1}", o.GetType().Name, o), ", "));
 					this.usedConverters.Add(c.Converter);
 					bool handled = c.Converter.Convert(this);
 					this.usedConverters.Remove(c.Converter);
-					//Log.Editor.Write("after: {0}", this.Result.ToString(o => string.Format("{0} {1}", o.GetType().Name, o), ", "));
-					//Log.Editor.PopIndent();
+					//Logs.Editor.Write("after: {0}", this.Result.ToString(o => string.Format("{0} {1}", o.GetType().Name, o), ", "));
+					//Logs.Editor.PopIndent();
 					if (handled) break;
 				}
 			}

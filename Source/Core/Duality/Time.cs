@@ -152,7 +152,7 @@ namespace Duality
 				fps = fps_frames;
 				fps_frames = 0;
 				fps_last = mainTimer;
-				//Log.Core.Write("FPS: {0},\tms: {1}", fps, lastDelta);
+				//Logs.Core.Write("FPS: {0},\tms: {1}", fps, lastDelta);
 			}
 		}
 	}

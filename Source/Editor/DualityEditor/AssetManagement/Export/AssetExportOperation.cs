@@ -161,7 +161,7 @@ namespace Duality.Editor.AssetManagement
 				}
 				catch (Exception ex)
 				{
-					Log.Editor.WriteError("An error occurred in the preparation step of '{1}': {0}", 
+					Logs.Editor.WriteError("An error occurred in the preparation step of '{1}': {0}", 
 						LogFormat.Exception(ex),
 						LogFormat.Type(importer.GetType()));
 					continue;
@@ -202,7 +202,7 @@ namespace Duality.Editor.AssetManagement
 					FileEventManager.FlagPathEditorModified(outputPath);
 					if (!assignment.ExpectedOutput.Contains(outputPath))
 					{
-						Log.Editor.WriteWarning(
+						Logs.Editor.WriteWarning(
 							"AssetImporter '{0}' created an unpredicted output file: '{1}'. " + Environment.NewLine +
 							"This may cause problems in the Asset Management system, especially during Asset re-import. " + Environment.NewLine +
 							"Please fix the implementation of the PrepareExport method so it properly calls AddOutputPath for each predicted output file.",
@@ -217,7 +217,7 @@ namespace Duality.Editor.AssetManagement
 			}
 			catch (Exception ex)
 			{
-				Log.Editor.WriteError("An error occurred while trying to export Resource '{2}' using '{1}': {0}", 
+				Logs.Editor.WriteError("An error occurred while trying to export Resource '{2}' using '{1}': {0}", 
 					LogFormat.Exception(ex),
 					LogFormat.Type(assignment.Importer.GetType()),
 					env.Input);

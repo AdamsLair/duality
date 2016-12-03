@@ -89,9 +89,9 @@ namespace Duality.Backend.DefaultOpenTK
 				EnableHighResolution = !inEditor
 			};
 				
-			Log.Core.Write("Initializing OpenTK...");
-			Log.Core.PushIndent();
-			Log.Core.Write(
+			Logs.Core.Write("Initializing OpenTK...");
+			Logs.Core.PushIndent();
+			Logs.Core.Write(
 				"Platform Backend: {0}" + Environment.NewLine + 
 				"EnableHighResolution: {1}",
 				options.Backend,
@@ -99,7 +99,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 			Toolkit.Init(options);
 
-			Log.Core.PopIndent();
+			Logs.Core.PopIndent();
 		}
 		/// <summary>
 		/// Guards the calling method agains being called from a thread that is not the main thread.
@@ -116,7 +116,7 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				if (!silent)
 				{
-					Log.Core.WriteError(
+					Logs.Core.WriteError(
 						"Method {0} isn't allowed to be called from a Thread that is not the main Thread.",
 						callerInfoMember);
 				}

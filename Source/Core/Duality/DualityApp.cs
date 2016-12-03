@@ -323,21 +323,21 @@ namespace Duality
 			// Initialize the plugin manager
 			{
 				assemblyLoader = plugins ?? new Duality.Backend.Dummy.DummyAssemblyLoader();
-				Log.Core.Write("Using '{0}' to load plugins.", assemblyLoader.GetType().Name);
+				Logs.Core.Write("Using '{0}' to load plugins.", assemblyLoader.GetType().Name);
 
 				assemblyLoader.Init();
 
 				// Log assembly loading data for diagnostic purposes
 				{
-					Log.Core.Write("Currently Loaded Assemblies:" + Environment.NewLine + "{0}",
+					Logs.Core.Write("Currently Loaded Assemblies:" + Environment.NewLine + "{0}",
 						assemblyLoader.LoadedAssemblies.ToString(
 							assembly => "  " + LogFormat.Assembly(assembly),
 							Environment.NewLine));
-					Log.Core.Write("Plugin Base Directories:" + Environment.NewLine + "{0}",
+					Logs.Core.Write("Plugin Base Directories:" + Environment.NewLine + "{0}",
 						assemblyLoader.BaseDirectories.ToString(
 							path => "  " + path,
 							Environment.NewLine));
-					Log.Core.Write("Available Assembly Paths:" + Environment.NewLine + "{0}",
+					Logs.Core.Write("Available Assembly Paths:" + Environment.NewLine + "{0}",
 						assemblyLoader.AvailableAssemblyPaths.ToString(
 							path => "  " + path,
 							Environment.NewLine));
@@ -373,7 +373,7 @@ namespace Duality
 			initialized = true;
 
 			// Write environment specs as a debug log
-			Log.Core.Write(
+			Logs.Core.Write(
 				"DualityApp initialized" + Environment.NewLine +
 				"Debug Mode: {0}" + Environment.NewLine +
 				"Command line arguments: {1}",
@@ -388,10 +388,10 @@ namespace Duality
 		{
 			if (!initialized) throw new InvalidOperationException("Can't initialize graphics / rendering because Duality itself isn't initialized yet.");
 
-			Log.Core.Write("Opening Window...");
-			Log.Core.PushIndent();
+			Logs.Core.Write("Opening Window...");
+			Logs.Core.PushIndent();
 			INativeWindow window = graphicsBack.CreateWindow(options);
-			Log.Core.PopIndent();
+			Logs.Core.PopIndent();
 
 			InitPostWindow();
 
@@ -422,7 +422,7 @@ namespace Duality
 			if (environment == ExecutionEnvironment.Editor && execContext == ExecutionContext.Game)
 			{
 				Scene.Current.Dispose();
-				Log.Core.Write("DualityApp Sandbox terminated");
+				Logs.Core.Write("DualityApp Sandbox terminated");
 				terminateScheduled = false;
 				return;
 			}
@@ -454,7 +454,7 @@ namespace Duality
 			assemblyLoader.Terminate();
 			assemblyLoader = null;
 
-			Log.Core.Write("DualityApp terminated");
+			Logs.Core.Write("DualityApp terminated");
 
 			initialized = false;
 			execContext = ExecutionContext.Terminated;
@@ -644,7 +644,7 @@ namespace Duality
 		/// var rendererTypes = DualityApp.GetAvailDualityTypes(typeof(Duality.Components.Renderer));
 		/// foreach (Type rt in rendererTypes)
 		/// {
-		/// 	Log.Core.Write("Renderer Type '{0}' from Assembly '{1}'", LogFormat.Type(rt), rt.Assembly.FullName);
+		/// 	Logs.Core.Write("Renderer Type '{0}' from Assembly '{1}'", LogFormat.Type(rt), rt.Assembly.FullName);
 		/// }
 		/// </code>
 		/// </example>
@@ -665,8 +665,8 @@ namespace Duality
 		{
 			if (typeFinder == null) typeFinder = GetAvailDualityTypes;
 
-			Log.Core.Write("Initializing {0}...", LogFormat.Type(typeof(T)));
-			Log.Core.PushIndent();
+			Logs.Core.Write("Initializing {0}...", LogFormat.Type(typeof(T)));
+			Logs.Core.PushIndent();
 
 			// Generate a list of available backends for evaluation
 			List<IDualityBackend> backends = new List<IDualityBackend>();
@@ -680,7 +680,7 @@ namespace Duality
 				IDualityBackend backend = backendType.CreateInstanceOf() as IDualityBackend;
 				if (backend == null)
 				{
-					Log.Core.WriteWarning("Unable to create an instance of {0}. Skipping it.", backendType.FullName);
+					Logs.Core.WriteWarning("Unable to create an instance of {0}. Skipping it.", backendType.FullName);
 					continue;
 				}
 				backends.Add(backend);
@@ -697,7 +697,7 @@ namespace Duality
 					appData.SkipBackends != null && 
 					appData.SkipBackends.Any(s => string.Equals(s, backend.Id, StringComparison.OrdinalIgnoreCase)))
 				{
-					Log.Core.Write("Backend '{0}' skipped because of AppData settings.", backend.Name);
+					Logs.Core.Write("Backend '{0}' skipped because of AppData settings.", backend.Name);
 					continue;
 				}
 
@@ -707,18 +707,18 @@ namespace Duality
 					available = backend.CheckAvailable();
 					if (!available)
 					{
-						Log.Core.Write("Backend '{0}' reports to be unavailable. Skipping it.", backend.Name);
+						Logs.Core.Write("Backend '{0}' reports to be unavailable. Skipping it.", backend.Name);
 					}
 				}
 				catch (Exception e)
 				{
 					available = false;
-					Log.Core.WriteWarning("Backend '{0}' failed the availability check with an exception: {1}", backend.Name, LogFormat.Exception(e));
+					Logs.Core.WriteWarning("Backend '{0}' failed the availability check with an exception: {1}", backend.Name, LogFormat.Exception(e));
 				}
 				if (!available) continue;
 
-				Log.Core.Write("{0}...", backend.Name);
-				Log.Core.PushIndent();
+				Logs.Core.Write("{0}...", backend.Name);
+				Logs.Core.PushIndent();
 				{
 					try
 					{
@@ -727,10 +727,10 @@ namespace Duality
 					}
 					catch (Exception e)
 					{
-						Log.Core.WriteError("Failed: {0}", LogFormat.Exception(e));
+						Logs.Core.WriteError("Failed: {0}", LogFormat.Exception(e));
 					}
 				}
-				Log.Core.PopIndent();
+				Logs.Core.PopIndent();
 
 				if (selectedBackend != null)
 					break;
@@ -749,14 +749,14 @@ namespace Duality
 				target = null;
 			}
 
-			Log.Core.PopIndent();
+			Logs.Core.PopIndent();
 		}
 		internal static void ShutdownBackend<T>(ref T backend) where T : class, IDualityBackend
 		{
 			if (backend == null) return;
 
-			Log.Core.Write("Shutting down {0}...", backend.Name);
-			Log.Core.PushIndent();
+			Logs.Core.Write("Shutting down {0}...", backend.Name);
+			Logs.Core.PushIndent();
 			{
 				try
 				{
@@ -769,10 +769,10 @@ namespace Duality
 				}
 				catch (Exception e)
 				{
-					Log.Core.WriteError("Failed: {0}", LogFormat.Exception(e));
+					Logs.Core.WriteError("Failed: {0}", LogFormat.Exception(e));
 				}
 			}
-			Log.Core.PopIndent();
+			Logs.Core.PopIndent();
 		}
 
 		private static void OnUserDataChanged()
@@ -833,16 +833,16 @@ namespace Duality
 				invalidAssembly.GetShortAssemblyName(),
 				"{0}");
 
-			if (ReflectionHelper.CleanEventBindings(typeof(DualityApp),      invalidAssembly)) Log.Core.WriteWarning(warningText, LogFormat.Type(typeof(DualityApp)));
-			if (ReflectionHelper.CleanEventBindings(typeof(Scene),           invalidAssembly)) Log.Core.WriteWarning(warningText, LogFormat.Type(typeof(Scene)));
-			if (ReflectionHelper.CleanEventBindings(typeof(Resource),        invalidAssembly)) Log.Core.WriteWarning(warningText, LogFormat.Type(typeof(Resource)));
-			if (ReflectionHelper.CleanEventBindings(typeof(ContentProvider), invalidAssembly)) Log.Core.WriteWarning(warningText, LogFormat.Type(typeof(ContentProvider)));
-			if (ReflectionHelper.CleanEventBindings(DualityApp.Keyboard,     invalidAssembly)) Log.Core.WriteWarning(warningText, LogFormat.Type(typeof(DualityApp)) + ".Keyboard");
-			if (ReflectionHelper.CleanEventBindings(DualityApp.Mouse,        invalidAssembly)) Log.Core.WriteWarning(warningText, LogFormat.Type(typeof(DualityApp)) + ".Mouse");
+			if (ReflectionHelper.CleanEventBindings(typeof(DualityApp),      invalidAssembly)) Logs.Core.WriteWarning(warningText, LogFormat.Type(typeof(DualityApp)));
+			if (ReflectionHelper.CleanEventBindings(typeof(Scene),           invalidAssembly)) Logs.Core.WriteWarning(warningText, LogFormat.Type(typeof(Scene)));
+			if (ReflectionHelper.CleanEventBindings(typeof(Resource),        invalidAssembly)) Logs.Core.WriteWarning(warningText, LogFormat.Type(typeof(Resource)));
+			if (ReflectionHelper.CleanEventBindings(typeof(ContentProvider), invalidAssembly)) Logs.Core.WriteWarning(warningText, LogFormat.Type(typeof(ContentProvider)));
+			if (ReflectionHelper.CleanEventBindings(DualityApp.Keyboard,     invalidAssembly)) Logs.Core.WriteWarning(warningText, LogFormat.Type(typeof(DualityApp)) + ".Keyboard");
+			if (ReflectionHelper.CleanEventBindings(DualityApp.Mouse,        invalidAssembly)) Logs.Core.WriteWarning(warningText, LogFormat.Type(typeof(DualityApp)) + ".Mouse");
 			foreach (JoystickInput joystick in DualityApp.Joysticks)
-				if (ReflectionHelper.CleanEventBindings(joystick,            invalidAssembly)) Log.Core.WriteWarning(warningText, LogFormat.Type(typeof(DualityApp)) + ".Joysticks");
+				if (ReflectionHelper.CleanEventBindings(joystick,            invalidAssembly)) Logs.Core.WriteWarning(warningText, LogFormat.Type(typeof(DualityApp)) + ".Joysticks");
 			foreach (GamepadInput gamepad in DualityApp.Gamepads)
-				if (ReflectionHelper.CleanEventBindings(gamepad,             invalidAssembly)) Log.Core.WriteWarning(warningText, LogFormat.Type(typeof(DualityApp)) + ".Gamepads");
+				if (ReflectionHelper.CleanEventBindings(gamepad,             invalidAssembly)) Logs.Core.WriteWarning(warningText, LogFormat.Type(typeof(DualityApp)) + ".Gamepads");
 		}
 		private static void CleanInputSources(Assembly invalidAssembly)
 		{
@@ -856,19 +856,19 @@ namespace Duality
 
 			if (DualityApp.Mouse.Source != null && DualityApp.Mouse.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 			{
-				Log.Core.WriteWarning(warningText, LogFormat.Type(DualityApp.Mouse.Source.GetType()));
+				Logs.Core.WriteWarning(warningText, LogFormat.Type(DualityApp.Mouse.Source.GetType()));
 				DualityApp.Mouse.Source = null;
 			}
 			if (DualityApp.Keyboard.Source != null && DualityApp.Keyboard.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 			{
-				Log.Core.WriteWarning(warningText, LogFormat.Type(DualityApp.Keyboard.Source.GetType()));
+				Logs.Core.WriteWarning(warningText, LogFormat.Type(DualityApp.Keyboard.Source.GetType()));
 				DualityApp.Keyboard.Source = null;
 			}
 			foreach (JoystickInput joystick in DualityApp.Joysticks.ToArray())
 			{
 				if (joystick.Source != null && joystick.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 				{
-					Log.Core.WriteWarning(warningText, LogFormat.Type(joystick.Source.GetType()));
+					Logs.Core.WriteWarning(warningText, LogFormat.Type(joystick.Source.GetType()));
 					DualityApp.Joysticks.RemoveSource(joystick.Source);
 				}
 			}
@@ -876,7 +876,7 @@ namespace Duality
 			{
 				if (gamepad.Source != null && gamepad.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 				{
-					Log.Core.WriteWarning(warningText, LogFormat.Type(gamepad.Source.GetType()));
+					Logs.Core.WriteWarning(warningText, LogFormat.Type(gamepad.Source.GetType()));
 					DualityApp.Gamepads.RemoveSource(gamepad.Source);
 				}
 			}
@@ -911,7 +911,7 @@ namespace Duality
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteError("An error occurred: {0}", LogFormat.Exception(e));
+					Logs.Editor.WriteError("An error occurred: {0}", LogFormat.Exception(e));
 				}
 			}
 			else

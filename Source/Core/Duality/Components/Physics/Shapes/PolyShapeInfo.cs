@@ -98,7 +98,7 @@ namespace Duality.Components.Physics
 			if (sortedVertices.Length > MaxVertices)
 			{
 				Array.Resize(ref sortedVertices, MaxVertices);
-				Log.Core.WriteWarning("Maximum Polygon Shape vertex count exceeded: {0} > {1}", this.vertices.Length, MaxVertices);
+				Logs.Core.WriteWarning("Maximum Polygon Shape vertex count exceeded: {0} > {1}", this.vertices.Length, MaxVertices);
 			}
 
 			// Don't let all vertices be aligned on one axis (zero-area polygons)

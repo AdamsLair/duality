@@ -122,7 +122,7 @@ namespace Duality
 				// If there were no suitable constructors, log a generic warning.
 				if (constructors.Length == 0)
 				{
-					Log.Core.WriteWarning(
+					Logs.Core.WriteWarning(
 						"Failed to create object of Type {0}. Make sure there is a trivial constructor.", 
 						LogFormat.Type(typeInfo));
 				}
@@ -143,14 +143,14 @@ namespace Duality
 					// If it's a problem in a static constructor, get the inner exception to know what's actually wrong.
 					if (lastError is TypeInitializationException)
 					{
-						Log.Core.WriteError("Failed to initialize Type {0}: {1}",
+						Logs.Core.WriteError("Failed to initialize Type {0}: {1}",
 							LogFormat.Type(typeInfo),
 							LogFormat.Exception(lastError.InnerException));
 					}
 					// Otherwise, just do a regular error log.
 					else
 					{
-						Log.Core.WriteError("Failed to create object of Type {0}: {1}",
+						Logs.Core.WriteError("Failed to create object of Type {0}: {1}",
 							LogFormat.Type(typeInfo),
 							LogFormat.Exception(lastError));
 					}

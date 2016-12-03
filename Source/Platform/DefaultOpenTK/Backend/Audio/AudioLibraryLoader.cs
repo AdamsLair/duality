@@ -61,7 +61,7 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			if (File.Exists(path))
 			{
-				Log.Core.Write("OpenAL Drivers installed in {0}", path);
+				Logs.Core.Write("OpenAL Drivers installed in {0}", path);
 				return true;
 			}
 			else
@@ -72,7 +72,7 @@ namespace Duality.Backend.DefaultOpenTK
 		[System.Diagnostics.DebuggerNonUserCode]
 		private static void InstallSoftwareFallback(string sourceFilePath32, string sourceFilePath64, string targetFilePath)
 		{
-			Log.Core.Write("OpenAL Drivers not found. Using {0} software fallback.", Environment.Is64BitProcess ? "64 Bit" : "32 Bit");
+			Logs.Core.Write("OpenAL Drivers not found. Using {0} software fallback.", Environment.Is64BitProcess ? "64 Bit" : "32 Bit");
 			if (Environment.Is64BitProcess)
 			{
 				if (!File.Exists(sourceFilePath64)) return;

@@ -19,8 +19,8 @@ namespace DualStickSpaceShooter
 			// loading screen instead, or something similar.
 			if (!this.contentLoaded && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 			{
-				Log.Game.Write("Loading game content...");
-				Log.Game.PushIndent();
+				Logs.Game.Write("Loading game content...");
+				Logs.Game.PushIndent();
 				{
 					List<ContentRef<Resource>> availableContent = ContentProvider.GetAvailableContent<Resource>();
 					foreach (ContentRef<Resource> resourceReference in availableContent)
@@ -28,7 +28,7 @@ namespace DualStickSpaceShooter
 						resourceReference.MakeAvailable();
 					}
 				}
-				Log.Game.PopIndent();
+				Logs.Game.PopIndent();
 				this.contentLoaded = true;
 			}
 		}

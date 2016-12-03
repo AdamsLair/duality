@@ -29,7 +29,7 @@ namespace Duality
 		/// </summary>
 		internal CorePluginManager()
 		{
-			this.PluginLog = Log.Core;
+			this.PluginLog = Logs.Core;
 		}
 		
 		/// <summary>

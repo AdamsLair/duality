@@ -348,8 +348,8 @@ namespace Duality.Backend.DefaultOpenTK
 			if (this.contextCapsRetrieved) return;
 			this.contextCapsRetrieved = true;
 
-			Log.Core.Write("Determining OpenGL context capabilities...");
-			Log.Core.PushIndent();
+			Logs.Core.Write("Determining OpenGL context capabilities...");
+			Logs.Core.PushIndent();
 
 			// Make sure we're not on a render target, which may override
 			// some settings that we'd like to get from the main contexts
@@ -370,17 +370,17 @@ namespace Duality.Backend.DefaultOpenTK
 			// actually zero, assume MSAA is driver-disabled.
 			if (targetSamples != actualSamples)
 			{
-				Log.Core.Write("Requested {0} MSAA samples, but got {1} samples instead.", targetSamples, actualSamples);
+				Logs.Core.Write("Requested {0} MSAA samples, but got {1} samples instead.", targetSamples, actualSamples);
 				if (actualSamples == 0)
 				{
 					this.msaaIsDriverDisabled = true;
-					Log.Core.Write("Assuming MSAA is unavailable. Duality will not use Alpha-to-Coverage masking techniques.");
+					Logs.Core.Write("Assuming MSAA is unavailable. Duality will not use Alpha-to-Coverage masking techniques.");
 				}
 			}
 
 			NativeRenderTarget.Bind(oldTarget);
 
-			Log.Core.PopIndent();
+			Logs.Core.PopIndent();
 		}
 
 		private void PrepareRenderBatch(IDrawBatch renderBatch)
@@ -765,7 +765,7 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				CheckOpenGLErrors();
 				versionString = GL.GetString(StringName.Version);
-				Log.Core.Write(
+				Logs.Core.Write(
 					"OpenGL Version: {0}" + Environment.NewLine +
 					"Vendor: {1}" + Environment.NewLine +
 					"Renderer: {2}" + Environment.NewLine +
@@ -778,7 +778,7 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteWarning("Can't determine OpenGL specs, because an error occurred: {0}", LogFormat.Exception(e));
+				Logs.Core.WriteWarning("Can't determine OpenGL specs, because an error occurred: {0}", LogFormat.Exception(e));
 			}
 
 			// Parse the OpenGL version string in order to determine if it's sufficient
@@ -792,7 +792,7 @@ namespace Duality.Backend.DefaultOpenTK
 					{
 						if (version.Major < MinOpenGLVersion.Major || (version.Major == MinOpenGLVersion.Major && version.Minor < MinOpenGLVersion.Minor))
 						{
-							Log.Core.WriteWarning(
+							Logs.Core.WriteWarning(
 								"The detected OpenGL version {0} appears to be lower than the required minimum. Version {1} or higher is required to run Duality applications.",
 								version,
 								MinOpenGLVersion);
@@ -819,7 +819,7 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				if (!silent)
 				{
-					Log.Core.WriteError(
+					Logs.Core.WriteError(
 						"Internal OpenGL error, code {0} at {1} in {2}, line {3}.", 
 						error,
 						callerInfoMember,

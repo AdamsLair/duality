@@ -90,7 +90,7 @@ namespace Duality.Editor.Forms
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteError("Can't load project template {0} because an error occurred in the process: {1}", templateFile, LogFormat.Exception(e));
+					Logs.Editor.WriteError("Can't load project template {0} because an error occurred in the process: {1}", templateFile, LogFormat.Exception(e));
 				}
 			}
 
