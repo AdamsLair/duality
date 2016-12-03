@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -12,6 +13,74 @@ namespace Duality
 	/// </summary>
 	public static class LogFormat
 	{
+		private static string[] adjectives = new string[] { 
+			"Adorable", "Adventurous", "Academic", "Accurate", "Active", "Adorable", "Agile", "Alarmed", "Amazing", 
+			"Ancient", "Angry", "Arctic", "Astonishing", "Average", "Awkward", "Bad", "Beautiful", "Big", "Black", 
+			"Blind", "Blue", "Bold", "Bossy", "Brave", "Bright", "Brilliant", "Bulky", "Calm", "Careful", "Cautious",
+			"Cheery", "Clever", "Clueless", "Clumsy", "Colossal", "Competent", "Confused", "Cool", "Crafty", "Crazy",
+			"Creative", "Creepy", "Criminal", "Cute", "Daring", "Dark", "Decent", "Devoted", "Diligent", "Dizzy",
+			"Dull", "Eager", "Educated", "Elaborate", "Elderly", "Eminent", "Enormous", "Euphoric", "Exotic", "Fabulous",
+			"Fair", "False", "Familiar", "Fancy", "Fatal", "Flashy", "Flawless", "Focused", "Foolish", "Fresh", "Friendly",
+			"Funny", "Gentle", "Giant", "Gifted", "Gleeful", "Grand", "Gray", "Great", "Green", "Greedy", "Hairy",
+			"Helpful", "Honest", "Hopeful", "Hot", "Huge", "Humble", "Hungry", "Ideal", "Impressive", "Kind", "Large",
+			"Lawful", "Lazy", "Little", "Lopsided", "Lovely", "Loyal", "Lucky", "Mad", "Magnificent", "Messy", "Mild",
+			"Modern", "Mysterious", "Nautical", "Nervous", "Nice", "Odd", "Old", "Orange", "Outstanding", "Peaceful",
+			"Pink", "Polite", "Precious", "Pretty", "Profitable", "Proud", "Pure", "Purple", "Quick", "Quiet", "Quirky",
+			"Radiant", "Rapid", "Rare", "Reckless", "Red", "Regular", "Reliable", "Rich", "Robust", "Royal", "Rude",
+			"Sad", "Scary", "Secret", "Serious", "Sharp", "Shiny", "Shady", "Short", "Shy", "Silly", "Simple", "Slow",
+			"Smart", "Small", "Sneaky", "Stable", "Strange", "Strict", "Strong", "Stunning", "Stupid", "Subtle", "Super",
+			"Superior", "Swift", "Tall", "Talkative", "Terrific", "Thirsty", "Tough", "Tricky", "True", "Trusty", 
+			"Ugly", "Upbeat", "Vain", "Violet", "Vivid", "Warm", "Wealthy", "Weird", "White", "Wild", "Witty", "Yellow",
+			"Young" };
+		private static string[] animalNames = new string[] { 
+			"Albatross", "Alligator", "Alpaca", "Ant", "Ape", "Badger", "Bat", "Bear", "Beaver", "Bird", "Bison",
+			"Buffalo", "Butterfly", "Camel", "Cat", "Cheetah", "Chicken", "Cobra", "Coyote", "Crab", "Crow", "Deer",
+			"Dog", "Dolphin", "Duck", "Eagle", "Eel", "Elephant", "Falcon", "Ferret", "Fish", "Fly", "Fox", "Frog",
+			"Giraffe", "Goat", "Goose", "Gorilla", "Hamster", "Hawk", "Hornet", "Horse", "Hyena", "Jackal", "Koala",
+			"Lion", "Llama", "Lobster", "Loris", "Mink", "Mole", "Monkey", "Mouse", "Octopus", "Otter", "Owl", "Oyster",
+			"Parrot", "Panda", "Penguin", "Pig", "Pigeon", "Pony", "Rabbit", "Rat", "Raven", "Seal", "Shark", "Snail", 
+			"Snake", "Spider", "Swan", "Tiger", "Turtle", "Wasp", "Whale", "Wolf", "Yak", "Zebra" };
+
+		/// <summary>
+		/// Generates a human-friendly string representation of a numeric ID value.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public static string HumanFriendlyId(int id)
+		{
+			StringBuilder builder = new StringBuilder(48);
+
+			unchecked
+			{
+				const int PositiveMask = 0x7FFFFFFF;
+				int seedA = 131071 + id;
+				int seedB = seedA * 8191 + id;
+				int seedC = seedB * 197 + id;
+
+				int adjectiveCount = 1 + (((seedB & PositiveMask) % 3) % 2);
+				for (int i = 0; i < adjectiveCount; i++)
+				{
+					int rnd = (seedA * 23 + 29) + (seedB * 41 * i);
+					int tokenIndex = (rnd & PositiveMask) % adjectives.Length;
+					builder.Append(adjectives[tokenIndex]);
+				}
+
+				int nameCount = 1 + (((seedC & PositiveMask) % 3) % 2);
+				for (int i = 0; i < nameCount; i++)
+				{
+					int rnd = (seedA * 173 + 179) + (seedC * 61 * i);
+					int tokenIndex = (rnd & PositiveMask) % animalNames.Length;
+					builder.Append(animalNames[tokenIndex]);
+				}
+			}
+
+			builder.Append(" (");
+			builder.Append(id);
+			builder.Append(')');
+
+			return builder.ToString();
+		}
+
 		/// <summary>
 		/// Returns a string that can be used for representing the current line and method within a source code file.
 		/// This method uses caller information attributes on its parameters - omit them in order to let the compiler do its work.

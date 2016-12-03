@@ -108,6 +108,7 @@
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Drawing\CanvasTest.cs" />
     <Compile Include="Utility\ExtMethodsMemberInfoTest.cs" />
+    <Compile Include="Utility\LogFormatTest.cs" />
     <Compile Include="Utility\RectTest.cs" />
     <Compile Include="Utility\ExtMethodsTypeInfoTest.cs" />
     <Compile Include="Utility\ObjectCreatorTest.cs" />
