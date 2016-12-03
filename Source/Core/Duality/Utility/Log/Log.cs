@@ -12,9 +12,10 @@ namespace Duality
 	/// </summary>
 	public sealed class Log
 	{
-		private List<ILogOutput> output = null;
-		private string           name   = "Log";
-		private string           prefix = "[Log] ";
+		private List<ILogOutput> output  = null;
+		private string           name    = "Log";
+		private string           prefix  = "[Log] ";
+		private object           syncObj = new object();
 
 
 		/// <summary>
@@ -30,13 +31,6 @@ namespace Duality
 		public string Prefix
 		{
 			get { return this.prefix; }
-		}
-		/// <summary>
-		/// [GET] Enumerates all the output writers of this log.
-		/// </summary>
-		public IEnumerable<ILogOutput> Outputs
-		{
-			get { return this.output; }
 		}
 
 
@@ -58,7 +52,10 @@ namespace Duality
 		/// <param name="writer"></param>
 		public void AddOutput(ILogOutput writer)
 		{
-			this.output.Add(writer);
+			lock (this.syncObj)
+			{
+				this.output.Add(writer);
+			}
 		}
 		/// <summary>
 		/// Removes a certain output.
@@ -66,7 +63,10 @@ namespace Duality
 		/// <param name="writer"></param>
 		public void RemoveOutput(ILogOutput writer)
 		{
-			this.output.Remove(writer);
+			lock (this.syncObj)
+			{
+				this.output.Remove(writer);
+			}
 		}
 
 		/// <summary>
@@ -74,22 +74,26 @@ namespace Duality
 		/// </summary>
 		public void PushIndent()
 		{
-			foreach (ILogOutput target in this.output)
-				target.PushIndent();
+			lock (this.syncObj)
+			{
+				foreach (ILogOutput target in this.output)
+					target.PushIndent();
+			}
 		}
 		/// <summary>
 		/// Decreases the current log entry indent.
 		/// </summary>
 		public void PopIndent()
 		{
-			foreach (ILogOutput target in this.output)
-				target.PopIndent();
+			lock (this.syncObj)
+			{
+				foreach (ILogOutput target in this.output)
+					target.PopIndent();
+			}
 		}
 
 		private void Write(LogMessageType type, string msg, object context)
 		{
-			Profile.TimeLog.BeginMeasure();
-
 			// If a null message is provided, log that. Don't throw an exception, since logging isn't expected to throw.
 			if (msg == null) msg = "[null message]";
 
@@ -102,19 +106,23 @@ namespace Duality
 
 			// Forward the message to all outputs
 			LogEntry entry = new LogEntry(type, msg);
-			foreach (ILogOutput target in this.output)
+			lock (this.syncObj)
 			{
-				try
+				Profile.TimeLog.BeginMeasure();
+				foreach (ILogOutput target in this.output)
 				{
-					target.Write(entry, context, this);
+					try
+					{
+						target.Write(entry, context, this);
+					}
+					catch (Exception)
+					{
+						// Don't allow log outputs to throw unhandled exceptions,
+						// because they would result in another log - and more exceptions.
+					}
 				}
-				catch (Exception)
-				{
-					// Don't allow log outputs to throw unhandled exceptions,
-					// because they would result in another log - and more exceptions.
-				}
+				Profile.TimeLog.EndMeasure();
 			}
-			Profile.TimeLog.EndMeasure();
 		}
 		private string FormatMessage(string format, object[] obj)
 		{
