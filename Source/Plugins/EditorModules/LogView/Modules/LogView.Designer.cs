@@ -264,7 +264,7 @@
 			this.logEntryList.Size = new System.Drawing.Size(681, 83);
 			this.logEntryList.TabIndex = 2;
 			this.logEntryList.SelectionChanged += new System.EventHandler(this.logEntryList_SelectionChanged);
-			this.logEntryList.NewEntry += new System.EventHandler<Duality.Editor.Plugins.LogView.LogEntryList.ViewEntryEventArgs>(this.logEntryList_NewEntry);
+			this.logEntryList.LogEntriesAdded += new System.EventHandler<Duality.Editor.Plugins.LogView.LogEntryList.ViewEntryEventArgs>(this.logEntryList_NewEntry);
 			this.logEntryList.Enter += new System.EventHandler(this.logEntryList_Enter);
 			// 
 			// LogView

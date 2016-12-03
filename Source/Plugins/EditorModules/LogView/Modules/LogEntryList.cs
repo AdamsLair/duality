@@ -112,14 +112,14 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		public class ViewEntryEventArgs : EventArgs
 		{
-			private ViewEntry viewEntry;
-			public ViewEntry ViewEntry
+			private ViewEntry[] viewEntries;
+			public IReadOnlyList<ViewEntry> ViewEntries
 			{
-				get { return this.viewEntry; }
+				get { return this.viewEntries; }
 			}
-			public ViewEntryEventArgs(ViewEntry viewEntry)
+			public ViewEntryEventArgs(ViewEntry[] viewEntries)
 			{
-				this.viewEntry = viewEntry;
+				this.viewEntries = viewEntries;
 			}
 		}
 
@@ -143,7 +143,7 @@ namespace Duality.Editor.Plugins.LogView
 
 		public event EventHandler SelectionChanged = null;
 		public event EventHandler ContentChanged = null;
-		public event EventHandler<ViewEntryEventArgs> NewEntry = null;
+		public event EventHandler<ViewEntryEventArgs> LogEntriesAdded = null;
 
 
 		public IEnumerable<ViewEntry> Entries
@@ -244,36 +244,21 @@ namespace Duality.Editor.Plugins.LogView
 			this.UpdateDisplayedEntries();
 			this.OnContentChanged();
 		}
-		public ViewEntry AddEntry(EditorLogEntry entry)
-		{
-			ViewEntry viewEntry = new ViewEntry(this, entry);
-			this.entryList.Add(viewEntry);
-			this.UpdateDisplayedEntries();
-
-			if (this.NewEntry != null)
-				this.NewEntry(this, new ViewEntryEventArgs(viewEntry));
-
-			this.OnContentChanged();
-			return viewEntry;
-		}
-		public void AddEntries(IReadOnlyList<EditorLogEntry> entries, int index, int count)
+		public void AddLogEntries(IReadOnlyList<EditorLogEntry> entries, int index, int count)
 		{
 			// Update content
-			List<ViewEntry> newEntries = new List<ViewEntry>(count);
+			ViewEntry[] newEntries = new ViewEntry[count];
 			for (int i = 0; i < count; i++)
 			{
 				ViewEntry viewEntry = new ViewEntry(this, entries[index + i]);
 				this.entryList.Add(viewEntry);
-				newEntries.Add(viewEntry);
+				newEntries[i] = viewEntry;
 			}
 			this.UpdateDisplayedEntries();
 
 			// Fire events
-			foreach (ViewEntry viewEntry in newEntries)
-			{
-				if (this.NewEntry != null)
-					this.NewEntry(this, new ViewEntryEventArgs(viewEntry));
-			}
+			if (this.LogEntriesAdded != null)
+				this.LogEntriesAdded(this, new ViewEntryEventArgs(newEntries));
 			this.OnContentChanged();
 		}
 		public void BindTo(EditorLogOutput logOutput)
@@ -352,7 +337,7 @@ namespace Duality.Editor.Plugins.LogView
 		private void ProcessIncomingEntries(IReadOnlyList<EditorLogEntry> entries, int index, int count)
 		{
 			bool wasAtEnd = this.IsScrolledToEnd;
-			this.AddEntries(entries, index, count);
+			this.AddLogEntries(entries, index, count);
 			if (wasAtEnd) this.ScrollToEnd();
 		}
 		private void UpdateFirstDisplayIndex()

@@ -203,18 +203,28 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		private void logEntryList_NewEntry(object sender, LogEntryList.ViewEntryEventArgs e)
 		{
-			LogEntry logEntry = e.ViewEntry.LogEntry.Content;
 			bool isHidden = this.DockHandler.DockState.IsAutoHide() && !this.ContainsFocus;
 			bool unseenChanges = false;
 
+			bool containsWarning = false;
+			bool containsError = false;
+			for (int i = 0; i < e.ViewEntries.Count; i++)
+			{
+				LogMessageType type = e.ViewEntries[i].LogEntry.Content.Type;
+				if (type == LogMessageType.Warning)
+					containsWarning = true;
+				else if (type == LogMessageType.Error)
+					containsError = true;
+			}
+
 			if (isHidden)
 			{
-				if (logEntry.Type == LogMessageType.Warning)
+				if (containsWarning)
 				{
 					this.unseenWarnings++;
 					unseenChanges = true;
 				}
-				else if (logEntry.Type == LogMessageType.Error)
+				else if (containsError)
 				{
 					if (this.unseenErrors == 0) System.Media.SystemSounds.Hand.Play();
 					this.unseenErrors++;
@@ -225,7 +235,7 @@ namespace Duality.Editor.Plugins.LogView
 			if (unseenChanges) this.UpdateTabText();
 
 			bool pause = 
-				e.ViewEntry.LogEntry.Content.Type == LogMessageType.Error && 
+				containsError && 
 				this.buttonPauseOnError.Checked && 
 				Sandbox.State == SandboxState.Playing && 
 				!Sandbox.IsChangingState;
