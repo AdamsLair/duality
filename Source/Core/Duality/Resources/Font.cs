@@ -22,12 +22,12 @@ namespace Duality.Resources
 	public class Font : Resource
 	{
 		/// <summary>
-		/// A generic <see cref="MonoSpace">monospace</see> Font (Size 8) that has been loaded from your systems font library.
+		/// A generic monospace Font (Size 8) that has been loaded from your systems font library.
 		/// This is usually "Courier New".
 		/// </summary>
 		public static ContentRef<Font> GenericMonospace8	{ get; private set; }
 		/// <summary>
-		/// A generic <see cref="MonoSpace">monospace</see> Font (Size 10) that has been loaded from your systems font library.
+		/// A generic monospace Font (Size 10) that has been loaded from your systems font library.
 		/// This is usually "Courier New".
 		/// </summary>
 		public static ContentRef<Font> GenericMonospace10	{ get; private set; }
@@ -124,21 +124,13 @@ namespace Duality.Resources
 		}
 
 		
-		private	float		size				= 16.0f;
-		private	FontStyle	style				= FontStyle.Regular;
 		private	RenderMode	renderMode			= RenderMode.SharpBitmap;
 		private	float		spacing				= 0.0f;
 		private	float		lineHeightFactor	= 1.0f;
-		private	bool		monospace			= false;
 		private	bool		kerning				= true;
 		private	GlyphData[]	glyphs				= null;
 		private	Pixmap		pixelData			= null;
 		private	int			maxGlyphWidth		= 0;
-		private	int			height				= 0;
-		private	int			ascent				= 0;
-		private	int			bodyAscent			= 0;
-		private	int			descent				= 0;
-		private	int			baseLine			= 0;
 		private FontMetrics	metrics				= null;
 		// Data that is automatically acquired while loading the font
 		[DontSerialize] private int[]		charLookup		= null;
@@ -146,28 +138,6 @@ namespace Duality.Resources
 		[DontSerialize] private	Texture		texture			= null;
 
 
-		/// <summary>
-		/// [GET] The size of the Font.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		[Obsolete("Size information is import-only. Modify importer settings instead. For read-only access, use the Metrics property.")]
-		public float Size
-		{
-			get { return this.size; }
-			set {} // Remove this on the next breaking change cycle
-		}
-		/// <summary>
-		/// [GET] The style of the font. 
-		/// 
-		/// This property is obsolete and will be removed in the next major version step.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		[Obsolete("Style information is import-only. Modify importer settings instead.")]
-		public FontStyle Style
-		{
-			get { return this.style; }
-			set {} // Remove this on the next breaking change cycle
-		}
 		/// <summary>
 		/// [GET / SET] Specifies how the glyphs of this <see cref="Font"/> are rendered in a text.
 		/// </summary>
@@ -194,7 +164,7 @@ namespace Duality.Resources
 			get { return this.material; }
 		}
 		/// <summary>
-		/// [GET / SET] Additional spacing between each character. This is usually one tenth of the Fonts <see cref="Size"/>.
+		/// [GET / SET] Additional spacing between each character.
 		/// </summary>
 		public float CharSpacing
 		{
@@ -211,18 +181,8 @@ namespace Duality.Resources
 			set { this.lineHeightFactor = value; }
 		}
 		/// <summary>
-		/// [GET] Whether this is considered a monospace Font. If true, each character occupies exactly the same space.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		[Obsolete("Monospace information is import-only. Modify importer settings instead. For read-only access, use the Metrics property.")]
-		public bool MonoSpace
-		{
-			get { return this.monospace; }
-			set {} // Remove this on the next breaking change cycle
-		}
-		/// <summary>
 		/// [GET / SET] Whether this Font uses kerning, a technique where characters are moved closer together based on their actual shape,
-		/// which usually looks much nicer. It has no visual effect when active at the same time with <see cref="MonoSpace"/>, however
+		/// which usually looks much nicer. It has no visual effect when active at the same time with <see cref="FontMetrics.Monospace"/>, however
 		/// kerning sample data will be available on glyphs.
 		/// </summary>
 		/// <seealso cref="GlyphData"/>
@@ -231,32 +191,6 @@ namespace Duality.Resources
 			get { return this.kerning; }
 			set { this.kerning = value; }
 		}
-		/// <summary>
-		/// [GET] Returns whether this Font requires to re-render its glyphs in order to match the
-		/// changes that have been made to its Properties.
-		/// 
-		/// This property is obsolete and will be removed in the next major version step.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		[Obsolete("This property is obsolete with the new Font importer and custom import parameters.")]
-		public bool GlyphsDirty
-		{
-			get { return false; }
-		}
-		
-		/// <summary>
-		/// [GET] Returns a chunk of memory that contains this Fonts embedded TrueType data for rendering glyphs.
-		/// 
-		/// This property is obsolete and will be removed in the next major version step.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		[Obsolete("This property is obsolete with the new Font importer and custom import parameters.")]
-		public byte[] EmbeddedTrueTypeFont
-		{
-			get { return null; }
-			set { }
-		}
-
 		/// <summary>
 		/// [GET] Returns whether this Font is (requesting to be) aligned to the pixel grid.
 		/// </summary>
@@ -274,42 +208,14 @@ namespace Duality.Resources
 		/// </summary>
 		public int Height
 		{
-			get { return this.height; }
+			get { return this.metrics.Height; }
 		}
 		/// <summary>
 		/// [GET] The y offset in pixels between two lines.
 		/// </summary>
 		public int LineSpacing
 		{
-			get { return MathF.RoundToInt(this.height * this.lineHeightFactor); }
-		}
-		/// <summary>
-		/// [GET] The Fonts ascent value.
-		/// </summary>
-		public int Ascent
-		{
-			get { return this.ascent; }
-		}
-		/// <summary>
-		/// [GET] The Fonts body ascent value.
-		/// </summary>
-		public int BodyAscent
-		{
-			get { return this.bodyAscent; }
-		}
-		/// <summary>
-		/// [GET] The Fonts descent value.
-		/// </summary>
-		public int Descent
-		{
-			get { return this.descent; }
-		}
-		/// <summary>
-		/// [GET] The Fonts base line height.
-		/// </summary>
-		public int BaseLine
-		{
-			get { return this.baseLine; }
+			get { return MathF.RoundToInt(this.metrics.Height * this.lineHeightFactor); }
 		}
 		/// <summary>
 		/// [GET] Provides access to various metrics that are inherent to this <see cref="Font"/> instance,
@@ -318,28 +224,13 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public FontMetrics Metrics
 		{
-			get 
-			{
-				// Remove this on the next major version step.
-				if (this.metrics == null)
-				{
-					this.metrics = new FontMetrics(
-						this.size, 
-						this.height, 
-						this.ascent, 
-						this.bodyAscent, 
-						this.descent, 
-						this.baseLine,
-						this.monospace);
-				}
-				return this.metrics;
-			}
+			get { return this.metrics; }
 		}
 
 
 		/// <summary>
-		/// Applies a new set of rendered glyphs to the <see cref="Font"/>, adjusts its typeface metadata and clears out the <see cref="GlyphsDirty"/> flag.
-		/// This method is used by the editor to update a Font after adjusting its properties.
+		/// Applies a new set of rendered glyphs to the <see cref="Font"/>, adjusts its typeface metadata 
+		/// re-generates texture and material.
 		/// </summary>
 		/// <param name="bitmap"></param>
 		/// <param name="atlas"></param>
@@ -356,17 +247,6 @@ namespace Duality.Resources
 			this.pixelData.Atlas = atlas.ToList();
 
 			this.metrics = metrics;
-
-			// Copy metrics data into local fields.
-			// Remove this on the next major version step.
-			this.size = metrics.Size;
-			this.height = metrics.Height;
-			this.ascent = metrics.Ascent;
-			this.bodyAscent = metrics.BodyAscent;
-			this.descent = metrics.Descent;
-			this.baseLine = metrics.BaseLine;
-			this.monospace = metrics.Monospace;
-
 			this.maxGlyphWidth = 0;
 			for (int i = 0; i < this.glyphs.Length; i++)
 			{
@@ -382,18 +262,18 @@ namespace Duality.Resources
 		/// </summary>
 		private void UpdateKerningData()
 		{
-			int kerningSamples = (this.Ascent + this.Descent) / 4;
+			int kerningSamples = (this.metrics.Ascent + this.metrics.Descent) / 4;
 			int[] kerningY;
 			if (kerningSamples <= 6)
 			{
 				kerningSamples = 6;
 				kerningY = new int[] {
-					this.BaseLine - this.Ascent,
-					this.BaseLine - this.BodyAscent,
-					this.BaseLine - this.BodyAscent * 2 / 3,
-					this.BaseLine - this.BodyAscent / 3,
-					this.BaseLine,
-					this.BaseLine + this.Descent};
+					this.metrics.BaseLine - this.metrics.Ascent,
+					this.metrics.BaseLine - this.metrics.BodyAscent,
+					this.metrics.BaseLine - this.metrics.BodyAscent * 2 / 3,
+					this.metrics.BaseLine - this.metrics.BodyAscent / 3,
+					this.metrics.BaseLine,
+					this.metrics.BaseLine + this.metrics.Descent};
 			}
 			else
 			{
@@ -403,11 +283,11 @@ namespace Duality.Resources
 				int ascentSamples = kerningSamples - bodySamples - descentSamples;
 
 				for (int k = 0; k < ascentSamples; k++) 
-					kerningY[k] = this.BaseLine - this.Ascent + k * (this.Ascent - this.BodyAscent) / ascentSamples;
+					kerningY[k] = this.metrics.BaseLine - this.metrics.Ascent + k * (this.metrics.Ascent - this.metrics.BodyAscent) / ascentSamples;
 				for (int k = 0; k < bodySamples; k++) 
-					kerningY[ascentSamples + k] = this.BaseLine - this.BodyAscent + k * this.BodyAscent / (bodySamples - 1);
+					kerningY[ascentSamples + k] = this.metrics.BaseLine - this.metrics.BodyAscent + k * this.metrics.BodyAscent / (bodySamples - 1);
 				for (int k = 0; k < descentSamples; k++) 
-					kerningY[ascentSamples + bodySamples + k] = this.BaseLine + (k + 1) * this.Descent / descentSamples;
+					kerningY[ascentSamples + bodySamples + k] = this.metrics.BaseLine + (k + 1) * this.metrics.Descent / descentSamples;
 			}
 
 			for (int i = 0; i < this.glyphs.Length; ++i)
@@ -521,7 +401,7 @@ namespace Duality.Resources
 			BatchInfo matInfo = new BatchInfo(technique, ColorRgba.White, this.texture);
 			if (technique == DrawTechnique.SharpAlpha)
 			{
-				matInfo.SetUniform("smoothness", this.size * 4.0f);
+				matInfo.SetUniform("smoothness", this.metrics.Size * 4.0f);
 			}
 			this.material = new Material(matInfo);
 		}
@@ -919,7 +799,7 @@ namespace Duality.Resources
 			glyphXOff = -glyphData.OffsetX;
 			glyphYOff = -glyphData.OffsetY;
 
-			if (this.kerning && !this.monospace)
+			if (this.kerning && !this.metrics.Monospace)
 			{
 				char glyphNext = index + 1 < text.Length ? text[index + 1] : ' ';
 				GlyphData glyphDataNext;
@@ -932,7 +812,7 @@ namespace Duality.Resources
 				glyphXAdv = glyphData.Width - glyphData.OffsetX + this.spacing - minSum;
 			}
 			else
-				glyphXAdv = (this.monospace ? this.maxGlyphWidth : (glyphData.Width - glyphData.OffsetX)) + this.spacing;
+				glyphXAdv = (this.metrics.Monospace ? this.maxGlyphWidth : (glyphData.Width - glyphData.OffsetX)) + this.spacing;
 		}
 
 		protected override void OnLoaded()
