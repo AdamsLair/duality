@@ -15,7 +15,7 @@ namespace Duality.Tests.PluginManager
 	{
 		public override void LoadPlugins()
 		{
-			foreach (string path in this.PluginLoader.AvailableAssemblyPaths)
+			foreach (string path in this.AssemblyLoader.AvailableAssemblyPaths)
 			{
 				this.LoadPlugin(path);
 			}

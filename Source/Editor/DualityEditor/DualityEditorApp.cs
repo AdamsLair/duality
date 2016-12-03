@@ -223,11 +223,11 @@ namespace Duality.Editor
 			DualityApp.Init(
 				DualityApp.ExecutionEnvironment.Editor, 
 				DualityApp.ExecutionContext.Editor, 
-				new DefaultPluginLoader(), 
+				new DefaultAssemblyLoader(), 
 				null);
 
 			// Initialize the plugin manager for the editor. We'll use the same loader as the core.
-			pluginManager.Init(DualityApp.PluginManager.PluginLoader);
+			pluginManager.Init(DualityApp.PluginManager.AssemblyLoader);
 			
 			// Need to load editor plugins before initializing the graphics context, so the backend is available
 			pluginManager.LoadPlugins();

@@ -13,7 +13,7 @@ namespace Duality
 		private static readonly Log dummyPluginLog = new Log("Dummy PluginManager Log");
 
 		private Log                             pluginLog       = dummyPluginLog;
-		private IPluginLoader                   pluginLoader    = null;
+		private IAssemblyLoader                 assemblyLoader  = null;
 		private Dictionary<string,T>            pluginRegistry  = new Dictionary<string,T>();
 		private List<Assembly>                  lockedPlugins   = new List<Assembly>();
 		private HashSet<Assembly>               disposedPlugins = new HashSet<Assembly>();
@@ -38,12 +38,12 @@ namespace Duality
 		
 		
 		/// <summary>
-		/// [GET] The plugin loader which is used by the <see cref="PluginManager{T}"/> to discover
+		/// [GET] The assembly loader which is used by the <see cref="PluginManager{T}"/> to discover
 		/// and load available plugin assemblies.
 		/// </summary>
-		public IPluginLoader PluginLoader
+		public IAssemblyLoader AssemblyLoader
 		{
-			get { return this.pluginLoader; }
+			get { return this.assemblyLoader; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all currently loaded plugins.
@@ -82,17 +82,17 @@ namespace Duality
 		internal PluginManager() { }
 
 		/// <summary>
-		/// Initializes the <see cref="PluginManager{T}"/> with the specified <see cref="IPluginLoader"/>.
+		/// Initializes the <see cref="PluginManager{T}"/> with the specified <see cref="IAssemblyLoader"/>.
 		/// This method needs to be called once after instantiation (or previous termination) before plugins 
 		/// can be loaded.
 		/// </summary>
-		/// <param name="pluginLoader"></param>
-		public void Init(IPluginLoader pluginLoader)
+		/// <param name="assemblyLoader"></param>
+		public void Init(IAssemblyLoader assemblyLoader)
 		{
-			if (this.pluginLoader != null) throw new InvalidOperationException("Plugin manager is already initialized.");
+			if (this.assemblyLoader != null) throw new InvalidOperationException("Plugin manager is already initialized.");
 
-			this.pluginLoader = pluginLoader;
-			this.pluginLoader.AssemblyResolve += this.pluginLoader_AssemblyResolve;
+			this.assemblyLoader = assemblyLoader;
+			this.assemblyLoader.AssemblyResolve += this.assemblyLoader_AssemblyResolve;
 			this.OnInit();
 		}
 		/// <summary>
@@ -100,12 +100,12 @@ namespace Duality
 		/// </summary>
 		public void Terminate()
 		{
-			if (this.pluginLoader == null) throw new InvalidOperationException("Plugin manager is is not currently initialized.");
+			if (this.assemblyLoader == null) throw new InvalidOperationException("Plugin manager is is not currently initialized.");
 
 			this.OnTerminate();
 			this.ClearPlugins();
-			this.pluginLoader.AssemblyResolve -= this.pluginLoader_AssemblyResolve;
-			this.pluginLoader = null;
+			this.assemblyLoader.AssemblyResolve -= this.assemblyLoader_AssemblyResolve;
+			this.assemblyLoader = null;
 		}
 		/// <summary>
 		/// Requests the disposal of all content / data that is dependent on any of the currently active
@@ -235,7 +235,7 @@ namespace Duality
 						Log.Type(pluginType.GetType())));
 
 				plugin.FilePath = pluginFilePath;
-				plugin.FileHash = this.pluginLoader.GetAssemblyHash(pluginFilePath);
+				plugin.FileHash = this.assemblyLoader.GetAssemblyHash(pluginFilePath);
 
 				this.pluginRegistry.Add(plugin.AssemblyName, plugin);
 			}
@@ -279,7 +279,7 @@ namespace Duality
 			Assembly pluginAssembly = null;
 			try
 			{
-				pluginAssembly = this.pluginLoader.LoadAssembly(pluginFilePath);
+				pluginAssembly = this.assemblyLoader.LoadAssembly(pluginFilePath);
 			}
 			catch (Exception e)
 			{
@@ -354,7 +354,7 @@ namespace Duality
 			Assembly pluginAssembly = null;
 			try
 			{
-				pluginAssembly = this.pluginLoader.LoadAssembly(pluginFilePath);
+				pluginAssembly = this.assemblyLoader.LoadAssembly(pluginFilePath);
 			}
 			catch (Exception e)
 			{
@@ -412,7 +412,7 @@ namespace Duality
 			this.availTypeDict.Clear();
 		}
 
-		private void pluginLoader_AssemblyResolve(object sender, AssemblyResolveEventArgs args)
+		private void assemblyLoader_AssemblyResolve(object sender, AssemblyResolveEventArgs args)
 		{
 			// Early-out, if the Assembly has already been resolved
 			if (args.IsResolved) return;

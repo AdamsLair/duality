@@ -163,7 +163,7 @@ namespace Duality.Editor.Forms
 				CorePlugin plugin = DualityApp.PluginManager.LoadedPlugins.FirstOrDefault(p => Path.GetFullPath(p.FilePath) == fullPath);
 				if (plugin == null) continue;
 
-				int hash = DualityApp.PluginManager.PluginLoader.GetAssemblyHash(this.reloadSchedule[i]);
+				int hash = DualityApp.PluginManager.AssemblyLoader.GetAssemblyHash(this.reloadSchedule[i]);
 				if (plugin.FileHash == hash)
 				{
 					this.reloadSchedule.RemoveAt(i);

@@ -54,7 +54,7 @@ namespace Duality.Launcher
 			DualityApp.Init(
 				DualityApp.ExecutionEnvironment.Launcher,
 				DualityApp.ExecutionContext.Game,
-				new DefaultPluginLoader(),
+				new DefaultAssemblyLoader(),
 				args);
 			
 			// Open up a new window

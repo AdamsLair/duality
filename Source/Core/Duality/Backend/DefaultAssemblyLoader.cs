@@ -8,7 +8,7 @@ using Duality.IO;
 
 namespace Duality.Backend
 {
-	public class DefaultPluginLoader : IPluginLoader
+	public class DefaultAssemblyLoader : IAssemblyLoader
 	{
 		private static readonly Assembly execAssembly = Assembly.GetEntryAssembly() ?? typeof(DualityApp).Assembly;
 		private static readonly string execAssemblyDir = Path.GetFullPath(Path.GetDirectoryName(execAssembly.Location));

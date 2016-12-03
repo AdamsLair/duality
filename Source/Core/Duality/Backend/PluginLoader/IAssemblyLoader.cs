@@ -8,7 +8,7 @@ namespace Duality.Backend
 	/// <summary>
 	/// Specifies an API for enumerating and loading plugin Assemblies.
 	/// </summary>
-	public interface IPluginLoader
+	public interface IAssemblyLoader
 	{
 		/// <summary>
 		/// Fired when the runtime attempts to resolve a non-trivial <see cref="Assembly"/>

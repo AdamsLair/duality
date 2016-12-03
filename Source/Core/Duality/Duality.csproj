@@ -165,7 +165,7 @@
     <Compile Include="Resources\ShaderInfo\ShaderFieldScope.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderFieldInfo.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderFieldType.cs" />
-    <Compile Include="Backend\Dummy\DummyPluginLoader.cs" />
+    <Compile Include="Backend\Dummy\DummyAssemblyLoader.cs" />
     <Compile Include="Utility\EditorHints\EditorHintImageAttribute.cs" />
     <Compile Include="Utility\EditorHints\EditorHintCategoryAttribute.cs" />
     <Compile Include="Utility\EditorHints\EditorHintDecimalPlacesAttribute.cs" />
@@ -196,7 +196,7 @@
     <Compile Include="Utility\Log\LogEntry.cs" />
     <Compile Include="Utility\Math\Range.cs" />
     <Compile Include="Utility\ObjectCreator.cs" />
-    <Compile Include="Backend\PluginLoader\IPluginLoader.cs" />
+    <Compile Include="Backend\PluginLoader\IAssemblyLoader.cs" />
     <Compile Include="IO\Streams\SubStreamWrapper.cs" />
     <Compile Include="IO\Streams\StreamWrapper.cs" />
     <Compile Include="IO\Streams\NonClosingStreamWrapper.cs" />

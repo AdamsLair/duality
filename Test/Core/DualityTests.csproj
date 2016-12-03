@@ -53,8 +53,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Source\Core\Duality\Backend\DefaultPluginLoader.cs">
-      <Link>DefaultPluginLoader.cs</Link>
+    <Compile Include="..\..\Source\Core\Duality\Backend\DefaultAssemblyLoader.cs">
+      <Link>DefaultAssemblyLoader.cs</Link>
     </Compile>
     <Compile Include="Cloning\HelperObjects\ExplicitCloneTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\InterfaceFieldTestObject.cs" />
@@ -97,7 +97,7 @@
     <Compile Include="Resources\PrefabTest.cs" />
     <Compile Include="Serialization\TestObjects\NullDefaultTestObject.cs" />
     <Compile Include="PluginManager\MockAssembly.cs" />
-    <Compile Include="PluginManager\MockPluginLoader.cs" />
+    <Compile Include="PluginManager\MockAssemblyLoader.cs" />
     <Compile Include="PluginManager\CorePluginManagerTest.cs" />
     <Compile Include="TestCategory.cs" />
     <Compile Include="TestHelper.cs" />

@@ -75,7 +75,7 @@ namespace Duality
 		private static bool                    isUpdating         = false;
 		private static bool                    runFromEditor      = false;
 		private static bool                    terminateScheduled = false;
-		private static IPluginLoader           pluginLoader       = null;
+		private static IAssemblyLoader         assemblyLoader     = null;
 		private static CorePluginManager       pluginManager      = new CorePluginManager();
 		private static ISystemBackend          systemBack         = null;
 		private static IGraphicsBackend        graphicsBack       = null;
@@ -126,7 +126,7 @@ namespace Duality
 		/// <summary>
 		/// [GET] The plugin manager that is used by Duality. Don't use this unless you know exactly what you're doing.
 		/// If you want to load a plugin, use the <see cref="CorePluginManager"/> from this property.
-		/// If you want to load a non-plugin Assembly, use the <see cref="PluginLoader"/>.
+		/// If you want to load a non-plugin Assembly, use the <see cref="AssemblyLoader"/>.
 		/// </summary>
 		public static CorePluginManager PluginManager
 		{
@@ -135,11 +135,11 @@ namespace Duality
 		/// <summary>
 		/// [GET] The plugin loader that is used by Duality. Don't use this unless you know exactly what you're doing.
 		/// If you want to load a plugin, use the <see cref="PluginManager"/>. 
-		/// If you want to load a non-plugin Assembly, use the <see cref="IPluginLoader"/> from this property.
+		/// If you want to load a non-plugin Assembly, use the <see cref="IAssemblyLoader"/> from this property.
 		/// </summary>
-		public static IPluginLoader PluginLoader
+		public static IAssemblyLoader AssemblyLoader
 		{
-			get { return pluginLoader; }
+			get { return assemblyLoader; }
 		}
 		/// <summary>
 		/// [GET] The system backend that is used by Duality. Don't use this unless you know exactly what you're doing.
@@ -304,7 +304,7 @@ namespace Duality
 		/// Command line arguments to run this DualityApp with. 
 		/// Usually these are just the ones from the host application, passed on.
 		/// </param>
-		public static void Init(ExecutionEnvironment env, ExecutionContext context, IPluginLoader plugins, string[] commandLineArgs)
+		public static void Init(ExecutionEnvironment env, ExecutionContext context, IAssemblyLoader plugins, string[] commandLineArgs)
 		{
 			if (initialized) return;
 
@@ -322,28 +322,28 @@ namespace Duality
 			
 			// Initialize the plugin manager
 			{
-				pluginLoader = plugins ?? new Duality.Backend.Dummy.DummyPluginLoader();
-				Log.Core.Write("Using '{0}' to load plugins.", pluginLoader.GetType().Name);
+				assemblyLoader = plugins ?? new Duality.Backend.Dummy.DummyAssemblyLoader();
+				Log.Core.Write("Using '{0}' to load plugins.", assemblyLoader.GetType().Name);
 
-				pluginLoader.Init();
+				assemblyLoader.Init();
 
 				// Log assembly loading data for diagnostic purposes
 				{
 					Log.Core.Write("Currently Loaded Assemblies:" + Environment.NewLine + "{0}",
-						pluginLoader.LoadedAssemblies.ToString(
+						assemblyLoader.LoadedAssemblies.ToString(
 							assembly => "  " + Log.Assembly(assembly),
 							Environment.NewLine));
 					Log.Core.Write("Plugin Base Directories:" + Environment.NewLine + "{0}",
-						pluginLoader.BaseDirectories.ToString(
+						assemblyLoader.BaseDirectories.ToString(
 							path => "  " + path,
 							Environment.NewLine));
 					Log.Core.Write("Available Assembly Paths:" + Environment.NewLine + "{0}",
-						pluginLoader.AvailableAssemblyPaths.ToString(
+						assemblyLoader.AvailableAssemblyPaths.ToString(
 							path => "  " + path,
 							Environment.NewLine));
 				}
 
-				pluginManager.Init(pluginLoader);
+				pluginManager.Init(assemblyLoader);
 				pluginManager.PluginsRemoving += pluginManager_PluginsRemoving;
 				pluginManager.PluginsRemoved += pluginManager_PluginsRemoved;
 			}
@@ -451,8 +451,8 @@ namespace Duality
 			pluginManager.Terminate();
 			pluginManager.PluginsRemoving -= pluginManager_PluginsRemoving;
 			pluginManager.PluginsRemoved -= pluginManager_PluginsRemoved;
-			pluginLoader.Terminate();
-			pluginLoader = null;
+			assemblyLoader.Terminate();
+			assemblyLoader = null;
 
 			Log.Core.Write("DualityApp terminated");
 
