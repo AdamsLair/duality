@@ -232,7 +232,7 @@ namespace Duality.Resources
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Error initializing RenderTarget {0}:{1}{2}", this, Environment.NewLine, Log.Exception(e));
+				Log.Core.WriteError("Error initializing RenderTarget {0}:{1}{2}", this, Environment.NewLine, LogFormat.Exception(e));
 			}
 		}
 

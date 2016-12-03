@@ -90,7 +90,7 @@ namespace Duality.Editor.Forms
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteError("Can't load project template {0} because an error occurred in the process: {1}", templateFile, Log.Exception(e));
+					Log.Editor.WriteError("Can't load project template {0} because an error occurred in the process: {1}", templateFile, LogFormat.Exception(e));
 				}
 			}
 
@@ -241,7 +241,7 @@ namespace Duality.Editor.Forms
 			{
 				this.resultEditorBinary = null;
 				MessageBox.Show(
-					string.Format(Properties.GeneralRes.Msg_ErrorCantCreateProject_Desc, Log.Exception(exception), Environment.NewLine),
+					string.Format(Properties.GeneralRes.Msg_ErrorCantCreateProject_Desc, LogFormat.Exception(exception), Environment.NewLine),
 					Properties.GeneralRes.Msg_ErrorCantCreateProject_Caption, 
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}

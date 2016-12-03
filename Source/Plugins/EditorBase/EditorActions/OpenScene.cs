@@ -28,7 +28,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 			catch (Exception exception)
 			{
 				Log.Editor.WriteError("An error occurred while switching from Scene {1} to Scene {2}: {0}", 
-					Log.Exception(exception),
+					LogFormat.Exception(exception),
 					lastPath,
 					scene != null ? scene.Path : "null");
 			}

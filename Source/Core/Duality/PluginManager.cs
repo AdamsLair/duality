@@ -187,7 +187,7 @@ namespace Duality
 				}
 				catch (Exception e)
 				{
-					this.pluginLog.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
+					this.pluginLog.WriteError("Error disposing plugin {1}: {0}", LogFormat.Exception(e), plugin.AssemblyName);
 				}
 			}
 			this.OnPluginsRemoved(oldPlugins);
@@ -232,7 +232,7 @@ namespace Duality
 				if (plugin == null) 
 					throw new Exception(string.Format(
 						"Failed to instantiate {0} class.", 
-						Log.Type(pluginType.GetType())));
+						LogFormat.Type(pluginType.GetType())));
 
 				plugin.FilePath = pluginFilePath;
 				plugin.FileHash = this.assemblyLoader.GetAssemblyHash(pluginFilePath);
@@ -241,7 +241,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				this.pluginLog.WriteError("Error loading plugin: {0}", Log.Exception(e));
+				this.pluginLog.WriteError("Error loading plugin: {0}", LogFormat.Exception(e));
 				this.disposedPlugins.Add(pluginAssembly);
 				plugin = null;
 			}
@@ -267,7 +267,7 @@ namespace Duality
 							this.pluginLog.WriteError(
 								"Can't reload plugin {0}, because it has been locked by the runtime. " + 
 								"This usually happens for plugins that implement a currently active backend.",
-								Log.Assembly(lockedAssembly));
+								LogFormat.Assembly(lockedAssembly));
 							return null;
 						}
 					}
@@ -283,7 +283,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				this.pluginLog.WriteError("Error loading plugin Assembly: {0}", Log.Exception(e));
+				this.pluginLog.WriteError("Error loading plugin Assembly: {0}", LogFormat.Exception(e));
 				return null;
 			}
 
@@ -320,7 +320,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				this.pluginLog.WriteError("Error initializing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
+				this.pluginLog.WriteError("Error initializing plugin {1}: {0}", LogFormat.Exception(e), plugin.AssemblyName);
 				this.RemovePlugin(plugin);
 			}
 		}
@@ -358,7 +358,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				this.pluginLog.WriteError("Error loading plugin Assembly: {0}", Log.Exception(e));
+				this.pluginLog.WriteError("Error loading plugin Assembly: {0}", LogFormat.Exception(e));
 				plugin = null;
 			}
 
@@ -382,7 +382,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				this.pluginLog.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
+				this.pluginLog.WriteError("Error disposing plugin {1}: {0}", LogFormat.Exception(e), plugin.AssemblyName);
 			}
 
 			// Discard temporary plugin-related data (cached Types, etc.)

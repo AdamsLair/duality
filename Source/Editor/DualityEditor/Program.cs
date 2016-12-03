@@ -55,7 +55,7 @@ namespace Duality.Editor
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteWarning("Text Logfile unavailable: {0}", Log.Exception(e));
+				Log.Core.WriteWarning("Text Logfile unavailable: {0}", LogFormat.Exception(e));
 			}
 
 			// Winforms Setup
@@ -124,7 +124,7 @@ namespace Duality.Editor
 		{
 			try
 			{
-				Log.Editor.WriteError("An error occurred: {0}", Log.Exception(e.Exception));
+				Log.Editor.WriteError("An error occurred: {0}", LogFormat.Exception(e.Exception));
 			}
 			catch (Exception) { /* Assure we're not causing any further exception by logging... */ }
 		}
@@ -172,7 +172,7 @@ namespace Duality.Editor
 					Log.Editor.WriteError("An error occurred verifying Package '{0}', Version {1}: {2}", 
 						package.Id, 
 						package.Version, 
-						Log.Exception(e));
+						LogFormat.Exception(e));
 				}
 				workerInterface.Progress += 0.5f / packagesToVerify.Length;
 				yield return null;

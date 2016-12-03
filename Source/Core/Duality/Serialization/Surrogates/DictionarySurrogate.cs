@@ -83,9 +83,9 @@ namespace Duality.Serialization.Surrogates
 			{
 				Log.Core.WriteWarning(
 					"Actual Type '{0}' of dictionary key '{1}' does not match reflected dictionary key type '{2}'. Skipping value.", 
-					key != null ? Log.Type(key.GetType()) : "unknown", 
+					key != null ? LogFormat.Type(key.GetType()) : "unknown", 
 					key, 
-					Log.Type(keyTypeInfo));
+					LogFormat.Type(keyTypeInfo));
 				return false;
 			}
 			return true;
@@ -96,9 +96,9 @@ namespace Duality.Serialization.Surrogates
 			{
 				Log.Core.WriteWarning(
 					"Actual Type '{0}' of value in dictionary field '{1}' does not match reflected dictionary field type '{2}'. Skipping value.", 
-					value != null ? Log.Type(value.GetType()) : "unknown", 
+					value != null ? LogFormat.Type(value.GetType()) : "unknown", 
 					value, 
-					Log.Type(valueTypeInfo));
+					LogFormat.Type(valueTypeInfo));
 				return false;
 			}
 			return true;

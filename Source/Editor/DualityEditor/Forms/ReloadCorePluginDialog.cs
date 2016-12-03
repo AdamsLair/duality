@@ -247,13 +247,13 @@ namespace Duality.Editor.Forms
 					{
 						this.owner.SetTaskbarProgressState(ThumbnailProgressState.Error);
 						MessageBox.Show(this, 
-							String.Format(GeneralRes.Msg_ErrorReloadCorePlugin_Desc, "\n", Log.Exception(this.workerInterface.Error)), 
+							String.Format(GeneralRes.Msg_ErrorReloadCorePlugin_Desc, "\n", LogFormat.Exception(this.workerInterface.Error)), 
 							GeneralRes.Msg_ErrorReloadCorePlugin_Caption, 
 							MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
 					catch (Exception exception)
 					{
-						Log.Editor.WriteError("An error occurred after finishing a Core plugin reload operation: {0}", Log.Exception(exception));
+						Log.Editor.WriteError("An error occurred after finishing a Core plugin reload operation: {0}", LogFormat.Exception(exception));
 					}
 					this.Close();
 				}
@@ -267,7 +267,7 @@ namespace Duality.Editor.Forms
 					}
 					catch (Exception exception)
 					{
-						Log.Editor.WriteError("An error occurred after finishing a Core plugin reload operation: {0}", Log.Exception(exception));
+						Log.Editor.WriteError("An error occurred after finishing a Core plugin reload operation: {0}", LogFormat.Exception(exception));
 					}
 					this.Close();
 				}
@@ -289,7 +289,7 @@ namespace Duality.Editor.Forms
 				// If we failed for an unknown reason, let's try a full restart instead.
 				if (!fullRestart)
 				{
-					Log.Editor.WriteError("Failed reloading plugins during runtime: {0}", Log.Exception(e));
+					Log.Editor.WriteError("Failed reloading plugins during runtime: {0}", LogFormat.Exception(e));
 					Log.Editor.Write("Trying full restart...");
 
 					try
@@ -301,14 +301,14 @@ namespace Duality.Editor.Forms
 					catch (Exception e2)
 					{
 						// Failed anyway? Log the error and stop.
-						Log.Editor.WriteError(Log.Exception(e2));
+						Log.Editor.WriteError(LogFormat.Exception(e2));
 						workInterface.Error = e2;
 					}
 				}
 				// If even a full restart has failed, log the error and stop right there.
 				else
 				{
-					Log.Editor.WriteError(Log.Exception(e));
+					Log.Editor.WriteError(LogFormat.Exception(e));
 					workInterface.Error = e;
 				}
 			}

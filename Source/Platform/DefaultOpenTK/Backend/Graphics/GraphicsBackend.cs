@@ -778,7 +778,7 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteWarning("Can't determine OpenGL specs, because an error occurred: {0}", Log.Exception(e));
+				Log.Core.WriteWarning("Can't determine OpenGL specs, because an error occurred: {0}", LogFormat.Exception(e));
 			}
 
 			// Parse the OpenGL version string in order to determine if it's sufficient

@@ -422,7 +422,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("An error occurred in custom ResourceResolve code: {0}", Log.Exception(e));
+				Log.Core.WriteError("An error occurred in custom ResourceResolve code: {0}", LogFormat.Exception(e));
 			}
 
 			if (args.Handled)

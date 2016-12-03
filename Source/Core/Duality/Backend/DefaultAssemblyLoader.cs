@@ -165,7 +165,7 @@ namespace Duality.Backend
 				Log.Core.WriteWarning(
 					"Can't resolve Assembly '{0}' (as requested by '{1}'): None of the available assembly paths matches the requested name.",
 					args.Name,
-					Log.Assembly(args.RequestingAssembly));
+					LogFormat.Assembly(args.RequestingAssembly));
 			}
 			else
 			{
@@ -180,7 +180,7 @@ namespace Duality.Backend
 			if (this.AssemblyLoaded != null)
 				this.AssemblyLoaded(this, new AssemblyLoadedEventArgs(args.LoadedAssembly));
 
-			Log.Core.Write("Assembly loaded: {0}", Log.Assembly(args.LoadedAssembly));
+			Log.Core.Write("Assembly loaded: {0}", LogFormat.Assembly(args.LoadedAssembly));
 		}
 	}
 }

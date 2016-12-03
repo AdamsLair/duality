@@ -204,7 +204,7 @@ namespace Duality.Editor.Plugins.Base
 				{
 					Log.Editor.WriteError(
 						"Failed to create System Font '{1} {2}, {3}' for rendering Duality Font glyphs: {0}",
-						Log.Exception(e),
+						LogFormat.Exception(e),
 						fontFamily.Name,
 						emSize,
 						style);

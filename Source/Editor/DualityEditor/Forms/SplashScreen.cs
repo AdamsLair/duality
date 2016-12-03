@@ -28,7 +28,7 @@ namespace Duality.Editor.Forms
 			}
 			catch (Exception e)
 			{
-				Log.Editor.Write("An error occurred while initializing the editor: {0}", Log.Exception(e));
+				Log.Editor.Write("An error occurred while initializing the editor: {0}", LogFormat.Exception(e));
 				return null;
 			}
 		}

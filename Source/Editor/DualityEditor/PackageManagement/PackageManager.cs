@@ -468,7 +468,7 @@ namespace Duality.Editor.PackageManagement
 			}
 			catch (Exception e)
 			{
-				Log.Editor.WriteError("Can't update {0}, because an error occurred: {1}", UpdaterFileName, Log.Exception(e));
+				Log.Editor.WriteError("Can't update {0}, because an error occurred: {1}", UpdaterFileName, LogFormat.Exception(e));
 				return false;
 			}
 
@@ -663,7 +663,7 @@ namespace Duality.Editor.PackageManagement
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
+					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", LogFormat.Exception(e));
 					return null;
 				}
 
@@ -706,7 +706,7 @@ namespace Duality.Editor.PackageManagement
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
+					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", LogFormat.Exception(e));
 					return null;
 				}
 			}
@@ -894,7 +894,7 @@ namespace Duality.Editor.PackageManagement
 				Log.Editor.WriteError(
 					"Failed to load PackageManager config file '{0}': {1}",
 					configFilePath,
-					Log.Exception(e));
+					LogFormat.Exception(e));
 			}
 		}
 		private void SaveConfig()
@@ -928,7 +928,7 @@ namespace Duality.Editor.PackageManagement
 					updateDoc = null;
 					Log.Editor.WriteError("Can't update existing '{0}' file: {1}", 
 						Path.GetFileName(updateFilePath), 
-						Log.Exception(exception));
+						LogFormat.Exception(exception));
 				}
 			}
 

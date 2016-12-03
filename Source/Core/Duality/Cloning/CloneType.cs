@@ -56,7 +56,7 @@ namespace Duality.Cloning
 			}
 			public override string ToString()
 			{
-				return string.Format("Field {0}", Log.FieldInfo(this.field, false));
+				return string.Format("Field {0}", LogFormat.FieldInfo(this.field, false));
 			}
 		}
 
@@ -452,7 +452,7 @@ namespace Duality.Cloning
 
 		public override string ToString()
 		{
-			return string.Format("CloneType {0}", Log.Type(this.type));
+			return string.Format("CloneType {0}", LogFormat.Type(this.type));
 		}
 
 		private static readonly MethodInfo SetupHandleObject = typeof(ICloneTargetSetup).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == "HandleObject");

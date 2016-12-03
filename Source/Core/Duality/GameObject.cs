@@ -571,7 +571,7 @@ namespace Duality
 		{
 			if (newComp.gameobj != null) throw new ArgumentException(String.Format(
 				"Specified Component '{0}' is already part of another GameObject '{1}'",
-				Log.Type(newComp.GetType()),
+				LogFormat.Type(newComp.GetType()),
 				newComp.gameobj.FullName));
 			
 			Type type = newComp.GetType();

@@ -297,7 +297,7 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteWarning("Can't determine OpenAL specs, because an error occurred: {0}", Log.Exception(e));
+				Log.Core.WriteWarning("Can't determine OpenAL specs, because an error occurred: {0}", LogFormat.Exception(e));
 			}
 		}
 		public static bool CheckOpenALErrors(bool silent = false, [CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)

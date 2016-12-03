@@ -123,7 +123,7 @@ namespace Duality.Backend.DefaultOpenTK
 					"window icon from the game's main executable '{0}'. This is " +
 					"uncritical, but still an error: {1}",
 					executablePath,
-					Log.Exception(e));
+					LogFormat.Exception(e));
 			}
 
 			if (options.ScreenMode == ScreenMode.FullWindow)

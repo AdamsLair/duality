@@ -162,7 +162,7 @@ namespace Duality.Serialization
 				this.LocalLog.WriteError("Error reading object at '{0:X8}'-'{1:X8}': {2}", 
 					lastPos,
 					lastPos + offset, 
-					Log.Exception(e));
+					LogFormat.Exception(e));
 			}
 
 			return result;
@@ -721,7 +721,7 @@ namespace Duality.Serialization
 					this.LocalLog.WriteWarning(
 						"Object data (Id {0}) is flagged for custom deserialization, yet the objects Type ('{1}') does not support it. Guessing associated fields...",
 						header.ObjectId,
-						Log.Type(header.ObjectType));
+						LogFormat.Type(header.ObjectType));
 					this.LocalLog.PushIndent();
 					foreach (var pair in customIO.Data)
 					{
@@ -782,8 +782,8 @@ namespace Duality.Serialization
 				this.LocalLog.WriteError(
 					"An error occurred in deserializing MemberInfo object Id {0} of type '{1}': {2}",
 					header.ObjectId,
-					Log.Type(header.DataType.ToActualType()),
-					Log.Exception(e));
+					LogFormat.Type(header.DataType.ToActualType()),
+					LogFormat.Exception(e));
 			}
 			
 			// Prepare object reference
@@ -872,13 +872,13 @@ namespace Duality.Serialization
 				{
 					// If anything goes wrong, assure the stream position is valid and points to the next data entry
 					this.reader.BaseStream.Seek(lastPos + offset, SeekOrigin.Begin);
-					this.LocalLog.WriteError("Error reading header at '{0:X8}'-'{1:X8}': {2}", lastPos, lastPos + offset, Log.Exception(e));
+					this.LocalLog.WriteError("Error reading header at '{0:X8}'-'{1:X8}': {2}", lastPos, lastPos + offset, LogFormat.Exception(e));
 				}
 			}
 			catch (Exception e) 
 			{
 				this.reader.BaseStream.Seek(initialPos, SeekOrigin.Begin);
-				this.LocalLog.WriteError("Error reading header: {0}", Log.Exception(e));
+				this.LocalLog.WriteError("Error reading header: {0}", LogFormat.Exception(e));
 			}
 		}
 		private object ReadPrimitive(DataType dataType)

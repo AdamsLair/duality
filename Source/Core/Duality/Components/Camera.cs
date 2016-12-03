@@ -553,7 +553,7 @@ namespace Duality.Components
 				}
 				catch (Exception e)
 				{
-					Log.Core.WriteError("There was an error while {0} was collecting drawcalls: {1}", this.ToString(), Log.Exception(e));
+					Log.Core.WriteError("There was an error while {0} was collecting drawcalls: {1}", this.ToString(), LogFormat.Exception(e));
 				}
 				this.drawDevice.Render(p.ClearFlags, p.ClearColor, p.ClearDepth);
 			}

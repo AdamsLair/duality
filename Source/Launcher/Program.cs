@@ -39,7 +39,7 @@ namespace Duality.Launcher
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteWarning("Text Logfile unavailable: {0}", Log.Exception(e));
+				Log.Core.WriteWarning("Text Logfile unavailable: {0}", LogFormat.Exception(e));
 			}
 
 			// Set up a global exception handler to log errors
@@ -92,7 +92,7 @@ namespace Duality.Launcher
 
 		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
-			Log.Core.WriteError(Log.Exception(e.ExceptionObject as Exception));
+			Log.Core.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
 		}
 
 		private static bool hasConsole = false;

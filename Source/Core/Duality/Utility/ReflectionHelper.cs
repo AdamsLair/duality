@@ -655,7 +655,7 @@ namespace Duality
 				return result;
 			}
 
-			throw new NotSupportedException(string.Format("Member Type '{0} not supported", Log.Type(member.GetType())));
+			throw new NotSupportedException(string.Format("Member Type '{0} not supported", LogFormat.Type(member.GetType())));
 		}
 
 		/// <summary>

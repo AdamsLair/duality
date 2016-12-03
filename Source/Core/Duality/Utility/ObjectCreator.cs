@@ -124,7 +124,7 @@ namespace Duality
 				{
 					Log.Core.WriteWarning(
 						"Failed to create object of Type {0}. Make sure there is a trivial constructor.", 
-						Log.Type(typeInfo));
+						LogFormat.Type(typeInfo));
 				}
 			}
 
@@ -144,15 +144,15 @@ namespace Duality
 					if (lastError is TypeInitializationException)
 					{
 						Log.Core.WriteError("Failed to initialize Type {0}: {1}",
-							Log.Type(typeInfo),
-							Log.Exception(lastError.InnerException));
+							LogFormat.Type(typeInfo),
+							LogFormat.Exception(lastError.InnerException));
 					}
 					// Otherwise, just do a regular error log.
 					else
 					{
 						Log.Core.WriteError("Failed to create object of Type {0}: {1}",
-							Log.Type(typeInfo),
-							Log.Exception(lastError));
+							LogFormat.Type(typeInfo),
+							LogFormat.Exception(lastError));
 					}
 				}
 			}

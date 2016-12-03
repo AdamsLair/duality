@@ -498,7 +498,7 @@ namespace Duality.Editor
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteError("Cannot load DockPanel data due to malformed or non-existent Xml: {0}", Log.Exception(e));
+					Log.Editor.WriteError("Cannot load DockPanel data due to malformed or non-existent Xml: {0}", LogFormat.Exception(e));
 				}
 				Log.Editor.PopIndent();
 			}
@@ -534,7 +534,7 @@ namespace Duality.Editor
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteError("Error loading editor user data: {0}", Log.Exception(e));
+					Log.Editor.WriteError("Error loading editor user data: {0}", LogFormat.Exception(e));
 				}
 				Log.Editor.PopIndent();
 			}
@@ -562,7 +562,7 @@ namespace Duality.Editor
 			catch (Exception e)
 			{
 				mainGraphicsContext = null;
-				Log.Editor.WriteError("Can't create editor graphics context, because an error occurred: {0}", Log.Exception(e));
+				Log.Editor.WriteError("Can't create editor graphics context, because an error occurred: {0}", LogFormat.Exception(e));
 			}
 		}
 		public static void PerformBufferSwap()
@@ -728,7 +728,7 @@ namespace Duality.Editor
 			}
 			catch (Exception e)
 			{
-				Log.Editor.WriteError("Backup of file '{0}' failed: {1}", path, Log.Exception(e));
+				Log.Editor.WriteError("Backup of file '{0}' failed: {1}", path, LogFormat.Exception(e));
 			}
 		}
 		
@@ -1026,7 +1026,7 @@ namespace Duality.Editor
 			{
 				Log.Editor.WriteError(
 					"Unable to analyze exported types because an error occured: {0}",
-					Log.Exception(e));
+					LogFormat.Exception(e));
 				exportedTypes = null;
 			}
 
@@ -1047,7 +1047,7 @@ namespace Duality.Editor
 							"Found public fields in Component class '{0}': {1}. " + 
 							"The usage of public fields is strongly discouraged in Component classes. Consider using properties instead.",
 							cmpType.GetTypeCSCodeName(true),
-							fields.ToString(f => Log.FieldInfo(f, false), ", "));
+							fields.ToString(f => LogFormat.FieldInfo(f, false), ", "));
 					}
 				}
 			}
@@ -1285,7 +1285,7 @@ namespace Duality.Editor
 					}
 					catch (Exception exception)
 					{
-						Log.Editor.WriteError("An error occurred during a core update: {0}", Log.Exception(exception));
+						Log.Editor.WriteError("An error occurred during a core update: {0}", LogFormat.Exception(exception));
 					}
 					OnUpdatingEngine();
 
@@ -1435,7 +1435,7 @@ namespace Duality.Editor
 		}
 		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
-			Log.Core.WriteError(Log.Exception(e.ExceptionObject as Exception));
+			Log.Core.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
 		}
 		private static object EditorHintImageResolver(string manifestResourceName)
 		{
