@@ -58,7 +58,7 @@ namespace Duality.Tests
 			}
 		}
 
-		void ILogOutput.Write(LogEntry entry)
+		void ILogOutput.Write(LogEntry entry, object context, Log source)
 		{
 			if (entry.Type == LogMessageType.Error)
 				this.lastErrorMessage = entry.Message;

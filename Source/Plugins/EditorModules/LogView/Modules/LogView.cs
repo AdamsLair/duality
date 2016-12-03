@@ -38,10 +38,10 @@ namespace Duality.Editor.Plugins.LogView
 			this.logEntryList.BindToDualityLogs();
 			this.logEntryList.ScrollToEnd();
 
-			InMemoryLogOutput logHistory = DualityEditorApp.GlobalLogData;
+			EditorLogOutput logHistory = DualityEditorApp.GlobalLogData;
 			for (int i = 0; i < logHistory.Entries.Count; i++)
 			{
-				LogMessageType type = logHistory.Entries[i].Type;
+				LogMessageType type = logHistory.Entries[i].Content.Type;
 				if (type == LogMessageType.Warning)
 					this.unseenWarnings++;
 				else if (type == LogMessageType.Error)
@@ -193,7 +193,7 @@ namespace Duality.Editor.Plugins.LogView
 			if (this.logEntryList.SelectedEntry != null)
 			{
 				//this.splitContainer.Panel2Collapsed = false;
-				this.textBoxEntry.Text = this.logEntryList.SelectedEntry.LogEntry.Message;
+				this.textBoxEntry.Text = this.logEntryList.SelectedEntry.LogEntry.Content.Message;
 			}
 			else
 			{
@@ -203,7 +203,7 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		private void logEntryList_NewEntry(object sender, LogEntryList.ViewEntryEventArgs e)
 		{
-			LogEntry logEntry = e.Entry.LogEntry;
+			LogEntry logEntry = e.ViewEntry.LogEntry.Content;
 			bool isHidden = this.DockHandler.DockState.IsAutoHide() && !this.ContainsFocus;
 			bool unseenChanges = false;
 
@@ -225,7 +225,7 @@ namespace Duality.Editor.Plugins.LogView
 			if (unseenChanges) this.UpdateTabText();
 
 			bool pause = 
-				e.Entry.LogEntry.Type == LogMessageType.Error && 
+				e.ViewEntry.LogEntry.Content.Type == LogMessageType.Error && 
 				this.buttonPauseOnError.Checked && 
 				Sandbox.State == SandboxState.Playing && 
 				!Sandbox.IsChangingState;

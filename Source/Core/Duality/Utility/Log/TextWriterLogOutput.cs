@@ -21,10 +21,10 @@ namespace Duality
 		}
 		
 		/// <inheritdoc />
-		public virtual void Write(LogEntry entry)
+		public virtual void Write(LogEntry entry, object context, Log source)
 		{
-			int indent = entry.Source.Indent;
-			string prefix = entry.Source.Prefix ?? "";
+			int indent = entry.Indent;
+			string prefix = source.Prefix ?? "";
 			string[] lines = entry.Message.Split(new[] { '\n', '\r', '\0' }, StringSplitOptions.RemoveEmptyEntries);
 			for (int i = 0; i < lines.Length; i++)
 			{
@@ -48,7 +48,7 @@ namespace Duality
 					lines[i] = new string(' ', prefix.Length + 5 + indent * 2) + lines[i];
 				}
 
-				this.WriteLine(entry.Source, entry.Type, lines[i], entry.Context);
+				this.WriteLine(source, entry.Type, lines[i], context);
 			}
 		}
 		/// <summary>

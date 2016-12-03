@@ -131,12 +131,12 @@ namespace Duality
 			}
 
 			// Forward the message to all outputs
-			LogEntry entry = new LogEntry(this, type, msg, context);
+			LogEntry entry = new LogEntry(type, msg, this.state.Indent);
 			foreach (ILogOutput log in this.strOut)
 			{
 				try
 				{
-					log.Write(entry);
+					log.Write(entry, context, this);
 				}
 				catch (Exception)
 				{
