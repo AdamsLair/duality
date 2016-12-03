@@ -656,6 +656,11 @@ namespace Duality.Editor.Plugins.LogView
 			{
 				this.ProcessIncomingEntries(entryList, this.lastLogItemCount, entryList.Count - this.lastLogItemCount);
 				this.lastLogItemCount = entryList.Count;
+				this.timerLogSchedule.Interval = 50;
+			}
+			else
+			{
+				this.timerLogSchedule.Interval = 200;
 			}
 		}
 		private void entryMenu_CopyAllItems_Click(object sender, EventArgs e)
