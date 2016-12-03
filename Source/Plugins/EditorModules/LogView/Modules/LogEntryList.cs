@@ -14,7 +14,7 @@ using Duality.Editor;
 
 namespace Duality.Editor.Plugins.LogView
 {
-	public class LogEntryList : UserControl, ILogOutput
+	public class LogEntryList : UserControl
 	{
 		[Flags]
 		public enum MessageFilter
@@ -124,22 +124,20 @@ namespace Duality.Editor.Plugins.LogView
 		}
 
 
-		private List<ViewEntry>         entryList          = new List<ViewEntry>();
-		private List<ViewEntry>         displayedEntryList = new List<ViewEntry>();
-		private MessageFilter           displayFilter      = MessageFilter.All;
-		private Color                   baseColor          = SystemColors.Control;
-		private bool                    boundToDualityLogs = false;
-		private bool                    scrolledToEnd      = true;
-		private bool                    lastSelected       = true;
-		private int                     firstDisplayIndex  = 0;
-		private int                     firstDisplayOffset = 0;
-		private ViewEntry               hoveredEntry       = null;
-		private ViewEntry               selectedEntry      = null;
-		private ContextMenuStrip        entryMenu          = null;
-		private Timer                   timerLogSchedule   = null;
-		private RawList<EditorLogEntry> logSchedule        = new RawList<EditorLogEntry>();
-		private bool                    logScheduleActive  = false;
-		private object                  logScheduleLock    = new object();
+		private List<ViewEntry>  entryList          = new List<ViewEntry>();
+		private List<ViewEntry>  displayedEntryList = new List<ViewEntry>();
+		private MessageFilter    displayFilter      = MessageFilter.All;
+		private Color            baseColor          = SystemColors.Control;
+		private bool             scrolledToEnd      = true;
+		private bool             lastSelected       = true;
+		private int              firstDisplayIndex  = 0;
+		private int              firstDisplayOffset = 0;
+		private ViewEntry        hoveredEntry       = null;
+		private ViewEntry        selectedEntry      = null;
+		private ContextMenuStrip entryMenu          = null;
+		private EditorLogOutput  boundToLogOutput   = null;
+		private Timer            timerLogSchedule   = null;
+		private int              lastLogItemCount   = 0;
 		private System.ComponentModel.IContainer components = null;
 
 
@@ -229,6 +227,7 @@ namespace Duality.Editor.Plugins.LogView
 			this.timerLogSchedule = new Timer(this.components);
 			this.timerLogSchedule.Interval = 50;
 			this.timerLogSchedule.Tick += new EventHandler(timerLogSchedule_Tick);
+			this.timerLogSchedule.Enabled = true;
 		}
 		protected override void Dispose(bool disposing)
 		{
@@ -257,13 +256,13 @@ namespace Duality.Editor.Plugins.LogView
 			this.OnContentChanged();
 			return viewEntry;
 		}
-		public void AddEntries(EditorLogEntry[] entries, int count)
+		public void AddEntries(IReadOnlyList<EditorLogEntry> entries, int index, int count)
 		{
 			// Update content
-			List<ViewEntry> newEntries = new List<ViewEntry>(entries.Length);
+			List<ViewEntry> newEntries = new List<ViewEntry>(count);
 			for (int i = 0; i < count; i++)
 			{
-				ViewEntry viewEntry = new ViewEntry(this, entries[i]);
+				ViewEntry viewEntry = new ViewEntry(this, entries[index + i]);
 				this.entryList.Add(viewEntry);
 				newEntries.Add(viewEntry);
 			}
@@ -277,33 +276,22 @@ namespace Duality.Editor.Plugins.LogView
 			}
 			this.OnContentChanged();
 		}
-		public void UpdateFromDataLog(EditorLogOutput dataLog)
+		public void BindTo(EditorLogOutput logOutput)
 		{
-			if (dataLog == null)
+			this.boundToLogOutput = logOutput;
+
+			if (logOutput == null)
 			{
 				this.Clear();
 				return;
 			}
 
 			this.entryList.Clear();
-			for (int i = 0; i < dataLog.Entries.Count; i++)
-				this.entryList.Add(new ViewEntry(this, dataLog.Entries[i]));
+			for (int i = 0; i < logOutput.Entries.Count; i++)
+				this.entryList.Add(new ViewEntry(this, logOutput.Entries[i]));
 			this.UpdateDisplayedEntries();
 
 			this.OnContentChanged();
-		}
-		public void BindToDualityLogs()
-		{
-			if (this.boundToDualityLogs) return;
-
-			Logs.AddGlobalOutput(this);
-			this.UpdateFromDataLog(DualityEditorApp.GlobalLogData);
-		}
-		public void UnbindFromDualityLogs()
-		{
-			if (!this.boundToDualityLogs) return;
-
-			Logs.RemoveGlobalOutput(this);
 		}
 		
 		public void SetFilterFlag(MessageFilter flag, bool isSet)
@@ -361,10 +349,10 @@ namespace Duality.Editor.Plugins.LogView
 			return null;
 		}
 		
-		private void ProcessIncomingEntries(EditorLogEntry[] entries, int count)
+		private void ProcessIncomingEntries(IReadOnlyList<EditorLogEntry> entries, int index, int count)
 		{
 			bool wasAtEnd = this.IsScrolledToEnd;
-			this.AddEntries(entries, count);
+			this.AddEntries(entries, index, count);
 			if (wasAtEnd) this.ScrollToEnd();
 		}
 		private void UpdateFirstDisplayIndex()
@@ -678,17 +666,12 @@ namespace Duality.Editor.Plugins.LogView
 		
 		private void timerLogSchedule_Tick(object sender, EventArgs e)
 		{
-			// Process a clone of the logSchedule to prevent any interference due to cross-thread logs
-			EditorLogEntry[] logScheduleArray = null;
-			lock (this.logScheduleLock)
+			IReadOnlyList<EditorLogEntry> entryList = this.boundToLogOutput.Entries;
+			if (entryList.Count > this.lastLogItemCount)
 			{
-				logScheduleArray = new EditorLogEntry[this.logSchedule.Count];
-				Array.Copy(this.logSchedule.Data, logScheduleArray, this.logSchedule.Count);
-				this.logSchedule.Clear();
-				this.timerLogSchedule.Enabled = false;
-				this.logScheduleActive = false;
+				this.ProcessIncomingEntries(entryList, this.lastLogItemCount, entryList.Count - this.lastLogItemCount);
+				this.lastLogItemCount = entryList.Count;
 			}
-			this.ProcessIncomingEntries(logScheduleArray, logScheduleArray.Length);
 		}
 		private void entryMenu_CopyAllItems_Click(object sender, EventArgs e)
 		{
@@ -703,21 +686,6 @@ namespace Duality.Editor.Plugins.LogView
 		private void entryMenu_CopyItem_Click(object sender, EventArgs e)
 		{
 			Clipboard.SetText(this.SelectedEntry.GetFullText());
-		}
-
-		void ILogOutput.Write(LogEntry entry, object context, Log source)
-		{
-			lock (this.logScheduleLock)
-			{
-				this.logSchedule.Add(new EditorLogEntry(entry, context, source));
-				if (!this.logScheduleActive)
-				{
-					// Don't use a synchronous Invoke. It will block while the BuildManager is active (why?)
-					// and thus lead to a deadlock when something is logged while it is.
-					this.InvokeEx(() => this.timerLogSchedule.Enabled = true, false);
-					this.logScheduleActive = true;
-				}
-			}
 		}
 	}
 }

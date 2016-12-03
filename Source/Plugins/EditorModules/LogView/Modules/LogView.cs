@@ -35,7 +35,7 @@ namespace Duality.Editor.Plugins.LogView
 		{
 			base.OnHandleCreated(e);
 
-			this.logEntryList.BindToDualityLogs();
+			this.logEntryList.BindTo(DualityEditorApp.GlobalLogData);
 			this.logEntryList.ScrollToEnd();
 
 			EditorLogOutput logHistory = DualityEditorApp.GlobalLogData;
@@ -60,7 +60,7 @@ namespace Duality.Editor.Plugins.LogView
 		{
 			base.OnClosed(e);
 
-			this.logEntryList.UnbindFromDualityLogs();
+			this.logEntryList.BindTo(null);
 
 			this.DockPanel.ActiveContentChanged -= DockPanel_ActiveContentChanged;
 			Sandbox.Entering -= this.Sandbox_Entering;
