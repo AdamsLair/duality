@@ -117,11 +117,6 @@ namespace Duality.Editor
 					corePluginReloader.State == ReloadCorePluginDialog.ReloaderState.RecoverFromRestart;
 			}
 		}
-		[Obsolete("Use DualityEditorApp.PluginManager instead.")]
-		public static IEnumerable<EditorPlugin> Plugins
-		{
-			get { return pluginManager.LoadedPlugins; }
-		}
 		public static IEnumerable<Resource> UnsavedResources
 		{
 			get { return unsavedResources.Where(r => !r.Disposed && !r.IsDefaultContent && !r.IsRuntimeResource && (r != Scene.Current || !Sandbox.IsActive)); }

@@ -121,16 +121,6 @@ namespace Duality
 		/// It is also called in an editor environment.
 		/// </summary>
 		public static event EventHandler Terminating = null;
-		/// <summary>
-		/// Called when Duality needs to discard plugin data such as cached Types and values.
-		/// </summary>
-		[Obsolete("Use DualityApp.PluginManager instead.")]
-		public static event EventHandler DiscardPluginData = null;
-		/// <summary>
-		/// Fired whenever a core plugin has been initialized. This is the case after loading or reloading one.
-		/// </summary>
-		[Obsolete("Use DualityApp.PluginManager instead.")]
-		public static event EventHandler<CorePluginEventArgs> PluginReady = null;
 
 		
 		/// <summary>
@@ -304,24 +294,6 @@ namespace Duality
 		{
 			get { return environment; }
 		}
-		/// <summary>
-		/// [GET] Enumerates all currently loaded plugins.
-		/// </summary>
-		[Obsolete("Use DualityApp.PluginManager instead.")]
-		public static IEnumerable<CorePlugin> LoadedPlugins
-		{
-			get { return pluginManager.LoadedPlugins; }
-		}
-		/// <summary>
-		/// [GET] Enumerates all plugin assemblies that have been loaded before, but have been discarded due to a runtime plugin reload operation.
-		/// This is usually only the case when being executed from withing the editor or manually triggering a plugin reload. However,
-		/// this is normally unnecessary.
-		/// </summary>
-		[Obsolete("Use DualityApp.PluginManager instead.")]
-		public static IEnumerable<Assembly> DisposedPlugins
-		{
-			get { return pluginManager.DisposedPlugins; }
-		}
 
 
 		/// <summary>
@@ -372,7 +344,6 @@ namespace Duality
 				}
 
 				pluginManager.Init(pluginLoader);
-				pluginManager.PluginsReady += pluginManager_PluginsReady;
 				pluginManager.PluginsRemoving += pluginManager_PluginsRemoving;
 				pluginManager.PluginsRemoved += pluginManager_PluginsRemoved;
 			}
@@ -478,7 +449,6 @@ namespace Duality
 
 			// Shut down the plugin manager and plugin loader
 			pluginManager.Terminate();
-			pluginManager.PluginsReady -= pluginManager_PluginsReady;
 			pluginManager.PluginsRemoving -= pluginManager_PluginsRemoving;
 			pluginManager.PluginsRemoved -= pluginManager_PluginsRemoved;
 			pluginLoader.Terminate();
@@ -655,40 +625,6 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Adds an already loaded plugin Assembly to the internal Duality CorePlugin registry.
-		/// You shouldn't need to call this method in general, since Duality manages its plugins
-		/// automatically. 
-		/// </summary>
-		/// <remarks>
-		/// This method can be useful in certain cases when it is necessary to treat an Assembly as a
-		/// Duality plugin, even though it isn't located in the Plugins folder, or is not available
-		/// as a file at all. A typical case for this is Unit Testing where the testing Assembly may
-		/// specify additional Duality types such as Components, Resources, etc.
-		/// </remarks>
-		/// <param name="pluginAssembly"></param>
-		/// <param name="pluginFilePath"></param>
-		/// <returns></returns>
-		[Obsolete("Use DualityApp.PluginManager instead.")]
-		public static CorePlugin LoadPlugin(Assembly pluginAssembly, string pluginFilePath)
-		{
-			return pluginManager.LoadPlugin(pluginAssembly, pluginFilePath);
-		}
-		[Obsolete("Use DualityApp.PluginManager instead.")]
-		internal static void InitPlugin(CorePlugin plugin)
-		{
-			pluginManager.InitPlugin(plugin);
-		}
-		/// <summary>
-		/// Reloads the specified plugin. Does not initialize it.
-		/// </summary>
-		/// <param name="pluginFilePath"></param>
-		[Obsolete("Use DualityApp.PluginManager instead.")]
-		internal static CorePlugin ReloadPlugin(string pluginFilePath)
-		{
-			return pluginManager.ReloadPlugin(pluginFilePath);
-		}
-
-		/// <summary>
 		/// Enumerates all currently loaded assemblies that are part of Duality, i.e. Duality itsself and all loaded plugins.
 		/// </summary>
 		/// <returns></returns>
@@ -855,17 +791,8 @@ namespace Duality
 				Terminating(null, EventArgs.Empty);
 		}
 		
-		private static void pluginManager_PluginsReady(object sender, DualityPluginEventArgs e)
-		{
-			if (PluginReady != null)
-				PluginReady(sender, new CorePluginEventArgs(e.Plugins.OfType<CorePlugin>()));
-		}
 		private static void pluginManager_PluginsRemoving(object sender, DualityPluginEventArgs e)
 		{
-			// Wrapper method for delivering the old API until removing it in v3.0
-			if (DiscardPluginData != null)
-				DiscardPluginData(sender, e);
-
 			// Dispose any existing Resources that could reference plugin data
 			VisualLog.ClearAll();
 			if (!Scene.Current.IsEmpty)

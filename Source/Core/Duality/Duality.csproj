@@ -174,7 +174,6 @@
     <Compile Include="Utility\EditorHints\EditorHintFlagsAttribute.cs" />
     <Compile Include="Utility\EditorHints\EditorHintAttribute.cs" />
     <Compile Include="Utility\EditorHints\MemberFlags.cs" />
-    <Compile Include="Utility\EventArgs\CorePluginEventArgs.cs" />
     <Compile Include="Utility\EventArgs\DualityPluginEventArgs.cs" />
     <Compile Include="Utility\EventArgs\ComponentEventArgs.cs" />
     <Compile Include="Utility\EventArgs\CollisionEventArgs.cs" />
