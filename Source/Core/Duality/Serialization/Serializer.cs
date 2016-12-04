@@ -265,7 +265,7 @@ namespace Duality.Serialization
 		public Log LocalLog
 		{
 			get { return this.log; }
-			set { this.log = value ?? new Log("Serialize"); }
+			set { this.log = value ?? new Log("Serialize", "IO"); }
 		}
 		/// <summary>
 		/// [GET] Enumerates registered <see cref="System.Reflection.FieldInfo">field</see> blockers. If any registered field blocker

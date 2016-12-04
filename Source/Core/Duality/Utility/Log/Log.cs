@@ -12,10 +12,10 @@ namespace Duality
 	/// </summary>
 	public sealed class Log
 	{
-		private List<ILogOutput> output      = null;
-		private string           name        = "Log";
-		private string           prefix      = "[Log] ";
-		private ILogOutput[]     syncOutput  = null;
+		private List<ILogOutput> output      = new List<ILogOutput>();
+		private string           name        = string.Empty;
+		private string           prefix      = string.Empty;
+		private ILogOutput[]     syncOutput  = new ILogOutput[0];
 		private object           syncObj     = new object();
 
 
@@ -46,13 +46,15 @@ namespace Duality
 		/// <summary>
 		/// Creates a new Log.
 		/// </summary>
-		/// <param name="name">The Logs name.</param>
+		/// <param name="name">The logs display name.</param>
+		/// <param name="id">The logs shorthand ID that will be displayed along with its log entries.</param>
 		/// <param name="output">It will be initially connected to the specified outputs.</param>
-		public Log(string name, params ILogOutput[] output)
+		public Log(string name, string id, params ILogOutput[] output)
 		{
 			this.name = name;
-			this.prefix = "[" + name + "] ";
-			this.output = new List<ILogOutput>(output);
+			this.prefix = string.Format("[{0}]", id).PadRight(7);
+			this.output.AddRange(output);
+			this.syncOutput = this.output.ToArray();
 		}
 
 		/// <summary>
