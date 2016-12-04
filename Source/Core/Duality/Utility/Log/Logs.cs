@@ -12,13 +12,31 @@ namespace Duality
 	/// </summary>
 	public static class Logs
 	{
-		private static List<Log> logs = new List<Log>();
+		private static List<Log>        logs         = new List<Log>();
 		private static List<ILogOutput> globalOutput = new List<ILogOutput>();
-		private static object syncObj = new object();
+
+		private static Log[]        syncLogs   = new Log[0];
+		private static ILogOutput[] syncOutput = new ILogOutput[0];
+		private static object       syncObj    = new object();
+
 		private static Log logGame   = null;
 		private static Log logCore   = null;
 		private static Log logEditor = null;
-
+		
+		/// <summary>
+		/// [GET] Enumerates the log output instances to which all global logs write.
+		/// </summary>
+		public static IEnumerable<ILogOutput> GlobalOutput
+		{
+			get { return syncOutput; }
+		}
+		/// <summary>
+		/// [GET] Enumerates all global logs.
+		/// </summary>
+		public static IEnumerable<Log> All
+		{
+			get { return syncLogs; }
+		}
 		/// <summary>
 		/// [GET] A global log channel for game-related entries. Use this for logging data from game plugins.
 		/// </summary>
@@ -50,6 +68,7 @@ namespace Duality
 			logs.Add(logGame);
 			logs.Add(logCore);
 			logs.Add(logEditor);
+			syncLogs = logs.ToArray();
 		}
 
 		/// <summary>
@@ -61,6 +80,7 @@ namespace Duality
 			lock (syncObj)
 			{
 				globalOutput.Add(output);
+				syncOutput = globalOutput.ToArray();
 				foreach (Log log in logs)
 				{
 					log.AddOutput(output);
@@ -76,6 +96,7 @@ namespace Duality
 			lock (syncObj)
 			{
 				globalOutput.Remove(output);
+				syncOutput = globalOutput.ToArray();
 				foreach (Log log in logs)
 				{
 					log.RemoveOutput(output);
@@ -109,6 +130,7 @@ namespace Duality
 						Instance.AddOutput(output);
 					}
 					logs.Add(Instance);
+					syncLogs = logs.ToArray();
 				}
 			}
 		}

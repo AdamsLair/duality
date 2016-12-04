@@ -17,6 +17,7 @@ namespace Duality
 	{
 		private static List<VisualLog> logs = new List<VisualLog>();
 		private static VisualLog defaultLog = new VisualLog("Default");
+		private static VisualLog[] syncLogs = new VisualLog[0];
 		private static object syncObj = new object();
 
 		/// <summary>
@@ -24,7 +25,7 @@ namespace Duality
 		/// </summary>
 		public static IEnumerable<VisualLog> All
 		{
-			get { return logs; }
+			get { return syncLogs; }
 		}
 		/// <summary>
 		/// [GET] Returns the default log, which can be used for quick output hacks and miscellaneous data.
@@ -49,7 +50,7 @@ namespace Duality
 
 		internal static void PrepareRenderLogEntries()
 		{
-			if (logs.Any(log => log.Entries.Count > 0) && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+			if (syncLogs.Any(log => log.Entries.Count > 0) && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 			{
 				VisualLogRenderer renderer = Scene.Current.FindComponent<VisualLogRenderer>(false);
 				if (renderer == null)
@@ -62,12 +63,12 @@ namespace Duality
 		}
 		internal static void UpdateLogEntries()
 		{
-			foreach (VisualLog log in logs)
+			foreach (VisualLog log in syncLogs)
 				log.Update();
 		}
 		internal static void ClearAll()
 		{
-			foreach (VisualLog log in logs)
+			foreach (VisualLog log in syncLogs)
 				log.Clear();
 		}
 
@@ -82,6 +83,7 @@ namespace Duality
 				lock (syncObj)
 				{
 					logs.Add(Instance);
+					syncLogs = logs.ToArray();
 				}
 			}
 		}
