@@ -192,6 +192,7 @@
     <Compile Include="Utility\IReadOnlyGrid.cs" />
     <Compile Include="Utility\Grid.cs" />
     <Compile Include="Utility\Log\ILogOutput.cs" />
+    <Compile Include="Utility\Log\CustomLogInfo.cs" />
     <Compile Include="Utility\Log\Logs.cs" />
     <Compile Include="Utility\Log\LogFormat.cs" />
     <Compile Include="Utility\Log\LogMessageType.cs" />

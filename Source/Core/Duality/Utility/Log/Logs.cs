@@ -12,26 +12,29 @@ namespace Duality
 	/// </summary>
 	public static class Logs
 	{
+		private static List<Log> logs = new List<Log>();
+		private static List<ILogOutput> globalOutput = new List<ILogOutput>();
+		private static object syncObj = new object();
 		private static Log logGame   = null;
 		private static Log logCore   = null;
 		private static Log logEditor = null;
 
 		/// <summary>
-		/// [GET] A log for game-related entries. Use this for logging data from game plugins.
+		/// [GET] A global log channel for game-related entries. Use this for logging data from game plugins.
 		/// </summary>
 		public static Log Game
 		{
 			get { return logGame; }
 		}
 		/// <summary>
-		/// [GET] A log for core-related entries. This is normally only used by Duality itsself.
+		/// [GET] A global log channel for core-related entries. This is normally only used by Duality itsself.
 		/// </summary>
 		public static Log Core
 		{
 			get { return logCore; }
 		}
 		/// <summary>
-		/// [GET] A log for editor-related entries. This is used by the Duality editor and its plugins.
+		/// [GET] A global log channel for editor-related entries. This is used by the Duality editor and its plugins.
 		/// </summary>
 		public static Log Editor
 		{
@@ -43,20 +46,71 @@ namespace Duality
 		{
 			logGame   = new Log("Game", "Game");
 			logCore   = new Log("Core", "Core");
-			logEditor = new Log("Editor", "Edit");
+			logEditor = new Log("Editor", "Editor");
+			logs.Add(logGame);
+			logs.Add(logCore);
+			logs.Add(logEditor);
 		}
 
+		/// <summary>
+		/// Adds the specified <see cref="ILogOutput"/> to every log global channel.
+		/// </summary>
+		/// <param name="output"></param>
 		public static void AddGlobalOutput(ILogOutput output)
 		{
-			logGame.AddOutput(output);
-			logCore.AddOutput(output);
-			logEditor.AddOutput(output);
+			lock (syncObj)
+			{
+				globalOutput.Add(output);
+				foreach (Log log in logs)
+				{
+					log.AddOutput(output);
+				}
+			}
 		}
+		/// <summary>
+		/// Removes the specified <see cref="ILogOutput"/> from every log global channel.
+		/// </summary>
+		/// <param name="output"></param>
 		public static void RemoveGlobalOutput(ILogOutput output)
 		{
-			logGame.RemoveOutput(output);
-			logCore.RemoveOutput(output);
-			logEditor.RemoveOutput(output);
+			lock (syncObj)
+			{
+				globalOutput.Remove(output);
+				foreach (Log log in logs)
+				{
+					log.RemoveOutput(output);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns a custom global log channel that is defined by a <see cref="CustomLogInfo"/>
+		/// implementation, as provided via generic type parameter.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public static Log Get<T>() where T : CustomLogInfo, new()
+		{
+			return CustomLogHolder<T>.Instance;
+		}
+
+		private static class CustomLogHolder<T> where T : CustomLogInfo, new()
+		{
+			public static Log Instance;
+
+			static CustomLogHolder()
+			{
+				T logInfo = new T();
+				Instance = new Log(logInfo.Name, logInfo.Id);
+				lock (syncObj)
+				{
+					foreach (ILogOutput output in globalOutput)
+					{
+						Instance.AddOutput(output);
+					}
+					logs.Add(Instance);
+				}
+			}
 		}
 	}
 }
