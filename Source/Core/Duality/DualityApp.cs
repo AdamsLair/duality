@@ -485,13 +485,13 @@ namespace Duality
 
 			Time.FrameTick();
 			Profile.FrameTick();
-			VisualLog.UpdateLogEntries();
+			VisualLogs.UpdateLogEntries();
 			pluginManager.InvokeBeforeUpdate();
 			UpdateUserInput();
 			Scene.Current.Update();
 			sound.Update();
 			pluginManager.InvokeAfterUpdate();
-			VisualLog.PrepareRenderLogEntries();
+			VisualLogs.PrepareRenderLogEntries();
 			RunCleanup();
 
 			Profile.TimeUpdate.EndMeasure();
@@ -508,7 +508,7 @@ namespace Duality
 			Profile.FrameTick();
 			if (execContext == ExecutionContext.Game && !freezeScene)
 			{
-				VisualLog.UpdateLogEntries();
+				VisualLogs.UpdateLogEntries();
 			}
 			pluginManager.InvokeBeforeUpdate();
 			if (execContext == ExecutionContext.Game)
@@ -540,7 +540,7 @@ namespace Duality
 			}
 			sound.Update();
 			pluginManager.InvokeAfterUpdate();
-			VisualLog.PrepareRenderLogEntries();
+			VisualLogs.PrepareRenderLogEntries();
 			RunCleanup();
 
 			Profile.TimeUpdate.EndMeasure();
@@ -794,7 +794,7 @@ namespace Duality
 		private static void pluginManager_PluginsRemoving(object sender, DualityPluginEventArgs e)
 		{
 			// Dispose any existing Resources that could reference plugin data
-			VisualLog.ClearAll();
+			VisualLogs.ClearAll();
 			if (!Scene.Current.IsEmpty)
 				Scene.Current.Dispose();
 			foreach (Resource r in ContentProvider.EnumeratePluginContent().ToArray())

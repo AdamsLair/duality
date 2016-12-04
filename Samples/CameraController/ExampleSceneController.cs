@@ -135,13 +135,13 @@ namespace CameraController
 					this.movementHistoryTimer -= 100.0f;
 					Vector2 targetPos = this.targetObj.Transform.Pos.Xy;
 					Vector2 cameraPos = this.mainCameraObj.Transform.Pos.Xy;
-					VisualLog.Default.DrawPoint(
+					VisualLogs.Default.DrawPoint(
 						targetPos.X,
 						targetPos.Y,
 						0.0f)
 						.WithColor(new ColorRgba(255, 128, 0))
 						.KeepAlive(3000.0f);
-					VisualLog.Default.DrawPoint(
+					VisualLogs.Default.DrawPoint(
 						cameraPos.X,
 						cameraPos.Y,
 						0.0f)

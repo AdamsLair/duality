@@ -387,7 +387,7 @@ namespace Steering
 			VisualDebugLog.BaseColor = ColorRgba.White;
 		}
 
-		private static readonly VisualLog VisualDebugLog = VisualLog.Get("agent");
+		private static readonly VisualLog VisualDebugLog = VisualLogs.Get("agent");
 		private const float DebugVelocityRadius = 100f;
 #endif
 		#endregion
