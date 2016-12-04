@@ -14,7 +14,7 @@ namespace Duality
 	{
 		private List<ILogOutput> output      = new List<ILogOutput>();
 		private string           name        = string.Empty;
-		private string           prefix      = string.Empty;
+		private string           id          = string.Empty;
 		private ILogOutput[]     syncOutput  = new ILogOutput[0];
 		private object           syncObj     = new object();
 
@@ -27,11 +27,12 @@ namespace Duality
 			get { return this.name; }
 		}
 		/// <summary>
-		/// [GET] The Log's prefix, which is automatically determined by its name.
+		/// [GET] The Log's shorthand ID that can be displayed along its entries to
+		/// identify their source log.
 		/// </summary>
-		public string Prefix
+		public string Id
 		{
-			get { return this.prefix; }
+			get { return this.id; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all <see cref="ILogOutput"/> instances that are
@@ -51,8 +52,8 @@ namespace Duality
 		/// <param name="output">It will be initially connected to the specified outputs.</param>
 		public Log(string name, string id, params ILogOutput[] output)
 		{
-			this.name = name;
-			this.prefix = string.Format("[{0}]", id).PadRight(7);
+			this.name = name ?? string.Empty;
+			this.id = id ?? string.Empty;
 			this.output.AddRange(output);
 			this.syncOutput = this.output.ToArray();
 		}

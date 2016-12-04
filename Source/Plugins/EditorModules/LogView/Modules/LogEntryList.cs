@@ -93,7 +93,7 @@ namespace Duality.Editor.Plugins.LogView
 			}
 			public void GetFullText(StringBuilder appendTo)
 			{
-				appendTo.Append(this.log.Source.Prefix);
+				appendTo.Append(this.log.Source.Id);
 				switch (this.log.Content.Type)
 				{
 					case LogMessageType.Message: appendTo.Append("Info:    "); break;

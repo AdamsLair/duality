@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 
 namespace Duality
@@ -11,6 +12,7 @@ namespace Duality
 	{
 		private	TextWriter target = null;
 		private int indent = 0;
+		private int prefixLength = 4;
 		private object writerLock = new object();
 
 		public TextWriter Target
@@ -21,6 +23,12 @@ namespace Duality
 		{
 			get { return this.indent; }
 		}
+		public int PrefixLength
+		{
+			get { return this.prefixLength; }
+			set { this.prefixLength = value; }
+		}
+
 
 		public TextWriterLogOutput(TextWriter target)
 		{
@@ -30,29 +38,33 @@ namespace Duality
 		/// <inheritdoc />
 		public virtual void Write(LogEntry entry, object context, Log source)
 		{
-			string prefix = source.Prefix ?? "";
+			StringBuilder builder = new StringBuilder();
+
+			string prefix = source.Id;
 			string[] lines = entry.Message.Split(new[] { '\n', '\r', '\0' }, StringSplitOptions.RemoveEmptyEntries);
 			for (int i = 0; i < lines.Length; i++)
 			{
+				builder.Clear();
 				if (i == 0)
 				{
+					builder.Append('[');
+					builder.Append(prefix, 0, Math.Min(prefix.Length, this.prefixLength));
+					builder.Append("] ");
 					switch (entry.Type)
 					{
-						case LogMessageType.Message:
-							lines[i] = prefix + "Msg: " + new string(' ', this.indent * 2) + lines[i];
-							break;
-						case LogMessageType.Warning:
-							lines[i] = prefix + "Wrn: " + new string(' ', this.indent * 2) + lines[i];
-							break;
-						case LogMessageType.Error:
-							lines[i] = prefix + "ERR: " + new string(' ', this.indent * 2) + lines[i];
-							break;
+						case LogMessageType.Message: builder.Append("Msg: "); break;
+						case LogMessageType.Warning: builder.Append("Wrn: "); break;
+						case LogMessageType.Error:   builder.Append("ERR: "); break;
 					}
+					builder.Append(' ', this.indent * 2);
+					builder.Append(lines[i]);
 				}
 				else
 				{
-					lines[i] = new string(' ', prefix.Length + 5 + this.indent * 2) + lines[i];
+					builder.Append(' ', this.prefixLength + 3 + 5 + this.indent * 2);
+					builder.Append(lines[i]);
 				}
+				lines[i] = builder.ToString();
 			}
 
 			lock (this.writerLock)
