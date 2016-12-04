@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Threading;
 
 namespace Duality.Editor
 {
@@ -56,11 +56,11 @@ namespace Duality.Editor
 		}
 		void ILogOutput.PushIndent()
 		{
-			this.indent++;
+			Interlocked.Increment(ref this.indent);
 		}
 		void ILogOutput.PopIndent()
 		{
-			this.indent--;
+			Interlocked.Decrement(ref this.indent);
 		}
 	}
 }

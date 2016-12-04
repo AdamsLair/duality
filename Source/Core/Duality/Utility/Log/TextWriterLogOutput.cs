@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 
 namespace Duality
 {
@@ -10,6 +11,7 @@ namespace Duality
 	{
 		private	TextWriter target = null;
 		private int indent = 0;
+		private object writerLock = new object();
 
 		public TextWriter Target
 		{
@@ -51,8 +53,12 @@ namespace Duality
 				{
 					lines[i] = new string(' ', prefix.Length + 5 + this.indent * 2) + lines[i];
 				}
+			}
 
-				this.WriteLine(source, entry.Type, lines[i], context);
+			lock (this.writerLock)
+			{
+				for (int i = 0; i < lines.Length; i++)
+					this.WriteLine(source, entry.Type, lines[i], context);
 			}
 		}
 		/// <summary>
@@ -70,12 +76,12 @@ namespace Duality
 		/// <inheritdoc />
 		public void PushIndent()
 		{
-			this.indent++;
+			Interlocked.Increment(ref this.indent);
 		}
 		/// <inheritdoc />
 		public void PopIndent()
 		{
-			this.indent--;
+			Interlocked.Decrement(ref this.indent);
 		}
 	}
 }
