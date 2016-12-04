@@ -51,8 +51,9 @@ namespace Duality.Editor.Plugins.LogView
 				get
 				{
 					if (this.log.Source == Logs.Game) return Properties.LogViewResCache.IconLogGame;
+					if (this.log.Source == Logs.Core) return Properties.LogViewResCache.IconLogCore;
 					if (this.log.Source == Logs.Editor) return Properties.LogViewResCache.IconLogEditor;
-					return Properties.LogViewResCache.IconLogCore;
+					return null;
 				}
 			}
 
@@ -383,13 +384,17 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		private void OnDisplayFilterChanged()
 		{
+			bool wasAtEnd = this.IsScrolledToEnd;
 			ViewEntry lastEntry = this.GetEntryAt(this.ScrollOffset);
 			int entryOff = this.ScrollOffset - this.GetEntryOffset(lastEntry);
 
 			this.UpdateDisplayedEntries();
 			this.OnContentChanged();
 
-			this.ScrollToEntry(lastEntry, entryOff);
+			if (wasAtEnd)
+				this.ScrollToEnd();
+			else
+				this.ScrollToEntry(lastEntry, entryOff);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -479,9 +484,12 @@ namespace Duality.Editor.Plugins.LogView
 					e.Graphics.DrawImage(typeIcon, 
 						typeIconRect.X + typeIconRect.Width / 2 - typeIcon.Width / 2,
 						typeIconRect.Y + typeIconRect.Height / 2 - typeIcon.Height / 2);
-					e.Graphics.DrawImage(sourceIcon, 
-						sourceIconRect.X + sourceIconRect.Width / 2 - sourceIcon.Width / 2,
-						sourceIconRect.Y + sourceIconRect.Height / 2 - sourceIcon.Height / 2);
+					if (sourceIcon != null)
+					{
+						e.Graphics.DrawImage(sourceIcon, 
+							sourceIconRect.X + sourceIconRect.Width / 2 - sourceIcon.Width / 2,
+							sourceIconRect.Y + sourceIconRect.Height / 2 - sourceIcon.Height / 2);
+					}
 					e.Graphics.DrawString(logEntry.Message, this.Font, foregroundBrush, textRect, messageFormat);
 					if (showTimestamp)
 					{
