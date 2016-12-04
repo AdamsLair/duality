@@ -159,9 +159,13 @@ namespace Duality.Editor.Plugins.LogView
 			if (this.sourceFilterButtons.TryGetValue(source.Id, out button))
 				return false;
 
-			button = new ToolStripButton(source.Name);
+			Image image = null;
+			if (source.CustomInfo != null)
+				image = source.CustomInfo.GetType().GetEditorImage();
+
+			button = new ToolStripButton(source.Name, image);
 			button.Tag = source.Id;
-			button.DisplayStyle = ToolStripItemDisplayStyle.Text;
+			button.DisplayStyle = (image == null) ? ToolStripItemDisplayStyle.Text : ToolStripItemDisplayStyle.Image;
 			button.CheckOnClick = true;
 			button.Checked = true;
 			button.CheckedChanged += this.sourceFilterButton_CheckedChanged;

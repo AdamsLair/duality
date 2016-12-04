@@ -18,9 +18,9 @@ namespace Duality.Editor.Plugins.LogView
 	{
 		public class ViewEntry
 		{
-			private EditorLogEntry log      = default(EditorLogEntry);
-			private int            msgLines = 1;
-			private int            height   = 0;
+			private EditorLogEntry log        = default(EditorLogEntry);
+			private Image          sourceIcon = null;
+			private int            height     = 0;
 			
 			public EditorLogEntry LogEntry
 			{
@@ -48,20 +48,24 @@ namespace Duality.Editor.Plugins.LogView
 			}
 			public Image SourceIcon
 			{
-				get
-				{
-					if (this.log.Source == Logs.Game) return Properties.LogViewResCache.IconLogGame;
-					if (this.log.Source == Logs.Core) return Properties.LogViewResCache.IconLogCore;
-					if (this.log.Source == Logs.Editor) return Properties.LogViewResCache.IconLogEditor;
-					return null;
-				}
+				get { return this.sourceIcon; }
 			}
 
 			public ViewEntry(LogEntryList parent, EditorLogEntry log)
 			{
 				this.log = log;
-				this.msgLines = log.Content.Message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Length;
-				this.height = Math.Max(20, 7 + this.msgLines * parent.Font.Height);
+
+				int lineCount = log.Content.Message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Length;
+				this.height = Math.Max(20, 7 + lineCount * parent.Font.Height);
+
+				if (this.log.Source == Logs.Game) 
+					this.sourceIcon = Properties.LogViewResCache.IconLogGame;
+				else if (this.log.Source == Logs.Core)
+					this.sourceIcon = Properties.LogViewResCache.IconLogCore;
+				else if (this.log.Source == Logs.Editor)
+					this.sourceIcon = Properties.LogViewResCache.IconLogEditor;
+				else if (this.log.Source.CustomInfo != null)
+					this.sourceIcon = this.log.Source.CustomInfo.GetType().GetEditorImage();
 			}
 
 			public void GetFullText(StringBuilder appendTo)
