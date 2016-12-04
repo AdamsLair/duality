@@ -12,10 +12,11 @@ namespace Duality
 	/// </summary>
 	public sealed class Log
 	{
-		private List<ILogOutput> output  = null;
-		private string           name    = "Log";
-		private string           prefix  = "[Log] ";
-		private object           syncObj = new object();
+		private List<ILogOutput> output      = null;
+		private string           name        = "Log";
+		private string           prefix      = "[Log] ";
+		private ILogOutput[]     syncOutput  = null;
+		private object           syncObj     = new object();
 
 
 		/// <summary>
@@ -31,6 +32,14 @@ namespace Duality
 		public string Prefix
 		{
 			get { return this.prefix; }
+		}
+		/// <summary>
+		/// [GET] Enumerates all <see cref="ILogOutput"/> instances that are
+		/// subscribed to this <see cref="Log"/>.
+		/// </summary>
+		public IEnumerable<ILogOutput> Output
+		{
+			get { return this.syncOutput; }
 		}
 
 
@@ -55,6 +64,7 @@ namespace Duality
 			lock (this.syncObj)
 			{
 				this.output.Add(writer);
+				this.syncOutput = this.output.ToArray();
 			}
 		}
 		/// <summary>
@@ -66,6 +76,7 @@ namespace Duality
 			lock (this.syncObj)
 			{
 				this.output.Remove(writer);
+				this.syncOutput = this.output.ToArray();
 			}
 		}
 
@@ -74,22 +85,18 @@ namespace Duality
 		/// </summary>
 		public void PushIndent()
 		{
-			lock (this.syncObj)
-			{
-				foreach (ILogOutput target in this.output)
-					target.PushIndent();
-			}
+			ILogOutput[] localOutput = this.syncOutput;
+			foreach (ILogOutput target in localOutput)
+				target.PushIndent();
 		}
 		/// <summary>
 		/// Decreases the current log entry indent.
 		/// </summary>
 		public void PopIndent()
 		{
-			lock (this.syncObj)
-			{
-				foreach (ILogOutput target in this.output)
-					target.PopIndent();
-			}
+			ILogOutput[] localOutput = this.syncOutput;
+			foreach (ILogOutput target in localOutput)
+				target.PopIndent();
 		}
 
 		private void Write(LogMessageType type, string msg, object context)
@@ -105,24 +112,22 @@ namespace Duality
 			}
 
 			// Forward the message to all outputs
+			Profile.TimeLog.BeginMeasure();
 			LogEntry entry = new LogEntry(type, msg);
-			lock (this.syncObj)
+			ILogOutput[] localOutput = this.syncOutput;
+			foreach (ILogOutput target in localOutput)
 			{
-				Profile.TimeLog.BeginMeasure();
-				foreach (ILogOutput target in this.output)
+				try
 				{
-					try
-					{
-						target.Write(entry, context, this);
-					}
-					catch (Exception)
-					{
-						// Don't allow log outputs to throw unhandled exceptions,
-						// because they would result in another log - and more exceptions.
-					}
+					target.Write(entry, context, this);
 				}
-				Profile.TimeLog.EndMeasure();
+				catch (Exception)
+				{
+					// Don't allow log outputs to throw unhandled exceptions,
+					// because they would result in another log - and more exceptions.
+				}
 			}
+			Profile.TimeLog.EndMeasure();
 		}
 		private string FormatMessage(string format, object[] obj)
 		{
