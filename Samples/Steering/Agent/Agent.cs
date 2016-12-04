@@ -375,6 +375,11 @@ namespace Steering
 
 #if DEBUG
 
+		private class AgentLog : CustomVisualLogInfo
+		{
+			public AgentLog() : base("Agent", ColorRgba.White) { }
+		}
+
 		private VisualLoggingMode debugVisualizationMode;
 		public VisualLoggingMode DebugVisualizationMode
 		{
@@ -382,12 +387,7 @@ namespace Steering
 			set { debugVisualizationMode = value; }
 		}
 
-		static Agent()
-		{
-			VisualDebugLog.BaseColor = ColorRgba.White;
-		}
-
-		private static readonly VisualLog VisualDebugLog = VisualLogs.Get("agent");
+		private static readonly VisualLog VisualDebugLog = VisualLogs.Get<AgentLog>();
 		private const float DebugVelocityRadius = 100f;
 #endif
 		#endregion

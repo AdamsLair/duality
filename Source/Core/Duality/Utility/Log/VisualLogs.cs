@@ -15,15 +15,16 @@ namespace Duality
 	/// </summary>
 	public static class VisualLogs
 	{
-		private	static	VisualLog						logDefault	= new VisualLog("Default");
-		private static	Dictionary<string,VisualLog>	logRegistry	= new Dictionary<string,VisualLog> { { logDefault.Name, logDefault } };
+		private static List<VisualLog> logs = new List<VisualLog>();
+		private static VisualLog defaultLog = new VisualLog("Default");
+		private static object syncObj = new object();
 
 		/// <summary>
 		/// [GET] Enumerates all currently existing logs.
 		/// </summary>
 		public static IEnumerable<VisualLog> All
 		{
-			get { return logRegistry.Values; }
+			get { return logs; }
 		}
 		/// <summary>
 		/// [GET] Returns the default log, which can be used for quick output hacks and miscellaneous data.
@@ -32,28 +33,23 @@ namespace Duality
 		/// </summary>
 		public static VisualLog Default
 		{
-			get { return logDefault; }
+			get { return defaultLog; }
 		}
+		
 		/// <summary>
-		/// [GET] Creates or retrieves a named log. Once a log has been created, it will remain available until
-		/// explicitly removed.
+		/// Returns a custom global log channel that is defined by a <see cref="CustomVisualLogInfo"/>
+		/// implementation, as provided via generic type parameter.
 		/// </summary>
-		/// <param name="logName"></param>
+		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static VisualLog Get(string logName)
+		public static VisualLog Get<T>() where T : CustomVisualLogInfo, new()
 		{
-			VisualLog log;
-			if (!logRegistry.TryGetValue(logName, out log))
-			{
-				log = new VisualLog(logName);
-				logRegistry[logName] = log;
-			}
-			return log;
+			return CustomLogHolder<T>.Instance;
 		}
 
 		internal static void PrepareRenderLogEntries()
 		{
-			if (logRegistry.Values.Any(log => log.Entries.Count > 0) && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+			if (logs.Any(log => log.Entries.Count > 0) && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 			{
 				VisualLogRenderer renderer = Scene.Current.FindComponent<VisualLogRenderer>(false);
 				if (renderer == null)
@@ -66,13 +62,28 @@ namespace Duality
 		}
 		internal static void UpdateLogEntries()
 		{
-			foreach (VisualLog log in logRegistry.Values)
+			foreach (VisualLog log in logs)
 				log.Update();
 		}
 		internal static void ClearAll()
 		{
-			foreach (VisualLog log in logRegistry.Values)
+			foreach (VisualLog log in logs)
 				log.Clear();
+		}
+
+		private static class CustomLogHolder<T> where T : CustomVisualLogInfo, new()
+		{
+			public static VisualLog Instance;
+
+			static CustomLogHolder()
+			{
+				T logInfo = new T();
+				Instance = new VisualLog(logInfo.Name);
+				lock (syncObj)
+				{
+					logs.Add(Instance);
+				}
+			}
 		}
 	}
 }

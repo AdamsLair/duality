@@ -191,6 +191,7 @@
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
     <Compile Include="Utility\IReadOnlyGrid.cs" />
     <Compile Include="Utility\Grid.cs" />
+    <Compile Include="Utility\Log\CustomVisualLogInfo.cs" />
     <Compile Include="Utility\Log\ILogOutput.cs" />
     <Compile Include="Utility\Log\CustomLogInfo.cs" />
     <Compile Include="Utility\Log\Logs.cs" />
