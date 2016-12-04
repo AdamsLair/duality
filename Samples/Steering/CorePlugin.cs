@@ -7,9 +7,12 @@ namespace Steering
 	{
 		protected override void OnBeforeUpdate()
 		{
-			var agents = Scene.Current.FindComponents<Agent>();
-			foreach (var agent in agents)
-				agent.Update();
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+			{
+				var agents = Scene.Current.FindComponents<Agent>();
+				foreach (var agent in agents)
+					agent.Update();
+			}
 		}
 	}
 }
