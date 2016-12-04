@@ -79,7 +79,7 @@ namespace Duality
 			static CustomLogHolder()
 			{
 				T logInfo = new T();
-				Instance = new VisualLog(logInfo.Name);
+				Instance = new VisualLog(logInfo.Name, logInfo);
 				lock (syncObj)
 				{
 					logs.Add(Instance);

@@ -12,9 +12,10 @@ namespace Duality
 	/// </summary>
 	public sealed class Log
 	{
-		private List<ILogOutput> output      = new List<ILogOutput>();
 		private string           name        = string.Empty;
 		private string           id          = string.Empty;
+		private CustomLogInfo    customInfo  = null;
+		private List<ILogOutput> output      = new List<ILogOutput>();
 		private ILogOutput[]     syncOutput  = new ILogOutput[0];
 		private object           syncObj     = new object();
 
@@ -35,6 +36,13 @@ namespace Duality
 			get { return this.id; }
 		}
 		/// <summary>
+		/// [GET] An optional <see cref="CustomLogInfo"/> that was passed to the log on creation.
+		/// </summary>
+		public CustomLogInfo CustomInfo
+		{
+			get { return this.customInfo; }
+		}
+		/// <summary>
 		/// [GET] Enumerates all <see cref="ILogOutput"/> instances that are
 		/// subscribed to this <see cref="Log"/>.
 		/// </summary>
@@ -49,11 +57,13 @@ namespace Duality
 		/// </summary>
 		/// <param name="name">The logs display name.</param>
 		/// <param name="id">The logs shorthand ID that will be displayed along with its log entries.</param>
+		/// <param name="customInfo">An optional <see cref="CustomLogInfo"/> object that acts as a tag.</param>
 		/// <param name="output">It will be initially connected to the specified outputs.</param>
-		public Log(string name, string id, params ILogOutput[] output)
+		public Log(string name, string id, CustomLogInfo customInfo = null)
 		{
 			this.name = name ?? string.Empty;
 			this.id = id ?? string.Empty;
+			this.customInfo = customInfo;
 			this.output.AddRange(output);
 			this.syncOutput = this.output.ToArray();
 		}

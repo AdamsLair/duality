@@ -18,6 +18,7 @@ namespace Duality
 	public sealed class VisualLog
 	{
 		private	string					name			= "VisualLog";
+		private	CustomVisualLogInfo		customInfo		= null;
 		private	bool					visible			= true;
 		private	ColorRgba				baseColor		= ColorRgba.White.WithAlpha(0.5f);
 		private	VisibilityFlag			visibilityGroup	= VisibilityFlag.AllGroups;
@@ -29,6 +30,13 @@ namespace Duality
 		public string Name
 		{
 			get { return this.name; }
+		}
+		/// <summary>
+		/// [GET] An optional <see cref="CustomVisualLogInfo"/> that was passed to the log on creation.
+		/// </summary>
+		public CustomVisualLogInfo CustomInfo
+		{
+			get { return this.customInfo; }
 		}
 		/// <summary>
 		/// [GET / SET] Whether or not this log will be displayed. It's basically an on / off switch.
@@ -64,9 +72,10 @@ namespace Duality
 		}
 
 
-		public VisualLog(string name)
+		public VisualLog(string name, CustomVisualLogInfo customInfo = null)
 		{
 			this.name = name;
+			this.customInfo = customInfo;
 		}
 
 		/// <summary>

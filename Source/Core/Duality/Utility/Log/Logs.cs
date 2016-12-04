@@ -122,7 +122,7 @@ namespace Duality
 			static CustomLogHolder()
 			{
 				T logInfo = new T();
-				Instance = new Log(logInfo.Name, logInfo.Id);
+				Instance = new Log(logInfo.Name, logInfo.Id, logInfo);
 				lock (syncObj)
 				{
 					foreach (ILogOutput output in globalOutput)
