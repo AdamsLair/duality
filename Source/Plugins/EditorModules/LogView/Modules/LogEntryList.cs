@@ -248,13 +248,13 @@ namespace Duality.Editor.Plugins.LogView
 			this.UpdateDisplayedEntries();
 			this.OnContentChanged();
 		}
-		public void AddLogEntries(IReadOnlyList<EditorLogEntry> entries, int index, int count)
+		public void AddLogEntries(EditorLogEntry[] entries)
 		{
 			// Update content
-			ViewEntry[] newEntries = new ViewEntry[count];
-			for (int i = 0; i < count; i++)
+			ViewEntry[] newEntries = new ViewEntry[entries.Length];
+			for (int i = 0; i < entries.Length; i++)
 			{
-				ViewEntry viewEntry = new ViewEntry(this, entries[index + i]);
+				ViewEntry viewEntry = new ViewEntry(this, entries[i]);
 				this.entryList.Add(viewEntry);
 				newEntries[i] = viewEntry;
 			}
@@ -267,20 +267,10 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		public void BindTo(EditorLogOutput logOutput)
 		{
+			this.Clear();
+			this.lastLogItemCount = 0;
 			this.boundToLogOutput = logOutput;
-
-			if (logOutput == null)
-			{
-				this.Clear();
-				return;
-			}
-
-			this.entryList.Clear();
-			for (int i = 0; i < logOutput.Entries.Count; i++)
-				this.entryList.Add(new ViewEntry(this, logOutput.Entries[i]));
-			this.UpdateDisplayedEntries();
-
-			this.OnContentChanged();
+			this.timerLogSchedule.Enabled = (this.boundToLogOutput != null);
 		}
 		
 		public void SetFilterFlag(MessageFilter flag, bool isSet)
@@ -342,10 +332,10 @@ namespace Duality.Editor.Plugins.LogView
 			return null;
 		}
 		
-		private void ProcessIncomingEntries(IReadOnlyList<EditorLogEntry> entries, int index, int count)
+		private void ProcessIncomingEntries(EditorLogEntry[] entries)
 		{
 			bool wasAtEnd = this.IsScrolledToEnd;
-			this.AddLogEntries(entries, index, count);
+			this.AddLogEntries(entries);
 			if (wasAtEnd) this.ScrollToEnd();
 		}
 		private void UpdateFirstDisplayIndex()
@@ -684,11 +674,18 @@ namespace Duality.Editor.Plugins.LogView
 		
 		private void timerLogSchedule_Tick(object sender, EventArgs e)
 		{
-			IReadOnlyList<EditorLogEntry> entryList = this.boundToLogOutput.Entries;
-			if (entryList.Count > this.lastLogItemCount)
+			int logLength = this.boundToLogOutput.EntryCount;
+			if (logLength > this.lastLogItemCount)
 			{
-				this.ProcessIncomingEntries(entryList, this.lastLogItemCount, entryList.Count - this.lastLogItemCount);
-				this.lastLogItemCount = entryList.Count;
+				EditorLogEntry[] newEntries = new EditorLogEntry[logLength - this.lastLogItemCount];
+				this.boundToLogOutput.ReadEntries(
+					newEntries, 
+					0, 
+					this.lastLogItemCount, 
+					logLength - this.lastLogItemCount);
+
+				this.ProcessIncomingEntries(newEntries);
+				this.lastLogItemCount = logLength;
 				this.timerLogSchedule.Interval = 50;
 			}
 			else

@@ -39,14 +39,8 @@ namespace Duality.Editor.Plugins.LogView
 			this.logEntryList.ScrollToEnd();
 
 			EditorLogOutput logHistory = DualityEditorApp.GlobalLogData;
-			for (int i = 0; i < logHistory.Entries.Count; i++)
-			{
-				LogMessageType type = logHistory.Entries[i].Content.Type;
-				if (type == LogMessageType.Warning)
-					this.unseenWarnings++;
-				else if (type == LogMessageType.Error)
-					this.unseenErrors++;
-			}
+			this.unseenErrors = logHistory.ErrorCount;
+			this.unseenWarnings = logHistory.WarningCount;
 			this.UpdateTabText();
 		}
 		protected override void OnShown(EventArgs e)
