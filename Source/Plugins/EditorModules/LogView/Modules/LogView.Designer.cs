@@ -250,11 +250,6 @@
 			this.logEntryList.AutoScroll = true;
 			this.logEntryList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.logEntryList.BaseColor = System.Drawing.Color.FromArgb(((int)(((byte)(162)))), ((int)(((byte)(162)))), ((int)(((byte)(162)))));
-			this.logEntryList.DisplayFilter = ((Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter)((((((Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.SourceCore | Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.SourceEditor)
-						| Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.SourceGame)
-						| Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.TypeMessage)
-						| Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.TypeWarning)
-						| Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.TypeError)));
 			this.logEntryList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.logEntryList.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.logEntryList.Location = new System.Drawing.Point(0, 0);

@@ -16,23 +16,6 @@ namespace Duality.Editor.Plugins.LogView
 {
 	public class LogEntryList : UserControl
 	{
-		[Flags]
-		public enum MessageFilter
-		{
-			None           = 0x0,
-
-			SourceCore     = 0x01,
-			SourceEditor   = 0x02,
-			SourceGame     = 0x04,
-
-			TypeMessage    = 0x08,
-			TypeWarning    = 0x10,
-			TypeError      = 0x20,
-
-			SourceAll      = SourceCore | SourceEditor | SourceGame,
-			TypeAll        = TypeMessage | TypeWarning | TypeError,
-			All            = SourceAll | TypeAll
-		}
 		public class ViewEntry
 		{
 			private EditorLogEntry log      = default(EditorLogEntry);
@@ -80,17 +63,6 @@ namespace Duality.Editor.Plugins.LogView
 				this.height = Math.Max(20, 7 + this.msgLines * parent.Font.Height);
 			}
 
-			public bool Matches(MessageFilter filter)
-			{
-				LogMessageType type = this.log.Content.Type;
-				if (type == LogMessageType.Message && (filter & MessageFilter.TypeMessage) == MessageFilter.None) return false;
-				if (type == LogMessageType.Warning && (filter & MessageFilter.TypeWarning) == MessageFilter.None) return false;
-				if (type == LogMessageType.Error && (filter & MessageFilter.TypeError) == MessageFilter.None) return false;
-				if (this.log.Source == Logs.Core && (filter & MessageFilter.SourceCore) == MessageFilter.None) return false;
-				if (this.log.Source == Logs.Editor && (filter & MessageFilter.SourceEditor) == MessageFilter.None) return false;
-				if (this.log.Source == Logs.Game && (filter & MessageFilter.SourceGame) == MessageFilter.None) return false;
-				return true;
-			}
 			public void GetFullText(StringBuilder appendTo)
 			{
 				appendTo.Append(this.log.Source.Id);
@@ -126,7 +98,8 @@ namespace Duality.Editor.Plugins.LogView
 
 		private List<ViewEntry>  entryList          = new List<ViewEntry>();
 		private List<ViewEntry>  displayedEntryList = new List<ViewEntry>();
-		private MessageFilter    displayFilter      = MessageFilter.All;
+		private HashSet<LogMessageType> msgTypeFilter = new HashSet<LogMessageType>();
+		private HashSet<string>  sourceIdFilter     = new HashSet<string>();
 		private Color            baseColor          = SystemColors.Control;
 		private bool             scrolledToEnd      = true;
 		private bool             lastSelected       = true;
@@ -183,24 +156,6 @@ namespace Duality.Editor.Plugins.LogView
 		public int ContentHeight
 		{
 			get { return this.AutoScrollMinSize.Height; }
-		}
-		public MessageFilter DisplayFilter
-		{
-			get { return this.displayFilter; }
-			set 
-			{
-				if (this.displayFilter != value)
-				{
-					ViewEntry lastEntry = this.GetEntryAt(this.ScrollOffset);
-					int entryOff = this.ScrollOffset - this.GetEntryOffset(lastEntry);
-
-					this.displayFilter = value;
-					this.UpdateDisplayedEntries();
-					this.OnContentChanged();
-
-					this.ScrollToEntry(lastEntry, entryOff);
-				}
-			}
 		}
 		public Color BaseColor
 		{
@@ -272,12 +227,19 @@ namespace Duality.Editor.Plugins.LogView
 			this.timerLogSchedule.Enabled = (this.boundToLogOutput != null);
 		}
 		
-		public void SetFilterFlag(MessageFilter flag, bool isSet)
+		public void SetTypeFilter(LogMessageType type, bool isFiltered)
 		{
-			if (isSet)
-				this.DisplayFilter |= flag;
-			else
-				this.DisplayFilter &= ~flag;
+			if (isFiltered && this.msgTypeFilter.Add(type))
+				this.OnDisplayFilterChanged();
+			else if (!isFiltered && this.msgTypeFilter.Remove(type))
+				this.OnDisplayFilterChanged();
+		}
+		public void SetSourceFilter(string sourceId, bool isFiltered)
+		{
+			if (isFiltered && this.sourceIdFilter.Add(sourceId))
+				this.OnDisplayFilterChanged();
+			else if (!isFiltered && this.sourceIdFilter.Remove(sourceId))
+				this.OnDisplayFilterChanged();
 		}
 		
 		public void ScrollToBegin()
@@ -364,7 +326,11 @@ namespace Duality.Editor.Plugins.LogView
 			this.displayedEntryList.Clear();
 			for (int i = 0; i < this.entryList.Count; i++)
 			{
-				if (!this.entryList[i].Matches(this.displayFilter)) continue;
+				EditorLogEntry logEntry = this.entryList[i].LogEntry;
+
+				if (this.msgTypeFilter.Contains(logEntry.Content.Type)) continue;
+				if (this.sourceIdFilter.Contains(logEntry.Source.Id)) continue;
+
 				this.displayedEntryList.Add(this.entryList[i]);
 			}
 		}
@@ -414,6 +380,16 @@ namespace Duality.Editor.Plugins.LogView
 			this.UpdateFirstDisplayIndex();
 			this.UpdateScrolledToEnd();
 			this.UpdateHoveredEntry(this.PointToClient(Cursor.Position));
+		}
+		private void OnDisplayFilterChanged()
+		{
+			ViewEntry lastEntry = this.GetEntryAt(this.ScrollOffset);
+			int entryOff = this.ScrollOffset - this.GetEntryOffset(lastEntry);
+
+			this.UpdateDisplayedEntries();
+			this.OnContentChanged();
+
+			this.ScrollToEntry(lastEntry, entryOff);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)

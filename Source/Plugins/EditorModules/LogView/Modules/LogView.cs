@@ -106,12 +106,12 @@ namespace Duality.Editor.Plugins.LogView
 			if (node.GetElementValue("AutoClear", out tryParseBool))    this.checkAutoClear.Checked = tryParseBool;
 			if (node.GetElementValue("PauseOnError", out tryParseBool)) this.buttonPauseOnError.Checked = tryParseBool;
 
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.SourceCore, this.buttonCore.Checked);
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.SourceEditor, this.buttonEditor.Checked);
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.SourceGame, this.buttonGame.Checked);
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.TypeMessage, this.buttonMessages.Checked);
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.TypeWarning, this.buttonWarnings.Checked);
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.TypeError, this.buttonErrors.Checked);
+			this.logEntryList.SetSourceFilter(Logs.Core.Id, !this.buttonCore.Checked);
+			this.logEntryList.SetSourceFilter(Logs.Editor.Id, !this.buttonEditor.Checked);
+			this.logEntryList.SetSourceFilter(Logs.Game.Id, !this.buttonGame.Checked);
+			this.logEntryList.SetTypeFilter(LogMessageType.Message, !this.buttonMessages.Checked);
+			this.logEntryList.SetTypeFilter(LogMessageType.Warning, !this.buttonWarnings.Checked);
+			this.logEntryList.SetTypeFilter(LogMessageType.Error, !this.buttonErrors.Checked);
 		}
 
 		private void MarkAsRead()
@@ -150,27 +150,27 @@ namespace Duality.Editor.Plugins.LogView
 
 		private void buttonCore_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.SourceCore, this.buttonCore.Checked);
+			this.logEntryList.SetSourceFilter(Logs.Core.Id, !this.buttonCore.Checked);
 		}
 		private void buttonEditor_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.SourceEditor, this.buttonEditor.Checked);
+			this.logEntryList.SetSourceFilter(Logs.Editor.Id, !this.buttonEditor.Checked);
 		}
 		private void buttonGame_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.SourceGame, this.buttonGame.Checked);
+			this.logEntryList.SetSourceFilter(Logs.Game.Id, !this.buttonGame.Checked);
 		}
 		private void buttonMessages_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.TypeMessage, this.buttonMessages.Checked);
+			this.logEntryList.SetTypeFilter(LogMessageType.Message, !this.buttonMessages.Checked);
 		}
 		private void buttonWarnings_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.TypeWarning, this.buttonWarnings.Checked);
+			this.logEntryList.SetTypeFilter(LogMessageType.Warning, !this.buttonWarnings.Checked);
 		}
 		private void buttonErrors_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.TypeError, this.buttonErrors.Checked);
+			this.logEntryList.SetTypeFilter(LogMessageType.Error, !this.buttonErrors.Checked);
 		}
 		private void buttonPauseOnError_CheckedChanged(object sender, EventArgs e) {}
 		private void actionClear_ButtonClick(object sender, EventArgs e)
