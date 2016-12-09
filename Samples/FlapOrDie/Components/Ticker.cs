@@ -32,7 +32,7 @@ namespace FlapOrDie.Components
 
         void ICmpUpdatable.OnUpdate()
         {
-            delta.X = this.speed * Time.MsPFMult * Time.TimeMult / 1000;
+            delta.X = this.speed * Time.MillisecondsPerFrame * Time.TimeMult / 1000;
 
             this.GameObj.Transform.MoveBy(-delta);
             if(this.GameObj.Transform.Pos.X + this.Text.TextMetrics.Size.X < -FlapOrDieCorePlugin.HalfWidth)

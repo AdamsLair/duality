@@ -304,7 +304,7 @@ namespace Duality.Components.Renderers
 			// Advance animation timer
 			if (this.animLoopMode == LoopMode.Loop)
 			{
-				this.animTime += Time.TimeMult * Time.SPFMult;
+				this.animTime += Time.TimeMult * Time.SecondsPerFrame;
 				if (this.animTime > this.animDuration)
 				{
 					int n = (int)(this.animTime / this.animDuration);
@@ -313,14 +313,14 @@ namespace Duality.Components.Renderers
 			}
 			else if (this.animLoopMode == LoopMode.Once)
 			{
-				this.animTime = MathF.Min(this.animTime + Time.TimeMult * Time.SPFMult, this.animDuration);
+				this.animTime = MathF.Min(this.animTime + Time.TimeMult * Time.SecondsPerFrame, this.animDuration);
 			}
 			else if (this.animLoopMode == LoopMode.PingPong)
 			{
 				float frameTime = this.animDuration / actualFrameCount;
 				float pingpongDuration = (this.animDuration - frameTime) * 2.0f;
 
-				this.animTime += Time.TimeMult * Time.SPFMult;
+				this.animTime += Time.TimeMult * Time.SecondsPerFrame;
 				if (this.animTime > pingpongDuration)
 				{
 					int n = (int)(this.animTime / pingpongDuration);
@@ -329,7 +329,7 @@ namespace Duality.Components.Renderers
 			}
 			else if (this.animLoopMode == LoopMode.Queue)
 			{
-				this.animTime += Time.TimeMult * Time.SPFMult;
+				this.animTime += Time.TimeMult * Time.SecondsPerFrame;
 				if (this.animTime > this.animDuration)
 				{
 					int n = (int)(this.animTime / this.animDuration);

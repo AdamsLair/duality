@@ -220,7 +220,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			// Advance animation time, unless we're displaying a fixed single frame
 			if (this.activeLoopMode != LoopMode.RandomSingle)
 			{
-				this.animTime += this.animSpeed * Time.TimeMult * Time.SPFMult;
+				this.animTime += this.animSpeed * Time.TimeMult * Time.SecondsPerFrame;
 			}
 		}
 	}

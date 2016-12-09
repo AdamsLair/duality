@@ -72,7 +72,7 @@ namespace FlapOrDie.Controllers
 
         void ICmpUpdatable.OnUpdate()
         {
-            float lastDelta = Time.MsPFMult * Time.TimeMult / 1000;
+            float lastDelta = Time.MillisecondsPerFrame * Time.TimeMult / 1000;
             if (this.rigidBody == null) this.rigidBody = this.GameObj.GetComponent<RigidBody>();
 
             if (!this.isDead)
@@ -80,7 +80,7 @@ namespace FlapOrDie.Controllers
                 if (DualityApp.Keyboard.KeyHit(Key.Space))
                 {
                     this.rigidBody.ApplyLocalImpulse(-Vector2.UnitY * this.impulseStrength);
-                    flapTime = (Time.MsPFMult / 1000 * 3);
+                    flapTime = (Time.MillisecondsPerFrame / 1000 * 3);
                 }
             }
 

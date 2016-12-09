@@ -125,7 +125,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float MotorForce
 		{
-			get { return this.joint == null ? 0.0f : (PhysicsUnit.ForceToDuality * (this.joint as PrismaticJoint).MotorForce * Time.SPFMult); }
+			get { return this.joint == null ? 0.0f : (PhysicsUnit.ForceToDuality * (this.joint as PrismaticJoint).MotorForce * Time.SecondsPerFrame); }
 		}
 		/// <summary>
 		/// [GET / SET] The reference angle that is used to constrain the bodies angle.

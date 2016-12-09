@@ -501,7 +501,7 @@ namespace Duality.Audio
 			{
 				if (this.fadeTarget != this.curFade)
 				{
-					float fadeTemp = Time.TimeMult * Time.SPFMult / Math.Max(0.05f, this.fadeTimeSec);
+					float fadeTemp = Time.TimeMult * Time.SecondsPerFrame / Math.Max(0.05f, this.fadeTimeSec);
 
 					if (this.fadeTarget > this.curFade)
 						this.curFade += fadeTemp;
@@ -516,11 +516,11 @@ namespace Duality.Audio
 			// Special paused-fading
 			if (this.paused && this.pauseFade > 0.0f)
 			{
-				this.pauseFade = MathF.Max(0.0f, this.pauseFade - Time.TimeMult * Time.SPFMult * 5.0f);
+				this.pauseFade = MathF.Max(0.0f, this.pauseFade - Time.TimeMult * Time.SecondsPerFrame * 5.0f);
 			}
 			else if (!this.paused && this.pauseFade < 1.0f)
 			{
-				this.pauseFade = MathF.Min(1.0f, this.pauseFade + Time.TimeMult * Time.SPFMult * 5.0f);
+				this.pauseFade = MathF.Min(1.0f, this.pauseFade + Time.TimeMult * Time.SecondsPerFrame * 5.0f);
 			}
 
 			// Apply the sounds state to its internal native audio source
@@ -547,7 +547,7 @@ namespace Duality.Audio
 			// Update play time
 			if (!this.paused)
 			{
-				this.playTime += MathF.Max(0.5f, nativeState.Pitch) * Time.TimeMult * Time.SPFMult;
+				this.playTime += MathF.Max(0.5f, nativeState.Pitch) * Time.TimeMult * Time.SecondsPerFrame;
 				if (this.sound.Res.FadeOutAt > 0.0f && this.playTime >= this.sound.Res.FadeOutAt)
 					this.FadeOut(this.sound.Res.FadeOutTime);
 			}
@@ -571,7 +571,7 @@ namespace Duality.Audio
 			// Remove faded out sources
 			if (fadeOut && nativeState.Volume <= 0.0f)
 			{
-				this.fadeWaitEnd += Time.TimeMult * Time.MsPFMult;
+				this.fadeWaitEnd += Time.TimeMult * Time.MillisecondsPerFrame;
 				// After fading out entirely, wait 50 ms before actually stopping the source to prevent unpleasant audio tick / glitch noises
 				if (this.fadeWaitEnd > 50.0f)
 				{

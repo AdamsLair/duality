@@ -21,7 +21,7 @@
 		/// <summary>
 		/// SI unit: s
 		/// </summary>
-		public const float TimeToDuality            = Time.FPSMult;
+		public const float TimeToDuality            = Time.FramesPerSecond;
 		/// <summary>
 		/// SI unit: m/s
 		/// </summary>

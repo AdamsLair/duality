@@ -82,7 +82,7 @@ namespace DualStickSpaceShooter
 			this.state = MindState.FallingAsleep;
 			this.eyeOpenTarget = 0.0f;
 			this.eyeBlinking = false;
-			this.eyeSpeed = Time.SPFMult / MathF.Rnd.NextFloat(1.5f, 3.5f);
+			this.eyeSpeed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(1.5f, 3.5f);
 			this.DeactivateSpikes();
 		}
 		private void Awake()
@@ -93,7 +93,7 @@ namespace DualStickSpaceShooter
 			this.state = MindState.Awaking;
 			this.eyeOpenTarget = 1.0f;
 			this.eyeBlinking = false;
-			this.eyeSpeed = Time.SPFMult / MathF.Rnd.NextFloat(1.0f, 1.5f);
+			this.eyeSpeed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(1.0f, 1.5f);
 
 			this.RandomizeBlinkTimer();
 		}
@@ -106,7 +106,7 @@ namespace DualStickSpaceShooter
 		{
 			this.eyeBlinking = true;
 			this.eyeOpenTarget = MathF.Min(1.0f - blinkStrength, this.eyeOpenTarget);
-			this.eyeSpeed = Time.SPFMult / MathF.Rnd.NextFloat(0.05f, 0.25f);
+			this.eyeSpeed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(0.05f, 0.25f);
 		}
 		private void BlinkSpikes(float blinkStrength = 1.0f)
 		{
@@ -115,7 +115,7 @@ namespace DualStickSpaceShooter
 			{
 				this.spikeState[i].Blinking = true;
 				this.spikeState[i].OpenTarget = MathF.Min(1.0f - blinkStrength, this.eyeOpenTarget);
-				this.spikeState[i].Speed = Time.SPFMult / MathF.Rnd.NextFloat(0.1f, 0.2f);
+				this.spikeState[i].Speed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(0.1f, 0.2f);
 			}
 		}
 		private void DeactivateSpikes()
@@ -126,7 +126,7 @@ namespace DualStickSpaceShooter
 			{
 				this.spikeState[i].Blinking = false;
 				this.spikeState[i].OpenTarget = 0.0f;
-				this.spikeState[i].Speed = Time.SPFMult / MathF.Rnd.NextFloat(0.25f, 1.0f);
+				this.spikeState[i].Speed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(0.25f, 1.0f);
 			}
 		}
 		private void ActivateSpikes()
@@ -137,7 +137,7 @@ namespace DualStickSpaceShooter
 			{
 				this.spikeState[i].Blinking = false;
 				this.spikeState[i].OpenTarget = 1.0f;
-				this.spikeState[i].Speed = Time.SPFMult / MathF.Rnd.NextFloat(0.25f, 1.0f);
+				this.spikeState[i].Speed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(0.25f, 1.0f);
 			}
 		}
 
@@ -333,14 +333,14 @@ namespace DualStickSpaceShooter
 					{
 						ship.TargetThrust = -body.LinearVelocity / MathF.Max(body.LinearVelocity.Length, ship.Blueprint.Res.MaxSpeed);
 						ship.TargetAngleRatio = 0.1f;
-						this.idleTimer += Time.MsPFMult * Time.TimeMult;
+						this.idleTimer += Time.MillisecondsPerFrame * Time.TimeMult;
 						
 						if (this.spikesActive)
 							this.DeactivateSpikes();
 					}
 
 					// Blink occasionally
-					this.blinkTimer -= Time.MsPFMult * Time.TimeMult;
+					this.blinkTimer -= Time.MillisecondsPerFrame * Time.TimeMult;
 					if (this.blinkTimer <= 0.0f)
 					{
 						this.RandomizeBlinkTimer();
@@ -413,7 +413,7 @@ namespace DualStickSpaceShooter
 				if (this.spikeState[i].Blinking && this.spikeState[i].OpenValue <= this.spikeState[i].OpenTarget + 0.0001f)
 				{
 					this.spikeState[i].OpenTarget = 1.0f;
-					this.spikeState[i].Speed = Time.SPFMult / MathF.Rnd.NextFloat(0.25f, 1.0f);
+					this.spikeState[i].Speed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(0.25f, 1.0f);
 				}
 
 				// If we're extending a spike where the sensor has already registered a contact, explode
