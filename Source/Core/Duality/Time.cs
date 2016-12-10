@@ -27,7 +27,8 @@ namespace Duality
 		private static Stopwatch watch      = new Stopwatch();
 		private static TimeSpan  gameTimer  = TimeSpan.Zero;
 		private static double    frameBegin = 0.0d;
-		private static float     lastDelta  = 0.0f;
+		private static float     gameDelta  = 0.0f;
+		private static float     realDelta  = 0.0f;
 		private static float     timeMult   = 0.0f;
 		private static float     timeScale  = 1.0f;
 		private static int       timeFreeze = 0;
@@ -44,18 +45,25 @@ namespace Duality
 			get { return startup; }
 		}
 		/// <summary>
-		/// [GET] Returns the real time that has passed since engine startup.
+		/// [GET] Returns the real, unscaled time that has passed since engine startup.
 		/// </summary>
 		public static TimeSpan MainTimer
 		{
 			get { return watch.Elapsed; }
 		}
 		/// <summary>
-		/// [GET] Returns the time passed since the last frame in seconds weighted by <see cref="TimeScale"/>
+		/// [GET] Returns the time passed since the last frame in seconds weighted by <see cref="TimeScale"/>.
 		/// </summary>
 		public static float DeltaTime
 		{
-			get { return timeMult * SecondsPerFrame; }
+			get { return gameDelta; }
+		}
+		/// <summary>
+		/// [GET] Returns the real, unscaled and unclamped time passed since the last frame in seconds.
+		/// </summary>
+		public static float UnscaledDeltaTime
+		{
+			get { return gameDelta; }
 		}
 		/// <summary>
 		/// [GET] Frames per Second
@@ -130,15 +138,19 @@ namespace Duality
 
 			frameCount++;
 
-			double mainTimer = Time.MainTimer.TotalMilliseconds;
-			lastDelta = forceFixedStep ? MillisecondsPerFrame : MathF.Min((float)(mainTimer - frameBegin), MillisecondsPerFrame * 2); // Don't skip more than 2 frames / fall below 30 fps
+			double mainTimer = Time.MainTimer.TotalSeconds;
+			realDelta = (float)(mainTimer - frameBegin);
+			if (forceFixedStep)
+				gameDelta = timeScale * SecondsPerFrame;
+			else
+				gameDelta = timeScale * MathF.Min(realDelta, SecondsPerFrame * 2); // Don't skip more than 2 frames / just simulate slower when below 30 fps
 			frameBegin = mainTimer;
 
 			if (timeFreeze == 0)
 			{
 				if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-					gameTimer += TimeSpan.FromTicks((long)(lastDelta * timeScale * TimeSpan.TicksPerMillisecond));
-				timeMult = timeScale * lastDelta / MillisecondsPerFrame;
+					gameTimer += TimeSpan.FromTicks((long)(gameDelta * TimeSpan.TicksPerSecond));
+				timeMult = gameDelta / SecondsPerFrame;
 			}
 			else
 			{
@@ -146,12 +158,11 @@ namespace Duality
 			}
 
 			fps_frames++;
-			if (mainTimer - fps_last >= 1000.0f)
+			if (mainTimer - fps_last >= 1.0f)
 			{
 				fps = fps_frames;
 				fps_frames = 0;
 				fps_last = mainTimer;
-				//Logs.Core.Write("FPS: {0},\tms: {1}", fps, lastDelta);
 			}
 		}
 	}
