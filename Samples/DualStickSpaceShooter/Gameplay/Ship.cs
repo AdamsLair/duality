@@ -194,7 +194,7 @@ namespace DualStickSpaceShooter
 			// Heal when damaged
 			if (this.hitpoints < 1.0f)
 			{
-				this.hitpoints = MathF.Clamp(this.hitpoints + blueprint.HealRate * Time.SPFMult * Time.TimeMult / blueprint.MaxHitpoints, 0.0f, 1.0f);
+				this.hitpoints = MathF.Clamp(this.hitpoints + blueprint.HealRate * Time.SecondsPerFrame * Time.TimeMult / blueprint.MaxHitpoints, 0.0f, 1.0f);
 			}
 
 			// Apply force according to the desired thrust
@@ -237,7 +237,7 @@ namespace DualStickSpaceShooter
 			}
 
 			// Weapon cooldown
-			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MsPFMult * Time.TimeMult);
+			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MillisecondsPerFrame * Time.TimeMult);
 
 			// Play the owners special flight sound, when available
 			if (this.owner != null && this.owner.FlightLoop != null)
@@ -262,7 +262,7 @@ namespace DualStickSpaceShooter
 				// Start the flight loop when requested
 				if (targetVolume > 0.0f && this.flightLoop == null)
 				{
-					if ((int)Time.MainTimer.TotalMilliseconds % 2976 <= (int)Time.MsPFMult)
+					if ((int)Time.MainTimer.TotalMilliseconds % 2976 <= (int)Time.MillisecondsPerFrame)
 					{
 						this.flightLoop = DualityApp.Sound.PlaySound(this.owner.FlightLoop);
 						this.flightLoop.Looped = true;

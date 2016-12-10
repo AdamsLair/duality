@@ -64,7 +64,7 @@ namespace Duality
 		public override void GetReportData(out ProfileReportCounterData data, ProfileReportOptions options)
 		{
 			data = new ProfileReportCounterData();
-			data.Severity = MathF.Clamp(this.lastValue / Time.MsPFMult, 0.0f, 1.0f);
+			data.Severity = MathF.Clamp(this.lastValue / Time.MillisecondsPerFrame, 0.0f, 1.0f);
 
 			if ((options & ProfileReportOptions.LastValue) != ProfileReportOptions.None)
 				data.LastValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.lastValue);

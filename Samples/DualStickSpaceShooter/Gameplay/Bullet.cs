@@ -53,7 +53,7 @@ namespace DualStickSpaceShooter
 		
 		void ICmpUpdatable.OnUpdate()
 		{
-			this.lifetime -= Time.MsPFMult * Time.TimeMult;
+			this.lifetime -= Time.MillisecondsPerFrame * Time.TimeMult;
 			if (this.lifetime <= 0.0f) this.GameObj.DisposeLater();
 		}
 		void ICmpCollisionListener.OnCollisionBegin(Component sender, CollisionEventArgs args)

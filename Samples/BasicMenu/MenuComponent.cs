@@ -76,7 +76,7 @@ namespace BasicMenu
 		void ICmpUpdatable.OnUpdate()
 		{
 			// get the milliseconds elapsed since the last frame
-			float lastDelta = Time.TimeMult * Time.MsPFMult / 1000;
+			float lastDelta = Time.TimeMult * Time.MillisecondsPerFrame / 1000;
 
 			if (this.fadingTime < this.timeToFade)
 			{

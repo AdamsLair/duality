@@ -215,7 +215,7 @@ namespace Duality.Components.Diagnostics
 						TimeCounter timeCounter = counter as TimeCounter;
 						for (int i = 0; i < ProfileCounter.ValueHistoryLen; i++)
 						{
-							float factor = timeCounter.ValueGraph[i] / Time.MsPFMult;
+							float factor = timeCounter.ValueGraph[i] / Time.MillisecondsPerFrame;
 							cache.GraphValues[i] = factor * 0.75f;
 							cache.GraphColors[i] = ColorRgba.Lerp(ColorRgba.White, ColorRgba.Red, factor);
 						}

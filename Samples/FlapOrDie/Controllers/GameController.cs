@@ -99,7 +99,7 @@ namespace FlapOrDie.Controllers
             this.scoreText.Text.SourceText = String.Format("Score: {0} {1}", player.Points, highschore);
 
             deltaPos.X = this.baseSpeed + (player.Points * this.pointsMultiplier);
-            deltaPos.X *= Time.MsPFMult * Time.TimeMult / 1000;
+            deltaPos.X *= Time.MillisecondsPerFrame * Time.TimeMult / 1000;
 
 			this.bgScroller.Update(deltaPos.X);
 

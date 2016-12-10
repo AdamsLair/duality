@@ -13,15 +13,15 @@ namespace Duality
 		/// <summary>
 		/// The amount of frame per second at the desired refresh rate of 60 FPS.
 		/// </summary>
-		public const	float	FPSMult		= 60.0f;
+		public const	float	FramesPerSecond			= 60.0f;
 		/// <summary>
 		/// Milliseconds a frame takes at the desired refresh rate of 60 FPS
 		/// </summary>
-		public const	float	MsPFMult	= 1000.0f / FPSMult;
+		public const	float	MillisecondsPerFrame	= 1000.0f / FramesPerSecond;
 		/// <summary>
 		/// Seconds a frame takes at the desired refresh rate of 60 FPS
 		/// </summary>
-		public const	float	SPFMult		= 1.0f / FPSMult;
+		public const	float	SecondsPerFrame			= 1.0f / FramesPerSecond;
 
 		private	static	DateTime	startup		= DateTime.Now;
 		private	static	Stopwatch	watch		= new Stopwatch();
@@ -51,12 +51,11 @@ namespace Duality
 			get { return watch.Elapsed; }
 		}		//	G
 		/// <summary>
-		/// [GET] Time in milliseconds the last frame took. Do not use this for frame-independent calculations. Use
-		/// <see cref="TimeMult"/> instead.
+		/// [GET] Returns the time passed since the last frame in seconds weighted by <see cref="TimeScale"/>
 		/// </summary>
-		public static float LastDelta
+		public static float DeltaTime
 		{
-			get { return lastDelta; }
+			get { return timeMult * SecondsPerFrame; }
 		}		//	G
 		/// <summary>
 		/// [GET] Frames per Second
@@ -132,14 +131,14 @@ namespace Duality
 			frameCount++;
 
 			double mainTimer = Time.MainTimer.TotalMilliseconds;
-			lastDelta = forceFixedStep ? MsPFMult : MathF.Min((float)(mainTimer - frameBegin), MsPFMult * 2); // Don't skip more than 2 frames / fall below 30 fps
+			lastDelta = forceFixedStep ? MillisecondsPerFrame : MathF.Min((float)(mainTimer - frameBegin), MillisecondsPerFrame * 2); // Don't skip more than 2 frames / fall below 30 fps
 			frameBegin = mainTimer;
 
 			if (timeFreeze == 0)
 			{
 				if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 					gameTimer += TimeSpan.FromTicks((long)(lastDelta * timeScale * TimeSpan.TicksPerMillisecond));
-				timeMult = timeScale * lastDelta / MsPFMult;
+				timeMult = timeScale * lastDelta / MillisecondsPerFrame;
 			}
 			else
 			{

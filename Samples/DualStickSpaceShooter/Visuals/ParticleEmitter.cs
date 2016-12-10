@@ -110,7 +110,7 @@ namespace DualStickSpaceShooter
 
 		public void Update(ParticleEffect effect)
 		{
-			this.burstTimer -= Time.MsPFMult * Time.TimeMult;
+			this.burstTimer -= Time.MillisecondsPerFrame * Time.TimeMult;
 			while (this.burstTimer <= 0.0f && (this.burstCount < this.maxBurstCount || this.maxBurstCount < 0))
 			{
 				this.burstTimer += MathF.Rnd.NextFloat(this.burstDelay.MinValue, this.burstDelay.MaxValue);
