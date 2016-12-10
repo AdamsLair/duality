@@ -437,7 +437,7 @@ namespace Duality.Resources
 
 			// Update physics
 			bool physUpdate = false;
-			double physBegin = Time.MainTimer.TotalMilliseconds;
+			double physBegin = Time.MainTimer.TotalSeconds;
 			if (Scene.PhysicsFixedTime)
 			{
 				physicsAcc += Time.MillisecondsPerFrame * Time.TimeMult;
@@ -477,7 +477,7 @@ namespace Duality.Resources
 				physUpdate = true;
 				Profile.TimeUpdatePhysics.EndMeasure();
 			}
-			double physTime = Time.MainTimer.TotalMilliseconds - physBegin;
+			double physTime = Time.MainTimer.TotalSeconds - physBegin;
 
 			// Apply Farseers internal measurements to Duality
 			if (physUpdate)
@@ -491,9 +491,9 @@ namespace Duality.Resources
 
 			// Update low fps physics state
 			if (!physicsLowFps)
-				physicsLowFps = Time.DeltaTime > Time.MillisecondsPerFrame && physTime > Time.DeltaTime * 0.85f;
+				physicsLowFps = Time.UnscaledDeltaTime > Time.SecondsPerFrame && physTime > Time.UnscaledDeltaTime * 0.85f;
 			else
-				physicsLowFps = !(Time.DeltaTime < Time.MillisecondsPerFrame * 0.9f || physTime < Time.DeltaTime * 0.6f);
+				physicsLowFps = !(Time.UnscaledDeltaTime < Time.SecondsPerFrame * 0.9f || physTime < Time.UnscaledDeltaTime * 0.6f);
 
 			// Update all GameObjects
 			Profile.TimeUpdateScene.BeginMeasure();
