@@ -16,7 +16,7 @@
     <releaseNotes>Tileset AutoTile Fallback Fixes
 #FIX: Fixed an incorrect AutoTile fallback case that would use an edge tile where the center tile would have been appropriate.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.8.3" />
+      <dependency id="AdamsLair.Duality" version="2.8.4" />
     </dependencies>
   </metadata>
   <files>
