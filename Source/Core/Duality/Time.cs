@@ -13,28 +13,28 @@ namespace Duality
 		/// <summary>
 		/// The amount of frame per second at the desired refresh rate of 60 FPS.
 		/// </summary>
-		public const	float	FramesPerSecond			= 60.0f;
+		public const float FramesPerSecond = 60.0f;
 		/// <summary>
 		/// Milliseconds a frame takes at the desired refresh rate of 60 FPS
 		/// </summary>
-		public const	float	MillisecondsPerFrame	= 1000.0f / FramesPerSecond;
+		public const float MillisecondsPerFrame = 1000.0f / FramesPerSecond;
 		/// <summary>
 		/// Seconds a frame takes at the desired refresh rate of 60 FPS
 		/// </summary>
-		public const	float	SecondsPerFrame			= 1.0f / FramesPerSecond;
+		public const float SecondsPerFrame = 1.0f / FramesPerSecond;
 
-		private	static	DateTime	startup		= DateTime.Now;
-		private	static	Stopwatch	watch		= new Stopwatch();
-		private	static	TimeSpan	gameTimer	= TimeSpan.Zero;
-		private	static	double		frameBegin	= 0.0d;
-		private	static	float		lastDelta	= 0.0f;
-		private	static	float		timeMult	= 0.0f;
-		private	static	float		timeScale	= 1.0f;
-		private	static	int			timeFreeze	= 0;
-		private	static	int			frameCount	= 0;
-		private	static	int			fps			= 0;
-		private	static	int			fps_frames	= 0;
-		private	static	double		fps_last	= 0.0d;
+		private static DateTime  startup    = DateTime.Now;
+		private static Stopwatch watch      = new Stopwatch();
+		private static TimeSpan  gameTimer  = TimeSpan.Zero;
+		private static double    frameBegin = 0.0d;
+		private static float     lastDelta  = 0.0f;
+		private static float     timeMult   = 0.0f;
+		private static float     timeScale  = 1.0f;
+		private static int       timeFreeze = 0;
+		private static int       frameCount = 0;
+		private static int       fps        = 0;
+		private static int       fps_frames = 0;
+		private static double    fps_last   = 0.0d;
 
 		/// <summary>
 		/// [GET] Returns the date and time of engine startup.
@@ -42,28 +42,28 @@ namespace Duality
 		public static DateTime StartupTime
 		{
 			get { return startup; }
-		}	//	G
+		}
 		/// <summary>
 		/// [GET] Returns the real time that has passed since engine startup.
 		/// </summary>
 		public static TimeSpan MainTimer
 		{
 			get { return watch.Elapsed; }
-		}		//	G
+		}
 		/// <summary>
 		/// [GET] Returns the time passed since the last frame in seconds weighted by <see cref="TimeScale"/>
 		/// </summary>
 		public static float DeltaTime
 		{
 			get { return timeMult * SecondsPerFrame; }
-		}		//	G
+		}
 		/// <summary>
 		/// [GET] Frames per Second
 		/// </summary>
 		public static float Fps
 		{
 			get { return fps; }
-		}				//	G
+		}
 		/// <summary>
 		/// [GET] Returns the game time that has passed since engine startup. Since it's game time, this timer will stop
 		/// when pausing or freezing and also run slower or faster according to <see cref="TimeScale"/>.
@@ -71,7 +71,7 @@ namespace Duality
 		public static TimeSpan GameTimer
 		{
 			get { return gameTimer; }
-		}		//	G
+		}
 		/// <summary>
 		/// [GET] Multiply any frame-independend movement or change with this factor.
 		/// It also applies the time scale you set.
@@ -79,7 +79,7 @@ namespace Duality
 		public static float TimeMult
 		{
 			get { return timeMult; }
-		}			//	G
+		}
 		/// <summary>
 		/// [GET / SET] Specifies how fast game time runs compared to real time i.e. how
 		/// fast the game runs. May be used for slow motion effects.
@@ -88,14 +88,14 @@ namespace Duality
 		{
 			get { return timeScale; }
 			set { timeScale = value; }
-		}		//	GS
+		}
 		/// <summary>
 		/// [GET] The number of frames passed since startup
 		/// </summary>
 		public static int FrameCount
 		{
 			get { return frameCount; }
-		}			//	G
+		}
 
 		/// <summary>
 		/// Freezes game time. This will cause the GameTimer to stop and TimeMult to equal zero.
