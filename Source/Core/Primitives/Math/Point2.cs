@@ -41,15 +41,21 @@ namespace Duality
 		{
 			get
 			{
-				if (index == 0) return X;
-				else if (index == 1) return Y;
-				throw new IndexOutOfRangeException("You tried to access this point at index: " + index);
+				switch (index)
+				{
+					case 0: return this.X;
+					case 1: return this.Y;
+					default: throw new IndexOutOfRangeException("Point2 access at index: " + index);
+				}
 			}
 			set
 			{
-				if (index == 0) X = value;
-				else if (index == 1) Y = value;
-				else throw new IndexOutOfRangeException("You tried to set this point at index: " + index);
+				switch (index)
+				{
+					case 0: this.X = value; return;
+					case 1: this.Y = value; return;
+					default: throw new IndexOutOfRangeException("Point2 access at index: " + index);
+				}
 			}
 		}
 

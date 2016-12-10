@@ -94,10 +94,10 @@ namespace Duality.Plugins.Tilemaps
 			//
 			// Actual fallbacks in case a certain connectivity state is unavailable.
 			//
-			directFallbacks[(int)(Top | Left | Right | BottomLeft | Bottom | BottomRight)] = Left | Right | BottomLeft | Bottom | BottomRight;
-			directFallbacks[(int)(TopLeft | Top | Left | Right | BottomLeft | Bottom)]     = TopLeft | Top | Left | BottomLeft |Bottom;
-			directFallbacks[(int)(Top | TopRight | Left | Right | Bottom | BottomRight)]   = Top | TopRight | Right | Bottom | BottomRight;
-			directFallbacks[(int)(TopLeft | Top | TopRight | Left | Right | Bottom)]       = TopLeft | Top | TopRight | Left | Right;
+			directFallbacks[(int)(Top | Left | Right | BottomLeft | Bottom | BottomRight)] = All;
+			directFallbacks[(int)(TopLeft | Top | Left | Right | BottomLeft | Bottom)]     = All;
+			directFallbacks[(int)(Top | TopRight | Left | Right | Bottom | BottomRight)]   = All;
+			directFallbacks[(int)(TopLeft | Top | TopRight | Left | Right | Bottom)]       = All;
 
 			directFallbacks[(int)(Top | TopRight | Left | Right | BottomLeft | Bottom | BottomRight)] = All;
 			directFallbacks[(int)(TopLeft | Top | Left | Right | BottomLeft | Bottom | BottomRight)]  = All;

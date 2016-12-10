@@ -168,7 +168,11 @@ namespace Duality.Editor.Plugins.LogView
 		public int ScrollOffset
 		{
 			get { return -this.AutoScrollPosition.Y; }
-			set { this.AutoScrollPosition = new Point(0, Math.Min(value, this.MaxScrollOffset)); }
+			set
+			{
+				this.AutoScrollPosition = new Point(0, Math.Min(value, this.MaxScrollOffset));
+				this.OnScrollPositionChanged();
+			}
 		}
 		public int MaxScrollOffset
 		{
@@ -309,7 +313,11 @@ namespace Duality.Editor.Plugins.LogView
 			else
 				this.DisplayFilter &= ~flag;
 		}
-
+		
+		public void ScrollToBegin()
+		{
+			this.ScrollOffset = 0;
+		}
 		public void ScrollToEnd()
 		{
 			this.ScrollOffset = this.MaxScrollOffset;
@@ -434,6 +442,12 @@ namespace Duality.Editor.Plugins.LogView
 			this.lastSelected = this.SelectedEntry == this.displayedEntryList.LastOrDefault();
 			if (this.SelectionChanged != null)
 				this.SelectionChanged(this, EventArgs.Empty);
+		}
+		private void OnScrollPositionChanged()
+		{
+			this.UpdateFirstDisplayIndex();
+			this.UpdateScrolledToEnd();
+			this.UpdateHoveredEntry(this.PointToClient(Cursor.Position));
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -586,9 +600,7 @@ namespace Duality.Editor.Plugins.LogView
 		protected override void OnScroll(ScrollEventArgs se)
 		{
 			base.OnScroll(se);
-			this.UpdateFirstDisplayIndex();
-			this.UpdateScrolledToEnd();
-			this.UpdateHoveredEntry(this.PointToClient(Cursor.Position));
+			this.OnScrollPositionChanged();
 		}
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
@@ -657,17 +669,37 @@ namespace Duality.Editor.Plugins.LogView
 			{
 				this.entryMenu_CopyItem_Click(this, EventArgs.Empty);
 			}
-			else if (e.KeyCode == Keys.Down && this.displayedEntryList.Any())
+			else if (e.KeyCode == Keys.Down && this.displayedEntryList.Count > 0)
 			{
 				int newEntryIndex = MathF.Clamp(this.displayedEntryList.IndexOfFirst(this.SelectedEntry) + 1, 0, this.displayedEntryList.Count - 1);
 				this.SelectedEntry = this.displayedEntryList[newEntryIndex];
 				this.EnsureVisible(this.SelectedEntry);
 			}
-			else if (e.KeyCode == Keys.Up && this.displayedEntryList.Any())
+			else if (e.KeyCode == Keys.Up && this.displayedEntryList.Count > 0)
 			{
 				int newEntryIndex = MathF.Clamp(this.displayedEntryList.IndexOfFirst(this.SelectedEntry) - 1, 0, this.displayedEntryList.Count - 1);
 				this.SelectedEntry = this.displayedEntryList[newEntryIndex];
 				this.EnsureVisible(this.SelectedEntry);
+			}
+			else if (e.KeyCode == Keys.PageDown && this.displayedEntryList.Count > 0)
+			{
+				this.ScrollOffset += this.ClientSize.Height * 3 / 4;
+				this.SelectedEntry = this.GetEntryAt(this.ScrollOffset + this.ClientSize.Height - 15);
+			}
+			else if (e.KeyCode == Keys.PageUp && this.displayedEntryList.Count > 0)
+			{
+				this.ScrollOffset -= this.ClientSize.Height * 3 / 4;
+				this.SelectedEntry = this.GetEntryAt(this.ScrollOffset + 15);
+			}
+			else if (e.KeyCode == Keys.End && this.displayedEntryList.Count > 0)
+			{
+				this.SelectedEntry = this.displayedEntryList[this.displayedEntryList.Count - 1];
+				this.ScrollToEnd();
+			}
+			else if (e.KeyCode == Keys.Home && this.displayedEntryList.Count > 0)
+			{
+				this.SelectedEntry = this.displayedEntryList[0];
+				this.ScrollToBegin();
 			}
 		}
 		

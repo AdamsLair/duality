@@ -40,11 +40,9 @@ namespace Duality.Tests
 			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);
 
 			// Add some Console logs manually for NUnit
-			if (!Log.Core.Outputs.OfType<TextWriterLogOutput>().Any(o => o.Target == Console.Out))
-			{
-				if (this.consoleLogOutput == null) this.consoleLogOutput = new TextWriterLogOutput(Console.Out);
-				Log.AddGlobalOutput(this.consoleLogOutput);
-			}
+			if (this.consoleLogOutput == null)
+				this.consoleLogOutput = new TextWriterLogOutput(Console.Out);
+			Log.AddGlobalOutput(this.consoleLogOutput);
 
 			// Initialize Duality
 			DualityApp.Init(
