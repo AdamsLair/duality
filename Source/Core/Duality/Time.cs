@@ -63,7 +63,7 @@ namespace Duality
 		/// </summary>
 		public static float UnscaledDeltaTime
 		{
-			get { return gameDelta; }
+			get { return realDelta; }
 		}
 		/// <summary>
 		/// [GET] Frames per Second
