@@ -228,13 +228,15 @@ namespace Duality.Editor.Plugins.LogView
 
 			this.timerLogSchedule = new Timer(this.components);
 			this.timerLogSchedule.Interval = 50;
-			this.timerLogSchedule.Tick += new EventHandler(timerLogSchedule_Tick);
+			this.timerLogSchedule.Tick += this.timerLogSchedule_Tick;
 		}
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (components != null))
+			this.UnbindFromDualityLogs();
+			if (disposing && this.components != null)
 			{
-				components.Dispose();
+				this.components.Dispose();
+				this.components = null;
 			}
 			base.Dispose(disposing);
 		}
@@ -365,6 +367,11 @@ namespace Duality.Editor.Plugins.LogView
 			return null;
 		}
 		
+		private void ScheduleMessageUpdate()
+		{
+			if (this.Disposing || this.IsDisposed) return;
+			this.timerLogSchedule.Enabled = true;
+		}
 		private void ProcessIncomingEntries(LogEntry[] entries, int count)
 		{
 			bool wasAtEnd = this.IsScrolledToEnd;
@@ -741,7 +748,7 @@ namespace Duality.Editor.Plugins.LogView
 				{
 					// Don't use a synchronous Invoke. It will block while the BuildManager is active (why?)
 					// and thus lead to a deadlock when something is logged while it is.
-					this.InvokeEx(() => this.timerLogSchedule.Enabled = true, false);
+					this.InvokeEx(this.ScheduleMessageUpdate, false);
 					this.logScheduleActive = true;
 				}
 			}
