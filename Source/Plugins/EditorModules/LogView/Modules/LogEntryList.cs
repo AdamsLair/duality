@@ -190,13 +190,15 @@ namespace Duality.Editor.Plugins.LogView
 
 			this.timerLogSchedule = new Timer(this.components);
 			this.timerLogSchedule.Interval = 50;
-			this.timerLogSchedule.Tick += new EventHandler(timerLogSchedule_Tick);
+			this.timerLogSchedule.Tick += this.timerLogSchedule_Tick;
 		}
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (components != null))
+			this.BindTo(null);
+			if (disposing && this.components != null)
 			{
-				components.Dispose();
+				this.components.Dispose();
+				this.components = null;
 			}
 			base.Dispose(disposing);
 		}
