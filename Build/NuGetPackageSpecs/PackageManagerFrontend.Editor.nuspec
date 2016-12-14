@@ -23,5 +23,6 @@
   <files>
     <file src="..\Output\Plugins\PackageManagerFrontend.editor.dll" target="lib" />
     <file src="..\Output\Plugins\PackageManagerFrontend.editor.pdb" target="lib" />
+    <file src="..\Output\Plugins\PackageManagerFrontend.editor.xml" target="lib" />
   </files>
 </package>

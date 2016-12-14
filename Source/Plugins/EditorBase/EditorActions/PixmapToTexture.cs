@@ -12,15 +12,14 @@ using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {
+	/// <summary>
+	/// Creates a new Texture Resource based on the Pixmap.
+	/// </summary>
 	public class PixmapToTexture : EditorSingleAction<Pixmap>
 	{
 		public override string Name
 		{
 			get { return EditorBaseRes.ActionName_CreateTexture; }
-		}
-		public override string Description
-		{
-			get { return EditorBaseRes.ActionDesc_CreateTexture; }
 		}
 		public override Image Icon
 		{

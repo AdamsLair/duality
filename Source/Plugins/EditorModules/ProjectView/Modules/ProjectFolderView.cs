@@ -1649,8 +1649,8 @@ namespace Duality.Editor.Plugins.ProjectView
 					if (item.Tag is CreateContextEntryTag)
 						result = HelpInfo.FromMember(ReflectionHelper.ResolveType((item.Tag as CreateContextEntryTag).TypeId));
 					// Editor Actions
-					else if (item.Tag is IEditorAction && !string.IsNullOrEmpty((item.Tag as IEditorAction).Description))
-						result = HelpInfo.FromText(item.Text, (item.Tag as IEditorAction).Description);
+					else if (item.Tag is IEditorAction && (item.Tag as IEditorAction).HelpInfo != null)
+						result = (item.Tag as IEditorAction).HelpInfo;
 					// A HelpInfo attached to the item
 					else if (item.Tag is HelpInfo)
 						result = item.Tag as HelpInfo;
@@ -1691,10 +1691,16 @@ namespace Duality.Editor.Plugins.ProjectView
 		string IToolTipProvider.GetToolTip(TreeNodeAdv viewNode, Aga.Controls.Tree.NodeControls.NodeControl nodeControl)
 		{
 			IEditorAction action = this.GetResourceOpenAction(viewNode, false);
-			if (action != null) return string.Format(
-				Duality.Editor.Plugins.ProjectView.Properties.ProjectViewRes.ProjectFolderView_Help_Doubleclick,
-				action.Description);
-			else return null;
+			if (action != null && action.HelpInfo != null)
+			{
+				return string.Format(
+					Duality.Editor.Plugins.ProjectView.Properties.ProjectViewRes.ProjectFolderView_Help_Doubleclick,
+					action.HelpInfo.Description);
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		private int ContextMenuItemComparison(IMenuModelItem itemA, IMenuModelItem itemB)

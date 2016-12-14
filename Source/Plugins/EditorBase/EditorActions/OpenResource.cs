@@ -12,13 +12,11 @@ using Duality.Editor.AssetManagement;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {
+	/// <summary>
+	/// Open Resource in external editor.
+	/// </summary>
 	public class OpenResource : EditorSingleAction<Resource>
 	{
-		public override string Description
-		{
-			get { return EditorBaseRes.ActionDesc_OpenResourceExternal; }
-		}
-
 		public override void Perform(Resource obj)
 		{
 			// If we still have the original source files around, prefer them.

@@ -11,13 +11,11 @@ using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {
+	/// <summary>
+	/// Open the Scene.
+	/// </summary>
 	public class OpenScene : EditorSingleAction<Scene>
 	{
-		public override string Description
-		{
-			get { return EditorBaseRes.ActionDesc_OpenScene; }
-		}
-
 		public override void Perform(Scene scene)
 		{
 			string lastPath = Scene.CurrentPath;

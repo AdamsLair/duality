@@ -25,10 +25,6 @@ namespace Duality.Editor.Plugins.Tilemaps.EditorActions
 		{
 			get { return TilemapsRes.ActionName_OpenTilemapEditor; }
 		}
-		public override string Description
-		{
-			get { return TilemapsRes.ActionDesc_OpenTilemapEditor; }
-		}
 		public override Image Icon
 		{
 			get { return typeof(Tilemap).GetEditorImage(); }
