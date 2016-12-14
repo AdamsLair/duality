@@ -29,7 +29,7 @@ namespace Duality.Editor
 			add { stack.ActiveHelpChanged += value; }
 			remove { stack.ActiveHelpChanged -= value; }
 		}
-		public static IHelpInfoReader ActiveHelp
+		public static IReadOnlyHelpInfo ActiveHelp
 		{
 			get { return stack.ActiveHelp; }
 		}

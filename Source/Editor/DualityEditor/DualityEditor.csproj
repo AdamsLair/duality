@@ -161,7 +161,7 @@
     </Compile>
     <Compile Include="HelpSystem\HelpAction.cs" />
     <Compile Include="HelpSystem\HelpStack.cs" />
-    <Compile Include="HelpSystem\IHelpInfoReader.cs" />
+    <Compile Include="HelpSystem\IReadOnlyHelpInfo.cs" />
     <Compile Include="HelpSystem\IHelpProvider.cs" />
     <Compile Include="PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
