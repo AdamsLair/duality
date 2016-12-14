@@ -16,7 +16,7 @@ namespace Duality.Editor
 		/// Performs the action on the specified object.
 		/// </summary>
 		/// <param name="obj"></param>
-		public abstract new void Perform(T obj);
+		public abstract void Perform(T obj);
 		/// <summary>
 		/// Returns whether the action can be performed on the specified object.
 		/// </summary>

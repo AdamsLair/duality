@@ -70,14 +70,6 @@ namespace Duality.Editor
 		}
 
 		/// <summary>
-		/// Performs the action on the specified object.
-		/// </summary>
-		/// <param name="obj"></param>
-		public void Perform(T obj)
-		{
-			this.Perform(new[] { obj });
-		}
-		/// <summary>
 		/// Performs the action on the specified set of objects.
 		/// </summary>
 		/// <param name="objEnum"></param>
@@ -100,10 +92,6 @@ namespace Duality.Editor
 			return context == DualityEditorApp.ActionContextMenu;
 		}
 
-		void IEditorAction.Perform(object obj)
-		{
-			this.Perform((T)obj);
-		}
 		void IEditorAction.Perform(IEnumerable<object> obj)
 		{
 			this.Perform(obj.Cast<T>());

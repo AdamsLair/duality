@@ -110,9 +110,10 @@ namespace Duality.Editor.UndoRedoActions
 				DualityEditorApp.ActionContextSetupObjectForEditing);
 
 			// Invoke all of them on the specified Component
+			Component[] actionTargets = new Component[] { cmp };
 			foreach (IEditorAction setupAction in setupActions)
 			{
-				setupAction.Perform(cmp);
+				setupAction.Perform(actionTargets);
 			}
 		}
 

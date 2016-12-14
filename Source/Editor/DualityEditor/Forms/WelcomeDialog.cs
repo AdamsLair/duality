@@ -138,7 +138,7 @@ namespace Duality.Editor.Forms
 			ActionNode node = (e.Node != null) ? (e.Node.Tag as ActionNode) : null;
 			if (node == null) return;
 
-			node.Action.Perform(new object());
+			node.Action.Perform(Enumerable.Empty<object>());
 		}
 		private void actionList_MouseLeave(object sender, EventArgs e)
 		{

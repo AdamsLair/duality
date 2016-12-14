@@ -35,11 +35,6 @@ namespace Duality.Editor
 		int Priority { get; }
 		
 		/// <summary>
-		/// Performs the action on the specified object.
-		/// </summary>
-		/// <param name="obj"></param>
-		void Perform(object obj);
-		/// <summary>
 		/// Performs the action on the specified set of objects.
 		/// </summary>
 		/// <param name="objEnum"></param>

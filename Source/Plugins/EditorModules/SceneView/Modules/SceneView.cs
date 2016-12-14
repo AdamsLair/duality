@@ -532,7 +532,7 @@ namespace Duality.Editor.Plugins.SceneView
 
 			if (action != null)
 			{
-				action.Perform(subject);
+				action.Perform(new[] { subject });
 				return true;
 			}
 			else return false;

@@ -470,17 +470,18 @@ namespace Duality.Editor.Plugins.ProjectView
 
 			// Create a new Resource instance of the specified type
 			Resource resInstance = type.GetTypeInfo().CreateInstanceOf() as Resource;
+			Resource[] actionTargets = new Resource[] { resInstance };
 
 			// Gather all available user editing setup actions
 			IEnumerable<IEditorAction> setupActions = DualityEditorApp.GetEditorActions(
 				resInstance.GetType(), 
-				new[] { resInstance },
+				actionTargets,
 				DualityEditorApp.ActionContextSetupObjectForEditing);
 
 			// Invoke all of them on the new Resource
 			foreach (IEditorAction setupAction in setupActions)
 			{
-				setupAction.Perform(resInstance);
+				setupAction.Perform(actionTargets);
 			}
 
 			// Determine the actual name and path of our new Resource
@@ -507,7 +508,8 @@ namespace Duality.Editor.Plugins.ProjectView
 			if (openAction != null)
 			{
 				ResourceNode resNode = node.Tag as ResourceNode;
-				openAction.Perform(resNode.ResLink.Res);
+				Resource[] actionTargets = new Resource[] { resNode.ResLink.Res };
+				openAction.Perform(actionTargets);
 			}
 		}
 		protected IEditorAction GetResourceOpenAction(TreeNodeAdv node, bool loadWhenNecessary = true)
