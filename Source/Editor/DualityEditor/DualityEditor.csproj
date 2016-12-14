@@ -159,6 +159,10 @@
     <Compile Include="Forms\WelcomeDialog.Designer.cs">
       <DependentUpon>WelcomeDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="HelpSystem\HelpAction.cs" />
+    <Compile Include="HelpSystem\HelpStack.cs" />
+    <Compile Include="HelpSystem\IHelpInfoReader.cs" />
+    <Compile Include="HelpSystem\IHelpProvider.cs" />
     <Compile Include="PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
     <Compile Include="Forms\LicenseAcceptDialog.cs">
@@ -265,7 +269,7 @@
     <Compile Include="Forms\SplashScreen.Designer.cs">
       <DependentUpon>SplashScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utility\HelpInfo.cs" />
+    <Compile Include="HelpSystem\HelpInfo.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsGraphics.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsForm.cs" />
     <Compile Include="Utility\MessageFilter.cs" />
