@@ -133,7 +133,7 @@ namespace DynamicLighting
 
 			Rect uvRect;
 			this.UpdateVisibleFrames();
-			this.GetAnimData(mainTex, tech, this.CurrentFrame, out uvRect);
+			this.GetAnimData(mainTex, this.CurrentFrame, out uvRect);
 			
 			this.PrepareVerticesLight(ref this.verticesLight, device, mainClr, uvRect, tech);
 			if (this.customMat != null)

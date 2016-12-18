@@ -199,10 +199,7 @@ namespace Duality.Components.Renderers
 			get { return this.frameBlend; }
 		}
 
-
-		public AnimSpriteRenderer() {}
-		public AnimSpriteRenderer(Rect rect, ContentRef<Material> mainMat) : base(rect, mainMat) {}
-
+		
 		/// <summary>
 		/// Updates the <see cref="AnimSpriteRenderer.CurrentFrame"/>, <see cref="NextFrame"/> and <see cref="FrameBlend"/> properties immediately.
 		/// This is called implicitly once each frame before drawing, so you don't normally call this. However, when changing animation
@@ -357,7 +354,7 @@ namespace Duality.Components.Renderers
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
 		
-		protected void GetAnimData(Texture mainTex, DrawTechnique tech, int frameIndex, out Rect uvRect)
+		protected void GetAnimData(Texture mainTex, int frameIndex, out Rect uvRect)
 		{
 			if (mainTex != null)
 				mainTex.LookupAtlas(frameIndex, out uvRect);
@@ -373,7 +370,7 @@ namespace Duality.Components.Renderers
 
 			Rect uvRect;
 			this.UpdateVisibleFrames();
-			this.GetAnimData(mainTex, tech, this.curAnimFrame, out uvRect);
+			this.GetAnimData(mainTex, this.curAnimFrame, out uvRect);
 			
 			this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
 			if (this.customMat != null)

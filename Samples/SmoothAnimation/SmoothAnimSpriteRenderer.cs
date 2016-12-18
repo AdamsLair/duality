@@ -21,10 +21,7 @@ namespace SmoothAnimation
 	{
 		[DontSerialize] private VertexC1P3T4A1[] verticesSmooth   = null;
 
-
-		public SmoothAnimSpriteRenderer() : base() {}
-		public SmoothAnimSpriteRenderer(Rect rect, ContentRef<Material> mainMat) : base(rect, mainMat) {}
-
+		
 		private void PrepareVerticesSmooth(ref VertexC1P3T4A1[] vertices, IDrawDevice device, float curAnimFrameFade, ColorRgba mainClr, Rect uvRect, Rect uvRectNext)
 		{
 			Vector3 posTemp = this.GameObj.Transform.Pos;
@@ -149,8 +146,8 @@ namespace SmoothAnimation
 			Rect uvRect;
 			Rect uvRectNext;
 			this.UpdateVisibleFrames();
-			this.GetAnimData(mainTex, tech, this.CurrentFrame, out uvRect);
-			this.GetAnimData(mainTex, tech, this.NextFrame, out uvRectNext);
+			this.GetAnimData(mainTex, this.CurrentFrame, out uvRect);
+			this.GetAnimData(mainTex, this.NextFrame, out uvRectNext);
 			
 			this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.FrameBlend, mainClr, uvRect, uvRectNext);
 			if (this.customMat != null)
