@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Samples.SmoothAnimation</id>
+    <version>1.0.0</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
+    <title>Smooth Sprite Animation Blending Sample</title>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/SmoothAnimationSample.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Demonstrates a smooth blending technique for sprite animations.</summary>
+    <description>This package implements a custom sprite renderer that is able to smoothly blend between two animation frames using a shader, rather than switching between the two frames instantaneously.</description>
+    <tags>Duality Sample Plugin Shaders Animation Rendering</tags>
+    <releaseNotes></releaseNotes>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.8.4" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.7.11" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\Samples\SmoothAnimation\Content\Plugins\SmoothAnimation.core.dll" target="lib" />
+    <file src="..\..\Samples\SmoothAnimation\Content\Plugins\SmoothAnimation.core.xml" target="lib" />
+    <file src="..\..\Samples\SmoothAnimation\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\SmoothAnimation\**\*.cs" target="source" exclude="..\..\Samples\SmoothAnimation\Content\**\*.*;..\..\Samples\SmoothAnimation\obj\**\*.*" />
+    <file src="..\..\Samples\SmoothAnimation\SmoothAnimation.csproj" target="source" />
+  </files>
+</package>
