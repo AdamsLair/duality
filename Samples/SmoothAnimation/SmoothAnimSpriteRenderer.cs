@@ -2,19 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Duality;
 using Duality.Editor;
 using Duality.Drawing;
 using Duality.Resources;
-using Duality.Cloning;
+using Duality.Components.Renderers;
 using Duality.Properties;
 
-namespace Duality.Components.Renderers
+namespace SmoothAnimation
 {
 	/// <summary>
 	/// Renders an animated sprite with smooth transitions between two active frames.
 	/// Similar to <see cref="AnimSpriteRenderer"/>, but extended with blending functionality.
 	/// </summary>
-	[ManuallyCloned]
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(CoreResNames.ImageAnimSpriteRenderer)]
 	public class SmoothAnimSpriteRenderer : AnimSpriteRenderer

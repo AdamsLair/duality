@@ -25,11 +25,6 @@ namespace Duality.Resources
 		/// </summary>
 		public static ContentRef<FragmentShader> Picking	{ get; private set; }
 		/// <summary>
-		/// [GET] The SmoothAnim FragmentShader. It performs two lookups
-		/// on the same texture and blends the results using an incoming float value.
-		/// </summary>
-		public static ContentRef<FragmentShader> SmoothAnim	{ get; private set; }
-		/// <summary>
 		/// [GET] The SharpMask FragmentShader. It enforces an antialiazed sharp mask when upscaling linearly blended textures.
 		/// </summary>
 		public static ContentRef<FragmentShader> SharpAlpha	{ get; private set; }

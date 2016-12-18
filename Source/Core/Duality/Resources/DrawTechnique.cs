@@ -58,37 +58,6 @@ namespace Duality.Resources
 		/// Renders geometry for a picking operation. This isn't used for regular rendering.
 		/// </summary>
 		public static ContentRef<DrawTechnique> Picking		{ get; private set; }
-		
-		/// <summary>
-		/// Renders SmoothAnim solid geometry without utilizing the alpha channel. This is the fastest default DrawTechnique.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Solid	{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim alpha-masked solid geometry. This is the recommended DrawTechnique for regular sprite rendering.
-		/// If multisampling is available, it is utilized to smooth masked edges.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Mask		{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim additive geometry. Ideal for glow effects.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Add		{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim geometry and using the alpha channel. However, for stencil-sharp alpha edges, <see cref="Mask"/> might
-		/// be sufficient and is a lot faster. Consider using it.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Alpha	{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim geometry multiplying the existing background with incoming color values. Can be used for shadowing effects.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Multiply	{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim geometry adding incoming color values weighted based on the existing background. Can be used for lighting effects.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Light	{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim geometry inverting the background color.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Invert	{ get; private set; }
 
 		internal static void InitDefaultContent()
 		{
@@ -103,15 +72,7 @@ namespace Duality.Resources
 				{ "Invert", new DrawTechnique(BlendMode.Invert) },
 
 				{ "Picking", new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking) },
-				{ "SharpAlpha", new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpAlpha) },
-				
-				{ "SmoothAnim_Solid", new DrawTechnique(BlendMode.Solid, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Mask", new DrawTechnique(BlendMode.Mask, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Add", new DrawTechnique(BlendMode.Add, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Alpha", new DrawTechnique(BlendMode.Alpha, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Multiply", new DrawTechnique(BlendMode.Multiply, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Light", new DrawTechnique(BlendMode.Light, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Invert", new DrawTechnique(BlendMode.Invert, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
+				{ "SharpAlpha", new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpAlpha) }
 			});
 		}
 		

@@ -342,7 +342,6 @@
     <Compile Include="Serialization\TypeDataLayout.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Drawing\VertexData\IVertexData.cs" />
-    <Compile Include="Drawing\VertexData\VertexC1P3T4A1.cs" />
     <Compile Include="Drawing\VertexData\VertexC1P3T2.cs" />
     <Compile Include="Drawing\VertexData\VertexC1P3.cs" />
   </ItemGroup>
@@ -362,8 +361,6 @@
     <EmbeddedResource Include="EmbeddedResources\Beep.ogg" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="EmbeddedResources\SmoothAnim.vert" />
-    <EmbeddedResource Include="EmbeddedResources\SmoothAnim.frag" />
     <EmbeddedResource Include="EmbeddedResources\Picking.frag" />
     <EmbeddedResource Include="EmbeddedResources\Minimal.frag" />
     <EmbeddedResource Include="EmbeddedResources\Minimal.vert" />

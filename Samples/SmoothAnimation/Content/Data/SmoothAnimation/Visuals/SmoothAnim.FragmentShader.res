@@ -1,4 +1,12 @@
-﻿uniform sampler2D mainTex;
+﻿<root dataType="Struct" type="Duality.Resources.FragmentShader" id="129723834">
+  <assetInfo dataType="Struct" type="Duality.Editor.AssetManagement.AssetInfo" id="427169525">
+    <customData />
+    <importerId dataType="String">BasicShaderAssetImporter</importerId>
+    <sourceFileHint dataType="Array" type="System.String[]" id="1100841590">
+      <item dataType="String">{Name}.frag</item>
+    </sourceFileHint>
+  </assetInfo>
+  <source dataType="String">uniform sampler2D mainTex;
 varying float animBlendVar;
 
 void main()
@@ -15,4 +23,6 @@ void main()
 
 	// Blend between frames
 	gl_FragColor = gl_Color * mix(texClrOld, texClrNew, animBlendVar);
-}
+}</source>
+</root>
+<!-- XmlFormatterBase Document Separator -->
