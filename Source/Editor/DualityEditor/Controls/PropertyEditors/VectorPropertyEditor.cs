@@ -335,6 +335,40 @@ namespace Duality.Editor.Controls.PropertyEditors
 			subEditor.Increment = 0.1m;
 		}
 
+		/// <summary>
+		/// Generic handler for "edited" events of the individual vector editors, allowing to apply changes
+		/// to only a single sub-editor, without affecting any others. Also handles the usual boilerplate code
+		/// for retrieving, mergind and re-assigning values.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="mergeOldNew">
+		/// A merge function that applies the modified value but leaves the others unchanged. 
+		/// The first parameter is the old value, the second parameters is the new one.
+		/// </param>
+		protected void HandleValueEdited<T>(Func<T,T,T> mergeOldNew)
+		{
+			if (this.IsUpdating) return;
+			if (this.Disposed) return;
+			if (!this.ReadOnly)
+			{
+				object[] values = this.GetValue().ToArray();
+				T newVal = (T)this.DisplayedValue;
+				for (int i = 0; i < values.Length; i++)
+				{
+					if (values[i] == null)
+						values[i] = this.DisplayedValue;
+					else
+					{
+						T oldVal = (T)values[i];
+						T mergedVal = mergeOldNew(oldVal, newVal);
+						values[i] = mergedVal;
+					}
+				}
+				this.SetValues(values);
+			}
+			this.PerformGetValue();
+		}
+
 		private void child_Invalidate(object sender, EventArgs e)
 		{
 			this.Invalidate();

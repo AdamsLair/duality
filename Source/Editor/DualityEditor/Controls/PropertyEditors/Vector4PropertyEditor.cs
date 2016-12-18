@@ -62,91 +62,19 @@ namespace Duality.Editor.Controls.PropertyEditors
 
 		private void editorX_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				Vector4 newVal = (Vector4)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						Vector4 oldVal = (Vector4)values[i];
-						values[i] = new Vector4(newVal.X, oldVal.Y, oldVal.Z, oldVal.W);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<Vector4>((oldVal, newVal) => new Vector4(newVal.X, oldVal.Y, oldVal.Z, oldVal.W));
 		}
 		private void editorY_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				Vector4 newVal = (Vector4)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						Vector4 oldVal = (Vector4)values[i];
-						values[i] = new Vector4(oldVal.X, newVal.Y, oldVal.Z, oldVal.W);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<Vector4>((oldVal, newVal) => new Vector4(oldVal.X, newVal.Y, oldVal.Z, oldVal.W));
 		}
 		private void editorZ_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				Vector4 newVal = (Vector4)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						Vector4 oldVal = (Vector4)values[i];
-						values[i] = new Vector4(oldVal.X, oldVal.Y, newVal.Z, oldVal.W);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<Vector4>((oldVal, newVal) => new Vector4(oldVal.X, oldVal.Y, newVal.Z, oldVal.W));
 		}
 		private void editorW_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				Vector4 newVal = (Vector4)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						Vector4 oldVal = (Vector4)values[i];
-						values[i] = new Vector4(oldVal.X, oldVal.Y, oldVal.Z, newVal.W);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<Vector4>((oldVal, newVal) => new Vector4(oldVal.X, oldVal.Y, oldVal.Z, newVal.W));
 		}
 	}
 }
