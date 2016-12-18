@@ -14,7 +14,7 @@ namespace Duality.Components.Renderers
 	[ManuallyCloned]
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(CoreResNames.ImageSpriteRenderer)]
-	public class SpriteRenderer : Renderer
+	public class SpriteRenderer : Renderer, ICmpSpriteRenderer
 	{
 		/// <summary>
 		/// Specifies how the sprites uv-Coordinates are calculated.
@@ -63,14 +63,15 @@ namespace Duality.Components.Renderers
 		}
 
 
-		protected Rect                 rect      = Rect.Align(Alignment.Center, 0, 0, 256, 256);
-		protected ContentRef<Material> sharedMat = Material.DualityIcon;
-		protected BatchInfo            customMat = null;
-		protected ColorRgba            colorTint = ColorRgba.White;
-		protected UVMode               rectMode  = UVMode.Stretch;
-		protected bool                 pixelGrid = false;
-		protected int                  offset    = 0;
-		protected FlipMode             flipMode  = FlipMode.None;
+		protected Rect                 rect        = Rect.Align(Alignment.Center, 0, 0, 256, 256);
+		protected ContentRef<Material> sharedMat   = Material.DualityIcon;
+		protected BatchInfo            customMat   = null;
+		protected ColorRgba            colorTint   = ColorRgba.White;
+		protected UVMode               rectMode    = UVMode.Stretch;
+		protected bool                 pixelGrid   = false;
+		protected int                  offset      = 0;
+		protected FlipMode             flipMode    = FlipMode.None;
+		protected SpriteIndexBlend     spriteIndex = SpriteIndexBlend.None;
 		[DontSerialize] protected VertexC1P3T2[] vertices = null;
 
 
@@ -155,15 +156,20 @@ namespace Duality.Components.Renderers
 			get { return this.flipMode; }
 			set { this.flipMode = value; }
 		}
-
-
-		public SpriteRenderer() {}
-		public SpriteRenderer(Rect rect, ContentRef<Material> mainMat)
+		/// <summary>
+		/// [GET / SET] The sprite index that is displayed by this renderer.
+		/// </summary>
+		public SpriteIndexBlend SpriteIndex
 		{
-			this.rect = rect;
-			this.sharedMat = mainMat;
+			get { return this.spriteIndex; }
+			set
+			{
+				this.spriteIndex = value;
+				this.spriteIndex.RemoveBlend();
+			}
 		}
 
+		
 		protected Texture RetrieveMainTex()
 		{
 			if (this.customMat != null)
@@ -297,20 +303,24 @@ namespace Duality.Components.Renderers
 			Texture mainTex = this.RetrieveMainTex();
 			ColorRgba mainClr = this.RetrieveMainColor();
 
+			// Determine the rect area of the texture to be displayed
 			Rect uvRect;
-			if (mainTex != null)
-			{
-				if (this.rectMode == UVMode.WrapBoth)
-					uvRect = new Rect(mainTex.UVRatio.X * this.rect.W / mainTex.PixelWidth, mainTex.UVRatio.Y * this.rect.H / mainTex.PixelHeight);
-				else if (this.rectMode == UVMode.WrapHorizontal)
-					uvRect = new Rect(mainTex.UVRatio.X * this.rect.W / mainTex.PixelWidth, mainTex.UVRatio.Y);
-				else if (this.rectMode == UVMode.WrapVertical)
-					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y * this.rect.H / mainTex.PixelHeight);
-				else
-					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y);
-			}
-			else
+			if (mainTex == null)
 				uvRect = new Rect(1.0f, 1.0f);
+			else if (this.spriteIndex.Current != -1)
+				mainTex.LookupAtlas(this.spriteIndex.Current, out uvRect);
+			else
+				uvRect = new Rect(mainTex.UVRatio);
+
+			// Determine wrap-around and stretch behavior if the displayed rect size does
+			// not equal the rect size that would be required for a 1:1 display.
+			Vector2 fullSize = new Vector2(
+				mainTex.PixelWidth * (uvRect.W / mainTex.UVRatio.X),
+				mainTex.PixelHeight * (uvRect.H / mainTex.UVRatio.Y));
+			if ((this.rectMode & UVMode.WrapHorizontal) != 0)
+				uvRect.W *= this.rect.W / fullSize.X;
+			if ((this.rectMode & UVMode.WrapVertical) != 0)
+				uvRect.H *= this.rect.H / fullSize.Y;
 
 			this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
 			if (this.customMat != null)
