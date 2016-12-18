@@ -75,69 +75,15 @@ namespace Duality.Editor.Controls.PropertyEditors
 
 		private void editorCurrent_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				SpriteIndexBlend newVal = (SpriteIndexBlend)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						SpriteIndexBlend oldVal = (SpriteIndexBlend)values[i];
-						values[i] = new SpriteIndexBlend(newVal.Current, oldVal.Next, oldVal.Blend);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<SpriteIndexBlend>((oldVal, newVal) => new SpriteIndexBlend(newVal.Current, oldVal.Next, oldVal.Blend));
 		}
 		private void editorBlend_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				SpriteIndexBlend newVal = (SpriteIndexBlend)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						SpriteIndexBlend oldVal = (SpriteIndexBlend)values[i];
-						values[i] = new SpriteIndexBlend(oldVal.Current, oldVal.Next, newVal.Blend);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<SpriteIndexBlend>((oldVal, newVal) => new SpriteIndexBlend(oldVal.Current, oldVal.Next, newVal.Blend));
 		}
 		private void editorNext_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				SpriteIndexBlend newVal = (SpriteIndexBlend)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						SpriteIndexBlend oldVal = (SpriteIndexBlend)values[i];
-						values[i] = new SpriteIndexBlend(oldVal.Current, newVal.Next, oldVal.Blend);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<SpriteIndexBlend>((oldVal, newVal) => new SpriteIndexBlend(oldVal.Current, newVal.Next, oldVal.Blend));
 		}
 	}
 }
