@@ -50,7 +50,16 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<SpriteRenderer>();
 				if (sprite == null) sprite = new SpriteRenderer();
 				sprite.SharedMaterial = mat;
-				if (mainTex != null) sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, mainTex.PixelWidth, mainTex.PixelHeight);
+				if (mainTex != null)
+				{
+					Vector2 spriteSize = new Vector2(mainTex.PixelWidth, mainTex.PixelHeight);
+					if (hasAnimation)
+					{
+						spriteSize.X = (mainTex.PixelWidth / basePixmap.AnimCols) - basePixmap.AnimFrameBorder * 2;
+						spriteSize.Y = (mainTex.PixelHeight / basePixmap.AnimRows) - basePixmap.AnimFrameBorder * 2;
+					}
+					sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, spriteSize.X, spriteSize.Y);
+				}
 				results.Add(sprite);
 
 				// If we have animation data, create an animator component as well
@@ -61,7 +70,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 					if (animator == null) animator = new SpriteAnimator();
 					animator.AnimDuration = 5.0f;
 					animator.AnimFrameCount = basePixmap.AnimFrames;
-					results.Add(sprite);
+					results.Add(animator);
 				}
 
 				convert.SuggestResultName(sprite, mat.Name);
