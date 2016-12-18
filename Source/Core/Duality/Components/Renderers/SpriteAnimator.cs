@@ -270,6 +270,14 @@ namespace Duality.Components.Renderers
 				}
 			}
 		}
+		private void ApplySpriteIndex()
+		{
+			// Apply the current animation state to the target sprite
+			if (this.sprite == null || (this.sprite as Component).GameObj != this.gameobj)
+				this.sprite = this.GameObj.GetComponent<ICmpSpriteRenderer>();
+			if (this.sprite != null)
+				this.sprite.SpriteIndex = this.spriteIndex;
+		}
 
 		void ICmpUpdatable.OnUpdate()
 		{
@@ -325,12 +333,7 @@ namespace Duality.Components.Renderers
 			}
 
 			this.UpdateVisibleFrames();
-
-			// Apply the current animation state to the target sprite
-			if (this.sprite == null || (this.sprite as Component).GameObj != this.gameobj)
-				this.sprite = this.GameObj.GetComponent<ICmpSpriteRenderer>();
-			if (this.sprite != null)
-				this.sprite.SpriteIndex = this.spriteIndex;
+			this.ApplySpriteIndex();
 		}
 		void ICmpInitializable.OnInit(Component.InitContext context)
 		{
@@ -338,6 +341,11 @@ namespace Duality.Components.Renderers
 			{
 				if (this.animLoopMode == LoopMode.RandomSingle)
 					this.animTime = MathF.Rnd.NextFloat(this.animDuration);
+			}
+			else if (context == InitContext.Activate)
+			{
+				this.UpdateVisibleFrames();
+				this.ApplySpriteIndex();
 			}
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
