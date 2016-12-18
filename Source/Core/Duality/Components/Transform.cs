@@ -507,7 +507,7 @@ namespace Duality.Components
 		/// <param name="value"></param>
 		public void MoveTo(Vector2 value)
 		{
-			this.MoveTo(new Vector3(value, pos.Z));
+			this.MoveTo(new Vector3(value, this.pos.Z));
 		}
 		/// <summary>
 		/// Moves the object to the given absolute position. This will affect the Transforms <see cref="Vel">velocity</see> value.
@@ -524,7 +524,7 @@ namespace Duality.Components
 		/// <param name="value"></param>
 		public void MoveToAbs(Vector2 value)
 		{
-			this.MoveToAbs(new Vector3(value, posAbs.Z));
+			this.MoveToAbs(new Vector3(value, this.posAbs.Z));
 		}
 		/// <summary>
 		/// Turns the object by the given radian angle. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
