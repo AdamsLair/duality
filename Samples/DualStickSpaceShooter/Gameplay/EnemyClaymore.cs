@@ -58,7 +58,7 @@ namespace DualStickSpaceShooter
 		private	SpikeState[]				spikeState		= new SpikeState[4];
 		private	ContentRef<EnemyBlueprint>	blueprint		= null;
 
-		[DontSerialize] private AnimSpriteRenderer	eye				= null;
+		[DontSerialize] private SpriteAnimator		eye				= null;
 		[DontSerialize] private SpriteRenderer[]	spikes			= null;
 		[DontSerialize] private SoundInstance		moveSoundLoop	= null;
 		[DontSerialize] private SoundInstance		dangerSoundLoop	= null;
@@ -507,10 +507,10 @@ namespace DualStickSpaceShooter
 			{
 				// Retrieve eye object references and initialize it
 				GameObject eyeObject = this.GameObj.ChildByName("Eye");
-				this.eye = eyeObject != null ? eyeObject.GetComponent<AnimSpriteRenderer>() : null;
+				this.eye = eyeObject != null ? eyeObject.GetComponent<SpriteAnimator>() : null;
 				if (this.eye != null)
 				{
-					this.eye.AnimLoopMode = AnimSpriteRenderer.LoopMode.FixedSingle;
+					this.eye.AnimLoopMode = SpriteAnimator.LoopMode.FixedSingle;
 					this.eye.AnimDuration = 1.0f;
 					this.eye.AnimTime = this.eyeOpenValue;
 				}

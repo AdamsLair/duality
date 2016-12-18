@@ -13,9 +13,9 @@ namespace FlapOrDie.Controllers
     [RequiredComponent(typeof(RigidBody))]
     public class PlayerController : Component, ICmpUpdatable, ICmpCollisionListener
     {
-        private AnimSpriteRenderer bodyRenderer;
-        private AnimSpriteRenderer frontWingRenderer;
-        private AnimSpriteRenderer backWingRenderer;
+        private SpriteAnimator bodyRenderer;
+        private SpriteAnimator frontWingRenderer;
+        private SpriteAnimator backWingRenderer;
         private float impulseStrength;
         private ContentRef<Scene> menuScene;
 
@@ -24,17 +24,17 @@ namespace FlapOrDie.Controllers
         [DontSerialize] private float flapTime;
         [DontSerialize] private bool isDead;
 
-        public AnimSpriteRenderer Body
+        public SpriteAnimator Body
         {
             get { return this.bodyRenderer; }
             set { this.bodyRenderer = value; }
         }
-        public AnimSpriteRenderer FrontWing
+        public SpriteAnimator FrontWing
         {
             get { return this.frontWingRenderer; }
             set { this.frontWingRenderer = value; }
         }
-        public AnimSpriteRenderer BackWing
+        public SpriteAnimator BackWing
         {
             get { return this.backWingRenderer; }
             set { this.backWingRenderer = value; }

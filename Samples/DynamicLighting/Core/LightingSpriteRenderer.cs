@@ -159,26 +159,15 @@ namespace DynamicLighting
 			Texture mainTex = this.RetrieveMainTex();
 			ColorRgba mainClr = this.RetrieveMainColor();
 			DrawTechnique tech = this.RetrieveDrawTechnique();
-			
-			Rect uvRect;
-			if (mainTex != null)
-			{
-				if (this.rectMode == UVMode.WrapBoth)
-					uvRect = new Rect(mainTex.UVRatio.X * this.rect.W / mainTex.PixelWidth, mainTex.UVRatio.Y * this.rect.H / mainTex.PixelHeight);
-				else if (this.rectMode == UVMode.WrapHorizontal)
-					uvRect = new Rect(mainTex.UVRatio.X * this.rect.W / mainTex.PixelWidth, mainTex.UVRatio.Y);
-				else if (this.rectMode == UVMode.WrapVertical)
-					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y * this.rect.H / mainTex.PixelHeight);
-				else
-					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y);
-			}
-			else
-				uvRect = new Rect(1.0f, 1.0f);
 
+			Rect uvRect;
+			this.GetUVRect(mainTex, out uvRect);
 			this.PrepareVerticesLight(ref this.verticesLight, device, mainClr, uvRect, tech);
 
-			if (this.customMat != null)	device.AddVertices(this.customMat, VertexMode.Quads, this.verticesLight);
-			else						device.AddVertices(this.sharedMat, VertexMode.Quads, this.verticesLight);
+			if (this.customMat != null)
+				device.AddVertices(this.customMat, VertexMode.Quads, this.verticesLight);
+			else
+				device.AddVertices(this.sharedMat, VertexMode.Quads, this.verticesLight);
 		}
 	}
 }

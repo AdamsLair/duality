@@ -243,7 +243,7 @@
     <Compile Include="Drawing\CanvasBuffer.cs" />
     <Compile Include="Drawing\Enums\DashPattern.cs" />
     <Compile Include="Drawing\CanvasState.cs" />
-    <Compile Include="Components\Renderers\AnimSpriteRenderer.cs" />
+    <Compile Include="Components\Renderers\SpriteAnimator.cs" />
     <Compile Include="Components\Renderers\TextRenderer.cs" />
     <Compile Include="Components\SoundEmitter.cs" />
     <Compile Include="Components\SoundListener.cs" />

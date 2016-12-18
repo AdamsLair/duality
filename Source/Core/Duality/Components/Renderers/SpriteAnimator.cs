@@ -11,12 +11,12 @@ using Duality.Properties;
 namespace Duality.Components.Renderers
 {
 	/// <summary>
-	/// Renders an animated sprite to represent the <see cref="GameObject"/>.
+	/// Animates a <see cref="ICmpSpriteRenderer"/> on the same <see cref="GameObject"/>.
 	/// </summary>
 	[ManuallyCloned]
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(CoreResNames.ImageAnimSpriteRenderer)]
-	public class AnimSpriteRenderer : SpriteRenderer, ICmpUpdatable, ICmpInitializable
+	public class SpriteAnimator : Component, ICmpUpdatable, ICmpInitializable
 	{
 		/// <summary>
 		/// Describes the sprite animations loop behaviour.
@@ -61,9 +61,8 @@ namespace Duality.Components.Renderers
 		private bool      animPaused          = false;
 		private List<int> customFrameSequence = null;
 
-		[DontSerialize] private int curAnimFrame = 0;
-		[DontSerialize] private int nextAnimFrame = 0;
-		[DontSerialize] private float frameBlend = 0.0f;
+		[DontSerialize] private ICmpSpriteRenderer sprite = null;
+		[DontSerialize] private SpriteIndexBlend spriteIndex = new SpriteIndexBlend(0);
 
 
 		/// <summary>
@@ -174,34 +173,17 @@ namespace Duality.Components.Renderers
 			}
 		}
 		/// <summary>
-		/// [GET] The currently visible animation frames index.
+		/// [GET] The sprite index (blend) that should be displayed by the target sprite.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public int CurrentFrame
+		public SpriteIndexBlend SpriteIndex
 		{
-			get { return this.curAnimFrame; }
-		}
-		/// <summary>
-		/// [GET] The next visible animation frames index.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public int NextFrame
-		{
-			get { return this.nextAnimFrame; }
-		}
-		/// <summary>
-		/// [GET] The current animation frames progress where zero means "just entered the current frame"
-		/// and one means "about to leave the current frame". This value is also used for smooth animation blending.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public float FrameBlend
-		{
-			get { return this.frameBlend; }
+			get { return this.spriteIndex; }
 		}
 
-		
+
 		/// <summary>
-		/// Updates the <see cref="AnimSpriteRenderer.CurrentFrame"/>, <see cref="NextFrame"/> and <see cref="FrameBlend"/> properties immediately.
+		/// Updates the <see cref="SpriteIndex"/> property immediately.
 		/// This is called implicitly once each frame before drawing, so you don't normally call this. However, when changing animation
 		/// parameters and requiring updated animation frame data immediately, this could be helpful.
 		/// </summary>
@@ -212,79 +194,79 @@ namespace Duality.Components.Renderers
 			float frameTemp = actualFrameCount * this.animTime / this.animDuration;
 
 			// Calculate visible frames
-			this.curAnimFrame = 0;
-			this.nextAnimFrame = 0;
-			this.frameBlend = 0.0f;
+			this.spriteIndex.Current = 0;
+			this.spriteIndex.Next = 0;
+			this.spriteIndex.Blend = 0.0f;
 			if (actualFrameCount > 0 && this.animDuration > 0)
 			{
 				// Queued behavior
 				if (this.animLoopMode == LoopMode.Queue)
 				{
-					this.curAnimFrame = 0;
-					this.nextAnimFrame = 1;
-					this.frameBlend = MathF.Clamp(this.animTime / this.animDuration, 0.0f, 1.0f);
+					this.spriteIndex.Current = 0;
+					this.spriteIndex.Next = 1;
+					this.spriteIndex.Blend = MathF.Clamp(this.animTime / this.animDuration, 0.0f, 1.0f);
 				}
 				// Non-queued behavior
 				else
 				{
 					// Calculate currently visible frame
-					this.curAnimFrame = (int)frameTemp;
+					this.spriteIndex.Current = (int)frameTemp;
 
 					// Handle extended frame range for ping pong mode
 					if (this.animLoopMode == LoopMode.PingPong)
 					{
-						if (this.curAnimFrame >= actualFrameCount)
-							this.curAnimFrame = (actualFrameCount - 1) * 2 - this.curAnimFrame;
+						if (this.spriteIndex.Current >= actualFrameCount)
+							this.spriteIndex.Current = (actualFrameCount - 1) * 2 - this.spriteIndex.Current;
 					}
 
 					// Normalize current frame when exceeding anim duration
 					if (this.animLoopMode == LoopMode.Once || this.animLoopMode == LoopMode.FixedSingle || this.animLoopMode == LoopMode.RandomSingle)
-						this.curAnimFrame = MathF.Clamp(this.curAnimFrame, 0, actualFrameCount - 1);
+						this.spriteIndex.Current = MathF.Clamp(this.spriteIndex.Current, 0, actualFrameCount - 1);
 					else
-						this.curAnimFrame = MathF.NormalizeVar(this.curAnimFrame, 0, actualFrameCount);
+						this.spriteIndex.Current = MathF.NormalizeVar(this.spriteIndex.Current, 0, actualFrameCount);
 
 					// Calculate second frame and fade value
-					this.frameBlend = frameTemp - (int)frameTemp;
+					this.spriteIndex.Blend = frameTemp - (int)frameTemp;
 					if (this.animLoopMode == LoopMode.Loop)
 					{
-						this.nextAnimFrame = MathF.NormalizeVar(this.curAnimFrame + 1, 0, actualFrameCount);
+						this.spriteIndex.Next = MathF.NormalizeVar(this.spriteIndex.Current + 1, 0, actualFrameCount);
 					}
 					else if (this.animLoopMode == LoopMode.PingPong)
 					{
 						if ((int)frameTemp < actualFrameCount)
 						{
-							this.nextAnimFrame = this.curAnimFrame + 1;
-							if (this.nextAnimFrame >= actualFrameCount)
-								this.nextAnimFrame = (actualFrameCount - 1) * 2 - this.nextAnimFrame;
+							this.spriteIndex.Next = this.spriteIndex.Current + 1;
+							if (this.spriteIndex.Next >= actualFrameCount)
+								this.spriteIndex.Next = (actualFrameCount - 1) * 2 - this.spriteIndex.Next;
 						}
 						else
 						{
-							this.nextAnimFrame = this.curAnimFrame - 1;
-							if (this.nextAnimFrame < 0)
-								this.nextAnimFrame = -this.nextAnimFrame;
+							this.spriteIndex.Next = this.spriteIndex.Current - 1;
+							if (this.spriteIndex.Next < 0)
+								this.spriteIndex.Next = -this.spriteIndex.Next;
 						}
 					}
 					else
 					{
-						this.nextAnimFrame = this.curAnimFrame + 1;
+						this.spriteIndex.Next = this.spriteIndex.Current + 1;
 					}
 				}
 			}
-			this.curAnimFrame = actualFrameBegin + MathF.Clamp(this.curAnimFrame, 0, actualFrameCount - 1);
-			this.nextAnimFrame = actualFrameBegin + MathF.Clamp(this.nextAnimFrame, 0, actualFrameCount - 1);
+			this.spriteIndex.Current = actualFrameBegin + MathF.Clamp(this.spriteIndex.Current, 0, actualFrameCount - 1);
+			this.spriteIndex.Next = actualFrameBegin + MathF.Clamp(this.spriteIndex.Next, 0, actualFrameCount - 1);
 
 			// Map to custom sequence
 			if (this.customFrameSequence != null)
 			{
 				if (this.customFrameSequence.Count > 0)
 				{
-					this.curAnimFrame = this.customFrameSequence[this.curAnimFrame];
-					this.nextAnimFrame = this.customFrameSequence[this.nextAnimFrame];
+					this.spriteIndex.Current = this.customFrameSequence[this.spriteIndex.Current];
+					this.spriteIndex.Next = this.customFrameSequence[this.spriteIndex.Next];
 				}
 				else
 				{
-					this.curAnimFrame = 0;
-					this.nextAnimFrame = 0;
+					this.spriteIndex.Current = 0;
+					this.spriteIndex.Next = 0;
 				}
 			}
 		}
@@ -343,6 +325,12 @@ namespace Duality.Components.Renderers
 			}
 
 			this.UpdateVisibleFrames();
+
+			// Apply the current animation state to the target sprite
+			if (this.sprite == null || (this.sprite as Component).GameObj != this.gameobj)
+				this.sprite = this.GameObj.GetComponent<ICmpSpriteRenderer>();
+			if (this.sprite != null)
+				this.sprite.SpriteIndex = this.spriteIndex;
 		}
 		void ICmpInitializable.OnInit(Component.InitContext context)
 		{
@@ -354,42 +342,17 @@ namespace Duality.Components.Renderers
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
 		
-		protected void GetAnimData(Texture mainTex, int frameIndex, out Rect uvRect)
-		{
-			if (mainTex != null)
-				mainTex.LookupAtlas(frameIndex, out uvRect);
-			else
-				uvRect = new Rect(1.0f, 1.0f);
-		}
-
-		public override void Draw(IDrawDevice device)
-		{
-			Texture mainTex = this.RetrieveMainTex();
-			ColorRgba mainClr = this.RetrieveMainColor();
-			DrawTechnique tech = this.RetrieveDrawTechnique();
-
-			Rect uvRect;
-			this.UpdateVisibleFrames();
-			this.GetAnimData(mainTex, this.curAnimFrame, out uvRect);
-			
-			this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
-			if (this.customMat != null)
-				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);
-			else
-				device.AddVertices(this.sharedMat, VertexMode.Quads, this.vertices);
-		}
-
 		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
 		{
 			base.OnSetupCloneTargets(targetObj, setup);
-			AnimSpriteRenderer target = targetObj as AnimSpriteRenderer;
+			SpriteAnimator target = targetObj as SpriteAnimator;
 
 			setup.HandleObject(this.customFrameSequence, target.customFrameSequence);
 		}
 		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
 		{
 			base.OnCopyDataTo(targetObj, operation);
-			AnimSpriteRenderer target = targetObj as AnimSpriteRenderer;
+			SpriteAnimator target = targetObj as SpriteAnimator;
 
 			target.animFirstFrame		= this.animFirstFrame;
 			target.animFrameCount		= this.animFrameCount;

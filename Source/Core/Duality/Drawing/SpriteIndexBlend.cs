@@ -20,60 +20,54 @@ namespace Duality.Drawing
 		/// </summary>
 		public static readonly SpriteIndexBlend First = new SpriteIndexBlend(0);
 
-		private int current;
-		private int next;
-		private float blend;
-
-
 		/// <summary>
 		/// The currently displayed sprite index.
 		/// </summary>
-		public int Current
-		{
-			get { return this.current; }
-			set { this.current = Math.Max(value, -1); }
-		}
+		public int Current;
 		/// <summary>
 		/// The sprite index that is to be displayed next / gradually blended over to.
 		/// </summary>
-		public int Next
-		{
-			get { return this.next; }
-			set { this.next = Math.Max(value, -1); }
-		}
+		public int Next;
 		/// <summary>
 		/// A blend value that represents the contribution of each sprite index to
 		/// the displayed image. Ranging from zero to one, zero represents <see cref="Current"/>
 		/// while one represents <see cref="Next"/> and 0.5 and equal blend between both.
 		/// </summary>
-		public float Blend
-		{
-			get { return this.blend; }
-			set { this.blend = MathF.Clamp(value, 0.0f, 1.0f); }
-		}
+		public float Blend;
 
 
 		public SpriteIndexBlend(int index)
 		{
-			this.current = Math.Max(index, -1);
-			this.next = this.current;
-			this.blend = 0.0f;
+			this.Current = index;
+			this.Next = index;
+			this.Blend = 0.0f;
+			this.Clamp();
 		}
 		public SpriteIndexBlend(int currentIndex, int nextIndex, float blend)
 		{
-			this.current = Math.Max(currentIndex, -1);
-			this.next = Math.Max(nextIndex, -1);
-			this.blend = blend;
+			this.Current = currentIndex;
+			this.Next = nextIndex;
+			this.Blend = blend;
+			this.Clamp();
 		}
 
+		/// <summary>
+		/// Clamps <see cref="Current"/>, <see cref="Next"/> and <see cref="Blend"/> into valid ranges.
+		/// </summary>
+		public void Clamp()
+		{
+			this.Current = Math.Max(this.Current, -1);
+			this.Next = Math.Max(this.Next, -1);
+			this.Blend = MathF.Clamp(this.Blend, 0.0f, 1.0f);
+		}
 		/// <summary>
 		/// Removes any blending information and transforms the blend of sprite indices into
 		/// one that represents only a single sprite index.
 		/// </summary>
 		public void RemoveBlend()
 		{
-			this.next = this.current;
-			this.blend = 0.0f;
+			this.Next = this.Current;
+			this.Blend = 0.0f;
 		}
 	}
 }

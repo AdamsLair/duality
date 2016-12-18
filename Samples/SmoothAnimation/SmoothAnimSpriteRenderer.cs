@@ -13,11 +13,11 @@ namespace SmoothAnimation
 {
 	/// <summary>
 	/// Renders an animated sprite with smooth transitions between two active frames.
-	/// Similar to <see cref="AnimSpriteRenderer"/>, but extended with blending functionality.
+	/// Similar to <see cref="SpriteRenderer"/>, but extended with blending functionality for different sprite indices.
 	/// </summary>
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(CoreResNames.ImageAnimSpriteRenderer)]
-	public class SmoothAnimSpriteRenderer : AnimSpriteRenderer
+	public class SmoothAnimSpriteRenderer : SpriteRenderer
 	{
 		[DontSerialize] private VertexC1P3T4A1[] verticesSmooth   = null;
 
@@ -145,11 +145,18 @@ namespace SmoothAnimation
 
 			Rect uvRect;
 			Rect uvRectNext;
-			this.UpdateVisibleFrames();
-			this.GetAnimData(mainTex, this.CurrentFrame, out uvRect);
-			this.GetAnimData(mainTex, this.NextFrame, out uvRectNext);
+			if (mainTex != null)
+			{
+				mainTex.LookupAtlas(this.spriteIndex.Current, out uvRect);
+				mainTex.LookupAtlas(this.spriteIndex.Next, out uvRectNext);
+			}
+			else
+			{
+				uvRect = new Rect(1.0f, 1.0f);
+				uvRectNext = new Rect(1.0f, 1.0f);
+			}
 			
-			this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.FrameBlend, mainClr, uvRect, uvRectNext);
+			this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.spriteIndex.Blend, mainClr, uvRect, uvRectNext);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.verticesSmooth);
 			else

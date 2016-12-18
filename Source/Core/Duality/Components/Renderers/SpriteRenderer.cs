@@ -165,6 +165,7 @@ namespace Duality.Components.Renderers
 			set
 			{
 				this.spriteIndex = value;
+				this.spriteIndex.Clamp();
 				this.spriteIndex.RemoveBlend();
 			}
 		}
@@ -297,14 +298,9 @@ namespace Duality.Components.Renderers
 				}
 			}
 		}
-
-		public override void Draw(IDrawDevice device)
+		protected void GetUVRect(Texture mainTex, out Rect uvRect)
 		{
-			Texture mainTex = this.RetrieveMainTex();
-			ColorRgba mainClr = this.RetrieveMainColor();
-
 			// Determine the rect area of the texture to be displayed
-			Rect uvRect;
 			if (mainTex == null)
 				uvRect = new Rect(1.0f, 1.0f);
 			else if (this.spriteIndex.Current != -1)
@@ -321,7 +317,15 @@ namespace Duality.Components.Renderers
 				uvRect.W *= this.rect.W / fullSize.X;
 			if ((this.rectMode & UVMode.WrapVertical) != 0)
 				uvRect.H *= this.rect.H / fullSize.Y;
+		}
 
+		public override void Draw(IDrawDevice device)
+		{
+			Texture mainTex = this.RetrieveMainTex();
+			ColorRgba mainClr = this.RetrieveMainColor();
+
+			Rect uvRect;
+			this.GetUVRect(mainTex, out uvRect);
 			this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);

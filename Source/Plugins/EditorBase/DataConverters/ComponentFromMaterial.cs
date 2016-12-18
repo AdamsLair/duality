@@ -43,34 +43,28 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				Texture mainTex = mat.MainTexture.Res;
 				Pixmap basePixmap = (mainTex != null) ? mainTex.BasePixmap.Res : null;
 				GameObject gameobj = convert.Result.OfType<GameObject>().FirstOrDefault();
+				bool hasAnimation = (mainTex != null && basePixmap != null && basePixmap.AnimFrames > 0);
 
-				if (mainTex == null || basePixmap == null || basePixmap.AnimFrames == 0)
+				// Create a sprite Component in any case
+				SpriteRenderer sprite = convert.Result.OfType<SpriteRenderer>().FirstOrDefault();
+				if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<SpriteRenderer>();
+				if (sprite == null) sprite = new SpriteRenderer();
+				sprite.SharedMaterial = mat;
+				if (mainTex != null) sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, mainTex.PixelWidth, mainTex.PixelHeight);
+				results.Add(sprite);
+
+				// If we have animation data, create an animator component as well
+				if (hasAnimation)
 				{
-					SpriteRenderer sprite = convert.Result.OfType<SpriteRenderer>().FirstOrDefault();
-					if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<SpriteRenderer>();
-					if (sprite == null) sprite = new SpriteRenderer();
-					sprite.SharedMaterial = mat;
-					if (mainTex != null) sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, mainTex.PixelWidth, mainTex.PixelHeight);
-					convert.SuggestResultName(sprite, mat.Name);
-					results.Add(sprite);
-				}
-				else
-				{
-					AnimSpriteRenderer sprite = convert.Result.OfType<AnimSpriteRenderer>().FirstOrDefault();
-					if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<AnimSpriteRenderer>();
-					if (sprite == null) sprite = new AnimSpriteRenderer();
-					sprite.SharedMaterial = mat;
-					sprite.Rect = Rect.Align(Alignment.Center, 
-						0.0f, 
-						0.0f, 
-						(mainTex.PixelWidth / basePixmap.AnimCols) - basePixmap.AnimFrameBorder * 2, 
-						(mainTex.PixelHeight / basePixmap.AnimRows) - basePixmap.AnimFrameBorder * 2);
-					sprite.AnimDuration = 5.0f;
-					sprite.AnimFrameCount = basePixmap.AnimFrames;
-					convert.SuggestResultName(sprite, mat.Name);
+					SpriteAnimator animator = convert.Result.OfType<SpriteAnimator>().FirstOrDefault();
+					if (animator == null && gameobj != null) animator = gameobj.GetComponent<SpriteAnimator>();
+					if (animator == null) animator = new SpriteAnimator();
+					animator.AnimDuration = 5.0f;
+					animator.AnimFrameCount = basePixmap.AnimFrames;
 					results.Add(sprite);
 				}
 
+				convert.SuggestResultName(sprite, mat.Name);
 				convert.MarkObjectHandled(mat);
 			}
 
