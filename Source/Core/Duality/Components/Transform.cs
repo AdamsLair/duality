@@ -20,39 +20,39 @@ namespace Duality.Components
 		[Flags]
 		public enum DirtyFlags
 		{
-			None		= 0x00,
+			None  = 0x00,
 
-			Pos			= 0x01,
-			Angle		= 0x04,
-			Scale		= 0x10,
+			Pos   = 0x01,
+			Angle = 0x04,
+			Scale = 0x10,
 
-			All			= Pos | Angle | Scale
+			All   = Pos | Angle | Scale
 		}
 
 		private const float MinScale = 0.0000001f;
 
-		private	Vector3	pos			= Vector3.Zero;
-		private	float	angle		= 0.0f;
-		private	float	scale		= 1.0f;
-		private	bool	deriveAngle		= true;
-		private	bool	ignoreParent	= false;
+		private Vector3   pos             = Vector3.Zero;
+		private float     angle           = 0.0f;
+		private float     scale           = 1.0f;
+		private bool      deriveAngle     = true;
+		private bool      ignoreParent    = false;
 
 		// Cached values, recalc on change
-		private	Transform	parentTransform	= null;
-		private	Vector3		posAbs			= Vector3.Zero;
-		private	float		angleAbs		= 0.0f;
-		private	float		scaleAbs		= 1.0f;
+		private Transform parentTransform = null;
+		private Vector3   posAbs          = Vector3.Zero;
+		private float     angleAbs        = 0.0f;
+		private float     scaleAbs        = 1.0f;
 		// Auto-calculated values
-		private	Vector3		vel				= Vector3.Zero;
-		private	Vector3		velAbs			= Vector3.Zero;
-		private	float		angleVel		= 0.0f;
-		private	float		angleVelAbs		= 0.0f;
+		private Vector3   vel             = Vector3.Zero;
+		private Vector3   velAbs          = Vector3.Zero;
+		private float     angleVel        = 0.0f;
+		private float     angleVelAbs     = 0.0f;
 		// Temporary per-frame values
-		[DontSerialize] private	DirtyFlags	changes			= DirtyFlags.None;
-		[DontSerialize] private	Vector3		tempVel			= Vector3.Zero;
-		[DontSerialize] private	Vector3		tempVelAbs		= Vector3.Zero;
-		[DontSerialize] private	float		tempAngleVel	= 0.0f;
-		[DontSerialize] private	float		tempAngleVelAbs	= 0.0f;
+		[DontSerialize] private DirtyFlags changes         = DirtyFlags.None;
+		[DontSerialize] private Vector3    tempVel         = Vector3.Zero;
+		[DontSerialize] private Vector3    tempVelAbs      = Vector3.Zero;
+		[DontSerialize] private float      tempAngleVel    = 0.0f;
+		[DontSerialize] private float      tempAngleVelAbs = 0.0f;
 
 		[DontSerialize] 
 		private EventHandler<TransformChangedEventArgs> eventTransformChanged = null;
