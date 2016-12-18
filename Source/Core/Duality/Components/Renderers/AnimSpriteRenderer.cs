@@ -61,10 +61,9 @@ namespace Duality.Components.Renderers
 		private bool      animPaused          = false;
 		private List<int> customFrameSequence = null;
 
-		[DontSerialize] private int   curAnimFrame      = 0;
-		[DontSerialize] private int   nextAnimFrame     = 0;
-		[DontSerialize] private float curAnimFrameFade  = 0.0f;
-		[DontSerialize] private VertexC1P3T4A1[] verticesSmooth = null;
+		[DontSerialize] private int curAnimFrame = 0;
+		[DontSerialize] private int nextAnimFrame = 0;
+		[DontSerialize] private float frameBlend = 0.0f;
 
 
 		/// <summary>
@@ -195,17 +194,17 @@ namespace Duality.Components.Renderers
 		/// and one means "about to leave the current frame". This value is also used for smooth animation blending.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public float CurrentFrameProgress
+		public float FrameBlend
 		{
-			get { return this.curAnimFrameFade; }
+			get { return this.frameBlend; }
 		}
 
 
 		public AnimSpriteRenderer() {}
 		public AnimSpriteRenderer(Rect rect, ContentRef<Material> mainMat) : base(rect, mainMat) {}
-		
+
 		/// <summary>
-		/// Updates the <see cref="CurrentFrame"/>, <see cref="NextFrame"/> and <see cref="CurrentFrameProgress"/> properties immediately.
+		/// Updates the <see cref="AnimSpriteRenderer.CurrentFrame"/>, <see cref="NextFrame"/> and <see cref="FrameBlend"/> properties immediately.
 		/// This is called implicitly once each frame before drawing, so you don't normally call this. However, when changing animation
 		/// parameters and requiring updated animation frame data immediately, this could be helpful.
 		/// </summary>
@@ -213,25 +212,25 @@ namespace Duality.Components.Renderers
 		{
 			int actualFrameBegin = this.customFrameSequence != null ? 0 : this.animFirstFrame;
 			int actualFrameCount = this.customFrameSequence != null ? this.customFrameSequence.Count : this.animFrameCount;
+			float frameTemp = actualFrameCount * this.animTime / this.animDuration;
 
 			// Calculate visible frames
 			this.curAnimFrame = 0;
 			this.nextAnimFrame = 0;
-			this.curAnimFrameFade = 0.0f;
+			this.frameBlend = 0.0f;
 			if (actualFrameCount > 0 && this.animDuration > 0)
 			{
 				// Queued behavior
 				if (this.animLoopMode == LoopMode.Queue)
 				{
-					this.curAnimFrameFade = MathF.Clamp(this.animTime / this.animDuration, 0.0f, 1.0f);
 					this.curAnimFrame = 0;
 					this.nextAnimFrame = 1;
+					this.frameBlend = MathF.Clamp(this.animTime / this.animDuration, 0.0f, 1.0f);
 				}
 				// Non-queued behavior
 				else
 				{
 					// Calculate currently visible frame
-					float frameTemp = actualFrameCount * this.animTime / this.animDuration;
 					this.curAnimFrame = (int)frameTemp;
 
 					// Handle extended frame range for ping pong mode
@@ -248,7 +247,7 @@ namespace Duality.Components.Renderers
 						this.curAnimFrame = MathF.NormalizeVar(this.curAnimFrame, 0, actualFrameCount);
 
 					// Calculate second frame and fade value
-					this.curAnimFrameFade = frameTemp - (int)frameTemp;
+					this.frameBlend = frameTemp - (int)frameTemp;
 					if (this.animLoopMode == LoopMode.Loop)
 					{
 						this.nextAnimFrame = MathF.NormalizeVar(this.curAnimFrame + 1, 0, actualFrameCount);
@@ -274,21 +273,21 @@ namespace Duality.Components.Renderers
 					}
 				}
 			}
-			this.curAnimFrame	= actualFrameBegin + MathF.Clamp(this.curAnimFrame, 0, actualFrameCount - 1);
-			this.nextAnimFrame	= actualFrameBegin + MathF.Clamp(this.nextAnimFrame, 0, actualFrameCount - 1);
+			this.curAnimFrame = actualFrameBegin + MathF.Clamp(this.curAnimFrame, 0, actualFrameCount - 1);
+			this.nextAnimFrame = actualFrameBegin + MathF.Clamp(this.nextAnimFrame, 0, actualFrameCount - 1);
 
 			// Map to custom sequence
 			if (this.customFrameSequence != null)
 			{
 				if (this.customFrameSequence.Count > 0)
 				{
-					this.curAnimFrame	= this.customFrameSequence[this.curAnimFrame];
-					this.nextAnimFrame	= this.customFrameSequence[this.nextAnimFrame];
+					this.curAnimFrame = this.customFrameSequence[this.curAnimFrame];
+					this.nextAnimFrame = this.customFrameSequence[this.nextAnimFrame];
 				}
 				else
 				{
-					this.curAnimFrame	= 0;
-					this.nextAnimFrame	= 0;
+					this.curAnimFrame = 0;
+					this.nextAnimFrame = 0;
 				}
 			}
 		}
@@ -358,134 +357,12 @@ namespace Duality.Components.Renderers
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
 		
-		protected void PrepareVerticesSmooth(ref VertexC1P3T4A1[] vertices, IDrawDevice device, float curAnimFrameFade, ColorRgba mainClr, Rect uvRect, Rect uvRectNext)
+		protected void GetAnimData(Texture mainTex, DrawTechnique tech, int frameIndex, out Rect uvRect)
 		{
-			Vector3 posTemp = this.gameobj.Transform.Pos;
-			float scaleTemp = 1.0f;
-			device.PreprocessCoords(ref posTemp, ref scaleTemp);
-
-			Vector2 xDot, yDot;
-			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, scaleTemp, out xDot, out yDot);
-
-			Rect rectTemp = this.rect.Transformed(this.gameobj.Transform.Scale, this.gameobj.Transform.Scale);
-			Vector2 edge1 = rectTemp.TopLeft;
-			Vector2 edge2 = rectTemp.BottomLeft;
-			Vector2 edge3 = rectTemp.BottomRight;
-			Vector2 edge4 = rectTemp.TopRight;
-
-			MathF.TransformDotVec(ref edge1, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
-			
-			float left       = uvRect.X;
-			float right      = uvRect.RightX;
-			float top        = uvRect.Y;
-			float bottom     = uvRect.BottomY;
-			float nextLeft   = uvRectNext.X;
-			float nextRight  = uvRectNext.RightX;
-			float nextTop    = uvRectNext.Y;
-			float nextBottom = uvRectNext.BottomY;
-
-			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
-			{
-				edge1.X = -edge1.X;
-				edge2.X = -edge2.X;
-				edge3.X = -edge3.X;
-				edge4.X = -edge4.X;
-			}
-			if ((this.flipMode & FlipMode.Vertical) != FlipMode.None)
-			{
-				edge1.Y = -edge1.Y;
-				edge2.Y = -edge2.Y;
-				edge3.Y = -edge3.Y;
-				edge4.Y = -edge4.Y;
-			}
-
-			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T4A1[4];
-
-			vertices[0].Pos.X = posTemp.X + edge1.X;
-			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
-			vertices[0].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[0].TexCoord.X = left;
-			vertices[0].TexCoord.Y = top;
-			vertices[0].TexCoord.Z = nextLeft;
-			vertices[0].TexCoord.W = nextTop;
-			vertices[0].Color = mainClr;
-			vertices[0].Attrib = curAnimFrameFade;
-
-			vertices[1].Pos.X = posTemp.X + edge2.X;
-			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
-			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[1].TexCoord.X = left;
-			vertices[1].TexCoord.Y = bottom;
-			vertices[1].TexCoord.Z = nextLeft;
-			vertices[1].TexCoord.W = nextBottom;
-			vertices[1].Color = mainClr;
-			vertices[1].Attrib = curAnimFrameFade;
-
-			vertices[2].Pos.X = posTemp.X + edge3.X;
-			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
-			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].TexCoord.X = right;
-			vertices[2].TexCoord.Y = bottom;
-			vertices[2].TexCoord.Z = nextRight;
-			vertices[2].TexCoord.W = nextBottom;
-			vertices[2].Color = mainClr;
-			vertices[2].Attrib = curAnimFrameFade;
-				
-			vertices[3].Pos.X = posTemp.X + edge4.X;
-			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
-			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].TexCoord.X = right;
-			vertices[3].TexCoord.Y = top;
-			vertices[3].TexCoord.Z = nextRight;
-			vertices[3].TexCoord.W = nextTop;
-			vertices[3].Color = mainClr;
-			vertices[3].Attrib = curAnimFrameFade;
-
-			if (this.pixelGrid)
-			{
-				vertices[0].Pos.X = MathF.Round(vertices[0].Pos.X);
-				vertices[1].Pos.X = MathF.Round(vertices[1].Pos.X);
-				vertices[2].Pos.X = MathF.Round(vertices[2].Pos.X);
-				vertices[3].Pos.X = MathF.Round(vertices[3].Pos.X);
-
-				if (MathF.RoundToInt(device.TargetSize.X) != (MathF.RoundToInt(device.TargetSize.X) / 2) * 2)
-				{
-					vertices[0].Pos.X += 0.5f;
-					vertices[1].Pos.X += 0.5f;
-					vertices[2].Pos.X += 0.5f;
-					vertices[3].Pos.X += 0.5f;
-				}
-
-				vertices[0].Pos.Y = MathF.Round(vertices[0].Pos.Y);
-				vertices[1].Pos.Y = MathF.Round(vertices[1].Pos.Y);
-				vertices[2].Pos.Y = MathF.Round(vertices[2].Pos.Y);
-				vertices[3].Pos.Y = MathF.Round(vertices[3].Pos.Y);
-
-				if (MathF.RoundToInt(device.TargetSize.Y) != (MathF.RoundToInt(device.TargetSize.Y) / 2) * 2)
-				{
-					vertices[0].Pos.Y += 0.5f;
-					vertices[1].Pos.Y += 0.5f;
-					vertices[2].Pos.Y += 0.5f;
-					vertices[3].Pos.Y += 0.5f;
-				}
-			}
-		}
-		protected void GetAnimData(Texture mainTex, DrawTechnique tech, bool smoothShaderInput, out Rect uvRect, out Rect uvRectNext)
-		{
-			this.UpdateVisibleFrames();
 			if (mainTex != null)
-			{
-				mainTex.LookupAtlas(this.curAnimFrame, out uvRect);
-				if (smoothShaderInput)
-					mainTex.LookupAtlas(this.nextAnimFrame, out uvRectNext);
-				else
-					uvRectNext = uvRect;
-			}
+				mainTex.LookupAtlas(frameIndex, out uvRect);
 			else
-				uvRect = uvRectNext = new Rect(1.0f, 1.0f);
+				uvRect = new Rect(1.0f, 1.0f);
 		}
 
 		public override void Draw(IDrawDevice device)
@@ -495,22 +372,14 @@ namespace Duality.Components.Renderers
 			DrawTechnique tech = this.RetrieveDrawTechnique();
 
 			Rect uvRect;
-			Rect uvRectNext;
-			bool smoothShaderInput = tech != null && tech.PreferredVertexFormat == VertexC1P3T4A1.Declaration;
-			this.GetAnimData(mainTex, tech, smoothShaderInput, out uvRect, out uvRectNext);
+			this.UpdateVisibleFrames();
+			this.GetAnimData(mainTex, tech, this.curAnimFrame, out uvRect);
 			
-			if (!smoothShaderInput)
-			{
-				this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
-				if (this.customMat != null)	device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);
-				else						device.AddVertices(this.sharedMat, VertexMode.Quads, this.vertices);
-			}
+			this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
+			if (this.customMat != null)
+				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);
 			else
-			{
-				this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.curAnimFrameFade, mainClr, uvRect, uvRectNext);
-				if (this.customMat != null)	device.AddVertices(this.customMat, VertexMode.Quads, this.verticesSmooth);
-				else						device.AddVertices(this.sharedMat, VertexMode.Quads, this.verticesSmooth);
-			}
+				device.AddVertices(this.sharedMat, VertexMode.Quads, this.vertices);
 		}
 
 		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
