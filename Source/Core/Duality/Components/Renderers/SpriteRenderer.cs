@@ -157,9 +157,10 @@ namespace Duality.Components.Renderers
 			set { this.flipMode = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The sprite index that is displayed by this renderer. Note that the <see cref="SpriteRenderer"/>
-		/// base class only evaluates <see cref="SpriteIndexBlend.Current"/> while ignoring blending states between frames.
-		/// Derived classes may use them to render transition effects.
+		/// [GET / SET] The sprite index that is displayed by this renderer. 
+		/// 
+		/// Note that the <see cref="SpriteRenderer"/> base class only evaluates the <see cref="SpriteIndexBlend.Current"/> 
+		/// sprite index while ignoring blending states between frames. Derived classes may use them to render transition effects.
 		/// </summary>
 		public SpriteIndexBlend SpriteIndex
 		{
