@@ -166,7 +166,6 @@ namespace Duality.Components.Renderers
 			{
 				this.spriteIndex = value;
 				this.spriteIndex.Clamp();
-				this.spriteIndex.RemoveBlend();
 			}
 		}
 
