@@ -76,7 +76,15 @@ namespace Duality.Components.Renderers
 		public int AnimFirstFrame
 		{
 			get { return this.animFirstFrame; }
-			set { this.animFirstFrame = MathF.Max(0, value); }
+			set
+			{
+				value = MathF.Max(0, value);
+				if (this.animFirstFrame != value)
+				{
+					this.animFirstFrame = value;
+					this.UpdateVisibleFrames();
+				}
+			}
 		}
 		/// <summary>
 		/// [GET / SET] The number of continous frames to use for the animation. Ignored if <see cref="CustomFrameSequence"/> is set.
@@ -89,7 +97,15 @@ namespace Duality.Components.Renderers
 		public int AnimFrameCount
 		{
 			get { return this.animFrameCount; }
-			set { this.animFrameCount = MathF.Max(0, value); }
+			set
+			{
+				value = MathF.Max(0, value);
+				if (this.animFrameCount != value)
+				{
+					this.animFrameCount = value;
+					this.UpdateVisibleFrames();
+				}
+			}
 		}
 		/// <summary>
 		/// [GET / SET] The time a single animation cycle needs to complete, in seconds.
@@ -100,12 +116,14 @@ namespace Duality.Components.Renderers
 			get { return this.animDuration; }
 			set
 			{
-				float lastDuration = this.animDuration;
-
-				this.animDuration = MathF.Max(0.0f, value);
-
-				if (lastDuration != 0.0f && this.animDuration != 0.0f)
-					this.animTime *= this.animDuration / lastDuration;
+				value = MathF.Max(0.0f, value);
+				if (this.animDuration != value)
+				{
+					float lastDuration = this.animDuration;
+					this.animDuration = MathF.Max(0.0f, value);
+					if (lastDuration != 0.0f && this.animDuration != 0.0f)
+						this.animTime *= this.animDuration / lastDuration;
+				}
 			}
 		}
 		/// <summary>
@@ -115,7 +133,15 @@ namespace Duality.Components.Renderers
 		public float AnimTime
 		{
 			get { return this.animTime; }
-			set { this.animTime = MathF.Max(0.0f, value); }
+			set
+			{
+				value = MathF.Max(0.0f, value);
+				if (this.animTime != value)
+				{
+					this.animTime = value;
+					this.UpdateVisibleFrames();
+				}
+			}
 		}
 		/// <summary>
 		/// [GET / SET] If true, the animation is paused and won't advance over time. <see cref="AnimTime"/> will stay constant until resumed.
@@ -145,7 +171,11 @@ namespace Duality.Components.Renderers
 		public List<int> CustomFrameSequence
 		{
 			get { return this.customFrameSequence; }
-			set { this.customFrameSequence = value; }
+			set
+			{
+				this.customFrameSequence = value;
+				this.UpdateVisibleFrames();
+			}
 		}
 		/// <summary>
 		/// [GET] Whether the animation is currently running, i.e. if there is anything animated right now.
@@ -183,11 +213,10 @@ namespace Duality.Components.Renderers
 
 
 		/// <summary>
-		/// Updates the <see cref="SpriteIndex"/> property immediately.
-		/// This is called implicitly once each frame before drawing, so you don't normally call this. However, when changing animation
-		/// parameters and requiring updated animation frame data immediately, this could be helpful.
+		/// Updates the <see cref="SpriteIndex"/> property based on the animators current state, and applies the new
+		/// <see cref="SpriteIndex"/> to the target sprite.
 		/// </summary>
-		public void UpdateVisibleFrames()
+		private void UpdateVisibleFrames()
 		{
 			int actualFrameBegin = this.customFrameSequence != null ? 0 : this.animFirstFrame;
 			int actualFrameCount = this.customFrameSequence != null ? this.customFrameSequence.Count : this.animFrameCount;
@@ -269,12 +298,16 @@ namespace Duality.Components.Renderers
 					this.spriteIndex.Next = 0;
 				}
 			}
+
+			this.ApplySpriteIndex();
 		}
 		private void ApplySpriteIndex()
 		{
+			// Retrieve the target sprite if it's unavailable or no longer up-to-date
+			if ((this.sprite == null || (this.sprite as Component).GameObj != this.gameobj) && this.gameobj != null)
+				this.sprite = this.gameobj.GetComponent<ICmpSpriteRenderer>();
+
 			// Apply the current animation state to the target sprite
-			if (this.sprite == null || (this.sprite as Component).GameObj != this.gameobj)
-				this.sprite = this.GameObj.GetComponent<ICmpSpriteRenderer>();
 			if (this.sprite != null)
 				this.sprite.SpriteIndex = this.spriteIndex;
 		}
@@ -333,7 +366,6 @@ namespace Duality.Components.Renderers
 			}
 
 			this.UpdateVisibleFrames();
-			this.ApplySpriteIndex();
 		}
 		void ICmpInitializable.OnInit(Component.InitContext context)
 		{
@@ -345,7 +377,6 @@ namespace Duality.Components.Renderers
 			else if (context == InitContext.Activate)
 			{
 				this.UpdateVisibleFrames();
-				this.ApplySpriteIndex();
 			}
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
