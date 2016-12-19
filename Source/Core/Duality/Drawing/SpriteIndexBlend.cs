@@ -69,5 +69,13 @@ namespace Duality.Drawing
 			this.Next = this.Current;
 			this.Blend = 0.0f;
 		}
+
+		public override string ToString()
+		{
+			if (this.Current != this.Next)
+				return string.Format("Index {0} to {1} at {2}%", this.Current, this.Next, this.Blend);
+			else
+				return string.Format("Index {0}", this.Current);
+		}
 	}
 }
