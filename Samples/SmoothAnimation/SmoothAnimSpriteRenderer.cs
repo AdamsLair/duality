@@ -141,20 +141,11 @@ namespace SmoothAnimation
 		{
 			Texture mainTex = this.RetrieveMainTex();
 			ColorRgba mainClr = this.RetrieveMainColor();
-			DrawTechnique tech = this.RetrieveDrawTechnique();
 
 			Rect uvRect;
 			Rect uvRectNext;
-			if (mainTex != null)
-			{
-				mainTex.LookupAtlas(this.spriteIndex.Current, out uvRect);
-				mainTex.LookupAtlas(this.spriteIndex.Next, out uvRectNext);
-			}
-			else
-			{
-				uvRect = new Rect(1.0f, 1.0f);
-				uvRectNext = new Rect(1.0f, 1.0f);
-			}
+			this.GetUVRect(mainTex, this.spriteIndex.Current, out uvRect);
+			this.GetUVRect(mainTex, this.spriteIndex.Next, out uvRectNext);
 			
 			this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.spriteIndex.Blend, mainClr, uvRect, uvRectNext);
 			if (this.customMat != null)

@@ -298,13 +298,13 @@ namespace Duality.Components.Renderers
 				}
 			}
 		}
-		protected void GetUVRect(Texture mainTex, out Rect uvRect)
+		protected void GetUVRect(Texture mainTex, int spriteIndex, out Rect uvRect)
 		{
 			// Determine the rect area of the texture to be displayed
 			if (mainTex == null)
 				uvRect = new Rect(1.0f, 1.0f);
-			else if (this.spriteIndex.Current != -1)
-				mainTex.LookupAtlas(this.spriteIndex.Current, out uvRect);
+			else if (spriteIndex != -1)
+				mainTex.LookupAtlas(spriteIndex, out uvRect);
 			else
 				uvRect = new Rect(mainTex.UVRatio);
 
@@ -325,7 +325,7 @@ namespace Duality.Components.Renderers
 			ColorRgba mainClr = this.RetrieveMainColor();
 
 			Rect uvRect;
-			this.GetUVRect(mainTex, out uvRect);
+			this.GetUVRect(mainTex, this.spriteIndex.Current, out uvRect);
 			this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);

@@ -161,7 +161,7 @@ namespace DynamicLighting
 			DrawTechnique tech = this.RetrieveDrawTechnique();
 
 			Rect uvRect;
-			this.GetUVRect(mainTex, out uvRect);
+			this.GetUVRect(mainTex, this.spriteIndex.Current, out uvRect);
 			this.PrepareVerticesLight(ref this.verticesLight, device, mainClr, uvRect, tech);
 
 			if (this.customMat != null)
