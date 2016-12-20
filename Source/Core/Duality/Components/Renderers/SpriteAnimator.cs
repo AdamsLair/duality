@@ -15,7 +15,7 @@ namespace Duality.Components.Renderers
 	/// </summary>
 	[ManuallyCloned]
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
-	[EditorHintImage(CoreResNames.ImageAnimSpriteRenderer)]
+	[EditorHintImage(CoreResNames.ImageAnimSpriteAnimator)]
 	public class SpriteAnimator : Component, ICmpUpdatable, ICmpInitializable
 	{
 		/// <summary>
