@@ -312,13 +312,16 @@ namespace Duality.Components.Renderers
 
 			// Determine wrap-around and stretch behavior if the displayed rect size does
 			// not equal the rect size that would be required for a 1:1 display.
-			Vector2 fullSize = new Vector2(
-				mainTex.PixelWidth * (uvRect.W / mainTex.UVRatio.X),
-				mainTex.PixelHeight * (uvRect.H / mainTex.UVRatio.Y));
-			if ((this.rectMode & UVMode.WrapHorizontal) != 0)
-				uvRect.W *= this.rect.W / fullSize.X;
-			if ((this.rectMode & UVMode.WrapVertical) != 0)
-				uvRect.H *= this.rect.H / fullSize.Y;
+			if (mainTex != null)
+			{
+				Vector2 fullSize = new Vector2(
+					mainTex.PixelWidth * (uvRect.W / mainTex.UVRatio.X),
+					mainTex.PixelHeight * (uvRect.H / mainTex.UVRatio.Y));
+				if ((this.rectMode & UVMode.WrapHorizontal) != 0)
+					uvRect.W *= this.rect.W / fullSize.X;
+				if ((this.rectMode & UVMode.WrapVertical) != 0)
+					uvRect.H *= this.rect.H / fullSize.Y;
+			}
 		}
 
 		public override void Draw(IDrawDevice device)
