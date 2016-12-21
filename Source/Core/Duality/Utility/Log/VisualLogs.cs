@@ -16,7 +16,7 @@ namespace Duality
 	public static class VisualLogs
 	{
 		private static List<VisualLog> logs = new List<VisualLog>();
-		private static VisualLog defaultLog = new VisualLog("Default");
+		private static VisualLog defaultLog = null;
 		private static VisualLog[] syncLogs = new VisualLog[0];
 		private static object syncObj = new object();
 
@@ -37,6 +37,14 @@ namespace Duality
 			get { return defaultLog; }
 		}
 		
+		[System.Diagnostics.DebuggerNonUserCode]
+		static VisualLogs()
+		{
+			defaultLog = new VisualLog("Default");
+			logs.Add(defaultLog);
+			syncLogs = logs.ToArray();
+		}
+
 		/// <summary>
 		/// Returns a custom global log channel that is defined by a <see cref="CustomVisualLogInfo"/>
 		/// implementation, as provided via generic type parameter.
