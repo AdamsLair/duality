@@ -263,36 +263,34 @@ namespace Duality.Editor.Plugins.LogView
 			bool isHidden = this.DockHandler.DockState.IsAutoHide() && !this.ContainsFocus;
 			bool unseenChanges = false;
 
-			bool containsWarning = false;
 			bool containsError = false;
 			for (int i = 0; i < e.ViewEntries.Count; i++)
 			{
 				EditorLogEntry logEntry = e.ViewEntries[i].LogEntry;
 				LogMessageType type = logEntry.Content.Type;
-				if (type == LogMessageType.Warning)
-					containsWarning = true;
-				else if (type == LogMessageType.Error)
+
+				if (isHidden)
+				{
+					if (type == LogMessageType.Warning)
+					{
+						this.unseenWarnings++;
+						unseenChanges = true;
+					}
+					else if (type == LogMessageType.Error)
+					{
+						if (this.unseenErrors == 0) System.Media.SystemSounds.Hand.Play();
+						this.unseenErrors++;
+						unseenChanges = true;
+					}
+				}
+				if (type == LogMessageType.Error)
 					containsError = true;
 
 				this.AddSourceFilterButton(logEntry.Source);
 			}
 
-			if (isHidden)
-			{
-				if (containsWarning)
-				{
-					this.unseenWarnings++;
-					unseenChanges = true;
-				}
-				else if (containsError)
-				{
-					if (this.unseenErrors == 0) System.Media.SystemSounds.Hand.Play();
-					this.unseenErrors++;
-					unseenChanges = true;
-				}
-			}
-
-			if (unseenChanges) this.UpdateTabText();
+			if (unseenChanges)
+				this.UpdateTabText();
 
 			bool pause = 
 				containsError && 
