@@ -140,13 +140,6 @@ namespace FlapOrDie.Controllers
             Vector3 startPosition = new Vector3(FlapOrDieCorePlugin.HalfWidth + 50, MathF.Rnd.NextFloat(-variance, variance), 0);
             GameObject newObstacle = this.obstaclePrefab.Res.Instantiate();
             newObstacle.Transform.Pos = startPosition;
-			foreach (SpriteAnimator animator in newObstacle.GetComponentsInChildren<SpriteAnimator>())
-			{
-				SpriteRenderer sprite = animator.GameObj.GetComponent<SpriteRenderer>();
-				if (sprite == null) continue;
-
-				animator.AnimFirstFrame = MathF.Rnd.Next(sprite.SharedMaterial.Res.MainTexture.Res.BasePixmap.Res.AnimFrames) + 1;
-			}
 
             this.GameObj.ParentScene.AddObject(newObstacle);
         }

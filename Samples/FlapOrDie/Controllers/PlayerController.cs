@@ -4,8 +4,9 @@ using System.Linq;
 
 using Duality;
 using Duality.Input;
-using Duality.Components.Physics;
+using Duality.Drawing;
 using Duality.Resources;
+using Duality.Components.Physics;
 using Duality.Components.Renderers;
 
 namespace FlapOrDie.Controllers
@@ -13,9 +14,9 @@ namespace FlapOrDie.Controllers
     [RequiredComponent(typeof(RigidBody))]
     public class PlayerController : Component, ICmpUpdatable, ICmpCollisionListener
     {
-        private SpriteAnimator bodyRenderer;
-        private SpriteAnimator frontWingRenderer;
-        private SpriteAnimator backWingRenderer;
+        private SpriteRenderer bodyRenderer;
+        private SpriteRenderer frontWingRenderer;
+        private SpriteRenderer backWingRenderer;
         private float impulseStrength;
         private ContentRef<Scene> menuScene;
 
@@ -24,17 +25,17 @@ namespace FlapOrDie.Controllers
         [DontSerialize] private float flapTime;
         [DontSerialize] private bool isDead;
 
-        public SpriteAnimator Body
+        public SpriteRenderer Body
         {
             get { return this.bodyRenderer; }
             set { this.bodyRenderer = value; }
         }
-        public SpriteAnimator FrontWing
+        public SpriteRenderer FrontWing
         {
             get { return this.frontWingRenderer; }
             set { this.frontWingRenderer = value; }
         }
-        public SpriteAnimator BackWing
+        public SpriteRenderer BackWing
         {
             get { return this.backWingRenderer; }
             set { this.backWingRenderer = value; }
@@ -67,7 +68,7 @@ namespace FlapOrDie.Controllers
 			this.GameObj.GetComponent<RigidBody>().LinearVelocity = Vector2.Zero;
 			this.GameObj.GetComponent<RigidBody>().AngularVelocity = 0;
             
-            Body.AnimFirstFrame = 1;
+            this.Body.SpriteIndex = new SpriteIndexBlend(0);
         }
 
         void ICmpUpdatable.OnUpdate()
@@ -116,7 +117,7 @@ namespace FlapOrDie.Controllers
             {
                 // otherwise, you're dead!
                 this.isDead = true;
-                Body.AnimFirstFrame = 2;
+                this.Body.SpriteIndex = new SpriteIndexBlend(1);
             }
         }
         void ICmpCollisionListener.OnCollisionEnd(Component sender, CollisionEventArgs args)
