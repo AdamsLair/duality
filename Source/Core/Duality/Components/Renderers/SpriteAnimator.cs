@@ -369,13 +369,10 @@ namespace Duality.Components.Renderers
 		}
 		void ICmpInitializable.OnInit(Component.InitContext context)
 		{
-			if (context == InitContext.Loaded)
+			if (context == InitContext.Activate)
 			{
 				if (this.animLoopMode == LoopMode.RandomSingle)
 					this.animTime = MathF.Rnd.NextFloat(this.animDuration);
-			}
-			else if (context == InitContext.Activate)
-			{
 				this.UpdateVisibleFrames();
 			}
 		}
