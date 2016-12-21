@@ -46,7 +46,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SmoothAnimSpriteRenderer.cs" />
+    <Compile Include="BlendedSpriteRenderer.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VertexC1P3T4A1.cs" />

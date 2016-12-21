@@ -12,12 +12,12 @@ using Duality.Properties;
 namespace SmoothAnimation
 {
 	/// <summary>
-	/// Renders an animated sprite with smooth transitions between two active frames.
-	/// Similar to <see cref="SpriteRenderer"/>, but extended with blending functionality for different sprite indices.
+	/// Renders a sprite and allows for smooth transitions between two active sprite index frames.
+	/// Similar to <see cref="SpriteRenderer"/>, but uses a vertex format with two UV coordinates and blending info.
 	/// </summary>
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(CoreResNames.ImageAnimSpriteRenderer)]
-	public class SmoothAnimSpriteRenderer : SpriteRenderer
+	public class BlendedSpriteRenderer : SpriteRenderer
 	{
 		[DontSerialize] private VertexC1P3T4A1[] verticesSmooth   = null;
 
