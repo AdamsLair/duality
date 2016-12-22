@@ -4,7 +4,7 @@ Additionally, the free icon set by FatCow Web Hosting was used in various places
 
 The Duality core library embeds several bitmap fonts which are based on the Open Source font "Cousine" by Steve Matteson. The font itself is not embedded but manually altered character / glyph renderings are, in binary form.
 
-The Duality sample project "DualStickSpaceShooter" uses bitmap fonts which are based on the Open Source font "Josefin Sans" by Santiago Orozco.
+The Duality sample project "DualStickSpaceShooter" uses bitmap fonts which are based on the Open Source font "Quattrocento Sans" by Pablo Impallari, Igino Marini and Brenda Gallo.
 
 The Duality sample project "BasicMenu" uses bitmap fonts which are based on the Open Source font "Duru Sans" by Sorkin Type Co (www.sorkintype.com) under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL
 
