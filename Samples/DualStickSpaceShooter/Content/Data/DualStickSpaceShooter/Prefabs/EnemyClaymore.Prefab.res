@@ -73,21 +73,14 @@
                   <Z dataType="Float">0</Z>
                 </velAbs>
               </item>
-              <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="924055088">
+              <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="924055088">
                 <active dataType="Bool">true</active>
-                <animDuration dataType="Float">1</animDuration>
-                <animFirstFrame dataType="Int">0</animFirstFrame>
-                <animFrameCount dataType="Int">6</animFrameCount>
-                <animLoopMode dataType="Enum" type="Duality.Components.Renderers.AnimSpriteRenderer+LoopMode" name="FixedSingle" value="4" />
-                <animPaused dataType="Bool">false</animPaused>
-                <animTime dataType="Float">0</animTime>
                 <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                   <A dataType="Byte">255</A>
                   <B dataType="Byte">255</B>
                   <G dataType="Byte">255</G>
                   <R dataType="Byte">255</R>
                 </colorTint>
-                <customFrameSequence />
                 <customMat />
                 <gameobj dataType="ObjectRef">1216619707</gameobj>
                 <offset dataType="Int">-1</offset>
@@ -104,8 +97,19 @@
                 </sharedMat>
                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
               </item>
+              <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1001">
+                <active dataType="Bool">true</active>
+                <animDuration dataType="Float">1</animDuration>
+                <animFirstFrame dataType="Int">0</animFirstFrame>
+                <animFrameCount dataType="Int">6</animFrameCount>
+                <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="FixedSingle" value="4" />
+                <animPaused dataType="Bool">false</animPaused>
+                <animTime dataType="Float">0</animTime>
+                <customFrameSequence />
+                <gameobj dataType="ObjectRef">1216619707</gameobj>
+              </item>
             </_items>
-            <_size dataType="Int">2</_size>
+            <_size dataType="Int">3</_size>
             <_version dataType="Int">2</_version>
           </compList>
           <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="871064168" surrogate="true">
@@ -113,11 +117,13 @@
             <body>
               <keys dataType="Array" type="System.Type[]" id="1736468721">
                 <item dataType="Type" id="2819286958" value="Duality.Components.Transform" />
-                <item dataType="Type" id="2611451594" value="Duality.Components.Renderers.AnimSpriteRenderer" />
+                <item dataType="Type" id="2611451594" value="Duality.Components.Renderers.SpriteRenderer" />
+                <item dataType="Type" id="1002" value="Duality.Components.Renderers.SpriteAnimator" />
               </keys>
               <values dataType="Array" type="Duality.Component[]" id="3751220192">
                 <item dataType="ObjectRef">3576934639</item>
                 <item dataType="ObjectRef">924055088</item>
+                <item dataType="ObjectRef">1001</item>
               </values>
             </body>
           </compMap>
