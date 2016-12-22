@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>2.7.11</version>
+    <version>2.7.12</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,10 +13,11 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>DualityUpdater Fixes
-#FIX: The updater will now transform project references for integrated projects even if they're referencing executable files, rather than dll files.</releaseNotes>
+    <releaseNotes>Simplified VectorPropertyEditor, Split HelpSystem.cs
+#CHANGE: Added a generic edited handler for the VectorPropertyEditor, allowing to cut a lot of boilerplate code from the individual implementations.
+#CHANGE: Split up file HelpInfo.cs into multiple files to follow one-class-per-file rule.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.8.3" />
+      <dependency id="AdamsLair.Duality" version="2.8.5" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
       <dependency id="AdamsLair.TreeViewAdv" version="1.7.6" />
       <dependency id="AdamsLair.WinForms" version="1.1.9" />
