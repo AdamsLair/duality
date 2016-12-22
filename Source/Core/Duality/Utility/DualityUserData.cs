@@ -72,7 +72,12 @@ namespace Duality
 		/// <summary>
 		/// Refreshes wait for the hardware / driver VSync.
 		/// </summary>
-		VSync
+		VSync,
+		/// <summary>
+		/// Refreshes wait for the hardware / driver VSync as long as the target framerate is reached. When
+		/// falling below, VSync will be temporarily suspended.
+		/// </summary>
+		AdaptiveVSync
 	}
 
 	/// <summary>
@@ -86,7 +91,7 @@ namespace Duality
 		private	int			gfxHeight			= 600;
 		private	ScreenMode	gfxMode				= ScreenMode.Window;
 		private	AAQuality	gfxAAQuality		= AAQuality.High;
-		private	RefreshMode	gfxRefreshMode		= RefreshMode.VSync;
+		private	RefreshMode	gfxRefreshMode		= RefreshMode.AdaptiveVSync;
 		private	float		sfxEffectVol		= 1.0f;
 		private	float		sfxSpeechVol		= 1.0f;
 		private	float		sfxMusicVol			= 1.0f;

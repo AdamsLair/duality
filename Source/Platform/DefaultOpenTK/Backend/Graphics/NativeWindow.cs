@@ -66,6 +66,22 @@ namespace Duality.Backend.DefaultOpenTK
 			else if (options.ScreenMode == ScreenMode.Fullscreen || options.ScreenMode == ScreenMode.Native)
 				windowFlags = GameWindowFlags.Fullscreen;
 
+			VSyncMode vsyncMode;
+			switch (options.RefreshMode)
+			{
+				default:
+				case RefreshMode.NoSync:
+				case RefreshMode.ManualSync:
+					vsyncMode = VSyncMode.Off;
+					break;
+				case RefreshMode.VSync:
+					vsyncMode = VSyncMode.On;
+					break;
+				case RefreshMode.AdaptiveVSync:
+					vsyncMode = VSyncMode.Adaptive;
+					break;
+			}
+
 			this.refreshMode = options.RefreshMode;
 			this.internalWindow = new InternalWindow(
 				this,
@@ -78,7 +94,7 @@ namespace Duality.Backend.DefaultOpenTK
 			this.internalWindow.CursorVisible = true;
 			if (!options.SystemCursorVisible)
 				this.internalWindow.Cursor = MouseCursor.Empty;
-			this.internalWindow.VSync = (options.RefreshMode != RefreshMode.VSync) ? VSyncMode.Off : VSyncMode.On;
+			this.internalWindow.VSync = vsyncMode;
 
 			Logs.Core.Write(
 				"Window Specification: " + Environment.NewLine +
@@ -251,9 +267,9 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				while (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MillisecondsPerFrame)
 				{
-					// Enough leftover time? Risk a millisecond sleep.
-					//if (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MillisecondsPerFrame * 0.75f)
-					//	System.Threading.Thread.Sleep(1);
+					// Enough leftover time? Risk a short sleep, don't burn CPU waiting.
+					if (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MillisecondsPerFrame * 0.75f)
+						System.Threading.Thread.Sleep(0);
 				}
 			}
 			this.frameLimiterWatch.Restart();

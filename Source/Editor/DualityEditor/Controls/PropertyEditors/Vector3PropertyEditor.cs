@@ -57,69 +57,15 @@ namespace Duality.Editor.Controls.PropertyEditors
 
 		private void editorX_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				Vector3 newVal = (Vector3)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						Vector3 oldVal = (Vector3)values[i];
-						values[i] = new Vector3(newVal.X, oldVal.Y, oldVal.Z);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<Vector3>((oldVal, newVal) => new Vector3(newVal.X, oldVal.Y, oldVal.Z));
 		}
 		private void editorY_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				Vector3 newVal = (Vector3)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						Vector3 oldVal = (Vector3)values[i];
-						values[i] = new Vector3(oldVal.X, newVal.Y, oldVal.Z);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<Vector3>((oldVal, newVal) => new Vector3(oldVal.X, newVal.Y, oldVal.Z));
 		}
 		private void editorZ_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				Vector3 newVal = (Vector3)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						Vector3 oldVal = (Vector3)values[i];
-						values[i] = new Vector3(oldVal.X, oldVal.Y, newVal.Z);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<Vector3>((oldVal, newVal) => new Vector3(oldVal.X, oldVal.Y, newVal.Z));
 		}
 	}
 }
