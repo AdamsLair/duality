@@ -57,47 +57,11 @@ namespace Duality.Editor.Controls.PropertyEditors
 
 		private void editorX_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				Point2 newVal = (Point2)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						Point2 oldVal = (Point2)values[i];
-						values[i] = new Point2(newVal.X, oldVal.Y);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<Point2>((oldVal, newVal) => new Point2(newVal.X, oldVal.Y));
 		}
 		private void editorY_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdating) return;
-			if (this.Disposed) return;
-			if (!this.ReadOnly)
-			{
-				object[] values = this.GetValue().ToArray();
-				Point2 newVal = (Point2)this.DisplayedValue;
-				for (int i = 0; i < values.Length; i++)
-				{
-					if (values[i] == null)
-						values[i] = this.DisplayedValue;
-					else
-					{
-						Point2 oldVal = (Point2)values[i];
-						values[i] = new Point2(oldVal.X, newVal.Y);
-					}
-				}
-				this.SetValues(values);
-			}
-			this.PerformGetValue();
+			this.HandleValueEdited<Point2>((oldVal, newVal) => new Point2(oldVal.X, newVal.Y));
 		}
 	}
 }
