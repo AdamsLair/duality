@@ -22,7 +22,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 	[RequiredComponent(typeof(Transform))]
 	[EditorHintCategory(SampleResNames.CategoryRpgLike)]
 	[EditorHintImage(TilemapsResNames.ImageActorRenderer)]
-	public class ActorRenderer : Renderer
+	public class ActorRenderer : Renderer, ICmpSpriteRenderer
 	{
 		private Rect                 rect           = Rect.Align(Alignment.Center, 0, 0, 256, 256);
 		private ContentRef<Material> sharedMat      = Material.DualityIcon;
@@ -135,7 +135,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 		public int SpriteIndex
 		{
 			get { return this.spriteIndex; }
-			set { this.spriteIndex = value; }
+			set { this.ApplySpriteAnimation(value, value, 0.0f); }
 		}
 		
 
@@ -246,7 +246,11 @@ namespace Duality.Samples.Tilemaps.RpgLike
 				vertices[3].Pos.Z += this.offset + (worldBaseY + edge4.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
 			}
 		}
-
+		
+		public void ApplySpriteAnimation(int currentSpriteIndex, int nextSpriteIndex, float progressToNext)
+		{
+			this.spriteIndex = currentSpriteIndex;
+		}
 		public override void Draw(IDrawDevice device)
 		{
 			Texture mainTex = this.RetrieveMainTex();
