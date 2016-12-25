@@ -69,11 +69,7 @@
                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                   <contentPath dataType="String">Data\FlapOrDie\Graphics\columns-top.Material.res</contentPath>
                 </sharedMat>
-                <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                  <Blend dataType="Float">0</Blend>
-                  <Current dataType="Int">-1</Current>
-                  <Next dataType="Int">-1</Next>
-                </spriteIndex>
+                <spriteIndex dataType="Int">-1</spriteIndex>
                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
               </item>
               <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="365901960">
@@ -219,11 +215,7 @@
                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                   <contentPath dataType="String">Data\FlapOrDie\Graphics\columns-bottom.Material.res</contentPath>
                 </sharedMat>
-                <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                  <Blend dataType="Float">0</Blend>
-                  <Current dataType="Int">-1</Current>
-                  <Next dataType="Int">-1</Next>
-                </spriteIndex>
+                <spriteIndex dataType="Int">-1</spriteIndex>
                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
               </item>
               <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="2560149554">

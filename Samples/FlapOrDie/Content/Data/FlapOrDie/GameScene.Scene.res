@@ -207,11 +207,7 @@
                                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                   <contentPath dataType="String">Data\FlapOrDie\Graphics\bg-middle.Material.res</contentPath>
                                 </sharedMat>
-                                <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                  <Blend dataType="Float">0</Blend>
-                                  <Current dataType="Int">-1</Current>
-                                  <Next dataType="Int">-1</Next>
-                                </spriteIndex>
+                                <spriteIndex dataType="Int">-1</spriteIndex>
                                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               </item>
                             </_items>
@@ -288,11 +284,7 @@
                                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                   <contentPath dataType="String">Data\FlapOrDie\Graphics\bg-front.Material.res</contentPath>
                                 </sharedMat>
-                                <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                  <Blend dataType="Float">0</Blend>
-                                  <Current dataType="Int">-1</Current>
-                                  <Next dataType="Int">-1</Next>
-                                </spriteIndex>
+                                <spriteIndex dataType="Int">-1</spriteIndex>
                                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               </item>
                             </_items>
@@ -372,11 +364,7 @@
                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                   <contentPath dataType="String">Data\FlapOrDie\Graphics\bg-back.Material.res</contentPath>
                 </sharedMat>
-                <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                  <Blend dataType="Float">0</Blend>
-                  <Current dataType="Int">-1</Current>
-                  <Next dataType="Int">-1</Next>
-                </spriteIndex>
+                <spriteIndex dataType="Int">-1</spriteIndex>
                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
               </back>
               <front dataType="ObjectRef">2944785037</front>
@@ -442,11 +430,7 @@
                           <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                             <contentPath dataType="String">Data\FlapOrDie\Graphics\game-over.Material.res</contentPath>
                           </sharedMat>
-                          <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                            <Blend dataType="Float">0</Blend>
-                            <Current dataType="Int">-1</Current>
-                            <Next dataType="Int">-1</Next>
-                          </spriteIndex>
+                          <spriteIndex dataType="Int">-1</spriteIndex>
                           <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                         </item>
                       </_items>
@@ -592,11 +576,7 @@
                                         <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                           <contentPath dataType="String">Data\FlapOrDie\Graphics\bat-spritesheet.Material.res</contentPath>
                                         </sharedMat>
-                                        <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                          <Blend dataType="Float">0</Blend>
-                                          <Current dataType="Int">0</Current>
-                                          <Next dataType="Int">-1</Next>
-                                        </spriteIndex>
+                                        <spriteIndex dataType="Int">0</spriteIndex>
                                         <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                                       </item>
                                     </_items>
@@ -681,11 +661,7 @@
                                         <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                           <contentPath dataType="String">Data\FlapOrDie\Graphics\bat-spritesheet.Material.res</contentPath>
                                         </sharedMat>
-                                        <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                          <Blend dataType="Float">0</Blend>
-                                          <Current dataType="Int">2</Current>
-                                          <Next dataType="Int">-1</Next>
-                                        </spriteIndex>
+                                        <spriteIndex dataType="Int">2</spriteIndex>
                                         <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                                       </item>
                                     </_items>
@@ -860,11 +836,7 @@
                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                   <contentPath dataType="String">Data\FlapOrDie\Graphics\bat-spritesheet.Material.res</contentPath>
                 </sharedMat>
-                <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                  <Blend dataType="Float">0</Blend>
-                  <Current dataType="Int">3</Current>
-                  <Next dataType="Int">-1</Next>
-                </spriteIndex>
+                <spriteIndex dataType="Int">3</spriteIndex>
                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
               </backWingRenderer>
               <bodyRenderer dataType="ObjectRef">2705701550</bodyRenderer>
