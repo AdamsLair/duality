@@ -56,13 +56,21 @@ namespace Duality
 			this.value = value;
 			this.used = true;
 		}
-		public override void Reset()
+		public override void ResetFrame()
 		{
 			this.lastUsed = this.used;
 			this.used = false;
 
 			this.lastValue = this.value;
 			this.value = 0.0f;
+		}
+		public override void ResetAll()
+		{
+			this.ResetFrame();
+			this.accumValue = 0.0d;
+			this.accumMaxValue = float.MinValue;
+			this.accumMinValue = float.MaxValue;
+			this.sampleCount = 0;
 		}
 
 		public override void GetReportData(out ProfileReportCounterData data)
@@ -76,9 +84,12 @@ namespace Duality
 			}
 			else
 			{
-				data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", (float)(this.accumValue / (double)this.sampleCount));
-				data.MinValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.accumMinValue);
-				data.MaxValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.accumMaxValue);
+				if (this.sampleCount > 0)
+				{
+					data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", (float)(this.accumValue / (double)this.sampleCount));
+					data.MinValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.accumMinValue);
+					data.MaxValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.accumMaxValue);
+				}
 				data.SampleCount = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.sampleCount);
 			}
 		}
@@ -93,7 +104,7 @@ namespace Duality
 			}
 			this.valueGraph[this.valueGraphCursor] = this.value;
 			this.valueGraphCursor = (this.valueGraphCursor + 1) % this.valueGraph.Length;
-			this.Reset();
+			this.ResetFrame();
 		}
 	}
 }

@@ -109,7 +109,11 @@ namespace Duality
 		/// <summary>
 		/// Resets the counters frame-local measurement values.
 		/// </summary>
-		public abstract void Reset();
+		public abstract void ResetFrame();
+		/// <summary>
+		/// Resets all of the counter's measurement values, including min, max and average values.
+		/// </summary>
+		public abstract void ResetAll();
 		/// <summary>
 		/// Gathers ProfileCounter data for generating a profile report.
 		/// </summary>

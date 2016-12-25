@@ -92,6 +92,18 @@ namespace Duality
 		}
 
 		/// <summary>
+		/// Completely resets all <see cref="ProfileCounter"/> instances, discarding
+		/// all data that has been collected so far and starting over.
+		/// </summary>
+		public static void ResetCounters()
+		{
+			foreach (var pair in counterMap)
+			{
+				pair.Value.ResetAll();
+			}
+		}
+
+		/// <summary>
 		/// Returns an existing <see cref="ProfileCounter"/> with the specified name.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -263,6 +275,9 @@ namespace Duality
 
 				if (options.HasFlag(ProfileReportOptions.Header))
 				{
+					if (options.HasFlag(ProfileReportOptions.FormattedText))
+						reportBuilder.Append(FormattedText.FormatColor(ColorRgba.White.WithAlpha(0.5f)));
+
 					reportBuilder.Append("Name");
 					reportBuilder.Append(' ', 1 + Math.Max((1 + maxNameLen) - "Name".Length, 0));
 
@@ -278,6 +293,9 @@ namespace Duality
 						reportBuilder.Append("        Samples ");
 
 					reportBuilder.Append(options.HasFlag(ProfileReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
+
+					if (options.HasFlag(ProfileReportOptions.FormattedText))
+						reportBuilder.Append(FormattedText.FormatColor(ColorRgba.White));
 				}
 				Stack<ProfileCounter> appendStack = new Stack<ProfileCounter>(rootCounters.Reverse());
 				while (appendStack.Count > 0)
