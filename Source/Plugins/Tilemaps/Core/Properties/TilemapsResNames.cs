@@ -19,5 +19,6 @@ namespace Duality.Plugins.Tilemaps.Properties
 		public const string ImageTilemapCollider = ManifestBaseName + "ImageTilemapCollider.png";
 		public const string ImageTileset         = ManifestBaseName + "ImageTileset.png";
 		public const string ImageActorRenderer   = ManifestBaseName + "ImageActorRenderer.png";
+		public const string ImageActorAnimator   = ManifestBaseName + "ImageActorAnimator.png";
 	}
 }
