@@ -19,6 +19,10 @@ namespace Duality
 		private	int			valueGraphCursor	= 0;
 
 
+		internal float Value
+		{
+			get { return this.value; }
+		}
 		public float LastValue
 		{
 			get { return this.lastValue; }
