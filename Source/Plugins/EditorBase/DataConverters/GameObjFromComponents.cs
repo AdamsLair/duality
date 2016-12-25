@@ -64,7 +64,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				}
 
 				// Make sure all requirements are met
-				foreach (Type t in Component.GetRequiredComponents(cmpType))
+				foreach (Type t in Component.GetRequiredComponentsToCreate(gameObj, cmpType))
 					gameObj.AddComponent(t);
 
 				// Make sure no other Component of this Type is already added

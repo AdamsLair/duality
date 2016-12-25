@@ -378,7 +378,6 @@ namespace Duality
 		/// Returns all required Component Types of a specified Component Type.
 		/// </summary>
 		/// <param name="cmpType">The Component Type that might require other Component Types.</param>
-		/// <param name="recursive">If true, also indirect requirements are returned.</param>
 		/// <returns>An array of Component Types to require.</returns>
 		public static IEnumerable<Type> GetRequiredComponents(Type cmpType)
 		{
@@ -407,6 +406,38 @@ namespace Duality
 			}
 			data.InitRequiredBy();
 			return data.RequiredBy;
+		}
+		/// <summary>
+		/// Given the specified target <see cref="GameObject"/> and <see cref="Component"/> type,
+		/// this method will enumerate all <see cref="Component"/> types that need to
+		/// be added in order to satisfy its requirements.
+		/// </summary>
+		/// <param name="targetObj"></param>
+		/// <param name="targetComponentType"></param>
+		/// <returns></returns>
+		public static IEnumerable<Type> GetRequiredComponentsToCreate(GameObject targetObj, Type targetComponentType)
+		{
+			// Retrieve the component's requirements
+			TypeData data;
+			if (!typeCache.TryGetValue(targetComponentType, out data))
+			{
+				data = new TypeData(targetComponentType);
+				typeCache[targetComponentType] = data;
+			}
+			data.InitRequirements();
+
+			// Create a sorted list of all components that need to be instantiated
+			// in order to satisfy the requirements for adding the given component to
+			// the specified object.
+			List<Type> createList = new List<Type>(data.Requirements.Count);
+			foreach (Type requiredType in data.Requirements)
+			{
+				// Skip this requirement, if it is already satisfied
+				if (targetObj.GetComponent(requiredType) != null) continue;
+
+				createList.Add(requiredType);
+			}
+			return createList;
 		}
 		/// <summary>
 		/// Clears the ReflectionHelpers Type cache.
