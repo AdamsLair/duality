@@ -58,29 +58,21 @@ namespace Duality
 			this.value = 0;
 		}
 		
-		public override void GetReportData(out ProfileReportCounterData data, ProfileReportOptions options)
+		public override void GetReportData(out ProfileReportCounterData data)
 		{
 			data = new ProfileReportCounterData();
 			data.Severity = 0.5f;
-			
-			if ((options & ProfileReportOptions.LastValue) != ProfileReportOptions.None)
-				data.LastValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.lastValue);
-
+			data.LastValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.lastValue);
 			if (this.IsSingleValue)
 			{
-				if ((options & ProfileReportOptions.AverageValue) != ProfileReportOptions.None)
-					data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.lastValue);
+				data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.lastValue);
 			}
 			else
 			{
-				if ((options & ProfileReportOptions.AverageValue) != ProfileReportOptions.None)
-					data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", (int)Math.Round((double)this.accumValue / (double)this.sampleCount));
-				if ((options & ProfileReportOptions.MinValue) != ProfileReportOptions.None)
-					data.MinValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.accumMinValue);
-				if ((options & ProfileReportOptions.MaxValue) != ProfileReportOptions.None)
-					data.MaxValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.accumMaxValue);
-				if ((options & ProfileReportOptions.SampleCount) != ProfileReportOptions.None)
-					data.SampleCount = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.sampleCount);
+				data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", (int)Math.Round((double)this.accumValue / (double)this.sampleCount));
+				data.MinValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.accumMinValue);
+				data.MaxValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.accumMaxValue);
+				data.SampleCount = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.sampleCount);
 			}
 		}
 		protected override void OnFrameTick()

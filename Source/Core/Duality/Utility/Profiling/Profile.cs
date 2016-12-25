@@ -285,7 +285,7 @@ namespace Duality
 					ProfileCounter current = appendStack.Pop();
 
 					ProfileReportCounterData data;
-					current.GetReportData(out data, options);
+					current.GetReportData(out data);
 					if (omitMinor && data.Severity <= 0.005f)
 						continue;
 					

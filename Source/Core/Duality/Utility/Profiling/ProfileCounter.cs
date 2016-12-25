@@ -115,7 +115,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="options"></param>
-		public abstract void GetReportData(out ProfileReportCounterData data, ProfileReportOptions options);
+		public abstract void GetReportData(out ProfileReportCounterData data);
 		protected virtual void OnFrameTick() {}
 
 		internal void TickFrame()
