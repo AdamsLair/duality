@@ -189,63 +189,67 @@ namespace Duality.Backend.DefaultOpenTK
 			// Early-out, if no display is connected / available anyway
 			if (DisplayDevice.Default == null) return;
 
+			// Determine the target state for our window
+			MouseCursor targetCursor = DualityApp.UserData.SystemCursorVisible ? MouseCursor.Default : MouseCursor.Empty;
+			WindowState targetWindowState = this.internalWindow.WindowState;
+			WindowBorder targetWindowBorder = this.internalWindow.WindowBorder;
+			Size targetSize = this.internalWindow.ClientSize;
+			bool enforceRes = false;
 			switch (DualityApp.UserData.GfxMode)
 			{
 				case ScreenMode.Window:
-					if (this.internalWindow.WindowState != WindowState.Normal ||
-						this.internalWindow.WindowBorder != WindowBorder.Resizable)
-					{
-						this.internalWindow.WindowState = WindowState.Normal;
-						this.internalWindow.WindowBorder = WindowBorder.Resizable;
-						DisplayDevice.Default.RestoreResolution();
-					}
+					targetWindowState = WindowState.Normal;
+					targetWindowBorder = WindowBorder.Resizable;
 					break;
 
 				case ScreenMode.FixedWindow:
-					if (this.internalWindow.WindowState != WindowState.Normal ||
-						this.internalWindow.WindowBorder != WindowBorder.Fixed ||
-						this.internalWindow.ClientSize.Width != DualityApp.UserData.GfxWidth ||
-						this.internalWindow.ClientSize.Height != DualityApp.UserData.GfxHeight)
-					{
-						this.internalWindow.WindowState = WindowState.Normal;
-						this.internalWindow.WindowBorder = WindowBorder.Fixed;
-						this.internalWindow.ClientSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
-						DisplayDevice.Default.RestoreResolution();
-					}
+					targetWindowState = WindowState.Normal;
+					targetWindowBorder = WindowBorder.Fixed;
+					targetSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
 					break;
 
 				case ScreenMode.FullWindow:
-					if (this.internalWindow.WindowState != WindowState.Fullscreen ||
-						this.internalWindow.WindowBorder != WindowBorder.Hidden ||
-						this.internalWindow.ClientSize.Width != DisplayDevice.Default.Width ||
-						this.internalWindow.ClientSize.Height != DisplayDevice.Default.Height)
-					{
-						this.internalWindow.ClientSize = new Size(DisplayDevice.Default.Width, DisplayDevice.Default.Height);
-						this.internalWindow.WindowState = WindowState.Fullscreen;
-						this.internalWindow.WindowBorder = WindowBorder.Hidden;
-						DisplayDevice.Default.RestoreResolution();
-					}
+					targetWindowState = WindowState.Fullscreen;
+					targetWindowBorder = WindowBorder.Hidden;
+					targetSize = new Size(DisplayDevice.Default.Width, DisplayDevice.Default.Height);
 					break;
 
 				case ScreenMode.Native:
 				case ScreenMode.Fullscreen:
-					if (this.internalWindow.WindowState != WindowState.Fullscreen ||
-						this.internalWindow.WindowBorder != WindowBorder.Hidden ||
-						this.internalWindow.ClientSize.Width != DualityApp.UserData.GfxWidth ||
-						this.internalWindow.ClientSize.Height != DualityApp.UserData.GfxHeight)
-					{
-						this.internalWindow.WindowState = WindowState.Fullscreen;
-						this.internalWindow.WindowBorder = WindowBorder.Hidden;
-						this.internalWindow.ClientSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
-						DisplayDevice.Default.ChangeResolution(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight, DisplayDevice.Default.BitsPerPixel, DisplayDevice.Default.RefreshRate);
-					}
+					targetWindowState = WindowState.Fullscreen;
+					targetWindowBorder = WindowBorder.Hidden;
+					targetSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
+					enforceRes = true;
 					break;
 
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
+			
+			// Enforce the specified screen resolution when requested
+			if (enforceRes)
+			{
+				DisplayDevice.Default.ChangeResolution(
+					targetSize.Width,
+					targetSize.Height, 
+					DisplayDevice.Default.BitsPerPixel, 
+					DisplayDevice.Default.RefreshRate);
+			}
+			else
+			{
+				DisplayDevice.Default.RestoreResolution();
+			}
 
-			this.internalWindow.Cursor = DualityApp.UserData.SystemCursorVisible ? MouseCursor.Default : MouseCursor.Empty;
+			// Apply the target state to the game window wherever values changed
+			if (this.internalWindow.WindowState != targetWindowState)
+				this.internalWindow.WindowState = targetWindowState;
+			if (this.internalWindow.WindowBorder != targetWindowBorder)
+				this.internalWindow.WindowBorder = targetWindowBorder;
+			if (this.internalWindow.ClientSize != targetSize)
+				this.internalWindow.ClientSize = targetSize;
+			if (this.internalWindow.Cursor != targetCursor)
+				this.internalWindow.Cursor = targetCursor;
+
 			DualityApp.TargetResolution = new Vector2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
 		}
 		private void OnResize(EventArgs e)
