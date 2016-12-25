@@ -68,7 +68,7 @@ namespace FlapOrDie.Controllers
 			this.GameObj.GetComponent<RigidBody>().LinearVelocity = Vector2.Zero;
 			this.GameObj.GetComponent<RigidBody>().AngularVelocity = 0;
             
-            this.Body.SpriteIndex = new SpriteIndexBlend(0);
+            this.Body.SpriteIndex = 0;
         }
 
         void ICmpUpdatable.OnUpdate()
@@ -117,7 +117,7 @@ namespace FlapOrDie.Controllers
             {
                 // otherwise, you're dead!
                 this.isDead = true;
-                this.Body.SpriteIndex = new SpriteIndexBlend(1);
+                this.Body.SpriteIndex = 1;
             }
         }
         void ICmpCollisionListener.OnCollisionEnd(Component sender, CollisionEventArgs args)

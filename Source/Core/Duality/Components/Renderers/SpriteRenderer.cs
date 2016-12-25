@@ -71,7 +71,7 @@ namespace Duality.Components.Renderers
 		protected bool                 pixelGrid   = false;
 		protected int                  offset      = 0;
 		protected FlipMode             flipMode    = FlipMode.None;
-		protected SpriteIndexBlend     spriteIndex = SpriteIndexBlend.None;
+		protected int                  spriteIndex = -1;
 		[DontSerialize] protected VertexC1P3T2[] vertices = null;
 
 
@@ -157,19 +157,12 @@ namespace Duality.Components.Renderers
 			set { this.flipMode = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The sprite index that is displayed by this renderer. 
-		/// 
-		/// Note that the <see cref="SpriteRenderer"/> base class only evaluates the <see cref="SpriteIndexBlend.Current"/> 
-		/// sprite index while ignoring blending states between frames. Derived classes may use them to render transition effects.
+		/// [GET / SET] The sprite index that is displayed by this renderer.
 		/// </summary>
-		public SpriteIndexBlend SpriteIndex
+		public int SpriteIndex
 		{
 			get { return this.spriteIndex; }
-			set
-			{
-				this.spriteIndex = value;
-				this.spriteIndex.Clamp();
-			}
+			set { this.ApplySpriteAnimation(value, value, 0.0f); }
 		}
 
 		
@@ -324,13 +317,19 @@ namespace Duality.Components.Renderers
 			}
 		}
 
+		/// <inheritdoc/>
+		public virtual void ApplySpriteAnimation(int currentSpriteIndex, int nextSpriteIndex, float progressToNext)
+		{
+			this.spriteIndex = currentSpriteIndex;
+		}
+		/// <inheritdoc/>
 		public override void Draw(IDrawDevice device)
 		{
 			Texture mainTex = this.RetrieveMainTex();
 			ColorRgba mainClr = this.RetrieveMainColor();
 
 			Rect uvRect;
-			this.GetUVRect(mainTex, this.spriteIndex.Current, out uvRect);
+			this.GetUVRect(mainTex, this.spriteIndex, out uvRect);
 			this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);

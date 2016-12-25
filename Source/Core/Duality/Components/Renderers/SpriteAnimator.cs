@@ -309,7 +309,12 @@ namespace Duality.Components.Renderers
 
 			// Apply the current animation state to the target sprite
 			if (this.sprite != null)
-				this.sprite.SpriteIndex = this.spriteIndex;
+			{
+				this.sprite.ApplySpriteAnimation(
+					this.spriteIndex.Current, 
+					this.spriteIndex.Next, 
+					this.spriteIndex.Blend);
+			}
 		}
 
 		void ICmpUpdatable.OnUpdate()

@@ -19,6 +19,9 @@ namespace SmoothAnimation
 	[EditorHintImage(CoreResNames.ImageAnimSpriteRenderer)]
 	public class BlendedSpriteRenderer : SpriteRenderer
 	{
+		private int nextSpriteIndex = -1;
+		private float spriteIndexBlend = 0.0f;
+
 		[DontSerialize] private VertexC1P3T4A1[] verticesSmooth   = null;
 
 		
@@ -137,6 +140,12 @@ namespace SmoothAnimation
 				}
 			}
 		}
+		public override void ApplySpriteAnimation(int currentSpriteIndex, int nextSpriteIndex, float progressToNext)
+		{
+			base.ApplySpriteAnimation(currentSpriteIndex, nextSpriteIndex, progressToNext);
+			this.nextSpriteIndex = nextSpriteIndex;
+			this.spriteIndexBlend = progressToNext;
+		}
 		public override void Draw(IDrawDevice device)
 		{
 			Texture mainTex = this.RetrieveMainTex();
@@ -144,10 +153,10 @@ namespace SmoothAnimation
 
 			Rect uvRect;
 			Rect uvRectNext;
-			this.GetUVRect(mainTex, this.spriteIndex.Current, out uvRect);
-			this.GetUVRect(mainTex, this.spriteIndex.Next, out uvRectNext);
+			this.GetUVRect(mainTex, this.spriteIndex, out uvRect);
+			this.GetUVRect(mainTex, this.nextSpriteIndex, out uvRectNext);
 			
-			this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.spriteIndex.Blend, mainClr, uvRect, uvRectNext);
+			this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.spriteIndexBlend, mainClr, uvRect, uvRectNext);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.verticesSmooth);
 			else
