@@ -99,7 +99,7 @@
           <item dataType="Struct" type="Duality.Components.Camera" id="1700552844">
             <active dataType="Bool">true</active>
             <farZ dataType="Float">10000</farZ>
-            <focusDist dataType="Float">465.286041</focusDist>
+            <focusDist dataType="Float">490.819763</focusDist>
             <gameobj dataType="ObjectRef">1163277037</gameobj>
             <nearZ dataType="Float">0</nearZ>
             <passes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Camera+Pass]]" id="3349398274">
@@ -680,11 +680,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -769,11 +765,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -858,11 +850,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -947,11 +935,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -1036,11 +1020,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -5063,11 +5043,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\ControlInfo\ControlGamepadMove.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -5152,11 +5128,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\ControlInfo\ControlMouseKeyboardMove.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -5273,11 +5245,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="4198910833">
@@ -5374,11 +5342,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2073249424">
@@ -5475,11 +5439,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="41400149">
@@ -5576,11 +5536,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3606008944">
@@ -5677,11 +5633,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2674986034">
@@ -5778,11 +5730,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2542315032">
@@ -5879,11 +5827,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1626305745">
@@ -5980,11 +5924,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2049728705">
@@ -6081,11 +6021,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1511265488">
@@ -6182,11 +6118,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="371970784">
@@ -6283,11 +6215,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3365550072">
@@ -6384,11 +6312,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2308336002">
@@ -6485,11 +6409,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1003505627">
@@ -6586,11 +6506,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1279577982">
@@ -6687,11 +6603,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2462489303">
@@ -6788,11 +6700,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1216007802">
@@ -6889,11 +6797,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="208075297">
@@ -8414,11 +8318,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -8503,11 +8403,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -8592,11 +8488,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -8681,11 +8573,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -8770,11 +8658,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -8859,11 +8743,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -8948,11 +8828,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -9037,11 +8913,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -9126,11 +8998,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -9215,11 +9083,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -9304,11 +9168,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -9393,11 +9253,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -9482,11 +9338,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -9571,11 +9423,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -9660,11 +9508,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -12959,11 +12803,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\ControlInfo\ControlGamepadFire.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -13048,11 +12888,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\ControlInfo\ControlMouseKeyboardFire.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -13169,11 +13005,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="4188011085">
@@ -13270,11 +13102,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3543429826">
@@ -13371,11 +13199,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2554308932">
@@ -13472,11 +13296,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="235762552">
@@ -13573,11 +13393,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2791719166">
@@ -13674,11 +13490,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="747845907">
@@ -13775,11 +13587,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2642863993">
@@ -13876,11 +13684,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3736402319">
@@ -13977,11 +13781,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1253075476">
@@ -14078,11 +13878,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="590466736">
@@ -14179,11 +13975,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="167273942">
@@ -14280,11 +14072,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3700370415">
@@ -14381,11 +14169,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1768358251">
@@ -14482,11 +14266,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="716083824">
@@ -14647,11 +14427,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -14736,11 +14512,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -14825,11 +14597,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -14914,11 +14682,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -22995,11 +22759,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1373088454">
@@ -23096,11 +22856,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="815523612">
@@ -23197,11 +22953,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3509288007">
@@ -23298,11 +23050,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3936264370">
@@ -23399,11 +23147,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="718981442">
@@ -23500,11 +23244,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="847787359">
@@ -23601,11 +23341,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="389116645">
@@ -23702,11 +23438,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2447810754">
@@ -23803,11 +23535,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3374675743">
@@ -23904,11 +23632,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1834377193">
@@ -24005,11 +23729,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1907234352">
@@ -24106,11 +23826,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3472715565">
@@ -24271,11 +23987,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -24360,11 +24072,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -24449,11 +24157,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -24538,11 +24242,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -24627,11 +24327,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -24716,11 +24412,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -24805,11 +24497,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -24894,11 +24582,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -24983,11 +24667,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -25072,11 +24752,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -41127,11 +40803,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2837639814">
@@ -41228,11 +40900,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1642651253">
@@ -41329,11 +40997,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="4015212342">
@@ -41430,11 +41094,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="4293516477">
@@ -41531,11 +41191,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3362551201">
@@ -41632,11 +41288,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1439072225">
@@ -41733,11 +41385,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3970573429">
@@ -41834,11 +41482,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1633038373">
@@ -41935,11 +41579,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="599848641">
@@ -42036,11 +41676,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="97544765">
@@ -42137,11 +41773,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3648713644">
@@ -42238,11 +41870,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1259418053">
@@ -42339,11 +41967,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="4277929307">
@@ -42440,11 +42064,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2048079126">
@@ -42541,11 +42161,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="238101617">
@@ -42642,11 +42258,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="251955087">
@@ -42743,11 +42355,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="151675839">
@@ -42844,11 +42452,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3320984488">
@@ -42945,11 +42549,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3135699184">
@@ -43046,11 +42646,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2009966507">
@@ -43147,11 +42743,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3730361323">
@@ -43248,11 +42840,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1514852048">
@@ -43349,11 +42937,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1497961661">
@@ -43450,11 +43034,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="704797315">
@@ -43551,11 +43131,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="68335435">
@@ -43652,11 +43228,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2471006613">
@@ -43817,11 +43389,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -43906,11 +43474,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -43995,11 +43559,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop2.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -44084,11 +43644,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -44173,11 +43729,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop3.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -44468,11 +44020,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Glow.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.ParticleEffect" id="1183572393">
@@ -44722,11 +44270,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Glow.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -44811,11 +44355,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Glow.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -44900,11 +44440,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Glow.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -44989,11 +44525,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Glow.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -45078,11 +44610,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Glow.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                           </_items>
@@ -46667,11 +46195,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3494211835">
@@ -46768,11 +46292,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="4286171869">
@@ -46869,11 +46389,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="1105629968">
@@ -46970,11 +46486,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2897015814">
@@ -47071,11 +46583,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2850500181">
@@ -47172,11 +46680,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3199659640">
@@ -47273,11 +46777,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2496753267">
@@ -47374,11 +46874,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="3336772971">
@@ -47475,11 +46971,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop5.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="938409753">
@@ -47576,11 +47068,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2167253921">
@@ -47677,11 +47165,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="24607588">
@@ -47778,11 +47262,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop4.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="400560651">
@@ -47879,11 +47359,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="4252816609">
@@ -47980,11 +47456,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="702022362">
@@ -48081,11 +47553,7 @@
                               <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Background\Backdrop1.Material.res</contentPath>
                               </sharedMat>
-                              <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                                <Blend dataType="Float">0</Blend>
-                                <Current dataType="Int">-1</Current>
-                                <Next dataType="Int">-1</Next>
-                              </spriteIndex>
+                              <spriteIndex dataType="Int">-1</spriteIndex>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.SpriteDepthColor" id="2992641527">
