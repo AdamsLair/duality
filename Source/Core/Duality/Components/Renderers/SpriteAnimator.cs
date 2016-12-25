@@ -53,12 +53,12 @@ namespace Duality.Components.Renderers
 			Queue
 		}
 
-		private int       animFirstFrame      = 0;
-		private int       animFrameCount      = 0;
-		private float     animDuration        = 5.0f;
-		private LoopMode  animLoopMode        = LoopMode.Loop;
-		private float     animTime            = 0.0f;
-		private bool      animPaused          = false;
+		private int       firstFrame      = 0;
+		private int       frameCount      = 0;
+		private LoopMode  animLoopMode    = LoopMode.Loop;
+		private float     animDuration    = 5.0f;
+		private float     animTime        = 0.0f;
+		private bool      paused          = false;
 		private List<int> customFrameSequence = null;
 
 		[DontSerialize] private ICmpSpriteRenderer sprite = null;
@@ -73,15 +73,15 @@ namespace Duality.Components.Renderers
 		/// of the <see cref="Duality.Resources.Texture"/> that is used.
 		/// </remarks>
 		[EditorHintRange(0, int.MaxValue)]
-		public int AnimFirstFrame
+		public int FirstFrame
 		{
-			get { return this.animFirstFrame; }
+			get { return this.firstFrame; }
 			set
 			{
 				value = MathF.Max(0, value);
-				if (this.animFirstFrame != value)
+				if (this.firstFrame != value)
 				{
-					this.animFirstFrame = value;
+					this.firstFrame = value;
 					this.UpdateVisibleFrames();
 				}
 			}
@@ -94,15 +94,15 @@ namespace Duality.Components.Renderers
 		/// of the <see cref="Duality.Resources.Texture"/> that is used.
 		/// </remarks>
 		[EditorHintRange(0, int.MaxValue)]
-		public int AnimFrameCount
+		public int FrameCount
 		{
-			get { return this.animFrameCount; }
+			get { return this.frameCount; }
 			set
 			{
 				value = MathF.Max(0, value);
-				if (this.animFrameCount != value)
+				if (this.frameCount != value)
 				{
-					this.animFrameCount = value;
+					this.frameCount = value;
 					this.UpdateVisibleFrames();
 				}
 			}
@@ -146,10 +146,10 @@ namespace Duality.Components.Renderers
 		/// <summary>
 		/// [GET / SET] If true, the animation is paused and won't advance over time. <see cref="AnimTime"/> will stay constant until resumed.
 		/// </summary>
-		public bool AnimPaused
+		public bool Paused
 		{
-			get { return this.animPaused; }
-			set { this.animPaused = value; }
+			get { return this.paused; }
+			set { this.paused = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The animations loop behaviour.
@@ -161,7 +161,7 @@ namespace Duality.Components.Renderers
 		}
 		/// <summary>
 		/// [GET / SET] A custom sequence of frame indices that will be used instead of the default range
-		/// specified by <see cref="AnimFirstFrame"/> and <see cref="AnimFrameCount"/>. Unused if set to null.
+		/// specified by <see cref="FirstFrame"/> and <see cref="FrameCount"/>. Unused if set to null.
 		/// </summary>
 		/// <remarks>
 		/// Animation indices are looked up in the <see cref="Duality.Resources.Pixmap.Atlas"/> map
@@ -192,11 +192,11 @@ namespace Duality.Components.Renderers
 						return false;
 					case LoopMode.Loop:
 					case LoopMode.PingPong:
-						return !this.animPaused;
+						return !this.paused;
 					case LoopMode.Once:
-						return !this.animPaused && this.animTime < this.animDuration;
+						return !this.paused && this.animTime < this.animDuration;
 					case LoopMode.Queue:
-						return !this.animPaused && this.customFrameSequence != null && this.customFrameSequence.Count > 1;
+						return !this.paused && this.customFrameSequence != null && this.customFrameSequence.Count > 1;
 					default:
 						return false;
 				}
@@ -218,8 +218,8 @@ namespace Duality.Components.Renderers
 		/// </summary>
 		private void UpdateVisibleFrames()
 		{
-			int actualFrameBegin = this.customFrameSequence != null ? 0 : this.animFirstFrame;
-			int actualFrameCount = this.customFrameSequence != null ? this.customFrameSequence.Count : this.animFrameCount;
+			int actualFrameBegin = this.customFrameSequence != null ? 0 : this.firstFrame;
+			int actualFrameCount = this.customFrameSequence != null ? this.customFrameSequence.Count : this.frameCount;
 			float frameTemp = actualFrameCount * this.animTime / this.animDuration;
 
 			// Calculate visible frames
@@ -320,10 +320,10 @@ namespace Duality.Components.Renderers
 		void ICmpUpdatable.OnUpdate()
 		{
 			if (!this.IsAnimationRunning) return;
-			if (this.animPaused) return;
+			if (this.paused) return;
 
-			int actualFrameBegin = this.customFrameSequence != null ? 0 : this.animFirstFrame;
-			int actualFrameCount = this.customFrameSequence != null ? this.customFrameSequence.Count : this.animFrameCount;
+			int actualFrameBegin = this.customFrameSequence != null ? 0 : this.firstFrame;
+			int actualFrameCount = this.customFrameSequence != null ? this.customFrameSequence.Count : this.frameCount;
 
 			// Advance animation timer
 			if (this.animLoopMode == LoopMode.Loop)
@@ -395,12 +395,12 @@ namespace Duality.Components.Renderers
 			base.OnCopyDataTo(targetObj, operation);
 			SpriteAnimator target = targetObj as SpriteAnimator;
 
-			target.animFirstFrame		= this.animFirstFrame;
-			target.animFrameCount		= this.animFrameCount;
+			target.firstFrame		= this.firstFrame;
+			target.frameCount		= this.frameCount;
 			target.animDuration			= this.animDuration;
 			target.animLoopMode			= this.animLoopMode;
 			target.animTime				= this.animTime;
-			target.animPaused			= this.animPaused;
+			target.paused			= this.paused;
 
 			operation.HandleObject(this.customFrameSequence, ref target.customFrameSequence);
 		}

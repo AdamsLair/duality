@@ -100,10 +100,10 @@
               <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1001">
                 <active dataType="Bool">true</active>
                 <animDuration dataType="Float">1</animDuration>
-                <animFirstFrame dataType="Int">0</animFirstFrame>
-                <animFrameCount dataType="Int">6</animFrameCount>
+                <firstFrame dataType="Int">0</firstFrame>
+                <frameCount dataType="Int">6</frameCount>
                 <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="FixedSingle" value="4" />
-                <animPaused dataType="Bool">false</animPaused>
+                <paused dataType="Bool">false</paused>
                 <animTime dataType="Float">0</animTime>
                 <customFrameSequence />
                 <gameobj dataType="ObjectRef">1216619707</gameobj>

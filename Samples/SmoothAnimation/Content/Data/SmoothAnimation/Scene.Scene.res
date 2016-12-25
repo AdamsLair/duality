@@ -175,10 +175,10 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="4073803880">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">10</animDuration>
-                  <animFirstFrame dataType="Int">0</animFirstFrame>
-                  <animFrameCount dataType="Int">64</animFrameCount>
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <animPaused dataType="Bool">false</animPaused>
+                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
                   <gameobj dataType="ObjectRef">760442718</gameobj>
@@ -277,10 +277,10 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="2897567117">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">10</animDuration>
-                  <animFirstFrame dataType="Int">0</animFirstFrame>
-                  <animFrameCount dataType="Int">64</animFrameCount>
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <animPaused dataType="Bool">false</animPaused>
+                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
                   <gameobj dataType="ObjectRef">3879173251</gameobj>
@@ -379,10 +379,10 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1384243057">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">10</animDuration>
-                  <animFirstFrame dataType="Int">0</animFirstFrame>
-                  <animFrameCount dataType="Int">64</animFrameCount>
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <animPaused dataType="Bool">false</animPaused>
+                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
                   <gameobj dataType="ObjectRef">2365849191</gameobj>
@@ -481,10 +481,10 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1894455204">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">10</animDuration>
-                  <animFirstFrame dataType="Int">0</animFirstFrame>
-                  <animFrameCount dataType="Int">64</animFrameCount>
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <animPaused dataType="Bool">false</animPaused>
+                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
                   <gameobj dataType="ObjectRef">2876061338</gameobj>
@@ -615,10 +615,10 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1967780549">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">2</animDuration>
-                  <animFirstFrame dataType="Int">0</animFirstFrame>
-                  <animFrameCount dataType="Int">64</animFrameCount>
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <animPaused dataType="Bool">false</animPaused>
+                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
                   <gameobj dataType="ObjectRef">2949386683</gameobj>
@@ -717,10 +717,10 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="2783572602">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">2</animDuration>
-                  <animFirstFrame dataType="Int">0</animFirstFrame>
-                  <animFrameCount dataType="Int">64</animFrameCount>
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <animPaused dataType="Bool">false</animPaused>
+                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
                   <gameobj dataType="ObjectRef">3765178736</gameobj>
@@ -819,10 +819,10 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="3837581690">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">2</animDuration>
-                  <animFirstFrame dataType="Int">0</animFirstFrame>
-                  <animFrameCount dataType="Int">64</animFrameCount>
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <animPaused dataType="Bool">false</animPaused>
+                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
                   <gameobj dataType="ObjectRef">524220528</gameobj>
@@ -921,10 +921,10 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1607089219">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">2</animDuration>
-                  <animFirstFrame dataType="Int">0</animFirstFrame>
-                  <animFrameCount dataType="Int">64</animFrameCount>
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <animPaused dataType="Bool">false</animPaused>
+                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
                   <gameobj dataType="ObjectRef">2588695353</gameobj>

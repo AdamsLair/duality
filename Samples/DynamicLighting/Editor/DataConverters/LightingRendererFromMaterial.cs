@@ -77,7 +77,7 @@ namespace DynamicLighting.DataConverters
 					if (animator == null && gameobj != null) animator = gameobj.GetComponent<SpriteAnimator>();
 					if (animator == null) animator = new SpriteAnimator();
 					animator.AnimDuration = 5.0f;
-					animator.AnimFrameCount = basePixmap.AnimFrames;
+					animator.FrameCount = basePixmap.AnimFrames;
 					results.Add(animator);
 				}
 				
