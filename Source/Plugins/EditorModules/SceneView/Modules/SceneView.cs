@@ -449,16 +449,19 @@ namespace Duality.Editor.Plugins.SceneView
 			Component firstReqComp = null;
 			for (int i = cmpList.Count - 1; i >= 0; --i)
 			{
-				Component c = cmpList[i];
-				if (ignoreGameObjList != null && ignoreGameObjList.Contains(c.GameObj)) continue;
+				Component cmpToRemove = cmpList[i];
+				if (ignoreGameObjList != null && ignoreGameObjList.Contains(cmpToRemove.GameObj)) continue;
 
 				Component reqComp = null;
-				foreach (Component r in c.GameObj.GetComponents<Component>())
+				foreach (Component otherComponent in cmpToRemove.GameObj.GetComponents<Component>())
 				{
-					if (cmpList.Contains(r)) continue;
-					if (!r.IsComponentRequirementMet(c))
+					if (cmpList.Contains(otherComponent)) continue;
+
+					IEnumerable<Type> otherRequirements = Component.RequireMap.GetRequirements(otherComponent.GetType());
+					bool isRequirementMetWhenRemoving = otherRequirements.All(type => otherComponent.GameObj.GetComponents(type).Any(c => c != cmpToRemove));
+					if (!isRequirementMetWhenRemoving)
 					{
-						reqComp = r;
+						reqComp = otherComponent;
 						break;
 					}
 				}
@@ -1027,7 +1030,7 @@ namespace Duality.Editor.Plugins.SceneView
 						bool canDropHere = true;
 
 						canDropHere = canDropHere && draggedObj.All(c => dropObj.GetComponent(c.GetType()) == null);
-						canDropHere = canDropHere && draggedObj.All(c => c.IsComponentRequirementMet(dropObj, draggedObj));
+						canDropHere = canDropHere && draggedObj.All(c => Component.RequireMap.IsRequirementMet(dropObj, c.GetType(), draggedObj.Select(d => d.GetType())));
 
 						e.Effect = canDropHere ? effect : DragDropEffects.None;
 					}

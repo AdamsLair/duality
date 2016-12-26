@@ -29,7 +29,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 		public override bool Convert(ConvertOperation convert)
 		{
 			List<Component> availData = convert.Perform<Component>().ToList();
-			availData.Sort((Component a, Component b) => a.RequiresComponent(b.GetType()) ? 1 : 0);
+			availData.Sort((Component a, Component b) => Component.RequireMap.IsRequired(a.GetType(), b.GetType()) ? 1 : 0);
 
 			// Generate objects
 			foreach (Component cmp in availData)
@@ -64,7 +64,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				}
 
 				// Make sure all requirements are met
-				foreach (Type t in Component.GetRequiredComponentsToCreate(gameObj, cmpType))
+				foreach (Type t in Component.RequireMap.GetRequirementsToCreate(gameObj, cmpType))
 					gameObj.AddComponent(t);
 
 				// Make sure no other Component of this Type is already added
