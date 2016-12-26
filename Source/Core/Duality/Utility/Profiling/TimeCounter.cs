@@ -19,6 +19,10 @@ namespace Duality
 		private	int			valueGraphCursor	= 0;
 
 
+		internal float Value
+		{
+			get { return this.value; }
+		}
 		public float LastValue
 		{
 			get { return this.lastValue; }
@@ -52,7 +56,7 @@ namespace Duality
 			this.value = value;
 			this.used = true;
 		}
-		public override void Reset()
+		public override void ResetFrame()
 		{
 			this.lastUsed = this.used;
 			this.used = false;
@@ -60,29 +64,32 @@ namespace Duality
 			this.lastValue = this.value;
 			this.value = 0.0f;
 		}
+		public override void ResetAll()
+		{
+			this.ResetFrame();
+			this.accumValue = 0.0d;
+			this.accumMaxValue = float.MinValue;
+			this.accumMinValue = float.MaxValue;
+			this.sampleCount = 0;
+		}
 
-		public override void GetReportData(out ProfileReportCounterData data, ProfileReportOptions options)
+		public override void GetReportData(out ProfileReportCounterData data)
 		{
 			data = new ProfileReportCounterData();
 			data.Severity = MathF.Clamp(this.lastValue / Time.MillisecondsPerFrame, 0.0f, 1.0f);
-
-			if ((options & ProfileReportOptions.LastValue) != ProfileReportOptions.None)
 				data.LastValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.lastValue);
-
 			if (this.IsSingleValue)
 			{
-				if ((options & ProfileReportOptions.AverageValue) != ProfileReportOptions.None)
 					data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.lastValue);
 			}
 			else
 			{
-				if ((options & ProfileReportOptions.AverageValue) != ProfileReportOptions.None)
+				if (this.sampleCount > 0)
+				{
 					data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", (float)(this.accumValue / (double)this.sampleCount));
-				if ((options & ProfileReportOptions.MinValue) != ProfileReportOptions.None)
 					data.MinValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.accumMinValue);
-				if ((options & ProfileReportOptions.MaxValue) != ProfileReportOptions.None)
 					data.MaxValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.accumMaxValue);
-				if ((options & ProfileReportOptions.SampleCount) != ProfileReportOptions.None)
+				}
 					data.SampleCount = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.sampleCount);
 			}
 		}
@@ -97,7 +104,7 @@ namespace Duality
 			}
 			this.valueGraph[this.valueGraphCursor] = this.value;
 			this.valueGraphCursor = (this.valueGraphCursor + 1) % this.valueGraph.Length;
-			this.Reset();
+			this.ResetFrame();
 		}
 	}
 }

@@ -12,40 +12,6 @@ using Duality.Properties;
 namespace Duality
 {
 	/// <summary>
-	/// This attribute indicates a <see cref="Component">Components</see> requirement for another Component
-	/// of a specific Type, that is attached to the same <see cref="GameObject"/>.
-	/// </summary>
-	/// <example>
-	/// The following code uses a RequiredComponentAttribute to indicate that a <see cref="Duality.Components.SoundEmitter"/>
-	/// always needs a <see cref="Duality.Components.Transform"/> available as well.
-	/// <code>
-	/// [RequiredComponent(typeof(Transform))]
-	/// public sealed class SoundEmitter : Component, ICmpUpdatable, ICmpInitializable
-	/// {
-	///		// ...
-	/// }
-	/// </code>
-	/// </example>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-	public class RequiredComponentAttribute : Attribute
-	{
-		private	Type	cmpType;
-
-		/// <summary>
-		/// The Component Type that is required by this Component.
-		/// </summary>
-		public Type RequiredComponentType
-		{
-			get { return this.cmpType; }
-		}
-
-		public RequiredComponentAttribute(Type cmpType)
-		{
-			this.cmpType = cmpType;
-		}
-	}
-
-	/// <summary>
 	/// Components are isolated logic units that can independently be added to and removed from <see cref="GameObject">GameObjects</see>.
 	/// Each Component has a distinct purpose, thus it is not possible to add multiple Components of the same Type to one GameObject.
 	/// Also, a Component may not belong to multiple GameObjects at once.
@@ -101,8 +67,8 @@ namespace Duality
 		}
 
 
-		internal	GameObject	gameobj	= null;
-		private		bool		active	= true;
+		internal GameObject gameobj = null;
+		private  bool       active  = true;
 
 		
 		/// <summary>
@@ -253,15 +219,17 @@ namespace Duality
 		/// </summary>
 		/// <param name="requiredType">The Component Type that might be required.</param>
 		/// <returns>True, if there is a requirement, false if not</returns>
+		[Obsolete("Use Component.RequireMap API instead.")]
 		public bool RequiresComponent(Type requiredType)
 		{
-			return RequiresComponent(this.GetType(), requiredType);
+			return requireMap.IsRequired(this.GetType(), requiredType);
 		}
 		/// <summary>
 		/// Returns whether this objects Component requirement is met.
 		/// </summary>
 		/// <param name="evenWhenRemovingThis">If not null, the specified Component is assumed to be missing.</param>
 		/// <returns>True, if the Component requirement is met, false if not.</returns>
+		[Obsolete("Use Component.RequireMap API instead.")]
 		public bool IsComponentRequirementMet(Component evenWhenRemovingThis = null)
 		{
 			var reqTypes = this.GetRequiredComponents();
@@ -273,28 +241,24 @@ namespace Duality
 		/// <param name="isMetInObj">The specified object is assumed as parent object.</param>
 		/// <param name="whenAddingThose">If not null, the specified Components are assumed to be present in the specified parent object.</param>
 		/// <returns>True, if the Component requirement is met, false if not.</returns>
+		[Obsolete("Use Component.RequireMap API instead.")]
 		public bool IsComponentRequirementMet(GameObject isMetInObj, IEnumerable<Component> whenAddingThose = null)
 		{
-			IEnumerable<Type> reqTypes = this.GetRequiredComponents();
-			foreach (Type reqType in reqTypes)
-			{
-				TypeInfo reqTypeInfo = reqType.GetTypeInfo();
-				if (isMetInObj.GetComponent(reqType) == null)
-				{
-					if (whenAddingThose == null) return false;
-					else if (!whenAddingThose.Any(c => reqTypeInfo.IsInstanceOfType(c))) return false;
-				}
-			}
-
-			return true;
+			return requireMap.IsRequirementMet(
+				isMetInObj, 
+				this.GetType(), 
+				(whenAddingThose != null) ? 
+					whenAddingThose.NotNull().Select(c => c.GetType()) : 
+					null);
 		}
 		/// <summary>
 		/// Returns all Component Types this Component requires.
 		/// </summary>
 		/// <returns>An array of required Component Types.</returns>
+		[Obsolete("Use Component.RequireMap API instead.")]
 		public IEnumerable<Type> GetRequiredComponents()
 		{
-			return GetRequiredComponents(this.GetType());
+			return requireMap.GetRequirements(this.GetType());
 		}
 
 		public override string ToString()
@@ -306,51 +270,16 @@ namespace Duality
 		}
 
 
-		private static Dictionary<Type,TypeData> typeCache = new Dictionary<Type,TypeData>();
-		private class TypeData
+		private static ComponentRequirementMap requireMap = new ComponentRequirementMap();
+
+		/// <summary>
+		/// [GET] Provides information about how different <see cref="Component"/> types are
+		/// depending on each other, as well as functionality to automatically enforce the
+		/// dependencies of a given <see cref="Component"/> type.
+		/// </summary>
+		public static ComponentRequirementMap RequireMap
 		{
-			public Type Component;
-			public List<Type> Requirements;
-			public List<Type> RequiredBy;
-
-			public TypeData(Type type)
-			{
-				this.Component = type;
-			}
-
-			public void InitRequirements()
-			{
-				if (this.Requirements != null) return;
-
-				this.Requirements = new List<Type>();
-				IEnumerable<RequiredComponentAttribute> attribs = this.Component.GetTypeInfo().GetAttributesCached<RequiredComponentAttribute>();
-				foreach (RequiredComponentAttribute a in attribs)
-				{
-					Type reqType = a.RequiredComponentType;
-
-					// Don't require itself
-					if (reqType == this.Component) continue;
-
-					this.Requirements.AddRange(GetRequiredComponents(reqType).Where(t => !this.Requirements.Contains(t)));
-					if (!this.Requirements.Contains(reqType))
-						this.Requirements.Add(reqType);
-				}
-			}
-			public void InitRequiredBy()
-			{
-				if (this.RequiredBy != null) return;
-				this.RequiredBy = new List<Type>();
-				foreach (TypeInfo cmpTypeInfo in DualityApp.GetAvailDualityTypes(typeof(Component)))
-				{
-					Type cmpType = cmpTypeInfo.AsType();
-
-					// Don't require itself
-					if (cmpType == this.Component) continue;
-
-					if (RequiresComponent(cmpType, this.Component))
-						this.RequiredBy.Add(cmpType);
-				}
-			}
+			get { return requireMap; }
 		}
 
 		/// <summary>
@@ -359,37 +288,20 @@ namespace Duality
 		/// <param name="cmpType">The Component Type that might require another Component Type.</param>
 		/// <param name="requiredType">The Component Type that might be required.</param>
 		/// <returns>True, if there is a requirement, false if not</returns>
+		[Obsolete("Use Component.RequireMap API instead.")]
 		public static bool RequiresComponent(Type cmpType, Type requiredType)
 		{
-			if (cmpType == requiredType) return false;
-
-			TypeInfo requiredTypeInfo = requiredType.GetTypeInfo();
-
-			TypeData data;
-			if (!typeCache.TryGetValue(cmpType, out data))
-			{
-				data = new TypeData(cmpType);
-				typeCache[cmpType] = data;
-			}
-			data.InitRequirements();
-			return data.Requirements.Any(reqType => reqType.GetTypeInfo().IsAssignableFrom(requiredTypeInfo));
+			return requireMap.IsRequired(cmpType, requiredType);
 		}
 		/// <summary>
 		/// Returns all required Component Types of a specified Component Type.
 		/// </summary>
 		/// <param name="cmpType">The Component Type that might require other Component Types.</param>
-		/// <param name="recursive">If true, also indirect requirements are returned.</param>
 		/// <returns>An array of Component Types to require.</returns>
+		[Obsolete("Use Component.RequireMap API instead.")]
 		public static IEnumerable<Type> GetRequiredComponents(Type cmpType)
 		{
-			TypeData data;
-			if (!typeCache.TryGetValue(cmpType, out data))
-			{
-				data = new TypeData(cmpType);
-				typeCache[cmpType] = data;
-			}
-			data.InitRequirements();
-			return data.Requirements;
+			return requireMap.GetRequirements(cmpType);
 		}
 		/// <summary>
 		/// Returns the number of Component Types that require the specified Component Type.
@@ -397,39 +309,23 @@ namespace Duality
 		/// </summary>
 		/// <param name="cmpType"></param>
 		/// <returns></returns>
+		[Obsolete("No longer supported.")]
 		public static IEnumerable<Type> GetRequiringComponents(Type requiredType)
 		{
-			TypeData data;
-			if (!typeCache.TryGetValue(requiredType, out data))
-			{
-				data = new TypeData(requiredType);
-				typeCache[requiredType] = data;
-			}
-			data.InitRequiredBy();
-			return data.RequiredBy;
+			return Enumerable.Empty<Type>();
 		}
 		/// <summary>
-		/// Clears the ReflectionHelpers Type cache.
+		/// Given the specified target <see cref="GameObject"/> and <see cref="Component"/> type,
+		/// this method will enumerate all <see cref="Component"/> types that need to
+		/// be added in order to satisfy its requirements.
 		/// </summary>
-		internal static void ClearTypeCache()
+		/// <param name="targetObj"></param>
+		/// <param name="targetComponentType"></param>
+		/// <returns></returns>
+		[Obsolete("Use Component.RequireMap API instead.")]
+		public static IEnumerable<Type> GetRequiredComponentsToCreate(GameObject targetObj, Type targetComponentType)
 		{
-			typeCache.Clear();
-		}
-	}
-
-	public class ComponentTypeComparer : IEqualityComparer<Component>
-	{
-		public static readonly ComponentTypeComparer Default = new ComponentTypeComparer();
-
-		public bool Equals(Component x, Component y)
-		{
-			if (x == y) return true;
-			if (x == null || y == null) return false;
-			return x.GetType() == y.GetType();
-		}
-		public int GetHashCode(Component obj)
-		{
-			return obj != null ? obj.GetType().GetHashCode() : 0;
+			return requireMap.GetRequirementsToCreate(targetObj, targetComponentType);
 		}
 	}
 }
