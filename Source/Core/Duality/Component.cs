@@ -15,33 +15,42 @@ namespace Duality
 	/// This attribute indicates a <see cref="Component">Components</see> requirement for another Component
 	/// of a specific Type, that is attached to the same <see cref="GameObject"/>.
 	/// </summary>
-	/// <example>
-	/// The following code uses a RequiredComponentAttribute to indicate that a <see cref="Duality.Components.SoundEmitter"/>
-	/// always needs a <see cref="Duality.Components.Transform"/> available as well.
-	/// <code>
-	/// [RequiredComponent(typeof(Transform))]
-	/// public sealed class SoundEmitter : Component, ICmpUpdatable, ICmpInitializable
-	/// {
-	///		// ...
-	/// }
-	/// </code>
-	/// </example>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class RequiredComponentAttribute : Attribute
 	{
-		private	Type	cmpType;
+		private Type cmpType;
+		private Type createDefaultType;
 
 		/// <summary>
-		/// The Component Type that is required by this Component.
+		/// The component type that is required by this component.
 		/// </summary>
 		public Type RequiredComponentType
 		{
 			get { return this.cmpType; }
 		}
-
-		public RequiredComponentAttribute(Type cmpType)
+		/// <summary>
+		/// The type that will be instantiated when automatically creating dependency components
+		/// for this component. Defaults to <see cref="RequiredComponentType"/>.
+		/// </summary>
+		public Type CreateDefaultType
 		{
-			this.cmpType = cmpType;
+			get { return this.createDefaultType; }
+		}
+
+		public RequiredComponentAttribute(Type requiredType) : this(requiredType, requiredType) { }
+		public RequiredComponentAttribute(Type requiredType, Type createDefaultType)
+		{
+			requiredType = requiredType ?? typeof(Component);
+			createDefaultType = createDefaultType ?? requiredType;
+
+			// If the creation type doesn't satisfy the requirement, fallback to default.
+			// An exception would be better, but throwing them in an attribute constructor
+			// is a bit dangerous.
+			if (!requiredType.GetTypeInfo().IsAssignableFrom(createDefaultType.GetTypeInfo()))
+				createDefaultType = requiredType;
+
+			this.cmpType = requiredType;
+			this.createDefaultType = createDefaultType;
 		}
 	}
 
