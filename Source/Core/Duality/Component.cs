@@ -222,7 +222,7 @@ namespace Duality
 		[Obsolete("Use Component.RequireMap API instead.")]
 		public bool RequiresComponent(Type requiredType)
 		{
-			return requireMap.RequiresComponent(this.GetType(), requiredType);
+			return requireMap.IsRequired(this.GetType(), requiredType);
 		}
 		/// <summary>
 		/// Returns whether this objects Component requirement is met.
@@ -244,7 +244,12 @@ namespace Duality
 		[Obsolete("Use Component.RequireMap API instead.")]
 		public bool IsComponentRequirementMet(GameObject isMetInObj, IEnumerable<Component> whenAddingThose = null)
 		{
-			return requireMap.IsComponentRequirementMet(isMetInObj, this.GetType(), whenAddingThose);
+			return requireMap.IsRequirementMet(
+				isMetInObj, 
+				this.GetType(), 
+				(whenAddingThose != null) ? 
+					whenAddingThose.NotNull().Select(c => c.GetType()) : 
+					null);
 		}
 		/// <summary>
 		/// Returns all Component Types this Component requires.
@@ -253,7 +258,7 @@ namespace Duality
 		[Obsolete("Use Component.RequireMap API instead.")]
 		public IEnumerable<Type> GetRequiredComponents()
 		{
-			return requireMap.GetRequiredComponents(this.GetType());
+			return requireMap.GetRequirements(this.GetType());
 		}
 
 		public override string ToString()
@@ -286,7 +291,7 @@ namespace Duality
 		[Obsolete("Use Component.RequireMap API instead.")]
 		public static bool RequiresComponent(Type cmpType, Type requiredType)
 		{
-			return requireMap.RequiresComponent(cmpType, requiredType);
+			return requireMap.IsRequired(cmpType, requiredType);
 		}
 		/// <summary>
 		/// Returns all required Component Types of a specified Component Type.
@@ -296,7 +301,7 @@ namespace Duality
 		[Obsolete("Use Component.RequireMap API instead.")]
 		public static IEnumerable<Type> GetRequiredComponents(Type cmpType)
 		{
-			return requireMap.GetRequiredComponents(cmpType);
+			return requireMap.GetRequirements(cmpType);
 		}
 		/// <summary>
 		/// Returns the number of Component Types that require the specified Component Type.
@@ -320,7 +325,7 @@ namespace Duality
 		[Obsolete("Use Component.RequireMap API instead.")]
 		public static IEnumerable<Type> GetRequiredComponentsToCreate(GameObject targetObj, Type targetComponentType)
 		{
-			return requireMap.GetRequiredComponentsToCreate(targetObj, targetComponentType);
+			return requireMap.GetRequirementsToCreate(targetObj, targetComponentType);
 		}
 	}
 }

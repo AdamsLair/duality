@@ -11,6 +11,10 @@ using Duality.Properties;
 
 namespace Duality
 {
+	/// <summary>
+	/// Retrieves, processes and caches type information about how different <see cref="Component"/>
+	/// types are interconnected using the <see cref="RequiredComponentAttribute"/>.
+	/// </summary>
 	public class ComponentRequirementMap
 	{
 		private struct CreationChainItem
@@ -57,7 +61,7 @@ namespace Duality
 					// Don't require itself
 					if (reqType == this.Component) continue;
 
-					this.Requirements.AddRange(map.GetRequiredComponents(reqType).Where(t => !this.Requirements.Contains(t)));
+					this.Requirements.AddRange(map.GetRequirements(reqType).Where(t => !this.Requirements.Contains(t)));
 					if (!this.Requirements.Contains(reqType))
 						this.Requirements.Add(reqType);
 				}
@@ -168,12 +172,20 @@ namespace Duality
 		private Dictionary<Type,TypeData> typeDataCache = new Dictionary<Type,TypeData>();
 
 
-		public bool RequiresComponent(Type cmpType, Type requiredType)
+		/// <summary>
+		/// Returns whether the first <see cref="Component"/> requires the second one.
+		/// In cases where a requirement can be satisfied by multiple different <see cref="Component"/>
+		/// types, this method will return true for all of them.
+		/// </summary>
+		/// <param name="componentType"></param>
+		/// <param name="requiredType"></param>
+		/// <returns></returns>
+		public bool IsRequired(Type componentType, Type requiredType)
 		{
-			if (cmpType == requiredType) return false;
+			if (componentType == requiredType) return false;
 
 			TypeInfo requiredTypeInfo = requiredType.GetTypeInfo();
-			foreach (Type type in this.GetRequiredComponents(cmpType))
+			foreach (Type type in this.GetRequirements(componentType))
 			{
 				if (type.GetTypeInfo().IsAssignableFrom(requiredTypeInfo))
 					return true;
@@ -181,35 +193,61 @@ namespace Duality
 
 			return false;
 		}
-		public bool IsComponentRequirementMet(GameObject targetObj, Type targetComponentType, IEnumerable<Component> whenAddingThose = null)
+		/// <summary>
+		/// Returns whether the <see cref="Component"/> requirements for a given <see cref="Component"/> type are met on
+		/// the specified <see cref="GameObject"/>, and whether they would be met if a specified set <see cref="Component"/>
+		/// types would be added prior.
+		/// </summary>
+		/// <param name="targetObj"></param>
+		/// <param name="targetComponentType"></param>
+		/// <param name="whenAddingThose"></param>
+		/// <returns></returns>
+		public bool IsRequirementMet(GameObject targetObj, Type targetComponentType, IEnumerable<Type> whenAddingThose = null)
 		{
-			IEnumerable<Type> reqTypes = this.GetRequiredComponents(targetComponentType);
+			IEnumerable<Type> reqTypes = this.GetRequirements(targetComponentType);
 			foreach (Type reqType in reqTypes)
 			{
 				TypeInfo reqTypeInfo = reqType.GetTypeInfo();
 				if (targetObj.GetComponent(reqType) == null)
 				{
-					if (whenAddingThose == null) return false;
-					else if (!whenAddingThose.Any(c => reqTypeInfo.IsInstanceOfType(c))) return false;
+					if (whenAddingThose == null)
+						return false;
+					else if (!whenAddingThose.Any(c => reqTypeInfo.IsAssignableFrom(c.GetTypeInfo())))
+						return false;
 				}
 			}
 
 			return true;
 		}
-		public IEnumerable<Type> GetRequiredComponents(Type cmpType)
+		/// <summary>
+		/// Enumerates all requirements of the specified <see cref="Component"/> type. 
+		/// These may include abstract classes or interface definitions.
+		/// </summary>
+		/// <param name="componentType"></param>
+		/// <returns></returns>
+		public IEnumerable<Type> GetRequirements(Type componentType)
 		{
 			TypeData data;
-			if (!this.typeDataCache.TryGetValue(cmpType, out data))
+			if (!this.typeDataCache.TryGetValue(componentType, out data))
 			{
-				data = new TypeData(cmpType);
-				this.typeDataCache[cmpType] = data;
+				data = new TypeData(componentType);
+				this.typeDataCache[componentType] = data;
 			}
 			if (data.Requirements == null)
 				data.InitRequirements(this);
 
 			return data.Requirements;
 		}
-		public IEnumerable<Type> GetRequiredComponentsToCreate(GameObject targetObj, Type targetComponentType)
+		/// <summary>
+		/// Given the specified target <see cref="GameObject"/> and <see cref="Component"/> type,
+		/// this method enumerates all <see cref="Component"/> types that will have to be created
+		/// on the target object in order to satisfy its requirements. The result will be sorted
+		/// in order of creation.
+		/// </summary>
+		/// <param name="targetObj"></param>
+		/// <param name="targetComponentType"></param>
+		/// <returns></returns>
+		public IEnumerable<Type> GetRequirementsToCreate(GameObject targetObj, Type targetComponentType)
 		{
 			// Retrieve the component's requirements
 			TypeData data;
@@ -238,6 +276,9 @@ namespace Duality
 			}
 			return createList;
 		}
+		/// <summary>
+		/// Clears the internal type data that this map has been storing internally.
+		/// </summary>
 		public void ClearTypeCache()
 		{
 			this.typeDataCache.Clear();
