@@ -214,53 +214,6 @@ namespace Duality
 			operation.HandleObject(this, target);
 		}
 
-		/// <summary>
-		/// Returns whether this Component requires a Component of the specified Type.
-		/// </summary>
-		/// <param name="requiredType">The Component Type that might be required.</param>
-		/// <returns>True, if there is a requirement, false if not</returns>
-		[Obsolete("Use Component.RequireMap API instead.")]
-		public bool RequiresComponent(Type requiredType)
-		{
-			return requireMap.IsRequired(this.GetType(), requiredType);
-		}
-		/// <summary>
-		/// Returns whether this objects Component requirement is met.
-		/// </summary>
-		/// <param name="evenWhenRemovingThis">If not null, the specified Component is assumed to be missing.</param>
-		/// <returns>True, if the Component requirement is met, false if not.</returns>
-		[Obsolete("Use Component.RequireMap API instead.")]
-		public bool IsComponentRequirementMet(Component evenWhenRemovingThis = null)
-		{
-			var reqTypes = this.GetRequiredComponents();
-			return reqTypes.All(r => this.GameObj.GetComponents(r).Any(c => c != evenWhenRemovingThis));
-		}
-		/// <summary>
-		/// Returns whether this objects Component requirement is met assuming a different <see cref="GameObj">parent GameObject</see>
-		/// </summary>
-		/// <param name="isMetInObj">The specified object is assumed as parent object.</param>
-		/// <param name="whenAddingThose">If not null, the specified Components are assumed to be present in the specified parent object.</param>
-		/// <returns>True, if the Component requirement is met, false if not.</returns>
-		[Obsolete("Use Component.RequireMap API instead.")]
-		public bool IsComponentRequirementMet(GameObject isMetInObj, IEnumerable<Component> whenAddingThose = null)
-		{
-			return requireMap.IsRequirementMet(
-				isMetInObj, 
-				this.GetType(), 
-				(whenAddingThose != null) ? 
-					whenAddingThose.NotNull().Select(c => c.GetType()) : 
-					null);
-		}
-		/// <summary>
-		/// Returns all Component Types this Component requires.
-		/// </summary>
-		/// <returns>An array of required Component Types.</returns>
-		[Obsolete("Use Component.RequireMap API instead.")]
-		public IEnumerable<Type> GetRequiredComponents()
-		{
-			return requireMap.GetRequirements(this.GetType());
-		}
-
 		public override string ToString()
 		{
 			if (this.gameobj == null)
@@ -280,52 +233,6 @@ namespace Duality
 		public static ComponentRequirementMap RequireMap
 		{
 			get { return requireMap; }
-		}
-
-		/// <summary>
-		/// Returns whether a Component Type requires another Component Type to work properly.
-		/// </summary>
-		/// <param name="cmpType">The Component Type that might require another Component Type.</param>
-		/// <param name="requiredType">The Component Type that might be required.</param>
-		/// <returns>True, if there is a requirement, false if not</returns>
-		[Obsolete("Use Component.RequireMap API instead.")]
-		public static bool RequiresComponent(Type cmpType, Type requiredType)
-		{
-			return requireMap.IsRequired(cmpType, requiredType);
-		}
-		/// <summary>
-		/// Returns all required Component Types of a specified Component Type.
-		/// </summary>
-		/// <param name="cmpType">The Component Type that might require other Component Types.</param>
-		/// <returns>An array of Component Types to require.</returns>
-		[Obsolete("Use Component.RequireMap API instead.")]
-		public static IEnumerable<Type> GetRequiredComponents(Type cmpType)
-		{
-			return requireMap.GetRequirements(cmpType);
-		}
-		/// <summary>
-		/// Returns the number of Component Types that require the specified Component Type.
-		/// This can be used as a measure of relative Component significance.
-		/// </summary>
-		/// <param name="cmpType"></param>
-		/// <returns></returns>
-		[Obsolete("No longer supported.")]
-		public static IEnumerable<Type> GetRequiringComponents(Type requiredType)
-		{
-			return Enumerable.Empty<Type>();
-		}
-		/// <summary>
-		/// Given the specified target <see cref="GameObject"/> and <see cref="Component"/> type,
-		/// this method will enumerate all <see cref="Component"/> types that need to
-		/// be added in order to satisfy its requirements.
-		/// </summary>
-		/// <param name="targetObj"></param>
-		/// <param name="targetComponentType"></param>
-		/// <returns></returns>
-		[Obsolete("Use Component.RequireMap API instead.")]
-		public static IEnumerable<Type> GetRequiredComponentsToCreate(GameObject targetObj, Type targetComponentType)
-		{
-			return requireMap.GetRequirementsToCreate(targetObj, targetComponentType);
 		}
 	}
 }
