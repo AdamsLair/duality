@@ -316,11 +316,34 @@ namespace Duality
 
 
 		private static Dictionary<Type,TypeData> typeCache = new Dictionary<Type,TypeData>();
+		private struct CreationChainItem
+		{
+			public Type RequiredType;
+			public Type CreateType;
+			public int SkipIfExists;
+
+			public override string ToString()
+			{
+				if (this.SkipIfExists > 0)
+				{
+					return string.Format("Skip {0} if {1} exists", 
+						this.SkipIfExists, 
+						Log.Type(this.RequiredType));
+				}
+				else
+				{
+					return string.Format("Require {0} or create {1}", 
+						Log.Type(this.RequiredType), 
+						Log.Type(this.CreateType));
+				}
+			}
+		}
 		private class TypeData
 		{
 			public Type Component;
 			public List<Type> Requirements;
 			public List<Type> RequiredBy;
+			public List<CreationChainItem> CreationChain;
 
 			public TypeData(Type type)
 			{
@@ -358,6 +381,108 @@ namespace Duality
 
 					if (RequiresComponent(cmpType, this.Component))
 						this.RequiredBy.Add(cmpType);
+				}
+			}
+			public void InitCreationChain()
+			{
+				if (this.CreationChain != null) return;
+
+				this.CreationChain = new List<CreationChainItem>();
+				IEnumerable<RequiredComponentAttribute> attributes = this.Component.GetTypeInfo().GetAttributesCached<RequiredComponentAttribute>();
+				foreach (RequiredComponentAttribute attrib in attributes)
+				{
+					// If this is a conditional creation, add the sub-chain of the Component to create
+					if (attrib.CreateDefaultType != attrib.RequiredComponentType)
+						this.AddCreationChainElements(attrib, attrib.CreateDefaultType);
+
+					// In any case, add the sub-chain of direct requirements
+					this.AddCreationChainElements(attrib, attrib.RequiredComponentType);
+				}
+
+				// Remove any duplicates that we might have generated in the creation chain
+				this.RemoveCreationChainDuplicates();
+			}
+
+			private void AddCreationChainElements(RequiredComponentAttribute attrib, Type subChainType)
+			{
+				if (subChainType == this.Component) return;
+
+				int baseIndex = this.CreationChain.Count;
+				int subChainLength = 0;
+
+				// Retrieve the creation sub-chain to satisfy this item's requirements
+				List<CreationChainItem> createTypeSubChain = GetCreationChain(subChainType);
+				foreach (CreationChainItem subItem in createTypeSubChain)
+				{
+					this.CreationChain.Add(subItem);
+					subChainLength++;
+				}
+
+				// Add the main item after its requirement items so we're always creating bottom-up
+				this.CreationChain.Add(new CreationChainItem
+				{
+					RequiredType = attrib.RequiredComponentType,
+					CreateType = attrib.CreateDefaultType
+				});
+
+				// If this is a conditional requirement, add a control item that checks the
+				// requirement and skips this item and its sub-chains if it's already met.
+				if (subChainLength > 0 && attrib.CreateDefaultType != attrib.RequiredComponentType)
+				{
+					this.CreationChain.Insert(baseIndex, new CreationChainItem
+					{
+						RequiredType = attrib.RequiredComponentType,
+						SkipIfExists = 1 + subChainLength
+					});
+				}
+			}
+			private void RemoveCreationChainDuplicates()
+			{
+				// We'll iterate over the creation chain assuming that each item
+				// is found to be already existing (so we can't assume to have created
+				// any specific type for abstract and interface requirements).
+				List<TypeInfo> guaranteedTypes = new List<TypeInfo>();
+				int uncertainCounter = 0;
+				int parentIndex = -1;
+				for (int i = 0; i < this.CreationChain.Count; i++)
+				{
+					// Can we guarantee that all requirements of this item will have been met?
+					TypeInfo requriedTypeInfo = this.CreationChain[i].RequiredType.GetTypeInfo();
+					bool requirementMet = guaranteedTypes.Any(t => requriedTypeInfo.IsAssignableFrom(t));
+
+					// If yes, remove the item and its sub-chains
+					if (requirementMet)
+					{
+						int removeCount = 1 + this.CreationChain[i].SkipIfExists;
+						this.CreationChain.RemoveRange(i, removeCount);
+						if (uncertainCounter > 0)
+						{
+							CreationChainItem parentItem = this.CreationChain[parentIndex];
+							parentItem.SkipIfExists -= removeCount;
+							this.CreationChain[parentIndex] = parentItem;
+							uncertainCounter -= removeCount;
+						}
+						i--;
+					}
+					// Otherwise, proceed to the next item
+					else
+					{
+						if (uncertainCounter == 0)
+						{
+							// If this item will create a Component, we can guarantee that its requirement is met
+							if (this.CreationChain[i].CreateType != null)
+								guaranteedTypes.Add(requriedTypeInfo);
+							// If this item might skip followup items, only allow to assume that the very last
+							// item's requirement will have been met, since after that one we can be sure that
+							// it was either there all along or was now created.
+							uncertainCounter += Math.Max(0, this.CreationChain[i].SkipIfExists - 1);
+							parentIndex = i;
+						}
+						else
+						{
+							uncertainCounter--;
+						}
+					}
 				}
 			}
 		}
@@ -417,6 +542,22 @@ namespace Duality
 			return data.RequiredBy;
 		}
 		/// <summary>
+		/// Initializes or returns the creation chain for the specified <see cref="Component"/> type.
+		/// </summary>
+		/// <param name="cmpType"></param>
+		/// <returns></returns>
+		private static List<CreationChainItem> GetCreationChain(Type cmpType)
+		{
+			TypeData data;
+			if (!typeCache.TryGetValue(cmpType, out data))
+			{
+				data = new TypeData(cmpType);
+				typeCache[cmpType] = data;
+			}
+			data.InitCreationChain();
+			return data.CreationChain;
+		}
+		/// <summary>
 		/// Given the specified target <see cref="GameObject"/> and <see cref="Component"/> type,
 		/// this method will enumerate all <see cref="Component"/> types that need to
 		/// be added in order to satisfy its requirements.
@@ -433,18 +574,22 @@ namespace Duality
 				data = new TypeData(targetComponentType);
 				typeCache[targetComponentType] = data;
 			}
-			data.InitRequirements();
+			data.InitCreationChain();
 
 			// Create a sorted list of all components that need to be instantiated
 			// in order to satisfy the requirements for adding the given component to
 			// the specified object.
-			List<Type> createList = new List<Type>(data.Requirements.Count);
-			foreach (Type requiredType in data.Requirements)
+			List<Type> createList = new List<Type>(data.CreationChain.Count);
+			for (int i = 0; i < data.CreationChain.Count; i++)
 			{
-				// Skip this requirement, if it is already satisfied
-				if (targetObj.GetComponent(requiredType) != null) continue;
-
-				createList.Add(requiredType);
+				CreationChainItem item = data.CreationChain[i];
+				if (targetObj.GetComponent(item.RequiredType) != null)
+				{
+					i += item.SkipIfExists;
+					continue;
+				}
+				if (item.CreateType != null && !createList.Contains(item.CreateType))
+					createList.Add(item.CreateType);
 			}
 			return createList;
 		}
