@@ -81,6 +81,9 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			// Initialize OpenTK, if not done yet
 			DefaultOpenTKBackendPlugin.InitOpenTK();
+			
+			// Log information about the available display devices
+			GraphicsBackend.LogDisplayDevices();
 
 			// Determine available and default graphics modes
 			this.QueryGraphicsModes();
@@ -755,6 +758,28 @@ namespace Duality.Backend.DefaultOpenTK
 			return true;
 		}
 
+		public static void LogDisplayDevices()
+		{
+			Logs.Core.Write("Available display devices:");
+			Logs.Core.PushIndent();
+			foreach (DisplayIndex index in new[] { DisplayIndex.First, DisplayIndex.Second, DisplayIndex.Third, DisplayIndex.Fourth, DisplayIndex.Sixth } )
+			{
+				DisplayDevice display = DisplayDevice.GetDisplay(index);
+				if (display == null) continue;
+
+				Logs.Core.Write(
+					"{0,-6}: {1,4}x{2,4} at {3,3} Hz, {4,2} bpp, pos [{5,4},{6,4}]{7}",
+					index,
+					display.Width,
+					display.Height,
+					display.RefreshRate,
+					display.BitsPerPixel,
+					display.Bounds.X,
+					display.Bounds.Y,
+					display.IsPrimary ? " (Primary)" : "");
+			}
+			Logs.Core.PopIndent();
+		}
 		public static void LogOpenGLSpecs()
 		{
 			// Accessing OpenGL functionality requires context. Don't get confused by AccessViolationExceptions, fail better instead.

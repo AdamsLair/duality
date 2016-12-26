@@ -154,16 +154,18 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			Component[] values = this.GetValue().Cast<Component>().NotNull().ToArray();
 			bool canRemove = true;
 			Component removeConflict = null;
-			foreach (Component c in values)
+			foreach (Component cmpToRemove in values)
 			{
-				foreach (Component r in c.GameObj.GetComponents<Component>())
+				foreach (Component otherComponent in cmpToRemove.GameObj.GetComponents<Component>())
 				{
-					if (r == c)
-						continue;
-					if (!r.IsComponentRequirementMet(c))
+					if (otherComponent == cmpToRemove) continue;
+
+					IEnumerable<Type> otherRequirements = Component.RequireMap.GetRequirements(otherComponent.GetType());
+					bool isRequirementMetWhenRemoving = otherRequirements.All(type => otherComponent.GameObj.GetComponents(type).Any(c => c != cmpToRemove));
+					if (!isRequirementMetWhenRemoving)
 					{
 						canRemove = false;
-						removeConflict = r;
+						removeConflict = otherComponent;
 						break;
 					}
 				}

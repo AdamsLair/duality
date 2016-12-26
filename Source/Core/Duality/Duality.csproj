@@ -92,6 +92,9 @@
     <Compile Include="DualityPlugin.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="CorePluginManager.cs" />
+    <Compile Include="Components\Other\ComponentRequirementMap.cs" />
+    <Compile Include="Components\Other\ComponentTypeComparer.cs" />
+    <Compile Include="Components\Other\RequiredComponentAttribute.cs" />
     <Compile Include="Input\JoystickHatEventArgs.cs" />
     <Compile Include="Input\JoystickHatPosition.cs" />
     <Compile Include="Input\JoystickHat.cs" />

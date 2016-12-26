@@ -64,7 +64,7 @@ namespace Duality.Editor.UndoRedoActions
 		{
 			return cmp
 				.Distinct(ComponentTypeComparer.Default)
-				.OrderByDescending(c => c.GetRequiredComponents().Count());
+				.OrderByDescending(c => Component.RequireMap.GetRequirements(c.GetType()).Count());
 		}
 	}
 }

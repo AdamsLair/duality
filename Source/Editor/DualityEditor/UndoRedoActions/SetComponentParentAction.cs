@@ -29,7 +29,7 @@ namespace Duality.Editor.UndoRedoActions
 			: base(obj
 			.Where(c => c != null)
 			.Distinct(ComponentTypeComparer.Default)
-			.OrderBy(c => c.GetRequiredComponents().Count()))
+			.OrderBy(c => Component.RequireMap.GetRequirements(c.GetType()).Count()))
 		{
 			this.targetValue = value;
 		}

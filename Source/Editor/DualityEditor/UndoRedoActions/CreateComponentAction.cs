@@ -58,10 +58,11 @@ namespace Duality.Editor.UndoRedoActions
 			{
 				Component obj = this.targetObj[i];
 
-				// Create dependency Components where required. This will extend the current loop
-				foreach (Type required in obj.GetRequiredComponents().Reverse())
+				// Create dependency Components where required. This will extend the current loop.
+				// (Reversed, so repeated injection at the same index will yield the original order)
+				IEnumerable<Type> createRequirements = Component.RequireMap.GetRequirementsToCreate(this.targetParentObj, obj.GetType());
+				foreach (Type required in createRequirements.Reverse())
 				{
-					if (this.targetParentObj.GetComponent(required) != null) continue;
 					obj = required.GetTypeInfo().CreateInstanceOf() as Component;
 
 					// Setup newly created dependency Components for user editing
@@ -128,7 +129,7 @@ namespace Duality.Editor.UndoRedoActions
 			return cmp
 				.Where(c => c != null && c.GameObj == null)
 				.Distinct(ComponentTypeComparer.Default)
-				.OrderBy(c => c.GetRequiredComponents().Count());
+				.OrderBy(c => Component.RequireMap.GetRequirements(c.GetType()).Count());
 		}
 	}
 }
