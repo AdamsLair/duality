@@ -110,13 +110,13 @@ namespace Duality.Editor.Plugins.SceneView.TreeModels
 					int bestScore = int.MinValue;
 					foreach (Type cmpType in availCmpTypes)
 					{
-						if (availCmpTypes.Any(c => Component.RequiresComponent(c, cmpType)))
+						if (availCmpTypes.Any(c => Component.RequireMap.IsRequired(c, cmpType)))
 							continue;
 						if (cmpType.GetEditorImage() == null)
 							continue;
 
 						int score = 
-							100000 * Component.GetRequiredComponents(cmpType).Count() -
+							100000 * Component.RequireMap.GetRequirements(cmpType).Count() -
 							100 * (cmpType.Name.Length > 0 ? ((int)cmpType.Name[0] - (int)' ') : 0) -
 							1 * (cmpType.Name.Length > 1 ? ((int)cmpType.Name[1] - (int)' ') : 0);
 						if (score > bestScore)
