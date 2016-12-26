@@ -86,6 +86,9 @@
     <Compile Include="Backend\Graphics\IGraphicsBackend.cs" />
     <Compile Include="Backend\PluginLoader\AssemblyLoadedEventArgs.cs" />
     <Compile Include="Backend\PluginLoader\AssemblyResolveEventArgs.cs" />
+    <Compile Include="Components\Other\ComponentRequirementMap.cs" />
+    <Compile Include="Components\Other\ComponentTypeComparer.cs" />
+    <Compile Include="Components\Other\RequiredComponentAttribute.cs" />
     <Compile Include="Components\Physics\Shapes\ChainShapeInfo.cs" />
     <Compile Include="DualityPlugin.cs" />
     <Compile Include="PluginManager.cs" />

@@ -879,7 +879,7 @@ namespace Duality
 			ImageCodec.ClearTypeCache();
 			ObjectCreator.ClearTypeCache();
 			ReflectionHelper.ClearTypeCache();
-			Component.ClearTypeCache();
+			Component.RequireMap.ClearTypeCache();
 			Serializer.ClearTypeCache();
 			CloneProvider.ClearTypeCache();
 

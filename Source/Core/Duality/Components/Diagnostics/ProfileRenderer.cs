@@ -27,20 +27,21 @@ namespace Duality.Components.Diagnostics
 			public VertexC1P3T2[][] VertText;
 		}
 
-		private	bool					textReportPerf		= true;
-		private	bool					textReportStat		= true;
-		private	bool					drawGraphs			= true;
-		private	List<string>			counterGraphs		= new List<string> { Profile.TimeFrame.FullName, Profile.TimeRender.FullName, Profile.TimeUpdate.FullName, Profile.StatMemoryTotalUsage.FullName };
-		private	ProfileReportOptions	textReportOptions	= ProfileReportOptions.LastValue | ProfileReportOptions.OmitMinorValues;
-		private	int						updateInterval		= 250;
-		private	Key						keyToggleTextPerf	= Key.F2;
-		private	Key						keyToggleTextStat	= Key.F3;
-		private	Key						keyToggleGraph		= Key.F4;
+		private bool                 textReportPerf    = true;
+		private bool                 textReportStat    = true;
+		private bool                 drawGraphs        = true;
+		private List<string>         counterGraphs     = new List<string> { Profile.TimeFrame.FullName, Profile.TimeRender.FullName, Profile.TimeUpdate.FullName, Profile.StatMemoryTotalUsage.FullName };
+		private ProfileReportOptions textReportOptions = ProfileReportOptions.LastValue | ProfileReportOptions.MaxValue | ProfileReportOptions.OmitMinorValues | ProfileReportOptions.Header;
+		private int                  updateInterval    = 250;
+		private Key                  keyToggleTextPerf = Key.F2;
+		private Key                  keyToggleTextStat = Key.F3;
+		private Key                  keyToggleGraph    = Key.F4;
+		private Key                  keyResetCounters  = Key.F5;
 
-		[DontSerialize] private	FormattedText		textReport			= null;
-		[DontSerialize] private	VertexC1P3T2[]		textReportIconVert	= null;
-		[DontSerialize] private	VertexC1P3T2[][]	textReportTextVert	= null;
-		[DontSerialize] private	TimeSpan			textReportLast		= TimeSpan.Zero;
+		[DontSerialize] private FormattedText    textReport         = null;
+		[DontSerialize] private VertexC1P3T2[]   textReportIconVert = null;
+		[DontSerialize] private VertexC1P3T2[][] textReportTextVert = null;
+		[DontSerialize] private TimeSpan         textReportLast     = TimeSpan.Zero;
 		[DontSerialize] private Dictionary<string,GraphCacheEntry> graphCache = new Dictionary<string,GraphCacheEntry>();
 
 
@@ -95,6 +96,14 @@ namespace Duality.Components.Diagnostics
 		{
 			get { return this.keyToggleGraph; }
 			set { this.keyToggleGraph = value; }
+		}
+		/// <summary>
+		/// [GET / SET] A key that can be used to reset all profile counter data back to zero.
+		/// </summary>
+		public Key KeyResetCounters
+		{
+			get { return this.keyResetCounters; }
+			set { this.keyResetCounters = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The names of <see cref="Duality.ProfileCounter"/> instances that should be drawn in graph form.
@@ -213,7 +222,8 @@ namespace Duality.Components.Diagnostics
 					if (counter is TimeCounter)
 					{
 						TimeCounter timeCounter = counter as TimeCounter;
-						for (int i = 0; i < ProfileCounter.ValueHistoryLen; i++)
+						int cursorPos = timeCounter.ValueGraphCursor;
+						for (int i = Math.Max(cursorPos - 1, 0); i <= Math.Min(cursorPos, ProfileCounter.ValueHistoryLen - 1); i++)
 						{
 							float factor = timeCounter.ValueGraph[i] / Time.MsPFMult;
 							cache.GraphValues[i] = factor * 0.75f;
@@ -223,12 +233,13 @@ namespace Duality.Components.Diagnostics
 						canvas.FillRect(graphRect.X, graphY, graphRect.W, graphH);
 						canvas.State.ColorTint = ColorRgba.White;
 						this.DrawHorizontalGraph(canvas, cache.GraphValues, cache.GraphColors, ref cache.VertGraph, graphRect.X, graphY, graphRect.W, graphH);
-						cursorRatio = (float)timeCounter.ValueGraphCursor / (float)ProfileCounter.ValueHistoryLen;
+						cursorRatio = (float)cursorPos / (float)ProfileCounter.ValueHistoryLen;
 					}
 					else if (counter is StatCounter)
 					{
 						StatCounter statCounter = counter as StatCounter;
-						for (int i = 0; i < ProfileCounter.ValueHistoryLen; i++)
+						int cursorPos = statCounter.ValueGraphCursor;
+						for (int i = Math.Max(cursorPos - 1, 0); i <= Math.Min(cursorPos, ProfileCounter.ValueHistoryLen - 1); i++)
 						{
 							cache.GraphValues[i] = (float)(statCounter.ValueGraph[i] - statCounter.MinValue) / statCounter.MaxValue;
 							cache.GraphColors[i] = ColorRgba.White;
@@ -237,7 +248,7 @@ namespace Duality.Components.Diagnostics
 						canvas.FillRect(graphRect.X, graphY, graphRect.W, graphH);
 						canvas.State.ColorTint = ColorRgba.White;
 						this.DrawHorizontalGraph(canvas, cache.GraphValues, cache.GraphColors, ref cache.VertGraph, graphRect.X, graphY, graphRect.W, graphH);
-						cursorRatio = (float)statCounter.ValueGraphCursor / (float)ProfileCounter.ValueHistoryLen;
+						cursorRatio = (float)cursorPos / (float)ProfileCounter.ValueHistoryLen;
 					}
 					
 					canvas.DrawText(new string[] { counter.FullName }, ref cache.VertText, graphRect.X, graphY);
@@ -270,6 +281,8 @@ namespace Duality.Components.Diagnostics
 				this.textReportStat = !this.textReportStat;
 			if (DualityApp.Keyboard.KeyHit(this.keyToggleGraph))
 				this.drawGraphs = !this.drawGraphs;
+			if (DualityApp.Keyboard.KeyHit(this.keyResetCounters))
+				Profile.ResetCounters();
 		}
 		
 		private void DrawHorizontalGraph(Canvas canvas, float[] values, ColorRgba[] colors, ref VertexC1P3[] vertices, float x, float y, float w, float h)
