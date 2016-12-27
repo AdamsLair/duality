@@ -268,7 +268,7 @@ namespace Duality.Plugins.Tilemaps
 			Tile[] tiles = tileGrid.RawData;
 			bool[] maskData = updateMask != null ? updateMask.RawData : null;
 			int tileStride = tileGrid.Width;
-			int maskStride = updateMask.Width;
+			int maskStride = updateMask != null ? updateMask.Width : 0;
 			int maxTileX = tileGrid.Width - 1;
 			int maxTileY = tileGrid.Height - 1;
 
@@ -277,8 +277,11 @@ namespace Duality.Plugins.Tilemaps
 				for (int x = 0; x < width; x++)
 				{
 					// Skip tiles that have been masked away
-					int m = x + maskStride * y;
-					if (maskData != null && !maskData[m]) continue;
+					if (maskData != null)
+					{
+						int m = x + maskStride * y;
+						if (!maskData[m]) continue;
+					}
 
 					// Determine tilemap coordinates and index
 					int tileX = x + beginX;
