@@ -17,6 +17,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 	/// </summary>
 	[EditorHintCategory(SampleResNames.CategoryRpgLike)]
 	[EditorHintImage(TilemapsResNames.ImageActorAnimator)]
+	[RequiredComponent(typeof(ICmpSpriteRenderer), typeof(ActorRenderer))]
 	public class ActorAnimator : Component, ICmpUpdatable
 	{
 		/// <summary>

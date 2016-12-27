@@ -16,6 +16,7 @@ namespace Duality.Components.Renderers
 	[ManuallyCloned]
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(CoreResNames.ImageAnimSpriteAnimator)]
+	[RequiredComponent(typeof(ICmpSpriteRenderer), typeof(SpriteRenderer))]
 	public class SpriteAnimator : Component, ICmpUpdatable, ICmpInitializable
 	{
 		/// <summary>
