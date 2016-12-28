@@ -98,8 +98,21 @@ namespace Duality.Editor
 					setupDialog.ShowDialog();
 					Log.Editor.PopIndent();
 				}
+				// Restart to apply the update
 				if (packageManager.ApplyUpdate())
 				{
+					Application.Exit();
+					return;
+				}
+				// If we have nothing to apply, but still require a sync, something went wrong.
+				// Should this happen on our first start, we'll remind the user that the install
+				// requires an internet connection and refuse to start.
+				else if (packageManager.IsPackageSyncRequired && packageManager.IsFirstInstall)
+				{
+					DialogResult result = MessageBox.Show( 
+						GeneralRes.Msg_ErrorFirstDualityInstall_Desc, 
+						GeneralRes.Msg_ErrorFirstDualityInstall_Caption, 
+						MessageBoxButtons.OK, MessageBoxIcon.Information);
 					Application.Exit();
 					return;
 				}
