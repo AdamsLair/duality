@@ -413,21 +413,27 @@ namespace Duality.Editor.PackageManagement
 			{
 				int countA;
 				int countB;
-				deepDependencyCount.TryGetValue(a, out countA);
-				deepDependencyCount.TryGetValue(b, out countB);
+				if (a == null || !deepDependencyCount.TryGetValue(a, out countA))
+					countA = 0;
+				if (b == null || !deepDependencyCount.TryGetValue(b, out countB))
+					countB = 0;
 				return countA - countB;
 			});
 		}
 		public void OrderByDependencies(IList<LocalPackage> packages)
 		{
 			// Map each list entry to its PackageInfo
-			PackageInfo[] localInfo = packages.Select(p => p.Info ?? this.QueryPackageInfo(p.PackageName)).ToArray();
+			PackageInfo[] localInfo = packages
+				.Select(p => p.Info ?? this.QueryPackageInfo(p.PackageName))
+				.NotNull()
+				.ToArray();
 
 			// Sort the mapped list
 			this.OrderByDependencies(localInfo);
 
 			// Now sort the original list to match the sorted mapped list
 			LocalPackage[] originalPackages = packages.ToArray();
+			int nonSortedCount = 0;
 			for (int i = 0; i < originalPackages.Length; i++)
 			{
 				LocalPackage localPackage = originalPackages[i];
@@ -435,6 +441,13 @@ namespace Duality.Editor.PackageManagement
 				int newIndex = localInfo.IndexOfFirst(p => p.Id == localPackage.Id && p.Version == localPackage.Version);
 				if (newIndex == -1)
 					newIndex = localInfo.IndexOfFirst(p => p.Id == localPackage.Id);
+
+				// Unresolved packages are always last in the sorted list
+				if (newIndex == -1)
+				{
+					newIndex = packages.Count - nonSortedCount - 1;
+					nonSortedCount++;
+				}
 
 				packages[newIndex] = localPackage;
 			}
@@ -502,6 +515,7 @@ namespace Duality.Editor.PackageManagement
 			Dictionary<PackageName,PackageInfo> resolveCache = new Dictionary<PackageName,PackageInfo>();
 			foreach (PackageInfo package in packages)
 			{
+				if (package == null) continue;
 				resolveCache[package.PackageName] = package;
 			}
 
@@ -509,6 +523,7 @@ namespace Duality.Editor.PackageManagement
 			Dictionary<PackageInfo,int> result = new Dictionary<PackageInfo,int>();
 			foreach (PackageInfo package in packages)
 			{
+				if (package == null) continue;
 				GetDeepDependencyCount(package, result, resolveCache);
 			}
 
