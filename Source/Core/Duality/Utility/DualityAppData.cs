@@ -13,15 +13,12 @@ namespace Duality
 	public class DualityAppData
 	{
 		private string            appName               = "Duality Application";
-		private string            authorName            = "Unknown";
-		private string            websiteUrl            = "http://www.adamslair.net";
 		private uint              version               = 0;
 		private ContentRef<Scene> startScene            = null;
 		private float             speedOfSound          = 360.0f;
 		private float             soundDopplerFactor    = 1.0f;
 		private float             physicsVelThreshold   = 0.5f * PhysicsUnit.VelocityToDuality;
 		private bool              physicsFixedTime      = false;
-		private bool              localUserData         = true;
 		private bool              multisampleBackBuffer = true;
 		private string[]          skipBackends          = null;
 		private object            customData            = null;
@@ -33,22 +30,6 @@ namespace Duality
 		{
 			get { return this.appName; }
 			set { this.appName = value; }
-		}
-		/// <summary>
-		/// [GET / SET] The author name of your application. Might be your or your team's name or -nickname.
-		/// </summary>
-		public string AuthorName
-		{
-			get { return this.authorName; }
-			set { this.authorName = value; }
-		}
-		/// <summary>
-		/// [GET / SET] The address of this game's official website or similar.
-		/// </summary>
-		public string WebsiteUrl
-		{
-			get { return this.websiteUrl; }
-			set { this.websiteUrl = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The current application / game version.
@@ -101,14 +82,6 @@ namespace Duality
 		{
 			get { return this.physicsFixedTime; }
 			set { this.physicsFixedTime = value; }
-		}
-		/// <summary>
-		/// [GET / SET] If true, user data is saved locally in the game folder instead of the current user account.
-		/// </summary>
-		public bool LocalUserData
-		{
-			get { return this.localUserData; }
-			set { this.localUserData = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Determines whether or not the backbuffer uses multisampling based on <see cref="DualityUserData.AntialiasingQuality"/>.

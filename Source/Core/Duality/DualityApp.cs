@@ -254,22 +254,7 @@ namespace Duality
 		/// </summary>
 		public static string UserDataPath
 		{
-			get
-			{
-				if (AppData.LocalUserData)
-				{
-					return "UserData.dat";
-				}
-				else
-				{
-					return PathOp.Combine(
-						systemBack.GetNamedPath(NamedDirectory.MyDocuments),
-						"Duality", 
-						"AppData", 
-						PathOp.GetValidFileName(appData.AppName), 
-						"UserData.dat");
-				}
-			}
+			get { return "UserData.dat"; }
 		}
 		/// <summary>
 		/// [GET] Returns the <see cref="ExecutionContext"/> in which this DualityApp is currently running.

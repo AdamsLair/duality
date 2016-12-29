@@ -202,7 +202,6 @@ namespace Duality.Editor
 				DualityAppData data;
 				data = Serializer.TryReadObject<DualityAppData>(DualityApp.AppDataPath) ?? new DualityAppData();
 				data.AppName = projName;
-				data.AuthorName = Environment.UserName;
 				data.Version = 0;
 				Serializer.WriteObject(data, DualityApp.AppDataPath, typeof(XmlSerializer));
 			
