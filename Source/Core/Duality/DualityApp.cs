@@ -461,21 +461,6 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Applies the specified screen resolution to both game and display device. This is a shorthand for
-		/// assigning a modified version of <see cref="DualityUserData"/> to <see cref="UserData"/>.
-		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="fullscreen"></param>
-		public static void ApplyResolution(int width, int height, bool fullscreen)
-		{
-			userData.GfxWidth = width;
-			userData.GfxHeight = height;
-			userData.GfxMode = fullscreen ? ScreenMode.Fullscreen : ScreenMode.Window;
-			OnUserDataChanged();
-		}
-
-		/// <summary>
 		/// Performs a single update cycle.
 		/// </summary>
 		public static void Update()
