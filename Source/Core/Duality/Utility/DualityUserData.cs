@@ -6,98 +6,23 @@ using System.Text;
 namespace Duality
 {
 	/// <summary>
-	/// Describes the way a Duality window is set up.
-	/// </summary>
-	public enum ScreenMode
-	{
-		/// <summary>
-		/// Duality runs in windowed mode. The window can be resized by the user.
-		/// </summary>
-		Window,
-		/// <summary>
-		/// Duality runs in windowed mode. The window has a fixed size.
-		/// </summary>
-		FixedWindow,
-		/// <summary>
-		/// Duality runs in windowed mode. The window is borderless and covers the whole screen.
-		/// </summary>
-		FullWindow,
-		/// <summary>
-		/// Duality runs in fullscreen mode, using whatever screen resolution is currently active on the users desktop.
-		/// </summary>
-		Native,
-		/// <summary>
-		/// Duality runs in fullscreen mode and changes desktop resolution whenever necesary.
-		/// </summary>
-		Fullscreen
-	}
-
-	/// <summary>
-	/// Specifies the quality level of the anti-aliasing used for rendering.
-	/// </summary>
-	public enum AAQuality
-	{
-		/// <summary>
-		/// Highest possible quality. Sacrifices performance for smooth edges. Can be a problem on older machines.
-		/// </summary>
-		High,
-		/// <summary>
-		/// Medium quality. A tradeoff between looks and Profile.
-		/// </summary>
-		Medium,
-		/// <summary>
-		/// Low quality. Favors Profile.
-		/// </summary>
-		Low,
-		/// <summary>
-		/// No hardware anti-aliasing is used at all.
-		/// </summary>
-		Off
-	}
-
-	/// <summary>
-	/// Specifies intervals and modes to refresh the screen and update the game.
-	/// </summary>
-	public enum RefreshMode
-	{
-		/// <summary>
-		/// Refreshes occur as fast as possible with no wait inbetween.
-		/// </summary>
-		NoSync,
-		/// <summary>
-		/// Refreshes target 60 FPS and will use wait for each frame to use its entire available time.
-		/// Doesn't use hardware / driver VSync, but prevents 100% CPU usage.
-		/// </summary>
-		ManualSync,
-		/// <summary>
-		/// Refreshes wait for the hardware / driver VSync.
-		/// </summary>
-		VSync,
-		/// <summary>
-		/// Refreshes wait for the hardware / driver VSync as long as the target framerate is reached. When
-		/// falling below, VSync will be temporarily suspended.
-		/// </summary>
-		AdaptiveVSync
-	}
-
-	/// <summary>
 	/// Provides information about user settings for this Duality application / game.
 	/// It is persistent beyond installing or deleting this Duality game.
 	/// </summary>
 	public class DualityUserData
 	{
-		private	string		userName			= "Unknown";
-		private	int			gfxWidth			= 800;
-		private	int			gfxHeight			= 600;
-		private	ScreenMode	gfxMode				= ScreenMode.Window;
-		private	AAQuality	gfxAAQuality		= AAQuality.High;
-		private	RefreshMode	gfxRefreshMode		= RefreshMode.AdaptiveVSync;
-		private	float		sfxEffectVol		= 1.0f;
-		private	float		sfxSpeechVol		= 1.0f;
-		private	float		sfxMusicVol			= 1.0f;
-		private	float		sfxMasterVol		= 1.0f;
-		private	bool		systemCursorVisible	= false;
-		private	object		customData			= null;
+		private string      userName            = "Unknown";
+		private int         gfxWidth            = 800;
+		private int         gfxHeight           = 600;
+		private ScreenMode  gfxMode             = ScreenMode.Window;
+		private AAQuality   gfxAAQuality        = AAQuality.High;
+		private RefreshMode gfxRefreshMode      = RefreshMode.AdaptiveVSync;
+		private float       sfxEffectVol        = 1.0f;
+		private float       sfxSpeechVol        = 1.0f;
+		private float       sfxMusicVol         = 1.0f;
+		private float       sfxMasterVol        = 1.0f;
+		private bool        systemCursorVisible = false;
+		private object      customData          = null;
 
 		/// <summary>
 		/// [GET / SET] The player's name. This may be his main character's name or simply remain unused.

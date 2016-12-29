@@ -169,6 +169,9 @@
     <Compile Include="Resources\ShaderInfo\ShaderFieldInfo.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderFieldType.cs" />
     <Compile Include="Backend\Dummy\DummyPluginLoader.cs" />
+    <Compile Include="Utility\RefreshMode.cs" />
+    <Compile Include="Utility\AAQuality.cs" />
+    <Compile Include="Utility\ScreenMode.cs" />
     <Compile Include="Utility\EditorHints\EditorHintImageAttribute.cs" />
     <Compile Include="Utility\EditorHints\EditorHintCategoryAttribute.cs" />
     <Compile Include="Utility\EditorHints\EditorHintDecimalPlacesAttribute.cs" />
