@@ -383,22 +383,22 @@ namespace Duality.Audio
 			switch (this.sound.IsAvailable ? this.sound.Res.Type : SoundType.World)
 			{
 				case SoundType.UserInterface:
-					optVolFactor = DualityApp.UserData.SfxEffectVol;
+					optVolFactor = DualityApp.UserData.SoundEffectVol;
 					break;
 				case SoundType.World:
-					optVolFactor = DualityApp.UserData.SfxEffectVol;
+					optVolFactor = DualityApp.UserData.SoundEffectVol;
 					break;
 				case SoundType.Speech:
-					optVolFactor = DualityApp.UserData.SfxSpeechVol;
+					optVolFactor = DualityApp.UserData.SoundSpeechVol;
 					break;
 				case SoundType.Music:
-					optVolFactor = DualityApp.UserData.SfxMusicVol;
+					optVolFactor = DualityApp.UserData.SoundMusicVol;
 					break;
 				default:
 					optVolFactor = 1.0f;
 					break;
 			}
-			return optVolFactor * DualityApp.UserData.SfxMasterVol * 0.5f;
+			return optVolFactor * DualityApp.UserData.SoundMasterVol * 0.5f;
 		}
 		private void RegisterPlaying()
 		{
