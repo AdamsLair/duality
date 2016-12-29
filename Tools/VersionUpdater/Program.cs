@@ -275,13 +275,19 @@ namespace VersionUpdater
 							if (idAttrib == null) continue;
 							if (versionAttrib == null) continue;
 
-							ProjectInfo dependency = allProjects.FirstOrDefault(p => string.Equals(p.NuSpecPackageId, idAttrib.Value, StringComparison.InvariantCultureIgnoreCase));
-							if (dependency == null) continue;
+							// Since multiple projects might be part of the same nuspec and either of them might
+							// have bumped the package version, we'll have to use the highest version number in
+							// our dependency reference. A proper solution would be to separate project from
+							// package info, but this will do for now.
+							Version highestDependencyVersion = allProjects
+								.Where(p => string.Equals(p.NuSpecPackageId, idAttrib.Value, StringComparison.InvariantCultureIgnoreCase))
+								.Max(p => p.NuSpecVersion);
+							if (highestDependencyVersion == null) continue;
 
 							versionAttrib.Value = string.Format("{0}.{1}.{2}", 
-								dependency.NuSpecVersion.Major,
-								dependency.NuSpecVersion.Minor,
-								dependency.NuSpecVersion.Build);
+								highestDependencyVersion.Major,
+								highestDependencyVersion.Minor,
+								highestDependencyVersion.Build);
 						}
 					}
 
