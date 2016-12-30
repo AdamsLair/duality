@@ -200,6 +200,7 @@ namespace Duality.Backend.DefaultOpenTK
 				case ScreenMode.Window:
 					targetWindowState = WindowState.Normal;
 					targetWindowBorder = WindowBorder.Resizable;
+					targetSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
 					break;
 
 				case ScreenMode.FixedWindow:
