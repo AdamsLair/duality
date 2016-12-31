@@ -23,19 +23,19 @@ namespace Duality
 		/// </summary>
 		public const float SecondsPerFrame = 1.0f / FramesPerSecond;
 
-		private static DateTime  startup    = DateTime.Now;
-		private static Stopwatch watch      = new Stopwatch();
-		private static TimeSpan  gameTimer  = TimeSpan.Zero;
-		private static double    frameBegin = 0.0d;
-		private static float     gameDelta  = 0.0f;
-		private static float     realDelta  = 0.0f;
-		private static float     timeMult   = 0.0f;
-		private static float     timeScale  = 1.0f;
-		private static int       timeFreeze = 0;
-		private static int       frameCount = 0;
-		private static int       fps        = 0;
-		private static int       fps_frames = 0;
-		private static double    fps_last   = 0.0d;
+		private static DateTime  startup       = DateTime.Now;
+		private static Stopwatch watch         = new Stopwatch();
+		private static TimeSpan  gameTimer     = TimeSpan.Zero;
+		private static double    frameBegin    = 0.0d;
+		private static float     gameDelta     = 0.0f;
+		private static float     realDelta     = 0.0f;
+		private static float     timeMult      = 0.0f;
+		private static float     timeScale     = 1.0f;
+		private static int       timeFreeze    = 0;
+		private static int       frameCount    = 0;
+		private static int       fps           = 0;
+		private static int       fpsFrameCount = 0;
+		private static double    fpsCountBegin = 0.0d;
 
 		/// <summary>
 		/// [GET] Returns the date and time of engine startup.
@@ -52,7 +52,15 @@ namespace Duality
 			get { return watch.Elapsed; }
 		}
 		/// <summary>
-		/// [GET] Returns the time passed since the last frame in seconds weighted by <see cref="TimeScale"/>.
+		/// [GET] Returns the game time that has passed since engine startup. Since it's game time, this timer will stop
+		/// when pausing or freezing and also run slower or faster according to <see cref="TimeScale"/>.
+		/// </summary>
+		public static TimeSpan GameTimer
+		{
+			get { return gameTimer; }
+		}
+		/// <summary>
+		/// [GET] Returns the time passed since the last frame in seconds, affected by <see cref="TimeScale"/>.
 		/// You can multiply your "per second" updates with this value to make them framerate independent.
 		/// </summary>
 		public static float DeltaTime
@@ -72,14 +80,6 @@ namespace Duality
 		public static float Fps
 		{
 			get { return fps; }
-		}
-		/// <summary>
-		/// [GET] Returns the game time that has passed since engine startup. Since it's game time, this timer will stop
-		/// when pausing or freezing and also run slower or faster according to <see cref="TimeScale"/>.
-		/// </summary>
-		public static TimeSpan GameTimer
-		{
-			get { return gameTimer; }
 		}
 		/// <summary>
 		/// [GET] A factor that represents how long the last frame took relative to the desired
@@ -163,12 +163,12 @@ namespace Duality
 				gameDelta = 0.0f;
 			}
 
-			fps_frames++;
-			if (mainTimer - fps_last >= 1.0f)
+			fpsFrameCount++;
+			if (mainTimer - fpsCountBegin >= 1.0f)
 			{
-				fps = fps_frames;
-				fps_frames = 0;
-				fps_last = mainTimer;
+				fps = fpsFrameCount;
+				fpsFrameCount = 0;
+				fpsCountBegin = mainTimer;
 			}
 		}
 	}
