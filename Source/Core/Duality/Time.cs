@@ -146,21 +146,21 @@ namespace Duality
 
 			double mainTimer = Time.MainTimer.TotalSeconds;
 			realDelta = (float)(mainTimer - frameBegin);
-			if (forceFixedStep)
-				gameDelta = timeScale * SecondsPerFrame;
-			else
-				gameDelta = timeScale * MathF.Min(realDelta, SecondsPerFrame * 2); // Don't skip more than 2 frames / just simulate slower when below 30 fps
 			frameBegin = mainTimer;
 
 			if (timeFreeze == 0)
 			{
+				float clampedDelta = forceFixedStep ? SecondsPerFrame : MathF.Min(realDelta, SecondsPerFrame * 2);
+				gameDelta = timeScale * clampedDelta;
+				timeMult = gameDelta / SecondsPerFrame;
+
 				if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 					gameTimer += TimeSpan.FromTicks((long)(gameDelta * TimeSpan.TicksPerSecond));
-				timeMult = gameDelta / SecondsPerFrame;
 			}
 			else
 			{
 				timeMult = 0.0f;
+				gameDelta = 0.0f;
 			}
 
 			fps_frames++;
