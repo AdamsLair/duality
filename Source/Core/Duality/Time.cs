@@ -53,6 +53,7 @@ namespace Duality
 		}
 		/// <summary>
 		/// [GET] Returns the time passed since the last frame in seconds weighted by <see cref="TimeScale"/>.
+		/// You can multiply your "per second" updates with this value to make them framerate independent.
 		/// </summary>
 		public static float DeltaTime
 		{
@@ -81,8 +82,13 @@ namespace Duality
 			get { return gameTimer; }
 		}
 		/// <summary>
-		/// [GET] Multiply any frame-independend movement or change with this factor.
-		/// It also applies the time scale you set.
+		/// [GET] A factor that represents how long the last frame took relative to the desired
+		/// frame time. When your game runs at half the target frame rate, this factor will be 2.0f,
+		/// when it runs at double the target frame rate, it will be 0.5f and so on. Similar to
+		/// <see cref="DeltaTime"/>, except as an abstract factor, rather than passed time.
+		/// 
+		/// You can multiply your "per frame" updates with this value to make them framerate independent
+		/// in the same way you can multiply your "per second" updates with <see cref="DeltaTime"/>.
 		/// </summary>
 		public static float TimeMult
 		{
