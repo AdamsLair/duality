@@ -471,7 +471,7 @@ namespace Duality.Drawing
 					this.offset.X += textElemSize.X;
 					this.lineWidth += textElemSize.X;
 					this.lineHeight = Math.Max(this.lineHeight, this.font.LineSpacing);
-					this.lineBaseLine = Math.Max(this.lineBaseLine, this.font.BaseLine);
+					this.lineBaseLine = Math.Max(this.lineBaseLine, this.font.Metrics.BaseLine);
 				}
 				else if (elem is TextElement && this.font == null)
 				{
@@ -1225,7 +1225,7 @@ namespace Duality.Drawing
 							state.CurrentElemText, 
 							ref textElemVert, 
 							state.CurrentElemOffset.X, 
-							state.CurrentElemOffset.Y + state.LineBaseLine - state.Font.BaseLine, 
+							state.CurrentElemOffset.Y + state.LineBaseLine - state.Font.Metrics.BaseLine, 
 							state.Color);
 						Array.Copy(textElemVert, 0, this.vertTextCache[state.FontIndex], state.CurrentElemTextVertexIndex, count);
 						vertTextLen[state.FontIndex] = state.CurrentElemTextVertexIndex + count;
@@ -1292,7 +1292,7 @@ namespace Duality.Drawing
 					{
 						TextElement textElem = elem as TextElement;
 						elemSize = state.Font.MeasureText(state.CurrentElemText);
-						elemOffset = new Vector2(state.CurrentElemOffset.X, state.CurrentElemOffset.Y + state.LineBaseLine - state.Font.BaseLine);
+						elemOffset = new Vector2(state.CurrentElemOffset.X, state.CurrentElemOffset.Y + state.LineBaseLine - state.Font.Metrics.BaseLine);
 					}
 					else if (elem is IconElement && this.icons != null)
 					{
@@ -1353,7 +1353,7 @@ namespace Duality.Drawing
 						state.CurrentElemText, 
 						target, 
 						x + state.CurrentElemOffset.X, 
-						y + state.CurrentElemOffset.Y + state.LineBaseLine - state.Font.BaseLine, 
+						y + state.CurrentElemOffset.Y + state.LineBaseLine - state.Font.Metrics.BaseLine, 
 						state.Color);
 				}
 				else if (elem is IconElement)

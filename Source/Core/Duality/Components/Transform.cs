@@ -501,12 +501,13 @@ namespace Duality.Components
 			this.MoveBy(value - this.pos);
 		}
 		/// <summary>
-		/// Moves the object to the given relative position. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object to the given relative position, leaving the Z coordinate unchanged.
+		/// This will affect the Transforms <see cref="Vel">velocity</see> value.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveTo(Vector2 value)
 		{
-			this.MoveTo(new Vector3(value));
+			this.MoveTo(new Vector3(value, this.pos.Z));
 		}
 		/// <summary>
 		/// Moves the object to the given absolute position. This will affect the Transforms <see cref="Vel">velocity</see> value.
@@ -517,12 +518,13 @@ namespace Duality.Components
 			this.MoveByAbs(value - this.posAbs);
 		}
 		/// <summary>
-		/// Moves the object to the given absolute position. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object to the given absolute position, leaving the Z coordinate unchanged.
+		/// This will affect the Transforms <see cref="Vel">velocity</see> value.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveToAbs(Vector2 value)
 		{
-			this.MoveToAbs(new Vector3(value));
+			this.MoveToAbs(new Vector3(value, this.posAbs.Z));
 		}
 		/// <summary>
 		/// Turns the object by the given radian angle. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.

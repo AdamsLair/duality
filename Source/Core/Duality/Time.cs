@@ -13,28 +13,29 @@ namespace Duality
 		/// <summary>
 		/// The amount of frame per second at the desired refresh rate of 60 FPS.
 		/// </summary>
-		public const	float	FPSMult		= 60.0f;
+		public const float FramesPerSecond = 60.0f;
 		/// <summary>
 		/// Milliseconds a frame takes at the desired refresh rate of 60 FPS
 		/// </summary>
-		public const	float	MsPFMult	= 1000.0f / FPSMult;
+		public const float MillisecondsPerFrame = 1000.0f / FramesPerSecond;
 		/// <summary>
 		/// Seconds a frame takes at the desired refresh rate of 60 FPS
 		/// </summary>
-		public const	float	SPFMult		= 1.0f / FPSMult;
+		public const float SecondsPerFrame = 1.0f / FramesPerSecond;
 
-		private	static	DateTime	startup		= DateTime.Now;
-		private	static	Stopwatch	watch		= new Stopwatch();
-		private	static	TimeSpan	gameTimer	= TimeSpan.Zero;
-		private	static	double		frameBegin	= 0.0d;
-		private	static	float		lastDelta	= 0.0f;
-		private	static	float		timeMult	= 0.0f;
-		private	static	float		timeScale	= 1.0f;
-		private	static	int			timeFreeze	= 0;
-		private	static	int			frameCount	= 0;
-		private	static	int			fps			= 0;
-		private	static	int			fps_frames	= 0;
-		private	static	double		fps_last	= 0.0d;
+		private static DateTime  startup       = DateTime.Now;
+		private static Stopwatch watch         = new Stopwatch();
+		private static TimeSpan  gameTimer     = TimeSpan.Zero;
+		private static double    frameBegin    = 0.0d;
+		private static float     gameDelta     = 0.0f;
+		private static float     realDelta     = 0.0f;
+		private static float     timeMult      = 0.0f;
+		private static float     timeScale     = 1.0f;
+		private static int       timeFreeze    = 0;
+		private static int       frameCount    = 0;
+		private static int       fps           = 0;
+		private static int       fpsFrameCount = 0;
+		private static double    fpsCountBegin = 0.0d;
 
 		/// <summary>
 		/// [GET] Returns the date and time of engine startup.
@@ -42,29 +43,14 @@ namespace Duality
 		public static DateTime StartupTime
 		{
 			get { return startup; }
-		}	//	G
+		}
 		/// <summary>
-		/// [GET] Returns the real time that has passed since engine startup.
+		/// [GET] Returns the real, unscaled time that has passed since engine startup.
 		/// </summary>
 		public static TimeSpan MainTimer
 		{
 			get { return watch.Elapsed; }
-		}		//	G
-		/// <summary>
-		/// [GET] Time in milliseconds the last frame took. Do not use this for frame-independent calculations. Use
-		/// <see cref="TimeMult"/> instead.
-		/// </summary>
-		public static float LastDelta
-		{
-			get { return lastDelta; }
-		}		//	G
-		/// <summary>
-		/// [GET] Frames per Second
-		/// </summary>
-		public static float Fps
-		{
-			get { return fps; }
-		}				//	G
+		}
 		/// <summary>
 		/// [GET] Returns the game time that has passed since engine startup. Since it's game time, this timer will stop
 		/// when pausing or freezing and also run slower or faster according to <see cref="TimeScale"/>.
@@ -72,15 +58,42 @@ namespace Duality
 		public static TimeSpan GameTimer
 		{
 			get { return gameTimer; }
-		}		//	G
+		}
 		/// <summary>
-		/// [GET] Multiply any frame-independend movement or change with this factor.
-		/// It also applies the time scale you set.
+		/// [GET] Returns the time passed since the last frame in seconds, affected by <see cref="TimeScale"/>.
+		/// You can multiply your "per second" updates with this value to make them framerate independent.
+		/// </summary>
+		public static float DeltaTime
+		{
+			get { return gameDelta; }
+		}
+		/// <summary>
+		/// [GET] Returns the real, unscaled and unclamped time passed since the last frame in seconds.
+		/// </summary>
+		public static float UnscaledDeltaTime
+		{
+			get { return realDelta; }
+		}
+		/// <summary>
+		/// [GET] Frames per Second
+		/// </summary>
+		public static float Fps
+		{
+			get { return fps; }
+		}
+		/// <summary>
+		/// [GET] A factor that represents how long the last frame took relative to the desired
+		/// frame time. When your game runs at half the target frame rate, this factor will be 2.0f,
+		/// when it runs at double the target frame rate, it will be 0.5f and so on. Similar to
+		/// <see cref="DeltaTime"/>, except as an abstract factor, rather than passed time.
+		/// 
+		/// You can multiply your "per frame" updates with this value to make them framerate independent
+		/// in the same way you can multiply your "per second" updates with <see cref="DeltaTime"/>.
 		/// </summary>
 		public static float TimeMult
 		{
 			get { return timeMult; }
-		}			//	G
+		}
 		/// <summary>
 		/// [GET / SET] Specifies how fast game time runs compared to real time i.e. how
 		/// fast the game runs. May be used for slow motion effects.
@@ -89,14 +102,14 @@ namespace Duality
 		{
 			get { return timeScale; }
 			set { timeScale = value; }
-		}		//	GS
+		}
 		/// <summary>
 		/// [GET] The number of frames passed since startup
 		/// </summary>
 		public static int FrameCount
 		{
 			get { return frameCount; }
-		}			//	G
+		}
 
 		/// <summary>
 		/// Freezes game time. This will cause the GameTimer to stop and TimeMult to equal zero.
@@ -131,28 +144,31 @@ namespace Duality
 
 			frameCount++;
 
-			double mainTimer = Time.MainTimer.TotalMilliseconds;
-			lastDelta = forceFixedStep ? MsPFMult : MathF.Min((float)(mainTimer - frameBegin), MsPFMult * 2); // Don't skip more than 2 frames / fall below 30 fps
+			double mainTimer = Time.MainTimer.TotalSeconds;
+			realDelta = (float)(mainTimer - frameBegin);
 			frameBegin = mainTimer;
 
 			if (timeFreeze == 0)
 			{
+				float clampedDelta = forceFixedStep ? SecondsPerFrame : MathF.Min(realDelta, SecondsPerFrame * 2);
+				gameDelta = timeScale * clampedDelta;
+				timeMult = gameDelta / SecondsPerFrame;
+
 				if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-					gameTimer += TimeSpan.FromTicks((long)(lastDelta * timeScale * TimeSpan.TicksPerMillisecond));
-				timeMult = timeScale * lastDelta / MsPFMult;
+					gameTimer += TimeSpan.FromTicks((long)(gameDelta * TimeSpan.TicksPerSecond));
 			}
 			else
 			{
 				timeMult = 0.0f;
+				gameDelta = 0.0f;
 			}
 
-			fps_frames++;
-			if (mainTimer - fps_last >= 1000.0f)
+			fpsFrameCount++;
+			if (mainTimer - fpsCountBegin >= 1.0f)
 			{
-				fps = fps_frames;
-				fps_frames = 0;
-				fps_last = mainTimer;
-				//Log.Core.Write("FPS: {0},\tms: {1}", fps, lastDelta);
+				fps = fpsFrameCount;
+				fpsFrameCount = 0;
+				fpsCountBegin = mainTimer;
 			}
 		}
 	}

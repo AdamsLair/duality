@@ -75,8 +75,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Core\Duality\Backend\DefaultPluginLoader.cs">
-      <Link>DefaultPluginLoader.cs</Link>
+    <Compile Include="..\..\Core\Duality\Backend\DefaultAssemblyLoader.cs">
+      <Link>DefaultAssemblyLoader.cs</Link>
     </Compile>
     <Compile Include="AssetManagement\AssetExportFinishedEventArgs.cs" />
     <Compile Include="AssetManagement\AssetInternalHelper.cs" />
@@ -89,6 +89,7 @@
     <Compile Include="Backend\EditorGraphics\INativeRenderableSite.cs" />
     <Compile Include="Backend\IEditorGraphicsBackend.cs" />
     <Compile Include="Controls\PropertyEditors\Point2PropertyEditor.cs" />
+    <Compile Include="Controls\PropertyEditors\SpriteIndexBlendPropertyEditor.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
     <Compile Include="AssetManagement\Export\AssetExportEnvironment.cs" />
@@ -161,7 +162,7 @@
     </Compile>
     <Compile Include="HelpSystem\HelpAction.cs" />
     <Compile Include="HelpSystem\HelpStack.cs" />
-    <Compile Include="HelpSystem\IHelpInfoReader.cs" />
+    <Compile Include="HelpSystem\IReadOnlyHelpInfo.cs" />
     <Compile Include="HelpSystem\IHelpProvider.cs" />
     <Compile Include="PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
@@ -186,6 +187,8 @@
     <Compile Include="Properties\GeneralResNames.cs" />
     <Compile Include="UndoRedoActions\EditResourceAssetDataAction.cs" />
     <Compile Include="Utility\BuildHelper.cs" />
+    <Compile Include="Utility\EditorLogEntry.cs" />
+    <Compile Include="Utility\EditorLogOutput.cs" />
     <Compile Include="Utility\EventArgs\ResourceRenamedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\PrefabAppliedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\ObjectPropertyChangedEventArgs.cs" />

@@ -417,11 +417,11 @@ namespace Duality.Resources
 					}
 					catch (Exception e)
 					{
-						Log.Core.WriteError(
+						Logs.Core.WriteError(
 							"Error applying PrefabLink changes in {0}, property {1}:\n{2}", 
 							this.obj.FullName,
 							this.changes[i].prop.Name,
-							Log.Exception(e));
+							LogFormat.Exception(e));
 					}
 				}
 				else

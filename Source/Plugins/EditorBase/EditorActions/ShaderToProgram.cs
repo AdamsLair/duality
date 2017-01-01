@@ -12,15 +12,14 @@ using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {
+	/// <summary>
+	/// Creates a new ShaderProgram Resource based on Vertex- and Fragmentshaders.
+	/// </summary>
 	public class ShaderToProgram : EditorAction<AbstractShader>
 	{
 		public override string Name
 		{
 			get { return EditorBaseRes.ActionName_CreateShaderProgram; }
-		}
-		public override string Description
-		{
-			get { return EditorBaseRes.ActionDesc_CreateShaderProgram; }
 		}
 		public override Image Icon
 		{

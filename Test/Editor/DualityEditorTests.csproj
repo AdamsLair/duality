@@ -59,7 +59,7 @@
     <Compile Include="PluginManager\EditorPluginManagerTest.cs" />
     <Compile Include="PluginManager\MockAssembly.cs" />
     <Compile Include="PluginManager\MockEditorPlugin.cs" />
-    <Compile Include="PluginManager\MockPluginLoader.cs" />
+    <Compile Include="PluginManager\MockAssemblyLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\EventArgs\ObjectPropertyChangedEventArgsTest.cs" />
     <Compile Include="Utility\PathHelperTest.cs" />

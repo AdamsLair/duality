@@ -470,17 +470,18 @@ namespace Duality.Editor.Plugins.ProjectView
 
 			// Create a new Resource instance of the specified type
 			Resource resInstance = type.GetTypeInfo().CreateInstanceOf() as Resource;
+			Resource[] actionTargets = new Resource[] { resInstance };
 
 			// Gather all available user editing setup actions
 			IEnumerable<IEditorAction> setupActions = DualityEditorApp.GetEditorActions(
 				resInstance.GetType(), 
-				new[] { resInstance },
+				actionTargets,
 				DualityEditorApp.ActionContextSetupObjectForEditing);
 
 			// Invoke all of them on the new Resource
 			foreach (IEditorAction setupAction in setupActions)
 			{
-				setupAction.Perform(resInstance);
+				setupAction.Perform(actionTargets);
 			}
 
 			// Determine the actual name and path of our new Resource
@@ -507,7 +508,8 @@ namespace Duality.Editor.Plugins.ProjectView
 			if (openAction != null)
 			{
 				ResourceNode resNode = node.Tag as ResourceNode;
-				openAction.Perform(resNode.ResLink.Res);
+				Resource[] actionTargets = new Resource[] { resNode.ResLink.Res };
+				openAction.Perform(actionTargets);
 			}
 		}
 		protected IEditorAction GetResourceOpenAction(TreeNodeAdv node, bool loadWhenNecessary = true)
@@ -1649,8 +1651,8 @@ namespace Duality.Editor.Plugins.ProjectView
 					if (item.Tag is CreateContextEntryTag)
 						result = HelpInfo.FromMember(ReflectionHelper.ResolveType((item.Tag as CreateContextEntryTag).TypeId));
 					// Editor Actions
-					else if (item.Tag is IEditorAction && !string.IsNullOrEmpty((item.Tag as IEditorAction).Description))
-						result = HelpInfo.FromText(item.Text, (item.Tag as IEditorAction).Description);
+					else if (item.Tag is IEditorAction && (item.Tag as IEditorAction).HelpInfo != null)
+						result = (item.Tag as IEditorAction).HelpInfo;
 					// A HelpInfo attached to the item
 					else if (item.Tag is HelpInfo)
 						result = item.Tag as HelpInfo;
@@ -1691,10 +1693,16 @@ namespace Duality.Editor.Plugins.ProjectView
 		string IToolTipProvider.GetToolTip(TreeNodeAdv viewNode, Aga.Controls.Tree.NodeControls.NodeControl nodeControl)
 		{
 			IEditorAction action = this.GetResourceOpenAction(viewNode, false);
-			if (action != null) return string.Format(
-				Duality.Editor.Plugins.ProjectView.Properties.ProjectViewRes.ProjectFolderView_Help_Doubleclick,
-				action.Description);
-			else return null;
+			if (action != null && action.HelpInfo != null)
+			{
+				return string.Format(
+					Duality.Editor.Plugins.ProjectView.Properties.ProjectViewRes.ProjectFolderView_Help_Doubleclick,
+					action.HelpInfo.Description);
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		private int ContextMenuItemComparison(IMenuModelItem itemA, IMenuModelItem itemB)

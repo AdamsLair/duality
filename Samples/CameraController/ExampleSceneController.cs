@@ -129,19 +129,19 @@ namespace CameraController
 			// Every 100 ms, draw one visual log entry to document movement
 			if (this.movementHistoryActive)
 			{
-				this.movementHistoryTimer += Time.MsPFMult * Time.TimeMult;
+				this.movementHistoryTimer += Time.MillisecondsPerFrame * Time.TimeMult;
 				if (this.movementHistoryTimer > 100.0f)
 				{
 					this.movementHistoryTimer -= 100.0f;
 					Vector2 targetPos = this.targetObj.Transform.Pos.Xy;
 					Vector2 cameraPos = this.mainCameraObj.Transform.Pos.Xy;
-					VisualLog.Default.DrawPoint(
+					VisualLogs.Default.DrawPoint(
 						targetPos.X,
 						targetPos.Y,
 						0.0f)
 						.WithColor(new ColorRgba(255, 128, 0))
 						.KeepAlive(3000.0f);
-					VisualLog.Default.DrawPoint(
+					VisualLogs.Default.DrawPoint(
 						cameraPos.X,
 						cameraPos.Y,
 						0.0f)
@@ -176,8 +176,8 @@ namespace CameraController
 			canvas.DrawLine(
 				screenSize.X * 0.5f, 
 				screenSize.Y * 0.5f, 
-				screenSize.X * 0.5f + camTransform.Vel.X / Time.SPFMult, 
-				screenSize.Y * 0.5f + camTransform.Vel.Y / Time.SPFMult);
+				screenSize.X * 0.5f + camTransform.Vel.X / Time.SecondsPerFrame,
+				screenSize.Y * 0.5f + camTransform.Vel.Y / Time.SecondsPerFrame);
 
 			// Draw some info text
 			if (this.infoText == null)

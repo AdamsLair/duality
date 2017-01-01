@@ -80,7 +80,7 @@ namespace Duality.Resources
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Error loading Shader {0}:{2}{1}", this.FullName, Log.Exception(e), Environment.NewLine);
+				Logs.Core.WriteError("Error loading Shader {0}:{2}{1}", this.FullName, LogFormat.Exception(e), Environment.NewLine);
 			}
 
 			this.compiled = true;

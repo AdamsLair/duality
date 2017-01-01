@@ -1090,9 +1090,9 @@ namespace Duality.Components.Physics
 
 					// The current PhysicsAlpha interpolation probably isn't the best one. Maybe replace later.
 					Vector2 bodyVel = this.body.LinearVelocity;
-					Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.PhysicsAlpha) * Time.SPFMult;
+					Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.PhysicsAlpha) * Time.SecondsPerFrame;
 					float bodyAngleVel = this.body.AngularVelocity;
-					float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsAlpha) * Time.SPFMult;
+					float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsAlpha) * Time.SecondsPerFrame;
 					t.IgnoreParent = true; // Force ignore parent!
 					t.MoveToAbs(new Vector3(
 						PhysicsUnit.LengthToDuality * bodyPos.X, 

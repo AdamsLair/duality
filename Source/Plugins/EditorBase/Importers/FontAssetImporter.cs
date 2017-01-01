@@ -202,9 +202,9 @@ namespace Duality.Editor.Plugins.Base
 				try { internalFont = new SysDrawFont(fontFamily, emSize, systemStyle); }
 				catch (Exception e)
 				{
-					Log.Editor.WriteError(
+					Logs.Editor.WriteError(
 						"Failed to create System Font '{1} {2}, {3}' for rendering Duality Font glyphs: {0}",
-						Log.Exception(e),
+						LogFormat.Exception(e),
 						fontFamily.Name,
 						emSize,
 						style);

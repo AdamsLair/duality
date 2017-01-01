@@ -11,9 +11,15 @@ namespace Duality.Components.Diagnostics
 	[EditorHintFlags(MemberFlags.Invisible)]
 	public class VisualLogRenderer : Component, ICmpRenderer, ICmpInitializable
 	{
-		private	CanvasBuffer	vertexBufferScreen	= new CanvasBuffer();
-		private	CanvasBuffer	vertexBufferWorld	= new CanvasBuffer();
+		private List<VisualLog> targetLogs         = null;
+		private CanvasBuffer    vertexBufferScreen = new CanvasBuffer();
+		private CanvasBuffer    vertexBufferWorld  = new CanvasBuffer();
 
+		public List<VisualLog> TargetLogs
+		{
+			get { return this.targetLogs; }
+			set { this.targetLogs = value; }
+		}
 		float ICmpRenderer.BoundRadius
 		{
 			get { return 0.0f; }
@@ -27,11 +33,16 @@ namespace Duality.Components.Diagnostics
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
+			// Render a specific set of logs when defined, or the global logs otherwise
+			IEnumerable<VisualLog> logs = 
+				this.targetLogs ?? 
+				VisualLogs.All;
+
 			if (device.VisibilityMask.HasFlag(VisibilityFlag.ScreenOverlay))
 			{
 				Canvas target = new Canvas(device, this.vertexBufferScreen);
 				target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
-				foreach (VisualLog log in VisualLog.All)
+				foreach (VisualLog log in logs)
 				{
 					if (!log.Visible) continue;
 					if (log.BaseColor.A == 0) continue;
@@ -56,7 +67,7 @@ namespace Duality.Components.Diagnostics
 				Canvas target = new Canvas(device, this.vertexBufferWorld);
 				target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
 				target.State.ZOffset = -1;
-				foreach (VisualLog log in VisualLog.All)
+				foreach (VisualLog log in logs)
 				{
 					if (!log.Visible) continue;
 					if (log.BaseColor.A == 0) continue;

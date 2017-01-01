@@ -50,7 +50,6 @@
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Properties\DynLightResNames.cs" />
     <Compile Include="VertexC1P3T4A4A1.cs" />
-    <Compile Include="LightingAnimSpriteRenderer.cs" />
     <Compile Include="Light.cs" />
     <Compile Include="LightingSpriteRenderer.cs" />
     <Compile Include="LightingTechnique.cs" />

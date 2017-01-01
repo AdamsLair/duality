@@ -217,7 +217,7 @@ namespace Duality.Editor.AssetManagement
 				}
 				catch (Exception ex)
 				{
-					Log.Editor.WriteError("Can't copy source files to the media / source directory: {0}", Log.Exception(ex));
+					Logs.Editor.WriteError("Can't copy source files to the media / source directory: {0}", LogFormat.Exception(ex));
 					this.inputMapping.RemoveAt(assignmentIndex);
 					assignmentIndex--;
 				}

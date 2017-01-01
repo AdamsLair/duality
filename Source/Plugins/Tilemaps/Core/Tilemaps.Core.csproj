@@ -85,6 +85,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="EmbeddedResources\ImageActorAnimator.png" />
     <Content Include="EmbeddedResources\ImageTilesetBig.png" />
     <Content Include="EmbeddedResources\ImageTilesetLarge.png" />
   </ItemGroup>

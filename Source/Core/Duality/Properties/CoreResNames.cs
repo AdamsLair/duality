@@ -42,6 +42,7 @@ namespace Duality.Properties
 
 		public const string ImageSpriteRenderer		= ManifestBaseName + "iconCmpSpriteRenderer.png";
 		public const string ImageAnimSpriteRenderer	= ManifestBaseName + "iconCmpSpriteRenderer.png";
+		public const string ImageAnimSpriteAnimator = ManifestBaseName + "iconCmpSpriteAnimator.png";
 		public const string ImageTextRenderer		= ManifestBaseName + "iconResFont.png";
 		public const string ImageTransform			= ManifestBaseName + "iconCmpTransform.png";
 		public const string ImageCamera				= ManifestBaseName + "iconCmpCamera.png";

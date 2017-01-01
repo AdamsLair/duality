@@ -231,12 +231,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				button.AutoToolTip = true;
 				button.Alignment = ToolStripItemAlignment.Right;
 				button.Click += this.actionToolButton_Click;
-
-				string desc = entry.Action.Description;
-				if (!string.IsNullOrEmpty(desc))
-				{
-					button.Tag = HelpInfo.FromText(entry.Action.Name, desc);
-				}
+				button.Tag = entry.Action.HelpInfo;
 
 				entry.ToolButton = button;
 				this.toolstrip.Items.Add(button);

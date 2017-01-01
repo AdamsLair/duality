@@ -259,7 +259,7 @@ namespace DualStickSpaceShooter
 			if (this.particles != null)
 			{
 				float timeMult = Time.TimeMult;
-				float timePassed = Time.MsPFMult * timeMult;
+				float timePassed = Time.MillisecondsPerFrame * timeMult;
 				
 				Vector3 boundRadiusOrigin = this.worldSpace ? this.GameObj.Transform.Pos : Vector3.Zero;
 

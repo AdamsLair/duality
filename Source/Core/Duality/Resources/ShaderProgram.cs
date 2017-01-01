@@ -32,13 +32,6 @@ namespace Duality.Resources
 		/// </summary>
 		public static ContentRef<ShaderProgram> Picking		{ get; private set; }
 		/// <summary>
-		/// The SmoothAnim ShaderProgram, using a <see cref="Duality.Resources.VertexShader.SmoothAnim"/> VertexShader and
-		/// a <see cref="Duality.Resources.FragmentShader.SmoothAnim"/> FragmentShader. Some <see cref="Duality.Components.Renderer">Renderers</see>
-		/// might react automatically to <see cref="Duality.Resources.Material">Materials</see> using this ShaderProgram and provide a suitable
-		/// vertex format.
-		/// </summary>
-		public static ContentRef<ShaderProgram> SmoothAnim	{ get; private set; }
-		/// <summary>
 		/// The SharpMask ShaderProgram, using a <see cref="Duality.Resources.VertexShader.Minimal"/> VertexShader and
 		/// a <see cref="Duality.Resources.FragmentShader.SharpAlpha"/> FragmentShader.
 		/// </summary>
@@ -50,7 +43,6 @@ namespace Duality.Resources
 			{
 				{ "Minimal", new ShaderProgram(VertexShader.Minimal, FragmentShader.Minimal) },
 				{ "Picking", new ShaderProgram(VertexShader.Minimal, FragmentShader.Picking) },
-				{ "SmoothAnim", new ShaderProgram(VertexShader.SmoothAnim, FragmentShader.SmoothAnim) },
 				{ "SharpAlpha", new ShaderProgram(VertexShader.Minimal, FragmentShader.SharpAlpha) }
 			});
 		}
@@ -161,7 +153,7 @@ namespace Duality.Resources
 			catch (Exception e)
 			{
 				this.fields = new ShaderFieldInfo[0];
-				Log.Core.WriteError("Error loading ShaderProgram {0}:{2}{1}", this.FullName, Log.Exception(e), Environment.NewLine);
+				Logs.Core.WriteError("Error loading ShaderProgram {0}:{2}{1}", this.FullName, LogFormat.Exception(e), Environment.NewLine);
 			}
 
 			// Even if we failed, we tried to compile it. Don't do it again and again.

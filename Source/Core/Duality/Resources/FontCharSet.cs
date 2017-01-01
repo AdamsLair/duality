@@ -31,21 +31,21 @@ namespace Duality.Resources
 			get { return this.chars; }
 		}
 		/// <summary>
-		/// [GET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font.BaseLine"/> parameter.
+		/// [GET] Characters which will contribute to calculating the <see cref="FontMetrics.BaseLine"/> parameter.
 		/// </summary>
 		public string CharBaseLineRef
 		{
 			get { return this.charBaseLineRef; }
 		}
 		/// <summary>
-		/// [GET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font.Descent"/> parameter.
+		/// [GET] Characters which will contribute to calculating the <see cref="FontMetrics.Descent"/> parameter.
 		/// </summary>
 		public string CharDescentRef
 		{
 			get { return this.charDescentRef; }
 		}
 		/// <summary>
-		/// [GET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font.Ascent"/> parameter.
+		/// [GET] Characters which will contribute to calculating the <see cref="FontMetrics.Ascent"/> parameter.
 		/// </summary>
 		public string CharBodyAscentRef
 		{

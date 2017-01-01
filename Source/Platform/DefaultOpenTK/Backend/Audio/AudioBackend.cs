@@ -73,12 +73,12 @@ namespace Duality.Backend.DefaultOpenTK
 			// Initialize OpenTK, if not done yet
 			DefaultOpenTKBackendPlugin.InitOpenTK();
 			
-			Log.Core.Write("Available devices:" + Environment.NewLine + "{0}", 
+			Logs.Core.Write("Available devices:" + Environment.NewLine + "{0}", 
 				AudioContext.AvailableDevices.ToString(d => "  " + d + (d == AudioContext.DefaultDevice ? " (Default)" : ""), Environment.NewLine));
 
 			// Create OpenAL audio context
 			this.context = new AudioContext();
-			Log.Core.Write("Current device: {0}", this.context.CurrentDevice);
+			Logs.Core.Write("Current device: {0}", this.context.CurrentDevice);
 
 			// Create extension interfaces
 			try
@@ -107,7 +107,7 @@ namespace Duality.Backend.DefaultOpenTK
 					break;
 			}
 			this.availSources = this.sourcePool.Count;
-			Log.Core.Write("{0} sources available", this.sourcePool.Count);
+			Logs.Core.Write("{0} sources available", this.sourcePool.Count);
 			
 			// Set up the streaming thread
 			this.streamWorkerEnd = false;
@@ -266,7 +266,7 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				CheckOpenALErrors();
 				string versionString = AL.Get(ALGetString.Version);
-				Log.Core.Write(
+				Logs.Core.Write(
 					"OpenAL Version: {0}" + Environment.NewLine + 
 					"Vendor: {1}" + Environment.NewLine + 
 					"Renderer: {2}" + Environment.NewLine + 
@@ -286,7 +286,7 @@ namespace Duality.Backend.DefaultOpenTK
 					{
 						if (version.Major < MinOpenALVersion.Major && version.Minor < MinOpenALVersion.Minor)
 						{
-							Log.Core.WriteWarning(
+							Logs.Core.WriteWarning(
 								"The detected OpenAL version {0} appears to be lower than the required minimum. Version {1} or higher is required to run Duality applications.",
 								version,
 								MinOpenALVersion);
@@ -297,7 +297,7 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteWarning("Can't determine OpenAL specs, because an error occurred: {0}", Log.Exception(e));
+				Logs.Core.WriteWarning("Can't determine OpenAL specs, because an error occurred: {0}", LogFormat.Exception(e));
 			}
 		}
 		public static bool CheckOpenALErrors(bool silent = false, [CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
@@ -308,7 +308,7 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				if (!silent)
 				{
-					Log.Core.WriteError(
+					Logs.Core.WriteError(
 						"Internal OpenAL error, code {0} at {1} in {2}, line {3}.", 
 						error,
 						callerInfoMember,

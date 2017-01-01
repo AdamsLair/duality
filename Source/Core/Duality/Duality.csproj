@@ -86,13 +86,15 @@
     <Compile Include="Backend\Graphics\IGraphicsBackend.cs" />
     <Compile Include="Backend\PluginLoader\AssemblyLoadedEventArgs.cs" />
     <Compile Include="Backend\PluginLoader\AssemblyResolveEventArgs.cs" />
-    <Compile Include="Components\Other\ComponentRequirementMap.cs" />
-    <Compile Include="Components\Other\ComponentTypeComparer.cs" />
-    <Compile Include="Components\Other\RequiredComponentAttribute.cs" />
+    <Compile Include="Components\ICmpInterfaces\ICmpSpriteRenderer.cs" />
     <Compile Include="Components\Physics\Shapes\ChainShapeInfo.cs" />
+    <Compile Include="Drawing\SpriteIndexBlend.cs" />
     <Compile Include="DualityPlugin.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="CorePluginManager.cs" />
+    <Compile Include="Components\Other\ComponentRequirementMap.cs" />
+    <Compile Include="Components\Other\ComponentTypeComparer.cs" />
+    <Compile Include="Components\Other\RequiredComponentAttribute.cs" />
     <Compile Include="Input\JoystickHatEventArgs.cs" />
     <Compile Include="Input\JoystickHatPosition.cs" />
     <Compile Include="Input\JoystickHat.cs" />
@@ -168,7 +170,7 @@
     <Compile Include="Resources\ShaderInfo\ShaderFieldScope.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderFieldInfo.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderFieldType.cs" />
-    <Compile Include="Backend\Dummy\DummyPluginLoader.cs" />
+    <Compile Include="Backend\Dummy\DummyAssemblyLoader.cs" />
     <Compile Include="Utility\RefreshMode.cs" />
     <Compile Include="Utility\AAQuality.cs" />
     <Compile Include="Utility\ScreenMode.cs" />
@@ -180,7 +182,6 @@
     <Compile Include="Utility\EditorHints\EditorHintFlagsAttribute.cs" />
     <Compile Include="Utility\EditorHints\EditorHintAttribute.cs" />
     <Compile Include="Utility\EditorHints\MemberFlags.cs" />
-    <Compile Include="Utility\EventArgs\CorePluginEventArgs.cs" />
     <Compile Include="Utility\EventArgs\DualityPluginEventArgs.cs" />
     <Compile Include="Utility\EventArgs\ComponentEventArgs.cs" />
     <Compile Include="Utility\EventArgs\CollisionEventArgs.cs" />
@@ -198,12 +199,17 @@
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
     <Compile Include="Utility\IReadOnlyGrid.cs" />
     <Compile Include="Utility\Grid.cs" />
+    <Compile Include="Utility\Log\CustomVisualLogInfo.cs" />
     <Compile Include="Utility\Log\ILogOutput.cs" />
+    <Compile Include="Utility\Log\CustomLogInfo.cs" />
+    <Compile Include="Utility\Log\Logs.cs" />
+    <Compile Include="Utility\Log\LogFormat.cs" />
     <Compile Include="Utility\Log\LogMessageType.cs" />
     <Compile Include="Utility\Log\LogEntry.cs" />
+    <Compile Include="Utility\Log\VisualLogs.cs" />
     <Compile Include="Utility\Math\Range.cs" />
     <Compile Include="Utility\ObjectCreator.cs" />
-    <Compile Include="Backend\PluginLoader\IPluginLoader.cs" />
+    <Compile Include="Backend\PluginLoader\IAssemblyLoader.cs" />
     <Compile Include="IO\Streams\SubStreamWrapper.cs" />
     <Compile Include="IO\Streams\StreamWrapper.cs" />
     <Compile Include="IO\Streams\NonClosingStreamWrapper.cs" />
@@ -243,7 +249,7 @@
     <Compile Include="Drawing\CanvasBuffer.cs" />
     <Compile Include="Drawing\Enums\DashPattern.cs" />
     <Compile Include="Drawing\CanvasState.cs" />
-    <Compile Include="Components\Renderers\AnimSpriteRenderer.cs" />
+    <Compile Include="Components\Renderers\SpriteAnimator.cs" />
     <Compile Include="Components\Renderers\TextRenderer.cs" />
     <Compile Include="Components\SoundEmitter.cs" />
     <Compile Include="Components\SoundListener.cs" />
@@ -306,7 +312,6 @@
     <Compile Include="DualityApp.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Utility\GameObjectManager.cs" />
-    <Compile Include="Utility\Log\InMemoryLogOutput.cs" />
     <Compile Include="Utility\Log\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.cs" />
@@ -345,7 +350,6 @@
     <Compile Include="Serialization\TypeDataLayout.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Drawing\VertexData\IVertexData.cs" />
-    <Compile Include="Drawing\VertexData\VertexC1P3T4A1.cs" />
     <Compile Include="Drawing\VertexData\VertexC1P3T2.cs" />
     <Compile Include="Drawing\VertexData\VertexC1P3.cs" />
   </ItemGroup>
@@ -365,8 +369,6 @@
     <EmbeddedResource Include="EmbeddedResources\Beep.ogg" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="EmbeddedResources\SmoothAnim.vert" />
-    <EmbeddedResource Include="EmbeddedResources\SmoothAnim.frag" />
     <EmbeddedResource Include="EmbeddedResources\Picking.frag" />
     <EmbeddedResource Include="EmbeddedResources\Minimal.frag" />
     <EmbeddedResource Include="EmbeddedResources\Minimal.vert" />
@@ -416,6 +418,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="EmbeddedResources\CousineLicense.txt" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpSpriteAnimator.png" />
     <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconBinarySerializer.png" />
     <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconXmlSerializer.png" />
   </ItemGroup>

@@ -29,7 +29,7 @@ namespace Duality.Editor
 			add { stack.ActiveHelpChanged += value; }
 			remove { stack.ActiveHelpChanged -= value; }
 		}
-		public static IHelpInfoReader ActiveHelp
+		public static IReadOnlyHelpInfo ActiveHelp
 		{
 			get { return stack.ActiveHelp; }
 		}
@@ -86,7 +86,7 @@ namespace Duality.Editor
 			}
 
 			if (File.Exists(mainDocPath)) LoadXmlCodeDoc(mainDocPath);
-			foreach (string baseDir in DualityApp.PluginManager.PluginLoader.BaseDirectories)
+			foreach (string baseDir in DualityApp.PluginManager.AssemblyLoader.BaseDirectories)
 			{
 				foreach (string xmlDocFile in Directory.EnumerateFiles(baseDir, "*.core.xml", SearchOption.AllDirectories))
 				{

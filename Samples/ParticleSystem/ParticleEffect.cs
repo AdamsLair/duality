@@ -222,7 +222,7 @@ namespace ParticleSystem
 			if (this.particles != null)
 			{
 				float timeMult = Time.TimeMult;
-				float timePassed = Time.MsPFMult * timeMult;
+				float timePassed = Time.MillisecondsPerFrame * timeMult;
 				
 				Particle[] particleData = this.particles.Data;
 				int particleCount = this.particles.Count;

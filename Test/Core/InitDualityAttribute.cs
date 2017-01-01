@@ -42,13 +42,13 @@ namespace Duality.Tests
 			// Add some Console logs manually for NUnit
 			if (this.consoleLogOutput == null)
 				this.consoleLogOutput = new TextWriterLogOutput(Console.Out);
-			Log.AddGlobalOutput(this.consoleLogOutput);
+			Logs.AddGlobalOutput(this.consoleLogOutput);
 
 			// Initialize Duality
 			DualityApp.Init(
 				DualityApp.ExecutionEnvironment.Launcher, 
 				DualityApp.ExecutionContext.Game, 
-				new DefaultPluginLoader(),
+				new DefaultAssemblyLoader(),
 				null);
 
 			// Manually register pseudo-plugin for the Unit Testing Assembly
@@ -77,7 +77,7 @@ namespace Duality.Tests
 			Console.WriteLine("----- Beginning Duality environment teardown -----");
 			
 			// Remove NUnit Console logs
-			Log.RemoveGlobalOutput(this.consoleLogOutput);
+			Logs.RemoveGlobalOutput(this.consoleLogOutput);
 			this.consoleLogOutput = null;
 
 			if (this.dummyWindow != null)

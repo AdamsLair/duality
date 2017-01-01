@@ -117,7 +117,7 @@ namespace Duality
 			if (!counterMap.TryGetValue(name, out c)) return null;
 
 			T cc = c as T;
-			if (cc == null) throw new InvalidOperationException(string.Format("The specified performance counter '{0}' is not a {1}.", name, Log.Type(typeof(T))));
+			if (cc == null) throw new InvalidOperationException(string.Format("The specified performance counter '{0}' is not a {1}.", name, LogFormat.Type(typeof(T))));
 			return cc;
 		}
 		/// <summary>

@@ -54,16 +54,19 @@ namespace Duality.Backend.DefaultOpenTK
 
 		public NativeWindow(GraphicsMode mode, WindowOptions options)
 		{
-			if (options.ScreenMode == ScreenMode.Native && DisplayDevice.Default != null)
+			if (options.ScreenMode == ScreenMode.Fullscreen || options.ScreenMode == ScreenMode.FullWindow)
 			{
-				options.Width = DisplayDevice.Default.Width;
-				options.Height = DisplayDevice.Default.Height;
+				if (DisplayDevice.Default != null)
+				{
+					options.Width = DisplayDevice.Default.Width;
+					options.Height = DisplayDevice.Default.Height;
+				}
 			}
 
 			GameWindowFlags windowFlags = GameWindowFlags.Default;
 			if (options.ScreenMode == ScreenMode.FixedWindow)
 				windowFlags = GameWindowFlags.FixedWindow;
-			else if (options.ScreenMode == ScreenMode.Fullscreen || options.ScreenMode == ScreenMode.Native)
+			else if (options.ScreenMode == ScreenMode.Fullscreen)
 				windowFlags = GameWindowFlags.Fullscreen;
 
 			VSyncMode vsyncMode;
@@ -96,7 +99,7 @@ namespace Duality.Backend.DefaultOpenTK
 				this.internalWindow.Cursor = MouseCursor.Empty;
 			this.internalWindow.VSync = vsyncMode;
 
-			Log.Core.Write(
+			Logs.Core.Write(
 				"Window Specification: " + Environment.NewLine +
 				"  Buffers: {0}" + Environment.NewLine +
 				"  Samples: {1}" + Environment.NewLine +
@@ -134,12 +137,12 @@ namespace Duality.Backend.DefaultOpenTK
 			// just because of an icon. Log the error and continue.
 			catch (Exception e)
 			{
-				Log.Core.WriteError(
+				Logs.Core.WriteError(
 					"There was an exception while trying to extract the " +
 					"window icon from the game's main executable '{0}'. This is " +
 					"uncritical, but still an error: {1}",
 					executablePath,
-					Log.Exception(e));
+					LogFormat.Exception(e));
 			}
 
 			if (options.ScreenMode == ScreenMode.FullWindow)
@@ -162,8 +165,6 @@ namespace Duality.Backend.DefaultOpenTK
 			this.UnhookFromDuality();
 			if (this.internalWindow != null)
 			{
-				if (DisplayDevice.Default != null)
-					DisplayDevice.Default.RestoreResolution();
 				this.internalWindow.Dispose();
 				this.internalWindow = null;
 			}
@@ -194,51 +195,29 @@ namespace Duality.Backend.DefaultOpenTK
 			WindowState targetWindowState = this.internalWindow.WindowState;
 			WindowBorder targetWindowBorder = this.internalWindow.WindowBorder;
 			Size targetSize = this.internalWindow.ClientSize;
-			bool enforceRes = false;
-			switch (DualityApp.UserData.GfxMode)
+			switch (DualityApp.UserData.WindowMode)
 			{
 				case ScreenMode.Window:
 					targetWindowState = WindowState.Normal;
 					targetWindowBorder = WindowBorder.Resizable;
-					targetSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
+					targetSize = new Size(DualityApp.UserData.WindowWidth, DualityApp.UserData.WindowHeight);
 					break;
 
 				case ScreenMode.FixedWindow:
 					targetWindowState = WindowState.Normal;
 					targetWindowBorder = WindowBorder.Fixed;
-					targetSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
+					targetSize = new Size(DualityApp.UserData.WindowWidth, DualityApp.UserData.WindowHeight);
 					break;
 
 				case ScreenMode.FullWindow:
+				case ScreenMode.Fullscreen:
 					targetWindowState = WindowState.Fullscreen;
 					targetWindowBorder = WindowBorder.Hidden;
 					targetSize = new Size(DisplayDevice.Default.Width, DisplayDevice.Default.Height);
 					break;
 
-				case ScreenMode.Native:
-				case ScreenMode.Fullscreen:
-					targetWindowState = WindowState.Fullscreen;
-					targetWindowBorder = WindowBorder.Hidden;
-					targetSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
-					enforceRes = true;
-					break;
-
 				default:
 					throw new ArgumentOutOfRangeException();
-			}
-			
-			// Enforce the specified screen resolution when requested
-			if (enforceRes)
-			{
-				DisplayDevice.Default.ChangeResolution(
-					targetSize.Width,
-					targetSize.Height, 
-					DisplayDevice.Default.BitsPerPixel, 
-					DisplayDevice.Default.RefreshRate);
-			}
-			else
-			{
-				DisplayDevice.Default.RestoreResolution();
 			}
 
 			// Apply the target state to the game window wherever values changed
@@ -270,10 +249,10 @@ namespace Duality.Backend.DefaultOpenTK
 			// Give the processor a rest if we have the time, don't use 100% CPU even without VSync
 			if (this.frameLimiterWatch.IsRunning && this.refreshMode == RefreshMode.ManualSync)
 			{
-				while (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MsPFMult)
+				while (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MillisecondsPerFrame)
 				{
 					// Enough leftover time? Risk a short sleep, don't burn CPU waiting.
-					if (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MsPFMult * 0.75f)
+					if (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MillisecondsPerFrame * 0.75f)
 						System.Threading.Thread.Sleep(0);
 				}
 			}

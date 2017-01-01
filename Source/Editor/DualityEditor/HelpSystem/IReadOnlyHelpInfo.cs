@@ -6,7 +6,7 @@ using Duality;
 
 namespace Duality.Editor
 {
-	public interface IHelpInfoReader
+	public interface IReadOnlyHelpInfo
 	{
 		string Id { get; }
 		string Topic { get; }

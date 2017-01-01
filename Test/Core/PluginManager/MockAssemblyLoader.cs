@@ -11,7 +11,7 @@ using Duality.Backend;
 
 namespace Duality.Tests.PluginManager
 {
-	public class MockPluginLoader : IPluginLoader, IDisposable
+	public class MockAssemblyLoader : IAssemblyLoader, IDisposable
 	{
 		private List<string>                       baseDirs         = new List<string>();
 		private Dictionary<string,Assembly>        assemblyMap      = new Dictionary<string,Assembly>();
@@ -56,7 +56,7 @@ namespace Duality.Tests.PluginManager
 		}
 		
 
-		public MockPluginLoader()
+		public MockAssemblyLoader()
 		{
 			MockCorePlugin.MapToAssemblyCallback += this.MockCorePlugin_MapToAssemblyCallback;
 			MockPlugin.MapToAssemblyCallback += this.MockPlugin_MapToAssemblyCallback;

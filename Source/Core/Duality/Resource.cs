@@ -216,7 +216,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("OnSaving() of {0} failed: {1}", this, Log.Exception(e));
+				Logs.Core.WriteError("OnSaving() of {0} failed: {1}", this, LogFormat.Exception(e));
 				return false;
 			}
 		}
@@ -231,7 +231,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("OnSaved() of {0} failed: {1}", this, Log.Exception(e));
+				Logs.Core.WriteError("OnSaved() of {0} failed: {1}", this, LogFormat.Exception(e));
 				return false;
 			}
 		}
@@ -423,10 +423,10 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Can't load {0} from '{1}', because an error occurred: {3}{2}",
-					Log.Type(typeof(T)),
+				Logs.Core.WriteError("Can't load {0} from '{1}', because an error occurred: {3}{2}",
+					LogFormat.Type(typeof(T)),
 					resPath ?? formatter.ToString(),
-					Log.Exception(e),
+					LogFormat.Exception(e),
 					Environment.NewLine);
 			}
 

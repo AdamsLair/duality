@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Duality.Drawing
+using Duality;
+using Duality.Drawing;
+
+namespace SmoothAnimation
 {
 	/// <summary>
 	/// Vertex data providing each vertex a position (3x4 byte), color (1x4 byte), two texture coordinates (4x4 byte)

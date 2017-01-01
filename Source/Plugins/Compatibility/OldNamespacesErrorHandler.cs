@@ -19,7 +19,6 @@ namespace Duality.Plugins.Compatibility
 				string fixedTypeId = resolveTypeError.TypeId;
 				if (fixedTypeId.EndsWith("Duality.VertexFormat.VertexC1P3"))			resolveTypeError.ResolvedType = typeof(Duality.Drawing.VertexC1P3);
 				else if (fixedTypeId.EndsWith("Duality.VertexFormat.VertexC1P3T2"))		resolveTypeError.ResolvedType = typeof(Duality.Drawing.VertexC1P3T2);
-				else if (fixedTypeId.EndsWith("Duality.VertexFormat.VertexC1P3T4A1"))	resolveTypeError.ResolvedType = typeof(Duality.Drawing.VertexC1P3T4A1);
 				else if (fixedTypeId.EndsWith("Duality.VertexFormat.IVertexData"))		resolveTypeError.ResolvedType = typeof(Duality.Drawing.IVertexData);
 				else if (fixedTypeId.EndsWith("Duality.ColorFormat.ColorHsva"))			resolveTypeError.ResolvedType = typeof(Duality.Drawing.ColorHsva);
 				else if (fixedTypeId.EndsWith("Duality.ColorFormat.ColorRgba"))			resolveTypeError.ResolvedType = typeof(Duality.Drawing.ColorRgba);

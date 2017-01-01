@@ -135,7 +135,7 @@ namespace Duality.Components.Physics
 			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
 			j.LocalXAxis = this.moveAxis;
 			j.MotorEnabled = this.motorEnabled;
-			j.MotorSpeed = this.motorSpeed / Time.SPFMult;
+			j.MotorSpeed = this.motorSpeed / Time.SecondsPerFrame;
 			j.MaxMotorTorque = PhysicsUnit.TimeToPhysical * this.maxMotorTorque;
 			j.DampingRatio = this.dampingRatio;
 			j.Frequency = this.frequency;

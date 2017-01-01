@@ -138,7 +138,7 @@
 			this.buttonCore.Name = "buttonCore";
 			this.buttonCore.Size = new System.Drawing.Size(23, 22);
 			this.buttonCore.Text = "Core";
-			this.buttonCore.CheckedChanged += new System.EventHandler(this.buttonCore_CheckedChanged);
+			this.buttonCore.CheckedChanged += new System.EventHandler(this.sourceFilterButton_CheckedChanged);
 			// 
 			// buttonEditor
 			// 
@@ -152,7 +152,7 @@
 			this.buttonEditor.Name = "buttonEditor";
 			this.buttonEditor.Size = new System.Drawing.Size(23, 22);
 			this.buttonEditor.Text = "Editor";
-			this.buttonEditor.CheckedChanged += new System.EventHandler(this.buttonEditor_CheckedChanged);
+			this.buttonEditor.CheckedChanged += new System.EventHandler(this.sourceFilterButton_CheckedChanged);
 			// 
 			// buttonGame
 			// 
@@ -166,7 +166,7 @@
 			this.buttonGame.Name = "buttonGame";
 			this.buttonGame.Size = new System.Drawing.Size(23, 22);
 			this.buttonGame.Text = "Game";
-			this.buttonGame.CheckedChanged += new System.EventHandler(this.buttonGame_CheckedChanged);
+			this.buttonGame.CheckedChanged += new System.EventHandler(this.sourceFilterButton_CheckedChanged);
 			// 
 			// actionClear
 			// 
@@ -250,11 +250,6 @@
 			this.logEntryList.AutoScroll = true;
 			this.logEntryList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.logEntryList.BaseColor = System.Drawing.Color.FromArgb(((int)(((byte)(162)))), ((int)(((byte)(162)))), ((int)(((byte)(162)))));
-			this.logEntryList.DisplayFilter = ((Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter)((((((Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.SourceCore | Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.SourceEditor)
-						| Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.SourceGame)
-						| Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.TypeMessage)
-						| Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.TypeWarning)
-						| Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.TypeError)));
 			this.logEntryList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.logEntryList.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.logEntryList.Location = new System.Drawing.Point(0, 0);
@@ -264,7 +259,7 @@
 			this.logEntryList.Size = new System.Drawing.Size(681, 83);
 			this.logEntryList.TabIndex = 2;
 			this.logEntryList.SelectionChanged += new System.EventHandler(this.logEntryList_SelectionChanged);
-			this.logEntryList.NewEntry += new System.EventHandler<Duality.Editor.Plugins.LogView.LogEntryList.ViewEntryEventArgs>(this.logEntryList_NewEntry);
+			this.logEntryList.LogEntriesAdded += new System.EventHandler<Duality.Editor.Plugins.LogView.LogEntryList.ViewEntryEventArgs>(this.logEntryList_LogEntriesAdded);
 			this.logEntryList.Enter += new System.EventHandler(this.logEntryList_Enter);
 			// 
 			// LogView

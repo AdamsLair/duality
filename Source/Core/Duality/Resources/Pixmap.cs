@@ -55,7 +55,7 @@ namespace Duality.Resources
 			IImageCodec codec = ImageCodec.GetRead(ImageCodec.FormatPng);
 			if (codec == null)
 			{
-				Log.Core.WriteError(
+				Logs.Core.WriteError(
 					"Unable to retrieve image codec for format '{0}'. Can't initialize default {1} Resources.",
 					ImageCodec.FormatPng,
 					typeof(Pixmap).Name);

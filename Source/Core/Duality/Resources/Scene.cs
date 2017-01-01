@@ -25,7 +25,7 @@ namespace Duality.Resources
 	[EditorHintImage(CoreResNames.ImageScene)]
 	public sealed class Scene : Resource
 	{
-		private const float PhysicsAccStart = Time.MsPFMult;
+		private const float PhysicsAccStart = Time.MillisecondsPerFrame;
 
 
 		private static World               physicsWorld      = new World(Vector2.Zero);
@@ -45,7 +45,7 @@ namespace Duality.Resources
 		/// </summary>
 		public static float PhysicsAlpha
 		{
-			get { return physicsAcc / Time.MsPFMult; }
+			get { return physicsAcc / Time.MillisecondsPerFrame; }
 		}
 		/// <summary>
 		/// [GET] Is fixed-timestep physics calculation currently active?
@@ -204,7 +204,7 @@ namespace Duality.Resources
 			{
 				switchToTarget = null;
 				switchToScheduled = false;
-				Log.Core.WriteWarning(
+				Logs.Core.WriteWarning(
 					"Potential Scene redirect loop detected: When performing previously " +
 					"scheduled switch to Scene '{0}', a awitch to Scene '{1}' was immediately scheduled. " +
 					"The second switch will not be performed to avoid entering a loop. Please " +
@@ -437,27 +437,27 @@ namespace Duality.Resources
 
 			// Update physics
 			bool physUpdate = false;
-			double physBegin = Time.MainTimer.TotalMilliseconds;
+			double physBegin = Time.MainTimer.TotalSeconds;
 			if (Scene.PhysicsFixedTime)
 			{
-				physicsAcc += Time.MsPFMult * Time.TimeMult;
+				physicsAcc += Time.MillisecondsPerFrame * Time.TimeMult;
 				int iterations = 0;
-				if (physicsAcc >= Time.MsPFMult)
+				if (physicsAcc >= Time.MillisecondsPerFrame)
 				{
 					Profile.TimeUpdatePhysics.BeginMeasure();
 					DualityApp.EditorGuard(() =>
 					{
 						double timeUpdateBegin = Time.MainTimer.TotalMilliseconds;
-						while (physicsAcc >= Time.MsPFMult)
+						while (physicsAcc >= Time.MillisecondsPerFrame)
 						{
 							// Catch up on updating progress
 							FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * DualityApp.AppData.PhysicsVelocityThreshold;
-							physicsWorld.Step(Time.SPFMult);
-							physicsAcc -= Time.MsPFMult;
+							physicsWorld.Step(Time.SecondsPerFrame);
+							physicsAcc -= Time.MillisecondsPerFrame;
 							iterations++;
 							
 							double timeSpent = Time.MainTimer.TotalMilliseconds - timeUpdateBegin;
-							if (timeSpent >= Time.MsPFMult * 10.0f) break; // Emergency exit
+							if (timeSpent >= Time.MillisecondsPerFrame * 10.0f) break; // Emergency exit
 						}
 					});
 					physUpdate = true;
@@ -470,14 +470,14 @@ namespace Duality.Resources
 				DualityApp.EditorGuard(() =>
 				{
 					FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * Time.TimeMult * DualityApp.AppData.PhysicsVelocityThreshold;
-					physicsWorld.Step(Time.TimeMult * Time.SPFMult);
+					physicsWorld.Step(Time.TimeMult * Time.SecondsPerFrame);
 					if (Time.TimeMult == 0.0f) physicsWorld.ClearForces(); // Complete freeze? Clear forces, so they don't accumulate.
 					physicsAcc = PhysicsAccStart;
 				});
 				physUpdate = true;
 				Profile.TimeUpdatePhysics.EndMeasure();
 			}
-			double physTime = Time.MainTimer.TotalMilliseconds - physBegin;
+			double physTime = Time.MainTimer.TotalSeconds - physBegin;
 
 			// Apply Farseers internal measurements to Duality
 			if (physUpdate)
@@ -491,9 +491,9 @@ namespace Duality.Resources
 
 			// Update low fps physics state
 			if (!physicsLowFps)
-				physicsLowFps = Time.LastDelta > Time.MsPFMult && physTime > Time.LastDelta * 0.85f;
+				physicsLowFps = Time.UnscaledDeltaTime > Time.SecondsPerFrame && physTime > Time.UnscaledDeltaTime * 0.85f;
 			else
-				physicsLowFps = !(Time.LastDelta < Time.MsPFMult * 0.9f || physTime < Time.LastDelta * 0.6f);
+				physicsLowFps = !(Time.UnscaledDeltaTime < Time.SecondsPerFrame * 0.9f || physTime < Time.UnscaledDeltaTime * 0.6f);
 
 			// Update all GameObjects
 			Profile.TimeUpdateScene.BeginMeasure();

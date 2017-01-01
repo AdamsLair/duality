@@ -481,7 +481,7 @@ namespace Duality.Editor.PackageManagement
 			}
 			catch (Exception e)
 			{
-				Log.Editor.WriteError("Can't update {0}, because an error occurred: {1}", UpdaterFileName, Log.Exception(e));
+				Logs.Editor.WriteError("Can't update {0}, because an error occurred: {1}", UpdaterFileName, LogFormat.Exception(e));
 				return false;
 			}
 
@@ -678,7 +678,7 @@ namespace Duality.Editor.PackageManagement
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
+					Logs.Editor.WriteWarning("Error querying NuGet package repository: {0}", LogFormat.Exception(e));
 					return null;
 				}
 
@@ -721,7 +721,7 @@ namespace Duality.Editor.PackageManagement
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
+					Logs.Editor.WriteWarning("Error querying NuGet package repository: {0}", LogFormat.Exception(e));
 					return null;
 				}
 			}
@@ -794,7 +794,7 @@ namespace Duality.Editor.PackageManagement
 			}
 			catch (UriFormatException)
 			{
-				Log.Editor.WriteError("NuGet repository URI '{0}' has an incorrect format and will be skipped.", repositoryUrl);
+				Logs.Editor.WriteError("NuGet repository URI '{0}' has an incorrect format and will be skipped.", repositoryUrl);
 				return null;
 			}
 
@@ -906,10 +906,10 @@ namespace Duality.Editor.PackageManagement
 			}
 			catch (Exception e)
 			{
-				Log.Editor.WriteError(
+				Logs.Editor.WriteError(
 					"Failed to load PackageManager config file '{0}': {1}",
 					configFilePath,
-					Log.Exception(e));
+					LogFormat.Exception(e));
 			}
 		}
 		private void SaveConfig()
@@ -941,9 +941,9 @@ namespace Duality.Editor.PackageManagement
 				catch (Exception exception)
 				{
 					updateDoc = null;
-					Log.Editor.WriteError("Can't update existing '{0}' file: {1}", 
+					Logs.Editor.WriteError("Can't update existing '{0}' file: {1}", 
 						Path.GetFileName(updateFilePath), 
-						Log.Exception(exception));
+						LogFormat.Exception(exception));
 				}
 			}
 
@@ -1133,7 +1133,7 @@ namespace Duality.Editor.PackageManagement
 		}
 		private void manager_PackageUninstalled(object sender, PackageOperationEventArgs e)
 		{
-			Log.Editor.Write("Package removal scheduled: {0}, {1}", e.Package.Id, e.Package.Version);
+			Logs.Editor.Write("Package removal scheduled: {0}, {1}", e.Package.Id, e.Package.Version);
 
 			// Determine all files that are referenced by a package, and the ones referenced by this one
 			IEnumerable<string> localFiles = this.CreateFileMapping(e.Package).Select(p => p.Key);
@@ -1170,7 +1170,7 @@ namespace Duality.Editor.PackageManagement
 		}
 		private void manager_PackageInstalled(object sender, PackageOperationEventArgs e)
 		{
-			Log.Editor.Write("Package downloaded: {0}, {1}", e.Package.Id, e.Package.Version);
+			Logs.Editor.Write("Package downloaded: {0}, {1}", e.Package.Id, e.Package.Version);
 			
 			// Update package entries from local config
 			PackageInfo packageInfo = this.QueryPackageInfo(new PackageName(e.Package.Id, e.Package.Version.Version));

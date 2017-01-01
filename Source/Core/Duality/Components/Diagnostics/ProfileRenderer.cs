@@ -225,7 +225,7 @@ namespace Duality.Components.Diagnostics
 						int cursorPos = timeCounter.ValueGraphCursor;
 						for (int i = Math.Max(cursorPos - 1, 0); i <= Math.Min(cursorPos, ProfileCounter.ValueHistoryLen - 1); i++)
 						{
-							float factor = timeCounter.ValueGraph[i] / Time.MsPFMult;
+							float factor = timeCounter.ValueGraph[i] / Time.MillisecondsPerFrame;
 							cache.GraphValues[i] = factor * 0.75f;
 							cache.GraphColors[i] = ColorRgba.Lerp(ColorRgba.White, ColorRgba.Red, factor);
 						}

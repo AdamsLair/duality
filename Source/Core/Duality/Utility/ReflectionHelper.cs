@@ -461,7 +461,7 @@ namespace Duality
 			if (memberResolveCache.TryGetValue(memberString, out result)) return result;
 
 			Assembly[] searchAsm = 
-				DualityApp.PluginLoader.LoadedAssemblies
+				DualityApp.AssemblyLoader.LoadedAssemblies
 				.Except(DualityApp.PluginManager.DisposedPlugins)
 				.ToArray();
 
@@ -655,7 +655,7 @@ namespace Duality
 				return result;
 			}
 
-			throw new NotSupportedException(string.Format("Member Type '{0} not supported", Log.Type(member.GetType())));
+			throw new NotSupportedException(string.Format("Member Type '{0} not supported", LogFormat.Type(member.GetType())));
 		}
 
 		/// <summary>
@@ -715,7 +715,7 @@ namespace Duality
 			if (searchAsm == null)
 			{
 				searchAsm = 
-					DualityApp.PluginLoader.LoadedAssemblies
+					DualityApp.AssemblyLoader.LoadedAssemblies
 					.Except(DualityApp.PluginManager.DisposedPlugins)
 					.ToArray();
 			}

@@ -92,6 +92,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F43413
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering", "Samples\Steering\Steering.csproj", "{0130132B-C38D-463E-90AC-5D389E934FAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmoothAnimation", "Samples\SmoothAnimation\SmoothAnimation.csproj", "{D29F3890-96E1-491B-AFAC-AD82E70E4208}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -230,6 +232,10 @@ Global
 		{0130132B-C38D-463E-90AC-5D389E934FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0130132B-C38D-463E-90AC-5D389E934FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0130132B-C38D-463E-90AC-5D389E934FAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D29F3890-96E1-491B-AFAC-AD82E70E4208}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D29F3890-96E1-491B-AFAC-AD82E70E4208}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D29F3890-96E1-491B-AFAC-AD82E70E4208}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D29F3890-96E1-491B-AFAC-AD82E70E4208}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -271,5 +277,6 @@ Global
 		{22D59FE7-3A2C-4415-9610-6F9C7B68594A} = {F5F3C4FF-9B64-4873-AE84-4C323B670EA9}
 		{D014227E-3E69-4C8B-984A-1519AA35C1AD} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{0130132B-C38D-463E-90AC-5D389E934FAE} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
+		{D29F3890-96E1-491B-AFAC-AD82E70E4208} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 	EndGlobalSection
 EndGlobal

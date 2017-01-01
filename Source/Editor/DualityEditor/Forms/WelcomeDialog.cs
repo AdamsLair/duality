@@ -44,8 +44,16 @@ namespace Duality.Editor.Forms
 				ActionNode item = node.Tag as ActionNode;
 				if (item == null) return;
 
-				string headline = item.Action.Name;
-				string summary = item.Action.Description;
+				string headline = null;
+				string summary = null;
+				HelpInfo helpInfo = item.Action.HelpInfo;
+				if (helpInfo != null)
+				{
+					headline = helpInfo.Topic;
+					summary = helpInfo.Description;
+				}
+				headline = headline ?? item.Action.Name ?? string.Empty;
+				summary = summary ?? string.Empty;
 
 				// Calculate drawing layout and data
 				StringFormat headlineFormat = new StringFormat { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
@@ -130,7 +138,7 @@ namespace Duality.Editor.Forms
 			ActionNode node = (e.Node != null) ? (e.Node.Tag as ActionNode) : null;
 			if (node == null) return;
 
-			node.Action.Perform(new object());
+			node.Action.Perform(Enumerable.Empty<object>());
 		}
 		private void actionList_MouseLeave(object sender, EventArgs e)
 		{
