@@ -742,7 +742,11 @@ namespace Duality.Cloning
 		}
 		void ICloneTargetSetup.HandleObject<T>(T source, T target, CloneBehavior behavior, TypeInfo behaviorTarget)
 		{
-			if (object.ReferenceEquals(source, this.currentObject))
+			// Since "fallback to default" is triggered by source being equal to the currently handled object,
+			// we need to make sure that this cannot be triggered accidentally by auto-generated clone lambdas.
+			// Only allow the fallback when the object in question is actually cloned by user code!
+			bool calledFromUserCode = this.currentObject is ICloneExplicit || this.currentCloneType.Surrogate != null;
+			if (object.ReferenceEquals(source, this.currentObject) && calledFromUserCode)
 			{
 				this.PrepareObjectChildCloneGraph(this.currentObject, target, this.currentCloneType);
 			}
@@ -805,7 +809,11 @@ namespace Duality.Cloning
 		bool ICloneOperation.HandleObject<T>(T source, ref T target)
 		{
 			// If we're just handling ourselfs, don't bother doing anything else.
-			if (object.ReferenceEquals(source, this.currentObject))
+			// Since "fallback to default" is triggered by source being equal to the currently handled object,
+			// we need to make sure that this cannot be triggered accidentally by auto-generated clone lambdas.
+			// Only allow the fallback when the object in question is actually cloned by user code!
+			bool calledFromUserCode = this.currentObject is ICloneExplicit || this.currentCloneType.Surrogate != null;
+			if (object.ReferenceEquals(source, this.currentObject) && calledFromUserCode)
 			{
 				if (!this.currentCloneType.IsPlainOldData)
 				{
