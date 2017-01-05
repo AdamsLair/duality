@@ -76,25 +76,47 @@ namespace Duality.Editor
 		
 		public static void LoadXmlCodeDoc()
 		{
-			string mainDocPath = "Duality.xml";
-			
-			if (!File.Exists(mainDocPath))
+			// Generate a list of expected documentation file paths
+			List<string> docPaths = new List<string>();
+			docPaths.Add("Duality.xml");
+			docPaths.Add("DualityPrimitives.xml");
+			docPaths.Add("DualityEditor.xml");
+
+			// Add expected documentation files for all loaded plugins
+			IEnumerable<DualityPlugin> allPlugins = DualityApp.PluginManager.LoadedPlugins;
+			allPlugins = allPlugins.Concat(DualityEditorApp.PluginManager.LoadedPlugins);
+			foreach (DualityPlugin plugin in allPlugins)
 			{
-				string remappedPath = Path.Combine(PathHelper.ExecutingAssemblyDir, mainDocPath);
-				if (File.Exists(remappedPath))
-					mainDocPath = remappedPath;
+				string pluginFileNameWithoutExt = Path.GetFileNameWithoutExtension(plugin.FilePath);
+				string pluginDir = Path.GetDirectoryName(plugin.FilePath);
+				string docFilePath = Path.Combine(pluginDir, pluginFileNameWithoutExt + ".xml");
+				docPaths.Add(docFilePath);
 			}
 
-			if (File.Exists(mainDocPath)) LoadXmlCodeDoc(mainDocPath);
-			foreach (string baseDir in DualityApp.PluginManager.PluginLoader.BaseDirectories)
+			// Re-map documentation paths to the executing directory when they aren't 
+			// in the working directory. Remove all the rest.
+			for (int i = docPaths.Count - 1; i >= 0; i--)
 			{
-				foreach (string xmlDocFile in Directory.EnumerateFiles(baseDir, "*.core.xml", SearchOption.AllDirectories))
+				if (!File.Exists(docPaths[i]))
 				{
-					LoadXmlCodeDoc(xmlDocFile);
+					string remappedPath = Path.Combine(PathHelper.ExecutingAssemblyDir, docPaths[i]);
+					if (File.Exists(remappedPath))
+						docPaths[i] = remappedPath;
+					else
+						docPaths.RemoveAt(i);
 				}
-				foreach (string xmlDocFile in Directory.EnumerateFiles(baseDir, "*.editor.xml", SearchOption.AllDirectories))
+			}
+
+			// Load all documentation files that are available
+			foreach (string path in docPaths)
+			{
+				try
 				{
-					LoadXmlCodeDoc(xmlDocFile);
+					LoadXmlCodeDoc(path);
+				}
+				catch (Exception e)
+				{
+					Log.Editor.Write("Error loading XML documentation file '{0}': {1}", path, Log.Exception(e));
 				}
 			}
 		}

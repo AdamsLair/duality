@@ -74,8 +74,27 @@ namespace Duality.Tests.Serialization
 		{
 			for (int i = 0; i < 256; i++)
 			{
-				this.TestWriteRead((char)i,	this.PrimaryFormat);
+				this.TestWriteRead((char)i, this.PrimaryFormat);
 			}
+		}
+		[Test] public void SerializeStringData()
+		{
+			this.TestWriteRead("Hello World", this.PrimaryFormat);
+			this.TestWriteRead("Hello < World", this.PrimaryFormat);
+			this.TestWriteRead("Hello > World", this.PrimaryFormat);
+			this.TestWriteRead("Hello <![CDATA[ World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \a World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \b World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \f World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \n World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \r World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \t World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \v World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \' World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \" World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \\ World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \0 World", this.PrimaryFormat);
+			this.TestWriteRead("Hello \u2615 World", this.PrimaryFormat); // Coffee emoji
 		}
 		[Test] public void SerializePrimitiveArrays()
 		{

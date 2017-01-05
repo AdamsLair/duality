@@ -38,6 +38,29 @@ namespace Duality.Tests.Cloning
 			Assert.IsTrue(data.Equals(dataResult));
 			Assert.IsFalse(data.AnyReferenceEquals(dataResult));
 		}
+		[Test] public void CloneRecursiveGraphs()
+		{
+			// Make sure that object referencing themselves can be cloned without problems
+			OwnedObject source = new OwnedObject();
+			source.TestData = 42;
+			source.TestProperty = source;
+			OwnedObject target = source.DeepClone();
+
+			Assert.AreNotSame(source, target);
+			Assert.AreEqual(source.TestData, target.TestData);
+			Assert.AreSame(target, target.TestProperty);
+		}
+		[Test] public void SelfReferentialObject()
+		{
+			// Objects that assign a self-reference to one of their fields during construction
+			// have been known to cause problems to the cloning algorithm. Test if that still works.
+			SelfReferenceObject source = new SelfReferenceObject();
+			SelfReferenceObject target = source.DeepClone();
+
+			Assert.AreNotSame(source, target);
+			Assert.AreSame(source, source.SelfRef);
+			Assert.AreSame(target, target.SelfRef);
+		}
 		[Test] public void CloneMemberInfo()
 		{
 			Random rnd = new Random();
