@@ -154,7 +154,6 @@ namespace Duality.Serialization
 		{
 			if (header.IsPrimitive)							this.WritePrimitive		(element, obj);
 			else if (header.DataType == DataType.Enum)		this.WriteEnum			(element, obj as Enum, header);
-			else if (header.DataType == DataType.String)	element.Value = obj as string;
 			else if (header.DataType == DataType.Struct)	this.WriteStruct		(element, obj, header);
 			else if (header.DataType == DataType.ObjectRef)	element.Value = XmlConvert.ToString(header.ObjectId);
 			else if	(header.DataType == DataType.Array)		this.WriteArray			(element, obj, header);
@@ -163,20 +162,27 @@ namespace Duality.Serialization
 		}
 		private void WritePrimitive(XElement element, object obj)
 		{
-			if		(obj is bool)		element.Value = XmlConvert.ToString((bool)obj);
-			else if (obj is byte)		element.Value = XmlConvert.ToString((byte)obj);
-			else if (obj is char)		element.Value = XmlConvert.EncodeName(XmlConvert.ToString((char)obj));
-			else if (obj is string)		element.Value = (string)obj;
-			else if (obj is sbyte)		element.Value = XmlConvert.ToString((sbyte)obj);
-			else if (obj is short)		element.Value = XmlConvert.ToString((short)obj);
-			else if (obj is ushort)		element.Value = XmlConvert.ToString((ushort)obj);
-			else if (obj is int)		element.Value = XmlConvert.ToString((int)obj);
-			else if (obj is uint)		element.Value = XmlConvert.ToString((uint)obj);
-			else if (obj is long)		element.Value = XmlConvert.ToString((long)obj);
-			else if (obj is ulong)		element.Value = XmlConvert.ToString((decimal)(ulong)obj);
-			else if (obj is float)		element.Value = XmlConvert.ToString((float)obj);
-			else if (obj is double)		element.Value = XmlConvert.ToString((double)obj);
-			else if (obj is decimal)	element.Value = XmlConvert.ToString((decimal)obj);
+			if      (obj is bool)    element.Value = XmlConvert.ToString((bool)obj);
+			else if (obj is byte)    element.Value = XmlConvert.ToString((byte)obj);
+			else if (obj is char)    element.Value = XmlConvert.EncodeName(XmlConvert.ToString((char)obj));
+			else if (obj is sbyte)   element.Value = XmlConvert.ToString((sbyte)obj);
+			else if (obj is short)   element.Value = XmlConvert.ToString((short)obj);
+			else if (obj is ushort)  element.Value = XmlConvert.ToString((ushort)obj);
+			else if (obj is int)     element.Value = XmlConvert.ToString((int)obj);
+			else if (obj is uint)    element.Value = XmlConvert.ToString((uint)obj);
+			else if (obj is long)    element.Value = XmlConvert.ToString((long)obj);
+			else if (obj is ulong)   element.Value = XmlConvert.ToString((decimal)(ulong)obj);
+			else if (obj is float)   element.Value = XmlConvert.ToString((float)obj);
+			else if (obj is double)  element.Value = XmlConvert.ToString((double)obj);
+			else if (obj is decimal) element.Value = XmlConvert.ToString((decimal)obj);
+			else if (obj is string)
+			{
+				string strVal = obj as string;
+				if (IsValidXmlString(strVal))
+					element.Value = strVal;
+				else
+					element.Add(new XCData(Convert.ToBase64String(Encoding.UTF8.GetBytes(strVal))));
+			}
 			else if (obj == null)
 				throw new ArgumentNullException("obj");
 			else
@@ -457,7 +463,6 @@ namespace Duality.Serialization
 			object result = null;
 
 			if (header.IsPrimitive)							result = this.ReadPrimitive(element, header.DataType);
-			else if (header.DataType == DataType.String)	result = element.Value;
 			else if (header.DataType == DataType.Enum)		result = this.ReadEnum(element, header);
 			else if (header.DataType == DataType.Struct)	result = this.ReadStruct(element, header);
 			else if (header.DataType == DataType.ObjectRef)	result = this.ReadObjectRef(element);
@@ -469,23 +474,31 @@ namespace Duality.Serialization
 		}
 		private object ReadPrimitive(XElement element, DataType dataType)
 		{
-			string val = element.Value;
 			switch (dataType)
 			{
-				case DataType.Bool:			return XmlConvert.ToBoolean(val);
-				case DataType.Byte:			return XmlConvert.ToByte(val);
-				case DataType.SByte:		return XmlConvert.ToSByte(val);
-				case DataType.Short:		return XmlConvert.ToInt16(val);
-				case DataType.UShort:		return XmlConvert.ToUInt16(val);
-				case DataType.Int:			return XmlConvert.ToInt32(val);
-				case DataType.UInt:			return XmlConvert.ToUInt32(val);
-				case DataType.Long:			return XmlConvert.ToInt64(val);
-				case DataType.ULong:		return XmlConvert.ToUInt64(val);
-				case DataType.Float:		return XmlConvert.ToSingle(val);
-				case DataType.Double:		return XmlConvert.ToDouble(val);
-				case DataType.Decimal:		return XmlConvert.ToDecimal(val);
-				case DataType.Char:			return XmlConvert.ToChar(XmlConvert.DecodeName(val));
-				case DataType.String:		return val;
+				case DataType.Bool:    return XmlConvert.ToBoolean(element.Value);
+				case DataType.Byte:    return XmlConvert.ToByte(element.Value);
+				case DataType.SByte:   return XmlConvert.ToSByte(element.Value);
+				case DataType.Short:   return XmlConvert.ToInt16(element.Value);
+				case DataType.UShort:  return XmlConvert.ToUInt16(element.Value);
+				case DataType.Int:     return XmlConvert.ToInt32(element.Value);
+				case DataType.UInt:    return XmlConvert.ToUInt32(element.Value);
+				case DataType.Long:    return XmlConvert.ToInt64(element.Value);
+				case DataType.ULong:   return XmlConvert.ToUInt64(element.Value);
+				case DataType.Float:   return XmlConvert.ToSingle(element.Value);
+				case DataType.Double:  return XmlConvert.ToDouble(element.Value);
+				case DataType.Decimal: return XmlConvert.ToDecimal(element.Value);
+				case DataType.Char:    return XmlConvert.ToChar(XmlConvert.DecodeName(element.Value));
+				case DataType.String:
+					if (element.FirstNode is XCData)
+					{
+						byte[] stringData = Convert.FromBase64String((element.FirstNode as XCData).Value);
+						return Encoding.UTF8.GetString(stringData, 0, stringData.Length);
+					}
+					else
+					{ 
+						return element.Value;
+					}
 				default:
 					throw new ArgumentException(string.Format("DataType '{0}' is not a primitive.", dataType));
 			}
@@ -881,6 +894,22 @@ namespace Duality.Serialization
 			return result;
 		}
 
+		[System.Diagnostics.DebuggerStepThrough]
+		private static bool IsValidXmlString(string value)
+		{
+			try
+			{
+				// Note: XML will normalize all \r chars into \n chars, so we'll treat \r as invalid, 
+				// triggering the verbatim / escaped / binary code path.
+				return 
+					value.IndexOf('\r') == -1 && 
+					XmlConvert.VerifyXmlChars(value) != null;
+			}
+			catch (XmlException)
+			{
+				return false;
+			}
+		}
 		private static string GetXmlElementName(string codeName)
 		{
 			return XmlConvert.EncodeName(codeName);
