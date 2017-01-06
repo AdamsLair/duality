@@ -1078,6 +1078,13 @@ namespace Duality.Components.Physics
 			// Update velocity and transform values
 			if (this.body != null)
 			{
+				// Enable the internal physics body if it wasn't already. This can happening
+				// in editor sandbox mode when creating a new RigidBody while paused and then
+				// resuming due to the execution context switch that we'll miss, leading to
+				// the body being disabled for performance reasons.
+				if (!this.body.Enabled && DualityApp.ExecContext != DualityApp.ExecutionContext.Editor)
+					this.body.Enabled = true;
+
 				this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
 				this.angularVel = PhysicsUnit.AngularVelocityToDuality * this.body.AngularVelocity;
 				this.revolutions = this.body.Revolutions;
