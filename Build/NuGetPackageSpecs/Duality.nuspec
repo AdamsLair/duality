@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.9.1</version>
+    <version>2.9.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,11 +13,11 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>XmlSerializer Bugfixes, Type Resolve Robustness, Cloning Bugfix
-#FIX: Fixed XmlSerializer throwing an exception when attempting to serialize strings containing null, bell or similar special characters. 
-#FIX: Fixed XmlSerializer inadvertently normalizing carriage return characters to newline characters.
-#FIX: Fixed a rogue exception when attempting to resolve a type string with an invalid generic parameter reference index token.
-#FIX: Fixed a bug in the cloning system that would cause a stack overflow when attempting to clone an object that would assign its own this reference to one of its fields during construction.</releaseNotes>
+    <releaseNotes>DictionarySurrogate Type Match Bugfix, CultureInfo Cloning / Serialization Surrogate, Regex Cloning / Serialization Surrogate
+#FIX: Fixed the cloning surrogate for Dictionary types accidentally triggering for certain custom interface implementations.
+#ADD: Added both a cloning and a serialization surrogate for CultureInfo.
+#ADD: Added both a cloning and a serialization surrogate for Regex.
+#FIX: Fixed a bug where creating a RigidBody in sandbox mode while paused would result in the body remaining inactive when resuming sandbox mode.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.2" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
