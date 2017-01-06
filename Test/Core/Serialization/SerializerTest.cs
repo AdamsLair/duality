@@ -281,6 +281,13 @@ namespace Duality.Tests.Serialization
 			this.TestWriteRead(new CultureInfo("en-US"), this.PrimaryFormat);
 			this.TestWriteRead(new CultureInfo("en"), this.PrimaryFormat);
 		}
+		[Test] public void SerializeHashSet()
+		{
+			Random rnd = new Random();
+			HashSet<int> source = new HashSet<int>(this.CreateArray<int>(50, () => rnd.Next()));
+			HashSet<int> target = this.WriteRead(source, this.PrimaryFormat);
+			CollectionAssert.AreEquivalent(source, target);
+		}
 
 		[Test] public void SequentialAccess()
 		{

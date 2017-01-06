@@ -48,6 +48,15 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(source, target);
 			Assert.AreEqual(source, target);
 		}
+		[Test] public void CloneHashSet()
+		{
+			Random rnd = new Random();
+			HashSet<int> source = new HashSet<int>(Enumerable.Range(0, 50).Select(i => rnd.Next()));
+			HashSet<int> target = source.DeepClone();
+
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEquivalent(source, target);
+		}
 
 		[Test] public void CloneContentRef()
 		{
