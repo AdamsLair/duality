@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Globalization;
 using System.Reflection;
 
 using Duality;
@@ -38,6 +39,14 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(source, target);
 			Assert.AreEqual(source.Options, target.Options);
 			Assert.AreEqual(source.MatchTimeout, target.MatchTimeout);
+		}
+		[Test] public void CloneCultureInfo()
+		{
+			CultureInfo source = new CultureInfo("en-US");
+			CultureInfo target = source.DeepClone();
+
+			Assert.AreNotSame(source, target);
+			Assert.AreEqual(source, target);
 		}
 
 		[Test] public void CloneContentRef()

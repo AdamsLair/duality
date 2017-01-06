@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.IO;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -274,6 +275,13 @@ namespace Duality.Tests.Serialization
 			Assert.AreEqual(source.Options, target.Options);
 			Assert.AreEqual(source.MatchTimeout, target.MatchTimeout);
 		}
+		[Test] public void SerializeCultureInfo()
+		{
+			this.TestWriteRead(CultureInfo.InvariantCulture, this.PrimaryFormat);
+			this.TestWriteRead(new CultureInfo("en-US"), this.PrimaryFormat);
+			this.TestWriteRead(new CultureInfo("en"), this.PrimaryFormat);
+		}
+
 		[Test] public void SequentialAccess()
 		{
 			Random rnd = new Random();
