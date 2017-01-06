@@ -86,6 +86,7 @@
     <Compile Include="Backend\Graphics\IGraphicsBackend.cs" />
     <Compile Include="Backend\PluginLoader\AssemblyLoadedEventArgs.cs" />
     <Compile Include="Backend\PluginLoader\AssemblyResolveEventArgs.cs" />
+    <Compile Include="Cloning\Surrogates\RegexSurrogate.cs" />
     <Compile Include="Components\Other\ComponentRequirementMap.cs" />
     <Compile Include="Components\Other\ComponentTypeComparer.cs" />
     <Compile Include="Components\Other\RequiredComponentAttribute.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="Resources\ShaderInfo\ShaderFieldInfo.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderFieldType.cs" />
     <Compile Include="Backend\Dummy\DummyPluginLoader.cs" />
+    <Compile Include="Serialization\Surrogates\RegexSurrogate.cs" />
     <Compile Include="Utility\RefreshMode.cs" />
     <Compile Include="Utility\AAQuality.cs" />
     <Compile Include="Utility\ScreenMode.cs" />
