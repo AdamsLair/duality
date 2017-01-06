@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Reflection;
 
 using Duality;
@@ -21,6 +22,24 @@ namespace Duality.Tests.Cloning
 	[TestFixture]
 	public class SpecificCloningTest
 	{
+		[Test] public void CloneRegex()
+		{
+			// Expect the source to match one phrase, but not another
+			Regex source = new Regex("H[aeu]llo", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(3));
+			Assert.IsTrue(source.IsMatch("Test this: Hello World"));
+			Assert.IsFalse(source.IsMatch("Test this: Hillo World"));
+
+			// Expect the target to show the same matches
+			Regex target = source.DeepClone();
+			Assert.IsTrue(target.IsMatch("Test this: Hello World"));
+			Assert.IsFalse(target.IsMatch("Test this: Hillo World"));
+
+			// Expect both instances to be different, but equal
+			Assert.AreNotSame(source, target);
+			Assert.AreEqual(source.Options, target.Options);
+			Assert.AreEqual(source.MatchTimeout, target.MatchTimeout);
+		}
+
 		[Test] public void CloneContentRef()
 		{
 			Random rnd = new Random();
@@ -132,6 +151,7 @@ namespace Duality.Tests.Cloning
 				Assert.AreEqual(sourceCmp.ComponentReference.GameObj.FullName, targetCmp.ComponentReference.GameObj.FullName);
 			}
 		}
+
 		[Test] public void CopyToGameObjectPreservation()
 		{
 			Random rnd = new Random();
@@ -235,6 +255,7 @@ namespace Duality.Tests.Cloning
 				Scene.SwitchTo(null);
 			}
 		}
+
 		[Test] public void TransformHierarchyInitialized()
 		{
 			Random rnd = new Random();
