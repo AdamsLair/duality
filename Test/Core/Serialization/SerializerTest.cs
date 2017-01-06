@@ -4,7 +4,9 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.IO;
+using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 using Duality;
 using Duality.Components;
@@ -256,6 +258,37 @@ namespace Duality.Tests.Serialization
 			Random rnd = new Random();
 			this.TestWriteRead(new TestObject(rnd), this.PrimaryFormat);
 		}
+		[Test] public void SerializeRegex()
+		{
+			// Expect the source to match one phrase, but not another
+			Regex source = new Regex("H[aeu]llo", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(3));
+			Assert.IsTrue(source.IsMatch("Test this: Hello World"));
+			Assert.IsFalse(source.IsMatch("Test this: Hillo World"));
+
+			// Expect the target to show the same matches
+			Regex target = this.WriteRead(source, this.PrimaryFormat);
+			Assert.IsTrue(target.IsMatch("Test this: Hello World"));
+			Assert.IsFalse(target.IsMatch("Test this: Hillo World"));
+
+			// Expect both instances to be different, but equal
+			Assert.AreNotSame(source, target);
+			Assert.AreEqual(source.Options, target.Options);
+			Assert.AreEqual(source.MatchTimeout, target.MatchTimeout);
+		}
+		[Test] public void SerializeCultureInfo()
+		{
+			this.TestWriteRead(CultureInfo.InvariantCulture, this.PrimaryFormat);
+			this.TestWriteRead(new CultureInfo("en-US"), this.PrimaryFormat);
+			this.TestWriteRead(new CultureInfo("en"), this.PrimaryFormat);
+		}
+		[Test] public void SerializeHashSet()
+		{
+			Random rnd = new Random();
+			HashSet<int> source = new HashSet<int>(this.CreateArray<int>(50, () => rnd.Next()));
+			HashSet<int> target = this.WriteRead(source, this.PrimaryFormat);
+			CollectionAssert.AreEquivalent(source, target);
+		}
+
 		[Test] public void SequentialAccess()
 		{
 			Random rnd = new Random();
@@ -584,18 +617,9 @@ namespace Duality.Tests.Serialization
 
 			return true;
 		}
-
-		private void TestDataEqual<T>(string name, T writeObj, Type format, Func<T,T,bool> checkEqual = null)
+		
+		private T WriteRead<T>(T writeObj, Type format)
 		{
-			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
-
-			T readObj = (T)this.ReadReferenceFile(name, format);
-			Assert.IsTrue(checkEqual(writeObj, readObj), "Failed data equality check of Type {0} with Value {1}", typeof(T), writeObj);
-		}
-		private void TestWriteRead<T>(T writeObj, Type format, Func<T,T,bool> checkEqual = null)
-		{
-			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
-
 			T readObj;
 			using (MemoryStream stream = new MemoryStream())
 			{
@@ -612,6 +636,21 @@ namespace Duality.Tests.Serialization
 					readObj = formatterRead.ReadObject<T>();
 				}
 			}
+			return readObj;
+		}
+
+		private void TestDataEqual<T>(string name, T writeObj, Type format, Func<T,T,bool> checkEqual = null)
+		{
+			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
+
+			T readObj = (T)this.ReadReferenceFile(name, format);
+			Assert.IsTrue(checkEqual(writeObj, readObj), "Failed data equality check of Type {0} with Value {1}", typeof(T), writeObj);
+		}
+		private void TestWriteRead<T>(T writeObj, Type format, Func<T,T,bool> checkEqual = null)
+		{
+			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
+
+			T readObj = this.WriteRead(writeObj, format);
 			Assert.IsTrue(checkEqual(writeObj, readObj), "Failed single WriteRead of Type {0} with Value {1}", typeof(T), writeObj);
 		}
 		private void TestSequential<T>(T writeObjA, T writeObjB, Type format, Func<T,T,bool> checkEqual = null)

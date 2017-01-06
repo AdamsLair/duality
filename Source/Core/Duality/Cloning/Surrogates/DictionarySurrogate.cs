@@ -11,7 +11,9 @@ namespace Duality.Cloning.Surrogates
 	{
 		public override bool MatchesType(TypeInfo t)
 		{
-			return typeof(IDictionary).GetTypeInfo().IsAssignableFrom(t) && t.IsGenericType && t.GenericTypeArguments.Length >= 2;
+			return 
+				t.IsGenericType && 
+				t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
 		}
 
 		public override void SetupCloneTargets(IDictionary source, IDictionary target, ICloneTargetSetup setup)
