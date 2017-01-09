@@ -53,7 +53,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// [GET] The size of the surface this drawing device operates on.
 		/// </summary>
-		Vector2 TargetSize { get; }
+		Point2 TargetSize { get; }
 		
 
 		

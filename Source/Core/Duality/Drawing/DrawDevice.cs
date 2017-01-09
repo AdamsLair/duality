@@ -281,9 +281,9 @@ namespace Duality.Drawing
 		{
 			get { return this.renderMode != RenderMatrix.OrthoScreen; }
 		}
-		public Vector2 TargetSize
+		public Point2 TargetSize
 		{
-			get { return this.viewportRect.Size; }
+			get { return new Point2((int)this.viewportRect.W, (int)this.viewportRect.H); }
 		}
 
 

@@ -151,7 +151,7 @@ namespace DualStickSpaceShooter
 					// Determine which text to draw to screen and where to draw it
 					string gameOverText = this.gameWin ? "is it over..?" : "darkness...";
 					Vector2 fullTextSize = canvas.MeasureText(gameOverText);
-					Vector2 textPos = device.TargetSize * 0.5f - fullTextSize * 0.5f;
+					Vector2 textPos = (Vector2)device.TargetSize * 0.5f - fullTextSize * 0.5f;
 					gameOverText = gameOverText.Substring(0, MathF.RoundToInt(gameOverText.Length * textAnimProgress));
 
 					// Make sure not to draw inbetween pixels, so the text is perfectly sharp.
@@ -167,7 +167,7 @@ namespace DualStickSpaceShooter
 
 				if (controlInfoAnimProgress > 0.0f)
 				{
-					Vector2 infoBasePos = device.TargetSize * 0.5f + new Vector2(0.0f, device.TargetSize.Y * 0.25f);
+					Vector2 infoBasePos = (Vector2)device.TargetSize * 0.5f + new Vector2(0.0f, device.TargetSize.Y * 0.25f);
 					if (this.controlInfoMouseKeyboard != null)
 					{
 						canvas.PushState();

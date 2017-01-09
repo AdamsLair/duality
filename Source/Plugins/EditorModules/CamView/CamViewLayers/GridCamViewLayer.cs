@@ -67,7 +67,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 	        Vector2 stepTemp = adjustedGridSize;
 	        Vector2 scaledStep = stepTemp * scaleTemp;
-	        float viewBoundRad = device.TargetSize.Length * 0.5f;
+	        float viewBoundRad = MathF.Distance(device.TargetSize.X, device.TargetSize.Y) * 0.5f;
 	        int lineCountX = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / scaledStep.X)) * 4;
 	        int lineCountY = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / scaledStep.Y)) * 4;
 			int vertexCount = (lineCountX * 2 + lineCountY * 2);
