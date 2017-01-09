@@ -1,11 +1,15 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Pixmap" id="129723834">
-  <animCols dataType="Int">3</animCols>
-  <animFrameBorder dataType="Int">0</animFrameBorder>
-  <animRows dataType="Int">5</animRows>
   <assetInfo dataType="Struct" type="Duality.Editor.AssetManagement.AssetInfo" id="427169525">
-    <customData />
+    <customData dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Object]]" id="1100841590" surrogate="true">
+      <header />
+      <body>
+        <SpriteSheetColumns dataType="Int">3</SpriteSheetColumns>
+        <SpriteSheetRows dataType="Int">5</SpriteSheetRows>
+        <SpriteFrameBorder dataType="Int">0</SpriteFrameBorder>
+      </body>
+    </customData>
     <importerId dataType="String">BasicPixmapAssetImporter</importerId>
-    <sourceFileHint dataType="Array" type="System.String[]" id="1100841590">
+    <sourceFileHint dataType="Array" type="System.String[]" id="649525530">
       <item dataType="String">{Name}.png</item>
     </sourceFileHint>
   </assetInfo>
