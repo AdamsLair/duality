@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Primitives</id>
-    <version>2.0.2</version>
+    <version>2.0.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Primitives</title>
@@ -16,8 +16,12 @@
     <references>
       <reference file="DualityPrimitives.dll" />
     </references>
-    <releaseNotes>Point2 / Vector2 Indexer Tweaks
-#CHANGE: Replaced an if statement with a switch-case to make it easier for the compiler to optimize.</releaseNotes>
+    <releaseNotes>Point2 Arithmetic Operators, Reordered Matrix, Quaternion Code, Removed Regions
+#ADD: Added basic arithmetic operators to Point2 struct. 
+#ADD: Added tests for Point2 struct.
+#CHANGE: Reordered Matrix and Quaternion code to match Duality code style.
+#CHANGE: Removed regions from Matrix and Quaternion code files.
+#CHANGE: Replaced indentation tabs in DualityPrimitives project with spaces.</releaseNotes>
   </metadata>
   <files>
     <file src="..\Output\DualityPrimitives.dll" target="lib" />
