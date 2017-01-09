@@ -77,7 +77,7 @@ namespace Duality.Resources
 			get
 			{
 				ContentRef<Texture> target = this.targets.Count > 0 ? this.targets[0] : null;
-				return target.IsAvailable ? target.Res.PixelWidth : 0;
+				return target.IsAvailable ? target.Res.ContentWidth : 0;
 			}
 		}
 		/// <summary>
@@ -88,7 +88,7 @@ namespace Duality.Resources
 			get
 			{
 				ContentRef<Texture> target = this.targets.Count > 0 ? this.targets[0] : null;
-				return target.IsAvailable ? target.Res.PixelHeight : 0;
+				return target.IsAvailable ? target.Res.ContentHeight : 0;
 			}
 		}
 		/// <summary>
@@ -213,7 +213,7 @@ namespace Duality.Resources
 		{
 			foreach (var target in this.targets.Where(t => t != null).Res())
 			{
-				if (target.PixelWidth == 0 || target.PixelHeight == 0)
+				if (target.ContentWidth == 0 || target.ContentHeight == 0)
 				{
 					Logs.Core.WriteError("Error initializing '{0}' because '{1}' has a dimension of zero.", this, target);
 					return;

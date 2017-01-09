@@ -1224,7 +1224,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 							{
 								totalLength += (outline[i - 1] - outline[i]).Length;
 							}
-							canvas.State.TextureCoordinateRect = new Rect(totalLength / strippledLineTex.PixelWidth, 1.0f);
+							canvas.State.TextureCoordinateRect = new Rect(totalLength / strippledLineTex.ContentWidth, 1.0f);
 						}
 
 						// Draw the outline

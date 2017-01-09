@@ -307,9 +307,7 @@ namespace Duality.Components.Renderers
 			// not equal the rect size that would be required for a 1:1 display.
 			if (mainTex != null)
 			{
-				Vector2 fullSize = new Vector2(
-					mainTex.PixelWidth * (uvRect.W / mainTex.UVRatio.X),
-					mainTex.PixelHeight * (uvRect.H / mainTex.UVRatio.Y));
+				Vector2 fullSize = mainTex.ContentSize * (uvRect.Size / mainTex.UVRatio);
 				if ((this.rectMode & UVMode.WrapHorizontal) != 0)
 					uvRect.W *= this.rect.W / fullSize.X;
 				if ((this.rectMode & UVMode.WrapVertical) != 0)

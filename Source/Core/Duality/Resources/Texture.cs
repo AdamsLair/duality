@@ -90,38 +90,54 @@ namespace Duality.Resources
 		[DontSerialize] private	bool	needsReload	= true;
 		[DontSerialize] private	Rect[]	atlas		= null;
 
-
+		
 		/// <summary>
-		/// [GET] The Textures internal texel width
+		/// [GET] The width of the internal texture that has been allocated, in pixels.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public int TexelWidth
+		public int InternalWidth
 		{
 			get { return this.texWidth; }
 		}
 		/// <summary>
-		/// [GET] The Textures internal texel height
+		/// [GET] The height of the internal texture that has been allocated, in pixels.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public int TexelHeight
+		public int InternalHeight
 		{
 			get { return this.texHeight; }
 		}
 		/// <summary>
-		/// [GET] The Textures original pixel width
+		/// [GET] The size of the internal texture that has been allocated, in pixels.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public int PixelWidth
+		public Point2 InternalSize
+		{
+			get { return new Point2(this.texWidth, this.texHeight); }
+		}
+		/// <summary>
+		/// [GET] The width of the texture area that is actually used, in pixels.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public int ContentWidth
 		{
 			get { return this.pxWidth; }
 		}
 		/// <summary>
-		/// [GET] The Textures original pixel height
+		/// [GET] The height of the texture area that is actually used, in pixels.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public int PixelHeight
+		public int ContentHeight
 		{
 			get { return this.pxHeight; }
+		}
+		/// <summary>
+		/// [GET] The size of the texture area that is actually used, in pixels.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public Point2 ContentSize
+		{
+			get { return new Point2(this.pxWidth, this.pxHeight); }
 		}
 		/// <summary>
 		/// [GET] The backends native texture. You shouldn't use this unless you know exactly what you're doing.
@@ -132,7 +148,7 @@ namespace Duality.Resources
 			get { return this.nativeTex; }
 		}
 		/// <summary>
-		/// [GET] UV (Texture) coordinates for the Textures lower right
+		/// [GET] The UV coordinate size that represents the texture's used content area.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public Vector2 UVRatio
@@ -161,12 +177,11 @@ namespace Duality.Resources
 			get { return this.needsReload; }
 		} 
 		/// <summary>
-		/// [GET / SET] The Textures size. Readonly, when created from a <see cref="BasePixmap"/>.
+		/// [GET / SET] The Textures nominal size. When create from a <see cref="BasePixmap"/>, this
+		/// value will be read-only and derived from its <see cref="Pixmap.Size"/>.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		[EditorHintRange(0, int.MaxValue)]
-		[EditorHintIncrement(1)]
-		[EditorHintDecimalPlaces(0)]
 		public Vector2 Size
 		{
 			get { return this.size; }
@@ -426,7 +441,7 @@ namespace Duality.Resources
 		/// Retrieves the pixel data that is currently stored in video memory.
 		/// </summary>
 		/// <param name="targetBuffer">The buffer (Rgba8 format) to store all the pixel data in. 
-		/// Its byte length should be at least <see cref="TexelWidth"/> * <see cref="TexelHeight"/> * 4.</param>
+		/// Its byte length should be at least <see cref="InternalWidth"/> * <see cref="InternalHeight"/> * 4.</param>
 		/// <returns>The number of bytes that were read.</returns>
 		public int GetPixelData<T>(T[] targetBuffer) where T : struct
 		{

@@ -65,11 +65,11 @@ namespace DynamicLighting.DataConverters
 				}
 				else if (mainTex != null)
 				{
-					spriteSize = new Vector2(mainTex.PixelWidth, mainTex.PixelHeight);
+					spriteSize = mainTex.ContentSize;
 				}
 				else
 				{
-					spriteSize = new Vector2(Pixmap.Checkerboard.Res.Width, Pixmap.Checkerboard.Res.Height);
+					spriteSize = Pixmap.Checkerboard.Res.Size;
 				}
 
 				// Create a sprite Component in any case

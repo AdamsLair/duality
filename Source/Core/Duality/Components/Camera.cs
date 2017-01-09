@@ -317,7 +317,7 @@ namespace Duality.Components
 				// Setup DrawDevice
 				this.drawDevice.PickingIndex = 1;
 				this.drawDevice.Target = this.pickingRT;
-				this.drawDevice.ViewportRect = new Rect(this.pickingTex.PixelWidth, this.pickingTex.PixelHeight);
+				this.drawDevice.ViewportRect = new Rect(this.pickingTex.ContentSize);
 
 				// Render the world
 				{
@@ -344,7 +344,7 @@ namespace Duality.Components
 			}
 
 			// Move data to local buffer
-			int pxNum = this.pickingTex.PixelWidth * this.pickingTex.PixelHeight;
+			int pxNum = this.pickingTex.ContentWidth * this.pickingTex.ContentHeight;
 			int pxByteNum = pxNum * 4;
 
 			if (this.pickingBuffer == null)
@@ -366,13 +366,13 @@ namespace Duality.Components
 		public ICmpRenderer PickRendererAt(int x, int y)
 		{
 			if (this.pickingBuffer == null) return null;
-			if (x < 0 || x >= this.pickingTex.PixelWidth) return null;
-			if (y < 0 || y >= this.pickingTex.PixelHeight) return null;
+			if (x < 0 || x >= this.pickingTex.ContentWidth) return null;
+			if (y < 0 || y >= this.pickingTex.ContentHeight) return null;
 
-			x = MathF.Clamp(x, 0, this.pickingTex.PixelWidth - 1);
-			y = MathF.Clamp(y, 0, this.pickingTex.PixelHeight - 1);
+			x = MathF.Clamp(x, 0, this.pickingTex.ContentWidth - 1);
+			y = MathF.Clamp(y, 0, this.pickingTex.ContentHeight - 1);
 
-			int baseIndex = 4 * (x + y * this.pickingTex.PixelWidth);
+			int baseIndex = 4 * (x + y * this.pickingTex.ContentWidth);
 			if (baseIndex + 4 >= this.pickingBuffer.Length) return null;
 
 			int rendererId = 
@@ -408,25 +408,25 @@ namespace Duality.Components
 		{
 			if (this.pickingBuffer == null)
 				return Enumerable.Empty<ICmpRenderer>();
-			if ((x + w) + (y + h) * this.pickingTex.PixelWidth >= this.pickingBuffer.Length)
+			if ((x + w) + (y + h) * this.pickingTex.ContentWidth >= this.pickingBuffer.Length)
 				return Enumerable.Empty<ICmpRenderer>();
 
 			Rect dstRect = new Rect(x, y, w, h);
-			Rect availRect = new Rect(this.pickingTex.PixelWidth, this.pickingTex.PixelHeight);
+			Rect availRect = new Rect(this.pickingTex.ContentSize);
 
 			if (!dstRect.Intersects(availRect)) return Enumerable.Empty<ICmpRenderer>();
 			dstRect = dstRect.Intersection(availRect);
 
 			x = Math.Max((int)dstRect.X, 0);
 			y = Math.Max((int)dstRect.Y, 0);
-			w = Math.Min((int)dstRect.W, this.pickingTex.PixelWidth - x);
-			h = Math.Min((int)dstRect.H, this.pickingTex.PixelHeight - y);
+			w = Math.Min((int)dstRect.W, this.pickingTex.ContentWidth - x);
+			h = Math.Min((int)dstRect.H, this.pickingTex.ContentHeight - y);
 
 			HashSet<ICmpRenderer> result = new HashSet<ICmpRenderer>();
 			int rendererIdLast = 0;
 			for (int j = 0; j < h; ++j)
 			{
-				int offset = 4 * (x + (y + j) * this.pickingTex.PixelWidth);
+				int offset = 4 * (x + (y + j) * this.pickingTex.ContentWidth);
 				for (int i = 0; i < w; ++i)
 				{
 					int rendererId =
@@ -564,7 +564,7 @@ namespace Duality.Components
 
 				Texture mainTex = p.Input.MainTexture.Res;
 				Vector2 uvRatio = mainTex != null ? mainTex.UVRatio : Vector2.One;
-				Vector2 inputSize = mainTex != null ? new Vector2(mainTex.PixelWidth, mainTex.PixelHeight) : Vector2.One;
+				Vector2 inputSize = mainTex != null ? mainTex.ContentSize : Vector2.One;
 				Rect targetRect;
 				if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor &&
 					!this.drawDevice.Target.IsAvailable)
@@ -680,9 +680,7 @@ namespace Duality.Components
 		}
 		private void SetupPickingRT(Point2 size)
 		{
-			if (this.pickingTex == null || 
-				this.pickingTex.PixelWidth != size.X || 
-				this.pickingTex.PixelHeight != size.Y)
+			if (this.pickingTex == null || this.pickingTex.ContentSize != size)
 			{
 				if (this.pickingTex != null) this.pickingTex.Dispose();
 				if (this.pickingRT != null) this.pickingRT.Dispose();
