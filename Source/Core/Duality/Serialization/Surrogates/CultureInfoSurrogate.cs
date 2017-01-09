@@ -6,7 +6,7 @@ using System.Globalization;
 namespace Duality.Serialization.Surrogates
 {
 	/// <summary>
-	/// De/Serializes a <see cref="Regex"/>.
+	/// De/Serializes a <see cref="CultureInfo"/> instance.
 	/// </summary>
 	public class CultureInfoSurrogate : SerializeSurrogate<CultureInfo>
 	{
