@@ -22,18 +22,7 @@ namespace Duality
 		/// The Y component of the Point.
 		/// </summary>
 		public int Y;
-
-		/// <summary>
-		/// Constructs a new Point.
-		/// </summary>
-		/// <param name="x">The x coordinate of the Point.</param>
-		/// <param name="y">The y coordinate of the Point.</param>
-		public Point2(int x, int y)
-		{
-			X = x;
-			Y = y;
-		}
-
+		
 		/// <summary>
 		/// Gets or sets the value at the index of the Point.
 		/// </summary>
@@ -57,6 +46,17 @@ namespace Duality
 					default: throw new IndexOutOfRangeException("Point2 access at index: " + index);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Constructs a new Point.
+		/// </summary>
+		/// <param name="x">The x coordinate of the Point.</param>
+		/// <param name="y">The y coordinate of the Point.</param>
+		public Point2(int x, int y)
+		{
+			X = x;
+			Y = y;
 		}
 
 		/// <summary>
@@ -95,6 +95,111 @@ namespace Duality
 			diff.X = left.X - right.X;
 			diff.Y = left.Y - right.Y;
 			return MathF.Sqrt(diff.X * diff.X + diff.Y * diff.Y);
+		}
+		
+		/// <summary>
+		/// Adds the specified points component-wise.
+		/// </summary>
+		public static Point2 operator +(Point2 left, Point2 right)
+		{
+			left.X += right.X;
+			left.Y += right.Y;
+			return left;
+		}
+		/// <summary>
+		/// Subtracts the specified points component-wise.
+		/// </summary>
+		public static Point2 operator -(Point2 left, Point2 right)
+		{
+			left.X -= right.X;
+			left.Y -= right.Y;
+			return left;
+		}
+		/// <summary>
+		/// Inverts the specified point component-wise,
+		/// </summary>
+		public static Point2 operator -(Point2 point)
+		{
+			point.X = -point.X;
+			point.Y = -point.Y;
+			return point;
+		}
+		/// <summary>
+		/// Multiplies the specified point component-wise with the specified factor.
+		/// </summary>
+		public static Point2 operator *(Point2 left, int right)
+		{
+			left.X *= right;
+			left.Y *= right;
+			return left;
+		}
+		/// <summary>
+		/// Multiplies the specified point component-wise with the specified factor.
+		/// </summary>
+		public static Point2 operator *(int left, Point2 right)
+		{
+			right.X *= left;
+			right.Y *= left;
+			return right;
+		}
+		/// <summary>
+		/// Multiplies the specified points component-wise.
+		/// </summary>
+		public static Point2 operator *(Point2 left, Point2 right)
+		{
+			left.X *= right.X;
+			left.Y *= right.Y;
+			return left;
+		}
+		/// <summary>
+		/// Divides the specified point component-wise with the specified value.
+		/// </summary>
+		public static Point2 operator /(Point2 left, int right)
+		{
+			left.X /= right;
+			left.Y /= right;
+			return left;
+		}
+		/// <summary>
+		/// Divides the specified points component-wise.
+		/// </summary>
+		public static Point2 operator /(Point2 left, Point2 right)
+		{
+			left.X /= right.X;
+			left.Y /= right.Y;
+			return left;
+		}
+
+		/// <summary>
+		/// Multiplies the specified point component-wise with the specified factor.
+		/// </summary>
+		public static Vector2 operator *(Point2 left, float right)
+		{
+			Vector2 result = left;
+			result.X *= right;
+			result.Y *= right;
+			return result;
+		}
+		/// <summary>
+		/// Multiplies the specified point component-wise with the specified factor.
+		/// </summary>
+		public static Vector2 operator *(float left, Point2 right)
+		{
+			Vector2 result = right;
+			result.X *= left;
+			result.Y *= left;
+			return result;
+		}
+		/// <summary>
+		/// Divides the specified point component-wise with the specified value.
+		/// </summary>
+		public static Vector2 operator /(Point2 left, float right)
+		{
+			float mult = 1.0f / right;
+			Vector2 result = left;
+			result.X *= mult;
+			result.Y *= mult;
+			return result;
 		}
 
 		/// <summary>
