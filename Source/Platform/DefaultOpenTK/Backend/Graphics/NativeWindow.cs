@@ -148,7 +148,7 @@ namespace Duality.Backend.DefaultOpenTK
 			if (options.ScreenMode == ScreenMode.FullWindow)
 				this.internalWindow.WindowState = WindowState.Fullscreen;
 
-			DualityApp.TargetResolution = new Vector2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
+			DualityApp.TargetResolution = new Point2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
 
 			// Register events and input
 			this.HookIntoDuality();
@@ -230,11 +230,11 @@ namespace Duality.Backend.DefaultOpenTK
 			if (this.internalWindow.Cursor != targetCursor)
 				this.internalWindow.Cursor = targetCursor;
 
-			DualityApp.TargetResolution = new Vector2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
+			DualityApp.TargetResolution = new Point2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
 		}
 		private void OnResize(EventArgs e)
 		{
-			DualityApp.TargetResolution = new Vector2(
+			DualityApp.TargetResolution = new Point2(
 				this.internalWindow.ClientSize.Width,
 				this.internalWindow.ClientSize.Height);
 		}

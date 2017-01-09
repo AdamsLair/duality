@@ -80,7 +80,7 @@ namespace Duality
 		private static ISystemBackend          systemBack         = null;
 		private static IGraphicsBackend        graphicsBack       = null;
 		private static IAudioBackend           audioBack          = null;
-		private static Vector2                 targetResolution   = Vector2.Zero;
+		private static Point2                  targetResolution   = Point2.Zero;
 		private static MouseInput              mouse              = new MouseInput();
 		private static KeyboardInput           keyboard           = new KeyboardInput();
 		private static JoystickInputCollection joysticks          = new JoystickInputCollection();
@@ -166,7 +166,7 @@ namespace Duality
 		/// [GET / SET] The size of the current rendering surface (full screen, a single window, etc.) in pixels. Setting this will not actually change
 		/// Duality's state - this is a pure "for your information" property.
 		/// </summary>
-		public static Vector2 TargetResolution
+		public static Point2 TargetResolution
 		{
 			get { return targetResolution; }
 			set { targetResolution = value; }
