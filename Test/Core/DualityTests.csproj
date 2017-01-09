@@ -109,7 +109,7 @@
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Drawing\CanvasTest.cs" />
     <Compile Include="Utility\ExtMethodsMemberInfoTest.cs" />
-    <Compile Include="Utility\RectTest.cs" />
+    <Compile Include="Math\RectTest.cs" />
     <Compile Include="Utility\ExtMethodsTypeInfoTest.cs" />
     <Compile Include="Utility\ObjectCreatorTest.cs" />
     <Compile Include="Utility\ReflectionHelperTest.cs" />
