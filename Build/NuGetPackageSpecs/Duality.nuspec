@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.9.0</version>
+    <version>2.9.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,19 +13,11 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>API Tweaks, Documentation, Extracted ComponentRequirementMap, Project Structure
-#CHANGE: Tweaked ComponentRequirementMap API. 
-#CHANGE: Added XML documentation.
-#CHANGE: Extracted a new ComponentRequirementMap class from Component to clearly separate this functionality. 
-#CHANGE: Flagged all requirement-related Component API except accessing the static requirement map instance as obsolete.
-#CHANGE: Split up Component to match one-class-per-file policy.
-#ADD: Implemented a more sophisticated Component requirement creation algorithm that supports requiring an abstract or interface type, but creating a different concrete type, in case the requirement isn't already met.
-#ADD: RequiredComponent now allows to specify a default Component type to create when auto-creating dependencies and the required one is missing.
-#CHANGE: Centralized code for deciding which Component requirements to create in a target object, so all requirements of a new Component are satisfied.
-#ADD: Added a reset hotkey for profile counters to the ProfileRenderer. 
-#ADD: Added API for resetting all profile counters min, max and average values to make it easier to record and detect spikes.
-#CHANGE: Tweaked GetReportData API in ProfileCounter.
-#ADD: Added a new time profiler that represents unaccounted for frame time, i.e. frame time that isn't otherwise measured.</releaseNotes>
+    <releaseNotes>DictionarySurrogate Type Match Bugfix, CultureInfo Cloning / Serialization Surrogate, Regex Cloning / Serialization Surrogate
+#FIX: Fixed the cloning surrogate for Dictionary types accidentally triggering for certain custom interface implementations.
+#ADD: Added both a cloning and a serialization surrogate for CultureInfo.
+#ADD: Added both a cloning and a serialization surrogate for Regex.
+#FIX: Fixed a bug where creating a RigidBody in sandbox mode while paused would result in the body remaining inactive when resuming sandbox mode.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.2" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />

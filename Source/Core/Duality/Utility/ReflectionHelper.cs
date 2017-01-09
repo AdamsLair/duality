@@ -788,8 +788,16 @@ namespace Duality
 			{
 				if (declaringMethod != null)
 				{
-					int methodGenArgIndex = int.Parse(typeNameBase.Substring(2, typeNameBase.Length - 2));
-					baseType = declaringMethod.GetGenericArguments()[methodGenArgIndex];
+					int methodGenArgIndex;
+					string genericTypeIndexToken = typeNameBase.Substring(2, typeNameBase.Length - 2);
+					if (int.TryParse(genericTypeIndexToken, out methodGenArgIndex))
+					{
+						Type[] genericMethodArguments = declaringMethod.GetGenericArguments();
+						if (methodGenArgIndex >= 0 && methodGenArgIndex < genericMethodArguments.Length)
+						{
+							baseType = genericMethodArguments[methodGenArgIndex];
+						}
+					}
 				}
 			}
 			else

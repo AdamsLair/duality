@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DefaultOpenTK</id>
-    <version>2.0.14</version>
+    <version>2.0.15</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>OpenTK Backend</title>
@@ -13,9 +13,8 @@
     <summary>The default audiovisual backend layer for Duality.</summary>
     <description>The default audiovisual backend layer for Duality. It uses OpenGL and OpenAL, as provided by OpenTK.</description>
     <tags>Duality Core Plugin Backend</tags>
-    <releaseNotes>DisplayDevice Logs, Simplified Window Handling Code
-#ADD: Added logs about the available display devices.
-#CHANGE: Simplified backend window handling code so it will only adjust properties that have actually been changed one-by-one.</releaseNotes>
+    <releaseNotes>
+</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.9.0" />
       <dependency id="AdamsLair.OpenTK" version="1.1.6" />

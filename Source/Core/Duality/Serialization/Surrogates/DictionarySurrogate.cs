@@ -13,7 +13,9 @@ namespace Duality.Serialization.Surrogates
 	{
 		public override bool MatchesType(TypeInfo t)
 		{
-			return t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
+			return 
+				t.IsGenericType && 
+				t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
 		}
 		public override void WriteData(IDataWriter writer)
 		{
