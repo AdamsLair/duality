@@ -34,42 +34,9 @@ namespace Duality
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Quaternion : IEquatable<Quaternion>
 	{
-		#region Fields
-
 		Vector3 xyz;
 		float w;
 
-		#endregion
-
-		#region Constructors
-
-		/// <summary>
-		/// Construct a new Quaternion from vector and w components
-		/// </summary>
-		/// <param name="v">The vector part</param>
-		/// <param name="w">The w part</param>
-		public Quaternion(Vector3 v, float w)
-		{
-			this.xyz = v;
-			this.w = w;
-		}
-
-		/// <summary>
-		/// Construct a new Quaternion
-		/// </summary>
-		/// <param name="x">The x component</param>
-		/// <param name="y">The y component</param>
-		/// <param name="z">The z component</param>
-		/// <param name="w">The w component</param>
-		public Quaternion(float x, float y, float z, float w)
-			: this(new Vector3(x, y, z), w)
-		{ }
-
-		#endregion
-
-		#region Public Members
-
-		#region Properties
 
 		/// <summary>
 		/// Gets or sets an OpenTK.Vector3 with the X, Y and Z components of this instance.
@@ -95,12 +62,28 @@ namespace Duality
 		/// Gets or sets the W component of this instance.
 		/// </summary>
 		public float W { get { return w; } set { w = value; } }
+		
 
-		#endregion
-
-		#region Instance
-
-		#region ToAxisAngle
+		/// <summary>
+		/// Construct a new Quaternion from vector and w components
+		/// </summary>
+		/// <param name="v">The vector part</param>
+		/// <param name="w">The w part</param>
+		public Quaternion(Vector3 v, float w)
+		{
+			this.xyz = v;
+			this.w = w;
+		}
+		/// <summary>
+		/// Construct a new Quaternion
+		/// </summary>
+		/// <param name="x">The x component</param>
+		/// <param name="y">The y component</param>
+		/// <param name="z">The z component</param>
+		/// <param name="w">The w component</param>
+		public Quaternion(float x, float y, float z, float w)
+			: this(new Vector3(x, y, z), w)
+		{ }
 
 		/// <summary>
 		/// Convert the current quaternion to axis angle representation
@@ -142,10 +125,6 @@ namespace Duality
 			return result;
 		}
 
-		#endregion
-
-		#region public float Length
-
 		/// <summary>
 		/// Gets the length (magnitude) of the quaternion.
 		/// </summary>
@@ -158,10 +137,6 @@ namespace Duality
 			}
 		}
 
-		#endregion
-
-		#region public float LengthSquared
-
 		/// <summary>
 		/// Gets the square of the quaternion length (magnitude).
 		/// </summary>
@@ -172,8 +147,6 @@ namespace Duality
 				return W * W + Xyz.LengthSquared;
 			}
 		}
-
-		#endregion
 
 		/// <summary>
 		/// Returns a copy of the Quaternion scaled to unit length.
@@ -203,8 +176,6 @@ namespace Duality
 			return q;
 		}
 
-		#region public void Normalize()
-
 		/// <summary>
 		/// Scales the Quaternion to unit length.
 		/// </summary>
@@ -215,10 +186,6 @@ namespace Duality
 			W *= scale;
 		}
 
-		#endregion
-
-		#region public void Conjugate()
-
 		/// <summary>
 		/// Inverts the Vector3 component of this Quaternion.
 		/// </summary>
@@ -227,22 +194,10 @@ namespace Duality
 			Xyz = -Xyz;
 		}
 
-		#endregion
-
-		#endregion
-
-		#region Static
-
-		#region Fields
-
 		/// <summary>
 		/// Defines the identity quaternion.
 		/// </summary>
 		public static readonly Quaternion Identity = new Quaternion(0, 0, 0, 1);
-
-		#endregion
-
-		#region Add
 
 		/// <summary>
 		/// Add two quaternions
@@ -270,10 +225,6 @@ namespace Duality
 				left.W + right.W);
 		}
 
-		#endregion
-
-		#region Sub
-
 		/// <summary>
 		/// Subtracts two instances.
 		/// </summary>
@@ -299,10 +250,6 @@ namespace Duality
 				left.Xyz - right.Xyz,
 				left.W - right.W);
 		}
-
-		#endregion
-
-		#region Mult
 
 		/// <summary>
 		/// Multiplies two instances.
@@ -380,10 +327,6 @@ namespace Duality
 			return new Quaternion(quaternion.X * scale, quaternion.Y * scale, quaternion.Z * scale, quaternion.W * scale);
 		}
 
-		#endregion
-
-		#region Conjugate
-
 		/// <summary>
 		/// Get the conjugate of the given quaternion
 		/// </summary>
@@ -403,10 +346,6 @@ namespace Duality
 		{
 			result = new Quaternion(-q.Xyz, q.W);
 		}
-
-		#endregion
-
-		#region Invert
 
 		/// <summary>
 		/// Get the inverse of the given quaternion
@@ -439,10 +378,6 @@ namespace Duality
 			}
 		}
 
-		#endregion
-
-		#region Normalize
-
 		/// <summary>
 		/// Scale the given quaternion to unit length
 		/// </summary>
@@ -466,10 +401,6 @@ namespace Duality
 			result = new Quaternion(q.Xyz * scale, q.W * scale);
 		}
 
-		#endregion
-
-		#region FromAxisAngle
-
 		/// <summary>
 		/// Build a quaternion from the given axis and angle
 		/// </summary>
@@ -490,10 +421,6 @@ namespace Duality
 
 			return Normalize(result);
 		}
-
-		#endregion
-
-		#region FromMatrix
 
 		/// <summary>
 		/// Builds a quaternion from the given rotation matrix
@@ -563,10 +490,6 @@ namespace Duality
 			}
 		}
 
-		#endregion
-
-		#region Slerp
-
 		/// <summary>
 		/// Do Spherical linear interpolation between two quaternions 
 		/// </summary>
@@ -629,12 +552,6 @@ namespace Duality
 			else
 				return Identity;
 		}
-
-		#endregion
-
-		#endregion
-
-		#region Operators
 
 		/// <summary>
 		/// Adds two instances.
@@ -719,12 +636,6 @@ namespace Duality
 			return !left.Equals(right);
 		}
 
-		#endregion
-
-		#region Overrides
-
-		#region public override string ToString()
-
 		/// <summary>
 		/// Returns a System.String that represents the current Quaternion.
 		/// </summary>
@@ -733,10 +644,6 @@ namespace Duality
 		{
 			return String.Format("V: {0}, W: {1}", Xyz, W);
 		}
-
-		#endregion
-
-		#region public override bool Equals (object o)
 
 		/// <summary>
 		/// Compares this object instance to another object for equality. 
@@ -749,10 +656,6 @@ namespace Duality
 				return this == (Quaternion)other;
 		}
 
-		#endregion
-
-		#region public override int GetHashCode ()
-
 		/// <summary>
 		/// Provides the hash code for this object. 
 		/// </summary>
@@ -761,14 +664,6 @@ namespace Duality
 		{
 			return Xyz.GetHashCode() ^ W.GetHashCode();
 		}
-
-		#endregion
-
-		#endregion
-
-		#endregion
-
-		#region IEquatable<Quaternion> Members
 
 		/// <summary>
 		/// Compares this Quaternion instance to another Quaternion for equality. 
@@ -779,7 +674,5 @@ namespace Duality
 		{
 			return Xyz == other.Xyz && W == other.W;
 		}
-
-		#endregion
 	}
 }

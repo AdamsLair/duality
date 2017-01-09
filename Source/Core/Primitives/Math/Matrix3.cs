@@ -33,8 +33,6 @@ namespace Duality
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Matrix3 : IEquatable<Matrix3>
 	{
-		#region Fields
-        
 		/// <summary>
 		/// First row of the matrix.
 		/// </summary>
@@ -60,10 +58,7 @@ namespace Duality
 		/// </summary>
 		public static readonly Matrix3 Zero = new Matrix3(Vector3.Zero, Vector3.Zero, Vector3.Zero);
         
-		#endregion
-        
-		#region Constructors
-        
+
 		/// <summary>
 		/// Constructs a new instance.
 		/// </summary>
@@ -109,12 +104,6 @@ namespace Duality
 			Row1 = matrix.Row1.Xyz;
 			Row2 = matrix.Row2.Xyz;
 		}
-        
-		#endregion
-        
-		#region Public Members
-        
-		#region Properties
         
 		/// <summary>
 		/// Gets the determinant of this matrix.
@@ -222,10 +211,6 @@ namespace Duality
 		/// Gets the trace of the matrix, the sum of the values along the diagonal.
 		/// </summary>
 		public float Trace { get { return Row0.X + Row1.Y + Row2.Z; } }
-        
-		#endregion
-
-		#region Indexers
 
 		/// <summary>
 		/// Gets or sets the value at a specified row and column.
@@ -248,12 +233,6 @@ namespace Duality
 			}
 		}
 
-		#endregion
-
-		#region Instance
-
-		#region public void Invert()
-
 		/// <summary>
 		/// Converts this instance into its inverse.
 		/// </summary>
@@ -261,10 +240,6 @@ namespace Duality
 		{
 			this = Matrix3.Invert(this);
 		}
-        
-		#endregion
-        
-		#region public void Transpose()
 
 		/// <summary>
 		/// Converts this instance into its transpose.
@@ -273,8 +248,6 @@ namespace Duality
 		{
 			this = Matrix3.Transpose(this);
 		}
-        
-		#endregion
 
 		/// <summary>
 		/// Returns a normalised copy of this instance.
@@ -403,12 +376,6 @@ namespace Duality
 			return q;
 		}
 
-		#endregion
-        
-		#region Static
-        
-		#region CreateFromAxisAngle
-
 		/// <summary>
 		/// Build a rotation matrix from the specified axis/angle rotation.
 		/// </summary>
@@ -461,10 +428,6 @@ namespace Duality
 			CreateFromAxisAngle(axis, angle, out result);
 			return result;
 		}
-        
-		#endregion
-        
-		#region CreateFromQuaternion
 
 		/// <summary>
 		/// Build a rotation matrix from the specified quaternion.
@@ -490,10 +453,6 @@ namespace Duality
 			CreateFromQuaternion(ref q, out result);
 			return result;
 		}
-        
-		#endregion
-        
-		#region CreateRotation[XYZ]
 
 		/// <summary>
 		/// Builds a rotation matrix for a rotation around the x-axis.
@@ -582,10 +541,6 @@ namespace Duality
 			return result;
 		}
         
-		#endregion
-        
-		#region CreateScale
-        
 		/// <summary>
 		/// Creates a scale matrix.
 		/// </summary>
@@ -664,10 +619,6 @@ namespace Duality
 			result.Row1.Y = y;
 			result.Row2.Z = z;
 		}
-        
-		#endregion
-        
-		#region Multiply Functions
 
 		/// <summary>
 		/// Multiplies two instances.
@@ -707,11 +658,7 @@ namespace Duality
 			result.Row2.Y = ((lM31 * rM12) + (lM32 * rM22)) + (lM33 * rM32);
 			result.Row2.Z = ((lM31 * rM13) + (lM32 * rM23)) + (lM33 * rM33);
 		}
-        
-		#endregion
-        
-		#region Invert Functions
-        
+
 		/// <summary>
 		/// Calculate the inverse of the given matrix
 		/// </summary>
@@ -832,10 +779,6 @@ namespace Duality
 			Invert(ref mat, out result);
 			return result;
 		}
-        
-		#endregion
-        
-		#region Transpose
 
 		/// <summary>
 		/// Calculate the transpose of the given matrix
@@ -864,12 +807,6 @@ namespace Duality
 			result.Row2.Y = mat.Row1.Z;
 			result.Row2.Z = mat.Row2.Z;
 		}
-        
-		#endregion
-        
-		#endregion
-        
-		#region Operators
 
 		/// <summary>
 		/// Matrix multiplication
@@ -904,12 +841,6 @@ namespace Duality
 			return !left.Equals(right);
 		}
         
-		#endregion
-        
-		#region Overrides
-        
-		#region public override string ToString()
-        
 		/// <summary>
 		/// Returns a System.String that represents the current Matrix3d.
 		/// </summary>
@@ -919,10 +850,6 @@ namespace Duality
 			return String.Format("{0}\n{1}\n{2}", Row0, Row1, Row2);
 		}
         
-		#endregion
-        
-		#region public override int GetHashCode()
-        
 		/// <summary>
 		/// Returns the hashcode for this instance.
 		/// </summary>
@@ -931,10 +858,6 @@ namespace Duality
 		{
 			return Row0.GetHashCode() ^ Row1.GetHashCode() ^ Row2.GetHashCode();
 		}
-        
-		#endregion
-        
-		#region public override bool Equals(object obj)
         
 		/// <summary>
 		/// Indicates whether this instance and a specified object are equal.
@@ -948,14 +871,6 @@ namespace Duality
             
 			return this.Equals((Matrix3)obj);
 		}
-        
-		#endregion
-        
-		#endregion
-        
-		#endregion
-        
-		#region IEquatable<Matrix3> Members
 
 		/// <summary>Indicates whether the current matrix is equal to another matrix.</summary>
 		/// <param name="other">A matrix to compare with this matrix.</param>
@@ -967,7 +882,5 @@ namespace Duality
 					Row1 == other.Row1 &&
 					Row2 == other.Row2;
 		}
-        
-		#endregion
 	}
 }
