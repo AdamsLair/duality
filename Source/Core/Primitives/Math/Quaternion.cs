@@ -34,34 +34,57 @@ namespace Duality
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Quaternion : IEquatable<Quaternion>
 	{
-		Vector3 xyz;
-		float w;
+		/// <summary>
+		/// Defines the identity quaternion.
+		/// </summary>
+		public static readonly Quaternion Identity = new Quaternion(0, 0, 0, 1);
+
+
+		private Vector3 xyz;
+		private float w;
 
 
 		/// <summary>
 		/// Gets or sets an OpenTK.Vector3 with the X, Y and Z components of this instance.
 		/// </summary>
 		public Vector3 Xyz { get { return xyz; } set { xyz = value; } }
-
 		/// <summary>
 		/// Gets or sets the X component of this instance.
 		/// </summary>
 		public float X { get { return xyz.X; } set { xyz.X = value; } }
-
 		/// <summary>
 		/// Gets or sets the Y component of this instance.
 		/// </summary>
 		public float Y { get { return xyz.Y; } set { xyz.Y = value; } }
-
 		/// <summary>
 		/// Gets or sets the Z component of this instance.
 		/// </summary>
 		public float Z { get { return xyz.Z; } set { xyz.Z = value; } }
-
 		/// <summary>
 		/// Gets or sets the W component of this instance.
 		/// </summary>
 		public float W { get { return w; } set { w = value; } }
+		/// <summary>
+		/// Gets the length (magnitude) of the quaternion.
+		/// </summary>
+		/// <seealso cref="LengthSquared"/>
+		public float Length
+		{
+			get
+			{
+				return (float)System.Math.Sqrt(W * W + Xyz.LengthSquared);
+			}
+		}
+		/// <summary>
+		/// Gets the square of the quaternion length (magnitude).
+		/// </summary>
+		public float LengthSquared
+		{
+			get
+			{
+				return W * W + Xyz.LengthSquared;
+			}
+		}
 		
 
 		/// <summary>
@@ -96,7 +119,6 @@ namespace Duality
 			axis = result.Xyz;
 			angle = result.W;
 		}
-
 		/// <summary>
 		/// Convert this instance to an axis-angle representation.
 		/// </summary>
@@ -124,28 +146,29 @@ namespace Duality
 
 			return result;
 		}
-
+		
 		/// <summary>
-		/// Gets the length (magnitude) of the quaternion.
+		/// Reverses the rotation angle of this Quaterniond.
 		/// </summary>
-		/// <seealso cref="LengthSquared"/>
-		public float Length
+		public void Invert()
 		{
-			get
-			{
-				return (float)System.Math.Sqrt(W * W + Xyz.LengthSquared);
-			}
+			W = -W;
 		}
-
 		/// <summary>
-		/// Gets the square of the quaternion length (magnitude).
+		/// Scales the Quaternion to unit length.
 		/// </summary>
-		public float LengthSquared
+		public void Normalize()
 		{
-			get
-			{
-				return W * W + Xyz.LengthSquared;
-			}
+			float scale = 1.0f / this.Length;
+			Xyz *= scale;
+			W *= scale;
+		}
+		/// <summary>
+		/// Inverts the Vector3 component of this Quaternion.
+		/// </summary>
+		public void Conjugate()
+		{
+			Xyz = -Xyz;
 		}
 
 		/// <summary>
@@ -157,15 +180,6 @@ namespace Duality
 			q.Normalize();
 			return q;
 		}
-
-		/// <summary>
-		/// Reverses the rotation angle of this Quaterniond.
-		/// </summary>
-		public void Invert()
-		{
-			W = -W;
-		}
-
 		/// <summary>
 		/// Returns a copy of this Quaterniond with its rotation angle reversed.
 		/// </summary>
@@ -175,29 +189,6 @@ namespace Duality
 			q.Invert();
 			return q;
 		}
-
-		/// <summary>
-		/// Scales the Quaternion to unit length.
-		/// </summary>
-		public void Normalize()
-		{
-			float scale = 1.0f / this.Length;
-			Xyz *= scale;
-			W *= scale;
-		}
-
-		/// <summary>
-		/// Inverts the Vector3 component of this Quaternion.
-		/// </summary>
-		public void Conjugate()
-		{
-			Xyz = -Xyz;
-		}
-
-		/// <summary>
-		/// Defines the identity quaternion.
-		/// </summary>
-		public static readonly Quaternion Identity = new Quaternion(0, 0, 0, 1);
 
 		/// <summary>
 		/// Add two quaternions
@@ -211,7 +202,6 @@ namespace Duality
 				left.Xyz + right.Xyz,
 				left.W + right.W);
 		}
-
 		/// <summary>
 		/// Add two quaternions
 		/// </summary>
@@ -237,7 +227,6 @@ namespace Duality
 				left.Xyz - right.Xyz,
 				left.W - right.W);
 		}
-
 		/// <summary>
 		/// Subtracts two instances.
 		/// </summary>
@@ -264,7 +253,6 @@ namespace Duality
 				right.W * left.Xyz + left.W * right.Xyz + Vector3.Cross(left.Xyz, right.Xyz),
 				left.W * right.W - Vector3.Dot(left.Xyz, right.Xyz));
 		}
-
 		/// <summary>
 		/// Multiplies two instances.
 		/// </summary>
@@ -291,7 +279,6 @@ namespace Duality
 			Multiply(ref left, ref right, out result);
 			return result;
 		}
-
 		/// <summary>
 		/// Multiplies two instances.
 		/// </summary>
@@ -304,7 +291,6 @@ namespace Duality
 				right.W * left.Xyz + left.W * right.Xyz + Vector3.Cross(left.Xyz, right.Xyz),
 				left.W * right.W - Vector3.Dot(left.Xyz, right.Xyz));
 		}
-
 		/// <summary>
 		/// Multiplies an instance by a scalar.
 		/// </summary>
@@ -315,7 +301,6 @@ namespace Duality
 		{
 			result = new Quaternion(quaternion.X * scale, quaternion.Y * scale, quaternion.Z * scale, quaternion.W * scale);
 		}
-
 		/// <summary>
 		/// Multiplies an instance by a scalar.
 		/// </summary>
@@ -336,7 +321,6 @@ namespace Duality
 		{
 			return new Quaternion(-q.Xyz, q.W);
 		}
-
 		/// <summary>
 		/// Get the conjugate of the given quaternion
 		/// </summary>
@@ -358,7 +342,6 @@ namespace Duality
 			Invert(ref q, out result);
 			return result;
 		}
-
 		/// <summary>
 		/// Get the inverse of the given quaternion
 		/// </summary>
@@ -389,7 +372,6 @@ namespace Duality
 			Normalize(ref q, out result);
 			return result;
 		}
-
 		/// <summary>
 		/// Scale the given quaternion to unit length
 		/// </summary>
@@ -433,7 +415,6 @@ namespace Duality
 			FromMatrix(ref matrix, out result);
 			return result;
 		}
-
 		/// <summary>
 		/// Builds a quaternion from the given rotation matrix
 		/// </summary>
@@ -565,7 +546,6 @@ namespace Duality
 			left.W += right.W;
 			return left;
 		}
-
 		/// <summary>
 		/// Subtracts two instances.
 		/// </summary>
@@ -578,7 +558,6 @@ namespace Duality
 			left.W -= right.W;
 			return left;
 		}
-
 		/// <summary>
 		/// Multiplies two instances.
 		/// </summary>
@@ -590,7 +569,6 @@ namespace Duality
 			Multiply(ref left, ref right, out left);
 			return left;
 		}
-
 		/// <summary>
 		/// Multiplies an instance by a scalar.
 		/// </summary>
@@ -602,7 +580,6 @@ namespace Duality
 			Multiply(ref quaternion, scale, out quaternion);
 			return quaternion;
 		}
-
 		/// <summary>
 		/// Multiplies an instance by a scalar.
 		/// </summary>
@@ -624,7 +601,6 @@ namespace Duality
 		{
 			return left.Equals(right);
 		}
-
 		/// <summary>
 		/// Compares two instances for inequality.
 		/// </summary>
@@ -644,7 +620,6 @@ namespace Duality
 		{
 			return String.Format("V: {0}, W: {1}", Xyz, W);
 		}
-
 		/// <summary>
 		/// Compares this object instance to another object for equality. 
 		/// </summary>
@@ -655,7 +630,6 @@ namespace Duality
 			if (other is Quaternion == false) return false;
 				return this == (Quaternion)other;
 		}
-
 		/// <summary>
 		/// Provides the hash code for this object. 
 		/// </summary>
@@ -664,7 +638,6 @@ namespace Duality
 		{
 			return Xyz.GetHashCode() ^ W.GetHashCode();
 		}
-
 		/// <summary>
 		/// Compares this Quaternion instance to another Quaternion for equality. 
 		/// </summary>
