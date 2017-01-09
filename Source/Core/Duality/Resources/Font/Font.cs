@@ -484,16 +484,14 @@ namespace Duality.Resources
 			float curOffset = 0.0f;
 			FontGlyphData glyphData;
 			Rect uvRect;
-			float glyphXOff;
-			float glyphYOff;
 			float glyphXAdv;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv);
 
 				Vector2 glyphPos;
-				glyphPos.X = MathF.Round(curOffset + glyphXOff);
-				glyphPos.Y = MathF.Round(0 + glyphYOff);
+				glyphPos.X = MathF.Round(curOffset + glyphData.Offset.X);
+				glyphPos.Y = MathF.Round(0 + glyphData.Offset.Y);
 
 				vertices[i * 4 + 0].Pos.X = glyphPos.X;
 				vertices[i * 4 + 0].Pos.Y = glyphPos.Y;
@@ -553,18 +551,16 @@ namespace Duality.Resources
 			float curOffset = 0.0f;
 			FontGlyphData glyphData;
 			Rect uvRect;
-			float glyphXOff;
-			float glyphYOff;
 			float glyphXAdv;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv);
 				Vector2 dataCoord = uvRect.Pos * this.pixelData.Size / this.texture.UVRatio;
 				
 				bitmap.DrawOnto(target, 
 					BlendMode.Alpha, 
-					MathF.RoundToInt(x + curOffset + glyphXOff), 
-					MathF.RoundToInt(y + glyphYOff),
+					MathF.RoundToInt(x + curOffset + glyphData.Offset.X), 
+					MathF.RoundToInt(y + glyphData.Offset.Y),
 					(int)glyphData.Size.X, 
 					(int)glyphData.Size.Y,
 					MathF.RoundToInt(dataCoord.X), 
@@ -588,12 +584,10 @@ namespace Duality.Resources
 			float curOffset = 0.0f;
 			FontGlyphData glyphData;
 			Rect uvRect;
-			float glyphXOff;
-			float glyphYOff;
 			float glyphXAdv;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv);
 
 				textSize.X = Math.Max(textSize.X, curOffset + glyphXAdv - this.spacing);
 				textSize.Y = Math.Max(textSize.Y, glyphData.Size.Y);
@@ -641,13 +635,11 @@ namespace Duality.Resources
 			float curOffset = 0.0f;
 			FontGlyphData glyphData;
 			Rect uvRect;
-			float glyphXOff;
-			float glyphYOff;
 			float glyphXAdv;
 			int lastValidLength = 0;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv);
 
 				textSize.X = Math.Max(textSize.X, curOffset + glyphXAdv);
 				textSize.Y = Math.Max(textSize.Y, glyphData.Size.Y);
@@ -677,14 +669,12 @@ namespace Duality.Resources
 			float curOffset = 0.0f;
 			FontGlyphData glyphData;
 			Rect uvRect;
-			float glyphXOff;
-			float glyphYOff;
 			float glyphXAdv;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv);
 
-				if (i == index) return new Rect(curOffset + glyphXOff, 0 + glyphYOff, glyphData.Size.X, glyphData.Size.Y);
+				if (i == index) return new Rect(curOffset + glyphData.Offset.X, 0 + glyphData.Offset.Y, glyphData.Size.X, glyphData.Size.Y);
 
 				curOffset += glyphXAdv;
 			}
@@ -706,14 +696,12 @@ namespace Duality.Resources
 			FontGlyphData glyphData;
 			Rect uvRect;
 			Rect glyphRect;
-			float glyphXOff;
-			float glyphYOff;
 			float glyphXAdv;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv);
 
-				glyphRect = new Rect(curOffset + glyphXOff, 0 + glyphYOff, glyphData.Size.X, glyphData.Size.Y);
+				glyphRect = new Rect(curOffset + glyphData.Offset.X, 0 + glyphData.Offset.Y, glyphData.Size.X, glyphData.Size.Y);
 				if (glyphRect.Contains(x, y)) return i;
 
 				curOffset += glyphXAdv;
@@ -722,15 +710,13 @@ namespace Duality.Resources
 			return -1;
 		}
 
-		private void ProcessTextAdv(string text, int index, out FontGlyphData glyphData, out Rect uvRect, out float glyphXAdv, out float glyphXOff, out float glyphYOff)
+		private void ProcessTextAdv(string text, int index, out FontGlyphData glyphData, out Rect uvRect, out float glyphXAdv)
 		{
 			char glyph = text[index];
 			int charIndex = (int)glyph > this.charLookup.Length ? 0 : this.charLookup[(int)glyph];
 			this.texture.LookupAtlas(charIndex, out uvRect);
 
 			this.GetGlyphData(glyph, out glyphData);
-			glyphXOff = -glyphData.Offset.X;
-			glyphYOff = -glyphData.Offset.Y;
 
 			if (this.kerning && !this.metrics.Monospace)
 			{
