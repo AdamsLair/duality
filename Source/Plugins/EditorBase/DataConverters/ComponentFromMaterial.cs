@@ -43,23 +43,30 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				Texture mainTex = mat.MainTexture.Res;
 				Pixmap basePixmap = (mainTex != null) ? mainTex.BasePixmap.Res : null;
 				GameObject gameobj = convert.Result.OfType<GameObject>().FirstOrDefault();
-				bool hasAnimation = (mainTex != null && basePixmap != null && basePixmap.AnimFrames > 0);
+				bool hasAnimation = (mainTex != null && basePixmap != null && basePixmap.Atlas != null && basePixmap.Atlas.Count > 0);
+				
+				// Determine the size of the displayed sprite
+				Vector2 spriteSize;
+				if (hasAnimation)
+				{
+					Rect atlasRect = basePixmap.LookupAtlas(0);
+					spriteSize = atlasRect.Size;
+				}
+				else if (mainTex != null)
+				{
+					spriteSize = new Vector2(mainTex.PixelWidth, mainTex.PixelHeight);
+				}
+				else
+				{
+					spriteSize = new Vector2(Pixmap.Checkerboard.Res.Width, Pixmap.Checkerboard.Res.Height);
+				}
 
 				// Create a sprite Component in any case
 				SpriteRenderer sprite = convert.Result.OfType<SpriteRenderer>().FirstOrDefault();
 				if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<SpriteRenderer>();
 				if (sprite == null) sprite = new SpriteRenderer();
 				sprite.SharedMaterial = mat;
-				if (mainTex != null)
-				{
-					Vector2 spriteSize = new Vector2(mainTex.PixelWidth, mainTex.PixelHeight);
-					if (hasAnimation)
-					{
-						spriteSize.X = (mainTex.PixelWidth / basePixmap.AnimCols) - basePixmap.AnimFrameBorder * 2;
-						spriteSize.Y = (mainTex.PixelHeight / basePixmap.AnimRows) - basePixmap.AnimFrameBorder * 2;
-					}
-					sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, spriteSize.X, spriteSize.Y);
-				}
+				sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, spriteSize.X, spriteSize.Y);
 				results.Add(sprite);
 
 				// If we have animation data, create an animator component as well
@@ -69,7 +76,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 					if (animator == null && gameobj != null) animator = gameobj.GetComponent<SpriteAnimator>();
 					if (animator == null) animator = new SpriteAnimator();
 					animator.AnimDuration = 5.0f;
-					animator.FrameCount = basePixmap.AnimFrames;
+					animator.FrameCount = basePixmap.Atlas.Count;
 					results.Add(animator);
 				}
 

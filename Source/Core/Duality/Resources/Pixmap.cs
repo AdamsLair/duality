@@ -24,31 +24,31 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET] A Pixmap showing the Duality icon.
 		/// </summary>
-		public static ContentRef<Pixmap> DualityIcon		{ get; private set; }
+		public static ContentRef<Pixmap> DualityIcon       { get; private set; }
 		/// <summary>
 		/// [GET] A Pixmap showing the Duality icon without the text on it.
 		/// </summary>
-		public static ContentRef<Pixmap> DualityIconB		{ get; private set; }
+		public static ContentRef<Pixmap> DualityIconB      { get; private set; }
 		/// <summary>
 		/// A Pixmap showing the Duality logo.
 		/// </summary>
-		public static ContentRef<Pixmap> DualityLogoBig		{ get; private set; }
+		public static ContentRef<Pixmap> DualityLogoBig    { get; private set; }
 		/// <summary>
 		/// A Pixmap showing the Duality logo.
 		/// </summary>
-		public static ContentRef<Pixmap> DualityLogoMedium	{ get; private set; }
+		public static ContentRef<Pixmap> DualityLogoMedium { get; private set; }
 		/// <summary>
 		/// A Pixmap showing the Duality logo.
 		/// </summary>
-		public static ContentRef<Pixmap> DualityLogoSmall	{ get; private set; }
+		public static ContentRef<Pixmap> DualityLogoSmall  { get; private set; }
 		/// <summary>
 		/// [GET] A plain white 1x1 Pixmap. Can be used as a dummy.
 		/// </summary>
-		public static ContentRef<Pixmap> White				{ get; private set; }
+		public static ContentRef<Pixmap> White             { get; private set; }
 		/// <summary>
 		/// [GET] A 256x256 black and white checkerboard image.
 		/// </summary>
-		public static ContentRef<Pixmap> Checkerboard		{ get; private set; }
+		public static ContentRef<Pixmap> Checkerboard      { get; private set; }
 
 		internal static void InitDefaultContent()
 		{
@@ -72,11 +72,8 @@ namespace Duality.Resources
 		}
 
 		
-		private	List<PixelData>	layers			= new List<PixelData>();
-		private	List<Rect>		atlas			= null;
-		private	int				animCols		= 0;
-		private	int				animRows		= 0;
-		private	int				animFrameBorder	= 0;
+		private List<PixelData> layers = new List<PixelData>();
+		private List<Rect>      atlas  = null;
 		
 		/// <summary>
 		/// [GET / SET] The main <see cref="Duality.Drawing.PixelData"/> layer of this <see cref="Pixmap"/>.
@@ -134,47 +131,7 @@ namespace Duality.Resources
 			get { return this.atlas; }
 			set { this.atlas = value; }
 		}
-		/// <summary>
-		/// [GET / SET] Pixel size of the border around each individual animation frame.
-		/// within the image.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.AffectsOthers)]
-		[EditorHintRange(0, 64)]
-		public int AnimFrameBorder
-		{
-			get { return this.animFrameBorder; }
-			set { this.GenerateAnimAtlas(this.animCols, this.animRows, value); }
-		}
-		/// <summary>
-		/// [GET / SET] Information about different animation frames contained in this Pixmap.
-		/// Setting this will lead to an auto-generated atlas map according to the animation.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.AffectsOthers)]
-		[EditorHintRange(0, 1024)]
-		public int AnimCols
-		{
-			get { return this.animCols; }
-			set { this.GenerateAnimAtlas(value, value == 0 ? 0 : this.animRows, this.animFrameBorder); }
-		}
-		/// <summary>
-		/// [GET / SET] Information about different animation frames contained in this Pixmap.
-		/// Setting this will lead to an auto-generated atlas map according to the animation.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.AffectsOthers)]
-		[EditorHintRange(0, 1024)]
-		public int AnimRows
-		{
-			get { return this.animRows; }
-			set { this.GenerateAnimAtlas(value == 0 ? 0 : this.animCols, value, this.animFrameBorder); }
-		}
-		/// <summary>
-		/// [GET] Total number of animation frames in this Pixmap
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public int AnimFrames
-		{
-			get { return this.animRows * this.animCols; }
-		}
+
  
 		/// <summary>
 		/// Creates a new, empty Pixmap.
@@ -189,59 +146,6 @@ namespace Duality.Resources
 			this.MainLayer = image;
 		}
 
-		/// <summary>
-		/// Generates a <see cref="Atlas">pixmap atlas</see> for sprite animations but leaves
-		/// previously existing atlas entries as they are, if possible. An automatically generated
-		/// pixmap atlas will always occupy the first indices, followed by custom atlas entries.
-		/// </summary>
-		/// <param name="cols">The number of columns in an animated sprite Pixmap</param>
-		/// <param name="rows">The number of rows in an animated sprite Pixmap</param>
-		public void GenerateAnimAtlas(int cols, int rows, int frameBorder)
-		{
-			// Remove previously existing animation atlas data
-			int frames = this.animCols * this.animRows;
-			if (this.atlas != null) this.atlas.RemoveRange(0, Math.Min(frames, this.atlas.Count));
-
-			// Discard empty atlas
-			if (cols == 0 && rows == 0)
-			{
-				this.animCols = 0;
-				this.animRows = 0;
-				this.animFrameBorder = frameBorder;
-				if (this.atlas != null && this.atlas.Count == 0) this.atlas = null;
-				return;
-			}
-
-			this.animCols = Math.Max(cols, 1);
-			this.animRows = Math.Max(rows, 1);
-
-			Vector2 frameSize = new Vector2((float)this.Width / this.animCols, (float)this.Height / this.animRows);
-
-			this.animFrameBorder = MathF.Clamp(frameBorder, 0, (int)(MathF.Min(frameSize.X, frameSize.Y) * 0.5f));
-
-			// Set up new atlas data
-			frames = this.animCols * this.animRows;
-			if (frames > 0)
-			{
-				if (this.atlas == null) this.atlas = new List<Rect>(frames);
-				int i = 0;
-				for (int y = 0; y < this.animRows; y++)
-				{
-					for (int x = 0; x < this.animCols; x++)
-					{
-						Rect frameRect = new Rect(
-							x * frameSize.X + this.animFrameBorder,
-							y * frameSize.Y + this.animFrameBorder,
-							frameSize.X - this.animFrameBorder * 2,
-							frameSize.Y - this.animFrameBorder * 2);
-						this.atlas.Insert(i, frameRect);
-						i++;
-					}
-				}
-			}
-			else if (this.atlas.Count == 0)
-				this.atlas = null;
-		}
 		/// <summary>
 		/// Does a safe (null-checked, clamped) pixmap <see cref="Atlas"/> lookup.
 		/// </summary>

@@ -21,13 +21,11 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			this.Expanded = true;
 		}
 
-		protected override void OnPropertySet(PropertyInfo property, IEnumerable<object> targets)
+		protected override void OnValueChanged(object sender, PropertyEditorValueEventArgs args)
 		{
-			base.OnPropertySet(property, targets);
-			if (property.IsEquivalent(ReflectionInfo.Property_Pixmap_AnimCols) ||
-				property.IsEquivalent(ReflectionInfo.Property_Pixmap_AnimRows) ||
-				property.IsEquivalent(ReflectionInfo.Property_Pixmap_AnimFrameBorder) ||
-				property.IsEquivalent(ReflectionInfo.Property_Pixmap_Atlas))
+			base.OnValueChanged(sender, args);
+			if (args.Editor.EditedMember != null &&
+				args.Editor.EditedMember.IsEquivalent(ReflectionInfo.Property_Pixmap_Atlas))
 			{
 				this.PerformGetValue();
 				(this.ParentEditor as PixmapPropertyEditor).UpdatePreview();

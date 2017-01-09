@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Drawing;
+using System.Collections.Generic;
 
 using Duality;
 using Duality.IO;
@@ -54,9 +55,28 @@ namespace Duality.Editor.Plugins.Base
 				{
 					Pixmap target = targetRef.Res;
 
+					// Retrieve import parameters
+					int sheetCols   = env.GetOrInitParameter(targetRef, "SpriteSheetColumns", 0);
+					int sheetRows   = env.GetOrInitParameter(targetRef, "SpriteSheetRows"   , 0);
+					int frameBorder = env.GetOrInitParameter(targetRef, "SpriteFrameBorder" , 0);
+
+					// Clamp import parameters
+					if (sheetCols   < 0) sheetCols   = 0;
+					if (sheetRows   < 0) sheetRows   = 0;
+					if (frameBorder < 0) frameBorder = 0;
+					env.SetParameter(targetRef, "SpriteSheetColumns", sheetCols  );
+					env.SetParameter(targetRef, "SpriteSheetRows"   , sheetRows  );
+					env.SetParameter(targetRef, "SpriteFrameBorder" , frameBorder);
+
 					// Update pixel data from the input file
 					PixelData pixelData = this.LoadPixelData(input.Path);
 					target.MainLayer = pixelData;
+
+					// Generate a sprite sheet atlas
+					if (sheetCols > 0 && sheetRows > 0)
+					{
+						this.GenerateSpriteSheetAtlas(target, sheetCols, sheetRows, frameBorder);
+					}
 
 					// Add the requested output to signal that we've done something with it
 					env.AddOutput(targetRef, input.Path);
@@ -105,6 +125,43 @@ namespace Duality.Editor.Plugins.Base
 			using (Bitmap bmp = data.ToBitmap())
 			{
 				bmp.Save(filePath);
+			}
+		}
+
+		/// <summary>
+		/// Generates a regular sprite sheet <see cref="Pixmap.Atlas"/> with a fixed number 
+		/// of columns and rows.
+		/// </summary>
+		/// <param name="cols">The number of columns in the sprite sheet.</param>
+		/// <param name="rows">The number of rows in the sprite sheet.</param>
+		/// <param name="frameBorder">Border size around each sprite sheet rect.</param>
+		private void GenerateSpriteSheetAtlas(Pixmap pixmap, int cols, int rows, int frameBorder)
+		{
+			// Determine working data
+			Vector2 frameSize = new Vector2((float)pixmap.Width / cols, (float)pixmap.Height / rows);
+			int frameCount = cols * rows;
+
+			// Clear old atlas
+			if (pixmap.Atlas == null)
+				pixmap.Atlas = new List<Rect>(frameCount);
+			else
+				pixmap.Atlas.Clear();
+
+			// Set up new atlas
+			if (frameCount > 0)
+			{
+				for (int y = 0; y < rows; y++)
+				{
+					for (int x = 0; x < cols; x++)
+					{
+						Rect frameRect = new Rect(
+							x * frameSize.X + frameBorder,
+							y * frameSize.Y + frameBorder,
+							frameSize.X - frameBorder * 2,
+							frameSize.Y - frameBorder * 2);
+						pixmap.Atlas.Add(frameRect);
+					}
+				}
 			}
 		}
 	}

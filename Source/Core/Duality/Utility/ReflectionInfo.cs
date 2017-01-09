@@ -54,9 +54,6 @@ namespace Duality
 		public static readonly PropertyInfo	Property_Font_GlyphRenderMode;
 		public static readonly PropertyInfo	Property_Font_MonoSpace;
 
-		public static readonly PropertyInfo	Property_Pixmap_AnimCols;
-		public static readonly PropertyInfo	Property_Pixmap_AnimRows;
-		public static readonly PropertyInfo	Property_Pixmap_AnimFrameBorder;
 		public static readonly PropertyInfo	Property_Pixmap_Atlas;
 
 		public static readonly PropertyInfo	Property_BatchInfo_Technique;
@@ -116,10 +113,7 @@ namespace Duality
 			Property_Font_MonoSpace			= GetProperty(font, "MonoSpace");
 
 			Type pixmap = typeof(Pixmap);
-			Property_Pixmap_AnimCols			= GetProperty(pixmap, "AnimCols");
-			Property_Pixmap_AnimRows			= GetProperty(pixmap, "AnimRows");
-			Property_Pixmap_AnimFrameBorder		= GetProperty(pixmap, "AnimFrameBorder");
-			Property_Pixmap_Atlas				= GetProperty(pixmap, "Atlas");
+			Property_Pixmap_Atlas			= GetProperty(pixmap, "Atlas");
 
 			Type batchInfo = typeof(BatchInfo);
 			Property_BatchInfo_Technique	= GetProperty(batchInfo, "Technique");
