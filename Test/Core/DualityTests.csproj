@@ -76,6 +76,8 @@
     <Compile Include="Cloning\SpecificCloningTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
     <Compile Include="ExtMethodsPixelData.cs" />
+    <Compile Include="Math\Point2Test.cs" />
+    <Compile Include="Math\RectTest.cs" />
     <Compile Include="Serialization\TestObjects\MismatchedComponent.cs" />
     <Compile Include="Serialization\TestObjects\NonExistentComponent.cs" />
     <Compile Include="Serialization\TestObjects\SomeEnum.cs" />
@@ -111,7 +113,6 @@
     <Compile Include="Utility\ExtMethodsMemberInfoTest.cs" />
     <Compile Include="Utility\Log\LogsTest.cs" />
     <Compile Include="Utility\Log\LogFormatTest.cs" />
-    <Compile Include="Utility\RectTest.cs" />
     <Compile Include="Utility\ExtMethodsTypeInfoTest.cs" />
     <Compile Include="Utility\ObjectCreatorTest.cs" />
     <Compile Include="Utility\ReflectionHelperTest.cs" />
