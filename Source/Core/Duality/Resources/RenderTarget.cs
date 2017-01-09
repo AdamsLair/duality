@@ -70,36 +70,30 @@ namespace Duality.Resources
 			}
 		}
 		/// <summary>
-		/// [GET] Width of this RenderTarget. This values is derived by its <see cref="Targets"/>.
+		/// [GET] The width of this <see cref="RenderTarget"/>. This value is derived from <see cref="Targets"/>.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public int Width
 		{
-			get
-			{
-				ContentRef<Texture> target = this.targets.Count > 0 ? this.targets[0] : null;
-				return target.IsAvailable ? target.Res.ContentWidth : 0;
-			}
+			get { return this.Size.X; }
 		}
 		/// <summary>
-		/// [GET] Height of this RenderTarget. This values is derived by its <see cref="Targets"/>.
+		/// [GET] The height of this <see cref="RenderTarget"/>. This value is derived from <see cref="Targets"/>.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public int Height
 		{
-			get
-			{
-				ContentRef<Texture> target = this.targets.Count > 0 ? this.targets[0] : null;
-				return target.IsAvailable ? target.Res.ContentHeight : 0;
-			}
+			get { return this.Size.Y; }
 		}
 		/// <summary>
-		/// [GET] UVRatio of this RenderTarget. This values is derived by its <see cref="Targets"/>.
+		/// [GET] The size of this <see cref="RenderTarget"/>. This value is derived from <see cref="Targets"/>.
 		/// </summary>
-		public Vector2 UVRatio
+		public Point2 Size
 		{
 			get
 			{
 				ContentRef<Texture> target = this.targets.Count > 0 ? this.targets[0] : null;
-				return target.IsAvailable ? target.Res.UVRatio : Vector2.One;
+				return target.IsAvailable ? target.Res.ContentSize : Point2.Zero;
 			}
 		}
 

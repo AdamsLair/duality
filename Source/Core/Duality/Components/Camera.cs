@@ -540,7 +540,7 @@ namespace Duality.Components
 			this.drawDevice.VisibilityMask = this.visibilityMask & p.VisibilityMask;
 			this.drawDevice.RenderMode = p.MatrixMode;
 			this.drawDevice.Target = p.Output;
-			this.drawDevice.ViewportRect = p.Output.IsAvailable ? new Rect(p.Output.Res.Width, p.Output.Res.Height) : viewportRect;
+			this.drawDevice.ViewportRect = p.Output.IsAvailable ? new Rect(p.Output.Res.Size) : viewportRect;
 
 			if (p.Input == null)
 			{
