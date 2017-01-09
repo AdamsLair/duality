@@ -165,23 +165,19 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\Explosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                    <Blend dataType="Float">0</Blend>
-                    <Current dataType="Int">0</Current>
-                    <Next dataType="Int">1</Next>
-                  </spriteIndex>
+                  <spriteIndex dataType="Int">-1</spriteIndex>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="4073803880">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">10</animDuration>
-                  <firstFrame dataType="Int">0</firstFrame>
-                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <gameobj dataType="ObjectRef">760442718</gameobj>
+                  <paused dataType="Bool">false</paused>
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -255,6 +251,7 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">3879173251</gameobj>
+                  <nextSpriteIndex dataType="Int">-1</nextSpriteIndex>
                   <offset dataType="Int">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
@@ -267,23 +264,20 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\SmoothAnimExplosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                    <Blend dataType="Float">0</Blend>
-                    <Current dataType="Int">0</Current>
-                    <Next dataType="Int">1</Next>
-                  </spriteIndex>
+                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndexBlend dataType="Float">0</spriteIndexBlend>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="2897567117">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">10</animDuration>
-                  <firstFrame dataType="Int">0</firstFrame>
-                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <gameobj dataType="ObjectRef">3879173251</gameobj>
+                  <paused dataType="Bool">false</paused>
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -369,23 +363,19 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\Explosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                    <Blend dataType="Float">0</Blend>
-                    <Current dataType="Int">0</Current>
-                    <Next dataType="Int">1</Next>
-                  </spriteIndex>
+                  <spriteIndex dataType="Int">-1</spriteIndex>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1384243057">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">10</animDuration>
-                  <firstFrame dataType="Int">0</firstFrame>
-                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <gameobj dataType="ObjectRef">2365849191</gameobj>
+                  <paused dataType="Bool">false</paused>
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -459,6 +449,7 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">2876061338</gameobj>
+                  <nextSpriteIndex dataType="Int">-1</nextSpriteIndex>
                   <offset dataType="Int">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
@@ -471,23 +462,20 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\SmoothAnimExplosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                    <Blend dataType="Float">0</Blend>
-                    <Current dataType="Int">0</Current>
-                    <Next dataType="Int">1</Next>
-                  </spriteIndex>
+                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndexBlend dataType="Float">0</spriteIndexBlend>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1894455204">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">10</animDuration>
-                  <firstFrame dataType="Int">0</firstFrame>
-                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <gameobj dataType="ObjectRef">2876061338</gameobj>
+                  <paused dataType="Bool">false</paused>
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -605,23 +593,19 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\Explosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                    <Blend dataType="Float">0</Blend>
-                    <Current dataType="Int">0</Current>
-                    <Next dataType="Int">1</Next>
-                  </spriteIndex>
+                  <spriteIndex dataType="Int">-1</spriteIndex>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1967780549">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">2</animDuration>
-                  <firstFrame dataType="Int">0</firstFrame>
-                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <gameobj dataType="ObjectRef">2949386683</gameobj>
+                  <paused dataType="Bool">false</paused>
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -695,6 +679,7 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">3765178736</gameobj>
+                  <nextSpriteIndex dataType="Int">-1</nextSpriteIndex>
                   <offset dataType="Int">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
@@ -707,23 +692,20 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\SmoothAnimExplosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                    <Blend dataType="Float">0</Blend>
-                    <Current dataType="Int">0</Current>
-                    <Next dataType="Int">1</Next>
-                  </spriteIndex>
+                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndexBlend dataType="Float">0</spriteIndexBlend>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="2783572602">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">2</animDuration>
-                  <firstFrame dataType="Int">0</firstFrame>
-                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <gameobj dataType="ObjectRef">3765178736</gameobj>
+                  <paused dataType="Bool">false</paused>
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -809,23 +791,19 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\Explosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                    <Blend dataType="Float">0</Blend>
-                    <Current dataType="Int">0</Current>
-                    <Next dataType="Int">1</Next>
-                  </spriteIndex>
+                  <spriteIndex dataType="Int">-1</spriteIndex>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="3837581690">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">2</animDuration>
-                  <firstFrame dataType="Int">0</firstFrame>
-                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <gameobj dataType="ObjectRef">524220528</gameobj>
+                  <paused dataType="Bool">false</paused>
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -899,6 +877,7 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">2588695353</gameobj>
+                  <nextSpriteIndex dataType="Int">-1</nextSpriteIndex>
                   <offset dataType="Int">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
@@ -911,23 +890,20 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\SmoothAnimExplosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                    <Blend dataType="Float">0</Blend>
-                    <Current dataType="Int">0</Current>
-                    <Next dataType="Int">1</Next>
-                  </spriteIndex>
+                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndexBlend dataType="Float">0</spriteIndexBlend>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1607089219">
                   <active dataType="Bool">true</active>
                   <animDuration dataType="Float">2</animDuration>
-                  <firstFrame dataType="Int">0</firstFrame>
-                  <frameCount dataType="Int">64</frameCount>
                   <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="Loop" value="1" />
-                  <paused dataType="Bool">false</paused>
                   <animTime dataType="Float">0</animTime>
                   <customFrameSequence />
+                  <firstFrame dataType="Int">0</firstFrame>
+                  <frameCount dataType="Int">64</frameCount>
                   <gameobj dataType="ObjectRef">2588695353</gameobj>
+                  <paused dataType="Bool">false</paused>
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -1037,11 +1013,7 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Struct" type="Duality.Drawing.SpriteIndexBlend">
-                    <Blend dataType="Float">0</Blend>
-                    <Current dataType="Int">-1</Current>
-                    <Next dataType="Int">-1</Next>
-                  </spriteIndex>
+                  <spriteIndex dataType="Int">-1</spriteIndex>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
               </_items>

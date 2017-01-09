@@ -719,7 +719,7 @@
         <targetFormat dataType="Enum" type="Duality.Drawing.TexturePixelFormat" name="Rgba" value="3" />
         <targetMagFilter dataType="Enum" type="Duality.Drawing.TextureMagFilter" name="Linear" value="1" />
         <targetMinFilter dataType="Enum" type="Duality.Drawing.TextureMinFilter" name="LinearMipmapLinear" value="5" />
-        <targetTileSpacing dataType="Int">1</targetTileSpacing>
+        <targetTileMargin dataType="Int">1</targetTileMargin>
       </item>
     </_items>
     <_size dataType="Int">1</_size>

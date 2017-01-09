@@ -75,13 +75,13 @@
               <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="365901960">
                 <active dataType="Bool">true</active>
                 <animDuration dataType="Float">5</animDuration>
-                <firstFrame dataType="Int">0</firstFrame>
-                <frameCount dataType="Int">3</frameCount>
                 <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="RandomSingle" value="3" />
-                <paused dataType="Bool">false</paused>
                 <animTime dataType="Float">2.833818</animTime>
                 <customFrameSequence />
+                <firstFrame dataType="Int">0</firstFrame>
+                <frameCount dataType="Int">3</frameCount>
                 <gameobj dataType="ObjectRef">1347508094</gameobj>
+                <paused dataType="Bool">false</paused>
               </item>
               <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="115317322">
                 <active dataType="Bool">true</active>
@@ -221,13 +221,13 @@
               <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="2560149554">
                 <active dataType="Bool">true</active>
                 <animDuration dataType="Float">5</animDuration>
-                <firstFrame dataType="Int">0</firstFrame>
-                <frameCount dataType="Int">3</frameCount>
                 <animLoopMode dataType="Enum" type="Duality.Components.Renderers.SpriteAnimator+LoopMode" name="RandomSingle" value="3" />
-                <paused dataType="Bool">false</paused>
                 <animTime dataType="Float">3.875142</animTime>
                 <customFrameSequence />
+                <firstFrame dataType="Int">0</firstFrame>
+                <frameCount dataType="Int">3</frameCount>
                 <gameobj dataType="ObjectRef">3541755688</gameobj>
+                <paused dataType="Bool">false</paused>
               </item>
               <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="2309564916">
                 <active dataType="Bool">true</active>

@@ -7,9 +7,9 @@
   <filterMag dataType="Enum" type="Duality.Drawing.TextureMagFilter" name="Linear" value="1" />
   <filterMin dataType="Enum" type="Duality.Drawing.TextureMinFilter" name="LinearMipmapLinear" value="5" />
   <pixelformat dataType="Enum" type="Duality.Drawing.TexturePixelFormat" name="Rgba" value="3" />
-  <size dataType="Struct" type="Duality.Vector2">
-    <X dataType="Float">696</X>
-    <Y dataType="Float">264</Y>
+  <size dataType="Struct" type="Duality.Point2">
+    <X dataType="Int">696</X>
+    <Y dataType="Int">264</Y>
   </size>
   <texSizeMode dataType="Enum" type="Duality.Drawing.TextureSizeMode" name="Enlarge" value="0" />
   <wrapX dataType="Enum" type="Duality.Drawing.TextureWrapMode" name="Clamp" value="0" />

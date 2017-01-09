@@ -1,4 +1,5 @@
 ﻿<root dataType="Struct" type="DualStickSpaceShooter.ShipBlueprint" id="129723834">
+  <assetInfo />
   <bulletType dataType="Struct" type="Duality.ContentRef`1[[DualStickSpaceShooter.BulletBlueprint]]">
     <contentPath dataType="String">Data\DualStickSpaceShooter\Blueprints\RegularBullet.BulletBlueprint.res</contentPath>
   </bulletType>
@@ -14,7 +15,6 @@
   <maxHitpoints dataType="Float">100</maxHitpoints>
   <maxSpeed dataType="Float">5</maxSpeed>
   <maxTurnSpeed dataType="Float">0.5</maxTurnSpeed>
-  <sourcePath />
   <thrusterPower dataType="Float">2</thrusterPower>
   <turnPower dataType="Float">1</turnPower>
   <weaponDelay dataType="Float">248</weaponDelay>

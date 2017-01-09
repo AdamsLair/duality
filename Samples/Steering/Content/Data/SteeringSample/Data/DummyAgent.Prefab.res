@@ -1,4 +1,5 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Prefab" id="129723834">
+  <assetInfo />
   <objTree dataType="Struct" type="Duality.GameObject" id="1557773463">
     <active dataType="Bool">true</active>
     <children />
@@ -26,16 +27,8 @@
           </posAbs>
           <scale dataType="Float">1</scale>
           <scaleAbs dataType="Float">1</scaleAbs>
-          <vel dataType="Struct" type="Duality.Vector3">
-            <X dataType="Float">0</X>
-            <Y dataType="Float">0</Y>
-            <Z dataType="Float">0</Z>
-          </vel>
-          <velAbs dataType="Struct" type="Duality.Vector3">
-            <X dataType="Float">0</X>
-            <Y dataType="Float">0</Y>
-            <Z dataType="Float">0</Z>
-          </velAbs>
+          <vel dataType="Struct" type="Duality.Vector3" />
+          <velAbs dataType="Struct" type="Duality.Vector3" />
         </item>
         <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="325582691">
           <active dataType="Bool">true</active>
@@ -43,18 +36,17 @@
           <angularVel dataType="Float">0</angularVel>
           <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
           <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
+          <colFilter />
           <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="None" value="0" />
           <continous dataType="Bool">false</continous>
+          <explicitInertia dataType="Float">0</explicitInertia>
           <explicitMass dataType="Float">0</explicitMass>
           <fixedAngle dataType="Bool">false</fixedAngle>
           <gameobj dataType="ObjectRef">1557773463</gameobj>
           <ignoreGravity dataType="Bool">true</ignoreGravity>
           <joints />
           <linearDamp dataType="Float">0.3</linearDamp>
-          <linearVel dataType="Struct" type="Duality.Vector2">
-            <X dataType="Float">0</X>
-            <Y dataType="Float">0</Y>
-          </linearVel>
+          <linearVel dataType="Struct" type="Duality.Vector2" />
           <revolutions dataType="Float">0</revolutions>
           <shapes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.ShapeInfo]]" id="1329389839">
             <_items dataType="Array" type="Duality.Components.Physics.ShapeInfo[]" id="476054446" length="4">
@@ -62,10 +54,7 @@
                 <density dataType="Float">1</density>
                 <friction dataType="Float">0.3</friction>
                 <parent dataType="ObjectRef">325582691</parent>
-                <position dataType="Struct" type="Duality.Vector2">
-                  <X dataType="Float">0</X>
-                  <Y dataType="Float">0</Y>
-                </position>
+                <position dataType="Struct" type="Duality.Vector2" />
                 <radius dataType="Float">40</radius>
                 <restitution dataType="Float">0.3</restitution>
                 <sensor dataType="Bool">false</sensor>
@@ -98,26 +87,24 @@
           <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           <wrapTexture dataType="Bool">false</wrapTexture>
         </item>
-        <item dataType="Struct" type="Steering.Agent" id="2639804075">
+        <item dataType="Struct" type="Steering.Agent" id="2221266285">
           <active dataType="Bool">true</active>
-          <characteristics dataType="Struct" type="Steering.DefaultAgentCharacteristics" id="3619690375">
+          <characteristics dataType="Struct" type="Steering.DefaultAgentCharacteristics" id="3251264513">
             <aggressiveness dataType="Float">0.5</aggressiveness>
           </characteristics>
+          <debugVisualizationMode dataType="Enum" type="Steering.Agent+VisualLoggingMode" name="None" value="0" />
           <gameobj dataType="ObjectRef">1557773463</gameobj>
           <radius dataType="Float">0</radius>
-          <sampler dataType="Struct" type="Steering.AdaptiveVelocitySampler" id="3936545152">
+          <sampler dataType="Struct" type="Steering.AdaptiveVelocitySampler" id="2833030496">
             <layerCount dataType="Int">3</layerCount>
             <outerLayerSampleCount dataType="Int">11</outerLayerSampleCount>
           </sampler>
-          <target dataType="Struct" type="Steering.PointTarget" id="1854574213">
-            <location dataType="Struct" type="Duality.Vector2">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-            </location>
+          <target dataType="Struct" type="Steering.PointTarget" id="3763273299">
+            <location dataType="Struct" type="Duality.Vector2" />
           </target>
           <toiHorizon dataType="Float">240</toiHorizon>
         </item>
-        <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="3665341711">
+        <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="3879568043">
           <active dataType="Bool">true</active>
           <gameobj dataType="ObjectRef">1557773463</gameobj>
         </item>
@@ -128,19 +115,19 @@
     <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2884270870" surrogate="true">
       <header />
       <body>
-        <keys dataType="Array" type="System.Type[]" id="921189750">
+        <keys dataType="Array" type="System.Object[]" id="921189750">
           <item dataType="Type" id="2285360096" value="Duality.Components.Transform" />
           <item dataType="Type" id="3213052814" value="Duality.Components.Physics.RigidBody" />
           <item dataType="Type" id="440111868" value="Duality.Components.Renderers.RigidBodyRenderer" />
           <item dataType="Type" id="2060713746" value="Steering.Agent" />
           <item dataType="Type" id="2856434328" value="Steering.AgentAttributeTranslator" />
         </keys>
-        <values dataType="Array" type="Duality.Component[]" id="3442451738">
+        <values dataType="Array" type="System.Object[]" id="3442451738">
           <item dataType="ObjectRef">3918088395</item>
           <item dataType="ObjectRef">325582691</item>
           <item dataType="ObjectRef">2156466653</item>
-          <item dataType="ObjectRef">2639804075</item>
-          <item dataType="ObjectRef">3665341711</item>
+          <item dataType="ObjectRef">2221266285</item>
+          <item dataType="ObjectRef">3879568043</item>
         </values>
       </body>
     </compMap>
@@ -156,6 +143,5 @@
     <parent />
     <prefabLink />
   </objTree>
-  <sourcePath dataType="String">Agent</sourcePath>
 </root>
 <!-- XmlFormatterBase Document Separator -->

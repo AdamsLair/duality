@@ -1,4 +1,5 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Material" id="129723834">
+  <assetInfo />
   <info dataType="Struct" type="Duality.Drawing.BatchInfo" id="427169525">
     <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
     <hashCode dataType="Int">0</hashCode>
@@ -21,6 +22,5 @@
     </textures>
     <uniforms />
   </info>
-  <sourcePath />
 </root>
 <!-- XmlFormatterBase Document Separator -->

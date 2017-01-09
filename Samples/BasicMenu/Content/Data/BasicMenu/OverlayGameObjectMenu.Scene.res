@@ -32,16 +32,8 @@
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
+            <vel dataType="Struct" type="Duality.Vector3" />
+            <velAbs dataType="Struct" type="Duality.Vector3" />
           </item>
           <item dataType="Struct" type="Duality.Components.Camera" id="4126102485">
             <active dataType="Bool">true</active>
@@ -62,25 +54,16 @@
                   <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="All" value="3" />
                   <input />
                   <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="PerspectiveWorld" value="0" />
-                  <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
-                    <contentPath />
-                  </output>
+                  <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
                   <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Camera+Pass" id="452707950">
-                  <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-                    <A dataType="Byte">0</A>
-                    <B dataType="Byte">0</B>
-                    <G dataType="Byte">0</G>
-                    <R dataType="Byte">0</R>
-                  </clearColor>
+                  <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba" />
                   <clearDepth dataType="Float">1</clearDepth>
                   <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
                   <input />
                   <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="OrthoScreen" value="1" />
-                  <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
-                    <contentPath />
-                  </output>
+                  <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
                   <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="All" value="4294967295" />
                 </item>
               </_items>
@@ -127,28 +110,12 @@
                               <gameobj dataType="ObjectRef">3150618205</gameobj>
                               <ignoreParent dataType="Bool">false</ignoreParent>
                               <parentTransform />
-                              <pos dataType="Struct" type="Duality.Vector3">
-                                <X dataType="Float">0</X>
-                                <Y dataType="Float">0</Y>
-                                <Z dataType="Float">0</Z>
-                              </pos>
-                              <posAbs dataType="Struct" type="Duality.Vector3">
-                                <X dataType="Float">0</X>
-                                <Y dataType="Float">0</Y>
-                                <Z dataType="Float">0</Z>
-                              </posAbs>
+                              <pos dataType="Struct" type="Duality.Vector3" />
+                              <posAbs dataType="Struct" type="Duality.Vector3" />
                               <scale dataType="Float">1</scale>
                               <scaleAbs dataType="Float">1</scaleAbs>
-                              <vel dataType="Struct" type="Duality.Vector3">
-                                <X dataType="Float">0</X>
-                                <Y dataType="Float">0</Y>
-                                <Z dataType="Float">0</Z>
-                              </vel>
-                              <velAbs dataType="Struct" type="Duality.Vector3">
-                                <X dataType="Float">0</X>
-                                <Y dataType="Float">0</Y>
-                                <Z dataType="Float">0</Z>
-                              </velAbs>
+                              <vel dataType="Struct" type="Duality.Vector3" />
+                              <velAbs dataType="Struct" type="Duality.Vector3" />
                             </parentTransform>
                             <pos dataType="Struct" type="Duality.Vector3">
                               <X dataType="Float">0</X>
@@ -162,16 +129,8 @@
                             </posAbs>
                             <scale dataType="Float">1</scale>
                             <scaleAbs dataType="Float">1</scaleAbs>
-                            <vel dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                              <Z dataType="Float">0</Z>
-                            </vel>
-                            <velAbs dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                              <Z dataType="Float">0</Z>
-                            </velAbs>
+                            <vel dataType="Struct" type="Duality.Vector3" />
+                            <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
                           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3423461069">
                             <active dataType="Bool">true</active>
@@ -182,6 +141,7 @@
                               <R dataType="Byte">45</R>
                             </colorTint>
                             <customMat />
+                            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                             <gameobj dataType="ObjectRef">1781294501</gameobj>
                             <offset dataType="Int">1</offset>
                             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -195,6 +155,7 @@
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                             </sharedMat>
+                            <spriteIndex dataType="Int">-1</spriteIndex>
                             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                           </item>
                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="3523923323">
@@ -208,9 +169,7 @@
                             </colorTint>
                             <customMat />
                             <gameobj dataType="ObjectRef">1781294501</gameobj>
-                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                              <contentPath />
-                            </iconMat>
+                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                             <offset dataType="Int">0</offset>
                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="2766966635">
                               <flowAreas />
@@ -267,28 +226,12 @@
                                               <gameobj dataType="ObjectRef">2991214831</gameobj>
                                               <ignoreParent dataType="Bool">false</ignoreParent>
                                               <parentTransform />
-                                              <pos dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </pos>
-                                              <posAbs dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </posAbs>
+                                              <pos dataType="Struct" type="Duality.Vector3" />
+                                              <posAbs dataType="Struct" type="Duality.Vector3" />
                                               <scale dataType="Float">1</scale>
                                               <scaleAbs dataType="Float">1</scaleAbs>
-                                              <vel dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </vel>
-                                              <velAbs dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </velAbs>
+                                              <vel dataType="Struct" type="Duality.Vector3" />
+                                              <velAbs dataType="Struct" type="Duality.Vector3" />
                                             </parentTransform>
                                             <pos dataType="Struct" type="Duality.Vector3">
                                               <X dataType="Float">0</X>
@@ -302,16 +245,8 @@
                                             </posAbs>
                                             <scale dataType="Float">1</scale>
                                             <scaleAbs dataType="Float">1</scaleAbs>
-                                            <vel dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </vel>
-                                            <velAbs dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </velAbs>
+                                            <vel dataType="Struct" type="Duality.Vector3" />
+                                            <velAbs dataType="Struct" type="Duality.Vector3" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="495692229">
                                             <active dataType="Bool">true</active>
@@ -322,6 +257,7 @@
                                               <R dataType="Byte">45</R>
                                             </colorTint>
                                             <customMat />
+                                            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                                             <gameobj dataType="ObjectRef">3148492957</gameobj>
                                             <offset dataType="Int">1</offset>
                                             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -335,6 +271,7 @@
                                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                                             </sharedMat>
+                                            <spriteIndex dataType="Int">-1</spriteIndex>
                                             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="596154483">
@@ -348,9 +285,7 @@
                                             </colorTint>
                                             <customMat />
                                             <gameobj dataType="ObjectRef">3148492957</gameobj>
-                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                              <contentPath />
-                                            </iconMat>
+                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1704046355">
                                               <flowAreas />
@@ -439,16 +374,8 @@
                                             </posAbs>
                                             <scale dataType="Float">1</scale>
                                             <scaleAbs dataType="Float">1</scaleAbs>
-                                            <vel dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </vel>
-                                            <velAbs dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </velAbs>
+                                            <vel dataType="Struct" type="Duality.Vector3" />
+                                            <velAbs dataType="Struct" type="Duality.Vector3" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2867403967">
                                             <active dataType="Bool">true</active>
@@ -459,6 +386,7 @@
                                               <R dataType="Byte">45</R>
                                             </colorTint>
                                             <customMat />
+                                            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                                             <gameobj dataType="ObjectRef">1225237399</gameobj>
                                             <offset dataType="Int">1</offset>
                                             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -472,6 +400,7 @@
                                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                                             </sharedMat>
+                                            <spriteIndex dataType="Int">-1</spriteIndex>
                                             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="2967866221">
@@ -485,9 +414,7 @@
                                             </colorTint>
                                             <customMat />
                                             <gameobj dataType="ObjectRef">1225237399</gameobj>
-                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                              <contentPath />
-                                            </iconMat>
+                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="2978313277">
                                               <flowAreas />
@@ -575,16 +502,8 @@
                                             </posAbs>
                                             <scale dataType="Float">1</scale>
                                             <scaleAbs dataType="Float">1</scaleAbs>
-                                            <vel dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </vel>
-                                            <velAbs dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </velAbs>
+                                            <vel dataType="Struct" type="Duality.Vector3" />
+                                            <velAbs dataType="Struct" type="Duality.Vector3" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="2898930527">
                                             <active dataType="Bool">true</active>
@@ -597,9 +516,7 @@
                                             </colorTint>
                                             <customMat />
                                             <gameobj dataType="ObjectRef">1156301705</gameobj>
-                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                              <contentPath />
-                                            </iconMat>
+                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="2530555455">
                                               <flowAreas />
@@ -733,28 +650,12 @@
                             <gameobj dataType="ObjectRef">1080590022</gameobj>
                             <ignoreParent dataType="Bool">false</ignoreParent>
                             <parentTransform dataType="ObjectRef">1215965841</parentTransform>
-                            <pos dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                              <Z dataType="Float">0</Z>
-                            </pos>
-                            <posAbs dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                              <Z dataType="Float">0</Z>
-                            </posAbs>
+                            <pos dataType="Struct" type="Duality.Vector3" />
+                            <posAbs dataType="Struct" type="Duality.Vector3" />
                             <scale dataType="Float">1</scale>
                             <scaleAbs dataType="Float">1</scaleAbs>
-                            <vel dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                              <Z dataType="Float">0</Z>
-                            </vel>
-                            <velAbs dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                              <Z dataType="Float">0</Z>
-                            </velAbs>
+                            <vel dataType="Struct" type="Duality.Vector3" />
+                            <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
                           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2722756590">
                             <active dataType="Bool">true</active>
@@ -765,6 +666,7 @@
                               <R dataType="Byte">45</R>
                             </colorTint>
                             <customMat />
+                            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                             <gameobj dataType="ObjectRef">1080590022</gameobj>
                             <offset dataType="Int">1</offset>
                             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -778,6 +680,7 @@
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                             </sharedMat>
+                            <spriteIndex dataType="Int">-1</spriteIndex>
                             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                           </item>
                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="2823218844">
@@ -791,9 +694,7 @@
                             </colorTint>
                             <customMat />
                             <gameobj dataType="ObjectRef">1080590022</gameobj>
-                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                              <contentPath />
-                            </iconMat>
+                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                             <offset dataType="Int">0</offset>
                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="2881498308">
                               <flowAreas />
@@ -850,28 +751,12 @@
                                               <gameobj dataType="ObjectRef">4160849249</gameobj>
                                               <ignoreParent dataType="Bool">false</ignoreParent>
                                               <parentTransform />
-                                              <pos dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </pos>
-                                              <posAbs dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </posAbs>
+                                              <pos dataType="Struct" type="Duality.Vector3" />
+                                              <posAbs dataType="Struct" type="Duality.Vector3" />
                                               <scale dataType="Float">1</scale>
                                               <scaleAbs dataType="Float">1</scaleAbs>
-                                              <vel dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </vel>
-                                              <velAbs dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </velAbs>
+                                              <vel dataType="Struct" type="Duality.Vector3" />
+                                              <velAbs dataType="Struct" type="Duality.Vector3" />
                                             </parentTransform>
                                             <pos dataType="Struct" type="Duality.Vector3">
                                               <X dataType="Float">75</X>
@@ -885,16 +770,8 @@
                                             </posAbs>
                                             <scale dataType="Float">1</scale>
                                             <scaleAbs dataType="Float">1</scaleAbs>
-                                            <vel dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </vel>
-                                            <velAbs dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </velAbs>
+                                            <vel dataType="Struct" type="Duality.Vector3" />
+                                            <velAbs dataType="Struct" type="Duality.Vector3" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1789297246">
                                             <active dataType="Bool">true</active>
@@ -905,6 +782,7 @@
                                               <R dataType="Byte">45</R>
                                             </colorTint>
                                             <customMat />
+                                            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                                             <gameobj dataType="ObjectRef">147130678</gameobj>
                                             <offset dataType="Int">1</offset>
                                             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -918,6 +796,7 @@
                                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                                             </sharedMat>
+                                            <spriteIndex dataType="Int">-1</spriteIndex>
                                             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="1889759500">
@@ -931,9 +810,7 @@
                                             </colorTint>
                                             <customMat />
                                             <gameobj dataType="ObjectRef">147130678</gameobj>
-                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                              <contentPath />
-                                            </iconMat>
+                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3488900692">
                                               <flowAreas />
@@ -1022,16 +899,8 @@
                                             </posAbs>
                                             <scale dataType="Float">1</scale>
                                             <scaleAbs dataType="Float">1</scaleAbs>
-                                            <vel dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </vel>
-                                            <velAbs dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </velAbs>
+                                            <vel dataType="Struct" type="Duality.Vector3" />
+                                            <velAbs dataType="Struct" type="Duality.Vector3" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1291416942">
                                             <active dataType="Bool">true</active>
@@ -1042,6 +911,7 @@
                                               <R dataType="Byte">45</R>
                                             </colorTint>
                                             <customMat />
+                                            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                                             <gameobj dataType="ObjectRef">3944217670</gameobj>
                                             <offset dataType="Int">1</offset>
                                             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -1055,6 +925,7 @@
                                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                                             </sharedMat>
+                                            <spriteIndex dataType="Int">-1</spriteIndex>
                                             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="1391879196">
@@ -1068,9 +939,7 @@
                                             </colorTint>
                                             <customMat />
                                             <gameobj dataType="ObjectRef">3944217670</gameobj>
-                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                              <contentPath />
-                                            </iconMat>
+                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1435159300">
                                               <flowAreas />
@@ -1158,16 +1027,8 @@
                                             </posAbs>
                                             <scale dataType="Float">1</scale>
                                             <scaleAbs dataType="Float">1</scaleAbs>
-                                            <vel dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </vel>
-                                            <velAbs dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </velAbs>
+                                            <vel dataType="Struct" type="Duality.Vector3" />
+                                            <velAbs dataType="Struct" type="Duality.Vector3" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="3830166906">
                                             <active dataType="Bool">true</active>
@@ -1180,9 +1041,7 @@
                                             </colorTint>
                                             <customMat />
                                             <gameobj dataType="ObjectRef">2087538084</gameobj>
-                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                              <contentPath />
-                                            </iconMat>
+                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1100207130">
                                               <flowAreas />
@@ -1328,16 +1187,8 @@
                             </posAbs>
                             <scale dataType="Float">1</scale>
                             <scaleAbs dataType="Float">1</scaleAbs>
-                            <vel dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                              <Z dataType="Float">0</Z>
-                            </vel>
-                            <velAbs dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                              <Z dataType="Float">0</Z>
-                            </velAbs>
+                            <vel dataType="Struct" type="Duality.Vector3" />
+                            <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
                           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2421376409">
                             <active dataType="Bool">true</active>
@@ -1348,6 +1199,7 @@
                               <R dataType="Byte">45</R>
                             </colorTint>
                             <customMat />
+                            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                             <gameobj dataType="ObjectRef">779209841</gameobj>
                             <offset dataType="Int">1</offset>
                             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -1361,6 +1213,7 @@
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                             </sharedMat>
+                            <spriteIndex dataType="Int">-1</spriteIndex>
                             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                           </item>
                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="2521838663">
@@ -1374,9 +1227,7 @@
                             </colorTint>
                             <customMat />
                             <gameobj dataType="ObjectRef">779209841</gameobj>
-                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                              <contentPath />
-                            </iconMat>
+                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                             <offset dataType="Int">0</offset>
                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="477288247">
                               <flowAreas />
@@ -1433,28 +1284,12 @@
                                               <gameobj dataType="ObjectRef">1991011308</gameobj>
                                               <ignoreParent dataType="Bool">false</ignoreParent>
                                               <parentTransform />
-                                              <pos dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </pos>
-                                              <posAbs dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </posAbs>
+                                              <pos dataType="Struct" type="Duality.Vector3" />
+                                              <posAbs dataType="Struct" type="Duality.Vector3" />
                                               <scale dataType="Float">1</scale>
                                               <scaleAbs dataType="Float">1</scaleAbs>
-                                              <vel dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </vel>
-                                              <velAbs dataType="Struct" type="Duality.Vector3">
-                                                <X dataType="Float">0</X>
-                                                <Y dataType="Float">0</Y>
-                                                <Z dataType="Float">0</Z>
-                                              </velAbs>
+                                              <vel dataType="Struct" type="Duality.Vector3" />
+                                              <velAbs dataType="Struct" type="Duality.Vector3" />
                                             </parentTransform>
                                             <pos dataType="Struct" type="Duality.Vector3">
                                               <X dataType="Float">-125</X>
@@ -1468,16 +1303,8 @@
                                             </posAbs>
                                             <scale dataType="Float">1</scale>
                                             <scaleAbs dataType="Float">1</scaleAbs>
-                                            <vel dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </vel>
-                                            <velAbs dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </velAbs>
+                                            <vel dataType="Struct" type="Duality.Vector3" />
+                                            <velAbs dataType="Struct" type="Duality.Vector3" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3009345359">
                                             <active dataType="Bool">true</active>
@@ -1488,6 +1315,7 @@
                                               <R dataType="Byte">45</R>
                                             </colorTint>
                                             <customMat />
+                                            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                                             <gameobj dataType="ObjectRef">1367178791</gameobj>
                                             <offset dataType="Int">1</offset>
                                             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -1501,6 +1329,7 @@
                                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                                             </sharedMat>
+                                            <spriteIndex dataType="Int">-1</spriteIndex>
                                             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="3109807613">
@@ -1514,9 +1343,7 @@
                                             </colorTint>
                                             <customMat />
                                             <gameobj dataType="ObjectRef">1367178791</gameobj>
-                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                              <contentPath />
-                                            </iconMat>
+                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="4196214285">
                                               <flowAreas />
@@ -1605,16 +1432,8 @@
                                             </posAbs>
                                             <scale dataType="Float">1</scale>
                                             <scaleAbs dataType="Float">1</scaleAbs>
-                                            <vel dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </vel>
-                                            <velAbs dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </velAbs>
+                                            <vel dataType="Struct" type="Duality.Vector3" />
+                                            <velAbs dataType="Struct" type="Duality.Vector3" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="4225583713">
                                             <active dataType="Bool">true</active>
@@ -1625,6 +1444,7 @@
                                               <R dataType="Byte">45</R>
                                             </colorTint>
                                             <customMat />
+                                            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                                             <gameobj dataType="ObjectRef">2583417145</gameobj>
                                             <offset dataType="Int">1</offset>
                                             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -1638,6 +1458,7 @@
                                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                                             </sharedMat>
+                                            <spriteIndex dataType="Int">-1</spriteIndex>
                                             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="31078671">
@@ -1651,9 +1472,7 @@
                                             </colorTint>
                                             <customMat />
                                             <gameobj dataType="ObjectRef">2583417145</gameobj>
-                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                              <contentPath />
-                                            </iconMat>
+                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3540624815">
                                               <flowAreas />
@@ -1742,16 +1561,8 @@
                                             </posAbs>
                                             <scale dataType="Float">1</scale>
                                             <scaleAbs dataType="Float">1</scaleAbs>
-                                            <vel dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </vel>
-                                            <velAbs dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </velAbs>
+                                            <vel dataType="Struct" type="Duality.Vector3" />
+                                            <velAbs dataType="Struct" type="Duality.Vector3" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="3315315376">
                                             <active dataType="Bool">true</active>
@@ -1764,9 +1575,7 @@
                                             </colorTint>
                                             <customMat />
                                             <gameobj dataType="ObjectRef">1572686554</gameobj>
-                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                              <contentPath />
-                                            </iconMat>
+                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3415372960">
                                               <flowAreas />
@@ -1846,16 +1655,8 @@
                                             </posAbs>
                                             <scale dataType="Float">1</scale>
                                             <scaleAbs dataType="Float">1</scaleAbs>
-                                            <vel dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </vel>
-                                            <velAbs dataType="Struct" type="Duality.Vector3">
-                                              <X dataType="Float">0</X>
-                                              <Y dataType="Float">0</Y>
-                                              <Z dataType="Float">0</Z>
-                                            </velAbs>
+                                            <vel dataType="Struct" type="Duality.Vector3" />
+                                            <velAbs dataType="Struct" type="Duality.Vector3" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="477257212">
                                             <active dataType="Bool">true</active>
@@ -1866,6 +1667,7 @@
                                               <R dataType="Byte">45</R>
                                             </colorTint>
                                             <customMat />
+                                            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                                             <gameobj dataType="ObjectRef">3130057940</gameobj>
                                             <offset dataType="Int">1</offset>
                                             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -1879,6 +1681,7 @@
                                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                                             </sharedMat>
+                                            <spriteIndex dataType="Int">-1</spriteIndex>
                                             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="577719466">
@@ -1892,9 +1695,7 @@
                                             </colorTint>
                                             <customMat />
                                             <gameobj dataType="ObjectRef">3130057940</gameobj>
-                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                              <contentPath />
-                                            </iconMat>
+                                            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1416774346">
                                               <flowAreas />
@@ -2137,16 +1938,8 @@
             </posAbs>
             <scale dataType="Float">1.25</scale>
             <scaleAbs dataType="Float">1.25</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
+            <vel dataType="Struct" type="Duality.Vector3" />
+            <velAbs dataType="Struct" type="Duality.Vector3" />
           </item>
           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1849493036">
             <active dataType="Bool">true</active>
@@ -2157,6 +1950,7 @@
               <R dataType="Byte">64</R>
             </colorTint>
             <customMat />
+            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
             <gameobj dataType="ObjectRef">207326468</gameobj>
             <offset dataType="Int">0</offset>
             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -2170,6 +1964,7 @@
             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
               <contentPath dataType="String">Default:Material:DualityLogoBig</contentPath>
             </sharedMat>
+            <spriteIndex dataType="Int">-1</spriteIndex>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
         </_items>
@@ -2228,16 +2023,8 @@
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
+            <vel dataType="Struct" type="Duality.Vector3" />
+            <velAbs dataType="Struct" type="Duality.Vector3" />
           </item>
           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="181066677">
             <active dataType="Bool">true</active>
@@ -2250,9 +2037,7 @@
             </colorTint>
             <customMat />
             <gameobj dataType="ObjectRef">2733405151</gameobj>
-            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-              <contentPath />
-            </iconMat>
+            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
             <offset dataType="Int">0</offset>
             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1658023141">
               <flowAreas />

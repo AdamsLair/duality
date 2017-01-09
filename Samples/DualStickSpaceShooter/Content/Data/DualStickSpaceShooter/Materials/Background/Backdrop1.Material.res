@@ -1,6 +1,7 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Material" id="129723834">
-  <info dataType="Struct" type="Duality.Resources.BatchInfo" id="427169525">
-    <dirtyFlag dataType="Enum" type="Duality.Resources.BatchInfo+DirtyFlag" name="None" value="0" />
+  <assetInfo />
+  <info dataType="Struct" type="Duality.Drawing.BatchInfo" id="427169525">
+    <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
     <hashCode dataType="Int">1015672523</hashCode>
     <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
       <A dataType="Byte">255</A>
@@ -22,12 +23,9 @@
     <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="649525530" surrogate="true">
       <header />
       <body>
-        <smoothness dataType="Array" type="System.Single[]" id="411997508">
-          <item dataType="Float">100</item>
-        </smoothness>
+        <smoothness dataType="Array" type="System.Single[]" id="411997508">100</smoothness>
       </body>
     </uniforms>
   </info>
-  <sourcePath />
 </root>
 <!-- XmlFormatterBase Document Separator -->

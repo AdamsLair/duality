@@ -1,7 +1,4 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Pixmap" id="129723834">
-  <animCols dataType="Int">0</animCols>
-  <animFrameBorder dataType="Int">0</animFrameBorder>
-  <animRows dataType="Int">0</animRows>
   <assetInfo />
   <atlas />
   <layers dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Drawing.PixelData]]" id="427169525">

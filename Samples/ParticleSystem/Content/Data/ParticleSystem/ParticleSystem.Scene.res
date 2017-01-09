@@ -36,16 +36,8 @@
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
+            <vel dataType="Struct" type="Duality.Vector3" />
+            <velAbs dataType="Struct" type="Duality.Vector3" />
           </item>
           <item dataType="Struct" type="Duality.Components.Camera" id="2798799345">
             <active dataType="Bool">true</active>
@@ -56,35 +48,21 @@
             <passes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Camera+Pass]]" id="1586507857">
               <_items dataType="Array" type="Duality.Components.Camera+Pass[]" id="1602373614" length="4">
                 <item dataType="Struct" type="Duality.Components.Camera+Pass" id="2346966608">
-                  <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-                    <A dataType="Byte">0</A>
-                    <B dataType="Byte">0</B>
-                    <G dataType="Byte">0</G>
-                    <R dataType="Byte">0</R>
-                  </clearColor>
+                  <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba" />
                   <clearDepth dataType="Float">1</clearDepth>
                   <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="All" value="3" />
                   <input />
                   <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="PerspectiveWorld" value="0" />
-                  <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
-                    <contentPath />
-                  </output>
+                  <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
                   <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Camera+Pass" id="3661249902">
-                  <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-                    <A dataType="Byte">0</A>
-                    <B dataType="Byte">0</B>
-                    <G dataType="Byte">0</G>
-                    <R dataType="Byte">0</R>
-                  </clearColor>
+                  <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba" />
                   <clearDepth dataType="Float">1</clearDepth>
                   <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
                   <input />
                   <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="OrthoScreen" value="1" />
-                  <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
-                    <contentPath />
-                  </output>
+                  <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
                   <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="All" value="4294967295" />
                 </item>
               </_items>
@@ -150,16 +128,8 @@
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
+            <vel dataType="Struct" type="Duality.Vector3" />
+            <velAbs dataType="Struct" type="Duality.Vector3" />
           </item>
           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="834132938">
             <active dataType="Bool">true</active>
@@ -170,6 +140,7 @@
               <R dataType="Byte">128</R>
             </colorTint>
             <customMat />
+            <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
             <gameobj dataType="ObjectRef">3486933666</gameobj>
             <offset dataType="Int">100</offset>
             <pixelGrid dataType="Bool">false</pixelGrid>
@@ -183,6 +154,7 @@
             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
               <contentPath dataType="String">Data\ParticleSystem\Visuals\BackgroundTile.Material.res</contentPath>
             </sharedMat>
+            <spriteIndex dataType="Int">-1</spriteIndex>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
         </_items>
@@ -233,50 +205,22 @@
                   <gameobj dataType="ObjectRef">4113979440</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </pos>
-                  <posAbs dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </posAbs>
+                  <pos dataType="Struct" type="Duality.Vector3" />
+                  <posAbs dataType="Struct" type="Duality.Vector3" />
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </vel>
-                  <velAbs dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </velAbs>
+                  <vel dataType="Struct" type="Duality.Vector3" />
+                  <velAbs dataType="Struct" type="Duality.Vector3" />
                 </item>
                 <item dataType="Struct" type="ParticleSystem.ParticleEffect" id="4083609470">
                   <active dataType="Bool">true</active>
                   <angularDrag dataType="Float">0.3</angularDrag>
-                  <constantForce dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </constantForce>
+                  <constantForce dataType="Struct" type="Duality.Vector3" />
                   <emitters dataType="Struct" type="System.Collections.Generic.List`1[[ParticleSystem.ParticleEmitter]]" id="4142054598">
                     <_items dataType="Array" type="ParticleSystem.ParticleEmitter[]" id="1278867712" length="4">
                       <item dataType="Struct" type="ParticleSystem.ParticleEmitter" id="253448860">
-                        <basePos dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </basePos>
-                        <baseVel dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </baseVel>
+                        <basePos dataType="Struct" type="Duality.Vector3" />
+                        <baseVel dataType="Struct" type="Duality.Vector3" />
                         <burstDelay dataType="Struct" type="Duality.Range">
                           <MaxValue dataType="Float">100</MaxValue>
                           <MinValue dataType="Float">100</MinValue>
@@ -311,18 +255,12 @@
                           <MaxValue dataType="Float">0.05</MaxValue>
                           <MinValue dataType="Float">-0.05</MinValue>
                         </randomAngleVel>
-                        <randomPos dataType="Struct" type="Duality.Range">
-                          <MaxValue dataType="Float">0</MaxValue>
-                          <MinValue dataType="Float">0</MinValue>
-                        </randomPos>
+                        <randomPos dataType="Struct" type="Duality.Range" />
                         <randomVel dataType="Struct" type="Duality.Range">
                           <MaxValue dataType="Float">3</MaxValue>
                           <MinValue dataType="Float">0</MinValue>
                         </randomVel>
-                        <spriteIndex dataType="Struct" type="Duality.Range">
-                          <MaxValue dataType="Float">0</MaxValue>
-                          <MinValue dataType="Float">0</MinValue>
-                        </spriteIndex>
+                        <spriteIndex dataType="Struct" type="Duality.Range" />
                       </item>
                     </_items>
                     <_size dataType="Int">1</_size>
@@ -410,22 +348,10 @@
                           </posAbs>
                           <scale dataType="Float">1</scale>
                           <scaleAbs dataType="Float">1</scaleAbs>
-                          <vel dataType="Struct" type="Duality.Vector3">
-                            <X dataType="Float">0</X>
-                            <Y dataType="Float">0</Y>
-                            <Z dataType="Float">0</Z>
-                          </vel>
-                          <velAbs dataType="Struct" type="Duality.Vector3">
-                            <X dataType="Float">0</X>
-                            <Y dataType="Float">0</Y>
-                            <Z dataType="Float">0</Z>
-                          </velAbs>
+                          <vel dataType="Struct" type="Duality.Vector3" />
+                          <velAbs dataType="Struct" type="Duality.Vector3" />
                         </parentTransform>
-                        <pos dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </pos>
+                        <pos dataType="Struct" type="Duality.Vector3" />
                         <posAbs dataType="Struct" type="Duality.Vector3">
                           <X dataType="Float">256</X>
                           <Y dataType="Float">0</Y>
@@ -433,16 +359,8 @@
                         </posAbs>
                         <scale dataType="Float">1</scale>
                         <scaleAbs dataType="Float">1</scaleAbs>
-                        <vel dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </vel>
-                        <velAbs dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </velAbs>
+                        <vel dataType="Struct" type="Duality.Vector3" />
+                        <velAbs dataType="Struct" type="Duality.Vector3" />
                       </item>
                       <item dataType="Struct" type="ParticleSystem.ParticleEffect" id="4011938583">
                         <active dataType="Bool">true</active>
@@ -455,11 +373,7 @@
                         <emitters dataType="Struct" type="System.Collections.Generic.List`1[[ParticleSystem.ParticleEmitter]]" id="1267613623">
                           <_items dataType="Array" type="ParticleSystem.ParticleEmitter[]" id="2624508302" length="4">
                             <item dataType="Struct" type="ParticleSystem.ParticleEmitter" id="3657408720">
-                              <basePos dataType="Struct" type="Duality.Vector3">
-                                <X dataType="Float">0</X>
-                                <Y dataType="Float">0</Y>
-                                <Z dataType="Float">0</Z>
-                              </basePos>
+                              <basePos dataType="Struct" type="Duality.Vector3" />
                               <baseVel dataType="Struct" type="Duality.Vector3">
                                 <X dataType="Float">0</X>
                                 <Y dataType="Float">-3</Y>
@@ -573,11 +487,7 @@
                         <gameobj dataType="ObjectRef">16560041</gameobj>
                         <ignoreParent dataType="Bool">false</ignoreParent>
                         <parentTransform dataType="ObjectRef">3189565084</parentTransform>
-                        <pos dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </pos>
+                        <pos dataType="Struct" type="Duality.Vector3" />
                         <posAbs dataType="Struct" type="Duality.Vector3">
                           <X dataType="Float">256</X>
                           <Y dataType="Float">0</Y>
@@ -585,16 +495,8 @@
                         </posAbs>
                         <scale dataType="Float">1</scale>
                         <scaleAbs dataType="Float">1</scaleAbs>
-                        <vel dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </vel>
-                        <velAbs dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </velAbs>
+                        <vel dataType="Struct" type="Duality.Vector3" />
+                        <velAbs dataType="Struct" type="Duality.Vector3" />
                       </item>
                       <item dataType="Struct" type="ParticleSystem.ParticleEffect" id="4281157367">
                         <active dataType="Bool">true</active>
@@ -607,16 +509,8 @@
                         <emitters dataType="Struct" type="System.Collections.Generic.List`1[[ParticleSystem.ParticleEmitter]]" id="2166227543">
                           <_items dataType="Array" type="ParticleSystem.ParticleEmitter[]" id="1487513102" length="4">
                             <item dataType="Struct" type="ParticleSystem.ParticleEmitter" id="2511740880">
-                              <basePos dataType="Struct" type="Duality.Vector3">
-                                <X dataType="Float">0</X>
-                                <Y dataType="Float">0</Y>
-                                <Z dataType="Float">0</Z>
-                              </basePos>
-                              <baseVel dataType="Struct" type="Duality.Vector3">
-                                <X dataType="Float">0</X>
-                                <Y dataType="Float">0</Y>
-                                <Z dataType="Float">0</Z>
-                              </baseVel>
+                              <basePos dataType="Struct" type="Duality.Vector3" />
+                              <baseVel dataType="Struct" type="Duality.Vector3" />
                               <burstDelay dataType="Struct" type="Duality.Range">
                                 <MaxValue dataType="Float">100</MaxValue>
                                 <MinValue dataType="Float">100</MinValue>
@@ -741,16 +635,8 @@
                         </posAbs>
                         <scale dataType="Float">1</scale>
                         <scaleAbs dataType="Float">1</scaleAbs>
-                        <vel dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </vel>
-                        <velAbs dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </velAbs>
+                        <vel dataType="Struct" type="Duality.Vector3" />
+                        <velAbs dataType="Struct" type="Duality.Vector3" />
                       </item>
                       <item dataType="Struct" type="ParticleSystem.ParticleEffect" id="3954708029">
                         <active dataType="Bool">true</active>
@@ -763,11 +649,7 @@
                         <emitters dataType="Struct" type="System.Collections.Generic.List`1[[ParticleSystem.ParticleEmitter]]" id="589203847">
                           <_items dataType="Array" type="ParticleSystem.ParticleEmitter[]" id="4185817934" length="4">
                             <item dataType="Struct" type="ParticleSystem.ParticleEmitter" id="683379408">
-                              <basePos dataType="Struct" type="Duality.Vector3">
-                                <X dataType="Float">0</X>
-                                <Y dataType="Float">0</Y>
-                                <Z dataType="Float">0</Z>
-                              </basePos>
+                              <basePos dataType="Struct" type="Duality.Vector3" />
                               <baseVel dataType="Struct" type="Duality.Vector3">
                                 <X dataType="Float">0.25</X>
                                 <Y dataType="Float">0</Y>
@@ -884,16 +766,8 @@
                   <emitters dataType="Struct" type="System.Collections.Generic.List`1[[ParticleSystem.ParticleEmitter]]" id="487753994">
                     <_items dataType="Array" type="ParticleSystem.ParticleEmitter[]" id="723247328" length="4">
                       <item dataType="Struct" type="ParticleSystem.ParticleEmitter" id="983715804">
-                        <basePos dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </basePos>
-                        <baseVel dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </baseVel>
+                        <basePos dataType="Struct" type="Duality.Vector3" />
+                        <baseVel dataType="Struct" type="Duality.Vector3" />
                         <burstDelay dataType="Struct" type="Duality.Range">
                           <MaxValue dataType="Float">50</MaxValue>
                           <MinValue dataType="Float">50</MinValue>
@@ -1014,38 +888,18 @@
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </vel>
-                  <velAbs dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </velAbs>
+                  <vel dataType="Struct" type="Duality.Vector3" />
+                  <velAbs dataType="Struct" type="Duality.Vector3" />
                 </item>
                 <item dataType="Struct" type="ParticleSystem.ParticleEffect" id="2676825595">
                   <active dataType="Bool">true</active>
                   <angularDrag dataType="Float">0.3</angularDrag>
-                  <constantForce dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </constantForce>
+                  <constantForce dataType="Struct" type="Duality.Vector3" />
                   <emitters dataType="Struct" type="System.Collections.Generic.List`1[[ParticleSystem.ParticleEmitter]]" id="1561152987">
                     <_items dataType="Array" type="ParticleSystem.ParticleEmitter[]" id="2879698070" length="4">
                       <item dataType="Struct" type="ParticleSystem.ParticleEmitter" id="4236755488">
-                        <basePos dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </basePos>
-                        <baseVel dataType="Struct" type="Duality.Vector3">
-                          <X dataType="Float">0</X>
-                          <Y dataType="Float">0</Y>
-                          <Z dataType="Float">0</Z>
-                        </baseVel>
+                        <basePos dataType="Struct" type="Duality.Vector3" />
+                        <baseVel dataType="Struct" type="Duality.Vector3" />
                         <burstDelay dataType="Struct" type="Duality.Range">
                           <MaxValue dataType="Float">3000</MaxValue>
                           <MinValue dataType="Float">3000</MinValue>
@@ -1080,18 +934,12 @@
                           <MaxValue dataType="Float">0.05</MaxValue>
                           <MinValue dataType="Float">-0.05</MinValue>
                         </randomAngleVel>
-                        <randomPos dataType="Struct" type="Duality.Range">
-                          <MaxValue dataType="Float">0</MaxValue>
-                          <MinValue dataType="Float">0</MinValue>
-                        </randomPos>
+                        <randomPos dataType="Struct" type="Duality.Range" />
                         <randomVel dataType="Struct" type="Duality.Range">
                           <MaxValue dataType="Float">4</MaxValue>
                           <MinValue dataType="Float">4</MinValue>
                         </randomVel>
-                        <spriteIndex dataType="Struct" type="Duality.Range">
-                          <MaxValue dataType="Float">0</MaxValue>
-                          <MinValue dataType="Float">0</MinValue>
-                        </spriteIndex>
+                        <spriteIndex dataType="Struct" type="Duality.Range" />
                       </item>
                     </_items>
                     <_size dataType="Int">1</_size>
@@ -1186,6 +1034,7 @@
             </counterGraphs>
             <drawGraphs dataType="Bool">false</drawGraphs>
             <gameobj dataType="ObjectRef">708372333</gameobj>
+            <keyResetCounters dataType="Enum" type="Duality.Input.Key" name="F5" value="14" />
             <keyToggleGraph dataType="Enum" type="Duality.Input.Key" name="F4" value="13" />
             <keyToggleTextPerf dataType="Enum" type="Duality.Input.Key" name="F2" value="11" />
             <keyToggleTextStat dataType="Enum" type="Duality.Input.Key" name="F3" value="12" />

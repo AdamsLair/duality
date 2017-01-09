@@ -1,7 +1,8 @@
 ﻿<root dataType="Struct" type="Duality.Resources.FragmentShader" id="129723834">
   <assetInfo dataType="Struct" type="Duality.Editor.AssetManagement.AssetInfo" id="427169525">
+    <customData />
     <importerId dataType="String">BasicShaderAssetImporter</importerId>
-    <nameHint dataType="String">FragmentShader</nameHint>
+    <sourceFileHint />
   </assetInfo>
   <source dataType="String">uniform float GameTime;
 

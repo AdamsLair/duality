@@ -1,4 +1,5 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Scene" id="129723834">
+  <assetInfo />
   <globalGravity dataType="Struct" type="Duality.Vector2">
     <X dataType="Float">0</X>
     <Y dataType="Float">33</Y>
@@ -21,11 +22,11 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3959643605</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.Agent" id="746706921">
+          <item dataType="Struct" type="Steering.Agent" id="328169131">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3959643605</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="1772244557">
+          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="1986470889">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3959643605</gameobj>
           </item>
@@ -36,19 +37,19 @@
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="617595904" surrogate="true">
         <header />
         <body>
-          <keys dataType="Array" type="System.Type[]" id="2905685645">
+          <keys dataType="Array" type="System.Object[]" id="2905685645">
             <item dataType="Type" id="13978918" value="Duality.Components.Transform" />
             <item dataType="Type" id="439788218" value="Duality.Components.Physics.RigidBody" />
             <item dataType="Type" id="2771621414" value="Duality.Components.Renderers.RigidBodyRenderer" />
             <item dataType="Type" id="2144167866" value="Steering.Agent" />
             <item dataType="Type" id="2730200870" value="Steering.AgentAttributeTranslator" />
           </keys>
-          <values dataType="Array" type="Duality.Component[]" id="225485752">
+          <values dataType="Array" type="System.Object[]" id="225485752">
             <item dataType="ObjectRef">2024991241</item>
             <item dataType="ObjectRef">2727452833</item>
             <item dataType="ObjectRef">263369499</item>
-            <item dataType="ObjectRef">746706921</item>
-            <item dataType="ObjectRef">1772244557</item>
+            <item dataType="ObjectRef">328169131</item>
+            <item dataType="ObjectRef">1986470889</item>
           </values>
         </body>
       </compMap>
@@ -158,11 +159,11 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1396203244</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.Agent" id="2478233856">
+          <item dataType="Struct" type="Steering.Agent" id="2059696066">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1396203244</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="3503771492">
+          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="3717997824">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1396203244</gameobj>
           </item>
@@ -173,19 +174,19 @@
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2124598538" surrogate="true">
         <header />
         <body>
-          <keys dataType="Array" type="System.Type[]" id="2173735480">
+          <keys dataType="Array" type="System.Object[]" id="2173735480">
             <item dataType="ObjectRef">13978918</item>
             <item dataType="ObjectRef">439788218</item>
             <item dataType="ObjectRef">2771621414</item>
             <item dataType="ObjectRef">2144167866</item>
             <item dataType="ObjectRef">2730200870</item>
           </keys>
-          <values dataType="Array" type="Duality.Component[]" id="1714155230">
+          <values dataType="Array" type="System.Object[]" id="1714155230">
             <item dataType="ObjectRef">3756518176</item>
             <item dataType="ObjectRef">164012472</item>
             <item dataType="ObjectRef">1994896434</item>
-            <item dataType="ObjectRef">2478233856</item>
-            <item dataType="ObjectRef">3503771492</item>
+            <item dataType="ObjectRef">2059696066</item>
+            <item dataType="ObjectRef">3717997824</item>
           </values>
         </body>
       </compMap>
@@ -295,11 +296,11 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">2587165737</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.Agent" id="3669196349">
+          <item dataType="Struct" type="Steering.Agent" id="3250658559">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">2587165737</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="399766689">
+          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="613993021">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">2587165737</gameobj>
           </item>
@@ -310,19 +311,19 @@
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="452958536" surrogate="true">
         <header />
         <body>
-          <keys dataType="Array" type="System.Type[]" id="3878695809">
+          <keys dataType="Array" type="System.Object[]" id="3878695809">
             <item dataType="ObjectRef">13978918</item>
             <item dataType="ObjectRef">439788218</item>
             <item dataType="ObjectRef">2771621414</item>
             <item dataType="ObjectRef">2144167866</item>
             <item dataType="ObjectRef">2730200870</item>
           </keys>
-          <values dataType="Array" type="Duality.Component[]" id="3392997728">
+          <values dataType="Array" type="System.Object[]" id="3392997728">
             <item dataType="ObjectRef">652513373</item>
             <item dataType="ObjectRef">1354974965</item>
             <item dataType="ObjectRef">3185858927</item>
-            <item dataType="ObjectRef">3669196349</item>
-            <item dataType="ObjectRef">399766689</item>
+            <item dataType="ObjectRef">3250658559</item>
+            <item dataType="ObjectRef">613993021</item>
           </values>
         </body>
       </compMap>
@@ -432,11 +433,11 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">354782310</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.Agent" id="1436812922">
+          <item dataType="Struct" type="Steering.Agent" id="1018275132">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">354782310</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="2462350558">
+          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="2676576890">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">354782310</gameobj>
           </item>
@@ -447,19 +448,19 @@
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2875611374" surrogate="true">
         <header />
         <body>
-          <keys dataType="Array" type="System.Type[]" id="1685867330">
+          <keys dataType="Array" type="System.Object[]" id="1685867330">
             <item dataType="ObjectRef">13978918</item>
             <item dataType="ObjectRef">439788218</item>
             <item dataType="ObjectRef">2771621414</item>
             <item dataType="ObjectRef">2144167866</item>
             <item dataType="ObjectRef">2730200870</item>
           </keys>
-          <values dataType="Array" type="Duality.Component[]" id="1232187402">
+          <values dataType="Array" type="System.Object[]" id="1232187402">
             <item dataType="ObjectRef">2715097242</item>
             <item dataType="ObjectRef">3417558834</item>
             <item dataType="ObjectRef">953475500</item>
-            <item dataType="ObjectRef">1436812922</item>
-            <item dataType="ObjectRef">2462350558</item>
+            <item dataType="ObjectRef">1018275132</item>
+            <item dataType="ObjectRef">2676576890</item>
           </values>
         </body>
       </compMap>
@@ -569,11 +570,11 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1770758309</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.Agent" id="2852788921">
+          <item dataType="Struct" type="Steering.Agent" id="2434251131">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1770758309</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="3878326557">
+          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="4092552889">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1770758309</gameobj>
           </item>
@@ -584,19 +585,19 @@
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="766569920" surrogate="true">
         <header />
         <body>
-          <keys dataType="Array" type="System.Type[]" id="1814165853">
+          <keys dataType="Array" type="System.Object[]" id="1814165853">
             <item dataType="ObjectRef">13978918</item>
             <item dataType="ObjectRef">439788218</item>
             <item dataType="ObjectRef">2771621414</item>
             <item dataType="ObjectRef">2144167866</item>
             <item dataType="ObjectRef">2730200870</item>
           </keys>
-          <values dataType="Array" type="Duality.Component[]" id="368961912">
+          <values dataType="Array" type="System.Object[]" id="368961912">
             <item dataType="ObjectRef">4131073241</item>
             <item dataType="ObjectRef">538567537</item>
             <item dataType="ObjectRef">2369451499</item>
-            <item dataType="ObjectRef">2852788921</item>
-            <item dataType="ObjectRef">3878326557</item>
+            <item dataType="ObjectRef">2434251131</item>
+            <item dataType="ObjectRef">4092552889</item>
           </values>
         </body>
       </compMap>
@@ -716,11 +717,11 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">4011406579</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.Agent" id="798469895">
+          <item dataType="Struct" type="Steering.Agent" id="379932105">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">4011406579</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="1824007531">
+          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="2038233863">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">4011406579</gameobj>
           </item>
@@ -731,19 +732,19 @@
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1605684704" surrogate="true">
         <header />
         <body>
-          <keys dataType="Array" type="System.Type[]" id="1904267147">
+          <keys dataType="Array" type="System.Object[]" id="1904267147">
             <item dataType="ObjectRef">13978918</item>
             <item dataType="ObjectRef">439788218</item>
             <item dataType="ObjectRef">2771621414</item>
             <item dataType="ObjectRef">2144167866</item>
             <item dataType="ObjectRef">2730200870</item>
           </keys>
-          <values dataType="Array" type="Duality.Component[]" id="2720119496">
+          <values dataType="Array" type="System.Object[]" id="2720119496">
             <item dataType="ObjectRef">2076754215</item>
             <item dataType="ObjectRef">2779215807</item>
             <item dataType="ObjectRef">315132473</item>
-            <item dataType="ObjectRef">798469895</item>
-            <item dataType="ObjectRef">1824007531</item>
+            <item dataType="ObjectRef">379932105</item>
+            <item dataType="ObjectRef">2038233863</item>
           </values>
         </body>
       </compMap>
@@ -863,11 +864,11 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3103949419</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.Agent" id="4185980031">
+          <item dataType="Struct" type="Steering.Agent" id="3767442241">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3103949419</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="916550371">
+          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="1130776703">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3103949419</gameobj>
           </item>
@@ -878,19 +879,19 @@
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3968664448" surrogate="true">
         <header />
         <body>
-          <keys dataType="Array" type="System.Type[]" id="2699176755">
+          <keys dataType="Array" type="System.Object[]" id="2699176755">
             <item dataType="ObjectRef">13978918</item>
             <item dataType="ObjectRef">439788218</item>
             <item dataType="ObjectRef">2771621414</item>
             <item dataType="ObjectRef">2144167866</item>
             <item dataType="ObjectRef">2730200870</item>
           </keys>
-          <values dataType="Array" type="Duality.Component[]" id="2637058744">
+          <values dataType="Array" type="System.Object[]" id="2637058744">
             <item dataType="ObjectRef">1169297055</item>
             <item dataType="ObjectRef">1871758647</item>
             <item dataType="ObjectRef">3702642609</item>
-            <item dataType="ObjectRef">4185980031</item>
-            <item dataType="ObjectRef">916550371</item>
+            <item dataType="ObjectRef">3767442241</item>
+            <item dataType="ObjectRef">1130776703</item>
           </values>
         </body>
       </compMap>
@@ -1010,11 +1011,11 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">2048440334</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.Agent" id="3130470946">
+          <item dataType="Struct" type="Steering.Agent" id="2711933156">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">2048440334</gameobj>
           </item>
-          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="4156008582">
+          <item dataType="Struct" type="Steering.AgentAttributeTranslator" id="75267618">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">2048440334</gameobj>
           </item>
@@ -1025,19 +1026,19 @@
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2032023838" surrogate="true">
         <header />
         <body>
-          <keys dataType="Array" type="System.Type[]" id="725710170">
+          <keys dataType="Array" type="System.Object[]" id="725710170">
             <item dataType="ObjectRef">13978918</item>
             <item dataType="ObjectRef">439788218</item>
             <item dataType="ObjectRef">2771621414</item>
             <item dataType="ObjectRef">2144167866</item>
             <item dataType="ObjectRef">2730200870</item>
           </keys>
-          <values dataType="Array" type="Duality.Component[]" id="822284218">
+          <values dataType="Array" type="System.Object[]" id="822284218">
             <item dataType="ObjectRef">113787970</item>
             <item dataType="ObjectRef">816249562</item>
             <item dataType="ObjectRef">2647133524</item>
-            <item dataType="ObjectRef">3130470946</item>
-            <item dataType="ObjectRef">4156008582</item>
+            <item dataType="ObjectRef">2711933156</item>
+            <item dataType="ObjectRef">75267618</item>
           </values>
         </body>
       </compMap>
@@ -1167,16 +1168,8 @@
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
+            <vel dataType="Struct" type="Duality.Vector3" />
+            <velAbs dataType="Struct" type="Duality.Vector3" />
           </item>
           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="417501095">
             <active dataType="Bool">true</active>
@@ -1189,25 +1182,15 @@
             </colorTint>
             <customMat />
             <gameobj dataType="ObjectRef">2969839569</gameobj>
-            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-              <contentPath />
-            </iconMat>
+            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
             <offset dataType="Int">0</offset>
             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3922822311">
-              <displayedText dataType="String">The RigidBodies used in this sample do not collide. All interaction is based solely on Agent decisions.</displayedText>
-              <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="3767064526">
-                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="1350185424">
-                  <text dataType="String">The RigidBodies used in this sample do not collide. All interaction is based solely on Agent decisions.</text>
-                </item>
-              </elements>
               <flowAreas />
-              <fontGlyphCount dataType="Array" type="System.Int32[]" id="2655782218">103</fontGlyphCount>
-              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="267689854">
+              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="3767064526">
                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
                   <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
                 </item>
               </fonts>
-              <iconCount dataType="Int">0</iconCount>
               <icons />
               <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
               <maxHeight dataType="Int">0</maxHeight>
@@ -1224,11 +1207,11 @@
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1210715832" surrogate="true">
         <header />
         <body>
-          <keys dataType="Array" type="System.Type[]" id="4167638873">
+          <keys dataType="Array" type="System.Object[]" id="4167638873">
             <item dataType="ObjectRef">13978918</item>
             <item dataType="Type" id="4127780814" value="Duality.Components.Renderers.TextRenderer" />
           </keys>
-          <values dataType="Array" type="Duality.Component[]" id="421037056">
+          <values dataType="Array" type="System.Object[]" id="421037056">
             <item dataType="ObjectRef">1035187205</item>
             <item dataType="ObjectRef">417501095</item>
           </values>
@@ -1247,7 +1230,6 @@
       <prefabLink />
     </item>
   </serializeObj>
-  <sourcePath />
   <visibilityStrategy dataType="Struct" type="Duality.Components.DefaultRendererVisibilityStrategy" id="2035693768" />
 </root>
 <!-- XmlFormatterBase Document Separator -->

@@ -1,8 +1,6 @@
 ﻿<root dataType="Struct" type="Duality.DualityAppData" id="129723834">
   <appName dataType="String">CameraController Sample</appName>
-  <authorName dataType="String">AdamsLair</authorName>
   <customData />
-  <localUserData dataType="Bool">false</localUserData>
   <multisampleBackBuffer dataType="Bool">true</multisampleBackBuffer>
   <physicsFixedTime dataType="Bool">false</physicsFixedTime>
   <physicsVelThreshold dataType="Float">0.8333333</physicsVelThreshold>
@@ -13,6 +11,5 @@
     <contentPath dataType="String">Data\CameraController\ExampleScene.Scene.res</contentPath>
   </startScene>
   <version dataType="UInt">13</version>
-  <websiteUrl dataType="String">http://www.adamslair.net</websiteUrl>
 </root>
 <!-- XmlFormatterBase Document Separator -->

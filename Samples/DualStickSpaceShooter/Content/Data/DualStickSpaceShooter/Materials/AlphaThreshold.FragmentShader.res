@@ -1,4 +1,5 @@
 ﻿<root dataType="Struct" type="Duality.Resources.FragmentShader" id="129723834">
+  <assetInfo />
   <source dataType="String">uniform sampler2D mainTex;
 uniform float threshold;
 
@@ -9,6 +10,5 @@ void main()
 	float alpha = smoothstep(threshold - 0.2, threshold, texColor.a);
 	gl_FragColor = vec4(gl_Color.rgb, gl_Color.a * alpha);
 }</source>
-  <sourcePath dataType="String">Source\Media\Materials\AlphaThreshold.frag</sourcePath>
 </root>
 <!-- XmlFormatterBase Document Separator -->

@@ -1,4 +1,5 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Prefab" id="129723834">
+  <assetInfo />
   <objTree dataType="Struct" type="Duality.GameObject" id="581423063">
     <active dataType="Bool">true</active>
     <children />
@@ -14,28 +15,12 @@
           <gameobj dataType="ObjectRef">581423063</gameobj>
           <ignoreParent dataType="Bool">false</ignoreParent>
           <parentTransform />
-          <pos dataType="Struct" type="Duality.Vector3">
-            <X dataType="Float">0</X>
-            <Y dataType="Float">0</Y>
-            <Z dataType="Float">0</Z>
-          </pos>
-          <posAbs dataType="Struct" type="Duality.Vector3">
-            <X dataType="Float">0</X>
-            <Y dataType="Float">0</Y>
-            <Z dataType="Float">0</Z>
-          </posAbs>
+          <pos dataType="Struct" type="Duality.Vector3" />
+          <posAbs dataType="Struct" type="Duality.Vector3" />
           <scale dataType="Float">1</scale>
           <scaleAbs dataType="Float">1</scaleAbs>
-          <vel dataType="Struct" type="Duality.Vector3">
-            <X dataType="Float">0</X>
-            <Y dataType="Float">0</Y>
-            <Z dataType="Float">0</Z>
-          </vel>
-          <velAbs dataType="Struct" type="Duality.Vector3">
-            <X dataType="Float">0</X>
-            <Y dataType="Float">0</Y>
-            <Z dataType="Float">0</Z>
-          </velAbs>
+          <vel dataType="Struct" type="Duality.Vector3" />
+          <velAbs dataType="Struct" type="Duality.Vector3" />
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.ParticleEffect" id="1608056156">
           <active dataType="Bool">true</active>
@@ -49,11 +34,7 @@
           <emitters dataType="Struct" type="System.Collections.Generic.List`1[[DualStickSpaceShooter.ParticleEmitter]]" id="1237417740">
             <_items dataType="Array" type="DualStickSpaceShooter.ParticleEmitter[]" id="1612802212" length="4">
               <item dataType="Struct" type="DualStickSpaceShooter.ParticleEmitter" id="1619804356">
-                <basePos dataType="Struct" type="Duality.Vector3">
-                  <X dataType="Float">0</X>
-                  <Y dataType="Float">0</Y>
-                  <Z dataType="Float">0</Z>
-                </basePos>
+                <basePos dataType="Struct" type="Duality.Vector3" />
                 <baseVel dataType="Struct" type="Duality.Vector3">
                   <X dataType="Float">0</X>
                   <Y dataType="Float">0</Y>
@@ -131,11 +112,11 @@
     <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3171503126" surrogate="true">
       <header />
       <body>
-        <keys dataType="Array" type="System.Type[]" id="523316406">
+        <keys dataType="Array" type="System.Object[]" id="523316406">
           <item dataType="Type" id="4000915296" value="Duality.Components.Transform" />
           <item dataType="Type" id="2380333198" value="DualStickSpaceShooter.ParticleEffect" />
         </keys>
-        <values dataType="Array" type="Duality.Component[]" id="2307920538">
+        <values dataType="Array" type="System.Object[]" id="2307920538">
           <item dataType="ObjectRef">2941737995</item>
           <item dataType="ObjectRef">1608056156</item>
         </values>
@@ -153,6 +134,5 @@
     <parent />
     <prefabLink />
   </objTree>
-  <sourcePath dataType="String">DamageSmoke</sourcePath>
 </root>
 <!-- XmlFormatterBase Document Separator -->

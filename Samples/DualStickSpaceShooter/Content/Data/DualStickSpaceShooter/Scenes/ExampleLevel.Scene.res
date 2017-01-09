@@ -47700,6 +47700,7 @@
             </counterGraphs>
             <drawGraphs dataType="Bool">false</drawGraphs>
             <gameobj dataType="ObjectRef">3709783311</gameobj>
+            <keyResetCounters dataType="Enum" type="Duality.Input.Key" name="F5" value="14" />
             <keyToggleGraph dataType="Enum" type="Duality.Input.Key" name="F4" value="13" />
             <keyToggleTextPerf dataType="Enum" type="Duality.Input.Key" name="F2" value="11" />
             <keyToggleTextStat dataType="Enum" type="Duality.Input.Key" name="F3" value="12" />

@@ -1,4 +1,5 @@
 ﻿<root dataType="Struct" type="Duality.Resources.FragmentShader" id="129723834">
+  <assetInfo />
   <source dataType="String">uniform sampler2D mainTex;
 
 varying vec3 lightIntensity;
@@ -9,6 +10,5 @@ void main()
 	color.rgb *= lightIntensity;
 	gl_FragColor = color;
 }</source>
-  <sourcePath dataType="String">Source\Media\PerVertexLighting\VertexLight.frag</sourcePath>
 </root>
 <!-- XmlFormatterBase Document Separator -->
