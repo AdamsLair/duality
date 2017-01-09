@@ -299,19 +299,21 @@ namespace Duality.Resources
 
 				if (this.glyphs[i].Glyph != ' ' && this.glyphs[i].Glyph != '\t' && this.glyphs[i].Height > 0 && this.glyphs[i].Width > 0)
 				{
+					Point2 glyphSize = glyphTemp.Size;
+
 					// Left side samples
 					{
 						int[] leftData = this.glyphs[i].KerningSamplesLeft;
-						int leftMid = glyphTemp.Width / 2;
+						int leftMid = glyphSize.X / 2;
 						int lastSampleY = 0;
 						for (int sampleIndex = 0; sampleIndex < leftData.Length; sampleIndex++)
 						{
 							leftData[sampleIndex] = leftMid;
 
 							int sampleY = kerningY[sampleIndex] + this.glyphs[i].OffsetY;
-							int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
-							int endY = MathF.Clamp(sampleY, 0, glyphTemp.Height);
-							if (sampleIndex == leftData.Length - 1) endY = glyphTemp.Height;
+							int beginY = MathF.Clamp(lastSampleY, 0, glyphSize.Y - 1);
+							int endY = MathF.Clamp(sampleY, 0, glyphSize.Y);
+							if (sampleIndex == leftData.Length - 1) endY = glyphSize.Y;
 							lastSampleY = endY;
 
 							for (int y = beginY; y < endY; y++)
@@ -330,27 +332,27 @@ namespace Duality.Resources
 					// Right side samples
 					{
 						int[] rightData = this.glyphs[i].KerningSamplesRight;
-						int rightMid = (glyphTemp.Width + 1) / 2;
+						int rightMid = (glyphSize.X + 1) / 2;
 						int lastSampleY = 0;
 						for (int sampleIndex = 0; sampleIndex < rightData.Length; sampleIndex++)
 						{
 							rightData[sampleIndex] = rightMid;
 								
 							int sampleY = kerningY[sampleIndex] + this.glyphs[i].OffsetY;
-							int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
-							int endY = MathF.Clamp(sampleY, 0, glyphTemp.Height);
-							if (sampleIndex == rightData.Length - 1) endY = glyphTemp.Height;
+							int beginY = MathF.Clamp(lastSampleY, 0, glyphSize.Y - 1);
+							int endY = MathF.Clamp(sampleY, 0, glyphSize.Y);
+							if (sampleIndex == rightData.Length - 1) endY = glyphSize.Y;
 							lastSampleY = endY;
 
 							for (int y = beginY; y < endY; y++)
 							{
-								int x = glyphTemp.Width - 1;
+								int x = glyphSize.X - 1;
 								while (glyphTemp[x, y].A <= 64)
 								{
 									x--;
 									if (x <= rightMid) break;
 								}
-								rightData[sampleIndex] = Math.Min(rightData[sampleIndex], glyphTemp.Width - 1 - x);
+								rightData[sampleIndex] = Math.Min(rightData[sampleIndex], glyphSize.X - 1 - x);
 							}
 						}
 					}
@@ -626,7 +628,7 @@ namespace Duality.Resources
 			for (int i = 0; i < text.Length; i++)
 			{
 				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
-				Vector2 dataCoord = uvRect.Pos * new Vector2(this.pixelData.Width, this.pixelData.Height) / this.texture.UVRatio;
+				Vector2 dataCoord = uvRect.Pos * this.pixelData.Size / this.texture.UVRatio;
 				
 				bitmap.DrawOnto(target, 
 					BlendMode.Alpha, 

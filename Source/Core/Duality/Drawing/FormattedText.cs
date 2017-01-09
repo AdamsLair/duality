@@ -1363,8 +1363,8 @@ namespace Duality.Drawing
 					Vector2 iconSize = icon.size;
 					Vector2 iconOffset = icon.offset;
 					Rect iconUvRect = icon.uvRect;
-					Vector2 dataCoord = iconUvRect.Pos * new Vector2(icons.Width, icons.Height);
-					Vector2 dataSize = iconUvRect.Size * new Vector2(icons.Width, icons.Height);
+					Vector2 dataCoord = iconUvRect.Pos * icons.Size;
+					Vector2 dataSize = iconUvRect.Size * icons.Size;
 					
 					PixelData iconLayer = icons.CloneSubImage(
 						MathF.RoundToInt(dataCoord.X), 

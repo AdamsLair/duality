@@ -107,7 +107,7 @@ namespace Duality.Resources
 			}
 		}
 		/// <summary>
-		/// [GET] The Width of the actual pixel data.
+		/// [GET] The image width of this <see cref="Pixmap"/>.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public int Width
@@ -115,12 +115,20 @@ namespace Duality.Resources
 			get { return this.MainLayer != null ? this.MainLayer.Width : 0; }
 		}
 		/// <summary>
-		/// [GET] The Height of the actual pixel data.
+		/// [GET] The image height of this <see cref="Pixmap"/>.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public int Height
 		{
 			get { return this.MainLayer != null ? this.MainLayer.Height : 0; }
+		}
+		/// <summary>
+		/// [GET] The image size of this <see cref="Pixmap"/>.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public Point2 Size
+		{
+			get { return this.MainLayer != null ? this.MainLayer.Size : Point2.Zero; }
 		}
 		/// <summary>
 		/// [GET / SET] The Pixmaps atlas array, distinguishing different areas in pixel coordinates
@@ -154,15 +162,9 @@ namespace Duality.Resources
 		public void LookupAtlas(int index, out Rect region)
 		{
 			if (this.atlas == null)
-			{
-				region.X = region.Y = 0.0f;
-				region.W = this.Width;
-				region.H = this.Height;
-			}
+				region = new Rect(this.Size);
 			else
-			{
 				region = this.atlas[MathF.Clamp(index, 0, this.atlas.Count - 1)];
-			}
 		}
 		/// <summary>
 		/// Does a safe (null-checked, clamped) pixmap <see cref="Atlas"/> lookup.
