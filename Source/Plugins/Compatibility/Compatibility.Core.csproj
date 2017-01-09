@@ -40,8 +40,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CorePlugin.cs" />
-    <Compile Include="MovedTypesV2ErrorHandler.cs" />
-    <Compile Include="OldNamespacesErrorHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
