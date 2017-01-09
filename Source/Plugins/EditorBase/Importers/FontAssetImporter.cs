@@ -331,14 +331,13 @@ namespace Duality.Editor.Plugins.Base
 					}
 					
 					// Memorize atlas coordinates & glyph data
-					glyphs[i].Width = glyphTemp.Width;
-					glyphs[i].Height = glyphTemp.Height;
-					glyphs[i].OffsetX = glyphTemp.Width - glyphTempTypo.Width;
-					glyphs[i].OffsetY = 0; // ttf fonts are rendered on blocks that are the whole size of the height - so no need for offset
+					glyphs[i].Size = glyphTemp.Size;
+					glyphs[i].Offset.X = glyphTemp.Width - glyphTempTypo.Width;
+					glyphs[i].Offset.Y = 0; // ttf fonts are rendered on blocks that are the whole size of the height - so no need for offset
 					if (isSpace)
 					{
-						glyphs[i].Width /= 2;
-						glyphs[i].OffsetX /= 2;
+						glyphs[i].Size.X /= 2;
+						glyphs[i].Offset.X /= 2;
 					}
 					atlas[i].X = x;
 					atlas[i].Y = y;
@@ -363,14 +362,14 @@ namespace Duality.Editor.Plugins.Base
 			// Monospace offset adjustments
 			if (monospace)
 			{
-				int maxGlyphWidth = 0;
+				float maxGlyphWidth = 0;
 				for (int i = 0; i < glyphs.Length; i++)
 				{
-					maxGlyphWidth = Math.Max(maxGlyphWidth, glyphs[i].Width);
+					maxGlyphWidth = Math.Max(maxGlyphWidth, glyphs[i].Size.X);
 				}
 				for (int i = 0; i < glyphs.Length; ++i)
 				{
-					glyphs[i].OffsetX -= (int)Math.Round((maxGlyphWidth - glyphs[i].Width) / 2.0f);
+					glyphs[i].Offset.X -= (int)Math.Round((maxGlyphWidth - glyphs[i].Size.X) / 2.0f);
 				}
 			}
 

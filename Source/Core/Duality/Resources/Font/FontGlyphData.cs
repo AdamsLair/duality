@@ -22,21 +22,13 @@ namespace Duality.Resources
 		/// </summary>
 		public char Glyph;
 		/// <summary>
-		/// The width of the glyph.
+		/// The displayed size of the glyph.
 		/// </summary>
-		public int Width;
+		public Vector2 Size;
 		/// <summary>
-		/// The height of the glyph.
+		/// The offset at which the glyph image is displayed relative to its base position.
 		/// </summary>
-		public int Height;
-		/// <summary>
-		/// The glyphs X offset when rendering it.
-		/// </summary>
-		public int OffsetX;
-		/// <summary>
-		/// The glyphs Y offset when rendering it.
-		/// </summary>
-		public int OffsetY;
+		public Vector2 Offset;
 		/// <summary>
 		/// The glyphs kerning samples to the left.
 		/// </summary>
@@ -48,12 +40,10 @@ namespace Duality.Resources
 
 		public override string ToString()
 		{
-			return string.Format("Glyph '{0}', {1}x{2}, OffsetX {3}, OffsetY {4}", 
+			return string.Format("Glyph '{0}', Size {1}, Offset {2}", 
 				this.Glyph, 
-				this.Width, 
-				this.Height, 
-				this.OffsetX,
-				this.OffsetY);
+				this.Size, 
+				this.Offset);
 		}
 	}
 }
