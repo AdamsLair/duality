@@ -172,7 +172,7 @@ namespace DualStickSpaceShooter
 					{
 						canvas.PushState();
 
-						Vector2 texSize = this.controlInfoMouseKeyboard.Res.MainTexture.Res.Size * 0.5f;
+						Vector2 texSize = (Vector2)this.controlInfoMouseKeyboard.Res.MainTexture.Res.Size * 0.5f;
 
 						canvas.State.SetMaterial(this.controlInfoMouseKeyboard);
 						canvas.State.ColorTint = ColorRgba.White.WithAlpha(controlInfoAnimProgress);
@@ -188,7 +188,7 @@ namespace DualStickSpaceShooter
 					{
 						canvas.PushState();
 
-						Vector2 texSize = this.controlInfoGamepad.Res.MainTexture.Res.Size * 0.5f;
+						Vector2 texSize = (Vector2)this.controlInfoGamepad.Res.MainTexture.Res.Size * 0.5f;
 
 						canvas.State.SetMaterial(this.controlInfoGamepad);
 						canvas.State.ColorTint = ColorRgba.White.WithAlpha(controlInfoAnimProgress);

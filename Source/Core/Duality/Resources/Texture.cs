@@ -71,7 +71,7 @@ namespace Duality.Resources
 
 		
 		private	ContentRef<Pixmap>	basePixmap	= null;
-		private	Vector2				size		= Vector2.Zero;
+		private	Point2				size		= Point2.Zero;
 		private	TextureSizeMode		texSizeMode	= TextureSizeMode.Default;
 		private	TextureMagFilter	filterMag	= TextureMagFilter.Linear;
 		private	TextureMinFilter	filterMin	= TextureMinFilter.LinearMipmapLinear;
@@ -182,7 +182,7 @@ namespace Duality.Resources
 		/// </summary>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		[EditorHintRange(0, int.MaxValue)]
-		public Vector2 Size
+		public Point2 Size
 		{
 			get { return this.size; }
 			set
@@ -500,11 +500,11 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		protected void AdjustSize(float width, float height)
+		protected void AdjustSize(int width, int height)
 		{
-			this.size = new Vector2(MathF.Abs(width), MathF.Abs(height));
-			this.pxWidth = MathF.RoundToInt(this.size.X);
-			this.pxHeight = MathF.RoundToInt(this.size.Y);
+			this.size = new Point2(MathF.Abs(width), MathF.Abs(height));
+			this.pxWidth = this.size.X;
+			this.pxHeight = this.size.Y;
 			this.pxDiameter = MathF.Distance(this.pxWidth, this.pxHeight);
 
 			if (this.texSizeMode == TextureSizeMode.NonPowerOfTwo)
