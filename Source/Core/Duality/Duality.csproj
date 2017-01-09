@@ -138,8 +138,10 @@
     <Compile Include="IO\PathEqualityComparer.cs" />
     <Compile Include="IO\PathOp.cs" />
     <Compile Include="Resources\AssetInfo.cs" />
-    <Compile Include="Resources\FontMetrics.cs" />
-    <Compile Include="Resources\FontCharSet.cs" />
+    <Compile Include="Resources\Font\FontRenderMode.cs" />
+    <Compile Include="Resources\Font\FontGlyphData.cs" />
+    <Compile Include="Resources\Font\FontMetrics.cs" />
+    <Compile Include="Resources\Font\FontCharSet.cs" />
     <Compile Include="Resources\ShaderInfo\BuiltinShaderFields.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderType.cs" />
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
@@ -323,7 +325,7 @@
     <Compile Include="Resources\AudioData.cs" />
     <Compile Include="Resources\DrawTechnique.cs" />
     <Compile Include="Resources\FragmentShader.cs" />
-    <Compile Include="Resources\Font.cs" />
+    <Compile Include="Resources\Font\Font.cs" />
     <Compile Include="Resources\ShaderProgram.cs" />
     <Compile Include="Resources\Material.cs" />
     <Compile Include="Resources\RenderTarget.cs" />

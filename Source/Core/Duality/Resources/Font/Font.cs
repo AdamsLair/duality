@@ -55,94 +55,25 @@ namespace Duality.Resources
 		}
 
 		
-		/// <summary>
-		/// Specifies how a Font is rendered. This affects both internal glyph rasterization and rendering.
-		/// </summary>
-		public enum RenderMode
-		{
-			/// <summary>
-			/// A monochrome bitmap is used to store glyphs. Rendering is unfiltered and pixel-perfect.
-			/// </summary>
-			MonochromeBitmap,
-			/// <summary>
-			/// A greyscale bitmap is used to store glyphs. Rendering is unfiltered and pixel-perfect.
-			/// </summary>
-			GrayscaleBitmap,
-			/// <summary>
-			/// A greyscale bitmap is used to store glyphs. Rendering is properly filtered but may blur text display a little.
-			/// </summary>
-			SmoothBitmap,
-			/// <summary>
-			/// A greyscale bitmap is used to store glyphs. Rendering is properly filtered and uses a shader to enforce sharp masked edges.
-			/// </summary>
-			SharpBitmap
-		}
-
-		/// <summary>
-		/// Contains data about a single glyph.
-		/// </summary>
-		public struct GlyphData
-		{
-			/// <summary>
-			/// The glyph that is encoded.
-			/// </summary>
-			public char Glyph;
-			/// <summary>
-			/// The width of the glyph.
-			/// </summary>
-			public int Width;
-			/// <summary>
-			/// The height of the glyph.
-			/// </summary>
-			public int Height;
-			/// <summary>
-			/// The glyphs X offset when rendering it.
-			/// </summary>
-			public int OffsetX;
-			/// <summary>
-			/// The glyphs Y offset when rendering it.
-			/// </summary>
-			public int OffsetY;
-			/// <summary>
-			/// The glyphs kerning samples to the left.
-			/// </summary>
-			public int[] KerningSamplesLeft;
-			/// <summary>
-			/// The glyphs kerning samples to the right.
-			/// </summary>
-			public int[] KerningSamplesRight;
-
-			public override string ToString()
-			{
-				return string.Format("Glyph '{0}', {1}x{2}, OffsetX {3}, OffsetY {4}", 
-					this.Glyph, 
-					this.Width, 
-					this.Height, 
-					this.OffsetX,
-					this.OffsetY);
-			}
-		}
-
-		
-		private	RenderMode	renderMode			= RenderMode.SharpBitmap;
-		private	float		spacing				= 0.0f;
-		private	float		lineHeightFactor	= 1.0f;
-		private	bool		kerning				= true;
-		private	GlyphData[]	glyphs				= null;
-		private	Pixmap		pixelData			= null;
-		private	int			maxGlyphWidth		= 0;
-		private FontMetrics	metrics				= null;
+		private FontRenderMode  renderMode       = FontRenderMode.SharpBitmap;
+		private float           spacing          = 0.0f;
+		private float           lineHeightFactor = 1.0f;
+		private bool            kerning          = true;
+		private FontGlyphData[] glyphs           = null;
+		private Pixmap          pixelData        = null;
+		private int             maxGlyphWidth    = 0;
+		private FontMetrics     metrics          = null;
 		// Data that is automatically acquired while loading the font
-		[DontSerialize] private int[]		charLookup		= null;
-		[DontSerialize] private	Material	material		= null;
-		[DontSerialize] private	Texture		texture			= null;
+		[DontSerialize] private int[]    charLookup = null;
+		[DontSerialize] private Material material   = null;
+		[DontSerialize] private Texture  texture    = null;
 
 
 		/// <summary>
 		/// [GET / SET] Specifies how the glyphs of this <see cref="Font"/> are rendered in a text.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
-		public RenderMode GlyphRenderMode
+		public FontRenderMode RenderMode
 		{
 			get { return this.renderMode; }
 			set
@@ -185,7 +116,7 @@ namespace Duality.Resources
 		/// which usually looks much nicer. It has no visual effect when active at the same time with <see cref="FontMetrics.Monospace"/>, however
 		/// kerning sample data will be available on glyphs.
 		/// </summary>
-		/// <seealso cref="GlyphData"/>
+		/// <seealso cref="FontGlyphData"/>
 		public bool Kerning
 		{
 			get { return this.kerning; }
@@ -199,8 +130,8 @@ namespace Duality.Resources
 			get
 			{ 
 				return 
-					this.renderMode == RenderMode.MonochromeBitmap || 
-					this.renderMode == RenderMode.GrayscaleBitmap;
+					this.renderMode == FontRenderMode.MonochromeBitmap || 
+					this.renderMode == FontRenderMode.GrayscaleBitmap;
 			}
 		}
 		/// <summary>
@@ -236,7 +167,7 @@ namespace Duality.Resources
 		/// <param name="atlas"></param>
 		/// <param name="glyphs"></param>
 		/// <param name="metrics"></param>
-		public void SetGlyphData(PixelData bitmap, Rect[] atlas, GlyphData[] glyphs, FontMetrics metrics)
+		public void SetGlyphData(PixelData bitmap, Rect[] atlas, FontGlyphData[] glyphs, FontMetrics metrics)
 		{
 			this.ReleaseResources();
 
@@ -390,11 +321,11 @@ namespace Duality.Resources
 
 			// Select DrawTechnique to use
 			ContentRef<DrawTechnique> technique;
-			if (this.renderMode == RenderMode.MonochromeBitmap)
+			if (this.renderMode == FontRenderMode.MonochromeBitmap)
 				technique = DrawTechnique.Mask;
-			else if (this.renderMode == RenderMode.GrayscaleBitmap)
+			else if (this.renderMode == FontRenderMode.GrayscaleBitmap)
 				technique = DrawTechnique.Alpha;
-			else if (this.renderMode == RenderMode.SmoothBitmap)
+			else if (this.renderMode == FontRenderMode.SmoothBitmap)
 				technique = DrawTechnique.Alpha;
 			else
 				technique = DrawTechnique.SharpAlpha;
@@ -434,7 +365,7 @@ namespace Duality.Resources
 		/// <param name="glyph">The glyph to retrieve information about.</param>
 		/// <param name="data">A struct holding the retrieved information.</param>
 		/// <returns>True, if successful, false if the specified glyph is not supported.</returns>
-		public bool GetGlyphData(char glyph, out GlyphData data)
+		public bool GetGlyphData(char glyph, out FontGlyphData data)
 		{
 			int glyphId = (int)glyph;
 			if (glyphId >= this.charLookup.Length)
@@ -551,7 +482,7 @@ namespace Duality.Resources
 				return len;
 
 			float curOffset = 0.0f;
-			GlyphData glyphData;
+			FontGlyphData glyphData;
 			Rect uvRect;
 			float glyphXOff;
 			float glyphYOff;
@@ -620,7 +551,7 @@ namespace Duality.Resources
 
 			PixelData bitmap = this.pixelData.MainLayer;
 			float curOffset = 0.0f;
-			GlyphData glyphData;
+			FontGlyphData glyphData;
 			Rect uvRect;
 			float glyphXOff;
 			float glyphYOff;
@@ -655,7 +586,7 @@ namespace Duality.Resources
 
 			Vector2 textSize = Vector2.Zero;
 			float curOffset = 0.0f;
-			GlyphData glyphData;
+			FontGlyphData glyphData;
 			Rect uvRect;
 			float glyphXOff;
 			float glyphYOff;
@@ -708,7 +639,7 @@ namespace Duality.Resources
 
 			Vector2 textSize = Vector2.Zero;
 			float curOffset = 0.0f;
-			GlyphData glyphData;
+			FontGlyphData glyphData;
 			Rect uvRect;
 			float glyphXOff;
 			float glyphYOff;
@@ -744,7 +675,7 @@ namespace Duality.Resources
 			if (this.texture == null) return Rect.Empty;
 
 			float curOffset = 0.0f;
-			GlyphData glyphData;
+			FontGlyphData glyphData;
 			Rect uvRect;
 			float glyphXOff;
 			float glyphYOff;
@@ -772,7 +703,7 @@ namespace Duality.Resources
 			if (this.texture == null) return -1;
 
 			float curOffset = 0.0f;
-			GlyphData glyphData;
+			FontGlyphData glyphData;
 			Rect uvRect;
 			Rect glyphRect;
 			float glyphXOff;
@@ -791,7 +722,7 @@ namespace Duality.Resources
 			return -1;
 		}
 
-		private void ProcessTextAdv(string text, int index, out GlyphData glyphData, out Rect uvRect, out float glyphXAdv, out float glyphXOff, out float glyphYOff)
+		private void ProcessTextAdv(string text, int index, out FontGlyphData glyphData, out Rect uvRect, out float glyphXAdv, out float glyphXOff, out float glyphYOff)
 		{
 			char glyph = text[index];
 			int charIndex = (int)glyph > this.charLookup.Length ? 0 : this.charLookup[(int)glyph];
@@ -804,7 +735,7 @@ namespace Duality.Resources
 			if (this.kerning && !this.metrics.Monospace)
 			{
 				char glyphNext = index + 1 < text.Length ? text[index + 1] : ' ';
-				GlyphData glyphDataNext;
+				FontGlyphData glyphDataNext;
 				this.GetGlyphData(glyphNext, out glyphDataNext);
 
 				int minSum = int.MaxValue;

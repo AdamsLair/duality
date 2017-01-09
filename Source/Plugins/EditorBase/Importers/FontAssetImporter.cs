@@ -125,7 +125,7 @@ namespace Duality.Editor.Plugins.Base
 			/// Information about each rendered glyph, e.g. its size,
 			/// offset, as well as how far the text will advance after it.
 			/// </summary>
-			public DualityFont.GlyphData[] GlyphData;
+			public FontGlyphData[] GlyphData;
 			/// <summary>
 			/// Overall font metrics that were generated or retrieved.
 			/// </summary>
@@ -232,7 +232,7 @@ namespace Duality.Editor.Plugins.Base
 		/// </summary>
 		private RenderedFontData RenderGlyphs(SysDrawFont internalFont, FontCharSet charSet, bool antialiazing, bool monospace)
 		{
-			DualityFont.GlyphData[] glyphs = new DualityFont.GlyphData[charSet.Chars.Length];
+			FontGlyphData[] glyphs = new FontGlyphData[charSet.Chars.Length];
 			for (int i = 0; i < glyphs.Length; i++)
 			{
 				glyphs[i].Glyph = charSet.Chars[i];
