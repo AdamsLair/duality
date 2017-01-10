@@ -138,6 +138,8 @@
     <Compile Include="IO\PathEqualityComparer.cs" />
     <Compile Include="IO\PathOp.cs" />
     <Compile Include="Resources\AssetInfo.cs" />
+    <Compile Include="Resources\Font\FontKerningLookup.cs" />
+    <Compile Include="Resources\Font\FontKerningPair.cs" />
     <Compile Include="Resources\Font\FontRenderMode.cs" />
     <Compile Include="Resources\Font\FontGlyphData.cs" />
     <Compile Include="Resources\Font\FontMetrics.cs" />
