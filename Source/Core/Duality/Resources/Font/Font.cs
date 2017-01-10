@@ -55,17 +55,19 @@ namespace Duality.Resources
 		}
 
 		
-		private FontRenderMode  renderMode       = FontRenderMode.SharpBitmap;
-		private float           spacing          = 0.0f;
-		private float           lineHeightFactor = 1.0f;
-		private bool            kerning          = true;
-		private FontGlyphData[] glyphs           = null;
-		private Pixmap          pixelData        = null;
-		private FontMetrics     metrics          = null;
+		private FontRenderMode    renderMode       = FontRenderMode.SharpBitmap;
+		private float             spacing          = 0.0f;
+		private float             lineHeightFactor = 1.0f;
+		private bool              kerning          = true;
+		private FontGlyphData[]   glyphs           = null;
+		private FontKerningPair[] kerningPairs     = null;
+		private Pixmap            pixelData        = null;
+		private FontMetrics       metrics          = null;
 		// Data that is automatically acquired while loading the font
-		[DontSerialize] private int[]    charLookup = null;
-		[DontSerialize] private Material material   = null;
-		[DontSerialize] private Texture  texture    = null;
+		[DontSerialize] private int[]             charLookup    = null;
+		[DontSerialize] private Material          material      = null;
+		[DontSerialize] private Texture           texture       = null;
+		[DontSerialize] private FontKerningLookup kerningLookup = null;
 
 
 		/// <summary>
@@ -166,123 +168,20 @@ namespace Duality.Resources
 		/// <param name="atlas"></param>
 		/// <param name="glyphs"></param>
 		/// <param name="metrics"></param>
-		public void SetGlyphData(PixelData bitmap, Rect[] atlas, FontGlyphData[] glyphs, FontMetrics metrics)
+		public void SetGlyphData(PixelData bitmap, Rect[] atlas, FontGlyphData[] glyphs, FontMetrics metrics, FontKerningPair[] kerningPairs)
 		{
 			this.ReleaseResources();
 
 			this.glyphs = glyphs;
-			this.GenerateCharLookup();
-
+			this.kerningPairs = kerningPairs;
 			this.pixelData = new Pixmap(bitmap);
 			this.pixelData.Atlas = atlas.ToList();
-
 			this.metrics = metrics;
 
-			this.UpdateKerningData();
+			this.GenerateCharLookup();
 			this.GenerateTexture();
 			this.GenerateMaterial();
-		}
-		/// <summary>
-		/// Updates this Fonts kerning sample data.
-		/// </summary>
-		private void UpdateKerningData()
-		{
-			int kerningSamples = (this.metrics.Ascent + this.metrics.Descent) / 4;
-			int[] kerningY;
-			if (kerningSamples <= 6)
-			{
-				kerningSamples = 6;
-				kerningY = new int[] {
-					this.metrics.BaseLine - this.metrics.Ascent,
-					this.metrics.BaseLine - this.metrics.BodyAscent,
-					this.metrics.BaseLine - this.metrics.BodyAscent * 2 / 3,
-					this.metrics.BaseLine - this.metrics.BodyAscent / 3,
-					this.metrics.BaseLine,
-					this.metrics.BaseLine + this.metrics.Descent};
-			}
-			else
-			{
-				kerningY = new int[kerningSamples];
-				int bodySamples = kerningSamples * 2 / 3;
-				int descentSamples = (kerningSamples - bodySamples) / 2;
-				int ascentSamples = kerningSamples - bodySamples - descentSamples;
-
-				for (int k = 0; k < ascentSamples; k++) 
-					kerningY[k] = this.metrics.BaseLine - this.metrics.Ascent + k * (this.metrics.Ascent - this.metrics.BodyAscent) / ascentSamples;
-				for (int k = 0; k < bodySamples; k++) 
-					kerningY[ascentSamples + k] = this.metrics.BaseLine - this.metrics.BodyAscent + k * this.metrics.BodyAscent / (bodySamples - 1);
-				for (int k = 0; k < descentSamples; k++) 
-					kerningY[ascentSamples + bodySamples + k] = this.metrics.BaseLine + (k + 1) * this.metrics.Descent / descentSamples;
-			}
-
-			for (int i = 0; i < this.glyphs.Length; ++i)
-			{
-				PixelData glyphTemp = this.GetGlyphBitmap(this.glyphs[i].Glyph);
-
-				this.glyphs[i].KerningSamplesLeft	= new int[kerningY.Length];
-				this.glyphs[i].KerningSamplesRight	= new int[kerningY.Length];
-
-				if (this.glyphs[i].Glyph != ' ' && this.glyphs[i].Glyph != '\t' && this.glyphs[i].Size.Y > 0 && this.glyphs[i].Size.X > 0)
-				{
-					Point2 glyphSize = glyphTemp.Size;
-
-					// Left side samples
-					{
-						int[] leftData = this.glyphs[i].KerningSamplesLeft;
-						int leftMid = glyphSize.X / 2;
-						int lastSampleY = 0;
-						for (int sampleIndex = 0; sampleIndex < leftData.Length; sampleIndex++)
-						{
-							leftData[sampleIndex] = leftMid;
-
-							int sampleY = kerningY[sampleIndex] + (int)this.glyphs[i].Offset.Y;
-							int beginY = MathF.Clamp(lastSampleY, 0, glyphSize.Y - 1);
-							int endY = MathF.Clamp(sampleY, 0, glyphSize.Y);
-							if (sampleIndex == leftData.Length - 1) endY = glyphSize.Y;
-							lastSampleY = endY;
-
-							for (int y = beginY; y < endY; y++)
-							{
-								int x = 0;
-								while (glyphTemp[x, y].A <= 64)
-								{
-									x++;
-									if (x >= leftMid) break;
-								}
-								leftData[sampleIndex] = Math.Min(leftData[sampleIndex], x);
-							}
-						}
-					}
-
-					// Right side samples
-					{
-						int[] rightData = this.glyphs[i].KerningSamplesRight;
-						int rightMid = (glyphSize.X + 1) / 2;
-						int lastSampleY = 0;
-						for (int sampleIndex = 0; sampleIndex < rightData.Length; sampleIndex++)
-						{
-							rightData[sampleIndex] = rightMid;
-								
-							int sampleY = kerningY[sampleIndex] + (int)this.glyphs[i].Offset.Y;
-							int beginY = MathF.Clamp(lastSampleY, 0, glyphSize.Y - 1);
-							int endY = MathF.Clamp(sampleY, 0, glyphSize.Y);
-							if (sampleIndex == rightData.Length - 1) endY = glyphSize.Y;
-							lastSampleY = endY;
-
-							for (int y = beginY; y < endY; y++)
-							{
-								int x = glyphSize.X - 1;
-								while (glyphTemp[x, y].A <= 64)
-								{
-									x--;
-									if (x <= rightMid) break;
-								}
-								rightData[sampleIndex] = Math.Min(rightData[sampleIndex], glyphSize.X - 1 - x);
-							}
-						}
-					}
-				}
-			}
+			this.GenerateKerningLookup();
 		}
 		private void ReleaseResources()
 		{
@@ -351,6 +250,10 @@ namespace Duality.Resources
 			{
 				this.charLookup[(int)this.glyphs[i].Glyph] = i;
 			}
+		}
+		private void GenerateKerningLookup()
+		{
+			this.kerningLookup = new FontKerningLookup(this.kerningPairs);
 		}
 
 		/// <summary>
@@ -712,20 +615,14 @@ namespace Duality.Resources
 
 			this.GetGlyphData(glyph, out glyphData);
 
+			glyphXAdv = glyphData.Advance + this.spacing;
+
 			if (this.kerning && !this.metrics.Monospace)
 			{
 				char glyphNext = index + 1 < text.Length ? text[index + 1] : ' ';
-				FontGlyphData glyphDataNext;
-				this.GetGlyphData(glyphNext, out glyphDataNext);
-
-				int minSum = int.MaxValue;
-				for (int k = 0; k < glyphData.KerningSamplesRight.Length; k++)
-					minSum = Math.Min(minSum, glyphData.KerningSamplesRight[k] + glyphDataNext.KerningSamplesLeft[k]);
-
-				glyphXAdv = glyphData.Advance + this.spacing - minSum;
+				float advanceOffset = this.kerningLookup.GetAdvanceOffset(glyph, glyphNext);
+				glyphXAdv += advanceOffset;
 			}
-			else
-				glyphXAdv = glyphData.Advance + this.spacing;
 		}
 
 		protected override void OnLoaded()
@@ -733,6 +630,7 @@ namespace Duality.Resources
 			this.GenerateCharLookup();
 			this.GenerateTexture();
 			this.GenerateMaterial();
+			this.GenerateKerningLookup();
 			base.OnLoaded();
 		}
 		protected override void OnDisposing(bool manually)

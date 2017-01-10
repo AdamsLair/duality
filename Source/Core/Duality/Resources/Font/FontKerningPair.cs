@@ -19,7 +19,7 @@ namespace Duality.Resources
 		/// </summary>
 		public char SecondChar;
 		/// <summary>
-		/// An offset to the <see cref="GlyphData.Advance"/> value that will be applied
+		/// An offset to the <see cref="FontGlyphData.Advance"/> value that will be applied
 		/// right after the first character, affecting the placement of the second one.
 		/// </summary>
 		public float AdvanceOffset;

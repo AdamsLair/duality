@@ -88,7 +88,8 @@ namespace Duality.Editor.Plugins.Base
 						fontData.Bitmap, 
 						fontData.Atlas, 
 						fontData.GlyphData, 
-						fontData.Metrics);
+						fontData.Metrics,
+						fontData.KerningPairs);
 
 					// Add the requested output to signal that we've done something with it
 					env.AddOutput(targetRef, input.Path);
@@ -126,6 +127,12 @@ namespace Duality.Editor.Plugins.Base
 			/// offset, as well as how far the text will advance after it.
 			/// </summary>
 			public FontGlyphData[] GlyphData;
+			/// <summary>
+			/// An array of all the kerning pairs of this font. Each kerning
+			/// pair represents a special case where the distance between
+			/// two glyphs should be adjusted when they appear next to each other.
+			/// </summary>
+			public FontKerningPair[] KerningPairs;
 			/// <summary>
 			/// Overall font metrics that were generated or retrieved.
 			/// </summary>
@@ -257,11 +264,9 @@ namespace Duality.Editor.Plugins.Base
 				MathF.RoundToInt(cols * internalFont.Size * 1.2f), 
 				MathF.RoundToInt(rows * internalFont.Height * 1.2f),
 				ColorRgba.TransparentBlack);
-			PixelData glyphTemp;
-			PixelData glyphTempTypo;
-			Bitmap bm;
 			Bitmap measureBm = new Bitmap(1, 1);
 			Rect[] atlas = new Rect[glyphs.Length];
+			PixelData[] glyphBitmaps = new PixelData[glyphs.Length];
 			using (Graphics measureGraphics = Graphics.FromImage(measureBm))
 			{
 				Brush fntBrush = new SolidBrush(Color.Black);
@@ -281,24 +286,25 @@ namespace Duality.Editor.Plugins.Base
 					SizeF charSize = measureGraphics.MeasureString(str, internalFont, pixelLayer.Width, formatDef);
 
 					// Rasterize a single glyph for rendering
-					bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), internalFont.Height + 1);
+					Bitmap bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), internalFont.Height + 1);
 					using (Graphics glyphGraphics = Graphics.FromImage(bm))
 					{
 						glyphGraphics.Clear(Color.Transparent);
 						glyphGraphics.TextRenderingHint = textRenderingHint;
 						glyphGraphics.DrawString(str, internalFont, fntBrush, new RectangleF(0, 0, bm.Width, bm.Height), formatDef);
 					}
-					glyphTemp = new PixelData();
-					glyphTemp.FromBitmap(bm);
+					glyphBitmaps[i] = new PixelData();
+					glyphBitmaps[i].FromBitmap(bm);
 					
 					// Rasterize a single glyph in typographic mode for metric analysis
+					PixelData glyphTempTypo;
 					if (!isSpace)
 					{
 						Point2 glyphTempOpaqueTopLeft;
 						Point2 glyphTempOpaqueSize;
-						glyphTemp.GetOpaqueBoundaries(out glyphTempOpaqueTopLeft, out glyphTempOpaqueSize);
+						glyphBitmaps[i].GetOpaqueBoundaries(out glyphTempOpaqueTopLeft, out glyphTempOpaqueSize);
 
-						glyphTemp.SubImage(glyphTempOpaqueTopLeft.X, 0, glyphTempOpaqueSize.X, glyphTemp.Height);
+						glyphBitmaps[i].SubImage(glyphTempOpaqueTopLeft.X, 0, glyphTempOpaqueSize.X, glyphBitmaps[i].Height);
 
 						if (charSet.CharBodyAscentRef.Contains(glyphs[i].Glyph))
 							bodyAscent += glyphTempOpaqueSize.Y;
@@ -320,19 +326,19 @@ namespace Duality.Editor.Plugins.Base
 					}
 					else
 					{
-						glyphTempTypo = glyphTemp;
+						glyphTempTypo = glyphBitmaps[i];
 					}
 
 					// Update xy values if it doesn't fit anymore
-					if (x + glyphTemp.Width + 2 > pixelLayer.Width)
+					if (x + glyphBitmaps[i].Width + 2 > pixelLayer.Width)
 					{
 						x = 1;
 						y += internalFont.Height + MathF.Clamp((int)MathF.Ceiling(internalFont.Height * 0.1875f), 3, 10);
 					}
 					
 					// Memorize atlas coordinates & glyph data
-					glyphs[i].Size = glyphTemp.Size;
-					glyphs[i].Offset.X = glyphTemp.Width - glyphTempTypo.Width;
+					glyphs[i].Size = glyphBitmaps[i].Size;
+					glyphs[i].Offset.X = glyphBitmaps[i].Width - glyphTempTypo.Width;
 					glyphs[i].Offset.Y = 0; // TTF fonts are rendered on blocks that are the whole size of the height - so no need for offset
 					if (isSpace)
 					{
@@ -343,13 +349,13 @@ namespace Duality.Editor.Plugins.Base
 
 					atlas[i].X = x;
 					atlas[i].Y = y;
-					atlas[i].W = glyphTemp.Width;
+					atlas[i].W = glyphBitmaps[i].Width;
 					atlas[i].H = (internalFont.Height + 1);
 
 					// Draw it onto the font surface
-					glyphTemp.DrawOnto(pixelLayer, BlendMode.Solid, x, y);
+					glyphBitmaps[i].DrawOnto(pixelLayer, BlendMode.Solid, x, y);
 
-					x += glyphTemp.Width + MathF.Clamp((int)MathF.Ceiling(internalFont.Height * 0.125f), 2, 10);
+					x += glyphBitmaps[i].Width + MathF.Clamp((int)MathF.Ceiling(internalFont.Height * 0.125f), 2, 10);
 				}
 			}
 
@@ -398,13 +404,168 @@ namespace Duality.Editor.Plugins.Base
 				descent:    descent, 
 				baseLine:   baseLine,
 				monospace:  monospace);
+
+			// Determine kerning pairs
+			FontKerningPair[] kerningPairs = null;
+			if (monospace)
+				kerningPairs = null;
+			else
+				kerningPairs = this.GatherKerningPairs(glyphs, metrics, glyphBitmaps);
+
 			return new RenderedFontData
 			{
 				Bitmap = pixelLayer,
 				Atlas = atlas,
 				GlyphData = glyphs,
-				Metrics = metrics
+				Metrics = metrics,
+				KerningPairs = kerningPairs
 			};
+		}
+
+		private FontKerningPair[] GatherKerningPairs(FontGlyphData[] glyphs, FontMetrics metrics, PixelData[] glyphBitmaps)
+		{
+			// Generate a sampling mask that decides at which heights we'll sample each glyph
+			int[] kerningMask = this.GetKerningMask(metrics);
+
+			// Gather samples from all glyphs that we have based on the image data we acquired
+			int[][] leftSamples = new int[glyphs.Length][];
+			int[][] rightSamples = new int[glyphs.Length][];
+			for (int i = 0; i < glyphs.Length; i++)
+			{
+				this.GatherKerningSamples(
+					glyphs[i].Glyph, 
+					glyphs[i].Offset, 
+					glyphBitmaps[i], 
+					kerningMask, 
+					ref leftSamples[i], 
+					ref rightSamples[i]);
+			}
+
+			// Find all glyph combinations with a non-zero kerning offset
+			List<FontKerningPair> pairs = new List<FontKerningPair>();
+			for (int i = 0; i < glyphs.Length; i++)
+			{
+				for (int j = 0; j < glyphs.Length; j++)
+				{
+					// Calculate the smallest depth sum across all height samples
+					int minSum = int.MaxValue;
+					for (int k = 0; k < rightSamples[i].Length; k++)
+						minSum = Math.Min(minSum, rightSamples[i][k] + leftSamples[j][k]);
+
+					// The smallest one represents the amount of pixels between the two
+					// glyphs that is completely empty. Out kerning offset will be the negative
+					// of that to make the two glyphs appear closer together.
+					float kerningOffset = -minSum;
+					if (kerningOffset != 0.0f)
+					{
+						pairs.Add(new FontKerningPair(
+							glyphs[i].Glyph, 
+							glyphs[j].Glyph, 
+							kerningOffset));
+					}
+				}
+			}
+
+			return pairs.ToArray();
+		}
+		private int[] GetKerningMask(FontMetrics metrics)
+		{
+			int kerningSamples = (metrics.Ascent + metrics.Descent) / 4;
+			int[] kerningY;
+			if (kerningSamples <= 6)
+			{
+				kerningSamples = 6;
+				kerningY = new int[] {
+					metrics.BaseLine - metrics.Ascent,
+					metrics.BaseLine - metrics.BodyAscent,
+					metrics.BaseLine - metrics.BodyAscent * 2 / 3,
+					metrics.BaseLine - metrics.BodyAscent / 3,
+					metrics.BaseLine,
+					metrics.BaseLine + metrics.Descent};
+			}
+			else
+			{
+				kerningY = new int[kerningSamples];
+				int bodySamples = kerningSamples * 2 / 3;
+				int descentSamples = (kerningSamples - bodySamples) / 2;
+				int ascentSamples = kerningSamples - bodySamples - descentSamples;
+
+				for (int k = 0; k < ascentSamples; k++) 
+					kerningY[k] = metrics.BaseLine - metrics.Ascent + k * (metrics.Ascent - metrics.BodyAscent) / ascentSamples;
+				for (int k = 0; k < bodySamples; k++) 
+					kerningY[ascentSamples + k] = metrics.BaseLine - metrics.BodyAscent + k * metrics.BodyAscent / (bodySamples - 1);
+				for (int k = 0; k < descentSamples; k++) 
+					kerningY[ascentSamples + bodySamples + k] = metrics.BaseLine + (k + 1) * metrics.Descent / descentSamples;
+			}
+			return kerningY;
+		}
+		private void GatherKerningSamples(char glyph, Vector2 glyphOffset, PixelData glyphBitmap, int[] sampleMask, ref int[] samplesLeft, ref int[] samplesRight)
+		{
+			samplesLeft = new int[sampleMask.Length];
+			samplesRight= new int[sampleMask.Length];
+
+			if (glyph == ' ') return;
+			if (glyph == '\t') return;
+			if (glyphBitmap.Width <= 0) return;
+			if (glyphBitmap.Height <= 0) return;
+
+			Point2 glyphSize = glyphBitmap.Size;
+
+			// Left side samples
+			{
+				int leftMid = glyphSize.X / 2;
+				int lastSampleY = 0;
+				for (int sampleIndex = 0; sampleIndex < samplesLeft.Length; sampleIndex++)
+				{
+					samplesLeft[sampleIndex] = leftMid;
+
+					int sampleY = sampleMask[sampleIndex] + (int)glyphOffset.Y;
+					int beginY = MathF.Clamp(lastSampleY, 0, glyphSize.Y - 1);
+					int endY = MathF.Clamp(sampleY, 0, glyphSize.Y);
+					if (sampleIndex == samplesLeft.Length - 1) endY = glyphSize.Y;
+					lastSampleY = endY;
+
+					for (int y = beginY; y < endY; y++)
+					{
+						int x = 0;
+						while (glyphBitmap[x, y].A <= 64)
+						{
+							x++;
+							if (x >= leftMid) break;
+						}
+						samplesLeft[sampleIndex] = Math.Min(samplesLeft[sampleIndex], x);
+					}
+				}
+			}
+
+			// Right side samples
+			{
+				int rightMid = (glyphSize.X + 1) / 2;
+				int lastSampleY = 0;
+				for (int sampleIndex = 0; sampleIndex < samplesRight.Length; sampleIndex++)
+				{
+					samplesRight[sampleIndex] = rightMid;
+								
+					int sampleY = sampleMask[sampleIndex] + (int)glyphOffset.Y;
+					int beginY = MathF.Clamp(lastSampleY, 0, glyphSize.Y - 1);
+					int endY = MathF.Clamp(sampleY, 0, glyphSize.Y);
+					if (sampleIndex == samplesRight.Length - 1) endY = glyphSize.Y;
+					lastSampleY = endY;
+
+					for (int y = beginY; y < endY; y++)
+					{
+						int x = glyphSize.X - 1;
+						while (glyphBitmap[x, y].A <= 64)
+						{
+							x--;
+							if (x <= rightMid) break;
+						}
+						samplesRight[sampleIndex] = Math.Min(samplesRight[sampleIndex], glyphSize.X - 1 - x);
+					}
+				}
+			}
+
+			return;
 		}
 	}
 }

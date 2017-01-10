@@ -33,14 +33,6 @@ namespace Duality.Resources
 		/// The offset by which the cursor advances after this glyph has been written.
 		/// </summary>
 		public float Advance;
-		/// <summary>
-		/// The glyphs kerning samples to the left.
-		/// </summary>
-		public int[] KerningSamplesLeft;
-		/// <summary>
-		/// The glyphs kerning samples to the right.
-		/// </summary>
-		public int[] KerningSamplesRight;
 
 		public override string ToString()
 		{
