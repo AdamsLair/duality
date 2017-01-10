@@ -110,6 +110,7 @@
     <Compile Include="CorePlugin.cs" />
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Drawing\CanvasTest.cs" />
+    <Compile Include="Utility\ExtMethodsRandomTest.cs" />
     <Compile Include="Utility\ExtMethodsMemberInfoTest.cs" />
     <Compile Include="Utility\Log\LogsTest.cs" />
     <Compile Include="Utility\Log\LogFormatTest.cs" />

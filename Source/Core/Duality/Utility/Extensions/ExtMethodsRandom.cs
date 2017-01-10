@@ -331,5 +331,25 @@ namespace Duality
 		{
 			return values.ElementAt(r.Next(values.Count()));
 		}
+
+		/// <summary>
+		/// Shuffles the specified list of values.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="r"></param>
+		/// <param name="values"></param>
+		public static void Shuffle<T>(this Random r, IList<T> values)
+		{
+			// Fisher–Yates shuffle
+			int range = values.Count;  
+			while (range > 1)
+			{  
+				range--;
+				int index = r.Next(range + 1);  
+				T value = values[index];  
+				values[index] = values[range];  
+				values[range] = value;  
+			}
+		}
 	}
 }
