@@ -645,6 +645,7 @@ namespace Duality.Resources
 			c.GenerateCharLookup();
 			c.GenerateTexture();
 			c.GenerateMaterial();
+			c.GenerateKerningLookup();
 		}
 	}
 }
