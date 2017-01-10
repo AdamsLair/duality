@@ -2,6 +2,7 @@
   <assetInfo />
   <glyphs dataType="Array" type="Duality.Resources.FontGlyphData[]" id="427169525">
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x003F_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -15,6 +16,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0020_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -28,6 +30,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">a</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -38,6 +41,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">b</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -51,6 +55,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">c</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -64,6 +69,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">d</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -77,6 +83,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">e</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -90,6 +97,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">f</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -103,6 +111,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">g</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -116,6 +125,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">h</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -129,6 +139,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">i</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -142,6 +153,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">j</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -155,6 +167,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">k</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -168,6 +181,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">l</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -181,6 +195,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">m</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -194,6 +209,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">n</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -207,6 +223,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">o</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -220,6 +237,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">p</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -233,6 +251,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">q</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -246,6 +265,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">r</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -259,6 +279,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">s</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -272,6 +293,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">t</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -285,6 +307,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">u</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -298,6 +321,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">v</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -311,6 +335,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">w</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -321,6 +346,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">x</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -334,6 +360,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">y</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -347,6 +374,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">z</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -360,6 +388,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">A</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -370,6 +399,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">B</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -383,6 +413,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">C</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -396,6 +427,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">D</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -409,6 +441,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">E</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -422,6 +455,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">F</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -435,6 +469,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">G</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -448,6 +483,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">H</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -461,6 +497,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">I</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -474,6 +511,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">J</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -487,6 +525,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">K</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -497,6 +536,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">L</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -510,6 +550,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">M</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -523,6 +564,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">N</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -536,6 +578,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">O</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -549,6 +592,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">P</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -562,6 +606,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">Q</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -575,6 +620,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">R</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -588,6 +634,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">S</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -601,6 +648,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">T</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -614,6 +662,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">U</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -627,6 +676,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">V</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -637,6 +687,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">W</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -647,6 +698,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">X</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -660,6 +712,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">Y</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -673,6 +726,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">Z</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -683,6 +737,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0031_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -696,6 +751,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0032_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -709,6 +765,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0033_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -722,6 +779,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0034_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -735,6 +793,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0035_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -748,6 +807,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0036_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -761,6 +821,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0037_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -774,6 +835,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0038_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -787,6 +849,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0039_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -800,6 +863,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0030_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -813,6 +877,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x002C_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -826,6 +891,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x003B_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -839,6 +905,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x002E_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -852,6 +919,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">:</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -865,6 +933,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x002D_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -878,6 +947,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -888,6 +958,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x003C_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -901,6 +972,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x003E_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -914,6 +986,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x007C_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -927,6 +1000,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0023_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -937,6 +1011,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0027_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -950,6 +1025,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x002B_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -963,6 +1039,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x002A_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -976,6 +1053,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x007E_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -989,6 +1067,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0040_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -999,6 +1078,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x005E_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1012,6 +1092,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x00B0_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1025,6 +1106,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0021_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1038,6 +1120,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0022_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1051,6 +1134,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x00A7_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1064,6 +1148,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0024_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1077,6 +1162,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0025_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1087,6 +1173,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0026_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1097,6 +1184,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x002F_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1110,6 +1198,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0028_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1123,6 +1212,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0029_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1136,6 +1226,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x003D_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1149,6 +1240,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x0060_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1162,6 +1254,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x00B2_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1175,6 +1268,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x00B3_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1188,6 +1282,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x007B_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1201,6 +1296,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x005B_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1214,6 +1310,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x005D_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1227,6 +1324,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x007D_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1240,6 +1338,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x005C_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1253,6 +1352,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x00B4_</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1266,6 +1366,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">ö</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1279,6 +1380,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">ä</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1289,6 +1391,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">ü</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1302,6 +1405,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">Ö</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1315,6 +1419,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">Ä</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1325,6 +1430,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">Ü</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />
@@ -1338,6 +1444,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">ß</Glyph>
       <KerningSamplesLeft />
       <KerningSamplesRight />

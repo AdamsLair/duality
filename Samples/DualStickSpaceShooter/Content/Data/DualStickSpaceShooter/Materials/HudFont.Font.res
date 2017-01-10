@@ -17,6 +17,7 @@
   </assetInfo>
   <glyphs dataType="Array" type="Duality.Resources.FontGlyphData[]" id="2035693768">
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x003F_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2796879029">4, 1, 4, 3, 3, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1876605768">3, 0, 1, 3, 3, 3</KerningSamplesRight>
@@ -27,6 +28,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">4</Advance>
       <Glyph dataType="Char">_x0020_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1397987327">0, 0, 0, 0, 0, 0</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2890172310">0, 0, 0, 0, 0, 0</KerningSamplesRight>
@@ -37,6 +39,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">a</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1332515681">4, 4, 2, 1, 1, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1414817956">3, 3, 0, 0, 0, 3</KerningSamplesRight>
@@ -47,6 +50,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">b</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2328102827">1, 1, 1, 1, 1, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="572702706">4, 4, 0, 0, 0, 4</KerningSamplesRight>
@@ -57,6 +61,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">c</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1552065549">4, 4, 0, 0, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1820493408">3, 3, 1, 3, 0, 3</KerningSamplesRight>
@@ -67,6 +72,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">d</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1773687607">5, 5, 0, 0, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2573851118">0, 0, 0, 0, 0, 4</KerningSamplesRight>
@@ -77,6 +83,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">e</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4230456825">4, 4, 0, 0, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3749983420">3, 3, 0, 3, 0, 3</KerningSamplesRight>
@@ -87,6 +94,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">7</Advance>
       <Glyph dataType="Char">f</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4178741315">3, 2, 0, 2, 2, 3</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1139965226">0, 2, 1, 2, 2, 2</KerningSamplesRight>
@@ -97,6 +105,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">11</Advance>
       <Glyph dataType="Char">g</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="308275717">5, 5, 1, 1, 2, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1315247352">4, 4, 1, 2, 2, 1</KerningSamplesRight>
@@ -107,6 +116,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">h</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2109231951">1, 1, 1, 1, 1, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1701464902">3, 3, 0, 0, 0, 3</KerningSamplesRight>
@@ -117,6 +127,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">3</Advance>
       <Glyph dataType="Char">i</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2059465073">1, 0, 1, 1, 1, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="568736724">1, 1, 1, 1, 1, 1</KerningSamplesRight>
@@ -127,6 +138,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">4</Advance>
       <Glyph dataType="Char">j</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1581187323">2, 2, 2, 2, 2, 0</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3239917794">1, 1, 1, 1, 1, 1</KerningSamplesRight>
@@ -140,6 +152,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">k</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3393914333">1, 1, 1, 1, 1, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2166964432">3, 3, 1, 2, 0, 3</KerningSamplesRight>
@@ -150,6 +163,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">3</Advance>
       <Glyph dataType="Char">l</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2562897479">1, 1, 1, 1, 1, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2804740318">1, 1, 1, 1, 1, 1</KerningSamplesRight>
@@ -160,6 +174,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">16</Advance>
       <Glyph dataType="Char">m</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="234460809">8, 8, 1, 1, 1, 8</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1592831020">7, 7, 0, 0, 0, 7</KerningSamplesRight>
@@ -170,6 +185,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">n</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2412494227">4, 4, 1, 1, 1, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1729776154">3, 3, 0, 0, 0, 3</KerningSamplesRight>
@@ -180,6 +196,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">o</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="556731541">5, 5, 0, 0, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2001124776">4, 4, 0, 0, 1, 4</KerningSamplesRight>
@@ -190,6 +207,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">p</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3505057887">5, 5, 1, 1, 1, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1204210550">4, 4, 0, 0, 0, 4</KerningSamplesRight>
@@ -200,6 +218,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">q</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1833850945">5, 5, 0, 0, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="474941956">4, 4, 0, 0, 0, 0</KerningSamplesRight>
@@ -210,6 +229,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">7</Advance>
       <Glyph dataType="Char">r</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1583527563">3, 3, 1, 1, 1, 3</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="340610898">2, 2, 1, 2, 2, 2</KerningSamplesRight>
@@ -220,6 +240,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">s</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1328307437">4, 4, 0, 1, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1650186816">3, 3, 1, 1, 1, 3</KerningSamplesRight>
@@ -230,6 +251,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">7</Advance>
       <Glyph dataType="Char">t</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2637345175">3, 2, 0, 2, 2, 3</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="827690958">2, 2, 1, 2, 1, 2</KerningSamplesRight>
@@ -240,6 +262,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">u</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="12794457">4, 4, 0, 0, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4192443548">3, 3, 0, 0, 0, 3</KerningSamplesRight>
@@ -250,6 +273,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">11</Advance>
       <Glyph dataType="Char">v</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="176358051">5, 5, 0, 2, 3, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1031531914">4, 4, 0, 2, 3, 4</KerningSamplesRight>
@@ -260,6 +284,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">17</Advance>
       <Glyph dataType="Char">w</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2545849829">8, 8, 0, 2, 3, 8</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="767709656">7, 7, 0, 1, 3, 7</KerningSamplesRight>
@@ -270,6 +295,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">11</Advance>
       <Glyph dataType="Char">x</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2720664751">5, 5, 1, 3, 1, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1919379622">4, 4, 1, 3, 1, 4</KerningSamplesRight>
@@ -280,6 +306,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">11</Advance>
       <Glyph dataType="Char">y</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2214660817">5, 5, 0, 2, 4, 0</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="504758964">4, 4, 0, 2, 4, 4</KerningSamplesRight>
@@ -290,6 +317,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">z</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2172976859">4, 4, 1, 2, 1, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="208565570">3, 3, 0, 2, 0, 3</KerningSamplesRight>
@@ -300,6 +328,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">14</Advance>
       <Glyph dataType="Char">A</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2681284029">7, 4, 3, 1, 0, 7</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4278471088">6, 5, 3, 2, 0, 6</KerningSamplesRight>
@@ -310,6 +339,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">B</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1852316199">4, 0, 0, 0, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1043355070">3, 1, 1, 0, 0, 3</KerningSamplesRight>
@@ -320,6 +350,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">12</Advance>
       <Glyph dataType="Char">C</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3850747497">6, 1, 0, 0, 1, 6</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4033158412">5, 1, 5, 5, 0, 5</KerningSamplesRight>
@@ -330,6 +361,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">12</Advance>
       <Glyph dataType="Char">D</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2007773939">6, 0, 0, 0, 0, 6</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3206011770">5, 1, 0, 0, 2, 5</KerningSamplesRight>
@@ -340,6 +372,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">E</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3461882357">4, 0, 0, 0, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="89353992">3, 0, 2, 3, 0, 3</KerningSamplesRight>
@@ -350,6 +383,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">F</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2079289151">4, 0, 0, 0, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="166941014">3, 0, 2, 3, 3, 3</KerningSamplesRight>
@@ -360,6 +394,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">12</Advance>
       <Glyph dataType="Char">G</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2318159009">6, 1, 0, 0, 1, 6</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1299495012">5, 1, 5, 0, 0, 5</KerningSamplesRight>
@@ -370,6 +405,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">11</Advance>
       <Glyph dataType="Char">H</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="511226603">5, 0, 0, 0, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3517265330">4, 0, 0, 0, 0, 4</KerningSamplesRight>
@@ -380,6 +416,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">2</Advance>
       <Glyph dataType="Char">I</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2487693645">1, 0, 0, 0, 0, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3116007968">1, 0, 0, 0, 0, 1</KerningSamplesRight>
@@ -390,6 +427,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">4</Advance>
       <Glyph dataType="Char">J</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2592711287">2, 2, 2, 2, 2, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1352711086">1, 0, 0, 0, 0, 1</KerningSamplesRight>
@@ -403,6 +441,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">11</Advance>
       <Glyph dataType="Char">K</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2216806201">5, 0, 0, 0, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="70110332">4, 2, 4, 3, 1, 4</KerningSamplesRight>
@@ -413,6 +452,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">L</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3134249859">4, 0, 0, 0, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2598349546">3, 3, 3, 3, 0, 3</KerningSamplesRight>
@@ -423,6 +463,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">14</Advance>
       <Glyph dataType="Char">M</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="206229317">7, 0, 0, 0, 0, 7</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3320887480">6, 0, 0, 0, 0, 6</KerningSamplesRight>
@@ -433,6 +474,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">11</Advance>
       <Glyph dataType="Char">N</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2997693071">5, 0, 0, 0, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2746684678">4, 0, 0, 0, 0, 4</KerningSamplesRight>
@@ -443,6 +485,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">14</Advance>
       <Glyph dataType="Char">O</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3122846385">7, 1, 0, 0, 1, 7</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3511155604">6, 1, 0, 0, 2, 6</KerningSamplesRight>
@@ -453,6 +496,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">P</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="202791995">4, 0, 0, 0, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="134008482">3, 1, 1, 3, 3, 3</KerningSamplesRight>
@@ -463,6 +507,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">15</Advance>
       <Glyph dataType="Char">Q</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="206660381">7, 1, 0, 0, 1, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2233191568">6, 2, 1, 1, 3, 0</KerningSamplesRight>
@@ -473,6 +518,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">11</Advance>
       <Glyph dataType="Char">R</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="596608391">5, 0, 0, 0, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4177416862">4, 3, 3, 3, 1, 4</KerningSamplesRight>
@@ -483,6 +529,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">S</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2102343625">5, 0, 0, 5, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1714209772">4, 1, 1, 0, 0, 4</KerningSamplesRight>
@@ -493,6 +540,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">11</Advance>
       <Glyph dataType="Char">T</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="793350355">5, 0, 5, 5, 5, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2482489306">4, 0, 4, 4, 4, 4</KerningSamplesRight>
@@ -503,6 +551,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">11</Advance>
       <Glyph dataType="Char">U</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="459616725">5, 0, 0, 0, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3917574504">4, 0, 0, 0, 1, 4</KerningSamplesRight>
@@ -513,6 +562,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">14</Advance>
       <Glyph dataType="Char">V</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2649724831">7, 1, 3, 4, 6, 7</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3645396278">6, 1, 2, 4, 5, 6</KerningSamplesRight>
@@ -526,6 +576,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">23</Advance>
       <Glyph dataType="Char">W</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3292332417">11, 0, 2, 3, 4, 11</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3158608324">10, 1, 2, 3, 4, 10</KerningSamplesRight>
@@ -536,6 +587,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">14</Advance>
       <Glyph dataType="Char">X</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1297535435">7, 1, 4, 3, 0, 7</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3935270162">6, 1, 4, 3, 1, 6</KerningSamplesRight>
@@ -546,6 +598,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">12</Advance>
       <Glyph dataType="Char">Y</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1199823405">6, 1, 4, 6, 6, 6</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2830763520">5, 0, 3, 5, 5, 5</KerningSamplesRight>
@@ -559,6 +612,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">Z</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2093392087">5, 0, 3, 1, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1367970190">4, 0, 3, 4, 0, 4</KerningSamplesRight>
@@ -569,6 +623,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">5</Advance>
       <Glyph dataType="Char">_x0031_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="951634841">2, 1, 2, 2, 2, 2</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1463870556">1, 0, 0, 0, 0, 1</KerningSamplesRight>
@@ -579,6 +634,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">_x0032_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="428099043">4, 0, 4, 2, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2616937290">3, 1, 1, 3, 0, 3</KerningSamplesRight>
@@ -589,6 +645,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">_x0033_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3752061733">5, 2, 4, 5, 1, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="910325144">4, 1, 1, 0, 0, 4</KerningSamplesRight>
@@ -599,6 +656,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">_x0034_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1283298287">5, 4, 1, 1, 5, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="532161126">4, 2, 2, 0, 2, 4</KerningSamplesRight>
@@ -609,6 +667,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">_x0035_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2494833681">5, 1, 1, 5, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="496710260">4, 1, 1, 1, 1, 4</KerningSamplesRight>
@@ -619,6 +678,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">_x0036_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2909276699">5, 1, 0, 0, 1, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4048145154">4, 1, 1, 0, 1, 4</KerningSamplesRight>
@@ -629,6 +689,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">_x0037_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="312677117">5, 1, 3, 2, 2, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3036882288">4, 1, 3, 4, 4, 4</KerningSamplesRight>
@@ -639,6 +700,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">_x0038_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1489893735">5, 1, 1, 0, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1159759742">4, 1, 1, 0, 1, 4</KerningSamplesRight>
@@ -649,6 +711,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">_x0039_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1862266793">5, 0, 0, 5, 1, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3666707660">4, 1, 1, 1, 2, 4</KerningSamplesRight>
@@ -659,6 +722,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">12</Advance>
       <Glyph dataType="Char">_x0030_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="505615923">6, 1, 0, 0, 1, 6</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3901249850">5, 1, 0, 1, 2, 5</KerningSamplesRight>
@@ -669,6 +733,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">3</Advance>
       <Glyph dataType="Char">_x002C_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4108982069">1, 1, 1, 1, 1, 0</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1100931784">1, 1, 1, 1, 0, 1</KerningSamplesRight>
@@ -679,6 +744,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">3</Advance>
       <Glyph dataType="Char">_x003B_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2459948671">1, 1, 1, 1, 1, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3394333462">1, 1, 0, 1, 0, 1</KerningSamplesRight>
@@ -689,6 +755,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">3</Advance>
       <Glyph dataType="Char">_x002E_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3255780833">1, 1, 1, 1, 1, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2521843748">1, 1, 1, 1, 1, 1</KerningSamplesRight>
@@ -699,6 +766,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">3</Advance>
       <Glyph dataType="Char">:</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1789500971">1, 1, 1, 1, 1, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1515395954">1, 1, 1, 1, 1, 1</KerningSamplesRight>
@@ -709,6 +777,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x002D_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="862416525">4, 4, 4, 0, 4, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3322584544">3, 3, 3, 0, 3, 3</KerningSamplesRight>
@@ -719,6 +788,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1148830135">5, 5, 5, 5, 5, 0</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2300390766">4, 4, 4, 4, 4, 0</KerningSamplesRight>
@@ -729,6 +799,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x003C_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1718302841">4, 4, 3, 1, 4, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="510149692">3, 3, 1, 3, 1, 3</KerningSamplesRight>
@@ -739,6 +810,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">7</Advance>
       <Glyph dataType="Char">_x003E_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="888442563">3, 3, 0, 2, 0, 3</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1431222442">2, 2, 2, 1, 2, 2</KerningSamplesRight>
@@ -749,6 +821,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">3</Advance>
       <Glyph dataType="Char">_x007C_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4920453">1, 1, 1, 1, 1, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3943566456">1, 1, 1, 1, 1, 1</KerningSamplesRight>
@@ -759,6 +832,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">12</Advance>
       <Glyph dataType="Char">_x0023_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2467504591">6, 4, 1, 1, 2, 6</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2526576326">5, 1, 0, 0, 4, 5</KerningSamplesRight>
@@ -769,6 +843,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">2</Advance>
       <Glyph dataType="Char">_x0027_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="294708209">0, 0, 1, 1, 1, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="588471124">0, 0, 1, 1, 1, 1</KerningSamplesRight>
@@ -779,6 +854,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">_x002B_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2101532539">4, 4, 4, 0, 4, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3715892322">3, 3, 3, 1, 3, 3</KerningSamplesRight>
@@ -789,6 +865,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">7</Advance>
       <Glyph dataType="Char">_x002A_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1735766109">3, 0, 1, 3, 3, 3</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2769848400">2, 0, 0, 2, 2, 2</KerningSamplesRight>
@@ -799,6 +876,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x007E_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2239796423">4, 4, 4, 1, 4, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2932012126">3, 3, 3, 0, 3, 3</KerningSamplesRight>
@@ -809,6 +887,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">14</Advance>
       <Glyph dataType="Char">_x0040_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1506089225">7, 3, 0, 0, 0, 2</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2558913452">6, 2, 1, 1, 3, 3</KerningSamplesRight>
@@ -819,6 +898,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">5</Advance>
       <Glyph dataType="Char">_x005E_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1679111187">2, 0, 2, 2, 2, 2</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2901738906">1, 0, 1, 1, 1, 1</KerningSamplesRight>
@@ -829,6 +909,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">6</Advance>
       <Glyph dataType="Char">_x00B0_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="925034261">3, 0, 1, 3, 3, 3</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2789385512">2, 1, 1, 2, 2, 2</KerningSamplesRight>
@@ -839,6 +920,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">3</Advance>
       <Glyph dataType="Char">_x0021_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1304686303">1, 1, 1, 1, 1, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1097375478">1, 0, 0, 1, 0, 1</KerningSamplesRight>
@@ -849,6 +931,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">5</Advance>
       <Glyph dataType="Char">_x0022_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2600561345">0, 0, 2, 2, 2, 2</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="612288900">0, 0, 1, 1, 1, 1</KerningSamplesRight>
@@ -859,6 +942,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x00A7_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4188253451">2, 1, 0, 1, 1, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="447384274">2, 2, 1, 1, 2, 3</KerningSamplesRight>
@@ -869,6 +953,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">_x0024_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1051625325">4, 0, 0, 4, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3658338752">4, 2, 2, 1, 1, 4</KerningSamplesRight>
@@ -879,6 +964,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">17</Advance>
       <Glyph dataType="Char">_x0025_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4078993431">8, 1, 1, 5, 4, 3</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3086271310">3, 4, 1, 0, 1, 7</KerningSamplesRight>
@@ -889,6 +975,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">13</Advance>
       <Glyph dataType="Char">_x0026_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3706780889">6, 2, 1, 0, 0, 6</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3696184348">5, 5, 0, 2, 1, 5</KerningSamplesRight>
@@ -899,6 +986,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">_x002F_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="637610275">4, 4, 3, 2, 1, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1977653514">1, 1, 3, 3, 3, 3</KerningSamplesRight>
@@ -909,6 +997,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">5</Advance>
       <Glyph dataType="Char">_x0028_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1309700197">2, 0, 0, 0, 1, 2</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2628454744">0, 1, 1, 1, 1, 0</KerningSamplesRight>
@@ -919,6 +1008,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">6</Advance>
       <Glyph dataType="Char">_x0029_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3279264559">1, 2, 3, 3, 2, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1665293350">2, 1, 0, 0, 1, 2</KerningSamplesRight>
@@ -929,6 +1019,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x003D_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3416309073">4, 4, 0, 0, 4, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="673505844">3, 3, 0, 0, 3, 3</KerningSamplesRight>
@@ -939,6 +1030,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">5</Advance>
       <Glyph dataType="Char">_x0060_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3786184027">2, 0, 2, 2, 2, 2</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="773312706">1, 0, 1, 1, 1, 1</KerningSamplesRight>
@@ -949,6 +1041,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">6</Advance>
       <Glyph dataType="Char">_x00B2_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2841702461">3, 1, 0, 3, 3, 3</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="604254512">2, 1, 1, 2, 2, 2</KerningSamplesRight>
@@ -959,6 +1052,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">6</Advance>
       <Glyph dataType="Char">_x00B3_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1670191271">3, 1, 0, 3, 3, 3</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="455932222">2, 1, 1, 2, 2, 2</KerningSamplesRight>
@@ -969,6 +1063,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">5</Advance>
       <Glyph dataType="Char">_x007B_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2448240873">2, 2, 1, 2, 2, 2</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3513224332">0, 1, 1, 1, 1, 0</KerningSamplesRight>
@@ -979,6 +1074,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">4</Advance>
       <Glyph dataType="Char">_x005B_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3261602163">0, 0, 0, 0, 0, 0</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1445938938">1, 1, 1, 1, 1, 1</KerningSamplesRight>
@@ -989,6 +1085,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">4</Advance>
       <Glyph dataType="Char">_x005D_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1928457333">1, 2, 2, 2, 2, 1</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1811580552">0, 0, 0, 0, 0, 0</KerningSamplesRight>
@@ -999,6 +1096,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">5</Advance>
       <Glyph dataType="Char">_x007D_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2907758015">0, 1, 1, 1, 1, 0</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1935844566">1, 1, 1, 1, 1, 1</KerningSamplesRight>
@@ -1009,6 +1107,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">8</Advance>
       <Glyph dataType="Char">_x005C_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1516494625">1, 1, 3, 4, 4, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3349280740">3, 3, 2, 1, 0, 0</KerningSamplesRight>
@@ -1019,6 +1118,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">5</Advance>
       <Glyph dataType="Char">_x00B4_</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3261290859">2, 0, 2, 2, 2, 2</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1221550386">1, 0, 1, 1, 1, 1</KerningSamplesRight>
@@ -1029,6 +1129,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">ö</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1180077005">5, 2, 0, 0, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="906226080">4, 3, 0, 0, 1, 4</KerningSamplesRight>
@@ -1039,6 +1140,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">ä</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3256885495">4, 3, 2, 1, 1, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2046418734">3, 1, 0, 0, 0, 3</KerningSamplesRight>
@@ -1049,6 +1151,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">9</Advance>
       <Glyph dataType="Char">ü</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3112167865">4, 2, 0, 0, 0, 4</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1459891196">3, 2, 0, 0, 0, 3</KerningSamplesRight>
@@ -1059,6 +1162,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">14</Advance>
       <Glyph dataType="Char">Ö</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="446558723">4, 1, 0, 0, 1, 7</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2436793962">5, 1, 0, 0, 2, 6</KerningSamplesRight>
@@ -1069,6 +1173,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">14</Advance>
       <Glyph dataType="Char">Ä</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2623293893">4, 4, 3, 1, 0, 7</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2237698104">5, 5, 3, 2, 0, 6</KerningSamplesRight>
@@ -1079,6 +1184,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">11</Advance>
       <Glyph dataType="Char">Ü</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3583727887">3, 0, 0, 0, 0, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3458672774">3, 0, 0, 0, 1, 4</KerningSamplesRight>
@@ -1089,6 +1195,7 @@
       </Size>
     </item>
     <item dataType="Struct" type="Duality.Resources.FontGlyphData">
+      <Advance dataType="Float">10</Advance>
       <Glyph dataType="Char">ß</Glyph>
       <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1806040369">2, 1, 1, 1, 1, 5</KerningSamplesLeft>
       <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4020144916">2, 2, 2, 0, 0, 4</KerningSamplesRight>
