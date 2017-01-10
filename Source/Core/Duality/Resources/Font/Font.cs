@@ -61,7 +61,6 @@ namespace Duality.Resources
 		private bool            kerning          = true;
 		private FontGlyphData[] glyphs           = null;
 		private Pixmap          pixelData        = null;
-		private float           maxGlyphWidth    = 0.0f;
 		private FontMetrics     metrics          = null;
 		// Data that is automatically acquired while loading the font
 		[DontSerialize] private int[]    charLookup = null;
@@ -178,11 +177,6 @@ namespace Duality.Resources
 			this.pixelData.Atlas = atlas.ToList();
 
 			this.metrics = metrics;
-			this.maxGlyphWidth = 0;
-			for (int i = 0; i < this.glyphs.Length; i++)
-			{
-				this.maxGlyphWidth = Math.Max(this.maxGlyphWidth, this.glyphs[i].Size.X);
-			}
 
 			this.UpdateKerningData();
 			this.GenerateTexture();
