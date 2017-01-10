@@ -728,10 +728,10 @@ namespace Duality.Resources
 				for (int k = 0; k < glyphData.KerningSamplesRight.Length; k++)
 					minSum = Math.Min(minSum, glyphData.KerningSamplesRight[k] + glyphDataNext.KerningSamplesLeft[k]);
 
-				glyphXAdv = glyphData.Size.X - glyphData.Offset.X + this.spacing - minSum;
+				glyphXAdv = glyphData.Advance + this.spacing - minSum;
 			}
 			else
-				glyphXAdv = (this.metrics.Monospace ? this.maxGlyphWidth : (glyphData.Size.X - glyphData.Offset.X)) + this.spacing;
+				glyphXAdv = glyphData.Advance + this.spacing;
 		}
 
 		protected override void OnLoaded()

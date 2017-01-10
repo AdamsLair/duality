@@ -30,6 +30,10 @@ namespace Duality.Resources
 		/// </summary>
 		public Vector2 Offset;
 		/// <summary>
+		/// The offset by which the cursor advances after this glyph has been written.
+		/// </summary>
+		public float Advance;
+		/// <summary>
 		/// The glyphs kerning samples to the left.
 		/// </summary>
 		public int[] KerningSamplesLeft;
@@ -40,10 +44,11 @@ namespace Duality.Resources
 
 		public override string ToString()
 		{
-			return string.Format("Glyph '{0}', Size {1}, Offset {2}", 
+			return string.Format("Glyph '{0}', Size {1}, Offset {2}, Advance {3}", 
 				this.Glyph, 
 				this.Size, 
-				this.Offset);
+				this.Offset,
+				this.Advance);
 		}
 	}
 }
