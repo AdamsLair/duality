@@ -55,18 +55,16 @@ namespace Duality.Resources
 		}
 
 		
+		private FontData          fontData         = null;
 		private FontRenderMode    renderMode       = FontRenderMode.SharpBitmap;
 		private float             spacing          = 0.0f;
 		private float             lineHeightFactor = 1.0f;
 		private bool              kerning          = true;
-		private FontGlyphData[]   glyphs           = null;
-		private FontKerningPair[] kerningPairs     = null;
-		private Pixmap            pixelData        = null;
-		private FontMetrics       metrics          = null;
 		// Data that is automatically acquired while loading the font
 		[DontSerialize] private int[]             charLookup    = null;
 		[DontSerialize] private Material          material      = null;
 		[DontSerialize] private Texture           texture       = null;
+		[DontSerialize] private Pixmap            pixmap        = null;
 		[DontSerialize] private FontKerningLookup kerningLookup = null;
 
 
@@ -140,14 +138,14 @@ namespace Duality.Resources
 		/// </summary>
 		public int Height
 		{
-			get { return this.metrics.Height; }
+			get { return this.fontData.Metrics.Height; }
 		}
 		/// <summary>
 		/// [GET] The y offset in pixels between two lines.
 		/// </summary>
 		public int LineSpacing
 		{
-			get { return MathF.RoundToInt(this.metrics.Height * this.lineHeightFactor); }
+			get { return MathF.RoundToInt(this.fontData.Metrics.Height * this.lineHeightFactor); }
 		}
 		/// <summary>
 		/// [GET] Provides access to various metrics that are inherent to this <see cref="Font"/> instance,
@@ -156,7 +154,7 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public FontMetrics Metrics
 		{
-			get { return this.metrics; }
+			get { return this.fontData.Metrics; }
 		}
 
 
@@ -168,17 +166,14 @@ namespace Duality.Resources
 		/// <param name="atlas"></param>
 		/// <param name="glyphs"></param>
 		/// <param name="metrics"></param>
-		public void SetGlyphData(PixelData bitmap, Rect[] atlas, FontGlyphData[] glyphs, FontMetrics metrics, FontKerningPair[] kerningPairs)
+		public void SetGlyphData(FontData fontData)
 		{
 			this.ReleaseResources();
 
-			this.glyphs = glyphs;
-			this.kerningPairs = kerningPairs;
-			this.pixelData = new Pixmap(bitmap);
-			this.pixelData.Atlas = atlas.ToList();
-			this.metrics = metrics;
+			this.fontData = fontData;
 
 			this.GenerateCharLookup();
+			this.GeneratePixmap();
 			this.GenerateTexture();
 			this.GenerateMaterial();
 			this.GenerateKerningLookup();
@@ -187,20 +182,30 @@ namespace Duality.Resources
 		{
 			if (this.material != null) this.material.Dispose();
 			if (this.texture != null) this.texture.Dispose();
-			if (this.pixelData != null) this.pixelData.Dispose();
+			if (this.pixmap != null) this.pixmap.Dispose();
 
 			this.material = null;
 			this.texture = null;
-			this.pixelData = null;
+			this.pixmap = null;
+		}
+		private void GeneratePixmap()
+		{
+			if (this.pixmap != null) this.pixmap.Dispose();
+
+			if (this.fontData == null)
+				return;
+			
+			this.pixmap = new Pixmap(fontData.Bitmap);
+			this.pixmap.Atlas = fontData.Atlas.ToList();
 		}
 		private void GenerateTexture()
 		{
 			if (this.texture != null) this.texture.Dispose();
 
-			if (this.pixelData == null)
+			if (this.pixmap == null)
 				return;
 
-			this.texture = new Texture(this.pixelData, 
+			this.texture = new Texture(this.pixmap, 
 				TextureSizeMode.Enlarge, 
 				this.IsPixelGridAligned ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
 				this.IsPixelGridAligned ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear);
@@ -227,33 +232,34 @@ namespace Duality.Resources
 			BatchInfo matInfo = new BatchInfo(technique, ColorRgba.White, this.texture);
 			if (technique == DrawTechnique.SharpAlpha)
 			{
-				matInfo.SetUniform("smoothness", this.metrics.Size * 4.0f);
+				matInfo.SetUniform("smoothness", this.fontData.Metrics.Size * 4.0f);
 			}
 			this.material = new Material(matInfo);
 		}
 		private void GenerateCharLookup()
 		{
-			if (this.glyphs == null)
+			FontGlyphData[] glyphs = fontData.Glyphs;
+			if (glyphs == null)
 			{
 				this.charLookup = new int[0];
 				return;
 			}
 
 			int maxCharVal = 0;
-			for (int i = 0; i < this.glyphs.Length; i++)
+			for (int i = 0; i < glyphs.Length; i++)
 			{
-				maxCharVal = Math.Max(maxCharVal, (int)this.glyphs[i].Glyph);
+				maxCharVal = Math.Max(maxCharVal, (int)glyphs[i].Glyph);
 			}
 
 			this.charLookup = new int[maxCharVal + 1];
-			for (int i = 0; i < this.glyphs.Length; i++)
+			for (int i = 0; i < glyphs.Length; i++)
 			{
-				this.charLookup[(int)this.glyphs[i].Glyph] = i;
+				this.charLookup[(int)glyphs[i].Glyph] = i;
 			}
 		}
 		private void GenerateKerningLookup()
 		{
-			this.kerningLookup = new FontKerningLookup(this.kerningPairs);
+			this.kerningLookup = new FontKerningLookup(this.fontData.KerningPairs);
 		}
 
 		/// <summary>
@@ -267,12 +273,12 @@ namespace Duality.Resources
 			int glyphId = (int)glyph;
 			if (glyphId >= this.charLookup.Length)
 			{
-				data = this.glyphs[0];
+				data = this.fontData.Glyphs[0];
 				return false;
 			}
 			else
 			{
-				data = this.glyphs[this.charLookup[glyphId]];
+				data = this.fontData.Glyphs[this.charLookup[glyphId]];
 				return true;
 			}
 		}
@@ -285,11 +291,11 @@ namespace Duality.Resources
 		{
 			Rect targetRect;
 			int charIndex = (int)glyph > this.charLookup.Length ? 0 : this.charLookup[(int)glyph];
-			this.pixelData.LookupAtlas(charIndex, out targetRect);
+			this.pixmap.LookupAtlas(charIndex, out targetRect);
 			PixelData subImg = new PixelData(
 				MathF.RoundToInt(targetRect.W), 
 				MathF.RoundToInt(targetRect.H));
-			this.pixelData.MainLayer.DrawOnto(subImg, BlendMode.Solid, 
+			this.pixmap.MainLayer.DrawOnto(subImg, BlendMode.Solid, 
 				-MathF.RoundToInt(targetRect.X), 
 				-MathF.RoundToInt(targetRect.Y));
 			return subImg;
@@ -441,10 +447,10 @@ namespace Duality.Resources
 		/// <param name="clr"></param>
 		public void RenderToBitmap(string text, PixelData target, float x, float y, ColorRgba clr)
 		{
-			if (this.pixelData == null)
+			if (this.pixmap == null)
 				return;
 
-			PixelData bitmap = this.pixelData.MainLayer;
+			PixelData bitmap = this.pixmap.MainLayer;
 			float curOffset = 0.0f;
 			FontGlyphData glyphData;
 			Rect uvRect;
@@ -452,7 +458,7 @@ namespace Duality.Resources
 			for (int i = 0; i < text.Length; i++)
 			{
 				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv);
-				Vector2 dataCoord = uvRect.Pos * this.pixelData.Size / this.texture.UVRatio;
+				Vector2 dataCoord = uvRect.Pos * bitmap.Size / this.texture.UVRatio;
 				
 				bitmap.DrawOnto(target, 
 					BlendMode.Alpha, 
@@ -617,7 +623,7 @@ namespace Duality.Resources
 
 			glyphXAdv = glyphData.Advance + this.spacing;
 
-			if (this.kerning && !this.metrics.Monospace)
+			if (this.kerning)
 			{
 				char glyphNext = index + 1 < text.Length ? text[index + 1] : ' ';
 				float advanceOffset = this.kerningLookup.GetAdvanceOffset(glyph, glyphNext);
@@ -628,6 +634,7 @@ namespace Duality.Resources
 		protected override void OnLoaded()
 		{
 			this.GenerateCharLookup();
+			this.GeneratePixmap();
 			this.GenerateTexture();
 			this.GenerateMaterial();
 			this.GenerateKerningLookup();
@@ -643,6 +650,7 @@ namespace Duality.Resources
 			base.OnCopyDataTo(target, operation);
 			Font c = target as Font;
 			c.GenerateCharLookup();
+			c.GeneratePixmap();
 			c.GenerateTexture();
 			c.GenerateMaterial();
 			c.GenerateKerningLookup();

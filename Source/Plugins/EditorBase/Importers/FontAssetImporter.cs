@@ -75,7 +75,7 @@ namespace Duality.Editor.Plugins.Base
 
 					// Load the TrueType Font and render all the required glyphs
 					byte[] trueTypeData = File.ReadAllBytes(input.Path);
-					RenderedFontData fontData = this.RenderGlyphs(
+					FontData fontData = this.RenderGlyphs(
 						trueTypeData, 
 						size, 
 						style, 
@@ -84,12 +84,7 @@ namespace Duality.Editor.Plugins.Base
 						monospace);
 
 					// Transfer our rendered Font data to the Font Resource
-					target.SetGlyphData(
-						fontData.Bitmap, 
-						fontData.Atlas, 
-						fontData.GlyphData, 
-						fontData.Metrics,
-						fontData.KerningPairs);
+					target.SetGlyphData(fontData);
 
 					// Add the requested output to signal that we've done something with it
 					env.AddOutput(targetRef, input.Path);
@@ -109,41 +104,10 @@ namespace Duality.Editor.Plugins.Base
 		void IAssetImporter.Export(IAssetExportEnvironment env) { }
 
 		/// <summary>
-		/// Holds the internal result of rendering a TrueType font.
-		/// </summary>
-		private struct RenderedFontData
-		{
-			/// <summary>
-			/// The pixel data that was produced during rendering. A single
-			/// bitmap contains all the rendered glyphs.
-			/// </summary>
-			public PixelData Bitmap;
-			/// <summary>
-			/// The bitmap / pixel atlas of the glyph pixel data.
-			/// </summary>
-			public Rect[] Atlas;
-			/// <summary>
-			/// Information about each rendered glyph, e.g. its size,
-			/// offset, as well as how far the text will advance after it.
-			/// </summary>
-			public FontGlyphData[] GlyphData;
-			/// <summary>
-			/// An array of all the kerning pairs of this font. Each kerning
-			/// pair represents a special case where the distance between
-			/// two glyphs should be adjusted when they appear next to each other.
-			/// </summary>
-			public FontKerningPair[] KerningPairs;
-			/// <summary>
-			/// Overall font metrics that were generated or retrieved.
-			/// </summary>
-			public FontMetrics Metrics;
-		}
-
-		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> based on its embedded TrueType representation.
 		/// <param name="extendedSet">Extended set of characters for renderning.</param>
 		/// </summary>
-		private RenderedFontData RenderGlyphs(byte[] trueTypeFontData, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiasing, bool monospace)
+		private FontData RenderGlyphs(byte[] trueTypeFontData, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiasing, bool monospace)
 		{
 			if (this.fontManagers == null)
 				this.fontManagers = new Dictionary<int, PrivateFontCollection>();
@@ -195,7 +159,7 @@ namespace Duality.Editor.Plugins.Base
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> using the specified system font family.
 		/// </summary>
-		private RenderedFontData RenderGlyphs(FontFamily fontFamily, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiasing, bool monospace)
+		private FontData RenderGlyphs(FontFamily fontFamily, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiasing, bool monospace)
 		{
 			// Determine System.Drawing font style
 			SysDrawFontStyle systemStyle = SysDrawFontStyle.Regular;
@@ -237,7 +201,7 @@ namespace Duality.Editor.Plugins.Base
 		/// This method assumes that the system font's size and style match the one specified in
 		/// the specified Duality font.
 		/// </summary>
-		private RenderedFontData RenderGlyphs(SysDrawFont internalFont, FontCharSet charSet, bool antialiazing, bool monospace)
+		private FontData RenderGlyphs(SysDrawFont internalFont, FontCharSet charSet, bool antialiazing, bool monospace)
 		{
 			FontGlyphData[] glyphs = new FontGlyphData[charSet.Chars.Length];
 			for (int i = 0; i < glyphs.Length; i++)
@@ -412,14 +376,7 @@ namespace Duality.Editor.Plugins.Base
 			else
 				kerningPairs = this.GatherKerningPairs(glyphs, metrics, glyphBitmaps);
 
-			return new RenderedFontData
-			{
-				Bitmap = pixelLayer,
-				Atlas = atlas,
-				GlyphData = glyphs,
-				Metrics = metrics,
-				KerningPairs = kerningPairs
-			};
+			return new FontData(pixelLayer, atlas, glyphs, metrics, kerningPairs);
 		}
 
 		private FontKerningPair[] GatherKerningPairs(FontGlyphData[] glyphs, FontMetrics metrics, PixelData[] glyphBitmaps)
