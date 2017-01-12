@@ -19,158 +19,33 @@ namespace Duality.Components
 	[EditorHintImage(CoreResNames.ImageCamera)]
 	public sealed class Camera : Component, ICmpInitializable
 	{
-		/// <summary>
-		/// Describes a single pass in the overall rendering process.
-		/// </summary>
-		public class Pass
-		{
-			private ColorRgba                clearColor     = ColorRgba.TransparentBlack;
-			private float                    clearDepth     = 1.0f;
-			private ClearFlag                clearFlags     = ClearFlag.All;
-			private RenderMatrix             matrixMode     = RenderMatrix.WorldSpace;
-			private VisibilityFlag           visibilityMask = VisibilityFlag.AllGroups;
-			private BatchInfo                input          = null;
-			private ContentRef<RenderTarget> output         = null;
-
-			[DontSerialize]
-			private EventHandler<CollectDrawcallEventArgs> collectDrawcalls	= null;
-
-			/// <summary>
-			/// Fired when collecting drawcalls for this pass. Note that not all passes do collect drawcalls (see <see cref="Input"/>)
-			/// </summary>
-			public event EventHandler<CollectDrawcallEventArgs> CollectDrawcalls
-			{
-				add { this.collectDrawcalls += value; }
-				remove { this.collectDrawcalls -= value; }
-			}
-			
-
-			/// <summary>
-			/// The input to use for rendering. This can for example be a <see cref="Duality.Resources.Texture"/> that
-			/// has been rendered to before and is now bound to perform a postprocessing step. If this is null, the current
-			/// <see cref="Duality.Resources.Scene"/> is used as input - which is usually the case in the first rendering pass.
-			/// </summary>
-			public BatchInfo Input
-			{
-				get { return this.input; }
-				set { this.input = value; }
-			}
-			/// <summary>
-			/// The output to render to in this pass. If this is null, the screen is used as rendering target.
-			/// </summary>
-			public ContentRef<RenderTarget> Output
-			{
-				get { return this.output; }
-				set { this.output = value; }
-			}
-			/// <summary>
-			/// [GET / SET] The clear color to apply when clearing the color buffer
-			/// </summary>
-			public ColorRgba ClearColor
-			{
-				get { return this.clearColor; }
-				set { this.clearColor = value; }
-			}
-			/// <summary>
-			/// [GET / SET] The clear depth to apply when clearing the depth buffer
-			/// </summary>
-			public float ClearDepth
-			{
-				get { return this.clearDepth; }
-				set { this.clearDepth = value; }
-			}
-			/// <summary>
-			/// [GET / SET] Specifies which buffers to clean before rendering this pass
-			/// </summary>
-			public ClearFlag ClearFlags
-			{
-				get { return this.clearFlags; }
-				set { this.clearFlags = value; }
-			}
-			/// <summary>
-			/// [GET / SET] How to set up the coordinate space before rendering
-			/// </summary>
-			public RenderMatrix MatrixMode
-			{
-				get { return this.matrixMode; }
-				set { this.matrixMode = value; }
-			}
-			/// <summary>
-			/// [GET / SET] A Pass-local bitmask flagging all visibility groups that are considered visible to this drawing device.
-			/// </summary>
-			public VisibilityFlag VisibilityMask
-			{
-				get { return this.visibilityMask; }
-				set { this.visibilityMask = value; }
-			}
-			
-
-			public Pass() {}
-			public Pass(Pass copyFrom)
-			{
-				this.input = copyFrom.input;
-				this.output = copyFrom.output;
-				this.clearColor = copyFrom.clearColor;
-				this.clearDepth = copyFrom.clearDepth;
-				this.clearFlags = copyFrom.clearFlags;
-				this.matrixMode = copyFrom.matrixMode;
-				this.visibilityMask = copyFrom.visibilityMask;
-
-				this.MakeAvailable();
-			}
-			public Pass(Pass copyFrom, BatchInfo inputOverride)
-			{
-				this.input = inputOverride;
-				this.output = copyFrom.output;
-				this.clearColor = copyFrom.clearColor;
-				this.clearDepth = copyFrom.clearDepth;
-				this.clearFlags = copyFrom.clearFlags;
-				this.matrixMode = copyFrom.matrixMode;
-				this.visibilityMask = copyFrom.visibilityMask;
-
-				this.MakeAvailable();
-			}
-
-			public void MakeAvailable()
-			{
-				this.output.MakeAvailable();
-			}
-			internal void NotifyCollectDrawcalls(IDrawDevice device)
-			{
-				Profile.TimeCollectDrawcalls.BeginMeasure();
-
-				if (this.collectDrawcalls != null)
-					this.collectDrawcalls(this, new CollectDrawcallEventArgs(device));
-
-				Profile.TimeCollectDrawcalls.EndMeasure();
-			}
-
-			public override string ToString()
-			{
-				ContentRef<Texture> inputTex = input == null ? null : input.MainTexture;
-				return string.Format("{0} => {1}{2}",
-					inputTex.IsExplicitNull ? (input == null ? "Camera" : "Undefined") : inputTex.Name,
-					output.IsExplicitNull ? "Screen" : output.Name,
-					(this.visibilityMask & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None ? " (Overlay)" : "");
-			}
-		}
-
-
-		private float           nearZ          = 0.0f;
-		private float           farZ           = 10000.0f;
-		private float           focusDist      = DrawDevice.DefaultFocusDist;
-		private PerspectiveMode perspective    = PerspectiveMode.Parallax;
-		private VisibilityFlag  visibilityMask = VisibilityFlag.All;
-		private List<Pass>      passes         = new List<Pass>();
+		private float                   nearZ          = 0.0f;
+		private float                   farZ           = 10000.0f;
+		private float                   focusDist      = DrawDevice.DefaultFocusDist;
+		private PerspectiveMode         perspective    = PerspectiveMode.Parallax;
+		private VisibilityFlag          visibilityMask = VisibilityFlag.All;
+		private ColorRgba               clearColor     = ColorRgba.TransparentBlack;
+		private ContentRef<RenderSetup> renderSetup    = RenderSetup.Default;
 
 		[DontSerialize] private DrawDevice                    drawDevice         = null;
+		[DontSerialize] private List<RenderStep>              renderSteps        = new List<RenderStep>();
 		[DontSerialize] private List<ICmpRenderer>            pickingMap         = null;
 		[DontSerialize] private RenderTarget                  pickingRT          = null;
 		[DontSerialize] private Texture                       pickingTex         = null;
 		[DontSerialize] private byte[]                        pickingBuffer      = null;
 		[DontSerialize] private List<Predicate<ICmpRenderer>> editorRenderFilter = new List<Predicate<ICmpRenderer>>();
-
 		
+		[DontSerialize] 
+		private EventHandler<CollectDrawcallEventArgs> eventCollectDrawcalls = null;
+		/// <summary>
+		/// Fired when a <see cref="RenderStep"/> is collecting drawcalls.
+		/// </summary>
+		public event EventHandler<CollectDrawcallEventArgs> EventCollectDrawcalls
+		{
+			add { this.eventCollectDrawcalls += value; }
+			remove { this.eventCollectDrawcalls -= value; }
+		}
+
 		/// <summary>
 		/// [GET / SET] The lowest Z value that can be displayed by the device.
 		/// </summary>
@@ -220,56 +95,23 @@ namespace Duality.Components
 			set { this.visibilityMask = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The background color of the rendered image.
+		/// [GET / SET] The default background color of the rendered image.
 		/// </summary>
 		public ColorRgba ClearColor
 		{
-			get
-			{
-				Pass clearPass = this.passes.FirstOrDefault(p => (p.ClearFlags & ClearFlag.Color) != ClearFlag.None);
-				if (clearPass == null) return ColorRgba.TransparentBlack;
-				return clearPass.ClearColor;
-			}
-			set
-			{
-				Pass clearPass = this.passes.FirstOrDefault(p => (p.ClearFlags & ClearFlag.Color) != ClearFlag.None);
-				if (clearPass != null) clearPass.ClearColor = value;
-			}
+			get { return this.clearColor; }
+			set { this.clearColor = value; }
 		}
 		/// <summary>
-		/// [GET / SET] A set of passes that describes the Cameras rendering process. Is never null nor empty.
+		/// [GET / SET] The <see cref="RenderSetup"/> that should be used by this camera. Will
+		/// use the default when unavailable.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.ForceWriteback)]
-		public List<Pass> Passes
+		public ContentRef<RenderSetup> RenderingSetup
 		{
-			get { return this.passes; }
-			set 
-			{ 
-				if (value != null)
-					this.passes = value.Select(v => v ?? new Pass()).ToList();
-				else
-					this.passes = new List<Pass>();
-			}
+			get { return this.renderSetup; }
+			set { this.renderSetup = value; }
 		}
 
-
-		public Camera()
-		{
-			// Set up default rendering
-			Pass worldPass = new Pass();
-			Pass overlayPass = new Pass();
-			overlayPass.MatrixMode = RenderMatrix.ScreenSpace;
-			overlayPass.ClearFlags = ClearFlag.None;
-			overlayPass.VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
-
-			this.passes.Add(worldPass);
-			this.passes.Add(overlayPass);
-		}
-		public void MakeAvailable()
-		{
-			foreach (var pass in this.passes)
-				pass.MakeAvailable();
-		}
 
 		/// <summary>
 		/// Renders the current <see cref="Duality.Resources.Scene"/>.
@@ -277,17 +119,14 @@ namespace Duality.Components
 		/// <param name="viewportRect">The viewport area to which will be rendered.</param>
 		public void Render(Rect viewportRect)
 		{
-			this.MakeAvailable();
+			this.UpdateRenderSteps();
 			this.UpdateDeviceConfig();
 
 			string counterName = PathOp.Combine("Cameras", this.gameobj.Name);
 			Profile.BeginMeasure(counterName);
 			Profile.TimeRender.BeginMeasure();
 
-			foreach (Pass t in this.passes)
-			{
-				this.RenderSinglePass(viewportRect, t);
-			}
+			this.RenderAllSteps(viewportRect);
 			this.drawDevice.VisibilityMask = this.visibilityMask;
 			this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
 			this.drawDevice.UpdateMatrices(); // Reset matrices for projection calculations during update
@@ -307,7 +146,7 @@ namespace Duality.Components
 
 			// Render picking map
 			{
-				this.MakeAvailable();
+				this.UpdateRenderSteps();
 				this.UpdateDeviceConfig();
 				this.SetupPickingRT(viewportSize);
 
@@ -535,34 +374,59 @@ namespace Duality.Components
 			this.drawDevice.FocusDist = this.focusDist;
 			this.drawDevice.Perspective = this.perspective;
 		}
-		private void RenderSinglePass(Rect viewportRect, Pass p)
-		{
-			this.drawDevice.VisibilityMask = this.visibilityMask & p.VisibilityMask;
-			this.drawDevice.RenderMode = p.MatrixMode;
-			this.drawDevice.Target = p.Output;
-			this.drawDevice.ViewportRect = p.Output.IsAvailable ? new Rect(p.Output.Res.Size) : viewportRect;
 
-			if (p.Input == null)
+		private void UpdateRenderSteps()
+		{
+			RenderSetup setup = this.renderSetup.Res ?? RenderSetup.Default.Res;
+			this.renderSteps = setup.Steps.ToList();
+
+			foreach (RenderStep step in this.renderSteps)
+				step.MakeAvailable();
+		}
+		private void RenderAllSteps(Rect viewportRect)
+		{
+			foreach (RenderStep step in this.renderSteps)
 			{
-				// Render Scene
+				this.RenderSingleStep(viewportRect, step);
+			}
+		}
+		private void RenderSingleStep(Rect viewportRect, RenderStep step)
+		{
+			this.drawDevice.VisibilityMask = this.visibilityMask & step.VisibilityMask;
+			this.drawDevice.RenderMode = step.MatrixMode;
+			this.drawDevice.Target = step.Output;
+			this.drawDevice.ViewportRect = step.Output.IsAvailable ? new Rect(step.Output.Res.Size) : viewportRect;
+
+			if (step.Input == null)
+			{
+				// Collect drawcalls from all the renderers the want to display
 				this.drawDevice.PrepareForDrawcalls();
 				try
 				{
+					// Collect renderer drawcalls
 					this.CollectDrawcalls();
-					p.NotifyCollectDrawcalls(this.drawDevice);
+
+					// Collect additional drawcalls by external sources subscribed to the event handler
+					if (this.eventCollectDrawcalls != null)
+						this.eventCollectDrawcalls(this, new CollectDrawcallEventArgs(step.Id, this.drawDevice));
 				}
 				catch (Exception e)
 				{
 					Logs.Core.WriteError("There was an error while {0} was collecting drawcalls: {1}", this.ToString(), LogFormat.Exception(e));
 				}
-				this.drawDevice.Render(p.ClearFlags, p.ClearColor, p.ClearDepth);
+
+				// Submit the collected drawcalls and perform rendering operations
+				this.drawDevice.Render(
+					step.ClearFlags, 
+					step.DefaultClearColor ? this.clearColor : step.ClearColor, 
+					step.ClearDepth);
 			}
 			else
 			{
 				Profile.TimePostProcessing.BeginMeasure();
 				this.drawDevice.PrepareForDrawcalls();
 
-				Texture mainTex = p.Input.MainTexture.Res;
+				Texture mainTex = step.Input.MainTexture.Res;
 				Vector2 uvRatio = mainTex != null ? mainTex.UVRatio : Vector2.One;
 				Vector2 inputSize = mainTex != null ? mainTex.ContentSize : Vector2.One;
 				Rect targetRect;
@@ -591,13 +455,14 @@ namespace Duality.Components
 					vertices[2].Color = ColorRgba.White;
 					vertices[3].Color = ColorRgba.White;
 
-					device.AddVertices(p.Input, VertexMode.Quads, vertices);
+					device.AddVertices(step.Input, VertexMode.Quads, vertices);
 				}
 
-				this.drawDevice.Render(p.ClearFlags, p.ClearColor, p.ClearDepth);
+				this.drawDevice.Render(step.ClearFlags, step.ClearColor, step.ClearDepth);
 				Profile.TimePostProcessing.EndMeasure();
 			}
 		}
+
 		private void CollectDrawcalls()
 		{
 			// If no visibility groups are met, don't bother looking for renderers.
