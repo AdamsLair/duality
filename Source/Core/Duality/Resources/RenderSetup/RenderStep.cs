@@ -14,6 +14,7 @@ namespace Duality.Resources
 	/// </summary>
 	public class RenderStep
 	{
+		private string                   id             = null;
 		private ColorRgba                clearColor     = ColorRgba.TransparentBlack;
 		private float                    clearDepth     = 1.0f;
 		private ClearFlag                clearFlags     = ClearFlag.All;
@@ -22,6 +23,16 @@ namespace Duality.Resources
 		private BatchInfo                input          = null;
 		private ContentRef<RenderTarget> output         = null;
 
+		/// <summary>
+		/// [GET / SET] An optional ID value that can be used to refer to a <see cref="RenderStep"/>
+		/// in an abstract way, i.e. identifying it by its role for rendering, rather than as a
+		/// concrete instance.
+		/// </summary>
+		public string Id
+		{
+			get { return this.id; }
+			set { this.id = value; }
+		}
 		/// <summary>
 		/// The input to use for rendering. This can for example be a <see cref="Duality.Resources.Texture"/> that
 		/// has been rendered to before and is now bound to perform a postprocessing step. If this is null, the current
