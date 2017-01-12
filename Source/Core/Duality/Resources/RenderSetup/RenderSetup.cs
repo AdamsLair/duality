@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Duality.Editor;
 using Duality.Properties;
 using Duality.Backend;
+using Duality.Drawing;
 
 
 namespace Duality.Resources
@@ -14,7 +15,31 @@ namespace Duality.Resources
 	[EditorHintImage(CoreResNames.ImageRenderSetup)]
 	public class RenderSetup : Resource
 	{
-		internal static void InitDefaultContent() { }
+		/// <summary>
+		/// The default rendering setup with one world-space step and one screen-space overlay step.
+		/// </summary>
+		public static ContentRef<RenderSetup> Default { get; private set; }
+
+		internal static void InitDefaultContent()
+		{
+			RenderSetup defaultSetup = new RenderSetup();
+			defaultSetup.Steps.Add(new RenderStep
+			{
+				Id = "World"
+			});
+			defaultSetup.Steps.Add(new RenderStep
+			{
+				Id = "ScreenOverlay",
+				MatrixMode = RenderMatrix.ScreenSpace,
+				ClearFlags = ClearFlag.None,
+				VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay
+			});
+
+			InitDefaultContent<RenderSetup>(new Dictionary<string,RenderSetup>
+			{
+				{ "Default", defaultSetup },
+			});
+		}
 
 		private List<RenderStep> steps = new List<RenderStep>();
 
