@@ -79,6 +79,7 @@ namespace Duality
 			Pixmap.InitDefaultContent();
 			Texture.InitDefaultContent();
 			Material.InitDefaultContent();
+			RenderSetup.InitDefaultContent();
 			Font.InitDefaultContent();
 			AudioData.InitDefaultContent();
 			Sound.InitDefaultContent();

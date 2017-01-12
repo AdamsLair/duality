@@ -138,6 +138,7 @@
     <Compile Include="IO\PathEqualityComparer.cs" />
     <Compile Include="IO\PathOp.cs" />
     <Compile Include="Resources\AssetInfo.cs" />
+    <Compile Include="Resources\RenderSetup.cs" />
     <Compile Include="Resources\Font\FontData.cs" />
     <Compile Include="Resources\Font\FontKerningLookup.cs" />
     <Compile Include="Resources\Font\FontKerningPair.cs" />
@@ -427,6 +428,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="EmbeddedResources\CousineLicense.txt" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResRenderSetup.png" />
     <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpSpriteAnimator.png" />
     <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconBinarySerializer.png" />
     <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconXmlSerializer.png" />

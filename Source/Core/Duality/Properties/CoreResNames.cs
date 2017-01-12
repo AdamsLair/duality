@@ -39,6 +39,7 @@ namespace Duality.Properties
 		public const string ImageAudioData			= ManifestBaseName + "iconResAudioData.png";
 		public const string ImageSound				= ManifestBaseName + "iconResSound.png";
 		public const string ImageFont				= ManifestBaseName + "iconResFont.png";
+		public const string ImageRenderSetup		= ManifestBaseName + "iconResRenderSetup.png";
 
 		public const string ImageSpriteRenderer		= ManifestBaseName + "iconCmpSpriteRenderer.png";
 		public const string ImageAnimSpriteRenderer	= ManifestBaseName + "iconCmpSpriteRenderer.png";
