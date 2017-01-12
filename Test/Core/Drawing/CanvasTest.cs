@@ -266,7 +266,7 @@ namespace Duality.Tests.Drawing
 			{
 				device.Perspective = PerspectiveMode.Flat;
 				device.VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
-				device.RenderMode = RenderMatrix.OrthoScreen;
+				device.RenderMode = RenderMatrix.ScreenSpace;
 				device.Target = renderTarget;
 				device.ViewportRect = new Rect(renderTarget.Size);
 

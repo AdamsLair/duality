@@ -27,7 +27,7 @@ namespace Duality.Components
 			private ColorRgba                clearColor     = ColorRgba.TransparentBlack;
 			private float                    clearDepth     = 1.0f;
 			private ClearFlag                clearFlags     = ClearFlag.All;
-			private RenderMatrix             matrixMode     = RenderMatrix.PerspectiveWorld;
+			private RenderMatrix             matrixMode     = RenderMatrix.WorldSpace;
 			private VisibilityFlag           visibilityMask = VisibilityFlag.AllGroups;
 			private BatchInfo                input          = null;
 			private ContentRef<RenderTarget> output         = null;
@@ -258,7 +258,7 @@ namespace Duality.Components
 			// Set up default rendering
 			Pass worldPass = new Pass();
 			Pass overlayPass = new Pass();
-			overlayPass.MatrixMode = RenderMatrix.OrthoScreen;
+			overlayPass.MatrixMode = RenderMatrix.ScreenSpace;
 			overlayPass.ClearFlags = ClearFlag.None;
 			overlayPass.VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 
@@ -289,7 +289,7 @@ namespace Duality.Components
 				this.RenderSinglePass(viewportRect, t);
 			}
 			this.drawDevice.VisibilityMask = this.visibilityMask;
-			this.drawDevice.RenderMode = RenderMatrix.PerspectiveWorld;
+			this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
 			this.drawDevice.UpdateMatrices(); // Reset matrices for projection calculations during update
 
 			Profile.TimeRender.EndMeasure();
@@ -322,7 +322,7 @@ namespace Duality.Components
 				// Render the world
 				{
 					this.drawDevice.VisibilityMask = this.visibilityMask & VisibilityFlag.AllGroups;
-					this.drawDevice.RenderMode = RenderMatrix.PerspectiveWorld;
+					this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
 
 					this.drawDevice.PrepareForDrawcalls();
 					this.CollectDrawcalls();
@@ -333,7 +333,7 @@ namespace Duality.Components
 				if (renderOverlay)
 				{
 					this.drawDevice.VisibilityMask = this.visibilityMask;
-					this.drawDevice.RenderMode = RenderMatrix.OrthoScreen;
+					this.drawDevice.RenderMode = RenderMatrix.ScreenSpace;
 
 					this.drawDevice.PrepareForDrawcalls();
 					this.CollectDrawcalls();

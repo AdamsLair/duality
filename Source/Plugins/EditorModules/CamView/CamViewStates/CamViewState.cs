@@ -158,7 +158,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				// This is used for the "background plate" to grey out or darken
 				// the actual rendered world in order to make custom gizmos more visible.
 				this.camPassBg = new Camera.Pass();
-				this.camPassBg.MatrixMode = RenderMatrix.OrthoScreen;
+				this.camPassBg.MatrixMode = RenderMatrix.ScreenSpace;
 				this.camPassBg.ClearFlags = ClearFlag.None;
 				this.camPassBg.VisibilityMask = VisibilityFlag.ScreenOverlay;
 
@@ -180,7 +180,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				// rendered. This is ideal for most text / status overlays, as well as
 				// direct cursor feedback.
 				this.camPassEdScreen = new Camera.Pass();
-				this.camPassEdScreen.MatrixMode = RenderMatrix.OrthoScreen;
+				this.camPassEdScreen.MatrixMode = RenderMatrix.ScreenSpace;
 				this.camPassEdScreen.ClearFlags = ClearFlag.None;
 				this.camPassEdScreen.VisibilityMask = VisibilityFlag.ScreenOverlay;
 			}

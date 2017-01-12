@@ -9,7 +9,13 @@ namespace Duality.Drawing
 	/// </summary>
 	public enum RenderMatrix
 	{
-		PerspectiveWorld,
-		OrthoScreen
+		/// <summary>
+		/// Rendering in world space, things are displayed from the point of view of an observer.
+		/// </summary>
+		WorldSpace,
+		/// <summary>
+		/// Rendering in screen space, things are displayed in screen coordinates and without depth.
+		/// </summary>
+		ScreenSpace
 	}
 }

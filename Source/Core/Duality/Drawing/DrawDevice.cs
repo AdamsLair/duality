@@ -198,7 +198,7 @@ namespace Duality.Drawing
 		private	Rect				viewportRect	= Rect.Empty;
 		private	Vector3				refPos			= Vector3.Zero;
 		private	float				refAngle		= 0.0f;
-		private	RenderMatrix		renderMode		= RenderMatrix.OrthoScreen;
+		private	RenderMatrix		renderMode		= RenderMatrix.ScreenSpace;
 		private	PerspectiveMode		perspective		= PerspectiveMode.Parallax;
 		private	Matrix4				matModelView	= Matrix4.Identity;
 		private	Matrix4				matProjection	= Matrix4.Identity;
@@ -279,7 +279,7 @@ namespace Duality.Drawing
 		}
 		public bool DepthWrite
 		{
-			get { return this.renderMode != RenderMatrix.OrthoScreen; }
+			get { return this.renderMode != RenderMatrix.ScreenSpace; }
 		}
 		public Point2 TargetSize
 		{
@@ -443,7 +443,7 @@ namespace Duality.Drawing
 
 		public void PreprocessCoords(ref Vector3 pos, ref float scale)
 		{
-			if (this.renderMode == RenderMatrix.OrthoScreen) return;
+			if (this.renderMode == RenderMatrix.ScreenSpace) return;
 			
 			// Make coordinates relative to the Camera
 			pos.X -= this.refPos.X;
@@ -471,7 +471,7 @@ namespace Duality.Drawing
 		}
 		public bool IsCoordInView(Vector3 c, float boundRad)
 		{
-			if (this.renderMode == RenderMatrix.OrthoScreen)
+			if (this.renderMode == RenderMatrix.ScreenSpace)
 			{
 				if (c.Z < this.nearZ) return false;
 			}
@@ -617,7 +617,7 @@ namespace Duality.Drawing
 		private void GenerateModelView(out Matrix4 mvMat)
 		{
 			mvMat = Matrix4.Identity;
-			if (this.renderMode == RenderMatrix.OrthoScreen) return;
+			if (this.renderMode == RenderMatrix.ScreenSpace) return;
 
 			// Translate objects contrary to the camera
 			// Removed: Do this in software now for custom perspective / parallax support
@@ -628,7 +628,7 @@ namespace Duality.Drawing
 		}
 		private void GenerateProjection(Rect orthoAbs, out Matrix4 projMat)
 		{
-			if (this.renderMode == RenderMatrix.OrthoScreen)
+			if (this.renderMode == RenderMatrix.ScreenSpace)
 			{
 				Matrix4.CreateOrthographicOffCenter(
 					orthoAbs.X,
@@ -732,7 +732,7 @@ namespace Duality.Drawing
 				ClearColor = ColorRgba.TransparentBlack,
 				ClearDepth = 1.0f,
 				Viewport = viewportRect,
-				RenderMode = RenderMatrix.OrthoScreen
+				RenderMode = RenderMatrix.ScreenSpace
 			};
 			DualityApp.GraphicsBackend.BeginRendering(null, options);
 			DualityApp.GraphicsBackend.EndRendering();

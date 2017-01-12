@@ -17,7 +17,7 @@ namespace Duality.Resources
 		private ColorRgba                clearColor     = ColorRgba.TransparentBlack;
 		private float                    clearDepth     = 1.0f;
 		private ClearFlag                clearFlags     = ClearFlag.All;
-		private RenderMatrix             matrixMode     = RenderMatrix.PerspectiveWorld;
+		private RenderMatrix             matrixMode     = RenderMatrix.WorldSpace;
 		private VisibilityFlag           visibilityMask = VisibilityFlag.AllGroups;
 		private BatchInfo                input          = null;
 		private ContentRef<RenderTarget> output         = null;

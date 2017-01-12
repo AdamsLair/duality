@@ -150,7 +150,7 @@ namespace Duality.Backend.DefaultOpenTK
 			GL.Clear(glClearMask);
 
 			// Configure Rendering params
-			if (options.RenderMode == RenderMatrix.OrthoScreen)
+			if (options.RenderMode == RenderMatrix.ScreenSpace)
 			{
 				GL.Enable(EnableCap.ScissorTest);
 				GL.Enable(EnableCap.DepthTest);
@@ -179,9 +179,9 @@ namespace Duality.Backend.DefaultOpenTK
 
 			if (NativeRenderTarget.BoundRT != null)
 			{
-				if (options.RenderMode == RenderMatrix.OrthoScreen) GL.Translate(0.0f, viewportRect.H * 0.5f, 0.0f);
+				if (options.RenderMode == RenderMatrix.ScreenSpace) GL.Translate(0.0f, viewportRect.H * 0.5f, 0.0f);
 				GL.Scale(1.0f, -1.0f, 1.0f);
-				if (options.RenderMode == RenderMatrix.OrthoScreen) GL.Translate(0.0f, -viewportRect.H * 0.5f, 0.0f);
+				if (options.RenderMode == RenderMatrix.ScreenSpace) GL.Translate(0.0f, -viewportRect.H * 0.5f, 0.0f);
 			}
 		}
 		void IGraphicsBackend.Render(IReadOnlyList<IDrawBatch> batches)

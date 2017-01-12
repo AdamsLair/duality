@@ -14,7 +14,7 @@ namespace Duality.Backend
 		private ColorRgba		clearColor			= ColorRgba.TransparentBlack;
 		private float			clearDepth			= 1.0f;
 		private	Rect			viewport			= new Rect(0, 0, 256, 256);
-		private	RenderMatrix	renderMode			= RenderMatrix.OrthoScreen;
+		private	RenderMatrix	renderMode			= RenderMatrix.ScreenSpace;
 		private	Matrix4			modelViewMatrix		= Matrix4.Identity;
 		private	Matrix4			projectionMatrix	= Matrix4.Identity;
 		
