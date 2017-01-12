@@ -25,7 +25,8 @@ namespace Duality.Resources
 			RenderSetup defaultSetup = new RenderSetup();
 			defaultSetup.Steps.Add(new RenderStep
 			{
-				Id = "World"
+				Id = "World",
+				DefaultClearColor = true
 			});
 			defaultSetup.Steps.Add(new RenderStep
 			{
