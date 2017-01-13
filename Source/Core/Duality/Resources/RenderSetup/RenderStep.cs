@@ -104,11 +104,6 @@ namespace Duality.Resources
 		}
 
 
-		public void MakeAvailable()
-		{
-			this.output.MakeAvailable();
-		}
-
 		public override string ToString()
 		{
 			ContentRef<Texture> inputTex = input == null ? null : input.MainTexture;

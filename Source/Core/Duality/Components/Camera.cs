@@ -19,13 +19,14 @@ namespace Duality.Components
 	[EditorHintImage(CoreResNames.ImageCamera)]
 	public sealed class Camera : Component, ICmpInitializable
 	{
-		private float                   nearZ          = 0.0f;
-		private float                   farZ           = 10000.0f;
-		private float                   focusDist      = DrawDevice.DefaultFocusDist;
-		private PerspectiveMode         perspective    = PerspectiveMode.Parallax;
-		private VisibilityFlag          visibilityMask = VisibilityFlag.All;
-		private ColorRgba               clearColor     = ColorRgba.TransparentBlack;
-		private ContentRef<RenderSetup> renderSetup    = RenderSetup.Default;
+		private float                    nearZ                 = 0.0f;
+		private float                    farZ                  = 10000.0f;
+		private float                    focusDist             = DrawDevice.DefaultFocusDist;
+		private PerspectiveMode          perspective           = PerspectiveMode.Parallax;
+		private VisibilityFlag           visibilityMask        = VisibilityFlag.All;
+		private ColorRgba                clearColor            = ColorRgba.TransparentBlack;
+		private ContentRef<RenderSetup>  renderSetup           = RenderSetup.Default;
+		private List<RenderStepAddition> additionalRenderSteps = new List<RenderStepAddition>();
 
 		[DontSerialize] private DrawDevice                    drawDevice         = null;
 		[DontSerialize] private List<RenderStep>              renderSteps        = new List<RenderStep>();
@@ -111,7 +112,56 @@ namespace Duality.Components
 			get { return this.renderSetup; }
 			set { this.renderSetup = value; }
 		}
+		/// <summary>
+		/// [GET / SET] A list of all rendering steps that will be executed in addition to 
+		/// the ones defined in the referenced or default <see cref="RenderingSetup"/>.
+		/// </summary>
+		public List<RenderStepAddition> AdditionalRenderSteps
+		{
+			get { return this.additionalRenderSteps; }
+			set { this.additionalRenderSteps = value ?? new List<RenderStepAddition>(); }
+		}
 
+
+		/// <summary>
+		/// Adds an additional rendering step inside the sequence of rendering steps that is 
+		/// defined by the <see cref="RenderingSetup"/>.
+		/// </summary>
+		/// <param name="anchorId">Id of the existing rendering step to which the new step will be anchored.</param>
+		/// <param name="anchorPos">Position of the new rendering step relative to the one it is anchored to.</param>
+		/// <param name="step">The new rendering step that should be inserted into the rendering step sequence.</param>
+		public void AddRenderStep(string anchorId, RenderStepPosition anchorPos, RenderStep step)
+		{
+			this.additionalRenderSteps.Add(new RenderStepAddition
+			{
+				AnchorStepId = anchorId,
+				AnchorPosition = anchorPos,
+				AddedRenderStep = step
+			});
+		}
+		/// <summary>
+		/// Adds an additional rendering step inside the sequence of rendering steps that is 
+		/// defined by the <see cref="RenderingSetup"/>.
+		/// </summary>
+		/// <param name="anchorPos">Position of the new rendering step relative to the one it is anchored to.</param>
+		/// <param name="step">The new rendering step that should be inserted into the rendering step sequence.</param>
+		public void AddRenderStep(RenderStepPosition anchorPos, RenderStep step)
+		{
+			this.additionalRenderSteps.Add(new RenderStepAddition
+			{
+				AnchorPosition = anchorPos,
+				AddedRenderStep = step
+			});
+		}
+		/// <summary>
+		/// Removes an additional rendering step inside the sequence of rendering steps that is 
+		/// defined by the <see cref="RenderingSetup"/>.
+		/// </summary>
+		/// <param name="step"></param>
+		public void RemoveRenderStep(RenderStep step)
+		{
+			this.additionalRenderSteps.RemoveAll(item => item.AddedRenderStep == step);
+		}
 
 		/// <summary>
 		/// Renders the current <see cref="Duality.Resources.Scene"/>.
@@ -378,10 +428,44 @@ namespace Duality.Components
 		private void UpdateRenderSteps()
 		{
 			RenderSetup setup = this.renderSetup.Res ?? RenderSetup.Default.Res;
-			this.renderSteps = setup.Steps.ToList();
 
-			foreach (RenderStep step in this.renderSteps)
-				step.MakeAvailable();
+			// Retrieve all rendering steps from the setup
+			this.renderSteps.Clear();
+			foreach (RenderStep step in setup.Steps)
+				this.renderSteps.Add(step);
+
+			// Insert additional rendering steps as defined locally
+			foreach (RenderStepAddition addition in this.additionalRenderSteps)
+			{
+				if (addition.AddedRenderStep == null) continue;
+
+				int anchorIndex = -1;
+				switch (addition.AnchorPosition)
+				{
+					case RenderStepPosition.Before:
+						anchorIndex = this.renderSteps.FindIndex(step => step.Id == addition.AnchorStepId);
+						if (anchorIndex == -1)
+							anchorIndex = 0;
+						break;
+					case RenderStepPosition.After:
+						anchorIndex = this.renderSteps.FindIndex(step => step.Id == addition.AnchorStepId);
+						if (anchorIndex == -1)
+							anchorIndex = this.renderSteps.Count;
+						else
+							anchorIndex++;
+						break;
+					case RenderStepPosition.First:
+						anchorIndex = 0;
+						break;
+					case RenderStepPosition.Last:
+						anchorIndex = this.renderSteps.Count;
+						break;
+				}
+				if (anchorIndex != -1)
+				{
+					this.renderSteps.Insert(anchorIndex, addition.AddedRenderStep);
+				}
+			}
 		}
 		private void RenderAllSteps(Rect viewportRect)
 		{

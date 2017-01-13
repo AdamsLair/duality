@@ -703,17 +703,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			try
 			{
 				this.CameraComponent.EventCollectDrawcalls += this.CameraComponent_EventCollectDrawcalls;
-				this.CameraComponent.Passes.Add(this.camPassBg);
-				this.CameraComponent.Passes.Add(this.camPassEdWorld);
-				this.CameraComponent.Passes.Add(this.camPassEdWorldNoDepth);
-				this.CameraComponent.Passes.Add(this.camPassEdScreen);
+				this.CameraComponent.AddRenderStep(RenderStepPosition.Last, this.camPassBg);
+				this.CameraComponent.AddRenderStep(this.camPassBg.Id, RenderStepPosition.After, this.camPassEdWorld);
+				this.CameraComponent.AddRenderStep(this.camPassEdWorld.Id, RenderStepPosition.After, this.camPassEdWorldNoDepth);
+				this.CameraComponent.AddRenderStep(this.camPassEdWorldNoDepth.Id, RenderStepPosition.After, this.camPassEdScreen);
 
 				this.OnRenderState();
 
-				this.CameraComponent.Passes.Remove(this.camPassBg);
-				this.CameraComponent.Passes.Remove(this.camPassEdWorld);
-				this.CameraComponent.Passes.Remove(this.camPassEdWorldNoDepth);
-				this.CameraComponent.Passes.Remove(this.camPassEdScreen);
+				this.CameraComponent.RemoveRenderStep(this.camPassBg);
+				this.CameraComponent.RemoveRenderStep(this.camPassEdWorld);
+				this.CameraComponent.RemoveRenderStep(this.camPassEdWorldNoDepth);
+				this.CameraComponent.RemoveRenderStep(this.camPassEdScreen);
 				this.CameraComponent.EventCollectDrawcalls -= this.CameraComponent_EventCollectDrawcalls;
 			}
 			catch (Exception exception)
