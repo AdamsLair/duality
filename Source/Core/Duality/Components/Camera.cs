@@ -483,6 +483,14 @@ namespace Duality.Components
 		}
 		private void RenderAllSteps(Rect viewportRect)
 		{
+			// Determine which rendering setup is active
+			RenderSetup setup = 
+				this.renderSetup.Res ?? 
+				DualityApp.AppData.RenderingSetup.Res ?? 
+				RenderSetup.Default.Res;
+			setup.ApplyOutputAutoResize((Point2)viewportRect.Size);
+
+			// Execute all steps in the rendering setup, as well as those that were added in this camera
 			foreach (RenderStep step in this.renderSteps)
 			{
 				this.RenderSingleStep(viewportRect, step);
