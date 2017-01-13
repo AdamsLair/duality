@@ -6,6 +6,7 @@ using Duality.Editor;
 using Duality.Properties;
 using Duality.Backend;
 using Duality.Drawing;
+using Duality.Components;
 
 
 namespace Duality.Resources
@@ -42,6 +43,7 @@ namespace Duality.Resources
 			});
 		}
 
+
 		private List<RenderStep> steps = new List<RenderStep>();
 
 		/// <summary>
@@ -58,6 +60,22 @@ namespace Duality.Resources
 				else
 					this.steps = new List<RenderStep>();
 			}
+		}
+
+		/// <summary>
+		/// Renders the specified <see cref="Scene"/>.
+		/// </summary>
+		/// <param name="scene">The <see cref="Scene"/> that should be rendered.</param>
+		/// <param name="viewportRect">The viewport to render to, in pixel coordinates.</param>
+		internal protected virtual void RenderScene(Scene scene, Rect viewportRect)
+		{
+			Camera[] activeCams = scene.FindComponents<Camera>()
+				.Where(c => c.Active)
+				.ToArray();
+
+			// Maybe sort / process list first later on.
+			foreach (Camera c in activeCams)
+				c.Render(viewportRect);
 		}
 	}
 }

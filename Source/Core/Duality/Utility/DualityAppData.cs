@@ -12,16 +12,17 @@ namespace Duality
 	/// </summary>
 	public class DualityAppData
 	{
-		private string            appName               = "Duality Application";
-		private uint              version               = 0;
-		private ContentRef<Scene> startScene            = null;
-		private float             speedOfSound          = 360.0f;
-		private float             soundDopplerFactor    = 1.0f;
-		private float             physicsVelThreshold   = 0.5f * PhysicsUnit.VelocityToDuality;
-		private bool              physicsFixedTime      = false;
-		private bool              multisampleBackBuffer = true;
-		private string[]          skipBackends          = null;
-		private object            customData            = null;
+		private string                  appName               = "Duality Application";
+		private uint                    version               = 0;
+		private ContentRef<Scene>       startScene            = null;
+		private ContentRef<RenderSetup> renderSetup           = RenderSetup.Default;
+		private float                   speedOfSound          = 360.0f;
+		private float                   soundDopplerFactor    = 1.0f;
+		private float                   physicsVelThreshold   = 0.5f * PhysicsUnit.VelocityToDuality;
+		private bool                    physicsFixedTime      = false;
+		private bool                    multisampleBackBuffer = true;
+		private string[]                skipBackends          = null;
+		private object                  customData            = null;
 
 		/// <summary>
 		/// [GET / SET] The name of your application / game. It will also be used as a window title by the launcher app.
@@ -47,6 +48,15 @@ namespace Duality
 		{
 			get { return this.startScene; }
 			set { this.startScene = value; }
+		}
+		/// <summary>
+		/// [GET / SET] The default <see cref="RenderSetup"/> that describes both how to render a given <see cref="Scene"/>, e.g.
+		/// the rendering steps that a <see cref="Duality.Components.Camera"/> will execute by default.
+		/// </summary>
+		public ContentRef<RenderSetup> RenderingSetup
+		{
+			get { return this.renderSetup; }
+			set { this.renderSetup = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The speed of sound. While this is technically a unitless value, you might assume something like "meters per second".

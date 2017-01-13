@@ -643,6 +643,7 @@ namespace Duality.Editor.Plugins.CamView
 			Camera c = this.nativeCamObj.AddComponent<Camera>();
 			c.ClearColor = ColorRgba.DarkGrey;
 			c.FarZ = 100000.0f;
+			c.RenderingSetup = RenderSetup.Default;
 
 			this.nativeCamObj.Transform.Pos = new Vector3(0.0f, 0.0f, -c.FocusDist);
 			DualityEditorApp.EditorObjects.AddObject(this.nativeCamObj);

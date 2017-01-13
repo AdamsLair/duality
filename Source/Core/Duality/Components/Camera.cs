@@ -26,7 +26,7 @@ namespace Duality.Components
 		private VisibilityFlag           visibilityMask        = VisibilityFlag.All;
 		private ColorRgba                clearColor            = ColorRgba.TransparentBlack;
 		private ContentRef<RenderTarget> renderTarget          = null;
-		private ContentRef<RenderSetup>  renderSetup           = RenderSetup.Default;
+		private ContentRef<RenderSetup>  renderSetup           = null;
 		private List<RenderStepAddition> additionalRenderSteps = new List<RenderStepAddition>();
 
 		[DontSerialize] private DrawDevice                    drawDevice         = null;
@@ -115,7 +115,7 @@ namespace Duality.Components
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="RenderSetup"/> that should be used by this camera. Will
-		/// use the default when unavailable.
+		/// fall back to the application-default <see cref="DualityAppData.RenderingSetup"/> when unavailable.
 		/// </summary>
 		public ContentRef<RenderSetup> RenderingSetup
 		{
@@ -437,7 +437,11 @@ namespace Duality.Components
 
 		private void UpdateRenderSteps()
 		{
-			RenderSetup setup = this.renderSetup.Res ?? RenderSetup.Default.Res;
+			// Decide which rendering setup to use
+			RenderSetup setup = 
+				this.renderSetup.Res ?? 
+				DualityApp.AppData.RenderingSetup.Res ?? 
+				RenderSetup.Default.Res;
 
 			// Retrieve all rendering steps from the setup
 			this.renderSteps.Clear();

@@ -414,16 +414,18 @@ namespace Duality.Resources
 		/// Renders the Scene
 		/// </summary>
 		/// <param name="viewportRect">The viewport to which will be rendered.</param>
-		/// <param name="camPredicate">Optional predicate to select which Cameras may be rendered and which not.</param>
-		internal void Render(Rect viewportRect, Predicate<Camera> camPredicate = null)
+		internal void Render(Rect viewportRect)
 		{
 			if (!this.IsCurrent) throw new InvalidOperationException("Can't render non-current Scene!");
 			switchLock++;
+			
+			// Retrieve the rendering setup that will be used for rendering the scene
+			RenderSetup setup = 
+				DualityApp.AppData.RenderingSetup.Res ?? 
+				RenderSetup.Default.Res;
 
-			Camera[] activeCams = this.FindComponents<Camera>().Where(c => c.Active && (camPredicate == null || camPredicate(c))).ToArray();
-			// Maybe sort / process list first later on.
-			foreach (Camera c in activeCams)
-				c.Render(viewportRect);
+			// Render the scene
+			setup.RenderScene(this, viewportRect);
 
 			switchLock--;
 		}

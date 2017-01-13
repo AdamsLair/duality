@@ -521,10 +521,9 @@ namespace Duality
 		/// <summary>
 		/// Performs a single render cycle.
 		/// </summary>
-		/// <param name="camPredicate">Optional predicate to select which Cameras may be rendered and which not.</param>
-		public static void Render(Rect viewportRect, Predicate<Duality.Components.Camera> camPredicate = null)
+		public static void Render(Rect viewportRect)
 		{
-			Scene.Current.Render(viewportRect, camPredicate);
+			Scene.Current.Render(viewportRect);
 		}
 
 		/// <summary>
