@@ -25,6 +25,7 @@ namespace Duality.Components
 		private PerspectiveMode          perspective           = PerspectiveMode.Parallax;
 		private VisibilityFlag           visibilityMask        = VisibilityFlag.All;
 		private ColorRgba                clearColor            = ColorRgba.TransparentBlack;
+		private ContentRef<RenderTarget> renderTarget          = null;
 		private ContentRef<RenderSetup>  renderSetup           = RenderSetup.Default;
 		private List<RenderStepAddition> additionalRenderSteps = new List<RenderStepAddition>();
 
@@ -102,6 +103,15 @@ namespace Duality.Components
 		{
 			get { return this.clearColor; }
 			set { this.clearColor = value; }
+		}
+		/// <summary>
+		/// [GET / SET] When set, the camera will render all output that would normally end up
+		/// on screen to the specified <see cref="RenderTarget"/> instead.
+		/// </summary>
+		public ContentRef<RenderTarget> Target
+		{
+			get { return this.renderTarget; }
+			set { this.renderTarget = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="RenderSetup"/> that should be used by this camera. Will
@@ -476,10 +486,12 @@ namespace Duality.Components
 		}
 		private void RenderSingleStep(Rect viewportRect, RenderStep step)
 		{
+			ContentRef<RenderTarget> renderTarget = step.Output.IsExplicitNull ? this.renderTarget : step.Output;
+
 			this.drawDevice.VisibilityMask = this.visibilityMask & step.VisibilityMask;
 			this.drawDevice.RenderMode = step.MatrixMode;
-			this.drawDevice.Target = step.Output;
-			this.drawDevice.ViewportRect = step.Output.IsAvailable ? new Rect(step.Output.Res.Size) : viewportRect;
+			this.drawDevice.Target = renderTarget;
+			this.drawDevice.ViewportRect = renderTarget.IsAvailable ? new Rect(renderTarget.Res.Size) : viewportRect;
 
 			if (step.Input == null)
 			{
