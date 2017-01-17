@@ -46,7 +46,7 @@ namespace Duality.Resources
 			set { this.input = value; }
 		}
 		/// <summary>
-		/// The resize behavior that is used to fit the rectangular <see cref="Input"/> to the output viewport.
+		/// [GET / SET] The resize behavior that is used to fit the rectangular <see cref="Input"/> to the output viewport.
 		/// </summary>
 		public TargetResize InputResize
 		{
