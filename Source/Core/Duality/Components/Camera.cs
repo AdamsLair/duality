@@ -488,6 +488,8 @@ namespace Duality.Components
 				this.renderSetup.Res ?? 
 				DualityApp.AppData.RenderingSetup.Res ?? 
 				RenderSetup.Default.Res;
+
+			// Resize all render targets to the viewport size we're dealing with
 			setup.ApplyOutputAutoResize((Point2)viewportRect.Size);
 
 			// Execute all steps in the rendering setup, as well as those that were added in this camera
@@ -536,7 +538,7 @@ namespace Duality.Components
 
 				Texture mainTex = step.Input.MainTexture.Res;
 				Vector2 uvRatio = mainTex != null ? mainTex.UVRatio : Vector2.One;
-				Vector2 inputSize = mainTex != null ? mainTex.ContentSize : Vector2.Zero;
+				Point2 inputSize = mainTex != null ? mainTex.ContentSize : Point2.Zero;
 
 				// Fit the input material rect to the output size according to rendering step config
 				Vector2 targetSize = step.InputResize.Apply(inputSize, this.drawDevice.TargetSize);
