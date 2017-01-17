@@ -537,12 +537,15 @@ namespace Duality.Components
 				Texture mainTex = step.Input.MainTexture.Res;
 				Vector2 uvRatio = mainTex != null ? mainTex.UVRatio : Vector2.One;
 				Vector2 inputSize = mainTex != null ? mainTex.ContentSize : Vector2.One;
-				Rect targetRect;
-				if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor &&
-					!this.drawDevice.Target.IsAvailable)
-					targetRect = Rect.Align(Alignment.Center, this.drawDevice.TargetSize.X * 0.5f, this.drawDevice.TargetSize.Y * 0.5f, inputSize.X, inputSize.Y);
-				else
-					targetRect = new Rect(this.drawDevice.TargetSize);
+
+				// Fit the input material rect to the output size according to rendering step config
+				Vector2 targetSize = step.InputResize.Apply(inputSize, this.drawDevice.TargetSize);
+				Rect targetRect = Rect.Align(
+					Alignment.Center, 
+					this.drawDevice.TargetSize.X * 0.5f, 
+					this.drawDevice.TargetSize.Y * 0.5f, 
+					targetSize.X, 
+					targetSize.Y);
 
 				IDrawDevice device = this.drawDevice;
 				{

@@ -22,6 +22,7 @@ namespace Duality.Resources
 		private RenderMatrix             matrixMode        = RenderMatrix.WorldSpace;
 		private VisibilityFlag           visibilityMask    = VisibilityFlag.AllGroups;
 		private BatchInfo                input             = null;
+		private TargetResize             inputResize       = TargetResize.None;
 		private ContentRef<RenderTarget> output            = null;
 
 		/// <summary>
@@ -43,6 +44,14 @@ namespace Duality.Resources
 		{
 			get { return this.input; }
 			set { this.input = value; }
+		}
+		/// <summary>
+		/// The resize behavior that is used to fit the rectangular <see cref="Input"/> to the output viewport.
+		/// </summary>
+		public TargetResize InputResize
+		{
+			get { return this.inputResize; }
+			set { this.inputResize = value; }
 		}
 		/// <summary>
 		/// The output to render to in this step. If this is null, the screen is used as rendering target.
