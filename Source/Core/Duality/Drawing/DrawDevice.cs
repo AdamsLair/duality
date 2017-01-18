@@ -195,6 +195,7 @@ namespace Duality.Drawing
 		private	float				nearZ			= 0.0f;
 		private	float				farZ			= 10000.0f;
 		private	float				focusDist		= DefaultFocusDist;
+		private	Vector2				targetSize		= Vector2.Zero;
 		private	Rect				viewportRect	= Rect.Empty;
 		private	Vector3				refPos			= Vector3.Zero;
 		private	float				refAngle		= 0.0f;
@@ -277,13 +278,14 @@ namespace Duality.Drawing
 			get { return this.viewportRect; }
 			set { this.viewportRect = value; }
 		}
+		public Vector2 TargetSize
+		{
+			get { return this.targetSize; }
+			set { this.targetSize = value; }
+		}
 		public bool DepthWrite
 		{
 			get { return this.renderMode != RenderMatrix.ScreenSpace; }
-		}
-		public Point2 TargetSize
-		{
-			get { return new Point2((int)this.viewportRect.W, (int)this.viewportRect.H); }
 		}
 
 
@@ -565,9 +567,8 @@ namespace Duality.Drawing
 		
 		public void UpdateMatrices()
 		{
-			Vector2 refSize = this.TargetSize;
 			this.GenerateModelView(out this.matModelView);
-			this.GenerateProjection(new Rect(refSize), out this.matProjection);
+			this.GenerateProjection(new Rect(this.targetSize), out this.matProjection);
 			this.matFinal = this.matModelView * this.matProjection;
 		}
 		public void PrepareForDrawcalls()

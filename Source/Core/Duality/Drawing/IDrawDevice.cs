@@ -51,9 +51,9 @@ namespace Duality.Drawing
 		/// </summary>
 		bool IsPicking { get; }
 		/// <summary>
-		/// [GET] The size of the surface this drawing device operates on.
+		/// [GET] The size of the image that is rendered by this device.
 		/// </summary>
-		Point2 TargetSize { get; }
+		Vector2 TargetSize { get; }
 		
 
 		

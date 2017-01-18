@@ -268,6 +268,7 @@ namespace Duality.Tests.Drawing
 				device.VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 				device.RenderMode = RenderMatrix.ScreenSpace;
 				device.Target = renderTarget;
+				device.TargetSize = renderTarget.Size;
 				device.ViewportRect = new Rect(renderTarget.Size);
 
 				device.PrepareForDrawcalls();

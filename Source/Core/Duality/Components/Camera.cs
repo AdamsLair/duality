@@ -216,6 +216,7 @@ namespace Duality.Components
 				// Setup DrawDevice
 				this.drawDevice.PickingIndex = 1;
 				this.drawDevice.Target = this.pickingRT;
+				this.drawDevice.TargetSize = this.pickingTex.ContentSize;
 				this.drawDevice.ViewportRect = new Rect(this.pickingTex.ContentSize);
 
 				// Render the world
@@ -505,6 +506,7 @@ namespace Duality.Components
 			this.drawDevice.VisibilityMask = this.visibilityMask & step.VisibilityMask;
 			this.drawDevice.RenderMode = step.MatrixMode;
 			this.drawDevice.Target = renderTarget;
+			this.drawDevice.TargetSize = renderTarget.IsAvailable ? renderTarget.Res.Size : viewportRect.Size;
 			this.drawDevice.ViewportRect = renderTarget.IsAvailable ? new Rect(renderTarget.Res.Size) : viewportRect;
 
 			if (step.Input == null)
