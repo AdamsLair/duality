@@ -30,6 +30,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private GraphicsMode          defaultGraphicsMode     = null;
 		private uint                  primaryVBO              = 0;
 		private NativeWindow          activeWindow            = null;
+		private Point2                externalBackbufferSize  = Point2.Zero;
 		private bool                  useAlphaToCoverageBlend = false;
 		private bool                  msaaIsDriverDisabled    = false;
 		private bool                  contextCapsRetrieved    = false;
@@ -57,6 +58,11 @@ namespace Duality.Backend.DefaultOpenTK
 		public NativeWindow ActiveWindow
 		{
 			get { return this.activeWindow; }
+		}
+		public Point2 ExternalBackbufferSize
+		{
+			get { return this.externalBackbufferSize; }
+			set { this.externalBackbufferSize = value; }
 		}
 
 		string IDualityBackend.Id
@@ -139,8 +145,10 @@ namespace Duality.Backend.DefaultOpenTK
 			Point2 availableSize;
 			if (NativeRenderTarget.BoundRT != null)
 				availableSize = new Point2(NativeRenderTarget.BoundRT.Width, NativeRenderTarget.BoundRT.Height);
+			else if (this.activeWindow != null)
+				availableSize = new Point2(this.activeWindow.Width, this.activeWindow.Height);
 			else
-				availableSize = DualityApp.TargetResolution;
+				availableSize = this.externalBackbufferSize;
 
 			// Translate viewport coordinates to OpenGL screen coordinates (borrom-left, rising), unless rendering
 			// to a texture, which is laid out Duality-like (top-left, descending)

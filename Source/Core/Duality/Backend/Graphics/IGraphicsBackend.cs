@@ -8,7 +8,8 @@ namespace Duality.Backend
 {
 	public interface IGraphicsBackend : IDualityBackend
 	{
-		IEnumerable<ScreenResolution> AvailableScreenResolutions {  get; }
+		IEnumerable<ScreenResolution> AvailableScreenResolutions { get; }
+		Point2 ExternalBackbufferSize { get; set; }
 
 		void BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats = null);
 		void Render(IReadOnlyList<IDrawBatch> batches);

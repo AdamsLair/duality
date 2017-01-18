@@ -25,6 +25,11 @@ namespace Duality.Backend.Dummy
 		{
 			get { return new ScreenResolution[] { new ScreenResolution(640, 480, 60) }; }
 		}
+		Point2 IGraphicsBackend.ExternalBackbufferSize
+		{
+			get { return Point2.Zero; }
+			set { }
+		}
 
 		bool IDualityBackend.CheckAvailable()
 		{
