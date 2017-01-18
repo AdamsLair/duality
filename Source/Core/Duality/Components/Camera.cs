@@ -546,8 +546,8 @@ namespace Duality.Components
 				Vector2 targetSize = step.InputResize.Apply(inputSize, this.drawDevice.ViewportRect.Size);
 				Rect targetRect = Rect.Align(
 					Alignment.Center, 
-					this.drawDevice.ViewportRect.X * 0.5f, 
-					this.drawDevice.ViewportRect.Y * 0.5f, 
+					this.drawDevice.ViewportRect.W * 0.5f, 
+					this.drawDevice.ViewportRect.H * 0.5f, 
 					targetSize.X, 
 					targetSize.Y);
 
