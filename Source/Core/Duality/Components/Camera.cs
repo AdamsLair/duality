@@ -543,11 +543,11 @@ namespace Duality.Components
 				Point2 inputSize = mainTex != null ? mainTex.ContentSize : Point2.Zero;
 
 				// Fit the input material rect to the output size according to rendering step config
-				Vector2 targetSize = step.InputResize.Apply(inputSize, this.drawDevice.TargetSize);
+				Vector2 targetSize = step.InputResize.Apply(inputSize, this.drawDevice.ViewportRect.Size);
 				Rect targetRect = Rect.Align(
 					Alignment.Center, 
-					this.drawDevice.TargetSize.X * 0.5f, 
-					this.drawDevice.TargetSize.Y * 0.5f, 
+					this.drawDevice.ViewportRect.X * 0.5f, 
+					this.drawDevice.ViewportRect.Y * 0.5f, 
 					targetSize.X, 
 					targetSize.Y);
 
