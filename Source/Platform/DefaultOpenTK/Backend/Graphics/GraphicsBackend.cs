@@ -135,10 +135,24 @@ namespace Duality.Backend.DefaultOpenTK
 			if (this.primaryVBO == 0) GL.GenBuffers(1, out this.primaryVBO);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, this.primaryVBO);
 
-			// Setup viewport
-			Rect viewportRect = options.Viewport;
-			GL.Viewport((int)viewportRect.X, (int)viewportRect.Y, (int)viewportRect.W, (int)viewportRect.H);
-			GL.Scissor((int)viewportRect.X, (int)viewportRect.Y, (int)viewportRect.W, (int)viewportRect.H);
+			// Determine the available size on the active rendering surface
+			Point2 availableSize;
+			if (NativeRenderTarget.BoundRT != null)
+				availableSize = new Point2(NativeRenderTarget.BoundRT.Width, NativeRenderTarget.BoundRT.Height);
+			else
+				availableSize = DualityApp.TargetResolution;
+
+			// Translate viewport coordinates to OpenGL screen coordinates (borrom-left, rising), unless rendering
+			// to a texture, which is laid out Duality-like (top-left, descending)
+			Rect openGLViewport = options.Viewport;
+			if (NativeRenderTarget.BoundRT == null)
+			{
+				openGLViewport.Y = (availableSize.Y - openGLViewport.H) - openGLViewport.Y;
+			}
+
+			// Setup viewport and scissor rects
+			GL.Viewport((int)openGLViewport.X, (int)openGLViewport.Y, (int)openGLViewport.W, (int)openGLViewport.H);
+			GL.Scissor((int)openGLViewport.X, (int)openGLViewport.Y, (int)openGLViewport.W, (int)openGLViewport.H);
 
 			// Clear buffers
 			ClearBufferMask glClearMask = 0;
@@ -179,9 +193,9 @@ namespace Duality.Backend.DefaultOpenTK
 
 			if (NativeRenderTarget.BoundRT != null)
 			{
-				if (options.RenderMode == RenderMatrix.ScreenSpace) GL.Translate(0.0f, viewportRect.H * 0.5f, 0.0f);
+				if (options.RenderMode == RenderMatrix.ScreenSpace) GL.Translate(0.0f, availableSize.Y * 0.5f, 0.0f);
 				GL.Scale(1.0f, -1.0f, 1.0f);
-				if (options.RenderMode == RenderMatrix.ScreenSpace) GL.Translate(0.0f, -viewportRect.H * 0.5f, 0.0f);
+				if (options.RenderMode == RenderMatrix.ScreenSpace) GL.Translate(0.0f, -availableSize.Y * 0.5f, 0.0f);
 			}
 		}
 		void IGraphicsBackend.Render(IReadOnlyList<IDrawBatch> batches)
