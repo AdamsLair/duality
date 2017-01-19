@@ -54,7 +54,7 @@ namespace Duality.Components.Renderers
 		}
 
 		private int       animFirstFrame      = 0;
-		private int       animFrameCount      = 0;
+		private int       animFrameCount      = 1;
 		private float     animDuration        = 5.0f;
 		private LoopMode  animLoopMode        = LoopMode.Loop;
 		private float     animTime            = 0.0f;
@@ -87,11 +87,11 @@ namespace Duality.Components.Renderers
 		/// Animation indices are looked up in the <see cref="Duality.Resources.Pixmap.Atlas"/> map
 		/// of the <see cref="Duality.Resources.Texture"/> that is used.
 		/// </remarks>
-		[EditorHintRange(0, int.MaxValue)]
+		[EditorHintRange(1, int.MaxValue)]
 		public int AnimFrameCount
 		{
 			get { return this.animFrameCount; }
-			set { this.animFrameCount = MathF.Max(0, value); }
+			set { this.animFrameCount = MathF.Max(1, value); }
 		}
 		/// <summary>
 		/// [GET / SET] The time a single animation cycle needs to complete, in seconds.
