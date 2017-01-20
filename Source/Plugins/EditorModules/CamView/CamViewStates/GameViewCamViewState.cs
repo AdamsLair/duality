@@ -38,10 +38,32 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		protected override void OnRenderState()
 		{
-			// Render game pov
-			Rect viewportRect = new Rect(this.ClientSize.Width, this.ClientSize.Height);
-			if (!Scene.Current.FindComponents<Camera>().Any())	DrawDevice.RenderVoid(viewportRect);
-			else												DualityApp.Render(viewportRect, viewportRect.Size);
+			Vector2 clientSize = new Vector2(this.ClientSize.Width, this.ClientSize.Height);
+			bool isRenderableScene = Scene.Current.FindComponents<Camera>().Any();
+			bool isResizedScene = false;
+
+			Vector2 imageSize = clientSize;
+			Rect viewportRect = new Rect(clientSize);
+			Point2 forcedSize = DualityApp.AppData.ForcedRenderSize;
+			if (forcedSize.X > 0 && forcedSize.Y > 0 && forcedSize != imageSize)
+			{
+				imageSize = DualityApp.AppData.ForcedRenderResizeMode.Apply(forcedSize, viewportRect.Size);
+				viewportRect = Rect.Align(
+					Alignment.Center, 
+					viewportRect.Size.X * 0.5f, 
+					viewportRect.Size.Y * 0.5f, 
+					imageSize.X, 
+					imageSize.Y);
+				isResizedScene = true;
+			}
+
+			if (isResizedScene)
+				DrawDevice.RenderVoid(new Rect(clientSize));
+
+			if (isRenderableScene)
+				DualityApp.Render(viewportRect, imageSize);
+			else
+				DrawDevice.RenderVoid(viewportRect);
 		}
 	}
 }

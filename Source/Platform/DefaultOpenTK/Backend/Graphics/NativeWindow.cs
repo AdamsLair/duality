@@ -247,9 +247,8 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		private void OnResize(EventArgs e)
 		{
-			DualityApp.TargetResolution = new Point2(
-				this.internalWindow.ClientSize.Width,
-				this.internalWindow.ClientSize.Height);
+			DualityApp.TargetResolution = this.Size;
+			DrawDevice.RenderVoid(new Rect(this.Size));
 		}
 		private void OnUpdateFrame(FrameEventArgs e)
 		{
@@ -275,8 +274,22 @@ namespace Duality.Backend.DefaultOpenTK
 		private void OnRenderFrame(FrameEventArgs e)
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
+			
+			Vector2 imageSize = this.Size;
+			Rect viewportRect = new Rect(imageSize);
+			Point2 forcedSize = DualityApp.AppData.ForcedRenderSize;
+			if (forcedSize.X > 0 && forcedSize.Y > 0 && forcedSize != imageSize)
+			{
+				imageSize = DualityApp.AppData.ForcedRenderResizeMode.Apply(forcedSize, viewportRect.Size);
+				viewportRect = Rect.Align(
+					Alignment.Center, 
+					viewportRect.Size.X * 0.5f, 
+					viewportRect.Size.Y * 0.5f, 
+					imageSize.X, 
+					imageSize.Y);
+			}
 
-			DualityApp.Render(new Rect(this.Size), this.Size);
+			DualityApp.Render(viewportRect, imageSize);
 			Profile.TimeRender.BeginMeasure();
 			Profile.TimeSwapBuffers.BeginMeasure();
 			this.internalWindow.SwapBuffers();

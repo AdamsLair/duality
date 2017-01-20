@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Duality.Resources;
+using Duality.Editor;
 
 namespace Duality
 {
@@ -12,17 +13,19 @@ namespace Duality
 	/// </summary>
 	public class DualityAppData
 	{
-		private string                  appName               = "Duality Application";
-		private uint                    version               = 0;
-		private ContentRef<Scene>       startScene            = null;
-		private ContentRef<RenderSetup> renderSetup           = RenderSetup.Default;
-		private float                   speedOfSound          = 360.0f;
-		private float                   soundDopplerFactor    = 1.0f;
-		private float                   physicsVelThreshold   = 0.5f * PhysicsUnit.VelocityToDuality;
-		private bool                    physicsFixedTime      = false;
-		private bool                    multisampleBackBuffer = true;
-		private string[]                skipBackends          = null;
-		private object                  customData            = null;
+		private string                  appName                = "Duality Application";
+		private uint                    version                = 0;
+		private ContentRef<Scene>       startScene             = null;
+		private ContentRef<RenderSetup> renderSetup            = RenderSetup.Default;
+		private Point2                  forcedRenderSize       = Point2.Zero;
+		private TargetResize            forcedRenderResizeMode = TargetResize.Fit;
+		private float                   speedOfSound           = 360.0f;
+		private float                   soundDopplerFactor     = 1.0f;
+		private float                   physicsVelThreshold    = 0.5f * PhysicsUnit.VelocityToDuality;
+		private bool                    physicsFixedTime       = false;
+		private bool                    multisampleBackBuffer  = true;
+		private string[]                skipBackends           = null;
+		private object                  customData             = null;
 
 		/// <summary>
 		/// [GET / SET] The name of your application / game. It will also be used as a window title by the launcher app.
@@ -57,6 +60,24 @@ namespace Duality
 		{
 			get { return this.renderSetup; }
 			set { this.renderSetup = value; }
+		}
+		/// <summary>
+		/// [GET / SET] When set to a non-zero value, the game's viewport will be adjusted to fit this size within the constraints
+		/// of the user-defined or default window size.
+		/// </summary>
+		[EditorHintRange(0, int.MaxValue)]
+		public Point2 ForcedRenderSize
+		{
+			get { return this.forcedRenderSize; }
+			set { this.forcedRenderSize = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Specifies how <see cref="ForcedRenderSize"/> will adjust the image to fit window constraints.
+		/// </summary>
+		public TargetResize ForcedRenderResizeMode
+		{
+			get { return this.forcedRenderResizeMode; }
+			set { this.forcedRenderResizeMode = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The speed of sound. While this is technically a unitless value, you might assume something like "meters per second".
