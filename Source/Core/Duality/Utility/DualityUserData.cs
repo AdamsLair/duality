@@ -11,8 +11,7 @@ namespace Duality
 	/// </summary>
 	public class DualityUserData
 	{
-		private int         windowWidth         = 800;
-		private int         windowHeight        = 600;
+		private Point2      windowSize          = new Point2(800, 600);
 		private ScreenMode  windowMode          = ScreenMode.Window;
 		private RefreshMode windowRefreshMode   = RefreshMode.AdaptiveVSync;
 		private AAQuality   antialiasingQuality = AAQuality.High;
@@ -24,20 +23,12 @@ namespace Duality
 		private object      customData          = null;
 
 		/// <summary>
-		/// [GET / SET] Width of the game's display area when in windowed mode.
+		/// [GET / SET] Size of the game's display area when in windowed mode.
 		/// </summary>
-		public int WindowWidth
+		public Point2 WindowSize
 		{
-			get { return this.windowWidth; }
-			set { this.windowWidth = value; }
-		}
-		/// <summary>
-		/// [GET / SET] Height of the game's display area when in windowed mode.
-		/// </summary>
-		public int WindowHeight
-		{
-			get { return this.windowHeight; }
-			set { this.windowHeight = value; }
+			get { return this.windowSize; }
+			set { this.windowSize = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Describes the way the game window is set up with regard to the screen on which the game runs.

@@ -59,11 +59,7 @@ namespace Duality.Tests
 			// Create a dummy window, to get access to all the device contexts
 			if (this.dummyWindow == null)
 			{
-				WindowOptions options = new WindowOptions
-				{
-					Width = 800,
-					Height = 600
-				};
+				WindowOptions options = new WindowOptions();
 				this.dummyWindow = DualityApp.OpenWindow(options);
 			}
 

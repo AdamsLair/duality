@@ -70,8 +70,9 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				if (DisplayDevice.Default != null)
 				{
-					options.Width = DisplayDevice.Default.Width;
-					options.Height = DisplayDevice.Default.Height;
+					options.Size = new Point2(
+						DisplayDevice.Default.Width, 
+						DisplayDevice.Default.Height);
 				}
 			}
 
@@ -100,8 +101,8 @@ namespace Duality.Backend.DefaultOpenTK
 			this.refreshMode = options.RefreshMode;
 			this.internalWindow = new InternalWindow(
 				this,
-				options.Width,
-				options.Height,
+				options.Size.X,
+				options.Size.Y,
 				mode,
 				options.Title,
 				windowFlags);
@@ -212,13 +213,13 @@ namespace Duality.Backend.DefaultOpenTK
 				case ScreenMode.Window:
 					targetWindowState = WindowState.Normal;
 					targetWindowBorder = WindowBorder.Resizable;
-					targetSize = new Size(DualityApp.UserData.WindowWidth, DualityApp.UserData.WindowHeight);
+					targetSize = new Size(DualityApp.UserData.WindowSize.X, DualityApp.UserData.WindowSize.Y);
 					break;
 
 				case ScreenMode.FixedWindow:
 					targetWindowState = WindowState.Normal;
 					targetWindowBorder = WindowBorder.Fixed;
-					targetSize = new Size(DualityApp.UserData.WindowWidth, DualityApp.UserData.WindowHeight);
+					targetSize = new Size(DualityApp.UserData.WindowSize.X, DualityApp.UserData.WindowSize.Y);
 					break;
 
 				case ScreenMode.FullWindow:

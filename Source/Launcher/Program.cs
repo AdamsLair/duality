@@ -60,8 +60,7 @@ namespace Duality.Launcher
 			// Open up a new window
 			WindowOptions options = new WindowOptions
 			{
-				Width = DualityApp.UserData.WindowWidth,
-				Height = DualityApp.UserData.WindowHeight,
+				Size = DualityApp.UserData.WindowSize,
 				ScreenMode = isDebugging ? ScreenMode.Window : DualityApp.UserData.WindowMode,
 				RefreshMode = (isDebugging || isProfiling) ? RefreshMode.NoSync : DualityApp.UserData.WindowRefreshMode,
 				Title = DualityApp.AppData.AppName,
