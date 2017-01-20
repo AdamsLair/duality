@@ -44,9 +44,8 @@ namespace Duality.Resources
 		}
 
 
-		private List<RenderStep>               steps                = new List<RenderStep>();
-		private TargetResize                   autoResizeTargetMode = TargetResize.None;
-		private List<ContentRef<RenderTarget>> autoResizeTargets    = new List<ContentRef<RenderTarget>>();
+		private List<RenderStep>              steps             = new List<RenderStep>();
+		private List<RenderSetupTargetResize> autoResizeTargets = new List<RenderSetupTargetResize>();
 
 		[DontSerialize] private Dictionary<ContentRef<RenderTarget>,Point2> originalTargetSizes = new Dictionary<ContentRef<RenderTarget>,Point2>();
 
@@ -67,26 +66,13 @@ namespace Duality.Resources
 			}
 		}
 		/// <summary>
-		/// [GET / SET] Specifies whether and how <see cref="RenderTarget"/> resources used by 
-		/// this <see cref="RenderSetup"/> should be automatically resized to fit the game's window size.
-		/// Which render targets are affected is defined by the <see cref="AutoResizeTargets"/> property.
-		/// 
-		/// Usually, this should be set to <see cref="TargetResize.None"/>, <see cref="TargetResize.Stretch"/>
-		/// or <see cref="TargetResize.Fit"/>.
-		/// </summary>
-		public TargetResize AutoResizeTargetMode
-		{
-			get { return this.autoResizeTargetMode; }
-			set { this.autoResizeTargetMode = value; }
-		}
-		/// <summary>
 		/// [GET / SET] A list of <see cref="RenderTarget"/> resources that should be automatically resized to 
 		/// fit the desired rendering output size.
 		/// </summary>
-		public List<ContentRef<RenderTarget>> AutoResizeTargets
+		public List<RenderSetupTargetResize> AutoResizeTargets
 		{
 			get { return this.autoResizeTargets; }
-			set { this.autoResizeTargets = value ?? new List<ContentRef<RenderTarget>>(); }
+			set { this.autoResizeTargets = value ?? new List<RenderSetupTargetResize>(); }
 		}
 
 
@@ -97,8 +83,9 @@ namespace Duality.Resources
 		/// <param name="outputSize"></param>
 		public void ApplyOutputAutoResize(Point2 outputSize)
 		{
-			foreach (ContentRef<RenderTarget> targetRef in this.autoResizeTargets)
+			foreach (RenderSetupTargetResize autoResize in this.autoResizeTargets)
 			{
+				ContentRef<RenderTarget> targetRef = autoResize.Target;
 				RenderTarget target = targetRef.Res;
 				if (target == null) continue;
 
@@ -108,7 +95,8 @@ namespace Duality.Resources
 					originalTargetSize = target.Size;
 
 				// Determine the target's desired size based on output size and resize mode.
-				Point2 desiredTargetSize = (Point2)this.autoResizeTargetMode.Apply(originalTargetSize, outputSize);
+				Point2 desiredTargetSize = (Point2)(autoResize.ResizeMode.Apply(originalTargetSize, outputSize) * autoResize.Scale);
+				desiredTargetSize = Point2.Max(desiredTargetSize, new Point2(1, 1));
 				if (target.Size != desiredTargetSize)
 				{
 					// If there's no record of the target's original size yet, create one

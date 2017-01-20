@@ -138,6 +138,7 @@
     <Compile Include="IO\PathEqualityComparer.cs" />
     <Compile Include="IO\PathOp.cs" />
     <Compile Include="Resources\AssetInfo.cs" />
+    <Compile Include="Resources\RenderSetup\RenderSetupTargetResize.cs" />
     <Compile Include="Resources\RenderSetup\RenderStepPosition.cs" />
     <Compile Include="Resources\RenderSetup\RenderStepAddition.cs" />
     <Compile Include="Resources\RenderSetup\RenderStep.cs" />
