@@ -177,7 +177,8 @@ namespace Duality.Components
 		/// Renders the current <see cref="Duality.Resources.Scene"/>.
 		/// </summary>
 		/// <param name="viewportRect">The viewport area to which will be rendered.</param>
-		public void Render(Rect viewportRect)
+		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
+		public void Render(Rect viewportRect, Vector2 imageSize)
 		{
 			this.UpdateRenderSteps();
 			this.UpdateDeviceConfig();
@@ -186,7 +187,7 @@ namespace Duality.Components
 			Profile.BeginMeasure(counterName);
 			Profile.TimeRender.BeginMeasure();
 
-			this.RenderAllSteps(viewportRect);
+			this.RenderAllSteps(viewportRect, imageSize);
 			this.drawDevice.VisibilityMask = this.visibilityMask;
 			this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
 			this.drawDevice.UpdateMatrices(); // Reset matrices for projection calculations during update
@@ -199,8 +200,9 @@ namespace Duality.Components
 		/// This method needs to be called each frame a picking operation is to be performed.
 		/// </summary>
 		/// <param name="viewportSize">Size of the viewport area to which will be rendered.</param>
+		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
 		/// <param name="renderOverlay">Whether or not to render screen overlay renderers onto the picking target.</param>
-		public void RenderPickingMap(Point2 viewportSize, bool renderOverlay)
+		public void RenderPickingMap(Point2 viewportSize, Vector2 imageSize, bool renderOverlay)
 		{
 			Profile.TimeVisualPicking.BeginMeasure();
 
@@ -482,7 +484,7 @@ namespace Duality.Components
 				}
 			}
 		}
-		private void RenderAllSteps(Rect viewportRect)
+		private void RenderAllSteps(Rect viewportRect, Vector2 imageSize)
 		{
 			// Determine which rendering setup is active
 			RenderSetup setup = 
@@ -496,17 +498,17 @@ namespace Duality.Components
 			// Execute all steps in the rendering setup, as well as those that were added in this camera
 			foreach (RenderStep step in this.renderSteps)
 			{
-				this.RenderSingleStep(viewportRect, step);
+				this.RenderSingleStep(viewportRect, imageSize, step);
 			}
 		}
-		private void RenderSingleStep(Rect viewportRect, RenderStep step)
+		private void RenderSingleStep(Rect viewportRect, Vector2 imageSize, RenderStep step)
 		{
 			ContentRef<RenderTarget> renderTarget = step.Output.IsExplicitNull ? this.renderTarget : step.Output;
 
 			this.drawDevice.VisibilityMask = this.visibilityMask & step.VisibilityMask;
 			this.drawDevice.RenderMode = step.MatrixMode;
 			this.drawDevice.Target = renderTarget;
-			this.drawDevice.TargetSize = renderTarget.IsAvailable ? renderTarget.Res.Size : viewportRect.Size;
+			this.drawDevice.TargetSize = renderTarget.IsAvailable ? renderTarget.Res.Size : imageSize;
 			this.drawDevice.ViewportRect = renderTarget.IsAvailable ? new Rect(renderTarget.Res.Size) : viewportRect;
 
 			if (step.Input == null)
@@ -543,11 +545,11 @@ namespace Duality.Components
 				Point2 inputSize = mainTex != null ? mainTex.ContentSize : Point2.Zero;
 
 				// Fit the input material rect to the output size according to rendering step config
-				Vector2 targetSize = step.InputResize.Apply(inputSize, this.drawDevice.ViewportRect.Size);
+				Vector2 targetSize = step.InputResize.Apply(inputSize, this.drawDevice.TargetSize);
 				Rect targetRect = Rect.Align(
 					Alignment.Center, 
-					this.drawDevice.ViewportRect.W * 0.5f, 
-					this.drawDevice.ViewportRect.H * 0.5f, 
+					this.drawDevice.TargetSize.X * 0.5f, 
+					this.drawDevice.TargetSize.Y * 0.5f, 
 					targetSize.X, 
 					targetSize.Y);
 

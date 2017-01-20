@@ -459,7 +459,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected virtual void OnRenderState()
 		{
 			// Render CamView
-			this.CameraComponent.Render(new Rect(this.ClientSize.Width, this.ClientSize.Height));
+			Point2 clientSize = new Point2(this.ClientSize.Width, this.ClientSize.Height);
+			this.CameraComponent.Render(new Rect(clientSize), clientSize);
 		}
 		protected virtual void OnUpdateState()
 		{

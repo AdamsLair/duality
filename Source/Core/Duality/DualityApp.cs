@@ -521,9 +521,11 @@ namespace Duality
 		/// <summary>
 		/// Performs a single render cycle.
 		/// </summary>
-		public static void Render(Rect viewportRect)
+		/// <param name="viewportRect">The viewport to render to, in pixel coordinates.</param>
+		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
+		public static void Render(Rect viewportRect, Vector2 imageSize)
 		{
-			Scene.Current.Render(viewportRect);
+			Scene.Current.Render(viewportRect, imageSize);
 		}
 
 		/// <summary>

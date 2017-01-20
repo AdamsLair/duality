@@ -55,6 +55,10 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			get { return this.internalWindow.ClientSize.Height; }
 		}
+		public Point2 Size
+		{
+			get { return new Point2(this.Width, this.Height); }
+		}
 		public bool IsMultisampled
 		{
 			get { return this.internalWindow.Context.GraphicsMode.Samples > 0; }
@@ -271,7 +275,7 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
 
-			DualityApp.Render(new Rect(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height));
+			DualityApp.Render(new Rect(this.Size), this.Size);
 			Profile.TimeRender.BeginMeasure();
 			Profile.TimeSwapBuffers.BeginMeasure();
 			this.internalWindow.SwapBuffers();

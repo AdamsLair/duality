@@ -141,7 +141,8 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="scene">The <see cref="Scene"/> that should be rendered.</param>
 		/// <param name="viewportRect">The viewport to render to, in pixel coordinates.</param>
-		internal protected virtual void RenderScene(Scene scene, Rect viewportRect)
+		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
+		internal protected virtual void RenderScene(Scene scene, Rect viewportRect, Vector2 imageSize)
 		{
 			Camera[] activeCams = scene.FindComponents<Camera>()
 				.Where(c => c.Active)
@@ -149,7 +150,7 @@ namespace Duality.Resources
 
 			// Maybe sort / process list first later on.
 			foreach (Camera c in activeCams)
-				c.Render(viewportRect);
+				c.Render(viewportRect, imageSize);
 		}
 	}
 }

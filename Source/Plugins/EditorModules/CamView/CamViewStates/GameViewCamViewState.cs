@@ -41,7 +41,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Render game pov
 			Rect viewportRect = new Rect(this.ClientSize.Width, this.ClientSize.Height);
 			if (!Scene.Current.FindComponents<Camera>().Any())	DrawDevice.RenderVoid(viewportRect);
-			else												DualityApp.Render(viewportRect);
+			else												DualityApp.Render(viewportRect, viewportRect.Size);
 		}
 	}
 }
