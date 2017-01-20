@@ -280,13 +280,14 @@ namespace Duality.Backend.DefaultOpenTK
 			Point2 forcedSize = DualityApp.AppData.ForcedRenderSize;
 			if (forcedSize.X > 0 && forcedSize.Y > 0 && forcedSize != imageSize)
 			{
-				imageSize = DualityApp.AppData.ForcedRenderResizeMode.Apply(forcedSize, viewportRect.Size);
+				Vector2 adjustedViewportSize = DualityApp.AppData.ForcedRenderResizeMode.Apply(forcedSize, viewportRect.Size);
+				imageSize = forcedSize;
 				viewportRect = Rect.Align(
 					Alignment.Center, 
 					viewportRect.Size.X * 0.5f, 
 					viewportRect.Size.Y * 0.5f, 
-					imageSize.X, 
-					imageSize.Y);
+					adjustedViewportSize.X, 
+					adjustedViewportSize.Y);
 			}
 
 			DualityApp.Render(viewportRect, imageSize);
