@@ -131,6 +131,20 @@ namespace Duality.Components
 			get { return this.additionalRenderSteps; }
 			set { this.additionalRenderSteps = value ?? new List<RenderStepAddition>(); }
 		}
+		/// <summary>
+		/// [GET] The rendering setup that will be used by this camera.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public RenderSetup ActiveRenderSetup
+		{
+			get
+			{
+				return 
+					this.renderSetup.Res ?? 
+					DualityApp.AppData.RenderingSetup.Res ?? 
+					RenderSetup.Default.Res;
+			}
+		}
 
 
 		/// <summary>
@@ -218,7 +232,7 @@ namespace Duality.Components
 				// Setup DrawDevice
 				this.drawDevice.PickingIndex = 1;
 				this.drawDevice.Target = this.pickingRT;
-				this.drawDevice.TargetSize = this.pickingTex.ContentSize;
+				this.drawDevice.TargetSize = imageSize;
 				this.drawDevice.ViewportRect = new Rect(this.pickingTex.ContentSize);
 
 				// Render the world
@@ -268,11 +282,9 @@ namespace Duality.Components
 		public ICmpRenderer PickRendererAt(int x, int y)
 		{
 			if (this.pickingBuffer == null) return null;
+
 			if (x < 0 || x >= this.pickingTex.ContentWidth) return null;
 			if (y < 0 || y >= this.pickingTex.ContentHeight) return null;
-
-			x = MathF.Clamp(x, 0, this.pickingTex.ContentWidth - 1);
-			y = MathF.Clamp(y, 0, this.pickingTex.ContentHeight - 1);
 
 			int baseIndex = 4 * (x + y * this.pickingTex.ContentWidth);
 			if (baseIndex + 4 >= this.pickingBuffer.Length) return null;
@@ -440,14 +452,9 @@ namespace Duality.Components
 
 		private void UpdateRenderSteps()
 		{
-			// Decide which rendering setup to use
-			RenderSetup setup = 
-				this.renderSetup.Res ?? 
-				DualityApp.AppData.RenderingSetup.Res ?? 
-				RenderSetup.Default.Res;
-
 			// Retrieve all rendering steps from the setup
 			this.renderSteps.Clear();
+			RenderSetup setup = this.ActiveRenderSetup;
 			foreach (RenderStep step in setup.Steps)
 				this.renderSteps.Add(step);
 
@@ -486,13 +493,8 @@ namespace Duality.Components
 		}
 		private void RenderAllSteps(Rect viewportRect, Vector2 imageSize)
 		{
-			// Determine which rendering setup is active
-			RenderSetup setup = 
-				this.renderSetup.Res ?? 
-				DualityApp.AppData.RenderingSetup.Res ?? 
-				RenderSetup.Default.Res;
-
 			// Resize all render targets to the viewport size we're dealing with
+			RenderSetup setup = this.ActiveRenderSetup;
 			setup.ApplyOutputAutoResize((Point2)viewportRect.Size);
 
 			// Execute all steps in the rendering setup, as well as those that were added in this camera
@@ -660,6 +662,7 @@ namespace Duality.Components
 				Profile.TimeCollectDrawcalls.EndMeasure();
 			}
 		}
+
 		private void SetupPickingRT(Point2 size)
 		{
 			if (this.pickingTex == null || this.pickingTex.ContentSize != size)
