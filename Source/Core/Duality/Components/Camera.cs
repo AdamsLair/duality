@@ -539,9 +539,6 @@ namespace Duality.Components
 			}
 			else
 			{
-				Profile.TimePostProcessing.BeginMeasure();
-				this.drawDevice.PrepareForDrawcalls();
-
 				Texture mainTex = step.Input.MainTexture.Res;
 				Vector2 uvRatio = mainTex != null ? mainTex.UVRatio : Vector2.One;
 				Point2 inputSize = mainTex != null ? mainTex.ContentSize : Point2.Zero;
@@ -554,6 +551,9 @@ namespace Duality.Components
 					this.drawDevice.TargetSize.Y * 0.5f, 
 					targetSize.X, 
 					targetSize.Y);
+
+				Profile.TimePostProcessing.BeginMeasure();
+				this.drawDevice.PrepareForDrawcalls();
 
 				IDrawDevice device = this.drawDevice;
 				{
