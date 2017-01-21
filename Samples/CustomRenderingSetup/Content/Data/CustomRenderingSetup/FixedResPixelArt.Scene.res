@@ -193,13 +193,13 @@
             <ignoreParent dataType="Bool">false</ignoreParent>
             <parentTransform />
             <pos dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">160</X>
-              <Y dataType="Float">150</Y>
+              <X dataType="Float">0</X>
+              <Y dataType="Float">-72</Y>
               <Z dataType="Float">0</Z>
             </pos>
             <posAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">160</X>
-              <Y dataType="Float">150</Y>
+              <X dataType="Float">0</X>
+              <Y dataType="Float">-72</Y>
               <Z dataType="Float">0</Z>
             </posAbs>
             <scale dataType="Float">1</scale>
@@ -209,7 +209,7 @@
           </item>
           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="501824035">
             <active dataType="Bool">true</active>
-            <blockAlign dataType="Enum" type="Duality.Alignment" name="BottomRight" value="10" />
+            <blockAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
               <A dataType="Byte">255</A>
               <B dataType="Byte">255</B>
@@ -231,7 +231,7 @@
               <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
               <maxHeight dataType="Int">0</maxHeight>
               <maxWidth dataType="Int">0</maxWidth>
-              <sourceText dataType="String">Bottom Right</sourceText>
+              <sourceText dataType="String">Hello World</sourceText>
               <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
             </text>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
@@ -257,270 +257,6 @@
       <identifier dataType="Struct" type="System.Guid" surrogate="true">
         <header>
           <data dataType="Array" type="System.Byte[]" id="3604699391">Wpenq60R8kW22gzbCA935Q==</data>
-        </header>
-        <body />
-      </identifier>
-      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-      <name dataType="String">TextRenderer</name>
-      <parent />
-      <prefabLink />
-    </item>
-    <item dataType="Struct" type="Duality.GameObject" id="2055219843">
-      <active dataType="Bool">true</active>
-      <children />
-      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3248324657">
-        <_items dataType="Array" type="Duality.Component[]" id="4044929070" length="4">
-          <item dataType="Struct" type="Duality.Components.Transform" id="120567479">
-            <active dataType="Bool">true</active>
-            <angle dataType="Float">0</angle>
-            <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
-            <gameobj dataType="ObjectRef">2055219843</gameobj>
-            <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
-            <pos dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">-160</X>
-              <Y dataType="Float">-150</Y>
-              <Z dataType="Float">0</Z>
-            </pos>
-            <posAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">-160</X>
-              <Y dataType="Float">-150</Y>
-              <Z dataType="Float">0</Z>
-            </posAbs>
-            <scale dataType="Float">1</scale>
-            <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3" />
-            <velAbs dataType="Struct" type="Duality.Vector3" />
-          </item>
-          <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="3797848665">
-            <active dataType="Bool">true</active>
-            <blockAlign dataType="Enum" type="Duality.Alignment" name="TopLeft" value="5" />
-            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-              <A dataType="Byte">255</A>
-              <B dataType="Byte">255</B>
-              <G dataType="Byte">255</G>
-              <R dataType="Byte">255</R>
-            </colorTint>
-            <customMat />
-            <gameobj dataType="ObjectRef">2055219843</gameobj>
-            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-            <offset dataType="Int">0</offset>
-            <text dataType="Struct" type="Duality.Drawing.FormattedText" id="229120041">
-              <flowAreas />
-              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="905338382">
-                <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                  <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
-                </item>
-              </fonts>
-              <icons />
-              <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
-              <maxHeight dataType="Int">0</maxHeight>
-              <maxWidth dataType="Int">0</maxWidth>
-              <sourceText dataType="String">Top Left</sourceText>
-              <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
-            </text>
-            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-          </item>
-        </_items>
-        <_size dataType="Int">2</_size>
-        <_version dataType="Int">2</_version>
-      </compList>
-      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1263588960" surrogate="true">
-        <header />
-        <body>
-          <keys dataType="Array" type="System.Object[]" id="1475707419">
-            <item dataType="ObjectRef">951458022</item>
-            <item dataType="ObjectRef">2334741238</item>
-          </keys>
-          <values dataType="Array" type="System.Object[]" id="1732324712">
-            <item dataType="ObjectRef">120567479</item>
-            <item dataType="ObjectRef">3797848665</item>
-          </values>
-        </body>
-      </compMap>
-      <compTransform dataType="ObjectRef">120567479</compTransform>
-      <identifier dataType="Struct" type="System.Guid" surrogate="true">
-        <header>
-          <data dataType="Array" type="System.Byte[]" id="2720993489">Q2wF4IVFSEaw9t9ARhubiA==</data>
-        </header>
-        <body />
-      </identifier>
-      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-      <name dataType="String">TextRenderer</name>
-      <parent />
-      <prefabLink />
-    </item>
-    <item dataType="Struct" type="Duality.GameObject" id="1695904318">
-      <active dataType="Bool">true</active>
-      <children />
-      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="417827432">
-        <_items dataType="Array" type="Duality.Component[]" id="1553947692" length="4">
-          <item dataType="Struct" type="Duality.Components.Transform" id="4056219250">
-            <active dataType="Bool">true</active>
-            <angle dataType="Float">0</angle>
-            <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
-            <gameobj dataType="ObjectRef">1695904318</gameobj>
-            <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
-            <pos dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">-160</X>
-              <Y dataType="Float">150</Y>
-              <Z dataType="Float">0</Z>
-            </pos>
-            <posAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">-160</X>
-              <Y dataType="Float">150</Y>
-              <Z dataType="Float">0</Z>
-            </posAbs>
-            <scale dataType="Float">1</scale>
-            <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3" />
-            <velAbs dataType="Struct" type="Duality.Vector3" />
-          </item>
-          <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="3438533140">
-            <active dataType="Bool">true</active>
-            <blockAlign dataType="Enum" type="Duality.Alignment" name="BottomLeft" value="9" />
-            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-              <A dataType="Byte">255</A>
-              <B dataType="Byte">255</B>
-              <G dataType="Byte">255</G>
-              <R dataType="Byte">255</R>
-            </colorTint>
-            <customMat />
-            <gameobj dataType="ObjectRef">1695904318</gameobj>
-            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-            <offset dataType="Int">0</offset>
-            <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3395437812">
-              <flowAreas />
-              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="779030692">
-                <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                  <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
-                </item>
-              </fonts>
-              <icons />
-              <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
-              <maxHeight dataType="Int">0</maxHeight>
-              <maxWidth dataType="Int">0</maxWidth>
-              <sourceText dataType="String">Bottom Left</sourceText>
-              <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
-            </text>
-            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-          </item>
-        </_items>
-        <_size dataType="Int">2</_size>
-        <_version dataType="Int">2</_version>
-      </compList>
-      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2826113822" surrogate="true">
-        <header />
-        <body>
-          <keys dataType="Array" type="System.Object[]" id="2402057770">
-            <item dataType="ObjectRef">951458022</item>
-            <item dataType="ObjectRef">2334741238</item>
-          </keys>
-          <values dataType="Array" type="System.Object[]" id="461690842">
-            <item dataType="ObjectRef">4056219250</item>
-            <item dataType="ObjectRef">3438533140</item>
-          </values>
-        </body>
-      </compMap>
-      <compTransform dataType="ObjectRef">4056219250</compTransform>
-      <identifier dataType="Struct" type="System.Guid" surrogate="true">
-        <header>
-          <data dataType="Array" type="System.Byte[]" id="2334734602">2TFGM1O8I0OAfuqFJzT6xA==</data>
-        </header>
-        <body />
-      </identifier>
-      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-      <name dataType="String">TextRenderer</name>
-      <parent />
-      <prefabLink />
-    </item>
-    <item dataType="Struct" type="Duality.GameObject" id="4039727490">
-      <active dataType="Bool">true</active>
-      <children />
-      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2396828300">
-        <_items dataType="Array" type="Duality.Component[]" id="2310277540" length="4">
-          <item dataType="Struct" type="Duality.Components.Transform" id="2105075126">
-            <active dataType="Bool">true</active>
-            <angle dataType="Float">0</angle>
-            <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
-            <gameobj dataType="ObjectRef">4039727490</gameobj>
-            <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
-            <pos dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">160</X>
-              <Y dataType="Float">-150</Y>
-              <Z dataType="Float">0</Z>
-            </pos>
-            <posAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">160</X>
-              <Y dataType="Float">-150</Y>
-              <Z dataType="Float">0</Z>
-            </posAbs>
-            <scale dataType="Float">1</scale>
-            <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3" />
-            <velAbs dataType="Struct" type="Duality.Vector3" />
-          </item>
-          <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="1487389016">
-            <active dataType="Bool">true</active>
-            <blockAlign dataType="Enum" type="Duality.Alignment" name="TopRight" value="6" />
-            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-              <A dataType="Byte">255</A>
-              <B dataType="Byte">255</B>
-              <G dataType="Byte">255</G>
-              <R dataType="Byte">255</R>
-            </colorTint>
-            <customMat />
-            <gameobj dataType="ObjectRef">4039727490</gameobj>
-            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-            <offset dataType="Int">0</offset>
-            <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3001377616">
-              <flowAreas />
-              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="323269564">
-                <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                  <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
-                </item>
-              </fonts>
-              <icons />
-              <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
-              <maxHeight dataType="Int">0</maxHeight>
-              <maxWidth dataType="Int">0</maxWidth>
-              <sourceText dataType="String">Top Right</sourceText>
-              <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
-            </text>
-            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-          </item>
-        </_items>
-        <_size dataType="Int">2</_size>
-        <_version dataType="Int">2</_version>
-      </compList>
-      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="20581366" surrogate="true">
-        <header />
-        <body>
-          <keys dataType="Array" type="System.Object[]" id="2813285382">
-            <item dataType="ObjectRef">951458022</item>
-            <item dataType="ObjectRef">2334741238</item>
-          </keys>
-          <values dataType="Array" type="System.Object[]" id="585759034">
-            <item dataType="ObjectRef">2105075126</item>
-            <item dataType="ObjectRef">1487389016</item>
-          </values>
-        </body>
-      </compMap>
-      <compTransform dataType="ObjectRef">2105075126</compTransform>
-      <identifier dataType="Struct" type="System.Guid" surrogate="true">
-        <header>
-          <data dataType="Array" type="System.Byte[]" id="3262025350">VhbPegbXBk+npV2Zj7TF0g==</data>
         </header>
         <body />
       </identifier>
@@ -610,6 +346,42 @@
       </identifier>
       <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
       <name dataType="String">Checkerboard</name>
+      <parent />
+      <prefabLink />
+    </item>
+    <item dataType="Struct" type="Duality.GameObject" id="390324711">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3672447685">
+        <_items dataType="Array" type="Duality.Component[]" id="140407510" length="4">
+          <item dataType="Struct" type="CustomRenderingSetup.ScreenSpaceRenderer" id="1043993782">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">390324711</gameobj>
+          </item>
+        </_items>
+        <_size dataType="Int">1</_size>
+        <_version dataType="Int">1</_version>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2007183912" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Object[]" id="1456887215">
+            <item dataType="Type" id="3044776942" value="CustomRenderingSetup.ScreenSpaceRenderer" />
+          </keys>
+          <values dataType="Array" type="System.Object[]" id="99732640">
+            <item dataType="ObjectRef">1043993782</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform />
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="3542204221">baDr6KjgdkG4PB84dPhC/A==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">ScreenSpaceRenderer</name>
       <parent />
       <prefabLink />
     </item>

@@ -48,6 +48,7 @@
     <DocumentationFile>CustomRenderingSetup.core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ScreenSpaceRenderer.cs" />
     <Compile Include="ConstantRotation.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

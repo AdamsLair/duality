@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Duality;
+using Duality.Components;
+using Duality.Drawing;
+
+namespace CustomRenderingSetup
+{
+	public class ScreenSpaceRenderer : Component, ICmpRenderer
+	{
+		float ICmpRenderer.BoundRadius
+		{
+			get { return float.MaxValue; }
+		}
+
+		bool ICmpRenderer.IsVisible(IDrawDevice device)
+		{
+			return 
+				(device.VisibilityMask & VisibilityFlag.AllGroups) != VisibilityFlag.None &&
+				(device.VisibilityMask & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None;
+		}
+		void ICmpRenderer.Draw(IDrawDevice device)
+		{
+			Canvas canvas = new Canvas(device);
+
+			// Draw screen space edge indicators
+			canvas.DrawLine(0, 10, device.TargetSize.X, 10);
+			canvas.DrawLine(0, device.TargetSize.Y - 10, device.TargetSize.X, device.TargetSize.Y - 10);
+			canvas.DrawLine(10, 0, 10, device.TargetSize.Y);
+			canvas.DrawLine(device.TargetSize.X - 10, 0, device.TargetSize.X - 10, device.TargetSize.Y);
+
+			// Draw some sample text
+			canvas.DrawText("Top Left", 10, 10, blockAlign: Alignment.TopLeft);
+			canvas.DrawText("Top Right", device.TargetSize.X - 10, 10, blockAlign: Alignment.TopRight);
+			canvas.DrawText("Bottom Left", 10, device.TargetSize.Y - 10, blockAlign: Alignment.BottomLeft);
+			canvas.DrawText("Bottom Right", device.TargetSize.X - 10, device.TargetSize.Y - 10, blockAlign: Alignment.BottomRight);
+		}
+	}
+}
