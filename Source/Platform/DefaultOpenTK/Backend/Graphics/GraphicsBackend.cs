@@ -159,8 +159,8 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 
 			// Setup viewport and scissor rects
-			GL.Viewport((int)openGLViewport.X, (int)openGLViewport.Y, (int)openGLViewport.W, (int)openGLViewport.H);
-			GL.Scissor((int)openGLViewport.X, (int)openGLViewport.Y, (int)openGLViewport.W, (int)openGLViewport.H);
+			GL.Viewport((int)openGLViewport.X, (int)openGLViewport.Y, (int)MathF.Ceiling(openGLViewport.W), (int)MathF.Ceiling(openGLViewport.H));
+			GL.Scissor((int)openGLViewport.X, (int)openGLViewport.Y, (int)MathF.Ceiling(openGLViewport.W), (int)MathF.Ceiling(openGLViewport.H));
 
 			// Clear buffers
 			ClearBufferMask glClearMask = 0;
