@@ -38,6 +38,7 @@ namespace Duality
 
 		public static readonly PropertyInfo	Property_Camera_ClearColor;
 		public static readonly PropertyInfo	Property_Camera_FocusDist;
+		public static readonly PropertyInfo	Property_Camera_RenderingSetup;
 
 		public static readonly PropertyInfo	Property_SoundEmitter_Sources;
 		
@@ -94,6 +95,7 @@ namespace Duality
 			Type camera = typeof(Camera);
 			Property_Camera_FocusDist			= GetProperty(camera, "FocusDist");
 			Property_Camera_ClearColor			= GetProperty(camera, "ClearColor");
+			Property_Camera_RenderingSetup		= GetProperty(camera, "RenderingSetup");
 
 			Type collider = typeof(RigidBody);
 			Property_RigidBody_Shapes			= GetProperty(collider, "Shapes");

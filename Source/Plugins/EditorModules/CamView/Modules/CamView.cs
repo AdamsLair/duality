@@ -75,7 +75,6 @@ namespace Duality.Editor.Plugins.CamView
 			{
 				this.cam = cam;
 			}
-
 			public override string ToString()
 			{
 				return this.CameraName;
@@ -100,7 +99,6 @@ namespace Duality.Editor.Plugins.CamView
 				this.stateType = stateType;
 				this.state = state;
 			}
-
 			public override string ToString()
 			{
 				return this.StateName;
@@ -129,7 +127,6 @@ namespace Duality.Editor.Plugins.CamView
 				this.layerType = stateType;
 				this.layer = layer;
 			}
-
 			public override string ToString()
 			{
 				return this.LayerName;
@@ -152,10 +149,26 @@ namespace Duality.Editor.Plugins.CamView
 			{
 				this.componentType = componentType;
 			}
-
 			public override string ToString()
 			{
 				return this.ComponentName;
+			}
+		}
+		private class RenderSetupEntry
+		{
+			private ContentRef<RenderSetup> renderSetup;
+			public ContentRef<RenderSetup> RenderSetup
+			{
+				get { return this.renderSetup; }
+			}
+
+			public RenderSetupEntry(ContentRef<RenderSetup> renderSetup)
+			{
+				this.renderSetup = renderSetup;
+			}
+			public override string ToString()
+			{
+				return this.renderSetup.Name;
 			}
 		}
 
@@ -175,11 +188,14 @@ namespace Duality.Editor.Plugins.CamView
 		private	GameObjectTypeFilter	objectVisibility			= new GameObjectTypeFilter();
 		private MenuModel				objectVisibilityMenuModel	= new MenuModel();
 		private MenuStripMenuView		objectVisibilityMenuView	= null;
+		private MenuModel				renderSetupMenuModel		= new MenuModel();
+		private MenuStripMenuView		renderSetupMenuView			= null;
 		private	EditingGuide			editingUserGuides			= new EditingGuide();
 		private	ColorPickerDialog		bgColorDialog				= null;
 		private	GameObject				nativeCamObj				= null;
 		private	string					loadTempState				= null;
 		private	string					loadTempPerspective			= null;
+		private	string					loadTempRenderSetup			= null;
 		private	InputEventMessageRedirector	globalInputFilter		= null;
 		private DateTime					globalInputLastOtherKey	= DateTime.Now;
 		private DateTime					lastLocalMouseMove		= DateTime.Now;
@@ -367,6 +383,7 @@ namespace Duality.Editor.Plugins.CamView
 			// Update Camera values according to GUI (which carries loaded or default settings)
 			this.focusDist_ValueChanged(this.focusDist, null);
 			this.camComp.ClearColor = this.selectedColorDialogColor.ToDualityRgba().WithAlpha(0);
+			this.camComp.RenderingSetup = new ContentRef<RenderSetup>(null, this.loadTempRenderSetup);
 			if (this.loadTempPerspective != null)
 			{
 				foreach (var item in this.perspectiveDropDown.DropDownItems.OfType<ToolStripMenuItem>())
@@ -621,6 +638,39 @@ namespace Duality.Editor.Plugins.CamView
 
 			this.objectVisibilitySelector.DropDown.Closing += this.objectVisibilitySelector_Closing;
 		}
+		private void InitRenderSetupSelector()
+		{
+			// Remove old items
+			this.renderSetupMenuModel.ClearItems();
+
+			// Add "null" item to default to application settings
+			{
+				RenderSetupEntry entry = new RenderSetupEntry(null);
+				MenuModelItem setupItem = this.renderSetupMenuModel.RequestItem("AppData Setting");
+				setupItem.Tag = entry;
+				setupItem.Checkable = true;
+				setupItem.Checked = this.camComp.RenderingSetup == null;
+				setupItem.ActionHandler = this.renderSetupSelector_ItemPerformAction;
+			}
+
+			// Add new items
+			var sortedSetups = ContentProvider.GetAvailableContent<RenderSetup>().OrderByDescending(a => a.IsDefaultContent);
+			foreach (var renderSetup in sortedSetups)
+			{
+				RenderSetupEntry entry = new RenderSetupEntry(renderSetup);
+				MenuModelItem setupItem = this.renderSetupMenuModel.RequestItem(renderSetup.Name);
+				setupItem.Tag = entry;
+				setupItem.Checkable = true;
+				setupItem.Checked = this.camComp.RenderingSetup == renderSetup;
+				setupItem.ActionHandler = this.renderSetupSelector_ItemPerformAction;
+			}
+			
+			if (this.renderSetupMenuView == null)
+			{
+				this.renderSetupMenuView = new MenuStripMenuView(this.renderSetupSelector.DropDownItems);
+				this.renderSetupMenuView.Model = this.renderSetupMenuModel;
+			}
+		}
 		private void InitCameraSelector()
 		{
 			this.camSelector.BeginUpdate();
@@ -829,6 +879,7 @@ namespace Duality.Editor.Plugins.CamView
 			{
 				node.SetElementValue("Perspective", nativeCamera.Perspective);
 				node.SetElementValue("FocusDist", nativeCamera.FocusDist);
+				node.SetElementValue("RenderSetup", nativeCamera.RenderingSetup.Path);
 				XElement bgColorElement = new XElement("BackgroundColor");
 				{
 					bgColorElement.SetElementValue("R", nativeCamera.ClearColor.R);
@@ -893,6 +944,7 @@ namespace Duality.Editor.Plugins.CamView
 			}
 			this.loadTempPerspective = node.GetElementValue("Perspective", this.loadTempPerspective);
 			this.loadTempState = node.GetElementValue("ActiveState", this.loadTempState);
+			this.loadTempRenderSetup = node.GetElementValue("RenderSetup", RenderSetup.Default.Path);
 
 			XElement snapToGridSizeElement = node.Element("SnapToGridSize");
 			if (snapToGridSizeElement != null)
@@ -1437,6 +1489,27 @@ namespace Duality.Editor.Plugins.CamView
 		private void objectVisibilitySelector_Closing(object sender, ToolStripDropDownClosingEventArgs e)
 		{
 			if (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked) e.Cancel = true;
+		}
+		private void renderSetupSelector_DropDownOpening(object sender, EventArgs e)
+		{
+			this.InitRenderSetupSelector();
+		}
+		private void renderSetupSelector_ItemPerformAction(object sender, EventArgs e)
+		{
+			MenuModelItem item = sender as MenuModelItem;
+			RenderSetupEntry entry = item.Tag as RenderSetupEntry;
+			if (this.camObj != this.nativeCamObj)
+			{
+				UndoRedoManager.Do(new EditPropertyAction(null,
+					ReflectionInfo.Property_Camera_RenderingSetup,
+					new[] { this.camComp },
+					new[] { (object)entry.RenderSetup }));
+			}
+			else
+			{
+				this.camComp.RenderingSetup = entry.RenderSetup;
+			}
+			this.RenderableControl.Invalidate();
 		}
 		private void snapToGridSelector_DropDownOpening(object sender, EventArgs e)
 		{
