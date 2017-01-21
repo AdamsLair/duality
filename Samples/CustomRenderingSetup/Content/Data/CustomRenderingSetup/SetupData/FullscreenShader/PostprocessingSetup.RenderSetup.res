@@ -1,9 +1,20 @@
 ﻿<root dataType="Struct" type="Duality.Resources.RenderSetup" id="129723834">
   <assetInfo />
   <autoResizeTargets dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Resources.RenderSetupTargetResize]]" id="427169525">
-    <_items dataType="Array" type="Duality.Resources.RenderSetupTargetResize[]" id="1100841590" length="4" />
-    <_size dataType="Int">0</_size>
-    <_version dataType="Int">4</_version>
+    <_items dataType="Array" type="Duality.Resources.RenderSetupTargetResize[]" id="1100841590" length="4">
+      <item dataType="Struct" type="Duality.Resources.RenderSetupTargetResize">
+        <ResizeMode dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
+        <Scale dataType="Struct" type="Duality.Vector2">
+          <X dataType="Float">1</X>
+          <Y dataType="Float">1</Y>
+        </Scale>
+        <Target dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
+          <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\MainTarget.RenderTarget.res</contentPath>
+        </Target>
+      </item>
+    </_items>
+    <_size dataType="Int">1</_size>
+    <_version dataType="Int">13</_version>
   </autoResizeTargets>
   <steps dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Resources.RenderStep]]" id="2035693768">
     <_items dataType="Array" type="Duality.Resources.RenderStep[]" id="2696347487" length="4">
@@ -17,7 +28,7 @@
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
         <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="WorldSpace" value="0" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
-          <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\PixelArtTarget.RenderTarget.res</contentPath>
+          <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\MainTarget.RenderTarget.res</contentPath>
         </output>
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
@@ -37,7 +48,7 @@
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
         <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="ScreenSpace" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
-          <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\PixelArtTarget.RenderTarget.res</contentPath>
+          <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\MainTarget.RenderTarget.res</contentPath>
         </output>
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
@@ -55,7 +66,7 @@
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1307056800">
           <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
-          <hashCode dataType="Int">1994806647</hashCode>
+          <hashCode dataType="Int">1746810227</hashCode>
           <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
             <A dataType="Byte">255</A>
             <B dataType="Byte">255</B>
@@ -63,19 +74,24 @@
             <R dataType="Byte">255</R>
           </mainColor>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-            <contentPath dataType="String">Default:DrawTechnique:Solid</contentPath>
+            <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\ScreenTechnique.DrawTechnique.res</contentPath>
           </technique>
           <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="2583301340" surrogate="true">
             <header />
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
-                <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\PixelArtTarget.Texture.res</contentPath>
+                <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\MainTargetTex.Texture.res</contentPath>
               </mainTex>
             </body>
           </textures>
-          <uniforms />
+          <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="721291542" surrogate="true">
+            <header />
+            <body>
+              <GameTime dataType="Array" type="System.Single[]" id="3895025142">0</GameTime>
+            </body>
+          </uniforms>
         </input>
-        <inputResize dataType="Enum" type="Duality.TargetResize" name="Fit" value="2" />
+        <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
         <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="ScreenSpace" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
         <targetRect dataType="Struct" type="Duality.Rect">

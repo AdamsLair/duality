@@ -3,7 +3,7 @@
   <blendType dataType="Enum" type="Duality.Drawing.BlendMode" name="Solid" value="0" />
   <prefType />
   <shader dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.ShaderProgram]]">
-    <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\PostprocessingProgram.ShaderProgram.res</contentPath>
+    <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\ScreenProgram.ShaderProgram.res</contentPath>
   </shader>
 </root>
 <!-- XmlFormatterBase Document Separator -->

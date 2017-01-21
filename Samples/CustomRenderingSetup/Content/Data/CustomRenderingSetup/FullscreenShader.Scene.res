@@ -54,7 +54,7 @@
             <nearZ dataType="Float">0</nearZ>
             <perspective dataType="Enum" type="Duality.Drawing.PerspectiveMode" name="Parallax" value="1" />
             <renderSetup dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderSetup]]">
-              <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\PostprocessingSetup.RenderSetup.res</contentPath>
+              <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\PostprocessingSetup.RenderSetup.res</contentPath>
             </renderSetup>
             <renderTarget dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
             <targetRect dataType="Struct" type="Duality.Rect">
