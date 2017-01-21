@@ -21,6 +21,7 @@ namespace Duality.Resources
 		private ClearFlag                clearFlags        = ClearFlag.All;
 		private RenderMatrix             matrixMode        = RenderMatrix.WorldSpace;
 		private VisibilityFlag           visibilityMask    = VisibilityFlag.AllGroups;
+		private Rect                     targetRect        = new Rect(1.0f, 1.0f);
 		private BatchInfo                input             = null;
 		private TargetResize             inputResize       = TargetResize.None;
 		private ContentRef<RenderTarget> output            = null;
@@ -60,6 +61,23 @@ namespace Duality.Resources
 		{
 			get { return this.output; }
 			set { this.output = value; }
+		}
+		/// <summary>
+		/// [GET / SET] The rectangular area this rendering step will render into, relative to the
+		/// total available viewport.
+		/// </summary>
+		[EditorHintDecimalPlaces(2)]
+		[EditorHintIncrement(0.1f)]
+		[EditorHintRange(0.0f, 1.0f)]
+		public Rect TargetRect
+		{
+			get { return this.targetRect; }
+			set
+			{
+				Rect intersection = value.Intersection(new Rect(1.0f, 1.0f));
+				if (intersection == Rect.Empty) return;
+				this.targetRect = intersection;
+			}
 		}
 		/// <summary>
 		/// [GET / SET] When true, the <see cref="ClearColor"/> that is specified by this <see cref="RenderStep"/>

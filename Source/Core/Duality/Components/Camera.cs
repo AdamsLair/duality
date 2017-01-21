@@ -22,6 +22,7 @@ namespace Duality.Components
 		private float                    nearZ                 = 0.0f;
 		private float                    farZ                  = 10000.0f;
 		private float                    focusDist             = DrawDevice.DefaultFocusDist;
+		private Rect                     targetRect            = new Rect(1.0f, 1.0f);
 		private PerspectiveMode          perspective           = PerspectiveMode.Parallax;
 		private VisibilityFlag           visibilityMask        = VisibilityFlag.All;
 		private ColorRgba                clearColor            = ColorRgba.TransparentBlack;
@@ -74,14 +75,31 @@ namespace Duality.Components
 		/// </summary>
 		[EditorHintDecimalPlaces(1)]
 		[EditorHintIncrement(10.0f)]
-		[EditorHintRange(0.0f,float.MaxValue)]
+		[EditorHintRange(0.0f, float.MaxValue)]
 		public float FocusDist
 		{
 			get { return this.focusDist; }
 			set { this.focusDist = MathF.Max(value, 0.01f); }
 		}
 		/// <summary>
-		/// [GET / SET] Specified the perspective effect that is applied when rendering the world.
+		/// [GET / SET] The rectangular area this camera will render into, relative to the
+		/// total available viewport during rendering.
+		/// </summary>
+		[EditorHintDecimalPlaces(2)]
+		[EditorHintIncrement(0.1f)]
+		[EditorHintRange(0.0f, 1.0f)]
+		public Rect TargetRect
+		{
+			get { return this.targetRect; }
+			set
+			{
+				Rect intersection = value.Intersection(new Rect(1.0f, 1.0f));
+				if (intersection == Rect.Empty) return;
+				this.targetRect = intersection;
+			}
+		}
+		/// <summary>
+		/// [GET / SET] Specifies the perspective effect that is applied when rendering the world.
 		/// </summary>
 		public PerspectiveMode Perspective
 		{
@@ -202,9 +220,11 @@ namespace Duality.Components
 			Profile.TimeRender.BeginMeasure();
 
 			this.RenderAllSteps(viewportRect, imageSize);
-			this.drawDevice.VisibilityMask = this.visibilityMask;
+
+			// Reset matrices for projection calculations during update
 			this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
-			this.drawDevice.UpdateMatrices(); // Reset matrices for projection calculations during update
+			this.drawDevice.TargetSize = imageSize;
+			this.drawDevice.UpdateMatrices();
 
 			Profile.TimeRender.EndMeasure();
 			Profile.EndMeasure(counterName);
@@ -257,6 +277,11 @@ namespace Duality.Components
 				}
 
 				this.drawDevice.PickingIndex = 0;
+
+				// Reset matrices for projection calculations during update
+				this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
+				this.drawDevice.TargetSize = imageSize;
+				this.drawDevice.UpdateMatrices();
 			}
 
 			// Move data to local buffer
@@ -507,11 +532,31 @@ namespace Duality.Components
 		{
 			ContentRef<RenderTarget> renderTarget = step.Output.IsExplicitNull ? this.renderTarget : step.Output;
 
+			// Determine the local viewport and image size, either derived from screen (parameters) or the render target
+			Vector2 localTargetSize = renderTarget.IsAvailable ? renderTarget.Res.Size : imageSize;
+			Rect localViewport = renderTarget.IsAvailable ? new Rect(renderTarget.Res.Size) : viewportRect;
+
+			// When rendering to screen, adjust the local render size and viewport 
+			// according to the camera target rect
+			if (step.Output.IsExplicitNull)
+			{
+				localViewport.Pos += localViewport.Size * this.targetRect.Pos;
+				localViewport.Size *= this.targetRect.Size;
+				localTargetSize *= this.targetRect.Size;
+			}
+
+			// Regardless of rendering targets, adjust the local render size and viewport 
+			// according to the rendering step target rect
+			localViewport.Pos += localViewport.Size * step.TargetRect.Pos;
+			localViewport.Size *= step.TargetRect.Size;
+			localTargetSize *= step.TargetRect.Size;
+
+			// Set up the draw device with rendering step settings
 			this.drawDevice.VisibilityMask = this.visibilityMask & step.VisibilityMask;
 			this.drawDevice.RenderMode = step.MatrixMode;
 			this.drawDevice.Target = renderTarget;
-			this.drawDevice.TargetSize = renderTarget.IsAvailable ? renderTarget.Res.Size : imageSize;
-			this.drawDevice.ViewportRect = renderTarget.IsAvailable ? new Rect(renderTarget.Res.Size) : viewportRect;
+			this.drawDevice.TargetSize = localTargetSize;
+			this.drawDevice.ViewportRect = localViewport;
 
 			if (step.Input == null)
 			{
