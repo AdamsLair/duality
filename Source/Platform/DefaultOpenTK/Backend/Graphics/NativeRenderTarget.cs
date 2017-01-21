@@ -47,9 +47,9 @@ namespace Duality.Backend.DefaultOpenTK
 							0, 0, curBound.targetInfos.Data[i].Target.Width, curBound.targetInfos.Data[i].Target.Height,
 							ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
 					}
+					GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
 					GL.ReadBuffer(ReadBufferMode.Back);
 					GL.DrawBuffer(DrawBufferMode.Back);
-					GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
 				}
 
 				// Generate Mipmaps for last bound
