@@ -40,7 +40,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			Vector2 clientSize = new Vector2(this.ClientSize.Width, this.ClientSize.Height);
 			bool isRenderableScene = Scene.Current.FindComponents<Camera>().Any();
-			bool isResizedScene = false;
 
 			Vector2 imageSize = clientSize;
 			Rect viewportRect = new Rect(clientSize);
@@ -55,16 +54,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					viewportRect.Size.Y * 0.5f, 
 					adjustedViewportSize.X, 
 					adjustedViewportSize.Y);
-				isResizedScene = true;
 			}
 
-			if (isResizedScene)
-				DrawDevice.RenderVoid(new Rect(clientSize));
+			// In case we're not using the entire viewport area, no cameras are
+			// rendering on screen or similar, clear the entire available area first.
+			DrawDevice.RenderVoid(new Rect(clientSize));
 
 			if (isRenderableScene)
+			{
 				DualityApp.Render(viewportRect, imageSize);
-			else
-				DrawDevice.RenderVoid(viewportRect);
+			}
 		}
 	}
 }
