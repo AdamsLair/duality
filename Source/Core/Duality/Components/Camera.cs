@@ -597,6 +597,12 @@ namespace Duality.Components
 					targetSize.X, 
 					targetSize.Y);
 
+				// Fit the target rect to actual pixel coordinates to avoid unnecessary filtering offsets
+				targetRect.X = (int)targetRect.X;
+				targetRect.Y = (int)targetRect.Y;
+				targetRect.W = MathF.Ceiling(targetRect.W);
+				targetRect.H = MathF.Ceiling(targetRect.H);
+
 				Profile.TimePostProcessing.BeginMeasure();
 				this.drawDevice.PrepareForDrawcalls();
 
