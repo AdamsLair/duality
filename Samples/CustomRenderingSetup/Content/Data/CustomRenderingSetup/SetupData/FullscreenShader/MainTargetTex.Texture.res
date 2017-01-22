@@ -9,7 +9,7 @@
     <X dataType="Int">404</X>
     <Y dataType="Int">404</Y>
   </size>
-  <texSizeMode dataType="Enum" type="Duality.Drawing.TextureSizeMode" name="Enlarge" value="0" />
+  <texSizeMode dataType="Enum" type="Duality.Drawing.TextureSizeMode" name="NonPowerOfTwo" value="2" />
   <wrapX dataType="Enum" type="Duality.Drawing.TextureWrapMode" name="Clamp" value="0" />
   <wrapY dataType="Enum" type="Duality.Drawing.TextureWrapMode" name="Clamp" value="0" />
 </root>
