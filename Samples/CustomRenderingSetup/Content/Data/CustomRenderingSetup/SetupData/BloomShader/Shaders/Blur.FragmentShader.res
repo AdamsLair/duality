@@ -1,0 +1,11 @@
+﻿<root dataType="Struct" type="Duality.Resources.FragmentShader" id="129723834">
+  <assetInfo dataType="Struct" type="Duality.Editor.AssetManagement.AssetInfo" id="427169525">
+    <customData />
+    <importerId dataType="String">BasicShaderAssetImporter</importerId>
+    <sourceFileHint dataType="Array" type="System.String[]" id="1100841590">
+      <item dataType="String">{Name}.frag</item>
+    </sourceFileHint>
+  </assetInfo>
+  <source dataType="String"><![CDATA[dW5pZm9ybSBzYW1wbGVyMkQgbWFpblRleDsNCnVuaWZvcm0gdmVjMiBibHVyRGlyZWN0aW9uOw0KDQp2b2lkIG1haW4oKQ0Kew0KCWl2ZWMyIHRleFNpemUgPSB0ZXh0dXJlU2l6ZShtYWluVGV4LCAwKTsNCgl2ZWMyIHBpeGVsT2Zmc2V0ID0gdmVjMigxLjAgLyB0ZXhTaXplLngsIDEuMCAvIHRleFNpemUueSkgKiBibHVyRGlyZWN0aW9uOw0KCXZlYzQgc2FtcGxlcyA9IHZlYzQoMCwgMCwgMCwgMCk7DQoJc2FtcGxlcyArPSB0ZXh0dXJlMkQobWFpblRleCwgZ2xfVGV4Q29vcmRbMF0uc3QgLSBwaXhlbE9mZnNldCAqIDMpICogMS4wIC8gNjQuMDsNCglzYW1wbGVzICs9IHRleHR1cmUyRChtYWluVGV4LCBnbF9UZXhDb29yZFswXS5zdCAtIHBpeGVsT2Zmc2V0ICogMikgKiA2LjAgLyA2NC4wOw0KCXNhbXBsZXMgKz0gdGV4dHVyZTJEKG1haW5UZXgsIGdsX1RleENvb3JkWzBdLnN0IC0gcGl4ZWxPZmZzZXQgKiAxKSAqIDE1LjAgLyA2NC4wOw0KCXNhbXBsZXMgKz0gdGV4dHVyZTJEKG1haW5UZXgsIGdsX1RleENvb3JkWzBdLnN0ICsgcGl4ZWxPZmZzZXQgKiAwKSAqIDIwLjAgLyA2NC4wOw0KCXNhbXBsZXMgKz0gdGV4dHVyZTJEKG1haW5UZXgsIGdsX1RleENvb3JkWzBdLnN0ICsgcGl4ZWxPZmZzZXQgKiAxKSAqIDE1LjAgLyA2NC4wOw0KCXNhbXBsZXMgKz0gdGV4dHVyZTJEKG1haW5UZXgsIGdsX1RleENvb3JkWzBdLnN0ICsgcGl4ZWxPZmZzZXQgKiAyKSAqIDYuMCAvIDY0LjA7DQoJc2FtcGxlcyArPSB0ZXh0dXJlMkQobWFpblRleCwgZ2xfVGV4Q29vcmRbMF0uc3QgKyBwaXhlbE9mZnNldCAqIDMpICogMS4wIC8gNjQuMDsNCglnbF9GcmFnQ29sb3IgPSBnbF9Db2xvciAqIHNhbXBsZXM7DQp9]]></source>
+</root>
+<!-- XmlFormatterBase Document Separator -->
