@@ -254,15 +254,18 @@ namespace Duality.Components
 				this.drawDevice.Target = this.pickingRT;
 				this.drawDevice.TargetSize = imageSize;
 				this.drawDevice.ViewportRect = new Rect(this.pickingTex.ContentSize);
+				this.drawDevice.ClearColor = ColorRgba.Black;
+				this.drawDevice.ClearDepth = 1.0f;
 
 				// Render the world
 				{
 					this.drawDevice.VisibilityMask = this.visibilityMask & VisibilityFlag.AllGroups;
 					this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
+					this.drawDevice.ClearFlags = ClearFlag.All;
 
 					this.drawDevice.PrepareForDrawcalls();
 					this.CollectDrawcalls();
-					this.drawDevice.Render(ClearFlag.All, ColorRgba.Black, 1.0f);
+					this.drawDevice.Render();
 				}
 
 				// Render screen overlays
@@ -270,10 +273,11 @@ namespace Duality.Components
 				{
 					this.drawDevice.VisibilityMask = this.visibilityMask;
 					this.drawDevice.RenderMode = RenderMatrix.ScreenSpace;
+					this.drawDevice.ClearFlags = ClearFlag.None;
 
 					this.drawDevice.PrepareForDrawcalls();
 					this.CollectDrawcalls();
-					this.drawDevice.Render(ClearFlag.None, ColorRgba.Black, 1.0f);
+					this.drawDevice.Render();
 				}
 
 				this.drawDevice.PickingIndex = 0;
@@ -530,6 +534,7 @@ namespace Duality.Components
 		}
 		private void RenderSingleStep(Rect viewportRect, Vector2 imageSize, RenderStep step)
 		{
+			RenderSetup setup = this.ActiveRenderSetup;
 			ContentRef<RenderTarget> renderTarget = step.Output.IsExplicitNull ? this.renderTarget : step.Output;
 
 			// Determine the local viewport and image size, either derived from screen (parameters) or the render target
@@ -557,12 +562,15 @@ namespace Duality.Components
 			this.drawDevice.Target = renderTarget;
 			this.drawDevice.TargetSize = localTargetSize;
 			this.drawDevice.ViewportRect = localViewport;
+			this.drawDevice.ClearFlags = step.ClearFlags;
+			this.drawDevice.ClearColor = step.DefaultClearColor ? this.clearColor : step.ClearColor;
+			this.drawDevice.ClearDepth = step.ClearDepth;
 			
-			// Collect drawcalls from all the renderers the want to display
-			this.drawDevice.PrepareForDrawcalls();
-
 			if (step.Input == null)
 			{
+				// Prepare for collecting drawcalls
+				this.drawDevice.PrepareForDrawcalls();
+
 				try
 				{
 					// Collect renderer drawcalls
@@ -576,18 +584,22 @@ namespace Duality.Components
 				{
 					Logs.Core.WriteError("There was an error while {0} was collecting drawcalls: {1}", this.ToString(), LogFormat.Exception(e));
 				}
+
+				// Submit the collected drawcalls and perform rendering operations
+				this.drawDevice.Render();
 			}
 			else
 			{
-				// Generate a single drawcall for a fullscreen quad
-				this.drawDevice.AddFullscreenQuad(step.Input, step.InputResize);
+				// Let the rendering setup process this rendering step
+				try
+				{
+					setup.ProcessRenderStep(step, this.drawDevice);
+				}
+				catch (Exception e)
+				{
+					Logs.Core.WriteError("There was an error while {0} was processing rendering step '{1}': {2}", this.ToString(), step.Id, LogFormat.Exception(e));
+				}
 			}
-
-			// Submit the collected drawcalls and perform rendering operations
-			this.drawDevice.Render(
-				step.ClearFlags, 
-				step.DefaultClearColor ? this.clearColor : step.ClearColor, 
-				step.ClearDepth);
 		}
 
 		private void CollectDrawcalls()

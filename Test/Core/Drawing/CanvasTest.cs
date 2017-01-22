@@ -276,7 +276,7 @@ namespace Duality.Tests.Drawing
 					Canvas canvas = new Canvas(device);
 					renderMethod(canvas);
 				}
-				device.Render(ClearFlag.All, ColorRgba.TransparentBlack, 1.0f);
+				device.Render();
 
 				pixelData = texture.GetPixelData();
 			}

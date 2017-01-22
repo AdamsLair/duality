@@ -130,15 +130,45 @@ namespace Duality.Resources
 		/// <param name="scene">The <see cref="Scene"/> that should be rendered.</param>
 		/// <param name="viewportRect">The viewport to render to, in pixel coordinates.</param>
 		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
-		internal protected virtual void RenderScene(Scene scene, Rect viewportRect, Vector2 imageSize)
+		internal void RenderScene(Scene scene, Rect viewportRect, Vector2 imageSize)
+		{
+			this.OnRenderScene(scene, viewportRect, imageSize);
+		}
+		/// <summary>
+		/// Processes the specified <see cref="RenderStep"/>.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="drawDevice"></param>
+		internal void ProcessRenderStep(RenderStep step, DrawDevice drawDevice)
+		{
+			this.OnProcessRenderStep(step, drawDevice);
+		}
+
+		/// <summary>
+		/// Called to render the specified <see cref="Scene"/>.
+		/// </summary>
+		/// <param name="scene">The <see cref="Scene"/> that should be rendered.</param>
+		/// <param name="viewportRect">The viewport to render to, in pixel coordinates.</param>
+		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
+		protected virtual void OnRenderScene(Scene scene, Rect viewportRect, Vector2 imageSize)
 		{
 			Camera[] activeCams = scene.FindComponents<Camera>()
 				.Where(c => c.Active)
 				.ToArray();
 
-			// Maybe sort / process list first later on.
 			foreach (Camera c in activeCams)
 				c.Render(viewportRect, imageSize);
+		}
+		/// <summary>
+		/// Called to process the specified <see cref="RenderStep"/>.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="drawDevice"></param>
+		protected virtual void OnProcessRenderStep(RenderStep step, DrawDevice drawDevice)
+		{
+			drawDevice.PrepareForDrawcalls();
+			drawDevice.AddFullscreenQuad(step.Input, step.InputResize);
+			drawDevice.Render();
 		}
 	}
 }

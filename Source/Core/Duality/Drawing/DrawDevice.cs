@@ -195,6 +195,9 @@ namespace Duality.Drawing
 		private	float				nearZ			= 0.0f;
 		private	float				farZ			= 10000.0f;
 		private	float				focusDist		= DefaultFocusDist;
+		private	ClearFlag			clearFlags		= ClearFlag.All;
+		private	ColorRgba			clearColor		= ColorRgba.TransparentBlack;
+		private	float				clearDepth		= 1.0f;
 		private	Vector2				targetSize		= Vector2.Zero;
 		private	Rect				viewportRect	= Rect.Empty;
 		private	Vector3				refPos			= Vector3.Zero;
@@ -245,6 +248,30 @@ namespace Duality.Drawing
 		{
 			get { return this.farZ; }
 			set { this.farZ = value; }
+		}
+		/// <summary>
+		/// [GET / SET] The clear color to apply when clearing the color buffer.
+		/// </summary>
+		public ColorRgba ClearColor
+		{
+			get { return this.clearColor; }
+			set { this.clearColor = value; }
+		}
+		/// <summary>
+		/// [GET / SET] The clear depth to apply when clearing the depth buffer
+		/// </summary>
+		public float ClearDepth
+		{
+			get { return this.clearDepth; }
+			set { this.clearDepth = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Specifies which buffers to clean before rendering with this device.
+		/// </summary>
+		public ClearFlag ClearFlags
+		{
+			get { return this.clearFlags; }
+			set { this.clearFlags = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Specified the perspective effect that is applied when rendering the world.
@@ -623,7 +650,7 @@ namespace Duality.Drawing
 			// Recalculate matrices according to current mode
 			this.UpdateMatrices();
 		}
-		public void Render(ClearFlag clearFlags, ColorRgba clearColor, float clearDepth)
+		public void Render()
 		{
 			if (DualityApp.GraphicsBackend == null) return;
 
@@ -631,9 +658,9 @@ namespace Duality.Drawing
 			this.OptimizeBatches();
 			RenderOptions options = new RenderOptions
 			{
-				ClearFlags = clearFlags,
-				ClearColor = clearColor,
-				ClearDepth = clearDepth,
+				ClearFlags = this.clearFlags,
+				ClearColor = this.clearColor,
+				ClearDepth = this.clearDepth,
 				Viewport = this.viewportRect,
 				RenderMode = this.renderMode,
 				ModelViewMatrix = this.matModelView,
