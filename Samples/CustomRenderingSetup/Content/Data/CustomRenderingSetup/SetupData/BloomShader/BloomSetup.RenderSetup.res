@@ -94,7 +94,7 @@
       </item>
     </_items>
     <_size dataType="Int">9</_size>
-    <_version dataType="Int">90</_version>
+    <_version dataType="Int">98</_version>
   </autoResizeTargets>
   <steps dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Resources.RenderStep]]" id="2035693768">
     <_items dataType="Array" type="Duality.Resources.RenderStep[]" id="2696347487" length="16">
@@ -146,7 +146,7 @@
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1307056800">
           <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
-          <hashCode dataType="Int">-1039186999</hashCode>
+          <hashCode dataType="Int">-66713629</hashCode>
           <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
             <A dataType="Byte">255</A>
             <B dataType="Byte">255</B>
@@ -167,7 +167,8 @@
           <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="721291542" surrogate="true">
             <header />
             <body>
-              <minBrightness dataType="Array" type="System.Single[]" id="3895025142">0.6</minBrightness>
+              <minBrightness dataType="Array" type="System.Single[]" id="3895025142">0.75</minBrightness>
+              <bloomStrength dataType="Array" type="System.Single[]" id="2511567898">1</bloomStrength>
             </body>
           </uniforms>
         </input>
