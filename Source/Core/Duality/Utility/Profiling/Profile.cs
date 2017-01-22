@@ -35,7 +35,6 @@ namespace Duality
 		public static readonly TimeCounter TimeCollectDrawcalls;
 		public static readonly TimeCounter TimeOptimizeDrawcalls;
 		public static readonly TimeCounter TimeProcessDrawcalls;
-		public static readonly TimeCounter TimePostProcessing;
 		public static readonly TimeCounter TimeLog;
 		public static readonly TimeCounter TimeVisualPicking;
 		public static readonly TimeCounter TimeUnaccounted;
@@ -70,7 +69,6 @@ namespace Duality
 			TimeCollectDrawcalls        = RequestCounter<TimeCounter>(@"Duality\Frame\Render\CollectDrawcalls");
 			TimeOptimizeDrawcalls       = RequestCounter<TimeCounter>(@"Duality\Frame\Render\OptimizeDrawcalls");
 			TimeProcessDrawcalls        = RequestCounter<TimeCounter>(@"Duality\Frame\Render\ProcessDrawcalls");
-			TimePostProcessing          = RequestCounter<TimeCounter>(@"Duality\Frame\Render\PostProcessing");
 			TimeLog                     = RequestCounter<TimeCounter>(@"Duality\Frame\Log");
 			TimeVisualPicking           = RequestCounter<TimeCounter>(@"Duality\Frame\VisualPicking");
 			TimeUnaccounted             = RequestCounter<TimeCounter>(@"Duality\Frame\Unaccounted");

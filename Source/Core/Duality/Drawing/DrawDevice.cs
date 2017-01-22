@@ -565,6 +565,53 @@ namespace Duality.Drawing
 			++this.numRawBatches;
 		}
 		
+		/// <summary>
+		/// Generates a single drawcall that renders a fullscreen quad using the specified material.
+		/// Assumes that the <see cref="DrawDevice"/> is set up to render in screen space.
+		/// </summary>
+		/// <param name="material"></param>
+		/// <param name="resizeMode"></param>
+		public void AddFullscreenQuad(BatchInfo material, TargetResize resizeMode)
+		{
+			Texture tex = material.MainTexture.Res;
+			Vector2 uvRatio = tex != null ? tex.UVRatio : Vector2.One;
+			Point2 inputSize = tex != null ? tex.ContentSize : Point2.Zero;
+
+			// Fit the input material rect to the output size according to rendering step config
+			Vector2 targetSize = resizeMode.Apply(inputSize, this.TargetSize);
+			Rect targetRect = Rect.Align(
+				Alignment.Center, 
+				this.TargetSize.X * 0.5f, 
+				this.TargetSize.Y * 0.5f, 
+				targetSize.X, 
+				targetSize.Y);
+
+			// Fit the target rect to actual pixel coordinates to avoid unnecessary filtering offsets
+			targetRect.X = (int)targetRect.X;
+			targetRect.Y = (int)targetRect.Y;
+			targetRect.W = MathF.Ceiling(targetRect.W);
+			targetRect.H = MathF.Ceiling(targetRect.H);
+
+			VertexC1P3T2[] vertices = new VertexC1P3T2[4];
+
+			vertices[0].Pos = new Vector3(targetRect.LeftX, targetRect.TopY, 0.0f);
+			vertices[1].Pos = new Vector3(targetRect.RightX, targetRect.TopY, 0.0f);
+			vertices[2].Pos = new Vector3(targetRect.RightX, targetRect.BottomY, 0.0f);
+			vertices[3].Pos = new Vector3(targetRect.LeftX, targetRect.BottomY, 0.0f);
+
+			vertices[0].TexCoord = new Vector2(0.0f, 0.0f);
+			vertices[1].TexCoord = new Vector2(uvRatio.X, 0.0f);
+			vertices[2].TexCoord = new Vector2(uvRatio.X, uvRatio.Y);
+			vertices[3].TexCoord = new Vector2(0.0f, uvRatio.Y);
+
+			vertices[0].Color = ColorRgba.White;
+			vertices[1].Color = ColorRgba.White;
+			vertices[2].Color = ColorRgba.White;
+			vertices[3].Color = ColorRgba.White;
+
+			this.AddVertices(material, VertexMode.Quads, vertices);
+		}
+
 		public void UpdateMatrices()
 		{
 			this.GenerateModelView(out this.matModelView);

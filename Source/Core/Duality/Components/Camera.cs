@@ -557,11 +557,12 @@ namespace Duality.Components
 			this.drawDevice.Target = renderTarget;
 			this.drawDevice.TargetSize = localTargetSize;
 			this.drawDevice.ViewportRect = localViewport;
+			
+			// Collect drawcalls from all the renderers the want to display
+			this.drawDevice.PrepareForDrawcalls();
 
 			if (step.Input == null)
 			{
-				// Collect drawcalls from all the renderers the want to display
-				this.drawDevice.PrepareForDrawcalls();
 				try
 				{
 					// Collect renderer drawcalls
@@ -575,62 +576,18 @@ namespace Duality.Components
 				{
 					Logs.Core.WriteError("There was an error while {0} was collecting drawcalls: {1}", this.ToString(), LogFormat.Exception(e));
 				}
-
-				// Submit the collected drawcalls and perform rendering operations
-				this.drawDevice.Render(
-					step.ClearFlags, 
-					step.DefaultClearColor ? this.clearColor : step.ClearColor, 
-					step.ClearDepth);
 			}
 			else
 			{
-				Texture mainTex = step.Input.MainTexture.Res;
-				Vector2 uvRatio = mainTex != null ? mainTex.UVRatio : Vector2.One;
-				Point2 inputSize = mainTex != null ? mainTex.ContentSize : Point2.Zero;
-
-				// Fit the input material rect to the output size according to rendering step config
-				Vector2 targetSize = step.InputResize.Apply(inputSize, this.drawDevice.TargetSize);
-				Rect targetRect = Rect.Align(
-					Alignment.Center, 
-					this.drawDevice.TargetSize.X * 0.5f, 
-					this.drawDevice.TargetSize.Y * 0.5f, 
-					targetSize.X, 
-					targetSize.Y);
-
-				// Fit the target rect to actual pixel coordinates to avoid unnecessary filtering offsets
-				targetRect.X = (int)targetRect.X;
-				targetRect.Y = (int)targetRect.Y;
-				targetRect.W = MathF.Ceiling(targetRect.W);
-				targetRect.H = MathF.Ceiling(targetRect.H);
-
-				Profile.TimePostProcessing.BeginMeasure();
-				this.drawDevice.PrepareForDrawcalls();
-
-				IDrawDevice device = this.drawDevice;
-				{
-					VertexC1P3T2[] vertices = new VertexC1P3T2[4];
-
-					vertices[0].Pos = new Vector3(targetRect.LeftX, targetRect.TopY, 0.0f);
-					vertices[1].Pos = new Vector3(targetRect.RightX, targetRect.TopY, 0.0f);
-					vertices[2].Pos = new Vector3(targetRect.RightX, targetRect.BottomY, 0.0f);
-					vertices[3].Pos = new Vector3(targetRect.LeftX, targetRect.BottomY, 0.0f);
-
-					vertices[0].TexCoord = new Vector2(0.0f, 0.0f);
-					vertices[1].TexCoord = new Vector2(uvRatio.X, 0.0f);
-					vertices[2].TexCoord = new Vector2(uvRatio.X, uvRatio.Y);
-					vertices[3].TexCoord = new Vector2(0.0f, uvRatio.Y);
-
-					vertices[0].Color = ColorRgba.White;
-					vertices[1].Color = ColorRgba.White;
-					vertices[2].Color = ColorRgba.White;
-					vertices[3].Color = ColorRgba.White;
-
-					device.AddVertices(step.Input, VertexMode.Quads, vertices);
-				}
-
-				this.drawDevice.Render(step.ClearFlags, step.ClearColor, step.ClearDepth);
-				Profile.TimePostProcessing.EndMeasure();
+				// Generate a single drawcall for a fullscreen quad
+				this.drawDevice.AddFullscreenQuad(step.Input, step.InputResize);
 			}
+
+			// Submit the collected drawcalls and perform rendering operations
+			this.drawDevice.Render(
+				step.ClearFlags, 
+				step.DefaultClearColor ? this.clearColor : step.ClearColor, 
+				step.ClearDepth);
 		}
 
 		private void CollectDrawcalls()
