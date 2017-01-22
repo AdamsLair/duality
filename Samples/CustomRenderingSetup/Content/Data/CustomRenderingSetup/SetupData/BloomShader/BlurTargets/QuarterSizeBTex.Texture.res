@@ -2,8 +2,8 @@
   <anisoFilter dataType="Bool">false</anisoFilter>
   <assetInfo />
   <basePixmap dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Pixmap]]" />
-  <filterMag dataType="Enum" type="Duality.Drawing.TextureMagFilter" name="Nearest" value="0" />
-  <filterMin dataType="Enum" type="Duality.Drawing.TextureMinFilter" name="Nearest" value="0" />
+  <filterMag dataType="Enum" type="Duality.Drawing.TextureMagFilter" name="Linear" value="1" />
+  <filterMin dataType="Enum" type="Duality.Drawing.TextureMinFilter" name="Linear" value="1" />
   <pixelformat dataType="Enum" type="Duality.Drawing.TexturePixelFormat" name="Rgba" value="3" />
   <size dataType="Struct" type="Duality.Point2">
     <X dataType="Int">288</X>
