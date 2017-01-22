@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Duality;
+using Duality.Editor;
 using Duality.Resources;
 using Duality.Drawing;
 
 namespace CustomRenderingSetup
 {
+	/// <summary>
+	/// A custom rendering setup that has a special code path for a programmatic bloom filter
+	/// which is triggered in <see cref="RenderStep"/> instances matching the <see cref="RenderStep.Id"/> "Bloom".
+	/// </summary>
 	public class CustomBloomRenderSetup : RenderSetup
 	{
 		private static readonly int PyramidSize = 4;
@@ -23,31 +28,54 @@ namespace CustomRenderingSetup
 		[DontSerialize] private RenderTarget[] targetPingPongB = new RenderTarget[PyramidSize];
 
 
+		/// <summary>
+		/// [GET / SET] A <see cref="DrawTechnique"/> that extracts bloom brightness from a rendered source image.
+		/// </summary>
 		public ContentRef<DrawTechnique> TechFilterBrightness
 		{
 			get { return this.techFilterBrightness; }
 			set { this.techFilterBrightness = value; }
 		}
+		/// <summary>
+		/// [GET / SET] A <see cref="DrawTechnique"/> that downsamples a source image by half.
+		/// </summary>
 		public ContentRef<DrawTechnique> TechDownsample
 		{
 			get { return this.techDownsample; }
 			set { this.techDownsample = value; }
 		}
+		/// <summary>
+		/// [GET / SET] A <see cref="DrawTechnique"/> that blurs the source image in one direction.
+		/// </summary>
 		public ContentRef<DrawTechnique> TechBlur
 		{
 			get { return this.techBlur; }
 			set { this.techBlur = value; }
 		}
+		/// <summary>
+		/// [GET / SET] A <see cref="DrawTechnique"/> that combines a main texture with a set of bloom textures at
+		/// various scales into a final image.
+		/// </summary>
 		public ContentRef<DrawTechnique> TechCombineFinal
 		{
 			get { return this.techCombineFinal; }
 			set { this.techCombineFinal = value; }
 		}
+		/// <summary>
+		/// [GET / SET] The minimum brightness value that a pixel needs to surpass in order to become part of
+		/// the bloom step.
+		/// </summary>
+		[EditorHintRange(0.0f, 1.0f)]
 		public float MinBrightness
 		{
 			get { return this.minBrightness; }
 			set { this.minBrightness = value; }
 		}
+		/// <summary>
+		/// [GET / SET] Strength multiplier for the final combine step that merges all bloom images with the
+		/// main rendered image.
+		/// </summary>
+		[EditorHintRange(0.0f, 1.0f)]
 		public float BloomStrength
 		{
 			get { return this.bloomStrength; }
@@ -81,7 +109,9 @@ namespace CustomRenderingSetup
 			// Downsample to lowest target
 			for (int i = 1; i < this.targetPingPongA.Length; i++)
 			{
-				this.Blit(drawDevice, this.targetPingPongA[i - 1], this.targetPingPongA[i], this.techDownsample);
+				BatchInfo material = new BatchInfo(this.techDownsample, ColorRgba.White);
+				material.MainTexture = this.targetPingPongA[i - 1].Targets[0];
+				this.Blit(drawDevice, material, this.targetPingPongA[i]);
 			}
 
 			// Blur all targets, separating horizontal and vertical blur
@@ -110,14 +140,6 @@ namespace CustomRenderingSetup
 			}
 		}
 		
-		private void Blit(DrawDevice device, RenderTarget source, RenderTarget target, ContentRef<DrawTechnique> technique)
-		{
-			this.Blit(device, source.Targets[0], target, technique);
-		}
-		private void Blit(DrawDevice device, ContentRef<Texture> source, RenderTarget target, ContentRef<DrawTechnique> technique)
-		{
-			this.Blit(device, new BatchInfo(technique, ColorRgba.White, source), target);
-		}
 		private void Blit(DrawDevice device, BatchInfo source, RenderTarget target)
 		{
 			device.Target = target;
@@ -128,17 +150,10 @@ namespace CustomRenderingSetup
 			device.AddFullscreenQuad(source, TargetResize.Stretch);
 			device.Render();
 		}
-		private void Blit(DrawDevice device, RenderTarget source, Rect screenRect, ContentRef<DrawTechnique> technique)
-		{
-			this.Blit(device, source.Targets[0], screenRect, technique);
-		}
-		private void Blit(DrawDevice device, ContentRef<Texture> texture, Rect screenRect, ContentRef<DrawTechnique> technique)
-		{
-			this.Blit(device, new BatchInfo(technique, ColorRgba.White, texture), screenRect);
-		}
 		private void Blit(DrawDevice device, BatchInfo source, Rect screenRect)
 		{
 			device.Target = null;
+			device.TargetSize = screenRect.Size;
 			device.ViewportRect = screenRect;
 
 			device.PrepareForDrawcalls();
