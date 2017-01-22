@@ -22,8 +22,9 @@ namespace Duality.Resources
 	[EditorHintImage(CoreResNames.ImageRenderTarget)]
 	public class RenderTarget : Resource
 	{
-		private	List<ContentRef<Texture>>	targets			= new List<ContentRef<Texture>>();
-		private	AAQuality					multisampling	= AAQuality.Off;
+		private List<ContentRef<Texture>> targets       = new List<ContentRef<Texture>>();
+		private AAQuality                 multisampling = AAQuality.Off;
+		private bool                      depthBuffer   = true;
 
 		[DontSerialize] private	INativeRenderTarget native = null;
 
@@ -39,7 +40,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET / SET] Whether this RenderTarget is multisampled.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		public AAQuality Multisampling
 		{
 			get { return this.multisampling; }
@@ -48,6 +48,22 @@ namespace Duality.Resources
 				if (this.multisampling != value)
 				{
 					this.multisampling = value;
+					this.FreeNativeRes();
+					this.SetupNativeRes();
+				}
+			}
+		}
+		/// <summary>
+		/// [GET / SET] Whether this RenderTarget provides a depth buffer.
+		/// </summary>
+		public bool DepthBuffer
+		{
+			get { return this.depthBuffer; }
+			set
+			{
+				if (this.depthBuffer != value)
+				{
+					this.depthBuffer = value;
 					this.FreeNativeRes();
 					this.SetupNativeRes();
 				}
@@ -222,7 +238,7 @@ namespace Duality.Resources
 
 			try
 			{
-				this.native.Setup(targets, this.multisampling);
+				this.native.Setup(targets, this.multisampling, this.depthBuffer);
 			}
 			catch (Exception e)
 			{
