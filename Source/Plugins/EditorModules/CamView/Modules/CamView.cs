@@ -1014,6 +1014,7 @@ namespace Duality.Editor.Plugins.CamView
 			this.showBgColorDialog.Enabled = value;
 			this.layerSelector.Enabled = value;
 			this.objectVisibilitySelector.Enabled = value;
+			this.renderSetupSelector.Enabled = value;
 			this.buttonResetZoom.Enabled = value;
 		}
 
