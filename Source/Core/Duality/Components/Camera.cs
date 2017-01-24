@@ -28,26 +28,13 @@ namespace Duality.Components
 		private ColorRgba                clearColor            = ColorRgba.TransparentBlack;
 		private ContentRef<RenderTarget> renderTarget          = null;
 		private ContentRef<RenderSetup>  renderSetup           = null;
-		private List<RenderStepAddition> additionalRenderSteps = new List<RenderStepAddition>();
 
 		[DontSerialize] private DrawDevice                    drawDevice         = null;
-		[DontSerialize] private List<RenderStep>              renderSteps        = new List<RenderStep>();
 		[DontSerialize] private List<ICmpRenderer>            pickingMap         = null;
 		[DontSerialize] private RenderTarget                  pickingRT          = null;
 		[DontSerialize] private Texture                       pickingTex         = null;
 		[DontSerialize] private byte[]                        pickingBuffer      = null;
-		[DontSerialize] private List<Predicate<ICmpRenderer>> editorRenderFilter = new List<Predicate<ICmpRenderer>>();
 		
-		[DontSerialize] 
-		private EventHandler<CollectDrawcallEventArgs> eventCollectDrawcalls = null;
-		/// <summary>
-		/// Fired when a <see cref="RenderStep"/> is collecting drawcalls.
-		/// </summary>
-		public event EventHandler<CollectDrawcallEventArgs> EventCollectDrawcalls
-		{
-			add { this.eventCollectDrawcalls += value; }
-			remove { this.eventCollectDrawcalls -= value; }
-		}
 
 		/// <summary>
 		/// [GET / SET] The lowest Z value that can be displayed by the device.
@@ -141,15 +128,6 @@ namespace Duality.Components
 			set { this.renderSetup = value; }
 		}
 		/// <summary>
-		/// [GET / SET] A list of all rendering steps that will be executed in addition to 
-		/// the ones defined in the referenced or default <see cref="RenderingSetup"/>.
-		/// </summary>
-		public List<RenderStepAddition> AdditionalRenderSteps
-		{
-			get { return this.additionalRenderSteps; }
-			set { this.additionalRenderSteps = value ?? new List<RenderStepAddition>(); }
-		}
-		/// <summary>
 		/// [GET] The rendering setup that will be used by this camera.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
@@ -166,65 +144,29 @@ namespace Duality.Components
 
 
 		/// <summary>
-		/// Adds an additional rendering step inside the sequence of rendering steps that is 
-		/// defined by the <see cref="RenderingSetup"/>.
-		/// </summary>
-		/// <param name="anchorId">Id of the existing rendering step to which the new step will be anchored.</param>
-		/// <param name="anchorPos">Position of the new rendering step relative to the one it is anchored to.</param>
-		/// <param name="step">The new rendering step that should be inserted into the rendering step sequence.</param>
-		public void AddRenderStep(string anchorId, RenderStepPosition anchorPos, RenderStep step)
-		{
-			this.additionalRenderSteps.Add(new RenderStepAddition
-			{
-				AnchorStepId = anchorId,
-				AnchorPosition = anchorPos,
-				AddedRenderStep = step
-			});
-		}
-		/// <summary>
-		/// Adds an additional rendering step inside the sequence of rendering steps that is 
-		/// defined by the <see cref="RenderingSetup"/>.
-		/// </summary>
-		/// <param name="anchorPos">Position of the new rendering step relative to the one it is anchored to.</param>
-		/// <param name="step">The new rendering step that should be inserted into the rendering step sequence.</param>
-		public void AddRenderStep(RenderStepPosition anchorPos, RenderStep step)
-		{
-			this.additionalRenderSteps.Add(new RenderStepAddition
-			{
-				AnchorPosition = anchorPos,
-				AddedRenderStep = step
-			});
-		}
-		/// <summary>
-		/// Removes an additional rendering step inside the sequence of rendering steps that is 
-		/// defined by the <see cref="RenderingSetup"/>.
-		/// </summary>
-		/// <param name="step"></param>
-		public void RemoveRenderStep(RenderStep step)
-		{
-			this.additionalRenderSteps.RemoveAll(item => item.AddedRenderStep == step);
-		}
-
-		/// <summary>
 		/// Renders the current <see cref="Duality.Resources.Scene"/>.
 		/// </summary>
 		/// <param name="viewportRect">The viewport area to which will be rendered.</param>
 		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
 		public void Render(Rect viewportRect, Vector2 imageSize)
 		{
-			this.UpdateRenderSteps();
-			this.UpdateDeviceConfig();
-
 			string counterName = PathOp.Combine("Cameras", this.gameobj.Name);
 			Profile.BeginMeasure(counterName);
 			Profile.TimeRender.BeginMeasure();
+			
+			// Configure the wrapped drawing device, so rendering matrices and settings
+			// are set up properly.
+			this.UpdateDeviceConfig();
 
-			this.RenderAllSteps(viewportRect, imageSize);
-
-			// Reset matrices for projection calculations during update
-			this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
-			this.drawDevice.TargetSize = imageSize;
-			this.drawDevice.UpdateMatrices();
+			// Render the scene that contains this camera from its current point of view
+			// using the previously configured drawing device.
+			RenderSetup setup = this.ActiveRenderSetup;
+			setup.RenderPointOfView(
+				this.GameObj.ParentScene, 
+				this.drawDevice, 
+				viewportRect, 
+				imageSize, 
+				this.targetRect);
 
 			Profile.TimeRender.EndMeasure();
 			Profile.EndMeasure(counterName);
@@ -240,53 +182,19 @@ namespace Duality.Components
 		{
 			Profile.TimeVisualPicking.BeginMeasure();
 
-			// Render picking map
-			{
-				this.UpdateRenderSteps();
-				this.UpdateDeviceConfig();
-				this.SetupPickingRT(viewportSize);
+			this.UpdateDeviceConfig();
+			this.drawDevice.Target = this.pickingRT;
 
-				if (this.pickingMap == null) this.pickingMap = new List<ICmpRenderer>();
-				this.pickingMap.Clear();
+			if (this.pickingMap == null) this.pickingMap = new List<ICmpRenderer>();
+			this.pickingMap.Clear();
 
-				// Setup DrawDevice
-				this.drawDevice.PickingIndex = 1;
-				this.drawDevice.Target = this.pickingRT;
-				this.drawDevice.TargetSize = imageSize;
-				this.drawDevice.ViewportRect = new Rect(this.pickingTex.ContentSize);
-				this.drawDevice.ClearColor = ColorRgba.Black;
-				this.drawDevice.ClearDepth = 1.0f;
-
-				// Render the world
-				{
-					this.drawDevice.VisibilityMask = this.visibilityMask & VisibilityFlag.AllGroups;
-					this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
-					this.drawDevice.ClearFlags = ClearFlag.All;
-
-					this.drawDevice.PrepareForDrawcalls();
-					this.CollectDrawcalls();
-					this.drawDevice.Render();
-				}
-
-				// Render screen overlays
-				if (renderOverlay)
-				{
-					this.drawDevice.VisibilityMask = this.visibilityMask;
-					this.drawDevice.RenderMode = RenderMatrix.ScreenSpace;
-					this.drawDevice.ClearFlags = ClearFlag.None;
-
-					this.drawDevice.PrepareForDrawcalls();
-					this.CollectDrawcalls();
-					this.drawDevice.Render();
-				}
-
-				this.drawDevice.PickingIndex = 0;
-
-				// Reset matrices for projection calculations during update
-				this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
-				this.drawDevice.TargetSize = imageSize;
-				this.drawDevice.UpdateMatrices();
-			}
+			PickingRenderSetup pickingSetup = RenderSetup.Picking.Res;
+			pickingSetup.RenderPointOfView(
+				this.GameObj.ParentScene, 
+				this.drawDevice, 
+				new Rect(viewportSize), 
+				imageSize, 
+				new Rect(0, 0, 1, 1));
 
 			// Move data to local buffer
 			int pxNum = this.pickingTex.ContentWidth * this.pickingTex.ContentHeight;
@@ -477,233 +385,8 @@ namespace Duality.Components
 			this.drawDevice.FarZ = this.farZ;
 			this.drawDevice.FocusDist = this.focusDist;
 			this.drawDevice.Perspective = this.perspective;
-		}
-
-		private void UpdateRenderSteps()
-		{
-			// Retrieve all rendering steps from the setup
-			this.renderSteps.Clear();
-			RenderSetup setup = this.ActiveRenderSetup;
-			foreach (RenderStep step in setup.Steps)
-				this.renderSteps.Add(step);
-
-			// Insert additional rendering steps as defined locally
-			foreach (RenderStepAddition addition in this.additionalRenderSteps)
-			{
-				if (addition.AddedRenderStep == null) continue;
-
-				int anchorIndex = -1;
-				switch (addition.AnchorPosition)
-				{
-					case RenderStepPosition.Before:
-						anchorIndex = this.renderSteps.FindIndex(step => step.Id == addition.AnchorStepId);
-						if (anchorIndex == -1)
-							anchorIndex = 0;
-						break;
-					case RenderStepPosition.After:
-						anchorIndex = this.renderSteps.FindIndex(step => step.Id == addition.AnchorStepId);
-						if (anchorIndex == -1)
-							anchorIndex = this.renderSteps.Count;
-						else
-							anchorIndex++;
-						break;
-					case RenderStepPosition.First:
-						anchorIndex = 0;
-						break;
-					case RenderStepPosition.Last:
-						anchorIndex = this.renderSteps.Count;
-						break;
-				}
-				if (anchorIndex != -1)
-				{
-					this.renderSteps.Insert(anchorIndex, addition.AddedRenderStep);
-				}
-			}
-		}
-		private void RenderAllSteps(Rect viewportRect, Vector2 imageSize)
-		{
-			// Resize all render targets to the viewport size we're dealing with
-			RenderSetup setup = this.ActiveRenderSetup;
-			setup.ApplyOutputAutoResize((Point2)viewportRect.Size);
-
-			// Execute all steps in the rendering setup, as well as those that were added in this camera
-			foreach (RenderStep step in this.renderSteps)
-			{
-				this.RenderSingleStep(viewportRect, imageSize, step);
-			}
-		}
-		private void RenderSingleStep(Rect viewportRect, Vector2 imageSize, RenderStep step)
-		{
-			RenderSetup setup = this.ActiveRenderSetup;
-			ContentRef<RenderTarget> renderTarget = step.Output.IsExplicitNull ? this.renderTarget : step.Output;
-
-			// Determine the local viewport and image size, either derived from screen (parameters) or the render target
-			Vector2 localTargetSize = renderTarget.IsAvailable ? renderTarget.Res.Size : imageSize;
-			Rect localViewport = renderTarget.IsAvailable ? new Rect(renderTarget.Res.Size) : viewportRect;
-
-			// When rendering to screen, adjust the local render size and viewport 
-			// according to the camera target rect
-			if (step.Output.IsExplicitNull)
-			{
-				localViewport.Pos += localViewport.Size * this.targetRect.Pos;
-				localViewport.Size *= this.targetRect.Size;
-				localTargetSize *= this.targetRect.Size;
-			}
-
-			// Regardless of rendering targets, adjust the local render size and viewport 
-			// according to the rendering step target rect
-			localViewport.Pos += localViewport.Size * step.TargetRect.Pos;
-			localViewport.Size *= step.TargetRect.Size;
-			localTargetSize *= step.TargetRect.Size;
-
-			// Set up the draw device with rendering step settings
-			this.drawDevice.VisibilityMask = this.visibilityMask & step.VisibilityMask;
-			this.drawDevice.RenderMode = step.MatrixMode;
-			this.drawDevice.Target = renderTarget;
-			this.drawDevice.TargetSize = localTargetSize;
-			this.drawDevice.ViewportRect = localViewport;
-			this.drawDevice.ClearFlags = step.ClearFlags;
-			this.drawDevice.ClearColor = step.DefaultClearColor ? this.clearColor : step.ClearColor;
-			this.drawDevice.ClearDepth = step.ClearDepth;
-			
-			if (step.Input == null)
-			{
-				// Prepare for collecting drawcalls
-				this.drawDevice.PrepareForDrawcalls();
-
-				try
-				{
-					// Collect renderer drawcalls
-					this.CollectDrawcalls();
-
-					// Collect additional drawcalls by external sources subscribed to the event handler
-					if (this.eventCollectDrawcalls != null)
-						this.eventCollectDrawcalls(this, new CollectDrawcallEventArgs(step.Id, this.drawDevice));
-				}
-				catch (Exception e)
-				{
-					Logs.Core.WriteError("There was an error while {0} was collecting drawcalls: {1}", this.ToString(), LogFormat.Exception(e));
-				}
-
-				// Submit the collected drawcalls and perform rendering operations
-				this.drawDevice.Render();
-			}
-			else
-			{
-				// Let the rendering setup process this rendering step
-				try
-				{
-					setup.ProcessRenderStep(step, this.drawDevice);
-				}
-				catch (Exception e)
-				{
-					Logs.Core.WriteError("There was an error while {0} was processing rendering step '{1}': {2}", this.ToString(), step.Id, LogFormat.Exception(e));
-				}
-			}
-		}
-
-		private void CollectDrawcalls()
-		{
-			// If no visibility groups are met, don't bother looking for renderers.
-			// This is important to allow efficient drawcall injection with additional
-			// "dummy" renderpasses. CamViewStates render their overlays by temporarily 
-			// adding 3 - 4 of these passes. Iterating over all objects again would be 
-			// devastating for performance and at the same time pointless.
-			if ((this.drawDevice.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) return;
-
-			// Query renderers
-			IRendererVisibilityStrategy visibilityStrategy = Scene.Current.VisibilityStrategy;
-			RawList<ICmpRenderer> visibleRenderers;
-			{
-				if (visibilityStrategy == null) return;
-				Profile.TimeQueryVisibleRenderers.BeginMeasure();
-
-				visibleRenderers = new RawList<ICmpRenderer>();
-				visibilityStrategy.QueryVisibleRenderers(this.drawDevice, visibleRenderers);
-				if (this.editorRenderFilter.Count > 0)
-				{
-					visibleRenderers.RemoveAll(r =>
-					{
-						for (int i = 0; i < this.editorRenderFilter.Count; i++)
-						{
-							if (!this.editorRenderFilter[i](r)) return true;
-						}
-						return false;
-					});
-				}
-
-				Profile.TimeQueryVisibleRenderers.EndMeasure();
-			}
-
-			// Collect drawcalls
-			if (this.drawDevice.IsPicking)
-			{
-				this.pickingMap.AddRange(visibleRenderers);
-				foreach (ICmpRenderer r in visibleRenderers)
-				{
-					r.Draw(this.drawDevice);
-					this.drawDevice.PickingIndex++;
-				}
-			}
-			else
-			{
-				bool profilePerType = visibilityStrategy.IsRendererQuerySorted;
-				Profile.TimeCollectDrawcalls.BeginMeasure();
-
-				Type lastRendererType = null;
-				Type rendererType = null;
-				TimeCounter activeProfiler = null;
-				ICmpRenderer[] data = visibleRenderers.Data;
-				for (int i = 0; i < data.Length; i++)
-				{
-					if (i >= visibleRenderers.Count) break;
-
-					// Manage profilers per Component type
-					if (profilePerType)
-					{
-						rendererType = data[i].GetType();
-						if (rendererType != lastRendererType)
-						{
-							if (activeProfiler != null)
-								activeProfiler.EndMeasure();
-							activeProfiler = Profile.RequestCounter<TimeCounter>(Profile.TimeCollectDrawcalls.FullName + @"\" + rendererType.Name);
-							activeProfiler.BeginMeasure();
-							lastRendererType = rendererType;
-						}
-					}
-
-					// Collect Drawcalls from this Component
-					data[i].Draw(this.drawDevice);
-				}
-				
-				if (activeProfiler != null)
-					activeProfiler.EndMeasure();
-
-				Profile.TimeCollectDrawcalls.EndMeasure();
-			}
-		}
-
-		private void SetupPickingRT(Point2 size)
-		{
-			if (this.pickingTex == null || this.pickingTex.ContentSize != size)
-			{
-				if (this.pickingTex != null) this.pickingTex.Dispose();
-				if (this.pickingRT != null) this.pickingRT.Dispose();
-				this.pickingTex = new Texture(
-					size.X, size.Y, TextureSizeMode.Default, 
-					TextureMagFilter.Nearest, TextureMinFilter.Nearest);
-				this.pickingRT = new RenderTarget(AAQuality.Off, this.pickingTex);
-			}
-		}
-
-		internal void AddEditorRendererFilter(Predicate<ICmpRenderer> filter)
-		{
-			if (this.editorRenderFilter.Contains(filter)) return;
-			this.editorRenderFilter.Add(filter);
-		}
-		internal void RemoveEditorRendererFilter(Predicate<ICmpRenderer> filter)
-		{
-			this.editorRenderFilter.Remove(filter);
+			this.drawDevice.VisibilityMask = this.visibilityMask;
+			this.drawDevice.ClearColor = this.clearColor;
 		}
 
 		void ICmpInitializable.OnInit(Component.InitContext context)

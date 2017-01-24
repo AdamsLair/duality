@@ -83,12 +83,12 @@ namespace CustomRenderingSetup
 		}
 
 
-		protected override void OnProcessRenderStep(RenderStep step, DrawDevice drawDevice)
+		protected override void OnRenderSingleStep(RenderStep step, Scene scene, DrawDevice drawDevice)
 		{
 			if (step.Id == "Bloom")
 				this.ProcessBloomStep(step, drawDevice);
 			else
-				base.OnProcessRenderStep(step, drawDevice);
+				base.OnRenderSingleStep(step, scene, drawDevice);
 		}
 		private void ProcessBloomStep(RenderStep step, DrawDevice drawDevice)
 		{
