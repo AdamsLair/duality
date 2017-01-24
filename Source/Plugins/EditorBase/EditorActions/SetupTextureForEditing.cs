@@ -12,6 +12,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 		public override void Perform(Texture texture)
 		{
 			texture.Size = new Vector2(128, 128);
+			texture.ReloadData();
 		}
 		
 		public override bool MatchesContext(string context)
