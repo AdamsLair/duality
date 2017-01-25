@@ -57,6 +57,7 @@ namespace Duality.Resources
 		[DontSerialize] private List<Predicate<ICmpRenderer>> rendererFilter = new List<Predicate<ICmpRenderer>>();
 		[DontSerialize] private EventHandler<CollectDrawcallEventArgs> eventCollectDrawcalls = null;
 
+
 		/// <summary>
 		/// Fired when a <see cref="RenderStep"/> is collecting drawcalls.
 		/// </summary>
@@ -65,6 +66,7 @@ namespace Duality.Resources
 			add { this.eventCollectDrawcalls += value; }
 			remove { this.eventCollectDrawcalls -= value; }
 		}
+
 
 		/// <summary>
 		/// [GET / SET] A set of rendering steps that describes the rendering process. Is never null nor empty.

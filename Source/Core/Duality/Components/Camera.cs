@@ -29,11 +29,7 @@ namespace Duality.Components
 		private ContentRef<RenderTarget> renderTarget          = null;
 		private ContentRef<RenderSetup>  renderSetup           = null;
 
-		[DontSerialize] private DrawDevice                    drawDevice         = null;
-		[DontSerialize] private List<ICmpRenderer>            pickingMap         = null;
-		[DontSerialize] private RenderTarget                  pickingRT          = null;
-		[DontSerialize] private Texture                       pickingTex         = null;
-		[DontSerialize] private byte[]                        pickingBuffer      = null;
+		[DontSerialize] private DrawDevice drawDevice          = null;
 		
 
 		/// <summary>
@@ -183,10 +179,6 @@ namespace Duality.Components
 			Profile.TimeVisualPicking.BeginMeasure();
 
 			this.UpdateDeviceConfig();
-			this.drawDevice.Target = this.pickingRT;
-
-			if (this.pickingMap == null) this.pickingMap = new List<ICmpRenderer>();
-			this.pickingMap.Clear();
 
 			PickingRenderSetup pickingSetup = RenderSetup.Picking.Res;
 			pickingSetup.RenderPointOfView(
@@ -195,17 +187,6 @@ namespace Duality.Components
 				new Rect(viewportSize), 
 				imageSize, 
 				new Rect(0, 0, 1, 1));
-
-			// Move data to local buffer
-			int pxNum = this.pickingTex.ContentWidth * this.pickingTex.ContentHeight;
-			int pxByteNum = pxNum * 4;
-
-			if (this.pickingBuffer == null)
-				this.pickingBuffer = new byte[pxByteNum];
-			else if (pxByteNum > this.pickingBuffer.Length)
-				Array.Resize(ref this.pickingBuffer, Math.Max(this.pickingBuffer.Length * 2, pxByteNum));
-
-			this.pickingRT.GetPixelData(this.pickingBuffer);
 
 			Profile.TimeVisualPicking.EndMeasure();
 		}
@@ -218,32 +199,8 @@ namespace Duality.Components
 		/// <returns>The <see cref="Duality.ICmpRenderer"/> that owns the pixel.</returns>
 		public ICmpRenderer PickRendererAt(int x, int y)
 		{
-			if (this.pickingBuffer == null) return null;
-
-			if (x < 0 || x >= this.pickingTex.ContentWidth) return null;
-			if (y < 0 || y >= this.pickingTex.ContentHeight) return null;
-
-			int baseIndex = 4 * (x + y * this.pickingTex.ContentWidth);
-			if (baseIndex + 4 >= this.pickingBuffer.Length) return null;
-
-			int rendererId = 
-				(this.pickingBuffer[baseIndex + 0] << 16) |
-				(this.pickingBuffer[baseIndex + 1] << 8) |
-				(this.pickingBuffer[baseIndex + 2] << 0);
-			if (rendererId > this.pickingMap.Count)
-			{
-				Logs.Core.WriteWarning("Unexpected picking result: {0}", ColorRgba.FromIntArgb(rendererId));
-				return null;
-			}
-			else if (rendererId != 0)
-			{
-				if ((this.pickingMap[rendererId - 1] as Component).Disposed)
-					return null;
-				else
-					return this.pickingMap[rendererId - 1];
-			}
-			else
-				return null;
+			PickingRenderSetup pickingSetup = RenderSetup.Picking.Res;
+			return pickingSetup.LookupPickingMap(x, y);
 		}
 		/// <summary>
 		/// Picks all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> contained within the specified
@@ -257,47 +214,8 @@ namespace Duality.Components
 		/// <returns>A set of all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> that have been picked.</returns>
 		public IEnumerable<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
 		{
-			if (this.pickingBuffer == null)
-				return Enumerable.Empty<ICmpRenderer>();
-			if ((x + w) + (y + h) * this.pickingTex.ContentWidth >= this.pickingBuffer.Length)
-				return Enumerable.Empty<ICmpRenderer>();
-
-			Rect dstRect = new Rect(x, y, w, h);
-			Rect availRect = new Rect(this.pickingTex.ContentSize);
-
-			if (!dstRect.Intersects(availRect)) return Enumerable.Empty<ICmpRenderer>();
-			dstRect = dstRect.Intersection(availRect);
-
-			x = Math.Max((int)dstRect.X, 0);
-			y = Math.Max((int)dstRect.Y, 0);
-			w = Math.Min((int)dstRect.W, this.pickingTex.ContentWidth - x);
-			h = Math.Min((int)dstRect.H, this.pickingTex.ContentHeight - y);
-
-			HashSet<ICmpRenderer> result = new HashSet<ICmpRenderer>();
-			int rendererIdLast = 0;
-			for (int j = 0; j < h; ++j)
-			{
-				int offset = 4 * (x + (y + j) * this.pickingTex.ContentWidth);
-				for (int i = 0; i < w; ++i)
-				{
-					int rendererId =
-						(this.pickingBuffer[offset]		<< 16) |
-						(this.pickingBuffer[offset + 1] << 8) |
-						(this.pickingBuffer[offset + 2] << 0);
-
-					if (rendererId != rendererIdLast)
-					{
-						if (rendererId - 1 > this.pickingMap.Count)
-							Logs.Core.WriteWarning("Unexpected picking result: {0}", ColorRgba.FromIntArgb(rendererId));
-						else if (rendererId != 0 && !(this.pickingMap[rendererId - 1] as Component).Disposed)
-							result.Add(this.pickingMap[rendererId - 1]);
-						rendererIdLast = rendererId;
-					}
-					offset += 4;
-				}
-			}
-
-			return result;
+			PickingRenderSetup pickingSetup = RenderSetup.Picking.Res;
+			return pickingSetup.LookupPickingMap(x, y, w, h);
 		}
 
 		/// <summary>
