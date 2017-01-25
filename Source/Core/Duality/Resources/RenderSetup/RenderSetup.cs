@@ -162,7 +162,14 @@ namespace Duality.Resources
 		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
 		public void RenderScene(Scene scene, Rect viewportRect, Vector2 imageSize)
 		{
-			this.OnRenderScene(scene, viewportRect, imageSize);
+			try
+			{
+				this.OnRenderScene(scene, viewportRect, imageSize);
+			}
+			catch (Exception e)
+			{
+				Logs.Core.WriteError("There was an error while {0} was rendering {1}: {2}", this, scene, LogFormat.Exception(e));
+			}
 		}
 		/// <summary>
 		/// Renders a scene from the perspective of a single, pre-configured drawing device.
@@ -172,13 +179,20 @@ namespace Duality.Resources
 		/// <param name="viewportRect"></param>
 		/// <param name="imageSize"></param>
 		/// <param name="outputTargetRect"></param>
-		public void RenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize, Rect outputTargetRect)
+		public void RenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize)
 		{
 			// Memorize projection matrix settings, so the drawing device can be properly reset later
 			RenderMatrix oldDeviceMatrix = drawDevice.RenderMode;
 			Vector2 oldDeviceTargetSize = drawDevice.TargetSize;
 
-			this.OnRenderPointOfView(scene, drawDevice, viewportRect, imageSize, outputTargetRect);
+			try
+			{
+				this.OnRenderPointOfView(scene, drawDevice, viewportRect, imageSize);
+			}
+			catch (Exception e)
+			{
+				Logs.Core.WriteError("There was an error while {0} was rendering a point of view in {1}: {2}", this, scene, LogFormat.Exception(e));
+			}
 
 			// Reset matrices for projection calculations to their previous state
 			drawDevice.RenderMode = oldDeviceMatrix;
@@ -258,7 +272,7 @@ namespace Duality.Resources
 		/// <param name="viewportRect"></param>
 		/// <param name="imageSize"></param>
 		/// <param name="outputTargetRect"></param>
-		protected void RenderSingleStep(RenderStep step, Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize, Rect outputTargetRect)
+		protected void RenderSingleStep(RenderStep step, Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize)
 		{
 			// Memorize old draw device settings to reset them later
 			VisibilityFlag oldDeviceMask = drawDevice.VisibilityMask;
@@ -271,15 +285,6 @@ namespace Duality.Resources
 			// Determine the local viewport and image size, either derived from screen (parameters) or the render target
 			Vector2 localTargetSize = renderTarget.IsAvailable ? renderTarget.Res.Size : imageSize;
 			Rect localViewport = renderTarget.IsAvailable ? new Rect(renderTarget.Res.Size) : viewportRect;
-
-			// When rendering to screen, adjust the local render size and viewport 
-			// according to the camera target rect
-			if (step.Output.IsExplicitNull)
-			{
-				localViewport.Pos += localViewport.Size * outputTargetRect.Pos;
-				localViewport.Size *= outputTargetRect.Size;
-				localTargetSize *= outputTargetRect.Size;
-			}
 
 			// Regardless of rendering targets, adjust the local render size and viewport 
 			// according to the rendering step target rect
@@ -319,38 +324,76 @@ namespace Duality.Resources
 		/// <param name="pickingMap"></param>
 		protected void CollectRendererDrawcalls(Scene scene, DrawDevice drawDevice)
 		{
-			// If no visibility groups are met, don't bother looking for renderers.
-			// This is important to allow efficient drawcall injection with additional
-			// "dummy" renderpasses. CamViewStates render their overlays by temporarily 
-			// adding 3 - 4 of these passes. Iterating over all objects again would be 
-			// devastating for performance and at the same time pointless.
-			if ((drawDevice.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) return;
-
-			// Query renderers
-			IRendererVisibilityStrategy visibilityStrategy = scene.VisibilityStrategy;
-			RawList<ICmpRenderer> visibleRenderers;
+			Profile.TimeCollectDrawcalls.BeginMeasure();
+			try
 			{
-				if (visibilityStrategy == null) return;
-				Profile.TimeQueryVisibleRenderers.BeginMeasure();
+				// If no visibility groups are met, don't bother looking for renderers.
+				// This is important to allow efficient drawcall injection with additional
+				// "dummy" renderpasses. CamViewStates render their overlays by temporarily 
+				// adding 3 - 4 of these passes. Iterating over all objects again would be 
+				// devastating for performance and at the same time pointless.
+				if ((drawDevice.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) return;
 
-				visibleRenderers = new RawList<ICmpRenderer>();
-				visibilityStrategy.QueryVisibleRenderers(drawDevice, visibleRenderers);
-				if (this.rendererFilter.Count > 0)
+				// Query renderers
+				IRendererVisibilityStrategy visibilityStrategy = scene.VisibilityStrategy;
+				RawList<ICmpRenderer> visibleRenderers;
 				{
-					visibleRenderers.RemoveAll(r =>
+					if (visibilityStrategy == null) return;
+					Profile.TimeQueryVisibleRenderers.BeginMeasure();
+
+					visibleRenderers = new RawList<ICmpRenderer>();
+					visibilityStrategy.QueryVisibleRenderers(drawDevice, visibleRenderers);
+					if (this.rendererFilter.Count > 0)
 					{
-						for (int i = 0; i < this.rendererFilter.Count; i++)
+						visibleRenderers.RemoveAll(r =>
 						{
-							if (!this.rendererFilter[i](r)) return true;
-						}
-						return false;
-					});
+							for (int i = 0; i < this.rendererFilter.Count; i++)
+							{
+								if (!this.rendererFilter[i](r)) return true;
+							}
+							return false;
+						});
+					}
+
+					Profile.TimeQueryVisibleRenderers.EndMeasure();
 				}
 
-				Profile.TimeQueryVisibleRenderers.EndMeasure();
+				this.OnCollectRendererDrawcalls(drawDevice, visibleRenderers, visibilityStrategy.IsRendererQuerySorted);
 			}
-
-			this.OnCollectRendererDrawcalls(drawDevice, visibleRenderers, visibilityStrategy.IsRendererQuerySorted);
+			catch (Exception e)
+			{
+				Logs.Core.WriteError("There was an error while {0} was collecting renderer drawcalls: {1}", this, LogFormat.Exception(e));
+			}
+			Profile.TimeCollectDrawcalls.EndMeasure();
+		}
+		/// <summary>
+		/// Collects drawcalls that are submitted by external sources which are 
+		/// subscribed to <see cref="EventCollectDrawcalls"/>.
+		/// </summary>
+		protected void CollectExternalDrawcalls(RenderStep step, DrawDevice drawDevice)
+		{
+			Profile.TimeCollectDrawcalls.BeginMeasure();
+			try
+			{
+				if (this.eventCollectDrawcalls != null)
+					this.eventCollectDrawcalls(this, new CollectDrawcallEventArgs(step.Id, drawDevice));
+			}
+			catch (Exception e)
+			{
+				Logs.Core.WriteError("There was an error while {0} was collecting external drawcalls: {1}", this, LogFormat.Exception(e));
+			}
+			Profile.TimeCollectDrawcalls.EndMeasure();
+		}
+		/// <summary>
+		/// Collects all drawcalls from both external sources and renderers in the scene.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="scene"></param>
+		/// <param name="drawDevice"></param>
+		protected void CollectDrawcalls(RenderStep step, Scene scene, DrawDevice drawDevice)
+		{
+			this.CollectRendererDrawcalls(scene, drawDevice);
+			this.CollectExternalDrawcalls(step, drawDevice);
 		}
 
 		/// <summary>
@@ -377,7 +420,7 @@ namespace Duality.Resources
 		/// <param name="viewportRect"></param>
 		/// <param name="imageSize"></param>
 		/// <param name="outputTargetRect"></param>
-		protected virtual void OnRenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize, Rect outputTargetRect)
+		protected virtual void OnRenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize)
 		{
 			// Resize all render targets to the viewport size we're dealing with
 			this.ApplyOutputAutoResize((Point2)viewportRect.Size);
@@ -385,7 +428,7 @@ namespace Duality.Resources
 			// Execute all steps in the rendering setup, as well as those that were added in this camera
 			foreach (RenderStep step in this.steps)
 			{
-				this.RenderSingleStep(step, scene, drawDevice, viewportRect, imageSize, outputTargetRect);
+				this.RenderSingleStep(step, scene, drawDevice, viewportRect, imageSize);
 			}
 		}
 		/// <summary>
@@ -398,19 +441,7 @@ namespace Duality.Resources
 			drawDevice.PrepareForDrawcalls();
 			if (step.Input == null)
 			{
-				try
-				{
-					// Collect renderer drawcalls
-					this.CollectRendererDrawcalls(scene, drawDevice);
-
-					// Collect additional drawcalls by external sources subscribed to the event handler
-					if (this.eventCollectDrawcalls != null)
-						this.eventCollectDrawcalls(this, new CollectDrawcallEventArgs(step.Id, drawDevice));
-				}
-				catch (Exception e)
-				{
-					Logs.Core.WriteError("There was an error while {0} was collecting drawcalls: {1}", this, LogFormat.Exception(e));
-				}
+				this.CollectDrawcalls(step, scene, drawDevice);
 			}
 			else
 			{
@@ -427,8 +458,6 @@ namespace Duality.Resources
 		/// <param name="renderersSortedByType"></param>
 		protected virtual void OnCollectRendererDrawcalls(DrawDevice drawDevice, RawList<ICmpRenderer> visibleRenderers, bool renderersSortedByType)
 		{
-			Profile.TimeCollectDrawcalls.BeginMeasure();
-
 			Type lastRendererType = null;
 			Type rendererType = null;
 			TimeCounter activeProfiler = null;
@@ -457,8 +486,6 @@ namespace Duality.Resources
 				
 			if (activeProfiler != null)
 				activeProfiler.EndMeasure();
-
-			Profile.TimeCollectDrawcalls.EndMeasure();
 		}
 	}
 }

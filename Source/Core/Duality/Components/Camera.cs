@@ -154,6 +154,16 @@ namespace Duality.Components
 			// Configure the wrapped drawing device, so rendering matrices and settings
 			// are set up properly.
 			this.UpdateDeviceConfig();
+			
+			// Determine the local viewport and image size, either derived from screen (parameters) or the render target
+			Vector2 localImageSize = this.renderTarget.IsAvailable ? this.renderTarget.Res.Size : imageSize;
+			Rect localViewport = this.renderTarget.IsAvailable ? new Rect(this.renderTarget.Res.Size) : viewportRect;
+
+			// When rendering to screen, adjust the local render size and viewport 
+			// according to the camera target rect
+			localViewport.Pos += localViewport.Size * this.targetRect.Pos;
+			localViewport.Size *= this.targetRect.Size;
+			localImageSize *= this.targetRect.Size;
 
 			// Render the scene that contains this camera from its current point of view
 			// using the previously configured drawing device.
@@ -162,9 +172,8 @@ namespace Duality.Components
 				// Parent scene might be null for editor-only cameras
 				this.GameObj.ParentScene ?? Scene.Current, 
 				this.drawDevice, 
-				viewportRect, 
-				imageSize, 
-				this.targetRect);
+				localViewport, 
+				localImageSize);
 
 			Profile.TimeRender.EndMeasure();
 			Profile.EndMeasure(counterName);
@@ -189,8 +198,7 @@ namespace Duality.Components
 				this.GameObj.ParentScene ?? Scene.Current, 
 				this.drawDevice, 
 				new Rect(viewportSize), 
-				imageSize, 
-				new Rect(0, 0, 1, 1));
+				imageSize);
 
 			Profile.TimeVisualPicking.EndMeasure();
 		}

@@ -127,7 +127,7 @@ namespace Duality.Resources
 			return result;
 		}
 
-		protected override void OnRenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize, Rect outputTargetRect)
+		protected override void OnRenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize)
 		{
 			// Set up the picking render target to match the proper size
 			if (this.pickingTex == null)
