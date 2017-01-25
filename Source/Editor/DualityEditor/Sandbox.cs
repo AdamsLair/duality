@@ -146,8 +146,17 @@ namespace Duality.Editor
 			state = SandboxState.Inactive;
 			DualityApp.ExecContext = DualityApp.ExecutionContext.Editor;
 
-			// (Re)Load Scene - now in editor context
-			Scene.SwitchTo(startScene);
+			// Check if the Scene we started the sandbox with is still valid, and switch back to it.
+			if (startScene.IsAvailable)
+			{
+				Scene.SwitchTo(startScene);
+			}
+			// Otherwise, just switch back to the previously active Scene. This can happen if the 
+			// start scene was a runtime-only Scene that was active while a plugin reload occurred.
+			else if (activeScene.IsAvailable)
+			{
+				Scene.SwitchTo(activeScene);
+			}
 
 			OnLeaveSandbox();
 			OnSandboxStateChanged();

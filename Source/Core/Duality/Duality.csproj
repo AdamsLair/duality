@@ -173,6 +173,8 @@
     <Compile Include="Backend\Dummy\DummyPluginLoader.cs" />
     <Compile Include="Serialization\Surrogates\CultureInfoSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\RegexSurrogate.cs" />
+    <Compile Include="Utility\Math\ExtMethodsTargetResize.cs" />
+    <Compile Include="Utility\Math\TargetResize.cs" />
     <Compile Include="Utility\RefreshMode.cs" />
     <Compile Include="Utility\AAQuality.cs" />
     <Compile Include="Utility\ScreenMode.cs" />
