@@ -37,11 +37,6 @@
           </item>
           <item dataType="Struct" type="Duality.Components.Camera" id="1918840298">
             <active dataType="Bool">true</active>
-            <additionalRenderSteps dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Resources.RenderStepAddition]]" id="708816302">
-              <_items dataType="Array" type="Duality.Resources.RenderStepAddition[]" id="2397586768" length="0" />
-              <_size dataType="Int">0</_size>
-              <_version dataType="Int">0</_version>
-            </additionalRenderSteps>
             <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba">
               <A dataType="Byte">255</A>
               <B dataType="Byte">115</B>
