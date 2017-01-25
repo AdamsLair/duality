@@ -277,7 +277,6 @@
     <Compile Include="Utility\Extensions\ExtMethodsToolStrip.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsMouseButtons.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsKeys.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsCamera.cs" />
     <Compile Include="Utility\NativeMethods.cs" />
     <Compile Include="Utility\ObjectSelection.cs" />
     <Compile Include="HelpSystem.cs" />

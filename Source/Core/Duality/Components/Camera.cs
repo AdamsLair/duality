@@ -29,7 +29,8 @@ namespace Duality.Components
 		private ContentRef<RenderTarget> renderTarget          = null;
 		private ContentRef<RenderSetup>  renderSetup           = null;
 
-		[DontSerialize] private DrawDevice drawDevice          = null;
+		[DontSerialize] private DrawDevice         drawDevice   = null;
+		[DontSerialize] private PickingRenderSetup pickingSetup = null;
 		
 
 		/// <summary>
@@ -158,7 +159,8 @@ namespace Duality.Components
 			// using the previously configured drawing device.
 			RenderSetup setup = this.ActiveRenderSetup;
 			setup.RenderPointOfView(
-				this.GameObj.ParentScene, 
+				// Parent scene might be null for editor-only cameras
+				this.GameObj.ParentScene ?? Scene.Current, 
 				this.drawDevice, 
 				viewportRect, 
 				imageSize, 
@@ -180,9 +182,11 @@ namespace Duality.Components
 
 			this.UpdateDeviceConfig();
 
-			PickingRenderSetup pickingSetup = RenderSetup.Picking.Res;
-			pickingSetup.RenderPointOfView(
-				this.GameObj.ParentScene, 
+			if (this.pickingSetup == null) this.pickingSetup = new PickingRenderSetup();
+			this.pickingSetup.RenderOverlay = renderOverlay;
+			this.pickingSetup.RenderPointOfView(
+				// Parent scene might be null for editor-only cameras
+				this.GameObj.ParentScene ?? Scene.Current, 
 				this.drawDevice, 
 				new Rect(viewportSize), 
 				imageSize, 
@@ -199,8 +203,8 @@ namespace Duality.Components
 		/// <returns>The <see cref="Duality.ICmpRenderer"/> that owns the pixel.</returns>
 		public ICmpRenderer PickRendererAt(int x, int y)
 		{
-			PickingRenderSetup pickingSetup = RenderSetup.Picking.Res;
-			return pickingSetup.LookupPickingMap(x, y);
+			if (this.pickingSetup == null) return null;
+			return this.pickingSetup.LookupPickingMap(x, y);
 		}
 		/// <summary>
 		/// Picks all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> contained within the specified
@@ -214,8 +218,8 @@ namespace Duality.Components
 		/// <returns>A set of all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> that have been picked.</returns>
 		public IEnumerable<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
 		{
-			PickingRenderSetup pickingSetup = RenderSetup.Picking.Res;
-			return pickingSetup.LookupPickingMap(x, y, w, h);
+			if (this.pickingSetup == null) return Enumerable.Empty<ICmpRenderer>();
+			return this.pickingSetup.LookupPickingMap(x, y, w, h);
 		}
 
 		/// <summary>
@@ -305,6 +309,7 @@ namespace Duality.Components
 			this.drawDevice.Perspective = this.perspective;
 			this.drawDevice.VisibilityMask = this.visibilityMask;
 			this.drawDevice.ClearColor = this.clearColor;
+			this.drawDevice.Target = this.renderTarget;
 		}
 
 		void ICmpInitializable.OnInit(Component.InitContext context)

@@ -130,6 +130,23 @@ namespace Duality.Resources
 		protected override void OnRenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize, Rect outputTargetRect)
 		{
 			// Set up the picking render target to match the proper size
+			if (this.pickingTex == null)
+			{
+				this.pickingTex = new Texture(
+					(int)viewportRect.W, 
+					(int)viewportRect.H, 
+					TextureSizeMode.Default, 
+					TextureMagFilter.Nearest, 
+					TextureMinFilter.Nearest);
+			}
+			if (this.pickingRT == null)
+			{
+				this.pickingRT = new RenderTarget(
+					AAQuality.Off,
+					true,
+					this.pickingTex);
+				this.pickingRT.DepthBuffer = true;
+			}
 			this.ResizeRenderTarget(this.pickingRT, (Point2)viewportRect.Size);
 
 			ContentRef<RenderTarget> oldDeviceTarget = drawDevice.Target;
@@ -139,6 +156,8 @@ namespace Duality.Resources
 			drawDevice.ClearColor = ColorRgba.Black;
 			drawDevice.ClearDepth = 1.0f;
 			drawDevice.Target = this.pickingRT;
+			drawDevice.TargetSize = imageSize;
+			drawDevice.ViewportRect = new Rect(this.pickingRT.Size);
 			
 			if (this.pickingMap == null) this.pickingMap = new List<ICmpRenderer>();
 			this.pickingMap.Clear();

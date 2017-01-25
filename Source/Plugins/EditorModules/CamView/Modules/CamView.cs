@@ -292,9 +292,9 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			get { return this.activeLayers; }
 		}
-		public IEnumerable<Type> ObjectVisibility
+		public GameObjectTypeFilter ObjectVisibility
 		{
-			get { return this.objectVisibility.MatchingTypes; }
+			get { return this.objectVisibility; }
 		}
 		public EditingGuide EditingUserGuides
 		{
@@ -1062,20 +1062,6 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			if (this.CurrentCameraChanged != null)
 				this.CurrentCameraChanged(this, new CameraChangedEventArgs(prev, next));
-			
-			if (prev != null) prev.RemoveEditorRendererFilter(this.RendererFilter);
-			if (next != null) next.AddEditorRendererFilter(this.RendererFilter);
-		}
-		
-		private bool RendererFilter(ICmpRenderer r)
-		{
-			GameObject obj = (r as Component).GameObj;
-
-			if (!this.objectVisibility.Matches(obj))
-				return false;
-
-			DesignTimeObjectData data = DesignTimeObjectData.Get(obj);
-			return !data.IsHidden;
 		}
 		
 		private void InstallFocusHook()

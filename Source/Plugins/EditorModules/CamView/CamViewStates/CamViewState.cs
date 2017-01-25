@@ -601,7 +601,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected void SaveObjectVisibility()
 		{
 			this.lastObjVisibility.Clear();
-			foreach (Type type in this.View.ObjectVisibility)
+			foreach (Type type in this.View.ObjectVisibility.MatchingTypes)
 			{
 				this.lastObjVisibility.Add(type.GetTypeId());
 			}
@@ -675,6 +675,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.renderFrameLast = 0;
 			DualityEditorApp.PerformBufferSwap();
 		}
+		
+		private bool RendererFilter(ICmpRenderer r)
+		{
+			GameObject obj = (r as Component).GameObj;
+
+			if (!this.View.ObjectVisibility.Matches(obj))
+				return false;
+
+			DesignTimeObjectData data = DesignTimeObjectData.Get(obj);
+			return !data.IsHidden;
+		}
 
 		private void RenderableControl_Paint(object sender, PaintEventArgs e)
 		{
@@ -706,6 +717,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				RenderSetup renderSetup = this.CameraComponent.ActiveRenderSetup;
 
 				renderSetup.EventCollectDrawcalls += this.CameraComponent_EventCollectDrawcalls;
+				renderSetup.AddRendererFilter(this.RendererFilter);
 				renderSetup.AddRenderStep(RenderStepPosition.Last, this.camPassBg);
 				renderSetup.AddRenderStep(this.camPassBg.Id, RenderStepPosition.After, this.camPassEdWorld);
 				renderSetup.AddRenderStep(this.camPassEdWorld.Id, RenderStepPosition.After, this.camPassEdWorldNoDepth);
@@ -717,6 +729,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				renderSetup.Steps.Remove(this.camPassEdWorld);
 				renderSetup.Steps.Remove(this.camPassEdWorldNoDepth);
 				renderSetup.Steps.Remove(this.camPassEdScreen);
+				renderSetup.RemoveRendererFilter(this.RendererFilter);
 				renderSetup.EventCollectDrawcalls -= this.CameraComponent_EventCollectDrawcalls;
 			}
 			catch (Exception exception)

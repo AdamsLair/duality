@@ -116,15 +116,17 @@ namespace Duality.Resources
 		/// <summary>
 		/// Creates a new, empty RenderTarget
 		/// </summary>
-		public RenderTarget() : this(AAQuality.Off, null) {}
+		public RenderTarget() : this(AAQuality.Off, true, null) {}
 		/// <summary>
 		/// Creates a new RenderTarget based on a set of <see cref="Duality.Resources.Texture">Textures</see>
 		/// </summary>
 		/// <param name="multisampling">The level of multisampling that is requested from this RenderTarget.</param>
+		/// <param name="depthBuffer">Whether or not this RenderTarget has a depth-buffer.</param>
 		/// <param name="targets">An array of <see cref="Duality.Resources.Texture">Textures</see> used as data destination.</param>
-		public RenderTarget(AAQuality multisampling, params ContentRef<Texture>[] targets)
+		public RenderTarget(AAQuality multisampling, bool depthBuffer, params ContentRef<Texture>[] targets)
 		{
 			this.multisampling = multisampling;
+			this.depthBuffer = depthBuffer;
 			if (targets != null) foreach (var t in targets) this.targets.Add(t);
 			this.SetupNativeRes();
 		}

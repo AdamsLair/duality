@@ -20,11 +20,6 @@ namespace Duality.Resources
 		/// The default rendering setup with one world-space step and one screen-space overlay step.
 		/// </summary>
 		public static ContentRef<RenderSetup> Default { get; private set; }
-		/// <summary>
-		/// A specialized <see cref="RenderSetup"/> that will render a lookup texture of the scene in
-		/// order to determine which <see cref="ICmpRenderer"/> is located at a certain screen position.
-		/// </summary>
-		public static ContentRef<PickingRenderSetup> Picking { get; private set; }
 
 		internal static void InitDefaultContent()
 		{
@@ -45,7 +40,6 @@ namespace Duality.Resources
 			InitDefaultContent<RenderSetup>(new Dictionary<string,RenderSetup>
 			{
 				{ "Default", defaultSetup },
-				{ "Picking", new PickingRenderSetup() },
 			});
 		}
 

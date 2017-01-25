@@ -261,7 +261,7 @@ namespace Duality.Tests.Drawing
 			PixelData pixelData;
 
 			using (Texture texture = new Texture(width, height, TextureSizeMode.NonPowerOfTwo))
-			using (RenderTarget renderTarget = new RenderTarget(AAQuality.Off, texture))
+			using (RenderTarget renderTarget = new RenderTarget(AAQuality.Off, true, texture))
 			using (DrawDevice device = new DrawDevice())
 			{
 				device.Perspective = PerspectiveMode.Flat;
