@@ -164,7 +164,7 @@ namespace Duality.Resources
 		/// [GET / SET] The Textures size. Readonly, when created from a <see cref="BasePixmap"/>.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
-		[EditorHintRange(0, int.MaxValue)]
+		[EditorHintRange(1, int.MaxValue)]
 		[EditorHintIncrement(1)]
 		[EditorHintDecimalPlaces(0)]
 		public Vector2 Size
