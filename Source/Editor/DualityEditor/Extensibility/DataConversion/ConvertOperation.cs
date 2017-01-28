@@ -293,7 +293,10 @@ namespace Duality.Editor
 				// their operation not performing correctly or at all.
 				catch (Exception e)
 				{
-					Log.Editor.WriteError("There was an error trying to convert data to target type {0}: {1}", Log.Type(target), e);
+					Log.Editor.WriteError(
+						"There was an error trying to convert data to target type {0}: {1}", 
+						Log.Type(target), 
+						Log.Exception(e));
 				}
 			}
 

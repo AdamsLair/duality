@@ -138,7 +138,7 @@ namespace Duality.Editor
 		{
 			try
 			{
-				Log.Core.WriteError(Log.Exception(e.ExceptionObject as Exception));
+				Log.Editor.WriteError(Log.Exception(e.ExceptionObject as Exception));
 			}
 			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
 		}
