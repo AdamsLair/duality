@@ -420,7 +420,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				ColorRgba focusColor = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.25f).WithAlpha(255);
 				ColorRgba noFocusColor = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f).WithAlpha(255);
 				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.Focused ? focusColor : noFocusColor));
-				canvas.DrawRect(0, 0, this.ClientSize.Width, this.ClientSize.Height);
+				canvas.DrawRect(0, 0, canvas.DrawDevice.TargetSize.X, canvas.DrawDevice.TargetSize.Y);
 			}
 			canvas.PopState();
 		}
@@ -458,9 +458,25 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		protected virtual void OnRenderState()
 		{
+			RenderSetup renderSetup = this.CameraComponent.ActiveRenderSetup;
+
+			renderSetup.EventCollectDrawcalls += this.CameraComponent_EventCollectDrawcalls;
+			renderSetup.AddRendererFilter(this.RendererFilter);
+			renderSetup.AddRenderStep(RenderStepPosition.Last, this.camPassBg);
+			renderSetup.AddRenderStep(this.camPassBg.Id, RenderStepPosition.After, this.camPassEdWorld);
+			renderSetup.AddRenderStep(this.camPassEdWorld.Id, RenderStepPosition.After, this.camPassEdWorldNoDepth);
+			renderSetup.AddRenderStep(this.camPassEdWorldNoDepth.Id, RenderStepPosition.After, this.camPassEdScreen);
+
 			// Render CamView
 			Point2 clientSize = new Point2(this.ClientSize.Width, this.ClientSize.Height);
 			this.CameraComponent.Render(new Rect(clientSize), clientSize);
+
+			renderSetup.Steps.Remove(this.camPassBg);
+			renderSetup.Steps.Remove(this.camPassEdWorld);
+			renderSetup.Steps.Remove(this.camPassEdWorldNoDepth);
+			renderSetup.Steps.Remove(this.camPassEdScreen);
+			renderSetup.RemoveRendererFilter(this.RendererFilter);
+			renderSetup.EventCollectDrawcalls -= this.CameraComponent_EventCollectDrawcalls;
 		}
 		protected virtual void OnUpdateState()
 		{
@@ -714,23 +730,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Perform rendering
 			try
 			{
-				RenderSetup renderSetup = this.CameraComponent.ActiveRenderSetup;
-
-				renderSetup.EventCollectDrawcalls += this.CameraComponent_EventCollectDrawcalls;
-				renderSetup.AddRendererFilter(this.RendererFilter);
-				renderSetup.AddRenderStep(RenderStepPosition.Last, this.camPassBg);
-				renderSetup.AddRenderStep(this.camPassBg.Id, RenderStepPosition.After, this.camPassEdWorld);
-				renderSetup.AddRenderStep(this.camPassEdWorld.Id, RenderStepPosition.After, this.camPassEdWorldNoDepth);
-				renderSetup.AddRenderStep(this.camPassEdWorldNoDepth.Id, RenderStepPosition.After, this.camPassEdScreen);
-
 				this.OnRenderState();
-
-				renderSetup.Steps.Remove(this.camPassBg);
-				renderSetup.Steps.Remove(this.camPassEdWorld);
-				renderSetup.Steps.Remove(this.camPassEdWorldNoDepth);
-				renderSetup.Steps.Remove(this.camPassEdScreen);
-				renderSetup.RemoveRendererFilter(this.RendererFilter);
-				renderSetup.EventCollectDrawcalls -= this.CameraComponent_EventCollectDrawcalls;
 			}
 			catch (Exception exception)
 			{
