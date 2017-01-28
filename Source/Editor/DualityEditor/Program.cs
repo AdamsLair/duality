@@ -63,6 +63,7 @@ namespace Duality.Editor
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.ThreadException += Application_ThreadException;
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 			
 			{
 				PackageManager packageManager = new PackageManager();
@@ -133,13 +134,21 @@ namespace Duality.Editor
 				logfileOutput = null;
 			}
 		}
+		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			try
+			{
+				Logs.Editor.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
+			}
+			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
+		}
 		private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
 		{
 			try
 			{
-				Logs.Editor.WriteError("An error occurred: {0}", LogFormat.Exception(e.Exception));
+				Logs.Editor.WriteError(LogFormat.Exception(e.Exception));
 			}
-			catch (Exception) { /* Assure we're not causing any further exception by logging... */ }
+			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
 		}
 		private static System.Collections.IEnumerable SynchronizePackages(ProcessingBigTaskDialog.WorkerInterface workerInterface)
 		{

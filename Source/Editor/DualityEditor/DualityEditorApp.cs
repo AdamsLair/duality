@@ -178,9 +178,6 @@ namespace Duality.Editor
 			// Set up an in-memory data log so plugins can access the log history when needed
 			memoryLogOutput = new EditorLogOutput();
 			Logs.AddGlobalOutput(memoryLogOutput);
-			
-			// Set up a global exception handler to log errors
-			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
 			// Create working directories, if not existing yet.
 			if (!Directory.Exists(DualityApp.DataDirectory))
@@ -1432,10 +1429,6 @@ namespace Duality.Editor
 			{
 				AnalyzeCorePlugin(plugin);
 			}
-		}
-		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			Logs.Core.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
 		}
 		private static object EditorHintImageResolver(string manifestResourceName)
 		{

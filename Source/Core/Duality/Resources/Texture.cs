@@ -181,7 +181,7 @@ namespace Duality.Resources
 		/// value will be read-only and derived from its <see cref="Pixmap.Size"/>.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
-		[EditorHintRange(0, int.MaxValue)]
+		[EditorHintRange(1, int.MaxValue)]
 		public Point2 Size
 		{
 			get { return this.size; }

@@ -91,7 +91,11 @@ namespace Duality.Launcher
 
 		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
-			Logs.Core.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
+			try
+			{
+				Logs.Core.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
+		}
+			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
 		}
 
 		private static bool hasConsole = false;
