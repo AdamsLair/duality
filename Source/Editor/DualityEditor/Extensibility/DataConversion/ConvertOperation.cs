@@ -277,18 +277,23 @@ namespace Duality.Editor
 				}
 
 				// Perform conversion
-				converters.StableSort((c1, c2) => (c2.Converter.Priority - c1.Converter.Priority) * 10000 + (c1.Complexity - c2.Complexity));
-				foreach (var c in converters)
+				try
 				{
-					//Log.Editor.Write("using {0}", s.GetType().Name);
-					//Log.Editor.PushIndent();
-					//Log.Editor.Write("before: {0}", this.Result.ToString(o => string.Format("{0} {1}", o.GetType().Name, o), ", "));
-					this.usedConverters.Add(c.Converter);
-					bool handled = c.Converter.Convert(this);
-					this.usedConverters.Remove(c.Converter);
-					//Log.Editor.Write("after: {0}", this.Result.ToString(o => string.Format("{0} {1}", o.GetType().Name, o), ", "));
-					//Log.Editor.PopIndent();
-					if (handled) break;
+					converters.StableSort((c1, c2) => (c2.Converter.Priority - c1.Converter.Priority) * 10000 + (c1.Complexity - c2.Complexity));
+					foreach (var c in converters)
+					{
+						this.usedConverters.Add(c.Converter);
+						bool handled = c.Converter.Convert(this);
+						this.usedConverters.Remove(c.Converter);
+						if (handled) break;
+					}
+				}
+				// Since convert operations are often performed in dragdrop handlers (which internally catch all exceptions),
+				// we should do some basic error logging in here to make sure users won't end up without explanation for
+				// their operation not performing correctly or at all.
+				catch (Exception e)
+				{
+					Log.Editor.WriteError("There was an error trying to convert data to target type {0}: {1}", Log.Type(target), e);
 				}
 			}
 
