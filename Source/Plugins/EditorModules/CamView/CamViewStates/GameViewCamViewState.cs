@@ -38,23 +38,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		protected override void OnRenderState()
 		{
-			Vector2 clientSize = new Vector2(this.ClientSize.Width, this.ClientSize.Height);
+			Point2 clientSize = new Point2(this.ClientSize.Width, this.ClientSize.Height);
 			bool isRenderableScene = Scene.Current.FindComponents<Camera>().Any();
-
-			Vector2 imageSize = clientSize;
-			Rect viewportRect = new Rect(clientSize);
-			Point2 forcedSize = DualityApp.AppData.ForcedRenderSize;
-			if (forcedSize.X > 0 && forcedSize.Y > 0 && forcedSize != imageSize)
-			{
-				Vector2 adjustedViewportSize = DualityApp.AppData.ForcedRenderResizeMode.Apply(forcedSize, viewportRect.Size);
-				imageSize = forcedSize;
-				viewportRect = Rect.Align(
-					Alignment.Center, 
-					viewportRect.Size.X * 0.5f, 
-					viewportRect.Size.Y * 0.5f, 
-					adjustedViewportSize.X, 
-					adjustedViewportSize.Y);
-			}
+			
+			Vector2 imageSize;
+			Rect viewportRect;
+			DualityApp.CalculateGameViewport(clientSize, out viewportRect, out imageSize);
 
 			// In case we're not using the entire viewport area, no cameras are
 			// rendering on screen or similar, clear the entire available area first.

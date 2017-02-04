@@ -46,7 +46,7 @@ namespace FlapOrDie
 		protected override void InitPlugin()
 		{
 			base.InitPlugin();
-			halfWidth = MathF.Max(DualityApp.TargetResolution.X / 2, 600);
+			halfWidth = MathF.Max(DualityApp.TargetViewSize.X / 2, 600);
 
 			highScore = 0;
 			currentHighScore = 0;

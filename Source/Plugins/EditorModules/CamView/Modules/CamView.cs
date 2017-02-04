@@ -847,7 +847,7 @@ namespace Duality.Editor.Plugins.CamView
 			activeCamView = this;
 
 			Control mainControl = (this.graphicsControl != null ? this.graphicsControl.Control : null) ?? this;
-			DualityApp.TargetResolution = new Point2(mainControl.ClientSize.Width, mainControl.ClientSize.Height);
+			DualityApp.WindowSize = new Point2(mainControl.ClientSize.Width, mainControl.ClientSize.Height);
 			DualityApp.Mouse.Source = this;
 			DualityApp.Keyboard.Source = this;
 
@@ -1273,7 +1273,7 @@ namespace Duality.Editor.Plugins.CamView
 			if (activeCamView == this)
 			{
 				Control mainControl = (this.graphicsControl != null ? this.graphicsControl.Control : null) ?? this;
-				DualityApp.TargetResolution = new Point2(mainControl.ClientSize.Width, mainControl.ClientSize.Height);
+				DualityApp.WindowSize = new Point2(mainControl.ClientSize.Width, mainControl.ClientSize.Height);
 			}
 			this.RenderableControl.Invalidate();
 		}

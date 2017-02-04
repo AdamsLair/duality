@@ -57,7 +57,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			// rect of the map and the one of the cameras visible area
 			Rect moveRect;
 			Vector3 camAreaTopLeft = camera.GetSpaceCoord(new Vector2(0.0f, 0.0f));
-			Vector3 camAreaBottomRight = camera.GetSpaceCoord(DualityApp.TargetResolution);
+			Vector3 camAreaBottomRight = camera.GetSpaceCoord(DualityApp.TargetViewSize);
 			Rect camArea = new Rect(
 				camAreaTopLeft.X, 
 				camAreaTopLeft.Y, 

@@ -161,7 +161,7 @@ namespace Duality.Backend.DefaultOpenTK
 			if (options.ScreenMode == ScreenMode.FullWindow)
 				this.internalWindow.WindowState = WindowState.Fullscreen;
 
-			DualityApp.TargetResolution = new Point2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
+			DualityApp.WindowSize = new Point2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
 
 			// Register events and input
 			this.HookIntoDuality();
@@ -243,11 +243,11 @@ namespace Duality.Backend.DefaultOpenTK
 			if (this.internalWindow.Cursor != targetCursor)
 				this.internalWindow.Cursor = targetCursor;
 
-			DualityApp.TargetResolution = new Point2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
+			DualityApp.WindowSize = new Point2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
 		}
 		private void OnResize(EventArgs e)
 		{
-			DualityApp.TargetResolution = this.Size;
+			DualityApp.WindowSize = this.Size;
 			DrawDevice.RenderVoid(new Rect(this.Size));
 		}
 		private void OnUpdateFrame(FrameEventArgs e)
@@ -275,20 +275,9 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
 			
-			Vector2 imageSize = this.Size;
-			Rect viewportRect = new Rect(imageSize);
-			Point2 forcedSize = DualityApp.AppData.ForcedRenderSize;
-			if (forcedSize.X > 0 && forcedSize.Y > 0 && forcedSize != imageSize)
-			{
-				Vector2 adjustedViewportSize = DualityApp.AppData.ForcedRenderResizeMode.Apply(forcedSize, viewportRect.Size);
-				imageSize = forcedSize;
-				viewportRect = Rect.Align(
-					Alignment.Center, 
-					viewportRect.Size.X * 0.5f, 
-					viewportRect.Size.Y * 0.5f, 
-					adjustedViewportSize.X, 
-					adjustedViewportSize.Y);
-			}
+			Vector2 imageSize;
+			Rect viewportRect;
+			DualityApp.CalculateGameViewport(this.Size, out viewportRect, out imageSize);
 
 			DualityApp.Render(viewportRect, imageSize);
 			Profile.TimeRender.BeginMeasure();

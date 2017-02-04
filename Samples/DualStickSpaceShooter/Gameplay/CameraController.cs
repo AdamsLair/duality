@@ -65,7 +65,7 @@ namespace DualStickSpaceShooter
 
 		private void AdjustToScreenSize()
 		{
-			Vector2 screenSize = DualityApp.TargetResolution;
+			Vector2 screenSize = DualityApp.TargetViewSize;
 			Camera camera = this.GameObj.GetComponent<Camera>();
 			camera.FocusDist = ReferenceFocusDist * screenSize.Length * this.zoomFactor / ReferenceScreenDiameter;
 		}

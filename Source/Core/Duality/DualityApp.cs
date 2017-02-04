@@ -80,7 +80,7 @@ namespace Duality
 		private static ISystemBackend          systemBack         = null;
 		private static IGraphicsBackend        graphicsBack       = null;
 		private static IAudioBackend           audioBack          = null;
-		private static Point2                  targetResolution   = Point2.Zero;
+		private static Point2                  windowSize         = Point2.Zero;
 		private static MouseInput              mouse              = new MouseInput();
 		private static KeyboardInput           keyboard           = new KeyboardInput();
 		private static JoystickInputCollection joysticks          = new JoystickInputCollection();
@@ -163,13 +163,31 @@ namespace Duality
 			get { return audioBack; }
 		}
 		/// <summary>
-		/// [GET / SET] The size of the current rendering surface (full screen, a single window, etc.) in pixels. Setting this will not actually change
-		/// Duality's state - this is a pure "for your information" property.
+		/// [GET / SET] The native client area size of the current game window in pixels. 
+		/// 
+		/// Note: Setting this will not actually change Duality's state - this is a pure 
+		/// "for your information" property that is set by the currently active backend.
+		/// To change window size at runtime, use <see cref="UserData"/>.
 		/// </summary>
-		public static Point2 TargetResolution
+		public static Point2 WindowSize
 		{
-			get { return targetResolution; }
-			set { targetResolution = value; }
+			get { return windowSize; }
+			set { windowSize = value; }
+		}
+		/// <summary>
+		/// [GET] The target resolution of the game in rendering image space, e.g. the view
+		/// size when rendering to the game window.
+		/// </summary>
+		public static Vector2 TargetViewSize
+		{
+			get
+			{
+				Point2 forcedRenderSize = DualityApp.AppData.ForcedRenderSize;
+				if (forcedRenderSize.X > 0 && forcedRenderSize.Y > 0)
+					return forcedRenderSize;
+				else
+					return windowSize;
+			}
 		}
 		/// <summary>
 		/// [GET] Returns whether the Duality application is currently focused, i.e. can be considered
@@ -526,6 +544,35 @@ namespace Duality
 		public static void Render(Rect viewportRect, Vector2 imageSize)
 		{
 			Scene.Current.Render(viewportRect, imageSize);
+		}
+
+		/// <summary>
+		/// Given the specified window size, this method calculates the window rectangle of the rendered
+		/// viewport, as well as the game's rendered image size while taking into account application settings
+		/// regarding forced rendering sizes.
+		/// </summary>
+		/// <param name="windowSize"></param>
+		/// <param name="windowViewport"></param>
+		/// <param name="renderTargetSize"></param>
+		public static void CalculateGameViewport(Point2 windowSize, out Rect windowViewport, out Vector2 renderTargetSize)
+		{
+			Point2 forcedSize = DualityApp.AppData.ForcedRenderSize;
+			TargetResize forcedResizeMode = DualityApp.AppData.ForcedRenderResizeMode;
+
+			renderTargetSize = windowSize;
+			windowViewport = new Rect(renderTargetSize);
+
+			if (forcedSize.X > 0 && forcedSize.Y > 0 && forcedSize != renderTargetSize)
+			{
+				Vector2 adjustedViewportSize = forcedResizeMode.Apply(forcedSize, windowViewport.Size);
+				renderTargetSize = forcedSize;
+				windowViewport = Rect.Align(
+					Alignment.Center, 
+					windowViewport.Size.X * 0.5f, 
+					windowViewport.Size.Y * 0.5f, 
+					adjustedViewportSize.X, 
+					adjustedViewportSize.Y);
+			}
 		}
 
 		/// <summary>
