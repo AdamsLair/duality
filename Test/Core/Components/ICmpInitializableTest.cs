@@ -13,7 +13,7 @@ using Duality.Tests.Components;
 using NUnit.Framework;
 
 
-namespace Duality.Tests.Resources
+namespace Duality.Tests.Components
 {
 	[TestFixture]
 	public class ICmpInitializableTest
