@@ -1598,26 +1598,13 @@ namespace Duality.Editor.Plugins.CamView
 			return null;
 		}
 
-		int IMouseInputSource.X
+		Point2 IMouseInputSource.Pos
 		{
-			get { return this.inputMouseX; }
+			get { return new Point2(this.inputMouseX, this.inputMouseY); }
 			set
 			{
 				if (this.activeState.EngineUserInput && this.RenderableControl.Focused && this.inputMouseCapture)
-				{
-					Cursor.Position = this.RenderableControl.PointToScreen(new Point(value, this.RenderableControl.PointToClient(Cursor.Position).Y));
-				}
-			}
-		}
-		int IMouseInputSource.Y
-		{
-			get { return this.inputMouseY; }
-			set
-			{
-				if (this.activeState.EngineUserInput && this.RenderableControl.Focused && this.inputMouseCapture)
-				{
-					Cursor.Position = this.RenderableControl.PointToScreen(new Point(this.RenderableControl.PointToClient(Cursor.Position).X, value));
-				}
+					Cursor.Position = this.RenderableControl.PointToScreen(new Point(value.X, value.Y));
 			}
 		}
 		float IMouseInputSource.Wheel

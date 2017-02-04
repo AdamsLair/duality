@@ -10,10 +10,10 @@ namespace Duality.Input
 	{
 		private class State
 		{
-			public bool IsAvailable		= false;
-			public int X				= -1;
-			public int Y				= -1;
-			public float Wheel			= 0.0f;
+			public bool IsAvailable = false;
+			public Point2 WindowPos = Point2.Zero;
+			public Vector2 ViewPos = Vector2.Zero;
+			public float Wheel = 0.0f;
 			public bool[] ButtonPressed	= new bool[(int)MouseButton.Last + 1];
 
 			public State() {}
@@ -23,10 +23,10 @@ namespace Duality.Input
 			}
 			public void CopyTo(State other)
 			{
-				other.IsAvailable	= this.IsAvailable;
-				other.X				= this.X;
-				other.Y				= this.Y;
-				other.Wheel			= this.Wheel;
+				other.IsAvailable = this.IsAvailable;
+				other.WindowPos   = this.WindowPos;
+				other.ViewPos     = this.ViewPos;
+				other.Wheel       = this.Wheel;
 				this.ButtonPressed.CopyTo(other.ButtonPressed, 0);
 			}
 			public void UpdateFromSource(IMouseInputSource source)
@@ -34,20 +34,28 @@ namespace Duality.Input
 				this.IsAvailable = source != null ? source.IsAvailable : false;
 				if (source == null) return;
 
-				this.X = source.X;
-				this.Y = source.Y;
+				this.WindowPos = source.Pos;
 				this.Wheel = source.Wheel;
 				for (int i = 0; i < this.ButtonPressed.Length; i++)
 				{
 					this.ButtonPressed[i] = source[(MouseButton)i];
 				}
+
+				// Map window position to game view position
+				Rect viewportRect;
+				Vector2 gameViewSize;
+				DualityApp.CalculateGameViewport(DualityApp.WindowSize, out viewportRect, out gameViewSize);
+				Vector2 relativePos = new Vector2(
+					MathF.Clamp((this.WindowPos.X - viewportRect.X) / viewportRect.W, 0.0f, 1.0f),
+					MathF.Clamp((this.WindowPos.Y - viewportRect.Y) / viewportRect.H, 0.0f, 1.0f));
+				this.ViewPos = relativePos * gameViewSize;
 			}
 		}
 
 
-		private	IMouseInputSource	source			= null;
-		private	State				currentState	= new State();
-		private	State				lastState		= new State();
+		private IMouseInputSource source       = null;
+		private State             currentState = new State();
+		private State             lastState    = new State();
 
 		
 		/// <summary>
@@ -78,74 +86,47 @@ namespace Duality.Input
 			get { return this.currentState.IsAvailable; }
 		}
 		/// <summary>
-		/// [GET / SET] The current viewport-local cursor X position.
+		/// [GET] The current window-local cursor position in native window coordinates.
 		/// </summary>
-		public int X
+		public Point2 WindowPos
 		{
-			get { return this.currentState.X; }
-			set { if (this.source != null) this.source.X = value; }
-		}
-		/// <summary>
-		/// [GET / SET] The current viewport-local cursor Y position.
-		/// </summary>
-		public int Y
-		{
-			get { return this.currentState.Y; }
-			set { if (this.source != null) this.source.Y = value; }
+			get { return this.currentState.WindowPos; }
+			set
+			{
+				if (this.source != null)
+					this.source.Pos = value;
+			}
 		}
 		/// <summary>
 		/// [GET] The current viewport-local cursor position.
 		/// </summary>
 		public Vector2 Pos
 		{
-			get { return new Vector2(this.currentState.X, this.currentState.Y); }
-		}
-		/// <summary>
-		/// [GET] Returns the X position change since last frame.
-		/// </summary>
-		public int XSpeed
-		{
-			get { return (this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.X - this.lastState.X) : 0; }
-		}
-		/// <summary>
-		/// [GET] Returns the Y position change since last frame.
-		/// </summary>
-		public int YSpeed
-		{
-			get { return (this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.Y - this.lastState.Y) : 0; }
+			get { return this.currentState.ViewPos; }
 		}
 		/// <summary>
 		/// [GET] The viewport-local cursor position change since last frame.
 		/// </summary>
 		public Vector2 Vel
 		{
-			get { return new Vector2(this.currentState.X - this.lastState.X, this.currentState.Y - this.lastState.Y); }
+			get
+			{
+				return (this.currentState.IsAvailable && this.lastState.IsAvailable) ? 
+					this.currentState.ViewPos - this.lastState.ViewPos : 
+					Vector2.Zero;
+			}
 		}
 		/// <summary>
 		/// [GET] The current mouse wheel value
 		/// </summary>
-		public int Wheel
-		{
-			get { return MathF.RoundToInt(this.currentState.Wheel); }
-		}
-		/// <summary>
-		/// [GET] The current (precise, high resolution) mouse wheel value
-		/// </summary>
-		public float WheelPrecise
+		public float Wheel
 		{
 			get { return this.currentState.Wheel; }
 		}
 		/// <summary>
 		/// [GET] Returns the change of the mouse wheel value since last frame.
 		/// </summary>
-		public int WheelSpeed
-		{
-			get { return MathF.RoundToInt(this.currentState.Wheel - this.lastState.Wheel); }
-		}
-		/// <summary>
-		/// [GET] Returns the (precise, high resolution) change of the mouse wheel value since last frame.
-		/// </summary>
-		public float WheelSpeedPrecise
+		public float WheelSpeed
 		{
 			get { return this.currentState.Wheel - this.lastState.Wheel; }
 		}
@@ -213,55 +194,42 @@ namespace Duality.Input
 			}
 			if (this.currentState.IsAvailable)
 			{
-				if (this.currentState.X != this.lastState.X || this.currentState.Y != this.lastState.Y)
+				if (this.currentState.ViewPos != this.lastState.ViewPos)
 				{
 					if (this.Move != null)
-					{
 						this.Move(this, new MouseMoveEventArgs(
 							this,
-							this.currentState.X, 
-							this.currentState.Y, 
-							(this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.X - this.lastState.X) : 0, 
-							(this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.Y - this.lastState.Y) : 0));
-					}
+							this.Pos, 
+							this.Vel));
 				}
 				if (this.currentState.Wheel != this.lastState.Wheel)
 				{
 					if (this.WheelChanged != null)
-					{
 						this.WheelChanged(this, new MouseWheelEventArgs(
 							this,
-							this.currentState.X,
-							this.currentState.Y,
-							MathF.RoundToInt(this.currentState.Wheel),
-							MathF.RoundToInt(this.currentState.Wheel - this.lastState.Wheel)));
-					}
+							this.Pos,
+							this.Wheel,
+							this.WheelSpeed));
 				}
 				for (int i = 0; i < this.currentState.ButtonPressed.Length; i++)
 				{
 					if (this.currentState.ButtonPressed[i] && !this.lastState.ButtonPressed[i])
 					{
 						if (this.ButtonDown != null)
-						{
 							this.ButtonDown(this, new MouseButtonEventArgs(
 								this,
-								this.currentState.X, 
-								this.currentState.Y, 
+								this.Pos, 
 								(MouseButton)i, 
 								this.currentState.ButtonPressed[i]));
-						}
 					}
 					if (!this.currentState.ButtonPressed[i] && this.lastState.ButtonPressed[i])
 					{
 						if (this.ButtonUp != null)
-						{
 							this.ButtonUp(this, new MouseButtonEventArgs(
 								this,
-								this.currentState.X, 
-								this.currentState.Y, 
+								this.Pos, 
 								(MouseButton)i, 
 								this.currentState.ButtonPressed[i]));
-						}
 					}
 				}
 			}

@@ -51,7 +51,7 @@ namespace DualStickSpaceShooter
 			// Is someone playing using mouse / keyboard? Display a mouse cursor then
 			if (Player.AlivePlayers.Any(p => p.InputMethod == InputMethod.MouseAndKeyboard))
 			{
-				canvas.FillCircle(DualityApp.Mouse.X, DualityApp.Mouse.Y, 2.0f);
+				canvas.FillCircle(DualityApp.Mouse.Pos.X, DualityApp.Mouse.Pos.Y, 2.0f);
 			}
 
 			// Is any player alive? Keep that value in mind, won't change here anyway.

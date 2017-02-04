@@ -7,51 +7,31 @@ namespace Duality.Input
 {
 	public class MouseEventArgs : UserInputEventArgs
 	{
-		private int x;
-		private int y;
+		private Vector2 pos;
 		
-		public int X
+		public Vector2 Pos
 		{
-			get { return this.x; }
-		}
-		public int Y
-		{
-			get { return this.y; }
-		}
-		public Vector2 Position
-		{
-			get { return new Vector2(this.x, this.y); }
+			get { return this.pos; }
 		}
 
-		public MouseEventArgs(MouseInput inputChannel, int x, int y) : base(inputChannel)
+		public MouseEventArgs(MouseInput inputChannel, Vector2 pos) : base(inputChannel)
 		{
-			this.x = x;
-			this.y = y;
+			this.pos = pos;
 		}
 	}
 
 	public class MouseMoveEventArgs : MouseEventArgs
 	{
-		private int deltaX;
-		private int deltaY;
+		private Vector2 vel;
 		
-		public int DeltaX
+		public Vector2 Vel
 		{
-			get { return this.deltaX; }
-		}
-		public int DeltaY
-		{
-			get { return this.deltaY; }
-		}
-		public Vector2 Delta
-		{
-			get { return new Vector2(this.deltaX, this.deltaY); }
+			get { return this.vel; }
 		}
 
-		public MouseMoveEventArgs(MouseInput inputChannel, int x, int y, int deltaX, int deltaY) : base(inputChannel, x, y)
+		public MouseMoveEventArgs(MouseInput inputChannel, Vector2 pos, Vector2 vel) : base(inputChannel, pos)
 		{
-			this.deltaX = deltaX;
-			this.deltaY = deltaY;
+			this.vel = vel;
 		}
 	}
 
@@ -69,7 +49,7 @@ namespace Duality.Input
 			get { return this.pressed; }
 		}
 
-		public MouseButtonEventArgs(MouseInput inputChannel, int x, int y, MouseButton button, bool pressed) : base(inputChannel, x, y)
+		public MouseButtonEventArgs(MouseInput inputChannel, Vector2 pos, MouseButton button, bool pressed) : base(inputChannel, pos)
 		{
 			this.button = button;
 			this.pressed = pressed;
@@ -79,21 +59,21 @@ namespace Duality.Input
 	public class MouseWheelEventArgs : MouseEventArgs
 	{
 		private float wheelValue;
-		private float wheelDelta;
+		private float wheelSpeed;
 
 		public float WheelValue
 		{
 			get { return this.wheelValue; }
 		}
-		public float WheelDelta
+		public float WheelSpeed
 		{
-			get { return this.wheelDelta; }
+			get { return this.wheelSpeed; }
 		}
 
-		public MouseWheelEventArgs(MouseInput inputChannel, int x, int y, int value, int delta) : base(inputChannel, x, y)
+		public MouseWheelEventArgs(MouseInput inputChannel, Vector2 pos, float value, float delta) : base(inputChannel, pos)
 		{
 			this.wheelValue = value;
-			this.wheelDelta = delta;
+			this.wheelSpeed = delta;
 		}
 	}
 }

@@ -31,8 +31,8 @@ namespace BasicMenu
 			{
 				canvas.State.ColorTint = ColorRgba.White;
 				canvas.FillCircle(
-					DualityApp.Mouse.X, 
-					DualityApp.Mouse.Y, 
+					DualityApp.Mouse.Pos.X, 
+					DualityApp.Mouse.Pos.Y, 
 					2);
 			}
 		}

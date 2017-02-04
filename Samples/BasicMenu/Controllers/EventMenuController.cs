@@ -58,8 +58,7 @@ namespace BasicMenu
 
 		void Mouse_Move(object sender, Duality.Input.MouseMoveEventArgs e)
 		{
-			mousePosition.X = e.X;
-			mousePosition.Y = e.Y;
+			mousePosition = e.Pos;
 
 			// check all MenuComponents under the mouse and sort them by Z,
 			// to find the one nearest to the Camera
