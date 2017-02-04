@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.9.4</version>
+    <version>2.9.5</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,8 +13,9 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>TargetResize Utility
-#ADD: Added TargetResize enum and extension methods to provide a convenient solution to the "fit image to target size" problem.</releaseNotes>
+    <releaseNotes>Cyclic RequiredComponent Warning
+#ADD: Added a warning log when detecting cyclic dependencies in RequiredComponent chains. 
+#ADD: Added a test condition to ensure there's a warning.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.3" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
