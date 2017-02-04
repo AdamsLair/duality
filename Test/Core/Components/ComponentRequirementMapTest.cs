@@ -102,14 +102,22 @@ namespace Duality.Tests.Components
 			// In a cyclic dependency situation, behavior is undefined and there is no "right" solution.
 			// For this test, just expect the system to not crash. Check some select results that we
 			// can safely expect.
+			TestingLogOutput logWatcher = new TestingLogOutput();
+			Log.AddGlobalOutput(logWatcher);
 
 			map.GetRequirements(typeof(TestComponentC1));
 			map.GetRequirements(typeof(TestComponentC2));
 			map.GetRequirements(typeof(TestComponentC3));
 
+			logWatcher.AssertNoErrors();
+			logWatcher.AssertWarning();
+
 			map.GetRequirementsToCreate(new GameObject(), typeof(TestComponentC1));
 			map.GetRequirementsToCreate(new GameObject(), typeof(TestComponentC2));
 			map.GetRequirementsToCreate(new GameObject(), typeof(TestComponentC3));
+
+			logWatcher.AssertNoErrors();
+			logWatcher.AssertWarning();
 
 			Assert.IsFalse(map.IsRequired(typeof(TestComponentC1), typeof(TestComponentC1)));
 			Assert.IsFalse(map.IsRequired(typeof(TestComponentC2), typeof(TestComponentC2)));
@@ -131,6 +139,8 @@ namespace Duality.Tests.Components
 			map.IsRequirementMet(new GameObject(), typeof(TestComponentC1), new[] { typeof(TestComponentC2), typeof(TestComponentC3) });
 			map.IsRequirementMet(new GameObject(), typeof(TestComponentC2), new[] { typeof(TestComponentC3), typeof(TestComponentC1) });
 			map.IsRequirementMet(new GameObject(), typeof(TestComponentC3), new[] { typeof(TestComponentC1), typeof(TestComponentC2) });
+
+			Log.RemoveGlobalOutput(logWatcher);
 		}
 		[Test] public void AbstractRequirements()
 		{
