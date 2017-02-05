@@ -477,6 +477,10 @@ namespace Duality.Plugins.Tilemaps
 				count.X = Math.Min(count.X, tilemaps[i].Size.X);
 				count.Y = Math.Min(count.Y, tilemaps[i].Size.Y);
 			}
+
+			if (count.X == int.MaxValue || count.Y == int.MaxValue)
+				count = Point2.Zero;
+
 			return count;
 		}
 
