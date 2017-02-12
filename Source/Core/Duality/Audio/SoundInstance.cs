@@ -535,6 +535,8 @@ namespace Duality.Audio
 					// Convert from Duality units to (physical) audio backend units.
 					nativeState.Position *= AudioUnit.LengthToPhysical;
 					nativeState.Velocity *= AudioUnit.VelocityToPhysical;
+					nativeState.MinDistance *= AudioUnit.LengthToPhysical;
+					nativeState.MaxDistance *= AudioUnit.LengthToPhysical;
 				}
 				else
 				{
