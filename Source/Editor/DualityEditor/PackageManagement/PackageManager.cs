@@ -1033,7 +1033,11 @@ namespace Duality.Editor.PackageManagement
 			string binaryBaseDir = this.pluginTargetDir;
 			string contentBaseDir = this.dataTargetDir;
 			string sourceBaseDir = Path.Combine(this.sourceTargetDir, folderFriendlyPackageName);
-			if (!isPluginPackage || !isDualityPackage) binaryBaseDir = "";
+			if (!isPluginPackage || !isDualityPackage)
+			{
+				binaryBaseDir = "";
+				contentBaseDir = "";
+			}
 
 			IPackageFile[] packageFiles;
 			try

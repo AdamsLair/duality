@@ -47,6 +47,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Audio2DPlayer.cs" />
     <Compile Include="ManualAudioHandling.cs" />
     <Compile Include="PlayerCharacter.cs" />
     <Compile Include="CorePlugin.cs" />

@@ -128,7 +128,7 @@ namespace Duality.Input
 		/// </summary>
 		public float WheelSpeed
 		{
-			get { return this.currentState.Wheel - this.lastState.Wheel; }
+			get { return (this.currentState.IsAvailable && this.lastState.IsAvailable) ? this.currentState.Wheel - this.lastState.Wheel : 0.0f; }
 		}
 		/// <summary>
 		/// [GET] Returns whether a specific <see cref="MouseButton"/> is currently pressed.
