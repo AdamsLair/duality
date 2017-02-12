@@ -537,6 +537,31 @@ namespace Duality.Audio
 					nativeState.Velocity *= AudioUnit.VelocityToPhysical;
 					nativeState.MinDistance *= AudioUnit.LengthToPhysical;
 					nativeState.MaxDistance *= AudioUnit.LengthToPhysical;
+
+					// Post-process sound instance data in listener space
+					float listenerAngle = DualityApp.Sound.ListenerAngle;
+					Vector3 adjustedPos = nativeState.RelativeToListener ? nativeState.Position : nativeState.Position - listenerPos * AudioUnit.LengthToPhysical;
+					MathF.TransformCoord(ref adjustedPos.X, ref adjustedPos.Z, -listenerAngle);
+
+					// Flatten depth position a little, so far away sounds that can still be seen appear louder
+					adjustedPos.Z *= 0.5f;
+					
+					// Normalize audio position for smooth panning when near. Do it in physical
+					// units, so this remains constant regardless of unit changes.
+					float smoothPanRadius = 5.0f;
+					float listenerSpaceDist = adjustedPos.Length;
+					if (listenerSpaceDist < smoothPanRadius)
+					{
+						float panningActive = listenerSpaceDist / smoothPanRadius;
+
+						adjustedPos = Vector3.Lerp(
+							new Vector3(0.0f, 0.0f, 1.0f + (smoothPanRadius - 1.0f) * panningActive), 
+							adjustedPos, 
+							panningActive);
+					}
+
+					MathF.TransformCoord(ref adjustedPos.X, ref adjustedPos.Z, listenerAngle);
+					nativeState.Position = nativeState.RelativeToListener ? adjustedPos : adjustedPos + listenerPos * AudioUnit.LengthToPhysical;
 				}
 				else
 				{
