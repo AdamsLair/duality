@@ -220,9 +220,9 @@ namespace Duality.Audio
 			}
 
 			DualityApp.AudioBackend.UpdateListener(
-				this.ListenerPos,
-				this.ListenerVel,
-				this.ListenerAngle,
+				this.ListenerPos * AudioUnit.LengthToPhysical,
+				this.ListenerVel * AudioUnit.VelocityToPhysical,
+				this.ListenerAngle * AudioUnit.AngleToPhysical,
 				this.mute);
 		}
 		
@@ -289,7 +289,7 @@ namespace Duality.Audio
 		private void DualityApp_AppDataChanged(object sender, EventArgs e)
 		{
 			DualityApp.AudioBackend.UpdateWorldSettings(
-				DualityApp.AppData.SpeedOfSound, 
+				DualityApp.AppData.SpeedOfSound, // Already in meters per second / audio units
 				DualityApp.AppData.SoundDopplerFactor);
 		}
 	}
