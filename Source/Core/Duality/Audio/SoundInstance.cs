@@ -531,6 +531,10 @@ namespace Duality.Audio
 					nativeState.RelativeToListener = attachedToListener;
 					if (attachedToListener)
 						nativeState.Position -= listenerPos;
+
+					// Convert from Duality units to (physical) audio backend units.
+					nativeState.Position *= AudioUnit.LengthToPhysical;
+					nativeState.Velocity *= AudioUnit.VelocityToPhysical;
 				}
 				else
 				{
