@@ -538,8 +538,13 @@ namespace Duality.Audio
 				}
 				else
 				{
+					// We'll do a +/- 30° panning for 2D audio
+					Vector2 localPos = Vector2.FromAngleLength(
+						MathF.DegToRad(30.0f * this.panning), 
+						1.0f);
+
 					nativeState.RelativeToListener = true;
-					nativeState.Position = new Vector3(this.panning, 0.0f, 0.0f);
+					nativeState.Position = new Vector3(localPos.X, 0.0f, -localPos.Y);
 					nativeState.Velocity = Vector3.Zero;
 				}
 				nativeState.Looped = this.looped;
