@@ -104,6 +104,15 @@ namespace Duality
 			return entry;
 		}
 		/// <summary>
+		/// Draws a point in screen space.
+		/// </summary>
+		/// <param name="screenPos"></param>
+		/// <returns></returns>
+		public VisualLogPointEntry DrawPoint(Vector2 screenPos)
+		{
+			return this.DrawPoint(screenPos.X, screenPos.Y);
+		}
+		/// <summary>
 		/// Draws a point in world space. A point has no physical size and is displayed in the same size
 		/// regardless of perspective settings or distance to the Camera.
 		/// </summary>
@@ -120,6 +129,16 @@ namespace Duality
 			return entry;
 		}
 		/// <summary>
+		/// Draws a point in world space. A point has no physical size and is displayed in the same size
+		/// regardless of perspective settings or distance to the Camera.
+		/// </summary>
+		/// <param name="worldPos"></param>
+		/// <returns></returns>
+		public VisualLogPointEntry DrawPoint(Vector3 worldPos)
+		{
+			return this.DrawPoint(worldPos.X, worldPos.Y, worldPos.Z);
+		}
+		/// <summary>
 		/// Draws a circle in screen space.
 		/// </summary>
 		/// <param name="screenX"></param>
@@ -133,6 +152,16 @@ namespace Duality
 			entry.Radius = radius;
 			this.Draw(entry);
 			return entry;
+		}
+		/// <summary>
+		/// Draws a circle in screen space.
+		/// </summary>
+		/// <param name="screenPos"></param>
+		/// <param name="radius"></param>
+		/// <returns></returns>
+		public VisualLogCircleEntry DrawCircle(Vector2 screenPos, float radius)
+		{
+			return this.DrawCircle(screenPos.X, screenPos.Y, radius);
 		}
 		/// <summary>
 		/// Draws a circle in world space.
@@ -152,6 +181,16 @@ namespace Duality
 			return entry;
 		}
 		/// <summary>
+		/// Draws a circle in world space.
+		/// </summary>
+		/// <param name="worldPos"></param>
+		/// <param name="radius"></param>
+		/// <returns></returns>
+		public VisualLogCircleEntry DrawCircle(Vector3 worldPos, float radius)
+		{
+			return this.DrawCircle(worldPos.X, worldPos.Y, worldPos.Z, radius);
+		}
+		/// <summary>
 		/// Draws a vector in screen space. A vector can be thought of as an arrow pointing in a certain direction.
 		/// It is useful for displaying velocities or directions.
 		/// </summary>
@@ -167,6 +206,17 @@ namespace Duality
 			entry.Vector = new Vector2(vectorX, vectorY);
 			this.Draw(entry);
 			return entry;
+		}
+		/// <summary>
+		/// Draws a vector in screen space. A vector can be thought of as an arrow pointing in a certain direction.
+		/// It is useful for displaying velocities or directions.
+		/// </summary>
+		/// <param name="screenPos">The vectors screen origin.</param>
+		/// <param name="vector">The vector to display.</param>
+		/// <returns></returns>
+		public VisualLogVectorEntry DrawVector(Vector2 screenPos, Vector2 vector)
+		{
+			return this.DrawVector(screenPos.X, screenPos.Y, vector.X, vector.Y);
 		}
 		/// <summary>
 		/// Draws a vector in world space. A vector can be thought of as an arrow pointing in a certain direction.
@@ -188,6 +238,17 @@ namespace Duality
 			return entry;
 		}
 		/// <summary>
+		/// Draws a vector in world space. A vector can be thought of as an arrow pointing in a certain direction.
+		/// It is useful for displaying velocities or directions.
+		/// </summary>
+		/// <param name="worldPos">The vectors world origin.</param>
+		/// <param name="vector">The vector to display.</param>
+		/// <returns></returns>
+		public VisualLogVectorEntry DrawVector(Vector3 worldPos, Vector2 vector)
+		{
+			return this.DrawVector(worldPos.X, worldPos.Y, worldPos.Z, vector.X, vector.Y);
+		}
+		/// <summary>
 		/// Draws a connection between two screen space points.
 		/// </summary>
 		/// <param name="screenX1"></param>
@@ -202,6 +263,16 @@ namespace Duality
 			entry.PosB = new Vector3(screenX2, screenY2, 0.0f);
 			this.Draw(entry);
 			return entry;
+		}
+		/// <summary>
+		/// Draws a connection between two screen space points.
+		/// </summary>
+		/// <param name="screenPos1"></param>
+		/// <param name="screenPos2"></param>
+		/// <returns></returns>
+		public VisualLogConnectionEntry DrawConnection(Vector2 screenPos1, Vector2 screenPos2)
+		{
+			return this.DrawConnection(screenPos1.X, screenPos1.Y, screenPos2.X, screenPos2.Y);
 		}
 		/// <summary>
 		/// Draws a connection between two world space points. Both points need to be on the same Z plane.
@@ -222,6 +293,16 @@ namespace Duality
 			return entry;
 		}
 		/// <summary>
+		/// Draws a connection between two world space points. Both points need to be on the same Z plane.
+		/// </summary>
+		/// <param name="worldPos1"></param>
+		/// <param name="worldPos2"></param>
+		/// <returns></returns>
+		public VisualLogConnectionEntry DrawConnection(Vector3 worldPos1, Vector2 worldPos2)
+		{
+			return this.DrawConnection(worldPos1.X, worldPos1.Y, worldPos1.Z, worldPos2.X, worldPos2.Y);
+		}
+		/// <summary>
 		/// Draws a convex polygon in screen space.
 		/// </summary>
 		/// <param name="screenX"></param>
@@ -235,6 +316,16 @@ namespace Duality
 			entry.Vertices = polygon;
 			this.Draw(entry);
 			return entry;
+		}
+		/// <summary>
+		/// Draws a convex polygon in screen space.
+		/// </summary>
+		/// <param name="screenPos"></param>
+		/// <param name="polygon"></param>
+		/// <returns></returns>
+		public VisualLogPolygonEntry DrawPolygon(Vector2 screenPos, Vector2[] polygon)
+		{
+			return this.DrawPolygon(screenPos.X, screenPos.Y, polygon);
 		}
 		/// <summary>
 		/// Draws a convex polygon in world space.
@@ -254,6 +345,16 @@ namespace Duality
 			return entry;
 		}
 		/// <summary>
+		/// Draws a convex polygon in world space.
+		/// </summary>
+		/// <param name="worldPos"></param>
+		/// <param name="polygon"></param>
+		/// <returns></returns>
+		public VisualLogPolygonEntry DrawPolygon(Vector3 worldPos, Vector2[] polygon)
+		{
+			return this.DrawPolygon(worldPos.X, worldPos.Y, worldPos.Z, polygon);
+		}
+		/// <summary>
 		/// Draws a text in screen space. Unlike other log entries, texts retain a constant rotation and size.
 		/// Only the point of their origin is transformed regularly.
 		/// </summary>
@@ -268,6 +369,17 @@ namespace Duality
 			entry.Text = text;
 			this.Draw(entry);
 			return entry;
+		}
+		/// <summary>
+		/// Draws a text in screen space. Unlike other log entries, texts retain a constant rotation and size.
+		/// Only the point of their origin is transformed regularly.
+		/// </summary>
+		/// <param name="screenPos"></param>
+		/// <param name="text"></param>
+		/// <returns></returns>
+		public VisualLogTextEntry DrawText(Vector2 screenPos, string text)
+		{
+			return this.DrawText(screenPos.X, screenPos.Y, text);
 		}
 		/// <summary>
 		/// Draws a text in world space. Unlike other log entries, texts retain a constant rotation and size.
@@ -286,6 +398,17 @@ namespace Duality
 			entry.Text = text;
 			this.Draw(entry);
 			return entry;
+		}
+		/// <summary>
+		/// Draws a text in world space. Unlike other log entries, texts retain a constant rotation and size.
+		/// Only the point of their origin is transformed regularly.
+		/// </summary>
+		/// <param name="worldPos"></param>
+		/// <param name="text"></param>
+		/// <returns></returns>
+		public VisualLogTextEntry DrawText(Vector3 worldPos, string text)
+		{
+			return this.DrawText(worldPos.X, worldPos.Y, worldPos.Z, text);
 		}
 
 		/// <summary>
