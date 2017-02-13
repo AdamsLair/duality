@@ -27,6 +27,7 @@ Note: This code has been heavily modified for the Duality framework.
 
 using System;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Duality
 {
@@ -100,7 +101,7 @@ namespace Duality
 		{
 			get
 			{
-				return (float)System.Math.Sqrt(X * X + Y * Y);
+				return (float)System.Math.Sqrt(this.X * this.X + this.Y * this.Y);
 			}
 		}
 		/// <summary>
@@ -115,7 +116,7 @@ namespace Duality
 		{
 			get
 			{
-				return X * X + Y * Y;
+				return this.X * this.X + this.Y * this.Y;
 			}
 		}
 		/// <summary>
@@ -125,7 +126,7 @@ namespace Duality
 		{
 			get
 			{
-				return (float)((Math.Atan2(Y, X) + Math.PI * 2.5) % (Math.PI * 2));
+				return (float)((Math.Atan2(this.Y, this.X) + Math.PI * 2.5) % (Math.PI * 2));
 			}
 		}
 
@@ -156,9 +157,10 @@ namespace Duality
 		{
 			get
 			{
-				Vector2 n = this;
-				n.Normalize();
-				return n;
+				float scale = 1.0f / this.Length;
+				return new Vector2(
+					this.X * scale, 
+					this.Y * scale);
 			}
 		}
 
@@ -194,8 +196,8 @@ namespace Duality
 		public void Normalize()
 		{
 			float scale = 1.0f / this.Length;
-			X *= scale;
-			Y *= scale;
+			this.X *= scale;
+			this.Y *= scale;
 		}
 
 		/// <summary>

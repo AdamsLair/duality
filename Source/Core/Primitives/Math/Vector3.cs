@@ -129,7 +129,10 @@ namespace Duality
 		{
 			get
 			{
-				return (float)System.Math.Sqrt(X * X + Y * Y + Z * Z);
+				return (float)System.Math.Sqrt(
+					this.X * this.X + 
+					this.Y * this.Y + 
+					this.Z * this.Z);
 			}
 		}
 		/// <summary>
@@ -145,7 +148,10 @@ namespace Duality
 		{
 			get
 			{
-				return X * X + Y * Y + Z * Z;
+				return 
+					this.X * this.X + 
+					this.Y * this.Y + 
+					this.Z * this.Z;
 			}
 		}
 		/// <summary>
@@ -155,9 +161,11 @@ namespace Duality
 		{
 			get
 			{
-				Vector3 n = this;
-				n.Normalize();
-				return n;
+				float scale = 1.0f / this.Length;
+				return new Vector3(
+					this.X * scale, 
+					this.Y * scale, 
+					this.Z * scale);
 			}
 		}
 
@@ -168,17 +176,23 @@ namespace Duality
 		{
 			get
 			{
-				if(index == 0) return X;
-				else if(index == 1) return Y;
-				else if(index == 2) return Z;
-				throw new IndexOutOfRangeException("You tried to access this vector at index: " + index);
+				switch (index)
+				{
+					case 0: return this.X;
+					case 1: return this.Y;
+					case 2: return this.Z;
+					default: throw new IndexOutOfRangeException("Vector3 access at index: " + index);
+				}
 			}
 			set
 			{
-				if(index == 0) X = value;
-				else if(index == 1) Y = value;
-				else if(index == 2) Z = value;
-				else throw new IndexOutOfRangeException("You tried to set this vector at index: " + index);
+				switch (index)
+				{
+					case 0: this.X = value; return;
+					case 1: this.Y = value; return;
+					case 2: this.Z = value; return;
+					default: throw new IndexOutOfRangeException("Vector3 access at index: " + index);
+				}
 			}
 		}
 
@@ -188,9 +202,9 @@ namespace Duality
 		public void Normalize()
 		{
 			float scale = 1.0f / this.Length;
-			X *= scale;
-			Y *= scale;
-			Z *= scale;
+			this.X *= scale;
+			this.Y *= scale;
+			this.Z *= scale;
 		}
 
 		/// <summary>

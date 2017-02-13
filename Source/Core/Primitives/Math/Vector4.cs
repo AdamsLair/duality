@@ -96,7 +96,11 @@ namespace Duality
 		{
 			get
 			{
-				return (float)System.Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
+				return (float)System.Math.Sqrt(
+					this.X * this.X + 
+					this.Y * this.Y + 
+					this.Z * this.Z + 
+					this.W * this.W);
 			}
 		}
 		/// <summary>
@@ -111,7 +115,11 @@ namespace Duality
 		{
 			get
 			{
-				return X * X + Y * Y + Z * Z + W * W;
+				return 
+					this.X * this.X + 
+					this.Y * this.Y + 
+					this.Z * this.Z + 
+					this.W * this.W;
 			}
 		}
 		/// <summary>
@@ -121,28 +129,41 @@ namespace Duality
 		{
 			get
 			{
-				Vector4 n = this;
-				n.Normalize();
-				return n;
+				float scale = 1.0f / this.Length;
+				return new Vector4(
+					this.X * scale, 
+					this.Y * scale, 
+					this.Z * scale, 
+					this.W * scale);
 			}
 		}
 
 		/// <summary>
 		/// Gets or sets the value at the index of the Vector.
 		/// </summary>
-		public float this[int index] {
-			get{
-				if(index == 0) return X;
-				else if(index == 1) return Y;
-				else if(index == 2) return Z;
-				else if(index == 3) return W;
-				throw new IndexOutOfRangeException("You tried to access this vector at index: " + index);
-			} set{
-				if(index == 0) X = value;
-				else if(index == 1) Y = value;
-				else if(index == 2) Z = value;
-				else if(index == 3) W = value;
-				else throw new IndexOutOfRangeException("You tried to set this vector at index: " + index);
+		public float this[int index]
+		{
+			get
+			{
+				switch (index)
+				{
+					case 0: return this.X;
+					case 1: return this.Y;
+					case 2: return this.Z;
+					case 3: return this.W;
+					default: throw new IndexOutOfRangeException("Vector4 access at index: " + index);
+				}
+			}
+			set
+			{
+				switch (index)
+				{
+					case 0: this.X = value; return;
+					case 1: this.Y = value; return;
+					case 2: this.Z = value; return;
+					case 3: this.W = value; return;
+					default: throw new IndexOutOfRangeException("Vector4 access at index: " + index);
+				}
 			}
 		}
 
@@ -152,10 +173,10 @@ namespace Duality
 		public void Normalize()
 		{
 			float scale = 1.0f / this.Length;
-			X *= scale;
-			Y *= scale;
-			Z *= scale;
-			W *= scale;
+			this.X *= scale;
+			this.Y *= scale;
+			this.Z *= scale;
+			this.W *= scale;
 		}
 
 		/// <summary>
