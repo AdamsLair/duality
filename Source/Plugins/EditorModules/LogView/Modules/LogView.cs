@@ -82,6 +82,9 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
 		{
+			if (this.DockPanel == null)
+				return;
+
 			if (this.DockPanel.ActiveAutoHideContent == this)
 			{
 				this.MarkAsRead();
