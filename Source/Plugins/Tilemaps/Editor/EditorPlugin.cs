@@ -219,7 +219,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (this.tilePalette == null || this.tilePalette.IsDisposed)
 			{
 				this.tilePalette = new TilemapToolSourcePalette();
-				this.tilePalette.VisibleChanged += this.tilePalette_VisibleChanged;
+				this.tilePalette.DockStateChanged += this.tilePalette_DockStateChanged;
 				this.tilePalette.HideOnClose = true;
 			
 				// If there are cached settings available, apply them to the new palette
@@ -283,7 +283,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.tilesetEditor.Dispose();
 			this.tilesetEditor = null;
 		}
-		private void tilePalette_VisibleChanged(object sender, EventArgs e)
+		private void tilePalette_DockStateChanged(object sender, EventArgs e)
 		{
 			if (this.tilePalette.IsHidden)
 			{
