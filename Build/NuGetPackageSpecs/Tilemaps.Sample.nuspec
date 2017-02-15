@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.Tilemaps</id>
-    <version>1.1.17</version>
+    <version>1.1.18</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps Sample</title>
@@ -14,11 +14,11 @@
     <description>A sample project to show how to use Tilemaps.</description>
     <tags>Duality Sample Plugin Tilemaps</tags>
     <releaseNotes>Updated Dependencies
-#CHANGE: Updated AdamsLair.Duality.Plugins.Tilemaps dependency</releaseNotes>
+#CHANGE: Updated AdamsLair.Duality.Editor.Plugins.Tilemaps dependency</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.1.12" />
-      <dependency id="AdamsLair.Duality.Editor.Plugins.Tilemaps" version="1.1.14" />
-      <dependency id="AdamsLair.Duality" version="2.9.5" />
+      <dependency id="AdamsLair.Duality.Editor.Plugins.Tilemaps" version="1.1.15" />
+      <dependency id="AdamsLair.Duality" version="2.9.7" />
     </dependencies>
   </metadata>
   <files>
