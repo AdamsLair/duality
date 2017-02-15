@@ -297,6 +297,7 @@ namespace Duality.Editor.Plugins.LogView
 		public void BindToDualityLogs()
 		{
 			if (this.boundToDualityLogs) return;
+			this.boundToDualityLogs = true;
 
 			Log.AddGlobalOutput(this);
 			this.UpdateFromDataLog(DualityEditorApp.GlobalLogData);
@@ -306,6 +307,8 @@ namespace Duality.Editor.Plugins.LogView
 			if (!this.boundToDualityLogs) return;
 
 			Log.RemoveGlobalOutput(this);
+
+			this.boundToDualityLogs = false;
 		}
 		
 		public void SetFilterFlag(MessageFilter flag, bool isSet)
