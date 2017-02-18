@@ -77,6 +77,9 @@
     <Compile Include="Components\ComponentRequirementMapTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
     <Compile Include="ExtMethodsPixelData.cs" />
+    <Compile Include="Math\Vector4Test.cs" />
+    <Compile Include="Math\Vector3Test.cs" />
+    <Compile Include="Math\Vector2Test.cs" />
     <Compile Include="Math\Point2Test.cs" />
     <Compile Include="Math\RectTest.cs" />
     <Compile Include="Resources\Font\FontKerningLookupTest.cs" />
