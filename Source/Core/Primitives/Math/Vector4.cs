@@ -581,10 +581,10 @@ namespace Duality
 		public static Vector4 operator /(Vector4 vec, float scale)
 		{
 			float mult = 1.0f / scale;
-			vec.X /= mult;
-			vec.Y /= mult;
-			vec.Z /= mult;
-			vec.W /= mult;
+			vec.X *= mult;
+			vec.Y *= mult;
+			vec.Z *= mult;
+			vec.W *= mult;
 			return vec;
 		}
 		/// <summary>
