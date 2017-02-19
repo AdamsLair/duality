@@ -6,9 +6,11 @@
   <soundMusicVol dataType="Float">1</soundMusicVol>
   <soundSpeechVol dataType="Float">1</soundSpeechVol>
   <systemCursorVisible dataType="Bool">true</systemCursorVisible>
-  <windowHeight dataType="Int">600</windowHeight>
   <windowMode dataType="Enum" type="Duality.ScreenMode" name="Window" value="0" />
   <windowRefreshMode dataType="Enum" type="Duality.RefreshMode" name="AdaptiveVSync" value="3" />
-  <windowWidth dataType="Int">800</windowWidth>
+  <windowSize dataType="Struct" type="Duality.Point2">
+    <X dataType="Int">800</X>
+    <Y dataType="Int">600</Y>
+  </windowSize>
 </root>
 <!-- XmlFormatterBase Document Separator -->
