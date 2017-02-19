@@ -14,7 +14,7 @@ namespace Duality.Tests.Utility
 	[TestFixture]
 	public class Vector3Test
 	{
-		private const float Epsilon = 0.000001f;
+		private const float Epsilon = 0.0001f;
 
 		[Test] public void Constuctors()
 		{
