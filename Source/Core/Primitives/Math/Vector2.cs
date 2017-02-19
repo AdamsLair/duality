@@ -156,9 +156,13 @@ namespace Duality
 		{
 			get
 			{
-				Vector2 n = this;
-				n.Normalize();
-				return n;
+				float length = this.Length;
+				if (length < 1e-15f) return Vector2.Zero;
+
+				float scale = 1.0f / length;
+				return new Vector2(
+					this.X * scale, 
+					this.Y * scale);
 			}
 		}
 
@@ -193,9 +197,17 @@ namespace Duality
 		/// </summary>
 		public void Normalize()
 		{
-			float scale = 1.0f / this.Length;
-			X *= scale;
-			Y *= scale;
+			float length = this.Length;
+			if (length < 1e-15f)
+			{
+				this = Vector2.Zero;
+			}
+			else
+			{
+				float scale = 1.0f / length;
+				this.X *= scale;
+				this.Y *= scale;
+			}
 		}
 
 		/// <summary>
