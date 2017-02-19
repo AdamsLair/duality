@@ -99,6 +99,7 @@ namespace Duality.Tests.Utility
 		}
 		[Test] public void Normalized()
 		{
+			// Normalizing direction vectors
 			for (int i = 0; i < 10; i++)
 			{
 				float length = MathF.Pow(1.25f, i);
@@ -111,6 +112,7 @@ namespace Duality.Tests.Utility
 				AssertVectorEpsilonEqual(new Vector3(length, length, length).Normalized, 1.0f / MathF.Sqrt(3), 1.0f / MathF.Sqrt(3), 1.0f / MathF.Sqrt(3));
 			}
 
+			// Normalizing random vectors - direction should be preserved
 			Random rnd = new Random(1);
 			for (int i = 0; i < 100; i++)
 			{
@@ -123,13 +125,33 @@ namespace Duality.Tests.Utility
 				float angleToZ = Vector3.AngleBetween(vector, Vector3.UnitZ);
 
 				Assert.AreEqual(1.0f, normalizedVector.Length, Epsilon);
+				AssertVectorEpsilonEqual(normalizedVector * length, vector.X, vector.Y, vector.Z);
 				Assert.AreEqual(angleToX, Vector3.AngleBetween(normalizedVector, Vector3.UnitX), Epsilon);
 				Assert.AreEqual(angleToY, Vector3.AngleBetween(normalizedVector, Vector3.UnitY), Epsilon);
 				Assert.AreEqual(angleToZ, Vector3.AngleBetween(normalizedVector, Vector3.UnitZ), Epsilon);
 			}
+
+			// Normalizing a zero-length vector should return a zero-length vector
+			AssertVectorEqual(new Vector3(0.0f, 0.0f, 0.0f).Normalized, 0.0f, 0.0f, 0.0f);
+
+			// Normalizing an increasingly small vector should never produce any invalid vectors
+			for (int i = 0; i < 50; i++)
+			{
+				float scale = MathF.Pow(10.0f, -i);
+				Vector3 vector = new Vector3(scale, scale, scale);
+				Vector3 normalizedVector = vector.Normalized;
+
+				Assert.IsFalse(float.IsNaN(normalizedVector.X));
+				Assert.IsFalse(float.IsNaN(normalizedVector.Y));
+				Assert.IsFalse(float.IsNaN(normalizedVector.Z));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.X));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.Y));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.Z));
+			}
 		}
 		[Test] public void Normalize()
 		{
+			// Normalizing random vectors - expect the same results as with Normalized
 			Random rnd = new Random(1);
 			for (int i = 0; i < 100; i++)
 			{
@@ -138,6 +160,25 @@ namespace Duality.Tests.Utility
 				normalizedVector.Normalize();
 
 				AssertVectorEpsilonEqual(normalizedVector, vector.Normalized.X, vector.Normalized.Y, vector.Normalized.Z);
+			}
+
+			// Normalizing a zero-length vector should return a zero-length vector
+			AssertVectorEqual(new Vector3(0.0f, 0.0f, 0.0f).Normalized, 0.0f, 0.0f, 0.0f);
+
+			// Normalizing an increasingly small vector should never produce any invalid vectors
+			for (int i = 0; i < 50; i++)
+			{
+				float scale = MathF.Pow(10.0f, -i);
+				Vector3 vector = new Vector3(scale, scale, scale);
+				Vector3 normalizedVector = vector;
+				normalizedVector.Normalize();
+
+				Assert.IsFalse(float.IsNaN(normalizedVector.X));
+				Assert.IsFalse(float.IsNaN(normalizedVector.Y));
+				Assert.IsFalse(float.IsNaN(normalizedVector.Z));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.X));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.Y));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.Z));
 			}
 		}
 		[Test] public void Length()

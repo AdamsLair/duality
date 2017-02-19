@@ -117,6 +117,7 @@ namespace Duality.Tests.Utility
 		}
 		[Test] public void Normalized()
 		{
+			// Normalizing direction vectors
 			for (int i = 0; i < 10; i++)
 			{
 				float length = MathF.Pow(1.25f, i);
@@ -130,9 +131,30 @@ namespace Duality.Tests.Utility
 				AssertVectorEpsilonEqual(new Vector4(0.0f, 0.0f, 0.0f, -length).Normalized, 0.0f, 0.0f, 0.0f, -1.0f);
 				AssertVectorEpsilonEqual(new Vector4(length, length, length, length).Normalized, 1.0f / MathF.Sqrt(4), 1.0f / MathF.Sqrt(4), 1.0f / MathF.Sqrt(4), 1.0f / MathF.Sqrt(4));
 			}
+
+			// Normalizing a zero-length vector should return a zero-length vector
+			AssertVectorEqual(new Vector4(0.0f, 0.0f, 0.0f, 0.0f).Normalized, 0.0f, 0.0f, 0.0f, 0.0f);
+
+			// Normalizing an increasingly small vector should never produce any invalid vectors
+			for (int i = 0; i < 50; i++)
+			{
+				float scale = MathF.Pow(10.0f, -i);
+				Vector4 vector = new Vector4(scale, scale, scale, scale);
+				Vector4 normalizedVector = vector.Normalized;
+
+				Assert.IsFalse(float.IsNaN(normalizedVector.X));
+				Assert.IsFalse(float.IsNaN(normalizedVector.Y));
+				Assert.IsFalse(float.IsNaN(normalizedVector.Z));
+				Assert.IsFalse(float.IsNaN(normalizedVector.W));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.X));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.Y));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.Z));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.W));
+			}
 		}
 		[Test] public void Normalize()
 		{
+			// Normalizing random vectors - expect the same results as with Normalized
 			Random rnd = new Random(1);
 			for (int i = 0; i < 100; i++)
 			{
@@ -141,6 +163,27 @@ namespace Duality.Tests.Utility
 				normalizedVector.Normalize();
 
 				AssertVectorEpsilonEqual(normalizedVector, vector.Normalized.X, vector.Normalized.Y, vector.Normalized.Z, vector.Normalized.W);
+			}
+
+			// Normalizing a zero-length vector should return a zero-length vector
+			AssertVectorEqual(new Vector4(0.0f, 0.0f, 0.0f, 0.0f).Normalized, 0.0f, 0.0f, 0.0f, 0.0f);
+
+			// Normalizing an increasingly small vector should never produce any invalid vectors
+			for (int i = 0; i < 50; i++)
+			{
+				float scale = MathF.Pow(10.0f, -i);
+				Vector4 vector = new Vector4(scale, scale, scale, scale);
+				Vector4 normalizedVector = vector;
+				normalizedVector.Normalize();
+
+				Assert.IsFalse(float.IsNaN(normalizedVector.X));
+				Assert.IsFalse(float.IsNaN(normalizedVector.Y));
+				Assert.IsFalse(float.IsNaN(normalizedVector.Z));
+				Assert.IsFalse(float.IsNaN(normalizedVector.W));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.X));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.Y));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.Z));
+				Assert.IsFalse(float.IsInfinity(normalizedVector.W));
 			}
 		}
 		[Test] public void Length()
