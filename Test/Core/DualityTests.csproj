@@ -74,6 +74,7 @@
     <Compile Include="Cloning\HelperObjects\TestData.cs" />
     <Compile Include="Cloning\HelperObjects\TestResource.cs" />
     <Compile Include="Cloning\SpecificCloningTest.cs" />
+    <Compile Include="Components\ComponentExecutionOrderTest.cs" />
     <Compile Include="Components\ComponentRequirementMapTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
     <Compile Include="ExtMethodsPixelData.cs" />
