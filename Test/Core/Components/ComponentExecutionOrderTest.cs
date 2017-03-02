@@ -99,6 +99,36 @@ namespace Duality.Tests.Components
 			Scene.SwitchTo(null, true);
 			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), true);
 		}
+		[Test] public void EnforceOrderSceneLoad()
+		{
+			Assert.Inconclusive("Not yet implemented");
+
+			EventOrderLog eventLog = new EventOrderLog();
+			eventLog.EventFilter = EventType.Loaded;
+
+			Scene scene = this.GenerateSampleScene(10,
+				typeof(TestComponentA1), 
+				typeof(TestComponentA2), 
+				typeof(TestComponentA3), 
+				typeof(TestComponentA4), 
+				typeof(TestComponentA5));
+
+			// Assign the event log so it gets serialized and it already
+			// there when the scene is initialized after loading
+			this.AssignEventLog(scene, eventLog);
+
+			// Save the scene and reload it without initializing it
+			using (MemoryStream data = new MemoryStream())
+			{
+				scene.Save(data);
+				data.Position = 0;
+				scene = Resource.Load<Scene>(data);
+			}
+
+			// Retrieve the deserialized event log again and evaluate results
+			eventLog = scene.FindComponent<TestComponent>().EventLog;
+			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
+		}
 
 		private void AssertEventOrder(EventOrderLog eventLog, int eventCount, ComponentExecutionOrder order, bool reverseOrder)
 		{

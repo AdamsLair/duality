@@ -41,6 +41,8 @@ namespace Duality.Tests.Components.ExecutionOrderTest
 		{
 			if (context == InitContext.Activate)
 				this.NotifyEvent(EventType.Activate);
+			else if (context == InitContext.Loaded)
+				this.NotifyEvent(EventType.Loaded);
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
 		{

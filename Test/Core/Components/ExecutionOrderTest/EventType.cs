@@ -25,6 +25,7 @@ namespace Duality.Tests.Components.ExecutionOrderTest
 		Update = 0x1,
 		Activate = 0x2,
 		Deactivate = 0x4,
+		Loaded = 0x8,
 
 		All = Update | Activate | Deactivate
 	}
