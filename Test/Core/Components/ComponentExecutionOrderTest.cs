@@ -55,7 +55,7 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(scene, eventLog);
 			DualityApp.Update();
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder());
+			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
 
 			Scene.SwitchTo(null, true);
 		}
@@ -75,7 +75,7 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(scene, eventLog);
 			Scene.SwitchTo(scene, true);
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder());
+			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
 
 			Scene.SwitchTo(null, true);
 		}
@@ -97,10 +97,10 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(scene, eventLog);
 			Scene.SwitchTo(null, true);
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder());
+			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), true);
 		}
 
-		private void AssertEventOrder(EventOrderLog eventLog, int eventCount, ComponentExecutionOrder order)
+		private void AssertEventOrder(EventOrderLog eventLog, int eventCount, ComponentExecutionOrder order, bool reverseOrder)
 		{
 			int actualEventCount = eventLog.EventOrder.Count();
 			Assert.AreEqual(
@@ -115,10 +115,20 @@ namespace Duality.Tests.Components
 				Type type = component.GetType();
 				int index = order.GetSortIndex(type);
 
-				Assert.GreaterOrEqual(
-					index, 
-					lastIndex, 
-					string.Format("Found {0} after {1}, which is out of order.", type.Name, lastType.Name));
+				if (reverseOrder)
+				{
+					Assert.LessOrEqual(
+						index, 
+						lastIndex, 
+						string.Format("Found {0} before {1}, which is out of the expected (reversed) order.", type.Name, lastType.Name));
+				}
+				else
+				{
+					Assert.GreaterOrEqual(
+						index, 
+						lastIndex, 
+						string.Format("Found {0} after {1}, which is out of order.", type.Name, lastType.Name));
+				}
 
 				lastIndex = index;
 				lastType = type;
