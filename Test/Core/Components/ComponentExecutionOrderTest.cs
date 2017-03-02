@@ -108,7 +108,7 @@ namespace Duality.Tests.Components
 				actualEventCount, 
 				string.Format("Expected {0} events of type/s {2}, but got only {1}", eventCount, actualEventCount, eventLog.EventFilter));
 
-			int lastIndex = int.MinValue;
+			int lastIndex = reverseOrder ? int.MaxValue : int.MinValue;
 			Type lastType = null;
 			foreach (TestComponent component in eventLog.EventOrder)
 			{
@@ -120,14 +120,20 @@ namespace Duality.Tests.Components
 					Assert.LessOrEqual(
 						index, 
 						lastIndex, 
-						string.Format("Found {0} before {1}, which is out of the expected (reversed) order.", type.Name, lastType.Name));
+						string.Format(
+							"Found {0} before {1}, which is out of the expected (reversed) order.", 
+							type.Name, 
+							lastType != null ? lastType.Name : "null"));
 				}
 				else
 				{
 					Assert.GreaterOrEqual(
 						index, 
 						lastIndex, 
-						string.Format("Found {0} after {1}, which is out of order.", type.Name, lastType.Name));
+						string.Format(
+							"Found {0} after {1}, which is out of order.", 
+							type.Name, 
+							lastType != null ? lastType.Name : "null"));
 				}
 
 				lastIndex = index;
