@@ -117,7 +117,7 @@ namespace Duality.Tests.Components
 			// there when the scene is initialized after loading
 			this.AssignEventLog(scene, eventLog);
 
-			// Save the scene and reload it without initializing it
+			// Save the scene and reload it so the OnLoaded code is triggered
 			using (MemoryStream data = new MemoryStream())
 			{
 				scene.Save(data);
