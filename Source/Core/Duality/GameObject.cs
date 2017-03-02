@@ -290,7 +290,7 @@ namespace Duality
 		/// <param name="parent"></param>
 		public GameObject(string name, GameObject parent = null)
 		{
-			this.name = name;
+			this.Name = name;
 			this.Parent = parent;
 		}
 		/// <summary>
