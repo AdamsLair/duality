@@ -260,7 +260,7 @@ namespace Duality.Tests.Drawing
 		{
 			PixelData pixelData;
 
-			using (Texture texture = new Texture(width, height, TextureSizeMode.NonPowerOfTwo))
+			using (Texture texture = new Texture(width, height, TextureSizeMode.NonPowerOfTwo, TextureMagFilter.Nearest, TextureMinFilter.Nearest))
 			using (RenderTarget renderTarget = new RenderTarget(AAQuality.Off, texture))
 			using (DrawDevice device = new DrawDevice())
 			{
