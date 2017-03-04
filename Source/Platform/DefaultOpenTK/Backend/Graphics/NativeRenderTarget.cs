@@ -31,69 +31,38 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			if (curBound == nextBound) return;
 
-			if (curBound != null && nextBound != curBound)
-			{
-				// Blit multisampled fbo
-				if (curBound.samples > 0)
-				{
-					GL.Ext.BindFramebuffer(FramebufferTarget.ReadFramebuffer, curBound.handleMsaaFBO);
-					GL.Ext.BindFramebuffer(FramebufferTarget.DrawFramebuffer, curBound.handleMainFBO);
-					for (int i = 0; i < curBound.targetInfos.Count; i++)
-					{
-						GL.ReadBuffer((ReadBufferMode)((int)ReadBufferMode.ColorAttachment0 + i));
-						GL.DrawBuffer((DrawBufferMode)((int)DrawBufferMode.ColorAttachment0 + i));
-						GL.Ext.BlitFramebuffer(
-							0, 0, curBound.targetInfos.Data[i].Target.Width, curBound.targetInfos.Data[i].Target.Height,
-							0, 0, curBound.targetInfos.Data[i].Target.Width, curBound.targetInfos.Data[i].Target.Height,
-							ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
-					}
-					GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
-					GL.ReadBuffer(ReadBufferMode.Back);
-					GL.DrawBuffer(DrawBufferMode.Back);
-				}
-
-				// Generate Mipmaps for last bound
-				for (int i = 0; i < curBound.targetInfos.Count; i++)
-				{
-					if (curBound.targetInfos.Data[i].Target.HasMipmaps)
-					{
-						GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
-
-						int lastTexId;
-						GL.GetInteger(GetPName.TextureBinding2D, out lastTexId);
-
-						int texId = curBound.targetInfos.Data[i].Target.Handle;
-						if (lastTexId != texId) 
-							GL.BindTexture(TextureTarget.Texture2D, texId);
-
-						GL.Ext.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-
-						if (lastTexId != texId) 
-							GL.BindTexture(TextureTarget.Texture2D, lastTexId);
-					}
-				}
-			}
+			// When binding a different target, execute pending post-render steps for the previous one
+			if (curBound != null && curBound != nextBound)
+				curBound.ApplyPostRender();
 
 			// Bind new RenderTarget
-			if (nextBound == null)
+			ApplyGLBind(nextBound);
+
+			// Update binding info
+			curBound = nextBound;
+			if (curBound != null)
+				curBound.pendingPostRender = true;
+		}
+		private static void ApplyGLBind(NativeRenderTarget target)
+		{
+			if (target == null)
 			{
-				curBound = null;
 				GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
 				GL.ReadBuffer(ReadBufferMode.Back);
 				GL.DrawBuffer(DrawBufferMode.Back);
 			}
 			else
 			{
-				curBound = nextBound;
-				GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, curBound.samples > 0 ? curBound.handleMsaaFBO : curBound.handleMainFBO);
-				DrawBuffersEnum[] buffers = new DrawBuffersEnum[curBound.targetInfos.Count];
+				GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, target.samples > 0 ? target.handleMsaaFBO : target.handleMainFBO);
+				DrawBuffersEnum[] buffers = new DrawBuffersEnum[target.targetInfos.Count];
 				for (int i = 0; i < buffers.Length; i++)
 				{
 					buffers[i] = (DrawBuffersEnum)((int)DrawBuffersEnum.ColorAttachment0 + i);
 				}
-				GL.DrawBuffers(curBound.targetInfos.Count, buffers);
+				GL.DrawBuffers(target.targetInfos.Count, buffers);
 			}
 		}
+
 
 		private struct TargetInfo
 		{
@@ -101,11 +70,14 @@ namespace Duality.Backend.DefaultOpenTK
 			public int HandleMsaaColorRBO;
 		}
 		
-		private int handleMainFBO	= 0;
-		private	int	handleDepthRBO	= 0;
-		private	int	handleMsaaFBO	= 0;
-		private	int	samples			= 0;
-		private	RawList<TargetInfo>	targetInfos	= new RawList<TargetInfo>();
+
+		private bool pendingPostRender = false;
+		private int  handleMainFBO     = 0;
+		private int  handleDepthRBO    = 0;
+		private int  handleMsaaFBO     = 0;
+		private int  samples           = 0;
+		private RawList<TargetInfo> targetInfos = new RawList<TargetInfo>();
+
 
 		public int Handle
 		{
@@ -122,6 +94,54 @@ namespace Duality.Backend.DefaultOpenTK
 		public int Samples
 		{
 			get { return this.samples; }
+		}
+
+
+		public void ApplyPostRender()
+		{
+			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
+
+			if (!this.pendingPostRender) return;
+			
+			// Resolve multisampling to the main FBO
+			if (this.samples > 0)
+			{
+				GL.Ext.BindFramebuffer(FramebufferTarget.ReadFramebuffer, this.handleMsaaFBO);
+				GL.Ext.BindFramebuffer(FramebufferTarget.DrawFramebuffer, this.handleMainFBO);
+				for (int i = 0; i < this.targetInfos.Count; i++)
+				{
+					GL.ReadBuffer((ReadBufferMode)((int)ReadBufferMode.ColorAttachment0 + i));
+					GL.DrawBuffer((DrawBufferMode)((int)DrawBufferMode.ColorAttachment0 + i));
+					GL.Ext.BlitFramebuffer(
+						0, 0, this.targetInfos.Data[i].Target.Width, this.targetInfos.Data[i].Target.Height,
+						0, 0, this.targetInfos.Data[i].Target.Width, this.targetInfos.Data[i].Target.Height,
+						ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
+				}
+			}
+			
+			// Generate mipmaps for the target textures
+			int lastTexId = -1;
+			for (int i = 0; i < this.targetInfos.Count; i++)
+			{
+				if (!this.targetInfos.Data[i].Target.HasMipmaps)
+					continue;
+
+				if (lastTexId == -1)
+				{ 
+					GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
+					GL.GetInteger(GetPName.TextureBinding2D, out lastTexId);
+				}
+
+				int texId = this.targetInfos.Data[i].Target.Handle;
+				GL.BindTexture(TextureTarget.Texture2D, texId);
+				GL.Ext.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+			}
+
+			// Reset OpenGL state
+			if (lastTexId != -1) GL.BindTexture(TextureTarget.Texture2D, lastTexId);
+			ApplyGLBind(curBound);
+
+			this.pendingPostRender = false;
 		}
 
 		void INativeRenderTarget.Setup(IReadOnlyList<INativeTexture> targets, AAQuality multisample)
@@ -280,20 +300,23 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
-			NativeRenderTarget lastRt = BoundRT;
-			Bind(this);
+			this.ApplyPostRender();
+			if (curBound != this) ApplyGLBind(this);
 			{
-				ReadBufferMode oldReadBuffer = (ReadBufferMode)GL.GetInteger(GetPName.ReadBuffer);
+				GL.Ext.BindFramebuffer(FramebufferTarget.ReadFramebuffer, this.handleMainFBO);
 				GL.ReadBuffer((ReadBufferMode)((int)ReadBufferMode.ColorAttachment0 + targetIndex));
 				GL.ReadPixels(x, y, width, height, dataLayout.ToOpenTK(), dataElementType.ToOpenTK(), buffer);
-				GL.ReadBuffer(oldReadBuffer);
 			}
-			Bind(lastRt);
+			ApplyGLBind(curBound);
 		}
 		void IDisposable.Dispose()
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
+
+			// If there are changes pending to be applied to the bound textures,
+			// they should be executed before the render target is gone.
+			this.ApplyPostRender();
 
 			if (this.handleMainFBO != 0)
 			{
