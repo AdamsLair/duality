@@ -80,6 +80,7 @@
     <Compile Include="Components\ExecutionOrderTest\EventType.cs" />
     <Compile Include="Components\ExecutionOrderTest\TestComponent.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
+    <Compile Include="Resources\RenderTargetTest.cs" />
     <Compile Include="ExtMethodsPixelData.cs" />
     <Compile Include="Math\Vector4Test.cs" />
     <Compile Include="Math\Vector3Test.cs" />
