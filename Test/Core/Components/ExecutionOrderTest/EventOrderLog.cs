@@ -38,7 +38,7 @@ namespace Duality.Tests.Components.ExecutionOrderTest
 		}
 		public void Notify(EventType eventType, TestComponent receiver)
 		{
-			if ((this.eventFilter & eventFilter) == EventType.None) return;
+			if ((this.eventFilter & eventType) == EventType.None) return;
 			this.eventOrder.Add(receiver);
 		}
 	}

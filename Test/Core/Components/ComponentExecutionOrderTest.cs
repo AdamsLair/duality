@@ -129,6 +129,48 @@ namespace Duality.Tests.Components
 			eventLog = scene.FindComponent<TestComponent>().EventLog;
 			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
 		}
+		[Test] public void EnforceOrderSceneSaved()
+		{
+			Assert.Inconclusive("Not yet implemented");
+
+			EventOrderLog eventLog = new EventOrderLog();
+			eventLog.EventFilter = EventType.Saved;
+
+			Scene scene = this.GenerateSampleScene(10,
+				typeof(TestComponentA1), 
+				typeof(TestComponentA2), 
+				typeof(TestComponentA3), 
+				typeof(TestComponentA4), 
+				typeof(TestComponentA5));
+
+			this.AssignEventLog(scene, eventLog);
+			using (MemoryStream data = new MemoryStream())
+			{
+				scene.Save(data);
+			}
+			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
+		}
+		[Test] public void EnforceOrderSceneSaving()
+		{
+			Assert.Inconclusive("Not yet implemented");
+
+			EventOrderLog eventLog = new EventOrderLog();
+			eventLog.EventFilter = EventType.Saving;
+
+			Scene scene = this.GenerateSampleScene(10,
+				typeof(TestComponentA1), 
+				typeof(TestComponentA2), 
+				typeof(TestComponentA3), 
+				typeof(TestComponentA4), 
+				typeof(TestComponentA5));
+
+			this.AssignEventLog(scene, eventLog);
+			using (MemoryStream data = new MemoryStream())
+			{
+				scene.Save(data);
+			}
+			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), true);
+		}
 
 		private void AssertEventOrder(EventOrderLog eventLog, int eventCount, ComponentExecutionOrder order, bool reverseOrder)
 		{
@@ -136,7 +178,7 @@ namespace Duality.Tests.Components
 			Assert.AreEqual(
 				eventCount, 
 				actualEventCount, 
-				string.Format("Expected {0} events of type/s {2}, but got only {1}", eventCount, actualEventCount, eventLog.EventFilter));
+				string.Format("Expected {0} events of type/s {2}, but got {1}", eventCount, actualEventCount, eventLog.EventFilter));
 
 			int lastIndex = reverseOrder ? int.MaxValue : int.MinValue;
 			Type lastType = null;

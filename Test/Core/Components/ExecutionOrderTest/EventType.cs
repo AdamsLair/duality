@@ -20,13 +20,15 @@ namespace Duality.Tests.Components.ExecutionOrderTest
 	[Flags]
 	public enum EventType
 	{
-		None = 0x0,
+		None       = 0x00,
 
-		Update = 0x1,
-		Activate = 0x2,
-		Deactivate = 0x4,
-		Loaded = 0x8,
+		Update     = 0x01,
+		Activate   = 0x02,
+		Deactivate = 0x04,
+		Loaded     = 0x08,
+		Saved      = 0x10,
+		Saving     = 0x20,
 
-		All = Update | Activate | Deactivate
+		All = Update | Activate | Deactivate | Loaded | Saved | Saving
 	}
 }
