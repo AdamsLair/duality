@@ -11,7 +11,7 @@ namespace Duality.Editor.Controls
 		{
 			get;
 			set;
-		}
+		} = 1000;
 
 		private TreeNodeAdv autoExpandNode = null;
 
