@@ -5,6 +5,11 @@ using System.Windows.Forms;
 
 namespace Duality.Editor.Controls
 {
+	/// <summary>
+	/// An extended TreeViewAdv.
+	/// Will automatically expand nodes that are being dragged over with another node.
+	/// A value of 0 in the constructor or setting the property AutoExpandDelay to 0 will disable this behaviour.
+	/// </summary>
 	public class AutoExpandTreeView : TreeViewAdv
 	{
 		private TreeNodeAdv autoExpandNode = null;
@@ -33,9 +38,7 @@ namespace Duality.Editor.Controls
 		{
 			if (AutoExpandDelay > 0)
 			{
-				autoExpandTimer.Stop();
 				autoExpandTimer.Interval = AutoExpandDelay;
-				
 				autoExpandTimer.Start();
 			}
 		}
@@ -44,10 +47,7 @@ namespace Duality.Editor.Controls
 		{
 			if (AutoExpandDelay > 0)
 			{
-				if (autoExpandNode != null)
-				{
-					autoExpandNode.Expand();
-				}
+				autoExpandNode.Expand();
 			}
 
 			autoExpandTimer.Stop();
@@ -61,25 +61,46 @@ namespace Duality.Editor.Controls
 		protected override void OnDragOver(DragEventArgs dragEvent)
 		{
 			base.OnDragOver(dragEvent);
-
 			if (AutoExpandDelay > 0)
 			{
 				Point locationHoverPosition = PointToClient(new Point(dragEvent.X, dragEvent.Y));
 				TreeNodeAdv hoveredNode = GetNodeAt(locationHoverPosition);
+				TreeNodeAdv draggedNode = SelectedNode;
 
-				if ((autoExpandNode == null || autoExpandNode != hoveredNode))
+				// If we hover over ourselves, null or a cihld stop the timer.
+				if (draggedNode == null || hoveredNode == null || draggedNode == hoveredNode || draggedNode.Children.Contains(hoveredNode))
+				{
+					autoExpandTimer.Stop();
+					autoExpandNode = null;
+					return;
+				}
+
+				// If we are different to the currently timing out node, then start it again.
+				if (autoExpandNode != hoveredNode)
 				{
 					autoExpandNode = hoveredNode;
 					StartAutoExpandTimer();
 				}
 			}
+		}
 
+		protected override void OnDragLeave(EventArgs dragLeaveEvent)
+		{
+			base.OnDragLeave(dragLeaveEvent);
+			autoExpandTimer.Stop();
+			autoExpandNode = null;
+		}
+
+		protected override void OnDragDrop(DragEventArgs dragDropEvent)
+		{
+			base.OnDragDrop(dragDropEvent);
+			autoExpandTimer.Stop();
+			autoExpandNode = null;
 		}
 
 		protected override void Dispose(bool disposing)
 		{
 			base.Dispose(disposing);
-
 			autoExpandTimer.Tick -= OnAutoExpandTimerTick;
 		}
 	}
