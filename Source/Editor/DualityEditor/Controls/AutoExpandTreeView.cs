@@ -7,30 +7,42 @@ namespace Duality.Editor.Controls
 {
 	public class AutoExpandTreeView : TreeViewAdv
 	{
-		public int DragOverExpandDelay
-		{
-			get;
-			set;
-		} = 1000;
-
 		private TreeNodeAdv autoExpandNode = null;
+		private Timer autoExpandTimer = new Timer();
 
-		private Timer timer = new Timer();
-
-		private void StartTimer()
+		public int AutoExpandDelay
 		{
-			if (DragOverExpandDelay > 0)
+			get
 			{
-				timer.Stop();
-				timer.Interval = DragOverExpandDelay;
-				timer.Tick += OnTimerTick;
-				timer.Start();
+				return autoExpandTimer.Interval;
+			}
+
+			set
+			{
+				autoExpandTimer.Interval = value;
 			}
 		}
 
-		private void StopTimer()
+		public AutoExpandTreeView(int autoExpandDelay = 1000)
 		{
-			if (DragOverExpandDelay > 0)
+			autoExpandTimer.Interval = autoExpandDelay;
+			autoExpandTimer.Tick += OnAutoExpandTimerTick;
+		}
+
+		private void StartAutoExpandTimer()
+		{
+			if (AutoExpandDelay > 0)
+			{
+				autoExpandTimer.Stop();
+				autoExpandTimer.Interval = AutoExpandDelay;
+				
+				autoExpandTimer.Start();
+			}
+		}
+
+		private void StopAutoExpandTimer()
+		{
+			if (AutoExpandDelay > 0)
 			{
 				if (autoExpandNode != null)
 				{
@@ -38,31 +50,37 @@ namespace Duality.Editor.Controls
 				}
 			}
 
-			timer.Stop();
+			autoExpandTimer.Stop();
 		}
 
-		private void OnTimerTick(object sender, EventArgs e)
+		private void OnAutoExpandTimerTick(object sender, EventArgs e)
 		{
-			StopTimer();
+			StopAutoExpandTimer();
 		}
 
-		protected override void OnDragOver(DragEventArgs drgevent)
+		protected override void OnDragOver(DragEventArgs dragEvent)
 		{
-			base.OnDragOver(drgevent);
+			base.OnDragOver(dragEvent);
 
-			if (DragOverExpandDelay > 0)
+			if (AutoExpandDelay > 0)
 			{
+				Point locationHoverPosition = PointToClient(new Point(dragEvent.X, dragEvent.Y));
+				TreeNodeAdv hoveredNode = GetNodeAt(locationHoverPosition);
 
-				Point p = PointToClient(new Point(drgevent.X, drgevent.Y));
-				var node = GetNodeAt(p);
-
-				if (autoExpandNode == null || autoExpandNode != node)
+				if ((autoExpandNode == null || autoExpandNode != hoveredNode))
 				{
-					autoExpandNode = node;
-					StartTimer();
+					autoExpandNode = hoveredNode;
+					StartAutoExpandTimer();
 				}
 			}
 
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+
+			autoExpandTimer.Tick -= OnAutoExpandTimerTick;
 		}
 	}
 }
