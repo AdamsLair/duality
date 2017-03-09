@@ -262,6 +262,7 @@
       <DependentUpon>ReloadCorePluginDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Utility\Extensions\ExtMethodsTreeViewAdv.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsTreeNodeAdv.cs" />
     <Compile Include="Forms\SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
