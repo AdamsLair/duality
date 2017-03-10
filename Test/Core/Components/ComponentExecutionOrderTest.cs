@@ -39,8 +39,6 @@ namespace Duality.Tests.Components
 
 		[Test] public void EnforceOrderSceneUpdate()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Update;
 

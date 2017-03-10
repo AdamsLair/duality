@@ -21,12 +21,42 @@ namespace Duality
 		{
 			public Type Type;
 			public int Index;
+
+			public override string ToString()
+			{
+				return string.Format("[{0}] {1}", this.Index, this.Type);
+			}
 		}
 
 		private Dictionary<Type,int> sortIndexCache = new Dictionary<Type,int>();
 		private IndexedType[] sortedComponentTypes = new IndexedType[0];
 		private HashSet<Type> componentTypes = new HashSet<Type>();
 
+
+		/// <summary>
+		/// Sorts a list of <see cref="Component"/> types according to their execution order.
+		/// </summary>
+		/// <param name="types"></param>
+		/// <param name="reverse"></param>
+		public void SortTypes(IList<Type> types, bool reverse)
+		{
+			IndexedType[] indexedTypes = new IndexedType[types.Count];
+			for (int i = 0; i < indexedTypes.Length; i++)
+			{
+				indexedTypes[i].Type = types[i];
+				indexedTypes[i].Index = this.GetSortIndex(indexedTypes[i].Type);
+			}
+
+			if (reverse)
+				Array.Sort(indexedTypes, (a, b) => b.Index - a.Index);
+			else
+				Array.Sort(indexedTypes, (a, b) => a.Index - b.Index);
+
+			for (int i = 0; i < indexedTypes.Length; i++)
+			{
+				types[i] = indexedTypes[i].Type;
+			}
+		}
 
 		/// <summary>
 		/// Retrieves the sorting index of the specified <see cref="Component"/> type.

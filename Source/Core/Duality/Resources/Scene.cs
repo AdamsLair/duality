@@ -534,9 +534,8 @@ namespace Duality.Resources
 		{
 			Profile.TimeUpdateSceneComponents.BeginMeasure();
 
-			// Gather a list of updatable Components
-			RawList<Component> updatableComponents = new RawList<Component>(256);
-			RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
+			// Create a sorted list of updatable component types
+			List<Type> updateTypeOrder = new List<Type>();
 			foreach (var pair in this.componentsByType)
 			{
 				// Skip Component types that aren't updatable anyway
@@ -544,13 +543,24 @@ namespace Duality.Resources
 				if (!(sampleComponent is T))
 					continue;
 
+				updateTypeOrder.Add(pair.Key.AsType());
+			}
+			Component.ExecOrder.SortTypes(updateTypeOrder, false);
+
+			// Gather a list of updatable Components
+			RawList<Component> updatableComponents = new RawList<Component>(256);
+			RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
+			foreach (Type type in updateTypeOrder)
+			{
+				TypeInfo typeInfo = type.GetTypeInfo();
+				List<Component> components = this.componentsByType[typeInfo];
 				int oldCount = updatableComponents.Count;
 
 				// Collect Components
-				updatableComponents.Reserve(updatableComponents.Count + pair.Value.Count);
-				for (int i = 0; i < pair.Value.Count; i++)
+				updatableComponents.Reserve(updatableComponents.Count + components.Count);
+				for (int i = 0; i < components.Count; i++)
 				{
-					updatableComponents.Add(pair.Value[i]);
+					updatableComponents.Add(components[i]);
 				}
 
 				// Keep in mind how many Components of each type we have in what order
@@ -558,9 +568,9 @@ namespace Duality.Resources
 				{
 					updateMap.Add(new UpdateEntry
 					{
-						Type = pair.Key,
+						Type = typeInfo,
 						Count = updatableComponents.Count - oldCount,
-						Profiler = Profile.RequestCounter<TimeCounter>(Profile.TimeUpdateScene.FullName + @"\" + pair.Key.Name)
+						Profiler = Profile.RequestCounter<TimeCounter>(Profile.TimeUpdateScene.FullName + @"\" + typeInfo.Name)
 					});
 				}
 			}
