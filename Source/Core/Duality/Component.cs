@@ -271,6 +271,7 @@ namespace Duality
 
 
 		private static ComponentRequirementMap requireMap = new ComponentRequirementMap();
+		private static ComponentExecutionOrder execOrder = new ComponentExecutionOrder();
 
 		/// <summary>
 		/// [GET] Provides information about how different <see cref="Component"/> types are
@@ -280,6 +281,14 @@ namespace Duality
 		public static ComponentRequirementMap RequireMap
 		{
 			get { return requireMap; }
+		}
+		/// <summary>
+		/// [GET] Provides information about the order in which different <see cref="Component"/>
+		/// types are updated, initialized and shut down.
+		/// </summary>
+		public static ComponentExecutionOrder ExecOrder
+		{
+			get { return execOrder; }
 		}
 
 		/// <summary>
