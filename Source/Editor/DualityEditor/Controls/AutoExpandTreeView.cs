@@ -15,63 +15,63 @@ namespace Duality.Editor.Controls
 		private TreeNodeAdv autoExpandNode = null;
 		private Timer autoExpandTimer = new Timer();
 
+
 		public int AutoExpandDelay
 		{
 			get { return this.autoExpandTimer.Interval; }
 			set { this.autoExpandTimer.Interval = value; }
 		}
 
-		public AutoExpandTreeView(int autoExpandDelay = 1000)
+
+		public AutoExpandTreeView()
 		{
-			this.autoExpandTimer.Interval = autoExpandDelay;
+			this.autoExpandTimer.Interval = 750;
 			this.autoExpandTimer.Tick += this.OnAutoExpandTimerTick;
 		}
 
 		private void StartAutoExpandTimer()
 		{
-			if (this.AutoExpandDelay > 0)
-			{
-				this.autoExpandTimer.Interval = this.AutoExpandDelay;
-				this.autoExpandTimer.Start();
-			}
+			this.autoExpandTimer.Start();
 		}
-		private void StopAutoExpandTimer()
+		private void ExecuteAutoExpand()
 		{
-			if (this.AutoExpandDelay > 0)
-			{
+			if (this.autoExpandNode != null)
 				this.autoExpandNode.Expand();
-			}
-
 			this.autoExpandTimer.Stop();
 		}
 
 		private void OnAutoExpandTimerTick(object sender, EventArgs e)
 		{
-			this.StopAutoExpandTimer();
+			this.ExecuteAutoExpand();
 		}
 		protected override void OnDragOver(DragEventArgs dragEvent)
 		{
 			base.OnDragOver(dragEvent);
-			if (this.AutoExpandDelay > 0)
+			TreeNodeAdv hoveredNode = this.DropPosition.Node;
+			TreeNodeAdv draggedNode = this.SelectedNode;
+
+			// Only allow expanding if we're hovering an expandable node that isn't the dragged 
+			// one or one if its parent nodes.
+			bool triggerAutoExpand = 
+				this.AutoExpandDelay > 0 &&
+				this.DropPosition.Position == NodePosition.Inside &&
+				draggedNode != null && 
+				hoveredNode != null && 
+				draggedNode != hoveredNode && 
+				hoveredNode.CanExpand && 
+				!hoveredNode.IsChildOf(draggedNode);
+				
+			// If we want to trigger auto-expand for a new node, (re)start the timer
+			if (triggerAutoExpand && this.autoExpandNode != hoveredNode)
 			{
-				Point locationHoverPosition = PointToClient(new Point(dragEvent.X, dragEvent.Y));
-				TreeNodeAdv hoveredNode = GetNodeAt(locationHoverPosition);
-				TreeNodeAdv draggedNode = SelectedNode;
-
-				// If we are null, hover over something null, hover over ourselves, hover over an unexpandable node or are the parent of the hovered node then clear ane exit.
-				if (draggedNode == null || hoveredNode == null || draggedNode == hoveredNode || !hoveredNode.CanExpand || draggedNode.IsParentOf(hoveredNode))
-				{
-					this.autoExpandTimer.Stop();
-					this.autoExpandNode = null;
-					return;
-				}
-
-				// If we are different to the currently timing out node, then start it again.
-				if (this.autoExpandNode != hoveredNode)
-				{
-					this.autoExpandNode = hoveredNode;
-					this.StartAutoExpandTimer();
-				}
+				this.autoExpandNode = hoveredNode;
+				this.StartAutoExpandTimer();
+			}
+			// Cancel any scheduled expand if auto-expand is no longer a valid option
+			else if (!triggerAutoExpand && this.autoExpandNode != null)
+			{
+				this.autoExpandTimer.Stop();
+				this.autoExpandNode = null;
 			}
 		}
 		protected override void OnDragLeave(EventArgs dragLeaveEvent)

@@ -4,7 +4,7 @@ namespace Duality.Editor
 {
 	public static class ExtMethodsTreeNodeAdv
 	{
-		public static bool IsParentOf(this TreeNodeAdv parent, TreeNodeAdv child)
+		public static bool IsChildOf(this TreeNodeAdv child, TreeNodeAdv parent)
 		{
 			if (child.Parent == null || child.Parent == child.Tree.Root)
 			{
@@ -16,7 +16,7 @@ namespace Duality.Editor
 			}
 			else
 			{
-				return IsParentOf(child.Parent, parent);
+				return IsChildOf(child.Parent, parent);
 			}
 		}
 	}
