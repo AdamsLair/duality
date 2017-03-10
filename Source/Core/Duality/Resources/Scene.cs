@@ -777,6 +777,7 @@ namespace Duality.Resources
 			List<List<Component>> query = null;
 			foreach (var pair in this.componentsByType)
 			{
+				if (pair.Value.Count == 0) continue;
 				if (typeInfo.IsAssignableFrom(pair.Key))
 				{
 					if (!multiple && singleResult == null)
@@ -807,6 +808,7 @@ namespace Duality.Resources
 			// Select from a multitude of results
 			else
 			{
+				Component.ExecOrder.SortTypedItems(query, list => list[0].GetType(), false);
 				result = query.SelectMany(cmpArr => cmpArr);
 			}
 

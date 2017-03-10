@@ -27,6 +27,17 @@ namespace Duality
 				return string.Format("[{0}] {1}", this.Index, this.Type);
 			}
 		}
+		private struct IndexedTypeItem
+		{
+			public Type Type;
+			public int TypeIndex;
+			public int ItemIndex;
+
+			public override string ToString()
+			{
+				return string.Format("Item #{0} [{1}] ({2})", this.ItemIndex, this.TypeIndex, this.Type);
+			}
+		}
 
 		private Dictionary<Type,int> sortIndexCache = new Dictionary<Type,int>();
 		private IndexedType[] sortedComponentTypes = new IndexedType[0];
@@ -55,6 +66,35 @@ namespace Duality
 			for (int i = 0; i < indexedTypes.Length; i++)
 			{
 				types[i] = indexedTypes[i].Type;
+			}
+		}
+		/// <summary>
+		/// Sorts a list of items according to the execution order of each items
+		/// associated <see cref="Component"/> type.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="items"></param>
+		/// <param name="typeOfItem"></param>
+		/// <param name="reverse"></param>
+		public void SortTypedItems<T>(IList<T> items, Func<T,Type> typeOfItem, bool reverse)
+		{
+			T[] itemArray = items.ToArray();
+			IndexedTypeItem[] indexedTypes = new IndexedTypeItem[items.Count];
+			for (int i = 0; i < indexedTypes.Length; i++)
+			{
+				indexedTypes[i].Type = typeOfItem(itemArray[i]);
+				indexedTypes[i].ItemIndex = i;
+				indexedTypes[i].TypeIndex = this.GetSortIndex(indexedTypes[i].Type);
+			}
+
+			if (reverse)
+				Array.Sort(indexedTypes, (a, b) => b.TypeIndex - a.TypeIndex);
+			else
+				Array.Sort(indexedTypes, (a, b) => a.TypeIndex - b.TypeIndex);
+
+			for (int i = 0; i < indexedTypes.Length; i++)
+			{
+				items[i] = itemArray[indexedTypes[i].ItemIndex];
 			}
 		}
 
@@ -88,6 +128,7 @@ namespace Duality
 		{
 			// Re-generate sort indices for all relevant component types
 			this.sortIndexCache.Clear();
+			HashSet<int> takenSortIndices = new HashSet<int>();
 			foreach (Type type in this.componentTypes)
 			{
 				// ToDo: Add an implementation that takes into account 
@@ -102,6 +143,12 @@ namespace Duality
 						nameHash = nameHash * 23 + (((int)fullName[i] * 449) % 991);
 				}
 				int sortIndex = nameHash % 10000;
+
+				// No sorting index can be used twice to ensure stable sort
+				// regardless of sorting algorithms used.
+				while (!takenSortIndices.Add(sortIndex))
+					sortIndex++;
+
 				this.sortIndexCache.Add(type, sortIndex);
 			}
 

@@ -59,8 +59,6 @@ namespace Duality.Tests.Components
 		}
 		[Test] public void EnforceOrderSceneFind()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Update;
 
@@ -74,7 +72,6 @@ namespace Duality.Tests.Components
 			// Since scene iteration is the basis for delivering broadcasted messages, we'll
 			// expect all related API to behave consistenly with regard to component execution order.
 			this.AssertComponentOrder(scene.FindComponents<TestComponent>().ToArray(), 5 * 10, Component.ExecOrder, false);
-			this.AssertComponentOrder(scene.FindGameObjects<TestComponent>().GetComponents<TestComponent>().ToArray(), 5 * 10, Component.ExecOrder, false);
 		}
 		[Test] public void EnforceOrderSceneActivate()
 		{
