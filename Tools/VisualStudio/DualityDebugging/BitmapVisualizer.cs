@@ -76,6 +76,14 @@ namespace Duality.VisualStudio
 					typeof(TextureAtlasDebuggerVisualizerObjectSource));
 				visualizerHost.ShowVisualizer();
 			}
+			else if (objToVisualize is RenderTarget)
+			{
+				var visualizerHost = new VisualizerDevelopmentHost(
+					objToVisualize,
+					typeof(BitmapDebuggerVisualizer),
+					typeof(RenderTargetDebuggerVisualizerObjectSource));
+				visualizerHost.ShowVisualizer();
+			}
 			else
 				throw new ArgumentException("Not supported.", "objToVisualize");
 

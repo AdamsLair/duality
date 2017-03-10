@@ -88,6 +88,7 @@
     <Compile Include="Backend\EditorGraphics\INativeEditorGraphicsContext.cs" />
     <Compile Include="Backend\EditorGraphics\INativeRenderableSite.cs" />
     <Compile Include="Backend\IEditorGraphicsBackend.cs" />
+    <Compile Include="Controls\AutoExpandTreeView.cs" />
     <Compile Include="Controls\PropertyEditors\Point2PropertyEditor.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
@@ -261,6 +262,7 @@
       <DependentUpon>ReloadCorePluginDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Utility\Extensions\ExtMethodsTreeViewAdv.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsTreeNodeAdv.cs" />
     <Compile Include="Forms\SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
