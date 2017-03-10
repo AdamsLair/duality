@@ -33,7 +33,7 @@
 			this.toolStrip = new System.Windows.Forms.ToolStrip();
 			this.toolStripButtonWorkDir = new System.Windows.Forms.ToolStripButton();
 			this.toolStripLabelProjectName = new System.Windows.Forms.ToolStripLabel();
-			this.folderView = new Aga.Controls.Tree.TreeViewAdv();
+			this.folderView = new Duality.Editor.Controls.AutoExpandTreeView();
 			this.treeColumnName = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnType = new Aga.Controls.Tree.TreeColumn();
 			this.contextMenuNode = new System.Windows.Forms.ContextMenuStrip(this.components);
