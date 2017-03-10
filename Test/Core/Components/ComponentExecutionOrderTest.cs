@@ -55,7 +55,7 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(scene, eventLog);
 			DualityApp.Update();
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
 
 			Scene.SwitchTo(null, true);
 		}
@@ -75,8 +75,8 @@ namespace Duality.Tests.Components
 
 			// Since scene iteration is the basis for delivering broadcasted messages, we'll
 			// expect all related API to behave consistenly with regard to component execution order.
-			this.AssertComponentOrder(scene.FindComponents<TestComponent>().ToArray(), 5 * 10, new ComponentExecutionOrder(), false);
-			this.AssertComponentOrder(scene.FindGameObjects<TestComponent>().GetComponents<TestComponent>().ToArray(), 5 * 10, new ComponentExecutionOrder(), false);
+			this.AssertComponentOrder(scene.FindComponents<TestComponent>().ToArray(), 5 * 10, Component.ExecOrder, false);
+			this.AssertComponentOrder(scene.FindGameObjects<TestComponent>().GetComponents<TestComponent>().ToArray(), 5 * 10, Component.ExecOrder, false);
 		}
 		[Test] public void EnforceOrderSceneActivate()
 		{
@@ -94,7 +94,7 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(scene, eventLog);
 			Scene.SwitchTo(scene, true);
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
 
 			Scene.SwitchTo(null, true);
 		}
@@ -116,7 +116,7 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(scene, eventLog);
 			Scene.SwitchTo(null, true);
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), true);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, true);
 		}
 		[Test] public void EnforceOrderSceneLoad()
 		{
@@ -146,7 +146,7 @@ namespace Duality.Tests.Components
 
 			// Retrieve the deserialized event log again and evaluate results
 			eventLog = scene.FindComponent<TestComponent>().EventLog;
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
 		}
 		[Test] public void EnforceOrderSceneSaved()
 		{
@@ -167,7 +167,7 @@ namespace Duality.Tests.Components
 			{
 				scene.Save(data);
 			}
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
 		}
 		[Test] public void EnforceOrderSceneSaving()
 		{
@@ -188,7 +188,7 @@ namespace Duality.Tests.Components
 			{
 				scene.Save(data);
 			}
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), true);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, true);
 		}
 
 		[Test] public void EnforceOrderPrefabLoad()
@@ -225,7 +225,7 @@ namespace Duality.Tests.Components
 
 			// Retrieve the deserialized event log again and evaluate results
 			eventLog = root.GetComponentsInChildren<TestComponent>().FirstOrDefault().EventLog;
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
 		}
 		[Test] public void EnforceOrderPrefabSaving()
 		{
@@ -250,7 +250,7 @@ namespace Duality.Tests.Components
 			prefab.Inject(root);
 
 			// Evaluate results
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
 		}
 		[Test] public void EnforceOrderPrefabSaved()
 		{
@@ -275,7 +275,7 @@ namespace Duality.Tests.Components
 			prefab.Inject(root);
 
 			// Evaluate results
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), true);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, true);
 		}
 
 		[Test] public void EnforceOrderGameObjectActivate()
@@ -298,7 +298,7 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(root, eventLog, true);
 			root.Active = true;
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
 
 			Scene.SwitchTo(null, true);
 		}
@@ -321,7 +321,7 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(root, eventLog, true);
 			root.Active = false;
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), true);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, true);
 
 			Scene.SwitchTo(null, true);
 		}
@@ -343,7 +343,7 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(root, eventLog, true);
 			Scene.Current.AddObject(root);
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), false);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
 
 			Scene.SwitchTo(null, true);
 		}
@@ -366,7 +366,7 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(root, eventLog, true);
 			Scene.Current.RemoveObject(root);
-			this.AssertEventOrder(eventLog, 5 * 10, new ComponentExecutionOrder(), true);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, true);
 
 			Scene.SwitchTo(null, true);
 		}
@@ -393,7 +393,7 @@ namespace Duality.Tests.Components
 				iterateOrder.Add(component);
 			});
 
-			this.AssertComponentOrder(iterateOrder, 5, new ComponentExecutionOrder(), false);
+			this.AssertComponentOrder(iterateOrder, 5, Component.ExecOrder, false);
 		}
 
 
