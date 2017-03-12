@@ -1000,8 +1000,11 @@ namespace Duality.Resources
 		protected override void OnSaving(string saveAsPath)
 		{
 			base.OnSaving(saveAsPath);
-			foreach (GameObject obj in this.objectManager.AllObjects)
-				obj.OnSaving();
+
+			// Prepare all components for saving in reverse order, sorted by type
+			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			for (int i = initList.Count - 1; i >= 0; i--)
+				initList[i].OnShutdown(Component.ShutdownContext.Saving);
 
 			this.serializeObj = this.objectManager.AllObjects.ToArray();
 			this.serializeObj.StableSort(SerializeGameObjectComparison);
@@ -1012,8 +1015,11 @@ namespace Duality.Resources
 				this.serializeObj = null;
 
 			base.OnSaved(saveAsPath);
-			foreach (GameObject obj in this.objectManager.AllObjects)
-				obj.OnSaved();
+			
+			// Re-initialize all components after saving, sorted by type
+			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			for (int i = 0; i < initList.Count; i++)
+				initList[i].OnInit(Component.InitContext.Saved);
 
 			// If this Scene is the current one, but it wasn't saved before, update the current Scenes internal ContentRef
 			if (this.IsCurrent && current.IsRuntimeResource)
@@ -1041,9 +1047,11 @@ namespace Duality.Resources
 			base.OnLoaded();
 
 			this.ApplyPrefabLinks();
-
-			foreach (GameObject obj in this.objectManager.AllObjects)
-				obj.OnLoaded();
+			
+			// Initialize all loaded components, sorted by type
+			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			for (int i = 0; i < initList.Count; i++)
+				initList[i].OnInit(Component.InitContext.Loaded);
 
 			this.visibilityStrategy.Update();
 		}

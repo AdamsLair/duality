@@ -111,8 +111,6 @@ namespace Duality.Tests.Components
 		}
 		[Test] public void EnforceOrderSceneLoad()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Loaded;
 
@@ -141,8 +139,6 @@ namespace Duality.Tests.Components
 		}
 		[Test] public void EnforceOrderSceneSaved()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Saved;
 
@@ -162,8 +158,6 @@ namespace Duality.Tests.Components
 		}
 		[Test] public void EnforceOrderSceneSaving()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Saving;
 
