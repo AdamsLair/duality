@@ -225,10 +225,19 @@ namespace Duality.Resources
 				// Deactivate GameObjects
 				DualityApp.EditorGuard(() =>
 				{
-					GameObject[] activeObj = current.ResWeak.ActiveObjects.ToArray();
-					foreach (GameObject o in activeObj)
+					// Create a list of components to deactivate
+					List<ICmpInitializable> shutdownList = new List<ICmpInitializable>();
+					foreach (Component component in current.ResWeak.FindComponents<ICmpInitializable>())
 					{
-						o.OnDeactivate();
+						if (!component.Active) continue;
+						shutdownList.Add(component as ICmpInitializable);
+					}
+					// Deactivate all the listed components. Note that they may create or destroy
+					// objects, so it's important that we're iterating a copy of the scene objects
+					// here, and not the real thing.
+					for (int i = shutdownList.Count - 1; i >= 0; i--)
+					{
+						shutdownList[i].OnShutdown(Component.ShutdownContext.Deactivate);
 					}
 				});
 
@@ -258,10 +267,19 @@ namespace Duality.Resources
 				// Activate GameObjects
 				DualityApp.EditorGuard(() =>
 				{
-					GameObject[] activeObj = current.ResWeak.ActiveObjects.ToArray();
-					foreach (GameObject o in activeObj)
+					// Create a list of components to activate
+					List<ICmpInitializable> initList = new List<ICmpInitializable>();
+					foreach (Component component in current.ResWeak.FindComponents<ICmpInitializable>())
 					{
-						o.OnActivate();
+						if (!component.Active) continue;
+						initList.Add(component as ICmpInitializable);
+					}
+					// Activate all the listed components. Note that they may create or destroy
+					// objects, so it's important that we're iterating a copy of the scene objects
+					// here, and not the real thing.
+					for (int i = 0; i < initList.Count; i++)
+					{
+						initList[i].OnInit(Component.InitContext.Activate);
 					}
 				});
 			}
