@@ -178,8 +178,6 @@ namespace Duality.Tests.Components
 
 		[Test] public void EnforceOrderPrefabLoad()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Loaded;
 
@@ -214,8 +212,6 @@ namespace Duality.Tests.Components
 		}
 		[Test] public void EnforceOrderPrefabSaving()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Saving;
 
@@ -235,12 +231,10 @@ namespace Duality.Tests.Components
 			prefab.Inject(root);
 
 			// Evaluate results
-			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, true);
 		}
 		[Test] public void EnforceOrderPrefabSaved()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Saved;
 
@@ -260,7 +254,7 @@ namespace Duality.Tests.Components
 			prefab.Inject(root);
 
 			// Evaluate results
-			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, true);
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
 		}
 
 		[Test] public void EnforceOrderGameObjectActivate()
