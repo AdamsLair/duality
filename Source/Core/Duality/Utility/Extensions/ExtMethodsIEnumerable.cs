@@ -217,27 +217,6 @@ namespace Duality
 		{
 			return collection.Skip(startIndex).Take(length);
 		}
-		/// <summary>
-		/// Shuffles the specified eumerable.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="collection"></param>
-		/// <param name="rnd">The random number generator to use. Defaults to <see cref="MathF.Rnd"/>, if null.</param>
-		/// <returns></returns>
-		public static IEnumerable<T> Shuffle<T>(this IList<T> collection, Random rnd = null)
-		{
-			if (!collection.Any()) yield break;
-			if (rnd == null) rnd = MathF.Rnd;
-
-			List<int> indices = Enumerable.Range(0, collection.Count).ToList();
-			while (indices.Count > 0)
-			{
-				int temp = rnd.Next(indices.Count);
-				int index = indices[temp];
-				indices.RemoveAt(temp);
-				yield return collection[index];
-			}
-		}
 
 		/// <summary>
 		/// Returns whether two sets of objects equal each other. This is the case if both sets contain an equal number of elements
