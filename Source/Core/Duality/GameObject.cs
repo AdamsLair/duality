@@ -680,15 +680,13 @@ namespace Duality
 		/// <param name="where">An optional predicate that needs to return true in order to perform the operation.</param>
 		public void IterateComponents<T>(Action<T> forEach, Predicate<T> where = null) where T : class
 		{
-			int count = this.compList.Count;
-			for (int i = 0; i < count; i++)
+			Component[] iterateList = this.compList.ToArray();
+			for (int i = 0; i < iterateList.Length; i++)
 			{
 				// Perform operation on elements matching predicate and Type
-				T cmp = this.compList[i] as T;
+				T cmp = iterateList[i] as T;
 				if (cmp != null && (where == null || where(cmp)))
-				{
 					forEach(cmp);
-				}
 			}
 		}
 		/// <summary>
@@ -701,18 +699,14 @@ namespace Duality
 		public void IterateChildren(Action<GameObject> forEach, Predicate<GameObject> where = null)
 		{
 			if (this.children == null) return;
-			for (int i = this.children.Count - 1; i >= 0; --i)
+
+			GameObject[] iterateList = this.children.ToArray();
+			for (int i = 0; i < iterateList.Length; i++)
 			{
-				GameObject obj = this.children[i];
-
 				// Perform operation on elements matching the predicate
+				GameObject obj = iterateList[i];
 				if (where == null || where(obj))
-				{
 					forEach(obj);
-
-					// Fix index, in case the collection changed
-					if (i > this.children.Count) i = this.children.Count;
-				}
 			}
 		}
 
