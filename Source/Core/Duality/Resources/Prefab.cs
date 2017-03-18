@@ -191,7 +191,8 @@ namespace Duality.Resources
 			base.OnLoaded();
 			if (this.objTree != null)
 			{
-				this.objTree.PerformSanitaryCheck();
+				this.objTree.EnsureConsistentData();
+				this.objTree.EnsureComponentOrder();
 
 				// Compose a list of all initializable Components, sort them
 				// by type and then execute their init code in order.

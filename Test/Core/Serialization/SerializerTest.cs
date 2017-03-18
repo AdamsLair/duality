@@ -472,7 +472,7 @@ namespace Duality.Tests.Serialization
 			this.logWatcher.AssertError();
 
 			// Sanitize the GameObject to give it a chance for cleanup of missing data
-			readObj.PerformSanitaryCheck();
+			readObj.EnsureConsistentData();
 
 			// Assert a warning log for the missing Component while sanitizing the GameObject
 			this.logWatcher.AssertWarning();
@@ -512,7 +512,7 @@ namespace Duality.Tests.Serialization
 			this.logWatcher.AssertWarning();
 
 			// Sanitize the GameObject to give it a chance for cleanup of missing data
-			readObj.PerformSanitaryCheck();
+			readObj.EnsureConsistentData();
 
 			// Assert a warning log for the missing Component while sanitizing the GameObject
 			this.logWatcher.AssertWarning();

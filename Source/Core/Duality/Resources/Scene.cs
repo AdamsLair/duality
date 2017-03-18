@@ -1033,7 +1033,11 @@ namespace Duality.Resources
 			if (this.serializeObj != null)
 			{
 				this.UnregisterManagerEvents();
-				foreach (GameObject obj in this.serializeObj) obj.PerformSanitaryCheck();
+				foreach (GameObject obj in this.serializeObj)
+				{
+					obj.EnsureConsistentData();
+					obj.EnsureComponentOrder();
+				}
 				foreach (GameObject obj in this.serializeObj)
 				{
 					obj.ParentScene = this;

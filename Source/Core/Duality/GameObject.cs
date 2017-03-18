@@ -860,9 +860,11 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Sanitary check in case something failed deserializing
+		/// Checks all internal data for consistency and fixes problems where possible.
+		/// This helps mitigate serialization problems that arise from changing data
+		/// structures during dev time.
 		/// </summary>
-		internal void PerformSanitaryCheck()
+		internal void EnsureConsistentData()
 		{
 			// Check for null or disposed child objects
 			if (this.children != null)
@@ -924,6 +926,35 @@ namespace Duality
 					this);
 			}
 		}
+		/// <summary>
+		/// Checks the objects internal <see cref="Component"/> containers for the correct
+		/// execution order and sorts them where necessary.
+		/// </summary>
+		internal void EnsureComponentOrder()
+		{
+			// Using insertion sort here, because it achieves best performance for already 
+			// sorted lists, and nearly sorted lists, as well as small lists.
+			ComponentExecutionOrder execOrder = Component.ExecOrder;
+			for (int k = 1; k < this.compList.Count; k++)
+			{
+				Component swapComponent = this.compList[k];
+				int swapSortIndex = execOrder.GetSortIndex(swapComponent.GetType());
+				int index = k - 1;
+				while (index >= 0)
+				{
+					int sortIndex = execOrder.GetSortIndex(this.compList[index].GetType());
+					if (sortIndex > swapSortIndex)
+					{
+						this.compList[index + 1] = this.compList[index];
+						index--;
+						continue;
+					}
+					break;
+				}
+				this.compList[index + 1] = swapComponent;
+			}
+		}
+
 		internal void OnLoaded(bool deep = false)
 		{
 			// Notify Components

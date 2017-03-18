@@ -370,8 +370,6 @@ namespace Duality.Tests.Components
 		}
 		[Test] public void EnforceOrderGameObjectIterateLoadedScene()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			// We'll actually generate a flat tree with only the root element here
 			GameObject root = this.GenerateSampleTree(1, true,
 				typeof(TestComponentA1), 
@@ -405,8 +403,6 @@ namespace Duality.Tests.Components
 		}
 		[Test] public void EnforceOrderGameObjectIterateLoadedPrefab()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			// We'll actually generate a flat tree with only the root element here
 			GameObject root = this.GenerateSampleTree(1, true,
 				typeof(TestComponentA1), 
@@ -513,8 +509,10 @@ namespace Duality.Tests.Components
 		private void ShuffleComponentOrder(GameObject obj)
 		{
 			FieldInfo field = typeof(GameObject).GetField("compList", BindingFlags.NonPublic | BindingFlags.Instance);
-			List<GameObject> list = (List<GameObject>)field.GetValue(obj);
-			list.Shuffle(new Random(1));
+			List<Component> list = (List<Component>)field.GetValue(obj);
+			Component[] shuffled = list.Shuffle(new Random(1)).ToArray();
+			list.Clear();
+			list.AddRange(shuffled);
 		}
 		private GameObject GenerateSampleTree(int objectCount, bool includeRoot, params Type[] componentTypes)
 		{
