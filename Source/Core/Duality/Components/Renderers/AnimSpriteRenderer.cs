@@ -373,20 +373,6 @@ namespace Duality.Components.Renderers
 			Vector2 edge3 = rectTemp.BottomRight;
 			Vector2 edge4 = rectTemp.TopRight;
 
-			MathF.TransformDotVec(ref edge1, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
-			
-			float left       = uvRect.X;
-			float right      = uvRect.RightX;
-			float top        = uvRect.Y;
-			float bottom     = uvRect.BottomY;
-			float nextLeft   = uvRectNext.X;
-			float nextRight  = uvRectNext.RightX;
-			float nextTop    = uvRectNext.Y;
-			float nextBottom = uvRectNext.BottomY;
-
 			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
 			{
 				edge1.X = -edge1.X;
@@ -401,6 +387,20 @@ namespace Duality.Components.Renderers
 				edge3.Y = -edge3.Y;
 				edge4.Y = -edge4.Y;
 			}
+
+			MathF.TransformDotVec(ref edge1, ref xDot, ref yDot);
+			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
+			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
+			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
+			
+			float left       = uvRect.X;
+			float right      = uvRect.RightX;
+			float top        = uvRect.Y;
+			float bottom     = uvRect.BottomY;
+			float nextLeft   = uvRectNext.X;
+			float nextRight  = uvRectNext.RightX;
+			float nextTop    = uvRectNext.Y;
+			float nextBottom = uvRectNext.BottomY;
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T4A1[4];
 
