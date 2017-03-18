@@ -46,7 +46,7 @@
 			this.panelBottom = new System.Windows.Forms.Panel();
 			this.textBoxFilter = new System.Windows.Forms.TextBox();
 			this.labelFilter = new System.Windows.Forms.Label();
-			this.objectView = new Aga.Controls.Tree.TreeViewAdv();
+			this.objectView = new Duality.Editor.Controls.AutoExpandTreeView();
 			this.nodeStateIcon = new Aga.Controls.Tree.NodeControls.NodeStateIcon();
 			this.nodeTextBoxName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.toolStrip.SuspendLayout();
