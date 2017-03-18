@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Reflection;
 
 using Duality;
 using Duality.Resources;
@@ -349,13 +350,8 @@ namespace Duality.Tests.Components
 
 			Scene.SwitchTo(null, true);
 		}
-		[Test] public void EnforceOrderGameObjectIterate()
+		[Test] public void EnforceOrderGameObjectIterateNew()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
-			EventOrderLog eventLog = new EventOrderLog();
-			eventLog.EventFilter = EventType.Activate;
-
 			// We'll actually generate a flat tree with only the root element here
 			GameObject root = this.GenerateSampleTree(1, true,
 				typeof(TestComponentA1), 
@@ -364,14 +360,82 @@ namespace Duality.Tests.Components
 				typeof(TestComponentA4), 
 				typeof(TestComponentA5));
 			
-			// Since scene iteration is the basis for delivering component messages and events, we'll
-			// expect all related API to behave consistenly with regard to component execution order.
+			// Check iteration order
 			List<TestComponent> iterateOrder = new List<TestComponent>();
 			root.IterateComponents<TestComponent>(component => 
 			{
 				iterateOrder.Add(component);
 			});
+			this.AssertComponentOrder(iterateOrder, 5, Component.ExecOrder, false);
+		}
+		[Test] public void EnforceOrderGameObjectIterateLoadedScene()
+		{
+			Assert.Inconclusive("Not yet implemented");
 
+			// We'll actually generate a flat tree with only the root element here
+			GameObject root = this.GenerateSampleTree(1, true,
+				typeof(TestComponentA1), 
+				typeof(TestComponentA2), 
+				typeof(TestComponentA3), 
+				typeof(TestComponentA4), 
+				typeof(TestComponentA5));
+
+			// Shuffle component order in the GameObject so we can see if it's fixed again
+			// after loading. This will ensure changes in exec order will be applied properly.
+			this.ShuffleComponentOrder(root);
+			
+			// Save and reload the object in a scene, make sure iteration order remains consistent
+			using (MemoryStream data = new MemoryStream())
+			{
+				Scene scene = new Scene();
+				scene.AddObject(root);
+				scene.Save(data);
+				data.Position = 0;
+				scene = Resource.Load<Scene>(data);
+				root = scene.RootObjects.FirstOrDefault();
+			}
+			
+			// Check iteration order
+			List<TestComponent> iterateOrder = new List<TestComponent>();
+			root.IterateComponents<TestComponent>(component => 
+			{
+				iterateOrder.Add(component);
+			});
+			this.AssertComponentOrder(iterateOrder, 5, Component.ExecOrder, false);
+		}
+		[Test] public void EnforceOrderGameObjectIterateLoadedPrefab()
+		{
+			Assert.Inconclusive("Not yet implemented");
+
+			// We'll actually generate a flat tree with only the root element here
+			GameObject root = this.GenerateSampleTree(1, true,
+				typeof(TestComponentA1), 
+				typeof(TestComponentA2), 
+				typeof(TestComponentA3), 
+				typeof(TestComponentA4), 
+				typeof(TestComponentA5));
+
+			// Shuffle component order in the GameObject so we can see if it's fixed again
+			// after loading. This will ensure changes in exec order will be applied properly.
+			this.ShuffleComponentOrder(root);
+			
+			// Save and reload the object in a Prefab, make sure iteration order remains consistent
+			using (MemoryStream data = new MemoryStream())
+			{
+				Prefab prefab = new Prefab();
+				prefab.Inject(root);
+				prefab.Save(data);
+				data.Position = 0;
+				prefab = Resource.Load<Prefab>(data);
+				root = prefab.Instantiate();
+			}
+			
+			// Check iteration order
+			List<TestComponent> iterateOrder = new List<TestComponent>();
+			root.IterateComponents<TestComponent>(component => 
+			{
+				iterateOrder.Add(component);
+			});
 			this.AssertComponentOrder(iterateOrder, 5, Component.ExecOrder, false);
 		}
 
@@ -446,6 +510,12 @@ namespace Duality.Tests.Components
 			}
 		}
 
+		private void ShuffleComponentOrder(GameObject obj)
+		{
+			FieldInfo field = typeof(GameObject).GetField("compList", BindingFlags.NonPublic | BindingFlags.Instance);
+			List<GameObject> list = (List<GameObject>)field.GetValue(obj);
+			list.Shuffle(new Random(1));
+		}
 		private GameObject GenerateSampleTree(int objectCount, bool includeRoot, params Type[] componentTypes)
 		{
 			Random rnd = new Random(1);

@@ -589,9 +589,24 @@ namespace Duality
 		{
 			newComp.gameobj = this;
 			this.compMap.Add(type, newComp);
-			this.compList.Add(newComp);
+			
+			bool added = false;
+			int newSortIndex = Component.ExecOrder.GetSortIndex(type);
+			for (int i = 0; i < this.compList.Count; i++)
+			{
+				Type itemType = this.compList[i].GetType();
+				int itemSortIndex = Component.ExecOrder.GetSortIndex(itemType);
+				if (itemSortIndex > newSortIndex)
+				{
+					this.compList.Insert(i, newComp);
+					added = true;
+					break;
+				}
+			}
+			if (!added)
+				this.compList.Add(newComp);
 
-			if (newComp is Components.Transform) this.compTransform = (Components.Transform)(Component)newComp;
+			if (newComp is Transform) this.compTransform = newComp as Transform;
 
 			this.OnComponentAdded(newComp);
 		}
@@ -665,17 +680,14 @@ namespace Duality
 		/// <param name="where">An optional predicate that needs to return true in order to perform the operation.</param>
 		public void IterateComponents<T>(Action<T> forEach, Predicate<T> where = null) where T : class
 		{
-			for (int i = this.compList.Count - 1; i >= 0; --i)
+			int count = this.compList.Count;
+			for (int i = 0; i < count; i++)
 			{
-				T cmp = this.compList[i] as T;
-
 				// Perform operation on elements matching predicate and Type
+				T cmp = this.compList[i] as T;
 				if (cmp != null && (where == null || where(cmp)))
 				{
 					forEach(cmp);
-
-					// Fix index, in case the collection changed
-					if (i > this.compList.Count) i = this.compList.Count;
 				}
 			}
 		}
