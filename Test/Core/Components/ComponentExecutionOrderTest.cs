@@ -260,8 +260,6 @@ namespace Duality.Tests.Components
 
 		[Test] public void EnforceOrderGameObjectActivate()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Activate;
 
@@ -284,8 +282,6 @@ namespace Duality.Tests.Components
 		}
 		[Test] public void EnforceOrderGameObjectDeactivate()
 		{
-			Assert.Inconclusive("Not yet implemented");
-
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Deactivate;
 
@@ -307,7 +303,7 @@ namespace Duality.Tests.Components
 		}
 		[Test] public void EnforceOrderGameObjectAdd()
 		{
-			Assert.Inconclusive("Not yet implemented");
+			Assert.Inconclusive("Not implemented in v2.x due to technical limitations that require breaking changes to fix. Works per-GameObject, but not globally in a GameObject hierarchy.");
 
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Activate;
@@ -329,7 +325,7 @@ namespace Duality.Tests.Components
 		}
 		[Test] public void EnforceOrderGameObjectRemove()
 		{
-			Assert.Inconclusive("Not yet implemented");
+			Assert.Inconclusive("Not implemented in v2.x due to technical limitations that require breaking changes to fix. Works per-GameObject, but not globally in a GameObject hierarchy.");
 
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Deactivate;

@@ -128,21 +128,9 @@ namespace Duality
 					if (this.scene != null && this.scene.IsCurrent)
 					{
 						if (value)
-						{
-							this.OnActivate();
-							foreach (GameObject child in this.ChildrenDeep)
-							{
-								if (!child.Active) child.OnActivate();
-							}
-						}
+							this.OnActivate(true);
 						else
-						{
-							this.OnDeactivate();
-							foreach (GameObject child in this.ChildrenDeep)
-							{
-								if (child.Active) child.OnDeactivate();
-							}
-						}
+							this.OnDeactivate(true);
 					}
 
 					this.active = value;
@@ -860,6 +848,35 @@ namespace Duality
 		}
 
 		/// <summary>
+		/// Gathers a list of components that would be affected if this <see cref="GameObject"/>
+		/// changed its activation state. This excludes components and child objects that
+		/// are inactive in their own right.
+		/// </summary>
+		/// <param name="initList"></param>
+		/// <param name="deep"></param>
+		private void GatherInitComponents(List<ICmpInitializable> initList, bool deep)
+		{
+			foreach (Component component in this.compList)
+			{
+				ICmpInitializable init = component as ICmpInitializable;
+
+				if (init == null) continue;
+				if (!component.ActiveSingle) continue;
+
+				initList.Add(init);
+			}
+
+			if (deep && this.children != null)
+			{
+				foreach (GameObject child in this.children)
+				{
+					if (!child.ActiveSingle) continue;
+					child.GatherInitComponents(initList, deep);
+				}
+			}
+		}
+
+		/// <summary>
 		/// Checks all internal data for consistency and fixes problems where possible.
 		/// This helps mitigate serialization problems that arise from changing data
 		/// structures during dev time.
@@ -976,19 +993,25 @@ namespace Duality
 			// Notify children
 			if (deep) this.IterateChildren(c => c.OnSaved(deep));
 		}
-		internal void OnActivate()
+		internal void OnActivate(bool deep = false)
 		{
-			// Notify Components
-			this.IterateComponents<ICmpInitializable>(
-				l => l.OnInit(Component.InitContext.Activate),
-				l => (l as Component).ActiveSingle);
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
+			this.GatherInitComponents(initList, deep);
+
+			Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
+
+			foreach (ICmpInitializable component in initList)
+				component.OnInit(Component.InitContext.Activate);
 		}
-		internal void OnDeactivate()
+		internal void OnDeactivate(bool deep = false)
 		{
-			// Notify Components
-			this.IterateComponents<ICmpInitializable>(
-				l => l.OnShutdown(Component.ShutdownContext.Deactivate),
-				l => (l as Component).ActiveSingle);
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
+			this.GatherInitComponents(initList, deep);
+
+			Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
+
+			foreach (ICmpInitializable component in initList)
+				component.OnShutdown(Component.ShutdownContext.Deactivate);
 		}
 		private void OnParentChanged(GameObject oldParent, GameObject newParent)
 		{
