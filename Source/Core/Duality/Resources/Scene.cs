@@ -303,30 +303,68 @@ namespace Duality.Resources
 		}
 		private static void OnGameObjectsAdded(GameObjectGroupEventArgs args)
 		{
+			// Gather a list of components to activate
+			int objCount = 0;
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
+			foreach (GameObject obj in args.Objects)
+			{
+				if (!obj.ActiveSingle) continue;
+				obj.GatherInitComponents(initList, false);
+				objCount++;
+			}
+
+			// If we collected components from more than one object, sort by exec order.
+			// Otherwise, we can safely assume that the list is already sorted.
+			if (objCount > 1) Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
+
+			// Invoke the init event on all gathered components in the right order
+			foreach (ICmpInitializable component in initList)
+				component.OnInit(Component.InitContext.Activate);
+
+			// Fire a global event to indicate that the new objects are ready
 			if (GameObjectsAdded != null)
 				GameObjectsAdded(current, args);
 
 			// ToDo: Remove this event in v3.0
 			foreach (GameObject obj in args.Objects)
 			{
-				if (obj.Active) obj.OnActivate();
 				if (GameObjectAdded != null)
 					GameObjectAdded(current, new GameObjectEventArgs(obj));
 			}
 		}
 		private static void OnGameObjectsRemoved(GameObjectGroupEventArgs args)
 		{
-			if (GameObjectsRemoved != null)
-				GameObjectsRemoved(current, args);
-
 			// ToDo: Remove this event in v3.0
 			foreach (GameObject obj in args.Objects)
 			{
 				if (GameObjectRemoved != null)
 					GameObjectRemoved(current, new GameObjectEventArgs(obj));
-				if (obj.Active || obj.Disposed) obj.OnDeactivate();
 			}
 
+			// Fire a global event to indicate that the objects are going to be shut down
+			if (GameObjectsRemoved != null)
+				GameObjectsRemoved(current, args);
+
+			// Gather a list of components to deactivate
+			int objCount = 0;
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
+			foreach (GameObject obj in args.Objects)
+			{
+				if (!obj.ActiveSingle && !obj.Disposed) continue;
+				obj.GatherInitComponents(initList, false);
+				objCount++;
+			}
+
+			// If we collected components from more than one object, sort by exec order.
+			// Otherwise, we can safely assume that the list is already sorted.
+			if (objCount > 1)
+				Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
+			else
+				initList.Reverse();
+
+			// Invoke the init event on all gathered components in the right order
+			foreach (ICmpInitializable component in initList)
+				component.OnShutdown(Component.ShutdownContext.Deactivate);
 		}
 		private static void OnComponentAdded(ComponentEventArgs args)
 		{

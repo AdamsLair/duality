@@ -854,7 +854,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="initList"></param>
 		/// <param name="deep"></param>
-		private void GatherInitComponents(List<ICmpInitializable> initList, bool deep)
+		internal void GatherInitComponents(List<ICmpInitializable> initList, bool deep)
 		{
 			foreach (Component component in this.compList)
 			{
@@ -870,7 +870,7 @@ namespace Duality
 			{
 				foreach (GameObject child in this.children)
 				{
-					if (!child.ActiveSingle) continue;
+					if (!child.ActiveSingle && !child.Disposed) continue;
 					child.GatherInitComponents(initList, deep);
 				}
 			}
