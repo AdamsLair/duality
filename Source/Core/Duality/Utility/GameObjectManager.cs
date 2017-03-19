@@ -60,20 +60,30 @@ namespace Duality
 				return this.allObj.Where(o => o.Parent == null && o.Active);
 			}
 		}
-		
+
 
 		/// <summary>
-		/// Fired when a GameObject is registered
+		/// Fired when a <see cref="GameObject"/> is registered.
 		/// </summary>
+		[Obsolete("Use GameObjectsAdded (note the plural) instead.")]
 		public event EventHandler<GameObjectEventArgs>	GameObjectAdded;
 		/// <summary>
-		/// Fired when a GameObject is unregistered
+		/// Fired when a <see cref="GameObject"/> is unregistered.
 		/// </summary>
+		[Obsolete("Use GameObjectsRemoved (note the plural) instead.")]
 		public event EventHandler<GameObjectEventArgs>	GameObjectRemoved;
+		/// <summary>
+		/// Fired once for every <see cref="GameObject"/> add operation.
+		/// </summary>
+		public event EventHandler<GameObjectGroupEventArgs> GameObjectsAdded;
+		/// <summary>
+		/// Fired once for every <see cref="GameObject"/> remove operation.
+		/// </summary>
+		public event EventHandler<GameObjectGroupEventArgs> GameObjectsRemoved;
 		/// <summary>
 		/// Fired when a registered GameObjects parent has changed
 		/// </summary>
-		public event EventHandler<GameObjectParentChangedEventArgs>	ParentChanged;
+		public event EventHandler<GameObjectParentChangedEventArgs> ParentChanged;
 		/// <summary>
 		/// Fired when a <see cref="Duality.Component"/> is added to an already registered GameObject.
 		/// </summary>
@@ -91,7 +101,9 @@ namespace Duality
 		/// <param name="obj"></param>
 		public bool AddObject(GameObject obj)
 		{
-			return this.AddObjectDeep(obj);
+			this.AddObject(new GameObject[] { obj });
+			// ToDo: Remove the return value in the v3.0 branch
+			return this.allObj.Contains(obj);
 		}
 		/// <summary>
 		/// Registers a set of GameObjects
@@ -99,8 +111,12 @@ namespace Duality
 		/// <param name="objEnum"></param>
 		public void AddObject(IEnumerable<GameObject> objEnum)
 		{
-			foreach (GameObject obj in objEnum.ToArray())
-				this.AddObjectDeep(obj);
+			List<GameObject> addedObjects = new List<GameObject>();
+			foreach (GameObject obj in objEnum)
+			{
+				this.AddObjectDeep(obj, addedObjects);
+			}
+			this.OnObjectsAdded(addedObjects);
 		}
 		/// <summary>
 		/// Unregisters a GameObject and all of its children
@@ -108,9 +124,10 @@ namespace Duality
 		/// <param name="obj"></param>
 		public bool RemoveObject(GameObject obj)
 		{
-			bool removed = this.RemoveObjectDeep(obj);
-			this.Flush();
-			return removed;
+			// ToDo: Remove the return value in the v3.0 branch
+			bool existedBefore = this.allObj.Contains(obj);
+			this.RemoveObject(new GameObject[] { obj });
+			return existedBefore;
 		}
 		/// <summary>
 		/// Unregisters a set of GameObjects
@@ -118,19 +135,19 @@ namespace Duality
 		/// <param name="objEnum"></param>
 		public void RemoveObject(IEnumerable<GameObject> objEnum)
 		{
-			foreach (GameObject obj in objEnum.ToArray())
+			List<GameObject> removedObjects = new List<GameObject>();
+			foreach (GameObject obj in objEnum)
 			{
-				this.RemoveObjectDeep(obj);
+				this.RemoveObjectDeep(obj, removedObjects);
 			}
-			this.Flush();
+			this.OnObjectsRemoved(removedObjects);
 		}
 		/// <summary>
 		/// Unregisters all GameObjects.
 		/// </summary>
 		public void Clear()
 		{
-			foreach (GameObject obj in this.allObj)
-				this.OnObjectRemoved(obj);
+			this.OnObjectsRemoved(this.allObj.ToList());
 			this.allObj.Clear();
 		}
 		/// <summary>
@@ -150,35 +167,23 @@ namespace Duality
 			this.allObj.RemoveWhere(obj => obj.Disposed);
 
 			// Notify removed objects
-			foreach (GameObject obj in removed)
-				this.OnObjectRemoved(obj);
+			this.OnObjectsRemoved(removed);
 		}
 
 
-		private bool AddObjectDeep(GameObject obj)
+		private void AddObjectDeep(GameObject obj, List<GameObject> addedObjects)
 		{
-			bool added = false;
-			if (!this.allObj.Contains(obj))
-			{
-				this.allObj.Add(obj);
-				this.OnObjectAdded(obj);
-				added = true;
-			}
+			if (this.allObj.Add(obj))
+				addedObjects.Add(obj);
 			foreach (GameObject child in obj.Children)
-			{
-				this.AddObjectDeep(child);
-			}
-			return added;
+				this.AddObjectDeep(child, addedObjects);
 		}
-		private bool RemoveObjectDeep(GameObject obj)
+		private void RemoveObjectDeep(GameObject obj, List<GameObject> removedObjects)
 		{
 			foreach (GameObject child in obj.Children)
-			{
-				this.RemoveObjectDeep(child);
-			}
-			bool removed = this.allObj.Remove(obj);
-			if (removed) this.OnObjectRemoved(obj);
-			return removed;
+				this.RemoveObjectDeep(child, removedObjects);
+			if (this.allObj.Remove(obj))
+				removedObjects.Add(obj);
 		}
 
 		private void RegisterEvents(GameObject obj)
@@ -194,17 +199,27 @@ namespace Duality
 			obj.EventComponentRemoving	-= this.OnComponentRemoving;
 		}
 
-		private void OnObjectAdded(GameObject obj)
+		private void OnObjectsAdded(List<GameObject> objList)
 		{
-			this.RegisterEvents(obj);
-			if (this.GameObjectAdded != null)
-				this.GameObjectAdded(this, new GameObjectEventArgs(obj));
+			foreach (GameObject obj in objList)
+			{
+				this.RegisterEvents(obj);
+				if (this.GameObjectAdded != null)
+					this.GameObjectAdded(this, new GameObjectEventArgs(obj));
+			}
+			if (this.GameObjectsAdded != null)
+				this.GameObjectsAdded(this, new GameObjectGroupEventArgs(objList));
 		}
-		private void OnObjectRemoved(GameObject obj)
+		private void OnObjectsRemoved(List<GameObject> objList)
 		{
-			this.UnregisterEvents(obj);
-			if (this.GameObjectRemoved != null)
-				this.GameObjectRemoved(this, new GameObjectEventArgs(obj));
+			foreach (GameObject obj in objList)
+			{
+				this.UnregisterEvents(obj);
+				if (this.GameObjectRemoved != null)
+					this.GameObjectRemoved(this, new GameObjectEventArgs(obj));
+			}
+			if (this.GameObjectsRemoved != null)
+				this.GameObjectsRemoved(this, new GameObjectGroupEventArgs(objList));
 		}
 		private void OnParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{

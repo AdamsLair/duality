@@ -255,8 +255,8 @@ namespace Duality.Editor
 			Resource.ResourceSaved += Resource_ResourceSaved;
 			Resource.ResourceSaving += Resource_ResourceSaving;
 			FileEventManager.PluginChanged += FileEventManager_PluginChanged;
-			editorObjects.GameObjectAdded += editorObjects_Registered;
-			editorObjects.GameObjectRemoved += editorObjects_Unregistered;
+			editorObjects.GameObjectsAdded += editorObjects_GameObjectsAdded;
+			editorObjects.GameObjectsRemoved += editorObjects_GameObjectsRemoved;
 			editorObjects.ComponentAdded += editorObjects_ComponentAdded;
 			editorObjects.ComponentRemoving += editorObjects_ComponentRemoved;
 
@@ -343,8 +343,8 @@ namespace Duality.Editor
 			Resource.ResourceSaving -= Resource_ResourceSaving;
 			Resource.ResourceDisposing -= Resource_ResourceDisposing;
 			FileEventManager.PluginChanged -= FileEventManager_PluginChanged;
-			editorObjects.GameObjectAdded -= editorObjects_Registered;
-			editorObjects.GameObjectRemoved -= editorObjects_Unregistered;
+			editorObjects.GameObjectsAdded -= editorObjects_GameObjectsAdded;
+			editorObjects.GameObjectsRemoved -= editorObjects_GameObjectsRemoved;
 			editorObjects.ComponentAdded -= editorObjects_ComponentAdded;
 			editorObjects.ComponentRemoving -= editorObjects_ComponentRemoved;
 
@@ -1392,15 +1392,21 @@ namespace Duality.Editor
 				DualityEditorApp.UpdatePluginSourceCode();
 		}
 
-		private static void editorObjects_Registered(object sender, GameObjectEventArgs e)
+		private static void editorObjects_GameObjectsAdded(object sender, GameObjectGroupEventArgs e)
 		{
-			if (e.Object.Active)
-				e.Object.OnActivate();
+			foreach (GameObject obj in e.Objects)
+			{
+				if (obj.Active)
+					obj.OnActivate();
+			}
 		}
-		private static void editorObjects_Unregistered(object sender, GameObjectEventArgs e)
+		private static void editorObjects_GameObjectsRemoved(object sender, GameObjectGroupEventArgs e)
 		{
-			if (e.Object.Active || e.Object.Disposed)
-				e.Object.OnDeactivate();
+			foreach (GameObject obj in e.Objects)
+			{
+				if (obj.Active || obj.Disposed)
+					obj.OnDeactivate();
+			}
 		}
 		private static void editorObjects_ComponentAdded(object sender, ComponentEventArgs e)
 		{

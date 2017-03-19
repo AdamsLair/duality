@@ -124,11 +124,21 @@ namespace Duality.Resources
 		/// <summary>
 		/// Fired when a <see cref="GameObject"/> has been registered in the current Scene.
 		/// </summary>
+		[Obsolete("Use GameObjectsAdded (note the plural) instead.")]
 		public static event EventHandler<GameObjectEventArgs> GameObjectAdded;
 		/// <summary>
 		/// Fired when a <see cref="GameObject"/> has been unregistered from the current Scene.
 		/// </summary>
+		[Obsolete("Use GameObjectsRemoved (note the plural) instead.")]
 		public static event EventHandler<GameObjectEventArgs> GameObjectRemoved;
+		/// <summary>
+		/// Fired once every time a group of <see cref="GameObject"/> instances has been registered in the current Scene.
+		/// </summary>
+		public static event EventHandler<GameObjectGroupEventArgs> GameObjectsAdded;
+		/// <summary>
+		/// Fired once every time a group of <see cref="GameObject"/> instances has been unregistered from the current Scene.
+		/// </summary>
+		public static event EventHandler<GameObjectGroupEventArgs> GameObjectsRemoved;
 		/// <summary>
 		/// Fired when a <see cref="Component"/> has been added to a <see cref="GameObject"/> that is registered in the current Scene.
 		/// </summary>
@@ -291,15 +301,32 @@ namespace Duality.Resources
 		{
 			if (GameObjectParentChanged != null) GameObjectParentChanged(current, args);
 		}
-		private static void OnGameObjectAdded(GameObjectEventArgs args)
+		private static void OnGameObjectsAdded(GameObjectGroupEventArgs args)
 		{
-			if (args.Object.Active) args.Object.OnActivate();
-			if (GameObjectAdded != null) GameObjectAdded(current, args);
+			if (GameObjectsAdded != null)
+				GameObjectsAdded(current, args);
+
+			// ToDo: Remove this event in v3.0
+			foreach (GameObject obj in args.Objects)
+			{
+				if (obj.Active) obj.OnActivate();
+				if (GameObjectAdded != null)
+					GameObjectAdded(current, new GameObjectEventArgs(obj));
+			}
 		}
-		private static void OnGameObjectRemoved(GameObjectEventArgs args)
+		private static void OnGameObjectsRemoved(GameObjectGroupEventArgs args)
 		{
-			if (GameObjectRemoved != null) GameObjectRemoved(current, args);
-			if (args.Object.Active || args.Object.Disposed) args.Object.OnDeactivate();
+			if (GameObjectsRemoved != null)
+				GameObjectsRemoved(current, args);
+
+			// ToDo: Remove this event in v3.0
+			foreach (GameObject obj in args.Objects)
+			{
+				if (GameObjectRemoved != null)
+					GameObjectRemoved(current, new GameObjectEventArgs(obj));
+				if (obj.Active || obj.Disposed) obj.OnDeactivate();
+			}
+
 		}
 		private static void OnComponentAdded(ComponentEventArgs args)
 		{
@@ -941,19 +968,19 @@ namespace Duality.Resources
 		}
 		private void RegisterManagerEvents()
 		{
-			this.objectManager.GameObjectAdded		+= this.objectManager_GameObjectAdded;
-			this.objectManager.GameObjectRemoved		+= this.objectManager_GameObjectRemoved;
-			this.objectManager.ParentChanged	+= this.objectManager_ParentChanged;
-			this.objectManager.ComponentAdded	+= this.objectManager_ComponentAdded;
-			this.objectManager.ComponentRemoving += this.objectManager_ComponentRemoving;
+			this.objectManager.GameObjectsAdded   += this.objectManager_GameObjectsAdded;
+			this.objectManager.GameObjectsRemoved += this.objectManager_GameObjectsRemoved;
+			this.objectManager.ParentChanged      += this.objectManager_ParentChanged;
+			this.objectManager.ComponentAdded     += this.objectManager_ComponentAdded;
+			this.objectManager.ComponentRemoving  += this.objectManager_ComponentRemoving;
 		}
 		private void UnregisterManagerEvents()
 		{
-			this.objectManager.GameObjectAdded		-= this.objectManager_GameObjectAdded;
-			this.objectManager.GameObjectRemoved		-= this.objectManager_GameObjectRemoved;
-			this.objectManager.ParentChanged	-= this.objectManager_ParentChanged;
-			this.objectManager.ComponentAdded	-= this.objectManager_ComponentAdded;
-			this.objectManager.ComponentRemoving -= this.objectManager_ComponentRemoving;
+			this.objectManager.GameObjectsAdded   -= this.objectManager_GameObjectsAdded;
+			this.objectManager.GameObjectsRemoved -= this.objectManager_GameObjectsRemoved;
+			this.objectManager.ParentChanged      -= this.objectManager_ParentChanged;
+			this.objectManager.ComponentAdded     -= this.objectManager_ComponentAdded;
+			this.objectManager.ComponentRemoving  -= this.objectManager_ComponentRemoving;
 		}
 
 		private static void ResetPhysics()
@@ -970,17 +997,23 @@ namespace Duality.Resources
 				b.Awake = true;
 		}
 
-		private void objectManager_GameObjectAdded(object sender, GameObjectEventArgs e)
+		private void objectManager_GameObjectsAdded(object sender, GameObjectGroupEventArgs e)
 		{
-			this.AddToManagers(e.Object);
-			e.Object.ParentScene = this;
-			if (this.IsCurrent) OnGameObjectAdded(e);
+			foreach (GameObject obj in e.Objects)
+			{
+				this.AddToManagers(obj);
+				obj.ParentScene = this;
+			}
+			if (this.IsCurrent) OnGameObjectsAdded(e);
 		}
-		private void objectManager_GameObjectRemoved(object sender, GameObjectEventArgs e)
+		private void objectManager_GameObjectsRemoved(object sender, GameObjectGroupEventArgs e)
 		{
-			this.RemoveFromManagers(e.Object);
-			e.Object.ParentScene = null;
-			if (this.IsCurrent) OnGameObjectRemoved(e);
+			foreach (GameObject obj in e.Objects)
+			{
+				this.RemoveFromManagers(obj);
+				obj.ParentScene = null;
+			}
+			if (this.IsCurrent) OnGameObjectsRemoved(e);
 		}
 		private void objectManager_ParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{
