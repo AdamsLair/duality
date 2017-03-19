@@ -342,6 +342,28 @@ namespace Duality.Tests.Components
 
 			Scene.SwitchTo(null, true);
 		}
+		[Test] public void EnforceOrderGameObjectDispose()
+		{
+			EventOrderLog eventLog = new EventOrderLog();
+			eventLog.EventFilter = EventType.Deactivate;
+
+			GameObject root = this.GenerateSampleTree(10, true,
+				typeof(TestComponentA1), 
+				typeof(TestComponentA2), 
+				typeof(TestComponentA3), 
+				typeof(TestComponentA4), 
+				typeof(TestComponentA5));
+
+			Scene.SwitchTo(new Scene(), true);
+			Scene.Current.AddObject(root);
+
+			this.AssignEventLog(root, eventLog, true);
+			root.Dispose();
+			DualityApp.RunCleanup();
+			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, true);
+
+			Scene.SwitchTo(null, true);
+		}
 		[Test] public void EnforceOrderGameObjectIterateNew()
 		{
 			// We'll actually generate a flat tree with only the root element here
