@@ -972,33 +972,12 @@ namespace Duality
 			}
 		}
 
-		internal void OnLoaded(bool deep = false)
-		{
-			// Notify Components
-			this.IterateComponents<ICmpInitializable>(l => l.OnInit(Component.InitContext.Loaded));
-			// Notify children
-			if (deep) this.IterateChildren(c => c.OnLoaded(deep));
-		}
-		internal void OnSaving(bool deep = false)
-		{
-			// Notify Components
-			this.IterateComponents<ICmpInitializable>(l => l.OnShutdown(Component.ShutdownContext.Saving));
-			// Notify children
-			if (deep) this.IterateChildren(c => c.OnSaving(deep));
-		}
-		internal void OnSaved(bool deep = false)
-		{
-			// Notify Components
-			this.IterateComponents<ICmpInitializable>(l => l.OnInit(Component.InitContext.Saved));
-			// Notify children
-			if (deep) this.IterateChildren(c => c.OnSaved(deep));
-		}
 		internal void OnActivate(bool deep = false)
 		{
 			List<ICmpInitializable> initList = new List<ICmpInitializable>();
 			this.GatherInitComponents(initList, deep);
 
-			Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
+			if (deep) Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
 
 			foreach (ICmpInitializable component in initList)
 				component.OnInit(Component.InitContext.Activate);
@@ -1008,7 +987,7 @@ namespace Duality
 			List<ICmpInitializable> initList = new List<ICmpInitializable>();
 			this.GatherInitComponents(initList, deep);
 
-			Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
+			if (deep) Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
 
 			foreach (ICmpInitializable component in initList)
 				component.OnShutdown(Component.ShutdownContext.Deactivate);
