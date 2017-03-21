@@ -1394,19 +1394,46 @@ namespace Duality.Editor
 
 		private static void editorObjects_GameObjectsAdded(object sender, GameObjectGroupEventArgs e)
 		{
+			// Gather a list of components to activate
+			int objCount = 0;
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
 			foreach (GameObject obj in e.Objects)
 			{
-				if (obj.Active)
-					obj.OnActivate();
+				if (!obj.ActiveSingle) continue;
+				obj.GatherInitComponents(initList, false);
+				objCount++;
 			}
+
+			// If we collected components from more than one object, sort by exec order.
+			// Otherwise, we can safely assume that the list is already sorted.
+			if (objCount > 1) Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
+
+			// Invoke the init event on all gathered components in the right order
+			foreach (ICmpInitializable component in initList)
+				component.OnInit(Component.InitContext.Activate);
 		}
 		private static void editorObjects_GameObjectsRemoved(object sender, GameObjectGroupEventArgs e)
 		{
+			// Gather a list of components to deactivate
+			int objCount = 0;
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
 			foreach (GameObject obj in e.Objects)
 			{
-				if (obj.Active || obj.Disposed)
-					obj.OnDeactivate();
+				if (!obj.ActiveSingle && !obj.Disposed) continue;
+				obj.GatherInitComponents(initList, false);
+				objCount++;
 			}
+
+			// If we collected components from more than one object, sort by exec order.
+			// Otherwise, we can safely assume that the list is already sorted.
+			if (objCount > 1)
+				Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
+			else
+				initList.Reverse();
+
+			// Invoke the init event on all gathered components in the right order
+			foreach (ICmpInitializable component in initList)
+				component.OnShutdown(Component.ShutdownContext.Deactivate);
 		}
 		private static void editorObjects_ComponentAdded(object sender, ComponentEventArgs e)
 		{

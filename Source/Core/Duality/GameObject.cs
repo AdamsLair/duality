@@ -127,10 +127,20 @@ namespace Duality
 				{
 					if (this.scene != null && this.scene.IsCurrent)
 					{
+						List<ICmpInitializable> initList = new List<ICmpInitializable>();
+						this.GatherInitComponents(initList, true);
 						if (value)
-							this.OnActivate(true);
+						{
+							Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
+							foreach (ICmpInitializable component in initList)
+								component.OnInit(Component.InitContext.Activate);
+						}
 						else
-							this.OnDeactivate(true);
+						{
+							Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
+							foreach (ICmpInitializable component in initList)
+								component.OnShutdown(Component.ShutdownContext.Deactivate);
+						}
 					}
 
 					this.active = value;
@@ -972,26 +982,6 @@ namespace Duality
 			}
 		}
 
-		internal void OnActivate(bool deep = false)
-		{
-			List<ICmpInitializable> initList = new List<ICmpInitializable>();
-			this.GatherInitComponents(initList, deep);
-
-			if (deep) Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
-
-			foreach (ICmpInitializable component in initList)
-				component.OnInit(Component.InitContext.Activate);
-		}
-		internal void OnDeactivate(bool deep = false)
-		{
-			List<ICmpInitializable> initList = new List<ICmpInitializable>();
-			this.GatherInitComponents(initList, deep);
-
-			if (deep) Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
-
-			foreach (ICmpInitializable component in initList)
-				component.OnShutdown(Component.ShutdownContext.Deactivate);
-		}
 		private void OnParentChanged(GameObject oldParent, GameObject newParent)
 		{
 			// Public event
