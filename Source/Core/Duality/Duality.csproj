@@ -91,6 +91,8 @@
     <Compile Include="Components\Other\ComponentExecutionOrder.cs" />
     <Compile Include="Components\Other\ComponentRequirementMap.cs" />
     <Compile Include="Components\Other\ComponentTypeComparer.cs" />
+    <Compile Include="Components\Other\ExecutionRelation.cs" />
+    <Compile Include="Components\Other\ExecutionOrderAttribute.cs" />
     <Compile Include="Components\Other\RequiredComponentAttribute.cs" />
     <Compile Include="Components\Physics\Shapes\ChainShapeInfo.cs" />
     <Compile Include="DualityPlugin.cs" />
