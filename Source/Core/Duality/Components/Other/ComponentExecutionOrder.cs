@@ -17,16 +17,6 @@ namespace Duality
 	/// </summary>
 	public class ComponentExecutionOrder
 	{
-		private struct IndexedType
-		{
-			public Type Type;
-			public int Index;
-
-			public override string ToString()
-			{
-				return string.Format("[{0}] {1}", this.Index, this.Type);
-			}
-		}
 		private struct IndexedTypeItem
 		{
 			public Type Type;
@@ -40,7 +30,6 @@ namespace Duality
 		}
 
 		private Dictionary<Type,int> sortIndexCache = new Dictionary<Type,int>();
-		private IndexedType[] sortedComponentTypes = new IndexedType[0];
 		private HashSet<Type> componentTypes = new HashSet<Type>();
 
 
@@ -51,17 +40,17 @@ namespace Duality
 		/// <param name="reverse"></param>
 		public void SortTypes(IList<Type> types, bool reverse)
 		{
-			IndexedType[] indexedTypes = new IndexedType[types.Count];
+			IndexedTypeItem[] indexedTypes = new IndexedTypeItem[types.Count];
 			for (int i = 0; i < indexedTypes.Length; i++)
 			{
 				indexedTypes[i].Type = types[i];
-				indexedTypes[i].Index = this.GetSortIndex(indexedTypes[i].Type);
+				indexedTypes[i].TypeIndex = this.GetSortIndex(indexedTypes[i].Type);
 			}
 
 			if (reverse)
-				Array.Sort(indexedTypes, (a, b) => b.Index - a.Index);
+				Array.Sort(indexedTypes, (a, b) => b.TypeIndex - a.TypeIndex);
 			else
-				Array.Sort(indexedTypes, (a, b) => a.Index - b.Index);
+				Array.Sort(indexedTypes, (a, b) => a.TypeIndex - b.TypeIndex);
 
 			for (int i = 0; i < indexedTypes.Length; i++)
 			{
@@ -120,12 +109,15 @@ namespace Duality
 		public void ClearTypeCache()
 		{
 			this.sortIndexCache.Clear();
-			this.sortedComponentTypes = new IndexedType[0];
 			this.componentTypes.Clear();
 		}
 
 		private void InitSortIndex()
 		{
+			// Gather a list of all available component types to minimize rebuild of the sort index
+			foreach (TypeInfo typeInfo in DualityApp.GetAvailDualityTypes(typeof(Component)))
+				this.componentTypes.Add(typeInfo.AsType());
+
 			// Re-generate sort indices for all relevant component types
 			this.sortIndexCache.Clear();
 			HashSet<int> takenSortIndices = new HashSet<int>();
@@ -151,17 +143,6 @@ namespace Duality
 
 				this.sortIndexCache.Add(type, sortIndex);
 			}
-
-			// Create a sorted list of component types
-			this.sortedComponentTypes = new IndexedType[this.componentTypes.Count];
-			int arrayIndex = 0;
-			foreach (var pair in this.sortIndexCache)
-			{
-				this.sortedComponentTypes[arrayIndex].Type = pair.Key;
-				this.sortedComponentTypes[arrayIndex].Index = pair.Value;
-				arrayIndex++;
-			}
-			Array.Sort(this.sortedComponentTypes, (a, b) => a.Index - b.Index);
 		}
 	}
 }
