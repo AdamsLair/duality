@@ -871,8 +871,9 @@ namespace Duality
 		/// <param name="deep"></param>
 		internal void GatherInitComponents(List<ICmpInitializable> initList, bool deep)
 		{
-			foreach (Component component in this.compList)
+			for (int i = 0; i < this.compList.Count; i++)
 			{
+				Component component = this.compList[i];
 				ICmpInitializable init = component as ICmpInitializable;
 
 				if (init == null) continue;
@@ -883,8 +884,9 @@ namespace Duality
 
 			if (deep && this.children != null)
 			{
-				foreach (GameObject child in this.children)
+				for (int i = 0; i < this.children.Count; i++)
 				{
+					GameObject child = this.children[i];
 					if (!child.ActiveSingle && !child.Disposed) continue;
 					child.GatherInitComponents(initList, deep);
 				}
