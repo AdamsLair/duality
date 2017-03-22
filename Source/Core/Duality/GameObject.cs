@@ -128,16 +128,21 @@ namespace Duality
 					if (this.scene != null && this.scene.IsCurrent)
 					{
 						List<ICmpInitializable> initList = new List<ICmpInitializable>();
-						this.GatherInitComponents(initList, true);
+						bool hasChildren = this.children != null && this.children.Count > 0;
+						this.GatherInitComponents(initList, hasChildren);
 						if (value)
 						{
-							Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
+							if (hasChildren)
+								Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
 							foreach (ICmpInitializable component in initList)
 								component.OnInit(Component.InitContext.Activate);
 						}
 						else
 						{
-							Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
+							if (hasChildren)
+								Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
+							else
+								initList.Reverse();
 							foreach (ICmpInitializable component in initList)
 								component.OnShutdown(Component.ShutdownContext.Deactivate);
 						}

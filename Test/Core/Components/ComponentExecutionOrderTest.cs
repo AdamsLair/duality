@@ -258,12 +258,13 @@ namespace Duality.Tests.Components
 			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
 		}
 
-		[Test] public void EnforceOrderGameObjectActivate()
+		[Test] public void EnforceOrderGameObjectActivate([Values(true, false)] bool deepObjectTree)
 		{
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Activate;
 
-			GameObject root = this.GenerateSampleTree(10, true,
+			int objectCount = deepObjectTree ? 10 : 1;
+			GameObject root = this.GenerateSampleTree(objectCount, true,
 				typeof(TestComponentA1), 
 				typeof(TestComponentA2), 
 				typeof(TestComponentA3), 
@@ -276,16 +277,17 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(root, eventLog, true);
 			root.Active = true;
-			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
+			this.AssertEventOrder(eventLog, 5 * objectCount, Component.ExecOrder, false);
 
 			Scene.SwitchTo(null, true);
 		}
-		[Test] public void EnforceOrderGameObjectDeactivate()
+		[Test] public void EnforceOrderGameObjectDeactivate([Values(true, false)] bool deepObjectTree)
 		{
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Deactivate;
 
-			GameObject root = this.GenerateSampleTree(10, true,
+			int objectCount = deepObjectTree ? 10 : 1;
+			GameObject root = this.GenerateSampleTree(objectCount, true,
 				typeof(TestComponentA1), 
 				typeof(TestComponentA2), 
 				typeof(TestComponentA3), 
@@ -297,16 +299,17 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(root, eventLog, true);
 			root.Active = false;
-			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, true);
+			this.AssertEventOrder(eventLog, 5 * objectCount, Component.ExecOrder, true);
 
 			Scene.SwitchTo(null, true);
 		}
-		[Test] public void EnforceOrderGameObjectAdd()
+		[Test] public void EnforceOrderGameObjectAdd([Values(true, false)] bool deepObjectTree)
 		{
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Activate;
 
-			GameObject root = this.GenerateSampleTree(10, true,
+			int objectCount = deepObjectTree ? 10 : 1;
+			GameObject root = this.GenerateSampleTree(objectCount, true,
 				typeof(TestComponentA1), 
 				typeof(TestComponentA2), 
 				typeof(TestComponentA3), 
@@ -317,16 +320,17 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(root, eventLog, true);
 			Scene.Current.AddObject(root);
-			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, false);
+			this.AssertEventOrder(eventLog, 5 * objectCount, Component.ExecOrder, false);
 
 			Scene.SwitchTo(null, true);
 		}
-		[Test] public void EnforceOrderGameObjectRemove()
+		[Test] public void EnforceOrderGameObjectRemove([Values(true, false)] bool deepObjectTree)
 		{
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Deactivate;
 
-			GameObject root = this.GenerateSampleTree(10, true,
+			int objectCount = deepObjectTree ? 10 : 1;
+			GameObject root = this.GenerateSampleTree(objectCount, true,
 				typeof(TestComponentA1), 
 				typeof(TestComponentA2), 
 				typeof(TestComponentA3), 
@@ -338,16 +342,17 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(root, eventLog, true);
 			Scene.Current.RemoveObject(root);
-			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, true);
+			this.AssertEventOrder(eventLog, 5 * objectCount, Component.ExecOrder, true);
 
 			Scene.SwitchTo(null, true);
 		}
-		[Test] public void EnforceOrderGameObjectDispose()
+		[Test] public void EnforceOrderGameObjectDispose([Values(true, false)] bool deepObjectTree)
 		{
 			EventOrderLog eventLog = new EventOrderLog();
 			eventLog.EventFilter = EventType.Deactivate;
 
-			GameObject root = this.GenerateSampleTree(10, true,
+			int objectCount = deepObjectTree ? 10 : 1;
+			GameObject root = this.GenerateSampleTree(objectCount, true,
 				typeof(TestComponentA1), 
 				typeof(TestComponentA2), 
 				typeof(TestComponentA3), 
@@ -360,7 +365,7 @@ namespace Duality.Tests.Components
 			this.AssignEventLog(root, eventLog, true);
 			root.Dispose();
 			DualityApp.RunCleanup();
-			this.AssertEventOrder(eventLog, 5 * 10, Component.ExecOrder, true);
+			this.AssertEventOrder(eventLog, 5 * objectCount, Component.ExecOrder, true);
 
 			Scene.SwitchTo(null, true);
 		}
