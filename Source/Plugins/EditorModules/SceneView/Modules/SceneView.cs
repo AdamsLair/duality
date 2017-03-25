@@ -148,8 +148,8 @@ namespace Duality.Editor.Plugins.SceneView
 
 			Scene.Entered += this.Scene_Entered;
 			Scene.Leaving += this.Scene_Leaving;
-			Scene.GameObjectAdded += this.Scene_GameObjectRegistered;
-			Scene.GameObjectRemoved += this.Scene_GameObjectUnregistered;
+			Scene.GameObjectsAdded += this.Scene_GameObjectsRegistered;
+			Scene.GameObjectsRemoved += this.Scene_GameObjectsUnregistered;
 			Scene.GameObjectParentChanged += this.Scene_GameObjectParentChanged;
 			Scene.ComponentAdded += this.Scene_ComponentAdded;
 			Scene.ComponentRemoving += this.Scene_ComponentRemoving;
@@ -169,8 +169,8 @@ namespace Duality.Editor.Plugins.SceneView
 
 			Scene.Entered -= this.Scene_Entered;
 			Scene.Leaving -= this.Scene_Leaving;
-			Scene.GameObjectAdded -= this.Scene_GameObjectRegistered;
-			Scene.GameObjectRemoved -= this.Scene_GameObjectUnregistered;
+			Scene.GameObjectsAdded -= this.Scene_GameObjectsRegistered;
+			Scene.GameObjectsRemoved -= this.Scene_GameObjectsUnregistered;
 			Scene.GameObjectParentChanged -= this.Scene_GameObjectParentChanged;
 			Scene.ComponentAdded -= this.Scene_ComponentAdded;
 			Scene.ComponentRemoving -= this.Scene_ComponentRemoving;
@@ -1742,40 +1742,46 @@ namespace Duality.Editor.Plugins.SceneView
 			parentNode.Nodes.Remove(oldObjNode);
 			this.UnregisterNodeTree(oldObjNode);
 		}
-		private void Scene_GameObjectUnregistered(object sender, GameObjectEventArgs e)
+		private void Scene_GameObjectsUnregistered(object sender, GameObjectGroupEventArgs e)
 		{
 			// Ignore events during transition
 			if (Scene.IsSwitching) return;
 
-			GameObjectNode oldObjNode = this.FindNode(e.Object);
-			if (oldObjNode == null) return;
-
-			Node parentNode = oldObjNode.Parent;
-			parentNode.Nodes.Remove(oldObjNode);
-			this.UnregisterNodeTree(oldObjNode);
-		}
-		private void Scene_GameObjectRegistered(object sender, GameObjectEventArgs e)
-		{
-			// Ignore events during transition
-			if (Scene.IsSwitching) return;
-
-			// Ignore already added nodes
-			if (this.FindNode(e.Object) != null) return;
-
-			// Find the parent node to add to
-			Node parentNode = e.Object.Parent != null ? this.FindNode(e.Object.Parent) : this.objectModel.Root;
-			
-			// No parent node existing? This must be a new object then.
-			if (parentNode == null)
+			foreach (GameObject obj in e.Objects)
 			{
-				// Let the parent handle it when it registers.
-				return;
-			}
+				GameObjectNode oldObjNode = this.FindNode(obj);
+				if (oldObjNode == null) continue;
 
-			// Create a new node and add it
-			GameObjectNode newObjNode = this.ScanGameObject(e.Object, true);
-			this.InsertNodeSorted(newObjNode, parentNode);
-			this.RegisterNodeTree(newObjNode);
+				Node parentNode = oldObjNode.Parent;
+				parentNode.Nodes.Remove(oldObjNode);
+				this.UnregisterNodeTree(oldObjNode);
+			}
+		}
+		private void Scene_GameObjectsRegistered(object sender, GameObjectGroupEventArgs e)
+		{
+			// Ignore events during transition
+			if (Scene.IsSwitching) return;
+
+			foreach (GameObject obj in e.Objects)
+			{
+				// Ignore already added nodes
+				if (this.FindNode(obj) != null) continue;
+
+				// Find the parent node to add to
+				Node parentNode = obj.Parent != null ? this.FindNode(obj.Parent) : this.objectModel.Root;
+
+				// No parent node existing? This must be a new object then.
+				if (parentNode == null)
+				{
+					// Let the parent handle it when it registers.
+					continue;
+				}
+
+				// Create a new node and add it
+				GameObjectNode newObjNode = this.ScanGameObject(obj, true);
+				this.InsertNodeSorted(newObjNode, parentNode);
+				this.RegisterNodeTree(newObjNode);
+			}
 		}
 		private void Scene_GameObjectParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{

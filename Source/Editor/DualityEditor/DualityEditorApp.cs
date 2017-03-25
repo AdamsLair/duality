@@ -255,8 +255,8 @@ namespace Duality.Editor
 			Resource.ResourceSaved += Resource_ResourceSaved;
 			Resource.ResourceSaving += Resource_ResourceSaving;
 			FileEventManager.PluginChanged += FileEventManager_PluginChanged;
-			editorObjects.GameObjectAdded += editorObjects_Registered;
-			editorObjects.GameObjectRemoved += editorObjects_Unregistered;
+			editorObjects.GameObjectsAdded += editorObjects_GameObjectsAdded;
+			editorObjects.GameObjectsRemoved += editorObjects_GameObjectsRemoved;
 			editorObjects.ComponentAdded += editorObjects_ComponentAdded;
 			editorObjects.ComponentRemoving += editorObjects_ComponentRemoved;
 
@@ -343,8 +343,8 @@ namespace Duality.Editor
 			Resource.ResourceSaving -= Resource_ResourceSaving;
 			Resource.ResourceDisposing -= Resource_ResourceDisposing;
 			FileEventManager.PluginChanged -= FileEventManager_PluginChanged;
-			editorObjects.GameObjectAdded -= editorObjects_Registered;
-			editorObjects.GameObjectRemoved -= editorObjects_Unregistered;
+			editorObjects.GameObjectsAdded -= editorObjects_GameObjectsAdded;
+			editorObjects.GameObjectsRemoved -= editorObjects_GameObjectsRemoved;
 			editorObjects.ComponentAdded -= editorObjects_ComponentAdded;
 			editorObjects.ComponentRemoving -= editorObjects_ComponentRemoved;
 
@@ -1392,15 +1392,48 @@ namespace Duality.Editor
 				DualityEditorApp.UpdatePluginSourceCode();
 		}
 
-		private static void editorObjects_Registered(object sender, GameObjectEventArgs e)
+		private static void editorObjects_GameObjectsAdded(object sender, GameObjectGroupEventArgs e)
 		{
-			if (e.Object.Active)
-				e.Object.OnActivate();
+			// Gather a list of components to activate
+			int objCount = 0;
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
+			foreach (GameObject obj in e.Objects)
+			{
+				if (!obj.ActiveSingle) continue;
+				obj.GatherInitComponents(initList, false);
+				objCount++;
+			}
+
+			// If we collected components from more than one object, sort by exec order.
+			// Otherwise, we can safely assume that the list is already sorted.
+			if (objCount > 1) Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
+
+			// Invoke the init event on all gathered components in the right order
+			foreach (ICmpInitializable component in initList)
+				component.OnInit(Component.InitContext.Activate);
 		}
-		private static void editorObjects_Unregistered(object sender, GameObjectEventArgs e)
+		private static void editorObjects_GameObjectsRemoved(object sender, GameObjectGroupEventArgs e)
 		{
-			if (e.Object.Active || e.Object.Disposed)
-				e.Object.OnDeactivate();
+			// Gather a list of components to deactivate
+			int objCount = 0;
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
+			foreach (GameObject obj in e.Objects)
+			{
+				if (!obj.ActiveSingle && !obj.Disposed) continue;
+				obj.GatherInitComponents(initList, false);
+				objCount++;
+			}
+
+			// If we collected components from more than one object, sort by exec order.
+			// Otherwise, we can safely assume that the list is already sorted.
+			if (objCount > 1)
+				Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
+			else
+				initList.Reverse();
+
+			// Invoke the init event on all gathered components in the right order
+			foreach (ICmpInitializable component in initList)
+				component.OnShutdown(Component.ShutdownContext.Deactivate);
 		}
 		private static void editorObjects_ComponentAdded(object sender, ComponentEventArgs e)
 		{
