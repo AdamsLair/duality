@@ -122,16 +122,6 @@ namespace Duality.Resources
 		/// </summary>
 		public static event EventHandler<GameObjectParentChangedEventArgs> GameObjectParentChanged;
 		/// <summary>
-		/// Fired when a <see cref="GameObject"/> has been registered in the current Scene.
-		/// </summary>
-		[Obsolete("Use GameObjectsAdded (note the plural) instead.")]
-		public static event EventHandler<GameObjectEventArgs> GameObjectAdded;
-		/// <summary>
-		/// Fired when a <see cref="GameObject"/> has been unregistered from the current Scene.
-		/// </summary>
-		[Obsolete("Use GameObjectsRemoved (note the plural) instead.")]
-		public static event EventHandler<GameObjectEventArgs> GameObjectRemoved;
-		/// <summary>
 		/// Fired once every time a group of <see cref="GameObject"/> instances has been registered in the current Scene.
 		/// </summary>
 		public static event EventHandler<GameObjectGroupEventArgs> GameObjectsAdded;
@@ -324,23 +314,9 @@ namespace Duality.Resources
 			// Fire a global event to indicate that the new objects are ready
 			if (GameObjectsAdded != null)
 				GameObjectsAdded(current, args);
-
-			// ToDo: Remove this event in v3.0
-			foreach (GameObject obj in args.Objects)
-			{
-				if (GameObjectAdded != null)
-					GameObjectAdded(current, new GameObjectEventArgs(obj));
-			}
 		}
 		private static void OnGameObjectsRemoved(GameObjectGroupEventArgs args)
 		{
-			// ToDo: Remove this event in v3.0
-			foreach (GameObject obj in args.Objects)
-			{
-				if (GameObjectRemoved != null)
-					GameObjectRemoved(current, new GameObjectEventArgs(obj));
-			}
-
 			// Fire a global event to indicate that the objects are going to be shut down
 			if (GameObjectsRemoved != null)
 				GameObjectsRemoved(current, args);

@@ -63,16 +63,6 @@ namespace Duality
 
 
 		/// <summary>
-		/// Fired when a <see cref="GameObject"/> is registered.
-		/// </summary>
-		[Obsolete("Use GameObjectsAdded (note the plural) instead.")]
-		public event EventHandler<GameObjectEventArgs>	GameObjectAdded;
-		/// <summary>
-		/// Fired when a <see cref="GameObject"/> is unregistered.
-		/// </summary>
-		[Obsolete("Use GameObjectsRemoved (note the plural) instead.")]
-		public event EventHandler<GameObjectEventArgs>	GameObjectRemoved;
-		/// <summary>
 		/// Fired once for every <see cref="GameObject"/> add operation.
 		/// </summary>
 		public event EventHandler<GameObjectGroupEventArgs> GameObjectsAdded;
@@ -204,8 +194,6 @@ namespace Duality
 			foreach (GameObject obj in objList)
 			{
 				this.RegisterEvents(obj);
-				if (this.GameObjectAdded != null)
-					this.GameObjectAdded(this, new GameObjectEventArgs(obj));
 			}
 			if (this.GameObjectsAdded != null)
 				this.GameObjectsAdded(this, new GameObjectGroupEventArgs(objList));
@@ -215,8 +203,6 @@ namespace Duality
 			foreach (GameObject obj in objList)
 			{
 				this.UnregisterEvents(obj);
-				if (this.GameObjectRemoved != null)
-					this.GameObjectRemoved(this, new GameObjectEventArgs(obj));
 			}
 			if (this.GameObjectsRemoved != null)
 				this.GameObjectsRemoved(this, new GameObjectGroupEventArgs(objList));
