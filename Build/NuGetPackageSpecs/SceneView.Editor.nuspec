@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.SceneView</id>
-    <version>2.0.11</version>
+    <version>2.0.12</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Scene View</title>
@@ -13,11 +13,12 @@
     <summary>Displays the contents of the current Scene hierarchically and allows editing the Scene graph.</summary>
     <description>Displays the contents of the current Scene hierarchically and allows editing the Scene graph.</description>
     <tags>Duality Editor Plugin SceneView</tags>
-    <releaseNotes>
-</releaseNotes>
+    <releaseNotes>Multi-GameObject Scene / Manager Events
+#ADD: Added multi-GameObject add / remove events to GameObjectManager and Scene. 
+#CHANGE: Flagged the old single-GameObject add / remove events as obsolete.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.9.9" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.7.20" />
+      <dependency id="AdamsLair.Duality" version="2.10.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.7.21" />
     </dependencies>
   </metadata>
   <files>
