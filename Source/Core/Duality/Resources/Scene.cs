@@ -721,7 +721,7 @@ namespace Duality.Resources
 		public void Append(ContentRef<Scene> scene)
 		{
 			if (!scene.IsAvailable) return;
-			this.objectManager.AddObject(scene.Res.RootObjects.Select(o => o.Clone()));
+			this.objectManager.AddObjects(scene.Res.RootObjects.Select(o => o.Clone()));
 		}
 		/// <summary>
 		/// Appends the specified Scene's contents to this Scene and consumes the specified Scene.
@@ -733,7 +733,7 @@ namespace Duality.Resources
 			Scene otherScene = scene.Res;
 			var otherObj = otherScene.RootObjects.ToArray();
 			otherScene.Clear();
-			this.objectManager.AddObject(otherObj);
+			this.objectManager.AddObjects(otherObj);
 			otherScene.Dispose();
 		}
 
@@ -750,14 +750,14 @@ namespace Duality.Resources
 		/// Registers a set of GameObjects and all of their children.
 		/// </summary>
 		/// <param name="objEnum"></param>
-		public void AddObject(IEnumerable<GameObject> objEnum)
+		public void AddObjects(IEnumerable<GameObject> objEnum)
 		{
 			foreach (GameObject obj in objEnum)
 			{
 				if (obj.ParentScene == null || obj.ParentScene == this) continue;
 				obj.ParentScene.RemoveObject(obj);
 			}
-			this.objectManager.AddObject(objEnum);
+			this.objectManager.AddObjects(objEnum);
 		}
 		/// <summary>
 		/// Unregisters a GameObject and all of its children
@@ -776,7 +776,7 @@ namespace Duality.Resources
 		/// Unregisters a set of GameObjects and all of their children.
 		/// </summary>
 		/// <param name="objEnum"></param>
-		public void RemoveObject(IEnumerable<GameObject> objEnum)
+		public void RemoveObjects(IEnumerable<GameObject> objEnum)
 		{
 			objEnum = objEnum.Where(o => o.ParentScene == this);
 			foreach (GameObject obj in objEnum)
@@ -785,7 +785,7 @@ namespace Duality.Resources
 				if (obj.Parent.ParentScene != this) continue;
 				obj.Parent = null;
 			}
-			this.objectManager.RemoveObject(objEnum);
+			this.objectManager.RemoveObjects(objEnum);
 		}
 
 		/// <summary>
