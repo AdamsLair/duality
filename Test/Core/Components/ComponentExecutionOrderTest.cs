@@ -454,6 +454,132 @@ namespace Duality.Tests.Components
 			this.AssertComponentOrder(iterateOrder, 5, Component.ExecOrder, false);
 		}
 
+		[Test] public void ExecOrderAttributeBefore()
+		{
+			ComponentExecutionOrder order = new ComponentExecutionOrder();
+
+			List<Type> types = new List<Type>();
+			types.Add(typeof(TestComponentB1));
+			types.Add(typeof(TestComponentB2));
+
+			order.SortTypes(types, false);
+
+			CollectionAssert.AreEqual(
+				new[] { typeof(TestComponentB2), typeof(TestComponentB1) }, 
+				types);
+		}
+		[Test] public void ExecOrderAttributeBeforeAndAfter()
+		{
+			ComponentExecutionOrder order = new ComponentExecutionOrder();
+
+			List<Type> types = new List<Type>();
+			types.Add(typeof(TestComponentC1));
+			types.Add(typeof(TestComponentC2));
+
+			order.SortTypes(types, false);
+
+			CollectionAssert.AreEqual(
+				new[] { typeof(TestComponentC2), typeof(TestComponentC1) }, 
+				types);
+		}
+		[Test] public void ExecOrderAttributeAfter()
+		{
+			ComponentExecutionOrder order = new ComponentExecutionOrder();
+
+			List<Type> types = new List<Type>();
+			types.Add(typeof(TestComponentD1));
+			types.Add(typeof(TestComponentD2));
+
+			order.SortTypes(types, false);
+
+			CollectionAssert.AreEqual(
+				new[] { typeof(TestComponentD2), typeof(TestComponentD1) }, 
+				types);
+		}
+		[Test] public void ExecOrderLoopResolve()
+		{
+			// If there is a loop in the execution order requirements, make sure
+			// a log informs the user about this.
+			TestingLogOutput logWatcher = new TestingLogOutput();
+			Log.AddGlobalOutput(logWatcher);
+
+			ComponentExecutionOrder order = new ComponentExecutionOrder();
+
+			List<Type> types = new List<Type>();
+			types.Add(typeof(TestComponentE1));
+			types.Add(typeof(TestComponentE2));
+			types.Add(typeof(TestComponentE3));
+
+			// Assert that we're still able to perform exec order sorting and
+			// the constraint loop doesn't cause further problems.
+			order.SortTypes(types, false);
+			
+			// Assert that there were no errors, but we got a warning.
+			logWatcher.AssertNoErrors();
+			logWatcher.AssertWarning();
+
+			Log.RemoveGlobalOutput(logWatcher);
+		}
+		[Test] public void ExecOrderBaseTypeRule()
+		{
+			ComponentExecutionOrder order = new ComponentExecutionOrder();
+
+			List<Type> types = new List<Type>();
+			types.Add(typeof(TestComponentH1));
+			types.Add(typeof(TestComponentI1));
+
+			order.SortTypes(types, false);
+
+			CollectionAssert.AreEqual(
+				new[] { typeof(TestComponentI1), typeof(TestComponentH1) }, 
+				types);
+		}
+		[Test] public void ExecOrderSpecificOverride()
+		{
+			ComponentExecutionOrder order = new ComponentExecutionOrder();
+
+			List<Type> types = new List<Type>();
+			types.Add(typeof(TestComponentH2));
+			types.Add(typeof(TestComponentI2));
+
+			order.SortTypes(types, false);
+
+			CollectionAssert.AreEqual(
+				new[] { typeof(TestComponentH2), typeof(TestComponentI2) }, 
+				types);
+		}
+		[Test] public void RequirementAttribute()
+		{
+			ComponentExecutionOrder order = new ComponentExecutionOrder();
+
+			List<Type> types = new List<Type>();
+			types.Add(typeof(TestComponentF1));
+			types.Add(typeof(TestComponentF2));
+
+			order.SortTypes(types, false);
+
+			CollectionAssert.AreEqual(
+				new[] { typeof(TestComponentF2), typeof(TestComponentF1) }, 
+				types);
+		}
+		[Test] public void RequirementLoopResolve()
+		{
+			ComponentExecutionOrder order = new ComponentExecutionOrder();
+
+			List<Type> types = new List<Type>();
+			types.Add(typeof(TestComponentG1));
+			types.Add(typeof(TestComponentG2));
+
+			order.SortTypes(types, false);
+
+			// Even though G1 requires G2 (implicit after), there is an explicit
+			// G1 before G2 attribute. We'll expect that to have priority in resolving
+			// this loop.
+			CollectionAssert.AreEqual(
+				new[] { typeof(TestComponentG1), typeof(TestComponentG2) }, 
+				types);
+		}
+
 
 		private void AssertEventOrder(EventOrderLog eventLog, int eventCount, ComponentExecutionOrder order, bool reverseOrder)
 		{
@@ -588,5 +714,44 @@ namespace Duality.Tests.Components
 		public class TestComponentA3 : TestComponent { }
 		public class TestComponentA4 : TestComponent { }
 		public class TestComponentA5 : TestComponent { }
+
+		public class TestComponentB1 : TestComponent { }
+		[ExecutionOrder(ExecutionRelation.Before, typeof(TestComponentB1))]
+		public class TestComponentB2 : TestComponent { }
+
+		[ExecutionOrder(ExecutionRelation.After, typeof(TestComponentC2))]
+		public class TestComponentC1 : TestComponent { }
+		[ExecutionOrder(ExecutionRelation.Before, typeof(TestComponentC1))]
+		public class TestComponentC2 : TestComponent { }
+
+		[ExecutionOrder(ExecutionRelation.After, typeof(TestComponentD2))]
+		public class TestComponentD1 : TestComponent { }
+		public class TestComponentD2 : TestComponent { }
+
+		[ExecutionOrder(ExecutionRelation.Before, typeof(TestComponentE1))]
+		public class TestComponentE1 : TestComponent { }
+		[ExecutionOrder(ExecutionRelation.Before, typeof(TestComponentE3))]
+		public class TestComponentE2 : TestComponent { }
+		[ExecutionOrder(ExecutionRelation.Before, typeof(TestComponentE2))]
+		public class TestComponentE3 : TestComponent { }
+
+		[RequiredComponent(typeof(TestComponentF2))]
+		public class TestComponentF1 : TestComponent { }
+		public class TestComponentF2 : TestComponent { }
+
+		[RequiredComponent(typeof(TestComponentG2))]
+		public class TestComponentG1 : TestComponent { }
+		[ExecutionOrder(ExecutionRelation.After, typeof(TestComponentG1))]
+		public class TestComponentG2 : TestComponent { }
+
+		public interface ITestComponentH { }
+		public class TestComponentH1 : TestComponent, ITestComponentH { }
+		[ExecutionOrder(ExecutionRelation.Before, typeof(TestComponentI2))]
+		public class TestComponentH2 : TestComponent, ITestComponentH { }
+
+		[ExecutionOrder(ExecutionRelation.Before, typeof(ITestComponentH))]
+		public class TestComponentI1 : TestComponent { }
+		[ExecutionOrder(ExecutionRelation.Before, typeof(ITestComponentH))]
+		public class TestComponentI2 : TestComponent { }
 	}
 }
