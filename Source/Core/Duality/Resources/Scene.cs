@@ -124,11 +124,21 @@ namespace Duality.Resources
 		/// <summary>
 		/// Fired when a <see cref="GameObject"/> has been registered in the current Scene.
 		/// </summary>
+		[Obsolete("Use GameObjectsAdded (note the plural) instead.")]
 		public static event EventHandler<GameObjectEventArgs> GameObjectAdded;
 		/// <summary>
 		/// Fired when a <see cref="GameObject"/> has been unregistered from the current Scene.
 		/// </summary>
+		[Obsolete("Use GameObjectsRemoved (note the plural) instead.")]
 		public static event EventHandler<GameObjectEventArgs> GameObjectRemoved;
+		/// <summary>
+		/// Fired once every time a group of <see cref="GameObject"/> instances has been registered in the current Scene.
+		/// </summary>
+		public static event EventHandler<GameObjectGroupEventArgs> GameObjectsAdded;
+		/// <summary>
+		/// Fired once every time a group of <see cref="GameObject"/> instances has been unregistered from the current Scene.
+		/// </summary>
+		public static event EventHandler<GameObjectGroupEventArgs> GameObjectsRemoved;
 		/// <summary>
 		/// Fired when a <see cref="Component"/> has been added to a <see cref="GameObject"/> that is registered in the current Scene.
 		/// </summary>
@@ -225,10 +235,19 @@ namespace Duality.Resources
 				// Deactivate GameObjects
 				DualityApp.EditorGuard(() =>
 				{
-					GameObject[] activeObj = current.ResWeak.ActiveObjects.ToArray();
-					foreach (GameObject o in activeObj)
+					// Create a list of components to deactivate
+					List<ICmpInitializable> shutdownList = new List<ICmpInitializable>();
+					foreach (Component component in current.ResWeak.FindComponents<ICmpInitializable>())
 					{
-						o.OnDeactivate();
+						if (!component.Active) continue;
+						shutdownList.Add(component as ICmpInitializable);
+					}
+					// Deactivate all the listed components. Note that they may create or destroy
+					// objects, so it's important that we're iterating a copy of the scene objects
+					// here, and not the real thing.
+					for (int i = shutdownList.Count - 1; i >= 0; i--)
+					{
+						shutdownList[i].OnShutdown(Component.ShutdownContext.Deactivate);
 					}
 				});
 
@@ -258,10 +277,19 @@ namespace Duality.Resources
 				// Activate GameObjects
 				DualityApp.EditorGuard(() =>
 				{
-					GameObject[] activeObj = current.ResWeak.ActiveObjects.ToArray();
-					foreach (GameObject o in activeObj)
+					// Create a list of components to activate
+					List<ICmpInitializable> initList = new List<ICmpInitializable>();
+					foreach (Component component in current.ResWeak.FindComponents<ICmpInitializable>())
 					{
-						o.OnActivate();
+						if (!component.Active) continue;
+						initList.Add(component as ICmpInitializable);
+					}
+					// Activate all the listed components. Note that they may create or destroy
+					// objects, so it's important that we're iterating a copy of the scene objects
+					// here, and not the real thing.
+					for (int i = 0; i < initList.Count; i++)
+					{
+						initList[i].OnInit(Component.InitContext.Activate);
 					}
 				});
 			}
@@ -273,15 +301,70 @@ namespace Duality.Resources
 		{
 			if (GameObjectParentChanged != null) GameObjectParentChanged(current, args);
 		}
-		private static void OnGameObjectAdded(GameObjectEventArgs args)
+		private static void OnGameObjectsAdded(GameObjectGroupEventArgs args)
 		{
-			if (args.Object.Active) args.Object.OnActivate();
-			if (GameObjectAdded != null) GameObjectAdded(current, args);
+			// Gather a list of components to activate
+			int objCount = 0;
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
+			foreach (GameObject obj in args.Objects)
+			{
+				if (!obj.ActiveSingle) continue;
+				obj.GatherInitComponents(initList, false);
+				objCount++;
+			}
+
+			// If we collected components from more than one object, sort by exec order.
+			// Otherwise, we can safely assume that the list is already sorted.
+			if (objCount > 1) Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
+
+			// Invoke the init event on all gathered components in the right order
+			foreach (ICmpInitializable component in initList)
+				component.OnInit(Component.InitContext.Activate);
+
+			// Fire a global event to indicate that the new objects are ready
+			if (GameObjectsAdded != null)
+				GameObjectsAdded(current, args);
+
+			// ToDo: Remove this event in v3.0
+			foreach (GameObject obj in args.Objects)
+			{
+				if (GameObjectAdded != null)
+					GameObjectAdded(current, new GameObjectEventArgs(obj));
+			}
 		}
-		private static void OnGameObjectRemoved(GameObjectEventArgs args)
+		private static void OnGameObjectsRemoved(GameObjectGroupEventArgs args)
 		{
-			if (GameObjectRemoved != null) GameObjectRemoved(current, args);
-			if (args.Object.Active || args.Object.Disposed) args.Object.OnDeactivate();
+			// ToDo: Remove this event in v3.0
+			foreach (GameObject obj in args.Objects)
+			{
+				if (GameObjectRemoved != null)
+					GameObjectRemoved(current, new GameObjectEventArgs(obj));
+			}
+
+			// Fire a global event to indicate that the objects are going to be shut down
+			if (GameObjectsRemoved != null)
+				GameObjectsRemoved(current, args);
+
+			// Gather a list of components to deactivate
+			int objCount = 0;
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
+			foreach (GameObject obj in args.Objects)
+			{
+				if (!obj.ActiveSingle && !obj.Disposed) continue;
+				obj.GatherInitComponents(initList, false);
+				objCount++;
+			}
+
+			// If we collected components from more than one object, sort by exec order.
+			// Otherwise, we can safely assume that the list is already sorted.
+			if (objCount > 1)
+				Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
+			else
+				initList.Reverse();
+
+			// Invoke the init event on all gathered components in the right order
+			foreach (ICmpInitializable component in initList)
+				component.OnShutdown(Component.ShutdownContext.Deactivate);
 		}
 		private static void OnComponentAdded(ComponentEventArgs args)
 		{
@@ -537,9 +620,8 @@ namespace Duality.Resources
 		{
 			Profile.TimeUpdateSceneComponents.BeginMeasure();
 
-			// Gather a list of updatable Components
-			RawList<Component> updatableComponents = new RawList<Component>(256);
-			RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
+			// Create a sorted list of updatable component types
+			List<Type> updateTypeOrder = new List<Type>();
 			foreach (var pair in this.componentsByType)
 			{
 				// Skip Component types that aren't updatable anyway
@@ -547,13 +629,24 @@ namespace Duality.Resources
 				if (!(sampleComponent is T))
 					continue;
 
+				updateTypeOrder.Add(pair.Key.AsType());
+			}
+			Component.ExecOrder.SortTypes(updateTypeOrder, false);
+
+			// Gather a list of updatable Components
+			RawList<Component> updatableComponents = new RawList<Component>(256);
+			RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
+			foreach (Type type in updateTypeOrder)
+			{
+				TypeInfo typeInfo = type.GetTypeInfo();
+				List<Component> components = this.componentsByType[typeInfo];
 				int oldCount = updatableComponents.Count;
 
 				// Collect Components
-				updatableComponents.Reserve(updatableComponents.Count + pair.Value.Count);
-				for (int i = 0; i < pair.Value.Count; i++)
+				updatableComponents.Reserve(updatableComponents.Count + components.Count);
+				for (int i = 0; i < components.Count; i++)
 				{
-					updatableComponents.Add(pair.Value[i]);
+					updatableComponents.Add(components[i]);
 				}
 
 				// Keep in mind how many Components of each type we have in what order
@@ -561,9 +654,9 @@ namespace Duality.Resources
 				{
 					updateMap.Add(new UpdateEntry
 					{
-						Type = pair.Key,
+						Type = typeInfo,
 						Count = updatableComponents.Count - oldCount,
-						Profiler = Profile.RequestCounter<TimeCounter>(Profile.TimeUpdateScene.FullName + @"\" + pair.Key.Name)
+						Profiler = Profile.RequestCounter<TimeCounter>(Profile.TimeUpdateScene.FullName + @"\" + typeInfo.Name)
 					});
 				}
 			}
@@ -770,6 +863,7 @@ namespace Duality.Resources
 			List<List<Component>> query = null;
 			foreach (var pair in this.componentsByType)
 			{
+				if (pair.Value.Count == 0) continue;
 				if (typeInfo.IsAssignableFrom(pair.Key))
 				{
 					if (!multiple && singleResult == null)
@@ -800,6 +894,7 @@ namespace Duality.Resources
 			// Select from a multitude of results
 			else
 			{
+				Component.ExecOrder.SortTypedItems(query, list => list[0].GetType(), false);
 				result = query.SelectMany(cmpArr => cmpArr);
 			}
 
@@ -914,19 +1009,19 @@ namespace Duality.Resources
 		}
 		private void RegisterManagerEvents()
 		{
-			this.objectManager.GameObjectAdded		+= this.objectManager_GameObjectAdded;
-			this.objectManager.GameObjectRemoved		+= this.objectManager_GameObjectRemoved;
-			this.objectManager.ParentChanged	+= this.objectManager_ParentChanged;
-			this.objectManager.ComponentAdded	+= this.objectManager_ComponentAdded;
-			this.objectManager.ComponentRemoving += this.objectManager_ComponentRemoving;
+			this.objectManager.GameObjectsAdded   += this.objectManager_GameObjectsAdded;
+			this.objectManager.GameObjectsRemoved += this.objectManager_GameObjectsRemoved;
+			this.objectManager.ParentChanged      += this.objectManager_ParentChanged;
+			this.objectManager.ComponentAdded     += this.objectManager_ComponentAdded;
+			this.objectManager.ComponentRemoving  += this.objectManager_ComponentRemoving;
 		}
 		private void UnregisterManagerEvents()
 		{
-			this.objectManager.GameObjectAdded		-= this.objectManager_GameObjectAdded;
-			this.objectManager.GameObjectRemoved		-= this.objectManager_GameObjectRemoved;
-			this.objectManager.ParentChanged	-= this.objectManager_ParentChanged;
-			this.objectManager.ComponentAdded	-= this.objectManager_ComponentAdded;
-			this.objectManager.ComponentRemoving -= this.objectManager_ComponentRemoving;
+			this.objectManager.GameObjectsAdded   -= this.objectManager_GameObjectsAdded;
+			this.objectManager.GameObjectsRemoved -= this.objectManager_GameObjectsRemoved;
+			this.objectManager.ParentChanged      -= this.objectManager_ParentChanged;
+			this.objectManager.ComponentAdded     -= this.objectManager_ComponentAdded;
+			this.objectManager.ComponentRemoving  -= this.objectManager_ComponentRemoving;
 		}
 
 		private static void ResetPhysics()
@@ -943,17 +1038,23 @@ namespace Duality.Resources
 				b.Awake = true;
 		}
 
-		private void objectManager_GameObjectAdded(object sender, GameObjectEventArgs e)
+		private void objectManager_GameObjectsAdded(object sender, GameObjectGroupEventArgs e)
 		{
-			this.AddToManagers(e.Object);
-			e.Object.ParentScene = this;
-			if (this.IsCurrent) OnGameObjectAdded(e);
+			foreach (GameObject obj in e.Objects)
+			{
+				this.AddToManagers(obj);
+				obj.ParentScene = this;
+			}
+			if (this.IsCurrent) OnGameObjectsAdded(e);
 		}
-		private void objectManager_GameObjectRemoved(object sender, GameObjectEventArgs e)
+		private void objectManager_GameObjectsRemoved(object sender, GameObjectGroupEventArgs e)
 		{
-			this.RemoveFromManagers(e.Object);
-			e.Object.ParentScene = null;
-			if (this.IsCurrent) OnGameObjectRemoved(e);
+			foreach (GameObject obj in e.Objects)
+			{
+				this.RemoveFromManagers(obj);
+				obj.ParentScene = null;
+			}
+			if (this.IsCurrent) OnGameObjectsRemoved(e);
 		}
 		private void objectManager_ParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{
@@ -973,8 +1074,11 @@ namespace Duality.Resources
 		protected override void OnSaving(string saveAsPath)
 		{
 			base.OnSaving(saveAsPath);
-			foreach (GameObject obj in this.objectManager.AllObjects)
-				obj.OnSaving();
+
+			// Prepare all components for saving in reverse order, sorted by type
+			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			for (int i = initList.Count - 1; i >= 0; i--)
+				initList[i].OnShutdown(Component.ShutdownContext.Saving);
 
 			this.serializeObj = this.objectManager.AllObjects.ToArray();
 			this.serializeObj.StableSort(SerializeGameObjectComparison);
@@ -985,8 +1089,11 @@ namespace Duality.Resources
 				this.serializeObj = null;
 
 			base.OnSaved(saveAsPath);
-			foreach (GameObject obj in this.objectManager.AllObjects)
-				obj.OnSaved();
+			
+			// Re-initialize all components after saving, sorted by type
+			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			for (int i = 0; i < initList.Count; i++)
+				initList[i].OnInit(Component.InitContext.Saved);
 
 			// If this Scene is the current one, but it wasn't saved before, update the current Scenes internal ContentRef
 			if (this.IsCurrent && current.IsRuntimeResource)
@@ -1000,7 +1107,11 @@ namespace Duality.Resources
 			if (this.serializeObj != null)
 			{
 				this.UnregisterManagerEvents();
-				foreach (GameObject obj in this.serializeObj) obj.PerformSanitaryCheck();
+				foreach (GameObject obj in this.serializeObj)
+				{
+					obj.EnsureConsistentData();
+					obj.EnsureComponentOrder();
+				}
 				foreach (GameObject obj in this.serializeObj)
 				{
 					obj.ParentScene = this;
@@ -1014,9 +1125,11 @@ namespace Duality.Resources
 			base.OnLoaded();
 
 			this.ApplyPrefabLinks();
-
-			foreach (GameObject obj in this.objectManager.AllObjects)
-				obj.OnLoaded();
+			
+			// Initialize all loaded components, sorted by type
+			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			for (int i = 0; i < initList.Count; i++)
+				initList[i].OnInit(Component.InitContext.Loaded);
 
 			this.visibilityStrategy.Update();
 		}

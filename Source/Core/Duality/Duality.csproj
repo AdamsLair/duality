@@ -88,8 +88,11 @@
     <Compile Include="Backend\PluginLoader\AssemblyResolveEventArgs.cs" />
     <Compile Include="Cloning\Surrogates\CultureInfoSurrogate.cs" />
     <Compile Include="Cloning\Surrogates\RegexSurrogate.cs" />
+    <Compile Include="Components\Other\ComponentExecutionOrder.cs" />
     <Compile Include="Components\Other\ComponentRequirementMap.cs" />
     <Compile Include="Components\Other\ComponentTypeComparer.cs" />
+    <Compile Include="Components\Other\ExecutionRelation.cs" />
+    <Compile Include="Components\Other\ExecutionOrderAttribute.cs" />
     <Compile Include="Components\Other\RequiredComponentAttribute.cs" />
     <Compile Include="Components\ICmpInterfaces\ICmpSpriteRenderer.cs" />
     <Compile Include="Components\Physics\Shapes\ChainShapeInfo.cs" />
@@ -185,6 +188,7 @@
     <Compile Include="Backend\Dummy\DummyAssemblyLoader.cs" />
     <Compile Include="Serialization\Surrogates\CultureInfoSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\RegexSurrogate.cs" />
+    <Compile Include="Utility\EventArgs\GameObjectGroupEventArgs.cs" />
     <Compile Include="Utility\Math\ExtMethodsTargetResize.cs" />
     <Compile Include="Utility\Math\AudioUnit.cs" />
     <Compile Include="Utility\Math\TargetResize.cs" />

@@ -245,11 +245,11 @@ namespace Duality.Tests.Cloning
 			testScene.AddObject(target);
 			
 			// Listen to object added events
-			EventHandler<GameObjectEventArgs> sceneHandler = delegate (object sender, GameObjectEventArgs e)
+			EventHandler<GameObjectGroupEventArgs> sceneHandler = delegate(object sender, GameObjectGroupEventArgs e)
 			{
 				gameObjectAddedEventReceived = true;
 			};
-			Scene.GameObjectAdded += sceneHandler;
+			Scene.GameObjectsAdded += sceneHandler;
 
 			// Enter the test Scene, so global Scene events will be fired
 			Scene.SwitchTo(testScene);
@@ -269,7 +269,7 @@ namespace Duality.Tests.Cloning
 			}
 			finally
 			{
-				Scene.GameObjectAdded -= sceneHandler;
+				Scene.GameObjectsAdded -= sceneHandler;
 				Scene.SwitchTo(null);
 			}
 		}

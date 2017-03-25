@@ -221,8 +221,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Scene.Leaving += this.Scene_Changed;
 			Scene.Entered += this.Scene_Changed;
 			Scene.GameObjectParentChanged += this.Scene_Changed;
-			Scene.GameObjectAdded += this.Scene_Changed;
-			Scene.GameObjectRemoved += this.Scene_Changed;
+			Scene.GameObjectsAdded += this.Scene_Changed;
+			Scene.GameObjectsRemoved += this.Scene_Changed;
 			Scene.ComponentAdded += this.Scene_Changed;
 			Scene.ComponentRemoving += this.Scene_Changed;
 
@@ -270,8 +270,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Scene.Leaving -= this.Scene_Changed;
 			Scene.Entered -= this.Scene_Changed;
 			Scene.GameObjectParentChanged -= this.Scene_Changed;
-			Scene.GameObjectAdded -= this.Scene_Changed;
-			Scene.GameObjectRemoved -= this.Scene_Changed;
+			Scene.GameObjectsAdded -= this.Scene_Changed;
+			Scene.GameObjectsRemoved -= this.Scene_Changed;
 			Scene.ComponentAdded -= this.Scene_Changed;
 			Scene.ComponentRemoving -= this.Scene_Changed;
 

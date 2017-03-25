@@ -825,6 +825,7 @@ namespace Duality
 			ObjectCreator.ClearTypeCache();
 			ReflectionHelper.ClearTypeCache();
 			Component.RequireMap.ClearTypeCache();
+			Component.ExecOrder.ClearTypeCache();
 			Serializer.ClearTypeCache();
 			CloneProvider.ClearTypeCache();
 

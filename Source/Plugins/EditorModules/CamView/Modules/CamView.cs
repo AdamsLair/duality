@@ -437,7 +437,7 @@ namespace Duality.Editor.Plugins.CamView
 			DualityEditorApp.UpdatingEngine			+= this.DualityEditorApp_UpdatingEngine;
 			Scene.Entered							+= this.Scene_Entered;
 			Scene.Leaving							+= this.Scene_Leaving;
-			Scene.GameObjectRemoved					+= this.Scene_GameObjectUnregistered;
+			Scene.GameObjectsRemoved				+= this.Scene_GameObjectsUnregistered;
 			Scene.ComponentRemoving					+= this.Scene_ComponentRemoving;
 
 			this.DockPanel.ActiveContentChanged		+= this.DockPanel_ActiveContentChanged;
@@ -452,7 +452,7 @@ namespace Duality.Editor.Plugins.CamView
 			DualityEditorApp.UpdatingEngine			-= this.DualityEditorApp_UpdatingEngine;
 			Scene.Entered							-= this.Scene_Entered;
 			Scene.Leaving							-= this.Scene_Leaving;
-			Scene.GameObjectRemoved					-= this.Scene_GameObjectUnregistered;
+			Scene.GameObjectsRemoved				-= this.Scene_GameObjectsUnregistered;
 			Scene.ComponentRemoving					-= this.Scene_ComponentRemoving;
 
 			this.DockPanel.ActiveContentChanged		-= this.DockPanel_ActiveContentChanged;
@@ -1401,9 +1401,10 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			if (this.camComp == e.Component) this.SetCurrentCamera(null);
 		}
-		private void Scene_GameObjectUnregistered(object sender, GameObjectEventArgs e)
+		private void Scene_GameObjectsUnregistered(object sender, GameObjectGroupEventArgs e)
 		{
-			if (this.camObj == e.Object) this.SetCurrentCamera(null);
+			if (e.Objects.Contains(this.camObj))
+				this.SetCurrentCamera(null);
 		}
 		
 		private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
