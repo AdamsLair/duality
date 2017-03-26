@@ -381,10 +381,7 @@ namespace Duality.Tests.Components
 			
 			// Check iteration order
 			List<TestComponent> iterateOrder = new List<TestComponent>();
-			root.IterateComponents<TestComponent>(component => 
-			{
-				iterateOrder.Add(component);
-			});
+			root.GetComponents(iterateOrder);
 			this.AssertComponentOrder(iterateOrder, 5, Component.ExecOrder, false);
 		}
 		[Test] public void EnforceOrderGameObjectIterateLoadedScene()
@@ -414,10 +411,7 @@ namespace Duality.Tests.Components
 			
 			// Check iteration order
 			List<TestComponent> iterateOrder = new List<TestComponent>();
-			root.IterateComponents<TestComponent>(component => 
-			{
-				iterateOrder.Add(component);
-			});
+			root.GetComponents(iterateOrder);
 			this.AssertComponentOrder(iterateOrder, 5, Component.ExecOrder, false);
 		}
 		[Test] public void EnforceOrderGameObjectIterateLoadedPrefab()
@@ -447,10 +441,7 @@ namespace Duality.Tests.Components
 			
 			// Check iteration order
 			List<TestComponent> iterateOrder = new List<TestComponent>();
-			root.IterateComponents<TestComponent>(component => 
-			{
-				iterateOrder.Add(component);
-			});
+			root.GetComponents(iterateOrder);
 			this.AssertComponentOrder(iterateOrder, 5, Component.ExecOrder, false);
 		}
 

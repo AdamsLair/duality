@@ -70,6 +70,7 @@ namespace Duality.Components.Physics
 		[DontSerialize] private bool      isProcessingEvents    = false;
 		[DontSerialize] private Body      body                  = null;
 		[DontSerialize] private List<ColEvent> eventBuffer      = new List<ColEvent>();
+		[DontSerialize] private List<ICmpCollisionListener> cachedListeners = new List<ICmpCollisionListener>();
 
 
 		internal Body PhysicsBody
@@ -1016,7 +1017,11 @@ namespace Duality.Components.Physics
 			if (this.isProcessingEvents) return;
 			this.isProcessingEvents = true;
 			{
-				// Don't use foreach here in case someone decides to add something at the end while iterating..
+				// Retrieve a list of event listeners to deliver to
+				this.cachedListeners.Clear();
+				this.gameobj.GetComponents(this.cachedListeners);
+
+				// Don't use foreach here in case someone decides to add something at the end while iterating.
 				for (int i = 0; i < this.eventBuffer.Count; i++)
 				{
 					this.ProcessSingleCollisionEvent(this.eventBuffer[i]);
@@ -1039,32 +1044,20 @@ namespace Duality.Components.Physics
 				colEvent.Data,
 				colEvent.FixtureA.UserData as ShapeInfo,
 				colEvent.FixtureB.UserData as ShapeInfo);
+			
+			for (int i = 0; i < this.cachedListeners.Count; i++)
+			{
+				ICmpCollisionListener listener = this.cachedListeners[i];
+				if (!(listener as Component).ActiveSingle) continue;
+				listener.OnCollisionBegin(this, args);
 
-			if (colEvent.Type == ColEvent.EventType.Collision)
-				this.NotifyCollisionBegin(args);
-			else if (colEvent.Type == ColEvent.EventType.Separation)
-				this.NotifyCollisionEnd(args);
-			else if (colEvent.Type == ColEvent.EventType.PostSolve)
-				this.NotifyCollisionSolve(args);
-		}
-		
-		private void NotifyCollisionBegin(CollisionEventArgs args)
-		{
-			this.gameobj.IterateComponents<ICmpCollisionListener>(
-				l => l.OnCollisionBegin(this, args), 
-				l => (l as Component).Active);
-		}
-		private void NotifyCollisionEnd(CollisionEventArgs args)
-		{
-			this.gameobj.IterateComponents<ICmpCollisionListener>(
-				l => l.OnCollisionEnd(this, args), 
-				l => (l as Component).Active);
-		}
-		private void NotifyCollisionSolve(CollisionEventArgs args)
-		{
-			this.gameobj.IterateComponents<ICmpCollisionListener>(
-				l => l.OnCollisionSolve(this, args), 
-				l => (l as Component).Active);
+				if (colEvent.Type == ColEvent.EventType.Collision)
+					listener.OnCollisionBegin(this, args);
+				else if (colEvent.Type == ColEvent.EventType.Separation)
+					listener.OnCollisionEnd(this, args);
+				else if (colEvent.Type == ColEvent.EventType.PostSolve)
+					listener.OnCollisionSolve(this, args);
+			}
 		}
 
 		void ICmpUpdatable.OnUpdate()

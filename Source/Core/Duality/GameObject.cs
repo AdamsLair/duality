@@ -787,25 +787,6 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Iterates over all Components that are instances of Type T. Unlike iterating manually over <see cref="GetComponents{T}"/>,
-		/// this method allows the underlying collection to change while iterating, making it a good candidate for ICmp notify operations.
-		/// </summary>
-		/// <typeparam name="T">The base Type of Components that are iterated. May be an ICmp interface or similar.</typeparam>
-		/// <param name="forEach">The operation that is performed on each Component.</param>
-		/// <param name="where">An optional predicate that needs to return true in order to perform the operation.</param>
-		public void IterateComponents<T>(Action<T> forEach, Predicate<T> where = null) where T : class
-		{
-			Component[] iterateList = this.compList.ToArray();
-			for (int i = 0; i < iterateList.Length; i++)
-			{
-				// Perform operation on elements matching predicate and Type
-				T cmp = iterateList[i] as T;
-				if (cmp != null && (where == null || where(cmp)))
-					forEach(cmp);
-			}
-		}
-
-		/// <summary>
 		/// Disposes this GameObject as well as all of its child GameObjects and <see cref="Component">Components</see>.
 		/// You usually don't need this - use <see cref="ExtMethodsIManageableObject.DisposeLater"/> instead.
 		/// </summary>

@@ -506,24 +506,35 @@ namespace Duality
 				if (!freezeScene)	Scene.Current.Update();
 				else				Scene.Current.EditorUpdate();
 
+				List<ICmpUpdatable> updatables = new List<ICmpUpdatable>();
 				foreach (GameObject obj in updateObjects)
 				{
 					if (!freezeScene && obj.ParentScene == Scene.Current)
 						continue;
 					
-					obj.IterateComponents<ICmpUpdatable>(
-						l => l.OnUpdate(),
-						l => (l as Component).Active);
+					updatables.Clear();
+					obj.GetComponents(updatables);
+					for (int i = 0; i < updatables.Count; i++)
+					{
+						if (!(updatables[i] as Component).Active) continue;
+						updatables[i].OnUpdate();
+					}
 				}
 			}
 			else if (execContext == ExecutionContext.Editor)
 			{
 				Scene.Current.EditorUpdate();
+
+				List<ICmpUpdatable> updatables = new List<ICmpUpdatable>();
 				foreach (GameObject obj in updateObjects)
 				{
-					obj.IterateComponents<ICmpUpdatable>(
-						l => l.OnUpdate(),
-						l => (l as Component).Active);
+					updatables.Clear();
+					obj.GetComponents(updatables);
+					for (int i = 0; i < updatables.Count; i++)
+					{
+						if (!(updatables[i] as Component).Active) continue;
+						updatables[i].OnUpdate();
+					}
 				}
 			}
 			sound.Update();
