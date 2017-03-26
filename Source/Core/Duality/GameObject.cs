@@ -499,9 +499,11 @@ namespace Duality
 		/// <typeparam name="T">The base Type to match when iterating through the Components.</typeparam>
 		/// <returns>An enumeration of all Components that match the specified conditions.</returns>
 		/// <seealso cref="GetComponents(System.Type)"/>
-		public IEnumerable<T> GetComponents<T>() where T : class
+		public List<T> GetComponents<T>() where T : class
 		{
-			return this.compList.OfType<T>();
+			List<T> result = new List<T>(this.compList.Count);
+			this.GetComponents<T>(result);
+			return result;
 		}
 		/// <summary>
 		/// Enumerates all <see cref="Component"/>s of this object's child GameObjects that match the specified <see cref="Type"/> or subclass it.
@@ -509,9 +511,9 @@ namespace Duality
 		/// <typeparam name="T">The base Type to match when iterating through the Components.</typeparam>
 		/// <returns>An enumeration of all Components that match the specified conditions.</returns>
 		/// <seealso cref="GetComponentsInChildren(System.Type)"/>
-		public IEnumerable<T> GetComponentsInChildren<T>() where T : class
+		public List<T> GetComponentsInChildren<T>() where T : class
 		{
-			if (this.children == null) return new T[0];
+			if (this.children == null) return new List<T>();
 
 			int startCapacity = Math.Max(this.children.Count * 2, 8);
 			List<T> result = new List<T>(startCapacity);
@@ -524,10 +526,10 @@ namespace Duality
 		/// <typeparam name="T">The base Type to match when iterating through the Components.</typeparam>
 		/// <returns>An enumeration of all Components that match the specified conditions.</returns>
 		/// <seealso cref="GetComponentsDeep(System.Type)"/>
-		public IEnumerable<T> GetComponentsDeep<T>() where T : class
+		public List<T> GetComponentsDeep<T>() where T : class
 		{
 			List<T> result = new List<T>(8);
-			this.GetComponentsInChildren<T>(result);
+			this.GetComponentsDeep<T>(result);
 			return result;
 		}
 		
@@ -600,10 +602,11 @@ namespace Duality
 		/// <param name="t">The base Type to match when iterating through the Components.</param>
 		/// <returns>An enumeration of all Components that match the specified conditions.</returns>
 		/// <seealso cref="GetComponents{T}()"/>
-		public IEnumerable<Component> GetComponents(Type t)
+		public List<Component> GetComponents(Type t)
 		{
-			TypeInfo typeInfo = t.GetTypeInfo();
-			return this.compList.Where(c => typeInfo.IsInstanceOfType(c));
+			List<Component> result = new List<Component>(this.compList.Count);
+			this.GetComponents(t, result);
+			return result;
 		}
 		/// <summary>
 		/// Enumerates all <see cref="Component"/>s of this object's child GameObjects that match the specified <see cref="Type"/> or subclass it.
@@ -611,9 +614,9 @@ namespace Duality
 		/// <param name="t">The base Type to match when iterating through the Components.</param>
 		/// <returns>An enumeration of all Components that match the specified conditions.</returns>
 		/// <seealso cref="GetComponentsInChildren{T}()"/>
-		public IEnumerable<Component> GetComponentsInChildren(Type t)
+		public List<Component> GetComponentsInChildren(Type t)
 		{
-			if (this.children == null) return new Component[0];
+			if (this.children == null) return new List<Component>();
 
 			int startCapacity = Math.Max(this.children.Count * 2, 8);
 			List<Component> result = new List<Component>(startCapacity);
@@ -626,7 +629,7 @@ namespace Duality
 		/// <param name="t">The base Type to match when iterating through the Components.</param>
 		/// <returns>An enumeration of all Components that match the specified conditions.</returns>
 		/// <seealso cref="GetComponentsDeep{T}()"/>
-		public IEnumerable<Component> GetComponentsDeep(Type t)
+		public List<Component> GetComponentsDeep(Type t)
 		{
 			List<Component> result = new List<Component>(8);
 			this.GetComponentsDeep(t, result);
