@@ -1113,7 +1113,7 @@ namespace Duality.Editor.Plugins.ProjectView
 
 						UndoRedoManager.BeginMacro();
 						// Prevent recursion
-						UndoRedoManager.Do(new BreakPrefabLinkAction(draggedObj.ChildrenDeep.Where(c => c.PrefabLink != null && c.PrefabLink.Prefab == prefab)));
+						UndoRedoManager.Do(new BreakPrefabLinkAction(draggedObj.GetChildrenDeep().Where(c => c.PrefabLink != null && c.PrefabLink.Prefab == prefab)));
 						// Inject GameObject to Prefab & Establish PrefabLink
 						UndoRedoManager.Do(new ApplyToPrefabAction(draggedObj, prefab));
 						UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromLast);

@@ -285,7 +285,7 @@ namespace Duality.Tests.Resources
 		{
 			if (a.Name != b.Name) return false;
 			if (a.ActiveSingle != b.ActiveSingle) return false;
-			if (a.Children.Count() != b.Children.Count()) return false;
+			if (a.Children.Count != b.Children.Count) return false;
 			if (a.GetComponents<Component>().Count() != b.GetComponents<Component>().Count()) return false;
 
 			foreach (Component ca in a.GetComponents<Component>())
@@ -295,10 +295,10 @@ namespace Duality.Tests.Resources
 				if (!this.CheckEquality(ca, cb)) return false;
 			}
 
-			for (int i = 0; i < a.Children.Count(); i++)
+			for (int i = 0; i < a.Children.Count; i++)
 			{
-				GameObject ca = a.ChildAtIndex(i);
-				GameObject cb = b.ChildAtIndex(i);
+				GameObject ca = a.Children[i];
+				GameObject cb = b.Children[i];
 				if (!this.CheckEquality(ca, cb)) return false;
 			}
 

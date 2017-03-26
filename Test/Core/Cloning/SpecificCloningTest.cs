@@ -350,7 +350,7 @@ namespace Duality.Tests.Cloning
 
 			// Clone the object hierarchy
 			GameObject targetA = sourceA.DeepClone();
-			GameObject targetB = targetA.ChildAtIndex(0);
+			GameObject targetB = targetA.Children[0];
 			RigidBody targetBodyA = targetA.GetComponent<RigidBody>();
 			RigidBody targetBodyB = targetB.GetComponent<RigidBody>();
 

@@ -92,7 +92,7 @@ namespace Duality.Resources
 				this.objTree.BreakPrefabLink();
 
 				// Prevent recursion
-				foreach (GameObject child in this.objTree.ChildrenDeep)
+				foreach (GameObject child in this.objTree.GetChildrenDeep())
 				{
 					if (child.PrefabLink != null && child.PrefabLink.Prefab == this)
 					{
@@ -387,7 +387,7 @@ namespace Duality.Resources
 			// Lower prefab links later
 			if (deep)
 			{
-				foreach (GameObject child in this.obj.ChildrenDeep.ToArray())
+				foreach (GameObject child in this.obj.GetChildrenDeep())
 				{
 					if (child.PrefabLink != null && child.PrefabLink.ParentLink == this)
 						child.PrefabLink.Apply(true);

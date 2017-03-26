@@ -17,7 +17,12 @@ namespace Duality
 		/// <returns></returns>
 		public static IEnumerable<GameObject> Children(this IEnumerable<GameObject> objEnum)
 		{
-			return objEnum.SelectMany(o => o.Children);
+			List<GameObject> result = new List<GameObject>();
+			foreach (GameObject obj in objEnum)
+			{
+				result.AddRange(obj.Children);
+			}
+			return result;
 		}
 		/// <summary>
 		/// Enumerates the <see cref="Duality.GameObject">GameObjects</see> children, grandchildren, etc.
@@ -26,7 +31,12 @@ namespace Duality
 		/// <returns></returns>
 		public static IEnumerable<GameObject> ChildrenDeep(this IEnumerable<GameObject> objEnum)
 		{
-			return objEnum.SelectMany(o => o.ChildrenDeep);
+			List<GameObject> result = new List<GameObject>();
+			foreach (GameObject obj in objEnum)
+			{
+				obj.GetChildrenDeep(result);
+			}
+			return result;
 		}
 		/// <summary>
 		/// Enumerates all <see cref="Duality.GameObject">GameObjects</see> that match the specified name.

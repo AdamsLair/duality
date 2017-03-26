@@ -180,28 +180,9 @@ namespace Duality
 		/// <summary>
 		/// [GET] Enumerates this objects child GameObjects.
 		/// </summary>
-		public IEnumerable<GameObject> Children
+		public IReadOnlyList<GameObject> Children
 		{
-			get { return this.children ?? EmptyChildren as IEnumerable<GameObject>; }
-		}
-		/// <summary>
-		/// [GET] Enumerates all GameObjects that are directly or indirectly parented to this object, i.e. its
-		/// children, grandchildren, etc.
-		/// </summary>
-		public IEnumerable<GameObject> ChildrenDeep
-		{
-			get
-			{
-				if (this.children == null) yield break;
-				foreach (GameObject c in this.children)
-				{
-					yield return c;
-					foreach (GameObject cc in c.ChildrenDeep)
-					{
-						yield return cc;
-					}
-				}
-			}
+			get { return this.children ?? EmptyChildren as IReadOnlyList<GameObject>; }
 		}
 		/// <summary>
 		/// [GET] The <see cref="Duality.Resources.PrefabLink"/> that connects this object to a <see cref="Duality.Resources.Prefab"/>.
@@ -330,7 +311,7 @@ namespace Duality
 				{
 					this.prefabLink = new PrefabLink(this, prefab);
 					// If a nested object is already PrefabLink'ed, add it to the changelist
-					foreach (GameObject child in this.ChildrenDeep)
+					foreach (GameObject child in this.GetChildrenDeep())
 					{
 						if (child.PrefabLink != null && child.PrefabLink.ParentLink == this.prefabLink)
 						{
@@ -357,6 +338,33 @@ namespace Duality
 		}
 		
 		/// <summary>
+		/// Enumerates all GameObjects that are directly or indirectly parented to this object, i.e. its
+		/// children, grandchildren, etc.
+		/// </summary>
+		public IEnumerable<GameObject> GetChildrenDeep()
+		{
+			if (this.children == null) return EmptyChildren;
+
+			int startCapacity = Math.Max(this.children.Count * 2, 8);
+			List<GameObject> result = new List<GameObject>(startCapacity);
+			this.GetChildrenDeep(result);
+			return result;
+		}
+		/// <summary>
+		/// Gathers all GameObjects that are directly or indirectly parented to this object, i.e. its
+		/// children, grandchildren, etc.
+		/// </summary>
+		public void GetChildrenDeep(List<GameObject> resultList)
+		{
+			if (this.children == null) return;
+			resultList.AddRange(this.children);
+			for (int i = 0; i < this.children.Count; i++)
+			{
+				this.children[i].GetChildrenDeep(resultList);
+			}
+		}
+
+		/// <summary>
 		/// Returns the first child GameObject with the specified name. You may also specify a full name to access children's children.
 		/// </summary>
 		/// <param name="name"></param>
@@ -367,17 +375,7 @@ namespace Duality
 			return this.children.FirstByName(name);
 		}
 		/// <summary>
-		/// Returns the child GameObject that is internally stored at the specified index.
-		/// </summary>
-		/// <param name="index">The index at which the desired GameObject is located.</param>
-		/// <returns>The child GameObject at the specified index. Null, if the index is not valid.</returns>
-		public GameObject ChildAtIndex(int index)
-		{
-			if (this.children == null || index < 0 || index >= this.children.Count) return null;
-			return this.children[index];
-		}
-		/// <summary>
-		/// Executes a series of <see cref="ChildAtIndex"/> calls, beginning at this GameObject and 
+		/// Executes a series of child indexing operations, beginning at this GameObject and 
 		/// each on the last retrieved child object.
 		/// </summary>
 		/// <param name="indexPath">An enumeration of child indices.</param>
@@ -390,20 +388,11 @@ namespace Duality
 			GameObject curObj = this;
 			foreach (int i in indexPath)
 			{
-				curObj = curObj.ChildAtIndex(i);
-				if (curObj == null) return null;
+				if (i < 0) return null;
+				if (i >= curObj.children.Count) return null;
+				curObj = curObj.children[i];
 			}
 			return curObj;
-		}
-		/// <summary>
-		/// Determines the index of a specific child GameObject.
-		/// </summary>
-		/// <param name="child">The child GameObject of which the index is to be determined.</param>
-		/// <returns>The index of the specified child GameObject</returns>
-		/// <seealso cref="ChildAtIndex"/>
-		public int IndexOfChild(GameObject child)
-		{
-			return this.children != null ? this.children.IndexOf(child) : -1;
 		}
 		/// <summary>
 		/// Determines the index path from this GameObject to the specified child (or grandchild, etc.) of it.
