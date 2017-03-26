@@ -176,7 +176,8 @@ namespace Duality.Tests.Cloning
 			GameObject source = new GameObject("ObjectA");
 			source.AddComponent(new TestComponent(rnd));
 			GameObject target = new GameObject("ObjectB");
-			TestComponent targetComponent = target.AddComponent(new TestComponent(rnd));
+			TestComponent targetComponent = new TestComponent(rnd);
+			target.AddComponent(targetComponent);
 
 			source.DeepCopyTo(target);
 			

@@ -178,11 +178,18 @@ namespace Duality
 			internal set { this.identifier = value; }
 		}
 		/// <summary>
-		/// [GET] Enumerates this objects child GameObjects.
+		/// [GET] A list of all (direct) child objects of this <see cref="GameObject"/>.
 		/// </summary>
 		public IReadOnlyList<GameObject> Children
 		{
 			get { return this.children ?? EmptyChildren as IReadOnlyList<GameObject>; }
+		}
+		/// <summary>
+		/// [GET] A list of all components that belong to this <see cref="GameObject"/>.
+		/// </summary>
+		public IReadOnlyList<Component> Components
+		{
+			get { return this.compList; }
 		}
 		/// <summary>
 		/// [GET] The <see cref="Duality.Resources.PrefabLink"/> that connects this object to a <see cref="Duality.Resources.Prefab"/>.
@@ -434,10 +441,57 @@ namespace Duality
 		public T GetComponent<T>() where T : class
 		{
 			Component result;
-			if (!this.compMap.TryGetValue(typeof(T), out result))
-				return this.GetComponents<T>().FirstOrDefault();
-			else
+			if (this.compMap.TryGetValue(typeof(T), out result))
+			{
 				return result as T;
+			}
+			else
+			{
+				for (int i = 0; i < this.compList.Count; i++)
+				{
+					T match = this.compList[i] as T;
+					if (match != null)
+						return match;
+				}
+				return null;
+			}
+		}
+		/// <summary>
+		/// Gathers all <see cref="Component"/>s of this GameObject that match the specified <see cref="Type"/> or subclass it.
+		/// </summary>
+		/// <typeparam name="T">The base Type to match when iterating through the Components.</typeparam>
+		/// <param name="resultList"></param>
+		public void GetComponents<T>(List<T> resultList) where T : class
+		{
+			for (int i = 0; i < this.compList.Count; i++)
+			{
+				T match = this.compList[i] as T;
+				if (match != null)
+					resultList.Add(match);
+			}
+		}
+		/// <summary>
+		/// Gathers all <see cref="Component"/>s of this object's child GameObjects that match the specified <see cref="Type"/> or subclass it.
+		/// </summary>
+		/// <typeparam name="T">The base Type to match when iterating through the Components.</typeparam>
+		/// <param name="resultList"></param>
+		public void GetComponentsInChildren<T>(List<T> resultList) where T : class
+		{
+			if (this.children == null) return;
+			for (int i = 0; i < this.children.Count; i++)
+			{
+				this.children[i].GetComponentsDeep<T>(resultList);
+			}
+		}
+		/// <summary>
+		/// Gathers all <see cref="Component"/>s of this GameObject or any child GameObject that match the specified <see cref="Type"/> or subclass it.
+		/// </summary>
+		/// <typeparam name="T">The base Type to match when iterating through the Components.</typeparam>
+		/// <param name="resultList"></param>
+		public void GetComponentsDeep<T>(List<T> resultList) where T : class
+		{
+			this.GetComponents<T>(resultList);
+			this.GetComponentsInChildren<T>(resultList);
 		}
 		/// <summary>
 		/// Enumerates all <see cref="Component"/>s of this GameObject that match the specified <see cref="Type"/> or subclass it.
@@ -458,7 +512,11 @@ namespace Duality
 		public IEnumerable<T> GetComponentsInChildren<T>() where T : class
 		{
 			if (this.children == null) return new T[0];
-			return this.children.SelectMany(o => o.GetComponentsDeep<T>());
+
+			int startCapacity = Math.Max(this.children.Count * 2, 8);
+			List<T> result = new List<T>(startCapacity);
+			this.GetComponentsInChildren<T>(result);
+			return result;
 		}
 		/// <summary>
 		/// Enumerates all <see cref="Component"/>s of this GameObject or any child GameObject that match the specified <see cref="Type"/> or subclass it.
@@ -468,9 +526,74 @@ namespace Duality
 		/// <seealso cref="GetComponentsDeep(System.Type)"/>
 		public IEnumerable<T> GetComponentsDeep<T>() where T : class
 		{
-			return this.GetComponents<T>().Concat(this.GetComponentsInChildren<T>());
+			List<T> result = new List<T>(8);
+			this.GetComponentsInChildren<T>(result);
+			return result;
 		}
-
+		
+		/// <summary>
+		/// Returns a single <see cref="Component"/> that matches the specified <see cref="System.Type"/>.
+		/// </summary>
+		/// <param name="t">The Type to match the Components with.</param>
+		/// <returns>A single Component that matches the specified Type. Null, if none was found.</returns>
+		/// <seealso cref="GetComponent{T}()"/>
+		public Component GetComponent(Type t)
+		{
+			Component result;
+			if (this.compMap.TryGetValue(t, out result))
+			{
+				return result;
+			}
+			else
+			{
+				TypeInfo typeInfo = t.GetTypeInfo();
+				for (int i = 0; i < this.compList.Count; i++)
+				{
+					Component component = this.compList[i];
+					if (typeInfo.IsInstanceOfType(component))
+						return component;
+				}
+				return null;
+			}
+		}
+		/// <summary>
+		/// Gathers all <see cref="Component"/>s of this GameObject that match the specified <see cref="Type"/> or subclass it.
+		/// </summary>
+		/// <param name="t">The Type to match the Components with.</param>
+		/// <param name="resultList"></param>
+		public void GetComponents(Type t, List<Component> resultList)
+		{
+			TypeInfo typeInfo = t.GetTypeInfo();
+			for (int i = 0; i < this.compList.Count; i++)
+			{
+				Component component = this.compList[i];
+				if (typeInfo.IsInstanceOfType(component))
+					resultList.Add(component);
+			}
+		}
+		/// <summary>
+		/// Gathers all <see cref="Component"/>s of this object's child GameObjects that match the specified <see cref="Type"/> or subclass it.
+		/// </summary>
+		/// <param name="t">The Type to match the Components with.</param>
+		/// <param name="resultList"></param>
+		public void GetComponentsInChildren(Type t, List<Component> resultList)
+		{
+			if (this.children == null) return;
+			for (int i = 0; i < this.children.Count; i++)
+			{
+				this.children[i].GetComponentsDeep(t, resultList);
+			}
+		}
+		/// <summary>
+		/// Gathers all <see cref="Component"/>s of this GameObject or any child GameObject that match the specified <see cref="Type"/> or subclass it.
+		/// </summary>
+		/// <param name="t">The Type to match the Components with.</param>
+		/// <param name="resultList"></param>
+		public void GetComponentsDeep(Type t, List<Component> resultList)
+		{
+			this.GetComponents(t, resultList);
+			this.GetComponentsInChildren(t, resultList);
+		}
 		/// <summary>
 		/// Enumerates all <see cref="Component"/>s of this GameObject that match the specified <see cref="Type"/> or subclass it.
 		/// </summary>
@@ -491,7 +614,11 @@ namespace Duality
 		public IEnumerable<Component> GetComponentsInChildren(Type t)
 		{
 			if (this.children == null) return new Component[0];
-			return this.children.SelectMany(o => o.GetComponentsDeep(t));
+
+			int startCapacity = Math.Max(this.children.Count * 2, 8);
+			List<Component> result = new List<Component>(startCapacity);
+			this.GetComponentsInChildren(t, result);
+			return result;
 		}
 		/// <summary>
 		/// Enumerates all <see cref="Component"/>s of this GameObject or any child GameObject that match the specified <see cref="Type"/> or subclass it.
@@ -501,21 +628,9 @@ namespace Duality
 		/// <seealso cref="GetComponentsDeep{T}()"/>
 		public IEnumerable<Component> GetComponentsDeep(Type t)
 		{
-			return this.GetComponents(t).Concat(this.GetComponentsInChildren(t));
-		}
-		/// <summary>
-		/// Returns a single <see cref="Component"/> that matches the specified <see cref="System.Type"/>.
-		/// </summary>
-		/// <param name="t">The Type to match the Components with.</param>
-		/// <returns>A single Component that matches the specified Type. Null, if none was found.</returns>
-		/// <seealso cref="GetComponent{T}()"/>
-		public Component GetComponent(Type t)
-		{
-			Component result;
-			if (!this.compMap.TryGetValue(t, out result))
-				return this.GetComponents(t).FirstOrDefault();
-			else
-				return result;
+			List<Component> result = new List<Component>(8);
+			this.GetComponentsDeep(t, result);
+			return result;
 		}
 
 		/// <summary>
@@ -527,9 +642,13 @@ namespace Duality
 		/// <seealso cref="AddComponent(System.Type)"/>
 		public T AddComponent<T>() where T : Component, new()
 		{
-			if (this.compMap.ContainsKey(typeof(T))) return this.compMap[typeof(T)] as T;
+			Component existing;
+			if (this.compMap.TryGetValue(typeof(T), out existing))
+				return existing as T;
+
 			T newComp = new T();
-			return this.AddComponent<T>(newComp);
+			this.AddComponent(newComp, typeof(T));
+			return newComp;
 		}
 		/// <summary>
 		/// Adds a <see cref="Component"/> of the specified <see cref="System.Type"/> to this GameObject, if not existing yet.
@@ -548,34 +667,30 @@ namespace Duality
 
 			Component newComp = type.GetTypeInfo().CreateInstanceOf() as Component;
 			this.AddComponent(newComp, type);
-
 			return newComp;
 		}
 		/// <summary>
 		/// Adds the specified <see cref="Component"/> to this GameObject, if no Component of that Type is already part of this GameObject.
 		/// Simply uses the already added Component otherwise.
 		/// </summary>
-		/// <typeparam name="T">The Components Type.</typeparam>
 		/// <param name="newComp">The Component instance to add to this GameObject.</param>
 		/// <returns>A reference to a Component of the specified Type</returns>
 		/// <exception cref="System.ArgumentException">Thrown if the specified Component is already attached to a GameObject</exception>
-		public T AddComponent<T>(T newComp) where T : Component
+		public void AddComponent(Component newComp)
 		{
-			if (newComp.gameobj != null) throw new ArgumentException(String.Format(
-				"Specified Component '{0}' is already part of another GameObject '{1}'",
-				LogFormat.Type(newComp.GetType()),
-				newComp.gameobj.FullName));
-			
 			Type type = newComp.GetType();
-			Component existing;
-			if (this.compMap.TryGetValue(type, out existing))
-			{
-				return existing as T;
-			}
+
+			// Consistency checks. Don't fail silently when we can't do what was intended.
+			if (newComp.gameobj != null) throw new ArgumentException(string.Format(
+				"Specified Component '{0}' is already part of another GameObject '{1}'",
+				LogFormat.Type(type),
+				newComp.gameobj.FullName));
+			if (this.compMap.ContainsKey(type)) throw new InvalidOperationException(string.Format(
+				"GameObject '{0}' already has a Component of type '{1}'.", 
+				this, 
+				LogFormat.Type(type)));
 
 			this.AddComponent(newComp, type);
-
-			return newComp;
 		}
 		private void AddComponent(Component newComp, Type type)
 		{
@@ -623,7 +738,7 @@ namespace Duality
 		public Component RemoveComponent(Type t)
 		{
 			Component cmp = this.GetComponent(t);
-			if (cmp != null) this.RemoveComponent(cmp);
+			if (cmp != null) this.RemoveComponent(cmp, cmp.GetType());
 			return cmp;
 		}
 		/// <summary>
@@ -639,9 +754,14 @@ namespace Duality
 			if (cmp == null) throw new ArgumentNullException("cmp", "Can't remove a null reference Component");
 			if (cmp.gameobj != this) throw new ArgumentException("The specified Component does not belong to this GameObject", "cmp");
 
+			Type type = cmp.GetType();
+			this.RemoveComponent(cmp, type);
+		}
+		private void RemoveComponent(Component cmp, Type type)
+		{
 			this.OnComponentRemoving(cmp);
 
-			this.compMap.Remove(cmp.GetType());
+			this.compMap.Remove(type);
 			this.compList.Remove(cmp);
 
 			if (cmp is Components.Transform) this.compTransform = null;
@@ -679,26 +799,6 @@ namespace Duality
 				T cmp = iterateList[i] as T;
 				if (cmp != null && (where == null || where(cmp)))
 					forEach(cmp);
-			}
-		}
-		/// <summary>
-		/// Iterates over all child GameObjects. Unlike iterating manually over <see cref="Children"/>,
-		/// this method allows the underlying collection to change while iterating, making it a good candidate for notify operations
-		/// that may execute code which adds or removed children.
-		/// </summary>
-		/// <param name="forEach">The operation that is performed on each child object.</param>
-		/// <param name="where">An optional predicate that needs to return true in order to perform the operation.</param>
-		public void IterateChildren(Action<GameObject> forEach, Predicate<GameObject> where = null)
-		{
-			if (this.children == null) return;
-
-			GameObject[] iterateList = this.children.ToArray();
-			for (int i = 0; i < iterateList.Length; i++)
-			{
-				// Perform operation on elements matching the predicate
-				GameObject obj = iterateList[i];
-				if (where == null || where(obj))
-					forEach(obj);
 			}
 		}
 
