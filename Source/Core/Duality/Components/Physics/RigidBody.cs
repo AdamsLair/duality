@@ -1049,7 +1049,6 @@ namespace Duality.Components.Physics
 			{
 				ICmpCollisionListener listener = this.cachedListeners[i];
 				if (!(listener as Component).ActiveSingle) continue;
-				listener.OnCollisionBegin(this, args);
 
 				if (colEvent.Type == ColEvent.EventType.Collision)
 					listener.OnCollisionBegin(this, args);
