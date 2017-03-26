@@ -50,7 +50,7 @@ namespace Duality.Editor.UndoRedoActions
 				PrefabLink link = component.GameObj.AffectedByPrefabLink;
 				if (link != null)
 				{
-					if (link.Prefab.IsAvailable) link.Prefab.Res.CopyTo(link.Obj.IndexPathOfChild(component.GameObj), component);
+					if (link.Prefab.IsAvailable) link.Prefab.Res.CopyTo(link.Obj.GetIndexPathOfChild(component.GameObj), component);
 					link.ClearChanges(component.GameObj, cmpTypeInfo, null);
 					affectedLinks.Add(link);
 				}

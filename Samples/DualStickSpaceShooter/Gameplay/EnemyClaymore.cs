@@ -506,7 +506,7 @@ namespace DualStickSpaceShooter
 			if (context == InitContext.Activate)
 			{
 				// Retrieve eye object references and initialize it
-				GameObject eyeObject = this.GameObj.ChildByName("Eye");
+				GameObject eyeObject = this.GameObj.GetChildByName("Eye");
 				this.eye = eyeObject != null ? eyeObject.GetComponent<SpriteAnimator>() : null;
 				if (this.eye != null)
 				{
@@ -517,10 +517,10 @@ namespace DualStickSpaceShooter
 
 				// Retrieve spike references
 				GameObject[] spikeObj = new GameObject[4];
-				spikeObj[0] = this.GameObj.ChildByName("SpikeTopRight");
-				spikeObj[1] = this.GameObj.ChildByName("SpikeBottomRight");
-				spikeObj[2] = this.GameObj.ChildByName("SpikeBottomLeft");
-				spikeObj[3] = this.GameObj.ChildByName("SpikeTopLeft");
+				spikeObj[0] = this.GameObj.GetChildByName("SpikeTopRight");
+				spikeObj[1] = this.GameObj.GetChildByName("SpikeBottomRight");
+				spikeObj[2] = this.GameObj.GetChildByName("SpikeBottomLeft");
+				spikeObj[3] = this.GameObj.GetChildByName("SpikeTopLeft");
 				this.spikes = new SpriteRenderer[spikeObj.Length];
 				for (int i = 0; i < spikeObj.Length; i++)
 				{

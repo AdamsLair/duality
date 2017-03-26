@@ -151,7 +151,7 @@ namespace Duality.Resources
 		{
 			if (this.objTree == null) return;
 
-			GameObject baseObj = this.objTree.ChildAtIndexPath(baseObjAddress);
+			GameObject baseObj = this.objTree.GetChildAtIndexPath(baseObjAddress);
 			if (baseObj == null) return;
 
 			Component baseCmp = baseObj.GetComponent(target.GetType());
@@ -161,27 +161,27 @@ namespace Duality.Resources
 		}
 
 		/// <summary>
-		/// Returns whether this Prefab contains a <see cref="GameObject"/> with the specified <see cref="GameObject.IndexPathOfChild">index path</see>.
+		/// Returns whether this Prefab contains a <see cref="GameObject"/> with the specified <see cref="GameObject.GetIndexPathOfChild">index path</see>.
 		/// It is based on this Prefabs root GameObject.
 		/// </summary>
-		/// <param name="indexPath">The <see cref="GameObject.IndexPathOfChild">index path</see> at which to search for a GameObject.</param>
+		/// <param name="indexPath">The <see cref="GameObject.GetIndexPathOfChild">index path</see> at which to search for a GameObject.</param>
 		/// <returns>True, if such child GameObjects exists, false if not.</returns>
 		public bool HasGameObject(IEnumerable<int> indexPath)
 		{
-			return this.objTree != null && this.objTree.ChildAtIndexPath(indexPath) != null;
+			return this.objTree != null && this.objTree.GetChildAtIndexPath(indexPath) != null;
 		}
 		/// <summary>
-		/// Returns whether this Prefab contains a <see cref="Component"/> inside a GameObject with the specified <see cref="GameObject.IndexPathOfChild">index path</see>.
+		/// Returns whether this Prefab contains a <see cref="Component"/> inside a GameObject with the specified <see cref="GameObject.GetIndexPathOfChild">index path</see>.
 		/// It is based on this Prefabs root GameObject.
 		/// </summary>
-		/// <param name="gameObjIndexPath">The <see cref="GameObject.IndexPathOfChild">index path</see> at which to search for a GameObject.</param>
+		/// <param name="gameObjIndexPath">The <see cref="GameObject.GetIndexPathOfChild">index path</see> at which to search for a GameObject.</param>
 		/// <param name="cmpType">The Component type to search for inside the found GameObject.</param>
 		/// <returns></returns>
 		public bool HasComponent(IEnumerable<int> gameObjIndexPath, Type cmpType)
 		{
 			if (this.objTree == null) return false;
 
-			GameObject child = this.objTree.ChildAtIndexPath(gameObjIndexPath);
+			GameObject child = this.objTree.GetChildAtIndexPath(gameObjIndexPath);
 			if (child == null) return false;
 			return child.GetComponent(cmpType) != null;
 		}
@@ -319,7 +319,7 @@ namespace Duality.Resources
 		{
 			if (this.changes == null || this.changes.Count == 0) return;
 			if (!other.obj.IsChildOf(this.obj)) return;
-			List<int> childPath = this.obj.IndexPathOfChild(other.obj);
+			List<int> childPath = this.obj.GetIndexPathOfChild(other.obj);
 
 			for (int i = this.changes.Count - 1; i >= 0; i--)
 			{
@@ -327,7 +327,7 @@ namespace Duality.Resources
 				{
 					object target;
 
-					GameObject targetObj = this.obj.ChildAtIndexPath(this.changes[i].childIndex);
+					GameObject targetObj = this.obj.GetChildAtIndexPath(this.changes[i].childIndex);
 					if (this.changes[i].componentType != null)
 						target = targetObj.GetComponent(this.changes[i].componentType);
 					else
@@ -415,7 +415,7 @@ namespace Duality.Resources
 
 			for (int i = 0; i < this.changes.Count; i++)
 			{
-				GameObject targetObj = this.obj.ChildAtIndexPath(this.changes[i].childIndex);
+				GameObject targetObj = this.obj.GetChildAtIndexPath(this.changes[i].childIndex);
 				object target;
 				if (this.changes[i].componentType != null)
 					target = targetObj.GetComponent(this.changes[i].componentType);
@@ -465,7 +465,7 @@ namespace Duality.Resources
 			// Update changelist values from properties
 			for (int i = 0; i < this.changes.Count; i++)
 			{
-				GameObject targetObj = this.obj.ChildAtIndexPath(this.changes[i].childIndex);
+				GameObject targetObj = this.obj.GetChildAtIndexPath(this.changes[i].childIndex);
 				object target;
 				if (this.changes[i].componentType != null)
 					target = targetObj.GetComponent(this.changes[i].componentType);
@@ -502,7 +502,7 @@ namespace Duality.Resources
 				throw new ArgumentException("Target field not assignable from Type " + value.GetType().Name + ".", "value");
 
 			VarMod change;
-			change.childIndex		= this.obj.IndexPathOfChild(targetObj);
+			change.childIndex		= this.obj.GetIndexPathOfChild(targetObj);
 			change.componentType	= (targetComp != null) ? targetComp.GetType() : null;
 			change.prop				= prop;
 			change.val				= value;
@@ -546,7 +546,7 @@ namespace Duality.Resources
 			if (targetObj == null) 
 				throw new ArgumentException("Target object is not a valid child of this PrefabLinks GameObject", "target");
 
-			this.PopChange(this.obj.IndexPathOfChild(targetObj), prop);
+			this.PopChange(this.obj.GetIndexPathOfChild(targetObj), prop);
 		}
 		private void PopChange(IEnumerable<int> indexPath, PropertyInfo prop, Type componentType = null)
 		{
@@ -580,7 +580,7 @@ namespace Duality.Resources
 			if (targetObj == null) 
 				throw new ArgumentException("Target object is not a valid child of this PrefabLinks GameObject", "target");
 
-			List<int> indexPath = this.obj.IndexPathOfChild(targetObj);
+			List<int> indexPath = this.obj.GetIndexPathOfChild(targetObj);
 			for (int i = 0; i < this.changes.Count; i++)
 			{
 				if (this.changes[i].childIndex.SequenceEqual(indexPath) && this.changes[i].prop == prop)
@@ -603,7 +603,7 @@ namespace Duality.Resources
 		{
 			if (this.changes == null || this.changes.Count == 0) return;
 
-			IEnumerable<int> indexPath = targetObj != null ? this.obj.IndexPathOfChild(targetObj) : null;
+			IEnumerable<int> indexPath = targetObj != null ? this.obj.GetIndexPathOfChild(targetObj) : null;
 			for (int i = this.changes.Count - 1; i >= 0; i--)
 			{
 				if (indexPath != null && !this.changes[i].childIndex.SequenceEqual(indexPath)) continue;
@@ -628,7 +628,7 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public bool AffectsObject(Component cmp)
 		{
-			return this.prefab.IsAvailable && this.prefab.Res.HasComponent(this.obj.IndexPathOfChild(cmp.GameObj), cmp.GetType());
+			return this.prefab.IsAvailable && this.prefab.Res.HasComponent(this.obj.GetIndexPathOfChild(cmp.GameObj), cmp.GetType());
 		}
 		/// <summary>
 		/// Returns whether a specific object is affected by this PrefabLink.
@@ -637,7 +637,7 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public bool AffectsObject(GameObject obj)
 		{
-			return this.prefab.IsAvailable && this.prefab.Res.HasGameObject(this.obj.IndexPathOfChild(obj));
+			return this.prefab.IsAvailable && this.prefab.Res.HasGameObject(this.obj.GetIndexPathOfChild(obj));
 		}
 
 		/// <summary>

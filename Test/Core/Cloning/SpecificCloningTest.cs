@@ -307,7 +307,7 @@ namespace Duality.Tests.Cloning
 
 			// Clone the object hierarchy
 			GameObject targetParentObj = sourceParentObj.DeepClone();
-			GameObject targetChildObj = targetParentObj.ChildByName("Child");
+			GameObject targetChildObj = targetParentObj.GetChildByName("Child");
 			Transform targetParentTransform = targetParentObj.Transform;
 			Transform targetChildTransform = targetChildObj.Transform;
 

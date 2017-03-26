@@ -369,7 +369,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public GameObject ChildByName(string name)
+		public GameObject GetChildByName(string name)
 		{
 			if (this.children == null || string.IsNullOrEmpty(name)) return null;
 			return this.children.FirstByName(name);
@@ -383,7 +383,7 @@ namespace Duality
 		/// <example>
 		/// Calling <c>ChildAtIndexPath(new[] { 0, 0 })</c> will return the first child of the first child.
 		/// </example>
-		public GameObject ChildAtIndexPath(IEnumerable<int> indexPath)
+		public GameObject GetChildAtIndexPath(IEnumerable<int> indexPath)
 		{
 			GameObject curObj = this;
 			foreach (int i in indexPath)
@@ -399,8 +399,8 @@ namespace Duality
 		/// </summary>
 		/// <param name="child">The child GameObject to lead to.</param>
 		/// <returns>A <see cref="List{T}"/> of indices that lead from this GameObject to the specified child GameObject.</returns>
-		/// <seealso cref="ChildAtIndexPath"/>
-		public List<int> IndexPathOfChild(GameObject child)
+		/// <seealso cref="GetChildAtIndexPath"/>
+		public List<int> GetIndexPathOfChild(GameObject child)
 		{
 			List<int> path = new List<int>();
 			while (child.parent != null && child != this)
