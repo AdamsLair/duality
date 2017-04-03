@@ -89,11 +89,9 @@ namespace Duality
 		/// Registers a GameObject and all of its children.
 		/// </summary>
 		/// <param name="obj"></param>
-		public bool AddObject(GameObject obj)
+		public void AddObject(GameObject obj)
 		{
 			this.AddObjects(new GameObject[] { obj });
-			// ToDo: Remove the return value in the v3.0 branch
-			return this.allObj.Contains(obj);
 		}
 		/// <summary>
 		/// Registers a set of GameObjects
@@ -112,12 +110,9 @@ namespace Duality
 		/// Unregisters a GameObject and all of its children
 		/// </summary>
 		/// <param name="obj"></param>
-		public bool RemoveObject(GameObject obj)
+		public void RemoveObject(GameObject obj)
 		{
-			// ToDo: Remove the return value in the v3.0 branch
-			bool existedBefore = this.allObj.Contains(obj);
 			this.RemoveObjects(new GameObject[] { obj });
-			return existedBefore;
 		}
 		/// <summary>
 		/// Unregisters a set of GameObjects
