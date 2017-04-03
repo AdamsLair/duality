@@ -102,7 +102,7 @@ namespace Duality.Editor.Plugins.SceneView.TreeModels
 			if (this.customIcon)
 			{
 				Type representant = null;
-				List<Type> availCmpTypes = this.obj.GetComponents<Component>().Where(c => c != ignoreComponent).Select(c => c.GetType()).ToList();
+				List<Type> availCmpTypes = this.obj.Components.Where(c => c != ignoreComponent).Select(c => c.GetType()).ToList();
 
 				if (representant == null)
 				{

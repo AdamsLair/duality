@@ -338,7 +338,7 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			if (obj == null) return null;
 			GameObjectNode thisNode = new GameObjectNode(obj, !this.buttonShowComponents.Checked);
-			foreach (Component c in obj.GetComponents<Component>())
+			foreach (Component c in obj.Components)
 			{
 				ComponentNode compNode = this.ScanComponent(c);
 				if (compNode != null) this.InsertNodeSorted(compNode, thisNode);
@@ -453,7 +453,7 @@ namespace Duality.Editor.Plugins.SceneView
 				if (ignoreGameObjList != null && ignoreGameObjList.Contains(cmpToRemove.GameObj)) continue;
 
 				Component reqComp = null;
-				foreach (Component otherComponent in cmpToRemove.GameObj.GetComponents<Component>())
+				foreach (Component otherComponent in cmpToRemove.GameObj.Components)
 				{
 					if (cmpList.Contains(otherComponent)) continue;
 

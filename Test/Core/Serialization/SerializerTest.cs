@@ -483,7 +483,7 @@ namespace Duality.Tests.Serialization
 			Assert.IsNotNull(readObj);
 			Assert.AreEqual(readObj.Name, "TestObject");
 			Assert.IsNotNull(readObj.GetComponent<Transform>());
-			Assert.AreEqual(1, readObj.GetComponents<Component>().Count());
+			Assert.AreEqual(1, readObj.Components.Count);
 		}
 		[Test] public void DeserializeMismatchedComponentType()
 		{
@@ -523,7 +523,7 @@ namespace Duality.Tests.Serialization
 			Assert.IsNotNull(readObj);
 			Assert.AreEqual(readObj.Name, "TestObject");
 			Assert.IsNotNull(readObj.GetComponent<Transform>());
-			Assert.AreEqual(1, readObj.GetComponents<Component>().Count());
+			Assert.AreEqual(1, readObj.Components.Count);
 		}
 		[Test] public void SaveMultipleResourcesToStream()
 		{

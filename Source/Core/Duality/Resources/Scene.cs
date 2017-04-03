@@ -947,7 +947,7 @@ namespace Duality.Resources
 
 		private void AddToManagers(GameObject obj)
 		{
-			foreach (Component cmp in obj.GetComponents<Component>())
+			foreach (Component cmp in obj.Components)
 				this.AddToManagers(cmp);
 		}
 		private void AddToManagers(Component cmp)
@@ -968,7 +968,7 @@ namespace Duality.Resources
 		}
 		private void RemoveFromManagers(GameObject obj)
 		{
-			foreach (Component cmp in obj.GetComponents<Component>())
+			foreach (Component cmp in obj.Components)
 				this.RemoveFromManagers(cmp);
 		}
 		private void RemoveFromManagers(Component cmp)

@@ -156,7 +156,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			Component removeConflict = null;
 			foreach (Component cmpToRemove in values)
 			{
-				foreach (Component otherComponent in cmpToRemove.GameObj.GetComponents<Component>())
+				foreach (Component otherComponent in cmpToRemove.GameObj.Components)
 				{
 					if (otherComponent == cmpToRemove) continue;
 
