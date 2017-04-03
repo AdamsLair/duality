@@ -59,9 +59,9 @@ namespace Duality.Components.Physics
 		}
 
 
-		protected override Joint CreateJoint(Body bodyA, Body bodyB)
+		protected override Joint CreateJoint(World world, Body bodyA, Body bodyB)
 		{
-			return bodyA != null && bodyB != null ? JointFactory.CreateAngleJoint(Scene.PhysicsWorld, bodyA, bodyB) : null;
+			return bodyA != null && bodyB != null ? JointFactory.CreateAngleJoint(world, bodyA, bodyB) : null;
 		}
 		internal override void UpdateJoint()
 		{

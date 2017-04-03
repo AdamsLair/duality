@@ -35,7 +35,7 @@ namespace Duality.Components.Physics
 		}
 
 
-		protected override Joint CreateJoint(Body bodyA, Body bodyB)
+		protected override Joint CreateJoint(World world, Body bodyA, Body bodyB)
 		{
 			if (bodyA == null || bodyB == null) return null;
 
@@ -51,7 +51,7 @@ namespace Duality.Components.Physics
 			if (jointB.joint == null) jointB.UpdateJoint();
 			if (jointA.joint == null || jointB.joint == null) return null;
 
-			return JointFactory.CreateGearJoint(Scene.PhysicsWorld, jointA.joint, jointB.joint, this.ratio);
+			return JointFactory.CreateGearJoint(world, jointA.joint, jointB.joint, this.ratio);
 		}
 		internal override void UpdateJoint()
 		{

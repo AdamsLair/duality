@@ -138,9 +138,9 @@ namespace Duality.Components.Physics
 		}
 
 
-		protected override Joint CreateJoint(Body bodyA, Body bodyB)
+		protected override Joint CreateJoint(World world, Body bodyA, Body bodyB)
 		{
-			return bodyA != null && bodyB != null ? JointFactory.CreatePrismaticJoint(Scene.PhysicsWorld, bodyA, bodyB, Vector2.Zero, Vector2.UnitX) : null;
+			return bodyA != null && bodyB != null ? JointFactory.CreatePrismaticJoint(world, bodyA, bodyB, Vector2.Zero, Vector2.UnitX) : null;
 		}
 		internal override void UpdateJoint()
 		{

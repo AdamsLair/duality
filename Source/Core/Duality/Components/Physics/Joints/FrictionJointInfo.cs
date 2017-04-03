@@ -58,9 +58,9 @@ namespace Duality.Components.Physics
 		}
 
 
-		protected override Joint CreateJoint(Body bodyA, Body bodyB)
+		protected override Joint CreateJoint(World world, Body bodyA, Body bodyB)
 		{
-			return bodyA != null && bodyB != null ? JointFactory.CreateFrictionJoint(Scene.PhysicsWorld, bodyA, bodyB, Vector2.Zero, Vector2.Zero) : null;
+			return bodyA != null && bodyB != null ? JointFactory.CreateFrictionJoint(world, bodyA, bodyB, Vector2.Zero, Vector2.Zero) : null;
 		}
 		internal override void UpdateJoint()
 		{
