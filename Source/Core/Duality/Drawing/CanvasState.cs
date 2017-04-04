@@ -17,7 +17,7 @@ namespace Duality.Drawing
 		private	BatchInfo			batchInfo;
 		private	ColorRgba			color;
 		private	ContentRef<Font>	font;
-		private	float				zOffset;
+		private	float				depthOffset;
 		private	bool		invariantTextScale;
 		private	float		transformAngle;
 		private	Vector2		transformScale;
@@ -87,12 +87,12 @@ namespace Duality.Drawing
 			set { this.color = value; }
 		}
 		/// <summary>
-		/// [GET / SET] A Z-Offset value that is added to each emitted vertices Z coordinate after all projection calculations have been done.
+		/// [GET / SET] A depth / Z offset value that is added to each emitted vertices Z coordinate after all projection calculations have been done.
 		/// </summary>
-		public float ZOffset
+		public float DepthOffset
 		{
-			get { return this.zOffset; }
-			set { this.zOffset = value; }
+			get { return this.depthOffset; }
+			set { this.depthOffset = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The angle by which all shapes are transformed locally.
@@ -155,7 +155,7 @@ namespace Duality.Drawing
 			target.font					= this.font;
 			target.color				= this.color;
 			target.invariantTextScale	= this.invariantTextScale;
-			target.zOffset				= this.zOffset;
+			target.depthOffset				= this.depthOffset;
 			target.transformAngle		= this.transformAngle;
 			target.transformHandle		= this.transformHandle;
 			target.transformScale		= this.transformScale;
@@ -180,7 +180,7 @@ namespace Duality.Drawing
 			this.font = Font.GenericMonospace10;
 			this.color = ColorRgba.White;
 			this.invariantTextScale = false;
-			this.zOffset = 0.0f;
+			this.depthOffset = 0.0f;
 			this.transformAngle = 0.0f;
 			this.transformHandle = Vector2.Zero;
 			this.transformScale = Vector2.One;
@@ -244,7 +244,7 @@ namespace Duality.Drawing
 				for (int i = 0; i < vertexData.Length; i++)
 				{
 					Vector3 pos = vertexData[i].Pos;
-					pos.Z += this.zOffset;
+					pos.Z += this.depthOffset;
 					vertexData[i].Pos = pos;
 				}
 			}
@@ -263,7 +263,7 @@ namespace Duality.Drawing
 					MathF.TransformDotVec(ref pos, ref this.curTX, ref this.curTY);
 					pos.X += shapeHandle.X;
 					pos.Y += shapeHandle.Y;
-					pos.Z += this.zOffset;
+					pos.Z += this.depthOffset;
 					vertexData[i].Pos = pos;
 				}
 			}
@@ -274,7 +274,7 @@ namespace Duality.Drawing
 			{
 				for (int i = 0; i < vertexData.Length; i++)
 				{
-					vertexData[i].Pos.Z += this.zOffset;
+					vertexData[i].Pos.Z += this.depthOffset;
 				}
 			}
 			else
@@ -290,7 +290,7 @@ namespace Duality.Drawing
 					MathF.TransformDotVec(ref vertexData[i].Pos, ref this.curTX, ref this.curTY);
 					vertexData[i].Pos.X += shapeHandle.X;
 					vertexData[i].Pos.Y += shapeHandle.Y;
-					vertexData[i].Pos.Z += this.zOffset;
+					vertexData[i].Pos.Z += this.depthOffset;
 				}
 			}
 		}

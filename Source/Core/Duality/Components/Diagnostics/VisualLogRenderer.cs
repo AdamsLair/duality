@@ -66,7 +66,7 @@ namespace Duality.Components.Diagnostics
 			{
 				Canvas target = new Canvas(device, this.vertexBufferWorld);
 				target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
-				target.State.ZOffset = -1;
+				target.State.DepthOffset = -1;
 				foreach (VisualLog log in logs)
 				{
 					if (!log.Visible) continue;
@@ -78,7 +78,7 @@ namespace Duality.Components.Diagnostics
 					{
 						if (logEntry.Anchor == VisualLogAnchor.Screen) continue;
 						target.PushState();
-						target.State.ZOffset += logEntry.DepthOffset;
+						target.State.DepthOffset += logEntry.DepthOffset;
 						target.State.ColorTint = new ColorRgba(1.0f, logEntry.LifetimeRatio);
 						if (logEntry.Anchor == VisualLogAnchor.Object && logEntry.AnchorObj != null && logEntry.AnchorObj.Transform != null)
 						{

@@ -1027,7 +1027,7 @@ namespace Duality.Drawing
 					Resources.DrawTechnique.Alpha, 
 					(baseLuminance > 0.5f ? ColorRgba.Black : ColorRgba.White).WithAlpha(baseAlpha * backAlpha)));
 				this.State.ColorTint = ColorRgba.White;
-				this.State.ZOffset += 1;
+				this.State.DepthOffset += 1.0f;
 				this.FillRect(
 					x - padding.X, 
 					y - padding.Y, 

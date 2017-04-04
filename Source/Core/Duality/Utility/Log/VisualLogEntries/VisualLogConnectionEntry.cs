@@ -78,7 +78,7 @@ namespace Duality
 				originPos.X, 
 				originPos.Y, 
 				originPos.Z);
-			if (target.DrawDevice.DepthWrite) target.State.ZOffset -= 0.1f;
+			if (target.DrawDevice.DepthWrite) target.State.DepthOffset -= 0.01f;
 			target.State.ColorTint = outlineColor;
 			target.FillPolygonOutline(
 				connection, 
@@ -88,7 +88,7 @@ namespace Duality
 				originPos.Z);
 
 			// Draw connection points and outline
-			if (target.DrawDevice.DepthWrite) target.State.ZOffset -= 0.1f;
+			if (target.DrawDevice.DepthWrite) target.State.DepthOffset -= 0.01f;
 			target.State.ColorTint = areaColor;
 			target.FillCircle(
 				originPos.X, 
@@ -100,7 +100,7 @@ namespace Duality
 				targetPos.Y, 
 				targetPos.Z, 
 				originRadius - borderRadius * 0.5f);
-			if (target.DrawDevice.DepthWrite) target.State.ZOffset -= 0.1f;
+			if (target.DrawDevice.DepthWrite) target.State.DepthOffset -= 0.01f;
 			target.State.ColorTint = outlineColor;
 			target.FillCircleSegment(
 				originPos.X, 

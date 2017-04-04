@@ -32,11 +32,9 @@ namespace Duality.Plugins.Tilemaps
 
 		
 		/// <summary>
-		/// [GET] The base depth offset that will be used when rendering a non-flat / deep <see cref="Tilemap"/>.
-		/// This property represents the sum of all non-local depth adjustments in the rendered <see cref="Tilemap"/>,
-		/// expressed as an offset to the depth that is implicitly defined by the <see cref="Transform"/> Z position.
-		/// 
-		/// This offset is automatically calculated based on <see cref="DepthOffset"/> and <see cref="TileDepthOffset"/>.
+		/// [GET] The base depth offset for generating tile vertices in this <see cref="Tilemap"/>, calculated based
+		/// on <see cref="DepthOffset"/> and <see cref="TileDepthOffset"/>.
+		/// For an absolute offset that is not based on per-tile depth, see <see cref="DepthOffset"/>.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float BaseDepthOffset
@@ -55,8 +53,8 @@ namespace Duality.Plugins.Tilemaps
 			}
 		}
 		/// <summary>
-		/// [GET / SET] The depth offset for the rendered <see cref="Tilemap"/> that is added
-		/// to each output vertex without contributing to perspective effects such as parallax.
+		/// [GET / SET] An absolute depth offset that is added to the entire <see cref="Tilemap"/> as whole.
+		/// For a relative offset based on per-tile depth, see <see cref="BaseDepthOffset"/>.
 		/// </summary>
 		public float DepthOffset
 		{

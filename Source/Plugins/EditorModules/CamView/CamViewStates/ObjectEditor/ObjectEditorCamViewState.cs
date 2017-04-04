@@ -175,7 +175,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			MathF.TransformDotVec(ref down, ref catDotX, ref catDotY);
 
 			canvas.PushState();
-			canvas.State.ZOffset = -1.0f;
+			canvas.State.DepthOffset = -1.0f;
 			foreach (ObjectEditorSelObj selObj in obj)
 			{
 				if (!selObj.HasTransform) continue;
@@ -593,7 +593,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			List<ObjectEditorSelObj> transformObjSel = this.allObjSel.Where(s => s.HasTransform).ToList();
 			Point cursorPos = this.PointToClient(Cursor.Position);
 			canvas.PushState();
-			canvas.State.ZOffset = -1.0f;
+			canvas.State.DepthOffset = -1.0f;
 			
 			// Draw indirectly selected object overlay
 			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f)));
@@ -636,7 +636,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (canScale)
 			{
 				float dotR = 3.0f / this.GetScaleAtZ(this.selectionCenter.Z);
-				canvas.State.ZOffset -= 0.1f;
+				canvas.State.DepthOffset -= 0.1f;
 				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
 				canvas.FillCircle(
 					this.selectionCenter.X + this.selectionRadius, 
@@ -658,7 +658,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.selectionCenter.Y - this.selectionRadius, 
 					this.selectionCenter.Z,
 					dotR);
-				canvas.State.ZOffset += 0.1f;
+				canvas.State.DepthOffset += 0.1f;
 			}
 
 			if (this.action != ObjectEditorAction.None)

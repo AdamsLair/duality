@@ -70,7 +70,7 @@ namespace Duality
 				circlePos.X, 
 				circlePos.Y, 
 				circlePos.Z);
-			if (target.DrawDevice.DepthWrite) target.State.ZOffset -= 0.1f;
+			if (target.DrawDevice.DepthWrite) target.State.DepthOffset -= 0.01f;
 			target.State.ColorTint *= ColorRgba.Black;
 			target.FillPolygonOutline(
 				this.vertices,

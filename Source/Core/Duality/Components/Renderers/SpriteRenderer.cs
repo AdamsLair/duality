@@ -69,7 +69,7 @@ namespace Duality.Components.Renderers
 		protected ColorRgba            colorTint   = ColorRgba.White;
 		protected UVMode               rectMode    = UVMode.Stretch;
 		protected bool                 pixelGrid   = false;
-		protected int                  offset      = 0;
+		protected float                offset      = 0.0f;
 		protected FlipMode             flipMode    = FlipMode.None;
 		protected int                  spriteIndex = -1;
 		[DontSerialize] protected VertexC1P3T2[] vertices = null;
@@ -132,21 +132,13 @@ namespace Duality.Components.Renderers
 			set { this.pixelGrid = value; }
 		}
 		/// <summary>
-		/// [GET / SET] A virtual Z offset that affects the order in which objects are drawn. If you want to assure an object is drawn after another one,
+		/// [GET / SET] A depth / Z offset that affects the order in which objects are drawn. If you want to assure an object is drawn after another one,
 		/// just assign a higher Offset value to the background object.
 		/// </summary>
-		public int Offset
+		public float DepthOffset
 		{
 			get { return this.offset; }
 			set { this.offset = value; }
-		}
-		/// <summary>
-		/// [GET] The internal Z-Offset added to the renderers vertices based on its <see cref="Offset"/> value.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public float VertexZOffset
-		{
-			get { return this.offset * 0.01f; }
 		}
 		/// <summary>
 		/// [GET / SET] Specifies whether the sprite should be flipped on a given axis when redered.
@@ -238,28 +230,28 @@ namespace Duality.Components.Renderers
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
-			vertices[0].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[0].Pos.Z = posTemp.Z + this.offset;
 			vertices[0].TexCoord.X = left;
 			vertices[0].TexCoord.Y = top;
 			vertices[0].Color = mainClr;
 
 			vertices[1].Pos.X = posTemp.X + edge2.X;
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
-			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[1].Pos.Z = posTemp.Z + this.offset;
 			vertices[1].TexCoord.X = left;
 			vertices[1].TexCoord.Y = bottom;
 			vertices[1].Color = mainClr;
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
-			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[2].Pos.Z = posTemp.Z + this.offset;
 			vertices[2].TexCoord.X = right;
 			vertices[2].TexCoord.Y = bottom;
 			vertices[2].Color = mainClr;
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
-			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[3].Pos.Z = posTemp.Z + this.offset;
 			vertices[3].TexCoord.X = right;
 			vertices[3].TexCoord.Y = top;
 			vertices[3].Color = mainClr;

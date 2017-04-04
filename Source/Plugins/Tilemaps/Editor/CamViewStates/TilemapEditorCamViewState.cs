@@ -940,7 +940,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				canvas.State.TransformHandle = -localRect.TopLeft;
 				canvas.State.TransformAngle = transform.Angle;
 				canvas.State.TransformScale = new Vector2(transform.Scale);
-				canvas.State.ZOffset = -0.01f;
+				canvas.State.DepthOffset = -0.01f;
 
 				// Draw the surrounding rect of the tilemap
 				canvas.State.ColorTint = ColorRgba.White.WithAlpha(greyOut ? 0.33f : 1.0f);

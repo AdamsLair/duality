@@ -25,7 +25,7 @@ namespace Duality.Components.Renderers
 		private BatchInfo            customOutlineMaterial = null;
 		private ColorRgba            colorTint             = ColorRgba.White;
 		private float                outlineWidth          = 3.0f;
-		private int                  offset                = 0;
+		private float                offset                = 0.0f;
 		private bool                 fillHollowShapes      = false;
 		private bool                 wrapTexture           = true;
 
@@ -77,10 +77,10 @@ namespace Duality.Components.Renderers
 			set { this.colorTint = value; }
 		}
 		/// <summary>
-		/// [GET / SET] A virtual Z offset that affects the order in which objects are drawn. If you want to assure an object is drawn after another one,
+		/// [GET / SET] A depth / Z offset that affects the order in which objects are drawn. If you want to assure an object is drawn after another one,
 		/// just assign a higher Offset value to the background object.
 		/// </summary>
-		public int Offset
+		public float DepthOffset
 		{
 			get { return this.offset; }
 			set { this.offset = value; }
@@ -111,14 +111,6 @@ namespace Duality.Components.Renderers
 			get { return this.wrapTexture; }
 			set { this.wrapTexture = value; }
 		}
-		/// <summary>
-		/// [GET] The internal Z-Offset added to the renderers vertices based on its <see cref="Offset"/> value.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public float VertexZOffset
-		{
-			get { return this.offset * 0.01f; }
-		}
 
 
 		public override void Draw(IDrawDevice device)
@@ -129,7 +121,7 @@ namespace Duality.Components.Renderers
 			Canvas canvas = new Canvas(device, this.vertexBuffer);
 
 			// Draw Shape Areas
-			canvas.State.ZOffset = this.offset;
+			canvas.State.DepthOffset = this.offset;
 			if (this.customAreaMaterial != null)
 				canvas.State.SetMaterial(this.customAreaMaterial);
 			else
@@ -146,7 +138,7 @@ namespace Duality.Components.Renderers
 			// Draw Shape Outlines
 			if (this.outlineWidth > 0.0f)
 			{
-				canvas.State.ZOffset = this.offset - 1;
+				canvas.State.DepthOffset = this.offset - 0.01f;
 				if (this.customOutlineMaterial != null)
 					canvas.State.SetMaterial(this.customOutlineMaterial);
 				else

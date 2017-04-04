@@ -78,7 +78,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			canvas.State.TextFont = Font.GenericMonospace10;
 			canvas.State.TextInvariantScale = true;
-			canvas.State.ZOffset = -0.5f;
+			canvas.State.DepthOffset = -0.5f;
 			Font textFont = canvas.State.TextFont.Res;
 
 			// Draw Shape layer

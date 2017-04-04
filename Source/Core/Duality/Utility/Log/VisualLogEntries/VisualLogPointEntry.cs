@@ -53,7 +53,7 @@ namespace Duality
 				circleRadius - borderRadius * 0.5f);
 
 			// Draw circle outline
-			if (target.DrawDevice.DepthWrite) target.State.ZOffset -= 1;
+			if (target.DrawDevice.DepthWrite) target.State.DepthOffset -= 0.01f;
 			target.State.ColorTint *= ColorRgba.Black;
 			target.FillCircleSegment(
 				circlePos.X, 

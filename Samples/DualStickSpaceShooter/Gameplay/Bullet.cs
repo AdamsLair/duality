@@ -40,7 +40,7 @@ namespace DualStickSpaceShooter
 			transform.Pos = new Vector3(position, 0.0f);
 			transform.MoveByAbs(body.LinearVelocity * Time.TimeMult);
 			transform.Angle = angle;
-			sprite.Offset = 1;
+			sprite.DepthOffset = 0.1f;
 
 			if (owner != null)
 			{
