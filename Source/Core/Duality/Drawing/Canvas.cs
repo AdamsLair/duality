@@ -107,7 +107,7 @@ namespace Duality.Drawing
 		/// <param name="mode"></param>
 		public void DrawVertices<T>(T[] vertices, VertexMode mode) where T : struct, IVertexData
 		{
-			DrawVertices<T>(vertices, mode, vertices.Length);
+			this.DrawVertices<T>(vertices, mode, vertices.Length);
 		}
 
 		/// <summary>
@@ -121,7 +121,8 @@ namespace Duality.Drawing
 		{
 			if (vertexCount == 0) return;
 			if (vertices.Length == 0) return;
-			if (vertexCount > vertices.Length) vertexCount = vertices.Length;
+			if (vertexCount < 0) throw new ArgumentException("Vertex count cannot be negative.", "vertexCount");
+			if (vertexCount > vertices.Length) throw new ArgumentException("Specified vertex count is higher than the size of the vertex array.", "vertexCount");
 
 			Vector3 pos = vertices[0].Pos;
 			float scale = 1.0f;
