@@ -98,7 +98,7 @@ namespace Duality.Drawing
 			return this.buffer.RequestVertexArray(minSize);
 		}
 
-		
+
 		/// <summary>
 		/// Draws a predefined set of vertices using the Canvas transformation.
 		/// </summary>
@@ -107,12 +107,29 @@ namespace Duality.Drawing
 		/// <param name="mode"></param>
 		public void DrawVertices<T>(T[] vertices, VertexMode mode) where T : struct, IVertexData
 		{
+			this.DrawVertices<T>(vertices, mode, vertices.Length);
+		}
+
+		/// <summary>
+		/// Draws part of a predefined set of vertices using the Canvas transformation.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="vertices"></param>
+		/// <param name="mode"></param>
+		/// <param name="vertexCount"></param>
+		public void DrawVertices<T>(T[] vertices, VertexMode mode, int vertexCount) where T : struct, IVertexData
+		{
+			if (vertexCount == 0) return;
+			if (vertices.Length == 0) return;
+			if (vertexCount < 0) throw new ArgumentException("Vertex count cannot be negative.", "vertexCount");
+			if (vertexCount > vertices.Length) throw new ArgumentException("Specified vertex count is higher than the size of the vertex array.", "vertexCount");
+
 			Vector3 pos = vertices[0].Pos;
 			float scale = 1.0f;
 			device.PreprocessCoords(ref pos, ref scale);
 
-			this.State.TransformVertices(vertices, pos.Xy, scale);
-			this.device.AddVertices<T>(this.State.MaterialDirect, mode, vertices);
+			this.State.TransformVertices(vertices, pos.Xy, scale, vertexCount);
+			this.device.AddVertices<T>(this.State.MaterialDirect, mode, vertices, vertexCount);
 		}
 
 		/// <summary>
