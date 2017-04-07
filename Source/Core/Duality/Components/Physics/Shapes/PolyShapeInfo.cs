@@ -4,6 +4,8 @@ using System.Linq;
 
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Common.Decomposition;
+using FarseerPhysics.Common;
 
 using Duality.Editor;
 
@@ -16,7 +18,7 @@ namespace Duality.Components.Physics
 	{
 		public const int MaxVertices = FarseerPhysics.Settings.MaxPolygonVertices;
 
-		private	Vector2[]	vertices;
+		private Vector2[] vertices;
 
 		/// <summary>
 		/// [GET / SET] The polygons vertices. While assinging the array will cause an automatic update, simply modifying it will require you to call <see cref="ShapeInfo.UpdateShape"/> manually.
@@ -61,12 +63,12 @@ namespace Duality.Components.Physics
 
 		protected override Fixture CreateFixture(Body body)
 		{
-			var farseerVert = this.CreateVertices(1.0f);
-			if (farseerVert == null) return null;
+			Vertices convexPolygon = this.CreateFarseerPolygon(this.vertices, 1.0f);
+			if (convexPolygon == null) return null;
 
 			this.Parent.CheckValidTransform();
 
-			Fixture f = body.CreateFixture(new PolygonShape(farseerVert, 1.0f), this);
+			Fixture f = body.CreateFixture(new PolygonShape(convexPolygon, 1.0f), this);
 
 			this.Parent.CheckValidTransform();
 			return f;
@@ -83,70 +85,48 @@ namespace Duality.Components.Physics
 
 			this.Parent.CheckValidTransform();
 
-			PolygonShape poly = this.fixture.Shape as PolygonShape;
-			poly.Set(this.CreateVertices(scale));
+			Vertices convexPolygon = this.CreateFarseerPolygon(this.vertices, scale);
+			if (convexPolygon != null)
+			{
+				PolygonShape poly = this.fixture.Shape as PolygonShape;
+				poly.Set(convexPolygon);
+			}
 
 			this.Parent.CheckValidTransform();
 		}
-		private FarseerPhysics.Common.Vertices CreateVertices(float scale)
+
+		private Vertices CreateFarseerPolygon(Vector2[] inputPolygon, float scale)
 		{
-			if (this.vertices == null || this.vertices.Length < 3) return null;
-			if (!MathF.IsPolygonConvex(this.vertices)) return null;
-			
-			// Be sure to not exceed the maximum vertex count
-			Vector2[] sortedVertices = this.vertices.ToArray();
-			if (sortedVertices.Length > MaxVertices)
-			{
-				Array.Resize(ref sortedVertices, MaxVertices);
-				Log.Core.WriteWarning("Maximum Polygon Shape vertex count exceeded: {0} > {1}", this.vertices.Length, MaxVertices);
-			}
+			// Early-out, if there are no vertices to process, or more than are supported
+			if (inputPolygon == null || inputPolygon.Length < 3 || inputPolygon.Length > MaxVertices)
+				return null;
 
-			// Don't let all vertices be aligned on one axis (zero-area polygons)
-			if (sortedVertices.Length > 0)
-			{
-				Vector2 firstVertex = sortedVertices[0];
-				bool alignX = true;
-				bool alignY = true;
-				for (int i = 0; i < sortedVertices.Length; i++)
-				{
-					if (sortedVertices[i].X != firstVertex.X)
-						alignX = false;
-					if (sortedVertices[i].Y != firstVertex.Y)
-						alignY = false;
-					if (!alignX && !alignY)
-						break;
-				}
-				if (alignX) sortedVertices[0].X += 0.01f;
-				if (alignY) sortedVertices[0].Y += 0.01f;
-			}
+			// Translate input polygon into farseer space and API
+			Vertices farseerPolygon = VerticesToFarseer(inputPolygon, scale);
 
-			// Sort vertices clockwise before submitting them to Farseer
-			Vector2 centroid = Vector2.Zero;
-			for (int i = 0; i < sortedVertices.Length; i++)
-				centroid += sortedVertices[i];
-			centroid /= sortedVertices.Length;
-			sortedVertices.StableSort(delegate(Vector2 first, Vector2 second)
-			{
-				return MathF.RoundToInt(
-					1000000.0f * MathF.Angle(centroid.X, centroid.Y, first.X, first.Y) - 
-					1000000.0f * MathF.Angle(centroid.X, centroid.Y, second.X, second.Y));
-			});
+			// Enforce counter-clockwise order of vertices
+			farseerPolygon.ForceCounterClockWise();
 
-			// Shrink a little bit
-			//for (int i = 0; i < sortedVertices.Length; i++)
-			//{
-			//    Vector2 rel = (sortedVertices[i] - centroid);
-			//    float len = rel.Length;
-			//    sortedVertices[i] = centroid + rel.Normalized * MathF.Max(0.0f, len - 1.5f);
-			//}
+			// Pass-through convex polygons
+			if (!farseerPolygon.IsConvex())
+				return null;
 
-			// Submit vertices
-			FarseerPhysics.Common.Vertices v = new FarseerPhysics.Common.Vertices(sortedVertices.Length);
-			for (int i = 0; i < sortedVertices.Length; i++)
-			{
-				v.Add(PhysicsUnit.LengthToPhysical * sortedVertices[i] * scale);
-			}
-			return v;
+			return farseerPolygon;
+		}
+
+		private static Vector2[] VerticesToDuality(Vertices vertices)
+		{
+			Vector2[] transformed = new Vector2[vertices.Count];
+			for (int i = 0; i < transformed.Length; i++)
+				transformed[i] = PhysicsUnit.LengthToPhysical * vertices[i];
+			return transformed;
+		}
+		private static Vertices VerticesToFarseer(Vector2[] vertices, float scale)
+		{
+			Vertices transformed = new Vertices(vertices.Length);
+			for (int i = 0; i < vertices.Length; i++)
+				transformed.Add(PhysicsUnit.LengthToPhysical * vertices[i] * scale);
+			return transformed;
 		}
 	}
 }

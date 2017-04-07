@@ -109,7 +109,6 @@ namespace Duality.Drawing
 		{
 			this.DrawVertices<T>(vertices, mode, vertices.Length);
 		}
-
 		/// <summary>
 		/// Draws part of a predefined set of vertices using the Canvas transformation.
 		/// </summary>
