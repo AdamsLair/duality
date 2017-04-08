@@ -17,8 +17,11 @@ namespace Duality.Components.Physics
 	public sealed class PolyShapeInfo : ShapeInfo
 	{
 		public const int MaxVertices = FarseerPhysics.Settings.MaxPolygonVertices;
-
+		
+		[DontSerialize]
+		private Fixture fixture;
 		private Vector2[] vertices;
+
 
 		/// <summary>
 		/// [GET / SET] The polygons vertices. While assinging the array will cause an automatic update, simply modifying it will require you to call <see cref="ShapeInfo.UpdateShape"/> manually.
@@ -32,7 +35,7 @@ namespace Duality.Components.Physics
 			set
 			{
 				this.vertices = value ?? new Vector2[] { Vector2.Zero, Vector2.UnitX, Vector2.UnitY };
-				this.UpdateFixture(true);
+				this.UpdateInternalShape(true);
 			}
 		}
 		[EditorHintFlags(MemberFlags.Invisible)]
@@ -54,79 +57,74 @@ namespace Duality.Components.Physics
 				return new Rect(minX, minY, maxX - minX, maxY - minY);
 			}
 		}
+		protected override bool IsInternalShapeCreated
+		{
+			get { return this.fixture != null; }
+		}
+
 			
 		public PolyShapeInfo() {}
-		public PolyShapeInfo(IEnumerable<Vector2> vertices, float density) : base(density)
+		public PolyShapeInfo(IEnumerable<Vector2> vertices, float density)
 		{
 			this.vertices = vertices.ToArray();
+			this.density = density;
 		}
 
-		protected override Fixture CreateFixture(Body body)
+		protected override void DestroyFixtures()
 		{
-			Vertices convexPolygon = this.CreateFarseerPolygon(this.vertices, 1.0f);
-			if (convexPolygon == null) return null;
-
-			this.Parent.CheckValidTransform();
-
-			Fixture f = body.CreateFixture(new PolygonShape(convexPolygon, 1.0f), this);
-
-			this.Parent.CheckValidTransform();
-			return f;
-		}
-		internal override void UpdateFixture(bool updateShape = false)
-		{
-			base.UpdateFixture(updateShape);
 			if (this.fixture == null) return;
-			if (this.Parent == null) return;
-				
-			float scale = 1.0f;
-			if (this.Parent.GameObj != null && this.Parent.GameObj.Transform != null)
-				scale = this.Parent.GameObj.Transform.Scale;
+			if (this.fixture.Body != null)
+				this.fixture.Body.DestroyFixture(this.fixture);
+			this.fixture = null;
+		}
+		protected override void SyncFixtures()
+		{
+			if (!this.EnsureFixtures()) return;
 
-			this.Parent.CheckValidTransform();
+			float scale = this.ParentScale;
+			
+			this.fixture.IsSensor = this.sensor;
+			this.fixture.Restitution = this.restitution;
+			this.fixture.Friction = this.friction;
+			
+			PolygonShape shape = this.fixture.Shape as PolygonShape;
+			this.UpdateVertices(shape.Vertices, scale);
+			shape.Density = this.density;
+			shape.Set(shape.Vertices);
+		}
 
-			Vertices convexPolygon = this.CreateFarseerPolygon(this.vertices, scale);
-			if (convexPolygon != null)
+		private bool EnsureFixtures()
+		{
+			if (this.vertices == null || this.vertices.Length < 3) return false;
+			if (this.vertices.Length > MaxVertices) return false;
+
+			if (this.fixture == null)
 			{
-				PolygonShape poly = this.fixture.Shape as PolygonShape;
-				poly.Set(convexPolygon);
+				Body body = this.Parent.PhysicsBody;
+				if (body != null)
+				{
+					Vertices shapeVertices = new Vertices(this.vertices.Length);
+					this.UpdateVertices(shapeVertices, this.ParentScale);
+					if (!shapeVertices.IsConvex()) return false;
+
+					this.fixture = new Fixture(
+						body, 
+						new PolygonShape(shapeVertices, this.density), 
+						this);
+				}
 			}
 
-			this.Parent.CheckValidTransform();
+			return this.fixture != null;
 		}
-
-		private Vertices CreateFarseerPolygon(Vector2[] inputPolygon, float scale)
+		private void UpdateVertices(Vertices targetVertices, float scale)
 		{
-			// Early-out, if there are no vertices to process, or more than are supported
-			if (inputPolygon == null || inputPolygon.Length < 3 || inputPolygon.Length > MaxVertices)
-				return null;
+			targetVertices.Clear();
 
-			// Translate input polygon into farseer space and API
-			Vertices farseerPolygon = VerticesToFarseer(inputPolygon, scale);
+			// Translate input polygon into Farseer space and API
+			VerticesToFarseer(this.vertices, scale, targetVertices);
 
 			// Enforce counter-clockwise order of vertices
-			farseerPolygon.ForceCounterClockWise();
-
-			// Pass-through convex polygons
-			if (!farseerPolygon.IsConvex())
-				return null;
-
-			return farseerPolygon;
-		}
-
-		private static Vector2[] VerticesToDuality(Vertices vertices)
-		{
-			Vector2[] transformed = new Vector2[vertices.Count];
-			for (int i = 0; i < transformed.Length; i++)
-				transformed[i] = PhysicsUnit.LengthToPhysical * vertices[i];
-			return transformed;
-		}
-		private static Vertices VerticesToFarseer(Vector2[] vertices, float scale)
-		{
-			Vertices transformed = new Vertices(vertices.Length);
-			for (int i = 0; i < vertices.Length; i++)
-				transformed.Add(PhysicsUnit.LengthToPhysical * vertices[i] * scale);
-			return transformed;
+			targetVertices.ForceCounterClockWise();
 		}
 	}
 }
