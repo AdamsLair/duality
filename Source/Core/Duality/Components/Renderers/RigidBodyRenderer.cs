@@ -166,9 +166,32 @@ namespace Duality.Components.Renderers
 		{
 			canvas.PushState();
 			if      (shape is CircleShapeInfo)                         this.DrawShapeArea(canvas, transform, shape as CircleShapeInfo);
-			else if (shape is PolyShapeInfo)                           this.DrawShapeArea(canvas, transform, (shape as PolyShapeInfo).Vertices);
 			else if (shape is LoopShapeInfo && this.fillHollowShapes)  this.DrawShapeArea(canvas, transform, (shape as LoopShapeInfo).Vertices);
 			else if (shape is ChainShapeInfo && this.fillHollowShapes) this.DrawShapeArea(canvas, transform, (shape as ChainShapeInfo).Vertices);
+			else if (shape is PolyShapeInfo)
+			{
+				PolyShapeInfo polyShape = shape as PolyShapeInfo;
+				Rect bounds = polyShape.Vertices.BoundingBox();
+				Rect texRect = new Rect(1.0f, 1.0f);
+				if (this.wrapTexture)
+				{
+					texRect.W = bounds.W / canvas.State.TextureBaseSize.X;
+					texRect.H = bounds.H / canvas.State.TextureBaseSize.Y;
+				}
+				if (polyShape.ConvexPolygons != null)
+				{
+					foreach (Vector2[] convexPolygon in polyShape.ConvexPolygons)
+					{
+						Rect localBounds = convexPolygon.BoundingBox();
+						Rect localTexRect = new Rect(
+							texRect.X + texRect.W * (localBounds.X - bounds.X) / bounds.W,
+							texRect.Y + texRect.H * (localBounds.Y - bounds.Y) / bounds.H,
+							texRect.W * localBounds.W / bounds.W,
+							texRect.H * localBounds.H / bounds.H);
+						this.DrawShapeArea(canvas, transform, convexPolygon, localTexRect);
+					}
+				}
+			}
 			canvas.PopState();
 		}
 		private void DrawShapeArea(Canvas canvas, Transform transform, CircleShapeInfo shape)
@@ -196,17 +219,24 @@ namespace Duality.Components.Renderers
 		{
 			if (shapeVertices.Length < 3) return;
 
+			Rect bounds = shapeVertices.BoundingBox();
+			Rect texRect = new Rect(1.0f, 1.0f);
+			if (this.wrapTexture)
+			{
+				texRect.W = bounds.W / canvas.State.TextureBaseSize.X;
+				texRect.H = bounds.H / canvas.State.TextureBaseSize.Y;
+			}
+			this.DrawShapeArea(canvas, transform, shapeVertices, texRect);
+		}
+		private void DrawShapeArea(Canvas canvas, Transform transform, Vector2[] shapeVertices, Rect texRect)
+		{
+			if (shapeVertices.Length < 3) return;
+
 			Vector3 pos = transform.Pos;
 			float angle = transform.Angle;
 			float scale = transform.Scale;
 
-			if (this.wrapTexture)
-			{
-				Rect pointBoundingRect = shapeVertices.BoundingBox();
-				canvas.State.TextureCoordinateRect = new Rect(
-					pointBoundingRect.W / canvas.State.TextureBaseSize.X,
-					pointBoundingRect.H / canvas.State.TextureBaseSize.Y);
-			}
+			canvas.State.TextureCoordinateRect = texRect;
 			canvas.State.TransformAngle = angle;
 			canvas.State.TransformScale = new Vector2(scale, scale);
 			canvas.FillPolygon(shapeVertices, pos.X, pos.Y, pos.Z);
