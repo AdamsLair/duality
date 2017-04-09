@@ -35,10 +35,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get { return 2; }
 		}
-		protected override int MaxVertexCount
-		{
-			get { return PolyShapeInfo.MaxVertices; }
-		}
 		
 		protected override ShapeInfo CreateShapeInfo(Vector2[] vertices)
 		{
@@ -51,10 +47,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected override void SetVertices(ShapeInfo shape, Vector2[] vertices)
 		{
 			(shape as PolyShapeInfo).Vertices = vertices;
-		}
-		protected override bool IsValidPolyon(Vector2[] vertices)
-		{
-			return MathF.IsPolygonConvex(vertices);
 		}
 	}
 }
