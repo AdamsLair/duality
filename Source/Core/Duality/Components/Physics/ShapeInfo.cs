@@ -157,20 +157,5 @@ namespace Duality.Components.Physics
 
 		protected abstract void DestroyFixtures();
 		protected abstract void SyncFixtures();
-
-		protected static Vector2[] VerticesToDuality(Vertices vertices)
-		{
-			Vector2[] transformed = new Vector2[vertices.Count];
-			for (int i = 0; i < transformed.Length; i++)
-				transformed[i] = PhysicsUnit.LengthToPhysical * vertices[i];
-			return transformed;
-		}
-		protected static void VerticesToFarseer(Vector2[] vertices, float scale, Vertices transformed)
-		{
-			transformed.Clear();
-			transformed.Capacity = Math.Min(transformed.Capacity, vertices.Length);
-			for (int i = 0; i < vertices.Length; i++)
-				transformed.Add(PhysicsUnit.LengthToPhysical * vertices[i] * scale);
-		}
 	}
 }
