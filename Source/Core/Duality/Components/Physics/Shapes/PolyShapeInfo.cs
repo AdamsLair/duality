@@ -88,9 +88,7 @@ namespace Duality.Components.Physics
 			this.fixture.Friction = this.friction;
 			
 			PolygonShape shape = this.fixture.Shape as PolygonShape;
-			this.UpdateVertices(shape.Vertices, scale);
 			shape.Density = this.density;
-			shape.Set(shape.Vertices);
 		}
 
 		private bool EnsureFixtures()

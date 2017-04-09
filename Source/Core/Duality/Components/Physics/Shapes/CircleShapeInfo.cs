@@ -69,15 +69,11 @@ namespace Duality.Components.Physics
 		{
 			if (!this.EnsureFixtures()) return;
 
-			float scale = this.ParentScale;
-			
 			this.fixture.IsSensor = this.sensor;
 			this.fixture.Restitution = this.restitution;
 			this.fixture.Friction = this.friction;
 
 			CircleShape circle = this.fixture.Shape as CircleShape;
-			circle.Radius = PhysicsUnit.LengthToPhysical * this.radius * scale;
-			circle.Position = PhysicsUnit.LengthToPhysical * this.position * scale;
 			circle.Density = this.density;
 		}
 
@@ -88,9 +84,15 @@ namespace Duality.Components.Physics
 				Body body = this.Parent.PhysicsBody;
 				if (body != null)
 				{
+					float scale = this.ParentScale;
+					CircleShape circle = new CircleShape(
+						PhysicsUnit.LengthToPhysical * this.radius * scale, 
+						this.density);
+					circle.Position = PhysicsUnit.LengthToPhysical * this.position * scale;
+
 					this.fixture = new Fixture(
 						body, 
-						new CircleShape(0.1f, 1.0f), 
+						circle, 
 						this);
 				}
 			}

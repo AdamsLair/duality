@@ -89,7 +89,6 @@ namespace Duality.Components.Physics
 			this.fixture.Friction = this.friction;
 			
 			ChainShape shape = this.fixture.Shape as ChainShape;
-			this.UpdateVertices(shape, this.ParentScale);
 			shape.Density = this.density;
 		}
 
