@@ -34,9 +34,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			{
 				float fgLum = this.FgColor.GetLuminance();
 				if (fgLum > 0.5f)
-					return ColorRgba.Lerp(new ColorRgba(255, 0, 255), ColorRgba.VeryLightGrey, 0.5f);
+					return new ColorRgba(255, 128, 255);
 				else
-					return ColorRgba.Lerp(new ColorRgba(255, 0, 255), ColorRgba.VeryDarkGrey, 0.5f);
+					return new ColorRgba(192, 0, 192);
 			}
 		}
 		public ColorRgba ObjectCenterColor
@@ -45,9 +45,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			{
 				float fgLum = this.FgColor.GetLuminance();
 				if (fgLum > 0.5f)
-					return ColorRgba.Lerp(new ColorRgba(255, 255, 0), ColorRgba.VeryLightGrey, 0.5f);
+					return new ColorRgba(255, 255, 128);
 				else
-					return ColorRgba.Lerp(new ColorRgba(255, 255, 0), ColorRgba.VeryDarkGrey, 0.5f);
+					return new ColorRgba(192, 192, 0);
 			}
 		}
 		public ColorRgba ShapeColor
