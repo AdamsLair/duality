@@ -140,7 +140,7 @@ namespace Duality.Components.Physics
 
 			// Decompose non-convex polygons and save them persistently,
 			// so we don't need to decompose them again unless modified.
-			List<Vertices> decomposed = BayazitDecomposer.ConvexPartition(fullPolygon);
+			List<Vertices> decomposed = Triangulate.ConvexPartition(fullPolygon, TriangulationAlgorithm.Bayazit);
 			foreach (Vertices polygon in decomposed)
 			{
 				this.convexPolygons.Add(VerticesToDuality(polygon));
