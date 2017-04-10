@@ -17,7 +17,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 {
 	public class RigidBodyShapeCamViewLayer : CamViewLayer
 	{
-		private float shapeOutlineWidth = 2.5f;
+		private float shapeOutlineWidth = 2.0f;
 		private float depthOffset = -0.5f;
 
 		public override string LayerName
