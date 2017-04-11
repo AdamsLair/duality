@@ -231,9 +231,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		private void DrawShape(Canvas canvas, Transform transform, PolyShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
 		{
 			// Fill each convex polygon individually
-			foreach (Vector2[] polygon in shape.ConvexPolygons)
+			if (shape.ConvexPolygons != null)
 			{
-				this.FillPolygon(canvas, transform, polygon, fillColor);
+				foreach (Vector2[] polygon in shape.ConvexPolygons)
+				{
+					this.FillPolygon(canvas, transform, polygon, fillColor);
+				}
 			}
 
 			// Draw the polygon outline
