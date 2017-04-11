@@ -34,10 +34,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected abstract ShapeInfo CreateShapeInfo(Vector2[] vertices);
 		protected abstract Vector2[] GetVertices(ShapeInfo shape);
 		protected abstract void SetVertices(ShapeInfo shape, Vector2[] vertices);
-		protected virtual bool IsValidPolyon(Vector2[] vertices)
-		{
-			return true;
-		}
 
 		public override void BeginAction()
 		{
@@ -81,17 +77,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public override void EndAction()
 		{
 			base.EndAction();
-			List<Vector2> vertices = this.GetVertices(this.actionShape).ToList();
-			
-			vertices.RemoveAt(this.currentVertex);
-			if (vertices.Count < this.initialVertexCount || this.currentVertex < this.initialVertexCount - 1)
+			List<Vector2> prevVertices = this.GetVertices(this.actionShape).ToList();
+			prevVertices.RemoveAt(this.currentVertex);
+
+			Vector2[] vertices = prevVertices.ToArray();
+			bool isValidShape = this.actionShape != null && this.actionShape.IsValid;
+			if (vertices.Length < this.initialVertexCount || this.currentVertex < this.initialVertexCount - 1 || !isValidShape)
 			{
 				this.Environment.SelectShapes(null);
 				this.Environment.ActiveBody.RemoveShape(this.actionShape);
 			}
 			else
 			{
-				this.SetVertices(this.actionShape, vertices.ToArray());
+				this.SetVertices(this.actionShape, vertices);
 
 				// Remove the shape and re-add it properly using an UndoRedoAction.
 				// Now that we're sure the shape is valid, we want its creation to
@@ -112,7 +110,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Vector2[] vertices = this.GetVertices(this.actionShape);
 			vertices[this.currentVertex] = this.Environment.ActiveBodyPos;
 
-			if (this.currentVertex < this.initialVertexCount || this.IsValidPolyon(vertices))
+			// Apply the current vertex and move on to the next.
+			// Note that it is possible to place vertices in a way that
+			// the polygon becomes invalid now, but will be valid again
+			// later when some more vertices are in place.
+			bool allowAdvance = this.CheckVertexPlacement(vertices, this.currentVertex);
+			if (allowAdvance)
 			{
 				this.Environment.LockedWorldPos = this.Environment.ActiveWorldPos;
 
@@ -131,6 +134,30 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			DualityEditorApp.NotifyObjPropChanged(this,
 				new ObjectSelection(this.Environment.ActiveBody),
 				ReflectionInfo.Property_RigidBody_Shapes);
+		}
+
+		private bool CheckVertexPlacement(Vector2[] vertices, int currentVertex)
+		{
+			Vector2 current = vertices[this.currentVertex];
+			Vector2 last = vertices[this.currentVertex - 1];
+
+			// Require a minimum distance between current and last vertex to
+			// avoid accidental double clicks and prevent ridiculously detailed
+			// collision shapes.
+			float distanceToLast = (current - last).Length;
+			if (distanceToLast < 2.5f) return false;
+
+			// Do not allow to cross any already existing edges, as this would produce
+			// a non-simple polygon that can not be fixed again by placing more vertices.
+			for (int i = 1; i < this.currentVertex; i++)
+			{
+				Vector2 start = vertices[i - 1];
+				Vector2 end = vertices[i];
+				if (MathF.LinesCross(start.X, start.Y, end.X, end.Y, current.X, current.Y, last.X, last.Y))
+					return false;
+			}
+
+			return true;
 		}
 
 		public override string GetActionText()

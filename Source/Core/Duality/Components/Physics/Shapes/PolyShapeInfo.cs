@@ -118,14 +118,17 @@ namespace Duality.Components.Physics
 
 			Vertices fullPolygon = VerticesToFarseer(this.vertices, 1.0f);
 
-			// Remove one of each duplicate vertex so both decomposer and
-			// physics simulation can work properly.
-			for (int i = fullPolygon.Count - 1; i > 0; i--)
+			// Do not allow neighbor vertices that are too close to each other.
+			for (int i = 1; i < fullPolygon.Count; i++)
 			{
-				if (fullPolygon[i] == fullPolygon[i - 1])
-					fullPolygon.RemoveAt(i);
+				float distance = (fullPolygon[i - 1] - fullPolygon[i]).Length;
+				if (distance < 0.025f) return;
 			}
-			if (fullPolygon.Count < 3) return;
+
+			// Discard non-simple and micro area polygons early, as there
+			// is nothing that decomposition can do in this case.
+			if (!fullPolygon.IsSimple()) return;
+			if (fullPolygon.GetArea() < 0.01f) return;
 
 			// If the polygon is small enough and convex, use it as-is.
 			if (this.vertices.Length <= FarseerPhysics.Settings.MaxPolygonVertices)
@@ -140,7 +143,7 @@ namespace Duality.Components.Physics
 
 			// Decompose non-convex polygons and save them persistently,
 			// so we don't need to decompose them again unless modified.
-			List<Vertices> decomposed = Triangulate.ConvexPartition(fullPolygon, TriangulationAlgorithm.Bayazit);
+			List<Vertices> decomposed = Triangulate.ConvexPartition(fullPolygon, TriangulationAlgorithm.Flipcode);
 			foreach (Vertices polygon in decomposed)
 			{
 				this.convexPolygons.Add(VerticesToDuality(polygon));
