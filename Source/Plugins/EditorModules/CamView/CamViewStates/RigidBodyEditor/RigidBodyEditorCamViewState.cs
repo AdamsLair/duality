@@ -82,6 +82,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public RigidBodyEditorCamViewState()
 		{
 			this.SetDefaultActiveLayers(
+				typeof(CamViewLayers.BackPlateCamViewLayer),
 				typeof(CamViewLayers.RigidBodyJointCamViewLayer),
 				typeof(CamViewLayers.RigidBodyShapeCamViewLayer));
 			this.SetDefaultObjectVisibility(
