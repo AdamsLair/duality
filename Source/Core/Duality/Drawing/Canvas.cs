@@ -1290,18 +1290,33 @@ namespace Duality.Drawing
 				
 				float dot = Vector2.Dot(normal, tangent2);
 
-				Vector2 cross;
-				MathF.LinesCross(
-					points[prev].X - normal.X * width, points[prev].Y - normal.Y * width, 
-					points[cur].X  - normal.X * width, points[cur].Y  - normal.Y * width, 
-					points[cur].X  - normal2.X * width, points[cur].Y  - normal2.Y * width,
-					points[next].X - normal2.X * width, points[next].Y - normal2.Y * width,
-					out cross.X, out cross.Y,
-					true);
-
-				Vector2 leftOffset = Vector2.Zero;
-				Vector2 rightOffset = (tangent - tangent2).Normalized * (cross - points[cur]).Length * MathF.Sign(dot) * -2;
+				Vector2 leftOffset;
+				Vector2 rightOffset;
 				
+				// Avoid the "parallel lines" edge case by using just the first 
+				// line segment's orientation and ignoring the second.
+				if (MathF.Abs(dot) < 0.0001f)
+				{
+					leftOffset = Vector2.Zero;
+					rightOffset = normal * width * 2.0f;
+				}
+				// Calculate the point where the two joining line segments cross
+				// and joing them in a sharp angle.
+				else
+				{
+					Vector2 cross;
+					MathF.LinesCross(
+						points[prev].X - normal.X * width, points[prev].Y - normal.Y * width, 
+						points[cur].X  - normal.X * width, points[cur].Y  - normal.Y * width, 
+						points[cur].X  - normal2.X * width, points[cur].Y  - normal2.Y * width,
+						points[next].X - normal2.X * width, points[next].Y - normal2.Y * width,
+						out cross.X, out cross.Y,
+						true);
+
+					leftOffset = Vector2.Zero;
+					rightOffset = (tangent - tangent2).Normalized * (cross - points[cur]).Length * MathF.Sign(dot) * -2;
+				}
+
 				if (!closedLoop)
 				{
 					bool first = (i == 0);
