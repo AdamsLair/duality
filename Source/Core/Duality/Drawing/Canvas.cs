@@ -1335,11 +1335,11 @@ namespace Duality.Drawing
 						out cross.X, out cross.Y,
 						true);
 
-					Vector2 sharpEdgeOffset = (cross - current);
+					Vector2 sharpEdgeOffset = (tangent - tangent2).Normalized * (cross - current).Length * MathF.Sign(normalDot);
 					float tangentDot = Vector2.Dot(tangent, -tangent2);
 
-					// Sharp edges: Use bevel joints
-					if (tangentDot > 0.0f)
+					// Sharp outward edges: Use bevel joints
+					if (tangentDot > 0.0f && normalDot < 0.0f)
 					{
 						float bevelLength = sharpEdgeOffset.Length * (tangent + tangent2).Length * 0.5f;
 						Vector2 bevelOffset = -tangent2 * -bevelLength;
@@ -1349,14 +1349,18 @@ namespace Duality.Drawing
 						rightOffset = bevelOffset * -2;
 						leftOffset2 = Vector2.Zero;
 						rightOffset2 = bevelOffset2 * -2;
+
+						shapeColor = ColorRgba.Red;
 					}
-					// Right angles and blunt edges: Use miter joints
+					// Right angles, inward and blunt edges: Use miter joints
 					else
 					{
 						leftOffset = Vector2.Zero;
 						rightOffset = sharpEdgeOffset * -2;
 						leftOffset2 = leftOffset;
 						rightOffset2 = rightOffset;
+
+						shapeColor = ColorRgba.Green;
 					}
 				}
 
