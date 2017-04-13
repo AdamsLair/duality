@@ -1285,6 +1285,17 @@ namespace Duality.Drawing
 				Vector2 current = points[i];
 				Vector2 prev = points[prevIndex];
 				Vector2 next = points[nextIndex];
+
+				// For duplicate points, duplicated vertices as well
+				if (i > 0 && current == prev)
+				{
+					int prevVertexBase = prevIndex * 4;
+					vertices[vertexBase + 0] = vertices[prevVertexBase + 0];
+					vertices[vertexBase + 1] = vertices[prevVertexBase + 1];
+					vertices[vertexBase + 2] = vertices[prevVertexBase + 2];
+					vertices[vertexBase + 3] = vertices[prevVertexBase + 3];
+					continue;
+				}
 				
 				Vector2 tangent = (current - prev).Normalized;
 				Vector2 tangent2 = (next - current).Normalized;
@@ -1293,34 +1304,26 @@ namespace Duality.Drawing
 				
 				float normalDot = Vector2.Dot(normal, tangent2);
 
-				Vector2 leftOffset;
-				Vector2 rightOffset;
-				Vector2 leftOffset2;
-				Vector2 rightOffset2;
+				Vector2 offsetA;
+				Vector2 offsetB;
 				
 				// Special cases for first and last vertex when not rendering a loop
 				if (!closedLoop && i == 0)
 				{
-					leftOffset = Vector2.Zero;
-					rightOffset = normal2 * width * 2.0f;
-					leftOffset2 = leftOffset;
-					rightOffset2 = rightOffset;
+					offsetA = normal2 * width * 2.0f;
+					offsetB = offsetA;
 				}
 				else if (!closedLoop && i == points.Length - 1)
 				{
-					leftOffset = Vector2.Zero;
-					rightOffset = normal * width * 2.0f;
-					leftOffset2 = leftOffset;
-					rightOffset2 = rightOffset;
+					offsetA = normal * width * 2.0f;
+					offsetB = offsetA;
 				}
 				// Avoid the "parallel lines" edge case by using just the first 
 				// line segment's orientation and ignoring the second.
 				else if (MathF.Abs(normalDot) < 0.0001f)
 				{
-					leftOffset = Vector2.Zero;
-					rightOffset = normal * width * 2.0f;
-					leftOffset2 = leftOffset;
-					rightOffset2 = rightOffset;
+					offsetA = normal * width * 2.0f;
+					offsetB = offsetA;
 				}
 				// Calculate the point where the two joining line segments cross
 				// and joing them in a sharp angle.
@@ -1335,61 +1338,57 @@ namespace Duality.Drawing
 						out cross.X, out cross.Y,
 						true);
 
-					Vector2 sharpEdgeOffset = (tangent - tangent2).Normalized * (cross - current).Length * MathF.Sign(normalDot);
 					float tangentDot = Vector2.Dot(tangent, -tangent2);
 
 					// Sharp outward edges: Use bevel joints
 					if (tangentDot > 0.0f && normalDot < 0.0f)
 					{
-						float bevelLength = sharpEdgeOffset.Length * (tangent + tangent2).Length * 0.5f;
-						Vector2 bevelOffset = -tangent2 * -bevelLength;
-						Vector2 bevelOffset2 = tangent * -bevelLength;
+						float sharpEdgeLength = MathF.Min((cross - current).Length, width * 10.0f);
+						Vector2 sharpEdgeOffset = (tangent - tangent2).Normalized * sharpEdgeLength * MathF.Sign(normalDot);
+						float bevelFactor = MathF.Min(tangentDot * 1.5f, 1.0f);
 
-						leftOffset = Vector2.Zero;
-						rightOffset = bevelOffset * -2;
-						leftOffset2 = Vector2.Zero;
-						rightOffset2 = bevelOffset2 * -2;
-
-						shapeColor = ColorRgba.Red;
+						offsetA = Vector2.Lerp(-sharpEdgeOffset, normal * width, bevelFactor) * 2.0f;
+						offsetB = Vector2.Lerp(-sharpEdgeOffset, normal2 * width, bevelFactor) * 2.0f;
 					}
 					// Right angles, inward and blunt edges: Use miter joints
 					else
 					{
-						leftOffset = Vector2.Zero;
-						rightOffset = sharpEdgeOffset * -2;
-						leftOffset2 = leftOffset;
-						rightOffset2 = rightOffset;
+						float sharpEdgeLength = MathF.Min(
+							(cross - current).Length, 
+							MathF.Min((prev - current).Length, (next - current).Length) * 0.5f);
+						Vector2 sharpEdgeOffset = (tangent - tangent2).Normalized * sharpEdgeLength * MathF.Sign(normalDot);
 
-						shapeColor = ColorRgba.Green;
+						offsetA = sharpEdgeOffset * -2;
+						offsetB = offsetA;
 					}
 				}
 
-				vertices[vertexBase + 0].Pos.X = (current.X + leftOffset.X) * scale + pos.X;
-				vertices[vertexBase + 0].Pos.Y = (current.Y + leftOffset.Y) * scale + pos.Y;
+				vertices[vertexBase + 0].Pos.X = current.X * scale + pos.X;
+				vertices[vertexBase + 0].Pos.Y = current.Y * scale + pos.Y;
 				vertices[vertexBase + 0].Pos.Z = pos.Z;
-				vertices[vertexBase + 0].TexCoord.X = texCoordRect.X + ((current.X + leftOffset.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
-				vertices[vertexBase + 0].TexCoord.Y = texCoordRect.Y + ((current.Y + leftOffset.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
+				vertices[vertexBase + 0].TexCoord.X = texCoordRect.X + ((current.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
+				vertices[vertexBase + 0].TexCoord.Y = texCoordRect.Y + ((current.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[vertexBase + 0].Color = shapeColor;
 				
-				vertices[vertexBase + 1].Pos.X = (current.X  + rightOffset.X) * scale + pos.X;
-				vertices[vertexBase + 1].Pos.Y = (current.Y  + rightOffset.Y) * scale + pos.Y;
+				vertices[vertexBase + 1].Pos.X = (current.X  + offsetA.X) * scale + pos.X;
+				vertices[vertexBase + 1].Pos.Y = (current.Y  + offsetA.Y) * scale + pos.Y;
 				vertices[vertexBase + 1].Pos.Z = pos.Z;
-				vertices[vertexBase + 1].TexCoord.X = texCoordRect.X + ((current.X + rightOffset.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
-				vertices[vertexBase + 1].TexCoord.Y = texCoordRect.Y + ((current.Y + rightOffset.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
+				vertices[vertexBase + 1].TexCoord.X = texCoordRect.X + ((current.X + offsetA.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
+				vertices[vertexBase + 1].TexCoord.Y = texCoordRect.Y + ((current.Y + offsetA.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[vertexBase + 1].Color = shapeColor;
 
-				vertices[vertexBase + 2].Pos.X = (current.X + leftOffset2.X) * scale + pos.X;
-				vertices[vertexBase + 2].Pos.Y = (current.Y + leftOffset2.Y) * scale + pos.Y;
+				vertices[vertexBase + 2].Pos.X = current.X * scale + pos.X;
+				vertices[vertexBase + 2].Pos.Y = current.Y * scale + pos.Y;
 				vertices[vertexBase + 2].Pos.Z = pos.Z;
-				vertices[vertexBase + 2].TexCoord.X = texCoordRect.X + ((current.X + leftOffset2.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
-				vertices[vertexBase + 2].TexCoord.Y = texCoordRect.Y + ((current.Y + leftOffset2.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
+				vertices[vertexBase + 2].TexCoord.X = texCoordRect.X + ((current.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
+				vertices[vertexBase + 2].TexCoord.Y = texCoordRect.Y + ((current.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[vertexBase + 2].Color = shapeColor;
 				
-				vertices[vertexBase + 3].Pos.X = (current.X  + rightOffset2.X) * scale + pos.X;
-				vertices[vertexBase + 3].Pos.Y = (current.Y  + rightOffset2.Y) * scale + pos.Y;
+				vertices[vertexBase + 3].Pos.X = (current.X  + offsetB.X) * scale + pos.X;
+				vertices[vertexBase + 3].Pos.Y = (current.Y  + offsetB.Y) * scale + pos.Y;
 				vertices[vertexBase + 3].Pos.Z = pos.Z;
-				vertices[vertexBase + 3].TexCoord.X = texCoordRect.X + ((current.X + rightOffset2.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
-				vertices[vertexBase + 3].TexCoord.Y = texCoordRect.Y + ((current.Y + rightOffset2.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
+				vertices[vertexBase + 3].TexCoord.X = texCoordRect.X + ((current.X + offsetB.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
+				vertices[vertexBase + 3].TexCoord.Y = texCoordRect.Y + ((current.Y + offsetB.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[vertexBase + 3].Color = shapeColor;
 			}
 
