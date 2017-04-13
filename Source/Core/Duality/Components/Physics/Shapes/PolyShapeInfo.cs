@@ -122,13 +122,13 @@ namespace Duality.Components.Physics
 			for (int i = 1; i < fullPolygon.Count; i++)
 			{
 				float distance = (fullPolygon[i - 1] - fullPolygon[i]).Length;
-				if (distance < 0.025f) return;
+				if (distance < 0.01f) return;
 			}
 
 			// Discard non-simple and micro area polygons early, as there
 			// is nothing that decomposition can do in this case.
 			if (!fullPolygon.IsSimple()) return;
-			if (fullPolygon.GetArea() < 0.01f) return;
+			if (fullPolygon.GetArea() < 0.0001f) return;
 
 			// If the polygon is small enough and convex, use it as-is.
 			if (this.vertices.Length <= FarseerPhysics.Settings.MaxPolygonVertices)
