@@ -115,7 +115,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 				bool isBodySelected = (body == selectedBody);
 
-				float bodyAlpha = isBodySelected ? 1.0f : (isAnyShapeSelected ? 0.5f : 1.0f);
+				float bodyAlpha = isBodySelected ? 1.0f : (isAnyBodySelected ? 0.5f : 1.0f);
 				float maxDensity = body.Shapes.Max(s => s.Density);
 				float minDensity = body.Shapes.Min(s => s.Density);
 				float avgDensity = (maxDensity + minDensity) * 0.5f;
@@ -130,7 +130,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 					bool isShapeSelected = isBodySelected && editorSelectedObjects.Contains(shape);
 
-					float shapeAlpha = bodyAlpha * (isShapeSelected ? 1.0f : (isAnyShapeSelected ? 0.75f : 1.0f));
+					float shapeAlpha = bodyAlpha * (isShapeSelected ? 1.0f : (isAnyShapeSelected && isBodySelected ? 0.75f : 1.0f));
 					float densityRelative = MathF.Abs(maxDensity - minDensity) < 0.01f ? 1.0f : shape.Density / avgDensity;
 					ColorRgba shapeColor = shape.IsSensor ? this.ShapeSensorColor : this.ShapeColor;
 					ColorRgba fontColor = this.FgColor;
