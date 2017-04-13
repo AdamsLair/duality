@@ -206,7 +206,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				// Draw transform center
 				if (body.BodyType == BodyType.Dynamic)
 				{
-					float size = this.GetScreenConstantScale(canvas, 4.0f);
+					float size = this.GetScreenConstantScale(canvas, 3.0f);
 					canvas.State.ColorTint = this.ObjectCenterColor.WithAlpha(bodyAlpha);
 					canvas.FillCircle(objPos.X, objPos.Y, 0.0f, size);
 				}
@@ -240,7 +240,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			}
 
 			// Draw the polygon outline
+			canvas.State.ZOffset = this.depthOffset - 0.1f;
 			this.DrawPolygonOutline(canvas, transform, shape.Vertices, outlineColor, true);
+			canvas.State.ZOffset = this.depthOffset;
 		}
 		private void DrawShape(Canvas canvas, Transform transform, CircleShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
 		{
@@ -263,6 +265,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			float outlineWidth = this.GetScreenConstantScale(canvas, this.shapeOutlineWidth);
 			canvas.State.ColorTint = outlineColor;
+			canvas.State.ZOffset = this.depthOffset - 0.1f;
 			canvas.FillCircleSegment(
 				objPos.X + circlePos.X,
 				objPos.Y + circlePos.Y,
@@ -271,6 +274,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				0.0f,
 				MathF.RadAngle360,
 				outlineWidth);
+			canvas.State.ZOffset = this.depthOffset;
 		}
 
 		private void FillPolygon(Canvas canvas, Transform transform, Vector2[] polygon, ColorRgba fillColor)
@@ -299,6 +303,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.State.ColorTint = outlineColor;
 
 			float outlineWidth = this.GetScreenConstantScale(canvas, this.shapeOutlineWidth);
+			outlineWidth /= objScale;
 			if (closedLoop)
 				canvas.FillPolygonOutline(polygon, outlineWidth, objPos.X, objPos.Y, 0.0f);
 			else
