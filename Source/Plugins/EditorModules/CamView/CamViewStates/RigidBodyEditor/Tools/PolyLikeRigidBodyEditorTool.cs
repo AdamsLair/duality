@@ -169,7 +169,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		private void AdvanceToNextVertex()
 		{
-			this.Environment.LockedWorldPos = this.Environment.ActiveWorldPos;
+			this.Environment.LockedWorldPos = new Vector3(this.lastPlacedVertexPos, 0.0f);
 
 			Vector2[] vertices = this.GetVertices(this.actionShape);
 			List<Vector2> vertexList = vertices.ToList();
