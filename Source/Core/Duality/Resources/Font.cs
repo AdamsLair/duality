@@ -769,7 +769,7 @@ namespace Duality.Resources
 		/// <returns>The size of the measured text.</returns>
 		public Vector2 MeasureText(string text)
 		{
-			if (this.texture == null) return Vector2.Zero;
+			if (this.texture == null || text == null) return Vector2.Zero;
 
 			Vector2 textSize = Vector2.Zero;
 			float curOffset = 0.0f;
