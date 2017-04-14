@@ -14,6 +14,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 {
 	public class RigidBodyJointCamViewLayer : CamViewLayer
 	{
+		private float anchorScale = 3.0f;
+		private float lineCapScale = 7.0f;
+		private float minAngleConstraintRadius = 20.0f;
+		private float defaultLineWidth = 2.0f;
+		private float depthOffset = -1.0f;
+
 		public override string LayerName
 		{
 			get { return Properties.CamViewRes.CamViewLayer_RigidBodyJoint_Name; }
@@ -60,26 +66,29 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		{
 			base.OnCollectWorldOverlayDrawcalls(canvas);
 			canvas.State.TextInvariantScale = true;
-			canvas.State.ZOffset = -1;
+			canvas.State.ZOffset = this.depthOffset;
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
 
 			RigidBody selectedBody = this.QuerySelectedCollider();
+			bool isAnyBodySelected = (selectedBody != null);
 
 			List<RigidBody> visibleColliders = this.QueryVisibleColliders().ToList();
 			List<JointInfo> visibleJoints = new List<JointInfo>();
-			foreach (RigidBody c in visibleColliders)
+			foreach (RigidBody body in visibleColliders)
 			{
-				if (c.Joints == null) continue;
-				visibleJoints.AddRange(c.Joints.Where(j => !visibleJoints.Contains(j)));
+				if (body.Joints == null) continue;
+				visibleJoints.AddRange(body.Joints.Where(j => !visibleJoints.Contains(j)));
 			}
-			foreach (JointInfo j in visibleJoints)
+			foreach (JointInfo joint in visibleJoints)
 			{
-				float jointAlpha = selectedBody != null && (j.ParentBody == selectedBody || j.OtherBody == selectedBody) ? 1.0f : 0.5f;
-				if (!j.Enabled) jointAlpha *= 0.25f;
+				bool isBodySelected = selectedBody != null && (joint.ParentBody == selectedBody || joint.OtherBody == selectedBody);
+				float jointAlpha = isBodySelected || !isAnyBodySelected ? 1.0f : 0.5f;
+				if (!joint.Enabled) jointAlpha *= 0.25f;
 				canvas.State.ColorTint = canvas.State.ColorTint.WithAlpha(jointAlpha);
 
-				if (j.ParentBody == null) continue;
-				if (j.OtherBody == null) continue;
-				this.DrawJoint(canvas, j);
+				if (joint.ParentBody == null) continue;
+				if (joint.OtherBody == null) continue;
+				this.DrawJoint(canvas, joint);
 			}
 		}
 
@@ -88,17 +97,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			if (joint.ParentBody == null) return;
 			if (joint.OtherBody == null) return;
 
-			if (joint is AngleJointInfo)				this.DrawJoint(canvas, joint as AngleJointInfo);
-			else if (joint is DistanceJointInfo)		this.DrawJoint(canvas, joint as DistanceJointInfo);
-			else if (joint is FrictionJointInfo)		this.DrawJoint(canvas, joint as FrictionJointInfo);
-			else if (joint is RevoluteJointInfo)		this.DrawJoint(canvas, joint as RevoluteJointInfo);
-			else if (joint is PrismaticJointInfo)		this.DrawJoint(canvas, joint as PrismaticJointInfo);
-			else if (joint is WeldJointInfo)			this.DrawJoint(canvas, joint as WeldJointInfo);
-			else if (joint is RopeJointInfo)			this.DrawJoint(canvas, joint as RopeJointInfo);
-			else if (joint is SliderJointInfo)			this.DrawJoint(canvas, joint as SliderJointInfo);
-			else if (joint is LineJointInfo)			this.DrawJoint(canvas, joint as LineJointInfo);
-			else if (joint is PulleyJointInfo)			this.DrawJoint(canvas, joint as PulleyJointInfo);
-			else if (joint is GearJointInfo)			this.DrawJoint(canvas, joint as GearJointInfo);
+			if (joint is AngleJointInfo)          this.DrawJoint(canvas, joint as AngleJointInfo);
+			else if (joint is DistanceJointInfo)  this.DrawJoint(canvas, joint as DistanceJointInfo);
+			else if (joint is FrictionJointInfo)  this.DrawJoint(canvas, joint as FrictionJointInfo);
+			else if (joint is RevoluteJointInfo)  this.DrawJoint(canvas, joint as RevoluteJointInfo);
+			else if (joint is PrismaticJointInfo) this.DrawJoint(canvas, joint as PrismaticJointInfo);
+			else if (joint is WeldJointInfo)      this.DrawJoint(canvas, joint as WeldJointInfo);
+			else if (joint is RopeJointInfo)      this.DrawJoint(canvas, joint as RopeJointInfo);
+			else if (joint is SliderJointInfo)    this.DrawJoint(canvas, joint as SliderJointInfo);
+			else if (joint is LineJointInfo)      this.DrawJoint(canvas, joint as LineJointInfo);
+			else if (joint is PulleyJointInfo)    this.DrawJoint(canvas, joint as PulleyJointInfo);
+			else if (joint is GearJointInfo)      this.DrawJoint(canvas, joint as GearJointInfo);
 		}
 		private void DrawJoint(Canvas canvas, AngleJointInfo joint)
 		{
@@ -130,11 +139,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		}
 		private void DrawJoint(Canvas canvas, RevoluteJointInfo joint)
 		{
+			float screenScale = this.GetScreenScale(canvas);
+			float anchorDist = this.GetAnchorDist(joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
+			float screenAnchorDist = screenScale * anchorDist;
 			float angularCircleRadA = joint.ParentBody.BoundRadius * 0.25f;
 			float angularCircleRadB = joint.OtherBody.BoundRadius * 0.25f;
-
-			float anchorDist = this.GetAnchorDist(joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
-			bool displaySecondCollider = anchorDist >= angularCircleRadA + angularCircleRadB;
+			bool displaySecondAngle = screenAnchorDist >= 2.0f * MathF.Max(
+				screenScale * angularCircleRadA + angularCircleRadB, 
+				2.0f * this.minAngleConstraintRadius);
 
 			this.DrawLocalPosConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
 			
@@ -146,7 +158,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					joint.OtherBody.GameObj.Transform.Angle - joint.ReferenceAngle, 
 					joint.ParentBody.GameObj.Transform.Angle, 
 					angularCircleRadA);
-				if (displaySecondCollider)
+				if (displaySecondAngle)
 				{
 					this.DrawLocalAngleConstraint(canvas, 
 						joint.OtherBody, 
@@ -167,9 +179,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		}
 		private void DrawJoint(Canvas canvas, PrismaticJointInfo joint)
 		{
+			float screenScale = this.GetScreenScale(canvas);
+			float screenDist = screenScale * (joint.ParentBody.GameObj.Transform.Pos - joint.OtherBody.GameObj.Transform.Pos).Length;
 			float angularCircleRadA = joint.ParentBody.BoundRadius * 0.25f;
 			float angularCircleRadB = joint.OtherBody.BoundRadius * 0.25f;
-			bool displaySecondCollider = (joint.ParentBody.GameObj.Transform.Pos - joint.OtherBody.GameObj.Transform.Pos).Length >= angularCircleRadA + angularCircleRadB;
+			bool displaySecondAngle = screenDist >= 2.0f * MathF.Max(
+				screenScale * angularCircleRadA + angularCircleRadB, 
+				2.0f * this.minAngleConstraintRadius);
 
 			if (joint.LimitEnabled)
 			    this.DrawLocalAxisConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB, joint.LowerLimit, joint.UpperLimit);
@@ -182,7 +198,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				joint.OtherBody.GameObj.Transform.Angle - joint.ReferenceAngle, 
 				joint.ParentBody.GameObj.Transform.Angle, 
 				angularCircleRadA);
-			if (displaySecondCollider)
+			if (displaySecondAngle)
 			{
 				this.DrawLocalAngleConstraint(canvas, 
 					joint.OtherBody, 
@@ -200,11 +216,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		}
 		private void DrawJoint(Canvas canvas, WeldJointInfo joint)
 		{
+			float screenScale = this.GetScreenScale(canvas);
+			float anchorDist = this.GetAnchorDist(joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
+			float screenAnchorDist = screenScale * anchorDist;
 			float angularCircleRadA = joint.ParentBody.BoundRadius * 0.25f;
 			float angularCircleRadB = joint.OtherBody.BoundRadius * 0.25f;
-
-			float anchorDist = this.GetAnchorDist(joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
-			bool displaySecondCollider = anchorDist >= angularCircleRadA + angularCircleRadB;
+			bool displaySecondAngle = screenAnchorDist >= 2.0f * MathF.Max(
+				screenScale * angularCircleRadA + angularCircleRadB, 
+				2.0f * this.minAngleConstraintRadius);
 
 			this.DrawLocalPosConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
 
@@ -217,7 +236,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				joint.OtherBody.GameObj.Transform.Angle - joint.RefAngle, 
 				joint.ParentBody.GameObj.Transform.Angle, 
 				angularCircleRadA);
-			if (displaySecondCollider)
+			if (displaySecondAngle)
 			{
 				this.DrawLocalAngleConstraint(canvas, 
 					joint.OtherBody, 
@@ -247,10 +266,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			this.DrawLocalAxisConstraint(canvas, joint.OtherBody, joint.ParentBody, joint.MovementAxis, joint.WheelAnchor, joint.CarAnchor, -joint.OtherBody.BoundRadius * 0.25f, joint.OtherBody.BoundRadius * 0.25f);
 			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.CarAnchor);
 			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.WheelAnchor);
-			
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, this.JointColor));
-			this.DrawLocalText(canvas, joint.ParentBody, "Car", Vector2.Zero, 0.0f);
-			this.DrawLocalText(canvas, joint.OtherBody, "Wheel", Vector2.Zero, 0.0f);
 
 			if (joint.MotorEnabled)
 			{
@@ -273,76 +288,56 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			this.DrawLocalLooseConstraint(canvas, joint.ParentBody, joint.OtherBody, Vector2.Zero, Vector2.Zero);
 		}
 		
-		private void DrawLocalText(Canvas canvas, RigidBody body, string text, Vector2 pos, float baseAngle)
-		{
-			this.DrawLocalText(canvas, body, text, pos, Vector2.Zero, baseAngle);
-		}
-		private void DrawLocalText(Canvas canvas, RigidBody body, string text, Vector2 pos, Vector2 handle, float baseAngle)
-		{
-			Vector3 bodyPos = body.GameObj.Transform.Pos;
-			Vector2 textSize = canvas.MeasureText(text);
-			bool flipText = MathF.TurnDir(baseAngle - canvas.DrawDevice.RefAngle, MathF.RadAngle90) < 0;
-			baseAngle = MathF.NormalizeAngle(flipText ? baseAngle + MathF.RadAngle180 : baseAngle);
-
-			handle *= textSize;
-			if (flipText) handle = textSize - handle;
-
-			canvas.State.TransformHandle = handle;
-			canvas.State.TransformAngle = baseAngle;
-			canvas.DrawText(text, 
-				bodyPos.X + pos.X, 
-				bodyPos.Y + pos.Y, 
-				bodyPos.Z);
-			canvas.State.TransformAngle = 0.0f;
-			canvas.State.TransformHandle = Vector2.Zero;
-		}
 		private void DrawLocalAnchor(Canvas canvas, RigidBody body, Vector2 anchor)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 colliderPos = body.GameObj.Transform.Pos;
 
-			ColorRgba clr = this.JointColor;
-			float markerCircleRad = body.BoundRadius * 0.02f;
+			float markerCircleRad = this.GetScreenConstantScale(canvas, this.anchorScale);
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.ColorTint = baseColor * this.JointColor;
 			canvas.FillCircle(
 				colliderPos.X + anchorToWorld.X,
 				colliderPos.Y + anchorToWorld.Y,
-				colliderPos.Z,
+				0.0f,
 				markerCircleRad);
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawLocalFrictionMarker(Canvas canvas, RigidBody body, Vector2 anchor)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 colliderPos = body.GameObj.Transform.Pos;
 
-			ColorRgba clr = this.JointColor;
-			float markerCircleRad = body.BoundRadius * 0.02f;
+			float markerCircleRad = this.GetScreenConstantScale(canvas, this.anchorScale);
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.ColorTint = baseColor * this.JointColor;
 			canvas.FillCircle(
 				colliderPos.X + anchorToWorld.X,
 				colliderPos.Y + anchorToWorld.Y,
-				colliderPos.Z,
+				0.0f,
 				markerCircleRad * 0.5f);
 			canvas.DrawCircle(
 				colliderPos.X + anchorToWorld.X,
 				colliderPos.Y + anchorToWorld.Y,
-				colliderPos.Z,
+				0.0f,
 				markerCircleRad);
 			canvas.DrawCircle(
 				colliderPos.X + anchorToWorld.X,
 				colliderPos.Y + anchorToWorld.Y,
-				colliderPos.Z,
+				0.0f,
 				markerCircleRad * 1.5f);
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawLocalAngleConstraint(Canvas canvas, RigidBody body, Vector2 anchor, float targetAngle, float currentAngle, float radius)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 bodyPos = body.GameObj.Transform.Pos;
 
-			ColorRgba clr = this.JointColor;
-			ColorRgba clrErr = this.JointErrorColor;
+			radius = this.GetScreenMinScale(canvas, radius, this.minAngleConstraintRadius);
 
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 			Vector2 angleVec = Vector2.FromAngleLength(targetAngle, radius);
 			Vector2 errorVec = Vector2.FromAngleLength(currentAngle, radius);
@@ -358,47 +353,43 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					circleEnd = circleBegin + MathF.CircularDist(circleBegin, circleEnd);
 				}
 
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
-				canvas.DrawLine(
+				canvas.State.ColorTint = baseColor * this.JointErrorColor;
+				canvas.FillThickLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
-					bodyPos.Z, 
+					0.0f, 
 					bodyPos.X + anchorToWorld.X + errorVec.X,
 					bodyPos.Y + anchorToWorld.Y + errorVec.Y,
-					bodyPos.Z);
-				canvas.DrawCircleSegment(
+					0.0f,
+					lineWidth);
+				canvas.FillCircleSegment(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
-					bodyPos.Z,
+					0.0f,
 					radius,
 					circleBegin,
-					circleEnd);
-				this.DrawLocalText(canvas, body,
-					string.Format("{0:F0}°", MathF.RadToDeg(MathF.NormalizeAngle(currentAngle))),
-					anchorToWorld + errorVec,
-					Vector2.UnitY,
-					errorVec.Angle);
+					circleEnd,
+					lineWidth);
 			}
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
-			canvas.DrawLine(
+			canvas.State.ColorTint = baseColor * this.JointColor;
+			canvas.FillThickLine(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z, 
+				0.0f, 
 				bodyPos.X + anchorToWorld.X + angleVec.X,
 				bodyPos.Y + anchorToWorld.Y + angleVec.Y,
-				bodyPos.Z);
-			this.DrawLocalText(canvas, body,
-				string.Format("{0:F0}°", MathF.RadToDeg(MathF.NormalizeAngle(targetAngle))),
-				anchorToWorld + angleVec,
-				angleVec.Angle);
+				0.0f,
+				lineWidth);
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawLocalAngleConstraint(Canvas canvas, RigidBody body, Vector2 anchor, float minAngle, float maxAngle, float currentAngle, float radius)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 bodyPos = body.GameObj.Transform.Pos;
 
-			ColorRgba clr = this.JointColor;
-			ColorRgba clrErr = this.JointErrorColor;
+			radius = this.GetScreenMinScale(canvas, radius, this.minAngleConstraintRadius);
 
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 			Vector2 angleVecMin = Vector2.FromAngleLength(minAngle, radius);
 			Vector2 angleVecMax = Vector2.FromAngleLength(maxAngle, radius);
@@ -418,117 +409,119 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					circleEnd = circleBegin + MathF.CircularDist(circleBegin, circleEnd);
 				}
 
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
-				canvas.DrawLine(
+				canvas.State.ColorTint = baseColor * this.JointErrorColor;
+				canvas.FillThickLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
-					bodyPos.Z, 
+					0.0f, 
 					bodyPos.X + anchorToWorld.X + errorVec.X,
 					bodyPos.Y + anchorToWorld.Y + errorVec.Y,
-					bodyPos.Z);
-				canvas.DrawCircleSegment(
+					0.0f,
+					lineWidth);
+				canvas.FillCircleSegment(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
-					bodyPos.Z,
+					0.0f,
 					radius,
 					circleBegin,
-					circleEnd);
-				this.DrawLocalText(canvas, body,
-					string.Format("{0:F0}°", MathF.RadToDeg(currentAngle)),
-					anchorToWorld + errorVec,
-					Vector2.UnitY,
-					errorVec.Angle);
+					circleEnd,
+					lineWidth);
 			}
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
-			canvas.DrawCircleSegment(
+
+			canvas.State.ColorTint = baseColor * this.JointColor;
+			canvas.FillCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z,
+				0.0f,
 				radius,
 				minAngle,
-				maxAngle);
-			canvas.DrawLine(
+				maxAngle,
+				lineWidth);
+			canvas.FillThickLine(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z, 
+				0.0f, 
 				bodyPos.X + anchorToWorld.X + angleVecMin.X,
 				bodyPos.Y + anchorToWorld.Y + angleVecMin.Y,
-				bodyPos.Z);
-			canvas.DrawLine(
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z, 
+				0.0f, 
 				bodyPos.X + anchorToWorld.X + angleVecMax.X,
 				bodyPos.Y + anchorToWorld.Y + angleVecMax.Y,
-				bodyPos.Z);
-			this.DrawLocalText(canvas, body,
-				string.Format("{0:F0}°", MathF.RadToDeg(minAngle)),
-				anchorToWorld + angleVecMin,
-				angleVecMin.Angle);
-			this.DrawLocalText(canvas, body,
-				string.Format("{0:F0}°", MathF.RadToDeg(maxAngle)),
-				anchorToWorld + angleVecMax,
-				angleVecMax.Angle);
+				0.0f,
+				lineWidth);
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawLocalAngleMotor(Canvas canvas, RigidBody body, Vector2 anchor, float speed, float maxTorque, float radius)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 bodyPos = body.GameObj.Transform.Pos;
 
-			ColorRgba clr = this.MotorColor;
+			radius = this.GetScreenMinScale(canvas, radius, this.minAngleConstraintRadius);
 
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
+			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			float baseAngle = body.GameObj.Transform.Angle;
 			float speedAngle = baseAngle + speed;
 			float maxTorqueAngle = baseAngle + MathF.Sign(speed) * maxTorque * PhysicsUnit.TorqueToPhysical * 0.01f;
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 			Vector2 arrowBase = anchorToWorld + Vector2.FromAngleLength(speedAngle, radius);
-			Vector2 arrowA = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45, MathF.Sign(speed) * radius * 0.05f);
-			Vector2 arrowB = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45 + MathF.RadAngle270, MathF.Sign(speed) * radius * 0.05f);
+			Vector2 arrowA = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45, MathF.Sign(speed) * worldLineCapScale);
+			Vector2 arrowB = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45 + MathF.RadAngle270, MathF.Sign(speed) * worldLineCapScale);
 
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
-			canvas.DrawCircleSegment(
+			canvas.State.ColorTint = baseColor * this.MotorColor;
+			canvas.FillCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z,
-				radius - 2,
+				0.0f,
+				radius - lineWidth * 2.0f,
 				MathF.Sign(speed) >= 0 ? baseAngle : maxTorqueAngle,
-				MathF.Sign(speed) >= 0 ? maxTorqueAngle : baseAngle);
-			canvas.DrawCircleSegment(
+				MathF.Sign(speed) >= 0 ? maxTorqueAngle : baseAngle,
+				lineWidth);
+			canvas.FillCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z,
-				radius + 2,
+				0.0f,
+				radius + lineWidth * 2.0f,
 				MathF.Sign(speed) >= 0 ? baseAngle : maxTorqueAngle,
-				MathF.Sign(speed) >= 0 ? maxTorqueAngle : baseAngle);
-			canvas.DrawCircleSegment(
+				MathF.Sign(speed) >= 0 ? maxTorqueAngle : baseAngle,
+				lineWidth);
+			canvas.FillCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z,
+				0.0f,
 				radius,
 				MathF.Sign(speed) >= 0 ? baseAngle : speedAngle,
-				MathF.Sign(speed) >= 0 ? speedAngle : baseAngle);
-			canvas.DrawLine(
+				MathF.Sign(speed) >= 0 ? speedAngle : baseAngle,
+				lineWidth);
+			canvas.FillThickLine(
 				bodyPos.X + arrowBase.X,
 				bodyPos.Y + arrowBase.Y,
-				bodyPos.Z,
+				0.0f,
 				bodyPos.X + arrowBase.X + arrowA.X,
 				bodyPos.Y + arrowBase.Y + arrowA.Y,
-				bodyPos.Z);
-			canvas.DrawLine(
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				bodyPos.X + arrowBase.X,
 				bodyPos.Y + arrowBase.Y,
-				bodyPos.Z,
+				0.0f,
 				bodyPos.X + arrowBase.X + arrowB.X,
 				bodyPos.Y + arrowBase.Y + arrowB.Y,
-				bodyPos.Z);
+				0.0f,
+				lineWidth);
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawLocalPosConstraint(Canvas canvas, RigidBody bodyA, RigidBody bodyB, Vector2 anchorA, Vector2 anchorB)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 colliderPosA = bodyA.GameObj.Transform.Pos;
 			Vector3 colliderPosB = bodyB.GameObj.Transform.Pos;
 
-			ColorRgba clr = this.JointColor;
-			ColorRgba clrErr = this.JointErrorColor;
-
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			Vector2 anchorAToWorld = bodyA.GameObj.Transform.GetWorldVector(anchorA);
 			Vector2 anchorBToWorld = bodyB.GameObj.Transform.GetWorldVector(anchorB);
 			Vector2 errorVec = (colliderPosB.Xy + anchorBToWorld) - (colliderPosA.Xy + anchorAToWorld);
@@ -536,46 +529,44 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			bool hasError = errorVec.Length >= 1.0f;
 			if (hasError)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
-				canvas.DrawLine(
+				canvas.State.ColorTint = baseColor * this.JointErrorColor;
+				canvas.FillThickLine(
 					colliderPosA.X + anchorAToWorld.X,
 					colliderPosA.Y + anchorAToWorld.Y,
-					colliderPosA.Z,
+					0.0f,
 					colliderPosB.X + anchorBToWorld.X,
 					colliderPosB.Y + anchorBToWorld.Y,
-					colliderPosB.Z);
-				this.DrawLocalText(canvas, bodyA, 
-					string.Format("{0:F1}", errorVec.Length), 
-					anchorAToWorld + errorVec * 0.5f, 
-					new Vector2(0.5f, 0.0f), 
-					errorVec.PerpendicularLeft.Angle);
+					0.0f,
+					lineWidth);
 			}
 
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
-			canvas.DrawLine(
+			canvas.State.ColorTint = baseColor * this.JointColor;
+			canvas.FillThickLine(
 				colliderPosA.X,
 				colliderPosA.Y,
-				colliderPosA.Z,
+				0.0f,
 				colliderPosA.X + anchorAToWorld.X,
 				colliderPosA.Y + anchorAToWorld.Y,
-				colliderPosA.Z);
-			canvas.DrawLine(
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				colliderPosB.X,
 				colliderPosB.Y,
-				colliderPosB.Z,
+				0.0f,
 				colliderPosB.X + anchorBToWorld.X,
 				colliderPosB.Y + anchorBToWorld.Y,
-				colliderPosB.Z);
+				0.0f,
+				lineWidth);
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawLocalDistConstraint(Canvas canvas, RigidBody bodyA, RigidBody bodyB, Vector2 localAnchorA, Vector2 localAnchorB, float minDist, float maxDist)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 bodyPosA = bodyA.GameObj.Transform.Pos;
 			Vector3 bodyPosB = bodyB.GameObj.Transform.Pos;
-
-			ColorRgba clr = this.JointColor;
-			ColorRgba clrErr = this.JointErrorColor;
 			
-			float markerCircleRad = bodyA.BoundRadius * 0.02f;
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
+			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			Vector2 anchorA = bodyA.GameObj.Transform.GetWorldVector(localAnchorA);
 			Vector2 anchorB = bodyB.GameObj.Transform.GetWorldVector(localAnchorB);
 			Vector2 errorVec = (bodyPosB.Xy + anchorB) - (bodyPosA.Xy + anchorA);
@@ -586,43 +577,38 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			if (hasError)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
-				canvas.DrawLine(
+				canvas.State.ColorTint = baseColor * this.JointErrorColor;
+				canvas.FillThickLine(
 					bodyPosA.X + anchorA.X + distVec.X,
 					bodyPosA.Y + anchorA.Y + distVec.Y,
-					bodyPosA.Z, 
+					0.0f, 
 					bodyPosA.X + anchorA.X + errorVec.X,
 					bodyPosA.Y + anchorA.Y + errorVec.Y,
-					bodyPosA.Z);
-				this.DrawLocalText(canvas, bodyA,
-					string.Format("{0:F1}", dist),
-					anchorA + errorVec,
-					Vector2.UnitY,
-					errorVec.Angle);
+					0.0f,
+					lineWidth);
 			}
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
-			canvas.DrawLine(
+
+			canvas.State.ColorTint = baseColor * this.JointColor;
+			canvas.FillThickLine(
 				bodyPosA.X + anchorA.X,
 				bodyPosA.Y + anchorA.Y,
-				bodyPosA.Z, 
+				0.0f, 
 				bodyPosA.X + anchorA.X + distVec.X,
 				bodyPosA.Y + anchorA.Y + distVec.Y,
-				bodyPosA.Z);
+				0.0f,
+				lineWidth);
 			if (hasError)
 			{
-				canvas.DrawLine(
-					bodyPosA.X + anchorA.X + distVec.X - lineNormal.X * 5.0f,
-					bodyPosA.Y + anchorA.Y + distVec.Y - lineNormal.Y * 5.0f,
-					bodyPosA.Z, 
-					bodyPosA.X + anchorA.X + distVec.X + lineNormal.X * 5.0f,
-					bodyPosA.Y + anchorA.Y + distVec.Y + lineNormal.Y * 5.0f,
-					bodyPosA.Z);
+				canvas.FillThickLine(
+					bodyPosA.X + anchorA.X + distVec.X - lineNormal.X * worldLineCapScale,
+					bodyPosA.Y + anchorA.Y + distVec.Y - lineNormal.Y * worldLineCapScale,
+					0.0f, 
+					bodyPosA.X + anchorA.X + distVec.X + lineNormal.X * worldLineCapScale,
+					bodyPosA.Y + anchorA.Y + distVec.Y + lineNormal.Y * worldLineCapScale,
+					0.0f,
+					lineWidth);
 			}
-			this.DrawLocalText(canvas, bodyA,
-				string.Format("{0:F1}", MathF.Clamp(dist, minDist, maxDist)),
-				anchorA + distVec,
-				Vector2.Zero,
-				errorVec.Angle);
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawLocalAxisConstraint(Canvas canvas, RigidBody bodyA, RigidBody bodyB, Vector2 localAxis, Vector2 localAnchorA, Vector2 localAnchorB, float min = 1, float max = -1)
 		{
@@ -644,84 +630,79 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		}
 		private void DrawLocalLooseConstraint(Canvas canvas, RigidBody bodyA, RigidBody bodyB, Vector2 anchorA, Vector2 anchorB)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 bodyPosA = bodyA.GameObj.Transform.Pos;
 			Vector3 bodyPosB = bodyB.GameObj.Transform.Pos;
-
-			ColorRgba clr = this.JointColor;
 
 			Vector2 anchorAToWorld = bodyA.GameObj.Transform.GetWorldVector(anchorA);
 			Vector2 anchorBToWorld = bodyB.GameObj.Transform.GetWorldVector(anchorB);
 
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.ColorTint = baseColor * this.JointColor;
 			canvas.DrawDashLine(
 				bodyPosA.X + anchorAToWorld.X,
 				bodyPosA.Y + anchorAToWorld.Y,
-				bodyPosA.Z,
+				0.0f,
 				bodyPosB.X + anchorBToWorld.X,
 				bodyPosB.Y + anchorBToWorld.Y,
-				bodyPosB.Z);
+				0.0f);
+			canvas.State.ColorTint = baseColor;
 		}
 		
 		private void DrawWorldAnchor(Canvas canvas, RigidBody body, Vector2 anchor)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 colliderPos = body.GameObj.Transform.Pos;
-			float markerCircleRad = body.BoundRadius * 0.02f;
-			ColorRgba clr = this.JointColor;
+			float markerCircleRad = this.GetScreenConstantScale(canvas, this.anchorScale);
 
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.ColorTint = baseColor * this.JointColor;
 			canvas.FillCircle(
 				anchor.X,
 				anchor.Y,
-				colliderPos.Z,
+				0.0f,
 				markerCircleRad);
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawWorldPosConstraint(Canvas canvas, RigidBody body, Vector2 localAnchor, Vector2 worldAnchor)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 bodyPos = body.GameObj.Transform.Pos;
 
-			ColorRgba clr = this.JointColor;
-			ColorRgba clrErr = this.JointErrorColor;
-
-			float angularCircleRadA = body.BoundRadius * 0.25f;
-			float markerCircleRad = body.BoundRadius * 0.02f;
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			Vector2 anchorAToWorld = body.GameObj.Transform.GetWorldVector(localAnchor);
 			Vector2 errorVec = worldAnchor - (bodyPos.Xy + anchorAToWorld);
 			
 			bool hasError = errorVec.Length >= 1.0f;
 			if (hasError)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
-				canvas.DrawLine(
+				canvas.State.ColorTint = baseColor * this.JointErrorColor;
+				canvas.FillThickLine(
 					bodyPos.X + anchorAToWorld.X,
 					bodyPos.Y + anchorAToWorld.Y,
-					bodyPos.Z,
+					0.0f,
 					worldAnchor.X,
 					worldAnchor.Y,
-					bodyPos.Z);
-				this.DrawLocalText(canvas, body,
-					string.Format("{0:F1}", errorVec.Length),
-					anchorAToWorld + errorVec * 0.5f,
-					new Vector2(0.5f, 0.0f),
-					errorVec.PerpendicularLeft.Angle);
+					0.0f,
+					lineWidth);
 			}
 
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
-			canvas.DrawLine(
+			canvas.State.ColorTint = baseColor * this.JointColor;
+			canvas.FillThickLine(
 				bodyPos.X,
 				bodyPos.Y,
-				bodyPos.Z,
+				0.0f,
 				bodyPos.X + anchorAToWorld.X,
 				bodyPos.Y + anchorAToWorld.Y,
-				bodyPos.Z);
+				0.0f,
+				lineWidth);
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawWorldDistConstraint(Canvas canvas, RigidBody body, Vector2 localAnchor, Vector2 worldAnchor, float minDist, float maxDist)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 colliderPosA = body.GameObj.Transform.Pos;
 
-			ColorRgba clr = this.JointColor;
-			ColorRgba clrErr = this.JointErrorColor;
-			
-			float markerCircleRad = body.BoundRadius * 0.02f;
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
+			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			Vector2 anchorA = body.GameObj.Transform.GetWorldVector(localAnchor);
 			Vector2 errorVec = worldAnchor - (colliderPosA.Xy + anchorA);
 			Vector2 lineNormal = errorVec.PerpendicularRight.Normalized;
@@ -731,47 +712,44 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			if (hasError)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
-				canvas.DrawLine(
+				canvas.State.ColorTint = baseColor * this.JointErrorColor;
+				canvas.FillThickLine(
 					colliderPosA.X + anchorA.X + distVec.X,
 					colliderPosA.Y + anchorA.Y + distVec.Y,
-					colliderPosA.Z, 
+					0.0f, 
 					colliderPosA.X + anchorA.X + errorVec.X,
 					colliderPosA.Y + anchorA.Y + errorVec.Y,
-					colliderPosA.Z);
-				this.DrawLocalText(canvas, body,
-					string.Format("{0:F1}", dist),
-					anchorA + errorVec,
-					Vector2.UnitY,
-					errorVec.Angle);
+					0.0f,
+					lineWidth);
 			}
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
-			canvas.DrawLine(
+
+			canvas.State.ColorTint = baseColor * this.JointColor;
+			canvas.FillThickLine(
 				colliderPosA.X + anchorA.X,
 				colliderPosA.Y + anchorA.Y,
-				colliderPosA.Z, 
+				0.0f, 
 				colliderPosA.X + anchorA.X + distVec.X,
 				colliderPosA.Y + anchorA.Y + distVec.Y,
-				colliderPosA.Z);
+				0.0f,
+				lineWidth);
 			if (hasError)
 			{
-				canvas.DrawLine(
-					colliderPosA.X + anchorA.X + distVec.X - lineNormal.X * 5.0f,
-					colliderPosA.Y + anchorA.Y + distVec.Y - lineNormal.Y * 5.0f,
-					colliderPosA.Z, 
-					colliderPosA.X + anchorA.X + distVec.X + lineNormal.X * 5.0f,
-					colliderPosA.Y + anchorA.Y + distVec.Y + lineNormal.Y * 5.0f,
-					colliderPosA.Z);
+				canvas.FillThickLine(
+					colliderPosA.X + anchorA.X + distVec.X - lineNormal.X * worldLineCapScale,
+					colliderPosA.Y + anchorA.Y + distVec.Y - lineNormal.Y * worldLineCapScale,
+					0.0f, 
+					colliderPosA.X + anchorA.X + distVec.X + lineNormal.X * worldLineCapScale,
+					colliderPosA.Y + anchorA.Y + distVec.Y + lineNormal.Y * worldLineCapScale,
+					0.0f,
+					lineWidth);
 			}
-			this.DrawLocalText(canvas, body,
-				string.Format("{0:F1}", MathF.Clamp(dist, minDist, maxDist)),
-				anchorA + distVec,
-				Vector2.Zero,
-				errorVec.Angle);
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawWorldAxisConstraint(Canvas canvas, RigidBody body, Vector2 worldAxis, Vector2 localAnchor, Vector2 worldAnchor, float min = 1, float max = -1)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 bodyPos = body.GameObj.Transform.Pos;
+
 			worldAxis = worldAxis.Normalized;
 			bool infinite = false;
 			if (min > max)
@@ -780,6 +758,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				max = 10000000.0f;
 				infinite = true;
 			}
+
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
+			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(localAnchor);
 			float axisVal = Vector2.Dot(bodyPos.Xy + anchorToWorld - worldAnchor, worldAxis);
 			Vector2 basePos = MathF.PointLineNearestPoint(
@@ -794,117 +775,122 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			Vector2 errorVec = basePos - bodyPos.Xy;
 			bool hasError = errorVal >= 1.0f;
 
-			ColorRgba clr = this.JointColor;
-			ColorRgba clrErr = this.JointErrorColor;
-			
 			if (hasError)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
-				canvas.DrawLine(
+				canvas.State.ColorTint = baseColor * this.JointErrorColor;
+				canvas.FillThickLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
-					bodyPos.Z,
+					0.0f,
 					basePos.X,
 					basePos.Y,
-					bodyPos.Z);
-				this.DrawLocalText(canvas, body,
-					string.Format("{0:F1}", errorVal),
-					errorVec * 0.5f,
-					new Vector2(0.5f, 0.0f),
-					errorVec.PerpendicularLeft.Angle);
+					0.0f,
+					lineWidth);
 			}
 
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
-			canvas.DrawLine(
+			canvas.State.ColorTint = baseColor * this.JointColor;
+			canvas.FillThickLine(
 				worldAnchor.X + worldAxis.X * min,
 				worldAnchor.Y + worldAxis.Y * min,
-				bodyPos.Z,
+				0.0f,
 				worldAnchor.X + worldAxis.X * max,
 				worldAnchor.Y + worldAxis.Y * max,
-				bodyPos.Z);
+				0.0f,
+				lineWidth);
 			if (!infinite)
 			{
-				canvas.DrawLine(
-					worldAnchor.X + worldAxis.X * min + worldAxis.PerpendicularLeft.X * 5.0f,
-					worldAnchor.Y + worldAxis.Y * min + worldAxis.PerpendicularLeft.Y * 5.0f,
-					bodyPos.Z,
-					worldAnchor.X + worldAxis.X * min + worldAxis.PerpendicularRight.X * 5.0f,
-					worldAnchor.Y + worldAxis.Y * min + worldAxis.PerpendicularRight.Y * 5.0f,
-					bodyPos.Z);
-				canvas.DrawLine(
-					worldAnchor.X + worldAxis.X * max + worldAxis.PerpendicularLeft.X * 5.0f,
-					worldAnchor.Y + worldAxis.Y * max + worldAxis.PerpendicularLeft.Y * 5.0f,
-					bodyPos.Z,
-					worldAnchor.X + worldAxis.X * max + worldAxis.PerpendicularRight.X * 5.0f,
-					worldAnchor.Y + worldAxis.Y * max + worldAxis.PerpendicularRight.Y * 5.0f,
-					bodyPos.Z);
+				canvas.FillThickLine(
+					worldAnchor.X + worldAxis.X * min + worldAxis.PerpendicularLeft.X * worldLineCapScale,
+					worldAnchor.Y + worldAxis.Y * min + worldAxis.PerpendicularLeft.Y * worldLineCapScale,
+					0.0f,
+					worldAnchor.X + worldAxis.X * min + worldAxis.PerpendicularRight.X * worldLineCapScale,
+					worldAnchor.Y + worldAxis.Y * min + worldAxis.PerpendicularRight.Y * worldLineCapScale,
+					0.0f,
+					lineWidth);
+				canvas.FillThickLine(
+					worldAnchor.X + worldAxis.X * max + worldAxis.PerpendicularLeft.X * worldLineCapScale,
+					worldAnchor.Y + worldAxis.Y * max + worldAxis.PerpendicularLeft.Y * worldLineCapScale,
+					0.0f,
+					worldAnchor.X + worldAxis.X * max + worldAxis.PerpendicularRight.X * worldLineCapScale,
+					worldAnchor.Y + worldAxis.Y * max + worldAxis.PerpendicularRight.Y * worldLineCapScale,
+					0.0f,
+					lineWidth);
 			}
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawWorldAxisMotor(Canvas canvas, RigidBody body, Vector2 worldAxis, Vector2 localAnchor, Vector2 worldAnchor, float speed, float maxForce, float offset)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 bodyPos = body.GameObj.Transform.Pos;
 
-			ColorRgba clr = this.MotorColor;
-
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
+			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
+			float worldArrowScale = this.GetScreenConstantScale(canvas, speed * 10.0f);
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(localAnchor);
 			float axisAngle = worldAxis.Angle;
 			float maxForceTemp = MathF.Sign(speed) * maxForce * PhysicsUnit.ForceToPhysical * 10.0f;
 			Vector2 arrowBegin = bodyPos.Xy + worldAxis.PerpendicularRight * offset;
-			Vector2 arrowBase = arrowBegin + worldAxis * speed * 10.0f;
-			Vector2 arrowA = Vector2.FromAngleLength(axisAngle + MathF.RadAngle45 + MathF.RadAngle180, MathF.Sign(speed) * MathF.Max(offset * 0.05f, 5.0f));
-			Vector2 arrowB = Vector2.FromAngleLength(axisAngle - MathF.RadAngle45 + MathF.RadAngle180, MathF.Sign(speed) * MathF.Max(offset * 0.05f, 5.0f));
+			Vector2 arrowBase = arrowBegin + worldAxis * worldArrowScale;
+			Vector2 arrowA = Vector2.FromAngleLength(axisAngle + MathF.RadAngle45 + MathF.RadAngle180, MathF.Sign(speed) * worldLineCapScale);
+			Vector2 arrowB = Vector2.FromAngleLength(axisAngle - MathF.RadAngle45 + MathF.RadAngle180, MathF.Sign(speed) * worldLineCapScale);
 			
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
-			canvas.DrawLine(
-				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f,
-				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f,
-				bodyPos.Z,
-				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f + worldAxis.X * maxForceTemp,
-				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f + worldAxis.Y * maxForceTemp,
-				bodyPos.Z);
-			canvas.DrawLine(
-				arrowBegin.X + worldAxis.PerpendicularRight.X * 2.0f,
-				arrowBegin.Y + worldAxis.PerpendicularRight.Y * 2.0f,
-				bodyPos.Z,
-				arrowBegin.X + worldAxis.PerpendicularRight.X * 2.0f + worldAxis.X * maxForceTemp,
-				arrowBegin.Y + worldAxis.PerpendicularRight.Y * 2.0f + worldAxis.Y * maxForceTemp,
-				bodyPos.Z);
-			canvas.DrawLine(
+			canvas.State.ColorTint = baseColor * this.MotorColor;
+			canvas.FillThickLine(
+				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f * lineWidth,
+				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f * lineWidth,
+				0.0f,
+				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f * lineWidth + worldAxis.X * maxForceTemp,
+				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f * lineWidth + worldAxis.Y * maxForceTemp,
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
+				arrowBegin.X + worldAxis.PerpendicularRight.X * 2.0f * lineWidth,
+				arrowBegin.Y + worldAxis.PerpendicularRight.Y * 2.0f * lineWidth,
+				0.0f,
+				arrowBegin.X + worldAxis.PerpendicularRight.X * 2.0f * lineWidth + worldAxis.X * maxForceTemp,
+				arrowBegin.Y + worldAxis.PerpendicularRight.Y * 2.0f * lineWidth + worldAxis.Y * maxForceTemp,
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				arrowBegin.X,
 				arrowBegin.Y,
-				bodyPos.Z,
+				0.0f,
 				arrowBase.X,
 				arrowBase.Y,
-				bodyPos.Z);
-			canvas.DrawLine(
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				arrowBase.X,
 				arrowBase.Y,
-				bodyPos.Z,
+				0.0f,
 				arrowBase.X + arrowA.X,
 				arrowBase.Y + arrowA.Y,
-				bodyPos.Z);
-			canvas.DrawLine(
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				arrowBase.X,
 				arrowBase.Y,
-				bodyPos.Z,
+				0.0f,
 				arrowBase.X + arrowB.X,
 				arrowBase.Y + arrowB.Y,
-				bodyPos.Z);
+				0.0f,
+				lineWidth);
+			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawWorldLooseConstraint(Canvas canvas, RigidBody bodyA, Vector2 anchorA, Vector2 anchorB)
 		{
+			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 bodyPosA = bodyA.GameObj.Transform.Pos;
 
-			ColorRgba clr = this.JointColor;
-
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.ColorTint = baseColor * this.JointColor;
 			canvas.DrawDashLine(
 				anchorA.X,
 				anchorA.Y,
-				bodyPosA.Z,
+				0.0f,
 				anchorB.X,
 				anchorB.Y,
-				bodyPosA.Z);
+				0.0f);
+			canvas.State.ColorTint = baseColor;
 		}
 
 		private float GetAnchorDist(RigidBody bodyA, RigidBody bodyB, Vector2 localAnchorA, Vector2 localAnchorB)
@@ -917,6 +903,21 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			Vector2 errorVec = (colliderPosB.Xy + anchorBToWorld) - (colliderPosA.Xy + anchorAToWorld);
 
 			return errorVec.Length;
+		}
+		
+		private float GetScreenScale(Canvas canvas)
+		{
+			return MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0.0f));
+		}
+		private float GetScreenMinScale(Canvas canvas, float worldScale, float minScreenScale)
+		{
+			float scaleToScreen = this.GetScreenScale(canvas);
+			float screenRadius = MathF.Max(worldScale * scaleToScreen, minScreenScale);
+			return screenRadius / scaleToScreen;
+		}
+		private float GetScreenConstantScale(Canvas canvas, float baseScale)
+		{
+			return baseScale / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0.0f));
 		}
 
 		private IEnumerable<RigidBody> QueryVisibleColliders()
