@@ -17,6 +17,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		private float anchorScale = 3.0f;
 		private float lineCapScale = 7.0f;
 		private float minAngleConstraintRadius = 20.0f;
+		private float defaultLineWidth = 2.0f;
 		private float depthOffset = -1.0f;
 
 		public override string LayerName
@@ -326,6 +327,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			radius = this.GetScreenMinScale(canvas, radius, this.minAngleConstraintRadius);
 
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 			Vector2 angleVec = Vector2.FromAngleLength(targetAngle, radius);
 			Vector2 errorVec = Vector2.FromAngleLength(currentAngle, radius);
@@ -342,29 +344,32 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				}
 
 				canvas.State.ColorTint = baseColor * this.JointErrorColor;
-				canvas.DrawLine(
+				canvas.FillThickLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
 					0.0f, 
 					bodyPos.X + anchorToWorld.X + errorVec.X,
 					bodyPos.Y + anchorToWorld.Y + errorVec.Y,
-					0.0f);
-				canvas.DrawCircleSegment(
+					0.0f,
+					lineWidth);
+				canvas.FillCircleSegment(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
 					0.0f,
 					radius,
 					circleBegin,
-					circleEnd);
+					circleEnd,
+					lineWidth);
 			}
 			canvas.State.ColorTint = baseColor * this.JointColor;
-			canvas.DrawLine(
+			canvas.FillThickLine(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
 				0.0f, 
 				bodyPos.X + anchorToWorld.X + angleVec.X,
 				bodyPos.Y + anchorToWorld.Y + angleVec.Y,
-				0.0f);
+				0.0f,
+				lineWidth);
 			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawLocalAngleConstraint(Canvas canvas, RigidBody body, Vector2 anchor, float minAngle, float maxAngle, float currentAngle, float radius)
@@ -374,6 +379,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			radius = this.GetScreenMinScale(canvas, radius, this.minAngleConstraintRadius);
 
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 			Vector2 angleVecMin = Vector2.FromAngleLength(minAngle, radius);
 			Vector2 angleVecMax = Vector2.FromAngleLength(maxAngle, radius);
@@ -394,44 +400,49 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				}
 
 				canvas.State.ColorTint = baseColor * this.JointErrorColor;
-				canvas.DrawLine(
+				canvas.FillThickLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
 					0.0f, 
 					bodyPos.X + anchorToWorld.X + errorVec.X,
 					bodyPos.Y + anchorToWorld.Y + errorVec.Y,
-					0.0f);
-				canvas.DrawCircleSegment(
+					0.0f,
+					lineWidth);
+				canvas.FillCircleSegment(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
 					0.0f,
 					radius,
 					circleBegin,
-					circleEnd);
+					circleEnd,
+					lineWidth);
 			}
 
 			canvas.State.ColorTint = baseColor * this.JointColor;
-			canvas.DrawCircleSegment(
+			canvas.FillCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
 				0.0f,
 				radius,
 				minAngle,
-				maxAngle);
-			canvas.DrawLine(
+				maxAngle,
+				lineWidth);
+			canvas.FillThickLine(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
 				0.0f, 
 				bodyPos.X + anchorToWorld.X + angleVecMin.X,
 				bodyPos.Y + anchorToWorld.Y + angleVecMin.Y,
-				0.0f);
-			canvas.DrawLine(
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
 				0.0f, 
 				bodyPos.X + anchorToWorld.X + angleVecMax.X,
 				bodyPos.Y + anchorToWorld.Y + angleVecMax.Y,
-				0.0f);
+				0.0f,
+				lineWidth);
 			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawLocalAngleMotor(Canvas canvas, RigidBody body, Vector2 anchor, float speed, float maxTorque, float radius)
@@ -441,6 +452,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			radius = this.GetScreenMinScale(canvas, radius, this.minAngleConstraintRadius);
 
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			float baseAngle = body.GameObj.Transform.Angle;
 			float speedAngle = baseAngle + speed;
@@ -451,41 +463,46 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			Vector2 arrowB = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45 + MathF.RadAngle270, MathF.Sign(speed) * worldLineCapScale);
 
 			canvas.State.ColorTint = baseColor * this.MotorColor;
-			canvas.DrawCircleSegment(
+			canvas.FillCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
 				0.0f,
-				radius - 2,
+				radius - lineWidth * 2.0f,
 				MathF.Sign(speed) >= 0 ? baseAngle : maxTorqueAngle,
-				MathF.Sign(speed) >= 0 ? maxTorqueAngle : baseAngle);
-			canvas.DrawCircleSegment(
+				MathF.Sign(speed) >= 0 ? maxTorqueAngle : baseAngle,
+				lineWidth);
+			canvas.FillCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
 				0.0f,
-				radius + 2,
+				radius + lineWidth * 2.0f,
 				MathF.Sign(speed) >= 0 ? baseAngle : maxTorqueAngle,
-				MathF.Sign(speed) >= 0 ? maxTorqueAngle : baseAngle);
-			canvas.DrawCircleSegment(
+				MathF.Sign(speed) >= 0 ? maxTorqueAngle : baseAngle,
+				lineWidth);
+			canvas.FillCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
 				0.0f,
 				radius,
 				MathF.Sign(speed) >= 0 ? baseAngle : speedAngle,
-				MathF.Sign(speed) >= 0 ? speedAngle : baseAngle);
-			canvas.DrawLine(
+				MathF.Sign(speed) >= 0 ? speedAngle : baseAngle,
+				lineWidth);
+			canvas.FillThickLine(
 				bodyPos.X + arrowBase.X,
 				bodyPos.Y + arrowBase.Y,
 				0.0f,
 				bodyPos.X + arrowBase.X + arrowA.X,
 				bodyPos.Y + arrowBase.Y + arrowA.Y,
-				0.0f);
-			canvas.DrawLine(
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				bodyPos.X + arrowBase.X,
 				bodyPos.Y + arrowBase.Y,
 				0.0f,
 				bodyPos.X + arrowBase.X + arrowB.X,
 				bodyPos.Y + arrowBase.Y + arrowB.Y,
-				0.0f);
+				0.0f,
+				lineWidth);
 			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawLocalPosConstraint(Canvas canvas, RigidBody bodyA, RigidBody bodyB, Vector2 anchorA, Vector2 anchorB)
@@ -494,6 +511,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			Vector3 colliderPosA = bodyA.GameObj.Transform.Pos;
 			Vector3 colliderPosB = bodyB.GameObj.Transform.Pos;
 
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			Vector2 anchorAToWorld = bodyA.GameObj.Transform.GetWorldVector(anchorA);
 			Vector2 anchorBToWorld = bodyB.GameObj.Transform.GetWorldVector(anchorB);
 			Vector2 errorVec = (colliderPosB.Xy + anchorBToWorld) - (colliderPosA.Xy + anchorAToWorld);
@@ -502,30 +520,33 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			if (hasError)
 			{
 				canvas.State.ColorTint = baseColor * this.JointErrorColor;
-				canvas.DrawLine(
+				canvas.FillThickLine(
 					colliderPosA.X + anchorAToWorld.X,
 					colliderPosA.Y + anchorAToWorld.Y,
 					0.0f,
 					colliderPosB.X + anchorBToWorld.X,
 					colliderPosB.Y + anchorBToWorld.Y,
-					0.0f);
+					0.0f,
+					lineWidth);
 			}
 
 			canvas.State.ColorTint = baseColor * this.JointColor;
-			canvas.DrawLine(
+			canvas.FillThickLine(
 				colliderPosA.X,
 				colliderPosA.Y,
 				0.0f,
 				colliderPosA.X + anchorAToWorld.X,
 				colliderPosA.Y + anchorAToWorld.Y,
-				0.0f);
-			canvas.DrawLine(
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				colliderPosB.X,
 				colliderPosB.Y,
 				0.0f,
 				colliderPosB.X + anchorBToWorld.X,
 				colliderPosB.Y + anchorBToWorld.Y,
-				0.0f);
+				0.0f,
+				lineWidth);
 			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawLocalDistConstraint(Canvas canvas, RigidBody bodyA, RigidBody bodyB, Vector2 localAnchorA, Vector2 localAnchorB, float minDist, float maxDist)
@@ -534,6 +555,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			Vector3 bodyPosA = bodyA.GameObj.Transform.Pos;
 			Vector3 bodyPosB = bodyB.GameObj.Transform.Pos;
 			
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			Vector2 anchorA = bodyA.GameObj.Transform.GetWorldVector(localAnchorA);
 			Vector2 anchorB = bodyB.GameObj.Transform.GetWorldVector(localAnchorB);
@@ -546,32 +568,35 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			if (hasError)
 			{
 				canvas.State.ColorTint = baseColor * this.JointErrorColor;
-				canvas.DrawLine(
+				canvas.FillThickLine(
 					bodyPosA.X + anchorA.X + distVec.X,
 					bodyPosA.Y + anchorA.Y + distVec.Y,
 					0.0f, 
 					bodyPosA.X + anchorA.X + errorVec.X,
 					bodyPosA.Y + anchorA.Y + errorVec.Y,
-					0.0f);
+					0.0f,
+					lineWidth);
 			}
 
 			canvas.State.ColorTint = baseColor * this.JointColor;
-			canvas.DrawLine(
+			canvas.FillThickLine(
 				bodyPosA.X + anchorA.X,
 				bodyPosA.Y + anchorA.Y,
 				0.0f, 
 				bodyPosA.X + anchorA.X + distVec.X,
 				bodyPosA.Y + anchorA.Y + distVec.Y,
-				0.0f);
+				0.0f,
+				lineWidth);
 			if (hasError)
 			{
-				canvas.DrawLine(
+				canvas.FillThickLine(
 					bodyPosA.X + anchorA.X + distVec.X - lineNormal.X * worldLineCapScale,
 					bodyPosA.Y + anchorA.Y + distVec.Y - lineNormal.Y * worldLineCapScale,
 					0.0f, 
 					bodyPosA.X + anchorA.X + distVec.X + lineNormal.X * worldLineCapScale,
 					bodyPosA.Y + anchorA.Y + distVec.Y + lineNormal.Y * worldLineCapScale,
-					0.0f);
+					0.0f,
+					lineWidth);
 			}
 			canvas.State.ColorTint = baseColor;
 		}
@@ -632,6 +657,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 bodyPos = body.GameObj.Transform.Pos;
 
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			Vector2 anchorAToWorld = body.GameObj.Transform.GetWorldVector(localAnchor);
 			Vector2 errorVec = worldAnchor - (bodyPos.Xy + anchorAToWorld);
 			
@@ -639,23 +665,25 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			if (hasError)
 			{
 				canvas.State.ColorTint = baseColor * this.JointErrorColor;
-				canvas.DrawLine(
+				canvas.FillThickLine(
 					bodyPos.X + anchorAToWorld.X,
 					bodyPos.Y + anchorAToWorld.Y,
 					0.0f,
 					worldAnchor.X,
 					worldAnchor.Y,
-					0.0f);
+					0.0f,
+					lineWidth);
 			}
 
 			canvas.State.ColorTint = baseColor * this.JointColor;
-			canvas.DrawLine(
+			canvas.FillThickLine(
 				bodyPos.X,
 				bodyPos.Y,
 				0.0f,
 				bodyPos.X + anchorAToWorld.X,
 				bodyPos.Y + anchorAToWorld.Y,
-				0.0f);
+				0.0f,
+				lineWidth);
 			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawWorldDistConstraint(Canvas canvas, RigidBody body, Vector2 localAnchor, Vector2 worldAnchor, float minDist, float maxDist)
@@ -663,6 +691,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 colliderPosA = body.GameObj.Transform.Pos;
 
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			Vector2 anchorA = body.GameObj.Transform.GetWorldVector(localAnchor);
 			Vector2 errorVec = worldAnchor - (colliderPosA.Xy + anchorA);
@@ -674,32 +703,35 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			if (hasError)
 			{
 				canvas.State.ColorTint = baseColor * this.JointErrorColor;
-				canvas.DrawLine(
+				canvas.FillThickLine(
 					colliderPosA.X + anchorA.X + distVec.X,
 					colliderPosA.Y + anchorA.Y + distVec.Y,
 					0.0f, 
 					colliderPosA.X + anchorA.X + errorVec.X,
 					colliderPosA.Y + anchorA.Y + errorVec.Y,
-					0.0f);
+					0.0f,
+					lineWidth);
 			}
 
 			canvas.State.ColorTint = baseColor * this.JointColor;
-			canvas.DrawLine(
+			canvas.FillThickLine(
 				colliderPosA.X + anchorA.X,
 				colliderPosA.Y + anchorA.Y,
 				0.0f, 
 				colliderPosA.X + anchorA.X + distVec.X,
 				colliderPosA.Y + anchorA.Y + distVec.Y,
-				0.0f);
+				0.0f,
+				lineWidth);
 			if (hasError)
 			{
-				canvas.DrawLine(
+				canvas.FillThickLine(
 					colliderPosA.X + anchorA.X + distVec.X - lineNormal.X * worldLineCapScale,
 					colliderPosA.Y + anchorA.Y + distVec.Y - lineNormal.Y * worldLineCapScale,
 					0.0f, 
 					colliderPosA.X + anchorA.X + distVec.X + lineNormal.X * worldLineCapScale,
 					colliderPosA.Y + anchorA.Y + distVec.Y + lineNormal.Y * worldLineCapScale,
-					0.0f);
+					0.0f,
+					lineWidth);
 			}
 			canvas.State.ColorTint = baseColor;
 		}
@@ -717,6 +749,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				infinite = true;
 			}
 
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(localAnchor);
 			float axisVal = Vector2.Dot(bodyPos.Xy + anchorToWorld - worldAnchor, worldAxis);
@@ -735,39 +768,43 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			if (hasError)
 			{
 				canvas.State.ColorTint = baseColor * this.JointErrorColor;
-				canvas.DrawLine(
+				canvas.FillThickLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
 					0.0f,
 					basePos.X,
 					basePos.Y,
-					0.0f);
+					0.0f,
+					lineWidth);
 			}
 
 			canvas.State.ColorTint = baseColor * this.JointColor;
-			canvas.DrawLine(
+			canvas.FillThickLine(
 				worldAnchor.X + worldAxis.X * min,
 				worldAnchor.Y + worldAxis.Y * min,
 				0.0f,
 				worldAnchor.X + worldAxis.X * max,
 				worldAnchor.Y + worldAxis.Y * max,
-				0.0f);
+				0.0f,
+				lineWidth);
 			if (!infinite)
 			{
-				canvas.DrawLine(
+				canvas.FillThickLine(
 					worldAnchor.X + worldAxis.X * min + worldAxis.PerpendicularLeft.X * worldLineCapScale,
 					worldAnchor.Y + worldAxis.Y * min + worldAxis.PerpendicularLeft.Y * worldLineCapScale,
 					0.0f,
 					worldAnchor.X + worldAxis.X * min + worldAxis.PerpendicularRight.X * worldLineCapScale,
 					worldAnchor.Y + worldAxis.Y * min + worldAxis.PerpendicularRight.Y * worldLineCapScale,
-					0.0f);
-				canvas.DrawLine(
+					0.0f,
+					lineWidth);
+				canvas.FillThickLine(
 					worldAnchor.X + worldAxis.X * max + worldAxis.PerpendicularLeft.X * worldLineCapScale,
 					worldAnchor.Y + worldAxis.Y * max + worldAxis.PerpendicularLeft.Y * worldLineCapScale,
 					0.0f,
 					worldAnchor.X + worldAxis.X * max + worldAxis.PerpendicularRight.X * worldLineCapScale,
 					worldAnchor.Y + worldAxis.Y * max + worldAxis.PerpendicularRight.Y * worldLineCapScale,
-					0.0f);
+					0.0f,
+					lineWidth);
 			}
 			canvas.State.ColorTint = baseColor;
 		}
@@ -776,6 +813,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			ColorRgba baseColor = canvas.State.ColorTint;
 			Vector3 bodyPos = body.GameObj.Transform.Pos;
 
+			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			float worldArrowScale = this.GetScreenConstantScale(canvas, speed * 10.0f);
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(localAnchor);
@@ -787,41 +825,46 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			Vector2 arrowB = Vector2.FromAngleLength(axisAngle - MathF.RadAngle45 + MathF.RadAngle180, MathF.Sign(speed) * worldLineCapScale);
 			
 			canvas.State.ColorTint = baseColor * this.MotorColor;
-			canvas.DrawLine(
-				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f,
-				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f,
+			canvas.FillThickLine(
+				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f * lineWidth,
+				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f * lineWidth,
 				0.0f,
-				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f + worldAxis.X * maxForceTemp,
-				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f + worldAxis.Y * maxForceTemp,
-				0.0f);
-			canvas.DrawLine(
-				arrowBegin.X + worldAxis.PerpendicularRight.X * 2.0f,
-				arrowBegin.Y + worldAxis.PerpendicularRight.Y * 2.0f,
+				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f * lineWidth + worldAxis.X * maxForceTemp,
+				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f * lineWidth + worldAxis.Y * maxForceTemp,
 				0.0f,
-				arrowBegin.X + worldAxis.PerpendicularRight.X * 2.0f + worldAxis.X * maxForceTemp,
-				arrowBegin.Y + worldAxis.PerpendicularRight.Y * 2.0f + worldAxis.Y * maxForceTemp,
-				0.0f);
-			canvas.DrawLine(
+				lineWidth);
+			canvas.FillThickLine(
+				arrowBegin.X + worldAxis.PerpendicularRight.X * 2.0f * lineWidth,
+				arrowBegin.Y + worldAxis.PerpendicularRight.Y * 2.0f * lineWidth,
+				0.0f,
+				arrowBegin.X + worldAxis.PerpendicularRight.X * 2.0f * lineWidth + worldAxis.X * maxForceTemp,
+				arrowBegin.Y + worldAxis.PerpendicularRight.Y * 2.0f * lineWidth + worldAxis.Y * maxForceTemp,
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				arrowBegin.X,
 				arrowBegin.Y,
 				0.0f,
 				arrowBase.X,
 				arrowBase.Y,
-				0.0f);
-			canvas.DrawLine(
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				arrowBase.X,
 				arrowBase.Y,
 				0.0f,
 				arrowBase.X + arrowA.X,
 				arrowBase.Y + arrowA.Y,
-				0.0f);
-			canvas.DrawLine(
+				0.0f,
+				lineWidth);
+			canvas.FillThickLine(
 				arrowBase.X,
 				arrowBase.Y,
 				0.0f,
 				arrowBase.X + arrowB.X,
 				arrowBase.Y + arrowB.Y,
-				0.0f);
+				0.0f,
+				lineWidth);
 			canvas.State.ColorTint = baseColor;
 		}
 		private void DrawWorldLooseConstraint(Canvas canvas, RigidBody bodyA, Vector2 anchorA, Vector2 anchorB)
