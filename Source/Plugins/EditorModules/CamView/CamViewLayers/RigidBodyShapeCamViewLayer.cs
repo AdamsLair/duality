@@ -230,14 +230,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		}
 		private void DrawShape(Canvas canvas, Transform transform, PolyShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
 		{
-			// Fill each convex polygon individually
 			if (shape.ConvexPolygons != null)
 			{
+				// Fill each convex polygon individually
 				foreach (Vector2[] polygon in shape.ConvexPolygons)
 				{
 					this.FillPolygon(canvas, transform, polygon, fillColor);
 				}
+
+				// Draw all convex polygon edges that are not outlines
+				canvas.State.ZOffset = this.depthOffset - 0.05f;
+				this.DrawPolygonInternals(canvas, transform, shape.Vertices, shape.ConvexPolygons, outlineColor);
+				canvas.State.ZOffset = this.depthOffset;
 			}
+
 
 			// Draw the polygon outline
 			canvas.State.ZOffset = this.depthOffset - 0.1f;
@@ -312,6 +318,72 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.State.TransformAngle = 0.0f;
 			canvas.State.TransformScale = Vector2.One;
 		}
+		private void DrawPolygonInternals(Canvas canvas, Transform transform, Vector2[] hullVertices, IReadOnlyList<Vector2[]> convexPolygons, ColorRgba outlineColor)
+		{
+			if (convexPolygons.Count <= 1) return;
+
+			Vector3 objPos = transform.Pos;
+			float objAngle = transform.Angle;
+			float objScale = transform.Scale;
+
+			canvas.State.TransformAngle = objAngle;
+			canvas.State.TransformScale = new Vector2(objScale, objScale);
+			canvas.State.ColorTint = outlineColor;
+
+			float dashPatternLength = this.GetScreenConstantScale(canvas, this.shapeOutlineWidth);
+			dashPatternLength /= objScale;
+
+			// Generate a lookup of drawn vertex indices, so we can
+			// avoid drawing the same edge twice. Every item is a combination
+			// of two indices.
+			HashSet<uint> drawnEdges = new HashSet<uint>();
+			for (int i = 0; i < hullVertices.Length; i++)
+			{
+				int currentHullIndex = i;
+				int nextHullIndex = (i + 1) % hullVertices.Length;
+				uint edgeId = (currentHullIndex > nextHullIndex) ?
+					((uint)currentHullIndex << 16) | (uint)nextHullIndex :
+					((uint)nextHullIndex << 16) | (uint)currentHullIndex;
+				drawnEdges.Add(edgeId);
+			}
+
+			foreach (Vector2[] polygon in convexPolygons)
+			{
+				if (polygon.Length < 2) continue;
+
+				int currentHullIndex;
+				int nextHullIndex = VertexListIndex(hullVertices, polygon[0]);
+				for (int i = 0; i < polygon.Length; i++)
+				{
+					int nextIndex = (i + 1) % polygon.Length;
+					currentHullIndex = nextHullIndex;
+					nextHullIndex = VertexListIndex(hullVertices, polygon[nextIndex]);
+
+					// Filter out edges that have already been drawn
+					if (currentHullIndex >= 0 && nextHullIndex >= 0)
+					{
+						uint edgeId = (currentHullIndex > nextHullIndex) ?
+							((uint)currentHullIndex << 16) | (uint)nextHullIndex :
+							((uint)nextHullIndex << 16) | (uint)currentHullIndex;
+						if (!drawnEdges.Add(edgeId))
+							continue;
+					}
+
+					canvas.DrawDashLine(
+						objPos.X + polygon[i].X, 
+						objPos.Y + polygon[i].Y, 
+						0.0f, 
+						objPos.X + polygon[nextIndex].X, 
+						objPos.Y + polygon[nextIndex].Y,
+						0.0f, 
+						DashPattern.Dash, 
+						1.0f / dashPatternLength);
+				}
+			}
+
+			canvas.State.TransformAngle = 0.0f;
+			canvas.State.TransformScale = Vector2.One;
+		}
 
 		private float GetScreenConstantScale(Canvas canvas, float baseScale)
 		{
@@ -331,6 +403,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			return 
 				DualityEditorApp.Selection.Components.OfType<RigidBody>().FirstOrDefault() ?? 
 				DualityEditorApp.Selection.GameObjects.GetComponents<RigidBody>().FirstOrDefault();
+		}
+
+		private static int VertexListIndex(Vector2[] vertices, Vector2 checkVertex)
+		{
+			for (int i = 0; i < vertices.Length; i++)
+			{
+				if (Math.Abs(vertices[i].X - checkVertex.X) < 0.001f &&
+					Math.Abs(vertices[i].Y - checkVertex.Y) < 0.001f)
+					return i;
+			}
+
+			return -1;
 		}
 	}
 }
