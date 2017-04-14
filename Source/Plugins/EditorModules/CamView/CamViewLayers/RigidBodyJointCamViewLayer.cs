@@ -139,11 +139,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		}
 		private void DrawJoint(Canvas canvas, RevoluteJointInfo joint)
 		{
+			float screenScale = this.GetScreenScale(canvas);
+			float anchorDist = this.GetAnchorDist(joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
+			float screenAnchorDist = screenScale * anchorDist;
 			float angularCircleRadA = joint.ParentBody.BoundRadius * 0.25f;
 			float angularCircleRadB = joint.OtherBody.BoundRadius * 0.25f;
-
-			float anchorDist = this.GetAnchorDist(joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
-			bool displaySecondCollider = anchorDist >= angularCircleRadA + angularCircleRadB;
+			bool displaySecondAngle = screenAnchorDist >= 2.0f * MathF.Max(
+				screenScale * angularCircleRadA + angularCircleRadB, 
+				2.0f * this.minAngleConstraintRadius);
 
 			this.DrawLocalPosConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
 			
@@ -155,7 +158,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					joint.OtherBody.GameObj.Transform.Angle - joint.ReferenceAngle, 
 					joint.ParentBody.GameObj.Transform.Angle, 
 					angularCircleRadA);
-				if (displaySecondCollider)
+				if (displaySecondAngle)
 				{
 					this.DrawLocalAngleConstraint(canvas, 
 						joint.OtherBody, 
@@ -176,9 +179,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		}
 		private void DrawJoint(Canvas canvas, PrismaticJointInfo joint)
 		{
+			float screenScale = this.GetScreenScale(canvas);
+			float screenDist = screenScale * (joint.ParentBody.GameObj.Transform.Pos - joint.OtherBody.GameObj.Transform.Pos).Length;
 			float angularCircleRadA = joint.ParentBody.BoundRadius * 0.25f;
 			float angularCircleRadB = joint.OtherBody.BoundRadius * 0.25f;
-			bool displaySecondCollider = (joint.ParentBody.GameObj.Transform.Pos - joint.OtherBody.GameObj.Transform.Pos).Length >= angularCircleRadA + angularCircleRadB;
+			bool displaySecondAngle = screenDist >= 2.0f * MathF.Max(
+				screenScale * angularCircleRadA + angularCircleRadB, 
+				2.0f * this.minAngleConstraintRadius);
 
 			if (joint.LimitEnabled)
 			    this.DrawLocalAxisConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB, joint.LowerLimit, joint.UpperLimit);
@@ -191,7 +198,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				joint.OtherBody.GameObj.Transform.Angle - joint.ReferenceAngle, 
 				joint.ParentBody.GameObj.Transform.Angle, 
 				angularCircleRadA);
-			if (displaySecondCollider)
+			if (displaySecondAngle)
 			{
 				this.DrawLocalAngleConstraint(canvas, 
 					joint.OtherBody, 
@@ -209,11 +216,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		}
 		private void DrawJoint(Canvas canvas, WeldJointInfo joint)
 		{
+			float screenScale = this.GetScreenScale(canvas);
+			float anchorDist = this.GetAnchorDist(joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
+			float screenAnchorDist = screenScale * anchorDist;
 			float angularCircleRadA = joint.ParentBody.BoundRadius * 0.25f;
 			float angularCircleRadB = joint.OtherBody.BoundRadius * 0.25f;
-
-			float anchorDist = this.GetAnchorDist(joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
-			bool displaySecondCollider = anchorDist >= angularCircleRadA + angularCircleRadB;
+			bool displaySecondAngle = screenAnchorDist >= 2.0f * MathF.Max(
+				screenScale * angularCircleRadA + angularCircleRadB, 
+				2.0f * this.minAngleConstraintRadius);
 
 			this.DrawLocalPosConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
 
@@ -226,7 +236,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				joint.OtherBody.GameObj.Transform.Angle - joint.RefAngle, 
 				joint.ParentBody.GameObj.Transform.Angle, 
 				angularCircleRadA);
-			if (displaySecondCollider)
+			if (displaySecondAngle)
 			{
 				this.DrawLocalAngleConstraint(canvas, 
 					joint.OtherBody, 
