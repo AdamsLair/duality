@@ -407,10 +407,10 @@ namespace Duality.Components.Physics
 			if (shape.Parent != this) return;
 			if (this.shapes == null || !this.shapes.Contains(shape)) return;
 
-			this.shapes.Remove(shape);
+			shape.DestroyInternalShape();
 			shape.Parent = null;
 
-			if (this.body != null) shape.DestroyFixture(this.body, false);
+			this.shapes.Remove(shape);
 		}
 		/// <summary>
 		/// Removes all existing shapes from the body.
@@ -420,7 +420,7 @@ namespace Duality.Components.Physics
 			if (this.shapes == null) return;
 			foreach (ShapeInfo shape in this.shapes)
 			{
-				if (this.body != null) shape.DestroyFixture(this.body, false);
+				shape.DestroyInternalShape();
 				shape.Parent = null;
 			}
 			this.shapes.Clear();
@@ -820,7 +820,8 @@ namespace Duality.Components.Physics
 			this.lastScale = this.gameobj.Transform.Scale;
 			if (this.shapes != null)
 			{
-				foreach (ShapeInfo info in this.shapes) info.UpdateFixture();
+				foreach (ShapeInfo info in this.shapes)
+					info.UpdateInternalShape(false);
 			}
 			this.body.CollisionCategories = (Category)this.colCat;
 			this.body.CollidesWith = (Category)this.colWith;
@@ -845,7 +846,7 @@ namespace Duality.Components.Physics
 			if (this.shapes != null)
 			{
 				foreach (ShapeInfo info in this.shapes)
-					info.DestroyFixture(this.body, true);
+					info.DestroyInternalShape();
 			}
 			
 			this.body.Collision -= this.body_OnCollision;

@@ -237,11 +237,11 @@ namespace Duality.Drawing
 				out this.curTX, 
 				out this.curTY);
 		}
-		internal void TransformVertices<T>(T[] vertexData, Vector2 shapeHandle, float shapeHandleScale) where T : struct, IVertexData
+		internal void TransformVertices<T>(T[] vertexData, Vector2 shapeHandle, float shapeHandleScale, int vertexCount) where T : struct, IVertexData
 		{
 			if (this.IsTransformIdentity)
 			{
-				for (int i = 0; i < vertexData.Length; i++)
+				for (int i = 0; i < vertexCount; i++)
 				{
 					Vector3 pos = vertexData[i].Pos;
 					pos.Z += this.depthOffset;
@@ -253,7 +253,7 @@ namespace Duality.Drawing
 				this.UpdateTransform();
 				Vector2 transformHandle = this.transformHandle;
 				Vector2 transformScale = this.transformScale;
-				for (int i = 0; i < vertexData.Length; i++)
+				for (int i = 0; i < vertexCount; i++)
 				{
 					Vector3 pos = vertexData[i].Pos;
 					pos.X -= transformHandle.X * shapeHandleScale + shapeHandle.X;

@@ -82,6 +82,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public RigidBodyEditorCamViewState()
 		{
 			this.SetDefaultActiveLayers(
+				typeof(CamViewLayers.BackPlateCamViewLayer),
 				typeof(CamViewLayers.RigidBodyJointCamViewLayer),
 				typeof(CamViewLayers.RigidBodyShapeCamViewLayer));
 			this.SetDefaultObjectVisibility(
@@ -446,7 +447,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		private void EndToolAction()
 		{
-			if (this.actionTool == this.toolNone) return;
+			// If we don't perform an action right now, at least deselect the tool
+			if (this.actionTool == this.toolNone)
+			{
+				this.SelectedTool = null;
+				return;
+			}
 			
 			this.actionTool.EndAction();
 			this.actionTool = this.toolNone;

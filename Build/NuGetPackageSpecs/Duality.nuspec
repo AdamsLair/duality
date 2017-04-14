@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.10.0</version>
+    <version>2.11.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,29 +13,28 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>Component Exec Order Algorithm, Micro-Opt GatherInitComponents, ComponentExecutionOrder Cleanup
-#ADD: Implemented a first draft of the algorithm that determines global component execution order based on per-component local constraints that are provided via attribute.
-#CHANGE: Micro-optimized the GatherInitComponents method (for vs. foreach).
-#CHANGE: Simplified the ComponentExecutionOrder class a bit and optimized to reduce sort order rebuilds to a minimum.
-#CHANGE: Added a fast-path for the special case of de/activating a flat GameObject individually that exploits the fact that components are already sorted per-object. 
-#ADD: Added more unit tests to check specifically for both flat and deep GameObject cases, so no special case code path is missed.
-#REMOVE: Removed internal OnActivate / OnDeactivate methods in favor of specialized inline code to be optimized further. 
-#CHANGE: Editor objects are now applying deterministic execution order to added and removed GameObject trees.
-#ADD: Added an execution order attribute and execution relation enum.
-#CHANGE: When adding or removing GameObject trees to / from the currently active Scene, Components are now initialized and shut down using the deterministic execution order.
-#ADD: Added multi-GameObject add / remove events to GameObjectManager and Scene. 
-#CHANGE: Flagged the old single-GameObject add / remove events as obsolete.
-#REMOVE: Removed some internal GameObject methods that were no longer used after recent init order changes.
-#CHANGE: When activating or deactivating GameObjects individually, their Components and their child object's Components are now initialized and shut down in deterministic order.
-#CHANGE: GameObjects now enforce proper Component order after being loaded as part of a Scene or Prefab.
-#FIX: Fixed GameObject component and child iteration methods to work reliably in all cases of modifying their underlying collection at the cost of internal data copying.
-#CHANGE: When adding new Components to a GameObject, they are now inserted into the proper position in the objects internal list. 
-#CHANGE: GameObject IterateComponents now performs forward iteration on the internal list to reflect Component execution order. 
-#ADD: Added some more tests regarding Component execution order when loading Scenes or Prefabs with potentially unsorted internal GameObject lists.</releaseNotes>
+    <releaseNotes>Polygon Shape Constraints, Canvas Thick Line Rendering Tweaks, Canvas Thick Outline Fixes
+#CHANGE: Relaxed polygon shape constraints so reasonably defined polygons continue to be valid.
+#CHANGE: Canvas thick line rendering now smoothly lerps from miter to bevel joint caps, improved edge case behaviour.
+#FIX: Thick line drawing in canvas now respects vertex winding order and only switches to bevel joints for outward pointing corners.
+#CHANGE: When drawing thick lines using the Canvas API, joints between two edges now switch between miter or bevel based on angle to prevent infinitely sharp corners.
+#CHANGE: Canvas thick line drawing methods no longer produce visual artefacts when two consecutive line segments are oriented exactly the same.
+#ADD: Added various polygon decomposition checks to ensure that no exceptions or invalid polygons are generated. 
+#ADD: Added editor-specific checks to make sure a vertex that would make a valid polygon impossible can not be placed.
+#CHANGE: Updated AdamsLair.FarseerDuality dependency to version 4.1.3. 
+#FIX: This fixes an issue that was previously causing exceptions when attempting to decompose some invalid polygons.
+#CHANGE: Updated AdamsLair.FarseerDuality dependency to version 4.1.2. 
+#FIX: This fixes an issue that was previously causing exceptions when attempting to decompose certain (non-counterclockwise?) polygons.
+#ADD: RigidBodyRenderer support for non-convex polygon shapes.
+#ADD: PolyShapeInfo now supports non-convex and arbitrarily large polygons using a decomposition algorithm internally.
+#CHANGE: Moved vertex and geometry updates of physics shapes out of the regular update method into the creation method, as geometry changes will always lead to re-generating fixtures while being redundant otherwise.
+#CHANGE: Refactored physics shape handling to allow for N-to-1 fixture to shape relations in future updates. 
+#CHANGE: Internal code / API cleanup on physics shape handling.
+#CHANGE: Adjusted internal polygon shape processing to use Farseer API instead of re-inventing a poorly shaped wheel.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.4" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
-      <dependency id="AdamsLair.FarseerDuality" version="4.1.1" />
+      <dependency id="AdamsLair.FarseerDuality" version="4.1.3" />
     </dependencies>
     <references>
       <reference file="Duality.dll" />
