@@ -287,7 +287,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.State.TransformAngle = objAngle;
 			canvas.State.TransformScale = new Vector2(objScale, objScale);
 
-			canvas.FillPolygon(polygon, objPos.X, objPos.Y, objPos.Z);
+			canvas.FillPolygon(polygon, objPos.X, objPos.Y, 0.0f);
 
 			canvas.State.TransformAngle = 0.0f;
 			canvas.State.TransformScale = Vector2.One;

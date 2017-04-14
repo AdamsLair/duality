@@ -283,7 +283,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.FillCircle(
 				colliderPos.X + anchorToWorld.X,
 				colliderPos.Y + anchorToWorld.Y,
-				colliderPos.Z,
+				0.0f,
 				markerCircleRad);
 		}
 		private void DrawLocalFrictionMarker(Canvas canvas, RigidBody body, Vector2 anchor)
@@ -297,17 +297,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.FillCircle(
 				colliderPos.X + anchorToWorld.X,
 				colliderPos.Y + anchorToWorld.Y,
-				colliderPos.Z,
+				0.0f,
 				markerCircleRad * 0.5f);
 			canvas.DrawCircle(
 				colliderPos.X + anchorToWorld.X,
 				colliderPos.Y + anchorToWorld.Y,
-				colliderPos.Z,
+				0.0f,
 				markerCircleRad);
 			canvas.DrawCircle(
 				colliderPos.X + anchorToWorld.X,
 				colliderPos.Y + anchorToWorld.Y,
-				colliderPos.Z,
+				0.0f,
 				markerCircleRad * 1.5f);
 		}
 		private void DrawLocalAngleConstraint(Canvas canvas, RigidBody body, Vector2 anchor, float targetAngle, float currentAngle, float radius)
@@ -333,14 +333,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				canvas.DrawLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
-					bodyPos.Z, 
+					0.0f, 
 					bodyPos.X + anchorToWorld.X + errorVec.X,
 					bodyPos.Y + anchorToWorld.Y + errorVec.Y,
-					bodyPos.Z);
+					0.0f);
 				canvas.DrawCircleSegment(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
-					bodyPos.Z,
+					0.0f,
 					radius,
 					circleBegin,
 					circleEnd);
@@ -349,10 +349,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.DrawLine(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z, 
+				0.0f, 
 				bodyPos.X + anchorToWorld.X + angleVec.X,
 				bodyPos.Y + anchorToWorld.Y + angleVec.Y,
-				bodyPos.Z);
+				0.0f);
 		}
 		private void DrawLocalAngleConstraint(Canvas canvas, RigidBody body, Vector2 anchor, float minAngle, float maxAngle, float currentAngle, float radius)
 		{
@@ -381,14 +381,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				canvas.DrawLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
-					bodyPos.Z, 
+					0.0f, 
 					bodyPos.X + anchorToWorld.X + errorVec.X,
 					bodyPos.Y + anchorToWorld.Y + errorVec.Y,
-					bodyPos.Z);
+					0.0f);
 				canvas.DrawCircleSegment(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
-					bodyPos.Z,
+					0.0f,
 					radius,
 					circleBegin,
 					circleEnd);
@@ -398,24 +398,24 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.DrawCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z,
+				0.0f,
 				radius,
 				minAngle,
 				maxAngle);
 			canvas.DrawLine(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z, 
+				0.0f, 
 				bodyPos.X + anchorToWorld.X + angleVecMin.X,
 				bodyPos.Y + anchorToWorld.Y + angleVecMin.Y,
-				bodyPos.Z);
+				0.0f);
 			canvas.DrawLine(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z, 
+				0.0f, 
 				bodyPos.X + anchorToWorld.X + angleVecMax.X,
 				bodyPos.Y + anchorToWorld.Y + angleVecMax.Y,
-				bodyPos.Z);
+				0.0f);
 		}
 		private void DrawLocalAngleMotor(Canvas canvas, RigidBody body, Vector2 anchor, float speed, float maxTorque, float radius)
 		{
@@ -433,38 +433,38 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.DrawCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z,
+				0.0f,
 				radius - 2,
 				MathF.Sign(speed) >= 0 ? baseAngle : maxTorqueAngle,
 				MathF.Sign(speed) >= 0 ? maxTorqueAngle : baseAngle);
 			canvas.DrawCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z,
+				0.0f,
 				radius + 2,
 				MathF.Sign(speed) >= 0 ? baseAngle : maxTorqueAngle,
 				MathF.Sign(speed) >= 0 ? maxTorqueAngle : baseAngle);
 			canvas.DrawCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
-				bodyPos.Z,
+				0.0f,
 				radius,
 				MathF.Sign(speed) >= 0 ? baseAngle : speedAngle,
 				MathF.Sign(speed) >= 0 ? speedAngle : baseAngle);
 			canvas.DrawLine(
 				bodyPos.X + arrowBase.X,
 				bodyPos.Y + arrowBase.Y,
-				bodyPos.Z,
+				0.0f,
 				bodyPos.X + arrowBase.X + arrowA.X,
 				bodyPos.Y + arrowBase.Y + arrowA.Y,
-				bodyPos.Z);
+				0.0f);
 			canvas.DrawLine(
 				bodyPos.X + arrowBase.X,
 				bodyPos.Y + arrowBase.Y,
-				bodyPos.Z,
+				0.0f,
 				bodyPos.X + arrowBase.X + arrowB.X,
 				bodyPos.Y + arrowBase.Y + arrowB.Y,
-				bodyPos.Z);
+				0.0f);
 		}
 		private void DrawLocalPosConstraint(Canvas canvas, RigidBody bodyA, RigidBody bodyB, Vector2 anchorA, Vector2 anchorB)
 		{
@@ -482,27 +482,27 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				canvas.DrawLine(
 					colliderPosA.X + anchorAToWorld.X,
 					colliderPosA.Y + anchorAToWorld.Y,
-					colliderPosA.Z,
+					0.0f,
 					colliderPosB.X + anchorBToWorld.X,
 					colliderPosB.Y + anchorBToWorld.Y,
-					colliderPosB.Z);
+					0.0f);
 			}
 
 			canvas.State.ColorTint = this.JointColor;
 			canvas.DrawLine(
 				colliderPosA.X,
 				colliderPosA.Y,
-				colliderPosA.Z,
+				0.0f,
 				colliderPosA.X + anchorAToWorld.X,
 				colliderPosA.Y + anchorAToWorld.Y,
-				colliderPosA.Z);
+				0.0f);
 			canvas.DrawLine(
 				colliderPosB.X,
 				colliderPosB.Y,
-				colliderPosB.Z,
+				0.0f,
 				colliderPosB.X + anchorBToWorld.X,
 				colliderPosB.Y + anchorBToWorld.Y,
-				colliderPosB.Z);
+				0.0f);
 		}
 		private void DrawLocalDistConstraint(Canvas canvas, RigidBody bodyA, RigidBody bodyB, Vector2 localAnchorA, Vector2 localAnchorB, float minDist, float maxDist)
 		{
@@ -524,29 +524,29 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				canvas.DrawLine(
 					bodyPosA.X + anchorA.X + distVec.X,
 					bodyPosA.Y + anchorA.Y + distVec.Y,
-					bodyPosA.Z, 
+					0.0f, 
 					bodyPosA.X + anchorA.X + errorVec.X,
 					bodyPosA.Y + anchorA.Y + errorVec.Y,
-					bodyPosA.Z);
+					0.0f);
 			}
 
 			canvas.State.ColorTint = this.JointColor;
 			canvas.DrawLine(
 				bodyPosA.X + anchorA.X,
 				bodyPosA.Y + anchorA.Y,
-				bodyPosA.Z, 
+				0.0f, 
 				bodyPosA.X + anchorA.X + distVec.X,
 				bodyPosA.Y + anchorA.Y + distVec.Y,
-				bodyPosA.Z);
+				0.0f);
 			if (hasError)
 			{
 				canvas.DrawLine(
 					bodyPosA.X + anchorA.X + distVec.X - lineNormal.X * 5.0f,
 					bodyPosA.Y + anchorA.Y + distVec.Y - lineNormal.Y * 5.0f,
-					bodyPosA.Z, 
+					0.0f, 
 					bodyPosA.X + anchorA.X + distVec.X + lineNormal.X * 5.0f,
 					bodyPosA.Y + anchorA.Y + distVec.Y + lineNormal.Y * 5.0f,
-					bodyPosA.Z);
+					0.0f);
 			}
 		}
 		private void DrawLocalAxisConstraint(Canvas canvas, RigidBody bodyA, RigidBody bodyB, Vector2 localAxis, Vector2 localAnchorA, Vector2 localAnchorB, float min = 1, float max = -1)
@@ -579,10 +579,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.DrawDashLine(
 				bodyPosA.X + anchorAToWorld.X,
 				bodyPosA.Y + anchorAToWorld.Y,
-				bodyPosA.Z,
+				0.0f,
 				bodyPosB.X + anchorBToWorld.X,
 				bodyPosB.Y + anchorBToWorld.Y,
-				bodyPosB.Z);
+				0.0f);
 		}
 		
 		private void DrawWorldAnchor(Canvas canvas, RigidBody body, Vector2 anchor)
@@ -594,7 +594,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.FillCircle(
 				anchor.X,
 				anchor.Y,
-				colliderPos.Z,
+				0.0f,
 				markerCircleRad);
 		}
 		private void DrawWorldPosConstraint(Canvas canvas, RigidBody body, Vector2 localAnchor, Vector2 worldAnchor)
@@ -613,20 +613,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				canvas.DrawLine(
 					bodyPos.X + anchorAToWorld.X,
 					bodyPos.Y + anchorAToWorld.Y,
-					bodyPos.Z,
+					0.0f,
 					worldAnchor.X,
 					worldAnchor.Y,
-					bodyPos.Z);
+					0.0f);
 			}
 
 			canvas.State.ColorTint = this.JointColor;
 			canvas.DrawLine(
 				bodyPos.X,
 				bodyPos.Y,
-				bodyPos.Z,
+				0.0f,
 				bodyPos.X + anchorAToWorld.X,
 				bodyPos.Y + anchorAToWorld.Y,
-				bodyPos.Z);
+				0.0f);
 		}
 		private void DrawWorldDistConstraint(Canvas canvas, RigidBody body, Vector2 localAnchor, Vector2 worldAnchor, float minDist, float maxDist)
 		{
@@ -646,29 +646,29 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				canvas.DrawLine(
 					colliderPosA.X + anchorA.X + distVec.X,
 					colliderPosA.Y + anchorA.Y + distVec.Y,
-					colliderPosA.Z, 
+					0.0f, 
 					colliderPosA.X + anchorA.X + errorVec.X,
 					colliderPosA.Y + anchorA.Y + errorVec.Y,
-					colliderPosA.Z);
+					0.0f);
 			}
 
 			canvas.State.ColorTint = this.JointColor;
 			canvas.DrawLine(
 				colliderPosA.X + anchorA.X,
 				colliderPosA.Y + anchorA.Y,
-				colliderPosA.Z, 
+				0.0f, 
 				colliderPosA.X + anchorA.X + distVec.X,
 				colliderPosA.Y + anchorA.Y + distVec.Y,
-				colliderPosA.Z);
+				0.0f);
 			if (hasError)
 			{
 				canvas.DrawLine(
 					colliderPosA.X + anchorA.X + distVec.X - lineNormal.X * 5.0f,
 					colliderPosA.Y + anchorA.Y + distVec.Y - lineNormal.Y * 5.0f,
-					colliderPosA.Z, 
+					0.0f, 
 					colliderPosA.X + anchorA.X + distVec.X + lineNormal.X * 5.0f,
 					colliderPosA.Y + anchorA.Y + distVec.Y + lineNormal.Y * 5.0f,
-					colliderPosA.Z);
+					0.0f);
 			}
 		}
 		private void DrawWorldAxisConstraint(Canvas canvas, RigidBody body, Vector2 worldAxis, Vector2 localAnchor, Vector2 worldAnchor, float min = 1, float max = -1)
@@ -702,36 +702,36 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				canvas.DrawLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
-					bodyPos.Z,
+					0.0f,
 					basePos.X,
 					basePos.Y,
-					bodyPos.Z);
+					0.0f);
 			}
 
 			canvas.State.ColorTint = this.JointColor;
 			canvas.DrawLine(
 				worldAnchor.X + worldAxis.X * min,
 				worldAnchor.Y + worldAxis.Y * min,
-				bodyPos.Z,
+				0.0f,
 				worldAnchor.X + worldAxis.X * max,
 				worldAnchor.Y + worldAxis.Y * max,
-				bodyPos.Z);
+				0.0f);
 			if (!infinite)
 			{
 				canvas.DrawLine(
 					worldAnchor.X + worldAxis.X * min + worldAxis.PerpendicularLeft.X * 5.0f,
 					worldAnchor.Y + worldAxis.Y * min + worldAxis.PerpendicularLeft.Y * 5.0f,
-					bodyPos.Z,
+					0.0f,
 					worldAnchor.X + worldAxis.X * min + worldAxis.PerpendicularRight.X * 5.0f,
 					worldAnchor.Y + worldAxis.Y * min + worldAxis.PerpendicularRight.Y * 5.0f,
-					bodyPos.Z);
+					0.0f);
 				canvas.DrawLine(
 					worldAnchor.X + worldAxis.X * max + worldAxis.PerpendicularLeft.X * 5.0f,
 					worldAnchor.Y + worldAxis.Y * max + worldAxis.PerpendicularLeft.Y * 5.0f,
-					bodyPos.Z,
+					0.0f,
 					worldAnchor.X + worldAxis.X * max + worldAxis.PerpendicularRight.X * 5.0f,
 					worldAnchor.Y + worldAxis.Y * max + worldAxis.PerpendicularRight.Y * 5.0f,
-					bodyPos.Z);
+					0.0f);
 			}
 		}
 		private void DrawWorldAxisMotor(Canvas canvas, RigidBody body, Vector2 worldAxis, Vector2 localAnchor, Vector2 worldAnchor, float speed, float maxForce, float offset)
@@ -750,38 +750,38 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.DrawLine(
 				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f,
 				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f,
-				bodyPos.Z,
+				0.0f,
 				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f + worldAxis.X * maxForceTemp,
 				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f + worldAxis.Y * maxForceTemp,
-				bodyPos.Z);
+				0.0f);
 			canvas.DrawLine(
 				arrowBegin.X + worldAxis.PerpendicularRight.X * 2.0f,
 				arrowBegin.Y + worldAxis.PerpendicularRight.Y * 2.0f,
-				bodyPos.Z,
+				0.0f,
 				arrowBegin.X + worldAxis.PerpendicularRight.X * 2.0f + worldAxis.X * maxForceTemp,
 				arrowBegin.Y + worldAxis.PerpendicularRight.Y * 2.0f + worldAxis.Y * maxForceTemp,
-				bodyPos.Z);
+				0.0f);
 			canvas.DrawLine(
 				arrowBegin.X,
 				arrowBegin.Y,
-				bodyPos.Z,
+				0.0f,
 				arrowBase.X,
 				arrowBase.Y,
-				bodyPos.Z);
+				0.0f);
 			canvas.DrawLine(
 				arrowBase.X,
 				arrowBase.Y,
-				bodyPos.Z,
+				0.0f,
 				arrowBase.X + arrowA.X,
 				arrowBase.Y + arrowA.Y,
-				bodyPos.Z);
+				0.0f);
 			canvas.DrawLine(
 				arrowBase.X,
 				arrowBase.Y,
-				bodyPos.Z,
+				0.0f,
 				arrowBase.X + arrowB.X,
 				arrowBase.Y + arrowB.Y,
-				bodyPos.Z);
+				0.0f);
 		}
 		private void DrawWorldLooseConstraint(Canvas canvas, RigidBody bodyA, Vector2 anchorA, Vector2 anchorB)
 		{
@@ -791,10 +791,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.DrawDashLine(
 				anchorA.X,
 				anchorA.Y,
-				bodyPosA.Z,
+				0.0f,
 				anchorB.X,
 				anchorB.Y,
-				bodyPosA.Z);
+				0.0f);
 		}
 
 		private float GetAnchorDist(RigidBody bodyA, RigidBody bodyB, Vector2 localAnchorA, Vector2 localAnchorB)
@@ -807,6 +807,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			Vector2 errorVec = (colliderPosB.Xy + anchorBToWorld) - (colliderPosA.Xy + anchorAToWorld);
 
 			return errorVec.Length;
+		}
+		
+		private float GetScreenConstantScale(Canvas canvas, float baseScale)
+		{
+			return baseScale / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0.0f));
 		}
 
 		private IEnumerable<RigidBody> QueryVisibleColliders()
