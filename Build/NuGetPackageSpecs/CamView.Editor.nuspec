@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.CamView</id>
-    <version>2.4.0</version>
+    <version>2.4.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Camera View</title>
@@ -13,31 +13,8 @@
     <summary>A basic Camera View editor module.</summary>
     <description>A basic Camera View editor module.</description>
     <tags>Duality Editor Plugin CamView</tags>
-    <releaseNotes>RigidBody Shape Layer Polygon Internals, RigidBody Joint Layer Angle Display Tweaks, RigidBody Joint Layer Line Width
-#ADD: The RigidBody shape layer now displays internal polygon decomposition lines.
-#CHANGE: Adjusted second angle constraint display to account for fixed-screen-size rendering.
-#CHANGE: Now rendering RigidBody joint constraints using lines with an actual width for better readability.
-#CHANGE: The RigidBody Joint layer visualization now renders using screen-space scaling.
-#FIX: Fixed alpha value propagation, so joints can now be displayed half-transparent again when out of focus.
-#CHANGE: All RigidBody related layer rendering is now fixed to the Z-0 plane, because that's where all physics takes place.
-#REMOVE: Removed all text display from the RigidBody joint layer.
-#CHANGE: Replaced all material switches in RigidBody Joint Layer with vertex-based color tints.
-#FIX: Fixed a bug that caused axis locks to be offset when placing new vertices based on old ones.
-#CHANGE: Adjusted highlight behaviour for RigidBody shapes based on selection.
-#CHANGE: Right-click deselects the current tool even if an action hasn't been started with it yet.
-#FIX: Shape visualization no longer scales outline thickness with object scale factor. 
-#CHANGE: Now using explicit depth offsets for outlines to make sure they're always required to be in front of the filled polygon shapes.
-#FIX: Polygon shapes can now be applied when hovering an unplaced vertex in a position that would make the polygon invalid. 
-#FIX: Fixed polygon shapes becoming invalid while editing due to the fact that the next vertex starts off where the last one was placed.
-#CHANGE: The RigidBody Editor state now by default activates the background plate layer.
-#ADD: Added various polygon decomposition checks to ensure that no exceptions or invalid polygons are generated. 
-#ADD: Added editor-specific checks to make sure a vertex that would make a valid polygon impossible can not be placed.
-#FIX: Fixed an exception in the RigidBody shape layer when attempting to render a polygon shape that is invalid.
-#CHANGE: Adjusted shape outline width.
-#CHANGE: Tweaked shape overlay colors to fit both dark and bright color schemes.
-#ADD: The RigidBody shape layer can now display non-convex polygons. 
-#CHANGE: Improved the overall rendering style of the RigidBody shape layer.
-#CHANGE: Adjusted RigidBodyEditor to no longer enforce former polygon shape constraints.</releaseNotes>
+    <releaseNotes>RigidBody Shape Layer Fixes
+#FIX: Fixed a bug in polygon decomposition line transformation for rotated or scaled objects.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.11.0" />
       <dependency id="AdamsLair.Duality.Editor" version="2.7.22" />
