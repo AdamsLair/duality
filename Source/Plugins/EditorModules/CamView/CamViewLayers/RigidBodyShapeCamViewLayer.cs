@@ -326,12 +326,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			float objAngle = transform.Angle;
 			float objScale = transform.Scale;
 
-			canvas.State.TransformAngle = objAngle;
-			canvas.State.TransformScale = new Vector2(objScale, objScale);
-			canvas.State.ColorTint = outlineColor;
+			Vector2 xDot;
+			Vector2 yDot;
+			MathF.GetTransformDotVec(objAngle, objScale, out xDot, out yDot);
 
-			float dashPatternLength = this.GetScreenConstantScale(canvas, this.shapeOutlineWidth);
-			dashPatternLength /= objScale;
+			float dashPatternLength = this.GetScreenConstantScale(canvas, this.shapeOutlineWidth * 0.5f);
 
 			// Generate a lookup of drawn vertex indices, so we can
 			// avoid drawing the same edge twice. Every item is a combination
@@ -346,6 +345,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					((uint)nextHullIndex << 16) | (uint)currentHullIndex;
 				drawnEdges.Add(edgeId);
 						}
+
+			canvas.State.ColorTint = outlineColor;
 
 			foreach (Vector2[] polygon in convexPolygons)
 			{
@@ -369,20 +370,26 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 							continue;
 						}
 
+					Vector2 lineStart = new Vector2(
+						polygon[i].X, 
+						polygon[i].Y);
+					Vector2 lineEnd = new Vector2(
+						polygon[nextIndex].X, 
+						polygon[nextIndex].Y);
+					MathF.TransformDotVec(ref lineStart, ref xDot, ref yDot);
+					MathF.TransformDotVec(ref lineEnd, ref xDot, ref yDot);
+
 					canvas.DrawDashLine(
-						objPos.X + polygon[i].X, 
-						objPos.Y + polygon[i].Y, 
+						objPos.X + lineStart.X, 
+						objPos.Y + lineStart.Y, 
 						0.0f, 
-						objPos.X + polygon[nextIndex].X, 
-						objPos.Y + polygon[nextIndex].Y,
+						objPos.X + lineEnd.X, 
+						objPos.Y + lineEnd.Y,
 						0.0f, 
 						DashPattern.Dash, 
 						1.0f / dashPatternLength);
 					}
 					}
-
-			canvas.State.TransformAngle = 0.0f;
-			canvas.State.TransformScale = Vector2.One;
 				}
 
 		private float GetScreenConstantScale(Canvas canvas, float baseScale)
