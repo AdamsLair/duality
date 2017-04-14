@@ -250,8 +250,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.WheelAnchor);
 			
 			canvas.State.ColorTint = this.JointColor;
-			this.DrawLocalText(canvas, joint.ParentBody, "Car", Vector2.Zero, 0.0f);
-			this.DrawLocalText(canvas, joint.OtherBody, "Wheel", Vector2.Zero, 0.0f);
 
 			if (joint.MotorEnabled)
 			{
@@ -274,29 +272,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			this.DrawLocalLooseConstraint(canvas, joint.ParentBody, joint.OtherBody, Vector2.Zero, Vector2.Zero);
 		}
 		
-		private void DrawLocalText(Canvas canvas, RigidBody body, string text, Vector2 pos, float baseAngle)
-		{
-			this.DrawLocalText(canvas, body, text, pos, Vector2.Zero, baseAngle);
-		}
-		private void DrawLocalText(Canvas canvas, RigidBody body, string text, Vector2 pos, Vector2 handle, float baseAngle)
-		{
-			Vector3 bodyPos = body.GameObj.Transform.Pos;
-			Vector2 textSize = canvas.MeasureText(text);
-			bool flipText = MathF.TurnDir(baseAngle - canvas.DrawDevice.RefAngle, MathF.RadAngle90) < 0;
-			baseAngle = MathF.NormalizeAngle(flipText ? baseAngle + MathF.RadAngle180 : baseAngle);
-
-			handle *= textSize;
-			if (flipText) handle = textSize - handle;
-
-			canvas.State.TransformHandle = handle;
-			canvas.State.TransformAngle = baseAngle;
-			canvas.DrawText(text, 
-				bodyPos.X + pos.X, 
-				bodyPos.Y + pos.Y, 
-				bodyPos.Z);
-			canvas.State.TransformAngle = 0.0f;
-			canvas.State.TransformHandle = Vector2.Zero;
-		}
 		private void DrawLocalAnchor(Canvas canvas, RigidBody body, Vector2 anchor)
 		{
 			Vector3 colliderPos = body.GameObj.Transform.Pos;
@@ -369,11 +344,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					radius,
 					circleBegin,
 					circleEnd);
-				this.DrawLocalText(canvas, body,
-					string.Format("{0:F0}°", MathF.RadToDeg(MathF.NormalizeAngle(currentAngle))),
-					anchorToWorld + errorVec,
-					Vector2.UnitY,
-					errorVec.Angle);
 			}
 			canvas.State.ColorTint = this.JointColor;
 			canvas.DrawLine(
@@ -383,10 +353,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				bodyPos.X + anchorToWorld.X + angleVec.X,
 				bodyPos.Y + anchorToWorld.Y + angleVec.Y,
 				bodyPos.Z);
-			this.DrawLocalText(canvas, body,
-				string.Format("{0:F0}°", MathF.RadToDeg(MathF.NormalizeAngle(targetAngle))),
-				anchorToWorld + angleVec,
-				angleVec.Angle);
 		}
 		private void DrawLocalAngleConstraint(Canvas canvas, RigidBody body, Vector2 anchor, float minAngle, float maxAngle, float currentAngle, float radius)
 		{
@@ -426,11 +392,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					radius,
 					circleBegin,
 					circleEnd);
-				this.DrawLocalText(canvas, body,
-					string.Format("{0:F0}°", MathF.RadToDeg(currentAngle)),
-					anchorToWorld + errorVec,
-					Vector2.UnitY,
-					errorVec.Angle);
 			}
 
 			canvas.State.ColorTint = this.JointColor;
@@ -455,14 +416,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				bodyPos.X + anchorToWorld.X + angleVecMax.X,
 				bodyPos.Y + anchorToWorld.Y + angleVecMax.Y,
 				bodyPos.Z);
-			this.DrawLocalText(canvas, body,
-				string.Format("{0:F0}°", MathF.RadToDeg(minAngle)),
-				anchorToWorld + angleVecMin,
-				angleVecMin.Angle);
-			this.DrawLocalText(canvas, body,
-				string.Format("{0:F0}°", MathF.RadToDeg(maxAngle)),
-				anchorToWorld + angleVecMax,
-				angleVecMax.Angle);
 		}
 		private void DrawLocalAngleMotor(Canvas canvas, RigidBody body, Vector2 anchor, float speed, float maxTorque, float radius)
 		{
@@ -533,11 +486,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					colliderPosB.X + anchorBToWorld.X,
 					colliderPosB.Y + anchorBToWorld.Y,
 					colliderPosB.Z);
-				this.DrawLocalText(canvas, bodyA, 
-					string.Format("{0:F1}", errorVec.Length), 
-					anchorAToWorld + errorVec * 0.5f, 
-					new Vector2(0.5f, 0.0f), 
-					errorVec.PerpendicularLeft.Angle);
 			}
 
 			canvas.State.ColorTint = this.JointColor;
@@ -580,11 +528,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					bodyPosA.X + anchorA.X + errorVec.X,
 					bodyPosA.Y + anchorA.Y + errorVec.Y,
 					bodyPosA.Z);
-				this.DrawLocalText(canvas, bodyA,
-					string.Format("{0:F1}", dist),
-					anchorA + errorVec,
-					Vector2.UnitY,
-					errorVec.Angle);
 			}
 
 			canvas.State.ColorTint = this.JointColor;
@@ -605,11 +548,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					bodyPosA.Y + anchorA.Y + distVec.Y + lineNormal.Y * 5.0f,
 					bodyPosA.Z);
 			}
-			this.DrawLocalText(canvas, bodyA,
-				string.Format("{0:F1}", MathF.Clamp(dist, minDist, maxDist)),
-				anchorA + distVec,
-				Vector2.Zero,
-				errorVec.Angle);
 		}
 		private void DrawLocalAxisConstraint(Canvas canvas, RigidBody bodyA, RigidBody bodyB, Vector2 localAxis, Vector2 localAnchorA, Vector2 localAnchorB, float min = 1, float max = -1)
 		{
@@ -679,11 +617,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					worldAnchor.X,
 					worldAnchor.Y,
 					bodyPos.Z);
-				this.DrawLocalText(canvas, body,
-					string.Format("{0:F1}", errorVec.Length),
-					anchorAToWorld + errorVec * 0.5f,
-					new Vector2(0.5f, 0.0f),
-					errorVec.PerpendicularLeft.Angle);
 			}
 
 			canvas.State.ColorTint = this.JointColor;
@@ -717,11 +650,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					colliderPosA.X + anchorA.X + errorVec.X,
 					colliderPosA.Y + anchorA.Y + errorVec.Y,
 					colliderPosA.Z);
-				this.DrawLocalText(canvas, body,
-					string.Format("{0:F1}", dist),
-					anchorA + errorVec,
-					Vector2.UnitY,
-					errorVec.Angle);
 			}
 
 			canvas.State.ColorTint = this.JointColor;
@@ -742,11 +670,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					colliderPosA.Y + anchorA.Y + distVec.Y + lineNormal.Y * 5.0f,
 					colliderPosA.Z);
 			}
-			this.DrawLocalText(canvas, body,
-				string.Format("{0:F1}", MathF.Clamp(dist, minDist, maxDist)),
-				anchorA + distVec,
-				Vector2.Zero,
-				errorVec.Angle);
 		}
 		private void DrawWorldAxisConstraint(Canvas canvas, RigidBody body, Vector2 worldAxis, Vector2 localAnchor, Vector2 worldAnchor, float min = 1, float max = -1)
 		{
@@ -783,11 +706,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					basePos.X,
 					basePos.Y,
 					bodyPos.Z);
-				this.DrawLocalText(canvas, body,
-					string.Format("{0:F1}", errorVal),
-					errorVec * 0.5f,
-					new Vector2(0.5f, 0.0f),
-					errorVec.PerpendicularLeft.Angle);
 			}
 
 			canvas.State.ColorTint = this.JointColor;
