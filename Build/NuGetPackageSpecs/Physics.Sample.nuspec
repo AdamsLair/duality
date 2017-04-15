@@ -15,7 +15,7 @@
     <tags>Duality Sample Plugin Physics</tags>
     <releaseNotes></releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.11.1" />
+      <dependency id="AdamsLair.Duality" version="2.11.2" />
       <dependency id="AdamsLair.Duality.Editor" version="2.7.23" />
     </dependencies>
   </metadata>
