@@ -42,8 +42,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.WinForms, Version=1.1.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AdamsLair.WinForms.1.1.9\lib\net45\AdamsLair.WinForms.dll</HintPath>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\AdamsLair.WinForms.1.1.10\lib\net45\AdamsLair.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Aga.Controls, Version=1.7.6.0, Culture=neutral, processorArchitecture=MSIL">
@@ -88,7 +88,9 @@
     <Compile Include="Backend\EditorGraphics\INativeEditorGraphicsContext.cs" />
     <Compile Include="Backend\EditorGraphics\INativeRenderableSite.cs" />
     <Compile Include="Backend\IEditorGraphicsBackend.cs" />
-    <Compile Include="Controls\AutoExpandTreeView.cs" />
+    <Compile Include="Controls\AutoExpandTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\PropertyEditors\Point2PropertyEditor.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
