@@ -290,10 +290,12 @@ namespace Duality.Components.Renderers
 			}
 			canvas.State.TransformAngle = angle;
 			canvas.State.TransformScale = new Vector2(scale, scale);
+
+			float inOutFactor = -1.0f + 0.3f / MathF.Max(1.0f, this.outlineWidth);
 			if (closedLoop)
-				canvas.FillPolygonOutline(shapeVertices, this.outlineWidth, pos.X, pos.Y, pos.Z);
+				canvas.FillPolygonOutline(shapeVertices, this.outlineWidth, inOutFactor, pos.X, pos.Y, pos.Z);
 			else
-				canvas.FillThickLineStrip(shapeVertices, this.outlineWidth, pos.X, pos.Y, pos.Z);
+				canvas.FillThickLineStrip(shapeVertices, this.outlineWidth, inOutFactor, pos.X, pos.Y, pos.Z);
 		}
 	}
 }
