@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.11.1</version>
+    <version>2.11.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,8 +13,9 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>Delauny Polygon Decomposition
-#CHANGE: Switched from Flipcode to Delauny decomposition as it tends to produce less thin / bigger triangles which are easier to handle physics-wise.</releaseNotes>
+    <releaseNotes>Canvas, RigidBodyRenderer Tweaks
+#ADD: Canvas thick line rendering methods now allow to specify which side the outline will be drawn on via parameter. 
+#CHANGE: RigidBodyRenderer now renders polygon outlines on the inside of the polygon for those defined in clockwise order.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.4" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
