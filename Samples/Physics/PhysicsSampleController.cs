@@ -22,6 +22,8 @@ namespace Duality.Samples.Physics
 
 		[DontSerialize] private RigidBody dragObj;
 		[DontSerialize] private Vector2 dragAnchor;
+		[DontSerialize] private Vector2 cameraDragScreenAnchor;
+		[DontSerialize] private Vector3 cameraDragWorldAnchor;
 
 		
 		public float DragForceFactor
@@ -60,6 +62,9 @@ namespace Duality.Samples.Physics
 		{
 			Canvas canvas = new Canvas(device);
 			Vector2 mousePos = DualityApp.Mouse.Pos;
+
+			// Make sure we'll draw below the sample info text
+			canvas.State.ZOffset = 1.0f;
 
 			// Draw drag anchor markers when dragging an object
 			if (this.dragObj != null)
@@ -103,6 +108,20 @@ namespace Duality.Samples.Physics
 			Camera mainCamera = this.GameObj.ParentScene.FindComponent<Camera>();
 			Vector2 screenMousePos = DualityApp.Mouse.Pos;
 			Vector3 worldMousePos = mainCamera.GetSpaceCoord(screenMousePos);
+
+			// Pressing the right mouse button: Starting a camera drag
+			if (DualityApp.Mouse.ButtonHit(MouseButton.Right))
+			{
+				this.cameraDragScreenAnchor = screenMousePos;
+				this.cameraDragWorldAnchor = mainCamera.GameObj.Transform.Pos;
+			}
+
+			// Holding the right mouse button: Adjusting the camera position
+			if (DualityApp.Mouse[MouseButton.Right])
+			{
+				Vector3 cameraMovement = new Vector3(this.cameraDragScreenAnchor - screenMousePos);
+				mainCamera.GameObj.Transform.MoveToAbs(this.cameraDragWorldAnchor + cameraMovement);
+			}
 
 			// Pressing the left mouse button: Picking up an object
 			if (DualityApp.Mouse.ButtonHit(MouseButton.Left))

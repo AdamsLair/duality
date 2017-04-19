@@ -76,7 +76,7 @@
           </item>
         </_items>
         <_size dataType="Int">3</_size>
-        <_version dataType="Int">115</_version>
+        <_version dataType="Int">119</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3235226824" surrogate="true">
         <header />
@@ -238,7 +238,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">115</_version>
+              <_version dataType="Int">119</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3011869498" surrogate="true">
               <header />
@@ -396,7 +396,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">59</_version>
+              <_version dataType="Int">63</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1790920704" surrogate="true">
               <header />
@@ -554,7 +554,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">59</_version>
+              <_version dataType="Int">63</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1861027318" surrogate="true">
               <header />
@@ -685,7 +685,7 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1152074849">
                   <active dataType="Bool">true</active>
                   <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                    <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                    <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                   </areaMaterial>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -707,7 +707,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">115</_version>
+              <_version dataType="Int">119</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2033139264" surrogate="true">
               <header />
@@ -807,7 +807,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2700552373">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -829,7 +829,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1976476600" surrogate="true">
                     <header />
@@ -925,7 +925,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3001109878">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -947,7 +947,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2931712158" surrogate="true">
                     <header />
@@ -1043,7 +1043,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3701693810">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -1065,7 +1065,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3885874070" surrogate="true">
                     <header />
@@ -1161,7 +1161,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1575660198">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -1183,7 +1183,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2183761886" surrogate="true">
                     <header />
@@ -1279,7 +1279,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="629484965">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -1301,7 +1301,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3562871032" surrogate="true">
                     <header />
@@ -1397,7 +1397,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="78540131">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -1419,7 +1419,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="217098400" surrogate="true">
                     <header />
@@ -1515,7 +1515,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3524642076">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -1537,7 +1537,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2422137290" surrogate="true">
                     <header />
@@ -1633,7 +1633,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1318459829">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -1655,7 +1655,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3156854712" surrogate="true">
                     <header />
@@ -1751,7 +1751,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="417021142">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -1773,7 +1773,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2807787230" surrogate="true">
                     <header />
@@ -1869,7 +1869,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="417964408">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -1891,7 +1891,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3571207178" surrogate="true">
                     <header />
@@ -1987,7 +1987,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3834872080">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -2009,7 +2009,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2432658458" surrogate="true">
                     <header />
@@ -2105,7 +2105,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1242036891">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -2127,7 +2127,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1230421504" surrogate="true">
                     <header />
@@ -2223,7 +2223,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="864578751">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -2245,7 +2245,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2723534952" surrogate="true">
                     <header />
@@ -2341,7 +2341,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2391631179">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -2363,7 +2363,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3404096832" surrogate="true">
                     <header />
@@ -2459,7 +2459,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1902367514">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -2481,7 +2481,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="552661750" surrogate="true">
                     <header />
@@ -2577,7 +2577,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="4122358264">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -2599,7 +2599,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2849089034" surrogate="true">
                     <header />
@@ -2695,7 +2695,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="751189320">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -2717,7 +2717,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3079541194" surrogate="true">
                     <header />
@@ -2813,7 +2813,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2503616688">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -2835,7 +2835,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2351787994" surrogate="true">
                     <header />
@@ -2931,7 +2931,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1851467062">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -2953,7 +2953,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="103430942" surrogate="true">
                     <header />
@@ -3049,7 +3049,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2028730015">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -3071,7 +3071,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3220198312" surrogate="true">
                     <header />
@@ -3167,7 +3167,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3019868839">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -3189,7 +3189,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3749087096" surrogate="true">
                     <header />
@@ -3285,7 +3285,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2191603542">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -3307,7 +3307,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1287299294" surrogate="true">
                     <header />
@@ -3403,7 +3403,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1319642473">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -3425,7 +3425,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1051272096" surrogate="true">
                     <header />
@@ -3521,7 +3521,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2201235549">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -3543,7 +3543,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3067781320" surrogate="true">
                     <header />
@@ -3639,7 +3639,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="4265060811">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -3661,7 +3661,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1347147328" surrogate="true">
                     <header />
@@ -3757,7 +3757,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1623523415">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -3779,7 +3779,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3578322360" surrogate="true">
                     <header />
@@ -3875,7 +3875,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="337237876">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -3897,7 +3897,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="484011290" surrogate="true">
                     <header />
@@ -3993,7 +3993,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2563462221">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -4015,7 +4015,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2191821672" surrogate="true">
                     <header />
@@ -4111,7 +4111,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="913074276">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -4133,7 +4133,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3022415162" surrogate="true">
                     <header />
@@ -4229,7 +4229,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="124121171">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -4251,7 +4251,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2505216480" surrogate="true">
                     <header />
@@ -4347,7 +4347,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3426236620">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -4369,7 +4369,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4221599114" surrogate="true">
                     <header />
@@ -4465,7 +4465,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2636471393">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -4487,7 +4487,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1335299776" surrogate="true">
                     <header />
@@ -4583,7 +4583,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3327277896">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -4605,7 +4605,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1789314506" surrogate="true">
                     <header />
@@ -4701,7 +4701,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2634352868">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -4723,7 +4723,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="582030138" surrogate="true">
                     <header />
@@ -4819,7 +4819,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="617343951">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -4841,7 +4841,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2051672136" surrogate="true">
                     <header />
@@ -4937,7 +4937,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3115838587">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -4959,7 +4959,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2187262720" surrogate="true">
                     <header />
@@ -5055,7 +5055,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1703734166">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -5077,7 +5077,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="92832222" surrogate="true">
                     <header />
@@ -5173,7 +5173,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="4287255715">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -5195,7 +5195,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2142971552" surrogate="true">
                     <header />
@@ -5291,7 +5291,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="4240374189">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -5313,7 +5313,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="174120" surrogate="true">
                     <header />
@@ -5409,7 +5409,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2593864211">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -5431,7 +5431,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2046712160" surrogate="true">
                     <header />
@@ -5527,7 +5527,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1506720505">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -5549,7 +5549,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="894936928" surrogate="true">
                     <header />
@@ -5645,7 +5645,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2050060046">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -5667,7 +5667,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2486461326" surrogate="true">
                     <header />
@@ -5763,7 +5763,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3706117358">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -5785,7 +5785,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2130404302" surrogate="true">
                     <header />
@@ -5881,7 +5881,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1329773046">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -5903,7 +5903,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="765075358" surrogate="true">
                     <header />
@@ -5999,7 +5999,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1496230446">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -6021,7 +6021,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2516137038" surrogate="true">
                     <header />
@@ -6117,7 +6117,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2247028660">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -6139,7 +6139,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1854331034" surrogate="true">
                     <header />
@@ -6235,7 +6235,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3172896047">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -6257,7 +6257,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1268579016" surrogate="true">
                     <header />
@@ -6353,7 +6353,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2228568734">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -6375,7 +6375,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3305991534" surrogate="true">
                     <header />
@@ -6471,7 +6471,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="358386596">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -6493,7 +6493,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3832269498" surrogate="true">
                     <header />
@@ -6589,7 +6589,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2369802604">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -6611,7 +6611,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1409530378" surrogate="true">
                     <header />
@@ -6707,7 +6707,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3006845167">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -6729,7 +6729,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="243797576" surrogate="true">
                     <header />
@@ -6825,7 +6825,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2829007936">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -6847,7 +6847,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2019236794" surrogate="true">
                     <header />
@@ -6943,7 +6943,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1462211781">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -6965,7 +6965,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2131349944" surrogate="true">
                     <header />
@@ -7061,7 +7061,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="280048541">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -7083,7 +7083,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2870852168" surrogate="true">
                     <header />
@@ -7179,7 +7179,7 @@
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="4285168974">
                         <active dataType="Bool">true</active>
                         <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                          <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                          <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                         </areaMaterial>
                         <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                           <A dataType="Byte">255</A>
@@ -7201,7 +7201,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">59</_version>
+                    <_version dataType="Int">63</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1656198798" surrogate="true">
                     <header />
@@ -7328,7 +7328,7 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="971365677">
                   <active dataType="Bool">true</active>
                   <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                    <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                    <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                   </areaMaterial>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -7350,7 +7350,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">55</_version>
+              <_version dataType="Int">59</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3970428776" surrogate="true">
               <header />
@@ -7449,7 +7449,7 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2384612163">
                   <active dataType="Bool">true</active>
                   <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                    <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                    <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                   </areaMaterial>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -7471,7 +7471,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">55</_version>
+              <_version dataType="Int">59</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2847000224" surrogate="true">
               <header />
@@ -7570,7 +7570,7 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2675502486">
                   <active dataType="Bool">true</active>
                   <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                    <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                    <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                   </areaMaterial>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -7592,7 +7592,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">55</_version>
+              <_version dataType="Int">59</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1940849950" surrogate="true">
               <header />
@@ -7691,7 +7691,7 @@
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1667637764">
                   <active dataType="Bool">true</active>
                   <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                    <contentPath dataType="String">Data\PhysicsSample\Materials\SolidGrey.Material.res</contentPath>
+                    <contentPath dataType="String">Data\PhysicsSample\Content\SolidGrey.Material.res</contentPath>
                   </areaMaterial>
                   <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                     <A dataType="Byte">255</A>
@@ -7713,7 +7713,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">55</_version>
+              <_version dataType="Int">59</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4272378170" surrogate="true">
               <header />
@@ -7770,41 +7770,114 @@
       <parent />
       <prefabLink />
     </item>
-    <item dataType="Struct" type="Duality.GameObject" id="2224420179">
+    <item dataType="Struct" type="Duality.GameObject" id="1833065865">
       <active dataType="Bool">true</active>
       <children />
-      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1404950625">
-        <_items dataType="Array" type="Duality.Component[]" id="122464622" length="4">
-          <item dataType="Struct" type="Duality.Samples.Physics.PhysicsSampleController" id="4159576750">
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="317589195">
+        <_items dataType="Array" type="Duality.Component[]" id="1020607478" length="4">
+          <item dataType="Struct" type="Duality.Samples.Physics.PhysicsSampleController" id="3768222436">
             <active dataType="Bool">true</active>
-            <gameobj dataType="ObjectRef">2224420179</gameobj>
+            <gameobj dataType="ObjectRef">1833065865</gameobj>
           </item>
         </_items>
         <_size dataType="Int">1</_size>
         <_version dataType="Int">1</_version>
       </compList>
-      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3402145824" surrogate="true">
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4148938824" surrogate="true">
         <header />
         <body>
-          <keys dataType="Array" type="System.Object[]" id="747716075">
-            <item dataType="Type" id="1104751222" value="Duality.Samples.Physics.PhysicsSampleController" />
+          <keys dataType="Array" type="System.Object[]" id="265609441">
+            <item dataType="Type" id="2632472430" value="Duality.Samples.Physics.PhysicsSampleController" />
           </keys>
-          <values dataType="Array" type="System.Object[]" id="3692519624">
-            <item dataType="ObjectRef">4159576750</item>
+          <values dataType="Array" type="System.Object[]" id="3277146656">
+            <item dataType="ObjectRef">3768222436</item>
           </values>
         </body>
       </compMap>
       <compTransform />
       <identifier dataType="Struct" type="System.Guid" surrogate="true">
         <header>
-          <data dataType="Array" type="System.Byte[]" id="582306017">17d16ODbQkKk/7cGzjMSxg==</data>
+          <data dataType="Array" type="System.Byte[]" id="3373239923">vRn77Lnm5USUwmdLsRIg0Q==</data>
         </header>
         <body />
       </identifier>
       <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
       <name dataType="String">PhysicsSampleController</name>
       <parent />
-      <prefabLink />
+      <prefabLink dataType="Struct" type="Duality.Resources.PrefabLink" id="3087040897">
+        <changes />
+        <obj dataType="ObjectRef">1833065865</obj>
+        <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
+          <contentPath dataType="String">Data\PhysicsSample\Content\PhysicsSampleController.Prefab.res</contentPath>
+        </prefab>
+      </prefabLink>
+    </item>
+    <item dataType="Struct" type="Duality.GameObject" id="2581962880">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3339198406">
+        <_items dataType="Array" type="Duality.Component[]" id="3432277248" length="4">
+          <item dataType="Struct" type="Duality.Samples.Physics.PhysicsSampleInfo" id="2061097753">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">2581962880</gameobj>
+          </item>
+        </_items>
+        <_size dataType="Int">1</_size>
+        <_version dataType="Int">1</_version>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3541453498" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Object[]" id="878827060">
+            <item dataType="Type" id="140795044" value="Duality.Samples.Physics.PhysicsSampleInfo" />
+          </keys>
+          <values dataType="Array" type="System.Object[]" id="586468086">
+            <item dataType="ObjectRef">2061097753</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform />
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="1432558992">T+0jJsZMGE2xt/OYOYgr1w==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">PhysicsSampleInfo</name>
+      <parent />
+      <prefabLink dataType="Struct" type="Duality.Resources.PrefabLink" id="4167691462">
+        <changes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Resources.PrefabLink+VarMod]]" id="3317800448">
+          <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="2088488092" length="4">
+            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
+              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="968957128">
+                <_items dataType="Array" type="System.Int32[]" id="22426220"></_items>
+                <_size dataType="Int">0</_size>
+                <_version dataType="Int">1</_version>
+              </childIndex>
+              <componentType dataType="ObjectRef">140795044</componentType>
+              <prop dataType="MemberInfo" id="3453901534" value="P:Duality.Samples.Physics.PhysicsSampleInfo:SampleName" />
+              <val dataType="String">Mass</val>
+            </item>
+            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
+              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="161583412">
+                <_items dataType="ObjectRef">22426220</_items>
+                <_size dataType="Int">0</_size>
+                <_version dataType="Int">1</_version>
+              </childIndex>
+              <componentType dataType="ObjectRef">140795044</componentType>
+              <prop dataType="MemberInfo" id="539217698" value="P:Duality.Samples.Physics.PhysicsSampleInfo:SampleDesc" />
+              <val dataType="String">The /cFF8888FFMass/cFFFFFFFF value of a body affects how well it displaces other bodies when a collision happens. Heavier bodies will require bigger forces to change their velocity and deal out higher impulse values on collision.</val>
+            </item>
+          </_items>
+          <_size dataType="Int">2</_size>
+          <_version dataType="Int">1160</_version>
+        </changes>
+        <obj dataType="ObjectRef">2581962880</obj>
+        <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
+          <contentPath dataType="String">Data\PhysicsSample\Content\PhysicsSampleInfo.Prefab.res</contentPath>
+        </prefab>
+      </prefabLink>
     </item>
     <item dataType="ObjectRef">3771095618</item>
     <item dataType="ObjectRef">94269783</item>
