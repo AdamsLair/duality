@@ -18,7 +18,7 @@
 #ADD: Added unit tests to verify the fix.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.9.9" />
-      <dependency id="AdamsLair.OpenTK" version="1.1.6" />
+      <dependency id="AdamsLair.OpenTK" version="1.1.8" />
     </dependencies>
   </metadata>
   <files>

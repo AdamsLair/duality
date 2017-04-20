@@ -19,8 +19,8 @@
       <dependency id="AdamsLair.Duality.Backend.DefaultOpenTK" version="2.0.11" />
       <dependency id="AdamsLair.Duality" version="2.8.3" />
       <dependency id="AdamsLair.Duality.Editor" version="2.7.7" />
-      <dependency id="AdamsLair.OpenTK" version="1.1.6" />
-      <dependency id="AdamsLair.OpenTK.GLControl" version="1.1.6" />
+      <dependency id="AdamsLair.OpenTK" version="1.1.8" />
+      <dependency id="AdamsLair.OpenTK.GLControl" version="1.1.8" />
     </dependencies>
   </metadata>
   <files>
