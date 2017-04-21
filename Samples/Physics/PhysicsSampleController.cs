@@ -7,19 +7,21 @@ using Duality;
 using Duality.Editor;
 using Duality.Drawing;
 using Duality.Input;
+using Duality.Resources;
 using Duality.Components;
 using Duality.Components.Physics;
 
 namespace Duality.Samples.Physics
 {
 	[EditorHintCategory("PhysicsSample")]
-    public class PhysicsSampleController : Component, ICmpUpdatable, ICmpRenderer
+    public class PhysicsSampleController : Component, ICmpInitializable, ICmpUpdatable, ICmpRenderer
 	{
 		private float dragForceFactor = 3.0f;
 		private float dragDampingFactor = 1.0f;
 		private ColorRgba defaultColor = ColorRgba.White;
 		private ColorRgba interactionColor = ColorRgba.Black;
 
+		[DontSerialize] private List<ContentRef<Scene>> sampleScenes;
 		[DontSerialize] private RigidBody dragObj;
 		[DontSerialize] private Vector2 dragAnchor;
 		[DontSerialize] private Vector2 cameraDragScreenAnchor;
@@ -49,6 +51,22 @@ namespace Duality.Samples.Physics
 		float ICmpRenderer.BoundRadius
 		{
 			get { return float.MaxValue; }
+		}
+
+
+		private void SwitchToSample(int index)
+		{
+			// Force reload of current sample later on by disposing it.
+			this.GameObj.ParentScene.DisposeLater();
+			// Switch to new sample
+			Scene.SwitchTo(this.sampleScenes[index]);
+		}
+		private void AdvanceSampleBy(int indexOffset)
+		{
+			// Determine the current samples' index and advance it
+			int currentIndex = this.sampleScenes.IndexOf(this.GameObj.ParentScene);
+			int newIndex = (currentIndex + indexOffset + this.sampleScenes.Count) % this.sampleScenes.Count;
+			this.SwitchToSample(newIndex);
 		}
 
 
@@ -162,6 +180,36 @@ namespace Duality.Samples.Physics
 				this.dragObj.ApplyWorldForce(dragForce + dampingForce, worldAnchor);
 				this.dragObj.ApplyLocalForce(dampingAngularForce);
 			}
+
+			// Pressing an arrow key: Switch sample scenes
+			if (DualityApp.Keyboard.KeyHit(Key.Left) || DualityApp.Keyboard.KeyHit(Key.Up))
+			{
+				this.AdvanceSampleBy(-1);
+			}
+			else if (DualityApp.Keyboard.KeyHit(Key.Right) || DualityApp.Keyboard.KeyHit(Key.Down))
+			{
+				this.AdvanceSampleBy(1);
+			}
+
+			// Pressing space bar: Toggle simulation pause mode
+			if (DualityApp.Keyboard.KeyHit(Key.Space))
+			{
+				bool isPaused = Time.TimeMult == 0.0f;
+				if (isPaused)
+					Time.Resume();
+				else
+					Time.Freeze();
+			}
 		}
+
+		void ICmpInitializable.OnInit(Component.InitContext context)
+		{
+			if (context == InitContext.Activate)
+			{
+				// Retrieve a list of all available scenes to cycle through.
+				this.sampleScenes = ContentProvider.GetAvailableContent<Scene>();
+			}
+		}
+		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
 	}
 }
