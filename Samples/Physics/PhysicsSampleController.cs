@@ -182,9 +182,6 @@ namespace Duality.Samples.Physics
 				Vector2 dampingForce = -this.dragObj.LinearVelocity * this.dragDampingFactor;
 				float dampingAngularForce = -this.dragObj.AngularVelocity * 2.0f * this.dragDampingFactor;
 
-				Log.Game.Write("Drag Force: {0}", dragForce.Length);
-				Log.Game.Write("Damping Force: {0}", dampingForce.Length);
-
 				this.dragObj.ApplyWorldForce(dragForce + dampingForce, worldAnchor);
 				this.dragObj.ApplyLocalForce(dampingAngularForce);
 			}
