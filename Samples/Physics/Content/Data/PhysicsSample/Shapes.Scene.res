@@ -79,7 +79,7 @@
           </item>
         </_items>
         <_size dataType="Int">3</_size>
-        <_version dataType="Int">83</_version>
+        <_version dataType="Int">85</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3235226824" surrogate="true">
         <header />
@@ -241,7 +241,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">83</_version>
+              <_version dataType="Int">85</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3011869498" surrogate="true">
               <header />
@@ -399,7 +399,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">83</_version>
+              <_version dataType="Int">85</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2500438774" surrogate="true">
               <header />
@@ -557,7 +557,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">31</_version>
+              <_version dataType="Int">33</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3225024790" surrogate="true">
               <header />
@@ -715,7 +715,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">31</_version>
+              <_version dataType="Int">33</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2045834488" surrogate="true">
               <header />
@@ -869,7 +869,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">83</_version>
+              <_version dataType="Int">85</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4038128149" surrogate="true">
               <header />
@@ -1035,7 +1035,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">29</_version>
+              <_version dataType="Int">31</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4147901408" surrogate="true">
               <header />
@@ -1205,7 +1205,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">29</_version>
+              <_version dataType="Int">31</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2619433800" surrogate="true">
               <header />
@@ -1391,7 +1391,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">29</_version>
+              <_version dataType="Int">31</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3580336568" surrogate="true">
               <header />
@@ -1545,7 +1545,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">29</_version>
+              <_version dataType="Int">31</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2733325000" surrogate="true">
               <header />
@@ -1691,7 +1691,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">29</_version>
+              <_version dataType="Int">31</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1625023626" surrogate="true">
               <header />
@@ -1943,14 +1943,14 @@
                           <lineAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
                           <maxHeight dataType="Int">0</maxHeight>
                           <maxWidth dataType="Int">250</maxWidth>
-                          <sourceText dataType="String">The fastest, simples and most basic of shapes.</sourceText>
+                          <sourceText dataType="String">The fastest, simplest and most basic of shapes.</sourceText>
                           <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                         </text>
                         <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
-                    <_version dataType="Int">4</_version>
+                    <_version dataType="Int">5</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1926308640" surrogate="true">
                     <header />
@@ -2015,7 +2015,7 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">14</_version>
+              <_version dataType="Int">15</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2836869380" surrogate="true">
               <header />
@@ -2124,14 +2124,14 @@
                           <lineAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
                           <maxHeight dataType="Int">0</maxHeight>
                           <maxWidth dataType="Int">250</maxWidth>
-                          <sourceText dataType="String">A simple polygon that has now corners pointing inward.</sourceText>
+                          <sourceText dataType="String">A simple polygon that has no inward pointing corners.</sourceText>
                           <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                         </text>
                         <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
-                    <_version dataType="Int">4</_version>
+                    <_version dataType="Int">5</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2574177902" surrogate="true">
                     <header />
@@ -2196,7 +2196,7 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">9</_version>
+              <_version dataType="Int">10</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1142533828" surrogate="true">
               <header />
@@ -2312,7 +2312,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
-                    <_version dataType="Int">4</_version>
+                    <_version dataType="Int">5</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2129138906" surrogate="true">
                     <header />
@@ -2377,7 +2377,7 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">7</_version>
+              <_version dataType="Int">8</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3725094483" surrogate="true">
               <header />
@@ -2486,14 +2486,14 @@
                           <lineAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
                           <maxHeight dataType="Int">0</maxHeight>
                           <maxWidth dataType="Int">300</maxWidth>
-                          <sourceText dataType="String">Non-Convex polygons will be decomposed into multiple convex polygons.</sourceText>
+                          <sourceText dataType="String">Non-convex polygons will be decomposed into multiple convex polygons.</sourceText>
                           <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                         </text>
                         <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
-                    <_version dataType="Int">4</_version>
+                    <_version dataType="Int">5</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="370580000" surrogate="true">
                     <header />
@@ -2558,7 +2558,7 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">7</_version>
+              <_version dataType="Int">8</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="714033340" surrogate="true">
               <header />
@@ -2674,7 +2674,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
-                    <_version dataType="Int">2</_version>
+                    <_version dataType="Int">3</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2600503098" surrogate="true">
                     <header />
@@ -2739,7 +2739,7 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">5</_version>
+              <_version dataType="Int">6</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3102904266" surrogate="true">
               <header />
@@ -2855,7 +2855,7 @@
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
-                    <_version dataType="Int">2</_version>
+                    <_version dataType="Int">3</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3205482650" surrogate="true">
                     <header />
@@ -2920,7 +2920,7 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">5</_version>
+              <_version dataType="Int">6</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="675873204" surrogate="true">
               <header />
@@ -2995,8 +2995,8 @@
     <item dataType="ObjectRef">891620472</item>
     <item dataType="ObjectRef">4268879702</item>
     <item dataType="ObjectRef">1860345741</item>
-    <item dataType="ObjectRef">3939865582</item>
     <item dataType="ObjectRef">101526662</item>
+    <item dataType="ObjectRef">3939865582</item>
   </serializeObj>
   <visibilityStrategy dataType="Struct" type="Duality.Components.DefaultRendererVisibilityStrategy" id="2035693768" />
 </root>
