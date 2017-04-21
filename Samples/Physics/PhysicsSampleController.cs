@@ -22,6 +22,7 @@ namespace Duality.Samples.Physics
 		private ColorRgba interactionColor = ColorRgba.Black;
 
 		[DontSerialize] private List<ContentRef<Scene>> sampleScenes;
+		[DontSerialize] private bool dragObjWasContinuous;
 		[DontSerialize] private RigidBody dragObj;
 		[DontSerialize] private Vector2 dragAnchor;
 		[DontSerialize] private Vector2 cameraDragScreenAnchor;
@@ -151,6 +152,12 @@ namespace Duality.Samples.Physics
 					Transform dragTransform = shapeAtCursor.Parent.GameObj.Transform;
 					this.dragObj = shapeAtCursor.Parent;
 					this.dragAnchor = dragTransform.GetLocalPoint(worldMousePos.Xy);
+
+					// Temporarily switch to continuous collision for dragged objects, as they
+					// might go very fast while in user control. Continuous collision prevents
+					// tunnelling in these cases.
+					this.dragObjWasContinuous = this.dragObj.ContinousCollision;
+					this.dragObj.ContinousCollision = true;
 				}
 			}
 
@@ -159,6 +166,7 @@ namespace Duality.Samples.Physics
 			{
 				if (this.dragObj != null)
 				{
+					this.dragObj.ContinousCollision = this.dragObjWasContinuous;
 					this.dragObj = null;
 					this.dragAnchor = Vector2.Zero;
 				}
