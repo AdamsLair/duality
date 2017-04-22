@@ -253,7 +253,7 @@ namespace Duality.Serialization
 		private void WriteStruct(XElement element, object obj, ObjectHeader header)
 		{
 			ISerializeExplicit objAsCustom = obj as ISerializeExplicit;
-			ISerializeSurrogate objSurrogate = GetSurrogateFor(header.ObjectType);
+			ISerializeSurrogate objSurrogate = header.SerializeType.Surrogate;
 			
 			// If we're serializing a value type, skip the entire object body if 
 			// it equals the zero-init struct. This will keep struct-heavy data a lot
@@ -579,7 +579,7 @@ namespace Duality.Serialization
 
 			// Retrieve surrogate if requested
 			ISerializeSurrogate objSurrogate = null;
-			if (surrogate && header.ObjectType != null) objSurrogate = GetSurrogateFor(header.ObjectType);
+			if (surrogate && header.SerializeType != null) objSurrogate = header.SerializeType.Surrogate;
 
 			// Construct object
 			object obj = null;

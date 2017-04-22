@@ -12,12 +12,13 @@ namespace Duality.Serialization
 	[DontSerialize]
 	public sealed class SerializeType
 	{
-		private TypeInfo    type;
-		private FieldInfo[] fields;
-		private string      typeString;
-		private DataType    dataType;
-		private bool        dontSerialize;
-		private object      defaultValue;
+		private TypeInfo            type;
+		private FieldInfo[]         fields;
+		private string              typeString;
+		private DataType            dataType;
+		private bool                dontSerialize;
+		private object              defaultValue;
+		private ISerializeSurrogate surrogate;
 
 		/// <summary>
 		/// [GET] The <see cref="System.Reflection.TypeInfo"/> that is described.
@@ -77,6 +78,14 @@ namespace Duality.Serialization
 		{
 			get { return this.defaultValue; }
 		}
+		/// <summary>
+		/// [GET] When assigned, this property returns the serialization surrogate
+		/// for the type it represents.
+		/// </summary>
+		public ISerializeSurrogate Surrogate
+		{
+			get { return this.surrogate; }
+		}
 
 		/// <summary>
 		/// Creates a new SerializeType based on a <see cref="System.Type"/>, gathering all the information that is necessary for serialization.
@@ -89,22 +98,18 @@ namespace Duality.Serialization
 			this.dataType = GetDataType(this.type);
 			this.dontSerialize = this.type.HasAttributeCached<DontSerializeAttribute>();
 			this.defaultValue = this.type.GetDefaultOf();
+			this.surrogate = Serializer.GetSurrogateFor(this.type);
 
-			if (this.dataType == DataType.Struct)
+			if (this.dataType == DataType.Struct && this.surrogate == null)
 			{
 				// Retrieve all fields that are not flagged not to be serialized
-				IEnumerable<FieldInfo> filteredFields = this.type
+				List<FieldInfo> filteredFields = this.type
 					.DeclaredFieldsDeep()
-					.Where(f => !f.IsStatic && !f.HasAttributeCached<DontSerializeAttribute>());
+					.Where(f => !f.IsStatic && !f.HasAttributeCached<DontSerializeAttribute>())
+					.ToList();
 
-				// Ugly hack to skip .Net collection _syncRoot fields. 
-				// Can't use field.IsNonSerialized, because that doesn't exist in the PCL profile,
-				// and implementing a whole filtering system just for this would be overkill.
-				filteredFields = filteredFields
-					.Where(f => !(
-						f.FieldType == typeof(object) && 
-						f.Name == "_syncRoot" && 
-						typeof(System.Collections.ICollection).GetTypeInfo().IsAssignableFrom(f.DeclaringType.GetTypeInfo())));
+				// Hack: Remove some specific fields based on an internal blacklist
+				this.RemoveBlacklistedFields(filteredFields);
 
 				// Store the filtered fields in a fixed form
 				this.fields = filteredFields.ToArray();
@@ -113,6 +118,44 @@ namespace Duality.Serialization
 			else
 			{
 				this.fields = new FieldInfo[0];
+			}
+		}
+
+		private void RemoveBlacklistedFields(List<FieldInfo> fields)
+		{
+			TypeInfo collectionBase = typeof(System.Collections.ICollection).GetTypeInfo();
+			if (collectionBase.IsAssignableFrom(this.type) && this.type.Namespace.StartsWith("System.Collections."))
+			{
+				// Ugly hack to skip .Net collection _syncRoot fields. 
+				// Can't use field.IsNonSerialized, because that doesn't exist in the PCL profile,
+				// and implementing a whole filtering system just for this would be overkill.
+				for (int i = fields.Count - 1; i >= 0; i--)
+				{
+					FieldInfo field = fields[i];
+					if (field.Name != "_syncRoot" && field.Name != "m_syncRoot") continue;
+					if (field.FieldType != typeof(object)) continue;
+					if (!collectionBase.IsAssignableFrom(field.DeclaringType.GetTypeInfo())) continue;
+					fields.RemoveAt(i);
+				}
+
+				// Another ugly hack to skip the .Net collection _version fields.
+				// They're not even flagged as IsNonSerialized, but they don't do
+				// any good for persistent serialization.
+				for (int i = fields.Count - 1; i >= 0; i--)
+				{
+					FieldInfo field = fields[i];
+					if (field.Name != "_version" && field.Name != "m_version") continue;
+					if (field.FieldType != typeof(int)) continue;
+					if (!collectionBase.IsAssignableFrom(field.DeclaringType.GetTypeInfo())) continue;
+					fields.RemoveAt(i);
+				}
+
+				// A proper solution to both of the above would be to define serialization surrogates
+				// for the affected types. However, since we can't access the internals of List<T>
+				// we'd end up copying and boxing lots of data and likely losing performance.
+				//
+				// It may be a viable solution for HashSet, Stack and Queue though, as they tend to be used
+				// with smaller quantities of items.
 			}
 		}
 
