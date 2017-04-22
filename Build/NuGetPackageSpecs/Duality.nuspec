@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.11.2</version>
+    <version>2.11.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,9 +13,9 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>Canvas, RigidBodyRenderer Tweaks
-#ADD: Canvas thick line rendering methods now allow to specify which side the outline will be drawn on via parameter. 
-#CHANGE: RigidBodyRenderer now renders polygon outlines on the inside of the polygon for those defined in clockwise order.</releaseNotes>
+    <releaseNotes>.Net Collection Serialization Tweaks, Serialization Surrogate Lookup Tweaks
+#CHANGE: When serializing .Net collections such as List&lt;T&gt;, the internal _version field is now omitted.
+#CHANGE: Serialization surrogate lookup is now done only once per type and then stored in the matching SerializeType class.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.4" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
