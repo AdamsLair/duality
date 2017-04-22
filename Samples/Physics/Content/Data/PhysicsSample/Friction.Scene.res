@@ -79,7 +79,7 @@
           </item>
         </_items>
         <_size dataType="Int">3</_size>
-        <_version dataType="Int">53</_version>
+        <_version dataType="Int">55</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3235226824" surrogate="true">
         <header />
@@ -241,7 +241,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">53</_version>
+              <_version dataType="Int">55</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="385039254" surrogate="true">
               <header />
@@ -266,7 +266,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Wall</name>
             <parent dataType="ObjectRef">3975364469</parent>
             <prefabLink />
           </item>
@@ -399,7 +399,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">53</_version>
+              <_version dataType="Int">55</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="850548960" surrogate="true">
               <header />
@@ -424,7 +424,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Wall</name>
             <parent dataType="ObjectRef">3975364469</parent>
             <prefabLink />
           </item>
@@ -557,7 +557,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">53</_version>
+              <_version dataType="Int">55</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3011869498" surrogate="true">
               <header />
@@ -582,7 +582,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Wall</name>
             <parent dataType="ObjectRef">3975364469</parent>
             <prefabLink />
           </item>
@@ -715,7 +715,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">53</_version>
+              <_version dataType="Int">55</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2500438774" surrogate="true">
               <header />
@@ -740,7 +740,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Wall</name>
             <parent dataType="ObjectRef">3975364469</parent>
             <prefabLink />
           </item>
@@ -873,7 +873,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">53</_version>
+              <_version dataType="Int">55</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2846507958" surrogate="true">
               <header />
@@ -898,7 +898,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Wall</name>
             <parent dataType="ObjectRef">3975364469</parent>
             <prefabLink />
           </item>
@@ -1031,7 +1031,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">53</_version>
+              <_version dataType="Int">55</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1719292640" surrogate="true">
               <header />
@@ -1056,7 +1056,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Wall</name>
             <parent dataType="ObjectRef">3975364469</parent>
             <prefabLink />
           </item>
@@ -1221,7 +1221,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">53</_version>
+              <_version dataType="Int">55</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2033139264" surrogate="true">
               <header />
@@ -1246,7 +1246,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Box</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -1379,7 +1379,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">31</_version>
+              <_version dataType="Int">33</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4126366158" surrogate="true">
               <header />
@@ -1404,7 +1404,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Box</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -1537,7 +1537,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">31</_version>
+              <_version dataType="Int">33</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3643533120" surrogate="true">
               <header />
@@ -1562,7 +1562,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Box</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -1695,7 +1695,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">31</_version>
+              <_version dataType="Int">33</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3652594360" surrogate="true">
               <header />
@@ -1720,7 +1720,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Box</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -1853,7 +1853,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">31</_version>
+              <_version dataType="Int">33</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3816183830" surrogate="true">
               <header />
@@ -1878,7 +1878,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Box</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -2011,7 +2011,7 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">25</_version>
+              <_version dataType="Int">27</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="176391328" surrogate="true">
               <header />
@@ -2036,7 +2036,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Box</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>

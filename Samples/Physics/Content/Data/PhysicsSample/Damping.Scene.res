@@ -223,7 +223,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -341,7 +341,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -459,7 +459,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -577,7 +577,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -695,7 +695,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -813,7 +813,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -934,7 +934,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -1055,7 +1055,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -1176,7 +1176,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -1297,7 +1297,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -1418,7 +1418,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
@@ -1539,7 +1539,7 @@
               <body />
             </identifier>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">RigidBodyRenderer</name>
+            <name dataType="String">Ball</name>
             <parent dataType="ObjectRef">2091764498</parent>
             <prefabLink />
           </item>
