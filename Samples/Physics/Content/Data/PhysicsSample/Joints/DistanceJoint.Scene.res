@@ -68,7 +68,6 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">2</_version>
             </passes>
             <perspective dataType="Enum" type="Duality.Drawing.PerspectiveMode" name="Parallax" value="1" />
             <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="All" value="4294967295" />
@@ -79,7 +78,6 @@
           </item>
         </_items>
         <_size dataType="Int">3</_size>
-        <_version dataType="Int">131</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3235226824" surrogate="true">
         <header />
@@ -185,7 +183,6 @@
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">138</_version>
                         </convexPolygons>
                         <density dataType="Float">1</density>
                         <friction dataType="Float">0.3</friction>
@@ -213,7 +210,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">1</_size>
-                    <_version dataType="Int">1</_version>
                   </shapes>
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="74821512">
@@ -241,7 +237,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">131</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3011869498" surrogate="true">
               <header />
@@ -343,7 +338,6 @@
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">138</_version>
                         </convexPolygons>
                         <density dataType="Float">1</density>
                         <friction dataType="Float">0.3</friction>
@@ -371,7 +365,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">1</_size>
-                    <_version dataType="Int">1</_version>
                   </shapes>
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="788996431">
@@ -399,7 +392,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">13</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="97244800" surrogate="true">
               <header />
@@ -430,12 +422,10 @@
           </item>
         </_items>
         <_size dataType="Int">2</_size>
-        <_version dataType="Int">16</_version>
       </children>
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="4076576384">
         <_items dataType="Array" type="Duality.Component[]" id="3589598893" length="0" />
         <_size dataType="Int">0</_size>
-        <_version dataType="Int">0</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3668253445" surrogate="true">
         <header />
@@ -469,7 +459,6 @@
                   <children dataType="Struct" type="System.Collections.Generic.List`1[[Duality.GameObject]]" id="3849577647">
                     <_items dataType="Array" type="Duality.GameObject[]" id="290220014" length="4" />
                     <_size dataType="Int">0</_size>
-                    <_version dataType="Int">2</_version>
                   </children>
                   <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1482508448">
                     <_items dataType="Array" type="Duality.Component[]" id="841871237" length="4">
@@ -578,14 +567,12 @@
                                     </item>
                                   </_items>
                                   <_size dataType="Int">1</_size>
-                                  <_version dataType="Int">1</_version>
                                 </shapes>
                               </otherBody>
                               <parentBody dataType="ObjectRef">3616158183</parentBody>
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">3</_version>
                         </joints>
                         <linearDamp dataType="Float">0.3</linearDamp>
                         <linearVel dataType="Struct" type="Duality.Vector2" />
@@ -615,7 +602,6 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">98</_version>
                               </convexPolygons>
                               <density dataType="Float">1</density>
                               <friction dataType="Float">0.3</friction>
@@ -643,7 +629,6 @@
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">28</_version>
                         </shapes>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1152074849">
@@ -671,7 +656,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">131</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="348140605" surrogate="true">
                     <header />
@@ -702,7 +686,6 @@
                 </item>
               </_items>
               <_size dataType="Int">1</_size>
-              <_version dataType="Int">1</_version>
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2913805626">
               <_items dataType="Array" type="Duality.Component[]" id="2763400820" length="4">
@@ -733,7 +716,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">46</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2290840966" surrogate="true">
               <header />
@@ -868,14 +850,12 @@
                                     </item>
                                   </_items>
                                   <_size dataType="Int">1</_size>
-                                  <_version dataType="Int">2</_version>
                                 </shapes>
                               </otherBody>
                               <parentBody dataType="ObjectRef">4123054304</parentBody>
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">1</_version>
                         </joints>
                         <linearDamp dataType="Float">0.3</linearDamp>
                         <linearVel dataType="Struct" type="Duality.Vector2" />
@@ -905,7 +885,6 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">60</_version>
                               </convexPolygons>
                               <density dataType="Float">1</density>
                               <friction dataType="Float">0.3</friction>
@@ -933,7 +912,6 @@
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">15</_version>
                         </shapes>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1658970970">
@@ -961,7 +939,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">41</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="316274414" surrogate="true">
                     <header />
@@ -992,7 +969,6 @@
                 </item>
               </_items>
               <_size dataType="Int">1</_size>
-              <_version dataType="Int">1</_version>
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3478108920">
               <_items dataType="Array" type="Duality.Component[]" id="2379244919" length="4">
@@ -1023,7 +999,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">41</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2820564663" surrogate="true">
               <header />
@@ -1166,14 +1141,12 @@
                                     </item>
                                   </_items>
                                   <_size dataType="Int">1</_size>
-                                  <_version dataType="Int">2</_version>
                                 </shapes>
                               </otherBody>
                               <parentBody dataType="ObjectRef">2090011395</parentBody>
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">1</_version>
                         </joints>
                         <linearDamp dataType="Float">0.3</linearDamp>
                         <linearVel dataType="Struct" type="Duality.Vector2" />
@@ -1203,7 +1176,6 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">65</_version>
                               </convexPolygons>
                               <density dataType="Float">1</density>
                               <friction dataType="Float">0.3</friction>
@@ -1231,7 +1203,6 @@
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">5</_version>
                         </shapes>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3920895357">
@@ -1259,7 +1230,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">41</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1075112136" surrogate="true">
                     <header />
@@ -1290,7 +1260,6 @@
                 </item>
               </_items>
               <_size dataType="Int">1</_size>
-              <_version dataType="Int">1</_version>
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="422816542">
               <_items dataType="Array" type="Duality.Component[]" id="48464858" length="4">
@@ -1321,7 +1290,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">41</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2921713988" surrogate="true">
               <header />
@@ -1467,14 +1435,12 @@
                                     </item>
                                   </_items>
                                   <_size dataType="Int">1</_size>
-                                  <_version dataType="Int">2</_version>
                                 </shapes>
                               </otherBody>
                               <parentBody dataType="ObjectRef">290627225</parentBody>
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">1</_version>
                         </joints>
                         <linearDamp dataType="Float">0.3</linearDamp>
                         <linearVel dataType="Struct" type="Duality.Vector2" />
@@ -1504,7 +1470,6 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">135</_version>
                               </convexPolygons>
                               <density dataType="Float">1</density>
                               <friction dataType="Float">0.3</friction>
@@ -1544,7 +1509,6 @@
                             </item>
                           </_items>
                           <_size dataType="Int">2</_size>
-                          <_version dataType="Int">12</_version>
                         </shapes>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2121511187">
@@ -1572,7 +1536,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">29</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3090804992" surrogate="true">
                     <header />
@@ -1603,7 +1566,6 @@
                 </item>
               </_items>
               <_size dataType="Int">1</_size>
-              <_version dataType="Int">1</_version>
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2853336506">
               <_items dataType="Array" type="Duality.Component[]" id="2643299252" length="4">
@@ -1634,7 +1596,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">29</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1690568774" surrogate="true">
               <header />
@@ -1777,14 +1738,12 @@
                                     </item>
                                   </_items>
                                   <_size dataType="Int">1</_size>
-                                  <_version dataType="Int">2</_version>
                                 </shapes>
                               </otherBody>
                               <parentBody dataType="ObjectRef">2382750302</parentBody>
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">1</_version>
                         </joints>
                         <linearDamp dataType="Float">0.3</linearDamp>
                         <linearVel dataType="Struct" type="Duality.Vector2" />
@@ -1814,7 +1773,6 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">135</_version>
                               </convexPolygons>
                               <density dataType="Float">1</density>
                               <friction dataType="Float">0.3</friction>
@@ -1842,7 +1800,6 @@
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">3</_version>
                         </shapes>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="4213634264">
@@ -1870,7 +1827,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">19</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4211215514" surrogate="true">
                     <header />
@@ -1959,7 +1915,6 @@
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">3</_version>
                         </joints>
                         <linearDamp dataType="Float">0.3</linearDamp>
                         <linearVel dataType="Struct" type="Duality.Vector2" />
@@ -1989,7 +1944,6 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">135</_version>
                               </convexPolygons>
                               <density dataType="Float">1</density>
                               <friction dataType="Float">0.3</friction>
@@ -2017,7 +1971,6 @@
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
-                          <_version dataType="Int">1</_version>
                         </shapes>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="339042552">
@@ -2045,7 +1998,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">3</_size>
-                    <_version dataType="Int">19</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3134855130" surrogate="true">
                     <header />
@@ -2076,7 +2028,6 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">2</_version>
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1592268960">
               <_items dataType="Array" type="Duality.Component[]" id="3250273147" length="4">
@@ -2107,7 +2058,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">19</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3114713795" surrogate="true">
               <header />
@@ -2138,12 +2088,10 @@
           </item>
         </_items>
         <_size dataType="Int">5</_size>
-        <_version dataType="Int">49</_version>
       </children>
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="64059286">
         <_items dataType="Array" type="Duality.Component[]" id="3137633622" length="4" />
         <_size dataType="Int">0</_size>
-        <_version dataType="Int">4</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2630997672" surrogate="true">
         <header />
@@ -2175,7 +2123,6 @@
           </item>
         </_items>
         <_size dataType="Int">1</_size>
-        <_version dataType="Int">1</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3248960696" surrogate="true">
         <header />
@@ -2299,7 +2246,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
-                    <_version dataType="Int">28</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1926308640" surrogate="true">
                     <header />
@@ -2328,7 +2274,6 @@
                 </item>
               </_items>
               <_size dataType="Int">1</_size>
-              <_version dataType="Int">3</_version>
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3642470302">
               <_items dataType="Array" type="Duality.Component[]" id="3075866394" length="4">
@@ -2364,7 +2309,6 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">38</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2836869380" surrogate="true">
               <header />
@@ -2480,7 +2424,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
-                    <_version dataType="Int">5</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1830824214" surrogate="true">
                     <header />
@@ -2509,7 +2452,6 @@
                 </item>
               </_items>
               <_size dataType="Int">1</_size>
-              <_version dataType="Int">1</_version>
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3574244086">
               <_items dataType="Array" type="Duality.Component[]" id="3813178398" length="4">
@@ -2545,7 +2487,6 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">5</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2979558288" surrogate="true">
               <header />
@@ -2661,7 +2602,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
-                    <_version dataType="Int">5</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1362007008" surrogate="true">
                     <header />
@@ -2690,7 +2630,6 @@
                 </item>
               </_items>
               <_size dataType="Int">1</_size>
-              <_version dataType="Int">1</_version>
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="4232771742">
               <_items dataType="Array" type="Duality.Component[]" id="1235913370" length="4">
@@ -2726,7 +2665,6 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">5</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="961658500" surrogate="true">
               <header />
@@ -2842,7 +2780,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
-                    <_version dataType="Int">4</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1365029102" surrogate="true">
                     <header />
@@ -2871,7 +2808,6 @@
                 </item>
               </_items>
               <_size dataType="Int">1</_size>
-              <_version dataType="Int">1</_version>
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="162529376">
               <_items dataType="Array" type="Duality.Component[]" id="2828440677" length="4">
@@ -2907,7 +2843,6 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">4</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1855570077" surrogate="true">
               <header />
@@ -3023,7 +2958,6 @@
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
-                    <_version dataType="Int">3</_version>
                   </compList>
                   <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="433442074" surrogate="true">
                     <header />
@@ -3052,7 +2986,6 @@
                 </item>
               </_items>
               <_size dataType="Int">1</_size>
-              <_version dataType="Int">1</_version>
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1917781752">
               <_items dataType="Array" type="Duality.Component[]" id="1876751879" length="4">
@@ -3088,7 +3021,6 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">3</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3437084551" surrogate="true">
               <header />
@@ -3117,12 +3049,10 @@
           </item>
         </_items>
         <_size dataType="Int">5</_size>
-        <_version dataType="Int">15</_version>
       </children>
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="193807326">
         <_items dataType="Array" type="Duality.Component[]" id="2329980746" length="0" />
         <_size dataType="Int">0</_size>
-        <_version dataType="Int">0</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3758793844" surrogate="true">
         <header />
@@ -3154,7 +3084,6 @@
           </item>
         </_items>
         <_size dataType="Int">1</_size>
-        <_version dataType="Int">1</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1683622568" surrogate="true">
         <header />
@@ -3184,7 +3113,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="2127135048">
                 <_items dataType="Array" type="System.Int32[]" id="2774288492"></_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">713320942</componentType>
               <prop dataType="MemberInfo" id="408413406" value="P:Duality.Samples.Physics.PhysicsSampleInfo:SampleDesc" />
@@ -3194,7 +3122,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3392522676">
                 <_items dataType="ObjectRef">2774288492</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">713320942</componentType>
               <prop dataType="MemberInfo" id="1253331490" value="P:Duality.Samples.Physics.PhysicsSampleInfo:SampleName" />
@@ -3202,7 +3129,6 @@
             </item>
           </_items>
           <_size dataType="Int">2</_size>
-          <_version dataType="Int">28</_version>
         </changes>
         <obj dataType="ObjectRef">3978794535</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">

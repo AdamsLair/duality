@@ -1649,7 +1649,6 @@
         </item>
       </_items>
       <_size dataType="Int">107</_size>
-      <_version dataType="Int">0</_version>
     </atlas>
     <layers dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Drawing.PixelData]]" id="3416008032">
       <_items dataType="Array" type="Duality.Drawing.PixelData[]" id="1887721035" length="4">
@@ -1662,7 +1661,6 @@
         </item>
       </_items>
       <_size dataType="Int">1</_size>
-      <_version dataType="Int">1</_version>
     </layers>
   </pixelData>
   <renderMode dataType="Enum" type="Duality.Resources.Font+RenderMode" name="SharpBitmap" value="3" />
