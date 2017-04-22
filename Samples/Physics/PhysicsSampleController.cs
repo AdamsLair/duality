@@ -209,7 +209,7 @@ namespace Duality.Samples.Physics
 
 		void ICmpInitializable.OnInit(Component.InitContext context)
 		{
-			if (context == InitContext.Activate)
+			if (context == InitContext.Activate && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 			{
 				// Retrieve a list of all available scenes to cycle through.
 				this.sampleScenes = ContentProvider.GetAvailableContent<Scene>();
