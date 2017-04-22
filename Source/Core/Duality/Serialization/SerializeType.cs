@@ -12,12 +12,13 @@ namespace Duality.Serialization
 	[DontSerialize]
 	public sealed class SerializeType
 	{
-		private TypeInfo    type;
-		private FieldInfo[] fields;
-		private string      typeString;
-		private DataType    dataType;
-		private bool        dontSerialize;
-		private object      defaultValue;
+		private TypeInfo            type;
+		private FieldInfo[]         fields;
+		private string              typeString;
+		private DataType            dataType;
+		private bool                dontSerialize;
+		private object              defaultValue;
+		private ISerializeSurrogate surrogate;
 
 		/// <summary>
 		/// [GET] The <see cref="System.Reflection.TypeInfo"/> that is described.
@@ -77,6 +78,14 @@ namespace Duality.Serialization
 		{
 			get { return this.defaultValue; }
 		}
+		/// <summary>
+		/// [GET] When assigned, this property returns the serialization surrogate
+		/// for the type it represents.
+		/// </summary>
+		public ISerializeSurrogate Surrogate
+		{
+			get { return this.surrogate; }
+		}
 
 		/// <summary>
 		/// Creates a new SerializeType based on a <see cref="System.Type"/>, gathering all the information that is necessary for serialization.
@@ -89,8 +98,9 @@ namespace Duality.Serialization
 			this.dataType = GetDataType(this.type);
 			this.dontSerialize = this.type.HasAttributeCached<DontSerializeAttribute>();
 			this.defaultValue = this.type.GetDefaultOf();
+			this.surrogate = Serializer.GetSurrogateFor(this.type);
 
-			if (this.dataType == DataType.Struct)
+			if (this.dataType == DataType.Struct && this.surrogate == null)
 			{
 				// Retrieve all fields that are not flagged not to be serialized
 				IEnumerable<FieldInfo> filteredFields = this.type
