@@ -1026,7 +1026,8 @@ namespace Duality.Drawing
 		/// <param name="blockAlign">Specifies the alignment of the text block.</param>
 		public void DrawText(string text, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
-			this.DrawText(new string[] { text }, x, y, z, blockAlign, drawBackground);
+			if(!string.IsNullOrEmpty(text))
+				this.DrawText(new string[] { text }, x, y, z, blockAlign, drawBackground);
 		}
 		/// <summary>
 		/// Draws the specified text.
