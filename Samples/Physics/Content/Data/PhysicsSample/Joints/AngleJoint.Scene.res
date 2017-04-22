@@ -531,7 +531,7 @@
                               <angle dataType="Float">0</angle>
                               <biasFactor dataType="Float">0.2</biasFactor>
                               <breakPoint dataType="Float">-1</breakPoint>
-                              <collide dataType="Bool">false</collide>
+                              <collide dataType="Bool">true</collide>
                               <enabled dataType="Bool">true</enabled>
                               <maxImpulse dataType="Float">-1</maxImpulse>
                               <otherBody dataType="Struct" type="Duality.Components.Physics.RigidBody" id="337872362">
@@ -813,7 +813,7 @@
                               <angle dataType="Float">0</angle>
                               <biasFactor dataType="Float">0.2</biasFactor>
                               <breakPoint dataType="Float">-1</breakPoint>
-                              <collide dataType="Bool">false</collide>
+                              <collide dataType="Bool">true</collide>
                               <enabled dataType="Bool">true</enabled>
                               <maxImpulse dataType="Float">-1</maxImpulse>
                               <otherBody dataType="Struct" type="Duality.Components.Physics.RigidBody" id="1269039458">
@@ -1103,7 +1103,7 @@
                               <angle dataType="Float">0</angle>
                               <biasFactor dataType="Float">0.2</biasFactor>
                               <breakPoint dataType="Float">-1</breakPoint>
-                              <collide dataType="Bool">false</collide>
+                              <collide dataType="Bool">true</collide>
                               <enabled dataType="Bool">true</enabled>
                               <maxImpulse dataType="Float">0.1</maxImpulse>
                               <otherBody dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3970835510">
