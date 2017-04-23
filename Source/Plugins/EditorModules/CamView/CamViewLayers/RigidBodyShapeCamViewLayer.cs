@@ -19,8 +19,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 	{
 		private float shapeOutlineWidth = 2.0f;
 		private float depthOffset = -0.5f;
+        // RigidBodyEditorSelVertices Test
+        private RigidBodyEditorSelVertices vertexSelector = new RigidBodyEditorSelVertices();
 
-		public override string LayerName
+        public override string LayerName
 		{
 			get { return Properties.CamViewRes.CamViewLayer_RigidBodyShape_Name; }
 		}
@@ -173,7 +175,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 							objPos.X + shapeCenter.X, 
 							objPos.Y + shapeCenter.Y,
 							0.0f);
-					}
+
+                        // RigidBodyEditorSelVertices Test
+                        if (isShapeSelected && poly != null) // RigidBodyEditorSelVertices should only work with polygon shapes
+                        {
+                            System.Drawing.Point mousePos = this.PointToClient(System.Windows.Forms.Cursor.Position);
+                            vertexSelector.Shape = shape as PolyShapeInfo;
+                            vertexSelector.Draw(canvas, new Vector3(mousePos.X, mousePos.Y, 0f));
+                        }
+                    }
 
 					shapeIndex++;
 				}
