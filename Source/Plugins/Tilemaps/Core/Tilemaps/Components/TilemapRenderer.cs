@@ -220,8 +220,13 @@ namespace Duality.Plugins.Tilemaps
 		/// <returns></returns>
 		public Vector2 GetLocalPosAtTile(Point2 tilePos)
 		{
-			Vector2 tileSize = this.LocalTileSize;
-			return new Vector2(tilePos.X * tileSize.X, tilePos.Y * tileSize.Y);
+			Rect localRect = this.LocalTilemapRect;
+			Tilemap tilemap = this.ActiveTilemap;
+			Point2 tileCount = tilemap != null ? tilemap.Size : new Point2(1, 1);
+
+			return new Vector2(
+				MathF.Lerp(localRect.LeftX, localRect.RightX, (float)tilePos.X / tileCount.X),
+				MathF.Lerp(localRect.TopY, localRect.BottomY, (float)tilePos.Y / tileCount.Y));
 		}
 		/// <summary>
 		/// Determines the generated depth offset for the tile at the specified tile coordinates.
