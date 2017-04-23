@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using Duality.Components.Physics;
+using Duality.Drawing;
 using Duality.Editor.Plugins.CamView.Properties;
 
 

@@ -545,6 +545,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.activeWorldPos.Z, 
 					this.selectedBody.BoundRadius * 4);
 			}
+			else
+			{
+				// RigidBodyEditorSelVertices Test 2
+				this.actionTool.OnCollectStateWorldOverlayDrawcalls(canvas);
+			}
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
@@ -578,15 +583,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			
-			if (e.Button == MouseButtons.Left)
+
+            if (e.Button == MouseButtons.Left)
 			{
 				// Because selection events may change the currently active tool,
 				// start by agreeing on what tool we're dealing with in this mouse event.
 				RigidBodyEditorTool proposedAction = this.activeTool;
 
 				// If there is no tool active, don't do selection changes or begin an action
-				if (proposedAction == this.toolNone) return;
+				// RigidBodyEditorSelVertices Test 2 (removed the next line)
+				//if (proposedAction == this.toolNone) return;
 
 				if (this.actionTool == proposedAction)
 				{

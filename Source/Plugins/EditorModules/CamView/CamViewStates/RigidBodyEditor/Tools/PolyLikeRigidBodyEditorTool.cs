@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Duality.Components.Physics;
 using Duality.Editor.Plugins.CamView.Properties;
 using Duality.Editor.Plugins.CamView.UndoRedoActions;
-
+using Duality.Drawing;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {

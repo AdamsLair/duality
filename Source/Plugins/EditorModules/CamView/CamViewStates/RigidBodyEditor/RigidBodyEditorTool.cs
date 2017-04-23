@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using Duality.Components.Physics;
-
+using Duality.Drawing;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
@@ -121,6 +121,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			return null;
 		}
+
+		// RigidBodyEditorSelVertices Test 2
+		public virtual void OnCollectStateWorldOverlayDrawcalls(Canvas canvas) { }
 
 		/// <summary>
 		/// Initializes the tool's internal toolbar button.
