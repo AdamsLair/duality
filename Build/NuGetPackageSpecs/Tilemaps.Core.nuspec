@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Tilemaps</id>
-    <version>1.1.12</version>
+    <version>1.1.13</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Core)</title>
@@ -13,10 +13,10 @@
     <summary>Defines core Resources and Components for using tilemaps with Duality.</summary>
     <description>Defines core Resources and Components for using tilemaps with Duality.</description>
     <tags>Duality Core Plugin Tilemaps</tags>
-    <releaseNotes>TilemapCollider Bugfix
-#FIX: Fixed an exception when attempting to create collision shapes in a TilemapCollider without any non-null source layers.</releaseNotes>
+    <releaseNotes>
+</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.9.5" />
+      <dependency id="AdamsLair.Duality" version="2.11.4" />
     </dependencies>
   </metadata>
   <files>
