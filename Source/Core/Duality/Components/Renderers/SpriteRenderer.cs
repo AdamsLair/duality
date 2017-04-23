@@ -331,10 +331,12 @@ namespace Duality.Components.Renderers
 			base.OnCopyDataTo(targetObj, operation);
 			SpriteRenderer target = targetObj as SpriteRenderer;
 			
-			target.rect			= this.rect;
-			target.colorTint	= this.colorTint;
-			target.rectMode		= this.rectMode;
-			target.offset		= this.offset;
+			target.rect      = this.rect;
+			target.colorTint = this.colorTint;
+			target.rectMode  = this.rectMode;
+			target.offset    = this.offset;
+			target.pixelGrid = this.pixelGrid;
+			target.flipMode  = this.flipMode;
 
 			operation.HandleValue(ref this.sharedMat, ref target.sharedMat);
 			operation.HandleObject(this.customMat, ref target.customMat);
