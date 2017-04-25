@@ -47,13 +47,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 				try
 				{
-					mousePos = canvas.DrawDevice.GetSpaceCoord(mousePos);
 					float radius = SELECTOR_RADIUS / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0f));
 
 					if (currentVertex.type == VertexType.Selected)
 					{
-						canvas.FillCircleSegment(currentVertex.pos.X, currentVertex.pos.Y, 0f, radius * 3f, 0f, MathF.RadAngle360, radius * .5f);
-					}
+                        canvas.DrawCircle(currentVertex.pos.X, currentVertex.pos.Y, radius * 2f);
+                    }
 					else
 					{
 						currentVertex = new VertexInfo();

@@ -13,8 +13,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// </summary>
 	public class NoRigidBodyEditorTool : RigidBodyEditorTool
 	{
-		private PolygonRigidBodyEditorOverlay overlay = new PolygonRigidBodyEditorOverlay();
-
 		public override string Name
 		{
 			get { return null; }
@@ -26,27 +24,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public override Cursor ActionCursor
 		{
 			get { return CursorHelper.Arrow; }
-		}
-
-		// RigidBodyEditorSelVertices Test 2
-		public override void OnCollectStateWorldOverlayDrawcalls(Canvas canvas)
-		{
-			RigidBodyEditorCamViewState env = Environment as RigidBodyEditorCamViewState;
-			Point mousePos = env.View.RenderableControl.PointToClient(Cursor.Position);
-			overlay.Draw(base.Environment.ActiveBody, canvas, new Vector3(mousePos.X, mousePos.Y, 0f));
-		}
-
-		// RigidBodyEditorSelVertices Test 2
-		public override void OnActionKeyPressed()
-		{
-			if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleNew)
-			{
-				List<Vector2> temp = overlay.CurrentVertex.shape.Vertices.ToList();
-				int id = overlay.CurrentVertex.id;
-				temp.Insert(id + 1, overlay.CurrentVertex.pos);
-				overlay.CurrentVertex.shape.Vertices = temp.ToArray();
-				overlay.CurrentVertex = new PolygonRigidBodyEditorOverlay.VertexInfo();
-			}
 		}
 	}
 }

@@ -112,18 +112,21 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// Called when the action key has been pressed after the action has already begun.
 		/// </summary>
 		public virtual void OnActionKeyPressed() { }
-		/// <summary>
-		/// While performing a continuous operation, this method can provide an optional
-		/// action text that will be displayed in the status area of the <see cref="RigidBody"/> editor.
-		/// </summary>
-		/// <returns></returns>
-		public virtual string GetActionText()
+        /// <summary>
+        /// Called when the action key has been released after the action has already begun.
+        /// </summary>
+        public virtual void OnActionKeyReleased() { }
+        /// <summary>
+        /// While performing a continuous operation, this method can provide an optional
+        /// action text that will be displayed in the status area of the <see cref="RigidBody"/> editor.
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetActionText()
 		{
 			return null;
 		}
-
-		// RigidBodyEditorSelVertices Test 2
-		public virtual void OnCollectStateWorldOverlayDrawcalls(Canvas canvas) { }
+        
+		public virtual void OnWorldOverlayDrawcalls(Canvas canvas) { }
 
 		/// <summary>
 		/// Initializes the tool's internal toolbar button.

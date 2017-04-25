@@ -382,6 +382,16 @@ namespace Duality.Editor.Plugins.CamView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap CursorArrowEditVertices {
+            get {
+                object obj = ResourceManager.GetObject("CursorArrowEditVertices", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap IconCmpCircleCollider {
             get {
                 object obj = ResourceManager.GetObject("IconCmpCircleCollider", resourceCulture);
@@ -395,6 +405,16 @@ namespace Duality.Editor.Plugins.CamView.Properties {
         public static System.Drawing.Bitmap IconCmpEdgeCollider {
             get {
                 object obj = ResourceManager.GetObject("IconCmpEdgeCollider", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconCmpEditVertices {
+            get {
+                object obj = ResourceManager.GetObject("IconCmpEditVertices", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -520,6 +540,15 @@ namespace Duality.Editor.Plugins.CamView.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Vertices.
+        /// </summary>
+        public static string RigidBodyCamViewState_ItemName_EditVertices {
+            get {
+                return ResourceManager.GetString("RigidBodyCamViewState_ItemName_EditVertices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RigidBody.
         /// </summary>
         public static string RigidBodyCamViewState_SelBodyName {
@@ -583,6 +612,15 @@ namespace Duality.Editor.Plugins.CamView.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Vertex.
+        /// </summary>
+        public static string UndoRedo_CreateRigidBodyShapeVertex {
+            get {
+                return ResourceManager.GetString("UndoRedo_CreateRigidBodyShapeVertex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete {0}.
         /// </summary>
         public static string UndoRedo_DeleteRigidBodyShape {
@@ -597,6 +635,15 @@ namespace Duality.Editor.Plugins.CamView.Properties {
         public static string UndoRedo_DeleteRigidBodyShapeMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_DeleteRigidBodyShapeMulti", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Vertex.
+        /// </summary>
+        public static string UndoRedo_DeleteRigidBodyShapeVertex {
+            get {
+                return ResourceManager.GetString("UndoRedo_DeleteRigidBodyShapeVertex", resourceCulture);
             }
         }
         
@@ -633,6 +680,15 @@ namespace Duality.Editor.Plugins.CamView.Properties {
         public static string UndoRedo_MoveCamViewObjMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_MoveCamViewObjMulti", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move Vertex.
+        /// </summary>
+        public static string UndoRedo_MoveRigidBodyShapeVertex {
+            get {
+                return ResourceManager.GetString("UndoRedo_MoveRigidBodyShapeVertex", resourceCulture);
             }
         }
         
