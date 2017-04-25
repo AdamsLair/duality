@@ -133,7 +133,7 @@ namespace Duality.Components.Physics
 			LineJoint j = this.joint as LineJoint;
 			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
 			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
-			j.LocalXAxis = this.moveAxis;
+			j.LocalXAxis = this.ParentBody.GameObj.Transform.GetWorldVector(this.moveAxis).Normalized;
 			j.MotorEnabled = this.motorEnabled;
 			j.MotorSpeed = this.motorSpeed / Time.SPFMult;
 			j.MaxMotorTorque = PhysicsUnit.TimeToPhysical * this.maxMotorTorque;
