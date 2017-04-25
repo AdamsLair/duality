@@ -50,7 +50,7 @@ namespace Duality.Components.Physics
 		public Vector2 MovementAxis
 		{
 			get { return this.moveAxis; }
-			set { this.moveAxis = value == Vector2.Zero ? Vector2.UnitX : value.Normalized; this.UpdateJoint(); }
+			set { this.moveAxis = (value == Vector2.Zero) ? Vector2.UnitX : value; this.UpdateJoint(); }
 		}
 		/// <summary>
 		/// [GET / SET] Is the joint limited in its movement?
