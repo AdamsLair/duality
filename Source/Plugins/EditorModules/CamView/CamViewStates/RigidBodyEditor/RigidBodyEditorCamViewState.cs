@@ -469,7 +469,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			// Since our tool actions are designed to block out other actions,
 			// by default deselect each tool after using it.
-			if (selectedTool == tools[1]) SelectedTool = tools[4]; // This should not be hardcoded this way! (1 = Create Polygon Shape, 4 = Edit Vertices)
+			if (selectedTool == tools[0] || selectedTool == tools[1]) SelectedTool = tools[4]; // This should not be hardcoded this way! (0 = Create Circle, 1 = Create Polygon Shape, 4 = Edit Vertices)
 			else if (!keepToolSelected) SelectedTool = null;
 		}
 		void IRigidBodyEditorToolEnvironment.EndToolAction()

@@ -53,6 +53,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 				this.Environment.SelectShapes(new ShapeInfo[] { this.actionCircle });
 			}
+			else
+			{
+				this.Environment.EndToolAction();
+			}
 		}
 		public override void UpdateAction()
 		{

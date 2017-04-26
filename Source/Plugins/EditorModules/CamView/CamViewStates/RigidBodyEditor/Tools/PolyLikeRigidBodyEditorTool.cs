@@ -37,7 +37,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected abstract Vector2[] GetVertices(ShapeInfo shape);
 		protected abstract void SetVertices(ShapeInfo shape, Vector2[] vertices);
 
-		public override void BeginAction(MouseButtons mouseButton)
+		public override void BeginAction(MouseButtons mouseButton) 
 		{
 			base.BeginAction(mouseButton);
 
@@ -59,6 +59,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					ReflectionInfo.Property_RigidBody_Shapes);
 
 				this.Environment.SelectShapes(new ShapeInfo[] { this.actionShape });
+			}
+			else
+			{
+				this.Environment.EndToolAction();
 			}
 		}
 		public override void UpdateAction()
@@ -94,44 +98,47 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public override void EndAction()
 		{
 			base.EndAction();
-			Vector2[] vertices = this.GetVertices(this.actionShape);
-
-			// If we're in the process of placing another vertex, remove that unplaced one
-			if (!this.pendingAdvance)
+			if (this.actionShape != null)
 			{
-				List<Vector2> prevVertices = vertices.ToList();
-				prevVertices.RemoveAt(this.currentVertex);
-				vertices = prevVertices.ToArray();
-			}
+				Vector2[] vertices = this.GetVertices(this.actionShape);
 
-			// Apply the new polygon and force an immediate body update / sync, so
-			// we can get a useful result from the shape's IsValid method.
-			this.SetVertices(this.actionShape, vertices);
-			this.Environment.ActiveBody.SynchronizeBodyShape();
+				// If we're in the process of placing another vertex, remove that unplaced one
+				if (!this.pendingAdvance)
+				{
+					List<Vector2> prevVertices = vertices.ToList();
+					prevVertices.RemoveAt(this.currentVertex);
+					vertices = prevVertices.ToArray();
+				}
 
-			// Check if we have a fully defined, valid polygon to apply
-			bool isValidShape = this.actionShape != null && this.actionShape.IsValid;
-			bool isMinVertexCountReached = 
-				vertices.Length >= this.initialVertexCount && 
-				this.currentVertex >= this.initialVertexCount - 1;
-			if (isValidShape && isMinVertexCountReached)
-			{
-				// Remove the shape and re-add it properly using an UndoRedoAction.
-				// Now that we're sure the shape is valid, we want its creation to
-				// show up in the UndoRedo stack.
-				this.Environment.ActiveBody.RemoveShape(this.actionShape);
-				UndoRedoManager.Do(new CreateRigidBodyShapeAction(this.Environment.ActiveBody, this.actionShape));
+				// Apply the new polygon and force an immediate body update / sync, so
+				// we can get a useful result from the shape's IsValid method.
+				this.SetVertices(this.actionShape, vertices);
+				this.Environment.ActiveBody.SynchronizeBodyShape();
+
+				// Check if we have a fully defined, valid polygon to apply
+				bool isValidShape = this.actionShape != null && this.actionShape.IsValid;
+				bool isMinVertexCountReached =
+					vertices.Length >= this.initialVertexCount &&
+					this.currentVertex >= this.initialVertexCount - 1;
+				if (isValidShape && isMinVertexCountReached)
+				{
+					// Remove the shape and re-add it properly using an UndoRedoAction.
+					// Now that we're sure the shape is valid, we want its creation to
+					// show up in the UndoRedo stack.
+					this.Environment.ActiveBody.RemoveShape(this.actionShape);
+					UndoRedoManager.Do(new CreateRigidBodyShapeAction(this.Environment.ActiveBody, this.actionShape));
+				}
+				else
+				{
+					this.Environment.SelectShapes(null);
+					this.Environment.ActiveBody.RemoveShape(this.actionShape);
+				}
+
+				DualityEditorApp.NotifyObjPropChanged(this,
+					new ObjectSelection(this.Environment.ActiveBody),
+					ReflectionInfo.Property_RigidBody_Shapes);
+				this.actionShape = null;
 			}
-			else
-			{
-				this.Environment.SelectShapes(null);
-				this.Environment.ActiveBody.RemoveShape(this.actionShape);
-			}
-			
-			DualityEditorApp.NotifyObjPropChanged(this,
-				new ObjectSelection(this.Environment.ActiveBody),
-				ReflectionInfo.Property_RigidBody_Shapes);
-			this.actionShape = null;
 		}
 		public override void OnActionKeyPressed(MouseButtons mouseButton)
 		{
