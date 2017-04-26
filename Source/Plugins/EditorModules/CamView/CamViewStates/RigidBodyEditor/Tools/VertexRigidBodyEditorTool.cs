@@ -53,14 +53,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
             if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleNew)
             {
                 List<Vector2> temp = overlay.CurrentVertex.shape.Vertices.ToList();
-                int id = overlay.CurrentVertex.id;
-                temp.Insert(id + 1, overlay.CurrentVertex.pos);
+                int id = overlay.CurrentVertex.id + 1;
+                temp.Insert(id, overlay.CurrentVertex.pos);
                 overlay.CurrentVertex.shape.Vertices = temp.ToArray();
-                this.Environment.EndToolAction(true);
 
                 UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(overlay.CurrentVertex.shape, originalVertices));
 
-                overlay.CurrentVertex = new PolygonRigidBodyEditorOverlay.VertexInfo();
+                overlay.CurrentVertex.id = id;
+                overlay.CurrentVertex.type = PolygonRigidBodyEditorOverlay.VertexType.Selected;
             }
             else if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleSelect)
             {
