@@ -87,7 +87,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					return; // If a single vertex selection is found, exit the method
 				}
 
-				selecting = true; // If no single vertex selection is found, start multiple selection mode
+				// Uncomment to allow multiple selection
+				//selecting = true; // If no single vertex selection is found, start multiple selection mode
 			}
 		}
 		public override void UpdateAction()
