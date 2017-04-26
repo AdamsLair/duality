@@ -111,6 +111,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				}
 				else
 				{
+					overlay.CurrentVertex.pos = this.mousePos.Xy;
 					overlay.CurrentVertex.shape.Vertices[overlay.CurrentVertex.id] = this.mousePos.Xy;
 				}
 			}
