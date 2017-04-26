@@ -49,7 +49,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			overlay.Draw(base.Environment.ActiveBody, canvas, mousePosVector, selecting);
 		}
 
-		public override void BeginAction(MouseButtons mouseButton)
+		private void SetOriginalVertices()
 		{
 			if (overlay.CurrentVertex.shape != null)
 			{
@@ -60,6 +60,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.originalVertices[i] = new Vector2(vertices[i].X, vertices[i].Y);
 				}
 			}
+		}
+
+		public override void BeginAction(MouseButtons mouseButton)
+		{
+			SetOriginalVertices();
 
 			if (!selecting)
 			{
@@ -72,12 +77,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 					UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(overlay.CurrentVertex.shape, originalVertices));
 
+					SetOriginalVertices(); // Needed for a good undo experience (the move vertext starts from here)
 					overlay.CurrentVertex.id = id;
 					overlay.CurrentVertex.type = PolygonRigidBodyEditorOverlay.VertexType.Selected;
 
 					overlay.SelectedVertices.Clear(); // Clear multiple selection
-
-					return; // If a single vertex selection is found, exit the method
 				}
 				else if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleSelect)
 				{
@@ -96,11 +100,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 							UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(overlay.CurrentVertex.shape, originalVertices));
 						}
 					}
-
-					return; // If a single vertex selection is found, exit the method
 				}
-
-				if (mouseButton == MouseButtons.Left)
+				else if (mouseButton == MouseButtons.Left)
 				{
 					// Uncomment to allow multiple selection
 					//selecting = true; // If no single vertex selection is found, start multiple selection mode
@@ -149,10 +150,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.Selected)
 				{
-					overlay.CurrentVertex.shape.Vertices = overlay.CurrentVertex.shape.Vertices;
+					// If the vertex is not moved, don't do anything
+					if (originalVertices[overlay.CurrentVertex.id] != overlay.CurrentVertex.pos)
+					{
+						overlay.CurrentVertex.shape.Vertices = overlay.CurrentVertex.shape.Vertices;
 
-					UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(overlay.CurrentVertex.shape, originalVertices));
-
+						UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(overlay.CurrentVertex.shape, originalVertices));
+					}
 					overlay.CurrentVertex = new PolygonRigidBodyEditorOverlay.VertexInfo();
 				}
 			}
