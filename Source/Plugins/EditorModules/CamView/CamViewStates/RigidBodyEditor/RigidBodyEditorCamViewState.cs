@@ -415,7 +415,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			return result;
 		}
 
-		private void BeginToolAction(RigidBodyEditorTool action)
+		private void BeginToolAction(RigidBodyEditorTool action, MouseButtons mouseButton)
 		{
 			if (this.actionTool == action) return;
 			if (this.actionTool != this.toolNone)
@@ -428,7 +428,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.lockedWorldPos = this.activeWorldPos;
 
 			this.actionTool = action;
-			this.actionTool.BeginAction();
+			this.actionTool.BeginAction(mouseButton);
 
 			this.UpdateRigidBodyToolButtons();
 			this.Invalidate();
@@ -470,7 +470,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Since our tool actions are designed to block out other actions,
 			// by default deselect each tool after using it.
 			if (selectedTool == tools[1]) SelectedTool = tools[4]; // This should not be hardcoded this way! (1 = Create Polygon Shape, 4 = Edit Vertices)
-			else if (!keepToolSelected) selectedTool = null;
+			else if (!keepToolSelected) SelectedTool = null;
 		}
 		void IRigidBodyEditorToolEnvironment.EndToolAction()
 		{
@@ -590,32 +590,24 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			base.OnMouseDown(e);
 
-			if (e.Button == MouseButtons.Left)
+			// Because selection events may change the currently active tool,
+			// start by agreeing on what tool we're dealing with in this mouse event.
+			RigidBodyEditorTool proposedAction = this.activeTool;
+
+			// If there is no tool active, don't do selection changes or begin an action
+			if (proposedAction == this.toolNone) return;
+
+			if (this.actionTool == proposedAction)
 			{
-				// Because selection events may change the currently active tool,
-				// start by agreeing on what tool we're dealing with in this mouse event.
-				RigidBodyEditorTool proposedAction = this.activeTool;
-
-				// If there is no tool active, don't do selection changes or begin an action
-				if (proposedAction == this.toolNone) return;
-
-				if (this.actionTool == proposedAction)
-				{
-					// Notify an already active action that the action key has
-					// been pressed again. This can be used for "action checkpoints",
-					// such as finishing the current vertex and adding another one.
-					this.actionTool.OnActionKeyPressed();
-				}
-				else
-				{
-					// Begin a new action with the proposed action tool
-					this.BeginToolAction(proposedAction);
-				}
+				// Notify an already active action that the action key has
+				// been pressed again. This can be used for "action checkpoints",
+				// such as finishing the current vertex and adding another one.
+				this.actionTool.OnActionKeyPressed(e.Button);
 			}
-			else if (e.Button == MouseButtons.Right)
+			else
 			{
-				// A right-click signals the end of our current tool action
-				this.EndToolAction();
+				// Begin a new action with the proposed action tool
+				this.BeginToolAction(proposedAction, e.Button);
 			}
 		}
 		protected override void OnMouseMove(MouseEventArgs e)

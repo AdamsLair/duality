@@ -99,7 +99,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// <summary>
 		/// Begins a continuous operation with this tool. Usually invoked via left-click.
 		/// </summary>
-		public virtual void BeginAction() { }
+		public virtual void BeginAction(MouseButtons mouseButton) { }
 		/// <summary>
 		/// Updates the currently active continuous operation of this tool.
 		/// </summary>
@@ -111,7 +111,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// <summary>
 		/// Called when the action key has been pressed after the action has already begun.
 		/// </summary>
-		public virtual void OnActionKeyPressed() { }
+		public virtual void OnActionKeyPressed(MouseButtons mouseButton) { }
 		/// <summary>
 		/// Called when the action key has been released after the action has already begun.
 		/// </summary>

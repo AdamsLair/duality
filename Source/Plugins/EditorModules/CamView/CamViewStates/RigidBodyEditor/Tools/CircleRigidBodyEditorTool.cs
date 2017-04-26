@@ -40,15 +40,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get { return 1; }
 		}
 
-		public override void BeginAction()
+		public override void BeginAction(MouseButtons mouseButton)
 		{
-			base.BeginAction();
-			this.beginLocalPos = this.Environment.ActiveBodyPos;
+			base.BeginAction(mouseButton);
 
-			this.actionCircle = new CircleShapeInfo(1.0f, this.Environment.ActiveBodyPos, 1.0f);
-			UndoRedoManager.Do(new CreateRigidBodyShapeAction(this.Environment.ActiveBody, this.actionCircle));
+			if (mouseButton == MouseButtons.Left)
+			{
+				this.beginLocalPos = this.Environment.ActiveBodyPos;
 
-			this.Environment.SelectShapes(new ShapeInfo[] { this.actionCircle });
+				this.actionCircle = new CircleShapeInfo(1.0f, this.Environment.ActiveBodyPos, 1.0f);
+				UndoRedoManager.Do(new CreateRigidBodyShapeAction(this.Environment.ActiveBody, this.actionCircle));
+
+				this.Environment.SelectShapes(new ShapeInfo[] { this.actionCircle });
+			}
 		}
 		public override void UpdateAction()
 		{
