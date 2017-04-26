@@ -14,15 +14,15 @@ namespace Duality.Editor
 {
 	public static class HelpSystem
 	{
-		private	static XmlCodeDoc       docDatabase            = new XmlCodeDoc();
-		private	static InputEventMessageFilter inputFilter     = null;
-		private	static Control          hoveredControl         = null;
-		private	static IHelpProvider    hoveredHelpProvider    = null;
-		private	static bool             hoveredHelpCaptured    = false;
-		private	static HelpStack        stack                  = new HelpStack();
-		private	static bool             needStackUpdate        = false;
-		private	static DateTime         lastGlobalWindowUpdate = DateTime.Now;
-		private	static List<Form>       globalWindows          = null;
+		private	static XmlCodeDoc	   docDatabase			= new XmlCodeDoc();
+		private	static InputEventMessageFilter inputFilter	 = null;
+		private	static Control		  hoveredControl		 = null;
+		private	static IHelpProvider	hoveredHelpProvider	= null;
+		private	static bool			 hoveredHelpCaptured	= false;
+		private	static HelpStack		stack				  = new HelpStack();
+		private	static bool			 needStackUpdate		= false;
+		private	static DateTime		 lastGlobalWindowUpdate = DateTime.Now;
+		private	static List<Form>	   globalWindows		  = null;
 		
 		public static event EventHandler<HelpStackChangedEventArgs> ActiveHelpChanged
 		{

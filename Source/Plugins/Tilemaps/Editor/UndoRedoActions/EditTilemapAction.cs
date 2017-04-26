@@ -16,14 +16,14 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 {
 	public class EditTilemapAction : UndoRedoAction
 	{
-		private Tilemap               tilemap;
+		private Tilemap			   tilemap;
 		private EditTilemapActionType type;
-		private Point2                origin;
-		private Grid<Tile>            oldTiles;
-		private Grid<Tile>            newTiles;
-		private Grid<bool>            editMask;
-		private Grid<bool>            editMaskAutoTile;
-		private AutoTilePaintMode     autoTileMode;
+		private Point2				origin;
+		private Grid<Tile>			oldTiles;
+		private Grid<Tile>			newTiles;
+		private Grid<bool>			editMask;
+		private Grid<bool>			editMaskAutoTile;
+		private AutoTilePaintMode	 autoTileMode;
 
 		public override string Name
 		{
@@ -236,7 +236,7 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 
 			// Apply new tile data from the appended action to this one
 			MaskedCopyGrid(editAction.newTiles, this.newTiles, editAction.editMask, drawOffset.X, drawOffset.Y);
-			MaskedCopyGrid(editAction.oldTiles, this.oldTiles, newlyEditedMask,     drawOffset.X, drawOffset.Y);
+			MaskedCopyGrid(editAction.oldTiles, this.oldTiles, newlyEditedMask,	 drawOffset.X, drawOffset.Y);
 			MaskedCopyGrid(editAction.editMask, this.editMask, editAction.editMask, drawOffset.X, drawOffset.Y);
 			MaskedCopyGrid(editAction.editMaskAutoTile, this.editMaskAutoTile, editAction.editMaskAutoTile, drawOffset.X, drawOffset.Y);
 		}
@@ -259,13 +259,13 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 				for (int y = 0; y < height; y++)
 				{
 					int i = x + width * y;
-					maskData[i] |= x > 0         && y > 0          && maskData[i - 1 - width];
-					maskData[i] |=                  y > 0          && maskData[i     - width];
-					maskData[i] |= x < width - 1 && y > 0          && maskData[i + 1 - width];
-					maskData[i] |= x > 0         &&                   maskData[i - 1];
-					maskData[i] |= x < width - 1 &&                   maskData[i + 1];
-					maskData[i] |= x > 0         && y < height - 1 && maskData[i - 1 + width];
-					maskData[i] |=                  y > 0          && maskData[i     - width];
+					maskData[i] |= x > 0		 && y > 0		  && maskData[i - 1 - width];
+					maskData[i] |=				  y > 0		  && maskData[i	 - width];
+					maskData[i] |= x < width - 1 && y > 0		  && maskData[i + 1 - width];
+					maskData[i] |= x > 0		 &&				   maskData[i - 1];
+					maskData[i] |= x < width - 1 &&				   maskData[i + 1];
+					maskData[i] |= x > 0		 && y < height - 1 && maskData[i - 1 + width];
+					maskData[i] |=				  y > 0		  && maskData[i	 - width];
 					maskData[i] |= x < width - 1 && y < height - 1 && maskData[i + 1 + width];
 				}
 			}

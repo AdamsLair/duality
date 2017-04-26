@@ -12,9 +12,9 @@ namespace Duality.Editor.AssetManagement
 	/// </summary>
 	public class AssetImportFinishedEventArgs : EventArgs
 	{
-		private bool                success  = false;
-		private bool                reImport = false;
-		private AssetImportInput[]  input    = null;
+		private bool				success  = false;
+		private bool				reImport = false;
+		private AssetImportInput[]  input	= null;
 		private AssetImportOutput[] output   = null;
 
 		/// <summary>

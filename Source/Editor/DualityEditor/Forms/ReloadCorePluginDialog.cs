@@ -228,11 +228,11 @@ namespace Duality.Editor.Forms
 
 		private void progressTimer_Tick(object sender, EventArgs e)
 		{
-            if (this.state == ReloaderState.WaitForPlugins)
+			if (this.state == ReloaderState.WaitForPlugins)
 			{
 				this.waitTime += this.progressTimer.Interval;
 				if (this.waitTime > 1000)
-                    this.State = ReloaderState.ReloadPlugins;
+					this.State = ReloaderState.ReloadPlugins;
 			}
 			else if (this.state == ReloaderState.ReloadPlugins)
 			{
@@ -381,7 +381,7 @@ namespace Duality.Editor.Forms
 		private static bool RequiresFullRestart(IEnumerable<string> reloadPluginPaths)
 		{
 			Assembly[] allPluginAssemblies = 
-				        DualityApp      .PluginManager.LoadedPlugins.Select(p => p.PluginAssembly)
+						DualityApp	  .PluginManager.LoadedPlugins.Select(p => p.PluginAssembly)
 				.Concat(DualityEditorApp.PluginManager.LoadedPlugins.Select(p => p.PluginAssembly))
 				.ToArray();
 

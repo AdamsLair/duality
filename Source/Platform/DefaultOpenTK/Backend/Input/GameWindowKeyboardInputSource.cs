@@ -167,7 +167,7 @@ namespace Duality.Backend.DefaultOpenTK
 				case Key.X:				return OpenTK.Input.Key.X;
 				case Key.Y:				return OpenTK.Input.Key.Y;
 				case Key.Z:				return OpenTK.Input.Key.Z;
-    
+	
 				case Key.Number0:		return OpenTK.Input.Key.Number0;
 				case Key.Number1:		return OpenTK.Input.Key.Number1;
 				case Key.Number2:		return OpenTK.Input.Key.Number2;

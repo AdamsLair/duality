@@ -9,24 +9,24 @@ using System.Text;
 
 namespace Duality.Editor
 {
-    /// <summary>
-    /// Provides an API to send files and directories to the recycle bin. 
+	/// <summary>
+	/// Provides an API to send files and directories to the recycle bin. 
 	/// 
 	/// Note that each operation comes with an overhead, so it is usually a 
 	/// lot better to call an API method once for N files than N times for each 
 	/// file individually.
-    /// </summary>
-    public static class RecycleBin
-    {
-        /// <summary>
-        /// Send file to recycle bin
-        /// </summary>
-        /// <param name="path">Location of directory or file to recycle</param>
-        /// <param name="flags">FileOperationFlags to add in addition to FOF_ALLOWUNDO</param>
-        private static bool Send(IEnumerable<string> paths, NativeMethods.FileOperationFlags flags)
-        {
-            try
-            {
+	/// </summary>
+	public static class RecycleBin
+	{
+		/// <summary>
+		/// Send file to recycle bin
+		/// </summary>
+		/// <param name="path">Location of directory or file to recycle</param>
+		/// <param name="flags">FileOperationFlags to add in addition to FOF_ALLOWUNDO</param>
+		private static bool Send(IEnumerable<string> paths, NativeMethods.FileOperationFlags flags)
+		{
+			try
+			{
 				// Generate a single buffer containing all the file names
 				StringBuilder builder = new StringBuilder();
 				foreach (string path in paths)
@@ -82,9 +82,9 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="path">Location of directory or file to recycle</param>
 		public static bool SendSilent(string path)
-        {
-            return SendSilent(new string[] { path });
-        }
+		{
+			return SendSilent(new string[] { path });
+		}
 		/// <summary>
 		/// Send a list of files silently to the recycle bin. Suppress dialog, suppress errors, delete if too large.
 		/// </summary>
@@ -93,5 +93,5 @@ namespace Duality.Editor
 		{
 			return Send(paths, NativeMethods.FileOperationFlags.FOF_NOCONFIRMATION | NativeMethods.FileOperationFlags.FOF_NOERRORUI | NativeMethods.FileOperationFlags.FOF_SILENT);
 		}
-    }
+	}
 }

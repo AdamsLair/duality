@@ -25,15 +25,15 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 
 
-		private AudioContext     context         = null;
-        private EffectsExtension extFx           = null;
-		private Stack<int>       sourcePool      = new Stack<int>();
-		private int              availSources    = 0;
+		private AudioContext	 context		 = null;
+		private EffectsExtension extFx		   = null;
+		private Stack<int>	   sourcePool	  = new Stack<int>();
+		private int			  availSources	= 0;
 
-		private Thread                  streamWorker            = null;
-		private List<NativeAudioSource> streamWorkerQueue       = null;
-		private AutoResetEvent          streamWorkerQueueEvent  = null;
-		private bool                    streamWorkerEnd         = false;
+		private Thread				  streamWorker			= null;
+		private List<NativeAudioSource> streamWorkerQueue	   = null;
+		private AutoResetEvent		  streamWorkerQueueEvent  = null;
+		private bool					streamWorkerEnd		 = false;
 
 
 		public EffectsExtension EffectsExtension

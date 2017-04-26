@@ -15,23 +15,23 @@ namespace Duality.Plugins.Tilemaps
 	/// </summary>
 	public class TilesetRenderInput
 	{
-		public static readonly string MainTexName    = "Main Texture";
-		public static readonly string MainTexId      = "mainTex";
+		public static readonly string MainTexName	= "Main Texture";
+		public static readonly string MainTexId	  = "mainTex";
 		public static readonly string CustomTexName  = "Custom Texture";
-		public static readonly string CustomTexId    = "customTex";
+		public static readonly string CustomTexId	= "customTex";
 
 		private static readonly string DefaultName   = MainTexName;
-		private static readonly string DefaultId     = MainTexId;
+		private static readonly string DefaultId	 = MainTexId;
 
-		private string             name              = DefaultName;
-		private string             id                = DefaultId;
-		private ContentRef<Pixmap> sourceData        = null;
-		private Point2             sourceTileSize    = new Point2(32, 32);
-		private int                sourceTileSpacing = 0;
-		private int                targetTileMargin  = 1;
+		private string			 name			  = DefaultName;
+		private string			 id				= DefaultId;
+		private ContentRef<Pixmap> sourceData		= null;
+		private Point2			 sourceTileSize	= new Point2(32, 32);
+		private int				sourceTileSpacing = 0;
+		private int				targetTileMargin  = 1;
 		private TextureMagFilter   targetMagFilter   = TextureMagFilter.Linear;
 		private TextureMinFilter   targetMinFilter   = TextureMinFilter.LinearMipmapLinear;
-		private TexturePixelFormat targetFormat      = TexturePixelFormat.Rgba;
+		private TexturePixelFormat targetFormat	  = TexturePixelFormat.Rgba;
 
 		/// <summary>
 		/// [GET / SET] The human-friendly name of this rendering input.

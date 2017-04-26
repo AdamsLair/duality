@@ -65,7 +65,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 				this.pickingOperation = new GlobalColorPickOperation();
 
 			this.pickingOperation.PickedColorChanged += this.pickingOperation_PickedColorChanged;
-			this.pickingOperation.OperationEnded     += this.pickingOperation_OperationEnded;
+			this.pickingOperation.OperationEnded	 += this.pickingOperation_OperationEnded;
 			this.pickingOperation.Start();
 		}
 		
@@ -136,9 +136,9 @@ namespace Duality.Editor.Controls.PropertyEditors
 			ButtonState buttonCDiagState = ButtonState.Disabled;
 			if (!this.ReadOnly && this.Enabled)
 			{
-				if (this.buttonCDiagPressed)                        buttonCDiagState = ButtonState.Pressed;
+				if (this.buttonCDiagPressed)						buttonCDiagState = ButtonState.Pressed;
 				else if (this.buttonCDiagHovered)					buttonCDiagState = ButtonState.Hot;
-				else                                                buttonCDiagState = ButtonState.Normal;
+				else												buttonCDiagState = ButtonState.Normal;
 			}
 			ControlRenderer.DrawButton(
 				e.Graphics, 
@@ -150,9 +150,9 @@ namespace Duality.Editor.Controls.PropertyEditors
 			ButtonState buttonCPickState = ButtonState.Disabled;
 			if (!this.ReadOnly && this.Enabled)
 			{
-				if (this.buttonCPickPressed)                        buttonCPickState = ButtonState.Pressed;
+				if (this.buttonCPickPressed)						buttonCPickState = ButtonState.Pressed;
 				else if (this.buttonCPickHovered)					buttonCPickState = ButtonState.Hot;
-				else                                                buttonCPickState = ButtonState.Normal;
+				else												buttonCPickState = ButtonState.Normal;
 			}
 			ControlRenderer.DrawButton(
 				e.Graphics,
@@ -330,7 +330,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 				this.PerformGetValue();
 			}
 			this.pickingOperation.PickedColorChanged -= this.pickingOperation_PickedColorChanged;
-			this.pickingOperation.OperationEnded     -= this.pickingOperation_OperationEnded;
+			this.pickingOperation.OperationEnded	 -= this.pickingOperation_OperationEnded;
 		}
 	}
 }

@@ -16,10 +16,10 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 {
 	public class ResizeTilemapAction : UndoRedoAction
 	{
-		private Tilemap[]    tilemaps;
+		private Tilemap[]	tilemaps;
 		private Grid<Tile>[] oldData;
-		private Point2       newSize;
-		private Alignment    origin;
+		private Point2	   newSize;
+		private Alignment	origin;
 
 		public override string Name
 		{
@@ -93,7 +93,7 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 				if (!object.Equals(fillTile, default(Tile)))
 				{
 					Grid<Tile> data = this.tilemaps[i].BeginUpdateTiles();
-					if (topAdd    > 0) data.Fill(fillTile, 0, 0, data.Width, topAdd);
+					if (topAdd	> 0) data.Fill(fillTile, 0, 0, data.Width, topAdd);
 					if (leftAdd   > 0) data.Fill(fillTile, 0, 0, leftAdd, data.Height);
 					if (bottomAdd > 0) data.Fill(fillTile, 0, data.Height - bottomAdd, data.Width, bottomAdd);
 					if (rightAdd  > 0) data.Fill(fillTile, data.Width - rightAdd, 0, rightAdd, data.Height);

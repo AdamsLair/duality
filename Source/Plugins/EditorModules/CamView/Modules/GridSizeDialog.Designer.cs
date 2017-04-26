@@ -72,8 +72,8 @@
 			// tableLayoutPanel
 			// 
 			this.tableLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.tableLayoutPanel.ColumnCount = 3;
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -132,23 +132,23 @@
 			this.editorZ.Location = new System.Drawing.Point(28, 45);
 			this.editorZ.Margin = new System.Windows.Forms.Padding(5, 1, 5, 1);
 			this.editorZ.Maximum = new decimal(new int[] {
-            1024,
-            0,
-            0,
-            0});
+			1024,
+			0,
+			0,
+			0});
 			this.editorZ.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.editorZ.Name = "editorZ";
 			this.editorZ.Size = new System.Drawing.Size(138, 20);
 			this.editorZ.TabIndex = 5;
 			this.editorZ.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			// 
 			// editorY
 			// 
@@ -156,23 +156,23 @@
 			this.editorY.Location = new System.Drawing.Point(28, 23);
 			this.editorY.Margin = new System.Windows.Forms.Padding(5, 1, 5, 1);
 			this.editorY.Maximum = new decimal(new int[] {
-            1024,
-            0,
-            0,
-            0});
+			1024,
+			0,
+			0,
+			0});
 			this.editorY.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.editorY.Name = "editorY";
 			this.editorY.Size = new System.Drawing.Size(138, 20);
 			this.editorY.TabIndex = 4;
 			this.editorY.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			// 
 			// labelZ
 			// 
@@ -213,23 +213,23 @@
 			this.editorX.Location = new System.Drawing.Point(28, 1);
 			this.editorX.Margin = new System.Windows.Forms.Padding(5, 1, 5, 1);
 			this.editorX.Maximum = new decimal(new int[] {
-            1024,
-            0,
-            0,
-            0});
+			1024,
+			0,
+			0,
+			0});
 			this.editorX.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.editorX.Name = "editorX";
 			this.editorX.Size = new System.Drawing.Size(138, 20);
 			this.editorX.TabIndex = 3;
 			this.editorX.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			// 
 			// activeX
 			// 

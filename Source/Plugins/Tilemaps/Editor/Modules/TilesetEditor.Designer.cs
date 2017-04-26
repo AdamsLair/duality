@@ -61,7 +61,7 @@
 			this.toolStripModeSelect.GripMargin = new System.Windows.Forms.Padding(0);
 			this.toolStripModeSelect.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStripModeSelect.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.labelSelectedTileset});
+			this.labelSelectedTileset});
 			this.toolStripModeSelect.Location = new System.Drawing.Point(0, 0);
 			this.toolStripModeSelect.Name = "toolStripModeSelect";
 			this.toolStripModeSelect.Size = new System.Drawing.Size(529, 25);
@@ -78,8 +78,8 @@
 			// layerView
 			// 
 			this.layerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.layerView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.layerView.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.layerView.ColumnHeaderHeight = 0;
@@ -134,10 +134,10 @@
 			this.toolStripEdit.GripMargin = new System.Windows.Forms.Padding(0);
 			this.toolStripEdit.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStripEdit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.buttonAddLayer,
-            this.buttonRemoveLayer,
-            this.buttonBrightness,
-            this.buttonDrawTileIndices});
+			this.buttonAddLayer,
+			this.buttonRemoveLayer,
+			this.buttonBrightness,
+			this.buttonDrawTileIndices});
 			this.toolStripEdit.Location = new System.Drawing.Point(0, 25);
 			this.toolStripEdit.Name = "toolStripEdit";
 			this.toolStripEdit.Size = new System.Drawing.Size(529, 25);
@@ -182,8 +182,8 @@
 			// splitMain
 			// 
 			this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
 			this.splitMain.Location = new System.Drawing.Point(0, 50);
 			this.splitMain.Name = "splitMain";
@@ -216,7 +216,7 @@
 			// panelBottom
 			// 
 			this.panelBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.panelBottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.panelBottom.Controls.Add(this.labelRequireApply);
 			this.panelBottom.Controls.Add(this.buttonApply);
@@ -230,7 +230,7 @@
 			// labelRequireApply
 			// 
 			this.labelRequireApply.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelRequireApply.ForeColor = System.Drawing.Color.Blue;
 			this.labelRequireApply.Location = new System.Drawing.Point(12, 1);
 			this.labelRequireApply.Name = "labelRequireApply";

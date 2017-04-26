@@ -18,7 +18,7 @@ namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 		public delegate void PostPerformAction(IEnumerable<ObjectEditorSelObj> obj);
 
 		protected ObjectEditorSelObj[] targetObj   = null;
-		protected PostPerformAction    postPerform = null;
+		protected PostPerformAction	postPerform = null;
 		
 		public override bool IsVoid
 		{

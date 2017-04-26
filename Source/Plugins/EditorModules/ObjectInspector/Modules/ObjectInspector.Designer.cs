@@ -52,12 +52,12 @@
 			this.toolStrip.GripMargin = new System.Windows.Forms.Padding(0);
 			this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.buttonAutoRefresh,
-            this.buttonDebug,
-            this.buttonSortByName,
-            this.toolStripSeparator1,
-            this.buttonClone,
-            this.buttonLock});
+			this.buttonAutoRefresh,
+			this.buttonDebug,
+			this.buttonSortByName,
+			this.toolStripSeparator1,
+			this.buttonClone,
+			this.buttonLock});
 			this.toolStrip.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Size = new System.Drawing.Size(231, 25);

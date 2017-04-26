@@ -22,7 +22,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 	[EditorHintCategory(SampleResNames.CategoryRpgLike)]
 	public class CameraController : Component, ICmpUpdatable, ICmpInitializable
 	{
-		private float      smoothness = 1.0f;
+		private float	  smoothness = 1.0f;
 		private GameObject targetObj  = null;
 
 		[DontSerialize] private Rect mapRect;

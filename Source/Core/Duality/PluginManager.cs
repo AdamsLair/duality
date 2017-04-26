@@ -12,11 +12,11 @@ namespace Duality
 	{
 		private static readonly Log dummyPluginLog = new Log("Dummy PluginManager Log");
 
-		private Log                             pluginLog       = dummyPluginLog;
-		private IPluginLoader                   pluginLoader    = null;
-		private Dictionary<string,T>            pluginRegistry  = new Dictionary<string,T>();
-		private List<Assembly>                  lockedPlugins   = new List<Assembly>();
-		private HashSet<Assembly>               disposedPlugins = new HashSet<Assembly>();
+		private Log							 pluginLog	   = dummyPluginLog;
+		private IPluginLoader				   pluginLoader	= null;
+		private Dictionary<string,T>			pluginRegistry  = new Dictionary<string,T>();
+		private List<Assembly>				  lockedPlugins   = new List<Assembly>();
+		private HashSet<Assembly>			   disposedPlugins = new HashSet<Assembly>();
 		private Dictionary<Type,List<TypeInfo>> availTypeDict   = new Dictionary<Type,List<TypeInfo>>();
 
 		/// <summary>

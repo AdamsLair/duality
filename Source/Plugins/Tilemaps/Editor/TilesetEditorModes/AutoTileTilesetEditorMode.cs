@@ -59,11 +59,11 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		}
 
 
-		private	TreeModel        treeModel      = new TreeModel();
-		private TileConnection   hoveredArea    = TileConnection.None;
-		private bool             isUserDrawing  = false;
-		private bool             isBaseTileDraw = false;
-		private bool             isExternalDraw = false;
+		private	TreeModel		treeModel	  = new TreeModel();
+		private TileConnection   hoveredArea	= TileConnection.None;
+		private bool			 isUserDrawing  = false;
+		private bool			 isBaseTileDraw = false;
+		private bool			 isExternalDraw = false;
 		private AutoTileDrawMode userDrawMode   = AutoTileDrawMode.Add;
 
 
@@ -344,14 +344,14 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			{
 				float angle = MathF.Angle(tileSize.Width / 2, tileSize.Height / 2, posOnTile.X, posOnTile.Y);
 				float threshold = MathF.DegToRad(22.5f);
-				if      (MathF.CircularDist(angle, MathF.DegToRad(315.0f)) <= threshold) this.hoveredArea = TileConnection.TopLeft;
+				if	  (MathF.CircularDist(angle, MathF.DegToRad(315.0f)) <= threshold) this.hoveredArea = TileConnection.TopLeft;
 				else if (MathF.CircularDist(angle, MathF.DegToRad(  0.0f)) <= threshold) this.hoveredArea = TileConnection.Top;
 				else if (MathF.CircularDist(angle, MathF.DegToRad( 45.0f)) <= threshold) this.hoveredArea = TileConnection.TopRight;
 				else if (MathF.CircularDist(angle, MathF.DegToRad(270.0f)) <= threshold) this.hoveredArea = TileConnection.Left;
 				else if (MathF.CircularDist(angle, MathF.DegToRad( 90.0f)) <= threshold) this.hoveredArea = TileConnection.Right;
 				else if (MathF.CircularDist(angle, MathF.DegToRad(225.0f)) <= threshold) this.hoveredArea = TileConnection.BottomLeft;
 				else if (MathF.CircularDist(angle, MathF.DegToRad(180.0f)) <= threshold) this.hoveredArea = TileConnection.Bottom;
-				else                                                                     this.hoveredArea = TileConnection.BottomRight;
+				else																	 this.hoveredArea = TileConnection.BottomRight;
 			}
 
 			// Update action state

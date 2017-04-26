@@ -774,13 +774,13 @@ namespace Duality.Editor.Plugins.SceneView
 			Type mainResType = null;
 			if (selObjData.Any())
 			{
-			    mainResType = selObjData.First().GetType();
-			    foreach (var obj in selObjData)
-			    {
-			        Type resType = obj.GetType();
-			        while (mainResType != null && !mainResType.IsAssignableFrom(resType))
-			            mainResType = mainResType.BaseType;
-			    }
+				mainResType = selObjData.First().GetType();
+				foreach (var obj in selObjData)
+				{
+					Type resType = obj.GetType();
+					while (mainResType != null && !mainResType.IsAssignableFrom(resType))
+						mainResType = mainResType.BaseType;
+				}
 			}
 			
 			// Prepare old entries for removal
@@ -832,8 +832,8 @@ namespace Duality.Editor.Plugins.SceneView
 			foreach (TypeInfo cmpType in componentTypeQuery)
 			{
 				// Skip invisible Types
-			    EditorHintFlagsAttribute editorHintFlags = cmpType.GetAttributesCached<EditorHintFlagsAttribute>().FirstOrDefault();
-			    if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
+				EditorHintFlagsAttribute editorHintFlags = cmpType.GetAttributesCached<EditorHintFlagsAttribute>().FirstOrDefault();
+				if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
 
 				// Create an item tree for the current Type
 				string[] categoryTree = cmpType.GetEditorCategory();
@@ -1507,7 +1507,7 @@ namespace Duality.Editor.Plugins.SceneView
 			CreateContextEntryTag clickedEntry = clickedItem.Tag as CreateContextEntryTag;
 			Type clickedType = ReflectionHelper.ResolveType(clickedEntry.TypeId);
 			if (clickedType == null) return;
-            
+			
 			// Determine which (GameObject) nodes we're creating Components on.
 			List<TreeNodeAdv> targetViewNodes = new List<TreeNodeAdv>();
 			foreach (TreeNodeAdv viewNode in this.objectView.SelectedNodes)

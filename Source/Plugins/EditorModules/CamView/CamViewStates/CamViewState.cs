@@ -42,27 +42,27 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		private static readonly ContentRef<Duality.Resources.Font> OverlayFont = Duality.Resources.Font.GenericMonospace8;
 
-		private Vector3       camVel                 = Vector3.Zero;
-		private Point         camActionBeginLoc      = Point.Empty;
-		private Vector3       camActionBeginLocSpace = Vector3.Zero;
-		private CameraAction  camAction              = CameraAction.None;
-		private bool          camActionAllowed       = true;
-		private bool          camTransformChanged    = false;
-		private bool          camBeginDragScene      = false;
-		private Camera.Pass   camPassBg              = null;
-		private Camera.Pass   camPassEdWorld         = null;
+		private Vector3	   camVel				 = Vector3.Zero;
+		private Point		 camActionBeginLoc	  = Point.Empty;
+		private Vector3	   camActionBeginLocSpace = Vector3.Zero;
+		private CameraAction  camAction			  = CameraAction.None;
+		private bool		  camActionAllowed	   = true;
+		private bool		  camTransformChanged	= false;
+		private bool		  camBeginDragScene	  = false;
+		private Camera.Pass   camPassBg			  = null;
+		private Camera.Pass   camPassEdWorld		 = null;
 		private Camera.Pass   camPassEdWorldNoDepth  = null;
-		private Camera.Pass   camPassEdScreen        = null;
-		private bool          engineUserInput        = false;
-		private UserGuideType snapToUserGuides       = UserGuideType.All;
-		private bool          mouseover              = false;
-		private CameraAction  drawCamGizmoState      = CameraAction.None;
-		private FormattedText statusText             = new FormattedText();
-		private FormattedText actionText             = new FormattedText();
-		private List<Type>    lastActiveLayers       = new List<Type>();
-		private List<string>  lastObjVisibility      = new List<string>();
-		private int           renderFrameLast        = -1;
-		private bool          renderFrameScheduled   = false;
+		private Camera.Pass   camPassEdScreen		= null;
+		private bool		  engineUserInput		= false;
+		private UserGuideType snapToUserGuides	   = UserGuideType.All;
+		private bool		  mouseover			  = false;
+		private CameraAction  drawCamGizmoState	  = CameraAction.None;
+		private FormattedText statusText			 = new FormattedText();
+		private FormattedText actionText			 = new FormattedText();
+		private List<Type>	lastActiveLayers	   = new List<Type>();
+		private List<string>  lastObjVisibility	  = new List<string>();
+		private int		   renderFrameLast		= -1;
+		private bool		  renderFrameScheduled   = false;
 
 
 		public abstract string StateName { get; }
@@ -185,10 +185,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.camPassEdScreen.VisibilityMask = VisibilityFlag.ScreenOverlay;
 			}
 
-			this.camPassBg.CollectDrawcalls             += this.camPassBg_CollectDrawcalls;
-			this.camPassEdWorld.CollectDrawcalls        += this.camPassEdWorld_CollectDrawcalls;
+			this.camPassBg.CollectDrawcalls			 += this.camPassBg_CollectDrawcalls;
+			this.camPassEdWorld.CollectDrawcalls		+= this.camPassEdWorld_CollectDrawcalls;
 			this.camPassEdWorldNoDepth.CollectDrawcalls	+= this.camPassEdWorldNoDepth_CollectDrawcalls;
-			this.camPassEdScreen.CollectDrawcalls       += this.camPassEdScreen_CollectDrawcalls;
+			this.camPassEdScreen.CollectDrawcalls	   += this.camPassEdScreen_CollectDrawcalls;
 
 			Control control = this.RenderableSite.Control;
 			control.Paint		+= this.RenderableControl_Paint;

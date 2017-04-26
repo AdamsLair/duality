@@ -33,11 +33,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 		
-		private TilesetEditorMode   activeMode     = null;
-		private EditorModeInfo[]    availableModes = null;
+		private TilesetEditorMode   activeMode	 = null;
+		private EditorModeInfo[]	availableModes = null;
 		private ContentRef<Tileset> backupTarget   = null;
-		private Tileset             tilesetBackup  = null;
-		private bool                applyRequired  = false;
+		private Tileset			 tilesetBackup  = null;
+		private bool				applyRequired  = false;
 		private TilesetView.TileIndexDrawMode tileIndexDrawMode = TilesetView.TileIndexDrawMode.Hovering;
 
 
@@ -309,7 +309,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			// Subscribe for global editor events
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
-			DualityEditorApp.SelectionChanged      += this.DualityEditorApp_SelectionChanged;
+			DualityEditorApp.SelectionChanged	  += this.DualityEditorApp_SelectionChanged;
 
 			// Apply editor-global tileset selection
 			this.ApplyGlobalTilesetSelection(SelectionChangeReason.Unknown);
@@ -328,7 +328,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
-			DualityEditorApp.SelectionChanged      -= this.DualityEditorApp_SelectionChanged;
+			DualityEditorApp.SelectionChanged	  -= this.DualityEditorApp_SelectionChanged;
 		}
 		protected override void OnFormClosing(FormClosingEventArgs e)
 		{

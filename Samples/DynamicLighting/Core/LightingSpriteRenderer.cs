@@ -81,7 +81,7 @@ namespace DynamicLighting
 			// Calculate UV coordinates
 			float left   = uvRect.X;
 			float right  = uvRect.RightX;
-			float top    = uvRect.Y;
+			float top	= uvRect.Y;
 			float bottom = uvRect.BottomY;
 
 			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)

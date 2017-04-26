@@ -24,16 +24,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// </summary>
 	public partial class RigidBodyEditorCamViewState : ObjectEditorCamViewState, IRigidBodyEditorToolEnvironment
 	{
-		private RigidBodyEditorTool       toolNone       = new NoRigidBodyEditorTool();
-		private List<RigidBodyEditorTool> tools          = new List<RigidBodyEditorTool>();
-		private RigidBody                 selectedBody   = null;
-		private RigidBodyEditorTool       selectedTool   = null;
-		private Vector3                   lockedWorldPos = Vector3.Zero;
-		private Vector3                   activeWorldPos = Vector3.Zero;
-		private Vector2                   activeObjPos   = Vector2.Zero;
-		private RigidBodyEditorTool       activeTool     = null;
-		private RigidBodyEditorTool       actionTool     = null;
-		private ToolStrip                 toolstrip      = null;
+		private RigidBodyEditorTool	   toolNone	   = new NoRigidBodyEditorTool();
+		private List<RigidBodyEditorTool> tools		  = new List<RigidBodyEditorTool>();
+		private RigidBody				 selectedBody   = null;
+		private RigidBodyEditorTool	   selectedTool   = null;
+		private Vector3				   lockedWorldPos = Vector3.Zero;
+		private Vector3				   activeWorldPos = Vector3.Zero;
+		private Vector2				   activeObjPos   = Vector2.Zero;
+		private RigidBodyEditorTool	   activeTool	 = null;
+		private RigidBodyEditorTool	   actionTool	 = null;
+		private ToolStrip				 toolstrip	  = null;
 
 		public override string StateName
 		{
@@ -445,11 +445,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (this.selectedBody != null)
 				this.selectedBody.SynchronizeBodyShape();
 		}
-        private void EndToolAction()
-        {
-            EndToolAction(false);
-        }
-        public void EndToolAction(bool keepToolSelected) // Added to be able to keep the current tool selected (edit vertex tool needs to be selected after any action)
+		private void EndToolAction()
+		{
+			EndToolAction(false);
+		}
+		public void EndToolAction(bool keepToolSelected) // Added to be able to keep the current tool selected (edit vertex tool needs to be selected after any action)
 		{
 			// If we don't perform an action right now, at least deselect the tool
 			if (this.actionTool == this.toolNone)
@@ -467,11 +467,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.Invalidate();
 			UndoRedoManager.Finish();
 
-            // Since our tool actions are designed to block out other actions,
-            // by default deselect each tool after using it.
-            if (selectedTool == tools[1]) SelectedTool = tools[4]; // This should not be hardcoded this way! (1 = Create Polygon Shape, 4 = Edit Vertices)
-            else if (!keepToolSelected) selectedTool = null;
-        }
+			// Since our tool actions are designed to block out other actions,
+			// by default deselect each tool after using it.
+			if (selectedTool == tools[1]) SelectedTool = tools[4]; // This should not be hardcoded this way! (1 = Create Polygon Shape, 4 = Edit Vertices)
+			else if (!keepToolSelected) selectedTool = null;
+		}
 		void IRigidBodyEditorToolEnvironment.EndToolAction()
 		{
 			this.EndToolAction();
@@ -551,11 +551,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.selectedBody.BoundRadius * 4);
 			}
 
-            // RigidBodyEditorSelVertices
-            if (selectedTool != this.toolNone)
-            {
-                this.selectedTool.OnWorldOverlayDrawcalls(canvas); 
-            }
+			// RigidBodyEditorSelVertices
+			if (selectedTool != this.toolNone)
+			{
+				this.selectedTool.OnWorldOverlayDrawcalls(canvas); 
+			}
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
@@ -590,7 +590,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			base.OnMouseDown(e);
 
-            if (e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons.Left)
 			{
 				// Because selection events may change the currently active tool,
 				// start by agreeing on what tool we're dealing with in this mouse event.
@@ -628,16 +628,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Update the current tools active action
 			this.UpdateToolAction();
 		}
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			base.OnMouseUp(e);
 
-            // If there is no tool active, don't do selection changes or begin an action
-            if (this.activeTool == this.toolNone) return;
+			// If there is no tool active, don't do selection changes or begin an action
+			if (this.activeTool == this.toolNone) return;
 
-            this.actionTool.OnActionKeyReleased();
-        }
-        protected override void OnLostFocus()
+			this.actionTool.OnActionKeyReleased();
+		}
+		protected override void OnLostFocus()
 		{
 			base.OnLostFocus();
 			//this.EndToolAction();

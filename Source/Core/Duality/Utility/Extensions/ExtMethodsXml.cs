@@ -156,18 +156,18 @@ namespace Duality
 
 			try
 			{
-				if      (typeof(T) == typeof(decimal)) { value = (T)(object)XmlConvert.ToDecimal(valueString);	return true; }
+				if	  (typeof(T) == typeof(decimal)) { value = (T)(object)XmlConvert.ToDecimal(valueString);	return true; }
 				else if (typeof(T) == typeof(double))  { value = (T)(object)XmlConvert.ToDouble(valueString);	return true; }
 				else if (typeof(T) == typeof(float))   { value = (T)(object)XmlConvert.ToSingle(valueString);	return true; }
-				else if (typeof(T) == typeof(long))    { value = (T)(object)XmlConvert.ToInt64(valueString);	return true; }
-				else if (typeof(T) == typeof(int))     { value = (T)(object)XmlConvert.ToInt32(valueString);	return true; }
+				else if (typeof(T) == typeof(long))	{ value = (T)(object)XmlConvert.ToInt64(valueString);	return true; }
+				else if (typeof(T) == typeof(int))	 { value = (T)(object)XmlConvert.ToInt32(valueString);	return true; }
 				else if (typeof(T) == typeof(short))   { value = (T)(object)XmlConvert.ToInt16(valueString);	return true; }
 				else if (typeof(T) == typeof(sbyte))   { value = (T)(object)XmlConvert.ToSByte(valueString);	return true; }
-				else if (typeof(T) == typeof(bool))    { value = (T)(object)XmlConvert.ToBoolean(valueString);	return true; }
+				else if (typeof(T) == typeof(bool))	{ value = (T)(object)XmlConvert.ToBoolean(valueString);	return true; }
 				else if (typeof(T) == typeof(ulong))   { value = (T)(object)XmlConvert.ToUInt64(valueString);	return true; }
-				else if (typeof(T) == typeof(uint))    { value = (T)(object)XmlConvert.ToUInt32(valueString);	return true; }
+				else if (typeof(T) == typeof(uint))	{ value = (T)(object)XmlConvert.ToUInt32(valueString);	return true; }
 				else if (typeof(T) == typeof(ushort))  { value = (T)(object)XmlConvert.ToUInt16(valueString);	return true; }
-				else if (typeof(T) == typeof(byte))    { value = (T)(object)XmlConvert.ToByte(valueString);		return true; }
+				else if (typeof(T) == typeof(byte))	{ value = (T)(object)XmlConvert.ToByte(valueString);		return true; }
 
 				TypeInfo typeInfo = typeof(T).GetTypeInfo();
 				if (typeInfo.IsEnum)

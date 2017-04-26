@@ -371,8 +371,8 @@ namespace Duality
 
 			// Do we need to carry over any old data?
 			bool oldDataCarriedOver = true;
-			if (width == 0 && height == 0)             oldDataCarriedOver = false; // Empty area
-			if (-x >= width      || -y >= height     ) oldDataCarriedOver = false; // Moved too far left or up
+			if (width == 0 && height == 0)			 oldDataCarriedOver = false; // Empty area
+			if (-x >= width	  || -y >= height	 ) oldDataCarriedOver = false; // Moved too far left or up
 			if (x  >= this.width || y  >= this.height) oldDataCarriedOver = false; // Moved too far right or down
 
 			if (oldDataCarriedOver)

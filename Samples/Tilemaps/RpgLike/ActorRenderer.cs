@@ -24,15 +24,15 @@ namespace Duality.Samples.Tilemaps.RpgLike
 	[EditorHintImage(TilemapsResNames.ImageActorRenderer)]
 	public class ActorRenderer : Renderer
 	{
-		private Rect                 rect           = Rect.Align(Alignment.Center, 0, 0, 256, 256);
-		private ContentRef<Material> sharedMat      = Material.DualityIcon;
-		private BatchInfo            customMat      = null;
-		private ColorRgba            colorTint      = ColorRgba.White;
-		private float                offset         = 0.0f;
-		private float                depthScale     = 0.01f;
-		private bool                 isVertical     = true;
-		private float                height         = 0.0f;
-		private int                  spriteIndex    = -1;
+		private Rect				 rect		   = Rect.Align(Alignment.Center, 0, 0, 256, 256);
+		private ContentRef<Material> sharedMat	  = Material.DualityIcon;
+		private BatchInfo			customMat	  = null;
+		private ColorRgba			colorTint	  = ColorRgba.White;
+		private float				offset		 = 0.0f;
+		private float				depthScale	 = 0.01f;
+		private bool				 isVertical	 = true;
+		private float				height		 = 0.0f;
+		private int				  spriteIndex	= -1;
 
 		[DontSerialize] private VertexC1P3T2[] vertices = null;
 
@@ -189,10 +189,10 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
-            
+			
 			float uvLeft   = uvRect.X;
 			float uvRight  = uvRect.RightX;
-			float uvTop    = uvRect.Y;
+			float uvTop	= uvRect.Y;
 			float uvBottom = uvRect.BottomY;
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2[4];

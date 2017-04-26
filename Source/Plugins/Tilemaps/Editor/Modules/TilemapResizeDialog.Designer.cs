@@ -50,7 +50,7 @@
 			// panelBottomBack
 			// 
 			this.panelBottomBack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.panelBottomBack.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.panelBottomBack.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelBottomBack.Controls.Add(this.buttonOk);
@@ -93,8 +93,8 @@
 			// groupBoxSize
 			// 
 			this.groupBoxSize.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxSize.Controls.Add(this.tableLayoutMapSize);
 			this.groupBoxSize.Controls.Add(this.originSelector);
 			this.groupBoxSize.Location = new System.Drawing.Point(12, 60);
@@ -107,8 +107,8 @@
 			// tableLayoutMapSize
 			// 
 			this.tableLayoutMapSize.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.tableLayoutMapSize.ColumnCount = 2;
 			this.tableLayoutMapSize.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutMapSize.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -132,10 +132,10 @@
 			this.editorHeight.Location = new System.Drawing.Point(44, 26);
 			this.editorHeight.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
 			this.editorHeight.Maximum = new decimal(new int[] {
-            1024,
-            0,
-            0,
-            0});
+			1024,
+			0,
+			0,
+			0});
 			this.editorHeight.Name = "editorHeight";
 			this.editorHeight.Size = new System.Drawing.Size(96, 20);
 			this.editorHeight.TabIndex = 3;
@@ -171,10 +171,10 @@
 			this.editorWidth.Location = new System.Drawing.Point(44, 3);
 			this.editorWidth.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
 			this.editorWidth.Maximum = new decimal(new int[] {
-            1024,
-            0,
-            0,
-            0});
+			1024,
+			0,
+			0,
+			0});
 			this.editorWidth.Name = "editorWidth";
 			this.editorWidth.Size = new System.Drawing.Size(96, 20);
 			this.editorWidth.TabIndex = 2;
@@ -183,14 +183,14 @@
 			// labelHeader
 			// 
 			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeader.AutoEllipsis = true;
 			this.labelHeader.Location = new System.Drawing.Point(12, 9);
 			this.labelHeader.Name = "labelHeader";
 			this.labelHeader.Size = new System.Drawing.Size(240, 48);
 			this.labelHeader.TabIndex = 9;
 			this.labelHeader.Text = "Resizing the selected Tilemaps will preserve the part of their content that still" +
-    " fits the new size and origin.";
+	" fits the new size and origin.";
 			// 
 			// labelMultiselect
 			// 

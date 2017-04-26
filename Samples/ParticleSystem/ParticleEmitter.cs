@@ -13,25 +13,25 @@ namespace ParticleSystem
 {
 	public class ParticleEmitter
 	{
-		private Range     burstDelay       = 100.0f;
-		private Range     burstParticleNum = 1;
-		private int       maxBurstCount    = -1;
-		private Range     particleLifetime = 1000;
-		private Vector3   basePos          = Vector3.Zero;
-		private Range     randomPos        = 0.0f;
-		private Range     randomAngle      = new Range(0.0f, MathF.RadAngle360);
-		private Vector3   baseVel          = Vector3.Zero;
-		private Range     randomVel        = new Range(0.0f, 3.0f);
-		private Range     randomAngleVel   = new Range(-0.05f, 0.05f);
-		private ColorHsva minColor         = ColorHsva.White;
-		private ColorHsva maxColor         = ColorHsva.White;
-		private Range     spriteIndex      = 0;
-		private float     depthMult        = 1.0f;
+		private Range	 burstDelay	   = 100.0f;
+		private Range	 burstParticleNum = 1;
+		private int	   maxBurstCount	= -1;
+		private Range	 particleLifetime = 1000;
+		private Vector3   basePos		  = Vector3.Zero;
+		private Range	 randomPos		= 0.0f;
+		private Range	 randomAngle	  = new Range(0.0f, MathF.RadAngle360);
+		private Vector3   baseVel		  = Vector3.Zero;
+		private Range	 randomVel		= new Range(0.0f, 3.0f);
+		private Range	 randomAngleVel   = new Range(-0.05f, 0.05f);
+		private ColorHsva minColor		 = ColorHsva.White;
+		private ColorHsva maxColor		 = ColorHsva.White;
+		private Range	 spriteIndex	  = 0;
+		private float	 depthMult		= 1.0f;
 
 		[DontSerialize]
-		private int       burstCount       = 0;
+		private int	   burstCount	   = 0;
 		[DontSerialize]
-		private float     burstTimer       = 0.0f;
+		private float	 burstTimer	   = 0.0f;
 
 		[EditorHintDecimalPlaces(0)]
 		public Range BurstDelay

@@ -13,10 +13,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public class SourcePaletteTilesetView : TilesetView
 	{
-		private Rectangle  selectedArea           = Rectangle.Empty;
-		private Grid<Tile> selectedTiles          = new Grid<Tile>();
-		private Point      actionBeginTilePos     = Point.Empty;
-		private bool       isUserSelecting        = false;
+		private Rectangle  selectedArea		   = Rectangle.Empty;
+		private Grid<Tile> selectedTiles		  = new Grid<Tile>();
+		private Point	  actionBeginTilePos	 = Point.Empty;
+		private bool	   isUserSelecting		= false;
 
 		public event EventHandler SelectedAreaChanged = null;
 		public event EventHandler SelectedAreaEditingFinished = null;

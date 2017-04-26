@@ -16,9 +16,9 @@ namespace Duality.Editor.Plugins.LogView
 {
 	public partial class LogView : DockContent
 	{
-		private int               unseenWarnings = 0;
-		private int               unseenErrors   = 0;
-		private RawList<LogEntry> logSchedule    = new RawList<LogEntry>();
+		private int			   unseenWarnings = 0;
+		private int			   unseenErrors   = 0;
+		private RawList<LogEntry> logSchedule	= new RawList<LogEntry>();
 
 
 		public LogView()
@@ -109,10 +109,10 @@ namespace Duality.Editor.Plugins.LogView
 			if (node.GetElementValue("ShowMessages", out tryParseBool)) this.buttonMessages.Checked = tryParseBool;
 			if (node.GetElementValue("ShowWarnings", out tryParseBool)) this.buttonWarnings.Checked = tryParseBool;
 			if (node.GetElementValue("ShowErrors", out tryParseBool))   this.buttonErrors.Checked = tryParseBool;
-			if (node.GetElementValue("ShowCore", out tryParseBool))     this.buttonCore.Checked = tryParseBool;
+			if (node.GetElementValue("ShowCore", out tryParseBool))	 this.buttonCore.Checked = tryParseBool;
 			if (node.GetElementValue("ShowEditor", out tryParseBool))   this.buttonEditor.Checked = tryParseBool;
-			if (node.GetElementValue("ShowGame", out tryParseBool))     this.buttonGame.Checked = tryParseBool;
-			if (node.GetElementValue("AutoClear", out tryParseBool))    this.checkAutoClear.Checked = tryParseBool;
+			if (node.GetElementValue("ShowGame", out tryParseBool))	 this.buttonGame.Checked = tryParseBool;
+			if (node.GetElementValue("AutoClear", out tryParseBool))	this.checkAutoClear.Checked = tryParseBool;
 			if (node.GetElementValue("PauseOnError", out tryParseBool)) this.buttonPauseOnError.Checked = tryParseBool;
 
 			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.SourceCore, this.buttonCore.Checked);

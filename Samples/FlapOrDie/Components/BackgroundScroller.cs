@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace FlapOrDie.Components
 {
-    public class BackgroundScroller : Component
-    {
-        private float speed;
+	public class BackgroundScroller : Component
+	{
+		private float speed;
 
-        public float Speed
-        {
-            get { return this.speed; }
-            set { this.speed = value; }
-        }
+		public float Speed
+		{
+			get { return this.speed; }
+			set { this.speed = value; }
+		}
 
 		private SpriteRenderer back;
 		private SpriteRenderer middle;
@@ -41,12 +41,12 @@ namespace FlapOrDie.Components
 			set { this.front = value; }
 		}
 
-        public void Update(float speed)
-        {
+		public void Update(float speed)
+		{
 			UpdatePosition(Front.GameObj, speed / 2);
 			UpdatePosition(Middle.GameObj, speed / 4);
 			UpdatePosition(Back.GameObj, speed / 8);
-        }
+		}
 
 		private void UpdatePosition(GameObject obj, float speed)
 		{
@@ -58,5 +58,5 @@ namespace FlapOrDie.Components
 
 			obj.Transform.Pos = pos;
 		}
-    }
+	}
 }

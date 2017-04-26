@@ -8,8 +8,8 @@ using Duality.Components.Physics;
 
 namespace FlapOrDie.Tags
 {
-    public class Obstacle : Component
-    {
-        // it's just used as a tag
-    }
+	public class Obstacle : Component
+	{
+		// it's just used as a tag
+	}
 }

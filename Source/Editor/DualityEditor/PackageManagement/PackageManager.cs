@@ -21,7 +21,7 @@ namespace Duality.Editor.PackageManagement
 		public const string DualityTag  = "Duality";
 		public const string PluginTag   = "Plugin";
 		public const string SampleTag   = "Sample";
-		public const string CoreTag     = "Core";
+		public const string CoreTag	 = "Core";
 		public const string EditorTag   = "Editor";
 		public const string LauncherTag = "Launcher";
 
@@ -37,32 +37,32 @@ namespace Duality.Editor.PackageManagement
 			"AdamsLair.Duality.Launcher"
 		};
 
-		private const string UpdateConfigFile     = "ApplyUpdate.xml";
-		private const string PackageConfigFile    = "PackageConfig.xml";
-		private const string LocalPackageDir      = EditorHelper.SourceDirectory + @"\Packages";
+		private const string UpdateConfigFile	 = "ApplyUpdate.xml";
+		private const string PackageConfigFile	= "PackageConfig.xml";
+		private const string LocalPackageDir	  = EditorHelper.SourceDirectory + @"\Packages";
 		private const string DefaultRepositoryUrl = @"https://packages.nuget.org/api/v2";
 
 
-		private List<string>       repositoryUrls  = new List<string>{ DefaultRepositoryUrl };
-		private bool               firstInstall    = false;
-		private bool               hasLocalRepo    = false;
-		private string             dataTargetDir   = null;
-		private string             sourceTargetDir = null;
-		private string             pluginTargetDir = null;
-		private string             rootPath        = null;
+		private List<string>	   repositoryUrls  = new List<string>{ DefaultRepositoryUrl };
+		private bool			   firstInstall	= false;
+		private bool			   hasLocalRepo	= false;
+		private string			 dataTargetDir   = null;
+		private string			 sourceTargetDir = null;
+		private string			 pluginTargetDir = null;
+		private string			 rootPath		= null;
 		private List<LocalPackage> localPackages   = new List<LocalPackage>();
 		private List<PackageName>  uninstallQueue  = new List<PackageName>();
 
-		private	object                              cacheLock              = new object();
+		private	object							  cacheLock			  = new object();
 		private	Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
-		private	Dictionary<NuGet.IPackage,bool>     licenseAcceptedCache   = new Dictionary<NuGet.IPackage,bool>();
+		private	Dictionary<NuGet.IPackage,bool>	 licenseAcceptedCache   = new Dictionary<NuGet.IPackage,bool>();
 
-		private NuGet.PackageManager     manager    = null;
+		private NuGet.PackageManager	 manager	= null;
 		private NuGet.IPackageRepository repository = null;
 
 		public event EventHandler<PackageLicenseAgreementEventArgs> PackageLicenseAcceptRequired = null;
-		public event EventHandler<PackageEventArgs>                 PackageInstalled             = null;
-		public event EventHandler<PackageEventArgs>                 PackageUninstalled           = null;
+		public event EventHandler<PackageEventArgs>				 PackageInstalled			 = null;
+		public event EventHandler<PackageEventArgs>				 PackageUninstalled		   = null;
 
 
 		public IEnumerable<LocalPackage> LocalPackages

@@ -64,33 +64,33 @@ namespace Duality
 			Editor
 		}
 
-		public const string CmdArgDebug     = "debug";
-		public const string CmdArgEditor    = "editor";
+		public const string CmdArgDebug	 = "debug";
+		public const string CmdArgEditor	= "editor";
 		public const string CmdArgProfiling = "profile";
 		public const string PluginDirectory = "Plugins";
 		public const string DataDirectory   = "Data";
 
 
-		private static bool                    initialized        = false;
-		private static bool                    isUpdating         = false;
-		private static bool                    runFromEditor      = false;
-		private static bool                    terminateScheduled = false;
-		private static IPluginLoader           pluginLoader       = null;
-		private static CorePluginManager       pluginManager      = new CorePluginManager();
-		private static ISystemBackend          systemBack         = null;
-		private static IGraphicsBackend        graphicsBack       = null;
-		private static IAudioBackend           audioBack          = null;
-		private static Vector2                 targetResolution   = Vector2.Zero;
-		private static MouseInput              mouse              = new MouseInput();
-		private static KeyboardInput           keyboard           = new KeyboardInput();
-		private static JoystickInputCollection joysticks          = new JoystickInputCollection();
-		private static GamepadInputCollection  gamepads           = new GamepadInputCollection();
-		private static SoundDevice             sound              = null;
-		private static ExecutionEnvironment    environment        = ExecutionEnvironment.Unknown;
-		private static ExecutionContext        execContext        = ExecutionContext.Terminated;
-		private static DualityAppData          appData            = null;
-		private static DualityUserData         userData           = null;
-		private static List<object>            disposeSchedule    = new List<object>();
+		private static bool					initialized		= false;
+		private static bool					isUpdating		 = false;
+		private static bool					runFromEditor	  = false;
+		private static bool					terminateScheduled = false;
+		private static IPluginLoader		   pluginLoader	   = null;
+		private static CorePluginManager	   pluginManager	  = new CorePluginManager();
+		private static ISystemBackend		  systemBack		 = null;
+		private static IGraphicsBackend		graphicsBack	   = null;
+		private static IAudioBackend		   audioBack		  = null;
+		private static Vector2				 targetResolution   = Vector2.Zero;
+		private static MouseInput			  mouse			  = new MouseInput();
+		private static KeyboardInput		   keyboard		   = new KeyboardInput();
+		private static JoystickInputCollection joysticks		  = new JoystickInputCollection();
+		private static GamepadInputCollection  gamepads		   = new GamepadInputCollection();
+		private static SoundDevice			 sound			  = null;
+		private static ExecutionEnvironment	environment		= ExecutionEnvironment.Unknown;
+		private static ExecutionContext		execContext		= ExecutionContext.Terminated;
+		private static DualityAppData		  appData			= null;
+		private static DualityUserData		 userData		   = null;
+		private static List<object>			disposeSchedule	= new List<object>();
 		
 		/// <summary>
 		/// Called when the game becomes focused or loses focus.
@@ -907,16 +907,16 @@ namespace Duality
 				invalidAssembly.GetShortAssemblyName(),
 				"{0}");
 
-			if (ReflectionHelper.CleanEventBindings(typeof(DualityApp),      invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)));
-			if (ReflectionHelper.CleanEventBindings(typeof(Scene),           invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(Scene)));
-			if (ReflectionHelper.CleanEventBindings(typeof(Resource),        invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(Resource)));
+			if (ReflectionHelper.CleanEventBindings(typeof(DualityApp),	  invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)));
+			if (ReflectionHelper.CleanEventBindings(typeof(Scene),		   invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(Scene)));
+			if (ReflectionHelper.CleanEventBindings(typeof(Resource),		invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(Resource)));
 			if (ReflectionHelper.CleanEventBindings(typeof(ContentProvider), invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(ContentProvider)));
-			if (ReflectionHelper.CleanEventBindings(DualityApp.Keyboard,     invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Keyboard");
-			if (ReflectionHelper.CleanEventBindings(DualityApp.Mouse,        invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Mouse");
+			if (ReflectionHelper.CleanEventBindings(DualityApp.Keyboard,	 invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Keyboard");
+			if (ReflectionHelper.CleanEventBindings(DualityApp.Mouse,		invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Mouse");
 			foreach (JoystickInput joystick in DualityApp.Joysticks)
-				if (ReflectionHelper.CleanEventBindings(joystick,            invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Joysticks");
+				if (ReflectionHelper.CleanEventBindings(joystick,			invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Joysticks");
 			foreach (GamepadInput gamepad in DualityApp.Gamepads)
-				if (ReflectionHelper.CleanEventBindings(gamepad,             invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Gamepads");
+				if (ReflectionHelper.CleanEventBindings(gamepad,			 invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Gamepads");
 		}
 		private static void CleanInputSources(Assembly invalidAssembly)
 		{

@@ -7,7 +7,7 @@ using Duality.Resources;
 
 namespace Duality.Editor.Backend.DefaultOpenTK
 {
-    public class DefaultOpenTKEditorBackendPlugin : EditorPlugin
+	public class DefaultOpenTKEditorBackendPlugin : EditorPlugin
 	{
 		public override string Id
 		{

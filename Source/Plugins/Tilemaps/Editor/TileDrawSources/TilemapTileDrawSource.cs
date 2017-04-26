@@ -11,9 +11,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public class TilemapTileDrawSource : ITileDrawSource
 	{
-		private Tilemap    tilemap = null;
-		private Point2     origin  = Point2.Zero;
-		private Grid<bool> area    = null;
+		private Tilemap	tilemap = null;
+		private Point2	 origin  = Point2.Zero;
+		private Grid<bool> area	= null;
 		private Grid<Tile> source  = new Grid<Tile>();
 
 

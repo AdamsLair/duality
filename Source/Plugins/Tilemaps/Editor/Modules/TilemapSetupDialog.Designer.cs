@@ -46,7 +46,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// panelBottomBack
 			// 
 			this.panelBottomBack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.panelBottomBack.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.panelBottomBack.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelBottomBack.Controls.Add(this.buttonOk);
@@ -82,8 +82,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// groupBoxSize
 			// 
 			this.groupBoxSize.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxSize.Controls.Add(this.settingsGrid);
 			this.groupBoxSize.Location = new System.Drawing.Point(12, 86);
 			this.groupBoxSize.Name = "groupBoxSize";
@@ -110,7 +110,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// labelDialogDesc
 			// 
 			this.labelDialogDesc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelDialogDesc.AutoEllipsis = true;
 			this.labelDialogDesc.Location = new System.Drawing.Point(69, 36);
 			this.labelDialogDesc.Margin = new System.Windows.Forms.Padding(3);
@@ -118,7 +118,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.labelDialogDesc.Size = new System.Drawing.Size(248, 44);
 			this.labelDialogDesc.TabIndex = 9;
 			this.labelDialogDesc.Text = "This dialog will help you generate a set of layered Tilemaps and configure them a" +
-    "s needed. You could do all of this manually, this is just a shortcut.\r\n";
+	"s needed. You could do all of this manually, this is just a shortcut.\r\n";
 			// 
 			// pictureBoxDialogIcon
 			// 
@@ -132,7 +132,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// labelHeader
 			// 
 			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelHeader.Location = new System.Drawing.Point(69, 9);
 			this.labelHeader.Margin = new System.Windows.Forms.Padding(0);

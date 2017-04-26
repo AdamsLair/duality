@@ -357,15 +357,15 @@ namespace Duality.Drawing
 			}
 			//else if (this.perspective == PerspectiveMode.Isometric)
 			//{
-			//    // Scale globally
-			//    scaleTemp = DefaultFocusDist / this.focusDist;
-			//    screenPos.X *= scaleTemp;
-			//    screenPos.Y *= scaleTemp;
+			//	// Scale globally
+			//	scaleTemp = DefaultFocusDist / this.focusDist;
+			//	screenPos.X *= scaleTemp;
+			//	screenPos.Y *= scaleTemp;
 				
-			//    // Revert isometric projection
-			//    screenPos.Z += screenPos.Y;
-			//    screenPos.Y -= screenPos.Z;
-			//    screenPos.Z += this.focusDist;
+			//	// Revert isometric projection
+			//	screenPos.Z += screenPos.Y;
+			//	screenPos.Y -= screenPos.Z;
+			//	screenPos.Z += this.focusDist;
 			//}
 			
 			// Make coordinates absolte
@@ -376,8 +376,8 @@ namespace Duality.Drawing
 			//// For isometric projection, assure we'll meet the target Z value.
 			//if (this.perspective == PerspectiveMode.Isometric)
 			//{
-			//    screenPos.Y += screenPos.Z - targetZ;
-			//    screenPos.Z = targetZ;
+			//	screenPos.Y += screenPos.Z - targetZ;
+			//	screenPos.Z = targetZ;
 			//}
 
 			return screenPos;

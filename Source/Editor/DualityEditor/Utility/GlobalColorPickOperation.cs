@@ -13,15 +13,15 @@ namespace Duality.Editor
 	/// and pick the color of the pixel at that position. A single <see cref="GlobalColorPickOperation"/>
 	/// object can be used for any number of picking operations.
 	/// </summary>
-    public class GlobalColorPickOperation
-    {
-		private IntPtr hookPtr     = IntPtr.Zero;
+	public class GlobalColorPickOperation
+	{
+		private IntPtr hookPtr	 = IntPtr.Zero;
 		private Bitmap screenPixel = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
-		private bool   active      = false;
-		private bool   canceled    = false;
+		private bool   active	  = false;
+		private bool   canceled	= false;
 		private Color  pickedColor = Color.Transparent;
 
-		private Form   cursorForm      = null;
+		private Form   cursorForm	  = null;
 		private Panel  cursorFormPanel = null;
 		private Timer  cursorFormTimer = null;
 

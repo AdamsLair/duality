@@ -12,13 +12,13 @@ namespace Duality
 	/// </summary>
 	public struct LogEntry
 	{
-		private Log            source;
+		private Log			source;
 		private LogMessageType type;
-		private string         message;
-		private object         context;
-		private DateTime       timeStamp;
-		private int            frameStamp;
-		private int            indent;
+		private string		 message;
+		private object		 context;
+		private DateTime	   timeStamp;
+		private int			frameStamp;
+		private int			indent;
 
 		/// <summary>
 		/// [GET] The <see cref="Log"/> from which this entry originates.

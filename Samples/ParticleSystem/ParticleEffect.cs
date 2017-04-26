@@ -14,19 +14,19 @@ namespace ParticleSystem
 	[RequiredComponent(typeof(Transform))]
 	public class ParticleEffect : Renderer, ICmpUpdatable, ICmpInitializable
 	{
-		private ContentRef<Material>  material      = null;
-		private Vector2               particleSize  = new Vector2(16, 16);
-		private Vector3               constantForce = Vector3.Zero;
-		private float                 linearDrag    = 0.3f;
-		private float                 angularDrag   = 0.3f;
-		private float                 fadeInAt      = 0.0f;
-		private float                 fadeOutAt     = 0.75f;
-		private List<ParticleEmitter> emitters      = new List<ParticleEmitter>();
+		private ContentRef<Material>  material	  = null;
+		private Vector2			   particleSize  = new Vector2(16, 16);
+		private Vector3			   constantForce = Vector3.Zero;
+		private float				 linearDrag	= 0.3f;
+		private float				 angularDrag   = 0.3f;
+		private float				 fadeInAt	  = 0.0f;
+		private float				 fadeOutAt	 = 0.75f;
+		private List<ParticleEmitter> emitters	  = new List<ParticleEmitter>();
 
 		[DontSerialize]
-		private float                 boundRadius   = 0.0f;
+		private float				 boundRadius   = 0.0f;
 		[DontSerialize]
-		private RawList<Particle>     particles     = null;
+		private RawList<Particle>	 particles	 = null;
 		[DontSerialize]
 		private RawList<VertexC1P3T2> vertexBuffer  = null;
 

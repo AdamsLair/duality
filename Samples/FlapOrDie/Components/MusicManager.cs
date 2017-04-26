@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace FlapOrDie.Components
 {
-    public class MusicManager : Component, ICmpInitializable
-    {
+	public class MusicManager : Component, ICmpInitializable
+	{
 		private ContentRef<Sound> bgm;
 		public ContentRef<Sound> Music
 		{

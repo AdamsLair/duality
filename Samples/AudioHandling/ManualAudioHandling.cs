@@ -23,10 +23,10 @@ namespace AudioHandling
 		[DontSerialize] private SoundInstance[] playingOutside = new SoundInstance[0];
 		[DontSerialize] private SoundInstance[] playingInside  = new SoundInstance[0];
 
-		[DontSerialize] private float         targetInside = 0.0f;
-		[DontSerialize] private float         inside       = 0.0f;
-		[DontSerialize] private FormattedText infoText     = null;
-		[DontSerialize] private FormattedText stateText    = null;
+		[DontSerialize] private float		 targetInside = 0.0f;
+		[DontSerialize] private float		 inside	   = 0.0f;
+		[DontSerialize] private FormattedText infoText	 = null;
+		[DontSerialize] private FormattedText stateText	= null;
 
 		public ContentRef<Sound>[] SoundsOutside
 		{

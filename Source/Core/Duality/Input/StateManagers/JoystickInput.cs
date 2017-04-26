@@ -11,10 +11,10 @@ namespace Duality.Input
 	{
 		private class State
 		{
-			public bool                   IsAvailable    = false;
-			public float[]                AxisValue      = new float[(int)JoystickAxis.Last + 1];
-			public bool[]                 ButtonPressed  = new bool[(int)JoystickButton.Last + 1];
-			public JoystickHatPosition[]  HatPosition    = new JoystickHatPosition[(int)JoystickHat.Last + 1];
+			public bool				   IsAvailable	= false;
+			public float[]				AxisValue	  = new float[(int)JoystickAxis.Last + 1];
+			public bool[]				 ButtonPressed  = new bool[(int)JoystickButton.Last + 1];
+			public JoystickHatPosition[]  HatPosition	= new JoystickHatPosition[(int)JoystickHat.Last + 1];
 
 			public State() {}
 			public State(State baseState)

@@ -16,9 +16,9 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 {
 	public class EditTilesetTileInputAction : UndoRedoAction
 	{
-		private Tileset            tileset;
+		private Tileset			tileset;
 		private RawList<TileInput> tileInput;
-		private RawList<bool>      tileInputMask;
+		private RawList<bool>	  tileInputMask;
 		private RawList<TileInput> backupTileInput;
 
 		public override string Name

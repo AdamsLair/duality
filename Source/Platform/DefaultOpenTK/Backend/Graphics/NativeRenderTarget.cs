@@ -72,10 +72,10 @@ namespace Duality.Backend.DefaultOpenTK
 		
 
 		private bool pendingPostRender = false;
-		private int  handleMainFBO     = 0;
-		private int  handleDepthRBO    = 0;
-		private int  handleMsaaFBO     = 0;
-		private int  samples           = 0;
+		private int  handleMainFBO	 = 0;
+		private int  handleDepthRBO	= 0;
+		private int  handleMsaaFBO	 = 0;
+		private int  samples		   = 0;
 		private RawList<TargetInfo> targetInfos = new RawList<TargetInfo>();
 
 

@@ -80,9 +80,9 @@ namespace Duality
 
 
 		private List<ILogOutput> strOut = null;
-		private SharedState      state  = null;
-		private string           name   = "Log";
-		private string           prefix = "[Log] ";
+		private SharedState	  state  = null;
+		private string		   name   = "Log";
+		private string		   prefix = "[Log] ";
 
 		/// <summary>
 		/// [GET] The Log's name

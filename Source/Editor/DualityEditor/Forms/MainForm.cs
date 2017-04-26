@@ -21,27 +21,27 @@ namespace Duality.Editor.Forms
 {
 	public partial class MainForm : Form, IHelpProvider
 	{
-		private int               activeDocumentIndex = -1;
-		private bool              shownWasCalled      = false;
-		private bool              nonUserClosing      = false;
-		private MenuModel         mainMenuModel       = new MenuModel();
-		private MenuStripMenuView mainMenuView        = null;
-		private MenuModel         serializerMenuModel = new MenuModel();
+		private int			   activeDocumentIndex = -1;
+		private bool			  shownWasCalled	  = false;
+		private bool			  nonUserClosing	  = false;
+		private MenuModel		 mainMenuModel	   = new MenuModel();
+		private MenuStripMenuView mainMenuView		= null;
+		private MenuModel		 serializerMenuModel = new MenuModel();
 		private MenuStripMenuView serializerMenuView  = null;
-		private WelcomeDialog     welcomeDialog       = null;
+		private WelcomeDialog	 welcomeDialog	   = null;
 
 		// Hardcoded main menu items
-		private MenuModelItem menuRunSandboxPlay    = null;
+		private MenuModelItem menuRunSandboxPlay	= null;
 		private MenuModelItem menuRunSandboxPause   = null;
-		private MenuModelItem menuRunSandboxStop    = null;
-		private MenuModelItem menuRunSandboxStep    = null;
+		private MenuModelItem menuRunSandboxStop	= null;
+		private MenuModelItem menuRunSandboxStep	= null;
 		private MenuModelItem menuRunSandboxFaster  = null;
 		private MenuModelItem menuRunSandboxSlower  = null;
-		private MenuModelItem menuEditUndo          = null;
-		private MenuModelItem menuEditRedo          = null;
-		private MenuModelItem menuRunApp            = null;
-		private MenuModelItem menuDebugApp          = null;
-		private MenuModelItem menuProfileApp        = null;
+		private MenuModelItem menuEditUndo		  = null;
+		private MenuModelItem menuEditRedo		  = null;
+		private MenuModelItem menuRunApp			= null;
+		private MenuModelItem menuDebugApp		  = null;
+		private MenuModelItem menuProfileApp		= null;
 
 
 		public DockPanel MainDockPanel

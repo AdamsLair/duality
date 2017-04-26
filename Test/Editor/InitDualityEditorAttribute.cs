@@ -66,8 +66,8 @@ namespace Duality.Editor.Tests
 			{
 				ContentProvider.ClearContent();
 				ContentProvider.DisposeDefaultContent();
-			    this.dummyWindow.Dispose();
-			    this.dummyWindow = null;
+				this.dummyWindow.Dispose();
+				this.dummyWindow = null;
 			}
 
 			DualityEditorApp.Terminate(false);

@@ -71,14 +71,14 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		}
 
 
-		private TreeModel                treeModel      = new TreeModel();
-		private CollisionInfoLayerNode[] layerNodes     = null;
-		private int                      editLayerIndex = 0;
-		private TileHotSpot              hoveredArea    = TileHotSpot.None;
-		private bool                     isUserDrawing  = false;
-		private bool                     drawSimple     = false;
-		private CollisionDrawMode        drawMode       = CollisionDrawMode.Set;
-		private TileCollisionShape       drawShape      = TileCollisionShape.Free;
+		private TreeModel				treeModel	  = new TreeModel();
+		private CollisionInfoLayerNode[] layerNodes	 = null;
+		private int					  editLayerIndex = 0;
+		private TileHotSpot			  hoveredArea	= TileHotSpot.None;
+		private bool					 isUserDrawing  = false;
+		private bool					 drawSimple	 = false;
+		private CollisionDrawMode		drawMode	   = CollisionDrawMode.Set;
+		private TileCollisionShape	   drawShape	  = TileCollisionShape.Free;
 
 
 		public override string Id
@@ -180,14 +180,14 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 						collision.HasFlag(TileCollisionShape.DiagonalDown);
 
 					Bitmap centerImage;
-					if      (collision == TileCollisionShape.Solid)              centerImage = TilemapsResCache.TilesetCollisionBit;
+					if	  (collision == TileCollisionShape.Solid)			  centerImage = TilemapsResCache.TilesetCollisionBit;
 					else if (collision.HasFlag(TileCollisionShape.DiagonalUp))   centerImage = TilemapsResCache.TilesetCollisionDiagUp;
 					else if (collision.HasFlag(TileCollisionShape.DiagonalDown)) centerImage = TilemapsResCache.TilesetCollisionDiagDown;
-					else                                                         centerImage = TilemapsResCache.TilesetCollisionBit;
+					else														 centerImage = TilemapsResCache.TilesetCollisionBit;
 					
 					Color centerColor;
 					if (centerIsCollision) centerColor = colorCollision;
-					else                   centerColor = colorFree;
+					else				   centerColor = colorFree;
 
 					e.Graphics.DrawImageTint(
 						centerImage, 
@@ -262,10 +262,10 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			else
 			{
 				float angle = MathF.Angle(tileSize.Width / 2, tileSize.Height / 2, posOnTile.X, posOnTile.Y);
-				if      (MathF.CircularDist(angle, 0.0f             ) < MathF.RadAngle45) this.hoveredArea = TileHotSpot.Top;
+				if	  (MathF.CircularDist(angle, 0.0f			 ) < MathF.RadAngle45) this.hoveredArea = TileHotSpot.Top;
 				else if (MathF.CircularDist(angle, MathF.RadAngle90 ) < MathF.RadAngle45) this.hoveredArea = TileHotSpot.Right;
 				else if (MathF.CircularDist(angle, MathF.RadAngle180) < MathF.RadAngle45) this.hoveredArea = TileHotSpot.Bottom;
-				else                                                                      this.hoveredArea = TileHotSpot.Left;
+				else																	  this.hoveredArea = TileHotSpot.Left;
 			}
 			
 			// If the user is in the process of setting or clearing bits, perform the drawing operation
@@ -385,9 +385,9 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		private static int GetCollisionIconAlpha(bool tileHovered, bool areaHovered, bool isActive)
 		{
 			if (tileHovered && areaHovered) return 255;
-			else if (isActive)              return 192;
-			else if (tileHovered)           return 128;
-			else                            return 64;
+			else if (isActive)			  return 192;
+			else if (tileHovered)		   return 128;
+			else							return 64;
 		}
 	}
 }

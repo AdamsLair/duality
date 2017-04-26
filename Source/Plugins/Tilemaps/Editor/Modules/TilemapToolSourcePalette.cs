@@ -147,9 +147,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.globalEventsSubscribed = true;
 
 				DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
-				DualityEditorApp.SelectionChanged      += this.DualityEditorApp_SelectionChanged;
-				Resource.ResourceDisposing             += this.Resource_ResourceDisposing;
-				Scene.Entered                          += this.Scene_Entered;
+				DualityEditorApp.SelectionChanged	  += this.DualityEditorApp_SelectionChanged;
+				Resource.ResourceDisposing			 += this.Resource_ResourceDisposing;
+				Scene.Entered						  += this.Scene_Entered;
 				TilemapsEditorPlugin.Instance.TileDrawingSourceChanged += 
 					this.TilemapsEditorPlugin_TileDrawingSourceChanged;
 			}
@@ -166,9 +166,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.globalEventsSubscribed = false;
 
 				DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
-				DualityEditorApp.SelectionChanged      -= this.DualityEditorApp_SelectionChanged;
-				Resource.ResourceDisposing             -= this.Resource_ResourceDisposing;
-				Scene.Entered                          -= this.Scene_Entered;
+				DualityEditorApp.SelectionChanged	  -= this.DualityEditorApp_SelectionChanged;
+				Resource.ResourceDisposing			 -= this.Resource_ResourceDisposing;
+				Scene.Entered						  -= this.Scene_Entered;
 				TilemapsEditorPlugin.Instance.TileDrawingSourceChanged -= 
 					this.TilemapsEditorPlugin_TileDrawingSourceChanged;
 			}

@@ -17,12 +17,12 @@ namespace Duality.Editor.UndoRedoActions
 {
 	public class EditResourceAssetDataAction : UndoRedoAction
 	{
-		protected PropertyGrid parent      = null;
-		protected bool         firstDo     = true;
-		protected string       targetKey   = null;
+		protected PropertyGrid parent	  = null;
+		protected bool		 firstDo	 = true;
+		protected string	   targetKey   = null;
 		protected Resource[]   targetObj   = null;
-		protected object[]     targetValue = null;
-		protected object[]     backupValue = null;
+		protected object[]	 targetValue = null;
+		protected object[]	 backupValue = null;
 		
 		public override string Name
 		{

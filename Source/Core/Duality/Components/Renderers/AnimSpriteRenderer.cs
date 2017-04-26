@@ -53,16 +53,16 @@ namespace Duality.Components.Renderers
 			Queue
 		}
 
-		private int       animFirstFrame      = 0;
-		private int       animFrameCount      = 1;
-		private float     animDuration        = 5.0f;
-		private LoopMode  animLoopMode        = LoopMode.Loop;
-		private float     animTime            = 0.0f;
-		private bool      animPaused          = false;
+		private int	   animFirstFrame	  = 0;
+		private int	   animFrameCount	  = 1;
+		private float	 animDuration		= 5.0f;
+		private LoopMode  animLoopMode		= LoopMode.Loop;
+		private float	 animTime			= 0.0f;
+		private bool	  animPaused		  = false;
 		private List<int> customFrameSequence = null;
 
-		[DontSerialize] private int   curAnimFrame      = 0;
-		[DontSerialize] private int   nextAnimFrame     = 0;
+		[DontSerialize] private int   curAnimFrame	  = 0;
+		[DontSerialize] private int   nextAnimFrame	 = 0;
 		[DontSerialize] private float curAnimFrameFade  = 0.0f;
 		[DontSerialize] private VertexC1P3T4A1[] verticesSmooth = null;
 
@@ -393,13 +393,13 @@ namespace Duality.Components.Renderers
 			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
 			
-			float left       = uvRect.X;
-			float right      = uvRect.RightX;
-			float top        = uvRect.Y;
-			float bottom     = uvRect.BottomY;
+			float left	   = uvRect.X;
+			float right	  = uvRect.RightX;
+			float top		= uvRect.Y;
+			float bottom	 = uvRect.BottomY;
 			float nextLeft   = uvRectNext.X;
 			float nextRight  = uvRectNext.RightX;
-			float nextTop    = uvRectNext.Y;
+			float nextTop	= uvRectNext.Y;
 			float nextBottom = uvRectNext.BottomY;
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T4A1[4];

@@ -42,7 +42,7 @@
 			// labelDescription
 			// 
 			this.labelDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelDescription.Location = new System.Drawing.Point(12, 9);
 			this.labelDescription.Name = "labelDescription";
 			this.labelDescription.Size = new System.Drawing.Size(397, 43);
@@ -52,8 +52,8 @@
 			// textBoxLicenseText
 			// 
 			this.textBoxLicenseText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxLicenseText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.textBoxLicenseText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxLicenseText.Location = new System.Drawing.Point(15, 55);
@@ -68,7 +68,7 @@
 			// linkLabelLicenseUrl
 			// 
 			this.linkLabelLicenseUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelLicenseUrl.Enabled = false;
 			this.linkLabelLicenseUrl.Location = new System.Drawing.Point(12, 312);
 			this.linkLabelLicenseUrl.Name = "linkLabelLicenseUrl";
@@ -105,7 +105,7 @@
 			// panelBottomBack
 			// 
 			this.panelBottomBack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.panelBottomBack.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.panelBottomBack.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelBottomBack.Controls.Add(this.buttonAgree);
@@ -118,7 +118,7 @@
 			// labelTranscriptInfo
 			// 
 			this.labelTranscriptInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelTranscriptInfo.Enabled = false;
 			this.labelTranscriptInfo.Location = new System.Drawing.Point(12, 241);
 			this.labelTranscriptInfo.Name = "labelTranscriptInfo";

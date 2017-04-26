@@ -12,10 +12,10 @@ namespace Duality.Editor
 	/// </summary>
 	public class ObjectPropertyChangedEventArgs : EventArgs
 	{
-		private ObjectSelection    obj;
+		private ObjectSelection	obj;
 		private List<PropertyInfo> propInfos;
-		private bool               completeChange;
-		private bool               persistCritical;
+		private bool			   completeChange;
+		private bool			   persistCritical;
 
 		/// <summary>
 		/// [GET] The list of affected objects.

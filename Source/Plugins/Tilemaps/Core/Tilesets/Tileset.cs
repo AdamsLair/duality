@@ -19,22 +19,22 @@ namespace Duality.Plugins.Tilemaps
 	[EditorHintImage(TilemapsResNames.ImageTileset)]
 	public class Tileset : Resource
 	{
-		public  static readonly Point2             DefaultTileSize     = new Point2(32, 32);
-		private static readonly BatchInfo          DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
+		public  static readonly Point2			 DefaultTileSize	 = new Point2(32, 32);
+		private static readonly BatchInfo		  DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
 
 		private List<TilesetRenderInput>   renderConfig   = new List<TilesetRenderInput>();
 		private List<TilesetAutoTileInput> autoTileConfig = new List<TilesetAutoTileInput>();
-		private BatchInfo                  baseMaterial   = new BatchInfo(DefaultBaseMaterial);
-		private Vector2                    tileSize       = DefaultTileSize;
-		private RawList<TileInput>         tileInput      = new RawList<TileInput>();
+		private BatchInfo				  baseMaterial   = new BatchInfo(DefaultBaseMaterial);
+		private Vector2					tileSize	   = DefaultTileSize;
+		private RawList<TileInput>		 tileInput	  = new RawList<TileInput>();
 
-		[DontSerialize] private RawList<TileInfo>         tileData       = new RawList<TileInfo>();
+		[DontSerialize] private RawList<TileInfo>		 tileData	   = new RawList<TileInfo>();
 		[DontSerialize] private List<TilesetAutoTileInfo> autoTileData   = new List<TilesetAutoTileInfo>();
-		[DontSerialize] private List<Texture>             renderData     = new List<Texture>();
-		[DontSerialize] private Material                  renderMaterial = null;
-		[DontSerialize] private bool                      compiled       = false;
-		[DontSerialize] private int                       compileHash    = 0;
-		[DontSerialize] private int                       tileCount      = 0;
+		[DontSerialize] private List<Texture>			 renderData	 = new List<Texture>();
+		[DontSerialize] private Material				  renderMaterial = null;
+		[DontSerialize] private bool					  compiled	   = false;
+		[DontSerialize] private int					   compileHash	= 0;
+		[DontSerialize] private int					   tileCount	  = 0;
 
 		
 		/// <summary>

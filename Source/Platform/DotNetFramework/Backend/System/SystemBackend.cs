@@ -42,12 +42,12 @@ namespace Duality.Backend.DotNetFramework
 			string path;
 			switch (dir)
 			{
-				default:                             path = null; break;
-				case NamedDirectory.Current:         path = System.IO.Directory.GetCurrentDirectory(); break;
+				default:							 path = null; break;
+				case NamedDirectory.Current:		 path = System.IO.Directory.GetCurrentDirectory(); break;
 				case NamedDirectory.ApplicationData: path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); break;
-				case NamedDirectory.MyDocuments:     path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); break;
-				case NamedDirectory.MyMusic:         path = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic); break;
-				case NamedDirectory.MyPictures:      path = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures); break;
+				case NamedDirectory.MyDocuments:	 path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); break;
+				case NamedDirectory.MyMusic:		 path = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic); break;
+				case NamedDirectory.MyPictures:	  path = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures); break;
 			}
 			return this.fileSystem.GetDualityPathFormat(path);
 		}

@@ -9,7 +9,7 @@ namespace Duality.Backend.DefaultOpenTK
 		public delegate void CursorPosSetter(int v);
 
 		private GameWindow window;
-		private bool       cursorInView;
+		private bool	   cursorInView;
 
 		public string Description
 		{

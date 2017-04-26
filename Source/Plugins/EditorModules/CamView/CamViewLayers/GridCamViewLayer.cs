@@ -16,40 +16,40 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 	{
 		private RawList<VertexC1P3> vertexBuffer = null;
 
-	    public override string LayerName
-	    {
-	        get { return Properties.CamViewRes.CamViewLayer_Grid_Name; }
-	    }
-	    public override string LayerDesc
-	    {
-	        get { return Properties.CamViewRes.CamViewLayer_Grid_Desc; }
-	    }
-	    public override int Priority
-	    {
-	        get { return base.Priority - 10; }
-	    }
+		public override string LayerName
+		{
+			get { return Properties.CamViewRes.CamViewLayer_Grid_Name; }
+		}
+		public override string LayerDesc
+		{
+			get { return Properties.CamViewRes.CamViewLayer_Grid_Desc; }
+		}
+		public override int Priority
+		{
+			get { return base.Priority - 10; }
+		}
 		public override bool MouseTracking
 		{
 			get { return true; }
 		}
 
-	    protected internal override void OnCollectDrawcalls(Canvas canvas)
-	    {
-	        base.OnCollectDrawcalls(canvas);
-	        IDrawDevice device = canvas.DrawDevice;
+		protected internal override void OnCollectDrawcalls(Canvas canvas)
+		{
+			base.OnCollectDrawcalls(canvas);
+			IDrawDevice device = canvas.DrawDevice;
 			
 			GridLayerData displayedData = default(GridLayerData);
 			this.View.ActiveState.GetDisplayedGridData(Point.Empty, ref displayedData);
 
-	        float scaleTemp = 1.0f;
-	        Vector3 posTemp = Vector3.Zero;
-	        device.PreprocessCoords(ref posTemp, ref scaleTemp);
-	        if (posTemp.Z <= canvas.DrawDevice.NearZ) return;
+			float scaleTemp = 1.0f;
+			Vector3 posTemp = Vector3.Zero;
+			device.PreprocessCoords(ref posTemp, ref scaleTemp);
+			if (posTemp.Z <= canvas.DrawDevice.NearZ) return;
 
-	        float alphaTemp = 0.5f;
-	        alphaTemp *= (float)Math.Min(1.0d, ((posTemp.Z - device.NearZ) / (device.NearZ * 5.0f)));
-	        if (alphaTemp <= 0.005f) return;
-	        ColorRgba gridColor = this.FgColor.WithAlpha(alphaTemp);
+			float alphaTemp = 0.5f;
+			alphaTemp *= (float)Math.Min(1.0d, ((posTemp.Z - device.NearZ) / (device.NearZ * 5.0f)));
+			if (alphaTemp <= 0.005f) return;
+			ColorRgba gridColor = this.FgColor.WithAlpha(alphaTemp);
 
 			float gridVisualMinSize = 50.0f;
 			Vector2 gridBaseSize = displayedData.GridBaseSize;
@@ -65,68 +65,68 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			adjustedGridSize.X = MathF.Max(adjustedGridBaseSize.X * scaleAdjustmentFactor, gridBaseSize.X);
 			adjustedGridSize.Y = MathF.Max(adjustedGridBaseSize.Y * scaleAdjustmentFactor, gridBaseSize.Y);
 
-	        Vector2 stepTemp = adjustedGridSize;
-	        Vector2 scaledStep = stepTemp * scaleTemp;
-	        float viewBoundRad = device.TargetSize.Length * 0.5f;
-	        int lineCountX = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / scaledStep.X)) * 4;
-	        int lineCountY = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / scaledStep.Y)) * 4;
+			Vector2 stepTemp = adjustedGridSize;
+			Vector2 scaledStep = stepTemp * scaleTemp;
+			float viewBoundRad = device.TargetSize.Length * 0.5f;
+			int lineCountX = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / scaledStep.X)) * 4;
+			int lineCountY = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / scaledStep.Y)) * 4;
 			int vertexCount = (lineCountX * 2 + lineCountY * 2);
 
 			if (this.vertexBuffer == null) this.vertexBuffer = new RawList<VertexC1P3>(vertexCount);
 			this.vertexBuffer.Count = vertexCount;
 
-	        VertexC1P3[] vertices = this.vertexBuffer.Data;
-	        float beginPos;
+			VertexC1P3[] vertices = this.vertexBuffer.Data;
+			float beginPos;
 			float pos;
 			int lineIndex;
 			int vertOff = 0;
 
-	        beginPos = posTemp.X % scaledStep.X - (lineCountX / 8) * scaledStep.X;
+			beginPos = posTemp.X % scaledStep.X - (lineCountX / 8) * scaledStep.X;
 			pos = beginPos;
 			lineIndex = 0;
-	        for (int x = 0; x < lineCountX; x++)
-	        {
-	            bool primaryLine = lineIndex % 4 == 0;
-	            bool secondaryLine = lineIndex % 4 == 2;
+			for (int x = 0; x < lineCountX; x++)
+			{
+				bool primaryLine = lineIndex % 4 == 0;
+				bool secondaryLine = lineIndex % 4 == 2;
 
-	            vertices[vertOff + x * 2 + 0].Color = primaryLine ? gridColor : gridColor.WithAlpha(alphaTemp * (secondaryLine ? 0.5f : 0.25f));
+				vertices[vertOff + x * 2 + 0].Color = primaryLine ? gridColor : gridColor.WithAlpha(alphaTemp * (secondaryLine ? 0.5f : 0.25f));
 
-	            vertices[vertOff + x * 2 + 0].Pos.X = pos;
-	            vertices[vertOff + x * 2 + 0].Pos.Y = -viewBoundRad;
-	            vertices[vertOff + x * 2 + 0].Pos.Z = posTemp.Z + 1;
+				vertices[vertOff + x * 2 + 0].Pos.X = pos;
+				vertices[vertOff + x * 2 + 0].Pos.Y = -viewBoundRad;
+				vertices[vertOff + x * 2 + 0].Pos.Z = posTemp.Z + 1;
 
-	            vertices[vertOff + x * 2 + 1] = vertices[vertOff + x * 2 + 0];
-	            vertices[vertOff + x * 2 + 1].Pos.Y = viewBoundRad;
+				vertices[vertOff + x * 2 + 1] = vertices[vertOff + x * 2 + 0];
+				vertices[vertOff + x * 2 + 1].Pos.Y = viewBoundRad;
 
 				pos += scaledStep.X / 4;
 				lineIndex++;
-	        }
+			}
 			vertOff += lineCountX * 2;
 
-	        beginPos = posTemp.Y % scaledStep.Y - (lineCountY / 8) * scaledStep.Y;
+			beginPos = posTemp.Y % scaledStep.Y - (lineCountY / 8) * scaledStep.Y;
 			pos = beginPos;
 			lineIndex = 0;
-	        for (int y = 0; y < lineCountY; y++)
-	        {
-	            bool primaryLine = lineIndex % 4 == 0;
-	            bool secondaryLine = lineIndex % 4 == 2;
+			for (int y = 0; y < lineCountY; y++)
+			{
+				bool primaryLine = lineIndex % 4 == 0;
+				bool secondaryLine = lineIndex % 4 == 2;
 
-	            vertices[vertOff + y * 2 + 0].Color = primaryLine ? gridColor : gridColor.WithAlpha(alphaTemp * (secondaryLine ? 0.5f : 0.25f));
+				vertices[vertOff + y * 2 + 0].Color = primaryLine ? gridColor : gridColor.WithAlpha(alphaTemp * (secondaryLine ? 0.5f : 0.25f));
 
-	            vertices[vertOff + y * 2 + 0].Pos.X = -viewBoundRad;
-	            vertices[vertOff + y * 2 + 0].Pos.Y = pos;
-	            vertices[vertOff + y * 2 + 0].Pos.Z = posTemp.Z + 1;
+				vertices[vertOff + y * 2 + 0].Pos.X = -viewBoundRad;
+				vertices[vertOff + y * 2 + 0].Pos.Y = pos;
+				vertices[vertOff + y * 2 + 0].Pos.Z = posTemp.Z + 1;
 
-	            vertices[vertOff + y * 2 + 1] = vertices[vertOff + y * 2 + 0];
-	            vertices[vertOff + y * 2 + 1].Pos.X = viewBoundRad;
+				vertices[vertOff + y * 2 + 1] = vertices[vertOff + y * 2 + 0];
+				vertices[vertOff + y * 2 + 1].Pos.X = viewBoundRad;
 
 				pos += scaledStep.Y / 4;
 				lineIndex++;
-	        }
+			}
 			vertOff += lineCountY * 2;
 
-	        device.AddVertices(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White), VertexMode.Lines, vertices, this.vertexBuffer.Count);
-	    }
+			device.AddVertices(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White), VertexMode.Lines, vertices, this.vertexBuffer.Count);
+		}
 		protected internal override void OnCollectOverlayDrawcalls(Canvas canvas)
 		{
 			base.OnCollectOverlayDrawcalls(canvas);

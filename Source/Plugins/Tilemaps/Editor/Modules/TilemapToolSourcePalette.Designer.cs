@@ -42,9 +42,9 @@
 			this.mainToolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.mainToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.labelTileset,
-            this.buttonBrightness,
-            this.buttonDrawTileIndices});
+			this.labelTileset,
+			this.buttonBrightness,
+			this.buttonDrawTileIndices});
 			this.mainToolStrip.Location = new System.Drawing.Point(0, 0);
 			this.mainToolStrip.Name = "mainToolStrip";
 			this.mainToolStrip.Size = new System.Drawing.Size(479, 25);

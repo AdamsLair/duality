@@ -13,13 +13,13 @@ namespace Duality.Tests.PluginManager
 {
 	public class MockPluginLoader : IPluginLoader, IDisposable
 	{
-		private List<string>                       baseDirs         = new List<string>();
-		private Dictionary<string,Assembly>        assemblyMap      = new Dictionary<string,Assembly>();
-		private HashSet<string>                    incompatibleDlls = new HashSet<string>();
-		private List<string>                       loadedAssemblies = new List<string>();
-		private Dictionary<DualityPlugin,Assembly> pluginMap        = new Dictionary<DualityPlugin,Assembly>();
-		private bool                               initialized      = false;
-		private bool                               disposed         = false;
+		private List<string>					   baseDirs		 = new List<string>();
+		private Dictionary<string,Assembly>		assemblyMap	  = new Dictionary<string,Assembly>();
+		private HashSet<string>					incompatibleDlls = new HashSet<string>();
+		private List<string>					   loadedAssemblies = new List<string>();
+		private Dictionary<DualityPlugin,Assembly> pluginMap		= new Dictionary<DualityPlugin,Assembly>();
+		private bool							   initialized	  = false;
+		private bool							   disposed		 = false;
 		
 
 		public event EventHandler<AssemblyResolveEventArgs> AssemblyResolve;

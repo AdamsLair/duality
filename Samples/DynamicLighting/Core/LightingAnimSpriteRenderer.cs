@@ -18,7 +18,7 @@ namespace DynamicLighting
 	public class LightingAnimSpriteRenderer : AnimSpriteRenderer
 	{
 		private float vertexTranslucency = 0.0f;
-		[DontSerialize] private VertexC1P3T2A4[]   verticesLight       = null;
+		[DontSerialize] private VertexC1P3T2A4[]   verticesLight	   = null;
 		[DontSerialize] private VertexC1P3T4A4A1[] verticesLightSmooth = null;
 
 		/// <summary>
@@ -82,13 +82,13 @@ namespace DynamicLighting
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T4A4A1[4];
 			
 			// Calculate UV coordinates
-			float left       = uvRect.X;
-			float right      = uvRect.RightX;
-			float top        = uvRect.Y;
-			float bottom     = uvRect.BottomY;
+			float left	   = uvRect.X;
+			float right	  = uvRect.RightX;
+			float top		= uvRect.Y;
+			float bottom	 = uvRect.BottomY;
 			float nextLeft   = uvRectNext.X;
 			float nextRight  = uvRectNext.RightX;
-			float nextTop    = uvRectNext.Y;
+			float nextTop	= uvRectNext.Y;
 			float nextBottom = uvRectNext.BottomY;
 
 			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
@@ -224,7 +224,7 @@ namespace DynamicLighting
 			// Calculate UV coordinates
 			float left   = uvRect.X;
 			float right  = uvRect.RightX;
-			float top    = uvRect.Y;
+			float top	= uvRect.Y;
 			float bottom = uvRect.BottomY;
 
 			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)

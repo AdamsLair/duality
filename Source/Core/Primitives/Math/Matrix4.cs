@@ -435,7 +435,7 @@ namespace Duality
 		{
 			return Column3;
 		}
-        
+		
 		/// <summary>
 		/// Build a rotation matrix from the specified axis/angle rotation.
 		/// </summary>
@@ -796,7 +796,7 @@ namespace Duality
 			CreateOrthographicOffCenter(left, right, bottom, top, zNear, zFar, out result);
 			return result;
 		}
-        
+		
 		/// <summary>
 		/// Creates a perspective projection matrix.
 		/// </summary>
@@ -825,7 +825,7 @@ namespace Duality
 				throw new ArgumentOutOfRangeException("zNear");
 			if (zFar <= 0)
 				throw new ArgumentOutOfRangeException("zFar");
-            
+			
 			float yMax = zNear * (float)System.Math.Tan(0.5f * fovy);
 			float yMin = -yMax;
 			float xMin = yMin * aspect;
@@ -857,7 +857,7 @@ namespace Duality
 			CreatePerspectiveFieldOfView(fovy, aspect, zNear, zFar, out result);
 			return result;
 		}
-        
+		
 		/// <summary>
 		/// Creates an perspective projection matrix.
 		/// </summary>
@@ -884,7 +884,7 @@ namespace Duality
 				throw new ArgumentOutOfRangeException("zFar");
 			if (zNear >= zFar)
 				throw new ArgumentOutOfRangeException("zNear");
-            
+			
 			float x = (2.0f * zNear) / (right - left);
 			float y = (2.0f * zNear) / (top - bottom);
 			float a = (right + left) / (right - left);

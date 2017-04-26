@@ -101,8 +101,8 @@
 			// 
 			this.packageList.AllowColumnReorder = true;
 			this.packageList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.packageList.AsyncExpanding = true;
 			this.packageList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.packageList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -220,8 +220,8 @@
 			// splitMain
 			// 
 			this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
 			this.splitMain.Location = new System.Drawing.Point(3, 77);
 			this.splitMain.Margin = new System.Windows.Forms.Padding(0);
@@ -246,10 +246,10 @@
 			this.toolStripMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.toolStripMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSearchBox,
-            this.toolStripLabelSearch,
-            this.toolStripLabelView,
-            this.toolStripViewBox});
+			this.toolStripSearchBox,
+			this.toolStripLabelSearch,
+			this.toolStripLabelView,
+			this.toolStripViewBox});
 			this.toolStripMain.Location = new System.Drawing.Point(0, 0);
 			this.toolStripMain.Name = "toolStripMain";
 			this.toolStripMain.Padding = new System.Windows.Forms.Padding(3, 3, 0, 3);
@@ -559,7 +559,7 @@
 			// panelLowerArea
 			// 
 			this.panelLowerArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.panelLowerArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.panelLowerArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelLowerArea.Controls.Add(this.buttonAdvanced);
@@ -583,7 +583,7 @@
 			// labelRequireRestart
 			// 
 			this.labelRequireRestart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelRequireRestart.ForeColor = System.Drawing.Color.Blue;
 			this.labelRequireRestart.Location = new System.Drawing.Point(114, 2);
 			this.labelRequireRestart.Name = "labelRequireRestart";
@@ -595,7 +595,7 @@
 			// flowLayoutBottom
 			// 
 			this.flowLayoutBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.flowLayoutBottom.Controls.Add(this.buttonClose);
 			this.flowLayoutBottom.Controls.Add(this.buttonApply);
 			this.flowLayoutBottom.Controls.Add(this.bottomFlowSpacer1);
@@ -703,20 +703,20 @@
 			// labelHeaderText
 			// 
 			this.labelHeaderText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeaderText.Location = new System.Drawing.Point(82, 35);
 			this.labelHeaderText.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.labelHeaderText.Name = "labelHeaderText";
 			this.labelHeaderText.Size = new System.Drawing.Size(803, 42);
 			this.labelHeaderText.TabIndex = 13;
 			this.labelHeaderText.Text = "Each Duality project consists of multiple Packages that can carry plugins and dat" +
-    "a. This dialog provides an overview of installed and available Packages and help" +
-    "s you manage them.";
+	"a. This dialog provides an overview of installed and available Packages and help" +
+	"s you manage them.";
 			// 
 			// labelHeader
 			// 
 			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelHeader.Location = new System.Drawing.Point(79, 7);
 			this.labelHeader.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
@@ -742,7 +742,7 @@
 			// contextMenuAdvanced
 			// 
 			this.contextMenuAdvanced.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.itemReInstallAll});
+			this.itemReInstallAll});
 			this.contextMenuAdvanced.Name = "contextMenuAdvanced";
 			this.contextMenuAdvanced.Size = new System.Drawing.Size(191, 26);
 			// 

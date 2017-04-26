@@ -48,11 +48,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		public static RigidBodyEditorSelShape Create(ShapeInfo shape)
 		{
-			if      (shape is CircleShapeInfo) return new RigidBodyEditorSelCircleShape(shape as CircleShapeInfo);
+			if	  (shape is CircleShapeInfo) return new RigidBodyEditorSelCircleShape(shape as CircleShapeInfo);
 			else if (shape is PolyShapeInfo  ) return new RigidBodyEditorSelPolyShape  (shape as PolyShapeInfo  );
 			else if (shape is ChainShapeInfo ) return new RigidBodyEditorSelChainShape (shape as ChainShapeInfo );
 			else if (shape is LoopShapeInfo  ) return new RigidBodyEditorSelLoopShape  (shape as LoopShapeInfo  );
-			else                               return null;
+			else							   return null;
 		}
 	}
 }

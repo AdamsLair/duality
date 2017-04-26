@@ -219,12 +219,12 @@ namespace Duality.Backend.DefaultOpenTK
 			switch (hatPos)
 			{
 				case OpenTK.Input.HatPosition.Centered:	 return JoystickHatPosition.Centered;
-				case OpenTK.Input.HatPosition.Up:        return JoystickHatPosition.Up;
-				case OpenTK.Input.HatPosition.UpLeft:    return JoystickHatPosition.Up | JoystickHatPosition.Left;
+				case OpenTK.Input.HatPosition.Up:		return JoystickHatPosition.Up;
+				case OpenTK.Input.HatPosition.UpLeft:	return JoystickHatPosition.Up | JoystickHatPosition.Left;
 				case OpenTK.Input.HatPosition.UpRight:   return JoystickHatPosition.Up | JoystickHatPosition.Right;
-				case OpenTK.Input.HatPosition.Right:     return JoystickHatPosition.Right;
-				case OpenTK.Input.HatPosition.Left:      return JoystickHatPosition.Left;
-				case OpenTK.Input.HatPosition.Down:      return JoystickHatPosition.Down;
+				case OpenTK.Input.HatPosition.Right:	 return JoystickHatPosition.Right;
+				case OpenTK.Input.HatPosition.Left:	  return JoystickHatPosition.Left;
+				case OpenTK.Input.HatPosition.Down:	  return JoystickHatPosition.Down;
 				case OpenTK.Input.HatPosition.DownLeft:  return JoystickHatPosition.Down | JoystickHatPosition.Left;
 				case OpenTK.Input.HatPosition.DownRight: return JoystickHatPosition.Down | JoystickHatPosition.Right;
 			}

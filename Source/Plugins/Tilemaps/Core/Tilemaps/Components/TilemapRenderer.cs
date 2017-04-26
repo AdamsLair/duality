@@ -19,12 +19,12 @@ namespace Duality.Plugins.Tilemaps
 	[EditorHintImage(TilemapsResNames.ImageTilemapRenderer)]
 	public class TilemapRenderer : Renderer, ICmpTilemapRenderer
 	{
-		private Alignment           origin          = Alignment.Center;
-		private Tilemap             externalTilemap = null;
-		private ColorRgba           colorTint       = ColorRgba.White;
-		private float               offset          = 0.0f;
-		private int                 tileDepthOffset = 0;
-		private float               tileDepthScale  = 0.01f;
+		private Alignment		   origin		  = Alignment.Center;
+		private Tilemap			 externalTilemap = null;
+		private ColorRgba		   colorTint	   = ColorRgba.White;
+		private float			   offset		  = 0.0f;
+		private int				 tileDepthOffset = 0;
+		private float			   tileDepthScale  = 0.01f;
 		private TileDepthOffsetMode tileDepthMode   = TileDepthOffsetMode.Flat;
 
 		[DontSerialize] private Tilemap localTilemap = null;

@@ -28,15 +28,15 @@ namespace Duality.Resources
 		private const float PhysicsAccStart = Time.MsPFMult;
 
 
-		private static World               physicsWorld      = new World(Vector2.Zero);
-		private static float               physicsAcc        = 0.0f;
-		private static bool                physicsLowFps     = false;
-		private static ContentRef<Scene>   current           = new Scene();
-		private static bool                curAutoGen        = false;
-		private static bool                isSwitching       = false;
-		private static int                 switchLock        = 0;
-		private static bool                switchToScheduled = false;
-		private static ContentRef<Scene>   switchToTarget    = null;
+		private static World			   physicsWorld	  = new World(Vector2.Zero);
+		private static float			   physicsAcc		= 0.0f;
+		private static bool				physicsLowFps	 = false;
+		private static ContentRef<Scene>   current		   = new Scene();
+		private static bool				curAutoGen		= false;
+		private static bool				isSwitching	   = false;
+		private static int				 switchLock		= 0;
+		private static bool				switchToScheduled = false;
+		private static ContentRef<Scene>   switchToTarget	= null;
 
 
 		/// <summary>
@@ -393,9 +393,9 @@ namespace Duality.Resources
 			public TimeCounter Profiler;
 		}
 
-		private Vector2                     globalGravity      = Vector2.UnitY * 33.0f;
+		private Vector2					 globalGravity	  = Vector2.UnitY * 33.0f;
 		private IRendererVisibilityStrategy visibilityStrategy = new DefaultRendererVisibilityStrategy();
-		private GameObject[]                serializeObj       = null;
+		private GameObject[]				serializeObj	   = null;
 
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
@@ -1008,16 +1008,16 @@ namespace Duality.Resources
 		{
 			this.objectManager.GameObjectsAdded   += this.objectManager_GameObjectsAdded;
 			this.objectManager.GameObjectsRemoved += this.objectManager_GameObjectsRemoved;
-			this.objectManager.ParentChanged      += this.objectManager_ParentChanged;
-			this.objectManager.ComponentAdded     += this.objectManager_ComponentAdded;
+			this.objectManager.ParentChanged	  += this.objectManager_ParentChanged;
+			this.objectManager.ComponentAdded	 += this.objectManager_ComponentAdded;
 			this.objectManager.ComponentRemoving  += this.objectManager_ComponentRemoving;
 		}
 		private void UnregisterManagerEvents()
 		{
 			this.objectManager.GameObjectsAdded   -= this.objectManager_GameObjectsAdded;
 			this.objectManager.GameObjectsRemoved -= this.objectManager_GameObjectsRemoved;
-			this.objectManager.ParentChanged      -= this.objectManager_ParentChanged;
-			this.objectManager.ComponentAdded     -= this.objectManager_ComponentAdded;
+			this.objectManager.ParentChanged	  -= this.objectManager_ParentChanged;
+			this.objectManager.ComponentAdded	 -= this.objectManager_ComponentAdded;
 			this.objectManager.ComponentRemoving  -= this.objectManager_ComponentRemoving;
 		}
 

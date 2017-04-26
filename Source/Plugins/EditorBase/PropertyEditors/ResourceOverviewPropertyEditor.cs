@@ -16,8 +16,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	[PropertyEditorAssignment(typeof(ResourceOverviewPropertyEditor), "MatchToProperty")]
 	public class ResourceOverviewPropertyEditor : GroupedPropertyEditor
 	{
-		private Type                        resourceType   = null;
-		private PropertyEditor              resourceEditor = null;
+		private Type						resourceType   = null;
+		private PropertyEditor			  resourceEditor = null;
 		private ResourceAssetPropertyEditor assetEditor = null;
 		
 		public override object DisplayedValue

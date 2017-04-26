@@ -17,16 +17,16 @@ namespace Duality.Plugins.Tilemaps
 		[Flags]
 		private enum Connection : byte
 		{
-			None      = 0x00,
+			None	  = 0x00,
 
-			Up        = 0x01,
+			Up		= 0x01,
 			RightUp   = 0x02,
-			Right     = 0x04,
+			Right	 = 0x04,
 			RightDown = 0x08,
-			Down      = 0x10,
+			Down	  = 0x10,
 			LeftDown  = 0x20,
-			Left      = 0x40,
-			LeftUp    = 0x80
+			Left	  = 0x40,
+			LeftUp	= 0x80
 		}
 
 
@@ -101,13 +101,13 @@ namespace Duality.Plugins.Tilemaps
 		{
 			Connection con = this.connections[from.X, from.Y];
 
-			if ((con & Connection.Up       ) != Connection.None) return new Point2(from.X    , from.Y - 1);
+			if ((con & Connection.Up	   ) != Connection.None) return new Point2(from.X	, from.Y - 1);
 			if ((con & Connection.RightUp  ) != Connection.None) return new Point2(from.X + 1, from.Y - 1);
-			if ((con & Connection.Right    ) != Connection.None) return new Point2(from.X + 1, from.Y    );
+			if ((con & Connection.Right	) != Connection.None) return new Point2(from.X + 1, from.Y	);
 			if ((con & Connection.RightDown) != Connection.None) return new Point2(from.X + 1, from.Y + 1);
-			if ((con & Connection.Down     ) != Connection.None) return new Point2(from.X    , from.Y + 1);
+			if ((con & Connection.Down	 ) != Connection.None) return new Point2(from.X	, from.Y + 1);
 			if ((con & Connection.LeftDown ) != Connection.None) return new Point2(from.X - 1, from.Y + 1);
-			if ((con & Connection.Left     ) != Connection.None) return new Point2(from.X - 1, from.Y    );
+			if ((con & Connection.Left	 ) != Connection.None) return new Point2(from.X - 1, from.Y	);
 			if ((con & Connection.LeftUp   ) != Connection.None) return new Point2(from.X - 1, from.Y - 1);
 
 			return new Point2(-1, -1);
@@ -135,11 +135,11 @@ namespace Duality.Plugins.Tilemaps
 			Connection.LeftUp,
 			Connection.Up,
 			Connection.RightUp,
-			Connection.None,     // Invalid (Unused)
+			Connection.None,	 // Invalid (Unused)
 			Connection.Left,
-			Connection.None,     // Invalid (Center)
+			Connection.None,	 // Invalid (Center)
 			Connection.Right,
-			Connection.None,     // Invalid (Unused)
+			Connection.None,	 // Invalid (Unused)
 			Connection.LeftDown,
 			Connection.Down,
 			Connection.RightDown
@@ -153,15 +153,15 @@ namespace Duality.Plugins.Tilemaps
 		{
 			switch (con)
 			{
-				default:                   return Connection.None;
-				case Connection.Up:        return Connection.Down;
+				default:				   return Connection.None;
+				case Connection.Up:		return Connection.Down;
 				case Connection.RightUp:   return Connection.LeftDown;
-				case Connection.Right:     return Connection.Left;
+				case Connection.Right:	 return Connection.Left;
 				case Connection.RightDown: return Connection.LeftUp;
-				case Connection.Down:      return Connection.Up;
+				case Connection.Down:	  return Connection.Up;
 				case Connection.LeftDown:  return Connection.RightUp;
-				case Connection.Left:      return Connection.Right;
-				case Connection.LeftUp:    return Connection.RightDown;
+				case Connection.Left:	  return Connection.Right;
+				case Connection.LeftUp:	return Connection.RightDown;
 			}
 		}
 	}
