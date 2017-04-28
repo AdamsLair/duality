@@ -151,7 +151,9 @@ namespace Duality.Components.Physics
 			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
 			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
 			j.ReferenceAngle = this.refAngle;
-			j.LocalXAxis1 = this.ParentBody.GameObj.Transform.GetWorldVector(this.moveAxis).Normalized;
+			// Farseer gotcha: Setter is in world coordinates even though getter returns local coordinates.
+			// Movement axis is relative to OtherBody, as that reflects Farseer behavior.
+			j.LocalXAxis1 = this.OtherBody.GameObj.Transform.GetWorldVector(this.moveAxis).Normalized;
 			j.LimitEnabled = this.limitEnabled;
 			j.LowerLimit = -PhysicsUnit.LengthToPhysical * this.upperLimit;
 			j.UpperLimit = -PhysicsUnit.LengthToPhysical * this.lowerLimit;
