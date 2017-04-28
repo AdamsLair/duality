@@ -89,6 +89,9 @@ namespace Duality.Components.Physics
 		/// <summary>
 		/// [GET / SET] The maximum motor force.
 		/// </summary>
+		[EditorHintIncrement(1.0f)]
+		[EditorHintDecimalPlaces(1)]
+		[EditorHintRange(0, 10000, 0, 500)]
 		public float MaxMotorForce
 		{
 			get { return this.maxMotorForce; }
