@@ -465,14 +465,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			float baseAngle = body.GameObj.Transform.Angle;
-			float speedAngle = baseAngle + speed;
-			float maxTorqueAngle = baseAngle + MathF.Sign(speed) * maxTorque * PhysicsUnit.TorqueToPhysical * 0.01f;
+			float speedAngle = baseAngle + speed * 0.2f;
+			float maxTorqueAngle = baseAngle + MathF.Sign(speed) * maxTorque * PhysicsUnit.TorqueToPhysical * 0.2f;
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 			Vector2 arrowBase = anchorToWorld + Vector2.FromAngleLength(speedAngle, radius);
 			Vector2 arrowA = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45, MathF.Sign(speed) * worldLineCapScale);
 			Vector2 arrowB = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45 + MathF.RadAngle270, MathF.Sign(speed) * worldLineCapScale);
 
-			canvas.State.ColorTint = baseColor * this.MotorColor;
+			canvas.State.ColorTint = baseColor * this.MotorColor.WithAlpha(0.5f);
 			canvas.FillCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
@@ -489,6 +489,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				MathF.Sign(speed) >= 0 ? baseAngle : maxTorqueAngle,
 				MathF.Sign(speed) >= 0 ? maxTorqueAngle : baseAngle,
 				lineWidth);
+			canvas.State.ColorTint = baseColor * this.MotorColor;
 			canvas.FillCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
@@ -825,16 +826,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
-			float worldArrowScale = this.GetScreenConstantScale(canvas, speed * 10.0f);
+			float worldArrowScale = this.GetScreenConstantScale(canvas, speed * 20.0f);
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(localAnchor);
 			float axisAngle = worldAxis.Angle;
-			float maxForceTemp = MathF.Sign(speed) * maxForce * PhysicsUnit.ForceToPhysical * 10.0f;
+			float maxForceTemp = MathF.Sign(speed) * maxForce * PhysicsUnit.ForceToPhysical * 2.0f;
 			Vector2 arrowBegin = bodyPos.Xy + worldAxis.PerpendicularRight * offset;
 			Vector2 arrowBase = arrowBegin + worldAxis * worldArrowScale;
 			Vector2 arrowA = Vector2.FromAngleLength(axisAngle + MathF.RadAngle45 + MathF.RadAngle180, MathF.Sign(speed) * worldLineCapScale);
 			Vector2 arrowB = Vector2.FromAngleLength(axisAngle - MathF.RadAngle45 + MathF.RadAngle180, MathF.Sign(speed) * worldLineCapScale);
 			
-			canvas.State.ColorTint = baseColor * this.MotorColor;
+			canvas.State.ColorTint = baseColor * this.MotorColor.WithAlpha(0.5f);
 			canvas.FillThickLine(
 				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f * lineWidth,
 				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f * lineWidth,
@@ -851,6 +852,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				arrowBegin.Y + worldAxis.PerpendicularRight.Y * 2.0f * lineWidth + worldAxis.Y * maxForceTemp,
 				0.0f,
 				lineWidth);
+			canvas.State.ColorTint = baseColor * this.MotorColor;
 			canvas.FillThickLine(
 				arrowBegin.X,
 				arrowBegin.Y,

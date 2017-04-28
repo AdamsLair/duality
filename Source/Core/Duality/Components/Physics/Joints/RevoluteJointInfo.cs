@@ -89,6 +89,9 @@ namespace Duality.Components.Physics
 		/// <summary>
 		/// [GET / SET] The maximum motor torque.
 		/// </summary>
+		[EditorHintIncrement(10.0f)]
+		[EditorHintDecimalPlaces(0)]
+		[EditorHintRange(0, 100000, 0, 5000)]
 		public float MaxMotorTorque
 		{
 			get { return this.maxMotorTorque; }
