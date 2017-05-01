@@ -3180,8 +3180,8 @@
                           <icons />
                           <lineAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
                           <maxHeight dataType="Int">0</maxHeight>
-                          <maxWidth dataType="Int">350</maxWidth>
-                          <sourceText dataType="String">Joints can connect two bodies of any kind, so more complex constraint setups are possible.</sourceText>
+                          <maxWidth dataType="Int">300</maxWidth>
+                          <sourceText dataType="String">More complex setups are possible by combining multiple joints and bodies.</sourceText>
                           <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                         </text>
                         <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
@@ -3369,13 +3369,13 @@
     <item dataType="ObjectRef">3771095618</item>
     <item dataType="ObjectRef">190303241</item>
     <item dataType="ObjectRef">2898627856</item>
-    <item dataType="ObjectRef">209337452</item>
     <item dataType="ObjectRef">1570063134</item>
     <item dataType="ObjectRef">961041577</item>
     <item dataType="ObjectRef">1490608698</item>
     <item dataType="ObjectRef">2091651235</item>
     <item dataType="ObjectRef">1483837714</item>
     <item dataType="ObjectRef">302638256</item>
+    <item dataType="ObjectRef">209337452</item>
     <item dataType="ObjectRef">1642399087</item>
     <item dataType="ObjectRef">282837764</item>
     <item dataType="ObjectRef">4124979211</item>

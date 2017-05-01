@@ -2950,8 +2950,8 @@
                           <icons />
                           <lineAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
                           <maxHeight dataType="Int">0</maxHeight>
-                          <maxWidth dataType="Int">350</maxWidth>
-                          <sourceText dataType="String">Joints can connect two bodies of any kind, so more complex constraint setups are possible.</sourceText>
+                          <maxWidth dataType="Int">300</maxWidth>
+                          <sourceText dataType="String">More complex setups are possible by combining multiple joints and bodies.</sourceText>
                           <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                         </text>
                         <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
