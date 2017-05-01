@@ -98,13 +98,13 @@ namespace Duality.Components.Physics
 			set { this.maxMotorTorque = value; this.UpdateJoint(); }
 		}
 		/// <summary>
-		/// [GET / SET] The desired motor speed in degree per frame.
+		/// [GET / SET] The desired motor speed in radians per frame.
 		/// </summary>
 		[EditorHintIncrement(MathF.RadAngle1)]
 		public float MotorSpeed
 		{
-			get { return MathF.RadToDeg(this.motorSpeed); }
-			set { this.motorSpeed = MathF.DegToRad(value); this.UpdateJoint(); }
+			get { return this.motorSpeed; }
+			set { this.motorSpeed = value; this.UpdateJoint(); }
 		}
 		/// <summary>
 		/// [GET] The current joint angle speed in radians per frame.
@@ -145,7 +145,7 @@ namespace Duality.Components.Physics
 			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
 			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
 			j.MotorEnabled = this.motorEnabled;
-			j.MotorSpeed = -this.motorSpeed / Time.SPFMult;
+			j.MotorSpeed = PhysicsUnit.AngularVelocityToPhysical * -this.motorSpeed;
 			j.MaxMotorTorque = PhysicsUnit.TorqueToPhysical * this.maxMotorTorque;
 			j.LimitEnabled = this.limitEnabled;
 			j.LowerLimit = -this.upperLimit;

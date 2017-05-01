@@ -140,8 +140,8 @@ namespace Duality.Components.Physics
 			// Movement axis is relative to OtherBody, as that reflects Farseer behavior.
 			j.LocalXAxis = this.OtherBody.GameObj.Transform.GetWorldVector(this.moveAxis).Normalized;
 			j.MotorEnabled = this.motorEnabled;
-			j.MotorSpeed = this.motorSpeed / Time.SPFMult;
-			j.MaxMotorTorque = PhysicsUnit.TimeToPhysical * this.maxMotorTorque;
+			j.MotorSpeed = PhysicsUnit.AngularVelocityToPhysical * this.motorSpeed;
+			j.MaxMotorTorque = PhysicsUnit.TorqueToPhysical * this.maxMotorTorque;
 			j.DampingRatio = this.dampingRatio;
 			j.Frequency = this.frequency;
 		}

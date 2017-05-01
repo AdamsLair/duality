@@ -465,7 +465,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			float baseAngle = body.GameObj.Transform.Angle;
-			float speedAngle = baseAngle + speed * 0.2f;
+			float speedAngle = baseAngle + speed * Time.FPSMult * 0.2f; // Radians per fifth of a second
 			float maxTorqueAngle = baseAngle + MathF.Sign(speed) * maxTorque * PhysicsUnit.TorqueToPhysical * 0.2f;
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 			Vector2 arrowBase = anchorToWorld + Vector2.FromAngleLength(speedAngle, radius);
