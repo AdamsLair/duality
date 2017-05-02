@@ -7,5 +7,5 @@ _This is a reminder on a few important traits of your Pull Request. **Do not add
 - Have you checked **spaces and tabs**? Use tabs for indentation and spaces for alignment.
 - Does your **code style** match Duality code style?
 - Have you **documented public API** you added or changed?
-- Have you **tested thoroughly** forfunctionality, stability and usability?
+- Have you **tested thoroughly** for functionality, stability and usability?
 - Do all of your changes and additions comply with the **comply with the [project license](https://github.com/AdamsLair/duality/blob/master/LICENSE)**?
