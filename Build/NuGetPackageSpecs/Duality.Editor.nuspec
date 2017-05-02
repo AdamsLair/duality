@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>2.7.22</version>
+    <version>2.7.25</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,13 +13,13 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>Default RigidBodyEditor Layers
-#CHANGE: The RigidBody Editor state now by default activates the background plate layer.</releaseNotes>
+    <releaseNotes>Updated AdamsLair.WinForms Dependency
+#CHANGE: Updated AdamsLair.WinForms dependency to version 1.1.12.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.11.0" />
+      <dependency id="AdamsLair.Duality" version="2.11.3" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
       <dependency id="AdamsLair.TreeViewAdv" version="1.7.6" />
-      <dependency id="AdamsLair.WinForms" version="1.1.9" />
+      <dependency id="AdamsLair.WinForms" version="1.1.12" />
       <dependency id="AdamsLair.WinForms.PopupControl" version="1.0.0.0" />
       <dependency id="NuGet.Core" version="2.8.3" />
     </dependencies>

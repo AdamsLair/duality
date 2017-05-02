@@ -81,6 +81,9 @@ namespace Duality.Components.Physics
 		/// <summary>
 		/// [GET / SET] The maximum motor torque.
 		/// </summary>
+		[EditorHintIncrement(10.0f)]
+		[EditorHintDecimalPlaces(0)]
+		[EditorHintRange(0, 100000, 0, 5000)]
 		public float MaxMotorTorque
 		{
 			get { return this.maxMotorTorque; }
@@ -133,10 +136,12 @@ namespace Duality.Components.Physics
 			LineJoint j = this.joint as LineJoint;
 			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
 			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
-			j.LocalXAxis = this.moveAxis;
+			// Farseer gotcha: Setter is in world coordinates even though getter returns local coordinates.
+			// Movement axis is relative to OtherBody, as that reflects Farseer behavior.
+			j.LocalXAxis = this.OtherBody.GameObj.Transform.GetWorldVector(this.moveAxis).Normalized;
 			j.MotorEnabled = this.motorEnabled;
-			j.MotorSpeed = this.motorSpeed / Time.SecondsPerFrame;
-			j.MaxMotorTorque = PhysicsUnit.TimeToPhysical * this.maxMotorTorque;
+			j.MotorSpeed = PhysicsUnit.AngularVelocityToPhysical * this.motorSpeed;
+			j.MaxMotorTorque = PhysicsUnit.TorqueToPhysical * this.maxMotorTorque;
 			j.DampingRatio = this.dampingRatio;
 			j.Frequency = this.frequency;
 		}

@@ -670,7 +670,23 @@ namespace Duality.Drawing
 		/// <param name="z"></param>
 		public void FillPolygonOutline(Vector2[] points, float width, float x, float y, float z = 0.0f)
 		{
-			this.FillThickOutline(points, width, x, y, z, true);
+			this.FillThickOutline(points, width, 1.0f, x, y, z, true);
+		}
+		/// <summary>
+		/// Fills a polygons outline. All vertices share the same Z value.
+		/// </summary>
+		/// <param name="points"></param>
+		/// <param name="width"></param>
+		/// <param name="inOutFactor">
+		/// A factor that determines on which side of the polygon the line will be drawn, ranging from -1 to 1.
+		/// Zero represents a line that is centered on the original polygon.
+		/// </param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="z"></param>
+		public void FillPolygonOutline(Vector2[] points, float width, float inOutFactor, float x, float y, float z = 0.0f)
+		{
+			this.FillThickOutline(points, width, inOutFactor, x, y, z, true);
 		}
 
 		/// <summary>
@@ -742,7 +758,23 @@ namespace Duality.Drawing
 		/// <param name="z"></param>
 		public void FillThickLineStrip(Vector2[] points, float width, float x, float y, float z = 0.0f)
 		{
-			this.FillThickOutline(points, width, x, y, z, false);
+			this.FillThickOutline(points, width, 1.0f, x, y, z, false);
+		}
+		/// <summary>
+		/// Fills a thick line strip. All vertices share the same Z value.
+		/// </summary>
+		/// <param name="points"></param>
+		/// <param name="width"></param>
+		/// <param name="inOutFactor">
+		/// A factor that determines on which side of the polygon the line will be drawn, ranging from -1 to 1.
+		/// Zero represents a line that is centered on the original polygon.
+		/// </param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="z"></param>
+		public void FillThickLineStrip(Vector2[] points, float width, float inOutFactor, float x, float y, float z = 0.0f)
+		{
+			this.FillThickOutline(points, width, inOutFactor, x, y, z, false);
 		}
 		
 		/// <summary>
@@ -994,7 +1026,8 @@ namespace Duality.Drawing
 		/// <param name="blockAlign">Specifies the alignment of the text block.</param>
 		public void DrawText(string text, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
-			this.DrawText(new string[] { text }, x, y, z, blockAlign, drawBackground);
+			if(!string.IsNullOrEmpty(text))
+				this.DrawText(new string[] { text }, x, y, z, blockAlign, drawBackground);
 		}
 		/// <summary>
 		/// Draws the specified text.
@@ -1254,7 +1287,20 @@ namespace Duality.Drawing
 			return font.MeasureText(text);
 		}
 
-		private void FillThickOutline(Vector2[] points, float width, float x, float y, float z, bool closedLoop)
+		/// <summary>
+		/// Draws a thick line strip or loop.
+		/// </summary>
+		/// <param name="points"></param>
+		/// <param name="width">The width of the filled line.</param>
+		/// <param name="inOutFactor">
+		/// A factor that determines on which side of the polygon the line will be drawn, ranging from -1 to 1.
+		/// Zero represents a line that is centered on the original polygon.
+		/// </param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="z"></param>
+		/// <param name="closedLoop"></param>
+		private void FillThickOutline(Vector2[] points, float width, float inOutFactor, float x, float y, float z, bool closedLoop)
 		{
 			width *= 0.5f;
 			Vector3 pos = new Vector3(x, y, z);
@@ -1264,6 +1310,11 @@ namespace Duality.Drawing
 
 			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
+			
+			// Determine line width on the inside and outside of the original polygon
+			inOutFactor = MathF.Clamp(inOutFactor, -1.0f, 1.0f);
+			float innerScale = 0.5f - 0.5f * inOutFactor;
+			float outerScale = 0.5f + 0.5f * inOutFactor;
 
 			// Determine bounding box
 			Rect pointBoundingRect = points.BoundingBox();
@@ -1279,17 +1330,18 @@ namespace Duality.Drawing
 			{
 				int vertexBase = i * 4;
 
+				int currentIndex = i;
 				int prevIndex = (i - 1 + points.Length) % points.Length;
 				int nextIndex = (i + 1) % points.Length;
 				
-				Vector2 current = points[i];
+				Vector2 current = points[currentIndex];
 				Vector2 prev = points[prevIndex];
 				Vector2 next = points[nextIndex];
 
-				// For duplicate points, duplicated vertices as well
+				// For duplicate points, duplicate vertices as well
 				if (i > 0 && current == prev)
 				{
-					int prevVertexBase = prevIndex * 4;
+					int prevVertexBase = ((i - 1 + points.Length) % points.Length) * 4;
 					vertices[vertexBase + 0] = vertices[prevVertexBase + 0];
 					vertices[vertexBase + 1] = vertices[prevVertexBase + 1];
 					vertices[vertexBase + 2] = vertices[prevVertexBase + 2];
@@ -1340,52 +1392,43 @@ namespace Duality.Drawing
 
 					float tangentDot = Vector2.Dot(tangent, -tangent2);
 
+					// Calculate the propre sharp / miter joint vertex
+					float sharpEdgeLength = MathF.Min((cross - current).Length, width * 10.0f);
+					Vector2 sharpEdgeOffset = (tangent - tangent2).Normalized * sharpEdgeLength * MathF.Sign(normalDot);
+
 					// Sharp outward edges: Use bevel joints
-					if (tangentDot > 0.0f && normalDot < 0.0f)
-					{
-						float sharpEdgeLength = MathF.Min((cross - current).Length, width * 10.0f);
-						Vector2 sharpEdgeOffset = (tangent - tangent2).Normalized * sharpEdgeLength * MathF.Sign(normalDot);
-						float bevelFactor = MathF.Min(tangentDot * 1.5f, 1.0f);
-
-						offsetA = Vector2.Lerp(-sharpEdgeOffset, normal * width, bevelFactor) * 2.0f;
-						offsetB = Vector2.Lerp(-sharpEdgeOffset, normal2 * width, bevelFactor) * 2.0f;
-					}
 					// Right angles, inward and blunt edges: Use miter joints
-					else
-					{
-						float sharpEdgeLength = MathF.Min(
-							(cross - current).Length, 
-							MathF.Min((prev - current).Length, (next - current).Length) * 0.5f);
-						Vector2 sharpEdgeOffset = (tangent - tangent2).Normalized * sharpEdgeLength * MathF.Sign(normalDot);
+					float sharpEdgeFactor = MathF.Clamp(tangentDot * 1.5f, 0.0f, 1.0f);
+					float outwardEdgeFactor = MathF.Clamp((-normalDot * inOutFactor + 0.125f) / 0.25f, 0.0f, 1.0f);
+					float bevelFactor = sharpEdgeFactor * outwardEdgeFactor;
 
-						offsetA = sharpEdgeOffset * -2;
-						offsetB = offsetA;
-					}
+					offsetA = Vector2.Lerp(-sharpEdgeOffset, normal * width, bevelFactor) * 2.0f;
+					offsetB = Vector2.Lerp(-sharpEdgeOffset, normal2 * width, bevelFactor) * 2.0f;
 				}
 
-				vertices[vertexBase + 0].Pos.X = current.X * scale + pos.X;
-				vertices[vertexBase + 0].Pos.Y = current.Y * scale + pos.Y;
+				vertices[vertexBase + 0].Pos.X = (current.X - offsetA.X * innerScale) * scale + pos.X;
+				vertices[vertexBase + 0].Pos.Y = (current.Y - offsetA.Y * innerScale) * scale + pos.Y;
 				vertices[vertexBase + 0].Pos.Z = pos.Z;
 				vertices[vertexBase + 0].TexCoord.X = texCoordRect.X + ((current.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
 				vertices[vertexBase + 0].TexCoord.Y = texCoordRect.Y + ((current.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[vertexBase + 0].Color = shapeColor;
 				
-				vertices[vertexBase + 1].Pos.X = (current.X  + offsetA.X) * scale + pos.X;
-				vertices[vertexBase + 1].Pos.Y = (current.Y  + offsetA.Y) * scale + pos.Y;
+				vertices[vertexBase + 1].Pos.X = (current.X + offsetA.X * outerScale) * scale + pos.X;
+				vertices[vertexBase + 1].Pos.Y = (current.Y + offsetA.Y * outerScale) * scale + pos.Y;
 				vertices[vertexBase + 1].Pos.Z = pos.Z;
 				vertices[vertexBase + 1].TexCoord.X = texCoordRect.X + ((current.X + offsetA.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
 				vertices[vertexBase + 1].TexCoord.Y = texCoordRect.Y + ((current.Y + offsetA.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[vertexBase + 1].Color = shapeColor;
 
-				vertices[vertexBase + 2].Pos.X = current.X * scale + pos.X;
-				vertices[vertexBase + 2].Pos.Y = current.Y * scale + pos.Y;
+				vertices[vertexBase + 2].Pos.X = (current.X - offsetB.X * innerScale) * scale + pos.X;
+				vertices[vertexBase + 2].Pos.Y = (current.Y - offsetB.Y * innerScale) * scale + pos.Y;
 				vertices[vertexBase + 2].Pos.Z = pos.Z;
 				vertices[vertexBase + 2].TexCoord.X = texCoordRect.X + ((current.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
 				vertices[vertexBase + 2].TexCoord.Y = texCoordRect.Y + ((current.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[vertexBase + 2].Color = shapeColor;
 				
-				vertices[vertexBase + 3].Pos.X = (current.X  + offsetB.X) * scale + pos.X;
-				vertices[vertexBase + 3].Pos.Y = (current.Y  + offsetB.Y) * scale + pos.Y;
+				vertices[vertexBase + 3].Pos.X = (current.X + offsetB.X * outerScale) * scale + pos.X;
+				vertices[vertexBase + 3].Pos.Y = (current.Y + offsetB.Y * outerScale) * scale + pos.Y;
 				vertices[vertexBase + 3].Pos.Z = pos.Z;
 				vertices[vertexBase + 3].TexCoord.X = texCoordRect.X + ((current.X + offsetB.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
 				vertices[vertexBase + 3].TexCoord.Y = texCoordRect.Y + ((current.Y + offsetB.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;

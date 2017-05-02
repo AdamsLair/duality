@@ -464,7 +464,7 @@ namespace Duality.Serialization
 			if (dataType != DataType.ObjectRef &&
 				!objSerializeType.IsSerializable && 
 				!typeof(ISerializeExplicit).GetTypeInfo().IsAssignableFrom(objSerializeType.Type) &&
-				GetSurrogateFor(objSerializeType.Type) == null) 
+				objSerializeType.Surrogate == null) 
 			{
 				this.LocalLog.WriteWarning("Ignoring object of Type '{0}' which is flagged with the {1}.", 
 					LogFormat.Type(objSerializeType.Type),
@@ -981,7 +981,7 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="t">The <see cref="System.Type"/> to retrieve a <see cref="Duality.Serialization.ISerializeSurrogate"/> for.</param>
 		/// <returns></returns>
-		protected static ISerializeSurrogate GetSurrogateFor(TypeInfo type)
+		internal static ISerializeSurrogate GetSurrogateFor(TypeInfo type)
 		{
 			if (surrogates == null)
 			{

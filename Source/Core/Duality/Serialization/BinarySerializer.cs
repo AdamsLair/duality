@@ -336,7 +336,7 @@ namespace Duality.Serialization
 		private void WriteStruct(object obj, ObjectHeader header)
 		{
 			ISerializeExplicit objAsCustom = obj as ISerializeExplicit;
-			ISerializeSurrogate objSurrogate = GetSurrogateFor(header.ObjectType);
+			ISerializeSurrogate objSurrogate = header.SerializeType.Surrogate;
 
 			this.writer.Write(objAsCustom != null);
 			this.writer.Write(objSurrogate != null);
@@ -672,7 +672,7 @@ namespace Duality.Serialization
 
 			// Retrieve surrogate if requested
 			ISerializeSurrogate objSurrogate = null;
-			if (surrogate && header.ObjectType != null) objSurrogate = GetSurrogateFor(header.ObjectType);
+			if (surrogate && header.SerializeType != null) objSurrogate = header.SerializeType.Surrogate;
 
 			// Construct object
 			object obj = null;
