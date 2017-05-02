@@ -242,10 +242,8 @@
     <Compile Include="Cloning\Surrogates\DictionarySurrogate.cs" />
     <Compile Include="Components\Diagnostics\VisualLogRenderer.cs" />
     <Compile Include="Components\Other\CollisionData.cs" />
-    <Compile Include="Components\Physics\Joints\GearJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\PulleyJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\LineJointInfo.cs" />
-    <Compile Include="Components\Physics\Joints\SliderJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\RopeJointInfo.cs" />
     <Compile Include="Components\Physics\Shapes\CircleShapeInfo.cs" />
     <Compile Include="Components\Physics\Joints\AngleJointInfo.cs" />

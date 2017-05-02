@@ -104,10 +104,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			else if (joint is PrismaticJointInfo)		this.DrawJoint(canvas, joint as PrismaticJointInfo);
 			else if (joint is WeldJointInfo)			this.DrawJoint(canvas, joint as WeldJointInfo);
 			else if (joint is RopeJointInfo)			this.DrawJoint(canvas, joint as RopeJointInfo);
-			else if (joint is SliderJointInfo)			this.DrawJoint(canvas, joint as SliderJointInfo);
 			else if (joint is LineJointInfo)			this.DrawJoint(canvas, joint as LineJointInfo);
 			else if (joint is PulleyJointInfo)			this.DrawJoint(canvas, joint as PulleyJointInfo);
-			else if (joint is GearJointInfo)			this.DrawJoint(canvas, joint as GearJointInfo);
 		}
 		private void DrawJoint(Canvas canvas, AngleJointInfo joint)
 		{
@@ -252,12 +250,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.LocalAnchorB);
 			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.LocalAnchorA);
 		}
-		private void DrawJoint(Canvas canvas, SliderJointInfo joint)
-		{
-			this.DrawLocalDistConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB, joint.MinLength, joint.MaxLength);
-			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.LocalAnchorB);
-			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.LocalAnchorA);
-		}
 		private void DrawJoint(Canvas canvas, LineJointInfo joint)
 		{
 			Vector2 anchorAToWorld = joint.ParentBody.GameObj.Transform.GetWorldPoint(joint.CarAnchor);
@@ -282,10 +274,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			this.DrawWorldLooseConstraint(canvas, joint.ParentBody, joint.WorldAnchorA, joint.WorldAnchorB);
 			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.LocalAnchorB);
 			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.LocalAnchorA);
-		}
-		private void DrawJoint(Canvas canvas, GearJointInfo joint)
-		{
-			this.DrawLocalLooseConstraint(canvas, joint.ParentBody, joint.OtherBody, Vector2.Zero, Vector2.Zero);
 		}
 		
 		private void DrawLocalAnchor(Canvas canvas, RigidBody body, Vector2 anchor)
@@ -465,7 +453,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			float lineWidth = this.GetScreenConstantScale(canvas, this.defaultLineWidth);
 			float worldLineCapScale = this.GetScreenConstantScale(canvas, this.lineCapScale);
 			float baseAngle = body.GameObj.Transform.Angle;
-			float speedAngle = baseAngle + speed * Time.FPSMult * 0.2f; // Radians per fifth of a second
+			float speedAngle = baseAngle + speed * Time.FramesPerSecond * 0.2f; // Radians per fifth of a second
 			float maxTorqueAngle = baseAngle + MathF.Sign(speed) * maxTorque * PhysicsUnit.TorqueToPhysical * 0.2f;
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 			Vector2 arrowBase = anchorToWorld + Vector2.FromAngleLength(speedAngle, radius);
