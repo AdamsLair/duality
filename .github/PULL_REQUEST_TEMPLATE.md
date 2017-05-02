@@ -8,4 +8,4 @@ _This is a reminder on a few important traits of your Pull Request. **Do not add
 - Does your **code style** match Duality code style?
 - Have you **documented public API** you added or changed?
 - Have you **tested thoroughly** for functionality, stability and usability?
-- Do all of your changes and additions comply with the **comply with the [project license](https://github.com/AdamsLair/duality/blob/master/LICENSE)**?
+- Do all of your changes and additions **comply with the [project license](https://github.com/AdamsLair/duality/blob/master/LICENSE)**?
