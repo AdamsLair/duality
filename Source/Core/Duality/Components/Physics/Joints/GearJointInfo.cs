@@ -26,12 +26,7 @@ namespace Duality.Components.Physics
 		public float Ratio
 		{
 			get { return this.ratio; }
-			set
-			{
-				this.ratio = value;
- 				this.DestroyJoint();
-				this.UpdateJoint();
-			}
+			set { this.ratio = value; this.UpdateJoint(); }
 		}
 
 
