@@ -24,7 +24,7 @@
     <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.dll" target="lib" />
     <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.xml" target="lib" />
     <file src="..\..\Samples\DualStickSpaceShooter\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Samples\DualStickSpaceShooter\**\*.cs" target="source" exclude="..\..\Source\Samples\DualStickSpaceShooter\Content\**\*.*;..\..\Source\Samples\DualStickSpaceShooter\obj\**\*.*" />
+    <file src="..\..\Samples\DualStickSpaceShooter\**\*.cs" target="source" exclude="..\..\Samples\DualStickSpaceShooter\Content\**\*.*;..\..\Samples\DualStickSpaceShooter\obj\**\*.*" />
     <file src="..\..\Samples\DualStickSpaceShooter\DualStickSpaceShooter.csproj" target="source" />
   </files>
 </package>
