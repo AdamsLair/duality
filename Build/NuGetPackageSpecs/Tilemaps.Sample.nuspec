@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.Tilemaps</id>
-    <version>1.1.20</version>
+    <version>1.1.21</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps Sample</title>
@@ -13,8 +13,8 @@
     <summary>A sample project to show how to use Tilemaps.</summary>
     <description>A sample project to show how to use Tilemaps.</description>
     <tags>Duality Sample Plugin Tilemaps</tags>
-    <releaseNotes>Tilemaps Sample Source Code
-#ADD: Now including source code in the tilemaps sample package.</releaseNotes>
+    <releaseNotes>Fixed Tilemaps / DualStickSpaceShooter NuSpec
+#FIX: Fixed exclude tag in Tilemaps and DualStickSpaceShooter sample packages.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.1.13" />
       <dependency id="AdamsLair.Duality.Editor.Plugins.Tilemaps" version="1.1.16" />
