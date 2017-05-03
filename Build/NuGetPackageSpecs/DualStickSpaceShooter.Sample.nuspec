@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.DualStickSpaceShooter</id>
-    <version>2.0.2</version>
+    <version>2.0.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Dual Stick Space Shooter Sample</title>
@@ -13,18 +13,18 @@
     <summary>A small dual stick space shooter made with Duality.</summary>
     <description>This package contains a small coop game for one to two players, controlled with mouse / keyboard and gamepads. Recommended to play with stereo audio at full volume.</description>
     <tags>Duality Sample Plugin Game Multiplayer Coop Shooter Topdown Minimalistic</tags>
-    <releaseNotes>Improved Project Structure (
-#437)</releaseNotes>
+    <releaseNotes>Fixed Tilemaps / DualStickSpaceShooter NuSpec
+#FIX: Fixed exclude tag in Tilemaps and DualStickSpaceShooter sample packages.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.8.3" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.7.7" />
+      <dependency id="AdamsLair.Duality" version="2.12.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.7.25" />
     </dependencies>
   </metadata>
   <files>
     <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.dll" target="lib" />
     <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.xml" target="lib" />
     <file src="..\..\Samples\DualStickSpaceShooter\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Samples\DualStickSpaceShooter\**\*.cs" target="source" exclude="..\..\Source\Samples\DualStickSpaceShooter\Content\**\*.*;..\..\Source\Samples\DualStickSpaceShooter\obj\**\*.*" />
+    <file src="..\..\Samples\DualStickSpaceShooter\**\*.cs" target="source" exclude="..\..\Samples\DualStickSpaceShooter\Content\**\*.*;..\..\Samples\DualStickSpaceShooter\obj\**\*.*" />
     <file src="..\..\Samples\DualStickSpaceShooter\DualStickSpaceShooter.csproj" target="source" />
   </files>
 </package>
