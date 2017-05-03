@@ -12,9 +12,15 @@ namespace Duality.Components.Physics
 {
 	/// <summary>
 	/// Connects two bodies using a gear. The gear type is determined by the joints that are attached to
-	/// each body. Supported joint types are (Fixed)Prismatic- and (Fixed)Revolutejoints. Those joints
+	/// each body. Supported joint types are Prismatic- and RevoluteJoints. Those joints
 	/// are required to be either fixed or attached to a static body.
+	/// 
+	/// This joint type has been flagged obsolete for its unstable behavior. 
+	/// Consider using custom specialized physics logic instead.
 	/// </summary>
+	[Obsolete(
+		"This joint type has been flagged obsolete for its unstable behavior. " +
+		"Consider using custom specialized physics logic instead.")]
 	public sealed class GearJointInfo : JointInfo
 	{
 		private	float	ratio	= 1.0f;
@@ -26,12 +32,7 @@ namespace Duality.Components.Physics
 		public float Ratio
 		{
 			get { return this.ratio; }
-			set
-			{
-				this.ratio = value;
- 				this.DestroyJoint();
-				this.UpdateJoint();
-			}
+			set { this.ratio = value; this.UpdateJoint(); }
 		}
 
 

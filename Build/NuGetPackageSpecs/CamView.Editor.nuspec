@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.CamView</id>
-    <version>2.4.1</version>
+    <version>2.4.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Camera View</title>
@@ -13,11 +13,13 @@
     <summary>A basic Camera View editor module.</summary>
     <description>A basic Camera View editor module.</description>
     <tags>Duality Editor Plugin CamView</tags>
-    <releaseNotes>RigidBody Shape Layer Fixes
-#FIX: Fixed a bug in polygon decomposition line transformation for rotated or scaled objects.</releaseNotes>
+    <releaseNotes>Physics Joint Fixes, CamView Joint Layer Tweaks
+#FIX: Fixed irregular API on RevoluteJoint that expressed angles in degrees, as opposed to radians.
+#CHANGE: Adjusted RigidBodyJoint layer scale of motor force visualization. 
+#CHANGE: Adjusted Object Inspector hints for motor force properties.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.11.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.7.22" />
+      <dependency id="AdamsLair.Duality" version="2.12.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.7.25" />
     </dependencies>
   </metadata>
   <files>
