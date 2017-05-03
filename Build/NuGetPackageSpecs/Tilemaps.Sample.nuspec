@@ -25,5 +25,7 @@
     <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.dll" target="lib" />
     <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.xml" target="lib" />
     <file src="..\..\Samples\Tilemaps\Content\Data\**\*.res" target="content" />
+    <file src="..\..\Samples\Tilemaps\**\*.cs" target="source" exclude="..\..\Source\Samples\Tilemaps\Content\**\*.*;..\..\Source\Samples\Tilemaps\obj\**\*.*" />
+    <file src="..\..\Samples\Tilemaps\Tilemaps.Sample.csproj" target="source" />
   </files>
 </package>
