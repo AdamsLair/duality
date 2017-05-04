@@ -146,11 +146,13 @@ namespace Duality.Samples.Physics
 			if (DualityApp.Mouse.ButtonHit(MouseButton.Left))
 			{
 				// Determine which shape is located at the cursor position
-				ShapeInfo shapeAtCursor = RigidBody.PickShapeGlobal(worldMousePos.Xy);
-				if (shapeAtCursor != null)
+				List<ShapeInfo> shapesAtCursor = RigidBody.PickShapesGlobal(worldMousePos.Xy);
+				foreach (ShapeInfo shape in shapesAtCursor)
 				{
-					Transform dragTransform = shapeAtCursor.Parent.GameObj.Transform;
-					this.dragObj = shapeAtCursor.Parent;
+					if (shape.IsSensor) continue;
+
+					Transform dragTransform = shape.Parent.GameObj.Transform;
+					this.dragObj = shape.Parent;
 					this.dragAnchor = dragTransform.GetLocalPoint(worldMousePos.Xy);
 
 					// Temporarily switch to continuous collision for dragged objects, as they
@@ -158,6 +160,8 @@ namespace Duality.Samples.Physics
 					// tunnelling in these cases.
 					this.dragObjWasContinuous = this.dragObj.ContinousCollision;
 					this.dragObj.ContinousCollision = true;
+
+					break;
 				}
 			}
 
