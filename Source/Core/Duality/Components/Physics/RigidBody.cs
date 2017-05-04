@@ -1079,7 +1079,7 @@ namespace Duality.Components.Physics
 			// Update velocity and transform values
 			if (this.body != null)
 			{
-				// Enable the internal physics body if it wasn't already. This can happening
+				// Enable the internal physics body if it wasn't already. This can happen
 				// in editor sandbox mode when creating a new RigidBody while paused and then
 				// resuming due to the execution context switch that we'll miss, leading to
 				// the body being disabled for performance reasons.
@@ -1089,25 +1089,26 @@ namespace Duality.Components.Physics
 				this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
 				this.angularVel = PhysicsUnit.AngularVelocityToDuality * this.body.AngularVelocity;
 				this.revolutions = this.body.Revolutions;
+
 				if (this.bodyType != BodyType.Static && this.body.Awake)
 				{
-					Transform t = this.gameobj.Transform;
+					Transform transform = this.gameobj.Transform;
 
 					// Make sure we're not overwriting any previously occuring changes
-					t.CommitChanges();
+					transform.CommitChanges();
 
 					// The current PhysicsAlpha interpolation probably isn't the best one. Maybe replace later.
 					Vector2 bodyVel = this.body.LinearVelocity;
 					Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.PhysicsAlpha) * Time.SPFMult;
 					float bodyAngleVel = this.body.AngularVelocity;
 					float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsAlpha) * Time.SPFMult;
-					t.IgnoreParent = true; // Force ignore parent!
-					t.MoveToAbs(new Vector3(
+					//transform.IgnoreParent = true; // Force ignore parent!
+					transform.MoveToAbs(new Vector3(
 						PhysicsUnit.LengthToDuality * bodyPos.X, 
 						PhysicsUnit.LengthToDuality * bodyPos.Y, 
-						t.Pos.Z));
-					t.TurnToAbs(bodyAngle);
-					t.CommitChanges(this);
+						transform.Pos.Z));
+					transform.TurnToAbs(bodyAngle);
+					transform.CommitChanges(this);
 				}
 			}
 
