@@ -1417,8 +1417,8 @@
                 <_size dataType="Int">0</_size>
               </childIndex>
               <componentType dataType="ObjectRef">2540647886</componentType>
-              <prop dataType="MemberInfo" id="2510065442" value="P:Duality.Samples.Physics.PhysicsSampleInfo:SampleDesc" />
-              <val dataType="String">Stacking lots of objects.</val>
+              <prop dataType="MemberInfo" id="2510065442" value="P:Duality.Samples.Physics.PhysicsSampleInfo:SampleName" />
+              <val dataType="String">Sensors</val>
             </item>
             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="4037944960">
@@ -1426,8 +1426,8 @@
                 <_size dataType="Int">0</_size>
               </childIndex>
               <componentType dataType="ObjectRef">2540647886</componentType>
-              <prop dataType="MemberInfo" id="272975750" value="P:Duality.Samples.Physics.PhysicsSampleInfo:SampleName" />
-              <val dataType="String">Sensors</val>
+              <prop dataType="MemberInfo" id="272975750" value="P:Duality.Samples.Physics.PhysicsSampleInfo:SampleDesc" />
+              <val dataType="String">Every shape can be flagged as a /cFF8888FFSensor Shape/cFFFFFFFF so it provides collision events, but does not react otherwise. Sensor shapes don't act as solid objects and do not push away other bodies.</val>
             </item>
           </_items>
           <_size dataType="Int">3</_size>
