@@ -1102,7 +1102,7 @@ namespace Duality.Components.Physics
 					Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.PhysicsAlpha) * Time.SPFMult;
 					float bodyAngleVel = this.body.AngularVelocity;
 					float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsAlpha) * Time.SPFMult;
-					//transform.IgnoreParent = true; // Force ignore parent!
+					transform.IgnoreParent = true; // Force ignore parent!
 					transform.MoveToAbs(new Vector3(
 						PhysicsUnit.LengthToDuality * bodyPos.X, 
 						PhysicsUnit.LengthToDuality * bodyPos.Y, 
