@@ -694,20 +694,40 @@ namespace Duality.Components.Physics
 		/// </summary>
 		/// <param name="worldCoord"></param>
 		/// <returns></returns>
+		[Obsolete("Use the overload that accepts a pre-existing list.")]
 		public List<ShapeInfo> PickShapes(Vector2 worldCoord)
 		{
-			if (this.body == null) return new List<ShapeInfo>();
-
 			List<ShapeInfo> picked = new List<ShapeInfo>();
+			this.PickShapes(worldCoord, picked);
+			return picked;
+		}
+		/// <summary>
+		/// Performs a physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
+		/// intersect the specified world coordinate.
+		/// </summary>
+		/// <param name="worldCoord"></param>
+		/// <param name="pickedShapes">
+		/// A list that will be filled with all shapes that were found. 
+		/// The list will not be cleared before adding items.
+		/// </param>
+		/// <returns>Returns whether any new shape was found.</returns>
+		public bool PickShapes(Vector2 worldCoord, List<ShapeInfo> pickedShapes)
+		{
+			if (this.body == null) return false;
+
 			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
 
+			int oldCount = pickedShapes.Count;
 			for (int i = 0; i < this.body.FixtureList.Count; i++)
 			{
-				Fixture f = this.body.FixtureList[i];
-				if (f.TestPoint(ref fsWorldCoord)) picked.Add(f.UserData as ShapeInfo);
+				Fixture fixture = this.body.FixtureList[i];
+				ShapeInfo shape = fixture.UserData as ShapeInfo;
+
+				if (fixture.TestPoint(ref fsWorldCoord))
+					pickedShapes.Add(shape);
 			}
 
-			return picked;
+			return pickedShapes.Count > oldCount;
 		}
 		/// <summary>
 		/// Performs a physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
@@ -716,14 +736,32 @@ namespace Duality.Components.Physics
 		/// <param name="worldCoord"></param>
 		/// <param name="size"></param>
 		/// <returns></returns>
+		[Obsolete("Use the overload that accepts a pre-existing list.")]
 		public List<ShapeInfo> PickShapes(Vector2 worldCoord, Vector2 size)
 		{
-			if (this.body == null) return new List<ShapeInfo>();
+			List<ShapeInfo> picked = new List<ShapeInfo>();
+			this.PickShapes(worldCoord, size, picked);
+			return picked;
+		}
+		/// <summary>
+		/// Performs a physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
+		/// intersect the specified world coordinate area.
+		/// </summary>
+		/// <param name="worldCoord"></param>
+		/// <param name="size"></param>
+		/// <param name="pickedShapes">
+		/// A list that will be filled with all shapes that were found. 
+		/// The list will not be cleared before adding items.
+		/// </param>
+		/// <returns>Returns whether any new shape was found.</returns>
+		public bool PickShapes(Vector2 worldCoord, Vector2 size, List<ShapeInfo> pickedShapes)
+		{
+			if (this.body == null) return false;
 
 			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
 			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsUnit.LengthToPhysical * (worldCoord + size));
 
-			List<ShapeInfo> picked = new List<ShapeInfo>();
+			int oldCount = pickedShapes.Count;
 			for (int i = 0; i < this.body.FixtureList.Count; i++)
 			{
 				Fixture f = this.body.FixtureList[i];
@@ -736,7 +774,7 @@ namespace Duality.Components.Physics
 				
 				if (fsWorldAABB.Contains(ref fAABB))
 				{
-					picked.Add(s);
+					pickedShapes.Add(s);
 					continue;
 				}
 				else if (!FarseerPhysics.Collision.AABB.TestOverlap(ref fsWorldAABB, ref fAABB))
@@ -752,7 +790,7 @@ namespace Duality.Components.Physics
 				{
 					if (f.TestPoint(ref fsTemp))
 					{
-						picked.Add(s);
+						pickedShapes.Add(s);
 						break;
 					}
 
@@ -766,7 +804,7 @@ namespace Duality.Components.Physics
 				} while (true);
 			}
 
-			return picked;
+			return pickedShapes.Count > oldCount;
 		}
 		
 		
@@ -1071,7 +1109,7 @@ namespace Duality.Components.Physics
 			// Update velocity and transform values
 			if (this.body != null)
 			{
-				// Enable the internal physics body if it wasn't already. This can happening
+				// Enable the internal physics body if it wasn't already. This can happen
 				// in editor sandbox mode when creating a new RigidBody while paused and then
 				// resuming due to the execution context switch that we'll miss, leading to
 				// the body being disabled for performance reasons.
@@ -1081,25 +1119,26 @@ namespace Duality.Components.Physics
 				this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
 				this.angularVel = PhysicsUnit.AngularVelocityToDuality * this.body.AngularVelocity;
 				this.revolutions = this.body.Revolutions;
+
 				if (this.bodyType != BodyType.Static && this.body.Awake)
 				{
-					Transform t = this.gameobj.Transform;
+					Transform transform = this.gameobj.Transform;
 
 					// Make sure we're not overwriting any previously occuring changes
-					t.CommitChanges();
+					transform.CommitChanges();
 
 					// The current PhysicsAlpha interpolation probably isn't the best one. Maybe replace later.
 					Vector2 bodyVel = this.body.LinearVelocity;
 					Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.PhysicsAlpha) * Time.SecondsPerFrame;
 					float bodyAngleVel = this.body.AngularVelocity;
 					float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsAlpha) * Time.SecondsPerFrame;
-					t.IgnoreParent = true; // Force ignore parent!
-					t.MoveToAbs(new Vector3(
+					transform.IgnoreParent = true; // Force ignore parent!
+					transform.MoveToAbs(new Vector3(
 						PhysicsUnit.LengthToDuality * bodyPos.X, 
 						PhysicsUnit.LengthToDuality * bodyPos.Y, 
-						t.Pos.Z));
-					t.TurnToAbs(bodyAngle);
-					t.CommitChanges(this);
+						transform.Pos.Z));
+					transform.TurnToAbs(bodyAngle);
+					transform.CommitChanges(this);
 				}
 			}
 
@@ -1335,34 +1374,57 @@ namespace Duality.Components.Physics
 		/// and may appear random. Return -1 to ignore the curret shape, 0 to terminate the raycast, data.Fraction to clip the ray for current hit, or 1 to continue.
 		/// </param>
 		/// <param name="hits">Returns a list of all occurred hits, ordered by their Fraction value.</param>
+		[Obsolete("Use the non-out parameter overload that accepts a pre-existing list.")]
 		public static void RayCast(Vector2 start, Vector2 end, RayCastCallback callback, out RawList<RayCastData> hits)
+		{
+			hits = new RawList<RayCastData>();
+			RayCast(start, end, callback, hits);
+		}
+		/// <summary>
+		/// Performs a 2d physical raycast in world coordinates.
+		/// </summary>
+		/// <param name="start">The starting point in world coordinates.</param>
+		/// <param name="end">The desired end point in world coordinates.</param>
+		/// <param name="callback">
+		/// The callback that is invoked for each hit on the raycast. Note that the order in which each hit occurs isn't deterministic
+		/// and may appear random. Return -1 to ignore the curret shape, 0 to terminate the raycast, data.Fraction to clip the ray for current hit, or 1 to continue.
+		/// </param>
+		/// <param name="hits">
+		/// A list that will be filled with all hits that were registered, ordered by their Fraction value. 
+		/// The list will not be cleared before adding items.
+		/// </param>
+		/// <returns>Returns whether any new hit was registered.</returns>
+		public static bool RayCast(Vector2 start, Vector2 end, RayCastCallback callback, RawList<RayCastData> hits)
 		{
 			if (callback == null) callback = Raycast_DefaultCallback;
 
 			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * start;
 			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
 
-			RawList<RayCastData> localHits = new RawList<RayCastData>();
+			int oldResultCount = hits.Count;
 			Scene.PhysicsWorld.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
 			{
-				int oldCount = localHits.Count++;
-				RayCastData[] data = localHits.Data;
+				int index = hits.Count++;
+				RayCastData[] data = hits.Data;
 
-				data[oldCount] = new RayCastData(
+				data[index] = new RayCastData(
 					fixture.UserData as ShapeInfo, 
 					PhysicsUnit.LengthToDuality * pos, 
 					normal, 
 					fraction);
 
-				float result = callback(data[oldCount]);
+				float result = callback(data[index]);
 				if (result < 0.0f)
-					localHits.Count--;
+					hits.Count--;
 
 				return result;
 			}, fsWorldCoordA, fsWorldCoordB);
-			localHits.Data.StableSort(0, localHits.Count, (d1, d2) => (int)(1000000.0f * (d1.Fraction - d2.Fraction)));
 
-			hits = localHits;
+			hits.Data.StableSort(
+				0, 
+				hits.Count, 
+				(d1, d2) => (int)(1000000.0f * (d1.Fraction - d2.Fraction)));
+			return hits.Count > oldResultCount;
 		}
 		/// <summary>
 		/// Performs a 2d physical raycast in world coordinates.
@@ -1430,11 +1492,40 @@ namespace Duality.Components.Physics
 		/// </summary>
 		/// <param name="worldCoord"></param>
 		/// <returns></returns>
+		[Obsolete("Use the overload that accepts a pre-existing list.")]
 		public static List<ShapeInfo> PickShapesGlobal(Vector2 worldCoord)
+		{
+			List<ShapeInfo> shapes = new List<ShapeInfo>();
+			PickShapesGlobal(worldCoord, shapes);
+			return shapes;
+		}
+		/// <summary>
+		/// Performs a global physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
+		/// intersect the specified world coordinate.
+		/// </summary>
+		/// <param name="worldCoord"></param>
+		/// <param name="pickedShapes">
+		/// A list that will be filled with all shapes that were found. 
+		/// The list will not be cleared before adding items.
+		/// </param>
+		/// <returns>Returns whether any new shape was found.</returns>
+		public static bool PickShapesGlobal(Vector2 worldCoord, List<ShapeInfo> pickedShapes)
 		{
 			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
 			List<Fixture> fixtureList = Scene.PhysicsWorld.TestPointAll(fsWorldCoord);
-			return new List<ShapeInfo>(fixtureList.Where(f => f != null && f.UserData is ShapeInfo).Select(f => f.UserData as ShapeInfo));
+
+			int oldResultCount = pickedShapes.Count;
+			foreach (Fixture fixture in fixtureList)
+			{
+				if (fixture == null) continue;
+
+				ShapeInfo shape = fixture.UserData as ShapeInfo;
+				if (shape == null) continue;
+
+				pickedShapes.Add(shape);
+		}
+
+			return pickedShapes.Count > oldResultCount;
 		}
 		/// <summary>
 		/// Performs a global physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
@@ -1443,15 +1534,36 @@ namespace Duality.Components.Physics
 		/// <param name="worldCoord"></param>
 		/// <param name="size"></param>
 		/// <returns></returns>
+		[Obsolete("Use the overload that accepts a pre-existing list.")]
 		public static List<ShapeInfo> PickShapesGlobal(Vector2 worldCoord, Vector2 size)
 		{
 			List<ShapeInfo> picked = new List<ShapeInfo>();
-			List<RigidBody> potentialBodies = QueryRectGlobal(worldCoord, size);
-
-			foreach (RigidBody c in potentialBodies)
-				picked.AddRange(c.PickShapes(worldCoord, size));
-
+			PickShapesGlobal(worldCoord, size, picked);
 			return picked;
+		}
+		/// <summary>
+		/// Performs a global physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
+		/// intersect the specified world coordinate area.
+		/// </summary>
+		/// <param name="worldCoord"></param>
+		/// <param name="size"></param>
+		/// <param name="pickedShapes">
+		/// A list that will be filled with all shapes that were found. 
+		/// The list will not be cleared before adding items.
+		/// </param>
+		/// <returns>Returns whether any new shape was found.</returns>
+		public static bool PickShapesGlobal(Vector2 worldCoord, Vector2 size, List<ShapeInfo> pickedShapes)
+		{
+			List<RigidBody> potentialBodies = new List<RigidBody>();
+			QueryRectGlobal(worldCoord, size, potentialBodies);
+
+			int oldResultCount = pickedShapes.Count;
+			foreach (RigidBody body in potentialBodies)
+			{
+				body.PickShapes(worldCoord, size, pickedShapes);
+			}
+
+			return pickedShapes.Count > oldResultCount;
 		}
 		/// <summary>
 		/// Performs a global physical AABB query and returns the <see cref="RigidBody">bodies</see> that
@@ -1460,25 +1572,43 @@ namespace Duality.Components.Physics
 		/// <param name="worldCoord"></param>
 		/// <param name="size"></param>
 		/// <returns></returns>
+		[Obsolete("Use the overload that accepts a pre-existing list.")]
 		public static List<RigidBody> QueryRectGlobal(Vector2 worldCoord, Vector2 size)
 		{
 			List<RigidBody> bodies = new List<RigidBody>();
-			
+			QueryRectGlobal(worldCoord, size, bodies);
+			return bodies;
+		}
+		/// <summary>
+		/// Performs a global physical AABB query and returns the <see cref="RigidBody">bodies</see> that
+		/// might be roughly contained or intersected by the specified region.
+		/// </summary>
+		/// <param name="worldCoord"></param>
+		/// <param name="size"></param>
+		/// <param name="queriedBodies">
+		/// A list that will be filled with all bodies that were found. 
+		/// The list will not be cleared before adding items.
+		/// </param>
+		/// <returns>Returns whether any new body was found.</returns>
+		public static bool QueryRectGlobal(Vector2 worldCoord, Vector2 size, List<RigidBody> queriedBodies)
+		{
 			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
 			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsUnit.LengthToPhysical * (worldCoord + size));
+
+			int oldResultCount = queriedBodies.Count;
 			Scene.PhysicsWorld.QueryAABB(fixture =>
 				{
 					ShapeInfo shape = fixture.UserData as ShapeInfo;
 					if (shape != null && shape.Parent != null && shape.Parent.Active)
 					{
-						if (!bodies.Contains(shape.Parent))
-							bodies.Add(shape.Parent);
+						if (!queriedBodies.Contains(shape.Parent))
+							queriedBodies.Add(shape.Parent);
 					}
 					return true;
 				},
 				ref fsWorldAABB);
 
-			return bodies;
+			return queriedBodies.Count > oldResultCount;
 		}
 		/// <summary>
 		/// Awakes all currently existing RigidBodies.
