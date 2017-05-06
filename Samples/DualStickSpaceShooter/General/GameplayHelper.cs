@@ -38,7 +38,12 @@ namespace DualStickSpaceShooter
 		private static void IterateLineOfSightBodies(Vector2 at, float radius, Predicate<RigidBody> affectsObject, LineOfSightCallback callback)
 		{
 			// Iterate over all RigidBodies in the area
-			List<RigidBody> nearBodies = RigidBody.QueryRectGlobal(at - new Vector2(radius, radius), new Vector2(radius, radius) * 2);
+			List<RigidBody> nearBodies = new List<RigidBody>();
+			RigidBody.QueryRectGlobal(
+				at - new Vector2(radius, radius), 
+				new Vector2(radius, radius) * 2, 
+				nearBodies);
+
 			foreach (RigidBody body in nearBodies)
 			{
 				if (body.WorldMassCenter == at) continue;
