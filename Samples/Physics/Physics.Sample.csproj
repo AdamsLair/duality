@@ -47,6 +47,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="QueryVisualizer.cs" />
     <Compile Include="RaycastVisualizer.cs" />
     <Compile Include="CollisionEventLogger.cs" />
     <Compile Include="SensorShapeTester.cs" />
