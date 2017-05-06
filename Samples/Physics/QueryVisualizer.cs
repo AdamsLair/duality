@@ -15,13 +15,18 @@ namespace Duality.Samples.Physics
 	[EditorHintCategory("PhysicsSample")]
     public class QueryVisualizer : Component, ICmpUpdatable
 	{
+		[DontSerialize] private List<RigidBody> queriedBodies = new List<RigidBody>();
+
 		void ICmpUpdatable.OnUpdate()
 		{
 			Transform transform = this.GameObj.Transform;
 
 			// Query all objects that might be in a 200x200 rect around this object
 			Vector2 queryRectSize = new Vector2(200, 200);
-			List<RigidBody> queriedBodies = RigidBody.QueryRectGlobal(transform.Pos.Xy - queryRectSize * 0.5f, queryRectSize);
+			RigidBody.QueryRectGlobal(
+				transform.Pos.Xy - queryRectSize * 0.5f, 
+				queryRectSize, 
+				this.queriedBodies);
 
 			// Display all objects that were returned from the query
 			foreach (RigidBody body in queriedBodies)
@@ -50,6 +55,9 @@ namespace Duality.Samples.Physics
 					transform.Pos - new Vector3(queryRectSize * 0.5f) + new Vector3(10.0f, 10.0f, 0.0f),
 					string.Format("{0} bodies", queriedBodies.Count - 1))
 				.WithOffset(-1.0f);
+
+			// Clear the list of queried bodies, to be re-used next frame
+			this.queriedBodies.Clear();
 		}
 	}
 }
