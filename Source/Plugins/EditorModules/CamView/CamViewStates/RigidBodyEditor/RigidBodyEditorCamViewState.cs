@@ -290,7 +290,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Rect worldRect = new Rect(worldCoord.X, worldCoord.Y, worldSize.X, worldSize.Y);
 
 			// Do a physical picking operation
-			List<ShapeInfo> result = body.PickShapes(worldCoord, worldSize);
+			List<ShapeInfo> result = new List<ShapeInfo>();
+			body.PickShapes(worldCoord, worldSize, result);
 
 			// Special case for Loop- and ChainShapes, because they are by definition unpickable
 			foreach (ShapeInfo shape in body.Shapes)
