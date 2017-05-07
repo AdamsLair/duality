@@ -35,6 +35,10 @@
             <vel dataType="Struct" type="Duality.Vector3" />
             <velAbs dataType="Struct" type="Duality.Vector3" />
           </item>
+          <item dataType="Struct" type="Duality.Components.SoundListener" id="1442975826">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">789494455</gameobj>
+          </item>
           <item dataType="Struct" type="Duality.Components.Camera" id="1326770262">
             <active dataType="Bool">true</active>
             <farZ dataType="Float">10000</farZ>
@@ -71,10 +75,6 @@
             </passes>
             <perspective dataType="Enum" type="Duality.Drawing.PerspectiveMode" name="Parallax" value="1" />
             <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="All" value="4294967295" />
-          </item>
-          <item dataType="Struct" type="Duality.Components.SoundListener" id="1442975826">
-            <active dataType="Bool">true</active>
-            <gameobj dataType="ObjectRef">789494455</gameobj>
           </item>
         </_items>
         <_size dataType="Int">3</_size>

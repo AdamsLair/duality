@@ -47,6 +47,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ApplyForceWhileColliding.cs" />
+    <Compile Include="ApplyVelocityWhileColliding.cs" />
+    <Compile Include="ApplyImpulseOnCollide.cs" />
     <Compile Include="QueryVisualizer.cs" />
     <Compile Include="RaycastVisualizer.cs" />
     <Compile Include="CollisionEventLogger.cs" />
