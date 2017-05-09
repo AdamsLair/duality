@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.12.0</version>
+    <version>2.12.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,17 +13,11 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>Flagged GearJoint as Obsolete, GearJoint Ratio Workaround, Updated Farseer Dependency
-#CHANGE: Flagged gear joint as obsolete because it behaves physically unstable. To be removed in v3.0.
-#CHANGE: Worked around gear joints entering an invalid state when changing the gear ratio at runtime by not allowing runtime updates for now.
-#CHANGE: Updated the Farseer dependency to version 4.1.4
-#CHANGE: Flagged slider joint as obsolete because it behaves physically unstable. To be removed in v3.0.
-#FIX: Fixed irregular API on RevoluteJoint that expressed angles in degrees, as opposed to radians.
-#CHANGE: Adjusted RigidBodyJoint layer scale of motor force visualization. 
-#CHANGE: Adjusted Object Inspector hints for motor force properties.
-#FIX: Fixed movement axis specification for prismatic and line joints on rotated bodies.
-#ADD: Added missing local axis transform on the line joint.
-#CHANGE: No longer normalizing the prismatic joints movement axis immediately, so users can properly enter their axis direction.</releaseNotes>
+    <releaseNotes>Tweaked RigidBody API, RigidBody Bugfixes, Internal RigidBody Tweaks
+#ADD: Added new overloads for RigidBody query methods that accept pre-existing lists to be filled, rather than always creating a new one. 
+#CHANGE: Flagged the old overloads as obsolete to encourage more efficient code on the user side. Also, they will be removed in v3.0.
+#FIX: Fixed buggy behaviour of nested RigidBodies that was introduced by forgetting to uncomment a previously active line again after testing.
+#CHANGE: Code style tweaks.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.4" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
