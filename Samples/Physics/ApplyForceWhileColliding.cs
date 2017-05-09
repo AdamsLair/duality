@@ -34,7 +34,7 @@ namespace Duality.Samples.Physics
 					applyWorldPos);
 
 				// Display a log to note that we did so
-				VisualLog.Default.DrawVector(new Vector3(applyWorldPos), forceDirection * 15.0f);
+				VisualLogs.Default.DrawVector(new Vector3(applyWorldPos), forceDirection * 15.0f);
 			}
 		}
 

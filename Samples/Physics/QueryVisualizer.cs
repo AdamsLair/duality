@@ -33,14 +33,14 @@ namespace Duality.Samples.Physics
 			{
 				if (body.GameObj == this.GameObj) continue;
 
-				VisualLog.Default
+				VisualLogs.Default
 					.DrawCircle(Vector3.Zero, body.BoundRadius)
 					.AnchorAt(body.GameObj)
 					.WithColor(ColorRgba.Green.WithAlpha(64));
 			}
 
 			// Display the queried area
-			VisualLog.Default
+			VisualLogs.Default
 				.DrawPolygon(transform.Pos, new Vector2[]
 				{
 					queryRectSize * new Vector2(-0.5f, -0.5f),
@@ -50,7 +50,7 @@ namespace Duality.Samples.Physics
 				})
 				.WithColor(ColorRgba.White.WithAlpha(128))
 				.WithOffset(1.0f);
-			VisualLog.Default
+			VisualLogs.Default
 				.DrawText(
 					transform.Pos - new Vector3(queryRectSize * 0.5f) + new Vector3(10.0f, 10.0f, 0.0f),
 					string.Format("{0} bodies", queriedBodies.Count - 1))

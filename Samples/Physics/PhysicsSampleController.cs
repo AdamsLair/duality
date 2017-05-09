@@ -83,7 +83,7 @@ namespace Duality.Samples.Physics
 			Vector2 mousePos = DualityApp.Mouse.Pos;
 
 			// Make sure we'll draw below the sample info text
-			canvas.State.ZOffset = 1.0f;
+			canvas.State.DepthOffset = 1.0f;
 
 			// Draw drag anchor markers when dragging an object
 			if (this.dragObj != null)
