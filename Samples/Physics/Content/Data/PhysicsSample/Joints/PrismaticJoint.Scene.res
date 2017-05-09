@@ -37,39 +37,25 @@
           </item>
           <item dataType="Struct" type="Duality.Components.Camera" id="1326770262">
             <active dataType="Bool">true</active>
+            <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba">
+              <A dataType="Byte">255</A>
+              <B dataType="Byte">203</B>
+              <G dataType="Byte">149</G>
+              <R dataType="Byte">90</R>
+            </clearColor>
             <farZ dataType="Float">10000</farZ>
             <focusDist dataType="Float">500</focusDist>
             <gameobj dataType="ObjectRef">789494455</gameobj>
             <nearZ dataType="Float">0</nearZ>
-            <passes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Camera+Pass]]" id="3179422778">
-              <_items dataType="Array" type="Duality.Components.Camera+Pass[]" id="1517587712" length="4">
-                <item dataType="Struct" type="Duality.Components.Camera+Pass" id="4275612316">
-                  <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-                    <A dataType="Byte">255</A>
-                    <B dataType="Byte">202</B>
-                    <G dataType="Byte">149</G>
-                    <R dataType="Byte">90</R>
-                  </clearColor>
-                  <clearDepth dataType="Float">1</clearDepth>
-                  <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="All" value="3" />
-                  <input />
-                  <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="PerspectiveWorld" value="0" />
-                  <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
-                  <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
-                </item>
-                <item dataType="Struct" type="Duality.Components.Camera+Pass" id="3175817750">
-                  <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba" />
-                  <clearDepth dataType="Float">1</clearDepth>
-                  <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
-                  <input />
-                  <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="OrthoScreen" value="1" />
-                  <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
-                  <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="All" value="4294967295" />
-                </item>
-              </_items>
-              <_size dataType="Int">2</_size>
-            </passes>
             <perspective dataType="Enum" type="Duality.Drawing.PerspectiveMode" name="Parallax" value="1" />
+            <renderSetup dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderSetup]]" />
+            <renderTarget dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
+            <targetRect dataType="Struct" type="Duality.Rect">
+              <H dataType="Float">1</H>
+              <W dataType="Float">1</W>
+              <X dataType="Float">0</X>
+              <Y dataType="Float">0</Y>
+            </targetRect>
             <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="All" value="4294967295" />
           </item>
           <item dataType="Struct" type="Duality.Components.SoundListener" id="1442975826">
@@ -227,7 +213,7 @@
                   <customOutlineMaterial />
                   <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">3771095618</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
@@ -382,7 +368,7 @@
                   <customOutlineMaterial />
                   <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">190303241</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
@@ -537,7 +523,7 @@
                   <customOutlineMaterial />
                   <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">2898627856</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
@@ -809,7 +795,7 @@
                         <customOutlineMaterial />
                         <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                         <gameobj dataType="ObjectRef">553381659</gameobj>
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                           <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                         </outlineMaterial>
@@ -869,7 +855,7 @@
                   <customOutlineMaterial />
                   <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">1570063134</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
@@ -1100,7 +1086,7 @@
                         <customOutlineMaterial />
                         <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                         <gameobj dataType="ObjectRef">3512432019</gameobj>
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                           <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                         </outlineMaterial>
@@ -1160,7 +1146,7 @@
                   <customOutlineMaterial />
                   <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">961041577</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
@@ -1399,7 +1385,7 @@
                         <customOutlineMaterial />
                         <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                         <gameobj dataType="ObjectRef">1339792878</gameobj>
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                           <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                         </outlineMaterial>
@@ -1459,7 +1445,7 @@
                   <customOutlineMaterial />
                   <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">1490608698</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
@@ -1698,7 +1684,7 @@
                         <customOutlineMaterial />
                         <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                         <gameobj dataType="ObjectRef">1688306863</gameobj>
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                           <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                         </outlineMaterial>
@@ -1758,7 +1744,7 @@
                   <customOutlineMaterial />
                   <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">2091651235</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
@@ -2039,7 +2025,7 @@
                         <customOutlineMaterial />
                         <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                         <gameobj dataType="ObjectRef">3706518184</gameobj>
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                           <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                         </outlineMaterial>
@@ -2218,7 +2204,7 @@
                         <customOutlineMaterial />
                         <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                         <gameobj dataType="ObjectRef">4113319895</gameobj>
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                           <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                         </outlineMaterial>
@@ -2278,7 +2264,7 @@
                   <customOutlineMaterial />
                   <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">1483837714</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
@@ -2457,7 +2443,7 @@
                         <customMat />
                         <gameobj dataType="ObjectRef">2633694611</gameobj>
                         <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <text dataType="Struct" type="Duality.Drawing.FormattedText" id="717662233">
                           <flowAreas />
                           <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2689717582">
@@ -2520,7 +2506,7 @@
                   <customMat />
                   <gameobj dataType="ObjectRef">302638256</gameobj>
                   <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <text dataType="Struct" type="Duality.Drawing.FormattedText" id="656317386">
                     <flowAreas />
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2403213664">
@@ -2635,7 +2621,7 @@
                         <customMat />
                         <gameobj dataType="ObjectRef">3760932626</gameobj>
                         <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <text dataType="Struct" type="Duality.Drawing.FormattedText" id="2110983384">
                           <flowAreas />
                           <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1133035436">
@@ -2698,7 +2684,7 @@
                   <customMat />
                   <gameobj dataType="ObjectRef">209337452</gameobj>
                   <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <text dataType="Struct" type="Duality.Drawing.FormattedText" id="289988598">
                     <flowAreas />
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1971939040">
@@ -2813,7 +2799,7 @@
                         <customMat />
                         <gameobj dataType="ObjectRef">2321545642</gameobj>
                         <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1390002608">
                           <flowAreas />
                           <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="655228348">
@@ -2876,7 +2862,7 @@
                   <customMat />
                   <gameobj dataType="ObjectRef">1642399087</gameobj>
                   <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3974093503">
                     <flowAreas />
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="4138391982">
@@ -2991,7 +2977,7 @@
                         <customMat />
                         <gameobj dataType="ObjectRef">3020797531</gameobj>
                         <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1774599297">
                           <flowAreas />
                           <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1003713838">
@@ -3054,7 +3040,7 @@
                   <customMat />
                   <gameobj dataType="ObjectRef">282837764</gameobj>
                   <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <text dataType="Struct" type="Duality.Drawing.FormattedText" id="4144192830">
                     <flowAreas />
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1229593104">
@@ -3169,7 +3155,7 @@
                         <customMat />
                         <gameobj dataType="ObjectRef">1892497549</gameobj>
                         <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <text dataType="Struct" type="Duality.Drawing.FormattedText" id="830827379">
                           <flowAreas />
                           <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="3920408870">
@@ -3232,7 +3218,7 @@
                   <customMat />
                   <gameobj dataType="ObjectRef">4124979211</gameobj>
                   <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <text dataType="Struct" type="Duality.Drawing.FormattedText" id="871644851">
                     <flowAreas />
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="397120550">
