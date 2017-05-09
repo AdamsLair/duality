@@ -31,10 +31,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\Physics\Content\Plugins\Physics.core.dll" target="lib" />
-    <file src="..\..\Samples\Physics\Content\Plugins\Physics.core.xml" target="lib" />
+    <file src="..\..\Samples\Physics\Content\Plugins\Physics.Sample.core.dll" target="lib" />
+    <file src="..\..\Samples\Physics\Content\Plugins\Physics.Sample.core.xml" target="lib" />
     <file src="..\..\Samples\Physics\Content\Data\**\*.res" target="content" />
     <file src="..\..\Samples\Physics\**\*.cs" target="source" exclude="..\..\Samples\Physics\Content\**\*.*;..\..\Samples\Physics\obj\**\*.*" />
-    <file src="..\..\Samples\Physics\Physics.csproj" target="source" />
+    <file src="..\..\Samples\Physics\Physics.Sample.csproj" target="source" />
   </files>
 </package>
