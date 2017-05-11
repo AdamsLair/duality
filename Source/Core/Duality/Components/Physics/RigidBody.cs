@@ -50,7 +50,7 @@ namespace Duality.Components.Physics
 		private float    angularDamp     = 0.3f;
 		private bool     fixedAngle      = false;
 		private bool     ignoreGravity   = false;
-		private bool     continous       = false;
+		private bool     useCCD          = false;
 		private Vector2  linearVel       = Vector2.Zero;
 		private float    angularVel      = 0.0f;
 		private float    revolutions     = 0.0f;
@@ -149,11 +149,11 @@ namespace Duality.Components.Physics
 		/// </summary>
 		public bool ContinousCollision
 		{
-			get { return this.continous; }
+			get { return this.useCCD; }
 			set 
 			{
 				if (this.body != null) this.body.IsBullet = value;
-				this.continous = value;
+				this.useCCD = value;
 			}
 		}
 		/// <summary>
@@ -912,7 +912,7 @@ namespace Duality.Components.Physics
 			this.body.AngularDamping = this.angularDamp;
 			this.body.FixedRotation = this.fixedAngle;
 			this.body.IgnoreGravity = this.ignoreGravity;
-			this.body.IsBullet = this.continous;
+			this.body.IsBullet = this.useCCD;
 			this.body.CollisionCategories = (Category)this.colCat;
 			this.body.CollidesWith = (Category)this.colWith;
 
@@ -1230,7 +1230,7 @@ namespace Duality.Components.Physics
 			target.angularDamp   = this.angularDamp;
 			target.fixedAngle    = this.fixedAngle;
 			target.ignoreGravity = this.ignoreGravity;
-			target.continous     = this.continous;
+			target.useCCD        = this.useCCD;
 			target.linearVel     = this.linearVel;
 			target.angularVel    = this.angularVel;
 			target.revolutions   = this.revolutions;
