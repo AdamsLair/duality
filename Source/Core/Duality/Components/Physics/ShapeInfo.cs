@@ -22,6 +22,7 @@ namespace Duality.Components.Physics
 		protected float   friction    = 0.3f;
 		protected float   restitution = 0.3f;
 		protected bool    sensor      = false;
+		protected int     userTag     = 0;
 			
 		/// <summary>
 		/// [GET] The shape's parent <see cref="RigidBody"/>.
@@ -56,6 +57,15 @@ namespace Duality.Components.Physics
 		{
 			get { return this.sensor; }
 			set { this.sensor = value; this.UpdateInternalShape(false); }
+		}
+		/// <summary>
+		/// [GET / SET] A user-specified tag that can be used to identify this shape
+		/// in collision handling code.
+		/// </summary>
+		public int UserTag
+		{
+			get { return this.userTag; }
+			set { this.userTag = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The shapes friction value. Usually a value between 0.0 and 1.0, but higher values can be used to indicate unusually strong friction.

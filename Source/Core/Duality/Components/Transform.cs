@@ -621,9 +621,12 @@ namespace Duality.Components
 		public void CommitChanges(Component sender = null)
 		{
 			if (this.changes == DirtyFlags.None) return;
-			if (sender == null) sender = this;
 			if (this.eventTransformChanged != null)
-				this.eventTransformChanged(sender, new TransformChangedEventArgs(this, this.changes));
+			{
+				this.eventTransformChanged(
+					sender ?? this, 
+					new TransformChangedEventArgs(this, this.changes));
+			}
 			this.changes = DirtyFlags.None;
 		}
 
