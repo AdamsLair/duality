@@ -190,6 +190,7 @@
                         <parent dataType="ObjectRef">2538904846</parent>
                         <restitution dataType="Float">0</restitution>
                         <sensor dataType="Bool">false</sensor>
+                        <userTag dataType="Int">0</userTag>
                         <vertices dataType="Array" type="Duality.Vector2[]" id="3229928086">
                           <item dataType="Struct" type="Duality.Vector2">
                             <X dataType="Float">-320</X>
@@ -346,6 +347,7 @@
                         <parent dataType="ObjectRef">3888840780</parent>
                         <restitution dataType="Float">0</restitution>
                         <sensor dataType="Bool">false</sensor>
+                        <userTag dataType="Int">0</userTag>
                         <vertices dataType="Array" type="Duality.Vector2[]" id="1665190550">
                           <item dataType="Struct" type="Duality.Vector2">
                             <X dataType="Float">-176</X>
@@ -502,6 +504,7 @@
                         <parent dataType="ObjectRef">883307877</parent>
                         <restitution dataType="Float">0</restitution>
                         <sensor dataType="Bool">false</sensor>
+                        <userTag dataType="Int">0</userTag>
                         <vertices dataType="Array" type="Duality.Vector2[]" id="114034966">
                           <item dataType="Struct" type="Duality.Vector2">
                             <X dataType="Float">-320</X>
@@ -667,6 +670,7 @@
                         <radius dataType="Float">32</radius>
                         <restitution dataType="Float">0.3</restitution>
                         <sensor dataType="Bool">false</sensor>
+                        <userTag dataType="Int">0</userTag>
                       </item>
                     </_items>
                     <_size dataType="Int">1</_size>
@@ -790,6 +794,7 @@
                         <radius dataType="Float">32</radius>
                         <restitution dataType="Float">0.3</restitution>
                         <sensor dataType="Bool">true</sensor>
+                        <userTag dataType="Int">0</userTag>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Physics.PolyShapeInfo" id="3705859734">
                         <convexPolygons dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Vector2[]]]" id="195219094">
@@ -820,6 +825,7 @@
                         <parent dataType="ObjectRef">3182709118</parent>
                         <restitution dataType="Float">0.3</restitution>
                         <sensor dataType="Bool">true</sensor>
+                        <userTag dataType="Int">1</userTag>
                         <vertices dataType="Array" type="Duality.Vector2[]" id="3329682650">
                           <item dataType="Struct" type="Duality.Vector2">
                             <X dataType="Float">48</X>
@@ -1264,6 +1270,7 @@
                         <radius dataType="Float">32</radius>
                         <restitution dataType="Float">0.3</restitution>
                         <sensor dataType="Bool">true</sensor>
+                        <userTag dataType="Int">0</userTag>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Physics.CircleShapeInfo" id="3694054038">
                         <density dataType="Float">1</density>
@@ -1273,6 +1280,7 @@
                         <radius dataType="Float">64</radius>
                         <restitution dataType="Float">0.3</restitution>
                         <sensor dataType="Bool">false</sensor>
+                        <userTag dataType="Int">0</userTag>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Physics.PolyShapeInfo" id="3518199808">
                         <convexPolygons dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Vector2[]]]" id="811271240">
@@ -1303,6 +1311,7 @@
                         <parent dataType="ObjectRef">1105514084</parent>
                         <restitution dataType="Float">0.3</restitution>
                         <sensor dataType="Bool">true</sensor>
+                        <userTag dataType="Int">1</userTag>
                         <vertices dataType="Array" type="Duality.Vector2[]" id="3627557086">
                           <item dataType="Struct" type="Duality.Vector2">
                             <X dataType="Float">32</X>
@@ -1479,6 +1488,7 @@
                               <radius dataType="Float">32</radius>
                               <restitution dataType="Float">0.3</restitution>
                               <sensor dataType="Bool">true</sensor>
+                              <userTag dataType="Int">0</userTag>
                             </item>
                           </_items>
                           <_size dataType="Int">1</_size>
@@ -1630,6 +1640,7 @@
                               <parent dataType="ObjectRef">3586936802</parent>
                               <restitution dataType="Float">0.3</restitution>
                               <sensor dataType="Bool">true</sensor>
+                              <userTag dataType="Int">1</userTag>
                               <vertices dataType="Array" type="Duality.Vector2[]" id="826968470">
                                 <item dataType="Struct" type="Duality.Vector2">
                                   <X dataType="Float">32</X>
@@ -1754,6 +1765,7 @@
                         <radius dataType="Float">64</radius>
                         <restitution dataType="Float">0.3</restitution>
                         <sensor dataType="Bool">false</sensor>
+                        <userTag dataType="Int">0</userTag>
                       </item>
                     </_items>
                     <_size dataType="Int">1</_size>

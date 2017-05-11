@@ -72,6 +72,13 @@ namespace Duality.Samples.Physics
 					.DrawCircle(new Vector3(shapePos), shapeRadius)
 					.AnchorAt(this.GameObj)
 					.KeepAlive(2000.0f);
+				VisualLog.Default
+					.DrawText(
+						new Vector3(shapePos) - (shapeRadius + 10.0f) * Vector3.UnitY, 
+						bodyArgs.MyShape.UserTag == 1 ? "Right" : "Left")
+					.Align(Alignment.Bottom)
+					.AnchorAt(this.GameObj)
+					.KeepAlive(2000.0f);
 			}
 		}
 		void ICmpCollisionListener.OnCollisionEnd(Component sender, CollisionEventArgs args)
