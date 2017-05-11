@@ -35,10 +35,6 @@
             <vel dataType="Struct" type="Duality.Vector3" />
             <velAbs dataType="Struct" type="Duality.Vector3" />
           </item>
-          <item dataType="Struct" type="Duality.Components.SoundListener" id="1442975826">
-            <active dataType="Bool">true</active>
-            <gameobj dataType="ObjectRef">789494455</gameobj>
-          </item>
           <item dataType="Struct" type="Duality.Components.Camera" id="1326770262">
             <active dataType="Bool">true</active>
             <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba">
@@ -61,6 +57,10 @@
               <Y dataType="Float">0</Y>
             </targetRect>
             <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="All" value="4294967295" />
+          </item>
+          <item dataType="Struct" type="Duality.Components.SoundListener" id="1442975826">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">789494455</gameobj>
           </item>
         </_items>
         <_size dataType="Int">3</_size>
@@ -135,7 +135,6 @@
                   <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                   <colFilter />
                   <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                  <continous dataType="Bool">false</continous>
                   <explicitInertia dataType="Float">0</explicitInertia>
                   <explicitMass dataType="Float">0</explicitMass>
                   <fixedAngle dataType="Bool">false</fixedAngle>
@@ -199,6 +198,7 @@
                     </_items>
                     <_size dataType="Int">1</_size>
                   </shapes>
+                  <useCCD dataType="Bool">false</useCCD>
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="74821512">
                   <active dataType="Bool">true</active>
@@ -292,7 +292,6 @@
                   <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                   <colFilter />
                   <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                  <continous dataType="Bool">false</continous>
                   <explicitInertia dataType="Float">0</explicitInertia>
                   <explicitMass dataType="Float">0</explicitMass>
                   <fixedAngle dataType="Bool">false</fixedAngle>
@@ -356,6 +355,7 @@
                     </_items>
                     <_size dataType="Int">1</_size>
                   </shapes>
+                  <useCCD dataType="Bool">false</useCCD>
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1424757446">
                   <active dataType="Bool">true</active>
@@ -449,7 +449,6 @@
                   <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                   <colFilter />
                   <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                  <continous dataType="Bool">false</continous>
                   <explicitInertia dataType="Float">0</explicitInertia>
                   <explicitMass dataType="Float">0</explicitMass>
                   <fixedAngle dataType="Bool">false</fixedAngle>
@@ -513,6 +512,7 @@
                     </_items>
                     <_size dataType="Int">1</_size>
                   </shapes>
+                  <useCCD dataType="Bool">false</useCCD>
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2714191839">
                   <active dataType="Bool">true</active>
@@ -636,7 +636,6 @@
                   <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                   <colFilter />
                   <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                  <continous dataType="Bool">true</continous>
                   <explicitInertia dataType="Float">0</explicitInertia>
                   <explicitMass dataType="Float">25</explicitMass>
                   <fixedAngle dataType="Bool">false</fixedAngle>
@@ -661,6 +660,7 @@
                     </_items>
                     <_size dataType="Int">1</_size>
                   </shapes>
+                  <useCCD dataType="Bool">true</useCCD>
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2019250850">
                   <active dataType="Bool">true</active>
@@ -757,7 +757,6 @@
                   <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                   <colFilter />
                   <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                  <continous dataType="Bool">true</continous>
                   <explicitInertia dataType="Float">0</explicitInertia>
                   <explicitMass dataType="Float">0</explicitMass>
                   <fixedAngle dataType="Bool">false</fixedAngle>
@@ -834,6 +833,7 @@
                     </_items>
                     <_size dataType="Int">2</_size>
                   </shapes>
+                  <useCCD dataType="Bool">true</useCCD>
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="718625784">
                   <active dataType="Bool">true</active>
@@ -1095,7 +1095,7 @@
                                           <customMat />
                                           <gameobj dataType="ObjectRef">797195694</gameobj>
                                           <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                                          <offset dataType="Int">0</offset>
+                                          <offset dataType="Float">0</offset>
                                           <text dataType="Struct" type="Duality.Drawing.FormattedText" id="2609767148">
                                             <flowAreas />
                                             <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="3480778852">
@@ -1182,7 +1182,7 @@
                                           <customMat />
                                           <gameobj dataType="ObjectRef">2983688862</gameobj>
                                           <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                                          <offset dataType="Int">0</offset>
+                                          <offset dataType="Float">0</offset>
                                           <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3024669884">
                                             <flowAreas />
                                             <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="3849070148">
@@ -1245,7 +1245,7 @@
                                     <customMat />
                                     <gameobj dataType="ObjectRef">212222877</gameobj>
                                     <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                                    <offset dataType="Int">0</offset>
+                                    <offset dataType="Float">0</offset>
                                     <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1668898377">
                                       <flowAreas />
                                       <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="124528014">
@@ -1262,8 +1262,8 @@
                                     </text>
                                     <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                                   </item>
-                          </_items>
-                          <_size dataType="Int">2</_size>
+                                </_items>
+                                <_size dataType="Int">2</_size>
                               </compList>
                               <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1043666663" surrogate="true">
                                 <header />
@@ -1411,7 +1411,6 @@
                   <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                   <colFilter />
                   <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                  <continous dataType="Bool">true</continous>
                   <explicitInertia dataType="Float">0</explicitInertia>
                   <explicitMass dataType="Float">0</explicitMass>
                   <fixedAngle dataType="Bool">false</fixedAngle>
@@ -1498,6 +1497,7 @@
                     </_items>
                     <_size dataType="Int">3</_size>
                   </shapes>
+                  <useCCD dataType="Bool">true</useCCD>
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2936398046">
                   <active dataType="Bool">true</active>
@@ -1632,7 +1632,6 @@
                         <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                         <colFilter />
                         <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                        <continous dataType="Bool">true</continous>
                         <explicitInertia dataType="Float">0</explicitInertia>
                         <explicitMass dataType="Float">0</explicitMass>
                         <fixedAngle dataType="Bool">false</fixedAngle>
@@ -1654,9 +1653,10 @@
                               <sensor dataType="Bool">true</sensor>
                               <userTag dataType="Int">0</userTag>
                             </item>
-        </_items>
+                          </_items>
                           <_size dataType="Int">1</_size>
                         </shapes>
+                        <useCCD dataType="Bool">true</useCCD>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3141545465">
                         <active dataType="Bool">true</active>
@@ -1673,7 +1673,7 @@
                         <customOutlineMaterial />
                         <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                         <gameobj dataType="ObjectRef">2542852275</gameobj>
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                           <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                         </outlineMaterial>
@@ -1763,7 +1763,6 @@
                         <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                         <colFilter />
                         <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                        <continous dataType="Bool">true</continous>
                         <explicitInertia dataType="Float">0</explicitInertia>
                         <explicitMass dataType="Float">0</explicitMass>
                         <fixedAngle dataType="Bool">false</fixedAngle>
@@ -1827,6 +1826,7 @@
                           </_items>
                           <_size dataType="Int">1</_size>
                         </shapes>
+                        <useCCD dataType="Bool">true</useCCD>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1122853468">
                         <active dataType="Bool">true</active>
@@ -1843,7 +1843,7 @@
                         <customOutlineMaterial />
                         <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                         <gameobj dataType="ObjectRef">524160278</gameobj>
-                        <offset dataType="Int">0</offset>
+                        <offset dataType="Float">0</offset>
                         <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                           <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                         </outlineMaterial>
@@ -1909,7 +1909,6 @@
                   <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                   <colFilter />
                   <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                  <continous dataType="Bool">true</continous>
                   <explicitInertia dataType="Float">0</explicitInertia>
                   <explicitMass dataType="Float">0</explicitMass>
                   <fixedAngle dataType="Bool">false</fixedAngle>
@@ -1934,6 +1933,7 @@
                     </_items>
                     <_size dataType="Int">1</_size>
                   </shapes>
+                  <useCCD dataType="Bool">true</useCCD>
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1609172732">
                   <active dataType="Bool">true</active>
@@ -1950,7 +1950,7 @@
                   <customOutlineMaterial />
                   <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">1010479542</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
@@ -1959,7 +1959,7 @@
                   <wrapTexture dataType="Bool">true</wrapTexture>
                 </item>
               </_items>
-        <_size dataType="Int">3</_size>
+              <_size dataType="Int">3</_size>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3256938654" surrogate="true">
               <header />
