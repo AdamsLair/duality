@@ -1225,18 +1225,18 @@ namespace Duality.Components.Physics
 			bool wasInitialized = target.bodyInitState == InitState.Initialized;
 			if (wasInitialized) target.Shutdown();
 
-			target.bodyType			= this.bodyType;
-			target.linearDamp		= this.linearDamp;
-			target.angularDamp		= this.angularDamp;
-			target.fixedAngle		= this.fixedAngle;
-			target.ignoreGravity	= this.ignoreGravity;
-			target.continous		= this.continous;
-			target.linearVel		= this.linearVel;
-			target.angularVel		= this.angularVel;
-			target.revolutions		= this.revolutions;
-			target.explicitMass		= this.explicitMass;
-			target.colCat			= this.colCat;
-			target.colWith			= this.colWith;
+			target.bodyType      = this.bodyType;
+			target.linearDamp    = this.linearDamp;
+			target.angularDamp   = this.angularDamp;
+			target.fixedAngle    = this.fixedAngle;
+			target.ignoreGravity = this.ignoreGravity;
+			target.continous     = this.continous;
+			target.linearVel     = this.linearVel;
+			target.angularVel    = this.angularVel;
+			target.revolutions   = this.revolutions;
+			target.explicitMass  = this.explicitMass;
+			target.colCat        = this.colCat;
+			target.colWith       = this.colWith;
 
 			if (this.shapes != null)
 			{
