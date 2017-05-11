@@ -50,6 +50,7 @@ namespace Duality.Components.Physics
 		private float    angularDamp     = 0.3f;
 		private bool     fixedAngle      = false;
 		private bool     ignoreGravity   = false;
+		private bool     allowParent     = false;
 		private bool     continous       = false;
 		private Vector2  linearVel       = Vector2.Zero;
 		private float    angularVel      = 0.0f;
@@ -141,6 +142,20 @@ namespace Duality.Components.Physics
 				if (this.body != null) this.body.IgnoreGravity = value;
 				this.ignoreGravity = value;
 			}
+		}
+		/// <summary>
+		/// [GET / SET] By default, <see cref="RigidBody"/> objects will ignore parent-child <see cref="Transform"/>
+		/// relations, which is achieved by forcing <see cref="Transform.IgnoreParent"/> to true at runtime. 
+		/// When enabling <see cref="AllowParent"/>, this constraint is removed. 
+		/// 
+		/// Note that you should only use this option if you can rule out that physics simulation and parent 
+		/// transform changes occur within the same time frame, as they will otherwise interfere with each 
+		/// other and cause undefined behavior.
+		/// </summary>
+		public bool AllowParent
+		{
+			get { return this.allowParent; }
+			set { this.allowParent = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Whether the body is included in continous collision detection or not.
@@ -1140,7 +1155,11 @@ namespace Duality.Components.Physics
 					Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.PhysicsAlpha) * Time.SPFMult;
 					float bodyAngleVel = this.body.AngularVelocity;
 					float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsAlpha) * Time.SPFMult;
-					transform.IgnoreParent = true; // Force ignore parent!
+
+					// Unless allowed explicitly, ignore the transform hierarchy, so nested RigidBodies don't clash
+					if (!this.allowParent)
+						transform.IgnoreParent = true;
+
 					transform.MoveToAbs(new Vector3(
 						PhysicsUnit.LengthToDuality * bodyPos.X, 
 						PhysicsUnit.LengthToDuality * bodyPos.Y, 
@@ -1265,6 +1284,7 @@ namespace Duality.Components.Physics
 			target.angularDamp   = this.angularDamp;
 			target.fixedAngle    = this.fixedAngle;
 			target.ignoreGravity = this.ignoreGravity;
+			target.allowParent   = this.allowParent;
 			target.continous     = this.continous;
 			target.linearVel     = this.linearVel;
 			target.angularVel    = this.angularVel;
