@@ -128,13 +128,13 @@
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="2538904846">
                   <active dataType="Bool">true</active>
+                  <allowParent dataType="Bool">false</allowParent>
                   <angularDamp dataType="Float">0.3</angularDamp>
                   <angularVel dataType="Float">0</angularVel>
                   <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Static" value="0" />
                   <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                   <colFilter />
                   <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                  <continous dataType="Bool">false</continous>
                   <explicitInertia dataType="Float">0</explicitInertia>
                   <explicitMass dataType="Float">0</explicitMass>
                   <fixedAngle dataType="Bool">false</fixedAngle>
@@ -175,6 +175,7 @@
                         <parent dataType="ObjectRef">2538904846</parent>
                         <restitution dataType="Float">0</restitution>
                         <sensor dataType="Bool">false</sensor>
+                        <userTag dataType="Int">0</userTag>
                         <vertices dataType="Array" type="Duality.Vector2[]" id="3229928086">
                           <item dataType="Struct" type="Duality.Vector2">
                             <X dataType="Float">-320</X>
@@ -197,6 +198,7 @@
                     </_items>
                     <_size dataType="Int">1</_size>
                   </shapes>
+                  <useCCD dataType="Bool">false</useCCD>
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="74821512">
                   <active dataType="Bool">true</active>
@@ -283,13 +285,13 @@
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3253079765">
                   <active dataType="Bool">true</active>
+                  <allowParent dataType="Bool">false</allowParent>
                   <angularDamp dataType="Float">0.3</angularDamp>
                   <angularVel dataType="Float">0</angularVel>
                   <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Static" value="0" />
                   <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                   <colFilter />
                   <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                  <continous dataType="Bool">false</continous>
                   <explicitInertia dataType="Float">0</explicitInertia>
                   <explicitMass dataType="Float">0</explicitMass>
                   <fixedAngle dataType="Bool">false</fixedAngle>
@@ -330,6 +332,7 @@
                         <parent dataType="ObjectRef">3253079765</parent>
                         <restitution dataType="Float">0</restitution>
                         <sensor dataType="Bool">false</sensor>
+                        <userTag dataType="Int">0</userTag>
                         <vertices dataType="Array" type="Duality.Vector2[]" id="2516240662">
                           <item dataType="Struct" type="Duality.Vector2">
                             <X dataType="Float">-320</X>
@@ -352,6 +355,7 @@
                     </_items>
                     <_size dataType="Int">1</_size>
                   </shapes>
+                  <useCCD dataType="Bool">false</useCCD>
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="788996431">
                   <active dataType="Bool">true</active>
@@ -499,13 +503,13 @@
                       </item>
                       <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3616158183">
                         <active dataType="Bool">true</active>
+                        <allowParent dataType="Bool">false</allowParent>
                         <angularDamp dataType="Float">0.3</angularDamp>
                         <angularVel dataType="Float">0</angularVel>
                         <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
                         <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                         <colFilter />
                         <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                        <continous dataType="Bool">false</continous>
                         <explicitInertia dataType="Float">0</explicitInertia>
                         <explicitMass dataType="Float">0</explicitMass>
                         <fixedAngle dataType="Bool">false</fixedAngle>
@@ -523,13 +527,13 @@
                               <maxTorque dataType="Float">50</maxTorque>
                               <otherBody dataType="Struct" type="Duality.Components.Physics.RigidBody" id="337872362">
                                 <active dataType="Bool">true</active>
+                                <allowParent dataType="Bool">false</allowParent>
                                 <angularDamp dataType="Float">0.3</angularDamp>
                                 <angularVel dataType="Float">0</angularVel>
                                 <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Static" value="0" />
                                 <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                                 <colFilter />
                                 <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                                <continous dataType="Bool">false</continous>
                                 <explicitInertia dataType="Float">0</explicitInertia>
                                 <explicitMass dataType="Float">0</explicitMass>
                                 <fixedAngle dataType="Bool">false</fixedAngle>
@@ -549,10 +553,12 @@
                                       <radius dataType="Float">16</radius>
                                       <restitution dataType="Float">0.3</restitution>
                                       <sensor dataType="Bool">false</sensor>
+                                      <userTag dataType="Int">0</userTag>
                                     </item>
                                   </_items>
                                   <_size dataType="Int">1</_size>
                                 </shapes>
+                                <useCCD dataType="Bool">false</useCCD>
                               </otherBody>
                               <parentBody dataType="ObjectRef">3616158183</parentBody>
                             </item>
@@ -593,6 +599,7 @@
                               <parent dataType="ObjectRef">3616158183</parent>
                               <restitution dataType="Float">0.3</restitution>
                               <sensor dataType="Bool">false</sensor>
+                              <userTag dataType="Int">0</userTag>
                               <vertices dataType="Array" type="Duality.Vector2[]" id="3571117934">
                                 <item dataType="Struct" type="Duality.Vector2">
                                   <X dataType="Float">-32</X>
@@ -615,6 +622,7 @@
                           </_items>
                           <_size dataType="Int">1</_size>
                         </shapes>
+                        <useCCD dataType="Bool">false</useCCD>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1152074849">
                         <active dataType="Bool">true</active>
@@ -781,13 +789,13 @@
                       </item>
                       <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="304263768">
                         <active dataType="Bool">true</active>
+                        <allowParent dataType="Bool">false</allowParent>
                         <angularDamp dataType="Float">0.3</angularDamp>
                         <angularVel dataType="Float">0</angularVel>
                         <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
                         <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                         <colFilter />
                         <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                        <continous dataType="Bool">false</continous>
                         <explicitInertia dataType="Float">0</explicitInertia>
                         <explicitMass dataType="Float">0</explicitMass>
                         <fixedAngle dataType="Bool">false</fixedAngle>
@@ -805,13 +813,13 @@
                               <maxTorque dataType="Float">200</maxTorque>
                               <otherBody dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3352047184">
                                 <active dataType="Bool">true</active>
+                                <allowParent dataType="Bool">false</allowParent>
                                 <angularDamp dataType="Float">0.3</angularDamp>
                                 <angularVel dataType="Float">0</angularVel>
                                 <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Static" value="0" />
                                 <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                                 <colFilter />
                                 <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                                <continous dataType="Bool">false</continous>
                                 <explicitInertia dataType="Float">0</explicitInertia>
                                 <explicitMass dataType="Float">0</explicitMass>
                                 <fixedAngle dataType="Bool">false</fixedAngle>
@@ -831,10 +839,12 @@
                                       <radius dataType="Float">16</radius>
                                       <restitution dataType="Float">0.3</restitution>
                                       <sensor dataType="Bool">false</sensor>
+                                      <userTag dataType="Int">0</userTag>
                                     </item>
                                   </_items>
                                   <_size dataType="Int">1</_size>
                                 </shapes>
+                                <useCCD dataType="Bool">false</useCCD>
                               </otherBody>
                               <parentBody dataType="ObjectRef">304263768</parentBody>
                             </item>
@@ -875,6 +885,7 @@
                               <parent dataType="ObjectRef">304263768</parent>
                               <restitution dataType="Float">0.3</restitution>
                               <sensor dataType="Bool">false</sensor>
+                              <userTag dataType="Int">0</userTag>
                               <vertices dataType="Array" type="Duality.Vector2[]" id="3668773782">
                                 <item dataType="Struct" type="Duality.Vector2">
                                   <X dataType="Float">-32</X>
@@ -897,6 +908,7 @@
                           </_items>
                           <_size dataType="Int">1</_size>
                         </shapes>
+                        <useCCD dataType="Bool">false</useCCD>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2135147730">
                         <active dataType="Bool">true</active>
@@ -1071,13 +1083,13 @@
                       </item>
                       <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="851752285">
                         <active dataType="Bool">true</active>
+                        <allowParent dataType="Bool">false</allowParent>
                         <angularDamp dataType="Float">0.3</angularDamp>
                         <angularVel dataType="Float">0</angularVel>
                         <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
                         <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                         <colFilter />
                         <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                        <continous dataType="Bool">false</continous>
                         <explicitInertia dataType="Float">0</explicitInertia>
                         <explicitMass dataType="Float">0</explicitMass>
                         <fixedAngle dataType="Bool">false</fixedAngle>
@@ -1095,13 +1107,13 @@
                               <maxTorque dataType="Float">1000</maxTorque>
                               <otherBody dataType="Struct" type="Duality.Components.Physics.RigidBody" id="742808751">
                                 <active dataType="Bool">true</active>
+                                <allowParent dataType="Bool">false</allowParent>
                                 <angularDamp dataType="Float">0.3</angularDamp>
                                 <angularVel dataType="Float">0</angularVel>
                                 <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Static" value="0" />
                                 <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                                 <colFilter />
                                 <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                                <continous dataType="Bool">false</continous>
                                 <explicitInertia dataType="Float">0</explicitInertia>
                                 <explicitMass dataType="Float">0</explicitMass>
                                 <fixedAngle dataType="Bool">false</fixedAngle>
@@ -1121,10 +1133,12 @@
                                       <radius dataType="Float">16</radius>
                                       <restitution dataType="Float">0.3</restitution>
                                       <sensor dataType="Bool">false</sensor>
+                                      <userTag dataType="Int">0</userTag>
                                     </item>
                                   </_items>
                                   <_size dataType="Int">1</_size>
                                 </shapes>
+                                <useCCD dataType="Bool">false</useCCD>
                               </otherBody>
                               <parentBody dataType="ObjectRef">851752285</parentBody>
                             </item>
@@ -1165,6 +1179,7 @@
                               <parent dataType="ObjectRef">851752285</parent>
                               <restitution dataType="Float">0.3</restitution>
                               <sensor dataType="Bool">false</sensor>
+                              <userTag dataType="Int">0</userTag>
                               <vertices dataType="Array" type="Duality.Vector2[]" id="3279667822">
                                 <item dataType="Struct" type="Duality.Vector2">
                                   <X dataType="Float">-32</X>
@@ -1187,6 +1202,7 @@
                           </_items>
                           <_size dataType="Int">1</_size>
                         </shapes>
+                        <useCCD dataType="Bool">false</useCCD>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2682636247">
                         <active dataType="Bool">true</active>
@@ -1361,13 +1377,13 @@
                       </item>
                       <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="2496278256">
                         <active dataType="Bool">true</active>
+                        <allowParent dataType="Bool">false</allowParent>
                         <angularDamp dataType="Float">0.3</angularDamp>
                         <angularVel dataType="Float">0</angularVel>
                         <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
                         <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                         <colFilter />
                         <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                        <continous dataType="Bool">false</continous>
                         <explicitInertia dataType="Float">0</explicitInertia>
                         <explicitMass dataType="Float">0</explicitMass>
                         <fixedAngle dataType="Bool">false</fixedAngle>
@@ -1385,13 +1401,13 @@
                               <maxTorque dataType="Float">200</maxTorque>
                               <otherBody dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3291219282">
                                 <active dataType="Bool">true</active>
+                                <allowParent dataType="Bool">false</allowParent>
                                 <angularDamp dataType="Float">0.3</angularDamp>
                                 <angularVel dataType="Float">0</angularVel>
                                 <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
                                 <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                                 <colFilter />
                                 <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                                <continous dataType="Bool">false</continous>
                                 <explicitInertia dataType="Float">0</explicitInertia>
                                 <explicitMass dataType="Float">0</explicitMass>
                                 <fixedAngle dataType="Bool">false</fixedAngle>
@@ -1435,6 +1451,7 @@
                                       <parent dataType="ObjectRef">3291219282</parent>
                                       <restitution dataType="Float">0.3</restitution>
                                       <sensor dataType="Bool">false</sensor>
+                                      <userTag dataType="Int">0</userTag>
                                       <vertices dataType="Array" type="Duality.Vector2[]" id="2017670678">
                                         <item dataType="Struct" type="Duality.Vector2">
                                           <X dataType="Float">-32</X>
@@ -1457,6 +1474,7 @@
                                   </_items>
                                   <_size dataType="Int">1</_size>
                                 </shapes>
+                                <useCCD dataType="Bool">false</useCCD>
                               </otherBody>
                               <parentBody dataType="ObjectRef">2496278256</parentBody>
                             </item>
@@ -1497,6 +1515,7 @@
                               <parent dataType="ObjectRef">2496278256</parent>
                               <restitution dataType="Float">0.3</restitution>
                               <sensor dataType="Bool">false</sensor>
+                              <userTag dataType="Int">0</userTag>
                               <vertices dataType="Array" type="Duality.Vector2[]" id="2616134166">
                                 <item dataType="Struct" type="Duality.Vector2">
                                   <X dataType="Float">-32</X>
@@ -1519,6 +1538,7 @@
                           </_items>
                           <_size dataType="Int">1</_size>
                         </shapes>
+                        <useCCD dataType="Bool">false</useCCD>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="32194922">
                         <active dataType="Bool">true</active>
@@ -1693,13 +1713,13 @@
                       </item>
                       <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="1519913751">
                         <active dataType="Bool">true</active>
+                        <allowParent dataType="Bool">false</allowParent>
                         <angularDamp dataType="Float">0.3</angularDamp>
                         <angularVel dataType="Float">0</angularVel>
                         <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
                         <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                         <colFilter />
                         <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                        <continous dataType="Bool">false</continous>
                         <explicitInertia dataType="Float">0</explicitInertia>
                         <explicitMass dataType="Float">0</explicitMass>
                         <fixedAngle dataType="Bool">false</fixedAngle>
@@ -1720,13 +1740,13 @@
                               <maxTorque dataType="Float">0</maxTorque>
                               <otherBody dataType="Struct" type="Duality.Components.Physics.RigidBody" id="186840586">
                                 <active dataType="Bool">true</active>
+                                <allowParent dataType="Bool">false</allowParent>
                                 <angularDamp dataType="Float">0.3</angularDamp>
                                 <angularVel dataType="Float">0</angularVel>
                                 <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
                                 <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                                 <colFilter />
                                 <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                                <continous dataType="Bool">false</continous>
                                 <explicitInertia dataType="Float">0</explicitInertia>
                                 <explicitMass dataType="Float">0</explicitMass>
                                 <fixedAngle dataType="Bool">false</fixedAngle>
@@ -1770,6 +1790,7 @@
                                       <parent dataType="ObjectRef">186840586</parent>
                                       <restitution dataType="Float">0.3</restitution>
                                       <sensor dataType="Bool">false</sensor>
+                                      <userTag dataType="Int">0</userTag>
                                       <vertices dataType="Array" type="Duality.Vector2[]" id="2286184982">
                                         <item dataType="Struct" type="Duality.Vector2">
                                           <X dataType="Float">-32</X>
@@ -1792,6 +1813,7 @@
                                   </_items>
                                   <_size dataType="Int">1</_size>
                                 </shapes>
+                                <useCCD dataType="Bool">false</useCCD>
                               </otherBody>
                               <parentBody dataType="ObjectRef">1519913751</parentBody>
                             </item>
@@ -1832,6 +1854,7 @@
                               <parent dataType="ObjectRef">1519913751</parent>
                               <restitution dataType="Float">0.3</restitution>
                               <sensor dataType="Bool">false</sensor>
+                              <userTag dataType="Int">0</userTag>
                               <vertices dataType="Array" type="Duality.Vector2[]" id="2699811278">
                                 <item dataType="Struct" type="Duality.Vector2">
                                   <X dataType="Float">-32</X>
@@ -1862,10 +1885,12 @@
                               <radius dataType="Float">8</radius>
                               <restitution dataType="Float">0.3</restitution>
                               <sensor dataType="Bool">false</sensor>
+                              <userTag dataType="Int">0</userTag>
                             </item>
                           </_items>
                           <_size dataType="Int">2</_size>
                         </shapes>
+                        <useCCD dataType="Bool">false</useCCD>
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="3350797713">
                         <active dataType="Bool">true</active>
