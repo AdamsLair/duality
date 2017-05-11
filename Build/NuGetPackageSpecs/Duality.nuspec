@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.12.1</version>
+    <version>2.12.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,11 +13,9 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>Tweaked RigidBody API, RigidBody Bugfixes, Internal RigidBody Tweaks
-#ADD: Added new overloads for RigidBody query methods that accept pre-existing lists to be filled, rather than always creating a new one. 
-#CHANGE: Flagged the old overloads as obsolete to encourage more efficient code on the user side. Also, they will be removed in v3.0.
-#FIX: Fixed buggy behaviour of nested RigidBodies that was introduced by forgetting to uncomment a previously active line again after testing.
-#CHANGE: Code style tweaks.</releaseNotes>
+    <releaseNotes>Introduced ShapeInfo UserTags, RigidBody AllowParent
+#ADD: ShapeInfo objects now have a UserTag property that can be used to identify shapes in collision handling code, or tag them with certain roles.
+#ADD: Added the RigidBody.AllowParent option that allows using RigidBodies in parent-child hierarchies "at your own risk", enabling use cases like sensor child objects.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.4" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />

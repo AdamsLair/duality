@@ -55,9 +55,30 @@ namespace Duality.Samples.Physics
 			RigidBodyCollisionEventArgs bodyArgs = args as RigidBodyCollisionEventArgs;
 			if (bodyArgs.MyShape.IsSensor)
 			{
+				// Ignore collisions with parent objects
+				if (this.GameObj.IsChildOf(bodyArgs.OtherShape.Parent.GameObj))
+					return;
+
+				// Keep track of all active collisions
 				this.triggerCounter++;
 				if (this.triggerCounter == 1)
 					this.OnTriggerActivated();
+
+				// Display a visual log which shape triggered
+				Rect shapeBounds = bodyArgs.MyShape.AABB;
+				Vector2 shapePos = shapeBounds.Center;
+				float shapeRadius = shapeBounds.WithOffset(-shapePos).BoundingRadius;
+				VisualLog.Default
+					.DrawCircle(new Vector3(shapePos), shapeRadius)
+					.AnchorAt(this.GameObj)
+					.KeepAlive(2000.0f);
+				VisualLog.Default
+					.DrawText(
+						new Vector3(shapePos) - (shapeRadius + 10.0f) * Vector3.UnitY, 
+						bodyArgs.MyShape.UserTag == 1 ? "Right" : "Left")
+					.Align(Alignment.Bottom)
+					.AnchorAt(this.GameObj)
+					.KeepAlive(2000.0f);
 			}
 		}
 		void ICmpCollisionListener.OnCollisionEnd(Component sender, CollisionEventArgs args)
@@ -65,6 +86,11 @@ namespace Duality.Samples.Physics
 			RigidBodyCollisionEventArgs bodyArgs = args as RigidBodyCollisionEventArgs;
 			if (bodyArgs.MyShape.IsSensor)
 			{
+				// Ignore collisions with parent objects
+				if (this.GameObj.IsChildOf(bodyArgs.OtherShape.Parent.GameObj))
+					return;
+
+				// Keep track of all active collisions
 				this.triggerCounter--;
 				if (this.triggerCounter == 0)
 					this.OnTriggerDeactivated();
