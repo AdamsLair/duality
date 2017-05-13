@@ -55,53 +55,43 @@ namespace Duality.Editor.PackageManagement
 			return false;
 		}
 
-		public void Load(string configFilePath)
+		public void Populate(string configFilePath)
 		{
-			try
+			XDocument doc = XDocument.Load(configFilePath);
+
+			// Parse primitive values
+			doc.Root.TryGetElementValue("FirstDualityInstall", ref this.firstInstall);
+
+			// Parse repository URLs
+			IEnumerable<XElement> repoUrlElements = doc.Root.Elements("RepositoryUrl");
+			if (repoUrlElements.Any())
 			{
-				XDocument doc = XDocument.Load(configFilePath);
-
-				// Parse primitive values
-				doc.Root.TryGetElementValue("FirstDualityInstall", ref this.firstInstall);
-
-				// Parse repository URLs
-				IEnumerable<XElement> repoUrlElements = doc.Root.Elements("RepositoryUrl");
-				if (repoUrlElements.Any())
+				this.repositoryUrls.Clear();
+				this.repositoryUrls.AddRange(repoUrlElements.Select(x => x.Value));
+				if (this.repositoryUrls.Count == 0)
 				{
-					this.repositoryUrls.Clear();
-					this.repositoryUrls.AddRange(repoUrlElements.Select(x => x.Value));
-					if (this.repositoryUrls.Count == 0)
-					{
-						this.repositoryUrls.Add(DefaultRepositoryUrl);
-					}
-				}
-
-				// Parse package list
-				XElement packagesElement = doc.Root.Element("Packages");
-				if (packagesElement != null)
-				{
-					this.localPackages.Clear();
-					foreach (XElement packageElement in packagesElement.Elements("Package"))
-					{
-						PackageName package = PackageName.None;
-						package.Id = packageElement.GetAttributeValue("id");
-						string versionString = packageElement.GetAttributeValue("version");
-						if (versionString != null) Version.TryParse(versionString, out package.Version);
-
-						// Skip invalid package references
-						if (string.IsNullOrWhiteSpace(package.Id)) continue;
-
-						// Create local package entry
-						this.localPackages.Add(new LocalPackage(package));
-					}
+					this.repositoryUrls.Add(DefaultRepositoryUrl);
 				}
 			}
-			catch (Exception e)
+
+			// Parse package list
+			XElement packagesElement = doc.Root.Element("Packages");
+			if (packagesElement != null)
 			{
-				Log.Editor.WriteError(
-					"Failed to load PackageManager config file '{0}': {1}",
-					configFilePath,
-					Log.Exception(e));
+				this.localPackages.Clear();
+				foreach (XElement packageElement in packagesElement.Elements("Package"))
+				{
+					PackageName package = PackageName.None;
+					package.Id = packageElement.GetAttributeValue("id");
+					string versionString = packageElement.GetAttributeValue("version");
+					if (versionString != null) Version.TryParse(versionString, out package.Version);
+
+					// Skip invalid package references
+					if (string.IsNullOrWhiteSpace(package.Id)) continue;
+
+					// Create local package entry
+					this.localPackages.Add(new LocalPackage(package));
+				}
 			}
 		}
 		public void Save(string configFilePath)
@@ -117,6 +107,13 @@ namespace Duality.Editor.PackageManagement
 					))
 				));
 			doc.Save(configFilePath);
+		}
+
+		public static PackageSetup Load(string configFilePath)
+		{
+			PackageSetup setup = new PackageSetup();
+			setup.Populate(configFilePath);
+			return setup;
 		}
 	}
 }

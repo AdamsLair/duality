@@ -99,14 +99,49 @@ namespace Duality.Editor.PackageManagement
 		{
 			get { return this.env; }
 		}
-
-
-		public PackageManager(string rootPath = null)
+		/// <summary>
+		/// [GET / SET] A data class representing the local package setup. Do not change these 
+		/// values manually, but use <see cref="PackageManager"/> API instead.
+		/// </summary>
+		public PackageSetup LocalSetup
 		{
-			this.env = new PackageManagerEnvironment(rootPath);
+			get { return this.setup; }
+		}
 
-			// Load the active package setup from the config file
-			this.LoadConfig();
+		
+		public PackageManager() : this(new PackageManagerEnvironment(null)) { }
+		public PackageManager(string rootPath) : this(new PackageManagerEnvironment(rootPath)) { }
+		public PackageManager(PackageManagerEnvironment workEnvironment) : this(workEnvironment, null) { }
+		public PackageManager(PackageManagerEnvironment workEnvironment, PackageSetup packageSetup)
+		{
+			// If no external package setup is provided, load it from the config file
+			if (packageSetup == null)
+			{
+				string configFilePath = workEnvironment.ConfigFilePath;
+				if (!File.Exists(configFilePath))
+				{
+					packageSetup = new PackageSetup();
+					packageSetup.Save(configFilePath);
+				}
+				else
+				{
+					try
+					{
+						packageSetup = PackageSetup.Load(configFilePath);
+					}
+					catch (Exception e)
+					{
+						Log.Editor.WriteError(
+							"Failed to load PackageManager config file '{0}': {1}",
+							configFilePath,
+							Log.Exception(e));
+					}
+				}
+			}
+
+			// Assign work environment and package setup to work with
+			this.env = workEnvironment;
+			this.setup = packageSetup;
 
 			// Create internal package management objects
 			IPackageRepository[] repositories = this.setup.RepositoryUrls
@@ -188,7 +223,7 @@ namespace Duality.Editor.PackageManagement
 			// In case we've just retrieved an explicit version for the first time, save the config file.
 			if (oldPackageVersion == null)
 			{
-				this.SaveConfig();
+				this.setup.Save(this.env.ConfigFilePath);
 			}
 		}
 		/// <summary>
@@ -839,24 +874,6 @@ namespace Duality.Editor.PackageManagement
 
 			return true;
 		}
-		private void LoadConfig()
-		{
-			string configFilePath = this.env.ConfigFilePath;
-			if (!File.Exists(configFilePath))
-			{
-				this.setup = new PackageSetup();
-				this.SaveConfig();
-			}
-			else
-			{
-				this.setup.Load(configFilePath);
-			}
-		}
-		private void SaveConfig()
-		{
-			string configFilePath = this.env.ConfigFilePath;
-			this.setup.Save(configFilePath);
-		}
 
 		private XDocument PrepareUpdateFile()
 		{
@@ -1099,7 +1116,7 @@ namespace Duality.Editor.PackageManagement
 
 			// Update local package configuration file
 			this.setup.LocalPackages.RemoveAll(p => p.Id == e.Package.Id);
-			this.SaveConfig();
+			this.setup.Save(this.env.ConfigFilePath);
 
 			this.OnPackageUninstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
 		}
@@ -1113,7 +1130,7 @@ namespace Duality.Editor.PackageManagement
 			{
 				this.setup.LocalPackages.RemoveAll(p => p.Id == e.Package.Id);
 				this.setup.LocalPackages.Add(new LocalPackage(packageInfo));
-				this.SaveConfig();
+				this.setup.Save(this.env.ConfigFilePath);
 			}
 
 			// Schedule files for updating / copying
