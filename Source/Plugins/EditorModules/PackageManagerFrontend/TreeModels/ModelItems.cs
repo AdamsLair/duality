@@ -290,7 +290,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			lock (this.asyncDataLock)
 			{
-				LocalPackage installedPackage = manager.LocalPackages.FirstOrDefault(p => p.Id == this.itemPackageInfo.Id);
+				LocalPackage installedPackage = manager.LocalSetup.GetPackage(this.itemPackageInfo.Id);
 				this.installedPackageInfo = (installedPackage != null) ? installedPackage.Info : null;
 			}
 		}

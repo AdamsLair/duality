@@ -55,14 +55,6 @@ namespace Duality.Editor.PackageManagement
 		public event EventHandler<PackageEventArgs>                 PackageUninstalled           = null;
 
 
-		public IEnumerable<LocalPackage> LocalPackages
-		{
-			get { return this.setup.LocalPackages; }
-		}
-		public bool IsFirstInstall
-		{
-			get { return this.setup.IsFirstInstall; }
-		}
 		public bool IsPackageSyncRequired
 		{
 			get
@@ -76,13 +68,13 @@ namespace Duality.Editor.PackageManagement
 				foreach (IPackage package in allInstalledPackages)
 				{
 					if (!IsDualityPackage(package)) continue;
-					if (!this.setup.HasPackage(new PackageName(package.Id, package.Version.Version)))
+					if (this.setup.GetPackage(package.Id, package.Version.Version) == null)
 						return true;
 				}
 
 				// Do we have registered packages that are not installed or don't have a specific version?
 				// Also, are any of them not actually installed yet?
-				foreach (LocalPackage package in this.setup.LocalPackages)
+				foreach (LocalPackage package in this.setup.Packages)
 				{
 					if (package.Id == null) return true;
 					if (package.Version == null) return true;
@@ -216,8 +208,8 @@ namespace Duality.Editor.PackageManagement
 			if (!packageInstalled && oldPackageVersion == null)
 			{
 				// Add the explicit version to the PackageConfig file
-				this.setup.LocalPackages.RemoveAll(p => p.Id == packageInfo.Id);
-				this.setup.LocalPackages.Add(new LocalPackage(packageInfo));
+				this.setup.Packages.RemoveAll(p => p.Id == packageInfo.Id);
+				this.setup.Packages.Add(new LocalPackage(packageInfo));
 			}
 
 			// In case we've just retrieved an explicit version for the first time, save the config file.
@@ -243,7 +235,7 @@ namespace Duality.Editor.PackageManagement
 				.LocalRepository
 				.GetPackages()
 				.ToArray();
-			LocalPackage[] registeredPackages = this.setup.LocalPackages
+			LocalPackage[] registeredPackages = this.setup.Packages
 				.ToArray();
 
 			foreach (IPackage package in allInstalledPackages)
@@ -280,7 +272,7 @@ namespace Duality.Editor.PackageManagement
 		}
 		public bool CanUninstallPackage(PackageInfo package)
 		{
-			return this.CanUninstallPackage(this.setup.LocalPackages.FirstOrDefault(p => p.Id == package.Id));
+			return this.CanUninstallPackage(this.setup.GetPackage(package.Id));
 		}
 		[DebuggerNonUserCode]
 		public bool CanUninstallPackage(LocalPackage package)
@@ -301,7 +293,7 @@ namespace Duality.Editor.PackageManagement
 
 		public void UpdatePackage(PackageInfo package)
 		{
-			this.UpdatePackage(this.setup.LocalPackages.FirstOrDefault(p => p.Id == package.Id));
+			this.UpdatePackage(this.setup.GetPackage(package.Id));
 		}
 		public void UpdatePackage(LocalPackage package)
 		{
@@ -319,7 +311,7 @@ namespace Duality.Editor.PackageManagement
 		}
 		public bool CanUpdatePackage(PackageInfo package)
 		{
-			return this.CanUpdatePackage(this.setup.LocalPackages.FirstOrDefault(p => p.Id == package.Id));
+			return this.CanUpdatePackage(this.setup.GetPackage(package.Id));
 		}
 		[DebuggerNonUserCode]
 		public bool CanUpdatePackage(LocalPackage package)
@@ -346,7 +338,7 @@ namespace Duality.Editor.PackageManagement
 		public IEnumerable<PackageInfo> GetUpdatablePackages()
 		{
 			List<PackageInfo> updatePackages = new List<PackageInfo>();
-			LocalPackage[] targetPackages = this.setup.LocalPackages.ToArray();
+			LocalPackage[] targetPackages = this.setup.Packages.ToArray();
 			for (int i = 0; i < targetPackages.Length; i++)
 			{
 				PackageInfo update = this.QueryPackageInfo(targetPackages[i].PackageName.VersionInvariant);
@@ -365,7 +357,7 @@ namespace Duality.Editor.PackageManagement
 		public PackageCompatibility GetCompatibilityLevel(PackageInfo target)
 		{
 			// If the target package is already installed in the matching version, assume compatibility
-			if (this.setup.LocalPackages.Any(local => local.Id == target.Id && local.Version == target.Version))
+			if (this.setup.GetPackage(target.Id, target.Version) != null)
 				return PackageCompatibility.Definite;
 
 			// Determine all packages that might be updated or installed
@@ -392,7 +384,7 @@ namespace Duality.Editor.PackageManagement
 			Dictionary<PackageInfo,LocalPackage> localMap = new Dictionary<PackageInfo,LocalPackage>();
 			foreach (PackageInfo package in touchedPackages)
 			{
-				LocalPackage local = this.setup.LocalPackages.FirstOrDefault(p => p.Id == package.Id);
+				LocalPackage local = this.setup.GetPackage(package.Id);
 				if (local == null) continue;
 
 				localMap.Add(package, local);
@@ -578,7 +570,7 @@ namespace Duality.Editor.PackageManagement
 						// If nothing turns up, see if we have a similar package locally and try that as well
 						if (dependency == null)
 						{
-							LocalPackage localDependency = this.setup.LocalPackages.FirstOrDefault(p => p.Id == dependencyName.Id);
+							LocalPackage localDependency = this.setup.GetPackage(dependencyName.VersionInvariant);
 							if (localDependency != null)
 							{
 								if (localDependency.Info != null)
@@ -777,7 +769,7 @@ namespace Duality.Editor.PackageManagement
 
 		private void RetrieveLocalPackageInfo()
 		{
-			foreach (LocalPackage localPackage in this.setup.LocalPackages)
+			foreach (LocalPackage localPackage in this.setup.Packages)
 			{
 				if (localPackage.Version != null && !string.IsNullOrEmpty(localPackage.Id))
 				{
@@ -1115,7 +1107,7 @@ namespace Duality.Editor.PackageManagement
 			updateDoc.Save(this.env.UpdateFilePath);
 
 			// Update local package configuration file
-			this.setup.LocalPackages.RemoveAll(p => p.Id == e.Package.Id);
+			this.setup.Packages.RemoveAll(p => p.Id == e.Package.Id);
 			this.setup.Save(this.env.ConfigFilePath);
 
 			this.OnPackageUninstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
@@ -1128,8 +1120,8 @@ namespace Duality.Editor.PackageManagement
 			PackageInfo packageInfo = this.QueryPackageInfo(new PackageName(e.Package.Id, e.Package.Version.Version));
 			if (packageInfo.IsDualityPackage)
 			{
-				this.setup.LocalPackages.RemoveAll(p => p.Id == e.Package.Id);
-				this.setup.LocalPackages.Add(new LocalPackage(packageInfo));
+				this.setup.Packages.RemoveAll(p => p.Id == e.Package.Id);
+				this.setup.Packages.Add(new LocalPackage(packageInfo));
 				this.setup.Save(this.env.ConfigFilePath);
 			}
 

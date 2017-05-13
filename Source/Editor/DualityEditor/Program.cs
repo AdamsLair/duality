@@ -69,7 +69,7 @@ namespace Duality.Editor
 				PackageManager packageManager = new PackageManager();
 
 				// On the first install startup, display a generic license agreement for Duality
-				if (packageManager.IsFirstInstall)
+				if (packageManager.LocalSetup.IsFirstInstall)
 				{
 					LicenseAcceptDialog licenseDialog = new LicenseAcceptDialog
 					{
@@ -108,7 +108,7 @@ namespace Duality.Editor
 				// If we have nothing to apply, but still require a sync, something went wrong.
 				// Should this happen on our first start, we'll remind the user that the install
 				// requires an internet connection and refuse to start.
-				else if (packageManager.IsPackageSyncRequired && packageManager.IsFirstInstall)
+				else if (packageManager.IsPackageSyncRequired && packageManager.LocalSetup.IsFirstInstall)
 				{
 					DialogResult result = MessageBox.Show( 
 						GeneralRes.Msg_ErrorFirstDualityInstall_Desc, 
@@ -160,7 +160,7 @@ namespace Duality.Editor
 			yield return null;
 
 			// Retrieve all registered Duality packages and sort them so we don't accidentally install an old dependency
-			LocalPackage[] packagesToVerify = manager.LocalPackages.ToArray();
+			LocalPackage[] packagesToVerify = manager.LocalSetup.Packages.ToArray();
 			manager.OrderByDependencies(packagesToVerify);
 			yield return null;
 

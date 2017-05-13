@@ -34,25 +34,33 @@ namespace Duality.Editor.PackageManagement
 			get { return this.firstInstall; }
 			set { this.firstInstall = value; }
 		}
-		public List<LocalPackage> LocalPackages
+		public List<LocalPackage> Packages
 		{
 			get { return this.localPackages; }
 		}
 
-
-		public bool HasPackage(PackageName package)
+		
+		public LocalPackage GetPackage(string id)
+		{
+			return this.GetPackage(new PackageName(id));
+		}
+		public LocalPackage GetPackage(string id, Version version)
+		{
+			return this.GetPackage(new PackageName(id, version));
+		}
+		public LocalPackage GetPackage(PackageName name)
 		{
 			foreach (LocalPackage localPackage in this.localPackages)
 			{
-				if (localPackage.Id == package.Id)
+				if (localPackage.Id == name.Id)
 				{
-					 if (localPackage.Version == package.Version)
-						 return true;
-					 else if (package.Version == null)
-						 return true;
+					 if (localPackage.Version == name.Version)
+						 return localPackage;
+					 else if (name.Version == null)
+						 return localPackage;
 				}
 			}
-			return false;
+			return null;
 		}
 
 		public void Populate(string configFilePath)
