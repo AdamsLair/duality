@@ -43,7 +43,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				if (packageIconCacheDir == null)
 				{
 					packageIconCacheDir = Path.Combine(
-						DualityEditorApp.PackageManager.LocalPackageStoreDirectory, 
+						DualityEditorApp.PackageManager.LocalEnvironment.RepositoryPath, 
 						"IconCache");
 				}
 				return packageIconCacheDir;

@@ -37,22 +37,15 @@ namespace Duality.Editor.PackageManagement
 			"AdamsLair.Duality.Launcher"
 		};
 
-		private const string UpdateConfigFile     = "ApplyUpdate.xml";
-		private const string PackageConfigFile    = "PackageConfig.xml";
-		private const string LocalPackageDir      = EditorHelper.SourceDirectory + @"\Packages";
 
+		private PackageSetup              setup          = new PackageSetup();
+		private PackageManagerEnvironment env            = null;
+		private bool                      hasLocalRepo   = false;
+		private List<PackageName>         uninstallQueue = new List<PackageName>();
 
-		private PackageSetup       setup           = new PackageSetup();
-		private bool               hasLocalRepo    = false;
-		private string             dataTargetDir   = null;
-		private string             sourceTargetDir = null;
-		private string             pluginTargetDir = null;
-		private string             rootPath        = null;
-		private List<PackageName>  uninstallQueue  = new List<PackageName>();
-
-		private	object                              cacheLock              = new object();
-		private	Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
-		private	Dictionary<NuGet.IPackage,bool>     licenseAcceptedCache   = new Dictionary<NuGet.IPackage,bool>();
+		private object                              cacheLock              = new object();
+		private Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
+		private Dictionary<NuGet.IPackage,bool>     licenseAcceptedCache   = new Dictionary<NuGet.IPackage,bool>();
 
 		private NuGet.PackageManager     manager    = null;
 		private NuGet.IPackageRepository repository = null;
@@ -102,32 +95,17 @@ namespace Duality.Editor.PackageManagement
 				return false;
 			}
 		}
-		/// <summary>
-		/// [GET] The local directory where packages are installed and stored prior to applying the update.
-		/// </summary>
-		public string LocalPackageStoreDirectory
+		public PackageManagerEnvironment LocalEnvironment
 		{
-			get { return LocalPackageDir; }
-		}
-		private string PackageFilePath
-		{
-			get { return Path.Combine(this.rootPath, PackageConfigFile); }
-		}
-		private string UpdateFilePath
-		{
-			get { return Path.Combine(this.rootPath, UpdateConfigFile); }
+			get { return this.env; }
 		}
 
 
-		public PackageManager(string rootPath = null, string dataTargetDir = null, string sourceTargetDir = null, string pluginTargetDir = null)
+		public PackageManager(string rootPath = null)
 		{
-			// Setup base parameters
-			this.rootPath        = rootPath        ?? Environment.CurrentDirectory;
-			this.dataTargetDir   = dataTargetDir   ?? Path.Combine(this.rootPath, DualityApp.DataDirectory);
-			this.sourceTargetDir = sourceTargetDir ?? Path.Combine(this.rootPath, EditorHelper.SourceCodeDirectory);
-			this.pluginTargetDir = pluginTargetDir ?? Path.Combine(this.rootPath, DualityApp.PluginDirectory);
+			this.env = new PackageManagerEnvironment(rootPath);
 
-			// Load additional config parameters
+			// Load the active package setup from the config file
 			this.LoadConfig();
 
 			// Create internal package management objects
@@ -137,7 +115,7 @@ namespace Duality.Editor.PackageManagement
 				.ToArray();
 			this.hasLocalRepo = repositories.OfType<LocalPackageRepository>().Any();
 			this.repository = new AggregateRepository(repositories);
-			this.manager = new NuGet.PackageManager(this.repository, LocalPackageDir);
+			this.manager = new NuGet.PackageManager(this.repository, this.env.RepositoryPath);
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
 			this.manager.PackageUninstalling += this.manager_PackageUninstalling;
@@ -461,7 +439,7 @@ namespace Duality.Editor.PackageManagement
 		public bool ApplyUpdate(bool restartEditor = true)
 		{
 			const string UpdaterFileName = "DualityUpdater.exe";
-			if (!File.Exists(this.UpdateFilePath)) return false;
+			if (!File.Exists(this.env.UpdateFilePath)) return false;
 			
 			// Manually perform update operations on the updater itself
 			try
@@ -492,7 +470,7 @@ namespace Duality.Editor.PackageManagement
 
 			// Run the updater application
 			Process.Start(UpdaterFileName, string.Format("\"{0}\" \"{1}\" \"{2}\"",
-				UpdateConfigFile,
+				this.env.UpdateFilePath,
 				restartEditor ? typeof(DualityEditorApp).Assembly.Location : "",
 				restartEditor ? Environment.CurrentDirectory : ""));
 
@@ -795,7 +773,7 @@ namespace Duality.Editor.PackageManagement
 				if (schemeName != null && Uri.CheckSchemeName(schemeName))
 					repositoryUrl = new Uri(repositoryUrl).AbsoluteUri;
 				else
-					repositoryUrl = new Uri("file:///" + Path.GetFullPath(Path.Combine(this.rootPath, repositoryUrl))).AbsolutePath;
+					repositoryUrl = new Uri("file:///" + Path.GetFullPath(Path.Combine(this.env.RootPath, repositoryUrl))).AbsolutePath;
 			}
 			catch (UriFormatException)
 			{
@@ -863,7 +841,7 @@ namespace Duality.Editor.PackageManagement
 		}
 		private void LoadConfig()
 		{
-			string configFilePath = this.PackageFilePath;
+			string configFilePath = this.env.ConfigFilePath;
 			if (!File.Exists(configFilePath))
 			{
 				this.setup = new PackageSetup();
@@ -876,13 +854,14 @@ namespace Duality.Editor.PackageManagement
 		}
 		private void SaveConfig()
 		{
-			this.setup.Save(this.PackageFilePath);
+			string configFilePath = this.env.ConfigFilePath;
+			this.setup.Save(configFilePath);
 		}
 
 		private XDocument PrepareUpdateFile()
 		{
 			// Load existing update file in order to update it
-			string updateFilePath = this.UpdateFilePath;
+			string updateFilePath = this.env.UpdateFilePath;
 			XDocument updateDoc = null;
 			if (File.Exists(updateFilePath))
 			{
@@ -982,9 +961,9 @@ namespace Duality.Editor.PackageManagement
 			bool isPluginPackage = isDualityPackage && package.Tags.Contains(PluginTag);
 
 			string folderFriendlyPackageName = package.Id;
-			string binaryBaseDir = this.pluginTargetDir;
-			string contentBaseDir = this.dataTargetDir;
-			string sourceBaseDir = Path.Combine(this.sourceTargetDir, folderFriendlyPackageName);
+			string binaryBaseDir = this.env.TargetPluginPath;
+			string contentBaseDir = this.env.TargetDataPath;
+			string sourceBaseDir = Path.Combine(this.env.TargetSourcePath, folderFriendlyPackageName);
 			if (!isPluginPackage || !isDualityPackage)
 			{
 				binaryBaseDir = "";
@@ -1116,7 +1095,7 @@ namespace Duality.Editor.PackageManagement
 				if (Path.GetExtension(packageFile) == ".csproj")
 					this.AppendSeparateProjectUpdateFileEntry(updateDoc, packageFile, EditorHelper.SourceCodeSolutionFile);
 			}
-			updateDoc.Save(this.UpdateFilePath);
+			updateDoc.Save(this.env.UpdateFilePath);
 
 			// Update local package configuration file
 			this.setup.LocalPackages.RemoveAll(p => p.Id == e.Package.Id);
@@ -1165,7 +1144,7 @@ namespace Duality.Editor.PackageManagement
 				if (Path.GetExtension(pair.Key) == ".csproj")
 					this.AppendIntegrateProjectUpdateFileEntry(updateDoc, pair.Key, EditorHelper.SourceCodeSolutionFile);
 			}
-			updateDoc.Save(this.UpdateFilePath);
+			updateDoc.Save(this.env.UpdateFilePath);
 
 			this.OnPackageInstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
 		}

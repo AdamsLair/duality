@@ -16,7 +16,7 @@ using Duality.Editor.Forms;
 
 namespace Duality.Editor.PackageManagement
 {
-	public sealed class PackageSetup
+	public class PackageSetup
 	{
 		private const string DefaultRepositoryUrl = @"https://packages.nuget.org/api/v2";
 
