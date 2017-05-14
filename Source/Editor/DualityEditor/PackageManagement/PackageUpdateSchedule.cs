@@ -18,7 +18,17 @@ namespace Duality.Editor.PackageManagement
 {
 	public class PackageUpdateSchedule
 	{
+		public static readonly string CopyItem = "Update";
+		public static readonly string DeleteItem = "Remove";
+		public static readonly string IntegrateProjectItem = "IntegrateProject";
+		public static readonly string SeparateProjectItem = "SeparateProject";
+
 		private XDocument document;
+
+		public IEnumerable<XElement> Items
+		{
+			get { return this.document.Root.Elements(); }
+		}
 
 		public PackageUpdateSchedule()
 		{
@@ -28,50 +38,50 @@ namespace Duality.Editor.PackageManagement
 		public void AppendCopyFile(string copySource, string copyTarget)
 		{
 			// Remove previous deletion schedules referring to the copy target
-			this.RemoveUpdateItems("Remove", copyTarget);
+			this.RemoveItems(DeleteItem, copyTarget);
 
 			// Append the copy entry
-			this.document.Root.Add(new XElement("Update", 
+			this.document.Root.Add(new XElement(CopyItem, 
 				new XAttribute("source", copySource), 
 				new XAttribute("target", copyTarget)));
 		}
 		public void AppendDeleteFile(string deleteTarget)
 		{
 			// Remove previous elements referring to the yet-to-delete file
-			this.RemoveUpdateItems("Update", deleteTarget);
-			this.RemoveUpdateItems("IntegrateProject", deleteTarget);
+			this.RemoveItems(CopyItem, deleteTarget);
+			this.RemoveItems(IntegrateProjectItem, deleteTarget);
 
 			// Append the delete entry
-			this.document.Root.Add(new XElement("Remove", 
+			this.document.Root.Add(new XElement(DeleteItem, 
 				new XAttribute("target", deleteTarget)));
 		}
 		public void AppendIntegrateProject(string projectFile, string solutionFile, string pluginDirectory)
 		{
 			// Remove previous deletion schedules referring to the copy target
-			this.RemoveUpdateItems("Remove", projectFile);
-			this.RemoveUpdateItems("Remove", solutionFile);
-			this.RemoveUpdateItems("SeparateProject", solutionFile);
+			this.RemoveItems(DeleteItem, projectFile);
+			this.RemoveItems(DeleteItem, solutionFile);
+			this.RemoveItems(SeparateProjectItem, solutionFile);
 
 			// Append the integrate entry
-			this.document.Root.Add(new XElement("IntegrateProject", 
+			this.document.Root.Add(new XElement(IntegrateProjectItem, 
 				new XAttribute("project", projectFile), 
 				new XAttribute("solution", solutionFile), 
 				new XAttribute("pluginDirectory", pluginDirectory)));
 		}
 		public void AppendSeparateProject(string projectFile, string solutionFile)
 		{
-			this.RemoveUpdateItems("IntegrateProject", projectFile);
+			this.RemoveItems(IntegrateProjectItem, projectFile);
 
 			// Append the integrate entry
-			this.document.Root.Add(new XElement("SeparateProject", 
+			this.document.Root.Add(new XElement(SeparateProjectItem, 
 				new XAttribute("project", projectFile), 
 				new XAttribute("solution", solutionFile)));
 		}
-		public void RemoveUpdateItems(string elementName, string referringTo)
+		private void RemoveItems(string itemType, string referringToFile)
 		{
-			IEnumerable<XElement> query = string.IsNullOrEmpty(elementName) ? 
+			IEnumerable<XElement> query = string.IsNullOrEmpty(itemType) ? 
 				this.document.Root.Elements() : 
-				this.document.Root.Elements(elementName);
+				this.document.Root.Elements(itemType);
 			List<XElement> queryResults = query.ToList();
 
 			foreach (XElement element in queryResults)
@@ -81,7 +91,7 @@ namespace Duality.Editor.PackageManagement
 				{
 					try
 					{
-						if (PathOp.ArePathsEqual(attribute.Value, referringTo))
+						if (PathOp.ArePathsEqual(attribute.Value, referringToFile))
 						{
 							anyReference = true;
 							break;
