@@ -45,7 +45,7 @@ namespace Duality.Editor.PackageManagement
 			this.document.Root.Add(new XElement("Remove", 
 				new XAttribute("target", deleteTarget)));
 		}
-		public void AppendIntegrateProject(string projectFile, string solutionFile)
+		public void AppendIntegrateProject(string projectFile, string solutionFile, string pluginDirectory)
 		{
 			// Remove previous deletion schedules referring to the copy target
 			this.RemoveUpdateItems("Remove", projectFile);
@@ -56,7 +56,7 @@ namespace Duality.Editor.PackageManagement
 			this.document.Root.Add(new XElement("IntegrateProject", 
 				new XAttribute("project", projectFile), 
 				new XAttribute("solution", solutionFile), 
-				new XAttribute("pluginDirectory", DualityApp.PluginDirectory)));
+				new XAttribute("pluginDirectory", pluginDirectory)));
 		}
 		public void AppendSeparateProject(string projectFile, string solutionFile)
 		{

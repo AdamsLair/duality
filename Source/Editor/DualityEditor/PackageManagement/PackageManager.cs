@@ -1025,7 +1025,11 @@ namespace Duality.Editor.PackageManagement
 				// Append the scheduled operation to the updater config file.
 				updateSchedule.AppendDeleteFile(packageFile);
 				if (Path.GetExtension(packageFile) == ".csproj")
-					updateSchedule.AppendSeparateProject(packageFile, EditorHelper.SourceCodeSolutionFile);
+				{
+					updateSchedule.AppendSeparateProject(
+						packageFile, 
+						this.env.TargetSolutionPathRelative);
+				}
 			}
 			this.SaveUpdateSchedule(updateSchedule);
 
@@ -1074,7 +1078,12 @@ namespace Duality.Editor.PackageManagement
 				// Append the scheduled operation to the updater config file.
 				updateSchedule.AppendCopyFile(Path.Combine(e.InstallPath, pair.Value), pair.Key);
 				if (Path.GetExtension(pair.Key) == ".csproj")
-					updateSchedule.AppendIntegrateProject(pair.Key, EditorHelper.SourceCodeSolutionFile);
+				{
+					updateSchedule.AppendIntegrateProject(
+						pair.Key, 
+						this.env.TargetSolutionPathRelative, 
+						this.env.TargetPluginPathRelative);
+				}
 			}
 			this.SaveUpdateSchedule(updateSchedule);
 

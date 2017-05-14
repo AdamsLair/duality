@@ -56,6 +56,15 @@ namespace Duality.Editor.PackageManagement
 			get { return this.updateFilePath; }
 		}
 
+		public string TargetPluginPathRelative
+		{
+			get { return DualityApp.PluginDirectory; }
+		}
+		public string TargetSolutionPathRelative
+		{
+			get { return EditorHelper.SourceCodeSolutionFile; }
+		}
+
 
 		public PackageManagerEnvironment(string rootPath)
 		{
@@ -67,7 +76,7 @@ namespace Duality.Editor.PackageManagement
 		{
 			this.targetDataPath   = Path.Combine(this.rootPath, DualityApp.DataDirectory);
 			this.targetSourcePath = Path.Combine(this.rootPath, EditorHelper.SourceCodeDirectory);
-			this.targetPluginPath = Path.Combine(this.rootPath, DualityApp.PluginDirectory);
+			this.targetPluginPath = Path.Combine(this.rootPath, this.TargetPluginPathRelative);
 			this.localRepoPath    = Path.Combine(this.rootPath, EditorHelper.SourceDirectory + @"\Packages");
 			this.configFilePath   = Path.Combine(this.rootPath, "PackageConfig.xml");
 			this.updateFilePath   = Path.Combine(this.rootPath, "ApplyUpdate.xml");
