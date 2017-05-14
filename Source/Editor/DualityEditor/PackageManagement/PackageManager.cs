@@ -471,23 +471,9 @@ namespace Duality.Editor.PackageManagement
 			// Manually perform update operations on the updater itself
 			try
 			{
-				XDocument updateDoc = this.PrepareUpdateFile();
-				foreach (XElement elem in updateDoc.Root.Elements())
-				{
-					XAttribute attribTarget = elem.Attribute("target");
-					XAttribute attribSource = elem.Attribute("source");
-					string target = (attribTarget != null) ? attribTarget.Value : null;
-					string source = (attribSource != null) ? attribSource.Value : null;
-
-					// Only Updater-updates
-					if (string.Equals(Path.GetFileName(target), UpdaterFileName, StringComparison.InvariantCultureIgnoreCase))
-					{
-						if (string.Equals(elem.Name.LocalName, "Remove", StringComparison.InvariantCultureIgnoreCase))
-							File.Delete(target);
-						else if (string.Equals(elem.Name.LocalName, "Update", StringComparison.InvariantCultureIgnoreCase))
-							File.Copy(source, target, true);
-					}
-				}
+				PackageUpdateSchedule schedule = this.PrepareUpdateSchedule();
+				schedule.ApplyUpdaterChanges(UpdaterFileName);
+				this.SaveUpdateSchedule(schedule);
 			}
 			catch (Exception e)
 			{
@@ -867,99 +853,36 @@ namespace Duality.Editor.PackageManagement
 			return true;
 		}
 
-		private XDocument PrepareUpdateFile()
+		private PackageUpdateSchedule PrepareUpdateSchedule()
 		{
-			// Load existing update file in order to update it
+			// Load existing update schedule in order to extend it
 			string updateFilePath = this.env.UpdateFilePath;
-			XDocument updateDoc = null;
+			PackageUpdateSchedule updateSchedule = null;
 			if (File.Exists(updateFilePath))
 			{
 				try
 				{
-					updateDoc = XDocument.Load(updateFilePath);
+					updateSchedule = PackageUpdateSchedule.Load(updateFilePath);
 				}
 				catch (Exception exception)
 				{
-					updateDoc = null;
-					Log.Editor.WriteError("Can't update existing '{0}' file: {1}", 
+					updateSchedule = null;
+					Log.Editor.WriteError("Error parsing existing package update schedule '{0}': {1}", 
 						Path.GetFileName(updateFilePath), 
 						Log.Exception(exception));
 				}
 			}
 
-			// If none existed yet, create an update file skeleton
-			if (updateDoc == null)
-			{
-				updateDoc = new XDocument(new XElement("UpdateConfig"));
-			}
+			// If none existed yet, create a fresh update schedule
+			if (updateSchedule == null)
+				updateSchedule = new PackageUpdateSchedule();
 
-			return updateDoc;
+			return updateSchedule;
 		}
-		private void AppendCopyUpdateFileEntry(XDocument updateDoc, string copySource, string copyTarget)
+		private void SaveUpdateSchedule(PackageUpdateSchedule schedule)
 		{
-			// Remove previous deletion schedules referring to the copy target
-			this.RemoveUpdateFileEntries(updateDoc, "Remove", copyTarget);
-
-			// Append the copy entry
-			updateDoc.Root.Add(new XElement("Update", 
-				new XAttribute("source", copySource), 
-				new XAttribute("target", copyTarget)));
-		}
-		private void AppendDeleteUpdateFileEntry(XDocument updateDoc, string deleteTarget)
-		{
-			// Remove previous elements referring to the yet-to-delete file
-			this.RemoveUpdateFileEntries(updateDoc, "Update", deleteTarget);
-			this.RemoveUpdateFileEntries(updateDoc, "IntegrateProject", deleteTarget);
-
-			// Append the delete entry
-			updateDoc.Root.Add(new XElement("Remove", 
-				new XAttribute("target", deleteTarget)));
-		}
-		private void AppendIntegrateProjectUpdateFileEntry(XDocument updateDoc, string projectFile, string solutionFile)
-		{
-			// Remove previous deletion schedules referring to the copy target
-			this.RemoveUpdateFileEntries(updateDoc, "Remove", projectFile);
-			this.RemoveUpdateFileEntries(updateDoc, "Remove", solutionFile);
-			this.RemoveUpdateFileEntries(updateDoc, "SeparateProject", solutionFile);
-
-			// Append the integrate entry
-			updateDoc.Root.Add(new XElement("IntegrateProject", 
-				new XAttribute("project", projectFile), 
-				new XAttribute("solution", solutionFile), 
-				new XAttribute("pluginDirectory", DualityApp.PluginDirectory)));
-		}
-		private void AppendSeparateProjectUpdateFileEntry(XDocument updateDoc, string projectFile, string solutionFile)
-		{
-			this.RemoveUpdateFileEntries(updateDoc, "IntegrateProject", projectFile);
-
-			// Append the integrate entry
-			updateDoc.Root.Add(new XElement("SeparateProject", 
-				new XAttribute("project", projectFile), 
-				new XAttribute("solution", solutionFile)));
-		}
-		private void RemoveUpdateFileEntries(XDocument updateDoc, string elementName, string referringTo)
-		{
-			var query = string.IsNullOrEmpty(elementName) ? updateDoc.Root.Elements() : updateDoc.Root.Elements(elementName);
-			foreach (XElement element in query.ToArray())
-			{
-				bool anyReference = false;
-				foreach (XAttribute attribute in element.Attributes())
-				{
-					try
-					{
-						if (PathOp.ArePathsEqual(attribute.Value, referringTo))
-						{
-							anyReference = true;
-							break;
-						}
-					}
-					catch (Exception) {}
-				}
-				if (anyReference)
-				{
-					element.Remove();
-				}
-			}
+			string updateFilePath = this.env.UpdateFilePath;
+			schedule.Save(updateFilePath);
 		}
 
 		private Dictionary<string,string> CreateFileMapping(NuGet.IPackage package)
@@ -1083,7 +1006,7 @@ namespace Duality.Editor.PackageManagement
 			IEnumerable<string> localFiles = this.CreateFileMapping(e.Package).Select(p => p.Key);
 
 			// Schedule files for removal
-			XDocument updateDoc = this.PrepareUpdateFile();
+			PackageUpdateSchedule updateSchedule = this.PrepareUpdateSchedule();
 			foreach (var packageFile in localFiles)
 			{
 				// Don't remove any file that is still referenced by a local package
@@ -1100,11 +1023,11 @@ namespace Duality.Editor.PackageManagement
 				if (stillInUse) continue;
 
 				// Append the scheduled operation to the updater config file.
-				this.AppendDeleteUpdateFileEntry(updateDoc, packageFile);
+				updateSchedule.AppendDeleteFile(packageFile);
 				if (Path.GetExtension(packageFile) == ".csproj")
-					this.AppendSeparateProjectUpdateFileEntry(updateDoc, packageFile, EditorHelper.SourceCodeSolutionFile);
+					updateSchedule.AppendSeparateProject(packageFile, EditorHelper.SourceCodeSolutionFile);
 			}
-			updateDoc.Save(this.env.UpdateFilePath);
+			this.SaveUpdateSchedule(updateSchedule);
 
 			// Update local package configuration file
 			this.setup.Packages.RemoveAll(p => p.Id == e.Package.Id);
@@ -1126,7 +1049,7 @@ namespace Duality.Editor.PackageManagement
 			}
 
 			// Schedule files for updating / copying
-			XDocument updateDoc = this.PrepareUpdateFile();
+			PackageUpdateSchedule updateSchedule = this.PrepareUpdateSchedule();
 			Dictionary<string,string> fileMapping = this.CreateFileMapping(e.Package);
 			foreach (var pair in fileMapping)
 			{
@@ -1149,11 +1072,11 @@ namespace Duality.Editor.PackageManagement
 				if (isOldVersion) continue;
 
 				// Append the scheduled operation to the updater config file.
-				this.AppendCopyUpdateFileEntry(updateDoc, Path.Combine(e.InstallPath, pair.Value), pair.Key);
+				updateSchedule.AppendCopyFile(Path.Combine(e.InstallPath, pair.Value), pair.Key);
 				if (Path.GetExtension(pair.Key) == ".csproj")
-					this.AppendIntegrateProjectUpdateFileEntry(updateDoc, pair.Key, EditorHelper.SourceCodeSolutionFile);
+					updateSchedule.AppendIntegrateProject(pair.Key, EditorHelper.SourceCodeSolutionFile);
 			}
-			updateDoc.Save(this.env.UpdateFilePath);
+			this.SaveUpdateSchedule(updateSchedule);
 
 			this.OnPackageInstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
 		}
