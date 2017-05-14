@@ -16,6 +16,9 @@ using Duality.Editor.Forms;
 
 namespace Duality.Editor.PackageManagement
 {
+	/// <summary>
+	/// Describes the local working environment of a <see cref="PackageManager"/>.
+	/// </summary>
 	public class PackageManagerEnvironment
 	{
 		private string rootPath         = null;
@@ -27,39 +30,70 @@ namespace Duality.Editor.PackageManagement
 		private string updateFilePath   = null;
 
 
+		/// <summary>
+		/// [GET] The root path to work in, which is usually the Duality project folder.
+		/// </summary>
 		public string RootPath
 		{
 			get { return this.rootPath; }
 		}
+		/// <summary>
+		/// [GET] The path where <see cref="Resource"/> package contents are copied to after installation.
+		/// </summary>
 		public string TargetDataPath
 		{
 			get { return this.targetDataPath; }
 		}
+		/// <summary>
+		/// [GET] The path where source code package contents are copied to after installation.
+		/// </summary>
 		public string TargetSourcePath
 		{
 			get { return this.targetSourcePath; }
 		}
+		/// <summary>
+		/// [GET] The path where plugin package contents are copied to after installation.
+		/// </summary>
 		public string TargetPluginPath
 		{
 			get { return this.targetPluginPath; }
 		}
+		/// <summary>
+		/// [GET] The path of the local package repository where packages will be installed to by NuGet.
+		/// After NuGet completed its installation, Duality will take care of copying each file to
+		/// its intended destination.
+		/// </summary>
 		public string RepositoryPath
 		{
 			get { return this.localRepoPath; }
 		}
+		/// <summary>
+		/// [GET] The path where the local <see cref="PackageSetup"/> config file is located.
+		/// </summary>
 		public string ConfigFilePath
 		{
 			get { return this.configFilePath; }
 		}
+		/// <summary>
+		/// [GET] The path where the <see cref="PackageUpdateSchedule"/> file is located.
+		/// </summary>
 		public string UpdateFilePath
 		{
 			get { return this.updateFilePath; }
 		}
 
+		/// <summary>
+		/// [GET] The (<see cref="RootPath"/>-)relative path where plugin package contents are copied to after installation.
+		/// See <see cref="TargetPluginPath"/> for a non-relative version.
+		/// </summary>
 		public string TargetPluginPathRelative
 		{
 			get { return DualityApp.PluginDirectory; }
 		}
+		/// <summary>
+		/// [GET] The (<see cref="RootPath"/>-)relative path of the source code solution file where source code 
+		/// project files from packages will be integrated after installation.
+		/// </summary>
 		public string TargetSolutionPathRelative
 		{
 			get { return EditorHelper.SourceCodeSolutionFile; }
