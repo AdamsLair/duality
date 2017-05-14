@@ -16,15 +16,40 @@ using Duality.Editor.Forms;
 
 namespace Duality.Editor.PackageManagement
 {
+	/// <summary>
+	/// Describes the required operations to apply a previously performed package operation.
+	/// 
+	/// The schedule is what's usually stored in a file at the <see cref="PackageManagerEnvironment.UpdateFilePath"/>,
+	/// which is read and executed by the updater application.
+	/// </summary>
 	public class PackageUpdateSchedule
 	{
+		/// <summary>
+		/// Element name of copy file update instructions. See <see cref="AppendCopyFile"/>.
+		/// </summary>
 		public static readonly string CopyItem = "Update";
+		/// <summary>
+		/// Element name of delete file update instructions. See <see cref="AppendDeleteFile"/>.
+		/// </summary>
 		public static readonly string DeleteItem = "Remove";
+		/// <summary>
+		/// Element name of project integration update instructions. See <see cref="AppendIntegrateProject"/>.
+		/// </summary>
 		public static readonly string IntegrateProjectItem = "IntegrateProject";
+		/// <summary>
+		/// Element name of project separation update instructions. See <see cref="AppendSeparateProject"/>.
+		/// </summary>
 		public static readonly string SeparateProjectItem = "SeparateProject";
+
 
 		private XDocument document;
 
+		/// <summary>
+		/// [GET] Enumerates all update instruction items in the schedule.
+		/// The type of each instruction can be derived from the element names,
+		/// but be aware that both names and attributes are an implementation
+		/// detail that can be subject to change in future versions.
+		/// </summary>
 		public IEnumerable<XElement> Items
 		{
 			get { return this.document.Root.Elements(); }
@@ -35,6 +60,11 @@ namespace Duality.Editor.PackageManagement
 			this.document = new XDocument(new XElement("UpdateConfig"));
 		}
 
+		/// <summary>
+		/// Appends a copy file instruction to the update schedule.
+		/// </summary>
+		/// <param name="copySource"></param>
+		/// <param name="copyTarget"></param>
 		public void AppendCopyFile(string copySource, string copyTarget)
 		{
 			// Remove previous deletion schedules referring to the copy target
@@ -45,6 +75,10 @@ namespace Duality.Editor.PackageManagement
 				new XAttribute("source", copySource), 
 				new XAttribute("target", copyTarget)));
 		}
+		/// <summary>
+		/// Appends a delete file instruction to the update schedule.
+		/// </summary>
+		/// <param name="deleteTarget"></param>
 		public void AppendDeleteFile(string deleteTarget)
 		{
 			// Remove previous elements referring to the yet-to-delete file
@@ -55,6 +89,14 @@ namespace Duality.Editor.PackageManagement
 			this.document.Root.Add(new XElement(DeleteItem, 
 				new XAttribute("target", deleteTarget)));
 		}
+		/// <summary>
+		/// Appends a project integration instruction to the update schedule.
+		/// This instruction type will make sure that the specified source code project file
+		/// is referenced in the Duality project's primary source code solution file.
+		/// </summary>
+		/// <param name="projectFile"></param>
+		/// <param name="solutionFile"></param>
+		/// <param name="pluginDirectory"></param>
 		public void AppendIntegrateProject(string projectFile, string solutionFile, string pluginDirectory)
 		{
 			// Remove previous deletion schedules referring to the copy target
@@ -68,6 +110,13 @@ namespace Duality.Editor.PackageManagement
 				new XAttribute("solution", solutionFile), 
 				new XAttribute("pluginDirectory", pluginDirectory)));
 		}
+		/// <summary>
+		/// Appends a project separation instruction to the update schedule.
+		/// This instruction type will make sure that the specified source code project file
+		/// is no longer referenced in the Duality project's primary source code solution file.
+		/// </summary>
+		/// <param name="projectFile"></param>
+		/// <param name="solutionFile"></param>
 		public void AppendSeparateProject(string projectFile, string solutionFile)
 		{
 			this.RemoveItems(IntegrateProjectItem, projectFile);
@@ -144,11 +193,20 @@ namespace Duality.Editor.PackageManagement
 			}
 		}
 
+		/// <summary>
+		/// Saves the update schedule to the specified file path.
+		/// </summary>
+		/// <param name="updateFilePath"></param>
 		public void Save(string updateFilePath)
 		{
 			this.document.Save(updateFilePath);
 		}
 
+		/// <summary>
+		/// Loads an existing update schedule from the specified file path.
+		/// </summary>
+		/// <param name="updateFilePath"></param>
+		/// <returns></returns>
 		public static PackageUpdateSchedule Load(string updateFilePath)
 		{
 			PackageUpdateSchedule schedule = new PackageUpdateSchedule();
