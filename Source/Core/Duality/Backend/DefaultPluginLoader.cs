@@ -120,21 +120,26 @@ namespace Duality.Backend
 						osFriendlyName = "Windows 2000";
 				}
 				Log.Core.Write(
-					"Environment Info: " + Environment.NewLine +
-					"  Current Directory: {0}" + Environment.NewLine +
-					"  Command Line: {1}" + Environment.NewLine +
-					"  Operating System: {2}" + Environment.NewLine +
-					"  64 Bit OS: {3}" + Environment.NewLine +
-					"  64 Bit Process: {4}" + Environment.NewLine +
-					"  CLR Version: {5}" + Environment.NewLine +
-					"  Processor Count: {6}",
-					Environment.CurrentDirectory,
-					Environment.CommandLine,
-					osName + (osFriendlyName != null ? (" (" + osFriendlyName + ")") : ""),
-					Environment.Is64BitOperatingSystem,
-					Environment.Is64BitProcess,
-					Environment.Version,
-					Environment.ProcessorCount);
+                    "Environment Info: " + Environment.NewLine +
+                    "  Current Directory: {0}" + Environment.NewLine +
+                    "  Command Line: {1}" + Environment.NewLine +
+                    "  Operating System: {2}" + Environment.NewLine +
+                    "  64 Bit OS: {3}" + Environment.NewLine +
+                    "  64 Bit Process: {4}" + Environment.NewLine +
+                    "  CLR Version: {5}" + Environment.NewLine +
+                    "  Processor Count: {6}" + Environment.NewLine +
+                    "  Processor Architecture: {7}" + Environment.NewLine +
+                    "  Processor Indentifer: {8}",
+
+                    Environment.CurrentDirectory,
+                    Environment.CommandLine,
+                    osName + (osFriendlyName != null ? (" (" + osFriendlyName + ")") : ""),
+                    Environment.Is64BitOperatingSystem,
+                    Environment.Is64BitProcess,
+                    Environment.Version,
+                    Environment.ProcessorCount,
+                    Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"),
+                    Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER"));
 			}
 			AppDomain.CurrentDomain.AssemblyResolve += this.CurrentDomain_AssemblyResolve;
 			AppDomain.CurrentDomain.AssemblyLoad += this.CurrentDomain_AssemblyLoad;
