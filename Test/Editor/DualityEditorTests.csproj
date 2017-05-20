@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="InitDualityEditorAttribute.cs" />
+    <Compile Include="PackageManagement\MockPackageSpec.cs" />
     <Compile Include="PackageManagement\PackageManagerTest.cs" />
     <Compile Include="PluginManager\EditorPluginManagerTest.cs" />
     <Compile Include="PluginManager\MockAssembly.cs" />

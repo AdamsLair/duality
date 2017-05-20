@@ -65,28 +65,28 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 		[Test] public void QueryPackageInfo()
 		{
-			PackageName name = new PackageName("AdamsLair.Duality.Test", new Version(1, 2, 3, 4));
-			this.CreateRemoteMockPackage(name);
+			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.Test", new Version(1, 2, 3, 4));
+			packageSpec.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
-			PackageInfo info = packageManager.QueryPackageInfo(name);
+			PackageInfo info = packageManager.QueryPackageInfo(packageSpec.Name);
 
 			Assert.IsNotNull(info);
-			Assert.AreEqual(name.Id, info.Id);
-			Assert.AreEqual(name.Version, info.Version);
-			Assert.AreEqual(name, info.PackageName);
+			Assert.AreEqual(packageSpec.Name.Id, info.Id);
+			Assert.AreEqual(packageSpec.Name.Version, info.Version);
+			Assert.AreEqual(packageSpec.Name, info.PackageName);
 		}
 		[Test] public void QueryAvailablePackages()
 		{
-			PackageName packageNonDuality = new PackageName("Some.Other.Package", new Version(1, 0, 0, 0));
-			PackageName packagePlugin = new PackageName("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
-			PackageName packagePluginLatest = new PackageName("AdamsLair.Duality.TestPlugin", new Version(1, 1, 0, 0));
-			PackageName packageSample = new PackageName("AdamsLair.Duality.TestSample", new Version(1, 1, 0, 0));
+			MockPackageSpec packageSpecNonDuality = new MockPackageSpec("Some.Other.Package", new Version(1, 0, 0, 0));
+			MockPackageSpec packageSpecPlugin = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
+			MockPackageSpec packageSpecPluginLatest = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 1, 0, 0));
+			MockPackageSpec packageSpecSample = new MockPackageSpec("AdamsLair.Duality.TestSample", new Version(1, 1, 0, 0));
 
-			this.CreateRemoteMockPackage(packageNonDuality);
-			this.CreateRemoteMockPackage(packagePlugin, new[] { PackageManager.DualityTag, PackageManager.PluginTag });
-			this.CreateRemoteMockPackage(packagePluginLatest, new[] { PackageManager.DualityTag, PackageManager.PluginTag });
-			this.CreateRemoteMockPackage(packageSample, new[] { PackageManager.DualityTag, PackageManager.SampleTag });
+			packageSpecNonDuality.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
+			packageSpecPlugin.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
+			packageSpecPluginLatest.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
+			packageSpecSample.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 			List<PackageInfo> packages = packageManager.QueryAvailablePackages().ToList();
@@ -95,17 +95,17 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsNotNull(packages);
 			Assert.AreEqual(2, packages.Count);
 
-			PackageInfo packagePluginInfo = packages.FirstOrDefault(item => item.Id == packagePlugin.Id);
-			PackageInfo packageSampleInfo = packages.FirstOrDefault(item => item.Id == packageSample.Id);
+			PackageInfo packagePluginInfo = packages.FirstOrDefault(item => item.Id == packageSpecPlugin.Name.Id);
+			PackageInfo packageSampleInfo = packages.FirstOrDefault(item => item.Id == packageSpecSample.Name.Id);
 
 			Assert.IsNotNull(packagePluginInfo);
 			Assert.IsNotNull(packageSampleInfo);
-			Assert.AreEqual(packagePluginLatest.Version, packagePluginInfo.Version);
+			Assert.AreEqual(packageSpecPluginLatest.Name.Version, packagePluginInfo.Version);
 		}
 		[Test] public void InstallPackage()
 		{
-			PackageName packageName = new PackageName("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
-			this.CreateRemoteMockPackage(packageName, new[] { PackageManager.DualityTag, PackageManager.PluginTag });
+			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
+			packageSpec.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 			
@@ -115,9 +115,9 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsFalse(File.Exists(this.workEnv.UpdateFilePath));
 
 			// Retrieve PackageInfo from the mock repository
-			PackageInfo packageInfo = packageManager.QueryPackageInfo(packageName);
+			PackageInfo packageInfo = packageManager.QueryPackageInfo(packageSpec.Name);
 			Assert.IsNotNull(packageInfo);
-			Assert.AreEqual(packageInfo.PackageName, packageName);
+			Assert.AreEqual(packageInfo.PackageName, packageSpec.Name);
 
 			// Install the package while listening for events
 			List<PackageName> installEvents = new List<PackageName>();
@@ -131,9 +131,9 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			// Assert that the package was installed properly
 			Assert.AreEqual(1, installEvents.Count);
-			Assert.AreEqual(packageName, installEvents[0]);
+			Assert.AreEqual(packageSpec.Name, installEvents[0]);
 			Assert.AreEqual(1, packageManager.LocalSetup.Packages.Count);
-			Assert.AreEqual(packageName, packageManager.LocalSetup.Packages[0].PackageName);
+			Assert.AreEqual(packageSpec.Name, packageManager.LocalSetup.Packages[0].PackageName);
 			Assert.IsTrue(packageManager.LocalSetup.Packages[0].IsInstallationComplete);
 
 			// Assert that there is an apply script now
@@ -149,58 +149,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			// them - which is why, unless Duality addresses this at some point in the future, 
 			// all plugins will end up in the Plugins root folder, regardless of their previous
 			// hierarchy.
-			this.AssertUpdateScheduleCopyItem(updateItems, packageName, "lib\\Foo.dll", "Plugins\\Foo.dll");
-			this.AssertUpdateScheduleCopyItem(updateItems, packageName, "lib\\Subfolder\\Bar.dll", "Plugins\\Bar.dll");
-		}
-
-		private void CreateRemoteMockPackage(PackageName name, IEnumerable<string> tags = null, IEnumerable<PackageName> dependencies = null)
-		{
-			dependencies = dependencies ?? Enumerable.Empty<PackageName>();
-			tags = tags ?? Enumerable.Empty<string>();
-
-			NuGet.PackageBuilder builder = new NuGet.PackageBuilder();
-			NuGet.ManifestMetadata metadata = new NuGet.ManifestMetadata
-			{
-				Authors = "AdamsLair",
-				Version = name.Version.ToString(),
-				Id = name.Id,
-				Description = string.Format("Mock Package: {0} {1}", name.Id, name.Version),
-				Tags = string.Join(" ", tags),
-				DependencySets = new List<NuGet.ManifestDependencySet>
-				{
-					new NuGet.ManifestDependencySet
-					{
-						TargetFramework = "net45",
-						Dependencies = dependencies
-							.Select(item => new NuGet.ManifestDependency { Id = item.Id, Version = item.Version.ToString() })
-							.ToList()
-					}
-				}
-			};
-
-			List<NuGet.ManifestFile> files = new List<NuGet.ManifestFile>();
-			files.Add(new NuGet.ManifestFile { Source = "Foo.dll", Target = "lib" });
-			files.Add(new NuGet.ManifestFile { Source = "Subfolder\\Bar.dll", Target = "lib\\Subfolder" });
-			this.CreateMockPackageFile("Foo.dll");
-			this.CreateMockPackageFile("Subfolder\\Bar.dll");
-
-			builder.PopulateFiles(TestPackageBuildPath, files);
-			builder.Populate(metadata);
-
-			string packageFileName = Path.Combine(
-				TestRepositoryPath, 
-				string.Format("{0}.{1}.nupkg", name.Id, name.Version));
-			using (FileStream stream = File.Open(packageFileName, FileMode.Create))
-			{
-				builder.Save(stream);
-			}
-		}
-		private void CreateMockPackageFile(string pathOrName)
-		{
-			string filePath = Path.Combine(TestPackageBuildPath, pathOrName);
-			string directory = Path.GetDirectoryName(filePath);
-			Directory.CreateDirectory(directory);
-			File.WriteAllText(filePath, "Mock Content");
+			this.AssertUpdateScheduleCopyItem(updateItems, packageSpec.Name, "lib\\Foo.dll", "Plugins\\Foo.dll");
+			this.AssertUpdateScheduleCopyItem(updateItems, packageSpec.Name, "lib\\Subfolder\\Bar.dll", "Plugins\\Bar.dll");
 		}
 
 		private void AssertUpdateScheduleCopyItem(IEnumerable<XElement> items, PackageName package, string source, string target)
