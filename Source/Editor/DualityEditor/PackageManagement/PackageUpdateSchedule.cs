@@ -173,14 +173,14 @@ namespace Duality.Editor.PackageManagement
 
 				// Apply updates that affect the updater itself
 				bool applied = false;
-				if (string.Equals(Path.GetFileName(target), updaterFilePath, StringComparison.InvariantCultureIgnoreCase))
+				if (PathOp.ArePathsEqual(target, updaterFilePath))
 				{
-					if (string.Equals(element.Name.LocalName, "Remove", StringComparison.InvariantCultureIgnoreCase))
+					if (string.Equals(element.Name.LocalName, DeleteItem, StringComparison.InvariantCultureIgnoreCase))
 					{
 						File.Delete(target);
 						applied = true;
 					}
-					else if (string.Equals(element.Name.LocalName, "Update", StringComparison.InvariantCultureIgnoreCase))
+					else if (string.Equals(element.Name.LocalName, CopyItem, StringComparison.InvariantCultureIgnoreCase))
 					{
 						File.Copy(source, target, true);
 						applied = true;
