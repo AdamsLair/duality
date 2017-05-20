@@ -21,13 +21,14 @@ namespace Duality.Editor.PackageManagement
 	/// </summary>
 	public class PackageManagerEnvironment
 	{
-		private string rootPath         = null;
-		private string targetDataPath   = null;
-		private string targetSourcePath = null;
-		private string targetPluginPath = null;
-		private string localRepoPath    = null;
-		private string configFilePath   = null;
-		private string updateFilePath   = null;
+		private string rootPath            = null;
+		private string targetDataPath      = null;
+		private string targetSourcePath    = null;
+		private string targetPluginPath    = null;
+		private string localRepoPath       = null;
+		private string configFilePath      = null;
+		private string updateFilePath      = null;
+		private string updaterExecFilePath = null;
 
 
 		/// <summary>
@@ -81,6 +82,14 @@ namespace Duality.Editor.PackageManagement
 		{
 			get { return this.updateFilePath; }
 		}
+		/// <summary>
+		/// [GET] The path of the binary that will be executed in order to apply a pending
+		/// update as scheduled in the <see cref="PackageUpdateSchedule"/> at the <see cref="UpdateFilePath"/>.
+		/// </summary>
+		public string UpdaterExecFilePath
+		{
+			get { return this.updaterExecFilePath; }
+		}
 
 		/// <summary>
 		/// [GET] The (<see cref="RootPath"/>-)relative path where plugin package contents are copied to after installation.
@@ -108,12 +117,13 @@ namespace Duality.Editor.PackageManagement
 
 		private void UpdateFromRootPath()
 		{
-			this.targetDataPath   = Path.Combine(this.rootPath, DualityApp.DataDirectory);
-			this.targetSourcePath = Path.Combine(this.rootPath, EditorHelper.SourceCodeDirectory);
-			this.targetPluginPath = Path.Combine(this.rootPath, this.TargetPluginPathRelative);
-			this.localRepoPath    = Path.Combine(this.rootPath, EditorHelper.SourceDirectory + @"\Packages");
-			this.configFilePath   = Path.Combine(this.rootPath, "PackageConfig.xml");
-			this.updateFilePath   = Path.Combine(this.rootPath, "ApplyUpdate.xml");
+			this.targetDataPath      = Path.Combine(this.rootPath, DualityApp.DataDirectory);
+			this.targetSourcePath    = Path.Combine(this.rootPath, EditorHelper.SourceCodeDirectory);
+			this.targetPluginPath    = Path.Combine(this.rootPath, this.TargetPluginPathRelative);
+			this.localRepoPath       = Path.Combine(this.rootPath, EditorHelper.SourceDirectory + @"\Packages");
+			this.configFilePath      = Path.Combine(this.rootPath, "PackageConfig.xml");
+			this.updateFilePath      = Path.Combine(this.rootPath, "ApplyUpdate.xml");
+			this.updaterExecFilePath = Path.Combine(this.rootPath, "DualityUpdater.exe");
 		}
 	}
 }

@@ -465,24 +465,26 @@ namespace Duality.Editor.PackageManagement
 
 		public bool ApplyUpdate(bool restartEditor = true)
 		{
-			const string UpdaterFileName = "DualityUpdater.exe";
 			if (!File.Exists(this.env.UpdateFilePath)) return false;
 			
 			// Manually perform update operations on the updater itself
 			try
 			{
 				PackageUpdateSchedule schedule = this.PrepareUpdateSchedule();
-				schedule.ApplyUpdaterChanges(UpdaterFileName);
+				schedule.ApplyUpdaterChanges(this.env.UpdaterExecFilePath);
 				this.SaveUpdateSchedule(schedule);
 			}
 			catch (Exception e)
 			{
-				Log.Editor.WriteError("Can't update {0}, because an error occurred: {1}", UpdaterFileName, Log.Exception(e));
+				Log.Editor.WriteError(
+					"Can't update '{0}', because an error occurred: {1}", 
+					this.env.UpdaterExecFilePath, 
+					Log.Exception(e));
 				return false;
 			}
 
 			// Run the updater application
-			Process.Start(UpdaterFileName, string.Format("\"{0}\" \"{1}\" \"{2}\"",
+			Process.Start(this.env.UpdaterExecFilePath, string.Format("\"{0}\" \"{1}\" \"{2}\"",
 				this.env.UpdateFilePath,
 				restartEditor ? typeof(DualityEditorApp).Assembly.Location : "",
 				restartEditor ? Environment.CurrentDirectory : ""));
@@ -1064,7 +1066,7 @@ namespace Duality.Editor.PackageManagement
 					if (localNugetPackage.Id != e.Package.Id) continue;
 
 					Dictionary<string,string> localMapping = this.CreateFileMapping(localNugetPackage);
-					if (localMapping.Any(p => PathHelper.Equals(p.Key, pair.Key)))
+					if (localMapping.Any(p => PathOp.ArePathsEqual(p.Key, pair.Key)))
 					{
 						if (localNugetPackage.Version > e.Package.Version)
 						{
