@@ -83,6 +83,13 @@ namespace Duality.Editor.PackageManagement.Tests
 			MockPackageSpec packageSpecPluginLatest = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 1, 0, 0));
 			MockPackageSpec packageSpecSample = new MockPackageSpec("AdamsLair.Duality.TestSample", new Version(1, 1, 0, 0));
 
+			packageSpecPlugin.Tags.Add(PackageManager.DualityTag);
+			packageSpecPlugin.Tags.Add(PackageManager.PluginTag);
+			packageSpecPluginLatest.Tags.Add(PackageManager.DualityTag);
+			packageSpecPluginLatest.Tags.Add(PackageManager.PluginTag);
+			packageSpecSample.Tags.Add(PackageManager.DualityTag);
+			packageSpecSample.Tags.Add(PackageManager.SampleTag);
+
 			packageSpecNonDuality.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 			packageSpecPlugin.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 			packageSpecPluginLatest.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
@@ -105,6 +112,8 @@ namespace Duality.Editor.PackageManagement.Tests
 		[Test] public void InstallPackage()
 		{
 			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
+			packageSpec.Tags.Add(PackageManager.DualityTag);
+			packageSpec.Tags.Add(PackageManager.PluginTag);
 			packageSpec.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
