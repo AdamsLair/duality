@@ -30,12 +30,15 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			Directory.CreateDirectory(TestClientPath);
 			Directory.CreateDirectory(TestRepositoryPath);
+			
+			string relativeRepositoryPath = PathHelper.MakeDirectoryPathRelative(
+				TestRepositoryPath, 
+				TestClientPath);
 
 			this.workEnv = new PackageManagerEnvironment(TestClientPath);
-
 			this.setup = new PackageSetup();
 			this.setup.RepositoryUrls.Clear();
-			this.setup.RepositoryUrls.Add(Path.GetFullPath(TestRepositoryPath));
+			this.setup.RepositoryUrls.Add(relativeRepositoryPath);
 		}
 		[TearDown] public void Cleanup()
 		{
@@ -164,10 +167,6 @@ namespace Duality.Editor.PackageManagement.Tests
 			// Load the apply script and assert its contents match the expected
 			PackageUpdateSchedule applyScript = PackageUpdateSchedule.Load(this.workEnv.UpdateFilePath);
 			List<XElement> updateItems = applyScript.Items.ToList();
-
-			Assert.AreEqual(
-				testCase.ExpectedPackages.Sum(p => p.LocalMapping.Count), 
-				updateItems.Count);
 			foreach (MockPackageSpec expectedPackage in testCase.ExpectedPackages)
 			{
 				foreach (var pair in expectedPackage.LocalMapping)
@@ -192,8 +191,10 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityPluginA.Tags.Add(PackageManager.PluginTag);
 			dualityPluginA.Files.Add("TestPluginA.dll", "lib");
 			dualityPluginA.Files.Add("Subfolder\\TestPluginA.Second.dll", "lib\\Subfolder");
+			dualityPluginA.Files.Add("Data\\TestPluginA\\SomeRes.Pixmap.res", "content\\TestPluginA");
 			dualityPluginA.LocalMapping.Add("lib\\TestPluginA.dll", "Plugins\\TestPluginA.dll");
 			dualityPluginA.LocalMapping.Add("lib\\Subfolder\\TestPluginA.Second.dll", "Plugins\\TestPluginA.Second.dll");
+			dualityPluginA.LocalMapping.Add("content\\TestPluginA\\SomeRes.Pixmap.res", "Data\\TestPluginA\\SomeRes.Pixmap.res");
 
 			cases.Add(new PackageInstallTestCase(
 				"Duality Plugin, No Dependencies", 
@@ -216,7 +217,9 @@ namespace Duality.Editor.PackageManagement.Tests
 			// Duality plugin depending on a non-Duality NuGet package
 			MockPackageSpec otherLibraryA = new MockPackageSpec("Some.Other.TestLibraryA");
 			otherLibraryA.Files.Add("TestLibraryA.dll", "lib");
+			otherLibraryA.Files.Add("Data\\TestLibraryA\\SomeFile.txt", "content\\TestLibraryA");
 			otherLibraryA.LocalMapping.Add("lib\\TestLibraryA.dll", "TestLibraryA.dll");
+			otherLibraryA.LocalMapping.Add("content\\TestLibraryA\\SomeFile.txt", "TestLibraryA\\SomeFile.txt");
 
 			MockPackageSpec dualityPluginC = new MockPackageSpec("AdamsLair.Duality.TestPluginC");
 			dualityPluginC.Tags.Add(PackageManager.DualityTag);
@@ -234,7 +237,9 @@ namespace Duality.Editor.PackageManagement.Tests
 			MockPackageSpec dualityNonPluginA = new MockPackageSpec("AdamsLair.Duality.TestNonPluginA");
 			dualityNonPluginA.Tags.Add(PackageManager.DualityTag);
 			dualityNonPluginA.Files.Add("TestNonPluginA.dll", "lib");
+			dualityNonPluginA.Files.Add("Data\\TestNonPluginA\\SomeFile.txt", "content\\TestNonPluginA");
 			dualityNonPluginA.LocalMapping.Add("lib\\TestNonPluginA.dll", "TestNonPluginA.dll");
+			dualityNonPluginA.LocalMapping.Add("content\\TestNonPluginA\\SomeFile.txt", "TestNonPluginA\\SomeFile.txt");
 
 			cases.Add(new PackageInstallTestCase(
 				"Duality Non-Plugin Package", 
