@@ -11,6 +11,11 @@ using NUnit.Framework;
 
 namespace Duality.Editor.PackageManagement.Tests
 {
+	/// <summary>
+	/// Specifies a NuGet package for mocking purposes during testing and provides
+	/// functionality to build packages from those specs, as well as information on
+	/// the expected outputs after an install via the <see cref="PackageManager"/>.
+	/// </summary>
 	public class MockPackageSpec
 	{
 		private PackageName name = new PackageName("Unknown", new Version(0, 0, 0, 0));
@@ -20,23 +25,42 @@ namespace Duality.Editor.PackageManagement.Tests
 		private Dictionary<string,string> expectedMapping = new Dictionary<string,string>();
 
 
+		/// <summary>
+		/// [GET / SET] The packages ID and version.
+		/// </summary>
 		public PackageName Name
 		{
 			get { return this.name; }
 			set { this.name = value; }
 		}
+		/// <summary>
+		/// [GET] A list of keywords that this package will be tagged with.
+		/// </summary>
 		public List<string> Tags
 		{
 			get { return this.tags; }
 		}
+		/// <summary>
+		/// [GET] A list of packages that this package depends on.
+		/// </summary>
 		public List<PackageName> Dependencies
 		{
 			get { return this.dependencies; }
 		}
+		/// <summary>
+		/// [GET] A mapping of files from source files in the package build directory to
+		/// their target inside the NuGet package. Note that the source files will be
+		/// created automatically when building the mock package.
+		/// </summary>
 		public Dictionary<string,string> Files
 		{
 			get { return this.files; }
 		}
+		/// <summary>
+		/// [GET] The expected mapping of files from the local package repository path to the
+		/// local root path. This information is used by tests for asserting correct install,
+		/// update and uninstall operations and needs to be specified manually.
+		/// </summary>
 		public Dictionary<string,string> ExpectedMapping
 		{
 			get { return this.expectedMapping; }
@@ -49,6 +73,12 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.name = new PackageName(id, version);
 		}
 
+		/// <summary>
+		/// Creates a NuGet package from this mock package spec and copies it into the
+		/// specified repository path.
+		/// </summary>
+		/// <param name="buildPath"></param>
+		/// <param name="repositoryPath"></param>
 		public void CreatePackage(string buildPath, string repositoryPath)
 		{
 			NuGet.PackageBuilder builder = new NuGet.PackageBuilder();
