@@ -900,8 +900,8 @@ namespace Duality.Editor.PackageManagement
 			string sourceBaseDir = Path.Combine(this.env.TargetSourcePath, folderFriendlyPackageName);
 			if (!isPluginPackage || !isDualityPackage)
 			{
-				binaryBaseDir = "";
-				contentBaseDir = "";
+				binaryBaseDir = this.env.RootPath;
+				contentBaseDir = this.env.RootPath;
 			}
 
 			IPackageFile[] packageFiles;
