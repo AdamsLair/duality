@@ -192,9 +192,11 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityPluginA.Files.Add("TestPluginA.dll", "lib");
 			dualityPluginA.Files.Add("Subfolder\\TestPluginA.Second.dll", "lib\\Subfolder");
 			dualityPluginA.Files.Add("Data\\TestPluginA\\SomeRes.Pixmap.res", "content\\TestPluginA");
+			dualityPluginA.Files.Add("Source\\Foo\\SomeCode.cs", "source\\Foo");
 			dualityPluginA.LocalMapping.Add("lib\\TestPluginA.dll", "Plugins\\TestPluginA.dll");
 			dualityPluginA.LocalMapping.Add("lib\\Subfolder\\TestPluginA.Second.dll", "Plugins\\TestPluginA.Second.dll");
 			dualityPluginA.LocalMapping.Add("content\\TestPluginA\\SomeRes.Pixmap.res", "Data\\TestPluginA\\SomeRes.Pixmap.res");
+			dualityPluginA.LocalMapping.Add("source\\Foo\\SomeCode.cs", "Source\\Code\\AdamsLair.Duality.TestPluginA\\Foo\\SomeCode.cs");
 
 			cases.Add(new PackageInstallTestCase(
 				"Duality Plugin, No Dependencies", 
