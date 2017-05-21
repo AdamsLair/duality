@@ -22,7 +22,7 @@ namespace Duality.Editor.PackageManagement.Tests
 		private List<string> tags = new List<string>();
 		private List<PackageName> dependencies = new List<PackageName>();
 		private Dictionary<string,string> files = new Dictionary<string,string>();
-		private Dictionary<string,string> expectedMapping = new Dictionary<string,string>();
+		private Dictionary<string,string> localMapping = new Dictionary<string,string>();
 
 
 		/// <summary>
@@ -61,9 +61,9 @@ namespace Duality.Editor.PackageManagement.Tests
 		/// local root path. This information is used by tests for asserting correct install,
 		/// update and uninstall operations and needs to be specified manually.
 		/// </summary>
-		public Dictionary<string,string> ExpectedMapping
+		public Dictionary<string,string> LocalMapping
 		{
-			get { return this.expectedMapping; }
+			get { return this.localMapping; }
 		}
 
 
@@ -139,6 +139,11 @@ namespace Duality.Editor.PackageManagement.Tests
 				this.name.Id,
 				this.name.Version,
 				pathOrName));
+		}
+
+		public override string ToString()
+		{
+			return this.name.ToString();
 		}
 	}
 }

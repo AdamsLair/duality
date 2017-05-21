@@ -109,22 +109,15 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsNotNull(packageSampleInfo);
 			Assert.AreEqual(packageSpecPluginLatest.Name.Version, packagePluginInfo.Version);
 		}
-		[Test] public void InstallPackage()
-		{
-			// Note that NuGet by default does not recognize lib subfolders during installation.
-			// The files will be packaged with subfolders, but their EffectivePath won't include
-			// them - which is why, unless Duality addresses this at some point in the future, 
-			// all plugins will end up in the Plugins root folder, regardless of their previous
-			// hierarchy.
-			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.TestPlugin");
-			packageSpec.Tags.Add(PackageManager.DualityTag);
-			packageSpec.Tags.Add(PackageManager.PluginTag);
-			packageSpec.Files.Add("Foo.dll", "lib");
-			packageSpec.Files.Add("Subfolder\\Bar.dll", "lib\\Subfolder");
-			packageSpec.ExpectedMapping.Add("lib\\Foo.dll", "Plugins\\Foo.dll");
-			packageSpec.ExpectedMapping.Add("lib\\Subfolder\\Bar.dll", "Plugins\\Bar.dll");
-			packageSpec.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 
+		[Test, TestCaseSource("InstallPackageTestCases")]
+		public void InstallPackage(PackageInstallTestCase testCase)
+		{
+			// Build packages from the specs we're testing with
+			foreach (MockPackageSpec package in testCase.RepositoryPackages)
+				package.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
+
+			// Set up a new package manager that we'll test our install with
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 			
 			// Precondition: No packages installed, no apply or sync required
@@ -133,9 +126,9 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsFalse(File.Exists(this.workEnv.UpdateFilePath));
 
 			// Retrieve PackageInfo from the mock repository
-			PackageInfo packageInfo = packageManager.QueryPackageInfo(packageSpec.Name);
+			PackageInfo packageInfo = packageManager.QueryPackageInfo(testCase.InstallPackage.Name);
 			Assert.IsNotNull(packageInfo);
-			Assert.AreEqual(packageInfo.PackageName, packageSpec.Name);
+			Assert.AreEqual(packageInfo.PackageName, testCase.InstallPackage.Name);
 
 			// Install the package while listening for events
 			List<PackageName> installEvents = new List<PackageName>();
@@ -147,12 +140,23 @@ namespace Duality.Editor.PackageManagement.Tests
 			packageManager.InstallPackage(packageInfo);
 			packageManager.PackageInstalled -= installedHandler;
 
-			// Assert that the package was installed properly
-			Assert.AreEqual(1, installEvents.Count);
-			Assert.AreEqual(packageSpec.Name, installEvents[0]);
-			Assert.AreEqual(1, packageManager.LocalSetup.Packages.Count);
-			Assert.AreEqual(packageSpec.Name, packageManager.LocalSetup.Packages[0].PackageName);
-			Assert.IsTrue(packageManager.LocalSetup.Packages[0].IsInstallationComplete);
+			// Assert that the expected install events were fired
+			Assert.AreEqual(
+				testCase.ExpectedPackages.Count, 
+				installEvents.Count);
+			CollectionAssert.AreEquivalent(
+				testCase.ExpectedPackages.Select(p => p.Name), 
+				installEvents);
+
+			// Assert that the expected packages were correctly registered in the local setup
+			Assert.AreEqual(
+				testCase.ExpectedDualityPackages.Count, 
+				packageManager.LocalSetup.Packages.Count);
+			CollectionAssert.AreEquivalent(
+				testCase.ExpectedDualityPackages.Select(p => p.Name), 
+				packageManager.LocalSetup.Packages.Select(p => p.PackageName));
+			Assert.IsTrue(
+				packageManager.LocalSetup.Packages.All(p => p.IsInstallationComplete));
 
 			// Assert that there is an apply script now
 			Assert.IsTrue(File.Exists(this.workEnv.UpdateFilePath));
@@ -160,12 +164,86 @@ namespace Duality.Editor.PackageManagement.Tests
 			// Load the apply script and assert its contents match the expected
 			PackageUpdateSchedule applyScript = PackageUpdateSchedule.Load(this.workEnv.UpdateFilePath);
 			List<XElement> updateItems = applyScript.Items.ToList();
-			Assert.AreEqual(packageSpec.ExpectedMapping.Count, updateItems.Count);
-			foreach (var pair in packageSpec.ExpectedMapping)
+
+			Assert.AreEqual(
+				testCase.ExpectedPackages.Sum(p => p.LocalMapping.Count), 
+				updateItems.Count);
+			foreach (MockPackageSpec expectedPackage in testCase.ExpectedPackages)
 			{
-				this.AssertUpdateScheduleCopyItem(updateItems, packageSpec.Name, pair.Key, pair.Value);
+				foreach (var pair in expectedPackage.LocalMapping)
+				{
+					this.AssertUpdateScheduleCopyItem(updateItems, expectedPackage.Name, pair.Key, pair.Value);
+				}
 			}
 		}
+		private IEnumerable<PackageInstallTestCase> InstallPackageTestCases()
+		{
+			// Note that NuGet by default does not recognize lib subfolders during installation.
+			// The files will be packaged with subfolders, but their EffectivePath won't include
+			// them - which is why, unless Duality addresses this at some point in the future, 
+			// all plugins will end up in the Plugins root folder, regardless of their previous
+			// hierarchy.
+
+			List<PackageInstallTestCase> cases = new List<PackageInstallTestCase>();
+
+			// Duality plugin without any dependencies
+			MockPackageSpec dualityPluginA = new MockPackageSpec("AdamsLair.Duality.TestPluginA");
+			dualityPluginA.Tags.Add(PackageManager.DualityTag);
+			dualityPluginA.Tags.Add(PackageManager.PluginTag);
+			dualityPluginA.Files.Add("TestPluginA.dll", "lib");
+			dualityPluginA.Files.Add("Subfolder\\TestPluginA.Second.dll", "lib\\Subfolder");
+			dualityPluginA.LocalMapping.Add("lib\\TestPluginA.dll", "Plugins\\TestPluginA.dll");
+			dualityPluginA.LocalMapping.Add("lib\\Subfolder\\TestPluginA.Second.dll", "Plugins\\TestPluginA.Second.dll");
+
+			cases.Add(new PackageInstallTestCase(
+				"Duality Plugin, No Dependencies", 
+				dualityPluginA, 
+				new [] { dualityPluginA }));
+
+			// Duality plugin depending on another Duality plugin
+			MockPackageSpec dualityPluginB = new MockPackageSpec("AdamsLair.Duality.TestPluginB");
+			dualityPluginB.Tags.Add(PackageManager.DualityTag);
+			dualityPluginB.Tags.Add(PackageManager.PluginTag);
+			dualityPluginB.Files.Add("TestPluginB.dll", "lib");
+			dualityPluginB.LocalMapping.Add("lib\\TestPluginB.dll", "Plugins\\TestPluginB.dll");
+			dualityPluginB.Dependencies.Add(dualityPluginA.Name);
+
+			cases.Add(new PackageInstallTestCase(
+				"Duality Plugin, With Duality Dependencies", 
+				dualityPluginB, 
+				new [] { dualityPluginB, dualityPluginA }));
+
+			// Duality plugin depending on a non-Duality NuGet package
+			MockPackageSpec otherLibraryA = new MockPackageSpec("Some.Other.TestLibraryA");
+			otherLibraryA.Files.Add("TestLibraryA.dll", "lib");
+			otherLibraryA.LocalMapping.Add("lib\\TestLibraryA.dll", "TestLibraryA.dll");
+
+			MockPackageSpec dualityPluginC = new MockPackageSpec("AdamsLair.Duality.TestPluginC");
+			dualityPluginC.Tags.Add(PackageManager.DualityTag);
+			dualityPluginC.Tags.Add(PackageManager.PluginTag);
+			dualityPluginC.Files.Add("TestPluginC.dll", "lib");
+			dualityPluginC.LocalMapping.Add("lib\\TestPluginC.dll", "Plugins\\TestPluginC.dll");
+			dualityPluginC.Dependencies.Add(otherLibraryA.Name);
+
+			cases.Add(new PackageInstallTestCase(
+				"Duality Plugin, With Lib Dependencies", 
+				dualityPluginC, 
+				new [] { dualityPluginC, otherLibraryA }));
+			
+			// Duality package that is not a plugin
+			MockPackageSpec dualityNonPluginA = new MockPackageSpec("AdamsLair.Duality.TestNonPluginA");
+			dualityNonPluginA.Tags.Add(PackageManager.DualityTag);
+			dualityNonPluginA.Files.Add("TestNonPluginA.dll", "lib");
+			dualityNonPluginA.LocalMapping.Add("lib\\TestNonPluginA.dll", "TestNonPluginA.dll");
+
+			cases.Add(new PackageInstallTestCase(
+				"Duality Non-Plugin Package", 
+				dualityNonPluginA, 
+				new [] { dualityNonPluginA }));
+
+			return cases;
+		}
+
 
 		private void AssertUpdateScheduleCopyItem(IEnumerable<XElement> items, PackageName package, string source, string target)
 		{
