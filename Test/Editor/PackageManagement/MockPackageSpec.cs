@@ -16,6 +16,8 @@ namespace Duality.Editor.PackageManagement.Tests
 		private PackageName name = new PackageName("Unknown", new Version(0, 0, 0, 0));
 		private List<string> tags = new List<string>();
 		private List<PackageName> dependencies = new List<PackageName>();
+		private Dictionary<string,string> files = new Dictionary<string,string>();
+
 
 		public PackageName Name
 		{
@@ -30,14 +32,16 @@ namespace Duality.Editor.PackageManagement.Tests
 		{
 			get { return this.dependencies; }
 		}
+		public Dictionary<string,string> Files
+		{
+			get { return this.files; }
+		}
 
-		public MockPackageSpec(string id, Version version) : this(id, version, null, null) { }
-		public MockPackageSpec(string id, Version version, IEnumerable<string> tags) : this(id, version, tags, null) { }
-		public MockPackageSpec(string id, Version version, IEnumerable<string> tags, IEnumerable<PackageName> dependencies)
+
+		public MockPackageSpec(string id) : this(id, new Version(1, 0, 0, 0)) { }
+		public MockPackageSpec(string id, Version version)
 		{
 			this.name = new PackageName(id, version);
-			if (tags != null) this.tags = tags.ToList();
-			if (dependencies != null) this.dependencies = dependencies.ToList();
 		}
 
 		public void CreatePackage(string buildPath, string repositoryPath)
@@ -62,13 +66,22 @@ namespace Duality.Editor.PackageManagement.Tests
 				}
 			};
 
-			List<NuGet.ManifestFile> files = new List<NuGet.ManifestFile>();
-			files.Add(new NuGet.ManifestFile { Source = "Foo.dll", Target = "lib" });
-			files.Add(new NuGet.ManifestFile { Source = "Subfolder\\Bar.dll", Target = "lib\\Subfolder" });
-			this.CreateFile(buildPath, "Foo.dll");
-			this.CreateFile(buildPath, "Subfolder\\Bar.dll");
+			List<NuGet.ManifestFile> fileMetadata = new List<NuGet.ManifestFile>();
+			foreach (var pair in this.files)
+			{
+				fileMetadata.Add(new NuGet.ManifestFile { Source = pair.Key, Target = pair.Value });
+				this.CreateFile(buildPath, pair.Key);
+			}
 
-			builder.PopulateFiles(buildPath, files);
+			// If we don't have files or dependencies, at least at one mock file so we
+			// can create a package at all.
+			if (this.files.Count == 0 && this.dependencies.Count == 0)
+			{
+				fileMetadata.Add(new NuGet.ManifestFile { Source = "Empty.dll", Target = "lib" });
+				this.CreateFile(buildPath, "Empty.dll");
+			}
+
+			builder.PopulateFiles(buildPath, fileMetadata);
 			builder.Populate(metadata);
 
 			string packageFileName = Path.Combine(

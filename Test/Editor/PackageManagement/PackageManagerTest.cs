@@ -78,10 +78,10 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 		[Test] public void QueryAvailablePackages()
 		{
-			MockPackageSpec packageSpecNonDuality = new MockPackageSpec("Some.Other.Package", new Version(1, 0, 0, 0));
+			MockPackageSpec packageSpecNonDuality = new MockPackageSpec("Some.Other.Package");
 			MockPackageSpec packageSpecPlugin = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
 			MockPackageSpec packageSpecPluginLatest = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 1, 0, 0));
-			MockPackageSpec packageSpecSample = new MockPackageSpec("AdamsLair.Duality.TestSample", new Version(1, 1, 0, 0));
+			MockPackageSpec packageSpecSample = new MockPackageSpec("AdamsLair.Duality.TestSample");
 
 			packageSpecPlugin.Tags.Add(PackageManager.DualityTag);
 			packageSpecPlugin.Tags.Add(PackageManager.PluginTag);
@@ -111,9 +111,11 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 		[Test] public void InstallPackage()
 		{
-			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
+			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.TestPlugin");
 			packageSpec.Tags.Add(PackageManager.DualityTag);
 			packageSpec.Tags.Add(PackageManager.PluginTag);
+			packageSpec.Files.Add("Foo.dll", "lib");
+			packageSpec.Files.Add("Subfolder\\Bar.dll", "lib\\Subfolder");
 			packageSpec.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
