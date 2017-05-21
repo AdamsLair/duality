@@ -111,11 +111,18 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 		[Test] public void InstallPackage()
 		{
+			// Note that NuGet by default does not recognize lib subfolders during installation.
+			// The files will be packaged with subfolders, but their EffectivePath won't include
+			// them - which is why, unless Duality addresses this at some point in the future, 
+			// all plugins will end up in the Plugins root folder, regardless of their previous
+			// hierarchy.
 			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.TestPlugin");
 			packageSpec.Tags.Add(PackageManager.DualityTag);
 			packageSpec.Tags.Add(PackageManager.PluginTag);
 			packageSpec.Files.Add("Foo.dll", "lib");
 			packageSpec.Files.Add("Subfolder\\Bar.dll", "lib\\Subfolder");
+			packageSpec.ExpectedMapping.Add("lib\\Foo.dll", "Plugins\\Foo.dll");
+			packageSpec.ExpectedMapping.Add("lib\\Subfolder\\Bar.dll", "Plugins\\Bar.dll");
 			packageSpec.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
@@ -153,15 +160,11 @@ namespace Duality.Editor.PackageManagement.Tests
 			// Load the apply script and assert its contents match the expected
 			PackageUpdateSchedule applyScript = PackageUpdateSchedule.Load(this.workEnv.UpdateFilePath);
 			List<XElement> updateItems = applyScript.Items.ToList();
-			Assert.AreEqual(2, updateItems.Count);
-
-			// Note that NuGet by default does not recognize lib subfolders during installation.
-			// The files will be packaged with subfolders, but their EffectivePath won't include
-			// them - which is why, unless Duality addresses this at some point in the future, 
-			// all plugins will end up in the Plugins root folder, regardless of their previous
-			// hierarchy.
-			this.AssertUpdateScheduleCopyItem(updateItems, packageSpec.Name, "lib\\Foo.dll", "Plugins\\Foo.dll");
-			this.AssertUpdateScheduleCopyItem(updateItems, packageSpec.Name, "lib\\Subfolder\\Bar.dll", "Plugins\\Bar.dll");
+			Assert.AreEqual(packageSpec.ExpectedMapping.Count, updateItems.Count);
+			foreach (var pair in packageSpec.ExpectedMapping)
+			{
+				this.AssertUpdateScheduleCopyItem(updateItems, packageSpec.Name, pair.Key, pair.Value);
+			}
 		}
 
 		private void AssertUpdateScheduleCopyItem(IEnumerable<XElement> items, PackageName package, string source, string target)

@@ -17,6 +17,7 @@ namespace Duality.Editor.PackageManagement.Tests
 		private List<string> tags = new List<string>();
 		private List<PackageName> dependencies = new List<PackageName>();
 		private Dictionary<string,string> files = new Dictionary<string,string>();
+		private Dictionary<string,string> expectedMapping = new Dictionary<string,string>();
 
 
 		public PackageName Name
@@ -35,6 +36,10 @@ namespace Duality.Editor.PackageManagement.Tests
 		public Dictionary<string,string> Files
 		{
 			get { return this.files; }
+		}
+		public Dictionary<string,string> ExpectedMapping
+		{
+			get { return this.expectedMapping; }
 		}
 
 
@@ -66,6 +71,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				}
 			};
 
+			// Set up file contents metadata for the package
 			List<NuGet.ManifestFile> fileMetadata = new List<NuGet.ManifestFile>();
 			foreach (var pair in this.files)
 			{
@@ -74,7 +80,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			}
 
 			// If we don't have files or dependencies, at least at one mock file so we
-			// can create a package at all.
+			// can create a package at all. This is useful for test cases where we're
+			// not actually interested in package contents at all.
 			if (this.files.Count == 0 && this.dependencies.Count == 0)
 			{
 				fileMetadata.Add(new NuGet.ManifestFile { Source = "Empty.dll", Target = "lib" });
