@@ -117,44 +117,26 @@ namespace Duality.Editor.PackageManagement.Tests
 		public void InstallPackage(PackageOperationTestCase testCase)
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
+
+			// Prepare the test by setting up remote repository and pre-installed local packages
 			this.SetupReporistoryForTest(testCase.Repository);
 			this.SetupPackagesForTest(packageManager, testCase.Setup);
 
-			// Retrieve PackageInfo from the mock repository
-			PackageInfo packageInfo = packageManager.QueryPackageInfo(testCase.Target.Name);
-			Assert.IsNotNull(packageInfo);
-			Assert.AreEqual(packageInfo.PackageName, testCase.Target.Name);
-
-			// Install the package while listening for events
-			List<PackageName> installEvents = new List<PackageName>();
-			EventHandler<PackageEventArgs> installedHandler = (sender, args) =>
+			using (PackageEventListener listener = new PackageEventListener(packageManager))
 			{
-				installEvents.Add(args.PackageName);
-			};
-			packageManager.PackageInstalled += installedHandler;
-			packageManager.InstallPackage(packageInfo);
-			packageManager.PackageInstalled -= installedHandler;
+				// Find and install the package to test
+				PackageInfo packageInfo = packageManager.QueryPackageInfo(testCase.Target.Name);
+				packageManager.InstallPackage(packageInfo);
 
-			// Assert that the expected install events were fired
-			Assert.AreEqual(
-				testCase.Installed.Count, 
-				installEvents.Count);
-			CollectionAssert.AreEquivalent(
-				testCase.Installed.Select(p => p.Name), 
-				installEvents);
+				// Assert that the expected events were fired
+				listener.AssertChanges(
+					testCase.Installed, 
+					testCase.Uninstalled);
+			}
 
-			// Assert that the expected packages were correctly registered in the local setup
-			Assert.AreEqual(
-				testCase.DualityResults.Count, 
-				packageManager.LocalSetup.Packages.Count);
-			CollectionAssert.AreEquivalent(
-				testCase.DualityResults.Select(p => p.Name), 
-				packageManager.LocalSetup.Packages.Select(p => p.PackageName));
-			Assert.IsTrue(
-				packageManager.LocalSetup.Packages.All(p => p.IsInstallationComplete));
-
-			// Expect the update schedule to reflect the expected installs
-			this.AssertUpdateSchedule(testCase);
+			// Assert client state / setup after the install was done
+			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
+			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
 		}
 		private IEnumerable<PackageOperationTestCase> InstallPackageTestCases()
 		{
@@ -302,11 +284,20 @@ namespace Duality.Editor.PackageManagement.Tests
 			}
 		}
 
-		private void AssertUpdateSchedule(PackageOperationTestCase testCase)
+		private void AssertLocalSetup(PackageSetup actualSetup, IEnumerable<MockPackageSpec> expectedSetup)
 		{
-			bool anyUpdateExpected = 
-				testCase.Installed.Count > 0 ||
-				testCase.Uninstalled.Count > 0;
+			Assert.AreEqual(
+				expectedSetup.Count(), 
+				actualSetup.Packages.Count);
+			CollectionAssert.AreEquivalent(
+				expectedSetup.Select(p => p.Name), 
+				actualSetup.Packages.Select(p => p.PackageName));
+			Assert.IsTrue(
+				actualSetup.Packages.All(p => p.IsInstallationComplete));
+		}
+		private void AssertUpdateSchedule(IEnumerable<MockPackageSpec> installed, IEnumerable<MockPackageSpec> uninstalled)
+		{
+			bool anyUpdateExpected = installed.Any() || uninstalled.Any();
 			bool updateScheduleExists = File.Exists(this.workEnv.UpdateFilePath);
 			
 			// Assert that the existence of an update file reflects whether we expect an update
@@ -325,7 +316,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			List<XElement> updateItems = applyScript.Items.ToList();
 
 			// Assert that every install has a matching copy for each of its files
-			foreach (MockPackageSpec package in testCase.Installed)
+			foreach (MockPackageSpec package in installed)
 			{
 				foreach (var pair in package.LocalMapping)
 				{
@@ -338,7 +329,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			}
 
 			// Assert that every uninstall has a matching copy for each of its files
-			foreach (MockPackageSpec package in testCase.Uninstalled)
+			foreach (MockPackageSpec package in uninstalled)
 			{
 				foreach (var pair in package.LocalMapping)
 				{
