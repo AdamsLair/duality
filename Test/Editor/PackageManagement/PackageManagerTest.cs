@@ -143,10 +143,10 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			// Assert that the expected install events were fired
 			Assert.AreEqual(
-				testCase.Results.Count, 
+				testCase.Installed.Count, 
 				installEvents.Count);
 			CollectionAssert.AreEquivalent(
-				testCase.Results.Select(p => p.Name), 
+				testCase.Installed.Select(p => p.Name), 
 				installEvents);
 
 			// Assert that the expected packages were correctly registered in the local setup
@@ -159,17 +159,23 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsTrue(
 				packageManager.LocalSetup.Packages.All(p => p.IsInstallationComplete));
 
-			// Assert that there is an apply script now
-			Assert.IsTrue(File.Exists(this.workEnv.UpdateFilePath));
-
-			// Load the apply script and assert its contents match the expected
-			PackageUpdateSchedule applyScript = PackageUpdateSchedule.Load(this.workEnv.UpdateFilePath);
-			List<XElement> updateItems = applyScript.Items.ToList();
-			foreach (MockPackageSpec expectedPackage in testCase.Results)
+			// Expect the update schedule to reflect the expected installs
+			bool anyUpdateExpected = testCase.Installed.Count > 0;
+			Assert.AreEqual(anyUpdateExpected, File.Exists(this.workEnv.UpdateFilePath));
+			if (anyUpdateExpected)
 			{
-				foreach (var pair in expectedPackage.LocalMapping)
+				PackageUpdateSchedule applyScript = PackageUpdateSchedule.Load(this.workEnv.UpdateFilePath);
+				List<XElement> updateItems = applyScript.Items.ToList();
+				foreach (MockPackageSpec expectedPackage in testCase.Installed)
 				{
-					this.AssertUpdateScheduleCopyItem(updateItems, expectedPackage.Name, pair.Key, pair.Value);
+					foreach (var pair in expectedPackage.LocalMapping)
+					{
+						this.AssertUpdateScheduleCopyItem(
+							updateItems, 
+							expectedPackage.Name, 
+							pair.Key, 
+							pair.Value);
+					}
 				}
 			}
 		}
@@ -245,6 +251,20 @@ namespace Duality.Editor.PackageManagement.Tests
 				"Duality Non-Plugin Package", 
 				dualityNonPluginA, 
 				new [] { dualityNonPluginA }));
+
+			// Installing a package that was already installed
+			cases.Add(new PackageOperationTestCase(
+				"Package Already Installed", 
+				new[] { dualityPluginA },
+				dualityPluginA, 
+				new[] { dualityPluginA }));
+
+			// Installing a package where one of its dependencies was already installed
+			cases.Add(new PackageOperationTestCase(
+				"Package Dependency Already Installed", 
+				new[] { dualityPluginA },
+				dualityPluginB, 
+				new[] { dualityPluginA, dualityPluginB }));
 
 			return cases;
 		}

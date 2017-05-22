@@ -19,6 +19,8 @@ namespace Duality.Editor.PackageManagement.Tests
 		private string name;
 		private List<MockPackageSpec> setup;
 		private MockPackageSpec target;
+		private List<MockPackageSpec> installed;
+		private List<MockPackageSpec> uninstalled;
 		private List<MockPackageSpec> results;
 		private List<MockPackageSpec> dualityResults;
 		private HashSet<MockPackageSpec> repository;
@@ -38,6 +40,20 @@ namespace Duality.Editor.PackageManagement.Tests
 		public MockPackageSpec Target
 		{
 			get { return this.target; }
+		}
+		/// <summary>
+		/// [GET] A list of all packages that are expected to have been installed during the test.
+		/// </summary>
+		public IReadOnlyList<MockPackageSpec> Installed
+		{
+			get { return this.installed; }
+		}
+		/// <summary>
+		/// [GET] A list of all packages that are expected to have been uninstalled during the test.
+		/// </summary>
+		public IReadOnlyList<MockPackageSpec> Uninstalled
+		{
+			get { return this.uninstalled; }
 		}
 		/// <summary>
 		/// [GET] A list of all packages that are expected to be present after 
@@ -73,6 +89,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.target = target;
 			this.setup = (setup ?? Enumerable.Empty<MockPackageSpec>()).ToList();
 			this.results = (results ?? Enumerable.Empty<MockPackageSpec>()).ToList();
+			this.installed = this.results.Except(this.setup).ToList();
+			this.uninstalled = this.setup.Except(this.results).ToList();
 			this.dualityResults = this.results
 				.Where(p => p.Tags.Contains(PackageManager.DualityTag))
 				.ToList();
