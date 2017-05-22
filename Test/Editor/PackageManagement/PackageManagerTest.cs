@@ -138,6 +138,32 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
 			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
 		}
+		[Test, TestCaseSource("UninstallPackageTestCases")]
+		public void UninstallPackage(PackageOperationTestCase testCase)
+		{
+			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
+
+			// Prepare the test by setting up remote repository and pre-installed local packages
+			this.SetupReporistoryForTest(testCase.Repository);
+			this.SetupPackagesForTest(packageManager, testCase.Setup);
+
+			using (PackageEventListener listener = new PackageEventListener(packageManager))
+			{
+				// Find and install the package to test
+				PackageInfo packageInfo = packageManager.QueryPackageInfo(testCase.Target.Name);
+				packageManager.UninstallPackage(packageInfo);
+
+				// Assert that the expected events were fired
+				listener.AssertChanges(
+					testCase.Installed, 
+					testCase.Uninstalled);
+			}
+
+			// Assert client state / setup after the install was done
+			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
+			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
+		}
+
 		private IEnumerable<PackageOperationTestCase> InstallPackageTestCases()
 		{
 			// Note that NuGet by default does not recognize lib subfolders during installation.
@@ -253,6 +279,58 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			return cases;
 		}
+		private IEnumerable<PackageOperationTestCase> UninstallPackageTestCases()
+		{
+			List<PackageOperationTestCase> cases = new List<PackageOperationTestCase>();
+
+			// Duality plugin without any dependencies
+			MockPackageSpec dualityPluginA = new MockPackageSpec("AdamsLair.Duality.TestPluginA");
+			dualityPluginA.Tags.Add(PackageManager.DualityTag);
+			dualityPluginA.Tags.Add(PackageManager.PluginTag);
+			dualityPluginA.Files.Add("TestPluginA.dll", "lib");
+			dualityPluginA.LocalMapping.Add("lib\\TestPluginA.dll", "Plugins\\TestPluginA.dll");
+
+			cases.Add(new PackageOperationTestCase(
+				"Duality Plugin, No Dependencies", 
+				new [] { dualityPluginA },
+				dualityPluginA, 
+				new MockPackageSpec[0]));
+
+			// Duality plugin with Duality plugin dependencies
+			MockPackageSpec dualityPluginB = new MockPackageSpec("AdamsLair.Duality.TestPluginB");
+			dualityPluginB.Tags.Add(PackageManager.DualityTag);
+			dualityPluginB.Tags.Add(PackageManager.PluginTag);
+			dualityPluginB.Files.Add("TestPluginB.dll", "lib");
+			dualityPluginB.LocalMapping.Add("lib\\TestPluginB.dll", "Plugins\\TestPluginB.dll");
+			dualityPluginB.Dependencies.Add(dualityPluginA.Name);
+
+			cases.Add(new PackageOperationTestCase(
+				"Duality Plugin, With Duality Dependencies", 
+				new [] { dualityPluginA, dualityPluginB },
+				dualityPluginB, 
+				new [] { dualityPluginA }));
+			
+
+			// Duality plugin depending on a non-Duality NuGet package
+			MockPackageSpec otherLibraryA = new MockPackageSpec("Some.Other.TestLibraryA");
+			otherLibraryA.Files.Add("TestLibraryA.dll", "lib");
+			otherLibraryA.LocalMapping.Add("lib\\TestLibraryA.dll", "TestLibraryA.dll");
+
+			MockPackageSpec dualityPluginC = new MockPackageSpec("AdamsLair.Duality.TestPluginC");
+			dualityPluginC.Tags.Add(PackageManager.DualityTag);
+			dualityPluginC.Tags.Add(PackageManager.PluginTag);
+			dualityPluginC.Files.Add("TestPluginC.dll", "lib");
+			dualityPluginC.LocalMapping.Add("lib\\TestPluginC.dll", "Plugins\\TestPluginC.dll");
+			dualityPluginC.Dependencies.Add(otherLibraryA.Name);
+
+			cases.Add(new PackageOperationTestCase(
+				"Duality Plugin, With Lib Dependencies", 
+				new [] { dualityPluginC, otherLibraryA },
+				dualityPluginC, 
+				new MockPackageSpec[0]));
+
+			return cases;
+		}
 
 
 		private void SetupReporistoryForTest(IEnumerable<MockPackageSpec> repository)
@@ -283,6 +361,11 @@ namespace Duality.Editor.PackageManagement.Tests
 				// Make sure all required packages are really there
 				foreach (MockPackageSpec package in setup)
 				{
+					// Skip checking non-Duality packages, as they do not show up in
+					// the local package setup and thus would always fail this check.
+					bool isDualityPackage = package.Tags.Contains(PackageManager.DualityTag);
+					if (!isDualityPackage) continue;
+
 					LocalPackage localPackage = packageManager.LocalSetup.GetPackage(package.Name);
 					if (localPackage == null || !localPackage.IsInstallationComplete)
 					{
