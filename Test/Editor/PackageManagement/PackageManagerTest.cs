@@ -225,6 +225,32 @@ namespace Duality.Editor.PackageManagement.Tests
 				dualityPluginB, 
 				new[] { dualityPluginA, dualityPluginB }));
 
+			// Installing a package where an old version of one of its dependencies is already installed
+			MockPackageSpec dualityPluginA_Old = new MockPackageSpec("AdamsLair.Duality.TestPluginA", new Version(0, 9, 0, 0));
+			dualityPluginA_Old.Tags.Add(PackageManager.DualityTag);
+			dualityPluginA_Old.Tags.Add(PackageManager.PluginTag);
+			dualityPluginA_Old.Files.Add("TestPluginA.dll", "lib");
+			dualityPluginA_Old.LocalMapping.Add("lib\\TestPluginA.dll", "Plugins\\TestPluginA.dll");
+
+			cases.Add(new PackageOperationTestCase(
+				"Older Package Dependency Installed", 
+				new[] { dualityPluginA_Old },
+				dualityPluginB, 
+				new[] { dualityPluginA, dualityPluginB }));
+
+			// Installing a package where a newer version of one of its dependencies is already installed
+			MockPackageSpec dualityPluginA_New = new MockPackageSpec("AdamsLair.Duality.TestPluginA", new Version(1, 1, 0, 0));
+			dualityPluginA_New.Tags.Add(PackageManager.DualityTag);
+			dualityPluginA_New.Tags.Add(PackageManager.PluginTag);
+			dualityPluginA_New.Files.Add("TestPluginA.dll", "lib");
+			dualityPluginA_New.LocalMapping.Add("lib\\TestPluginA.dll", "Plugins\\TestPluginA.dll");
+
+			cases.Add(new PackageOperationTestCase(
+				"Newer Package Dependency Installed", 
+				new[] { dualityPluginA_New },
+				dualityPluginB, 
+				new[] { dualityPluginA_New, dualityPluginB }));
+
 			return cases;
 		}
 
