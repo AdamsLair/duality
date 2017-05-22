@@ -166,6 +166,7 @@
     <Compile Include="HelpSystem\HelpStack.cs" />
     <Compile Include="HelpSystem\IHelpInfoReader.cs" />
     <Compile Include="HelpSystem\IHelpProvider.cs" />
+    <Compile Include="PackageManagement\PackageManagerLogger.cs" />
     <Compile Include="PackageManagement\PackageManagerEnvironment.cs" />
     <Compile Include="PackageManagement\PackageUpdateSchedule.cs" />
     <Compile Include="PackageManagement\PackageSetup.cs" />

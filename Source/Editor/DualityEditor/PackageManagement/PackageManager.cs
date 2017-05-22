@@ -49,6 +49,7 @@ namespace Duality.Editor.PackageManagement
 
 		private NuGet.PackageManager     manager    = null;
 		private NuGet.IPackageRepository repository = null;
+		private PackageManagerLogger     logger     = null;
 
 		public event EventHandler<PackageLicenseAgreementEventArgs> PackageLicenseAcceptRequired = null;
 		public event EventHandler<PackageEventArgs>                 PackageInstalled             = null;
@@ -146,6 +147,8 @@ namespace Duality.Editor.PackageManagement
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
 			this.manager.PackageUninstalling += this.manager_PackageUninstalling;
+			this.logger = new PackageManagerLogger();
+			this.manager.Logger = this.logger;
 
 			// Retrieve information about local packages
 			this.RetrieveLocalPackageInfo();
@@ -165,8 +168,13 @@ namespace Duality.Editor.PackageManagement
 				return;
 			}
 
+			Log.Editor.Write("Installing package '{0}'...", package.PackageName);
+			Log.Editor.PushIndent();
+
 			// Request NuGet to install the package
 			this.manager.InstallPackage(newPackage, false, false);
+
+			Log.Editor.PopIndent();
 		}
 
 		/// <summary>
@@ -177,6 +185,9 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="package"></param>
 		public void VerifyPackage(LocalPackage package)
 		{
+			Log.Editor.Write("Verifying package '{0}'...", package.PackageName);
+			Log.Editor.PushIndent();
+
 			Version oldPackageVersion = package.Version;
 
 			// Determine the exact version that will be downloaded
@@ -217,6 +228,8 @@ namespace Duality.Editor.PackageManagement
 			{
 				this.setup.Save(this.env.ConfigFilePath);
 			}
+
+			Log.Editor.PopIndent();
 		}
 		/// <summary>
 		/// Uninstalls all Duality packages that are installed, but not registered. This
@@ -266,9 +279,14 @@ namespace Duality.Editor.PackageManagement
 		}
 		private void UninstallPackage(string id, Version version, bool force)
 		{
+			Log.Editor.Write("Uninstalling package '{0} {1}'...", id, version);
+			Log.Editor.PushIndent();
+
 			this.uninstallQueue.Add(new PackageName(id, version));
 			this.manager.UninstallPackage(id, new SemanticVersion(version), force, true);
 			this.uninstallQueue.Clear();
+
+			Log.Editor.PopIndent();
 		}
 		public bool CanUninstallPackage(PackageInfo package)
 		{
@@ -279,6 +297,7 @@ namespace Duality.Editor.PackageManagement
 		{
 			bool allowed = true;
 			this.manager.WhatIf = true;
+			this.manager.Logger = null;
 			try
 			{
 				this.manager.UninstallPackage(package.Id, new SemanticVersion(package.Version), false, true);
@@ -287,6 +306,7 @@ namespace Duality.Editor.PackageManagement
 			{
 				allowed = false;
 			}
+			this.manager.Logger = this.logger;
 			this.manager.WhatIf = false;
 			return allowed;
 		}
@@ -304,10 +324,15 @@ namespace Duality.Editor.PackageManagement
 			{
 				return;
 			}
+			
+			Log.Editor.Write("Updating package '{0}'...", package.PackageName);
+			Log.Editor.PushIndent();
 
 			this.uninstallQueue = null;
 			this.manager.UpdatePackage(newPackage, true, false);
 			this.uninstallQueue = new List<PackageName>();
+
+			Log.Editor.PopIndent();
 		}
 		public bool CanUpdatePackage(PackageInfo package)
 		{
@@ -318,6 +343,7 @@ namespace Duality.Editor.PackageManagement
 		{
 			bool allowed = true;
 			this.manager.WhatIf = true;
+			this.manager.Logger = null;
 			try
 			{
 				Version version = this.QueryPackageInfo(package.PackageName.VersionInvariant).Version;
@@ -327,6 +353,7 @@ namespace Duality.Editor.PackageManagement
 			{
 				allowed = false;
 			}
+			this.manager.Logger = this.logger;
 			this.manager.WhatIf = false;
 			return allowed;
 		}
@@ -466,10 +493,14 @@ namespace Duality.Editor.PackageManagement
 		public bool ApplyUpdate(bool restartEditor = true)
 		{
 			if (!File.Exists(this.env.UpdateFilePath)) return false;
+
+			Log.Editor.Write("Applying package update...");
+			Log.Editor.PushIndent();
 			
 			// Manually perform update operations on the updater itself
 			try
 			{
+				Log.Editor.Write("Preparing updater...");
 				PackageUpdateSchedule schedule = this.PrepareUpdateSchedule();
 				schedule.ApplyUpdaterChanges(this.env.UpdaterExecFilePath);
 				this.SaveUpdateSchedule(schedule);
@@ -484,10 +515,13 @@ namespace Duality.Editor.PackageManagement
 			}
 
 			// Run the updater application
+			Log.Editor.Write("Running updater...");
 			Process.Start(this.env.UpdaterExecFilePath, string.Format("\"{0}\" \"{1}\" \"{2}\"",
 				this.env.UpdateFilePath,
 				restartEditor ? typeof(DualityEditorApp).Assembly.Location : "",
 				restartEditor ? Environment.CurrentDirectory : ""));
+
+			Log.Editor.PopIndent();
 
 			return true;
 		}
@@ -996,13 +1030,16 @@ namespace Duality.Editor.PackageManagement
 				if (packageInfo.IsDualityPackage)
 				{
 					if (!this.uninstallQueue.Any(p => p.Id == e.Package.Id && p.Version == e.Package.Version.Version))
+					{
 						e.Cancel = true;
+						Log.Editor.Write("Skip dependency uninstall of package '{0} {1}'.", e.Package.Id, e.Package.Version);
+					}
 				}
 			}
 		}
 		private void manager_PackageUninstalled(object sender, PackageOperationEventArgs e)
 		{
-			Log.Editor.Write("Package removal scheduled: {0}, {1}", e.Package.Id, e.Package.Version);
+			Log.Editor.Write("Integrating uninstall of package '{0} {1}'...", e.Package.Id, e.Package.Version);
 
 			// Determine all files that are referenced by a package, and the ones referenced by this one
 			IEnumerable<string> localFiles = this.CreateFileMapping(e.Package).Select(p => p.Key);
@@ -1043,7 +1080,7 @@ namespace Duality.Editor.PackageManagement
 		}
 		private void manager_PackageInstalled(object sender, PackageOperationEventArgs e)
 		{
-			Log.Editor.Write("Package downloaded: {0}, {1}", e.Package.Id, e.Package.Version);
+			Log.Editor.Write("Integrating install of package '{0} {1}'...", e.Package.Id, e.Package.Version);
 			
 			// Update package entries from local config
 			PackageInfo packageInfo = this.QueryPackageInfo(new PackageName(e.Package.Id, e.Package.Version.Version));
