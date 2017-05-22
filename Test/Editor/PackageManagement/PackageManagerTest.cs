@@ -116,14 +116,8 @@ namespace Duality.Editor.PackageManagement.Tests
 		[Test, TestCaseSource("InstallPackageTestCases")]
 		public void InstallPackage(PackageOperationTestCase testCase)
 		{
-			// Build packages from the specs we're testing with
-			foreach (MockPackageSpec package in testCase.Repository)
-				package.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
-
-			// Set up a new package manager that we'll test our install with
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
-
-			// Setup the required pre-installed packages for the test
+			this.SetupReporistoryForTest(testCase.Repository);
 			this.SetupPackagesForTest(packageManager, testCase.Setup);
 
 			// Retrieve PackageInfo from the mock repository
@@ -160,24 +154,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				packageManager.LocalSetup.Packages.All(p => p.IsInstallationComplete));
 
 			// Expect the update schedule to reflect the expected installs
-			bool anyUpdateExpected = testCase.Installed.Count > 0;
-			Assert.AreEqual(anyUpdateExpected, File.Exists(this.workEnv.UpdateFilePath));
-			if (anyUpdateExpected)
-			{
-				PackageUpdateSchedule applyScript = PackageUpdateSchedule.Load(this.workEnv.UpdateFilePath);
-				List<XElement> updateItems = applyScript.Items.ToList();
-				foreach (MockPackageSpec expectedPackage in testCase.Installed)
-				{
-					foreach (var pair in expectedPackage.LocalMapping)
-					{
-						this.AssertUpdateScheduleCopyItem(
-							updateItems, 
-							expectedPackage.Name, 
-							pair.Key, 
-							pair.Value);
-					}
-				}
-			}
+			this.AssertUpdateSchedule(testCase);
 		}
 		private IEnumerable<PackageOperationTestCase> InstallPackageTestCases()
 		{
@@ -270,6 +247,13 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 
 
+		private void SetupReporistoryForTest(IEnumerable<MockPackageSpec> repository)
+		{
+			foreach (MockPackageSpec package in repository)
+			{
+				package.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
+			}
+		}
 		private void SetupPackagesForTest(PackageManager packageManager, IEnumerable<MockPackageSpec> setup)
 		{
 			try
@@ -318,6 +302,53 @@ namespace Duality.Editor.PackageManagement.Tests
 			}
 		}
 
+		private void AssertUpdateSchedule(PackageOperationTestCase testCase)
+		{
+			bool anyUpdateExpected = 
+				testCase.Installed.Count > 0 ||
+				testCase.Uninstalled.Count > 0;
+			bool updateScheduleExists = File.Exists(this.workEnv.UpdateFilePath);
+			
+			// Assert that the existence of an update file reflects whether we expect an update
+			if (!anyUpdateExpected)
+			{
+				Assert.IsFalse(updateScheduleExists);
+				return;
+			}
+			else
+			{
+				Assert.IsTrue(updateScheduleExists);
+			}
+
+			// Load the update schedule to check its contents
+			PackageUpdateSchedule applyScript = PackageUpdateSchedule.Load(this.workEnv.UpdateFilePath);
+			List<XElement> updateItems = applyScript.Items.ToList();
+
+			// Assert that every install has a matching copy for each of its files
+			foreach (MockPackageSpec package in testCase.Installed)
+			{
+				foreach (var pair in package.LocalMapping)
+				{
+					this.AssertUpdateScheduleCopyItem(
+						updateItems, 
+						package.Name, 
+						pair.Key, 
+						pair.Value);
+				}
+			}
+
+			// Assert that every uninstall has a matching copy for each of its files
+			foreach (MockPackageSpec package in testCase.Uninstalled)
+			{
+				foreach (var pair in package.LocalMapping)
+				{
+					this.AssertUpdateScheduleDeleteItem(
+						updateItems, 
+						package.Name, 
+						pair.Value);
+				}
+			}
+		}
 		private void AssertUpdateScheduleCopyItem(IEnumerable<XElement> items, PackageName package, string source, string target)
 		{
 			string sourceAbs = Path.Combine(this.workEnv.RepositoryPath, package.Id + "." + package.Version, source);
@@ -348,6 +379,26 @@ namespace Duality.Editor.PackageManagement.Tests
 				"  Expected target: '{2}'",
 				items.Count(),
 				sourceAbs,
+				targetAbs);
+		}
+		private void AssertUpdateScheduleDeleteItem(IEnumerable<XElement> items, PackageName package, string target)
+		{
+			string targetAbs = Path.Combine(this.workEnv.RootPath, target);
+
+			foreach (XElement item in items)
+			{
+				if (item.Name != PackageUpdateSchedule.DeleteItem) continue;
+				if (PathOp.ArePathsEqual(item.GetAttributeValue("target"), targetAbs))
+				{
+					return;
+				}
+			}
+
+			Assert.Fail(
+				"Expected delete instruction, but found no matching item." + Environment.NewLine +
+				"  {0} update schedule items" + Environment.NewLine +
+				"  Expected target: '{1}'",
+				items.Count(),
 				targetAbs);
 		}
 	}
