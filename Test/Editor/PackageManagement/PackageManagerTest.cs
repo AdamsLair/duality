@@ -315,32 +315,43 @@ namespace Duality.Editor.PackageManagement.Tests
 			PackageUpdateSchedule applyScript = PackageUpdateSchedule.Load(this.workEnv.UpdateFilePath);
 			List<XElement> updateItems = applyScript.Items.ToList();
 
-			// Assert that every install has a matching copy for each of its files
+			// Assert that every install has a matching copy for each of its files.
+			HashSet<string> writtenFiles = new HashSet<string>();
 			foreach (MockPackageSpec package in installed)
 			{
 				foreach (var pair in package.LocalMapping)
 				{
-					this.AssertUpdateScheduleCopyItem(
+					this.AssertUpdateScheduleCopy(
 						updateItems, 
 						package.Name, 
 						pair.Key, 
 						pair.Value);
+
+					// Note that an install can supersede a previous uninstall by copying a 
+					// file into the same location. Keep track of all written files to check this.
+					writtenFiles.Add(pair.Value);
 				}
 			}
 
-			// Assert that every uninstall has a matching copy for each of its files
+			// Assert that every uninstall has a matching delete for each of its files.
 			foreach (MockPackageSpec package in uninstalled)
 			{
 				foreach (var pair in package.LocalMapping)
 				{
-					this.AssertUpdateScheduleDeleteItem(
+					// If the file we expect to see deleted was overwritten instead, skip
+					// the assert to account for update situations where an uninstall is
+					// immediately followed by an install.
+					if (writtenFiles.Contains(pair.Value))
+						continue;
+
+					this.AssertUpdateScheduleDelete(
 						updateItems, 
 						package.Name, 
 						pair.Value);
 				}
 			}
 		}
-		private void AssertUpdateScheduleCopyItem(IEnumerable<XElement> items, PackageName package, string source, string target)
+		private void AssertUpdateScheduleCopy(IEnumerable<XElement> items, PackageName package, string source, string target)
 		{
 			string sourceAbs = Path.Combine(this.workEnv.RepositoryPath, package.Id + "." + package.Version, source);
 			string targetAbs = Path.Combine(this.workEnv.RootPath, target);
@@ -372,7 +383,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				sourceAbs,
 				targetAbs);
 		}
-		private void AssertUpdateScheduleDeleteItem(IEnumerable<XElement> items, PackageName package, string target)
+		private void AssertUpdateScheduleDelete(IEnumerable<XElement> items, PackageName package, string target)
 		{
 			string targetAbs = Path.Combine(this.workEnv.RootPath, target);
 
