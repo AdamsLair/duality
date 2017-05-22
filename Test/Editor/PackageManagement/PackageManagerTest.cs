@@ -114,24 +114,22 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 
 		[Test, TestCaseSource("InstallPackageTestCases")]
-		public void InstallPackage(PackageInstallTestCase testCase)
+		public void InstallPackage(PackageOperationTestCase testCase)
 		{
 			// Build packages from the specs we're testing with
-			foreach (MockPackageSpec package in testCase.RepositoryPackages)
+			foreach (MockPackageSpec package in testCase.Repository)
 				package.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 
 			// Set up a new package manager that we'll test our install with
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
-			
-			// Precondition: No packages installed, no apply or sync required
-			Assert.IsFalse(packageManager.IsPackageSyncRequired);
-			Assert.IsEmpty(packageManager.LocalSetup.Packages);
-			Assert.IsFalse(File.Exists(this.workEnv.UpdateFilePath));
+
+			// Setup the required pre-installed packages for the test
+			this.SetupPackagesForTest(packageManager, testCase.Setup);
 
 			// Retrieve PackageInfo from the mock repository
-			PackageInfo packageInfo = packageManager.QueryPackageInfo(testCase.InstallPackage.Name);
+			PackageInfo packageInfo = packageManager.QueryPackageInfo(testCase.Target.Name);
 			Assert.IsNotNull(packageInfo);
-			Assert.AreEqual(packageInfo.PackageName, testCase.InstallPackage.Name);
+			Assert.AreEqual(packageInfo.PackageName, testCase.Target.Name);
 
 			// Install the package while listening for events
 			List<PackageName> installEvents = new List<PackageName>();
@@ -145,18 +143,18 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			// Assert that the expected install events were fired
 			Assert.AreEqual(
-				testCase.ExpectedPackages.Count, 
+				testCase.Results.Count, 
 				installEvents.Count);
 			CollectionAssert.AreEquivalent(
-				testCase.ExpectedPackages.Select(p => p.Name), 
+				testCase.Results.Select(p => p.Name), 
 				installEvents);
 
 			// Assert that the expected packages were correctly registered in the local setup
 			Assert.AreEqual(
-				testCase.ExpectedDualityPackages.Count, 
+				testCase.DualityResults.Count, 
 				packageManager.LocalSetup.Packages.Count);
 			CollectionAssert.AreEquivalent(
-				testCase.ExpectedDualityPackages.Select(p => p.Name), 
+				testCase.DualityResults.Select(p => p.Name), 
 				packageManager.LocalSetup.Packages.Select(p => p.PackageName));
 			Assert.IsTrue(
 				packageManager.LocalSetup.Packages.All(p => p.IsInstallationComplete));
@@ -167,7 +165,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			// Load the apply script and assert its contents match the expected
 			PackageUpdateSchedule applyScript = PackageUpdateSchedule.Load(this.workEnv.UpdateFilePath);
 			List<XElement> updateItems = applyScript.Items.ToList();
-			foreach (MockPackageSpec expectedPackage in testCase.ExpectedPackages)
+			foreach (MockPackageSpec expectedPackage in testCase.Results)
 			{
 				foreach (var pair in expectedPackage.LocalMapping)
 				{
@@ -175,7 +173,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				}
 			}
 		}
-		private IEnumerable<PackageInstallTestCase> InstallPackageTestCases()
+		private IEnumerable<PackageOperationTestCase> InstallPackageTestCases()
 		{
 			// Note that NuGet by default does not recognize lib subfolders during installation.
 			// The files will be packaged with subfolders, but their EffectivePath won't include
@@ -183,7 +181,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			// all plugins will end up in the Plugins root folder, regardless of their previous
 			// hierarchy.
 
-			List<PackageInstallTestCase> cases = new List<PackageInstallTestCase>();
+			List<PackageOperationTestCase> cases = new List<PackageOperationTestCase>();
 
 			// Duality plugin without any dependencies
 			MockPackageSpec dualityPluginA = new MockPackageSpec("AdamsLair.Duality.TestPluginA");
@@ -198,7 +196,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityPluginA.LocalMapping.Add("content\\TestPluginA\\SomeRes.Pixmap.res", "Data\\TestPluginA\\SomeRes.Pixmap.res");
 			dualityPluginA.LocalMapping.Add("source\\Foo\\SomeCode.cs", "Source\\Code\\AdamsLair.Duality.TestPluginA\\Foo\\SomeCode.cs");
 
-			cases.Add(new PackageInstallTestCase(
+			cases.Add(new PackageOperationTestCase(
 				"Duality Plugin, No Dependencies", 
 				dualityPluginA, 
 				new [] { dualityPluginA }));
@@ -211,7 +209,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityPluginB.LocalMapping.Add("lib\\TestPluginB.dll", "Plugins\\TestPluginB.dll");
 			dualityPluginB.Dependencies.Add(dualityPluginA.Name);
 
-			cases.Add(new PackageInstallTestCase(
+			cases.Add(new PackageOperationTestCase(
 				"Duality Plugin, With Duality Dependencies", 
 				dualityPluginB, 
 				new [] { dualityPluginB, dualityPluginA }));
@@ -230,7 +228,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityPluginC.LocalMapping.Add("lib\\TestPluginC.dll", "Plugins\\TestPluginC.dll");
 			dualityPluginC.Dependencies.Add(otherLibraryA.Name);
 
-			cases.Add(new PackageInstallTestCase(
+			cases.Add(new PackageOperationTestCase(
 				"Duality Plugin, With Lib Dependencies", 
 				dualityPluginC, 
 				new [] { dualityPluginC, otherLibraryA }));
@@ -243,7 +241,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityNonPluginA.LocalMapping.Add("lib\\TestNonPluginA.dll", "TestNonPluginA.dll");
 			dualityNonPluginA.LocalMapping.Add("content\\TestNonPluginA\\SomeFile.txt", "TestNonPluginA\\SomeFile.txt");
 
-			cases.Add(new PackageInstallTestCase(
+			cases.Add(new PackageOperationTestCase(
 				"Duality Non-Plugin Package", 
 				dualityNonPluginA, 
 				new [] { dualityNonPluginA }));
@@ -251,6 +249,54 @@ namespace Duality.Editor.PackageManagement.Tests
 			return cases;
 		}
 
+
+		private void SetupPackagesForTest(PackageManager packageManager, IEnumerable<MockPackageSpec> setup)
+		{
+			try
+			{
+				// Install all required packages
+				foreach (MockPackageSpec package in setup)
+				{
+					PackageInfo packageInfo = packageManager.QueryPackageInfo(package.Name);
+					if (packageInfo == null || packageInfo.PackageName != package.Name)
+					{
+						Assert.Inconclusive(
+							"Failed to create the required package setup for the test. Unable to retrieve package '{0}'", 
+							package.Name);
+					}
+
+					packageManager.InstallPackage(packageInfo);
+				}
+
+				// Make sure all required packages are really there
+				foreach (MockPackageSpec package in setup)
+				{
+					LocalPackage localPackage = packageManager.LocalSetup.GetPackage(package.Name);
+					if (localPackage == null || !localPackage.IsInstallationComplete)
+					{
+						Assert.Inconclusive(
+							"Failed to create the required package setup for the test. Install failed for package '{0}'", 
+							package.Name);
+					}
+				}
+
+				// Apply all scheduled copy and delete operations immediately
+				if (File.Exists(this.workEnv.UpdateFilePath))
+				{
+					PackageUpdateSchedule applyScript = PackageUpdateSchedule.Load(this.workEnv.UpdateFilePath);
+					applyScript.ApplyChanges(applyScript.Items);
+
+					// Get rid of the other scheduled updates
+					File.Delete(this.workEnv.UpdateFilePath);
+				}
+			}
+			catch (Exception e)
+			{
+				Assert.Inconclusive(
+					"Failed to create the required package setup for the test because an exception occurred: {0}", 
+					e);
+			}
+		}
 
 		private void AssertUpdateScheduleCopyItem(IEnumerable<XElement> items, PackageName package, string source, string target)
 		{
