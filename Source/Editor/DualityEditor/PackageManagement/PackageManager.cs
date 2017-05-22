@@ -144,6 +144,7 @@ namespace Duality.Editor.PackageManagement
 			this.hasLocalRepo = repositories.OfType<LocalPackageRepository>().Any();
 			this.repository = new AggregateRepository(repositories);
 			this.manager = new NuGet.PackageManager(this.repository, this.env.RepositoryPath);
+			this.manager.PackageInstalling += this.manager_PackageInstalling;
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
 			this.manager.PackageUninstalling += this.manager_PackageUninstalling;
@@ -1083,6 +1084,26 @@ namespace Duality.Editor.PackageManagement
 			this.setup.Save(this.env.ConfigFilePath);
 
 			this.OnPackageUninstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
+		}
+		private void manager_PackageInstalling(object sender, PackageOperationEventArgs e)
+		{
+			// If we're about to install a newer version of a package that is already
+			// installed, make sure to uninstall the older version of it.
+			LocalPackage localPackage = this.setup.GetPackage(e.Package.Id);
+			if (localPackage != null && localPackage.Version < e.Package.Version.Version)
+			{
+				if (this.uninstallQueue != null)
+					this.uninstallQueue.Add(localPackage.PackageName);
+
+				this.manager.UninstallPackage(
+					localPackage.Id, 
+					new SemanticVersion(localPackage.Version), 
+					true, 
+					false);
+
+				if (this.uninstallQueue != null)
+					this.uninstallQueue.Remove(localPackage.PackageName);
+			}
 		}
 		private void manager_PackageInstalled(object sender, PackageOperationEventArgs e)
 		{
