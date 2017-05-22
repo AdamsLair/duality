@@ -355,7 +355,11 @@ namespace Duality.Editor.PackageManagement.Tests
 
 					// Note that an install can supersede a previous uninstall by copying a 
 					// file into the same location. Keep track of all written files to check this.
-					writtenFiles.Add(pair.Value);
+					bool uniqueCopy = writtenFiles.Add(pair.Value);
+
+					// Assert that we don't copy multiple files to the same target location.
+					// The package manager should take care of resolving this up front.
+					Assert.IsTrue(uniqueCopy);
 				}
 			}
 
