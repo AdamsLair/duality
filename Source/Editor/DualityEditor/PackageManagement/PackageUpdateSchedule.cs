@@ -163,7 +163,31 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="updaterFilePath"></param>
 		public void ApplyUpdaterChanges(string updaterFilePath)
 		{
-			List<XElement> updateItems = this.document.Root.Elements().ToList();
+			List<XElement> updaterItems = new List<XElement>();
+
+			// Gather all items that are affecting the updater
+			foreach (XElement element in this.Items)
+			{
+				XAttribute attribTarget = element.Attribute("target");
+				string target = (attribTarget != null) ? attribTarget.Value : null;
+
+				if (PathOp.ArePathsEqual(target, updaterFilePath))
+					updaterItems.Add(element);
+			}
+
+			this.ApplyChanges(updaterItems);
+		}
+		/// <summary>
+		/// Applies a set of scheduled update instructions immediately and removes them from the schedule.
+		/// 
+		/// Note that this method only supports copy and delete operations. More complex operations are only
+		/// implemented in the updater application, as this is the one usually performing them. This method
+		/// exists only for applying updates to the updater itself, as well as for testing purposes.
+		/// </summary>
+		/// <param name="items"></param>
+		public void ApplyChanges(IEnumerable<XElement> items)
+		{
+			List<XElement> updateItems = items.ToList();
 			foreach (XElement element in updateItems)
 			{
 				XAttribute attribTarget = element.Attribute("target");
@@ -173,18 +197,15 @@ namespace Duality.Editor.PackageManagement
 
 				// Apply updates that affect the updater itself
 				bool applied = false;
-				if (PathOp.ArePathsEqual(target, updaterFilePath))
+				if (string.Equals(element.Name.LocalName, DeleteItem, StringComparison.InvariantCultureIgnoreCase))
 				{
-					if (string.Equals(element.Name.LocalName, DeleteItem, StringComparison.InvariantCultureIgnoreCase))
-					{
-						File.Delete(target);
-						applied = true;
-					}
-					else if (string.Equals(element.Name.LocalName, CopyItem, StringComparison.InvariantCultureIgnoreCase))
-					{
-						File.Copy(source, target, true);
-						applied = true;
-					}
+					File.Delete(target);
+					applied = true;
+				}
+				else if (string.Equals(element.Name.LocalName, CopyItem, StringComparison.InvariantCultureIgnoreCase))
+				{
+					File.Copy(source, target, true);
+					applied = true;
 				}
 
 				// Remove applied elements from the schedule
