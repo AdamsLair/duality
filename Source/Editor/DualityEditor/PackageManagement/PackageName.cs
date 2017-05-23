@@ -52,7 +52,7 @@ namespace Duality.Editor.PackageManagement
 		}
 		public override string ToString()
 		{
-			return string.Format("{0}, {1}", this.Id, this.Version);
+			return string.Format("{0} {1}", this.Id, this.Version);
 		}
 		
 		public static bool operator == (PackageName a, PackageName b)

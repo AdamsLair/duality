@@ -40,11 +40,16 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 		public void AssertInstall(PackageName package)
 		{
-			Assert.IsTrue(this.installEvents.Remove(package));
+			Assert.IsTrue(
+				this.installEvents.Remove(package), 
+				"Expected install event for package {0}, but did not receive one.", 
+				package);
 		}
 		public void AssertUninstall(PackageName package)
 		{
-			Assert.IsTrue(this.uninstallEvents.Remove(package));
+			Assert.IsTrue(this.uninstallEvents.Remove(package), 
+				"Expected uninstall event for package {0}, but did not receive one.", 
+				package);
 		}
 		public void AssertEmpty()
 		{
