@@ -300,7 +300,7 @@ namespace Duality.Editor.PackageManagement
 				PackageInfo packageInfo = package.Info ?? this.QueryPackageInfo(package.PackageName);
 				if (packageInfo == null) continue;
 
-				foreach (PackageInfo dependency in this.GetDeepDependencies(new [] { packageInfo }))
+				foreach (PackageInfo dependency in this.GetDeepDependencies(new [] { packageInfo }, new [] { id }))
 				{
 					// Don't check versions, as dependencies are usually not resolved
 					// with an exact version match.
@@ -566,20 +566,24 @@ namespace Duality.Editor.PackageManagement
 		/// Enumerates the complete dependency tree of the specified packages, including
 		/// the packages themselves.
 		/// </summary>
-		/// <param name="package"></param>
+		/// <param name="packages"></param>
+		/// <param name="skipPackageIds"></param>
 		/// <returns></returns>
-		private IEnumerable<PackageInfo> GetDeepDependencies(IEnumerable<PackageInfo> packages)
+		private IEnumerable<PackageInfo> GetDeepDependencies(IEnumerable<PackageInfo> packages, IEnumerable<string> skipPackageIds = null)
 		{
-			Dictionary<PackageInfo,int> deepDependencyCount = this.GetDeepDependencyCount(packages);
+			Dictionary<PackageInfo,int> deepDependencyCount = this.GetDeepDependencyCount(packages, skipPackageIds);
 			return deepDependencyCount.Keys;
 		}
 		/// <summary>
 		/// Determines the number of deep dependencies for each package in the specified collection.
 		/// </summary>
 		/// <param name="packages"></param>
+		/// <param name="skipPackageIds"></param>
 		/// <returns></returns>
-		private Dictionary<PackageInfo,int> GetDeepDependencyCount(IEnumerable<PackageInfo> packages)
+		private Dictionary<PackageInfo,int> GetDeepDependencyCount(IEnumerable<PackageInfo> packages, IEnumerable<string> skipPackageIds = null)
 		{
+			HashSet<string> skipPackageSet = new HashSet<string>(skipPackageIds ?? Enumerable.Empty<string>());
+
 			// Build a lookup for the packages we already know
 			Dictionary<PackageName,PackageInfo> resolveCache = new Dictionary<PackageName,PackageInfo>();
 			foreach (PackageInfo package in packages)
@@ -593,7 +597,7 @@ namespace Duality.Editor.PackageManagement
 			foreach (PackageInfo package in packages)
 			{
 				if (package == null) continue;
-				GetDeepDependencyCount(package, result, resolveCache);
+				GetDeepDependencyCount(package, result, resolveCache, skipPackageSet);
 			}
 
 			return result;
@@ -605,7 +609,7 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="deepCount"></param>
 		/// <param name="resolver"></param>
 		/// <returns></returns>
-		private int GetDeepDependencyCount(PackageInfo package, Dictionary<PackageInfo,int> deepCount, Dictionary<PackageName,PackageInfo> resolveCache)
+		private int GetDeepDependencyCount(PackageInfo package, Dictionary<PackageInfo,int> deepCount, Dictionary<PackageName,PackageInfo> resolveCache, HashSet<string> skipIdSet)
 		{
 			int count;
 			if (!deepCount.TryGetValue(package, out count))
@@ -619,6 +623,9 @@ namespace Duality.Editor.PackageManagement
 				// Iterate over dependencies and count theirs as well
 				foreach (PackageName dependencyName in package.Dependencies)
 				{
+					// If this dependency is part of the set of skipped packages, skip it
+					if (skipIdSet.Contains(dependencyName.Id)) continue;
+
 					// Try to resolve the dependency name to get a hold on the actual info
 					PackageInfo dependency;
 					if (!resolveCache.TryGetValue(dependencyName, out dependency))
@@ -651,7 +658,7 @@ namespace Duality.Editor.PackageManagement
 					if (dependency == null) continue;
 
 					// Add secondary dependencies
-					count += GetDeepDependencyCount(dependency, deepCount, resolveCache);
+					count += GetDeepDependencyCount(dependency, deepCount, resolveCache, skipIdSet);
 				}
 
 				// Update the registered value
