@@ -409,12 +409,14 @@ namespace Duality.Editor.PackageManagement.Tests
 			MockPackageSpec pluginA2 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(2, 1, 0, 0));
 			MockPackageSpec pluginB1 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 0, 2, 0));
 			MockPackageSpec pluginB2 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(2, 2, 0, 0));
-			MockPackageSpec pluginC1 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC", new Version(4, 1, 2, 0));
-			MockPackageSpec pluginC2 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC", new Version(5, 2, 1, 0));
+			MockPackageSpec pluginC1 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC", new Version(1, 1, 2, 0));
+			MockPackageSpec pluginC2 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC", new Version(2, 2, 1, 0));
+			MockPackageSpec pluginD1 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginD", new Version(1, 1, 3, 0));
 			pluginA1.Dependencies.Add(libraryA1.Name);
 			pluginA2.Dependencies.Add(libraryA2.Name);
 			pluginB1.Dependencies.Add(pluginA1.Name);
 			pluginB2.Dependencies.Add(pluginA2.Name);
+			pluginD1.Dependencies.Add(pluginA1.Name);
 
 			List<MockPackageSpec> repository = new List<MockPackageSpec>();
 			repository.Add(libraryA1);
@@ -425,6 +427,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			repository.Add(pluginB2);
 			repository.Add(pluginC1);
 			repository.Add(pluginC2);
+			repository.Add(pluginD1);
 
 			List<PackageRestoreTestCase> cases = new List<PackageRestoreTestCase>();
 
@@ -529,14 +532,32 @@ namespace Duality.Editor.PackageManagement.Tests
 				List<PackageName> configSetup = new List<PackageName>();
 				configSetup.Add(pluginB2.Name);
 
+				// Duality will first uninstall pluginA2, but then re-install it
+				// while verifying pluginB2, so we expect both an install and an
+				// uninstall for that package.
 				cases.Add(new PackageRestoreTestCase(
-					"Partial Uninstall, Dependent",
+					"Dependency Uninstall, Reinstall",
  					repository,
 					new [] { libraryA2, pluginA2, pluginB2 },
 					configSetup, 
 					new [] { libraryA2, pluginA2, pluginB2 },
-					new [] { pluginA2 },
-					new [] { pluginA2 }));
+					new [] { libraryA2, pluginA2 },
+					new [] { libraryA2, pluginA2 }));
+			}
+
+			// Uninstall of a package which has an older version that others depend on
+			{
+				List<PackageName> configSetup = new List<PackageName>();
+				configSetup.Add(pluginD1.Name);
+
+				// Duality will first uninstall pluginA2, but then re-install an
+				// older version of it because pluginD1 requires that as a dependency.
+				cases.Add(new PackageRestoreTestCase(
+					"Dependency Uninstall, Revert to Old",
+ 					repository,
+					new [] { libraryA2, pluginA2, pluginD1 },
+					configSetup, 
+					new [] { libraryA1, pluginA1, pluginD1 }));
 			}
 
 			return cases;
