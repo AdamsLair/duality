@@ -477,7 +477,7 @@ namespace Duality.Editor.PackageManagement.Tests
 					if (!isDualityPackage) continue;
 
 					LocalPackage localPackage = packageManager.LocalSetup.GetPackage(package.Name);
-					if (localPackage == null || !localPackage.IsInstallationComplete)
+					if (localPackage == null)
 					{
 						Assert.Inconclusive(
 							"Failed to create the required package setup for the test. Install failed for package '{0}'", 
@@ -507,12 +507,12 @@ namespace Duality.Editor.PackageManagement.Tests
 		{
 			Assert.AreEqual(
 				expectedSetup.Count(), 
-				actualSetup.Packages.Count);
+				actualSetup.Packages.Count,
+				"Number of registered Duality packages in local setup");
 			CollectionAssert.AreEquivalent(
 				expectedSetup.Select(p => p.Name), 
-				actualSetup.Packages.Select(p => p.PackageName));
-			Assert.IsTrue(
-				actualSetup.Packages.All(p => p.IsInstallationComplete));
+				actualSetup.Packages.Select(p => p.PackageName),
+				"Registered Duality packages in local setup");
 		}
 		private void AssertUpdateSchedule(IEnumerable<MockPackageSpec> installed, IEnumerable<MockPackageSpec> uninstalled)
 		{

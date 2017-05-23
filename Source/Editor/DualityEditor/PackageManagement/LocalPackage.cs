@@ -28,10 +28,6 @@ namespace Duality.Editor.PackageManagement
 			get { return this.info; }
 			internal set { this.info = value; }
 		}
-		public bool IsInstallationComplete
-		{
-			get { return this.info != null; }
-		}
 
 
 		internal LocalPackage(PackageInfo info)
