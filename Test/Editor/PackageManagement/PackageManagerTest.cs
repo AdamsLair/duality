@@ -163,6 +163,31 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
 			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
 		}
+		[Test, TestCaseSource("UpdatePackageTestCases")]
+		public void UpdatePackage(PackageOperationTestCase testCase)
+		{
+			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
+
+			// Prepare the test by setting up remote repository and pre-installed local packages
+			this.SetupReporistoryForTest(testCase.Repository);
+			this.SetupPackagesForTest(packageManager, testCase.Setup);
+
+			using (PackageEventListener listener = new PackageEventListener(packageManager))
+			{
+				// Find and install the package to test
+				PackageInfo packageInfo = packageManager.QueryPackageInfo(testCase.Target.Name);
+				packageManager.UpdatePackage(packageInfo);
+
+				// Assert that the expected events were fired
+				listener.AssertChanges(
+					testCase.Installed, 
+					testCase.Uninstalled);
+			}
+
+			// Assert client state / setup after the install was done
+			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
+			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
+		}
 
 		private IEnumerable<PackageOperationTestCase> InstallPackageTestCases()
 		{
@@ -328,6 +353,81 @@ namespace Duality.Editor.PackageManagement.Tests
 				new [] { dualityPluginC, otherLibraryA },
 				dualityPluginC, 
 				new MockPackageSpec[0]));
+
+			return cases;
+		}
+		private IEnumerable<PackageOperationTestCase> UpdatePackageTestCases()
+		{
+			List<PackageOperationTestCase> cases = new List<PackageOperationTestCase>();
+
+			// Duality plugin without any dependencies
+			MockPackageSpec dualityPluginA_Old = new MockPackageSpec("AdamsLair.Duality.TestPluginA", new Version(1, 0, 0, 0));
+			dualityPluginA_Old.Tags.Add(PackageManager.DualityTag);
+			dualityPluginA_Old.Tags.Add(PackageManager.PluginTag);
+			dualityPluginA_Old.Files.Add("TestPluginA.dll", "lib");
+			dualityPluginA_Old.LocalMapping.Add("lib\\TestPluginA.dll", "Plugins\\TestPluginA.dll");
+
+			MockPackageSpec dualityPluginA_New = new MockPackageSpec("AdamsLair.Duality.TestPluginA", new Version(1, 1, 0, 0));
+			dualityPluginA_New.Tags.Add(PackageManager.DualityTag);
+			dualityPluginA_New.Tags.Add(PackageManager.PluginTag);
+			dualityPluginA_New.Files.Add("TestPluginA.dll", "lib");
+			dualityPluginA_New.LocalMapping.Add("lib\\TestPluginA.dll", "Plugins\\TestPluginA.dll");
+
+			cases.Add(new PackageOperationTestCase(
+				"Duality Plugin, No Dependencies", 
+				new [] { dualityPluginA_Old },
+				dualityPluginA_Old, 
+				new [] { dualityPluginA_New }));
+
+			// Duality plugin with Duality plugin dependencies
+			MockPackageSpec dualityPluginB_Old = new MockPackageSpec("AdamsLair.Duality.TestPluginB", new Version(1, 0, 0, 0));
+			dualityPluginB_Old.Tags.Add(PackageManager.DualityTag);
+			dualityPluginB_Old.Tags.Add(PackageManager.PluginTag);
+			dualityPluginB_Old.Files.Add("TestPluginB.dll", "lib");
+			dualityPluginB_Old.LocalMapping.Add("lib\\TestPluginB.dll", "Plugins\\TestPluginB.dll");
+			dualityPluginB_Old.Dependencies.Add(dualityPluginA_Old.Name);
+
+			MockPackageSpec dualityPluginB_New = new MockPackageSpec("AdamsLair.Duality.TestPluginB", new Version(1, 1, 0, 0));
+			dualityPluginB_New.Tags.Add(PackageManager.DualityTag);
+			dualityPluginB_New.Tags.Add(PackageManager.PluginTag);
+			dualityPluginB_New.Files.Add("TestPluginB.dll", "lib");
+			dualityPluginB_New.LocalMapping.Add("lib\\TestPluginB.dll", "Plugins\\TestPluginB.dll");
+			dualityPluginB_New.Dependencies.Add(dualityPluginA_New.Name);
+
+			cases.Add(new PackageOperationTestCase(
+				"Duality Plugin, With Duality Dependencies", 
+				new [] { dualityPluginA_Old, dualityPluginB_Old },
+				dualityPluginB_Old, 
+				new [] { dualityPluginA_New, dualityPluginB_New }));
+
+			// Duality plugin depending on a non-Duality NuGet package
+			MockPackageSpec otherLibraryA_Old = new MockPackageSpec("Some.Other.TestLibraryA", new Version(1, 0, 0, 0));
+			otherLibraryA_Old.Files.Add("TestLibraryA.dll", "lib");
+			otherLibraryA_Old.LocalMapping.Add("lib\\TestLibraryA.dll", "TestLibraryA.dll");
+
+			MockPackageSpec otherLibraryA_New = new MockPackageSpec("Some.Other.TestLibraryA", new Version(1, 1, 0, 0));
+			otherLibraryA_New.Files.Add("TestLibraryA.dll", "lib");
+			otherLibraryA_New.LocalMapping.Add("lib\\TestLibraryA.dll", "TestLibraryA.dll");
+
+			MockPackageSpec dualityPluginC_Old = new MockPackageSpec("AdamsLair.Duality.TestPluginC", new Version(1, 0, 0, 0));
+			dualityPluginC_Old.Tags.Add(PackageManager.DualityTag);
+			dualityPluginC_Old.Tags.Add(PackageManager.PluginTag);
+			dualityPluginC_Old.Files.Add("TestPluginC.dll", "lib");
+			dualityPluginC_Old.LocalMapping.Add("lib\\TestPluginC.dll", "Plugins\\TestPluginC.dll");
+			dualityPluginC_Old.Dependencies.Add(otherLibraryA_Old.Name);
+
+			MockPackageSpec dualityPluginC_New = new MockPackageSpec("AdamsLair.Duality.TestPluginC", new Version(1, 1, 0, 0));
+			dualityPluginC_New.Tags.Add(PackageManager.DualityTag);
+			dualityPluginC_New.Tags.Add(PackageManager.PluginTag);
+			dualityPluginC_New.Files.Add("TestPluginC.dll", "lib");
+			dualityPluginC_New.LocalMapping.Add("lib\\TestPluginC.dll", "Plugins\\TestPluginC.dll");
+			dualityPluginC_New.Dependencies.Add(otherLibraryA_New.Name);
+
+			cases.Add(new PackageOperationTestCase(
+				"Duality Plugin, With Lib Dependencies", 
+				new [] { otherLibraryA_Old, dualityPluginC_Old },
+				dualityPluginC_Old, 
+				new [] { otherLibraryA_New, dualityPluginC_New }));
 
 			return cases;
 		}
