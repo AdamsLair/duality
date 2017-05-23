@@ -390,12 +390,14 @@ namespace Duality.Editor.PackageManagement.Tests
 		private IEnumerable<PackageRestoreTestCase> PackageRestoreTestCases()
 		{
 			// Create a shared repository for all test cases to save some space and redundancy
-			MockPackageSpec libraryA1 = MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(5, 0, 1, 0));
-			MockPackageSpec libraryA2 = MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(6, 1, 0, 0));
+			MockPackageSpec libraryA1 = MockPackageSpec.CreateLibrary("Some.Other.LibraryA", new Version(5, 0, 1, 0));
+			MockPackageSpec libraryA2 = MockPackageSpec.CreateLibrary("Some.Other.LibraryA", new Version(6, 1, 0, 0));
 			MockPackageSpec pluginA1 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 0, 1, 0));
 			MockPackageSpec pluginA2 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(2, 1, 0, 0));
 			MockPackageSpec pluginB1 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 0, 2, 0));
 			MockPackageSpec pluginB2 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(2, 2, 0, 0));
+			MockPackageSpec pluginC1 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC", new Version(4, 1, 2, 0));
+			MockPackageSpec pluginC2 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC", new Version(5, 2, 1, 0));
 			pluginA1.Dependencies.Add(libraryA1.Name);
 			pluginA2.Dependencies.Add(libraryA2.Name);
 			pluginB1.Dependencies.Add(pluginA1.Name);
@@ -408,6 +410,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			repository.Add(pluginA2);
 			repository.Add(pluginB1);
 			repository.Add(pluginB2);
+			repository.Add(pluginC1);
+			repository.Add(pluginC2);
 
 			List<PackageRestoreTestCase> cases = new List<PackageRestoreTestCase>();
 
@@ -437,6 +441,49 @@ namespace Duality.Editor.PackageManagement.Tests
 					new MockPackageSpec[0],
 					configSetup, 
 					new [] { libraryA1, pluginA1, pluginB1 }));
+			}
+
+			// Partial restore of packages to newest available versions
+			{
+				List<PackageName> configSetup = new List<PackageName>();
+				configSetup.Add(pluginA1.Name);
+				configSetup.Add(pluginC1.Name.VersionInvariant);
+
+				cases.Add(new PackageRestoreTestCase(
+					"Partial Restore, Newest",
+ 					repository,
+					new [] { libraryA1, pluginA1 },
+					configSetup, 
+					new [] { libraryA1, pluginA1, pluginC2 }));
+			}
+
+			// Partial restore of packages to specific package versions
+			{
+				List<PackageName> configSetup = new List<PackageName>();
+				configSetup.Add(pluginA1.Name);
+				configSetup.Add(pluginB1.Name);
+
+				cases.Add(new PackageRestoreTestCase(
+					"Partial Restore, Specific",
+ 					repository,
+					new [] { libraryA1, pluginA1 },
+					configSetup, 
+					new [] { libraryA1, pluginA1, pluginB1 }));
+			}
+
+			// Partial restore of packages to newest available versions implicitly
+			// leading to an update of already installed packages
+			{
+				List<PackageName> configSetup = new List<PackageName>();
+				configSetup.Add(pluginA1.Name);
+				configSetup.Add(pluginB1.Name.VersionInvariant);
+
+				cases.Add(new PackageRestoreTestCase(
+					"Partial Restore, Implicit Update",
+ 					repository,
+					new [] { libraryA1, pluginA1 },
+					configSetup, 
+					new [] { libraryA2, pluginA2, pluginB2 }));
 			}
 
 			return cases;
