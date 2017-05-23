@@ -389,45 +389,54 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 		private IEnumerable<PackageRestoreTestCase> PackageRestoreTestCases()
 		{
+			// Create a shared repository for all test cases to save some space and redundancy
+			MockPackageSpec libraryA1 = MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(5, 0, 1, 0));
+			MockPackageSpec libraryA2 = MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(6, 1, 0, 0));
+			MockPackageSpec pluginA1 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 0, 1, 0));
+			MockPackageSpec pluginA2 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(2, 1, 0, 0));
+			MockPackageSpec pluginB1 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 0, 2, 0));
+			MockPackageSpec pluginB2 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(2, 2, 0, 0));
+			pluginA1.Dependencies.Add(libraryA1.Name);
+			pluginA2.Dependencies.Add(libraryA2.Name);
+			pluginB1.Dependencies.Add(pluginA1.Name);
+			pluginB2.Dependencies.Add(pluginA2.Name);
+
+			List<MockPackageSpec> repository = new List<MockPackageSpec>();
+			repository.Add(libraryA1);
+			repository.Add(libraryA2);
+			repository.Add(pluginA1);
+			repository.Add(pluginA2);
+			repository.Add(pluginB1);
+			repository.Add(pluginB2);
+
 			List<PackageRestoreTestCase> cases = new List<PackageRestoreTestCase>();
 
+			// Full restore of all packages to the newest available versions
 			{
-				List<MockPackageSpec> repository = new List<MockPackageSpec>();
-				repository.Add(MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(5, 0, 0, 0)));
-				repository.Add(MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(5, 0, 1, 0)));
-				repository.Add(MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(5, 1, 0, 0)));
-				repository.Add(MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(6, 1, 0, 0)));
-
-				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 0, 0, 0)));
-				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 0, 1, 0)));
-				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 1, 0, 0)));
-				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(2, 1, 0, 0)));
-
-				repository[4].Dependencies.Add(repository[0].Name);
-				repository[5].Dependencies.Add(repository[1].Name);
-				repository[6].Dependencies.Add(repository[2].Name);
-				repository[7].Dependencies.Add(repository[3].Name);
-
-				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 0, 0, 0)));
-				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 0, 2, 0)));
-				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 2, 0, 0)));
-				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(2, 2, 0, 0)));
-
-				repository[8].Dependencies.Add(repository[4].Name);
-				repository[9].Dependencies.Add(repository[5].Name);
-				repository[10].Dependencies.Add(repository[6].Name);
-				repository[11].Dependencies.Add(repository[7].Name);
-
 				List<PackageName> configSetup = new List<PackageName>();
-				configSetup.Add(new PackageName("AdamsLair.Duality.TestPluginA"));
-				configSetup.Add(new PackageName("AdamsLair.Duality.TestPluginB"));
+				configSetup.Add(pluginA1.Name.VersionInvariant);
+				configSetup.Add(pluginB1.Name.VersionInvariant);
 
 				cases.Add(new PackageRestoreTestCase(
-					"Full Restore",
+					"Full Restore, Newest",
  					repository,
 					new MockPackageSpec[0],
 					configSetup, 
-					new [] { repository[3], repository[7], repository[11] }));
+					new [] { libraryA2, pluginA2, pluginB2 }));
+			}
+
+			// Full restore of all packages to specific package versions
+			{
+				List<PackageName> configSetup = new List<PackageName>();
+				configSetup.Add(pluginA1.Name);
+				configSetup.Add(pluginB1.Name);
+
+				cases.Add(new PackageRestoreTestCase(
+					"Full Restore, Specific",
+ 					repository,
+					new MockPackageSpec[0],
+					configSetup, 
+					new [] { libraryA1, pluginA1, pluginB1 }));
 			}
 
 			return cases;
