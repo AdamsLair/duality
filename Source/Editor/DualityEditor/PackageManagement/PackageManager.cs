@@ -1089,22 +1089,22 @@ namespace Duality.Editor.PackageManagement
 		{
 			// If we're about to install a newer version of a package that is already
 			// installed, make sure to uninstall the older version of it.
-			LocalPackage localPackage = this.setup.GetPackage(e.Package.Id);
-			if (localPackage != null && 
-				localPackage.Version != null && 
-				localPackage.Version < e.Package.Version.Version)
+			IPackage localPackage = this.manager.LocalRepository
+				.FindPackagesById(e.Package.Id)
+				.FirstOrDefault();
+			if (localPackage != null && localPackage.Version < e.Package.Version)
 			{
+				PackageName packageName = new PackageName(localPackage.Id, localPackage.Version.Version);
 				if (this.uninstallQueue != null)
-					this.uninstallQueue.Add(localPackage.PackageName);
+					this.uninstallQueue.Add(packageName);
 
 				this.manager.UninstallPackage(
-					localPackage.Id, 
-					new SemanticVersion(localPackage.Version), 
+					localPackage,
 					true, 
 					false);
 
 				if (this.uninstallQueue != null)
-					this.uninstallQueue.Remove(localPackage.PackageName);
+					this.uninstallQueue.Remove(packageName);
 			}
 		}
 		private void manager_PackageInstalled(object sender, PackageOperationEventArgs e)
