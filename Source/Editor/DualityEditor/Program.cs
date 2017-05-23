@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Threading;
 using System.Globalization;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -124,6 +125,59 @@ namespace Duality.Editor
 				return;
 			}
 		}
+		private static IEnumerable SynchronizePackages(ProcessingBigTaskDialog.WorkerInterface workerInterface)
+		{
+			PackageManager manager = workerInterface.Data as PackageManager;
+
+			// Set the working state and yield, so the UI can update properly in case we're in the main thread
+			workerInterface.Progress = 0.0f;
+			workerInterface.StateDesc = GeneralRes.TaskPrepareInfo;
+			yield return null;
+
+			// Retrieve all registered Duality packages and sort them so we don't accidentally install an old dependency
+			LocalPackage[] packagesToVerify = manager.LocalSetup.Packages.ToArray();
+			manager.OrderByDependencies(packagesToVerify);
+			yield return null;
+
+			// Uninstall all "shadow" Duality packages that are installed, but not registered
+			Log.Editor.Write("Uninstalling unregistered packages...");
+			Log.Editor.PushIndent();
+			manager.UninstallNonRegisteredPackages();
+			Log.Editor.PopIndent();
+			yield return null;
+
+			// Iterate over previously reigstered local packages and verify / install them.
+			Log.Editor.Write("Verifying registered packages...");
+			Log.Editor.PushIndent();
+			foreach (LocalPackage package in packagesToVerify)
+			{
+				// Update the task dialog's UI
+				if (package.Version != null)
+					workerInterface.StateDesc = string.Format("Package '{0}', Version {1}...", package.Id, package.Version);
+				else
+					workerInterface.StateDesc = string.Format("Package '{0}'...", package.Id);
+				workerInterface.Progress += 0.5f / packagesToVerify.Length;
+				yield return null;
+
+				// Verify / Install the local package as needed
+				try
+				{
+					manager.VerifyPackage(package);
+				}
+				catch (Exception e)
+				{
+					Log.Editor.WriteError("An error occurred verifying Package '{0}', Version {1}: {2}", 
+						package.Id, 
+						package.Version, 
+						Log.Exception(e));
+				}
+				workerInterface.Progress += 0.5f / packagesToVerify.Length;
+				yield return null;
+			}
+			Log.Editor.PopIndent();
+
+			yield break;
+		}
 
 		private static void ArchiveOldLogfile()
 		{
@@ -195,59 +249,6 @@ namespace Duality.Editor
 				Log.Editor.WriteError(Log.Exception(e.Exception));
 			}
 			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
-		}
-		private static System.Collections.IEnumerable SynchronizePackages(ProcessingBigTaskDialog.WorkerInterface workerInterface)
-		{
-			PackageManager manager = workerInterface.Data as PackageManager;
-
-			// Set the working state and yield, so the UI can update properly in case we're in the main thread
-			workerInterface.Progress = 0.0f;
-			workerInterface.StateDesc = GeneralRes.TaskPrepareInfo;
-			yield return null;
-
-			// Retrieve all registered Duality packages and sort them so we don't accidentally install an old dependency
-			LocalPackage[] packagesToVerify = manager.LocalSetup.Packages.ToArray();
-			manager.OrderByDependencies(packagesToVerify);
-			yield return null;
-
-			// Uninstall all "shadow" Duality packages that are installed, but not registered
-			Log.Editor.Write("Uninstalling unregistered packages...");
-			Log.Editor.PushIndent();
-			manager.UninstallNonRegisteredPackages();
-			Log.Editor.PopIndent();
-			yield return null;
-
-			// Iterate over previously reigstered local packages and verify / install them.
-			Log.Editor.Write("Verifying registered packages...");
-			Log.Editor.PushIndent();
-			foreach (LocalPackage package in packagesToVerify)
-			{
-				// Update the task dialog's UI
-				if (package.Version != null)
-					workerInterface.StateDesc = string.Format("Package '{0}', Version {1}...", package.Id, package.Version);
-				else
-					workerInterface.StateDesc = string.Format("Package '{0}'...", package.Id);
-				workerInterface.Progress += 0.5f / packagesToVerify.Length;
-				yield return null;
-
-				// Verify / Install the local package as needed
-				try
-				{
-					manager.VerifyPackage(package);
-				}
-				catch (Exception e)
-				{
-					Log.Editor.WriteError("An error occurred verifying Package '{0}', Version {1}: {2}", 
-						package.Id, 
-						package.Version, 
-						Log.Exception(e));
-				}
-				workerInterface.Progress += 0.5f / packagesToVerify.Length;
-				yield return null;
-			}
-			Log.Editor.PopIndent();
-
-			yield break;
 		}
 	}
 }
