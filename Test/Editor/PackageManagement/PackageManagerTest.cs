@@ -202,7 +202,11 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			using (PackageEventListener listener = new PackageEventListener(packageManager))
 			{
-				List<LocalPackage> packagesToVerify = this.setup.Packages.ToList();
+				// Uninstall packages that are installed but no longer present in the local setup config
+				packageManager.UninstallNonRegisteredPackages();
+
+				// Install, update or check packages that are in the local setup config
+				List<LocalPackage> packagesToVerify = packageManager.LocalSetup.Packages.ToList();
 				packageManager.OrderByDependencies(packagesToVerify);
 				foreach (LocalPackage package in packagesToVerify)
 				{
@@ -331,7 +335,6 @@ namespace Duality.Editor.PackageManagement.Tests
 				dualityPluginB, 
 				new [] { dualityPluginA }));
 			
-
 			// Duality plugin depending on a non-Duality NuGet package
 			MockPackageSpec otherLibraryA = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryA");
 			MockPackageSpec dualityPluginC = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC");
@@ -342,6 +345,16 @@ namespace Duality.Editor.PackageManagement.Tests
 				new [] { dualityPluginC, otherLibraryA },
 				dualityPluginC, 
 				new MockPackageSpec[0]));
+
+			// Duality plugin that has a dependency that other plugins still need
+			MockPackageSpec dualityPluginD = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginD");
+			dualityPluginD.Dependencies.Add(dualityPluginA.Name);
+
+			cases.Add(new PackageOperationTestCase(
+				"Shared Dependencies", 
+				new [] { dualityPluginA, dualityPluginB, dualityPluginD },
+				dualityPluginD, 
+				new [] { dualityPluginA, dualityPluginB }));
 
 			return cases;
 		}
@@ -484,6 +497,46 @@ namespace Duality.Editor.PackageManagement.Tests
 					new [] { libraryA1, pluginA1 },
 					configSetup, 
 					new [] { libraryA2, pluginA2, pluginB2 }));
+			}
+
+			// Full uninstall of all packages because they've been removed from the config
+			{
+				List<PackageName> configSetup = new List<PackageName>();
+
+				cases.Add(new PackageRestoreTestCase(
+					"Full Uninstall",
+ 					repository,
+					new [] { libraryA2, pluginA2, pluginB2 },
+					configSetup, 
+					new MockPackageSpec[0]));
+			}
+
+			// Uninstall of a leaf package
+			{
+				List<PackageName> configSetup = new List<PackageName>();
+				configSetup.Add(pluginA2.Name);
+
+				cases.Add(new PackageRestoreTestCase(
+					"Partial Uninstall, Leaf",
+ 					repository,
+					new [] { libraryA2, pluginA2, pluginB2 },
+					configSetup, 
+					new [] { libraryA2, pluginA2 }));
+			}
+
+			// Uninstall of a package that others depend on
+			{
+				List<PackageName> configSetup = new List<PackageName>();
+				configSetup.Add(pluginB2.Name);
+
+				cases.Add(new PackageRestoreTestCase(
+					"Partial Uninstall, Dependent",
+ 					repository,
+					new [] { libraryA2, pluginA2, pluginB2 },
+					configSetup, 
+					new [] { libraryA2, pluginA2, pluginB2 },
+					new [] { pluginA2 },
+					new [] { pluginA2 }));
 			}
 
 			return cases;

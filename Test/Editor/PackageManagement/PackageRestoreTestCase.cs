@@ -83,13 +83,15 @@ namespace Duality.Editor.PackageManagement.Tests
 
 
 		public PackageRestoreTestCase(string name, IEnumerable<MockPackageSpec> repository, IEnumerable<MockPackageSpec> preSetup, IEnumerable<PackageName> desiredSetup, IEnumerable<MockPackageSpec> results)
+			: this(name, repository, preSetup, desiredSetup, results, null, null) { }
+		public PackageRestoreTestCase(string name, IEnumerable<MockPackageSpec> repository, IEnumerable<MockPackageSpec> preSetup, IEnumerable<PackageName> desiredSetup, IEnumerable<MockPackageSpec> results, IEnumerable<MockPackageSpec> installed, IEnumerable<MockPackageSpec> uninstalled)
 		{
 			this.name = name;
 			this.preSetup = preSetup.ToList();
 			this.desiredSetup = desiredSetup.ToList();
 			this.results = results.ToList();
-			this.installed = this.results.Except(this.preSetup).ToList();
-			this.uninstalled = this.preSetup.Except(this.results).ToList();
+			this.installed = (installed ?? this.results.Except(this.preSetup)).ToList();
+			this.uninstalled = (uninstalled ?? this.preSetup.Except(this.results)).ToList();
 			this.dualityResults = this.results
 				.Where(p => p.Tags.Contains(PackageManager.DualityTag))
 				.ToList();
