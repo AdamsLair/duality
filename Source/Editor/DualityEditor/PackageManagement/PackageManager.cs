@@ -1090,7 +1090,9 @@ namespace Duality.Editor.PackageManagement
 			// If we're about to install a newer version of a package that is already
 			// installed, make sure to uninstall the older version of it.
 			LocalPackage localPackage = this.setup.GetPackage(e.Package.Id);
-			if (localPackage != null && localPackage.Version < e.Package.Version.Version)
+			if (localPackage != null && 
+				localPackage.Version != null && 
+				localPackage.Version < e.Package.Version.Version)
 			{
 				if (this.uninstallQueue != null)
 					this.uninstallQueue.Add(localPackage.PackageName);
