@@ -67,6 +67,7 @@
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="InitDualityEditorAttribute.cs" />
     <Compile Include="PackageManagement\PackageEventListener.cs" />
+    <Compile Include="PackageManagement\PackageRestoreTestCase.cs" />
     <Compile Include="PackageManagement\PackageOperationTestCase.cs" />
     <Compile Include="PackageManagement\MockPackageSpec.cs" />
     <Compile Include="PackageManagement\PackageManagerTest.cs" />

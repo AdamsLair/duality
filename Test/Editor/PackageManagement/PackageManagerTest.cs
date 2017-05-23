@@ -112,6 +112,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsNotNull(packageSampleInfo);
 			Assert.AreEqual(packageSpecPluginLatest.Name.Version, packagePluginInfo.Version);
 		}
+		
 
 		[Test, TestCaseSource("InstallPackageTestCases")]
 		public void InstallPackage(PackageOperationTestCase testCase)
@@ -185,6 +186,34 @@ namespace Duality.Editor.PackageManagement.Tests
 			}
 
 			// Assert client state / setup after the install was done
+			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
+			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
+		}
+		[Test, TestCaseSource("PackageRestoreTestCases")] 
+		public void PackageRestore(PackageRestoreTestCase testCase)
+		{
+			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
+
+			this.SetupReporistoryForTest(testCase.Repository);
+			this.SetupPackagesForTest(packageManager, testCase.PreSetup);
+
+			packageManager.LocalSetup.Packages.Clear();
+			packageManager.LocalSetup.Packages.AddRange(testCase.DesiredSetup.Select(name => new LocalPackage(name)));
+
+			using (PackageEventListener listener = new PackageEventListener(packageManager))
+			{
+				List<LocalPackage> packagesToVerify = this.setup.Packages.ToList();
+				packageManager.OrderByDependencies(packagesToVerify);
+				foreach (LocalPackage package in packagesToVerify)
+				{
+					packageManager.VerifyPackage(package);
+				}
+
+				listener.AssertChanges(
+					testCase.Installed, 
+					testCase.Uninstalled);
+			}
+
 			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
 			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
 		}
@@ -428,6 +457,51 @@ namespace Duality.Editor.PackageManagement.Tests
 				new [] { otherLibraryA_Old, dualityPluginC_Old },
 				dualityPluginC_Old, 
 				new [] { otherLibraryA_New, dualityPluginC_New }));
+
+			return cases;
+		}
+		private IEnumerable<PackageRestoreTestCase> PackageRestoreTestCases()
+		{
+			List<PackageRestoreTestCase> cases = new List<PackageRestoreTestCase>();
+
+			{
+				List<MockPackageSpec> repository = new List<MockPackageSpec>();
+				repository.Add(MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(5, 0, 0, 0)));
+				repository.Add(MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(5, 0, 1, 0)));
+				repository.Add(MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(5, 1, 0, 0)));
+				repository.Add(MockPackageSpec.CreateDualityPlugin("Some.Other.LibraryA", new Version(6, 1, 0, 0)));
+
+				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 0, 0, 0)));
+				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 0, 1, 0)));
+				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 1, 0, 0)));
+				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(2, 1, 0, 0)));
+
+				repository[4].Dependencies.Add(repository[0].Name);
+				repository[5].Dependencies.Add(repository[1].Name);
+				repository[6].Dependencies.Add(repository[2].Name);
+				repository[7].Dependencies.Add(repository[3].Name);
+
+				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 0, 0, 0)));
+				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 0, 2, 0)));
+				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 2, 0, 0)));
+				repository.Add(MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(2, 2, 0, 0)));
+
+				repository[8].Dependencies.Add(repository[4].Name);
+				repository[9].Dependencies.Add(repository[5].Name);
+				repository[10].Dependencies.Add(repository[6].Name);
+				repository[11].Dependencies.Add(repository[7].Name);
+
+				List<PackageName> configSetup = new List<PackageName>();
+				configSetup.Add(new PackageName("AdamsLair.Duality.TestPluginA"));
+				configSetup.Add(new PackageName("AdamsLair.Duality.TestPluginB"));
+
+				cases.Add(new PackageRestoreTestCase(
+					"Full Restore",
+ 					repository,
+					new MockPackageSpec[0],
+					configSetup, 
+					new [] { repository[3], repository[7], repository[11] }));
+			}
 
 			return cases;
 		}

@@ -145,5 +145,25 @@ namespace Duality.Editor.PackageManagement.Tests
 		{
 			return this.name.ToString();
 		}
+
+		/// <summary>
+		/// Creates a package spec with a mock Assembly file, tagged as a Duality plugin.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="version"></param>
+		/// <returns></returns>
+		public static MockPackageSpec CreateDualityPlugin(string id, Version version)
+		{
+			MockPackageSpec package = new MockPackageSpec(id, version);
+			package.Tags.Add(PackageManager.DualityTag);
+			package.Tags.Add(PackageManager.PluginTag);
+			package.Files.Add(
+				string.Format("{0}.dll", id), 
+				"lib");
+			package.LocalMapping.Add(
+				string.Format("lib\\{0}.dll", id), 
+				string.Format("Plugins\\{0}.dll", id));
+			return package;
+		}
 	}
 }
