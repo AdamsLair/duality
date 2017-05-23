@@ -13,41 +13,148 @@ using Duality.Editor.PackageManagement;
 
 namespace Duality.Editor
 {
-	static class Program
+	internal static class Program
 	{
 		private const string DualityMainLicenseUrl = @"https://github.com/AdamsLair/duality/raw/master/LICENSE";
+
+		private static StreamWriter logfileWriter;
+		private static TextWriterLogOutput logfileOutput;
+		private static bool recoverFromPluginReload;
+
 
 		[STAThread]
 		private static void Main(string[] args)
 		{
 			// Parse command line arguments
-			bool recover = false;
-			foreach (string a in args)
-			{
-				if (a == "debug")
-					System.Diagnostics.Debugger.Launch();
-				else if (a == "recover")
-					recover = true;
-			}
+			ParseCommandLineArguments(args);
 
 			// Culture setup
 			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 			Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
-			// Set up file logging
-			StreamWriter logfileWriter = null;
-			TextWriterLogOutput logfileOutput = null;
+			// Set up a text logfile
+			ArchiveOldLogfile();
+			CreateLogfile();
+
+			// Winforms Setup
+			PrepareWinFormsApplication();
+			
+			// Restore or remove packages to match package config
+			VerifyPackageSetup();
+
+			// Run the editor
+			SplashScreen splashScreen = new SplashScreen(recoverFromPluginReload);
+			splashScreen.Show();
+			Application.Run();
+
+			// Clean up the log file
+			CloseLogfile();
+		}
+
+		private static void ParseCommandLineArguments(string[] args)
+		{
+			recoverFromPluginReload = false;
+			foreach (string argument in args)
+			{
+				if (argument == "debug")
+					System.Diagnostics.Debugger.Launch();
+				else if (argument == "recover")
+					recoverFromPluginReload = true;
+			}
+		}
+		private static void PrepareWinFormsApplication()
+		{
+			Application.CurrentCulture = Thread.CurrentThread.CurrentCulture;
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.ThreadException += Application_ThreadException;
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+		}
+		private static void VerifyPackageSetup()
+		{
+			PackageManager packageManager = new PackageManager();
+
+			// On the first install startup, display a generic license agreement for Duality
+			if (packageManager.LocalSetup.IsFirstInstall)
+			{
+				LicenseAcceptDialog licenseDialog = new LicenseAcceptDialog
+				{
+					DescriptionText = GeneralRes.LicenseAcceptDialog_FirstStartGeneric,
+					LicenseUrl = new Uri(DualityMainLicenseUrl)
+				};
+				DialogResult result = licenseDialog.ShowDialog();
+				if (result != DialogResult.OK)
+				{
+					Application.Exit();
+					return;
+				}
+			}
+
+			// Perform the initial package update - even before initializing the editor
+			if (packageManager.IsPackageSyncRequired)
+			{
+				Log.Editor.Write("Updating Packages...");
+				Log.Editor.PushIndent();
+				ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
+					GeneralRes.TaskInstallPackages_Caption, 
+					GeneralRes.TaskInstallPackages_Desc, 
+					SynchronizePackages, 
+					packageManager);
+				setupDialog.ShowInTaskbar = true;
+				setupDialog.MainThreadRequired = false;
+				setupDialog.ShowDialog();
+				Log.Editor.PopIndent();
+			}
+			// Restart to apply the update
+			if (packageManager.ApplyUpdate())
+			{
+				Application.Exit();
+				return;
+			}
+			// If we have nothing to apply, but still require a sync, something went wrong.
+			// Should this happen on our first start, we'll remind the user that the install
+			// requires an internet connection and refuse to start.
+			else if (packageManager.IsPackageSyncRequired && packageManager.LocalSetup.IsFirstInstall)
+			{
+				DialogResult result = MessageBox.Show( 
+					GeneralRes.Msg_ErrorFirstDualityInstall_Desc, 
+					GeneralRes.Msg_ErrorFirstDualityInstall_Caption, 
+					MessageBoxButtons.OK, MessageBoxIcon.Information);
+				Application.Exit();
+				return;
+			}
+		}
+
+		private static void ArchiveOldLogfile()
+		{
 			try
 			{
-				// If there is an existing logfile, preserve it under a different name
-				if (File.Exists(DualityEditorApp.EditorLogfilePath))
+				// If there is an existing logfile, archive it for diagnostic purposes
+				FileInfo prevLogfile = new FileInfo(DualityEditorApp.EditorLogfilePath);
+				if (prevLogfile.Exists)
 				{
-					if (File.Exists(DualityEditorApp.EditorPrevLogfilePath))
-						File.Delete(DualityEditorApp.EditorPrevLogfilePath);
-					File.Move(DualityEditorApp.EditorLogfilePath, DualityEditorApp.EditorPrevLogfilePath);
-				}
+					if (!Directory.Exists(DualityEditorApp.EditorPrevLogfileDir))
+						Directory.CreateDirectory(DualityEditorApp.EditorPrevLogfileDir);
 
-				// Create a new logfile
+					string timestampToken = prevLogfile.LastWriteTimeUtc.ToString("yyyy-MM-dd-T-HH-mm");
+					string prevLogfileName = string.Format(DualityEditorApp.EditorPrevLogfileName, timestampToken);
+					string prevLogFilePath = Path.Combine(DualityEditorApp.EditorPrevLogfileDir, prevLogfileName);
+
+					prevLogfile.MoveTo(prevLogFilePath);
+				}
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteWarning("Unable to archive old logfile: {0}", Log.Exception(e));
+			}
+		}
+		private static void CreateLogfile()
+		{
+			if (logfileOutput != null || logfileWriter != null)
+				CloseLogfile();
+
+			try
+			{
 				logfileWriter = new StreamWriter(DualityEditorApp.EditorLogfilePath);
 				logfileWriter.AutoFlush = true;
 				logfileOutput = new TextWriterLogOutput(logfileWriter);
@@ -55,85 +162,24 @@ namespace Duality.Editor
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteWarning("Text Logfile unavailable: {0}", Log.Exception(e));
+				Log.Core.WriteWarning("Unable to create logfile: {0}", Log.Exception(e));
 			}
-
-			// Winforms Setup
-			Application.CurrentCulture = Thread.CurrentThread.CurrentCulture;
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			Application.ThreadException += Application_ThreadException;
-			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-			
-			{
-				PackageManager packageManager = new PackageManager();
-
-				// On the first install startup, display a generic license agreement for Duality
-				if (packageManager.LocalSetup.IsFirstInstall)
-				{
-					LicenseAcceptDialog licenseDialog = new LicenseAcceptDialog
-					{
-						DescriptionText = GeneralRes.LicenseAcceptDialog_FirstStartGeneric,
-						LicenseUrl = new Uri(DualityMainLicenseUrl)
-					};
-					DialogResult result = licenseDialog.ShowDialog();
-					if (result != DialogResult.OK)
-					{
-						Application.Exit();
-						return;
-					}
-				}
-
-				// Perform the initial package update - even before initializing the editor
-				if (packageManager.IsPackageSyncRequired)
-				{
-					Log.Editor.Write("Updating Packages...");
-					Log.Editor.PushIndent();
-					ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
-						GeneralRes.TaskInstallPackages_Caption, 
-						GeneralRes.TaskInstallPackages_Desc, 
-						SynchronizePackages, 
-						packageManager);
-					setupDialog.ShowInTaskbar = true;
-					setupDialog.MainThreadRequired = false;
-					setupDialog.ShowDialog();
-					Log.Editor.PopIndent();
-				}
-				// Restart to apply the update
-				if (packageManager.ApplyUpdate())
-				{
-					Application.Exit();
-					return;
-				}
-				// If we have nothing to apply, but still require a sync, something went wrong.
-				// Should this happen on our first start, we'll remind the user that the install
-				// requires an internet connection and refuse to start.
-				else if (packageManager.IsPackageSyncRequired && packageManager.LocalSetup.IsFirstInstall)
-				{
-					DialogResult result = MessageBox.Show( 
-						GeneralRes.Msg_ErrorFirstDualityInstall_Desc, 
-						GeneralRes.Msg_ErrorFirstDualityInstall_Caption, 
-						MessageBoxButtons.OK, MessageBoxIcon.Information);
-					Application.Exit();
-					return;
-				}
-			}
-
-			// Run the editor
-			SplashScreen splashScreen = new SplashScreen(recover);
-			splashScreen.Show();
-			Application.Run();
-
-			// Clean up the log file
-			if (logfileWriter != null)
+		}
+		private static void CloseLogfile()
+		{
+			if (logfileOutput != null)
 			{
 				Log.RemoveGlobalOutput(logfileOutput);
+				logfileOutput = null;
+			}
+			if (logfileWriter != null)
+			{
 				logfileWriter.Flush();
 				logfileWriter.Close();
 				logfileWriter = null;
-				logfileOutput = null;
 			}
 		}
+
 		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
 			try
