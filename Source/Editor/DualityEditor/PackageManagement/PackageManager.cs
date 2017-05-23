@@ -41,7 +41,6 @@ namespace Duality.Editor.PackageManagement
 		private PackageSetup              setup          = new PackageSetup();
 		private PackageManagerEnvironment env            = null;
 		private bool                      hasLocalRepo   = false;
-		private List<PackageName>         uninstallQueue = null;
 
 		private object                              cacheLock              = new object();
 		private Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
@@ -147,7 +146,6 @@ namespace Duality.Editor.PackageManagement
 			this.manager.PackageInstalling += this.manager_PackageInstalling;
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
-			this.manager.PackageUninstalling += this.manager_PackageUninstalling;
 			this.logger = new PackageManagerLogger();
 			this.manager.Logger = this.logger;
 
@@ -283,19 +281,48 @@ namespace Duality.Editor.PackageManagement
 			Log.Editor.Write("Uninstalling package '{0} {1}'...", id, version);
 			Log.Editor.PushIndent();
 
-			// NuGet dependency removal will remove all dependencies that are
-			// not otherwise used. However, this will affect Duality packages
-			// as well, so we might accidentally uninstall some of them, because
-			// no package really depends on them.
-			// 
-			// To avoid this, we'll have an uninstall queue and cancel all Duality
-			// package uninstalls that aren't registered there.
-			this.uninstallQueue = new List<PackageName>();
-			this.uninstallQueue.Add(new PackageName(id, version));
+			// Find all dependencies of the package we want to uninstall
+			PackageInfo uninstallPackage = this.QueryPackageInfo(new PackageName(id, version));
+			List<PackageInfo> uninstallDependencies;
+			if (uninstallPackage != null)
+			{
+				uninstallDependencies = this.GetDeepDependencies(new [] { uninstallPackage }).ToList();
+				uninstallDependencies.RemoveAll(package => package.Id == uninstallPackage.Id);
+			}
+			else
+				uninstallDependencies = new List<PackageInfo>();
 
-			this.manager.UninstallPackage(id, new SemanticVersion(version), force, true);
+			// Filter out all dependencies that are used by other Duality packages
+			foreach (LocalPackage package in this.LocalSetup.Packages)
+			{
+				if (package.Id == id) continue;
 
-			this.uninstallQueue = null;
+				PackageInfo packageInfo = package.Info ?? this.QueryPackageInfo(package.PackageName);
+				if (packageInfo == null) continue;
+
+				foreach (PackageInfo dependency in this.GetDeepDependencies(new [] { packageInfo }))
+				{
+					// Don't check versions, as dependencies are usually not resolved
+					// with an exact version match.
+					uninstallDependencies.RemoveAll(item => item.Id == dependency.Id);
+				}
+			}
+
+			// Uninstall the package itself
+			this.manager.UninstallPackage(id, new SemanticVersion(version), force);
+
+			// Uninstall its dependencies that are no longer used
+			foreach (PackageInfo package in uninstallDependencies)
+			{
+				List<NuGet.IPackage> matchingNuGetPackages = this.manager.LocalRepository
+					.FindPackagesById(package.Id)
+					.ToList();
+
+				foreach (NuGet.IPackage nugetPackage in matchingNuGetPackages)
+				{
+					this.manager.UninstallPackage(nugetPackage, force, false);
+				}
+			}
 
 			Log.Editor.PopIndent();
 		}
@@ -536,7 +563,8 @@ namespace Duality.Editor.PackageManagement
 		}
 		
 		/// <summary>
-		/// Enumerates the complete dependency tree of the specified packages.
+		/// Enumerates the complete dependency tree of the specified packages, including
+		/// the packages themselves.
 		/// </summary>
 		/// <param name="package"></param>
 		/// <returns></returns>
@@ -1030,20 +1058,6 @@ namespace Duality.Editor.PackageManagement
 				this.PackageUninstalled(this, args);
 		}
 		
-		private void manager_PackageUninstalling(object sender, PackageOperationEventArgs e)
-		{
-			// Prevent NuGet from uninstalling Duality dependencies that aren't scheduled for uninstall
-			PackageName packageName = new PackageName(e.Package.Id, e.Package.Version.Version);
-			if (this.uninstallQueue != null && !this.uninstallQueue.Contains(packageName))
-			{
-				PackageInfo packageInfo = this.QueryPackageInfo(packageName);
-				if (packageInfo.IsDualityPackage)
-				{
-					e.Cancel = true;
-					Log.Editor.Write("Skip dependency uninstall of Duality package '{0}'.", packageName);
-				}
-			}
-		}
 		private void manager_PackageUninstalled(object sender, PackageOperationEventArgs e)
 		{
 			Log.Editor.Write("Integrating uninstall of package '{0} {1}'...", e.Package.Id, e.Package.Version);
@@ -1088,23 +1102,19 @@ namespace Duality.Editor.PackageManagement
 		private void manager_PackageInstalling(object sender, PackageOperationEventArgs e)
 		{
 			// If we're about to install a newer version of a package that is already
-			// installed, make sure to uninstall the older version of it.
-			IPackage localPackage = this.manager.LocalRepository
+			// installed, make sure to uninstall any older versions of it.
+			List<NuGet.IPackage> previousPackages = this.manager.LocalRepository
 				.FindPackagesById(e.Package.Id)
-				.FirstOrDefault();
-			if (localPackage != null && localPackage.Version < e.Package.Version)
+				.ToList();
+			foreach (NuGet.IPackage package in previousPackages)
 			{
-				PackageName packageName = new PackageName(localPackage.Id, localPackage.Version.Version);
-				if (this.uninstallQueue != null)
-					this.uninstallQueue.Add(packageName);
-
-				this.manager.UninstallPackage(
-					localPackage,
-					true, 
-					false);
-
-				if (this.uninstallQueue != null)
-					this.uninstallQueue.Remove(packageName);
+				if (package.Version < e.Package.Version)
+				{
+					this.manager.UninstallPackage(
+						package,
+						true, 
+						false);
+				}
 			}
 		}
 		private void manager_PackageInstalled(object sender, PackageOperationEventArgs e)
