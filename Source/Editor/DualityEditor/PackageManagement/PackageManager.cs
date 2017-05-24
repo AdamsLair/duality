@@ -176,18 +176,6 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="package"></param>
 		public void VerifyPackage(LocalPackage package)
 		{
-			// Check if this packages config entry and local repository item are
-			// already version-specific and in sync.
-			if (package.Version != null)
-			{
-				var matchCandidates = this.manager.LocalRepository.FindPackagesById(package.Id);
-				foreach (NuGet.IPackage installedPackage in matchCandidates)
-				{
-					if (installedPackage.Version.Version == package.Version)
-						return;
-				}
-			}
-
 			Version oldPackageVersion = package.Version;
 
 			// Determine the exact version that will be downloaded
