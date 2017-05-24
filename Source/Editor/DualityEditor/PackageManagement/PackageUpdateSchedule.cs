@@ -138,15 +138,11 @@ namespace Duality.Editor.PackageManagement
 				bool anyReference = false;
 				foreach (XAttribute attribute in element.Attributes())
 				{
-					try
+					if (string.Equals(attribute.Value, referringToFile, StringComparison.InvariantCultureIgnoreCase))
 					{
-						if (PathOp.ArePathsEqual(attribute.Value, referringToFile))
-						{
-							anyReference = true;
-							break;
-						}
+						anyReference = true;
+						break;
 					}
-					catch (Exception) {}
 				}
 				if (anyReference)
 				{
@@ -160,18 +156,20 @@ namespace Duality.Editor.PackageManagement
 		/// reason can't be done by the updater. The applied items will be removed from
 		/// the schedule.
 		/// </summary>
-		/// <param name="updaterFilePath"></param>
-		public void ApplyUpdaterChanges(string updaterFilePath)
+		/// <param name="updaterPath"></param>
+		public void ApplyUpdaterChanges(string updaterPath)
 		{
 			List<XElement> updaterItems = new List<XElement>();
+			string updaterFullPath = Path.GetFullPath(updaterPath);
 
 			// Gather all items that are affecting the updater
 			foreach (XElement element in this.Items)
 			{
 				XAttribute attribTarget = element.Attribute("target");
 				string target = (attribTarget != null) ? attribTarget.Value : null;
-
-				if (PathOp.ArePathsEqual(target, updaterFilePath))
+				
+				string fullPathA = Path.GetFullPath(target);
+				if (string.Equals(fullPathA, updaterFullPath, StringComparison.InvariantCultureIgnoreCase))
 					updaterItems.Add(element);
 			}
 

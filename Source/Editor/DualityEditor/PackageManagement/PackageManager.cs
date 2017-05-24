@@ -920,7 +920,7 @@ namespace Duality.Editor.PackageManagement
 					if (localNugetPackage.Id != e.Package.Id) continue;
 
 					Dictionary<string,string> localMapping = this.CreateFileMapping(localNugetPackage);
-					if (localMapping.Any(p => PathOp.ArePathsEqual(p.Key, pair.Key)))
+					if (localMapping.Any(p => string.Equals(p.Value, pair.Value, StringComparison.InvariantCultureIgnoreCase)))
 					{
 						if (localNugetPackage.Version > e.Package.Version)
 						{
