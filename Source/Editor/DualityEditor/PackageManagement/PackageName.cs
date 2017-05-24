@@ -45,9 +45,15 @@ namespace Duality.Editor.PackageManagement
 		{
 			unchecked
 			{
-				return 
-					92357 * this.Id.GetHashCode() + 
-					this.Version.GetHashCode();
+				int hashCode = (this.Id ?? string.Empty).GetHashCode();
+				if (this.Version != null)
+				{
+					hashCode = 1019 * hashCode + this.Version.Major;
+					hashCode = 1021 * hashCode + this.Version.Minor;
+					hashCode = 1031 * hashCode + this.Version.Revision;
+					hashCode = 1033 * hashCode + this.Version.Build;
+				}
+				return hashCode;
 			}
 		}
 		public override string ToString()
