@@ -29,7 +29,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 
 		protected override IEnumerable<object> EnumeratePackages()
 		{
-			return this.packageManager.QueryAvailablePackages();
+			return this.packageManager.GetLatestDualityPackages();
 		}
 		protected override BaseItem CreatePackageItem(object package, BaseItem parentItem)
 		{

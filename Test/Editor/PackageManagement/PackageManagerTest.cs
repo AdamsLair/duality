@@ -66,20 +66,20 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsEmpty(packageManager.LocalSetup.Packages);
 			Assert.AreEqual(1, packageManager.LocalSetup.RepositoryUrls.Count);
 		}
-		[Test] public void QueryPackageInfo()
+		[Test] public void GetPackage()
 		{
 			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.Test", new Version(1, 2, 3, 4));
 			packageSpec.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
-			PackageInfo info = packageManager.QueryPackageInfo(packageSpec.Name);
+			PackageInfo info = packageManager.GetPackage(packageSpec.Name);
 
 			Assert.IsNotNull(info);
 			Assert.AreEqual(packageSpec.Name.Id, info.Id);
 			Assert.AreEqual(packageSpec.Name.Version, info.Version);
 			Assert.AreEqual(packageSpec.Name, info.PackageName);
 		}
-		[Test] public void QueryAvailablePackages()
+		[Test] public void GetLatestDualityPackages()
 		{
 			MockPackageSpec packageSpecNonDuality = new MockPackageSpec("Some.Other.Package");
 			MockPackageSpec packageSpecPlugin = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
@@ -99,7 +99,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			packageSpecSample.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
-			List<PackageInfo> packages = packageManager.QueryAvailablePackages().ToList();
+			List<PackageInfo> packages = packageManager.GetLatestDualityPackages().ToList();
 
 			// We expect that only Duality packages are reported, and only the latest version of each.
 			Assert.IsNotNull(packages);
@@ -126,7 +126,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			using (PackageEventListener listener = new PackageEventListener(packageManager))
 			{
 				// Find and install the package to test
-				PackageInfo packageInfo = packageManager.QueryPackageInfo(testCase.Target.Name);
+				PackageInfo packageInfo = packageManager.GetPackage(testCase.Target.Name);
 				packageManager.InstallPackage(packageInfo);
 
 				// Assert that the expected events were fired
@@ -151,7 +151,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			using (PackageEventListener listener = new PackageEventListener(packageManager))
 			{
 				// Find and install the package to test
-				PackageInfo packageInfo = packageManager.QueryPackageInfo(testCase.Target.Name);
+				PackageInfo packageInfo = packageManager.GetPackage(testCase.Target.Name);
 				packageManager.UninstallPackage(packageInfo);
 
 				// Assert that the expected events were fired
@@ -176,7 +176,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			using (PackageEventListener listener = new PackageEventListener(packageManager))
 			{
 				// Find and install the package to test
-				PackageInfo packageInfo = packageManager.QueryPackageInfo(testCase.Target.Name);
+				PackageInfo packageInfo = packageManager.GetPackage(testCase.Target.Name);
 				packageManager.UpdatePackage(packageInfo);
 
 				// Assert that the expected events were fired
@@ -578,7 +578,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				// Install all required packages
 				foreach (MockPackageSpec package in setup)
 				{
-					PackageInfo packageInfo = packageManager.QueryPackageInfo(package.Name);
+					PackageInfo packageInfo = packageManager.GetPackage(package.Name);
 					if (packageInfo == null || packageInfo.PackageName != package.Name)
 					{
 						Assert.Inconclusive(

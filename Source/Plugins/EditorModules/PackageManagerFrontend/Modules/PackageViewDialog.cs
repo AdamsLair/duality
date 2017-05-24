@@ -387,7 +387,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void UpdatePackage(PackageInfo info)
 		{
-			PackageInfo newestInfo = this.packageManager.QueryPackageInfo(info.PackageName.VersionInvariant);
+			PackageInfo newestInfo = this.packageManager.GetPackage(info.PackageName.VersionInvariant);
 			if (!this.ConfirmCompatibility(newestInfo))
 				return;
 
@@ -409,7 +409,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			IEnumerable<PackageInfo> newestUpdatablePackages = 
 				this.packageManager.GetUpdatablePackages()
-				.Select(p => this.packageManager.QueryPackageInfo(p.PackageName.VersionInvariant));
+				.Select(p => this.packageManager.GetPackage(p.PackageName.VersionInvariant));
 			if (!this.ConfirmCompatibility(newestUpdatablePackages))
 				return;
 
@@ -462,7 +462,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			this.oldTreeViewSize = this.packageList.Size;
 
+			// Retrieve the package manager and clear its remote package cache, so we'll
+			// get fresh data every time we re-open the package view dialog.
 			this.packageManager = DualityEditorApp.PackageManager;
+			this.packageManager.ClearCache();
 			this.nodeTextBoxVersion.PackageManager = this.packageManager;
 
 			this.modelOnline = new OnlinePackagesTreeModel(this.packageManager);
