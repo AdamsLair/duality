@@ -1031,24 +1031,34 @@ namespace Duality.Editor.PackageManagement
 			PackageInfo info = new PackageInfo(new PackageName(package.Id, package.Version.Version));
 
 			// Retrieve package data
-			info.Title			= package.Title;
-			info.Summary		= package.Summary;
-			info.Description	= package.Description;
-			info.ReleaseNotes	= package.ReleaseNotes;
+			info.Title          = package.Title;
+			info.Summary        = package.Summary;
+			info.Description    = package.Description;
+			info.ReleaseNotes   = package.ReleaseNotes;
 			info.RequireLicenseAcceptance = package.RequireLicenseAcceptance;
-			info.ProjectUrl		= package.ProjectUrl;
-			info.LicenseUrl		= package.LicenseUrl;
-			info.IconUrl		= package.IconUrl;
-			info.DownloadCount	= package.DownloadCount;
-			info.PublishDate	= package.Published.HasValue ? package.Published.Value.DateTime : DateTime.MinValue;
-			info.Authors		= package.Authors;
-			info.Tags			= package.Tags != null ? package.Tags.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : Enumerable.Empty<string>();
+			info.ProjectUrl     = package.ProjectUrl;
+			info.LicenseUrl     = package.LicenseUrl;
+			info.IconUrl        = package.IconUrl;
+			info.DownloadCount  = package.DownloadCount;
+			info.PublishDate    = package.Published.HasValue ? package.Published.Value.DateTime : DateTime.MinValue;
+			info.Authors        = package.Authors.ToList();
+			info.Tags           = package.Tags != null ? 
+				package.Tags.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : 
+				new string[0];
 
 			// Retrieve the matching set of dependencies. For now, don't support different sets and just pick the first one.
 			var matchingDependencySet = package.DependencySets.FirstOrDefault();
 			if (matchingDependencySet != null)
 			{
-				info.Dependencies = matchingDependencySet.Dependencies.Select(d => new PackageName(d.Id, (d.VersionSpec != null && d.VersionSpec.MinVersion != null) ? d.VersionSpec.MinVersion.Version : null));
+				List<PackageName> dependencies = new List<PackageName>();
+				foreach (NuGet.PackageDependency dependency in matchingDependencySet.Dependencies)
+				{
+					if (dependency.VersionSpec != null && dependency.VersionSpec.MinVersion != null)
+						dependencies.Add(new PackageName(dependency.Id, dependency.VersionSpec.MinVersion.Version));
+					else
+						dependencies.Add(new PackageName(dependency.Id, null));
+				}
+				info.Dependencies = dependencies;
 			}
 
 			return info;

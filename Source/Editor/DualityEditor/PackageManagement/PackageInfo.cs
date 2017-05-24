@@ -101,20 +101,32 @@ namespace Duality.Editor.PackageManagement
 			get { return this.publishDate; }
 			internal set { this.publishDate = value; }
 		}
-		public IEnumerable<string> Authors
+		public IReadOnlyList<string> Authors
 		{
 			get { return this.authors; }
-			internal set { this.authors = (value ?? Enumerable.Empty<string>()).ToList(); }
+			internal set
+			{
+				this.authors.Clear();
+				if (value != null) this.authors.AddRange(value);
+			}
 		}
-		public IEnumerable<string> Tags
+		public IReadOnlyList<string> Tags
 		{
 			get { return this.tags; }
-			internal set { this.tags = (value ?? Enumerable.Empty<string>()).ToList(); }
+			internal set
+			{
+				this.tags.Clear();
+				if (value != null) this.tags.AddRange(value);
+			}
 		}
-		public IEnumerable<PackageName> Dependencies
+		public IReadOnlyList<PackageName> Dependencies
 		{
 			get { return this.dependencies; }
-			internal set { this.dependencies = (value ?? Enumerable.Empty<PackageName>()).ToList(); }
+			internal set
+			{
+				this.dependencies.Clear();
+				if (value != null) this.dependencies.AddRange(value);
+			}
 		}
 
 
