@@ -190,7 +190,7 @@ namespace Duality.Editor
 					if (!Directory.Exists(DualityEditorApp.EditorPrevLogfileDir))
 						Directory.CreateDirectory(DualityEditorApp.EditorPrevLogfileDir);
 
-					string timestampToken = prevLogfile.LastWriteTimeUtc.ToString("yyyy-MM-dd-T-HH-mm");
+					string timestampToken = prevLogfile.LastWriteTimeUtc.ToString("yyyy-MM-dd-T-HH-mm-ss");
 					string prevLogfileName = string.Format(DualityEditorApp.EditorPrevLogfileName, timestampToken);
 					string prevLogFilePath = Path.Combine(DualityEditorApp.EditorPrevLogfileDir, prevLogfileName);
 
