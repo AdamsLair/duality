@@ -38,13 +38,13 @@ namespace Duality.Editor.PackageManagement
 		};
 
 
-		private PackageSetup              setup          = new PackageSetup();
-		private PackageManagerEnvironment env            = null;
-		private bool                      hasLocalRepo   = false;
+		private PackageSetup              setup        = new PackageSetup();
+		private PackageManagerEnvironment env          = null;
+		private bool                      hasLocalRepo = false;
 
 		private object                              cacheLock              = new object();
 		private Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
-		private Dictionary<PackageName,bool>        licenseAcceptedCache   = new Dictionary<PackageName,bool>();
+		private Dictionary<PackageName,bool>        licenseAccepted        = new Dictionary<PackageName,bool>();
 		private PackageDependencyWalker             dependencyWalker       = null;
 
 		private NuGet.PackageManager     manager    = null;
@@ -808,7 +808,7 @@ namespace Duality.Editor.PackageManagement
 					return true;
 
 				bool agreed;
-				if (!this.licenseAcceptedCache.TryGetValue(package.PackageName, out agreed) || !agreed)
+				if (!this.licenseAccepted.TryGetValue(package.PackageName, out agreed) || !agreed)
 				{
 					PackageLicenseAgreementEventArgs args = new PackageLicenseAgreementEventArgs(
 						package.PackageName,
@@ -821,7 +821,7 @@ namespace Duality.Editor.PackageManagement
 						DisplayDefaultLicenseAcceptDialog(args);
 
 					agreed = args.IsLicenseAccepted;
-					this.licenseAcceptedCache[package.PackageName] = agreed;
+					this.licenseAccepted[package.PackageName] = agreed;
 				}
 
 				if (!agreed)
