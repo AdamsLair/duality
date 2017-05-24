@@ -111,7 +111,7 @@ namespace Duality.Editor.PackageManagement
 
 		public PackageManagerEnvironment(string rootPath)
 		{
-			this.rootPath = rootPath ?? Environment.CurrentDirectory;
+			this.rootPath = rootPath ?? string.Empty;
 			this.UpdateFromRootPath();
 		}
 

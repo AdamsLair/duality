@@ -203,7 +203,7 @@ namespace Duality.Editor.PackageManagement
 				else if (string.Equals(element.Name.LocalName, CopyItem, StringComparison.InvariantCultureIgnoreCase))
 				{
 					string directory = Path.GetDirectoryName(target);
-					if (!Directory.Exists(directory))
+					if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
 						Directory.CreateDirectory(directory);
 
 					File.Copy(source, target, true);
