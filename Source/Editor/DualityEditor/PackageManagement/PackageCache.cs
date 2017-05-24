@@ -17,11 +17,10 @@ using Duality.Editor.Forms;
 namespace Duality.Editor.PackageManagement
 {
 	/// <summary>
-	/// Caches information about local and remote package repositories.
+	/// Caches information about remote package repositories.
 	/// </summary>
 	internal class PackageCache
 	{
-		private NuGet.PackageManager     manager      = null;
 		private NuGet.IPackageRepository repository   = null;
 		private bool                     hasLocalRepo = false;
 
@@ -33,11 +32,10 @@ namespace Duality.Editor.PackageManagement
 		private Dictionary<string,List<NuGet.IPackage>> repositoryPackages = new Dictionary<string,List<NuGet.IPackage>>();
 
 
-		public PackageCache(NuGet.PackageManager local, NuGet.IPackageRepository remote, bool remoteHasLocal)
+		public PackageCache(NuGet.IPackageRepository repository, bool isPartiallyLocalRepo)
 		{
-			this.manager = local;
-			this.repository = remote;
-			this.hasLocalRepo = remoteHasLocal;
+			this.repository = repository;
+			this.hasLocalRepo = isPartiallyLocalRepo;
 		}
 
 		/// <summary>
@@ -172,18 +170,10 @@ namespace Duality.Editor.PackageManagement
 		}
 		private NuGet.IPackage FindPackage(PackageName packageRef)
 		{
-			// Find a specific version. We're not looking for listed packages only.
-			if (packageRef.Version != null)
+			try
 			{
-				// Query locally first, since we're looking for a specific version number anyway.
-				foreach (NuGet.IPackage package in this.manager.LocalRepository.FindPackagesById(packageRef.Id))
-				{
-					if (package.Version.Version == packageRef.Version)
-						return package;
-				}
-
-				// Nothing found? Query online then.
-				try
+				// Find a specific version. We're not looking for listed packages only.
+				if (packageRef.Version != null)
 				{
 					// First try an indexed lookup. This may fail for freshly released packages.
 					foreach (NuGet.IPackage package in this.GetRemotePackages(packageRef.Id))
@@ -207,19 +197,12 @@ namespace Duality.Editor.PackageManagement
 						if (package.Version.Version != packageRef.Version) continue;
 						return package;
 					}
-				}
-				catch (Exception e)
-				{
-					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
+
+					// No matching package was found
 					return null;
 				}
-
-				return null;
-			}
-			// Find the newest available, listed version online.
-			else
-			{
-				try
+				// Find the newest available, listed version online.
+				else
 				{
 					// Enumerate all package versions - do not rely on an indexed
 					// lookup to get the latest, as the index might not be up-to-date.
@@ -251,11 +234,11 @@ namespace Duality.Editor.PackageManagement
 					}
 					return latestPackage;
 				}
-				catch (Exception e)
-				{
-					Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
-					return null;
-				}
+			}
+			catch (Exception e)
+			{
+				Log.Editor.WriteWarning("Error querying NuGet package repository: {0}", Log.Exception(e));
+				return null;
 			}
 		}
 		private List<NuGet.IPackage> GetRemotePackages(string id)

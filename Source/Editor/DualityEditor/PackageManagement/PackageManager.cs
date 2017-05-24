@@ -155,7 +155,6 @@ namespace Duality.Editor.PackageManagement
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
 			this.cache = new PackageCache(
-				this.manager, 
 				this.repository,
 				repositories.OfType<LocalPackageRepository>().Any());
 
