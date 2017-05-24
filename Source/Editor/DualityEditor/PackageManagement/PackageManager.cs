@@ -44,7 +44,8 @@ namespace Duality.Editor.PackageManagement
 
 		private object                              cacheLock              = new object();
 		private Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
-		private Dictionary<NuGet.IPackage,bool>     licenseAcceptedCache   = new Dictionary<NuGet.IPackage,bool>();
+		private Dictionary<PackageName,bool>        licenseAcceptedCache   = new Dictionary<PackageName,bool>();
+		private PackageDependencyWalker             dependencyWalker       = null;
 
 		private NuGet.PackageManager     manager    = null;
 		private NuGet.IPackageRepository repository = null;
@@ -148,6 +149,7 @@ namespace Duality.Editor.PackageManagement
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
 			this.logger = new PackageManagerLogger();
 			this.manager.Logger = this.logger;
+			this.dependencyWalker = new PackageDependencyWalker(this.QueryPackageInfo);
 
 			// Retrieve information about local packages
 			this.RetrieveLocalPackageInfo();
@@ -283,14 +285,14 @@ namespace Duality.Editor.PackageManagement
 
 			// Find all dependencies of the package we want to uninstall
 			PackageInfo uninstallPackage = this.QueryPackageInfo(new PackageName(id, version));
-			List<PackageInfo> uninstallDependencies;
+			List<PackageInfo> uninstallDependencies = new List<PackageInfo>();
 			if (uninstallPackage != null)
 			{
-				uninstallDependencies = this.GetDeepDependencies(new [] { uninstallPackage }).ToList();
+				this.dependencyWalker.Clear();
+				this.dependencyWalker.WalkGraph(uninstallPackage);
+				uninstallDependencies.AddRange(this.dependencyWalker.VisitedPackages);
 				uninstallDependencies.RemoveAll(package => package.Id == uninstallPackage.Id);
 			}
-			else
-				uninstallDependencies = new List<PackageInfo>();
 
 			// Filter out all dependencies that are used by other Duality packages
 			foreach (LocalPackage package in this.LocalSetup.Packages)
@@ -299,8 +301,11 @@ namespace Duality.Editor.PackageManagement
 
 				PackageInfo packageInfo = package.Info ?? this.QueryPackageInfo(package.PackageName);
 				if (packageInfo == null) continue;
-
-				foreach (PackageInfo dependency in this.GetDeepDependencies(new [] { packageInfo }, new [] { id }))
+				
+				this.dependencyWalker.Clear();
+				this.dependencyWalker.IgnorePackage(id);
+				this.dependencyWalker.WalkGraph(packageInfo);
+				foreach (PackageInfo dependency in this.dependencyWalker.VisitedPackages)
 				{
 					// Don't check versions, as dependencies are usually not resolved
 					// with an exact version match.
@@ -424,7 +429,9 @@ namespace Duality.Editor.PackageManagement
 				return PackageCompatibility.Definite;
 
 			// Determine all packages that might be updated or installed
-			PackageInfo[] touchedPackages = this.GetDeepDependencies(new[] { target }).ToArray();
+			this.dependencyWalker.Clear();
+			this.dependencyWalker.WalkGraph(target);
+			List<PackageInfo> touchedPackages = this.dependencyWalker.VisitedPackages.ToList();
 
 			// Verify properly specified dependencies for Duality packages
 			if (target.IsDualityPackage)
@@ -479,17 +486,14 @@ namespace Duality.Editor.PackageManagement
 			if (packages.Count < 2) return;
 
 			// Determine the number of deep dependencies for each package
-			Dictionary<PackageInfo,int> deepDependencyCount = this.GetDeepDependencyCount(packages);
+			this.dependencyWalker.Clear();
+			this.dependencyWalker.WalkGraph(packages);
 
 			// Sort packages according to their deep dependency counts
 			packages.StableSort((a, b) =>
 			{
-				int countA;
-				int countB;
-				if (a == null || !deepDependencyCount.TryGetValue(a, out countA))
-					countA = 0;
-				if (b == null || !deepDependencyCount.TryGetValue(b, out countB))
-					countB = 0;
+				int countA = (a == null) ? 0 : this.dependencyWalker.GetDependencyCount(a.PackageName);
+				int countB = (b == null) ? 0 : this.dependencyWalker.GetDependencyCount(b.PackageName);
 				return countA - countB;
 			});
 		}
@@ -560,111 +564,6 @@ namespace Duality.Editor.PackageManagement
 			Log.Editor.PopIndent();
 
 			return true;
-		}
-		
-		/// <summary>
-		/// Enumerates the complete dependency tree of the specified packages, including
-		/// the packages themselves.
-		/// </summary>
-		/// <param name="packages"></param>
-		/// <param name="skipPackageIds"></param>
-		/// <returns></returns>
-		private IEnumerable<PackageInfo> GetDeepDependencies(IEnumerable<PackageInfo> packages, IEnumerable<string> skipPackageIds = null)
-		{
-			Dictionary<PackageInfo,int> deepDependencyCount = this.GetDeepDependencyCount(packages, skipPackageIds);
-			return deepDependencyCount.Keys;
-		}
-		/// <summary>
-		/// Determines the number of deep dependencies for each package in the specified collection.
-		/// </summary>
-		/// <param name="packages"></param>
-		/// <param name="skipPackageIds"></param>
-		/// <returns></returns>
-		private Dictionary<PackageInfo,int> GetDeepDependencyCount(IEnumerable<PackageInfo> packages, IEnumerable<string> skipPackageIds = null)
-		{
-			HashSet<string> skipPackageSet = new HashSet<string>(skipPackageIds ?? Enumerable.Empty<string>());
-
-			// Build a lookup for the packages we already know
-			Dictionary<PackageName,PackageInfo> resolveCache = new Dictionary<PackageName,PackageInfo>();
-			foreach (PackageInfo package in packages)
-			{
-				if (package == null) continue;
-				resolveCache[package.PackageName] = package;
-			}
-
-			// Determine the dependency count of each package
-			Dictionary<PackageInfo,int> result = new Dictionary<PackageInfo,int>();
-			foreach (PackageInfo package in packages)
-			{
-				if (package == null) continue;
-				GetDeepDependencyCount(package, result, resolveCache, skipPackageSet);
-			}
-
-			return result;
-		}
-		/// <summary>
-		/// Determines the number of deep dependencies for the specified package.
-		/// </summary>
-		/// <param name="package"></param>
-		/// <param name="deepCount"></param>
-		/// <param name="resolver"></param>
-		/// <returns></returns>
-		private int GetDeepDependencyCount(PackageInfo package, Dictionary<PackageInfo,int> deepCount, Dictionary<PackageName,PackageInfo> resolveCache, HashSet<string> skipIdSet)
-		{
-			int count;
-			if (!deepCount.TryGetValue(package, out count))
-			{
-				// Use the count of direct dependencies as starting value
-				count = package.Dependencies.Count();
-
-				// Prevent endless recursion on cyclic dependency graphs by registering early
-				deepCount[package] = count;
-
-				// Iterate over dependencies and count theirs as well
-				foreach (PackageName dependencyName in package.Dependencies)
-				{
-					// If this dependency is part of the set of skipped packages, skip it
-					if (skipIdSet.Contains(dependencyName.Id)) continue;
-
-					// Try to resolve the dependency name to get a hold on the actual info
-					PackageInfo dependency;
-					if (!resolveCache.TryGetValue(dependencyName, out dependency))
-					{
-						// Try the exact name locally and online
-						dependency = this.QueryPackageInfo(dependencyName);
-
-						// If nothing turns up, see if we have a similar package locally and try that as well
-						if (dependency == null)
-						{
-							LocalPackage localDependency = this.setup.GetPackage(dependencyName.VersionInvariant);
-							if (localDependency != null)
-							{
-								if (localDependency.Info != null)
-									dependency = localDependency.Info;
-								else
-									dependency = this.QueryPackageInfo(localDependency.PackageName);
-							}
-						}
-
-						// If we still have nothing, try a general search for the newest package with that Id
-						if (dependency == null)
-						{
-							dependency = this.QueryPackageInfo(dependencyName.VersionInvariant);
-						}
-
-						// Cache the results for later
-						resolveCache[dependencyName] = dependency;
-					}
-					if (dependency == null) continue;
-
-					// Add secondary dependencies
-					count += GetDeepDependencyCount(dependency, deepCount, resolveCache, skipIdSet);
-				}
-
-				// Update the registered value
-				deepCount[package] = count;
-			}
-			return count;
 		}
 
 		public IEnumerable<PackageInfo> QueryAvailablePackages()
@@ -879,26 +778,27 @@ namespace Duality.Editor.PackageManagement
 
 		private bool CheckDeepLicenseAgreements(NuGet.IPackage package)
 		{
-			var deepDependencyCountDict = this.GetDeepDependencyCount(new[] { this.CreatePackageInfo(package) });
-			NuGet.IPackage[] deepDependencies = deepDependencyCountDict.Keys
-				.Select(i => this.FindPackageInfo(i.PackageName))
-				.NotNull()
-				.ToArray();
-			NuGet.IPackage[] installedPackages = this.manager.LocalRepository.GetPackages().ToArray();
+			this.dependencyWalker.Clear();
+			this.dependencyWalker.WalkGraph(new PackageName(package.Id, package.Version.Version));
 
-			foreach (NuGet.IPackage p in deepDependencies)
+			List<PackageInfo> packageGraph = this.dependencyWalker.VisitedPackages.ToList();
+			List<NuGet.IPackage> installedPackages = this.manager.LocalRepository.GetPackages().ToList();
+
+			foreach (PackageInfo visitedPackage in packageGraph)
 			{
 				// Skip the ones that are already installed
-				if (installedPackages.Any(l => l.Id == p.Id && l.Version >= p.Version))
+				if (installedPackages.Any(installed => 
+					installed.Id == visitedPackage.Id && 
+					installed.Version.Version >= visitedPackage.Version))
 					continue;
 
-				if (!this.CheckLicenseAgreement(p))
+				if (!this.CheckLicenseAgreement(visitedPackage))
 					return false;
 			}
 
 			return true;
 		}
-		private bool CheckLicenseAgreement(NuGet.IPackage package)
+		private bool CheckLicenseAgreement(PackageInfo package)
 		{
 			if (package.RequireLicenseAcceptance)
 			{
@@ -908,10 +808,10 @@ namespace Duality.Editor.PackageManagement
 					return true;
 
 				bool agreed;
-				if (!this.licenseAcceptedCache.TryGetValue(package, out agreed) || !agreed)
+				if (!this.licenseAcceptedCache.TryGetValue(package.PackageName, out agreed) || !agreed)
 				{
 					PackageLicenseAgreementEventArgs args = new PackageLicenseAgreementEventArgs(
-						new PackageName(package.Id, package.Version.Version),
+						package.PackageName,
 						package.LicenseUrl,
 						package.RequireLicenseAcceptance);
 
@@ -921,7 +821,7 @@ namespace Duality.Editor.PackageManagement
 						DisplayDefaultLicenseAcceptDialog(args);
 
 					agreed = args.IsLicenseAccepted;
-					this.licenseAcceptedCache[package] = agreed;
+					this.licenseAcceptedCache[package.PackageName] = agreed;
 				}
 
 				if (!agreed)
