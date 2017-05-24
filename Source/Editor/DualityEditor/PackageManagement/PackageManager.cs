@@ -176,54 +176,45 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="package"></param>
 		public void VerifyPackage(LocalPackage package)
 		{
-			Log.Editor.Write("Verifying package '{0}'...", package.PackageName);
-			Log.Editor.PushIndent();
-			try
+			Version oldPackageVersion = package.Version;
+
+			// Determine the exact version that will be downloaded
+			PackageInfo packageInfo = this.GetPackage(package.PackageName);
+			if (packageInfo == null)
 			{
-				Version oldPackageVersion = package.Version;
-
-				// Determine the exact version that will be downloaded
-				PackageInfo packageInfo = this.GetPackage(package.PackageName);
-				if (packageInfo == null)
-				{
-					throw new Exception(string.Format(
-						"Can't resolve version of package '{0}'. There seems to be no compatible version available.",
-						package.Id));
-				}
-
-				// Prepare a listener to determine whether we actually installed something
-				EventHandler<PackageOperationEventArgs> installListener = null;
-				bool packageInstalled = false;
-				installListener = delegate(object sender, PackageOperationEventArgs args)
-				{
-					if (args.Package.Id == package.Id)
-					{
-						packageInstalled = true;
-					}
-				};
-
-				// Install the package. Won't do anything if the package is already installed.
-				this.manager.PackageInstalled += installListener;
-				this.InstallPackage(packageInfo, true);
-				this.manager.PackageInstalled -= installListener;
-
-				// If we didn't install anything, that package was already present in the local cache, but not in the PackageConfig file
-				if (!packageInstalled && oldPackageVersion == null)
-				{
-					// Add the explicit version to the PackageConfig file
-					this.setup.Packages.RemoveAll(p => p.Id == packageInfo.Id);
-					this.setup.Packages.Add(new LocalPackage(packageInfo));
-				}
-
-				// In case we've just retrieved an explicit version for the first time, save the config file.
-				if (oldPackageVersion == null)
-				{
-					this.setup.Save(this.env.ConfigFilePath);
-				}
+				throw new Exception(string.Format(
+					"Can't resolve version of package '{0}'. There seems to be no compatible version available.",
+					package.Id));
 			}
-			finally
+
+			// Prepare a listener to determine whether we actually installed something
+			EventHandler<PackageOperationEventArgs> installListener = null;
+			bool packageInstalled = false;
+			installListener = delegate(object sender, PackageOperationEventArgs args)
 			{
-				Log.Editor.PopIndent();
+				if (args.Package.Id == package.Id)
+				{
+					packageInstalled = true;
+				}
+			};
+
+			// Install the package. Won't do anything if the package is already installed.
+			this.manager.PackageInstalled += installListener;
+			this.InstallPackage(packageInfo, true);
+			this.manager.PackageInstalled -= installListener;
+
+			// If we didn't install anything, that package was already present in the local cache, but not in the PackageConfig file
+			if (!packageInstalled && oldPackageVersion == null)
+			{
+				// Add the explicit version to the PackageConfig file
+				this.setup.Packages.RemoveAll(p => p.Id == packageInfo.Id);
+				this.setup.Packages.Add(new LocalPackage(packageInfo));
+			}
+
+			// In case we've just retrieved an explicit version for the first time, save the config file.
+			if (oldPackageVersion == null)
+			{
+				this.setup.Save(this.env.ConfigFilePath);
 			}
 		}
 		/// <summary>
