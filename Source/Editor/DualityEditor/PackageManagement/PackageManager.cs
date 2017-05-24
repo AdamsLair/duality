@@ -967,14 +967,5 @@ namespace Duality.Editor.PackageManagement
 				args.AcceptLicense();
 			}
 		}
-		public static string GetDisplayedVersion(Version version)
-		{
-			if (version == null)
-				return string.Empty;
-			else if (version.Build == 0)
-				return string.Format("{0}.{1}", version.Major, version.Minor);
-			else
-				return string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
-		}
 	}
 }

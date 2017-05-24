@@ -292,9 +292,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				this.textBoxReleaseNotes.Text		= releaseNoteText;
 				this.labelPackageVersion.Text		= isItemUpdatable ? 
 					string.Format("{0} --> {1}", 
-						PackageManager.GetDisplayedVersion(installedInfo.Version), 
-						PackageManager.GetDisplayedVersion(newestInfo.Version)) : 
-					PackageManager.GetDisplayedVersion(itemInfo.Version);
+						PackageViewDialog.GetDisplayedVersionString(installedInfo.Version), 
+						PackageViewDialog.GetDisplayedVersionString(newestInfo.Version)) : 
+					PackageViewDialog.GetDisplayedVersionString(itemInfo.Version);
 			}
 			
 			this.labelPackageAuthor.Visible			= !string.IsNullOrWhiteSpace(this.labelPackageAuthor.Text);
@@ -818,6 +818,16 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				return controlProvider.GetToolTip(node, nodeControl);
 			}
 			return null;
+		}
+
+		public static string GetDisplayedVersionString(Version version)
+		{
+			if (version == null)
+				return string.Empty;
+			else if (version.Build == 0)
+				return string.Format("{0}.{1}", version.Major, version.Minor);
+			else
+				return string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
 		}
 	}
 }
