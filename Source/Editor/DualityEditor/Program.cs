@@ -95,7 +95,7 @@ namespace Duality.Editor
 			// Perform the initial package update - even before initializing the editor
 			if (packageManager.IsPackageSyncRequired)
 			{
-				Log.Editor.Write("Updating Packages...");
+				Log.Editor.Write("Synchronizing Local Package Setup...");
 				Log.Editor.PushIndent();
 				ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
 					GeneralRes.TaskInstallPackages_Caption, 
@@ -142,7 +142,7 @@ namespace Duality.Editor
 			yield return null;
 
 			// Uninstall all "shadow" Duality packages that are installed, but not registered
-			Log.Editor.Write("Uninstalling unregistered packages...");
+			Log.Editor.Write("Removing unregistered packages...");
 			Log.Editor.PushIndent();
 			manager.UninstallNonRegisteredPackages();
 			Log.Editor.PopIndent();
