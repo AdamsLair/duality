@@ -108,7 +108,8 @@ namespace Duality.Editor
 				Log.Editor.PopIndent();
 			}
 
-			// Restart to apply the update
+			// Restart to apply the update. This will also trigger when there is a pending
+			// update from before that wasn't applied yet.
 			if (packageManager.ApplyUpdate())
 			{
 				return false;
