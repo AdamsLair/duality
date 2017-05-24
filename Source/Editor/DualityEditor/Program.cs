@@ -41,7 +41,11 @@ namespace Duality.Editor
 			PrepareWinFormsApplication();
 			
 			// Restore or remove packages to match package config
-			VerifyPackageSetup();
+			if (!VerifyPackageSetup())
+			{
+				Application.Exit();
+				return;
+			}
 
 			// Run the editor
 			SplashScreen splashScreen = new SplashScreen(recoverFromPluginReload);
@@ -71,7 +75,7 @@ namespace Duality.Editor
 			Application.ThreadException += Application_ThreadException;
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 		}
-		private static void VerifyPackageSetup()
+		private static bool VerifyPackageSetup()
 		{
 			PackageManager packageManager = new PackageManager();
 
@@ -85,10 +89,7 @@ namespace Duality.Editor
 				};
 				DialogResult result = licenseDialog.ShowDialog();
 				if (result != DialogResult.OK)
-				{
-					Application.Exit();
-					return;
-				}
+					return false;
 			}
 
 			// Perform the initial package update - even before initializing the editor
@@ -106,11 +107,11 @@ namespace Duality.Editor
 				setupDialog.ShowDialog();
 				Log.Editor.PopIndent();
 			}
+
 			// Restart to apply the update
 			if (packageManager.ApplyUpdate())
 			{
-				Application.Exit();
-				return;
+				return false;
 			}
 			// If we have nothing to apply, but still require a sync, something went wrong.
 			// Should this happen on our first start, we'll remind the user that the install
@@ -121,9 +122,10 @@ namespace Duality.Editor
 					GeneralRes.Msg_ErrorFirstDualityInstall_Desc, 
 					GeneralRes.Msg_ErrorFirstDualityInstall_Caption, 
 					MessageBoxButtons.OK, MessageBoxIcon.Information);
-				Application.Exit();
-				return;
+				return false;
 			}
+
+			return true;
 		}
 		private static IEnumerable SynchronizePackages(ProcessingBigTaskDialog.WorkerInterface workerInterface)
 		{
