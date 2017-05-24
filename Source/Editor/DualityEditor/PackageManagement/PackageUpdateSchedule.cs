@@ -160,7 +160,6 @@ namespace Duality.Editor.PackageManagement
 		public void ApplyUpdaterChanges(string updaterPath)
 		{
 			List<XElement> updaterItems = new List<XElement>();
-			string updaterFullPath = Path.GetFullPath(updaterPath);
 
 			// Gather all items that are affecting the updater
 			foreach (XElement element in this.Items)
@@ -168,8 +167,7 @@ namespace Duality.Editor.PackageManagement
 				XAttribute attribTarget = element.Attribute("target");
 				string target = (attribTarget != null) ? attribTarget.Value : null;
 				
-				string fullPathA = Path.GetFullPath(target);
-				if (string.Equals(fullPathA, updaterFullPath, StringComparison.InvariantCultureIgnoreCase))
+				if (string.Equals(target, updaterPath, StringComparison.InvariantCultureIgnoreCase))
 					updaterItems.Add(element);
 			}
 
