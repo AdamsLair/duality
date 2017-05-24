@@ -178,49 +178,53 @@ namespace Duality.Editor.PackageManagement
 		{
 			Log.Editor.Write("Verifying package '{0}'...", package.PackageName);
 			Log.Editor.PushIndent();
-
-			Version oldPackageVersion = package.Version;
-
-			// Determine the exact version that will be downloaded
-			PackageInfo packageInfo = this.GetPackage(package.PackageName);
-			if (packageInfo == null)
+			try
 			{
-				throw new Exception(string.Format(
-					"Can't resolve version of package '{0}'. There seems to be no compatible version available.",
-					package.Id));
-			}
+				Version oldPackageVersion = package.Version;
 
-			// Prepare a listener to determine whether we actually installed something
-			EventHandler<PackageOperationEventArgs> installListener = null;
-			bool packageInstalled = false;
-			installListener = delegate(object sender, PackageOperationEventArgs args)
-			{
-				if (args.Package.Id == package.Id)
+				// Determine the exact version that will be downloaded
+				PackageInfo packageInfo = this.GetPackage(package.PackageName);
+				if (packageInfo == null)
 				{
-					packageInstalled = true;
+					throw new Exception(string.Format(
+						"Can't resolve version of package '{0}'. There seems to be no compatible version available.",
+						package.Id));
 				}
-			};
 
-			// Install the package. Won't do anything if the package is already installed.
-			this.manager.PackageInstalled += installListener;
-			this.InstallPackage(packageInfo, true);
-			this.manager.PackageInstalled -= installListener;
+				// Prepare a listener to determine whether we actually installed something
+				EventHandler<PackageOperationEventArgs> installListener = null;
+				bool packageInstalled = false;
+				installListener = delegate(object sender, PackageOperationEventArgs args)
+				{
+					if (args.Package.Id == package.Id)
+					{
+						packageInstalled = true;
+					}
+				};
 
-			// If we didn't install anything, that package was already present in the local cache, but not in the PackageConfig file
-			if (!packageInstalled && oldPackageVersion == null)
-			{
-				// Add the explicit version to the PackageConfig file
-				this.setup.Packages.RemoveAll(p => p.Id == packageInfo.Id);
-				this.setup.Packages.Add(new LocalPackage(packageInfo));
+				// Install the package. Won't do anything if the package is already installed.
+				this.manager.PackageInstalled += installListener;
+				this.InstallPackage(packageInfo, true);
+				this.manager.PackageInstalled -= installListener;
+
+				// If we didn't install anything, that package was already present in the local cache, but not in the PackageConfig file
+				if (!packageInstalled && oldPackageVersion == null)
+				{
+					// Add the explicit version to the PackageConfig file
+					this.setup.Packages.RemoveAll(p => p.Id == packageInfo.Id);
+					this.setup.Packages.Add(new LocalPackage(packageInfo));
+				}
+
+				// In case we've just retrieved an explicit version for the first time, save the config file.
+				if (oldPackageVersion == null)
+				{
+					this.setup.Save(this.env.ConfigFilePath);
+				}
 			}
-
-			// In case we've just retrieved an explicit version for the first time, save the config file.
-			if (oldPackageVersion == null)
+			finally
 			{
-				this.setup.Save(this.env.ConfigFilePath);
+				Log.Editor.PopIndent();
 			}
-
-			Log.Editor.PopIndent();
 		}
 		/// <summary>
 		/// Uninstalls all Duality packages that are installed, but not registered. This
@@ -280,11 +284,15 @@ namespace Duality.Editor.PackageManagement
 
 			Log.Editor.Write("Installing package '{0}'...", package.PackageName);
 			Log.Editor.PushIndent();
-
-			// Request NuGet to install the package
-			this.manager.InstallPackage(newPackage, false, false);
-
-			Log.Editor.PopIndent();
+			try
+			{
+				// Request NuGet to install the package
+				this.manager.InstallPackage(newPackage, false, false);
+			}
+			finally
+			{
+				Log.Editor.PopIndent();
+			}
 		}
 
 		/// <summary>
@@ -307,54 +315,58 @@ namespace Duality.Editor.PackageManagement
 		{
 			Log.Editor.Write("Uninstalling package '{0} {1}'...", id, version);
 			Log.Editor.PushIndent();
-
-			// Find all dependencies of the package we want to uninstall
-			PackageInfo uninstallPackage = this.GetPackage(new PackageName(id, version));
-			List<PackageInfo> uninstallDependencies = new List<PackageInfo>();
-			if (uninstallPackage != null)
+			try
 			{
-				this.dependencyWalker.Clear();
-				this.dependencyWalker.WalkGraph(uninstallPackage);
-				uninstallDependencies.AddRange(this.dependencyWalker.VisitedPackages);
-				uninstallDependencies.RemoveAll(package => package.Id == uninstallPackage.Id);
-			}
+				// Find all dependencies of the package we want to uninstall
+				PackageInfo uninstallPackage = this.GetPackage(new PackageName(id, version));
+				List<PackageInfo> uninstallDependencies = new List<PackageInfo>();
+				if (uninstallPackage != null)
+				{
+					this.dependencyWalker.Clear();
+					this.dependencyWalker.WalkGraph(uninstallPackage);
+					uninstallDependencies.AddRange(this.dependencyWalker.VisitedPackages);
+					uninstallDependencies.RemoveAll(package => package.Id == uninstallPackage.Id);
+				}
 
-			// Filter out all dependencies that are used by other Duality packages
-			foreach (LocalPackage package in this.LocalSetup.Packages)
-			{
-				if (package.Id == id) continue;
+				// Filter out all dependencies that are used by other Duality packages
+				foreach (LocalPackage package in this.LocalSetup.Packages)
+				{
+					if (package.Id == id) continue;
 
-				PackageInfo packageInfo = package.Info ?? this.GetPackage(package.PackageName);
-				if (packageInfo == null) continue;
+					PackageInfo packageInfo = package.Info ?? this.GetPackage(package.PackageName);
+					if (packageInfo == null) continue;
 				
-				this.dependencyWalker.Clear();
-				this.dependencyWalker.IgnorePackage(id);
-				this.dependencyWalker.WalkGraph(packageInfo);
-				foreach (PackageInfo dependency in this.dependencyWalker.VisitedPackages)
+					this.dependencyWalker.Clear();
+					this.dependencyWalker.IgnorePackage(id);
+					this.dependencyWalker.WalkGraph(packageInfo);
+					foreach (PackageInfo dependency in this.dependencyWalker.VisitedPackages)
+					{
+						// Don't check versions, as dependencies are usually not resolved
+						// with an exact version match.
+						uninstallDependencies.RemoveAll(item => item.Id == dependency.Id);
+					}
+				}
+
+				// Uninstall the package itself
+				this.manager.UninstallPackage(id, new SemanticVersion(version), force);
+
+				// Uninstall its dependencies that are no longer used
+				foreach (PackageInfo package in uninstallDependencies)
 				{
-					// Don't check versions, as dependencies are usually not resolved
-					// with an exact version match.
-					uninstallDependencies.RemoveAll(item => item.Id == dependency.Id);
+					List<NuGet.IPackage> matchingNuGetPackages = this.manager.LocalRepository
+						.FindPackagesById(package.Id)
+						.ToList();
+
+					foreach (NuGet.IPackage nugetPackage in matchingNuGetPackages)
+					{
+						this.manager.UninstallPackage(nugetPackage, force, false);
+					}
 				}
 			}
-
-			// Uninstall the package itself
-			this.manager.UninstallPackage(id, new SemanticVersion(version), force);
-
-			// Uninstall its dependencies that are no longer used
-			foreach (PackageInfo package in uninstallDependencies)
+			finally
 			{
-				List<NuGet.IPackage> matchingNuGetPackages = this.manager.LocalRepository
-					.FindPackagesById(package.Id)
-					.ToList();
-
-				foreach (NuGet.IPackage nugetPackage in matchingNuGetPackages)
-				{
-					this.manager.UninstallPackage(nugetPackage, force, false);
-				}
+				Log.Editor.PopIndent();
 			}
-
-			Log.Editor.PopIndent();
 		}
 
 		/// <summary>
@@ -416,10 +428,14 @@ namespace Duality.Editor.PackageManagement
 			
 			Log.Editor.Write("Updating package '{0}'...", package.PackageName);
 			Log.Editor.PushIndent();
-
-			this.manager.UpdatePackage(newPackage, true, false);
-
-			Log.Editor.PopIndent();
+			try
+			{
+				this.manager.UpdatePackage(newPackage, true, false);
+			}
+			finally
+			{
+				Log.Editor.PopIndent();
+			}
 		}
 
 		/// <summary>
@@ -436,32 +452,36 @@ namespace Duality.Editor.PackageManagement
 
 			Log.Editor.Write("Applying package update...");
 			Log.Editor.PushIndent();
-			
-			// Manually perform update operations on the updater itself
 			try
 			{
-				Log.Editor.Write("Preparing updater...");
-				PackageUpdateSchedule schedule = this.PrepareUpdateSchedule();
-				schedule.ApplyUpdaterChanges(this.env.UpdaterExecFilePath);
-				this.SaveUpdateSchedule(schedule);
+				// Manually perform update operations on the updater itself
+				try
+				{
+					Log.Editor.Write("Preparing updater...");
+					PackageUpdateSchedule schedule = this.PrepareUpdateSchedule();
+					schedule.ApplyUpdaterChanges(this.env.UpdaterExecFilePath);
+					this.SaveUpdateSchedule(schedule);
+				}
+				catch (Exception e)
+				{
+					Log.Editor.WriteError(
+						"Can't update '{0}', because an error occurred: {1}", 
+						this.env.UpdaterExecFilePath, 
+						Log.Exception(e));
+					return false;
+				}
+
+				// Run the updater application
+				Log.Editor.Write("Running updater...");
+				Process.Start(this.env.UpdaterExecFilePath, string.Format("\"{0}\" \"{1}\" \"{2}\"",
+					this.env.UpdateFilePath,
+					restartEditor ? typeof(DualityEditorApp).Assembly.Location : "",
+					restartEditor ? Environment.CurrentDirectory : ""));
 			}
-			catch (Exception e)
+			finally
 			{
-				Log.Editor.WriteError(
-					"Can't update '{0}', because an error occurred: {1}", 
-					this.env.UpdaterExecFilePath, 
-					Log.Exception(e));
-				return false;
+				Log.Editor.PopIndent();
 			}
-
-			// Run the updater application
-			Log.Editor.Write("Running updater...");
-			Process.Start(this.env.UpdaterExecFilePath, string.Format("\"{0}\" \"{1}\" \"{2}\"",
-				this.env.UpdateFilePath,
-				restartEditor ? typeof(DualityEditorApp).Assembly.Location : "",
-				restartEditor ? Environment.CurrentDirectory : ""));
-
-			Log.Editor.PopIndent();
 
 			return true;
 		}
