@@ -96,7 +96,7 @@ namespace Duality
 		{
 			if (localBody == impulse.BodyA)
 			{
-				this.pos = PhysicsUnit.LengthToDuality * (impulse.Points[pointIndex].rA + impulse.BodyA.Position);
+				this.pos = PhysicsUnit.LengthToDuality * (impulse.Points[pointIndex].rA + impulse.BodyA.WorldCenter);
 				this.normal = impulse.Normal;
 				this.normalImpulse = PhysicsUnit.ImpulseToDuality * impulse.Points[pointIndex].NormalImpulse;
 				this.tangentImpulse = PhysicsUnit.ImpulseToDuality * impulse.Points[pointIndex].TangentImpulse;
@@ -105,7 +105,7 @@ namespace Duality
 			}
 			else if (localBody == impulse.BodyB)
 			{
-				this.pos = PhysicsUnit.LengthToDuality * (impulse.Points[pointIndex].rB + impulse.BodyB.Position);
+				this.pos = PhysicsUnit.LengthToDuality * (impulse.Points[pointIndex].rB + impulse.BodyB.WorldCenter);
 				this.normal = -impulse.Normal;
 				this.normalImpulse = PhysicsUnit.ImpulseToDuality * impulse.Points[pointIndex].NormalImpulse;
 				this.tangentImpulse = PhysicsUnit.ImpulseToDuality * impulse.Points[pointIndex].TangentImpulse;
