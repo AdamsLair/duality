@@ -292,9 +292,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				this.textBoxReleaseNotes.Text		= releaseNoteText;
 				this.labelPackageVersion.Text		= isItemUpdatable ? 
 					string.Format("{0} --> {1}", 
-						PackageManager.GetDisplayedVersion(installedInfo.Version), 
-						PackageManager.GetDisplayedVersion(newestInfo.Version)) : 
-					PackageManager.GetDisplayedVersion(itemInfo.Version);
+						PackageViewDialog.GetDisplayedVersionString(installedInfo.Version), 
+						PackageViewDialog.GetDisplayedVersionString(newestInfo.Version)) : 
+					PackageViewDialog.GetDisplayedVersionString(itemInfo.Version);
 			}
 			
 			this.labelPackageAuthor.Visible			= !string.IsNullOrWhiteSpace(this.labelPackageAuthor.Text);
@@ -387,7 +387,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void UpdatePackage(PackageInfo info)
 		{
-			PackageInfo newestInfo = this.packageManager.QueryPackageInfo(info.PackageName.VersionInvariant);
+			PackageInfo newestInfo = this.packageManager.GetPackage(info.PackageName.VersionInvariant);
 			if (!this.ConfirmCompatibility(newestInfo))
 				return;
 
@@ -409,7 +409,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			IEnumerable<PackageInfo> newestUpdatablePackages = 
 				this.packageManager.GetUpdatablePackages()
-				.Select(p => this.packageManager.QueryPackageInfo(p.PackageName.VersionInvariant));
+				.Select(p => this.packageManager.GetPackage(p.PackageName.VersionInvariant));
 			if (!this.ConfirmCompatibility(newestUpdatablePackages))
 				return;
 
@@ -462,7 +462,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			this.oldTreeViewSize = this.packageList.Size;
 
+			// Retrieve the package manager and clear its remote package cache, so we'll
+			// get fresh data every time we re-open the package view dialog.
 			this.packageManager = DualityEditorApp.PackageManager;
+			this.packageManager.ClearCache();
 			this.nodeTextBoxVersion.PackageManager = this.packageManager;
 
 			this.modelOnline = new OnlinePackagesTreeModel(this.packageManager);
@@ -662,13 +665,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			if (cancelArgs.Cancel) return;
 
 			// Delete all files and directories in the local package store, except the icon cache
-			foreach (string dir in Directory.EnumerateDirectories(this.packageManager.LocalPackageStoreDirectory))
+			foreach (string dir in Directory.EnumerateDirectories(this.packageManager.LocalEnvironment.RepositoryPath))
 			{
 				if (PathOp.ArePathsEqual(PackageItem.PackageIconCacheDir, dir))
 					continue;
 				Directory.Delete(dir, true);
 			}
-			foreach (string file in Directory.EnumerateFiles(this.packageManager.LocalPackageStoreDirectory))
+			foreach (string file in Directory.EnumerateFiles(this.packageManager.LocalEnvironment.RepositoryPath))
 			{
 				File.Delete(file);
 			}
@@ -815,6 +818,16 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				return controlProvider.GetToolTip(node, nodeControl);
 			}
 			return null;
+		}
+
+		public static string GetDisplayedVersionString(Version version)
+		{
+			if (version == null)
+				return string.Empty;
+			else if (version.Build == 0)
+				return string.Format("{0}.{1}", version.Major, version.Minor);
+			else
+				return string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
 		}
 	}
 }

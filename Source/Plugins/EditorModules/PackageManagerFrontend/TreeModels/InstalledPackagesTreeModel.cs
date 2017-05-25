@@ -84,7 +84,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 
 		protected override IEnumerable<object> EnumeratePackages()
 		{
-			return this.packageManager.LocalPackages;
+			return this.packageManager.LocalSetup.Packages;
 		}
 		protected override BaseItem CreatePackageItem(object package, BaseItem parentItem)
 		{
@@ -95,7 +95,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			// Will be called from a worker thread, because packages are installed in one.
 
-			LocalPackage localPackage = this.packageManager.LocalPackages.FirstOrDefault(p => p.Id == e.Id && p.Version == e.Version);
+			LocalPackage localPackage = this.packageManager.LocalSetup.GetPackage(e.Id, e.Version);
 			if (localPackage == null) return;
 
 			BaseItem item = this.CreatePackageItem(localPackage, null);

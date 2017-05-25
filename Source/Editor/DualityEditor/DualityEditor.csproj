@@ -167,6 +167,12 @@
     <Compile Include="HelpSystem\HelpStack.cs" />
     <Compile Include="HelpSystem\IReadOnlyHelpInfo.cs" />
     <Compile Include="HelpSystem\IHelpProvider.cs" />
+    <Compile Include="PackageManagement\PackageDependencyWalker.cs" />
+    <Compile Include="PackageManagement\PackageCache.cs" />
+    <Compile Include="PackageManagement\PackageManagerLogger.cs" />
+    <Compile Include="PackageManagement\PackageManagerEnvironment.cs" />
+    <Compile Include="PackageManagement\PackageUpdateSchedule.cs" />
+    <Compile Include="PackageManagement\PackageSetup.cs" />
     <Compile Include="PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
     <Compile Include="Forms\LicenseAcceptDialog.cs">

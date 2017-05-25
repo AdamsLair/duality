@@ -204,7 +204,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				}
 				
 				// Draw transform center
-				if (body.BodyType == BodyType.Dynamic)
 				{
 					float size = this.GetScreenConstantScale(canvas, 3.0f);
 					canvas.State.ColorTint = this.ObjectCenterColor.WithAlpha(bodyAlpha);

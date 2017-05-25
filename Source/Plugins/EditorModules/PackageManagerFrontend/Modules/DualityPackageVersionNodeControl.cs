@@ -58,8 +58,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				if (itemVersion != null && newVersion != null)
 					isUpToDate = itemVersion >= newVersion;
 			}
-			string itemVersionText = PackageManager.GetDisplayedVersion(itemVersion);
-			string newVersionText = isInstalled && !isUpToDate ? PackageManager.GetDisplayedVersion(newVersion) : string.Empty;
+			string itemVersionText = PackageViewDialog.GetDisplayedVersionString(itemVersion);
+			string newVersionText = isInstalled && !isUpToDate ? PackageViewDialog.GetDisplayedVersionString(newVersion) : string.Empty;
 
 			// Determine background color and icon based on versioning
 			Brush backgroundBrush = null;

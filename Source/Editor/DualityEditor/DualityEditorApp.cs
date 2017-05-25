@@ -31,7 +31,8 @@ namespace Duality.Editor
 	public static class DualityEditorApp
 	{
 		public	const	string	EditorLogfilePath		= "logfile_editor.txt";
-		public	const	string	EditorPrevLogfilePath	= "logfile_editor_prev.txt";
+		public	const	string	EditorPrevLogfileName	= "logfile_editor_{0}.txt";
+		public	const	string	EditorPrevLogfileDir	= "Temp";
 		public	const	string	DesignTimeDataFile		= "DesignTimeData.dat";
 		public	const	string	UserDataFile			= "EditorUserData.xml";
 		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";

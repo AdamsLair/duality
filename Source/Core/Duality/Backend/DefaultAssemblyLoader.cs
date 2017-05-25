@@ -159,7 +159,21 @@ namespace Duality.Backend
 					return resolveArgs.ResolvedAssembly;
 			}
 			
-			// Admit that we didn't find anything.
+			// Admit that we didn't find anything - unless it's a resource Assembly, which
+			// is used for WinForms localization. Not finding them is the default / expected.
+			bool isResourceAssembly = false;
+			if (args.Name != null)
+			{
+				string token = ".resources";
+				int index = args.Name.IndexOf(token);
+				int pastEndIndex = index + token.Length;
+				if (index != -1 && (pastEndIndex >= args.Name.Length || args.Name[pastEndIndex] == ','))
+				{
+					isResourceAssembly = true;
+				}
+			}
+			if (!isResourceAssembly)
+			{
 			if (args.RequestingAssembly != null)
 			{
 				Logs.Core.WriteWarning(
@@ -172,6 +186,7 @@ namespace Duality.Backend
 				Logs.Core.WriteWarning(
 					"Can't resolve Assembly '{0}': None of the available assembly paths matches the requested name.",
 					args.Name);
+			}
 			}
 			return null;
 		}
