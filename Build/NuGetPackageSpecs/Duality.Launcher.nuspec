@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Launcher</id>
-    <version>2.3.2</version>
+    <version>2.3.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Launcher</title>
@@ -13,12 +13,10 @@
     <summary>The default launcher application for Duality games.</summary>
     <description>The default launcher application for Duality games.</description>
     <tags>Duality Launcher</tags>
-    <releaseNotes>Exception Handling Tweaks
-#CHANGE: Cleaned up exception handling code for the editor to be in one place, rather than two. 
-#CHANGE: The launcher application exception handling can no longer get caught in a stack overflow if writing an error log causes an exception. 
-#CHANGE: Editor data convert operations now have their own exception handling, since WinForms dragdrop operations appear to have the unfortunate habit of internally catching most exceptions silently.</releaseNotes>
+    <releaseNotes>PluginLoader Tweaks
+#CHANGE: The default plugin loader no longer logs warnings for unresolved Assemblies, if those Assemblies are (WinForms) Resource Assemblies.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.9.4" />
+      <dependency id="AdamsLair.Duality" version="2.12.3" />
     </dependencies>
   </metadata>
   <files>

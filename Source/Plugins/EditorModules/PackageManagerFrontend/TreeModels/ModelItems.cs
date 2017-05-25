@@ -43,7 +43,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				if (packageIconCacheDir == null)
 				{
 					packageIconCacheDir = Path.Combine(
-						DualityEditorApp.PackageManager.LocalPackageStoreDirectory, 
+						DualityEditorApp.PackageManager.LocalEnvironment.RepositoryPath, 
 						"IconCache");
 				}
 				return packageIconCacheDir;
@@ -254,7 +254,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		public override void RetrieveAsyncData(PackageManager manager)
 		{
 			// Retrieve info about newest online version
-			PackageInfo newestPackage = manager.QueryPackageInfo(this.itemPackageInfo.PackageName.VersionInvariant);
+			PackageInfo newestPackage = manager.GetPackage(this.itemPackageInfo.PackageName.VersionInvariant);
 			lock (this.asyncDataLock)
 			{
 				this.newestPackageInfo = newestPackage;
@@ -290,7 +290,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			lock (this.asyncDataLock)
 			{
-				LocalPackage installedPackage = manager.LocalPackages.FirstOrDefault(p => p.Id == this.itemPackageInfo.Id);
+				LocalPackage installedPackage = manager.LocalSetup.GetPackage(this.itemPackageInfo.Id);
 				this.installedPackageInfo = (installedPackage != null) ? installedPackage.Info : null;
 			}
 		}

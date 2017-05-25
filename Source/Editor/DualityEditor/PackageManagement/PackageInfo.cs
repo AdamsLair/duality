@@ -101,26 +101,71 @@ namespace Duality.Editor.PackageManagement
 			get { return this.publishDate; }
 			internal set { this.publishDate = value; }
 		}
-		public IEnumerable<string> Authors
+		public IReadOnlyList<string> Authors
 		{
 			get { return this.authors; }
-			internal set { this.authors = (value ?? Enumerable.Empty<string>()).ToList(); }
+			internal set
+			{
+				this.authors.Clear();
+				if (value != null) this.authors.AddRange(value);
+			}
 		}
-		public IEnumerable<string> Tags
+		public IReadOnlyList<string> Tags
 		{
 			get { return this.tags; }
-			internal set { this.tags = (value ?? Enumerable.Empty<string>()).ToList(); }
+			internal set
+			{
+				this.tags.Clear();
+				if (value != null) this.tags.AddRange(value);
+			}
 		}
-		public IEnumerable<PackageName> Dependencies
+		public IReadOnlyList<PackageName> Dependencies
 		{
 			get { return this.dependencies; }
-			internal set { this.dependencies = (value ?? Enumerable.Empty<PackageName>()).ToList(); }
+			internal set
+			{
+				this.dependencies.Clear();
+				if (value != null) this.dependencies.AddRange(value);
+			}
 		}
 
 
 		internal PackageInfo(PackageName package)
 		{
 			this.packageName = package;
+		}
+		internal PackageInfo(NuGet.IPackage nuGetPackage)
+		{
+			// Retrieve package data
+			this.packageName    = new PackageName(nuGetPackage.Id, nuGetPackage.Version.Version);
+			this.title          = nuGetPackage.Title;
+			this.summary        = nuGetPackage.Summary;
+			this.description    = nuGetPackage.Description;
+			this.releaseNotes   = nuGetPackage.ReleaseNotes;
+			this.requireLicense = nuGetPackage.RequireLicenseAcceptance;
+			this.projectUrl     = nuGetPackage.ProjectUrl;
+			this.licenseUrl     = nuGetPackage.LicenseUrl;
+			this.iconUrl        = nuGetPackage.IconUrl;
+			this.downloadCount  = nuGetPackage.DownloadCount;
+			this.publishDate    = nuGetPackage.Published.HasValue ? nuGetPackage.Published.Value.DateTime : DateTime.MinValue;
+			
+			if (nuGetPackage.Authors != null)
+				this.authors.AddRange(nuGetPackage.Authors);
+			if (nuGetPackage.Tags != null)
+				this.tags.AddRange(nuGetPackage.Tags.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+
+			// Retrieve the matching set of dependencies. For now, don't support different sets and just pick the first one.
+			var matchingDependencySet = nuGetPackage.DependencySets.FirstOrDefault();
+			if (matchingDependencySet != null)
+			{
+				foreach (NuGet.PackageDependency dependency in matchingDependencySet.Dependencies)
+				{
+					if (dependency.VersionSpec != null && dependency.VersionSpec.MinVersion != null)
+						this.dependencies.Add(new PackageName(dependency.Id, dependency.VersionSpec.MinVersion.Version));
+					else
+						this.dependencies.Add(new PackageName(dependency.Id, null));
+				}
+			}
 		}
 
 		public override string ToString()
