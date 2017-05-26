@@ -113,7 +113,6 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.AreEqual(packageSpecPluginLatest.Name.Version, packagePluginInfo.Version);
 		}
 		
-
 		[Test, TestCaseSource("InstallPackageTestCases")]
 		public void InstallPackage(PackageOperationTestCase testCase)
 		{
@@ -136,6 +135,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			}
 
 			// Assert client state / setup after the install was done
+			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync");
 			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
 			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
 		}
@@ -161,6 +161,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			}
 
 			// Assert client state / setup after the install was done
+			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync");
 			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
 			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
 		}
@@ -186,6 +187,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			}
 
 			// Assert client state / setup after the install was done
+			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync");
 			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
 			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
 		}
@@ -218,6 +220,7 @@ namespace Duality.Editor.PackageManagement.Tests
 					testCase.Uninstalled);
 			}
 
+			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync");
 			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
 			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
 		}
@@ -604,6 +607,14 @@ namespace Duality.Editor.PackageManagement.Tests
 							"Failed to create the required package setup for the test. Install failed for package '{0}'", 
 							package.Name);
 					}
+				}
+
+				// Make sure that the install didn't leave the setup out of sync with the install
+				if (packageManager.IsPackageSyncRequired)
+				{
+					Assert.Inconclusive(
+						"Failed to create the required package setup for the test. " +
+						"Local setup out of sync with installs.");
 				}
 
 				// Apply all scheduled copy and delete operations immediately
