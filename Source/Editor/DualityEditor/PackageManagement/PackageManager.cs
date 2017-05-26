@@ -344,7 +344,10 @@ namespace Duality.Editor.PackageManagement
 					uninstallPackage,
 					force);
 
-				// Uninstall its dependencies that are no longer used
+				// Uninstall its dependencies that are no longer used, in reverse dependency order
+				// to avoid stumbling over dependencies that they might have between each other.
+				this.OrderByDependencies(uninstallDependencies);
+				uninstallDependencies.Reverse();
 				foreach (PackageInfo package in uninstallDependencies)
 				{
 					List<NuGet.IPackage> matchingNuGetPackages = this.manager.LocalRepository
