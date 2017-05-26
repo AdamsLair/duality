@@ -882,7 +882,8 @@ namespace Duality.Editor.PackageManagement
 			this.SaveUpdateSchedule(updateSchedule);
 
 			// Update local package configuration file
-			this.setup.Packages.RemoveAll(p => p.Id == e.Package.Id);
+			PackageName packageName = new PackageName(e.Package.Id, e.Package.Version.Version);
+			this.setup.Packages.RemoveAll(p => p.PackageName == packageName);
 			this.setup.Save(this.env.ConfigFilePath);
 
 			this.OnPackageUninstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
