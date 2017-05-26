@@ -269,6 +269,12 @@ namespace Duality.Editor.PackageManagement
 		private void InstallPackage(PackageName packageName, bool skipLicense)
 		{
 			NuGet.IPackage installPackage = this.cache.GetNuGetPackage(packageName);
+			if (installPackage == null)
+			{
+				throw new InvalidOperationException(string.Format(
+					"Unable to install package '{0}', because no matching package could be found.",
+					packageName));
+			}
 
 			// Check license terms
 			if (!skipLicense && !this.CheckDeepLicenseAgreements(installPackage))
@@ -403,8 +409,21 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="packageName"></param>
 		public void UpdatePackage(PackageName packageName)
 		{
+			if (!this.manager.LocalRepository.FindPackagesById(packageName.Id).Any())
+			{
+				throw new InvalidOperationException(string.Format(
+					"Can't update package '{0}', because it is not installed.",
+					packageName));
+			}
+
 			NuGet.IPackage latestPackage = this.cache.GetNuGetPackage(packageName.VersionInvariant);
-			
+			if (latestPackage == null)
+			{
+				throw new InvalidOperationException(string.Format(
+					"Unable to update package '{0}', because no matching package could be found.",
+					packageName));
+			}
+
 			// Check license terms
 			if (!this.CheckDeepLicenseAgreements(latestPackage))
 			{
