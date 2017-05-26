@@ -566,6 +566,49 @@ namespace Duality.Editor.PackageManagement.Tests
 			return cases;
 		}
 
+		[Test] public void DuplicatePackage()
+		{
+			// Let's try to trick the package manager into having a duplicate version installed!
+			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
+
+			MockPackageSpec dualityPluginA_Old = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(0, 9, 0, 0));
+			MockPackageSpec dualityPluginA_New = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 0, 0, 0));
+
+			List<MockPackageSpec> repository = new List<MockPackageSpec>();
+			repository.Add(dualityPluginA_Old);
+			repository.Add(dualityPluginA_New);
+
+			// Prepare the test by setting up remote repository and pre-installed local packages
+			this.SetupReporistoryForTest(repository);
+
+			// Install the old version first. Nothing special happens.
+			packageManager.InstallPackage(packageManager.GetPackage(dualityPluginA_Old.Name));
+
+			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA_Old });
+			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
+
+			// Install a newer version without uninstalling the old one.
+			// Expect the newer version to replace the old.
+			packageManager.InstallPackage(packageManager.GetPackage(dualityPluginA_New.Name));
+
+			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA_New });
+			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
+
+			// Install an older version without uninstalling the newer one.
+			// Expect the newer version to persist with no old version being installed.
+			packageManager.InstallPackage(packageManager.GetPackage(dualityPluginA_Old.Name));
+
+			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA_New });
+			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
+
+			// Downgrade from new to old explicitly
+			packageManager.UninstallPackage(packageManager.GetPackage(dualityPluginA_New.Name));
+			packageManager.InstallPackage(packageManager.GetPackage(dualityPluginA_Old.Name));
+
+			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA_Old });
+			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
+		}
+
 
 		private void SetupReporistoryForTest(IEnumerable<MockPackageSpec> repository)
 		{
