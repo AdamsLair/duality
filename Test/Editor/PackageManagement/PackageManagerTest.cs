@@ -356,6 +356,26 @@ namespace Duality.Editor.PackageManagement.Tests
 				dualityPluginD, 
 				new [] { dualityPluginA, dualityPluginB }));
 
+			// Duality plugin that has multiple non-Duality dependencies that depend on each other
+			MockPackageSpec otherLibraryB = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryB");
+			MockPackageSpec otherLibraryC = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryC");
+			MockPackageSpec otherLibraryD = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryD");
+			MockPackageSpec otherLibraryE = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryE");
+			MockPackageSpec dualityPluginE = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginE");
+			otherLibraryB.Dependencies.Add(otherLibraryD.Name);
+			otherLibraryB.Dependencies.Add(otherLibraryE.Name);
+			otherLibraryD.Dependencies.Add(otherLibraryC.Name);
+			// Order is important - biggest dependency set comes centered to trigger most problems
+			dualityPluginE.Dependencies.Add(otherLibraryC.Name);
+			dualityPluginE.Dependencies.Add(otherLibraryB.Name);
+			dualityPluginE.Dependencies.Add(otherLibraryE.Name);
+
+			cases.Add(new PackageOperationTestCase(
+				"Interconnected Dependencies", 
+				new [] { otherLibraryD, otherLibraryC, otherLibraryE, otherLibraryB, dualityPluginE },
+				dualityPluginE, 
+				new MockPackageSpec[0]));
+
 			return cases;
 		}
 		private IEnumerable<PackageOperationTestCase> UpdatePackageTestCases()
