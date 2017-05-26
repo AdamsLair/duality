@@ -7,20 +7,20 @@ namespace Duality.Editor.PackageManagement
 {
 	public class PackageInfo
 	{
-		private	PackageName			packageName		= PackageName.None;
-		private	string				title			= null;
-		private	string				summary			= null;
-		private	string				description		= null;
-		private	string				releaseNotes	= null;
-		private	bool				requireLicense	= false;
-		private	Uri					projectUrl		= null;
-		private	Uri					licenseUrl		= null;
-		private	Uri					iconUrl			= null;
-		private	int					downloadCount	= 0;
-		private	DateTime			publishDate		= DateTime.MinValue;
-		private	List<string>		authors			= new List<string>();
-		private	List<string>		tags			= new List<string>();
-		private	List<PackageName>	dependencies	= new List<PackageName>();
+		private PackageName       name           = PackageName.None;
+		private string            title          = null;
+		private string            summary        = null;
+		private string            description    = null;
+		private string            releaseNotes   = null;
+		private bool              requireLicense = false;
+		private Uri               projectUrl     = null;
+		private Uri               licenseUrl     = null;
+		private Uri               iconUrl        = null;
+		private int               downloadCount  = 0;
+		private DateTime          publishDate    = DateTime.MinValue;
+		private List<string>      authors        = new List<string>();
+		private List<string>      tags           = new List<string>();
+		private List<PackageName> dependencies   = new List<PackageName>();
 
 
 		public bool IsDualityPackage
@@ -39,17 +39,17 @@ namespace Duality.Editor.PackageManagement
 		{
 			get { return this.tags.Contains(PackageManager.CoreTag); }
 		}
-		public PackageName PackageName
+		public PackageName Name
 		{
-			get { return this.packageName; }
+			get { return this.name; }
 		}
 		public string Id
 		{
-			get { return this.packageName.Id; }
+			get { return this.name.Id; }
 		}
 		public Version Version
 		{
-			get { return this.packageName.Version; }
+			get { return this.name.Version; }
 		}
 		public string Title
 		{
@@ -132,12 +132,12 @@ namespace Duality.Editor.PackageManagement
 
 		internal PackageInfo(PackageName package)
 		{
-			this.packageName = package;
+			this.name = package;
 		}
 		internal PackageInfo(NuGet.IPackage nuGetPackage)
 		{
 			// Retrieve package data
-			this.packageName    = new PackageName(nuGetPackage.Id, nuGetPackage.Version.Version);
+			this.name           = new PackageName(nuGetPackage.Id, nuGetPackage.Version.Version);
 			this.title          = nuGetPackage.Title;
 			this.summary        = nuGetPackage.Summary;
 			this.description    = nuGetPackage.Description;
@@ -170,7 +170,7 @@ namespace Duality.Editor.PackageManagement
 
 		public override string ToString()
 		{
-			return string.Format("Package Info '{0}'", this.packageName);
+			return string.Format("Package Info '{0}'", this.name);
 		}
 	}
 }
