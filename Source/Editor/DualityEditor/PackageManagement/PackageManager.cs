@@ -203,7 +203,8 @@ namespace Duality.Editor.PackageManagement
 			this.InstallPackage(packageInfo, true);
 			this.manager.PackageInstalled -= installListener;
 
-			// If we didn't install anything, that package was already present in the local cache, but not in the PackageConfig file
+			// If we didn't install anything, that package was already in the local repo.
+			// Update the local setup to match its specific version.
 			if (!packageInstalled && oldPackageVersion == null)
 			{
 				// Add the explicit version to the PackageConfig file
@@ -890,19 +891,28 @@ namespace Duality.Editor.PackageManagement
 		}
 		private void manager_PackageInstalling(object sender, PackageOperationEventArgs e)
 		{
-			// If we're about to install a newer version of a package that is already
-			// installed, make sure to uninstall any older versions of it.
+			// Duality does, by design, not support multiple versions of the same package to be
+			// installed at the same time. Enforce this constraint by double-checking every install
+			// for already installed versions of the same package.
 			List<NuGet.IPackage> previousPackages = this.manager.LocalRepository
 				.FindPackagesById(e.Package.Id)
 				.ToList();
 			foreach (NuGet.IPackage package in previousPackages)
 			{
+				// Installing a newer version? Make sure to uninstall any older versions of it.
 				if (package.Version < e.Package.Version)
 				{
 					this.manager.UninstallPackage(
 						package,
 						true, 
 						false);
+				}
+				// Installing an older version? Cancel the operation. We'll prefer the newer 
+				// version and if a downgrade is really desired, it should be done by explicitly 
+				// uninstalling the newer package first.
+				else if (package.Version > e.Package.Version)
+				{
+					e.Cancel = true;
 				}
 			}
 		}
