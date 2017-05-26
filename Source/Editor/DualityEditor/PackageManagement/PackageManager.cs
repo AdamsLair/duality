@@ -173,18 +173,18 @@ namespace Duality.Editor.PackageManagement
 		/// the registered Duality package version number with the one that is present
 		/// in the local cache.
 		/// </summary>
-		/// <param name="package"></param>
-		public void VerifyPackage(LocalPackage package)
+		/// <param name="localPackage"></param>
+		public void VerifyPackage(LocalPackage localPackage)
 		{
-			Version oldPackageVersion = package.Version;
+			Version oldPackageVersion = localPackage.Version;
 
-			// Determine the exact version that will be downloaded
-			PackageInfo packageInfo = this.GetPackage(package.PackageName);
+			// Determine the exact version that will be installed
+			PackageInfo packageInfo = this.GetPackage(localPackage.PackageName);
 			if (packageInfo == null)
 			{
 				throw new Exception(string.Format(
 					"Can't resolve version of package '{0}'. There seems to be no compatible version available.",
-					package.Id));
+					localPackage.Id));
 			}
 
 			// Prepare a listener to determine whether we actually installed something
@@ -192,7 +192,7 @@ namespace Duality.Editor.PackageManagement
 			bool packageInstalled = false;
 			installListener = delegate(object sender, PackageOperationEventArgs args)
 			{
-				if (args.Package.Id == package.Id)
+				if (args.Package.Id == localPackage.Id)
 				{
 					packageInstalled = true;
 				}
@@ -200,7 +200,7 @@ namespace Duality.Editor.PackageManagement
 
 			// Install the package. Won't do anything if the package is already installed.
 			this.manager.PackageInstalled += installListener;
-			this.InstallPackage(packageInfo, true);
+			this.InstallPackage(localPackage.PackageName, true);
 			this.manager.PackageInstalled -= installListener;
 
 			// If we didn't install anything, that package was already in the local repo.
@@ -252,85 +252,85 @@ namespace Duality.Editor.PackageManagement
 				// Uninstall all others with a force-uninstall. If we happen to remove
 				// a package that is actually still needed, an additional package verification
 				// step afterwards will fix this.
-				this.UninstallPackage(package.Id, package.Version.Version, true);
+				this.UninstallPackage(
+					new PackageName(package.Id, package.Version.Version), 
+					true);
 			}
 		}
 
 		/// <summary>
 		/// Installs the specified package.
 		/// </summary>
-		/// <param name="package"></param>
-		public void InstallPackage(PackageInfo package)
+		/// <param name="packageName"></param>
+		public void InstallPackage(PackageName packageName)
 		{
-			this.InstallPackage(package, false);
+			this.InstallPackage(packageName, false);
 		}
-		private void InstallPackage(PackageInfo package, bool skipLicense)
+		private void InstallPackage(PackageName packageName, bool skipLicense)
 		{
-			NuGet.IPackage newPackage = this.cache.GetNuGetPackage(package.PackageName);
+			NuGet.IPackage installPackage = this.cache.GetNuGetPackage(packageName);
 
 			// Check license terms
-			if (!skipLicense && !this.CheckDeepLicenseAgreements(newPackage))
+			if (!skipLicense && !this.CheckDeepLicenseAgreements(installPackage))
 			{
 				return;
 			}
 
-			Log.Editor.Write("Installing package '{0}'...", package.PackageName);
+			Log.Editor.Write("Installing package '{0}'...", packageName);
 			Log.Editor.PushIndent();
 			try
 			{
 				// Request NuGet to install the package
-				this.manager.InstallPackage(newPackage, false, false);
+				this.manager.InstallPackage(installPackage, false, false);
 			}
 			finally
 			{
 				Log.Editor.PopIndent();
 			}
 		}
-
 		/// <summary>
 		/// Uninstalls the specified package.
 		/// </summary>
-		/// <param name="package"></param>
-		public void UninstallPackage(PackageInfo package)
+		/// <param name="packageName"></param>
+		public void UninstallPackage(PackageName packageName)
 		{
-			this.UninstallPackage(package.Id, package.Version, false);
+			this.UninstallPackage(packageName, false);
 		}
-		/// <summary>
-		/// Uninstalls the specified package.
-		/// </summary>
-		/// <param name="package"></param>
-		public void UninstallPackage(LocalPackage package)
+		private void UninstallPackage(PackageName packageName, bool force)
 		{
-			this.UninstallPackage(package.Id, package.Version, false);
-		}
-		private void UninstallPackage(string id, Version version, bool force)
-		{
-			Log.Editor.Write("Uninstalling package '{0} {1}'...", id, version);
+			Log.Editor.Write("Uninstalling package '{0}'...", packageName);
 			Log.Editor.PushIndent();
 			try
 			{
+				// Find the local package that we'll uninstall
+				NuGet.IPackage uninstallPackage = this.manager.LocalRepository
+					.FindPackagesById(packageName.Id)
+					.FirstOrDefault(p => p.Version.Version == packageName.Version);
+				if (uninstallPackage == null) return;
+
 				// Find all dependencies of the package we want to uninstall
-				PackageInfo uninstallPackage = this.GetPackage(new PackageName(id, version));
+				PackageName uninstallPackageName = new PackageName(uninstallPackage.Id, uninstallPackage.Version.Version);
+				PackageInfo uninstallPackageInfo = this.GetPackage(uninstallPackageName);
 				List<PackageInfo> uninstallDependencies = new List<PackageInfo>();
-				if (uninstallPackage != null)
+				if (uninstallPackageInfo != null)
 				{
 					this.dependencyWalker.Clear();
-					this.dependencyWalker.WalkGraph(uninstallPackage);
+					this.dependencyWalker.WalkGraph(uninstallPackageInfo);
 					uninstallDependencies.AddRange(this.dependencyWalker.VisitedPackages);
-					uninstallDependencies.RemoveAll(package => package.Id == uninstallPackage.Id);
+					uninstallDependencies.RemoveAll(package => package.Id == uninstallPackageInfo.Id);
 				}
 
 				// Filter out all dependencies that are used by other Duality packages
-				foreach (LocalPackage package in this.LocalSetup.Packages)
+				foreach (LocalPackage otherPackage in this.LocalSetup.Packages)
 				{
-					if (package.Id == id) continue;
+					if (otherPackage.Id == uninstallPackage.Id) continue;
 
-					PackageInfo packageInfo = package.Info ?? this.GetPackage(package.PackageName);
-					if (packageInfo == null) continue;
+					PackageInfo otherPackageInfo = otherPackage.Info ?? this.GetPackage(otherPackage.PackageName);
+					if (otherPackageInfo == null) continue;
 				
 					this.dependencyWalker.Clear();
-					this.dependencyWalker.IgnorePackage(id);
-					this.dependencyWalker.WalkGraph(packageInfo);
+					this.dependencyWalker.IgnorePackage(uninstallPackage.Id);
+					this.dependencyWalker.WalkGraph(otherPackageInfo);
 					foreach (PackageInfo dependency in this.dependencyWalker.VisitedPackages)
 					{
 						// Don't check versions, as dependencies are usually not resolved
@@ -340,7 +340,9 @@ namespace Duality.Editor.PackageManagement
 				}
 
 				// Uninstall the package itself
-				this.manager.UninstallPackage(id, new SemanticVersion(version), force);
+				this.manager.UninstallPackage(
+					uninstallPackage,
+					force);
 
 				// Uninstall its dependencies that are no longer used
 				foreach (PackageInfo package in uninstallDependencies)
@@ -360,17 +362,6 @@ namespace Duality.Editor.PackageManagement
 				Log.Editor.PopIndent();
 			}
 		}
-
-		/// <summary>
-		/// Determines whether the specified package can be uninstalled. Returns
-		/// false when other packages still depend on it.
-		/// </summary>
-		/// <param name="package"></param>
-		/// <returns></returns>
-		public bool CanUninstallPackage(PackageInfo package)
-		{
-			return this.CanUninstallPackage(this.setup.GetPackage(package.Id));
-		}
 		/// <summary>
 		/// Determines whether the specified package can be uninstalled. Returns
 		/// false when other packages still depend on it.
@@ -378,14 +369,21 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="package"></param>
 		/// <returns></returns>
 		[DebuggerNonUserCode]
-		public bool CanUninstallPackage(LocalPackage package)
+		public bool CanUninstallPackage(PackageName packageName)
 		{
+			LocalPackage localPackage = this.setup.GetPackage(packageName);
+			if (localPackage == null) return false;
+
 			bool allowed = true;
 			this.manager.WhatIf = true;
 			this.manager.Logger = null;
 			try
 			{
-				this.manager.UninstallPackage(package.Id, new SemanticVersion(package.Version), false, true);
+				this.manager.UninstallPackage(
+					localPackage.Id, 
+					new SemanticVersion(localPackage.Version), 
+					false, 
+					true);
 			}
 			catch (Exception)
 			{
@@ -395,34 +393,25 @@ namespace Duality.Editor.PackageManagement
 			this.manager.WhatIf = false;
 			return allowed;
 		}
-
 		/// <summary>
 		/// Updates the specified package to the latest available version.
 		/// </summary>
-		/// <param name="package"></param>
-		public void UpdatePackage(PackageInfo package)
+		/// <param name="packageName"></param>
+		public void UpdatePackage(PackageName packageName)
 		{
-			this.UpdatePackage(this.setup.GetPackage(package.Id));
-		}
-		/// <summary>
-		/// Updates the specified package to the latest available version.
-		/// </summary>
-		/// <param name="package"></param>
-		public void UpdatePackage(LocalPackage package)
-		{
-			NuGet.IPackage newPackage = this.cache.GetNuGetPackage(new PackageName(package.Id));
+			NuGet.IPackage latestPackage = this.cache.GetNuGetPackage(packageName.VersionInvariant);
 			
 			// Check license terms
-			if (!this.CheckDeepLicenseAgreements(newPackage))
+			if (!this.CheckDeepLicenseAgreements(latestPackage))
 			{
 				return;
 			}
 			
-			Log.Editor.Write("Updating package '{0}'...", package.PackageName);
+			Log.Editor.Write("Updating package '{0}'...", packageName);
 			Log.Editor.PushIndent();
 			try
 			{
-				this.manager.UpdatePackage(newPackage, true, false);
+				this.manager.UpdatePackage(latestPackage, true, false);
 			}
 			finally
 			{

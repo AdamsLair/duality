@@ -230,7 +230,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			bool isItemSelected = this.selectedItem != null;
 			bool isItemInstalled = isItemSelected && this.selectedItem.IsInstalled;
 			bool isItemUpdatable = isItemInstalled && this.selectedItem.IsUpdatable;
-			bool canUninstall = isItemInstalled && this.packageManager.CanUninstallPackage(this.selectedItem.ItemPackageInfo);
+			bool canUninstall = isItemInstalled && this.packageManager.CanUninstallPackage(this.selectedItem.ItemPackageInfo.PackageName);
 			bool canUpdate = isItemUpdatable;
 
 			this.buttonInstall.Visible			= isItemSelected && !isItemInstalled;
@@ -335,7 +335,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 					PackageManagerFrontendRes.TaskInstallPackages_Caption, 
 					PackageManagerFrontendRes.TaskInstallPackages_Desc, 
 					PackageOperationThread, 
-					new PackageOperationData(this.packageManager, info, d => d.Manager.InstallPackage(d.Package)));
+					new PackageOperationData(this.packageManager, info, d => d.Manager.InstallPackage(d.Package.PackageName)));
 				setupDialog.MainThreadRequired = false;
 				setupDialog.ShowDialog();
 				operationSuccessful = setupDialog.DialogResult == DialogResult.OK;
@@ -368,7 +368,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 					PackageManagerFrontendRes.TaskUninstallPackages_Caption, 
 					PackageManagerFrontendRes.TaskUninstallPackages_Desc, 
 					PackageOperationThread, 
-					new PackageOperationData(this.packageManager, info, d => d.Manager.UninstallPackage(d.Package)));
+					new PackageOperationData(this.packageManager, info, d => d.Manager.UninstallPackage(d.Package.PackageName)));
 				setupDialog.MainThreadRequired = false;
 				setupDialog.ShowDialog();
 				operationSuccessful = setupDialog.DialogResult == DialogResult.OK;
@@ -395,7 +395,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				PackageManagerFrontendRes.TaskUpdatePackages_Caption, 
 				PackageManagerFrontendRes.TaskUpdatePackages_Desc, 
 				PackageOperationThread, 
-				new PackageOperationData(this.packageManager, info, d => d.Manager.UpdatePackage(d.Package)));
+				new PackageOperationData(this.packageManager, info, d => d.Manager.UpdatePackage(d.Package.PackageName)));
 			setupDialog.MainThreadRequired = false;
 			setupDialog.ShowDialog();
 
@@ -794,7 +794,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 				try
 				{
-					manager.UpdatePackage(package);
+					manager.UpdatePackage(package.PackageName);
 				}
 				catch (Exception e)
 				{
