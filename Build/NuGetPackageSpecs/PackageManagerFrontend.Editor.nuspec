@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.PackageManagerFrontend</id>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Package Manager Frontend</title>
@@ -13,16 +13,12 @@
     <summary>A user interface for conveniently managing Duality packages.</summary>
     <description>A user interface for conveniently managing Duality packages.</description>
     <tags>Duality Editor Plugin PackageManagerFrontend</tags>
-    <releaseNotes>PackageManager Cleanup, Extracted Internal PackageCache, PackageManager LocalSetup Integration
-#CHANGE: Moved view-specific package version display code to PackageViewDialog.
-#CHANGE: Extracted internal package info cache from PackageManager. 
-#CHANGE: Changed default behavior to also cache remote repository data that may change (like new packages becoming available), but allowing to clear the cache manually when desired. 
-#CHANGE: Renamed public PackageManager API for enumerating available packages and retrieving package info.
-#ADD: Added GetPackage shortcut to the PackageSetup class and used it in PackageManager where manual LINQ lookups were used before.
-#CHANGE: Moved all "local paths / work environment" related settings into the new PackageManagerEnvironment class.</releaseNotes>
+    <releaseNotes>PackageManager API, PackageManager API
+#CHANGE: Renamed public PackageName properties to Name properties for better readability.
+#CHANGE: Adjusted PackageManager API to work based on PackageNames (ID / version) rather than specific objects.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.12.3" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.8.0" />
+      <dependency id="AdamsLair.Duality" version="2.12.4" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.9.0" />
     </dependencies>
   </metadata>
   <files>
