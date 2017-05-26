@@ -371,8 +371,10 @@ namespace Duality.Editor.PackageManagement
 		[DebuggerNonUserCode]
 		public bool CanUninstallPackage(PackageName packageName)
 		{
-			LocalPackage localPackage = this.setup.GetPackage(packageName);
-			if (localPackage == null) return false;
+			NuGet.IPackage uninstallPackage = this.manager.LocalRepository
+				.FindPackagesById(packageName.Id)
+				.FirstOrDefault(p => p.Version.Version == packageName.Version);
+			if (uninstallPackage == null) return false;
 
 			bool allowed = true;
 			this.manager.WhatIf = true;
@@ -380,8 +382,7 @@ namespace Duality.Editor.PackageManagement
 			try
 			{
 				this.manager.UninstallPackage(
-					localPackage.Id, 
-					new SemanticVersion(localPackage.Version), 
+					uninstallPackage,
 					false, 
 					true);
 			}
