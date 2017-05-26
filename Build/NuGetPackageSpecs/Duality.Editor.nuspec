@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>2.8.0</version>
+    <version>2.9.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,62 +13,16 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>PackageManager Verify Bugfix, PackageUpdateSchedule Bugfix, PackageManager Verify Optimization
-#FIX: Restored original package verification behavior where every package was installed, as there may be cases where a local setup item matches exactly with its installation, but its dependencies do not.
-#FIX: Fixed an exception when applying updater changes.
-#CHANGE: Skipping full package verification for packages where the specified setup and local repository are already a version-specific match.
-#CHANGE: Removed an extra layer of log indentation for verifying packages.
-#CHANGE: Added a clarifying comment to some of the package sync code on editor startup.
-#CHANGE: Added try-finally guard clauses around log indentation sections, so they're properly un-indented in case of an exception.
-#CHANGE: Rephrased editor package sync logs to better reflect what is actually happening.
-#CHANGE: PackageCache now operates exclusively on a remote repository and doesn't fall back to retrieving local packages.
-#FIX: Fixed package environment default to use relative paths instead of rooted / absolute paths.
-#FIX: Fixed a bug in startup cancellation code that would prevent Duality from shutting down when intending to do so.
-#FIX: Fixed a first-install bug in the package manager caused by using PathOp core functionality that only becomes available after the system backend has been initialized.
-#CHANGE: Adjusted archived editor logfile names to include seconds in their timestamp to avoid overwriting them when restarting.
-#CHANGE: Moved view-specific package version display code to PackageViewDialog.
-#CHANGE: Cleaned up some code in PackageManager, moved around most of it. 
-#ADD: Added XML docs to public PackageManager API.
-#CHANGE: Extracted internal package info cache from PackageManager. 
-#CHANGE: Changed default behavior to also cache remote repository data that may change (like new packages becoming available), but allowing to clear the cache manually when desired. 
-#CHANGE: Renamed public PackageManager API for enumerating available packages and retrieving package info.
-#FIX: Fixed null reference exception in PackageName.GetHashCode for version-invariant names.
-#CHANGE: Code style tweaks, internal variable renamed.
-#CHANGE: Extracted the PackageDependencyWalker algorithm from its previous implementation in PackageManager internals. 
-#CHANGE: Adjusted the implementation to produce less garbage and perform faster due to a persistent package resolve cache.
-#CHANGE: PackageInfo now uses read-only lists for authors, tags and dependencies.
-#CHANGE: Uninstalling a package with dependencies will now take into account which shared dependencies only exist due to transitivity over the uninstall candidate and treat them accordingly.
-#CHANGE: Replaced internal uninstall queue / lock with custom dependency resolve and uninstall rules.
-#CHANGE: Extended auto-uninstall of old package versions when installing a newer version of the same package to non-Duality packages as well.
-#ADD: Added XML comments to LocalPackage.
-#REMOVE: Removed LocalPackage.IsInstallationComplete property, as it was unused and did no longer serve a purpose.
-#FIX: Fixed an exception during the first install of a previously version-invariant package.
-#CHANGE: Moved around package sync coroutine.
-#CHANGE: Previous editor logfiles are now archived in the Temp subfolder and no longer limited to a single one. 
-#CHANGE: Cleaned up editor startup routine by splitting it up into multiple methods.
-#CHANGE: Improved readability of stringified package names and event listener assertion messages.
-#CHANGE: When installing a package that is a newer version of an already-installed package, the old version will be uninstalled first.
-#CHANGE: The package managers internal uninstall queue for Duality packages is now off by default and only selectively enabled during an externally triggered uninstall operation.
-#CHANGE: The default plugin loader no longer logs warnings for unresolved Assemblies, if those Assemblies are (WinForms) Resource Assemblies.
-#ADD: Added more logs to PackageManager, including logs about NuGet internals for diagnostic purposes.
-#FIX: Fixed ApplyChanges failing when attempting to copy into a non-existent directory.
-#CHANGE: Exposed API to perform trivial update operations in the package update schedule immediately. Used for updater updates and testing.
-#ADD: Added Equals and equality operator support to PackageName.
-#FIX: Fixed package install not using the root directory as specified in the PackageManagerEnvironment.
-#FIX: Fixed a flaky path comparison in PackageUpdateSchedule to decide whether an item affects the updater tool.
-#CHANGE: Moved updater file path from an internal constant to PackageManagerEnvironment.
-#ADD: Added XML comments for PackageUpdateSchedule API.
-#ADD: Added XML comments for PackageManagerEnvironment API.
-#ADD: Added XML comments for PackageSetup API.
-#ADD: Added an abstraction leak to PakageUpdateSchedule allowing to access the scheduled update items directly, as this is probably the less maintenance-intensive way compared to introducing a while class hierarchy just for accessing them in tests only.
-#CHANGE: Replaced some hardcoded relative paths with proper PackageManagerEnvironment lookups.
-#CHANGE: Moved construction, serialization and partial application of package update schedules out of the PackageManager and into its own class.
-#ADD: Added GetPackage shortcut to the PackageSetup class and used it in PackageManager where manual LINQ lookups were used before.
-#CHANGE: Replaced the hardcoded LoadConfig / SaveConfig methods with a constructor fallback and the option to manually provide a pre-generated package setup class.
-#CHANGE: Moved all "local paths / work environment" related settings into the new PackageManagerEnvironment class.
-#CHANGE: Moved that is defined in the package config file into a separate class that also takes care of loading and saving it.</releaseNotes>
+    <releaseNotes>PackageManager Parameter Check, PackageManager Uninstall Bugfix, PackageManager CanUninstall Bugfix
+#ADD: Install and Update commands now throw exceptions when attempting to perform them on non-existent packages.
+#FIX: Fixed package uninstall for cases where its different non-Duality dependencies depend on each other.
+#FIX: Fixed CanUninstallPackage behavior for non-registered packages.
+#CHANGE: Renamed public PackageName properties to Name properties for better readability.
+#CHANGE: Adjusted PackageManager API to work based on PackageNames (ID / version) rather than specific objects.
+#FIX: Fixed a bug that allowed the package manager to install an old version of a package alongside its already installed newer version.
+#CHANGE: Uninstalling a package no longer removes all versions of it from the local config, but only the uninstalled one specifically.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.12.3" />
+      <dependency id="AdamsLair.Duality" version="2.12.4" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
       <dependency id="AdamsLair.TreeViewAdv" version="1.7.6" />
       <dependency id="AdamsLair.WinForms" version="1.1.12" />

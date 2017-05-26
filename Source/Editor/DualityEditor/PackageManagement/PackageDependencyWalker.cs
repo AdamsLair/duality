@@ -105,10 +105,10 @@ namespace Duality.Editor.PackageManagement
 			foreach (PackageInfo package in packages)
 			{
 				if (package == null) continue;
-				this.resolveCache[package.PackageName] = package;
+				this.resolveCache[package.Name] = package;
 			}
 
-			this.WalkGraph(packages.Select(p => p.PackageName));
+			this.WalkGraph(packages.Select(p => p.Name));
 		}
 		/// <summary>
 		/// Walks the specified packages dependency graphs and adds 
@@ -180,7 +180,7 @@ namespace Duality.Editor.PackageManagement
 
 			// Improve cyclic dependency handling by counting direct dependencies early
 			int count = package.Dependencies.Count;
-			this.dependencyCount[package.PackageName] = count;
+			this.dependencyCount[package.Name] = count;
 
 			// Iterate over dependencies and count theirs as well
 			foreach (PackageName dependencyName in package.Dependencies)
@@ -194,11 +194,11 @@ namespace Duality.Editor.PackageManagement
 
 				// Add secondary dependencies
 				VisitPackage(dependency);
-				count += this.dependencyCount[dependency.PackageName];
+				count += this.dependencyCount[dependency.Name];
 			}
 
 			// Update the previous count value
-			this.dependencyCount[package.PackageName] = count;
+			this.dependencyCount[package.Name] = count;
 		}
 	}
 }

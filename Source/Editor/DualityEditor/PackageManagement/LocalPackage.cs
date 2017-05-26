@@ -10,8 +10,8 @@ namespace Duality.Editor.PackageManagement
 	/// </summary>
 	public sealed class LocalPackage
 	{
-		private PackageName packageName = PackageName.None;
-		private PackageInfo info        = null;
+		private PackageName name = PackageName.None;
+		private PackageInfo info = null;
 
 		
 		/// <summary>
@@ -19,16 +19,16 @@ namespace Duality.Editor.PackageManagement
 		/// Note that a local package may be version-invariant to flag itself
 		/// for an update to the newest available version during package verify.
 		/// </summary>
-		public PackageName PackageName
+		public PackageName Name
 		{
-			get { return this.packageName; }
+			get { return this.name; }
 		}
 		/// <summary>
 		/// [GET] The ID of the package.
 		/// </summary>
 		public string Id
 		{
-			get { return this.packageName.Id; }
+			get { return this.name.Id; }
 		}
 		/// <summary>
 		/// [GET] The version of the package. Can be null, in which case the
@@ -36,7 +36,7 @@ namespace Duality.Editor.PackageManagement
 		/// </summary>
 		public Version Version
 		{
-			get { return this.packageName.Version; }
+			get { return this.name.Version; }
 		}
 		/// <summary>
 		/// [GET] A <see cref="PackageInfo"/> representing the locally installed
@@ -51,18 +51,18 @@ namespace Duality.Editor.PackageManagement
 
 		internal LocalPackage(PackageInfo info)
 		{
-			this.packageName = info.PackageName;
+			this.name = info.Name;
 			this.info = info;
 		}
 		internal LocalPackage(PackageName package)
 		{
-			this.packageName = package;
+			this.name = package;
 			this.info = null;
 		}
 
 		public override string ToString()
 		{
-			return string.Format("Local Package '{0}'", this.packageName);
+			return string.Format("Local Package '{0}'", this.name);
 		}
 	}
 }
