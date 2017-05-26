@@ -179,7 +179,7 @@ namespace Duality.Editor.PackageManagement
 			Version oldPackageVersion = localPackage.Version;
 
 			// Determine the exact version that will be installed
-			PackageInfo packageInfo = this.GetPackage(localPackage.PackageName);
+			PackageInfo packageInfo = this.GetPackage(localPackage.Name);
 			if (packageInfo == null)
 			{
 				throw new Exception(string.Format(
@@ -200,7 +200,7 @@ namespace Duality.Editor.PackageManagement
 
 			// Install the package. Won't do anything if the package is already installed.
 			this.manager.PackageInstalled += installListener;
-			this.InstallPackage(localPackage.PackageName, true);
+			this.InstallPackage(localPackage.Name, true);
 			this.manager.PackageInstalled -= installListener;
 
 			// If we didn't install anything, that package was already in the local repo.
@@ -325,7 +325,7 @@ namespace Duality.Editor.PackageManagement
 				{
 					if (otherPackage.Id == uninstallPackage.Id) continue;
 
-					PackageInfo otherPackageInfo = otherPackage.Info ?? this.GetPackage(otherPackage.PackageName);
+					PackageInfo otherPackageInfo = otherPackage.Info ?? this.GetPackage(otherPackage.Name);
 					if (otherPackageInfo == null) continue;
 				
 					this.dependencyWalker.Clear();
@@ -506,7 +506,7 @@ namespace Duality.Editor.PackageManagement
 			LocalPackage[] targetPackages = this.setup.Packages.ToArray();
 			for (int i = 0; i < targetPackages.Length; i++)
 			{
-				PackageInfo update = this.GetPackage(targetPackages[i].PackageName.VersionInvariant);
+				PackageInfo update = this.GetPackage(targetPackages[i].Name.VersionInvariant);
 				if (update.Version <= targetPackages[i].Version) continue;
 				updatePackages.Add(update);
 			}
@@ -588,8 +588,8 @@ namespace Duality.Editor.PackageManagement
 			// Sort packages according to their deep dependency counts
 			packages.StableSort((a, b) =>
 			{
-				int countA = (a == null) ? 0 : this.dependencyWalker.GetDependencyCount(a.PackageName);
-				int countB = (b == null) ? 0 : this.dependencyWalker.GetDependencyCount(b.PackageName);
+				int countA = (a == null) ? 0 : this.dependencyWalker.GetDependencyCount(a.Name);
+				int countB = (b == null) ? 0 : this.dependencyWalker.GetDependencyCount(b.Name);
 				return countA - countB;
 			});
 		}
@@ -602,7 +602,7 @@ namespace Duality.Editor.PackageManagement
 		{
 			// Map each list entry to its PackageInfo
 			PackageInfo[] localInfo = packages
-				.Select(p => p.Info ?? this.GetPackage(p.PackageName))
+				.Select(p => p.Info ?? this.GetPackage(p.Name))
 				.NotNull()
 				.ToArray();
 
@@ -706,10 +706,10 @@ namespace Duality.Editor.PackageManagement
 					return true;
 
 				bool agreed;
-				if (!this.licenseAccepted.TryGetValue(package.PackageName, out agreed) || !agreed)
+				if (!this.licenseAccepted.TryGetValue(package.Name, out agreed) || !agreed)
 				{
 					PackageLicenseAgreementEventArgs args = new PackageLicenseAgreementEventArgs(
-						package.PackageName,
+						package.Name,
 						package.LicenseUrl,
 						package.RequireLicenseAcceptance);
 
@@ -719,7 +719,7 @@ namespace Duality.Editor.PackageManagement
 						DisplayDefaultLicenseAcceptDialog(args);
 
 					agreed = args.IsLicenseAccepted;
-					this.licenseAccepted[package.PackageName] = agreed;
+					this.licenseAccepted[package.Name] = agreed;
 				}
 
 				if (!agreed)
@@ -873,7 +873,7 @@ namespace Duality.Editor.PackageManagement
 
 			// Update local package configuration file
 			PackageName packageName = new PackageName(e.Package.Id, e.Package.Version.Version);
-			this.setup.Packages.RemoveAll(p => p.PackageName == packageName);
+			this.setup.Packages.RemoveAll(p => p.Name == packageName);
 			this.setup.Save(this.env.ConfigFilePath);
 
 			this.OnPackageUninstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));

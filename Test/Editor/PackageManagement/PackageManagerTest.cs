@@ -77,7 +77,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsNotNull(info);
 			Assert.AreEqual(packageSpec.Name.Id, info.Id);
 			Assert.AreEqual(packageSpec.Name.Version, info.Version);
-			Assert.AreEqual(packageSpec.Name, info.PackageName);
+			Assert.AreEqual(packageSpec.Name, info.Name);
 		}
 		[Test] public void GetLatestDualityPackages()
 		{
@@ -636,14 +636,14 @@ namespace Duality.Editor.PackageManagement.Tests
 				foreach (MockPackageSpec package in setup)
 				{
 					PackageInfo packageInfo = packageManager.GetPackage(package.Name);
-					if (packageInfo == null || packageInfo.PackageName != package.Name)
+					if (packageInfo == null || packageInfo.Name != package.Name)
 					{
 						Assert.Inconclusive(
 							"Failed to create the required package setup for the test. Unable to retrieve package '{0}'", 
 							package.Name);
 					}
 
-					packageManager.InstallPackage(packageInfo.PackageName);
+					packageManager.InstallPackage(packageInfo.Name);
 				}
 
 				// Make sure all required packages are really there
@@ -697,7 +697,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				"Number of registered Duality packages in local setup");
 			CollectionAssert.AreEquivalent(
 				expectedSetup.Select(p => p.Name), 
-				actualSetup.Packages.Select(p => p.PackageName),
+				actualSetup.Packages.Select(p => p.Name),
 				"Registered Duality packages in local setup");
 		}
 		private void AssertUpdateSchedule(IEnumerable<MockPackageSpec> installed, IEnumerable<MockPackageSpec> uninstalled)
