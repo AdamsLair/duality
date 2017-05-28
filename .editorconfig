@@ -7,10 +7,6 @@ root = true
 [*]
 indent_style = tab
 
-# Code files
-[*.{cs}]
-indent_size = 4
-
 # Xml project files
 [*.{csproj}]
 indent_style = space
