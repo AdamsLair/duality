@@ -424,33 +424,5 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			return -1;
 		}
-
-		//public void OnMouseDown(System.Windows.Forms.MouseEventArgs e)
-		//{
-		//	if (e.Button == System.Windows.Forms.MouseButtons.Left)
-		//	{
-		//		if (vertexSelector.CurrentVertex.type == RigidBodyEditorSelVertices.VertexType.PosibleSelect)
-		//		{
-		//			vertexSelector.CurrentVertex.type = RigidBodyEditorSelVertices.VertexType.Selected;
-		//		}
-		//		else if (vertexSelector.CurrentVertex.type == RigidBodyEditorSelVertices.VertexType.PosibleNew)
-		//		{
-		//			List<Vector2> temp = vertexSelector.Shape.Vertices.ToList();
-		//			temp.Insert(vertexSelector.CurrentVertex.id, vertexSelector.CurrentVertex.pos);
-		//			vertexSelector.Shape.Vertices = temp.ToArray();
-		//			vertexSelector.CurrentVertex = new RigidBodyEditorSelVertices.VertexInfo();
-		//		}
-		//	}
-		//	else if (e.Button == System.Windows.Forms.MouseButtons.Right)
-		//	{
-		//		if (vertexSelector.CurrentVertex.type == RigidBodyEditorSelVertices.VertexType.Selected)
-		//		{
-		//			List<Vector2> temp = vertexSelector.Shape.Vertices.ToList();
-		//			temp.RemoveAt(vertexSelector.CurrentVertex.id);
-		//			vertexSelector.Shape.Vertices = temp.ToArray();
-		//			vertexSelector.CurrentVertex = new RigidBodyEditorSelVertices.VertexInfo();
-		//		}
-		//	}
-		//}
 	}
 }
