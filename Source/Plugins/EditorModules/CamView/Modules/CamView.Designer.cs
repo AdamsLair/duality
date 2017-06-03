@@ -72,10 +72,10 @@
 			this.focusDist.BackColor = System.Drawing.Color.Transparent;
 			this.focusDist.DecimalPlaces = 2;
 			this.focusDist.Maximum = new decimal(new int[] {
-			100000,
-			0,
-			0,
-			0});
+            100000,
+            0,
+            0,
+            0});
 			this.focusDist.Name = "focusDist";
 			this.focusDist.NumBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.focusDist.NumericWidth = 75;
@@ -83,10 +83,10 @@
 			this.focusDist.Text = "RefDist";
 			this.focusDist.ToolTipText = "Adjust the Cameras reference distance";
 			this.focusDist.Value = new decimal(new int[] {
-			500,
-			0,
-			0,
-			0});
+            500,
+            0,
+            0,
+            0});
 			this.focusDist.ValueChanged += new System.EventHandler(this.focusDist_ValueChanged);
 			// 
 			// toolStripSeparator2
@@ -115,17 +115,17 @@
 			this.toolbarCamera.GripMargin = new System.Windows.Forms.Padding(0);
 			this.toolbarCamera.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolbarCamera.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.stateSelector,
-			this.layerSelector,
-			this.objectVisibilitySelector,
-			this.toolStripSeparator1,
-			this.buttonResetZoom,
-			this.perspectiveDropDown,
-			this.focusDist,
-			this.toolStripSeparator2,
-			this.showBgColorDialog,
-			this.camSelector,
-			this.snapToGridSelector});
+            this.stateSelector,
+            this.layerSelector,
+            this.objectVisibilitySelector,
+            this.toolStripSeparator1,
+            this.buttonResetZoom,
+            this.perspectiveDropDown,
+            this.focusDist,
+            this.toolStripSeparator2,
+            this.showBgColorDialog,
+            this.camSelector,
+            this.snapToGridSelector});
 			this.toolbarCamera.Location = new System.Drawing.Point(0, 0);
 			this.toolbarCamera.Name = "toolbarCamera";
 			this.toolbarCamera.Size = new System.Drawing.Size(651, 25);
@@ -191,12 +191,12 @@
 			// 
 			this.snapToGridSelector.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.snapToGridSelector.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.snapToGridInactiveItem,
-			this.snapToGridPixelPerfectItem,
-			this.snapToGrid16Item,
-			this.snapToGrid32Item,
-			this.snapToGrid64Item,
-			this.snapToGridCustomItem});
+            this.snapToGridInactiveItem,
+            this.snapToGridPixelPerfectItem,
+            this.snapToGrid16Item,
+            this.snapToGrid32Item,
+            this.snapToGrid64Item,
+            this.snapToGridCustomItem});
 			this.snapToGridSelector.Image = global::Duality.Editor.Plugins.CamView.Properties.Resources.SnapToGrid;
 			this.snapToGridSelector.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.snapToGridSelector.Name = "snapToGridSelector";

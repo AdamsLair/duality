@@ -7,7 +7,7 @@ using Duality;
 
 namespace DualStickSpaceShooter
 {
-	public class DualStickSpaceShooterCorePlugin : CorePlugin
+    public class DualStickSpaceShooterCorePlugin : CorePlugin
 	{
 		private bool contentLoaded = false;
 		protected override void OnBeforeUpdate()

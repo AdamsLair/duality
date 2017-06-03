@@ -36,13 +36,13 @@ namespace Duality.Editor
 			FromLast
 		}
 
-		private static List<UndoRedoAction> actionStack		= new List<UndoRedoAction>();
-		private static int				  actionIndex		= -1;
-		private static string			   macroName		  = null;
-		private static int				  macroBeginCount	= 0;
-		private static List<UndoRedoAction> macroList		  = new List<UndoRedoAction>();
-		private static int				  maxActions		 = 50;
-		private static bool				 lastActionFinished = false;
+		private static List<UndoRedoAction> actionStack        = new List<UndoRedoAction>();
+		private static int                  actionIndex        = -1;
+		private static string               macroName          = null;
+		private static int                  macroBeginCount    = 0;
+		private static List<UndoRedoAction> macroList          = new List<UndoRedoAction>();
+		private static int                  maxActions         = 50;
+		private static bool                 lastActionFinished = false;
 
 
 		/// <summary>

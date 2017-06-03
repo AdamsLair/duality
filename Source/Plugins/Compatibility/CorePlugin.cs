@@ -6,5 +6,5 @@ namespace Duality.Plugins.Compatibility
 	/// <summary>
 	/// Defines the dynamic lighting core plugin.
 	/// </summary>
-	public class ResourceVersionCompatibilityCorePlugin : CorePlugin {}
+    public class ResourceVersionCompatibilityCorePlugin : CorePlugin {}
 }

@@ -17,11 +17,11 @@ namespace Duality.Components.Physics
 	public abstract class ShapeInfo
 	{
 		[CloneBehavior(CloneBehavior.WeakReference)]
-		private RigidBody parent	  = null;
-		protected float   density	 = 1.0f;
-		protected float   friction	= 0.3f;
+		private RigidBody parent      = null;
+		protected float   density     = 1.0f;
+		protected float   friction    = 0.3f;
 		protected float   restitution = 0.3f;
-		protected bool	sensor	  = false;
+		protected bool    sensor      = false;
 			
 		/// <summary>
 		/// [GET] The shape's parent <see cref="RigidBody"/>.

@@ -43,7 +43,7 @@
 			// labelHeader
 			// 
 			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelHeader.Location = new System.Drawing.Point(69, 9);
 			this.labelHeader.Margin = new System.Windows.Forms.Padding(0);
@@ -67,20 +67,20 @@
 			// labelDialogDesc
 			// 
 			this.labelDialogDesc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelDialogDesc.Location = new System.Drawing.Point(69, 36);
 			this.labelDialogDesc.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
 			this.labelDialogDesc.Name = "labelDialogDesc";
 			this.labelDialogDesc.Size = new System.Drawing.Size(213, 40);
 			this.labelDialogDesc.TabIndex = 17;
 			this.labelDialogDesc.Text = "This is probably the first time you\'re working with Duality - so here are some th" +
-	"ings that might help you get started.";
+    "ings that might help you get started.";
 			// 
 			// actionList
 			// 
 			this.actionList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.actionList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.actionList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.actionList.ColumnHeaderHeight = 1;
@@ -148,7 +148,7 @@
 			// labelReOpenDesc
 			// 
 			this.labelReOpenDesc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelReOpenDesc.Location = new System.Drawing.Point(9, 301);
 			this.labelReOpenDesc.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
 			this.labelReOpenDesc.Name = "labelReOpenDesc";

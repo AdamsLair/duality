@@ -13,12 +13,12 @@ namespace Duality.Plugins.Tilemaps
 	/// </summary>
 	public class TilesetAutoTileInput
 	{
-		public static readonly string DefaultName	= "AutoTile";
-		public static readonly string DefaultId	  = "autoTile";
+		public static readonly string DefaultName    = "AutoTile";
+		public static readonly string DefaultId      = "autoTile";
 
-		private string name				 = DefaultName;
-		private string id				   = DefaultId;
-		private int	baseTile			 = -1;
+		private string name                 = DefaultName;
+		private string id                   = DefaultId;
+		private int    baseTile             = -1;
 		private RawList<TilesetAutoTileItem> tiles = new RawList<TilesetAutoTileItem>();
 		
 		/// <summary>

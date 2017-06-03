@@ -7,5 +7,5 @@ using Duality;
 
 namespace Duality.Samples.Tilemaps
 {
-	public class TilemapsSampleCorePlugin : CorePlugin {}
+    public class TilemapsSampleCorePlugin : CorePlugin {}
 }

@@ -59,15 +59,15 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			MenuModelItem fileItem = main.MainMenu.RequestItem(GeneralRes.MenuName_File);
 			fileItem.AddItem(new MenuModelItem
 			{
-				Name = PackageManagerFrontendRes.MenuItemName_PackageView,
-				Icon = PackageManagerFrontendResCache.IconPackage.ToBitmap(),
-				ActionHandler = this.menuItemManagePackages_Click
+			    Name = PackageManagerFrontendRes.MenuItemName_PackageView,
+			    Icon = PackageManagerFrontendResCache.IconPackage.ToBitmap(),
+			    ActionHandler = this.menuItemManagePackages_Click
 			});
 			MenuModelItem helpItem = main.MainMenu.RequestItem(GeneralRes.MenuName_Help);
 			helpItem.AddItem(new MenuModelItem
 			{
-				Name = PackageManagerFrontendRes.MenuItemName_BrowseSamples,
-				ActionHandler = this.menuItemBrowseSamples_Click
+			    Name = PackageManagerFrontendRes.MenuItemName_BrowseSamples,
+			    ActionHandler = this.menuItemBrowseSamples_Click
 			});
 		}
 		

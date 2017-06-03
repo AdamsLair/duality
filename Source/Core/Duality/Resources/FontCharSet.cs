@@ -12,15 +12,15 @@ namespace Duality.Resources
 	public class FontCharSet
 	{
 		public static readonly FontCharSet Default = new FontCharSet(
-			chars:			 "? abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,;.:-_<>|#'+*~@^°!\"§$%&/()=`²³{[]}\\´öäüÖÄÜß",
+			chars:             "? abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,;.:-_<>|#'+*~@^°!\"§$%&/()=`²³{[]}\\´öäüÖÄÜß",
 			charBaseLineRef:   "acemnorsuvwxz",
-			charDescentRef:	"pqgjyQ|",
+			charDescentRef:    "pqgjyQ|",
 			charBodyAscentRef: "acemnorsuvwxz"
 		);
 
-		private string chars			 = string.Empty;
+		private string chars             = string.Empty;
 		private string charBaseLineRef   = string.Empty;
-		private string charDescentRef	= string.Empty;
+		private string charDescentRef    = string.Empty;
 		private string charBodyAscentRef = string.Empty;
 
 		/// <summary>
@@ -70,9 +70,9 @@ namespace Duality.Resources
 		public FontCharSet MergedWith(FontCharSet second)
 		{
 			return new FontCharSet(
-				chars:			 MergeCharList(this.chars,			 (second != null) ? second.chars			 : null),
+				chars:             MergeCharList(this.chars,             (second != null) ? second.chars             : null),
 				charBaseLineRef:   MergeCharList(this.charBaseLineRef,   (second != null) ? second.charBaseLineRef   : null),
-				charDescentRef:	MergeCharList(this.charDescentRef,	(second != null) ? second.charDescentRef	: null),
+				charDescentRef:    MergeCharList(this.charDescentRef,    (second != null) ? second.charDescentRef    : null),
 				charBodyAscentRef: MergeCharList(this.charBodyAscentRef, (second != null) ? second.charBodyAscentRef : null)
 			);
 		}

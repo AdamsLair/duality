@@ -14,8 +14,8 @@ namespace Duality.Editor.UndoRedoActions
 {
 	public class CreateComponentAction : ComponentAction
 	{
-		private List<Component> backupObj		= null;
-		private GameObject	  targetParentObj  = null;
+		private List<Component> backupObj        = null;
+		private GameObject      targetParentObj  = null;
 
 
 		protected override string NameBase

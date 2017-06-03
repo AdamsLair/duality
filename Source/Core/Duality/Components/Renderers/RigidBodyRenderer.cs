@@ -19,15 +19,15 @@ namespace Duality.Components.Renderers
 	[EditorHintImage(CoreResNames.ImageRigidBodyRenderer)]
 	public class RigidBodyRenderer : Renderer
 	{
-		private ContentRef<Material> areaMaterial		  = Material.Checkerboard;
-		private ContentRef<Material> outlineMaterial	   = Material.SolidWhite;
-		private BatchInfo			customAreaMaterial	= null;
-		private BatchInfo			customOutlineMaterial = null;
-		private ColorRgba			colorTint			 = ColorRgba.White;
-		private float				outlineWidth		  = 3.0f;
-		private int				  offset				= 0;
-		private bool				 fillHollowShapes	  = false;
-		private bool				 wrapTexture		   = true;
+		private ContentRef<Material> areaMaterial          = Material.Checkerboard;
+		private ContentRef<Material> outlineMaterial       = Material.SolidWhite;
+		private BatchInfo            customAreaMaterial    = null;
+		private BatchInfo            customOutlineMaterial = null;
+		private ColorRgba            colorTint             = ColorRgba.White;
+		private float                outlineWidth          = 3.0f;
+		private int                  offset                = 0;
+		private bool                 fillHollowShapes      = false;
+		private bool                 wrapTexture           = true;
 
 		[DontSerialize] private CanvasBuffer vertexBuffer = new CanvasBuffer();
 
@@ -165,7 +165,7 @@ namespace Duality.Components.Renderers
 		private void DrawShapeArea(Canvas canvas, Transform transform, ShapeInfo shape)
 		{
 			canvas.PushState();
-			if	  (shape is CircleShapeInfo)						 this.DrawShapeArea(canvas, transform, shape as CircleShapeInfo);
+			if      (shape is CircleShapeInfo)                         this.DrawShapeArea(canvas, transform, shape as CircleShapeInfo);
 			else if (shape is LoopShapeInfo && this.fillHollowShapes)  this.DrawShapeArea(canvas, transform, (shape as LoopShapeInfo).Vertices);
 			else if (shape is ChainShapeInfo && this.fillHollowShapes) this.DrawShapeArea(canvas, transform, (shape as ChainShapeInfo).Vertices);
 			else if (shape is PolyShapeInfo)
@@ -245,7 +245,7 @@ namespace Duality.Components.Renderers
 		private void DrawShapeOutline(Canvas canvas, Transform transform, ShapeInfo shape)
 		{
 			canvas.PushState();
-			if	  (shape is CircleShapeInfo) this.DrawShapeOutline(canvas, transform, shape as CircleShapeInfo);
+			if      (shape is CircleShapeInfo) this.DrawShapeOutline(canvas, transform, shape as CircleShapeInfo);
 			else if (shape is PolyShapeInfo)   this.DrawShapeOutline(canvas, transform, (shape as PolyShapeInfo).Vertices, true);
 			else if (shape is LoopShapeInfo)   this.DrawShapeOutline(canvas, transform, (shape as LoopShapeInfo).Vertices, true);
 			else if (shape is ChainShapeInfo)  this.DrawShapeOutline(canvas, transform, (shape as ChainShapeInfo).Vertices, false);

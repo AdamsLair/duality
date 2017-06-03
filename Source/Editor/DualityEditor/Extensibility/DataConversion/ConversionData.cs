@@ -10,7 +10,7 @@ namespace Duality.Editor
 {
 	public class ConversionData : IDataObject
 	{
-		private	IDataObject data	  = null;
+		private	IDataObject data      = null;
 		private	DataObject  dataCache = new DataObject();
 
 		public ConversionData(IDataObject data)

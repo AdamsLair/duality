@@ -143,7 +143,7 @@ namespace Duality
 				float m11 = Row0.X, m12 = Row0.Y, m13 = Row0.Z,
 				m21 = Row1.X, m22 = Row1.Y, m23 = Row1.Z,
 				m31 = Row2.X, m32 = Row2.Y, m33 = Row2.Z;
-				
+                
 				return m11 * m22 * m33 + m12 * m23 * m31 + m13 * m21 * m32
 						- m13 * m22 * m31 - m11 * m23 * m32 - m12 * m21 * m33;
 			}
@@ -364,12 +364,12 @@ namespace Duality
 			//normalize and create a local copy of the vector.
 			axis.Normalize();
 			float axisX = axis.X, axisY = axis.Y, axisZ = axis.Z;
-			
+            
 			//calculate angles
 			float cos = (float)System.Math.Cos(-angle);
 			float sin = (float)System.Math.Sin(-angle);
 			float t = 1.0f - cos;
-			
+            
 			//do the conversion math once
 			float tXX = t * axisX * axisX,
 			tXY = t * axisX * axisY,
@@ -377,11 +377,11 @@ namespace Duality
 			tYY = t * axisY * axisY,
 			tYZ = t * axisY * axisZ,
 			tZZ = t * axisZ * axisZ;
-			
+            
 			float sinX = sin * axisX,
 			sinY = sin * axisY,
 			sinZ = sin * axisZ;
-			
+            
 			result.Row0.X = tXX + cos;
 			result.Row0.Y = tXY - sinZ;
 			result.Row0.Z = tXZ + sinY;
@@ -438,7 +438,7 @@ namespace Duality
 		{
 			float cos = (float)System.Math.Cos(angle);
 			float sin = (float)System.Math.Sin(angle);
-			
+            
 			result = Identity;
 			result.Row1.Y = cos;
 			result.Row1.Z = sin;
@@ -466,7 +466,7 @@ namespace Duality
 		{
 			float cos = (float)System.Math.Cos(angle);
 			float sin = (float)System.Math.Sin(angle);
-			
+            
 			result = Identity;
 			result.Row0.X = cos;
 			result.Row0.Z = -sin;
@@ -494,7 +494,7 @@ namespace Duality
 		{
 			float cos = (float)System.Math.Cos(angle);
 			float sin = (float)System.Math.Sin(angle);
-			
+            
 			result = Identity;
 			result.Row0.X = cos;
 			result.Row0.Y = sin;
@@ -512,7 +512,7 @@ namespace Duality
 			CreateRotationZ(angle, out result);
 			return result;
 		}
-		
+        
 		/// <summary>
 		/// Creates a scale matrix.
 		/// </summary>
@@ -613,7 +613,7 @@ namespace Duality
 			rM11 = right.Row0.X, rM12 = right.Row0.Y, rM13 = right.Row0.Z,
 			rM21 = right.Row1.X, rM22 = right.Row1.Y, rM23 = right.Row1.Z,
 			rM31 = right.Row2.X, rM32 = right.Row2.Y, rM33 = right.Row2.Z;
-			
+            
 			result.Row0.X = ((lM11 * rM11) + (lM12 * rM21)) + (lM13 * rM31);
 			result.Row0.Y = ((lM11 * rM12) + (lM12 * rM22)) + (lM13 * rM32);
 			result.Row0.Z = ((lM11 * rM13) + (lM12 * rM23)) + (lM13 * rM33);
@@ -636,11 +636,11 @@ namespace Duality
 			int[] colIdx = { 0, 0, 0 };
 			int[] rowIdx = { 0, 0, 0 };
 			int[] pivotIdx = { -1, -1, -1 };
-			
+            
 			float[,] inverse = {{mat.Row0.X, mat.Row0.Y, mat.Row0.Z},
 				{mat.Row1.X, mat.Row1.Y, mat.Row1.Z},
 				{mat.Row2.X, mat.Row2.Y, mat.Row2.Z}};
-			
+            
 			int icol = 0;
 			int irow = 0;
 			for (int i = 0; i < 3; i++)
@@ -670,9 +670,9 @@ namespace Duality
 						}
 					}
 				}
-				
+                
 				++(pivotIdx[icol]);
-				
+                
 				if (irow != icol)
 				{
 					for (int k = 0; k < 3; ++k)
@@ -682,22 +682,22 @@ namespace Duality
 						inverse[icol, k] = f;
 					}
 				}
-				
+                
 				rowIdx[i] = irow;
 				colIdx[i] = icol;
-				
+                
 				float pivot = inverse[icol, icol];
-				
+                
 				if (pivot == 0.0f)
 				{
 					throw new InvalidOperationException("Matrix is singular and cannot be inverted.");
 				}
-				
+                
 				float oneOverPivot = 1.0f / pivot;
 				inverse[icol, icol] = 1.0f;
 				for (int k = 0; k < 3; ++k)
 					inverse[icol, k] *= oneOverPivot;
-				
+                
 				for (int j = 0; j < 3; ++j)
 				{
 					if (icol != j)
@@ -709,7 +709,7 @@ namespace Duality
 					}
 				}
 			}
-			
+            
 			for (int j = 2; j >= 0; --j)
 			{
 				int ir = rowIdx[j];
@@ -721,7 +721,7 @@ namespace Duality
 					inverse[k, ic] = f;
 				}
 			}
-			
+            
 			result.Row0.X = inverse[0, 0];
 			result.Row0.Y = inverse[0, 1];
 			result.Row0.Z = inverse[0, 2];
@@ -803,7 +803,7 @@ namespace Duality
 		{
 			return !left.Equals(right);
 		}
-		
+        
 		/// <summary>
 		/// Returns a System.String that represents the current Matrix3d.
 		/// </summary>
@@ -829,7 +829,7 @@ namespace Duality
 		{
 			if (!(obj is Matrix3))
 				return false;
-			
+            
 			return this.Equals((Matrix3)obj);
 		}
 		/// <summary>

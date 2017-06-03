@@ -181,19 +181,19 @@
 			this.mainToolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.mainToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.actionSaveAll,
-			this.toolStripSeparator1,
-			this.actionOpenCode,
-			this.toolStripSeparator2,
-			this.actionRunApp,
-			this.actionDebugApp,
-			this.toolStripSeparator3,
-			this.actionRunSandbox,
-			this.actionStepSandbox,
-			this.actionPauseSandbox,
-			this.actionStopSandbox,
-			this.splitButtonBackupSettings,
-			this.selectFormattingMethod});
+            this.actionSaveAll,
+            this.toolStripSeparator1,
+            this.actionOpenCode,
+            this.toolStripSeparator2,
+            this.actionRunApp,
+            this.actionDebugApp,
+            this.toolStripSeparator3,
+            this.actionRunSandbox,
+            this.actionStepSandbox,
+            this.actionPauseSandbox,
+            this.actionStopSandbox,
+            this.splitButtonBackupSettings,
+            this.selectFormattingMethod});
 			this.mainToolStrip.Location = new System.Drawing.Point(0, 24);
 			this.mainToolStrip.Name = "mainToolStrip";
 			this.mainToolStrip.Size = new System.Drawing.Size(916, 25);
@@ -307,8 +307,8 @@
 			this.splitButtonBackupSettings.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.splitButtonBackupSettings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.splitButtonBackupSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.checkBackups,
-			this.menuAutosave});
+            this.checkBackups,
+            this.menuAutosave});
 			this.splitButtonBackupSettings.Image = global::Duality.Editor.Properties.Resources.drive_disk;
 			this.splitButtonBackupSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.splitButtonBackupSettings.Name = "splitButtonBackupSettings";
@@ -329,10 +329,10 @@
 			// menuAutosave
 			// 
 			this.menuAutosave.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.optionAutosaveDisabled,
-			this.optionAutosaveTenMinutes,
-			this.optionAutosaveThirtyMinutes,
-			this.optionAutoSaveOneHour});
+            this.optionAutosaveDisabled,
+            this.optionAutosaveTenMinutes,
+            this.optionAutosaveThirtyMinutes,
+            this.optionAutoSaveOneHour});
 			this.menuAutosave.Name = "menuAutosave";
 			this.menuAutosave.Size = new System.Drawing.Size(123, 22);
 			this.menuAutosave.Text = "Autosave";

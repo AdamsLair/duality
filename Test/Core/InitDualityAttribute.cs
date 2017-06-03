@@ -84,8 +84,8 @@ namespace Duality.Tests
 			{
 				ContentProvider.ClearContent();
 				ContentProvider.DisposeDefaultContent();
-				this.dummyWindow.Dispose();
-				this.dummyWindow = null;
+			    this.dummyWindow.Dispose();
+			    this.dummyWindow = null;
 			}
 
 			// Save local testing memory. As this uses Duality serializers, 

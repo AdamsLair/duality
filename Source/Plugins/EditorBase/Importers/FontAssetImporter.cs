@@ -67,11 +67,11 @@ namespace Duality.Editor.Plugins.Base
 					DualityFont target = targetRef.Res;
 
 					// Retrieve import parameters
-					float	   size			= env.GetOrInitParameter(targetRef, "Size"		   , 16.0f			);
-					FontStyle   style		   = env.GetOrInitParameter(targetRef, "Style"		  , FontStyle.Regular);
-					string	  extendedCharSet = env.GetOrInitParameter(targetRef, "ExtendedCharSet", string.Empty	 );
-					bool		antialiasing	= env.GetOrInitParameter(targetRef, "AntiAlias"	  , true			 );
-					bool		monospace	   = env.GetOrInitParameter(targetRef, "Monospace"	  , false			);
+					float       size            = env.GetOrInitParameter(targetRef, "Size"           , 16.0f            );
+					FontStyle   style           = env.GetOrInitParameter(targetRef, "Style"          , FontStyle.Regular);
+					string      extendedCharSet = env.GetOrInitParameter(targetRef, "ExtendedCharSet", string.Empty     );
+					bool        antialiasing    = env.GetOrInitParameter(targetRef, "AntiAlias"      , true             );
+					bool        monospace       = env.GetOrInitParameter(targetRef, "Monospace"      , false            );
 
 					// Load the TrueType Font and render all the required glyphs
 					byte[] trueTypeData = File.ReadAllBytes(input.Path);
@@ -389,11 +389,11 @@ namespace Duality.Editor.Plugins.Base
 
 			// Aggregate rendered and generated data into our return value
 			FontMetrics metrics = new FontMetrics(
-				size:	   internalFont.SizeInPoints,
-				height:	 (int)internalFont.Height, 
-				ascent:	 ascent, 
+				size:       internalFont.SizeInPoints,
+				height:     (int)internalFont.Height, 
+				ascent:     ascent, 
 				bodyAscent: bodyAscent, 
-				descent:	descent, 
+				descent:    descent, 
 				baseLine:   baseLine,
 				monospace:  monospace);
 			return new RenderedFontData

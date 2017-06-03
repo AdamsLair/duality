@@ -30,9 +30,9 @@ namespace Duality.Components.Physics
 				PostSolve
 			}
 
-			public EventType	 Type;
-			public Fixture	   FixtureA;
-			public Fixture	   FixtureB;
+			public EventType     Type;
+			public Fixture       FixtureA;
+			public Fixture       FixtureB;
 			public CollisionData Data;
 
 			public ColEvent(EventType type, Fixture fxA, Fixture fxB, CollisionData data)
@@ -45,31 +45,31 @@ namespace Duality.Components.Physics
 		}
 
 
-		private BodyType bodyType		= BodyType.Dynamic;
-		private float	linearDamp	  = 0.3f;
-		private float	angularDamp	 = 0.3f;
-		private bool	 fixedAngle	  = false;
-		private bool	 ignoreGravity   = false;
-		private bool	 continous	   = false;
-		private Vector2  linearVel	   = Vector2.Zero;
-		private float	angularVel	  = 0.0f;
-		private float	revolutions	 = 0.0f;
-		private float	explicitMass	= 0.0f;
-		private float	explicitInertia = 0.0f;
-		private CollisionCategory colCat	= CollisionCategory.Cat1;
+		private BodyType bodyType        = BodyType.Dynamic;
+		private float    linearDamp      = 0.3f;
+		private float    angularDamp     = 0.3f;
+		private bool     fixedAngle      = false;
+		private bool     ignoreGravity   = false;
+		private bool     continous       = false;
+		private Vector2  linearVel       = Vector2.Zero;
+		private float    angularVel      = 0.0f;
+		private float    revolutions     = 0.0f;
+		private float    explicitMass    = 0.0f;
+		private float    explicitInertia = 0.0f;
+		private CollisionCategory colCat    = CollisionCategory.Cat1;
 		private CollisionCategory colWith   = CollisionCategory.All;
 		private CollisionFilter   colFilter = null;
-		private List<ShapeInfo>   shapes	= null;
-		private List<JointInfo>   joints	= null;
+		private List<ShapeInfo>   shapes    = null;
+		private List<JointInfo>   joints    = null;
 
-		[DontSerialize] private float	 lastScale			 = 1.0f;
-		[DontSerialize] private InitState bodyInitState		 = InitState.Disposed;
-		[DontSerialize] private bool	  schedUpdateBody	   = false;
-		[DontSerialize] private bool	  enableBodyAfterUpdate = false;
-		[DontSerialize] private bool	  isUpdatingBody		= false;
-		[DontSerialize] private bool	  isProcessingEvents	= false;
-		[DontSerialize] private Body	  body				  = null;
-		[DontSerialize] private List<ColEvent> eventBuffer	  = new List<ColEvent>();
+		[DontSerialize] private float     lastScale             = 1.0f;
+		[DontSerialize] private InitState bodyInitState         = InitState.Disposed;
+		[DontSerialize] private bool      schedUpdateBody       = false;
+		[DontSerialize] private bool      enableBodyAfterUpdate = false;
+		[DontSerialize] private bool      isUpdatingBody        = false;
+		[DontSerialize] private bool      isProcessingEvents    = false;
+		[DontSerialize] private Body      body                  = null;
+		[DontSerialize] private List<ColEvent> eventBuffer      = new List<ColEvent>();
 
 
 		internal Body PhysicsBody
@@ -834,7 +834,7 @@ namespace Duality.Components.Physics
 			if (this.body == null) return;
 
 			this.body.ResetMassData();
-			if (this.explicitMass	> 0.0f) this.body.Mass	= PhysicsUnit.MassToPhysical	* this.explicitMass;
+			if (this.explicitMass    > 0.0f) this.body.Mass    = PhysicsUnit.MassToPhysical    * this.explicitMass;
 			if (this.explicitInertia > 0.0f) this.body.Inertia = PhysicsUnit.InertiaToPhysical * this.explicitInertia;
 		}
 

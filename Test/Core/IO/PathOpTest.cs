@@ -119,20 +119,20 @@ namespace Duality.Tests.IO
 			{
 				var tester = CreatePermutationTester(s => PathOp.GetDirectoryName(s));
 				tester.AssertEqual(string.Empty,  @"C:");
-				tester.AssertEqual(@"C:",		 @"C:\");
+				tester.AssertEqual(@"C:",         @"C:\");
 				tester.AssertEqual(string.Empty,  @"File");
 				tester.AssertEqual(string.Empty,  @"File.ext");
 				tester.AssertEqual(string.Empty,  @"File.multi.ext");
-				tester.AssertEqual(@"C:",		 @"C:\Folder");
+				tester.AssertEqual(@"C:",         @"C:\Folder");
 				tester.AssertEqual(@"C:\Folder",  @"C:\Folder\");
 				tester.AssertEqual(@"C:\Folder",  @"C:\Folder\File.ext");
 				tester.AssertEqual(@"C:\Folder",  @"C:\Folder\File.multi.ext");
-				tester.AssertEqual(@"\Folder",	@"\Folder\");
-				tester.AssertEqual(@"\Folder",	@"\Folder\File.ext");
-				tester.AssertEqual(@"Folder",	 @"Folder\File.ext");
+				tester.AssertEqual(@"\Folder",    @"\Folder\");
+				tester.AssertEqual(@"\Folder",    @"\Folder\File.ext");
+				tester.AssertEqual(@"Folder",     @"Folder\File.ext");
 				tester.AssertEqual(@"Folder.txt", @"Folder.txt\File.ext");
-				tester.AssertEqual(@"\Folder",	@"\Folder\File.multi.ext");
-				tester.AssertEqual(@"Folder",	 @"Folder\File.multi.ext");
+				tester.AssertEqual(@"\Folder",    @"\Folder\File.multi.ext");
+				tester.AssertEqual(@"Folder",     @"Folder\File.multi.ext");
 				tester.AssertEqual(@"Folder.txt", @"Folder.txt\File.multi.ext");
 			}
 
@@ -152,19 +152,19 @@ namespace Duality.Tests.IO
 			// Retrieving file names from various paths
 			{
 				var tester = CreatePermutationTester(s => PathOp.GetFileName(s));
-				tester.AssertEqual(@"C:",			 @"C:");
-				tester.AssertEqual(string.Empty,	  @"C:\");
-				tester.AssertEqual(@"File",		   @"File");
-				tester.AssertEqual(@"File.ext",	   @"File.ext");
+				tester.AssertEqual(@"C:",             @"C:");
+				tester.AssertEqual(string.Empty,      @"C:\");
+				tester.AssertEqual(@"File",           @"File");
+				tester.AssertEqual(@"File.ext",       @"File.ext");
 				tester.AssertEqual(@"File.multi.ext", @"File.multi.ext");
-				tester.AssertEqual(@"Folder",		 @"C:\Folder");
-				tester.AssertEqual(string.Empty,	  @"C:\Folder\");
-				tester.AssertEqual(@"File.ext",	   @"C:\Folder\File.ext");
+				tester.AssertEqual(@"Folder",         @"C:\Folder");
+				tester.AssertEqual(string.Empty,      @"C:\Folder\");
+				tester.AssertEqual(@"File.ext",       @"C:\Folder\File.ext");
 				tester.AssertEqual(@"File.multi.ext", @"C:\Folder\File.multi.ext");
-				tester.AssertEqual(string.Empty,	  @"\Folder\");
-				tester.AssertEqual(@"File.ext",	   @"\Folder\File.ext");
-				tester.AssertEqual(@"File.ext",	   @"Folder\File.ext");
-				tester.AssertEqual(@"File.ext",	   @"Folder.txt\File.ext");
+				tester.AssertEqual(string.Empty,      @"\Folder\");
+				tester.AssertEqual(@"File.ext",       @"\Folder\File.ext");
+				tester.AssertEqual(@"File.ext",       @"Folder\File.ext");
+				tester.AssertEqual(@"File.ext",       @"Folder.txt\File.ext");
 				tester.AssertEqual(@"File.multi.ext", @"\Folder\File.multi.ext");
 				tester.AssertEqual(@"File.multi.ext", @"Folder\File.multi.ext");
 				tester.AssertEqual(@"File.multi.ext", @"Folder.txt\File.multi.ext");
@@ -186,19 +186,19 @@ namespace Duality.Tests.IO
 			// Retrieving filenames without extensions from various paths
 			{
 				var tester = CreatePermutationTester(s => PathOp.GetFileNameWithoutExtension(s));
-				tester.AssertEqual(@"C:",		 @"C:");
+				tester.AssertEqual(@"C:",         @"C:");
 				tester.AssertEqual(string.Empty,  @"C:\");
-				tester.AssertEqual(@"File",	   @"File");
-				tester.AssertEqual(@"File",	   @"File.ext");
+				tester.AssertEqual(@"File",       @"File");
+				tester.AssertEqual(@"File",       @"File.ext");
 				tester.AssertEqual(@"File.multi", @"File.multi.ext");
-				tester.AssertEqual(@"Folder",	 @"C:\Folder");
+				tester.AssertEqual(@"Folder",     @"C:\Folder");
 				tester.AssertEqual(string.Empty,  @"C:\Folder\");
-				tester.AssertEqual(@"File",	   @"C:\Folder\File.ext");
+				tester.AssertEqual(@"File",       @"C:\Folder\File.ext");
 				tester.AssertEqual(@"File.multi", @"C:\Folder\File.multi.ext");
 				tester.AssertEqual(string.Empty,  @"\Folder\");
-				tester.AssertEqual(@"File",	   @"\Folder\File.ext");
-				tester.AssertEqual(@"File",	   @"Folder\File.ext");
-				tester.AssertEqual(@"File",	   @"Folder.txt\File.ext");
+				tester.AssertEqual(@"File",       @"\Folder\File.ext");
+				tester.AssertEqual(@"File",       @"Folder\File.ext");
+				tester.AssertEqual(@"File",       @"Folder.txt\File.ext");
 				tester.AssertEqual(@"File.multi", @"\Folder\File.multi.ext");
 				tester.AssertEqual(@"File.multi", @"Folder\File.multi.ext");
 				tester.AssertEqual(@"File.multi", @"Folder.txt\File.multi.ext");
@@ -223,19 +223,19 @@ namespace Duality.Tests.IO
 				tester.AssertEqual(string.Empty,  @"C:");
 				tester.AssertEqual(string.Empty,  @"C:\");
 				tester.AssertEqual(string.Empty,  @"File");
-				tester.AssertEqual(@".ext",	   @"File.ext");
-				tester.AssertEqual(@".ext",	   @"File.multi.ext");
+				tester.AssertEqual(@".ext",       @"File.ext");
+				tester.AssertEqual(@".ext",       @"File.multi.ext");
 				tester.AssertEqual(string.Empty,  @"C:\Folder");
 				tester.AssertEqual(string.Empty,  @"C:\Folder\");
-				tester.AssertEqual(@".ext",	   @"C:\Folder\File.ext");
-				tester.AssertEqual(@".ext",	   @"C:\Folder\File.multi.ext");
+				tester.AssertEqual(@".ext",       @"C:\Folder\File.ext");
+				tester.AssertEqual(@".ext",       @"C:\Folder\File.multi.ext");
 				tester.AssertEqual(string.Empty,  @"\Folder\");
-				tester.AssertEqual(@".ext",	   @"\Folder\File.ext");
-				tester.AssertEqual(@".ext",	   @"Folder\File.ext");
-				tester.AssertEqual(@".ext",	   @"Folder.txt\File.ext");
-				tester.AssertEqual(@".ext",	   @"\Folder\File.multi.ext");
-				tester.AssertEqual(@".ext",	   @"Folder\File.multi.ext");
-				tester.AssertEqual(@".ext",	   @"Folder.txt\File.multi.ext");
+				tester.AssertEqual(@".ext",       @"\Folder\File.ext");
+				tester.AssertEqual(@".ext",       @"Folder\File.ext");
+				tester.AssertEqual(@".ext",       @"Folder.txt\File.ext");
+				tester.AssertEqual(@".ext",       @"\Folder\File.multi.ext");
+				tester.AssertEqual(@".ext",       @"Folder\File.multi.ext");
+				tester.AssertEqual(@".ext",       @"Folder.txt\File.multi.ext");
 			}
 
 			// Null and empty paths
@@ -256,21 +256,21 @@ namespace Duality.Tests.IO
 				string currentDir = Directory.GetCurrentDirectory();
 				string currentVolume = Path.GetFullPath(currentDir).Substring(0, 2);
 				var tester = CreatePermutationTester(s => PathOp.GetFullPath(s), true);
-				//tester.AssertEqual(@"C:\",												 @"C:");
-				tester.AssertEqual(@"C:\",												 @"C:\");
-				tester.AssertEqual(Path.Combine(currentDir, @"File"),					  @"File");
-				tester.AssertEqual(Path.Combine(currentDir, @"File.ext"),				  @"File.ext");
-				tester.AssertEqual(Path.Combine(currentDir, @"File.multi.ext"),			@"File.multi.ext");
-				tester.AssertEqual(@"C:\Folder",										   @"C:\Folder");
-				tester.AssertEqual(@"C:\Folder\",										  @"C:\Folder\");
-				tester.AssertEqual(@"C:\Folder\File.ext",								  @"C:\Folder\File.ext");
-				tester.AssertEqual(@"C:\Folder\File.multi.ext",							@"C:\Folder\File.multi.ext");
-				tester.AssertEqual(currentVolume + @"\Folder\",							@"\Folder\");
-				tester.AssertEqual(currentVolume + @"\Folder\File.ext",					@"\Folder\File.ext");
-				tester.AssertEqual(Path.Combine(currentDir, @"Folder\File.ext"),		   @"Folder\File.ext");
-				tester.AssertEqual(Path.Combine(currentDir, @"Folder.txt\File.ext"),	   @"Folder.txt\File.ext");
-				tester.AssertEqual(currentVolume + @"\Folder\File.multi.ext",			  @"\Folder\File.multi.ext");
-				tester.AssertEqual(Path.Combine(currentDir, @"Folder\File.multi.ext"),	 @"Folder\File.multi.ext");
+				//tester.AssertEqual(@"C:\",                                                 @"C:");
+				tester.AssertEqual(@"C:\",                                                 @"C:\");
+				tester.AssertEqual(Path.Combine(currentDir, @"File"),                      @"File");
+				tester.AssertEqual(Path.Combine(currentDir, @"File.ext"),                  @"File.ext");
+				tester.AssertEqual(Path.Combine(currentDir, @"File.multi.ext"),            @"File.multi.ext");
+				tester.AssertEqual(@"C:\Folder",                                           @"C:\Folder");
+				tester.AssertEqual(@"C:\Folder\",                                          @"C:\Folder\");
+				tester.AssertEqual(@"C:\Folder\File.ext",                                  @"C:\Folder\File.ext");
+				tester.AssertEqual(@"C:\Folder\File.multi.ext",                            @"C:\Folder\File.multi.ext");
+				tester.AssertEqual(currentVolume + @"\Folder\",                            @"\Folder\");
+				tester.AssertEqual(currentVolume + @"\Folder\File.ext",                    @"\Folder\File.ext");
+				tester.AssertEqual(Path.Combine(currentDir, @"Folder\File.ext"),           @"Folder\File.ext");
+				tester.AssertEqual(Path.Combine(currentDir, @"Folder.txt\File.ext"),       @"Folder.txt\File.ext");
+				tester.AssertEqual(currentVolume + @"\Folder\File.multi.ext",              @"\Folder\File.multi.ext");
+				tester.AssertEqual(Path.Combine(currentDir, @"Folder\File.multi.ext"),     @"Folder\File.multi.ext");
 				tester.AssertEqual(Path.Combine(currentDir, @"Folder.txt\File.multi.ext"), @"Folder.txt\File.multi.ext");
 			}
 

@@ -16,7 +16,7 @@ namespace Duality.Plugins.Tilemaps
 		/// <summary>
 		/// Represents an unknown <see cref="TilemapData"/> version.
 		/// </summary>
-		private const int Serialize_Version_Unknown	 = 0;
+		private const int Serialize_Version_Unknown     = 0;
 		/// <summary>
 		/// Represents the zip-compressed byte array <see cref="TilemapData"/> version.
 		/// </summary>
@@ -28,7 +28,7 @@ namespace Duality.Plugins.Tilemaps
 		/// <summary>
 		/// Represents the first <see cref="TilemapData"/> version that includes AutoTile data.
 		/// </summary>
-		private const int Serialize_Version_AutoTile	= 3;
+		private const int Serialize_Version_AutoTile    = 3;
 		/// <summary>
 		/// The lowest version identifier that can be handled in deserialization.
 		/// </summary>

@@ -357,9 +357,9 @@ namespace Duality
 		{
 			if (count == 0) return;
 			
-			if (count < 0)						throw new ArgumentException("Parameter 'count' may not be negative.", "count");
+			if (count < 0)                        throw new ArgumentException("Parameter 'count' may not be negative.", "count");
 			if (index < 0 || index >= this.count) throw new IndexOutOfRangeException("Parameter 'index' is out of range.");
-			if (index + count > this.count)	   throw new IndexOutOfRangeException("'index + count' is out of range.");
+			if (index + count > this.count)       throw new IndexOutOfRangeException("'index + count' is out of range.");
 
 			Array.Sort(this.data, index, count, comparer);
 		}
@@ -373,9 +373,9 @@ namespace Duality
 		{
 			if (count == 0) return;
 
-			if (count < 0)						throw new ArgumentException("Parameter 'count' may not be negative.", "count");
+			if (count < 0)                        throw new ArgumentException("Parameter 'count' may not be negative.", "count");
 			if (index < 0 || index >= this.count) throw new IndexOutOfRangeException("Parameter 'index' is out of range.");
-			if (index + count > this.count)	   throw new IndexOutOfRangeException("'index + count' is out of range.");
+			if (index + count > this.count)       throw new IndexOutOfRangeException("'index + count' is out of range.");
 
 			Array.Sort(this.data, index, count, new FunctorComparer(comparison));
 		}

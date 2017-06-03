@@ -19,25 +19,25 @@ namespace Duality.Editor.Plugins.LogView
 		[Flags]
 		public enum MessageFilter
 		{
-			None		   = 0x0,
+			None           = 0x0,
 
-			SourceCore	 = 0x01,
+			SourceCore     = 0x01,
 			SourceEditor   = 0x02,
-			SourceGame	 = 0x04,
+			SourceGame     = 0x04,
 
-			TypeMessage	= 0x08,
-			TypeWarning	= 0x10,
-			TypeError	  = 0x20,
+			TypeMessage    = 0x08,
+			TypeWarning    = 0x10,
+			TypeError      = 0x20,
 
-			SourceAll	  = SourceCore | SourceEditor | SourceGame,
-			TypeAll		= TypeMessage | TypeWarning | TypeError,
-			All			= SourceAll | TypeAll
+			SourceAll      = SourceCore | SourceEditor | SourceGame,
+			TypeAll        = TypeMessage | TypeWarning | TypeError,
+			All            = SourceAll | TypeAll
 		}
 		public class ViewEntry
 		{
-			private LogEntry	 log	  = default(LogEntry);
-			private int		  msgLines = 1;
-			private int		  height   = 0;
+			private LogEntry     log      = default(LogEntry);
+			private int          msgLines = 1;
+			private int          height   = 0;
 			
 			public LogEntry LogEntry
 			{
@@ -92,7 +92,7 @@ namespace Duality.Editor.Plugins.LogView
 				appendTo.Append(this.log.Source.Prefix);
 				switch (this.log.Type)
 				{
-					case LogMessageType.Message: appendTo.Append("Info:	"); break;
+					case LogMessageType.Message: appendTo.Append("Info:    "); break;
 					case LogMessageType.Warning: appendTo.Append("Warning: "); break;
 					case LogMessageType.Error:   appendTo.Append("Error:   "); break;
 				}
@@ -120,22 +120,22 @@ namespace Duality.Editor.Plugins.LogView
 		}
 
 
-		private List<ViewEntry>	 entryList		  = new List<ViewEntry>();
-		private List<ViewEntry>	 displayedEntryList = new List<ViewEntry>();
-		private MessageFilter	   displayFilter	  = MessageFilter.All;
-		private Color			   baseColor		  = SystemColors.Control;
-		private bool				boundToDualityLogs = false;
-		private bool				scrolledToEnd	  = true;
-		private bool				lastSelected	   = true;
-		private int				 firstDisplayIndex  = 0;
-		private int				 firstDisplayOffset = 0;
-		private ViewEntry		   hoveredEntry	   = null;
-		private ViewEntry		   selectedEntry	  = null;
-		private ContextMenuStrip	entryMenu		  = null;
-		private Timer			   timerLogSchedule   = null;
-		private RawList<LogEntry>   logSchedule		= new RawList<LogEntry>();
-		private bool				logScheduleActive  = false;
-		private object			  logScheduleLock	= new object();
+		private List<ViewEntry>     entryList          = new List<ViewEntry>();
+		private List<ViewEntry>     displayedEntryList = new List<ViewEntry>();
+		private MessageFilter       displayFilter      = MessageFilter.All;
+		private Color               baseColor          = SystemColors.Control;
+		private bool                boundToDualityLogs = false;
+		private bool                scrolledToEnd      = true;
+		private bool                lastSelected       = true;
+		private int                 firstDisplayIndex  = 0;
+		private int                 firstDisplayOffset = 0;
+		private ViewEntry           hoveredEntry       = null;
+		private ViewEntry           selectedEntry      = null;
+		private ContextMenuStrip    entryMenu          = null;
+		private Timer               timerLogSchedule   = null;
+		private RawList<LogEntry>   logSchedule        = new RawList<LogEntry>();
+		private bool                logScheduleActive  = false;
+		private object              logScheduleLock    = new object();
 		private System.ComponentModel.IContainer components = null;
 
 

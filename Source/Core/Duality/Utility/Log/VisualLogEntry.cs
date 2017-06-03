@@ -17,15 +17,15 @@ namespace Duality
 		/// Default width of the outline of a log entries visual representation.
 		/// </summary>
 		protected const float DefaultOutlineWidth = 1.5f;
-		private   const float LifeTimeEpsilon	 = 0.000001f;
+		private   const float LifeTimeEpsilon     = 0.000001f;
 
-		private float		   maxLifetime	 = LifeTimeEpsilon;
-		private float		   lifetime		= LifeTimeEpsilon;
-		private float		   depthOffset	 = 0.0f;
-		private ColorRgba	   color		   = ColorRgba.White;
-		private bool			lifetimeAsAlpha = false;   
-		private VisualLogAnchor anchor		  = VisualLogAnchor.Screen;
-		private GameObject	  anchorObj	   = null;
+		private float           maxLifetime     = LifeTimeEpsilon;
+		private float           lifetime        = LifeTimeEpsilon;
+		private float           depthOffset     = 0.0f;
+		private ColorRgba       color           = ColorRgba.White;
+		private bool            lifetimeAsAlpha = false;   
+		private VisualLogAnchor anchor          = VisualLogAnchor.Screen;
+		private GameObject      anchorObj       = null;
 
 
 		/// <summary>

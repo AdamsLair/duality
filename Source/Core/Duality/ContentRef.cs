@@ -334,9 +334,9 @@ namespace Duality
 		{
 			// Old check, didn't work for XY == null when XY was a Resource created at runtime
 			//if (first.contentInstance != null && second.contentInstance != null)
-			//	return first.contentInstance == second.contentInstance;
+			//    return first.contentInstance == second.contentInstance;
 			//else
-			//	return first.contentPath == second.contentPath;
+			//    return first.contentPath == second.contentPath;
 
 			// Completely identical
 			if (first.contentInstance == second.contentInstance && first.contentPath == second.contentPath)

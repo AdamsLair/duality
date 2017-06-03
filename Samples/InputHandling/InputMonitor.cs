@@ -96,8 +96,8 @@ namespace InputHandling
 				"/f[1]Mouse Stats/f[0]/n/n" +
 				string.Format("Description: /cFF8800FF{0}/cFFFFFFFF/n", input.Description) +
 				string.Format("IsAvailable: /cFF8800FF{0}/cFFFFFFFF/n", input.IsAvailable) +
-				string.Format("X:	 /c44AAFFFF{0,4}/cFFFFFFFF | XSpeed:	 /c44AAFFFF{1,4}/cFFFFFFFF/n", input.X, input.XSpeed) +
-				string.Format("Y:	 /c44AAFFFF{0,4}/cFFFFFFFF | YSpeed:	 /c44AAFFFF{1,4}/cFFFFFFFF/n", input.Y, input.YSpeed) +
+				string.Format("X:     /c44AAFFFF{0,4}/cFFFFFFFF | XSpeed:     /c44AAFFFF{1,4}/cFFFFFFFF/n", input.X, input.XSpeed) +
+				string.Format("Y:     /c44AAFFFF{0,4}/cFFFFFFFF | YSpeed:     /c44AAFFFF{1,4}/cFFFFFFFF/n", input.Y, input.YSpeed) +
 				string.Format("Wheel: /c44AAFFFF{0,4}/cFFFFFFFF | WheelSpeed: /c44AAFFFF{1,4}/cFFFFFFFF/n", input.WheelPrecise, input.WheelSpeedPrecise) +
 				string.Format("Buttons: /c44AAFFFF{0}/cFFFFFFFF/n", activeButtons);
 		}
@@ -194,8 +194,8 @@ namespace InputHandling
 				string.Format("IsAvailable: /cFF8800FF{0}/cFFFFFFFF/n", input.IsAvailable) +
 				string.Format("ButtonCount: /cFF8800FF{0,2}/cFFFFFFFF | AxisCount: /cFF8800FF{1,2}/cFFFFFFFF | HatCount: /cFF8800FF{2,2}/cFFFFFFFF/n", input.ButtonCount, input.AxisCount, input.HatCount) +
 				string.Format("Buttons: /c44AAFFFF{0}/cFFFFFFFF/n", activeButtons) +
-				string.Format("Axes:	/c44AAFFFF{0}/cFFFFFFFF/n", axisValues) +
-				string.Format("Hats:	/c44AAFFFF{0}/cFFFFFFFF", hatValues);
+				string.Format("Axes:    /c44AAFFFF{0}/cFFFFFFFF/n", axisValues) +
+				string.Format("Hats:    /c44AAFFFF{0}/cFFFFFFFF", hatValues);
 		}
 		private void WriteInputStats(ref FormattedText target, GamepadInputCollection inputCollection)
 		{
@@ -231,10 +231,10 @@ namespace InputHandling
 			return
 				string.Format("Description: /cFF8800FF{0}/cFFFFFFFF/n", input.Description) +
 				string.Format("IsAvailable: /cFF8800FF{0}/cFFFFFFFF/n", input.IsAvailable) +
-				string.Format("Buttons:		  /c44AAFFFF{0}/cFFFFFFFF/n", activeButtons) +
-				string.Format("Left  Trigger:	/c44AAFFFF{0}/cFFFFFFFF/n", input.LeftTrigger) +
+				string.Format("Buttons:          /c44AAFFFF{0}/cFFFFFFFF/n", activeButtons) +
+				string.Format("Left  Trigger:    /c44AAFFFF{0}/cFFFFFFFF/n", input.LeftTrigger) +
 				string.Format("Left  Thumbstick: /c44AAFFFF{0}/cFFFFFFFF/n", input.LeftThumbstick) +
-				string.Format("Right Trigger:	/c44AAFFFF{0}/cFFFFFFFF/n", input.RightTrigger) +
+				string.Format("Right Trigger:    /c44AAFFFF{0}/cFFFFFFFF/n", input.RightTrigger) +
 				string.Format("Right Thumbstick: /c44AAFFFF{0}/cFFFFFFFF/n", input.RightThumbstick) +
 				string.Format("Directional Pad:  /c44AAFFFF{0}/cFFFFFFFF", input.DPad);
 		}

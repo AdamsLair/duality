@@ -19,23 +19,23 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
 	public abstract class ObjectEditorCamViewState : CamViewState
 	{
-		private   bool				 actionAllowed	   = true;
-		private   bool				 actionIsClone	   = false;
-		private   Point				actionBeginLoc	  = Point.Empty;
-		private   Vector3			  actionBeginLocSpace = Vector3.Zero;
-		private   Vector3			  actionLastLocSpace  = Vector3.Zero;
-		private   ObjectEditorAxisLock actionLockedAxis	= ObjectEditorAxisLock.None;
-		private   ObjectEditorAction   action			  = ObjectEditorAction.None;
-		private   bool				 selectionStatsValid = false;
-		private   Vector3			  selectionCenter	 = Vector3.Zero;
-		private   float				selectionRadius	 = 0.0f;
-		private   ObjectSelection	  activeRectSel	   = new ObjectSelection();
-		private   ObjectEditorAction   mouseoverAction	 = ObjectEditorAction.None;
-		private   ObjectEditorSelObj   mouseoverObject	 = null;
-		private   bool				 mouseoverSelect	 = false;
+		private   bool                 actionAllowed       = true;
+		private   bool                 actionIsClone       = false;
+		private   Point                actionBeginLoc      = Point.Empty;
+		private   Vector3              actionBeginLocSpace = Vector3.Zero;
+		private   Vector3              actionLastLocSpace  = Vector3.Zero;
+		private   ObjectEditorAxisLock actionLockedAxis    = ObjectEditorAxisLock.None;
+		private   ObjectEditorAction   action              = ObjectEditorAction.None;
+		private   bool                 selectionStatsValid = false;
+		private   Vector3              selectionCenter     = Vector3.Zero;
+		private   float                selectionRadius     = 0.0f;
+		private   ObjectSelection      activeRectSel       = new ObjectSelection();
+		private   ObjectEditorAction   mouseoverAction     = ObjectEditorAction.None;
+		private   ObjectEditorSelObj   mouseoverObject     = null;
+		private   bool                 mouseoverSelect     = false;
 		private   ObjectEditorAction   drawSelGizmoState   = ObjectEditorAction.None;
-		protected List<ObjectEditorSelObj> actionObjSel	= new List<ObjectEditorSelObj>();
-		protected List<ObjectEditorSelObj> allObjSel	   = new List<ObjectEditorSelObj>();
+		protected List<ObjectEditorSelObj> actionObjSel    = new List<ObjectEditorSelObj>();
+		protected List<ObjectEditorSelObj> allObjSel       = new List<ObjectEditorSelObj>();
 		protected List<ObjectEditorSelObj> indirectObjSel  = new List<ObjectEditorSelObj>();
 
 
@@ -716,9 +716,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			ObjectEditorAction visibleObjectAction = this.VisibleObjAction;
 
-			if (visibleObjectAction == ObjectEditorAction.Move)			return Properties.CamViewRes.CamView_Action_Move;
-			else if (visibleObjectAction == ObjectEditorAction.Rotate)	 return Properties.CamViewRes.CamView_Action_Rotate;
-			else if (visibleObjectAction == ObjectEditorAction.Scale)	  return Properties.CamViewRes.CamView_Action_Scale;
+			if (visibleObjectAction == ObjectEditorAction.Move)            return Properties.CamViewRes.CamView_Action_Move;
+			else if (visibleObjectAction == ObjectEditorAction.Rotate)     return Properties.CamViewRes.CamView_Action_Rotate;
+			else if (visibleObjectAction == ObjectEditorAction.Scale)      return Properties.CamViewRes.CamView_Action_Scale;
 			else if (visibleObjectAction == ObjectEditorAction.RectSelect) return Properties.CamViewRes.CamView_Action_Select_Active;
 
 			return base.UpdateStatusText();

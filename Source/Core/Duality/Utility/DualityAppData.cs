@@ -12,19 +12,19 @@ namespace Duality
 	/// </summary>
 	public class DualityAppData
 	{
-		private string			appName			   = "Duality Application";
-		private string			authorName			= "Unknown";
-		private string			websiteUrl			= "http://www.adamslair.net";
-		private uint			  version			   = 0;
-		private ContentRef<Scene> startScene			= null;
-		private float			 speedOfSound		  = 360.0f;
-		private float			 soundDopplerFactor	= 1.0f;
-		private float			 physicsVelThreshold   = 0.5f * PhysicsUnit.VelocityToDuality;
-		private bool			  physicsFixedTime	  = false;
-		private bool			  localUserData		 = true;
-		private bool			  multisampleBackBuffer = true;
-		private string[]		  skipBackends		  = null;
-		private object			customData			= null;
+		private string            appName               = "Duality Application";
+		private string            authorName            = "Unknown";
+		private string            websiteUrl            = "http://www.adamslair.net";
+		private uint              version               = 0;
+		private ContentRef<Scene> startScene            = null;
+		private float             speedOfSound          = 360.0f;
+		private float             soundDopplerFactor    = 1.0f;
+		private float             physicsVelThreshold   = 0.5f * PhysicsUnit.VelocityToDuality;
+		private bool              physicsFixedTime      = false;
+		private bool              localUserData         = true;
+		private bool              multisampleBackBuffer = true;
+		private string[]          skipBackends          = null;
+		private object            customData            = null;
 
 		/// <summary>
 		/// [GET / SET] The name of your application / game. It will also be used as a window title by the launcher app.

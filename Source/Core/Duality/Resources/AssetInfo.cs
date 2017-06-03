@@ -19,9 +19,9 @@ namespace Duality.Editor.AssetManagement
 	{
 		internal static readonly string FileHintNameVariable = "{Name}";
 
-		private string					importerId	 = null;
-		private string[]				  sourceFileHint = null;
-		private Dictionary<string,object> customData	 = null;
+		private string                    importerId     = null;
+		private string[]                  sourceFileHint = null;
+		private Dictionary<string,object> customData     = null;
 
 		[DontSerialize] private string nameHint = null;
 

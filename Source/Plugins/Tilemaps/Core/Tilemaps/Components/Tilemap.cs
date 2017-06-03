@@ -16,10 +16,10 @@ namespace Duality.Plugins.Tilemaps
 	public class Tilemap : Component, ICmpInitializable
 	{
 		private ContentRef<Tileset> tileset  = null;
-		private TilemapData		 tileData = new TilemapData();
+		private TilemapData         tileData = new TilemapData();
 
-		[DontSerialize] private int	updateStack	   = 0;
-		[DontSerialize] private Point2 updateTopLeft	 = Point2.Zero;
+		[DontSerialize] private int    updateStack       = 0;
+		[DontSerialize] private Point2 updateTopLeft     = Point2.Zero;
 		[DontSerialize] private Point2 updateBottomRight = Point2.Zero;
 
 		[DontSerialize] 

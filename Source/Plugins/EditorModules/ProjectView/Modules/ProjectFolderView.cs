@@ -801,8 +801,8 @@ namespace Duality.Editor.Plugins.ProjectView
 			foreach (TypeInfo resType in resourceTypeQuery)
 			{
 				// Skip invisible Types
-				EditorHintFlagsAttribute editorHintFlags = resType.GetAttributesCached<EditorHintFlagsAttribute>().FirstOrDefault();
-				if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
+			    EditorHintFlagsAttribute editorHintFlags = resType.GetAttributesCached<EditorHintFlagsAttribute>().FirstOrDefault();
+			    if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
 
 				// Create an item tree for the current Type
 				string[] categoryTree = resType.GetEditorCategory();

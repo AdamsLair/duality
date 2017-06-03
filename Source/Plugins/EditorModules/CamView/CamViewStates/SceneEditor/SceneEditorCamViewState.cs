@@ -51,7 +51,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			base.OnEnterState();
 
-			DualityEditorApp.SelectionChanged	  += this.DualityEditorApp_SelectionChanged;
+			DualityEditorApp.SelectionChanged      += this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 
 			// Initial selection update
@@ -66,7 +66,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.actionObjSel.Clear();
 			this.indirectObjSel.Clear();
 
-			DualityEditorApp.SelectionChanged	  -= this.DualityEditorApp_SelectionChanged;
+			DualityEditorApp.SelectionChanged      -= this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 		}
 		protected override void OnSceneChanged()

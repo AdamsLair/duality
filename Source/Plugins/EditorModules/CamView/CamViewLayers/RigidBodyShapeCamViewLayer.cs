@@ -21,7 +21,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		private float shapeOutlineWidth = 2.0f;
 		private float depthOffset = -0.5f;
 
-		public override string LayerName
+        public override string LayerName
 		{
 			get { return Properties.CamViewRes.CamViewLayer_RigidBodyShape_Name; }
 		}
@@ -153,7 +153,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					else
 					{
 						Vector2[] shapeVertices = null;
-						if	  (poly  != null) shapeVertices = poly .Vertices;
+						if      (poly  != null) shapeVertices = poly .Vertices;
 						else if (loop  != null) shapeVertices = loop .Vertices;
 						else if (chain != null) shapeVertices = chain.Vertices;
 
@@ -174,7 +174,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 							objPos.X + shapeCenter.X, 
 							objPos.Y + shapeCenter.Y,
 							0.0f);
-					}
+                    }
 
 					shapeIndex++;
 				}
@@ -216,7 +216,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		
 		private void DrawShape(Canvas canvas, Transform transform, ShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
 		{
-			if	  (shape is CircleShapeInfo) this.DrawShape(canvas, transform, shape as CircleShapeInfo, fillColor, outlineColor);
+			if      (shape is CircleShapeInfo) this.DrawShape(canvas, transform, shape as CircleShapeInfo, fillColor, outlineColor);
 			else if (shape is LoopShapeInfo)   this.DrawShape(canvas, transform, shape as LoopShapeInfo  , fillColor, outlineColor);
 			else if (shape is ChainShapeInfo)  this.DrawShape(canvas, transform, shape as ChainShapeInfo , fillColor, outlineColor);
 			else if (shape is PolyShapeInfo)   this.DrawShape(canvas, transform, shape as PolyShapeInfo  , fillColor, outlineColor);
@@ -425,32 +425,32 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			return -1;
 		}
 
-		//public void OnMouseDown(System.Windows.Forms.MouseEventArgs e)
-		//{
-		//	if (e.Button == System.Windows.Forms.MouseButtons.Left)
-		//	{
-		//		if (vertexSelector.CurrentVertex.type == RigidBodyEditorSelVertices.VertexType.PosibleSelect)
-		//		{
-		//			vertexSelector.CurrentVertex.type = RigidBodyEditorSelVertices.VertexType.Selected;
-		//		}
-		//		else if (vertexSelector.CurrentVertex.type == RigidBodyEditorSelVertices.VertexType.PosibleNew)
-		//		{
-		//			List<Vector2> temp = vertexSelector.Shape.Vertices.ToList();
-		//			temp.Insert(vertexSelector.CurrentVertex.id, vertexSelector.CurrentVertex.pos);
-		//			vertexSelector.Shape.Vertices = temp.ToArray();
-		//			vertexSelector.CurrentVertex = new RigidBodyEditorSelVertices.VertexInfo();
-		//		}
-		//	}
-		//	else if (e.Button == System.Windows.Forms.MouseButtons.Right)
-		//	{
-		//		if (vertexSelector.CurrentVertex.type == RigidBodyEditorSelVertices.VertexType.Selected)
-		//		{
-		//			List<Vector2> temp = vertexSelector.Shape.Vertices.ToList();
-		//			temp.RemoveAt(vertexSelector.CurrentVertex.id);
-		//			vertexSelector.Shape.Vertices = temp.ToArray();
-		//			vertexSelector.CurrentVertex = new RigidBodyEditorSelVertices.VertexInfo();
-		//		}
-		//	}
-		//}
-	}
+        //public void OnMouseDown(System.Windows.Forms.MouseEventArgs e)
+        //{
+        //    if (e.Button == System.Windows.Forms.MouseButtons.Left)
+        //    {
+        //        if (vertexSelector.CurrentVertex.type == RigidBodyEditorSelVertices.VertexType.PosibleSelect)
+        //        {
+        //            vertexSelector.CurrentVertex.type = RigidBodyEditorSelVertices.VertexType.Selected;
+        //        }
+        //        else if (vertexSelector.CurrentVertex.type == RigidBodyEditorSelVertices.VertexType.PosibleNew)
+        //        {
+        //            List<Vector2> temp = vertexSelector.Shape.Vertices.ToList();
+        //            temp.Insert(vertexSelector.CurrentVertex.id, vertexSelector.CurrentVertex.pos);
+        //            vertexSelector.Shape.Vertices = temp.ToArray();
+        //            vertexSelector.CurrentVertex = new RigidBodyEditorSelVertices.VertexInfo();
+        //        }
+        //    }
+        //    else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+        //    {
+        //        if (vertexSelector.CurrentVertex.type == RigidBodyEditorSelVertices.VertexType.Selected)
+        //        {
+        //            List<Vector2> temp = vertexSelector.Shape.Vertices.ToList();
+        //            temp.RemoveAt(vertexSelector.CurrentVertex.id);
+        //            vertexSelector.Shape.Vertices = temp.ToArray();
+        //            vertexSelector.CurrentVertex = new RigidBodyEditorSelVertices.VertexInfo();
+        //        }
+        //    }
+        //}
+    }
 }

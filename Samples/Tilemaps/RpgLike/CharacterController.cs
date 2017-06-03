@@ -21,8 +21,8 @@ namespace Duality.Samples.Tilemaps.RpgLike
 	[EditorHintImage(TilemapsResNames.ImageActorRenderer)]
 	public class CharacterController : Component, ICmpUpdatable
 	{
-		private float   speed		   = 1.0f;
-		private float   acceleration	= 0.2f;
+		private float   speed           = 1.0f;
+		private float   acceleration    = 0.2f;
 		private Vector2 targetMovement  = Vector2.Zero;
 
 		public float Speed

@@ -24,9 +24,9 @@ namespace Duality.Resources
 			switch (fieldName)
 			{
 				// Per-Frame Variables (Globals)
-				case "RealTime":		return 0;
-				case "GameTime":		return 1;
-				case "FrameCount":	  return 2;
+				case "RealTime":        return 0;
+				case "GameTime":        return 1;
+				case "FrameCount":      return 2;
 
 				// Per-DrawDevice Variables
 				case "CameraFocusDist": return 3;
@@ -58,11 +58,11 @@ namespace Duality.Resources
 			{
 				case 0: value[0] = (float)Time.MainTimer.TotalSeconds; return true;
 				case 1: value[0] = (float)Time.GameTimer.TotalSeconds; return true;
-				case 2: value[0] = (float)Time.FrameCount;			 return true;
-				case 3: value[0] = currentDevice.FocusDist;			return true;
+				case 2: value[0] = (float)Time.FrameCount;             return true;
+				case 3: value[0] = currentDevice.FocusDist;            return true;
 				case 4: value[0] = currentDevice.RefCoord.X;
-						value[1] = currentDevice.RefCoord.Y;
-						value[2] = currentDevice.RefCoord.Z;		   return true;
+				        value[1] = currentDevice.RefCoord.Y;
+				        value[2] = currentDevice.RefCoord.Z;           return true;
 				case 5: value[0] = currentDevice.Perspective == PerspectiveMode.Parallax ? 1.0f : 0.0f; return true;
 			}
 

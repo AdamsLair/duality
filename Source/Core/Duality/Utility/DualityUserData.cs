@@ -11,18 +11,18 @@ namespace Duality
 	/// </summary>
 	public class DualityUserData
 	{
-		private string	  userName			= "Unknown";
-		private int		 gfxWidth			= 800;
-		private int		 gfxHeight		   = 600;
-		private ScreenMode  gfxMode			 = ScreenMode.Window;
-		private AAQuality   gfxAAQuality		= AAQuality.High;
-		private RefreshMode gfxRefreshMode	  = RefreshMode.AdaptiveVSync;
-		private float	   sfxEffectVol		= 1.0f;
-		private float	   sfxSpeechVol		= 1.0f;
-		private float	   sfxMusicVol		 = 1.0f;
-		private float	   sfxMasterVol		= 1.0f;
-		private bool		systemCursorVisible = false;
-		private object	  customData		  = null;
+		private string      userName            = "Unknown";
+		private int         gfxWidth            = 800;
+		private int         gfxHeight           = 600;
+		private ScreenMode  gfxMode             = ScreenMode.Window;
+		private AAQuality   gfxAAQuality        = AAQuality.High;
+		private RefreshMode gfxRefreshMode      = RefreshMode.AdaptiveVSync;
+		private float       sfxEffectVol        = 1.0f;
+		private float       sfxSpeechVol        = 1.0f;
+		private float       sfxMusicVol         = 1.0f;
+		private float       sfxMasterVol        = 1.0f;
+		private bool        systemCursorVisible = false;
+		private object      customData          = null;
 
 		/// <summary>
 		/// [GET / SET] The player's name. This may be his main character's name or simply remain unused.

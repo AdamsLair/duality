@@ -24,17 +24,17 @@ namespace Duality.Backend.DefaultOpenTK
 			get { return activeInstance; }
 		}
 
-		private IDrawDevice		   currentDevice		   = null;
-		private RenderStats		   renderStats			 = null;
-		private HashSet<GraphicsMode> availGraphicsModes	  = null;
-		private GraphicsMode		  defaultGraphicsMode	 = null;
-		private uint				  primaryVBO			  = 0;
-		private NativeWindow		  activeWindow			= null;
-		private bool				  useAlphaToCoverageBlend = false;
-		private bool				  msaaIsDriverDisabled	= false;
-		private bool				  contextCapsRetrieved	= false;
+		private IDrawDevice           currentDevice           = null;
+		private RenderStats           renderStats             = null;
+		private HashSet<GraphicsMode> availGraphicsModes      = null;
+		private GraphicsMode          defaultGraphicsMode     = null;
+		private uint                  primaryVBO              = 0;
+		private NativeWindow          activeWindow            = null;
+		private bool                  useAlphaToCoverageBlend = false;
+		private bool                  msaaIsDriverDisabled    = false;
+		private bool                  contextCapsRetrieved    = false;
 
-		private List<IDrawBatch>	  renderBatchesSharingVBO = new List<IDrawBatch>();
+		private List<IDrawBatch>      renderBatchesSharingVBO = new List<IDrawBatch>();
 		
 
 		public GraphicsMode DefaultGraphicsMode

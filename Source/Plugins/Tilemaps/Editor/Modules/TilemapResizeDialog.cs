@@ -96,14 +96,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 			switch (origin)
 			{
 				default:
-				case OriginSelector.Origin.Center:	  return Alignment.Center;
-				case OriginSelector.Origin.Left:		return Alignment.Left;
-				case OriginSelector.Origin.Right:	   return Alignment.Right;
-				case OriginSelector.Origin.TopLeft:	 return Alignment.TopLeft;
-				case OriginSelector.Origin.Top:		 return Alignment.Top;
-				case OriginSelector.Origin.TopRight:	return Alignment.TopRight;
+				case OriginSelector.Origin.Center:      return Alignment.Center;
+				case OriginSelector.Origin.Left:        return Alignment.Left;
+				case OriginSelector.Origin.Right:       return Alignment.Right;
+				case OriginSelector.Origin.TopLeft:     return Alignment.TopLeft;
+				case OriginSelector.Origin.Top:         return Alignment.Top;
+				case OriginSelector.Origin.TopRight:    return Alignment.TopRight;
 				case OriginSelector.Origin.BottomLeft:  return Alignment.BottomLeft;
-				case OriginSelector.Origin.Bottom:	  return Alignment.Bottom;
+				case OriginSelector.Origin.Bottom:      return Alignment.Bottom;
 				case OriginSelector.Origin.BottomRight: return Alignment.BottomRight;
 			}
 		}

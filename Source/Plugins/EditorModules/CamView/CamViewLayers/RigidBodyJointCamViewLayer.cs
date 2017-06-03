@@ -97,17 +97,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			if (joint.ParentBody == null) return;
 			if (joint.OtherBody == null) return;
 
-			if (joint is AngleJointInfo)		  this.DrawJoint(canvas, joint as AngleJointInfo);
+			if (joint is AngleJointInfo)          this.DrawJoint(canvas, joint as AngleJointInfo);
 			else if (joint is DistanceJointInfo)  this.DrawJoint(canvas, joint as DistanceJointInfo);
 			else if (joint is FrictionJointInfo)  this.DrawJoint(canvas, joint as FrictionJointInfo);
 			else if (joint is RevoluteJointInfo)  this.DrawJoint(canvas, joint as RevoluteJointInfo);
 			else if (joint is PrismaticJointInfo) this.DrawJoint(canvas, joint as PrismaticJointInfo);
-			else if (joint is WeldJointInfo)	  this.DrawJoint(canvas, joint as WeldJointInfo);
-			else if (joint is RopeJointInfo)	  this.DrawJoint(canvas, joint as RopeJointInfo);
-			else if (joint is SliderJointInfo)	this.DrawJoint(canvas, joint as SliderJointInfo);
-			else if (joint is LineJointInfo)	  this.DrawJoint(canvas, joint as LineJointInfo);
-			else if (joint is PulleyJointInfo)	this.DrawJoint(canvas, joint as PulleyJointInfo);
-			else if (joint is GearJointInfo)	  this.DrawJoint(canvas, joint as GearJointInfo);
+			else if (joint is WeldJointInfo)      this.DrawJoint(canvas, joint as WeldJointInfo);
+			else if (joint is RopeJointInfo)      this.DrawJoint(canvas, joint as RopeJointInfo);
+			else if (joint is SliderJointInfo)    this.DrawJoint(canvas, joint as SliderJointInfo);
+			else if (joint is LineJointInfo)      this.DrawJoint(canvas, joint as LineJointInfo);
+			else if (joint is PulleyJointInfo)    this.DrawJoint(canvas, joint as PulleyJointInfo);
+			else if (joint is GearJointInfo)      this.DrawJoint(canvas, joint as GearJointInfo);
 		}
 		private void DrawJoint(Canvas canvas, AngleJointInfo joint)
 		{
@@ -188,9 +188,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				2.0f * this.minAngleConstraintRadius);
 
 			if (joint.LimitEnabled)
-				this.DrawLocalAxisConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB, joint.LowerLimit, joint.UpperLimit);
+			    this.DrawLocalAxisConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB, joint.LowerLimit, joint.UpperLimit);
 			else
-				this.DrawLocalAxisConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB);
+			    this.DrawLocalAxisConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB);
 
 			this.DrawLocalAngleConstraint(canvas, 
 				joint.ParentBody, 
@@ -209,7 +209,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			}
 
 			if (joint.MotorEnabled)
-				this.DrawLocalAxisMotor(canvas, joint.ParentBody, joint.OtherBody, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB, joint.MotorSpeed, joint.MaxMotorForce, joint.ParentBody.BoundRadius * 1.15f);
+			    this.DrawLocalAxisMotor(canvas, joint.ParentBody, joint.OtherBody, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB, joint.MotorSpeed, joint.MaxMotorForce, joint.ParentBody.BoundRadius * 1.15f);
 
 			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.LocalAnchorA);
 			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.LocalAnchorB);

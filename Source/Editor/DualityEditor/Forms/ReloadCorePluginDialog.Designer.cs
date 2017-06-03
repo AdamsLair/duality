@@ -37,20 +37,20 @@
 			// descLabel
 			// 
 			this.descLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.descLabel.Location = new System.Drawing.Point(12, 9);
 			this.descLabel.Name = "descLabel";
 			this.descLabel.Size = new System.Drawing.Size(260, 44);
 			this.descLabel.TabIndex = 0;
 			this.descLabel.Text = "Duality Core Plugins are being reloaded. Depending on the size of the currently l" +
-	"oaded Scene, this may take some seconds.";
+    "oaded Scene, this may take some seconds.";
 			this.descLabel.UseWaitCursor = true;
 			// 
 			// progressBar
 			// 
 			this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.progressBar.Location = new System.Drawing.Point(15, 62);
 			this.progressBar.Name = "progressBar";
 			this.progressBar.Size = new System.Drawing.Size(260, 23);

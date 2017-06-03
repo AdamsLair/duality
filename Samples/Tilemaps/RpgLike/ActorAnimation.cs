@@ -16,10 +16,10 @@ namespace Duality.Samples.Tilemaps.RpgLike
 	/// </summary>
 	public class ActorAnimation
 	{
-		private string				 name			  = "Empty Animation";
-		private AnimDirMapping[]	   startFrame		= new AnimDirMapping[0];
-		private int					frameCount		= 0;
-		private float				  duration		  = 2.0f;
+		private string                 name              = "Empty Animation";
+		private AnimDirMapping[]       startFrame        = new AnimDirMapping[0];
+		private int                    frameCount        = 0;
+		private float                  duration          = 2.0f;
 		private ActorAnimator.LoopMode preferredLoopMode = ActorAnimator.LoopMode.Loop;
 
 		/// <summary>

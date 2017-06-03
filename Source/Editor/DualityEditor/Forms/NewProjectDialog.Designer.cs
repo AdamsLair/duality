@@ -106,8 +106,8 @@
 			// splitFolderTemplate
 			// 
 			this.splitFolderTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.splitFolderTemplate.Location = new System.Drawing.Point(-1, 60);
 			this.splitFolderTemplate.Name = "splitFolderTemplate";
 			// 
@@ -129,8 +129,8 @@
 			this.templateView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.templateView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.templateView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.columnName,
-			this.columnDesc});
+            this.columnName,
+            this.columnDesc});
 			this.templateView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.templateView.FullRowSelect = true;
 			this.templateView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -214,7 +214,7 @@
 			// labelLowerArea
 			// 
 			this.labelLowerArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelLowerArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.labelLowerArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.labelLowerArea.Location = new System.Drawing.Point(-1, 324);
@@ -226,14 +226,14 @@
 			// labelDialogDesc
 			// 
 			this.labelDialogDesc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelDialogDesc.Location = new System.Drawing.Point(68, 24);
 			this.labelDialogDesc.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
 			this.labelDialogDesc.Name = "labelDialogDesc";
 			this.labelDialogDesc.Size = new System.Drawing.Size(407, 30);
 			this.labelDialogDesc.TabIndex = 11;
 			this.labelDialogDesc.Text = "After selecting a suitable project template, destination and name, a new project " +
-	"folder will be automatically created.";
+    "folder will be automatically created.";
 			this.labelDialogDesc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// labelProjectTemplate
@@ -271,7 +271,7 @@
 			// labelHeader
 			// 
 			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelHeader.Location = new System.Drawing.Point(68, 3);
 			this.labelHeader.Margin = new System.Windows.Forms.Padding(0);
@@ -284,7 +284,7 @@
 			// textBoxTemplate
 			// 
 			this.textBoxTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxTemplate.CueText = "Select project template";
 			this.textBoxTemplate.Location = new System.Drawing.Point(105, 244);
 			this.textBoxTemplate.Name = "textBoxTemplate";
@@ -295,7 +295,7 @@
 			// textBoxName
 			// 
 			this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxName.CueText = "Enter project name here";
 			this.textBoxName.Location = new System.Drawing.Point(105, 270);
 			this.textBoxName.Name = "textBoxName";
@@ -305,7 +305,7 @@
 			// textBoxFolder
 			// 
 			this.textBoxFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxFolder.CueText = "Select a project folder";
 			this.textBoxFolder.Location = new System.Drawing.Point(105, 296);
 			this.textBoxFolder.Name = "textBoxFolder";

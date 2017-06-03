@@ -25,13 +25,13 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	/// </summary>
 	public class ResourceImportExportPropertyEditor : PropertyEditor, IHelpProvider
 	{
-		private bool	  sourceFilesAvailable = false;
-		private bool	  exporterAvailable	= false;
-		private Rectangle rectButtonShow	   = Rectangle.Empty;
-		private Rectangle rectButtonExport	 = Rectangle.Empty;
+		private bool      sourceFilesAvailable = false;
+		private bool      exporterAvailable    = false;
+		private Rectangle rectButtonShow       = Rectangle.Empty;
+		private Rectangle rectButtonExport     = Rectangle.Empty;
 		private Rectangle rectButtonReImport   = Rectangle.Empty;
-		private int	   pressedButton		= -1;
-		private int	   hoveredButton		= -1;
+		private int       pressedButton        = -1;
+		private int       hoveredButton        = -1;
 
 
 		public override object DisplayedValue
@@ -155,24 +155,24 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			this.ControlRenderer.DrawButton(
 				e.Graphics, this.rectButtonShow, 
-				!canShow ?				 ButtonState.Disabled :
+				!canShow ?                 ButtonState.Disabled :
 				(this.pressedButton == 0 ? ButtonState.Pressed  :
-				(this.hoveredButton == 0 ? ButtonState.Hot	  :
-										   ButtonState.Normal   )), 
+				(this.hoveredButton == 0 ? ButtonState.Hot      :
+				                           ButtonState.Normal   )), 
 				"Show");
 			this.ControlRenderer.DrawButton(
 				e.Graphics, this.rectButtonExport, 
-				!canExport ?			   ButtonState.Disabled : 
+				!canExport ?               ButtonState.Disabled : 
 				(this.pressedButton == 1 ? ButtonState.Pressed  : 
-				(this.hoveredButton == 1 ? ButtonState.Hot	  :
-										   ButtonState.Normal   )), 
+				(this.hoveredButton == 1 ? ButtonState.Hot      :
+				                           ButtonState.Normal   )), 
 				"Export");
 			this.ControlRenderer.DrawButton(
 				e.Graphics, this.rectButtonReImport, 
-				!canImport ?			   ButtonState.Disabled : 
+				!canImport ?               ButtonState.Disabled : 
 				(this.pressedButton == 2 ? ButtonState.Pressed  :
-				(this.hoveredButton == 2 ? ButtonState.Hot	  :
-										   ButtonState.Normal   )), 
+				(this.hoveredButton == 2 ? ButtonState.Hot      :
+				                           ButtonState.Normal   )), 
 				"Import");
 		}
 

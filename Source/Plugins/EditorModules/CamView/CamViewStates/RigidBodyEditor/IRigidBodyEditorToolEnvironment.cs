@@ -42,23 +42,23 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// </summary>
 		bool IsActionKeyPressed { get; }
 
-		/// <summary>
-		/// Stops the currently active tool action. Call this when you want a custom tool action
-		/// implementation to end without the user explicitly ending it.
-		/// </summary>
-		void EndToolAction();
-		/// <summary>
-		/// Stops the currently active tool action. Call this when you want a custom tool action
-		/// implementation to end without the user explicitly ending it.
-		/// </summary>
-		void EndToolAction(bool keepToolSelected);
-		/// <summary>
-		/// Selects the specified enumeration of <see cref="RigidBody"/> shapes in the editor.
-		/// To clear the current shape selection, specify an empty or null shape enumerable
-		/// with a <see cref="SelectMode"/> of <see cref="SelectMode.Set"/>.
-		/// </summary>
-		/// <param name="shapes"></param>
-		/// <param name="mode"></param>
-		void SelectShapes(IEnumerable<ShapeInfo> shapes, SelectMode mode = SelectMode.Set);
+        /// <summary>
+        /// Stops the currently active tool action. Call this when you want a custom tool action
+        /// implementation to end without the user explicitly ending it.
+        /// </summary>
+        void EndToolAction();
+        /// <summary>
+        /// Stops the currently active tool action. Call this when you want a custom tool action
+        /// implementation to end without the user explicitly ending it.
+        /// </summary>
+        void EndToolAction(bool keepToolSelected);
+        /// <summary>
+        /// Selects the specified enumeration of <see cref="RigidBody"/> shapes in the editor.
+        /// To clear the current shape selection, specify an empty or null shape enumerable
+        /// with a <see cref="SelectMode"/> of <see cref="SelectMode.Set"/>.
+        /// </summary>
+        /// <param name="shapes"></param>
+        /// <param name="mode"></param>
+        void SelectShapes(IEnumerable<ShapeInfo> shapes, SelectMode mode = SelectMode.Set);
 	}
 }

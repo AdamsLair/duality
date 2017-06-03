@@ -60,11 +60,11 @@
 			this.toolStrip.GripMargin = new System.Windows.Forms.Padding(0);
 			this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.buttonShowComponents,
-			this.toolStripSeparator2,
-			this.toolStripButtonCreateScene,
-			this.toolStripButtonSaveScene,
-			this.toolStripLabelSceneName});
+            this.buttonShowComponents,
+            this.toolStripSeparator2,
+            this.toolStripButtonCreateScene,
+            this.toolStripButtonSaveScene,
+            this.toolStripLabelSceneName});
 			this.toolStrip.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Size = new System.Drawing.Size(206, 25);
@@ -133,10 +133,10 @@
 			// contextMenuDragMoveCopy
 			// 
 			this.contextMenuDragMoveCopy.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.copyHereToolStripMenuItem,
-			this.moveHereToolStripMenuItem,
-			this.toolStripSeparator1,
-			this.cancelToolStripMenuItem});
+            this.copyHereToolStripMenuItem,
+            this.moveHereToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.cancelToolStripMenuItem});
 			this.contextMenuDragMoveCopy.Name = "contextMenuDragMoveCopy";
 			this.contextMenuDragMoveCopy.Size = new System.Drawing.Size(131, 76);
 			// 
@@ -259,9 +259,9 @@
 			this.Controls.Add(this.panelBottom);
 			this.Controls.Add(this.toolStrip);
 			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockLeft) 
-			| WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight) 
-			| WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
-			| WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

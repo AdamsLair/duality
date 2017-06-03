@@ -162,15 +162,15 @@ namespace Duality.Serialization
 		}
 		private void WritePrimitive(XElement element, object obj)
 		{
-			if	  (obj is bool)	element.Value = XmlConvert.ToString((bool)obj);
-			else if (obj is byte)	element.Value = XmlConvert.ToString((byte)obj);
-			else if (obj is char)	element.Value = XmlConvert.EncodeName(XmlConvert.ToString((char)obj));
+			if      (obj is bool)    element.Value = XmlConvert.ToString((bool)obj);
+			else if (obj is byte)    element.Value = XmlConvert.ToString((byte)obj);
+			else if (obj is char)    element.Value = XmlConvert.EncodeName(XmlConvert.ToString((char)obj));
 			else if (obj is sbyte)   element.Value = XmlConvert.ToString((sbyte)obj);
 			else if (obj is short)   element.Value = XmlConvert.ToString((short)obj);
 			else if (obj is ushort)  element.Value = XmlConvert.ToString((ushort)obj);
-			else if (obj is int)	 element.Value = XmlConvert.ToString((int)obj);
-			else if (obj is uint)	element.Value = XmlConvert.ToString((uint)obj);
-			else if (obj is long)	element.Value = XmlConvert.ToString((long)obj);
+			else if (obj is int)     element.Value = XmlConvert.ToString((int)obj);
+			else if (obj is uint)    element.Value = XmlConvert.ToString((uint)obj);
+			else if (obj is long)    element.Value = XmlConvert.ToString((long)obj);
 			else if (obj is ulong)   element.Value = XmlConvert.ToString((decimal)(ulong)obj);
 			else if (obj is float)   element.Value = XmlConvert.ToString((float)obj);
 			else if (obj is double)  element.Value = XmlConvert.ToString((double)obj);
@@ -476,19 +476,19 @@ namespace Duality.Serialization
 		{
 			switch (dataType)
 			{
-				case DataType.Bool:	return XmlConvert.ToBoolean(element.Value);
-				case DataType.Byte:	return XmlConvert.ToByte(element.Value);
+				case DataType.Bool:    return XmlConvert.ToBoolean(element.Value);
+				case DataType.Byte:    return XmlConvert.ToByte(element.Value);
 				case DataType.SByte:   return XmlConvert.ToSByte(element.Value);
 				case DataType.Short:   return XmlConvert.ToInt16(element.Value);
 				case DataType.UShort:  return XmlConvert.ToUInt16(element.Value);
-				case DataType.Int:	 return XmlConvert.ToInt32(element.Value);
-				case DataType.UInt:	return XmlConvert.ToUInt32(element.Value);
-				case DataType.Long:	return XmlConvert.ToInt64(element.Value);
+				case DataType.Int:     return XmlConvert.ToInt32(element.Value);
+				case DataType.UInt:    return XmlConvert.ToUInt32(element.Value);
+				case DataType.Long:    return XmlConvert.ToInt64(element.Value);
 				case DataType.ULong:   return XmlConvert.ToUInt64(element.Value);
 				case DataType.Float:   return XmlConvert.ToSingle(element.Value);
 				case DataType.Double:  return XmlConvert.ToDouble(element.Value);
 				case DataType.Decimal: return XmlConvert.ToDecimal(element.Value);
-				case DataType.Char:	return XmlConvert.ToChar(XmlConvert.DecodeName(element.Value));
+				case DataType.Char:    return XmlConvert.ToChar(XmlConvert.DecodeName(element.Value));
 				case DataType.String:
 					if (element.FirstNode is XCData)
 					{

@@ -47,13 +47,13 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		}
 
 
-		private TreeModel		  treeModel			 = new TreeModel();
+		private TreeModel          treeModel             = new TreeModel();
 		private DepthInfoLayerNode treeNodeOffsetLayer   = null;
 		private DepthInfoLayerNode treeNodeVerticalLayer = null;
-		private EditMode		   editMode			  = EditMode.Offset;
-		private int				drawDepthOffset	   = 0;
-		private bool			   drawVertical		  = false;
-		private bool			   isUserDrawing		 = false;
+		private EditMode           editMode              = EditMode.Offset;
+		private int                drawDepthOffset       = 0;
+		private bool               drawVertical          = false;
+		private bool               isUserDrawing         = false;
 
 		private Dictionary<string,Bitmap> textCache = new Dictionary<string,Bitmap>();
 
@@ -123,8 +123,8 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 						textFormat);
 
 					g.SmoothingMode = SmoothingMode.HighQuality;
-					g.DrawPath(pen, path);				
-					g.FillPath(brush, path);							
+					g.DrawPath(pen, path);                
+					g.FillPath(brush, path);                            
 					g.SmoothingMode = SmoothingMode.Default;
 				}
 

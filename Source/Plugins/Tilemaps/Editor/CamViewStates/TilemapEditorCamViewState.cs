@@ -30,32 +30,32 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			public ToolStripButton ToolButton;
 		}
 
-		private static readonly float		   FillAnimDuration = 250.0f;
-		private static readonly Point2		  InvalidTile	  = new Point2(-1, -1);
-		private static Texture				  strippledLineTex = null;
+		private static readonly float           FillAnimDuration = 250.0f;
+		private static readonly Point2          InvalidTile      = new Point2(-1, -1);
+		private static Texture                  strippledLineTex = null;
 
 
 		private TilemapTool toolNone   = new NoTilemapTool();
 		private TilemapTool toolSelect = new SelectTilemapTool();
 
-		private List<TilemapActionEntry> actions	 = new List<TilemapActionEntry>();
-		private List<TilemapTool>   tools			  = new List<TilemapTool>();
-		private TilemapTool		 overrideTool	   = null;
-		private TilemapTool		 selectedTool	   = null;
-		private Tilemap			 selectedTilemap	= null;
-		private ICmpTilemapRenderer hoveredRenderer	= null;
-		private Point2			  hoveredTile		= InvalidTile;
-		private TilemapTool		 activeTool		 = null;
-		private Tilemap			 activeTilemap	  = null;
-		private ICmpTilemapRenderer activeRenderer	 = null;
-		private Point2			  activeAreaOrigin   = InvalidTile;
-		private Grid<bool>		  activeArea		 = new Grid<bool>();
-		private List<Vector2[]>	 activeAreaOutlines = new List<Vector2[]>();
-		private bool				activePreviewValid = false;
-		private DateTime			activePreviewTime  = DateTime.Now;
-		private TilemapTool		 actionTool		 = null;
-		private Point2			  actionBeginTile	= InvalidTile;
-		private ToolStrip		   toolstrip		  = null;
+		private List<TilemapActionEntry> actions     = new List<TilemapActionEntry>();
+		private List<TilemapTool>   tools              = new List<TilemapTool>();
+		private TilemapTool         overrideTool       = null;
+		private TilemapTool         selectedTool       = null;
+		private Tilemap             selectedTilemap    = null;
+		private ICmpTilemapRenderer hoveredRenderer    = null;
+		private Point2              hoveredTile        = InvalidTile;
+		private TilemapTool         activeTool         = null;
+		private Tilemap             activeTilemap      = null;
+		private ICmpTilemapRenderer activeRenderer     = null;
+		private Point2              activeAreaOrigin   = InvalidTile;
+		private Grid<bool>          activeArea         = new Grid<bool>();
+		private List<Vector2[]>     activeAreaOutlines = new List<Vector2[]>();
+		private bool                activePreviewValid = false;
+		private DateTime            activePreviewTime  = DateTime.Now;
+		private TilemapTool         actionTool         = null;
+		private Point2              actionBeginTile    = InvalidTile;
+		private ToolStrip           toolstrip          = null;
 
 
 		public override string StateName
@@ -1082,7 +1082,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		[Flags]
 		private enum TileHighlightMode
 		{
-			Normal	= 0x0,
+			Normal    = 0x0,
 			Selection = 0x1,
 			Uncertain = 0x2
 		}
@@ -1277,16 +1277,16 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				for (int x = 0; x < edgeMap.Width; x++)
 				{
 					// Determine highlight state of the four tiles around this node
-					bool topLeft	 = x > 0			  && y > 0			   && tileArea[x - 1, y - 1];
-					bool topRight	= x < tileArea.Width && y > 0			   && tileArea[x	, y - 1];
-					bool bottomLeft  = x > 0			  && y < tileArea.Height && tileArea[x - 1, y	];
-					bool bottomRight = x < tileArea.Width && y < tileArea.Height && tileArea[x	, y	];
+					bool topLeft     = x > 0              && y > 0               && tileArea[x - 1, y - 1];
+					bool topRight    = x < tileArea.Width && y > 0               && tileArea[x    , y - 1];
+					bool bottomLeft  = x > 0              && y < tileArea.Height && tileArea[x - 1, y    ];
+					bool bottomRight = x < tileArea.Width && y < tileArea.Height && tileArea[x    , y    ];
 
 					// Determine which edges are visible
-					if (topLeft	 != topRight   ) edgeMap.AddEdge(new Point2(x, y), new Point2(x	, y - 1));
-					if (topRight	!= bottomRight) edgeMap.AddEdge(new Point2(x, y), new Point2(x + 1, y	));
-					if (bottomRight != bottomLeft ) edgeMap.AddEdge(new Point2(x, y), new Point2(x	, y + 1));
-					if (bottomLeft  != topLeft	) edgeMap.AddEdge(new Point2(x, y), new Point2(x - 1, y	));
+					if (topLeft     != topRight   ) edgeMap.AddEdge(new Point2(x, y), new Point2(x    , y - 1));
+					if (topRight    != bottomRight) edgeMap.AddEdge(new Point2(x, y), new Point2(x + 1, y    ));
+					if (bottomRight != bottomLeft ) edgeMap.AddEdge(new Point2(x, y), new Point2(x    , y + 1));
+					if (bottomLeft  != topLeft    ) edgeMap.AddEdge(new Point2(x, y), new Point2(x - 1, y    ));
 				}
 			}
 

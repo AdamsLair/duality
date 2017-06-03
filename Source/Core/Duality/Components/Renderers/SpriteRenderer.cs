@@ -25,7 +25,7 @@ namespace Duality.Components.Renderers
 			/// <summary>
 			/// The uv-Coordinates are constant, stretching the supplied texture to fit the SpriteRenderers dimensions.
 			/// </summary>
-			Stretch		= 0x0,
+			Stretch        = 0x0,
 			/// <summary>
 			/// The u-Coordinate is calculated based on the available horizontal space, allowing the supplied texture to be
 			/// tiled across the SpriteRenderers width.
@@ -40,7 +40,7 @@ namespace Duality.Components.Renderers
 			/// The uv-Coordinates are calculated based on the available space, allowing the supplied texture to be
 			/// tiled across the SpriteRenderers size.
 			/// </summary>
-			WrapBoth	   = WrapHorizontal | WrapVertical
+			WrapBoth       = WrapHorizontal | WrapVertical
 		}
 		/// <summary>
 		/// Specifies whether the sprite should be flipped on a given axis.
@@ -51,7 +51,7 @@ namespace Duality.Components.Renderers
 			/// <summary>
 			/// The sprite will not be flipped at all.
 			/// </summary>
-			None	   = 0x0,
+			None       = 0x0,
 			/// <summary>
 			/// The sprite will be flipped on its horizontal axis.
 			/// </summary>
@@ -63,14 +63,14 @@ namespace Duality.Components.Renderers
 		}
 
 
-		protected Rect				 rect	  = Rect.Align(Alignment.Center, 0, 0, 256, 256);
+		protected Rect                 rect      = Rect.Align(Alignment.Center, 0, 0, 256, 256);
 		protected ContentRef<Material> sharedMat = Material.DualityIcon;
-		protected BatchInfo			customMat = null;
-		protected ColorRgba			colorTint = ColorRgba.White;
-		protected UVMode			   rectMode  = UVMode.Stretch;
-		protected bool				 pixelGrid = false;
-		protected int				  offset	= 0;
-		protected FlipMode			 flipMode  = FlipMode.None;
+		protected BatchInfo            customMat = null;
+		protected ColorRgba            colorTint = ColorRgba.White;
+		protected UVMode               rectMode  = UVMode.Stretch;
+		protected bool                 pixelGrid = false;
+		protected int                  offset    = 0;
+		protected FlipMode             flipMode  = FlipMode.None;
 		[DontSerialize] protected VertexC1P3T2[] vertices = null;
 
 
@@ -226,10 +226,10 @@ namespace Duality.Components.Renderers
 			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
-			
+            
 			float left   = uvRect.X;
 			float right  = uvRect.RightX;
-			float top	= uvRect.Y;
+			float top    = uvRect.Y;
 			float bottom = uvRect.BottomY;
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2[4];

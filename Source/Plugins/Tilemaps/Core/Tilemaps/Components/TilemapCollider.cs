@@ -35,15 +35,15 @@ namespace Duality.Plugins.Tilemaps
 			}
 		};
 
-		private Alignment				origin		  = Alignment.Center;
-		private TilemapCollisionSource[] source		  = DefaultSource;
-		private bool					 solidOuterEdges = true;
-		private bool					 roundedCorners  = false;
+		private Alignment                origin          = Alignment.Center;
+		private TilemapCollisionSource[] source          = DefaultSource;
+		private bool                     solidOuterEdges = true;
+		private bool                     roundedCorners  = false;
 
 		// Shape property values that are used when generating new shapes.
 		// These are not directly editable, but retrieved from RigidBody
 		// values / generated shapes the user has edited.
-		private float shapeFriction	= 0.3f;
+		private float shapeFriction    = 0.3f;
 		private float shapeRestitution = 0.3f;
 
 		[DontSerialize] private Tilemap referenceTilemap = null;
@@ -536,20 +536,20 @@ namespace Duality.Plugins.Tilemaps
 					targetEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y));
 
 					// Determine block collision neighbourhood
-					bool left   = (x == 0)			  ? (x == leftBorderPos  ) : (collisionData[x - 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool left   = (x == 0)              ? (x == leftBorderPos  ) : (collisionData[x - 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
 					bool right  = (x == SectorSize - 1) ? (x == rightBorderPos ) : (collisionData[x + 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
-					bool top	= (y == 0)			  ? (y == topBorderPos   ) : (collisionData[x, y - 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool top    = (y == 0)              ? (y == topBorderPos   ) : (collisionData[x, y - 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
 					bool bottom = (y == SectorSize - 1) ? (y == bottomBorderPos) : (collisionData[x, y + 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
 
 					// Adjust outer edge states 
 					if (center != left )  targetEdgeMap.AddEdge   (new Point2(x, y), new Point2(x, y + 1));
-					else				  targetEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x, y + 1));
+					else                  targetEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x, y + 1));
 					if (center != right)  targetEdgeMap.AddEdge   (new Point2(x + 1, y), new Point2(x + 1, y + 1));
-					else				  targetEdgeMap.RemoveEdge(new Point2(x + 1, y), new Point2(x + 1, y + 1));
-					if (center != top)	targetEdgeMap.AddEdge   (new Point2(x, y), new Point2(x + 1, y));
-					else				  targetEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x + 1, y));
+					else                  targetEdgeMap.RemoveEdge(new Point2(x + 1, y), new Point2(x + 1, y + 1));
+					if (center != top)    targetEdgeMap.AddEdge   (new Point2(x, y), new Point2(x + 1, y));
+					else                  targetEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x + 1, y));
 					if (center != bottom) targetEdgeMap.AddEdge   (new Point2(x, y + 1), new Point2(x + 1, y + 1));
-					else				  targetEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
+					else                  targetEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
 				}
 			}
 
@@ -569,9 +569,9 @@ namespace Duality.Plugins.Tilemaps
 					if (!diagonalDown && !diagonalUp) continue;
 
 					// Determine block collision neighbourhood
-					bool left   = (x == 0)			  ? (x == leftBorderPos  ) : (collisionData[x - 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool left   = (x == 0)              ? (x == leftBorderPos  ) : (collisionData[x - 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
 					bool right  = (x == SectorSize - 1) ? (x == rightBorderPos ) : (collisionData[x + 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
-					bool top	= (y == 0)			  ? (y == topBorderPos   ) : (collisionData[x, y - 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool top    = (y == 0)              ? (y == topBorderPos   ) : (collisionData[x, y - 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
 					bool bottom = (y == SectorSize - 1) ? (y == bottomBorderPos) : (collisionData[x, y + 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
 
 					// Remove perpendicular edges that are redundant because of the diagonal fence

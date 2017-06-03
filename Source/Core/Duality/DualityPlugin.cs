@@ -6,11 +6,11 @@ namespace Duality
 {
 	public abstract class DualityPlugin
 	{
-		private bool	 disposed = false;
+		private bool     disposed = false;
 		private Assembly assembly = null;
 		private string   asmName  = null;
 		private string   filePath = null;
-		private int	  fileHash = 0;
+		private int      fileHash = 0;
 
 		public bool Disposed
 		{

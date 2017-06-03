@@ -65,10 +65,10 @@ namespace Duality.Launcher
 
 		private void SetConsoleBackColor(Log source)
 		{
-			if	  (source == Log.Core)   Console.BackgroundColor = ConsoleColor.DarkBlue;
+			if      (source == Log.Core)   Console.BackgroundColor = ConsoleColor.DarkBlue;
 			else if (source == Log.Game)   Console.BackgroundColor = ConsoleColor.DarkCyan;
 			else if (source == Log.Editor) Console.BackgroundColor = ConsoleColor.DarkMagenta;
-			else						   Console.BackgroundColor = ConsoleColor.Black;
+			else                           Console.BackgroundColor = ConsoleColor.Black;
 		}
 		private void SetDarkConsoleColor(LogMessageType type)
 		{
@@ -77,7 +77,7 @@ namespace Duality.Launcher
 				default:
 				case LogMessageType.Message: Console.ForegroundColor = ConsoleColor.DarkGray;   break;
 				case LogMessageType.Warning: Console.ForegroundColor = ConsoleColor.DarkYellow; break;
-				case LogMessageType.Error:   Console.ForegroundColor = ConsoleColor.DarkRed;	break;
+				case LogMessageType.Error:   Console.ForegroundColor = ConsoleColor.DarkRed;    break;
 			}
 		}
 		private void SetBrightConsoleColor(LogMessageType type, bool highlight)
@@ -86,10 +86,10 @@ namespace Duality.Launcher
 			{
 				default:
 				case LogMessageType.Message: Console.ForegroundColor = highlight ? 
-																	   ConsoleColor.White   : 
-																	   ConsoleColor.Gray;   break;
+					                                                   ConsoleColor.White   : 
+					                                                   ConsoleColor.Gray;   break;
 				case LogMessageType.Warning: Console.ForegroundColor = ConsoleColor.Yellow; break;
-				case LogMessageType.Error:   Console.ForegroundColor = ConsoleColor.Red;	break;
+				case LogMessageType.Error:   Console.ForegroundColor = ConsoleColor.Red;    break;
 			}
 		}
 

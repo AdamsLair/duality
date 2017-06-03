@@ -22,10 +22,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public class TilemapsEditorPlugin : EditorPlugin
 	{
-		private static readonly string		  ElementNameTilePalette   = "TilePalette";
-		private static readonly string		  ElementNameTilesetEditor = "TilesetEditor";
+		private static readonly string          ElementNameTilePalette   = "TilePalette";
+		private static readonly string          ElementNameTilesetEditor = "TilesetEditor";
 		public  static readonly ITileDrawSource EmptyTileDrawingSource   = new DummyTileDrawSource();
-		public  static readonly string		  ActionTilemapEditor	  = "TilemapEditor";
+		public  static readonly string          ActionTilemapEditor      = "TilemapEditor";
 
 		private static TilemapsEditorPlugin instance = null;
 		public static TilemapsEditorPlugin Instance
@@ -34,14 +34,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 
-		private bool					 isLoading				= false;
-		private TilesetEditor			tilesetEditor			= null;
-		private TilemapToolSourcePalette tilePalette			  = null;
-		private int					  pendingLocalTilePalettes = 0;
-		private XElement				 tilePaletteSettings	  = null;
-		private XElement				 tilesetEditorSettings	= null;
-		private ITileDrawSource		  tileDrawingSource		= EmptyTileDrawingSource;
-		private HashSet<ContentRef<Tileset>> recompileOnChange	= new HashSet<ContentRef<Tileset>>();
+		private bool                     isLoading                = false;
+		private TilesetEditor            tilesetEditor            = null;
+		private TilemapToolSourcePalette tilePalette              = null;
+		private int                      pendingLocalTilePalettes = 0;
+		private XElement                 tilePaletteSettings      = null;
+		private XElement                 tilesetEditorSettings    = null;
+		private ITileDrawSource          tileDrawingSource        = EmptyTileDrawingSource;
+		private HashSet<ContentRef<Tileset>> recompileOnChange    = new HashSet<ContentRef<Tileset>>();
 
 		/// <summary>
 		/// An event that is fired when the <see cref="TileDrawingSource"/> is assigned a new value.

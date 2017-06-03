@@ -68,18 +68,18 @@
 			// labelInfo
 			// 
 			this.labelInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelInfo.Location = new System.Drawing.Point(12, 9);
 			this.labelInfo.Name = "labelInfo";
 			this.labelInfo.Size = new System.Drawing.Size(286, 44);
 			this.labelInfo.TabIndex = 6;
 			this.labelInfo.Text = "Multiple Asset Importers are able to handle the specified input files. Please sel" +
-	"ect the one to use.";
+    "ect the one to use.";
 			// 
 			// importerView
 			// 
 			this.importerView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.importerView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.importerView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.importerView.DefaultToolTipProvider = null;
@@ -117,8 +117,8 @@
 			// inputFileView
 			// 
 			this.inputFileView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.inputFileView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.inputFileView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.inputFileView.ColumnHeaderHeight = 1;
@@ -169,7 +169,7 @@
 			// labelInputFileView
 			// 
 			this.labelInputFileView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelInputFileView.Location = new System.Drawing.Point(12, 53);
 			this.labelInputFileView.Name = "labelInputFileView";
 			this.labelInputFileView.Size = new System.Drawing.Size(286, 18);
@@ -180,7 +180,7 @@
 			// labelImporterView
 			// 
 			this.labelImporterView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelImporterView.Location = new System.Drawing.Point(12, 137);
 			this.labelImporterView.Name = "labelImporterView";
 			this.labelImporterView.Size = new System.Drawing.Size(286, 18);

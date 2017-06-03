@@ -49,12 +49,12 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			RandomSingle
 		}
 
-		private List<ActorAnimation> animations	 = new List<ActorAnimation>();
-		private ActorAnimation	   activeAnim	 = null;
-		private LoopMode			 activeLoopMode = LoopMode.Loop;
-		private float				animTime	   = 0.0f;
-		private float				animDirection  = 0.0f;
-		private float				animSpeed	  = 1.0f;
+		private List<ActorAnimation> animations     = new List<ActorAnimation>();
+		private ActorAnimation       activeAnim     = null;
+		private LoopMode             activeLoopMode = LoopMode.Loop;
+		private float                animTime       = 0.0f;
+		private float                animDirection  = 0.0f;
+		private float                animSpeed      = 1.0f;
 
 		/// <summary>
 		/// [GET / SET] A list of animations that is available for the animated actor.

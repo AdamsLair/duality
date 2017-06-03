@@ -13,7 +13,7 @@ using OpenTK;
 
 namespace Duality.Backend.DefaultOpenTK
 {
-	public class DefaultOpenTKBackendPlugin : CorePlugin
+    public class DefaultOpenTKBackendPlugin : CorePlugin
 	{
 		private static bool openTKInitialized;
 		private static Thread mainThread;

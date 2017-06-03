@@ -36,26 +36,26 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 
-		private ContentRef<Tileset> tileset				= null;
-		private int				 displayedConfigIndex   = 0;
-		private HorizontalAlignment rowAlignment		   = HorizontalAlignment.Left;
-		private TileIndexDrawMode   drawTileIndices		= TileIndexDrawMode.Never;
-		private bool				allowMultiColumnMode   = true;
-		private MultiColumnMode	 multiColumnMode		= MultiColumnMode.None;
-		private int				 multiColumnCount	   = 1;
-		private int				 multiColumnLength	  = 0;
-		private int				 totalTileCount		 = 0;
-		private Size				displayedTileSize	  = Size.Empty;
-		private Point			   tileCount			  = Point.Empty;
-		private Size				tilesetContentSize	 = Size.Empty;
-		private Bitmap			  tileBitmap			 = null;
-		private Bitmap			  backBitmap			 = null;
-		private TextureBrush		backBrush			  = null;
-		private int				 additionalSpace		= 0;
-		private Size				contentSize			= Size.Empty;
-		private Size				spacing				= new Size(2, 2);
-		private int				 hoverIndex			 = -1;
-		private bool				globalEventsSubscribed = false;
+		private ContentRef<Tileset> tileset                = null;
+		private int                 displayedConfigIndex   = 0;
+		private HorizontalAlignment rowAlignment           = HorizontalAlignment.Left;
+		private TileIndexDrawMode   drawTileIndices        = TileIndexDrawMode.Never;
+		private bool                allowMultiColumnMode   = true;
+		private MultiColumnMode     multiColumnMode        = MultiColumnMode.None;
+		private int                 multiColumnCount       = 1;
+		private int                 multiColumnLength      = 0;
+		private int                 totalTileCount         = 0;
+		private Size                displayedTileSize      = Size.Empty;
+		private Point               tileCount              = Point.Empty;
+		private Size                tilesetContentSize     = Size.Empty;
+		private Bitmap              tileBitmap             = null;
+		private Bitmap              backBitmap             = null;
+		private TextureBrush        backBrush              = null;
+		private int                 additionalSpace        = 0;
+		private Size                contentSize            = Size.Empty;
+		private Size                spacing                = new Size(2, 2);
+		private int                 hoverIndex             = -1;
+		private bool                globalEventsSubscribed = false;
 
 		private RawList<TilesetViewPaintTileData> paintTileBuffer = new RawList<TilesetViewPaintTileData>();
 

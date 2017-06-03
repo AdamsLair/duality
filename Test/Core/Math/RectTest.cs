@@ -150,12 +150,12 @@ namespace Duality.Tests.Utility
 		{
 			Assert.AreEqual(new Rect(-5, -5, 10, 10),   Rect.Align(Alignment.Center, 0, 0, 10, 10));
 
-			Assert.AreEqual(new Rect(0, -5, 10, 10),	Rect.Align(Alignment.Left, 0, 0, 10, 10));
+			Assert.AreEqual(new Rect(0, -5, 10, 10),    Rect.Align(Alignment.Left, 0, 0, 10, 10));
 			Assert.AreEqual(new Rect(-10, -5, 10, 10),  Rect.Align(Alignment.Right, 0, 0, 10, 10));
-			Assert.AreEqual(new Rect(-5, 0, 10, 10),	Rect.Align(Alignment.Top, 0, 0, 10, 10));
+			Assert.AreEqual(new Rect(-5, 0, 10, 10),    Rect.Align(Alignment.Top, 0, 0, 10, 10));
 			Assert.AreEqual(new Rect(-5, -10, 10, 10),  Rect.Align(Alignment.Bottom, 0, 0, 10, 10));
 
-			Assert.AreEqual(new Rect(0, 0, 10, 10),	 Rect.Align(Alignment.TopLeft, 0, 0, 10, 10));
+			Assert.AreEqual(new Rect(0, 0, 10, 10),     Rect.Align(Alignment.TopLeft, 0, 0, 10, 10));
 			Assert.AreEqual(new Rect(-10, 0, 10, 10),   Rect.Align(Alignment.TopRight, 0, 0, 10, 10));
 			Assert.AreEqual(new Rect(0, -10, 10, 10),   Rect.Align(Alignment.BottomLeft, 0, 0, 10, 10));
 			Assert.AreEqual(new Rect(-10, -10, 10, 10), Rect.Align(Alignment.BottomRight, 0, 0, 10, 10));
@@ -214,15 +214,15 @@ namespace Duality.Tests.Utility
 
 			// Intersection with self and offset-variants
 			Assert.AreEqual(norm, rect.Intersection(rect));
-			Assert.AreEqual(new Rect(norm.X + 1, norm.Y	, norm.W - 1, norm.H	), rect.Intersection(rect.WithOffset(1, 0)));
-			Assert.AreEqual(new Rect(norm.X	, norm.Y	, norm.W - 1, norm.H	), rect.Intersection(rect.WithOffset(-1, 0)));
-			Assert.AreEqual(new Rect(norm.X	, norm.Y + 1, norm.W	, norm.H - 1), rect.Intersection(rect.WithOffset(0, 1)));
-			Assert.AreEqual(new Rect(norm.X	, norm.Y	, norm.W	, norm.H - 1), rect.Intersection(rect.WithOffset(0, -1)));
+			Assert.AreEqual(new Rect(norm.X + 1, norm.Y    , norm.W - 1, norm.H    ), rect.Intersection(rect.WithOffset(1, 0)));
+			Assert.AreEqual(new Rect(norm.X    , norm.Y    , norm.W - 1, norm.H    ), rect.Intersection(rect.WithOffset(-1, 0)));
+			Assert.AreEqual(new Rect(norm.X    , norm.Y + 1, norm.W    , norm.H - 1), rect.Intersection(rect.WithOffset(0, 1)));
+			Assert.AreEqual(new Rect(norm.X    , norm.Y    , norm.W    , norm.H - 1), rect.Intersection(rect.WithOffset(0, -1)));
 
 			// Intersection with corners
-			Assert.AreEqual(new Rect(rect.TopLeft.X		, rect.TopLeft.Y		, 1, 1), rect.Intersection(rect.TopLeft.X - 1	, rect.TopLeft.Y - 1	, 2, 2));
-			Assert.AreEqual(new Rect(rect.TopRight.X - 1   , rect.TopRight.Y	   , 1, 1), rect.Intersection(rect.TopRight.X - 1   , rect.TopRight.Y - 1   , 2, 2));
-			Assert.AreEqual(new Rect(rect.BottomLeft.X	 , rect.BottomLeft.Y - 1 , 1, 1), rect.Intersection(rect.BottomLeft.X - 1 , rect.BottomLeft.Y - 1 , 2, 2));
+			Assert.AreEqual(new Rect(rect.TopLeft.X        , rect.TopLeft.Y        , 1, 1), rect.Intersection(rect.TopLeft.X - 1    , rect.TopLeft.Y - 1    , 2, 2));
+			Assert.AreEqual(new Rect(rect.TopRight.X - 1   , rect.TopRight.Y       , 1, 1), rect.Intersection(rect.TopRight.X - 1   , rect.TopRight.Y - 1   , 2, 2));
+			Assert.AreEqual(new Rect(rect.BottomLeft.X     , rect.BottomLeft.Y - 1 , 1, 1), rect.Intersection(rect.BottomLeft.X - 1 , rect.BottomLeft.Y - 1 , 2, 2));
 			Assert.AreEqual(new Rect(rect.BottomRight.X - 1, rect.BottomRight.Y - 1, 1, 1), rect.Intersection(rect.BottomRight.X - 1, rect.BottomRight.Y - 1, 2, 2));
 
 			// Non-intersection

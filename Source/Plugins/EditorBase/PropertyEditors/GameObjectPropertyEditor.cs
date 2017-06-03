@@ -335,8 +335,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			if (!this.active.HasValue) this.active = true;
 			this.active = !this.active.Value;
-			this.PerformSetActive(this.active.Value);
-			this.PerformGetValue();
+		    this.PerformSetActive(this.active.Value);
+		    this.PerformGetValue();
 		}
 
 		private void OnPrefabLinkShowPressed()

@@ -19,16 +19,16 @@ namespace Duality.Backend.DefaultOpenTK
 			Immediately
 		}
 
-		private int				  handle		 = 0;
-		private int				  filterHandle   = 0;
-		private	bool				 isInitial	  = true;
-		private	bool				 isStreamed	 = false;
-		private	bool				 isFirstUpdate  = true;
-		private	AudioSourceState	 lastState	  = AudioSourceState.Default;
+		private int                  handle         = 0;
+		private int                  filterHandle   = 0;
+		private	bool                 isInitial      = true;
+		private	bool                 isStreamed     = false;
+		private	bool                 isFirstUpdate  = true;
+		private	AudioSourceState     lastState      = AudioSourceState.Default;
 		private IAudioStreamProvider streamProvider = null;
 
-		private object			   strLock		= new object();
-		private	StopRequest		  strStopReq	 = StopRequest.None;
+		private object               strLock        = new object();
+		private	StopRequest          strStopReq     = StopRequest.None;
 		private	INativeAudioBuffer[] strAlBuffers   = null;
 
 

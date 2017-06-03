@@ -32,15 +32,15 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			if (this.character == null) return;
 
 			// Keyboard character controls using WASD
-			Vector2 movement = Vector2.Zero;
-			if (DualityApp.Keyboard[Key.A])
-				movement -= Vector2.UnitX;
-			if (DualityApp.Keyboard[Key.D])
-				movement += Vector2.UnitX;
-			if (DualityApp.Keyboard[Key.W])
-				movement -= Vector2.UnitY;
-			if (DualityApp.Keyboard[Key.S])
-				movement += Vector2.UnitY;
+            Vector2 movement = Vector2.Zero;
+            if (DualityApp.Keyboard[Key.A])
+                movement -= Vector2.UnitX;
+            if (DualityApp.Keyboard[Key.D])
+                movement += Vector2.UnitX;
+            if (DualityApp.Keyboard[Key.W])
+                movement -= Vector2.UnitY;
+            if (DualityApp.Keyboard[Key.S])
+                movement += Vector2.UnitY;
 
 			// Gamepad character controls using the left stick
 			for (int i = 0; i < DualityApp.Gamepads.Count; i++)

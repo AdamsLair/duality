@@ -57,16 +57,16 @@
 			this.toolStrip.GripMargin = new System.Windows.Forms.Padding(0);
 			this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.labelVisibility,
-			this.buttonErrors,
-			this.buttonWarnings,
-			this.buttonMessages,
-			this.toolStripSeparator1,
-			this.buttonCore,
-			this.buttonEditor,
-			this.buttonGame,
-			this.actionClear,
-			this.buttonPauseOnError});
+            this.labelVisibility,
+            this.buttonErrors,
+            this.buttonWarnings,
+            this.buttonMessages,
+            this.toolStripSeparator1,
+            this.buttonCore,
+            this.buttonEditor,
+            this.buttonGame,
+            this.actionClear,
+            this.buttonPauseOnError});
 			this.toolStrip.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Size = new System.Drawing.Size(683, 25);
@@ -173,7 +173,7 @@
 			this.actionClear.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.actionClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.actionClear.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.checkAutoClear});
+            this.checkAutoClear});
 			this.actionClear.Image = global::Duality.Editor.Plugins.LogView.Properties.Resources.cross;
 			this.actionClear.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionClear.Name = "actionClear";

@@ -33,6 +33,6 @@ namespace Duality.Plugins.Tilemaps
 		/// <summary>
 		/// All collision layers.
 		/// </summary>
-		All	= 0xF
+		All    = 0xF
 	}
 }

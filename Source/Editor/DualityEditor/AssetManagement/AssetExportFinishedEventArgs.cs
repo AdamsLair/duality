@@ -12,7 +12,7 @@ namespace Duality.Editor.AssetManagement
 	/// </summary>
 	public class AssetExportFinishedEventArgs : EventArgs
 	{
-		private bool	 success = false;
+		private bool     success = false;
 		private Resource input   = null;
 		private string[] output  = null;
 

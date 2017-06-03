@@ -14,16 +14,16 @@ namespace Duality.Plugins.Tilemaps
 	{
 		private static readonly TileConnection[] NoFallbacks = new TileConnection[0];
 
-		private static readonly int			StateCount  = (int)TileConnection.All + 1;
-		private static readonly TileConnection None		= TileConnection.None;
-		private static readonly TileConnection All		 = TileConnection.All;
-		private static readonly TileConnection TopLeft	 = TileConnection.TopLeft;
-		private static readonly TileConnection Top		 = TileConnection.Top;
-		private static readonly TileConnection TopRight	= TileConnection.TopRight;
-		private static readonly TileConnection Left		= TileConnection.Left;
-		private static readonly TileConnection Right	   = TileConnection.Right;
+		private static readonly int            StateCount  = (int)TileConnection.All + 1;
+		private static readonly TileConnection None        = TileConnection.None;
+		private static readonly TileConnection All         = TileConnection.All;
+		private static readonly TileConnection TopLeft     = TileConnection.TopLeft;
+		private static readonly TileConnection Top         = TileConnection.Top;
+		private static readonly TileConnection TopRight    = TileConnection.TopRight;
+		private static readonly TileConnection Left        = TileConnection.Left;
+		private static readonly TileConnection Right       = TileConnection.Right;
 		private static readonly TileConnection BottomLeft  = TileConnection.BottomLeft;
-		private static readonly TileConnection Bottom	  = TileConnection.Bottom;
+		private static readonly TileConnection Bottom      = TileConnection.Bottom;
 		private static readonly TileConnection BottomRight = TileConnection.BottomRight;
 
 
@@ -55,60 +55,60 @@ namespace Duality.Plugins.Tilemaps
 			// See here: https://cloud.githubusercontent.com/assets/14859411/11279962/ccc1ac2e-8ef3-11e5-8e99-861b0d7a1c9a.png
 			//
 			MapAllPermutations(directFallbacks, Left | Right | BottomLeft | Bottom | BottomRight, TopLeft, TopRight);
-			MapAllPermutations(directFallbacks, TopLeft | Top | Left | BottomLeft | Bottom,	   TopRight, BottomRight);
-			MapAllPermutations(directFallbacks, Left | BottomLeft | Bottom,					   TopLeft, TopRight, BottomRight);
-			MapAllPermutations(directFallbacks, TopLeft | Top | TopRight | Left | Right,		  BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Left | Right,									 TopLeft, TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, TopLeft | Top | Left,							 TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, TopLeft | Top | Left | BottomLeft | Bottom,       TopRight, BottomRight);
+			MapAllPermutations(directFallbacks, Left | BottomLeft | Bottom,                       TopLeft, TopRight, BottomRight);
+			MapAllPermutations(directFallbacks, TopLeft | Top | TopRight | Left | Right,          BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, Left | Right,                                     TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, TopLeft | Top | Left,                             TopRight, BottomLeft, BottomRight);
 
-			MapAllPermutations(directFallbacks, Left,											 TopLeft, TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Top | TopRight | Right | Bottom | BottomRight,	TopLeft, BottomLeft);
-			MapAllPermutations(directFallbacks, Right | Bottom | BottomRight,					 TopLeft, TopRight, BottomLeft);
-			MapAllPermutations(directFallbacks, Top | Bottom,									 TopLeft, TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Bottom,										   TopLeft, TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Top | TopRight | Right,						   TopLeft, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Right,											TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, Left,                                             TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, Top | TopRight | Right | Bottom | BottomRight,    TopLeft, BottomLeft);
+			MapAllPermutations(directFallbacks, Right | Bottom | BottomRight,                     TopLeft, TopRight, BottomLeft);
+			MapAllPermutations(directFallbacks, Top | Bottom,                                     TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, Bottom,                                           TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, Top | TopRight | Right,                           TopLeft, BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, Right,                                            TopLeft, TopRight, BottomLeft, BottomRight);
 
-			MapAllPermutations(directFallbacks, Top,											  TopLeft, TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, None,											 TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, Top,                                              TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, None,                                             TopLeft, TopRight, BottomLeft, BottomRight);
 
-			MapAllPermutations(directFallbacks, Left | Right | BottomLeft | Bottom,			   TopLeft, TopRight);
-			MapAllPermutations(directFallbacks, Left | Right | Bottom | BottomRight,			  TopLeft, TopRight);
-			MapAllPermutations(directFallbacks, Left | Right | Bottom,							TopLeft, TopRight);
-			MapAllPermutations(directFallbacks, Top | Left | BottomLeft | Bottom,				 TopRight, BottomRight);
-			MapAllPermutations(directFallbacks, TopLeft | Top | Left | Bottom,					TopRight, BottomRight);
-			MapAllPermutations(directFallbacks, Top | Left | Bottom,							  TopRight, BottomRight);
-			MapAllPermutations(directFallbacks, Left | Bottom,									TopLeft, TopRight, BottomRight);
+			MapAllPermutations(directFallbacks, Left | Right | BottomLeft | Bottom,               TopLeft, TopRight);
+			MapAllPermutations(directFallbacks, Left | Right | Bottom | BottomRight,              TopLeft, TopRight);
+			MapAllPermutations(directFallbacks, Left | Right | Bottom,                            TopLeft, TopRight);
+			MapAllPermutations(directFallbacks, Top | Left | BottomLeft | Bottom,                 TopRight, BottomRight);
+			MapAllPermutations(directFallbacks, TopLeft | Top | Left | Bottom,                    TopRight, BottomRight);
+			MapAllPermutations(directFallbacks, Top | Left | Bottom,                              TopRight, BottomRight);
+			MapAllPermutations(directFallbacks, Left | Bottom,                                    TopLeft, TopRight, BottomRight);
 
-			MapAllPermutations(directFallbacks, Top | TopRight | Left | Right,					BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, TopLeft | Top | Left | Right,					 BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Top | Left | Right,							   BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Top | Left,									   TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Top | Right | Bottom | BottomRight,			   TopLeft, BottomLeft);
-			MapAllPermutations(directFallbacks, Top | TopRight | Right | Bottom,				  TopLeft, BottomLeft);
-			MapAllPermutations(directFallbacks, Top | Right | Bottom,							 TopLeft, BottomLeft);
+			MapAllPermutations(directFallbacks, Top | TopRight | Left | Right,                    BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, TopLeft | Top | Left | Right,                     BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, Top | Left | Right,                               BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, Top | Left,                                       TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, Top | Right | Bottom | BottomRight,               TopLeft, BottomLeft);
+			MapAllPermutations(directFallbacks, Top | TopRight | Right | Bottom,                  TopLeft, BottomLeft);
+			MapAllPermutations(directFallbacks, Top | Right | Bottom,                             TopLeft, BottomLeft);
 
-			MapAllPermutations(directFallbacks, Right | Bottom,								   TopLeft, TopRight, BottomLeft);
-			MapAllPermutations(directFallbacks, Top | Right,									  TopLeft, BottomLeft, BottomRight);
+			MapAllPermutations(directFallbacks, Right | Bottom,                                   TopLeft, TopRight, BottomLeft);
+			MapAllPermutations(directFallbacks, Top | Right,                                      TopLeft, BottomLeft, BottomRight);
 			
 			//
 			// Actual fallbacks in case a certain connectivity state is unavailable.
 			//
 			directFallbacks[(int)(Top | Left | Right | BottomLeft | Bottom | BottomRight)] = All;
-			directFallbacks[(int)(TopLeft | Top | Left | Right | BottomLeft | Bottom)]	 = All;
+			directFallbacks[(int)(TopLeft | Top | Left | Right | BottomLeft | Bottom)]     = All;
 			directFallbacks[(int)(Top | TopRight | Left | Right | Bottom | BottomRight)]   = All;
-			directFallbacks[(int)(TopLeft | Top | TopRight | Left | Right | Bottom)]	   = All;
+			directFallbacks[(int)(TopLeft | Top | TopRight | Left | Right | Bottom)]       = All;
 
 			directFallbacks[(int)(Top | TopRight | Left | Right | BottomLeft | Bottom | BottomRight)] = All;
 			directFallbacks[(int)(TopLeft | Top | Left | Right | BottomLeft | Bottom | BottomRight)]  = All;
-			directFallbacks[(int)(TopLeft | Top | TopRight | Left | Right | Bottom | BottomRight)]	= All;
-			directFallbacks[(int)(TopLeft | Top | TopRight | Left | Right | BottomLeft | Bottom)]	 = All;
+			directFallbacks[(int)(TopLeft | Top | TopRight | Left | Right | Bottom | BottomRight)]    = All;
+			directFallbacks[(int)(TopLeft | Top | TopRight | Left | Right | BottomLeft | Bottom)]     = All;
 
 			directFallbacks[(int)(Top | TopRight | Left | Right | BottomLeft | Bottom)] = All;
 			directFallbacks[(int)(TopLeft | Top | Left | Right | Bottom | BottomRight)] = All;
 
-			directFallbacks[(int)(TopLeft | Top | Left | Right | Bottom)]	 = All;
-			directFallbacks[(int)(Top | TopRight | Left | Right | Bottom)]	= All;
+			directFallbacks[(int)(TopLeft | Top | Left | Right | Bottom)]     = All;
+			directFallbacks[(int)(Top | TopRight | Left | Right | Bottom)]    = All;
 			directFallbacks[(int)(Top | Left | Right | BottomLeft | Bottom)]  = All;
 			directFallbacks[(int)(Top | Left | Right | Bottom | BottomRight)] = All;
 
@@ -116,22 +116,22 @@ namespace Duality.Plugins.Tilemaps
 
 			directFallbacks[(int)(Left | Right | BottomLeft | Bottom)]  = Left | Right | BottomLeft | Bottom | BottomRight;
 			directFallbacks[(int)(Left | Right | BottomRight | Bottom)] = Left | Right | BottomLeft | Bottom | BottomRight;
-			directFallbacks[(int)(Left | Right | Bottom)]			   = Left | Right | BottomLeft | Bottom | BottomRight;
+			directFallbacks[(int)(Left | Right | Bottom)]               = Left | Right | BottomLeft | Bottom | BottomRight;
 
 			directFallbacks[(int)(Top | Left | BottomLeft | Bottom)] = TopLeft | Top | Left | BottomLeft | Bottom;
-			directFallbacks[(int)(TopLeft | Top | Left | Bottom)]	= TopLeft | Top | Left | BottomLeft | Bottom;
-			directFallbacks[(int)(Top | Left | Bottom)]			  = TopLeft | Top | Left | BottomLeft | Bottom;
+			directFallbacks[(int)(TopLeft | Top | Left | Bottom)]    = TopLeft | Top | Left | BottomLeft | Bottom;
+			directFallbacks[(int)(Top | Left | Bottom)]              = TopLeft | Top | Left | BottomLeft | Bottom;
 
 			directFallbacks[(int)(Top | TopRight | Left | Right)] = TopLeft | Top | TopRight | Left | Right;
 			directFallbacks[(int)(TopLeft | Top | Left | Right)]  = TopLeft | Top | TopRight | Left | Right;
-			directFallbacks[(int)(Top | Left | Right)]			= TopLeft | Top | TopRight | Left | Right;
+			directFallbacks[(int)(Top | Left | Right)]            = TopLeft | Top | TopRight | Left | Right;
 
 			directFallbacks[(int)(Top | Right | Bottom | BottomRight)] = Top | TopRight | Right | Bottom | BottomRight;
-			directFallbacks[(int)(Top | TopRight | Right | Bottom)]	= Top | TopRight | Right | Bottom | BottomRight;
-			directFallbacks[(int)(Top | Right | Bottom)]			   = Top | TopRight | Right | Bottom | BottomRight;
+			directFallbacks[(int)(Top | TopRight | Right | Bottom)]    = Top | TopRight | Right | Bottom | BottomRight;
+			directFallbacks[(int)(Top | Right | Bottom)]               = Top | TopRight | Right | Bottom | BottomRight;
 
-			directFallbacks[(int)(Top | Left)]	 = TopLeft | Top | Left;
-			directFallbacks[(int)(Top | Right)]	= Top | TopRight | Right;
+			directFallbacks[(int)(Top | Left)]     = TopLeft | Top | Left;
+			directFallbacks[(int)(Top | Right)]    = Top | TopRight | Right;
 			directFallbacks[(int)(Left | Bottom)]  = Left | BottomLeft | Bottom;
 			directFallbacks[(int)(Right | Bottom)] = Right | Bottom | BottomRight;
 

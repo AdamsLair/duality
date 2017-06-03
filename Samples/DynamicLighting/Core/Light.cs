@@ -23,8 +23,8 @@ namespace DynamicLighting
 	/// </summary>
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(DynLightResNames.IconResourceLight)]
-	public class Light : Component
-	{
+    public class Light : Component
+    {
 		private class DeviceLightInfo
 		{
 			public	List<Light>		PriorizedLights;

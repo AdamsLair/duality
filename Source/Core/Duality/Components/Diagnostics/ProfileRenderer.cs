@@ -27,21 +27,21 @@ namespace Duality.Components.Diagnostics
 			public VertexC1P3T2[][] VertText;
 		}
 
-		private bool				 textReportPerf	= true;
-		private bool				 textReportStat	= true;
-		private bool				 drawGraphs		= true;
-		private List<string>		 counterGraphs	 = new List<string> { Profile.TimeFrame.FullName, Profile.TimeRender.FullName, Profile.TimeUpdate.FullName, Profile.StatMemoryTotalUsage.FullName };
+		private bool                 textReportPerf    = true;
+		private bool                 textReportStat    = true;
+		private bool                 drawGraphs        = true;
+		private List<string>         counterGraphs     = new List<string> { Profile.TimeFrame.FullName, Profile.TimeRender.FullName, Profile.TimeUpdate.FullName, Profile.StatMemoryTotalUsage.FullName };
 		private ProfileReportOptions textReportOptions = ProfileReportOptions.LastValue | ProfileReportOptions.MaxValue | ProfileReportOptions.OmitMinorValues | ProfileReportOptions.Header;
-		private int				  updateInterval	= 250;
-		private Key				  keyToggleTextPerf = Key.F2;
-		private Key				  keyToggleTextStat = Key.F3;
-		private Key				  keyToggleGraph	= Key.F4;
-		private Key				  keyResetCounters  = Key.F5;
+		private int                  updateInterval    = 250;
+		private Key                  keyToggleTextPerf = Key.F2;
+		private Key                  keyToggleTextStat = Key.F3;
+		private Key                  keyToggleGraph    = Key.F4;
+		private Key                  keyResetCounters  = Key.F5;
 
-		[DontSerialize] private FormattedText	textReport		 = null;
+		[DontSerialize] private FormattedText    textReport         = null;
 		[DontSerialize] private VertexC1P3T2[]   textReportIconVert = null;
 		[DontSerialize] private VertexC1P3T2[][] textReportTextVert = null;
-		[DontSerialize] private TimeSpan		 textReportLast	 = TimeSpan.Zero;
+		[DontSerialize] private TimeSpan         textReportLast     = TimeSpan.Zero;
 		[DontSerialize] private Dictionary<string,GraphCacheEntry> graphCache = new Dictionary<string,GraphCacheEntry>();
 
 

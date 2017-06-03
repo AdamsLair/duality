@@ -16,8 +16,8 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 {
 	public class RemoveTilesetConfigLayerAction<T> : UndoRedoAction
 	{
-		private Tileset	  tileset;
-		private T			layer;
+		private Tileset      tileset;
+		private T            layer;
 		private PropertyInfo property;
 
 		public override string Name

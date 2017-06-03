@@ -53,35 +53,35 @@ namespace Duality
 
 		static Profile()
 		{
-			TimeFrame				   = RequestCounter<TimeCounter>(@"Duality\Frame");
-			TimeUpdate				  = RequestCounter<TimeCounter>(@"Duality\Frame\Update");
-			TimeUpdatePhysics		   = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics");
+			TimeFrame                   = RequestCounter<TimeCounter>(@"Duality\Frame");
+			TimeUpdate                  = RequestCounter<TimeCounter>(@"Duality\Frame\Update");
+			TimeUpdatePhysics           = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics");
 			TimeUpdatePhysicsContacts   = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\Contacts");
 			TimeUpdatePhysicsController = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\Controller");
 			TimeUpdatePhysicsContinous  = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\Continous");
 			TimeUpdatePhysicsAddRemove  = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\AddRemove");
-			TimeUpdatePhysicsSolve	  = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\Solve");
-			TimeUpdateScene			 = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene");
+			TimeUpdatePhysicsSolve      = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\Solve");
+			TimeUpdateScene             = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene");
 			TimeUpdateSceneComponents   = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene\All Components");
-			TimeUpdateAudio			 = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Audio");
-			TimeRender				  = RequestCounter<TimeCounter>(@"Duality\Frame\Render");
-			TimeSwapBuffers			 = RequestCounter<TimeCounter>(@"Duality\Frame\Render\SwapBuffers");
+			TimeUpdateAudio             = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Audio");
+			TimeRender                  = RequestCounter<TimeCounter>(@"Duality\Frame\Render");
+			TimeSwapBuffers             = RequestCounter<TimeCounter>(@"Duality\Frame\Render\SwapBuffers");
 			TimeQueryVisibleRenderers   = RequestCounter<TimeCounter>(@"Duality\Frame\Render\QueryVisibleRenderers");
-			TimeCollectDrawcalls		= RequestCounter<TimeCounter>(@"Duality\Frame\Render\CollectDrawcalls");
-			TimeOptimizeDrawcalls	   = RequestCounter<TimeCounter>(@"Duality\Frame\Render\OptimizeDrawcalls");
-			TimeProcessDrawcalls		= RequestCounter<TimeCounter>(@"Duality\Frame\Render\ProcessDrawcalls");
-			TimePostProcessing		  = RequestCounter<TimeCounter>(@"Duality\Frame\Render\PostProcessing");
-			TimeLog					 = RequestCounter<TimeCounter>(@"Duality\Frame\Log");
-			TimeVisualPicking		   = RequestCounter<TimeCounter>(@"Duality\Frame\VisualPicking");
-			TimeUnaccounted			 = RequestCounter<TimeCounter>(@"Duality\Frame\Unaccounted");
+			TimeCollectDrawcalls        = RequestCounter<TimeCounter>(@"Duality\Frame\Render\CollectDrawcalls");
+			TimeOptimizeDrawcalls       = RequestCounter<TimeCounter>(@"Duality\Frame\Render\OptimizeDrawcalls");
+			TimeProcessDrawcalls        = RequestCounter<TimeCounter>(@"Duality\Frame\Render\ProcessDrawcalls");
+			TimePostProcessing          = RequestCounter<TimeCounter>(@"Duality\Frame\Render\PostProcessing");
+			TimeLog                     = RequestCounter<TimeCounter>(@"Duality\Frame\Log");
+			TimeVisualPicking           = RequestCounter<TimeCounter>(@"Duality\Frame\VisualPicking");
+			TimeUnaccounted             = RequestCounter<TimeCounter>(@"Duality\Frame\Unaccounted");
 
-			StatNumPlaying2D			= RequestCounter<StatCounter>(@"Duality\Stats\Audio\NumPlaying2D");
-			StatNumPlaying3D			= RequestCounter<StatCounter>(@"Duality\Stats\Audio\NumPlaying3D");
-			StatNumDrawcalls			= RequestCounter<StatCounter>(@"Duality\Stats\Render\NumDrawcalls");
-			StatNumRawBatches		   = RequestCounter<StatCounter>(@"Duality\Stats\Render\NumRawBatches");
-			StatNumMergedBatches		= RequestCounter<StatCounter>(@"Duality\Stats\Render\NumMergedBatches");
-			StatNumOptimizedBatches	 = RequestCounter<StatCounter>(@"Duality\Stats\Render\NumOptimizedBatches");
-			StatMemoryTotalUsage		= RequestCounter<StatCounter>(@"Duality\Stats\Memory\TotalUsage");
+			StatNumPlaying2D            = RequestCounter<StatCounter>(@"Duality\Stats\Audio\NumPlaying2D");
+			StatNumPlaying3D            = RequestCounter<StatCounter>(@"Duality\Stats\Audio\NumPlaying3D");
+			StatNumDrawcalls            = RequestCounter<StatCounter>(@"Duality\Stats\Render\NumDrawcalls");
+			StatNumRawBatches           = RequestCounter<StatCounter>(@"Duality\Stats\Render\NumRawBatches");
+			StatNumMergedBatches        = RequestCounter<StatCounter>(@"Duality\Stats\Render\NumMergedBatches");
+			StatNumOptimizedBatches     = RequestCounter<StatCounter>(@"Duality\Stats\Render\NumOptimizedBatches");
+			StatMemoryTotalUsage        = RequestCounter<StatCounter>(@"Duality\Stats\Memory\TotalUsage");
 			StatMemoryGarbageCollect0   = RequestCounter<StatCounter>(@"Duality\Stats\Memory\GarbageCollect0");
 			StatMemoryGarbageCollect1   = RequestCounter<StatCounter>(@"Duality\Stats\Memory\GarbageCollect1");
 			StatMemoryGarbageCollect2   = RequestCounter<StatCounter>(@"Duality\Stats\Memory\GarbageCollect2");
@@ -290,7 +290,7 @@ namespace Duality
 					if (options.HasFlag(ProfileReportOptions.MaxValue))
 						reportBuilder.Append("   Max. Value ");
 					if (options.HasFlag(ProfileReportOptions.SampleCount))
-						reportBuilder.Append("		Samples ");
+						reportBuilder.Append("        Samples ");
 
 					reportBuilder.Append(options.HasFlag(ProfileReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
 

@@ -12,12 +12,12 @@ namespace Duality.Serialization
 	[DontSerialize]
 	public sealed class SerializeType
 	{
-		private TypeInfo			type;
-		private FieldInfo[]		 fields;
-		private string			  typeString;
-		private DataType			dataType;
-		private bool				dontSerialize;
-		private object			  defaultValue;
+		private TypeInfo            type;
+		private FieldInfo[]         fields;
+		private string              typeString;
+		private DataType            dataType;
+		private bool                dontSerialize;
+		private object              defaultValue;
 		private ISerializeSurrogate surrogate;
 
 		/// <summary>

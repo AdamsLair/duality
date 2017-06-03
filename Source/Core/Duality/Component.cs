@@ -68,7 +68,7 @@ namespace Duality
 
 
 		internal GameObject gameobj = null;
-		private  bool	   active  = true;
+		private  bool       active  = true;
 
 		
 		/// <summary>

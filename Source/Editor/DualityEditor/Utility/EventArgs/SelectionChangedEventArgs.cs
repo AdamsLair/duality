@@ -9,12 +9,12 @@ namespace Duality.Editor
 {
 	public class SelectionChangedEventArgs : EventArgs
 	{
-		private ObjectSelection			 current;
-		private ObjectSelection			 previous;
-		private ObjectSelection.Category	diffCat;
-		private ObjectSelection			 added;
-		private ObjectSelection			 removed;
-		private SelectionChangeReason	   reason;
+		private ObjectSelection             current;
+		private ObjectSelection             previous;
+		private ObjectSelection.Category    diffCat;
+		private ObjectSelection             added;
+		private ObjectSelection             removed;
+		private SelectionChangeReason       reason;
 
 		public ObjectSelection Current
 		{
