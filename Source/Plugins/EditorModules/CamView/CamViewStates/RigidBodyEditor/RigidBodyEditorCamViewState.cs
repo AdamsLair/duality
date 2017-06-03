@@ -24,16 +24,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// </summary>
 	public partial class RigidBodyEditorCamViewState : ObjectEditorCamViewState, IRigidBodyEditorToolEnvironment
 	{
-		private RigidBodyEditorTool	   toolNone	   = new NoRigidBodyEditorTool();
-		private List<RigidBodyEditorTool> tools		  = new List<RigidBodyEditorTool>();
-		private RigidBody				 selectedBody   = null;
-		private RigidBodyEditorTool	   selectedTool   = null;
-		private Vector3				   lockedWorldPos = Vector3.Zero;
-		private Vector3				   activeWorldPos = Vector3.Zero;
-		private Vector2				   activeObjPos   = Vector2.Zero;
-		private RigidBodyEditorTool	   activeTool	 = null;
-		private RigidBodyEditorTool	   actionTool	 = null;
-		private ToolStrip				 toolstrip	  = null;
+		private RigidBodyEditorTool       toolNone       = new NoRigidBodyEditorTool();
+		private List<RigidBodyEditorTool> tools          = new List<RigidBodyEditorTool>();
+		private RigidBody                 selectedBody   = null;
+		private RigidBodyEditorTool       selectedTool   = null;
+		private Vector3                   lockedWorldPos = Vector3.Zero;
+		private Vector3                   activeWorldPos = Vector3.Zero;
+		private Vector2                   activeObjPos   = Vector2.Zero;
+		private RigidBodyEditorTool       activeTool     = null;
+		private RigidBodyEditorTool       actionTool     = null;
+		private ToolStrip                 toolstrip      = null;
 
 		public override string StateName
 		{

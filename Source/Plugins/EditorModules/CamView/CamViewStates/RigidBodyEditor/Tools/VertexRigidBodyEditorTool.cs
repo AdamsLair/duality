@@ -1,12 +1,13 @@
-﻿using Duality.Components.Physics;
-using Duality.Drawing;
-using Duality.Editor.Plugins.CamView.Properties;
-using Duality.Editor.Plugins.CamView.UndoRedoActions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+
+using Duality.Drawing;
+using Duality.Components.Physics;
+using Duality.Editor.Plugins.CamView.Properties;
+using Duality.Editor.Plugins.CamView.UndoRedoActions;
 
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
