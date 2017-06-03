@@ -32,7 +32,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 			public ToolStripButton ToolButton;
 		}
 
-		
+		private const float         zoomInStep     = 1.1f;
+		private const float         zoomOutStep    = 1.0f / zoomInStep;
+
 		private TilesetEditorMode   activeMode     = null;
 		private EditorModeInfo[]    availableModes = null;
 		private ContentRef<Tileset> backupTarget   = null;
@@ -82,6 +84,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			// Initial resize event to apply a proper size to the layer view main column
 			this.layerView_Resize(this, EventArgs.Empty);
+			UpdateZoomButtons();
 		}
 		
 		internal void SaveUserData(XElement node)
@@ -461,6 +464,24 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.layerView.SelectedNode = this.layerView.Root.Children[selectedIndex];
 			}
 		}
+		private void buttonZoomIn_Click (object sender, EventArgs e)
+		{
+			this.tilesetView.TileSizeMultiplier *= zoomInStep;
+			this.tilesetView.InvalidateTileset();
+			UpdateZoomButtons();
+		}
+		private void buttonZoomOut_Click (object sender, EventArgs e)
+		{
+			this.tilesetView.TileSizeMultiplier *= zoomOutStep;
+			this.tilesetView.InvalidateTileset();
+			UpdateZoomButtons();
+		}
+		private void buttonZoomDefault_Click (object sender, EventArgs e)
+		{
+			this.tilesetView.TileSizeMultiplier = 1.0f;
+			this.tilesetView.InvalidateTileset();
+			UpdateZoomButtons();
+		}
 		private void layerView_SelectionChanged(object sender, EventArgs e)
 		{
 			TreeNodeAdv viewNode = this.layerView.SelectedNode;
@@ -511,6 +532,25 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 
 			return null;
+		}
+
+		private void UpdateZoomButtons ()
+		{
+			switch (this.tilesetView.ZoomStatus)
+			{
+				case TilesetView.ZoomingStatus.General:
+					this.buttonZoomIn.Enabled = true;
+					this.buttonZoomOut.Enabled = true;
+					break;
+				case TilesetView.ZoomingStatus.Max:
+					this.buttonZoomIn.Enabled = false;
+					this.buttonZoomOut.Enabled = true;
+					break;
+				case TilesetView.ZoomingStatus.Min:
+					this.buttonZoomIn.Enabled = true;
+					this.buttonZoomOut.Enabled = false;
+					break;
+			}
 		}
 	}
 }
