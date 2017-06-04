@@ -536,17 +536,17 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void UpdateZoomButtons()
 		{
-			switch (this.tilesetView.ZoomStatus)
+			switch (this.tilesetView.ZoomLevelTag)
 			{
-				case TilesetView.ZoomingStatus.General:
+				case TilesetView.ZoomLevel.Custom:
 					this.buttonZoomIn.Enabled = true;
 					this.buttonZoomOut.Enabled = true;
 					break;
-				case TilesetView.ZoomingStatus.Max:
+				case TilesetView.ZoomLevel.Max:
 					this.buttonZoomIn.Enabled = false;
 					this.buttonZoomOut.Enabled = true;
 					break;
-				case TilesetView.ZoomingStatus.Min:
+				case TilesetView.ZoomLevel.Min:
 					this.buttonZoomIn.Enabled = true;
 					this.buttonZoomOut.Enabled = false;
 					break;

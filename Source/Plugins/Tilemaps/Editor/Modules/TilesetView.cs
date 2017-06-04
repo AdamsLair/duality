@@ -28,9 +28,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Always
 		}
 
-		public enum ZoomingStatus
+		public enum ZoomLevel
 		{
-			General,
+			Custom,
 			Max,
 			Min
 		}
@@ -66,7 +66,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private int                 hoverIndex             = -1;
 		private bool                globalEventsSubscribed = false;
 		private float               tileSizeMultiplier     = 1.0f;
-		private ZoomingStatus       zoomStatus             = ZoomingStatus.General;
+		private ZoomLevel           zoomLevel              = ZoomLevel.Custom;
 
 		private RawList<TilesetViewPaintTileData> paintTileBuffer = new RawList<TilesetViewPaintTileData>();
 
@@ -221,35 +221,35 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 				Vector2 originalTileSize = tileset.TileSize;
 				this.tileSizeMultiplier = value;
-				this.zoomStatus = ZoomingStatus.General;
+				this.zoomLevel = ZoomLevel.Custom;
 				if (value * originalTileSize.X < MinDisplayedSize)
 				{
-					this.zoomStatus = ZoomingStatus.Min;
 					this.tileSizeMultiplier = MinDisplayedSize / originalTileSize.X;
+					this.zoomLevel = ZoomLevel.Min;
 				}
 				if (value * originalTileSize.Y < MinDisplayedSize)
 				{
-					this.zoomStatus = ZoomingStatus.Min;
 					this.tileSizeMultiplier = MinDisplayedSize / originalTileSize.Y;
+					this.zoomLevel = ZoomLevel.Min;
 				}
 				if (value * originalTileSize.X > MaxDisplayedSize)
 				{
-					this.zoomStatus = ZoomingStatus.Max;
 					this.tileSizeMultiplier = MaxDisplayedSize / originalTileSize.X;
+					this.zoomLevel = ZoomLevel.Max;
 				}
 				if (value * originalTileSize.Y > MaxDisplayedSize)
 				{
-					this.zoomStatus = ZoomingStatus.Max;
 					this.tileSizeMultiplier = MaxDisplayedSize / originalTileSize.Y;
+					this.zoomLevel = ZoomLevel.Max;
 				}
 			}
 		}
 		/// <summary>
 		/// [GET] Returns <see cref="TileSizeMultiplier"/>'s relation to the size limits.
 		/// </summary>
-		public ZoomingStatus ZoomStatus
+		public ZoomLevel ZoomLevelTag
 		{
-			get { return this.zoomStatus; }
+			get { return this.zoomLevel; }
 		}
 
 
