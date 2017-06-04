@@ -28,12 +28,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Always
 		}
 
-		public enum ZoomLevel
+		[Flags]
+		public enum ZoomLevelTags
 		{
-			Default,
-			Custom,
-			Max,
-			Min
+			None    = 0x0,
+			Default = 0x1,
+			Max     = 0x2,
+			Min     = 0x4
 		}
 
 		protected enum MultiColumnMode
@@ -70,7 +71,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private float               defaultTileSizeFactor  = 1.0f;
 		private float               minTileSizeFactor      = 1.0f;
 		private float               maxTileSizeFactor      = 1.0f;
-		private ZoomLevel           zoomLevel              = ZoomLevel.Custom;
+		private ZoomLevelTags       specialZoomLevel       = ZoomLevelTags.None;
 
 		private RawList<TilesetViewPaintTileData> paintTileBuffer = new RawList<TilesetViewPaintTileData>();
 
@@ -236,9 +237,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		/// <summary>
 		/// [GET] Returns <see cref="TileSizeFactor"/>'s relation to the size limits.
 		/// </summary>
-		public ZoomLevel ZoomLevelTag
+		public ZoomLevelTags SpecialZoomLevel
 		{
-			get { return this.zoomLevel; }
+			get { return this.specialZoomLevel; }
 		}
 
 
@@ -511,24 +512,21 @@ namespace Duality.Editor.Plugins.Tilemaps
 		
 		private void UpdateZoomLevel()
 		{
+			this.specialZoomLevel = ZoomLevelTags.None;
 			if (this.tileSizeFactor <= this.minTileSizeFactor)
 			{
 				this.tileSizeFactor = this.minTileSizeFactor;
-				this.zoomLevel = ZoomLevel.Min;
+				this.specialZoomLevel |= ZoomLevelTags.Min;
 			}
-			else if (this.tileSizeFactor >= this.maxTileSizeFactor)
+			if (this.tileSizeFactor >= this.maxTileSizeFactor)
 			{
 				this.tileSizeFactor = this.maxTileSizeFactor;
-				this.zoomLevel = ZoomLevel.Max;
+				this.specialZoomLevel |= ZoomLevelTags.Max;
 			}
-			else if (MathF.Abs(this.tileSizeFactor - this.defaultTileSizeFactor) < 0.1f)
+			if (MathF.Abs(this.tileSizeFactor - this.defaultTileSizeFactor) < 0.1f)
 			{
 				this.tileSizeFactor = this.defaultTileSizeFactor;
-				this.zoomLevel = ZoomLevel.Default;
-			}
-			else
-			{
-				this.zoomLevel = ZoomLevel.Custom;
+				this.specialZoomLevel |= ZoomLevelTags.Default;
 			}
 		}
 		private void UpdateMultiColumnMode()

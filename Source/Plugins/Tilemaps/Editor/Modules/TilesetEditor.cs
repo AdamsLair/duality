@@ -203,9 +203,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void UpdateZoomButtons()
 		{
-			this.buttonZoomIn.Enabled = (this.tilesetView.ZoomLevelTag != TilesetView.ZoomLevel.Max);
-			this.buttonZoomOut.Enabled = (this.tilesetView.ZoomLevelTag != TilesetView.ZoomLevel.Min);
-			this.buttonZoomDefault.Enabled = (this.tilesetView.ZoomLevelTag != TilesetView.ZoomLevel.Default);
+			this.buttonZoomIn.Enabled = !this.tilesetView.SpecialZoomLevel.HasFlag(TilesetView.ZoomLevelTags.Max);
+			this.buttonZoomOut.Enabled = !this.tilesetView.SpecialZoomLevel.HasFlag(TilesetView.ZoomLevelTags.Min);
+			this.buttonZoomDefault.Enabled = !this.tilesetView.SpecialZoomLevel.HasFlag(TilesetView.ZoomLevelTags.Default);
 		}
 		
 		private void StartRecordTilesetChanges()
