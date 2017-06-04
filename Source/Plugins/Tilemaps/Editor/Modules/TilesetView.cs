@@ -42,8 +42,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Vertical
 		}
 
-		private const float         minDisplayedSize       = 30.0f;
-		private const float         maxDisplayedSize       = 50.0f;
+		private const float         MinDisplayedSize       = 30.0f;
+		private const float         MaxDisplayedSize       = 50.0f;
 
 		private ContentRef<Tileset> tileset                = null;
 		private int                 displayedConfigIndex   = 0;
@@ -207,7 +207,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		/// <summary>
 		/// [GET / SET] The display size multiplier of the tiles relative to their original pixel size.
-		/// Constrained by <see cref="minDisplayedSize"/> and <see cref="maxDisplayedSize"/> constants.
+		/// Constrained by <see cref="MinDisplayedSize"/> and <see cref="MaxDisplayedSize"/> constants.
 		/// </summary>
 		public float TileSizeMultiplier
 		{
@@ -222,25 +222,25 @@ namespace Duality.Editor.Plugins.Tilemaps
 				Vector2 originalTileSize = tileset.TileSize;
 				this.tileSizeMultiplier = value;
 				this.zoomStatus = ZoomingStatus.General;
-				if (value * originalTileSize.X < minDisplayedSize)
+				if (value * originalTileSize.X < MinDisplayedSize)
 				{
-					this.tileSizeMultiplier = minDisplayedSize / originalTileSize.X;
 					this.zoomStatus = ZoomingStatus.Min;
+					this.tileSizeMultiplier = MinDisplayedSize / originalTileSize.X;
 				}
-				if (value * originalTileSize.Y < minDisplayedSize)
+				if (value * originalTileSize.Y < MinDisplayedSize)
 				{
-					this.tileSizeMultiplier = minDisplayedSize / originalTileSize.Y;
 					this.zoomStatus = ZoomingStatus.Min;
+					this.tileSizeMultiplier = MinDisplayedSize / originalTileSize.Y;
 				}
-				if (value * originalTileSize.X > maxDisplayedSize)
+				if (value * originalTileSize.X > MaxDisplayedSize)
 				{
-					this.tileSizeMultiplier = maxDisplayedSize / originalTileSize.X;
 					this.zoomStatus = ZoomingStatus.Max;
+					this.tileSizeMultiplier = MaxDisplayedSize / originalTileSize.X;
 				}
-				if (value * originalTileSize.Y > maxDisplayedSize)
+				if (value * originalTileSize.Y > MaxDisplayedSize)
 				{
-					this.tileSizeMultiplier = maxDisplayedSize / originalTileSize.Y;
 					this.zoomStatus = ZoomingStatus.Max;
+					this.tileSizeMultiplier = MaxDisplayedSize / originalTileSize.Y;
 				}
 			}
 		}
