@@ -56,6 +56,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private int                 multiColumnCount       = 1;
 		private int                 multiColumnLength      = 0;
 		private int                 totalTileCount         = 0;
+		private Vector2             originalTileSize       = Vector2.Zero;
 		private Size                displayedTileSize      = Size.Empty;
 		private Point               tileCount              = Point.Empty;
 		private Size                tilesetContentSize     = Size.Empty;
@@ -535,18 +536,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void UpdateDisplayedContentSize()
 		{
-			Tileset tileset = this.tileset.Res;
-			if (tileset != null)
-			{
-				Vector2 originalTileSize = tileset.TileSize;
-				this.displayedTileSize = new Size(
-					(int)(originalTileSize.X * this.tileSizeFactor), 
-					(int)(originalTileSize.Y * this.tileSizeFactor));
-			}
-			else
-			{
-				this.displayedTileSize = Size.Empty;
-			}
+			this.displayedTileSize = new Size(
+				(int)(this.originalTileSize.X * this.tileSizeFactor), 
+				(int)(this.originalTileSize.Y * this.tileSizeFactor));
 			this.tilesetContentSize = new Size(
 				this.displayedTileSize.Width * this.tileCount.X + this.spacing.Width * (this.tileCount.X - 1), 
 				this.displayedTileSize.Height * this.tileCount.Y + this.spacing.Height * (this.tileCount.Y - 1));
@@ -559,7 +551,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			// Calculate how many columns we could fit vertically and horizontally
 			Point maxColumnCount;
-			if (this.totalTileCount == 0 || !this.allowMultiColumnMode)
+			if (this.totalTileCount == 0 || !this.allowMultiColumnMode || this.tilesetContentSize.IsEmpty)
 			{
 				maxColumnCount = Point.Empty;
 			}
@@ -728,18 +720,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Retrieve tileset data and create local tileset bitmap
 			if (mainInput != null && sourceData != null)
 			{
-				Vector2 originalTileSize = tileset.TileSize;
+				this.originalTileSize = tileset.TileSize;
 
 				// Find a suitable default display size for the tileset
 				this.defaultTileSizeFactor = 1.0f;
-				while (defaultTileSizeFactor * originalTileSize.X > MaxDisplayedSize)
+				while (defaultTileSizeFactor * this.originalTileSize.X > MaxDisplayedSize)
 					this.defaultTileSizeFactor /= 2.0f;
-				while (defaultTileSizeFactor * originalTileSize.X < MinDisplayedSize)
+				while (defaultTileSizeFactor * this.originalTileSize.X < MinDisplayedSize)
 					this.defaultTileSizeFactor *= 2.0f;
 
 				// Clamp tile size factors to min / max display size range
-				this.minTileSizeFactor = MinDisplayedSize / MathF.Min(originalTileSize.X, originalTileSize.Y);
-				this.maxTileSizeFactor = MaxDisplayedSize / MathF.Max(originalTileSize.X, originalTileSize.Y);
+				this.minTileSizeFactor = MinDisplayedSize / MathF.Min(this.originalTileSize.X, this.originalTileSize.Y);
+				this.maxTileSizeFactor = MaxDisplayedSize / MathF.Max(this.originalTileSize.X, this.originalTileSize.Y);
 				this.maxTileSizeFactor = MathF.Max(this.maxTileSizeFactor, this.minTileSizeFactor);
 				this.defaultTileSizeFactor = MathF.Clamp(this.defaultTileSizeFactor, this.minTileSizeFactor, this.maxTileSizeFactor);
 				this.tileSizeFactor = this.defaultTileSizeFactor;
@@ -752,6 +744,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 			else
 			{
+				this.originalTileSize = Vector2.Zero;
 				this.minTileSizeFactor = 1.0f;
 				this.maxTileSizeFactor = 1.0f;
 				this.defaultTileSizeFactor = 1.0f;
