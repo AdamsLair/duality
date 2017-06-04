@@ -42,8 +42,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Vertical
 		}
 
-		private const float         MinDisplayedSize       = 30.0f;
-		private const float         MaxDisplayedSize       = 50.0f;
+		private const float         MinDisplayedSize       = 32.0f;
+		private const float         MaxDisplayedSize       = 64.0f;
 
 		private ContentRef<Tileset> tileset                = null;
 		private int                 displayedConfigIndex   = 0;
