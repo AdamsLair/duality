@@ -32,7 +32,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 			public ToolStripButton ToolButton;
 		}
 
-		
+		private const float         ZoomInStep     = 1.25f;
+		private const float         ZoomOutStep    = 1.0f / ZoomInStep;
+
 		private TilesetEditorMode   activeMode     = null;
 		private EditorModeInfo[]    availableModes = null;
 		private ContentRef<Tileset> backupTarget   = null;
@@ -82,6 +84,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			// Initial resize event to apply a proper size to the layer view main column
 			this.layerView_Resize(this, EventArgs.Empty);
+			UpdateZoomButtons();
 		}
 		
 		internal void SaveUserData(XElement node)
@@ -195,6 +198,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.buttonDrawTileIndices.Image = TilemapsResCache.IconShowIndices;
 					break;
 			}
+		}
+		private void UpdateZoomButtons()
+		{
+			this.buttonZoomIn.Enabled = !this.tilesetView.SpecialZoomLevel.HasFlag(TilesetView.ZoomLevelTags.Max);
+			this.buttonZoomOut.Enabled = !this.tilesetView.SpecialZoomLevel.HasFlag(TilesetView.ZoomLevelTags.Min);
+			this.buttonZoomDefault.Enabled = !this.tilesetView.SpecialZoomLevel.HasFlag(TilesetView.ZoomLevelTags.Default);
 		}
 		
 		private void StartRecordTilesetChanges()
@@ -358,6 +367,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			Tileset nextTileset = args.Next.Res;
 
+			this.UpdateZoomButtons();
 			this.StartRecordTilesetChanges();
 			
 			// Update the label that tells us which tileset is selected
@@ -460,6 +470,21 @@ namespace Duality.Editor.Plugins.Tilemaps
 				selectedIndex = MathF.Clamp(selectedIndex - 1, 0, this.layerView.Root.Children.Count - 1);
 				this.layerView.SelectedNode = this.layerView.Root.Children[selectedIndex];
 			}
+		}
+		private void buttonZoomIn_Click(object sender, EventArgs e)
+		{
+			this.tilesetView.TileSizeFactor *= ZoomInStep;
+			this.UpdateZoomButtons();
+		}
+		private void buttonZoomOut_Click(object sender, EventArgs e)
+		{
+			this.tilesetView.TileSizeFactor *= ZoomOutStep;
+			this.UpdateZoomButtons();
+		}
+		private void buttonZoomDefault_Click(object sender, EventArgs e)
+		{
+			this.tilesetView.ResetZoom();
+			this.UpdateZoomButtons();
 		}
 		private void layerView_SelectionChanged(object sender, EventArgs e)
 		{

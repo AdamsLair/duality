@@ -39,13 +39,17 @@
 			this.buttonAddLayer = new System.Windows.Forms.ToolStripButton();
 			this.buttonRemoveLayer = new System.Windows.Forms.ToolStripButton();
 			this.buttonBrightness = new System.Windows.Forms.ToolStripButton();
+			this.buttonDrawTileIndices = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonZoomDefault = new System.Windows.Forms.ToolStripButton();
+			this.buttonZoomOut = new System.Windows.Forms.ToolStripButton();
+			this.buttonZoomIn = new System.Windows.Forms.ToolStripButton();
 			this.splitMain = new System.Windows.Forms.SplitContainer();
 			this.tilesetView = new Duality.Editor.Plugins.Tilemaps.TilesetView();
 			this.panelBottom = new System.Windows.Forms.Panel();
 			this.labelRequireApply = new System.Windows.Forms.Label();
 			this.buttonApply = new System.Windows.Forms.Button();
 			this.buttonRevert = new System.Windows.Forms.Button();
-			this.buttonDrawTileIndices = new System.Windows.Forms.ToolStripButton();
 			this.toolStripModeSelect.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
@@ -137,7 +141,11 @@
             this.buttonAddLayer,
             this.buttonRemoveLayer,
             this.buttonBrightness,
-            this.buttonDrawTileIndices});
+            this.buttonDrawTileIndices,
+            this.toolStripSeparator1,
+            this.buttonZoomDefault,
+            this.buttonZoomOut,
+            this.buttonZoomIn});
 			this.toolStripEdit.Location = new System.Drawing.Point(0, 25);
 			this.toolStripEdit.Name = "toolStripEdit";
 			this.toolStripEdit.Size = new System.Drawing.Size(529, 25);
@@ -179,6 +187,56 @@
 			this.buttonBrightness.Text = "Toggle Background";
 			this.buttonBrightness.CheckedChanged += new System.EventHandler(this.buttonBrightness_CheckedChanged);
 			// 
+			// buttonDrawTileIndices
+			// 
+			this.buttonDrawTileIndices.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonDrawTileIndices.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonDrawTileIndices.Image = ((System.Drawing.Image)(resources.GetObject("buttonDrawTileIndices.Image")));
+			this.buttonDrawTileIndices.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonDrawTileIndices.Name = "buttonDrawTileIndices";
+			this.buttonDrawTileIndices.Size = new System.Drawing.Size(23, 22);
+			this.buttonDrawTileIndices.Text = "Show Tile Indices";
+			this.buttonDrawTileIndices.Click += new System.EventHandler(this.buttonDrawTileIndices_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttonZoomDefault
+			// 
+			this.buttonZoomDefault.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonZoomDefault.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonZoomDefault.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconZoomDefault;
+			this.buttonZoomDefault.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonZoomDefault.Name = "buttonZoomDefault";
+			this.buttonZoomDefault.Size = new System.Drawing.Size(23, 22);
+			this.buttonZoomDefault.Text = "Default Zoom";
+			this.buttonZoomDefault.Click += new System.EventHandler(this.buttonZoomDefault_Click);
+			// 
+			// buttonZoomOut
+			// 
+			this.buttonZoomOut.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonZoomOut.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconZoomOut;
+			this.buttonZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonZoomOut.Name = "buttonZoomOut";
+			this.buttonZoomOut.Size = new System.Drawing.Size(23, 22);
+			this.buttonZoomOut.Text = "Zoom Out";
+			this.buttonZoomOut.Click += new System.EventHandler(this.buttonZoomOut_Click);
+			// 
+			// buttonZoomIn
+			// 
+			this.buttonZoomIn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonZoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonZoomIn.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconZoomIn;
+			this.buttonZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonZoomIn.Name = "buttonZoomIn";
+			this.buttonZoomIn.Size = new System.Drawing.Size(23, 22);
+			this.buttonZoomIn.Text = "Zoom In";
+			this.buttonZoomIn.Click += new System.EventHandler(this.buttonZoomIn_Click);
+			// 
 			// splitMain
 			// 
 			this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -212,6 +270,7 @@
 			this.tilesetView.Size = new System.Drawing.Size(345, 267);
 			this.tilesetView.Spacing = new System.Drawing.Size(0, 0);
 			this.tilesetView.TabIndex = 2;
+			this.tilesetView.TileSizeFactor = 1F;
 			// 
 			// panelBottom
 			// 
@@ -265,17 +324,6 @@
 			this.buttonRevert.UseVisualStyleBackColor = true;
 			this.buttonRevert.Click += new System.EventHandler(this.buttonRevert_Click);
 			// 
-			// buttonDrawTileIndices
-			// 
-			this.buttonDrawTileIndices.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.buttonDrawTileIndices.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonDrawTileIndices.Image = ((System.Drawing.Image)(resources.GetObject("buttonDrawTileIndices.Image")));
-			this.buttonDrawTileIndices.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttonDrawTileIndices.Name = "buttonDrawTileIndices";
-			this.buttonDrawTileIndices.Size = new System.Drawing.Size(23, 22);
-			this.buttonDrawTileIndices.Text = "Show Tile Indices";
-			this.buttonDrawTileIndices.Click += new System.EventHandler(this.buttonDrawTileIndices_Click);
-			// 
 			// TilesetEditor
 			// 
 			this.AcceptButton = this.buttonApply;
@@ -328,5 +376,9 @@
 		private Aga.Controls.Tree.TreeColumn treeColumnMain;
 		private System.Windows.Forms.Label labelRequireApply;
 		private System.Windows.Forms.ToolStripButton buttonDrawTileIndices;
+		private System.Windows.Forms.ToolStripButton buttonZoomIn;
+		private System.Windows.Forms.ToolStripButton buttonZoomOut;
+		private System.Windows.Forms.ToolStripButton buttonZoomDefault;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 	}
 }

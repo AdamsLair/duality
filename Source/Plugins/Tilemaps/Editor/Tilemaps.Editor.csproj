@@ -208,6 +208,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="EmbeddedResources\IconZoomDefault.png" />
+    <None Include="EmbeddedResources\IconZoomIn.png" />
+    <None Include="EmbeddedResources\IconZoomOut.png" />
     <None Include="EmbeddedResources\IconTileBrush.png" />
     <None Include="EmbeddedResources\IconTileFill.png" />
     <None Include="EmbeddedResources\IconTileRect.png" />
