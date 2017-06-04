@@ -199,6 +199,24 @@ namespace Duality.Editor.Plugins.Tilemaps
 					break;
 			}
 		}
+		private void UpdateZoomButtons()
+		{
+			switch (this.tilesetView.ZoomLevelTag)
+			{
+				case TilesetView.ZoomLevel.Custom:
+					this.buttonZoomIn.Enabled = true;
+					this.buttonZoomOut.Enabled = true;
+					break;
+				case TilesetView.ZoomLevel.Max:
+					this.buttonZoomIn.Enabled = false;
+					this.buttonZoomOut.Enabled = true;
+					break;
+				case TilesetView.ZoomLevel.Min:
+					this.buttonZoomIn.Enabled = true;
+					this.buttonZoomOut.Enabled = false;
+					break;
+			}
+		}
 		
 		private void StartRecordTilesetChanges()
 		{
@@ -468,19 +486,19 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			this.tilesetView.TileSizeMultiplier *= ZoomInStep;
 			this.tilesetView.InvalidateTileset();
-			UpdateZoomButtons();
+			this.UpdateZoomButtons();
 		}
 		private void buttonZoomOut_Click(object sender, EventArgs e)
 		{
 			this.tilesetView.TileSizeMultiplier *= ZoomOutStep;
 			this.tilesetView.InvalidateTileset();
-			UpdateZoomButtons();
+			this.UpdateZoomButtons();
 		}
 		private void buttonZoomDefault_Click(object sender, EventArgs e)
 		{
 			this.tilesetView.TileSizeMultiplier = 1.0f;
 			this.tilesetView.InvalidateTileset();
-			UpdateZoomButtons();
+			this.UpdateZoomButtons();
 		}
 		private void layerView_SelectionChanged(object sender, EventArgs e)
 		{
@@ -532,25 +550,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 
 			return null;
-		}
-
-		private void UpdateZoomButtons()
-		{
-			switch (this.tilesetView.ZoomLevelTag)
-			{
-				case TilesetView.ZoomLevel.Custom:
-					this.buttonZoomIn.Enabled = true;
-					this.buttonZoomOut.Enabled = true;
-					break;
-				case TilesetView.ZoomLevel.Max:
-					this.buttonZoomIn.Enabled = false;
-					this.buttonZoomOut.Enabled = true;
-					break;
-				case TilesetView.ZoomLevel.Min:
-					this.buttonZoomIn.Enabled = true;
-					this.buttonZoomOut.Enabled = false;
-					break;
-			}
 		}
 	}
 }
