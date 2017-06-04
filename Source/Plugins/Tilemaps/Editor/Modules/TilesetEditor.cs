@@ -171,8 +171,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 					changeReason);
 				this.OnTilesetSelectionChanging(args);
 				this.tilesetView.TargetTileset = tileset;
-				this.tilesetView.ResetZoom();
-				this.UpdateZoomButtons();
 				this.OnTilesetSelectionChanged(args);
 			}
 		}
@@ -369,6 +367,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			Tileset nextTileset = args.Next.Res;
 
+			this.UpdateZoomButtons();
 			this.StartRecordTilesetChanges();
 			
 			// Update the label that tells us which tileset is selected
