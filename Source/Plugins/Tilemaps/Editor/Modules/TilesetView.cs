@@ -215,31 +215,27 @@ namespace Duality.Editor.Plugins.Tilemaps
 			set
 			{
 				Tileset tileset = this.tileset.Res;
-				if (tileset == null)
-				{
-					return;
-				}
-				Vector2 originalTileSize = tileset.TileSize;
+				if (tileset == null) return;
+
 				this.tileSizeMultiplier = value;
 				this.zoomLevel = ZoomLevel.Custom;
-				if (value * originalTileSize.X < MinDisplayedSize)
+
+				// Determine min and max zoom based on how big the tiles are and
+				// how big they can be reasonably displayed.
+				Vector2 originalTileSize = tileset.TileSize;
+				Vector2 displayedTileSize = value * originalTileSize;
+				float minMultiplier = MinDisplayedSize / MathF.Min(originalTileSize.X, originalTileSize.Y);
+				float maxMultiplier = MaxDisplayedSize / MathF.Max(originalTileSize.X, originalTileSize.Y);
+
+				// Limit zoom level and tag it if we're hitting a special zoom level.
+				if (this.tileSizeMultiplier <= minMultiplier)
 				{
-					this.tileSizeMultiplier = MinDisplayedSize / originalTileSize.X;
+					this.tileSizeMultiplier = minMultiplier;
 					this.zoomLevel = ZoomLevel.Min;
 				}
-				if (value * originalTileSize.Y < MinDisplayedSize)
+				else if (this.tileSizeMultiplier >= maxMultiplier)
 				{
-					this.tileSizeMultiplier = MinDisplayedSize / originalTileSize.Y;
-					this.zoomLevel = ZoomLevel.Min;
-				}
-				if (value * originalTileSize.X > MaxDisplayedSize)
-				{
-					this.tileSizeMultiplier = MaxDisplayedSize / originalTileSize.X;
-					this.zoomLevel = ZoomLevel.Max;
-				}
-				if (value * originalTileSize.Y > MaxDisplayedSize)
-				{
-					this.tileSizeMultiplier = MaxDisplayedSize / originalTileSize.Y;
+					this.tileSizeMultiplier = maxMultiplier;
 					this.zoomLevel = ZoomLevel.Max;
 				}
 			}
