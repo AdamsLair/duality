@@ -270,7 +270,7 @@
 			this.tilesetView.Size = new System.Drawing.Size(345, 267);
 			this.tilesetView.Spacing = new System.Drawing.Size(0, 0);
 			this.tilesetView.TabIndex = 2;
-			this.tilesetView.TileSizeMultiplier = 1F;
+			this.tilesetView.TileSizeFactor = 1F;
 			// 
 			// panelBottom
 			// 

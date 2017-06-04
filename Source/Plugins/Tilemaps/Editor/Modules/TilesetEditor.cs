@@ -32,7 +32,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			public ToolStripButton ToolButton;
 		}
 
-		private const float         ZoomInStep     = 1.1f;
+		private const float         ZoomInStep     = 1.25f;
 		private const float         ZoomOutStep    = 1.0f / ZoomInStep;
 
 		private TilesetEditorMode   activeMode     = null;
@@ -171,6 +171,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 					changeReason);
 				this.OnTilesetSelectionChanging(args);
 				this.tilesetView.TargetTileset = tileset;
+				this.tilesetView.ResetZoom();
+				this.UpdateZoomButtons();
 				this.OnTilesetSelectionChanged(args);
 			}
 		}
@@ -484,20 +486,17 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void buttonZoomIn_Click(object sender, EventArgs e)
 		{
-			this.tilesetView.TileSizeMultiplier *= ZoomInStep;
-			this.tilesetView.InvalidateTileset();
+			this.tilesetView.TileSizeFactor *= ZoomInStep;
 			this.UpdateZoomButtons();
 		}
 		private void buttonZoomOut_Click(object sender, EventArgs e)
 		{
-			this.tilesetView.TileSizeMultiplier *= ZoomOutStep;
-			this.tilesetView.InvalidateTileset();
+			this.tilesetView.TileSizeFactor *= ZoomOutStep;
 			this.UpdateZoomButtons();
 		}
 		private void buttonZoomDefault_Click(object sender, EventArgs e)
 		{
-			this.tilesetView.TileSizeMultiplier = 1.0f;
-			this.tilesetView.InvalidateTileset();
+			this.tilesetView.ResetZoom();
 			this.UpdateZoomButtons();
 		}
 		private void layerView_SelectionChanged(object sender, EventArgs e)
