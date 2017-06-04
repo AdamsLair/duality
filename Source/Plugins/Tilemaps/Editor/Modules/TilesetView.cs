@@ -719,6 +719,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 				// Clamp tile size factors to min / max display size range
 				this.minTileSizeFactor = MinDisplayedSize / MathF.Min(originalTileSize.X, originalTileSize.Y);
 				this.maxTileSizeFactor = MaxDisplayedSize / MathF.Max(originalTileSize.X, originalTileSize.Y);
+				this.maxTileSizeFactor = MathF.Max(this.maxTileSizeFactor, this.minTileSizeFactor);
 				this.defaultTileSizeFactor = MathF.Clamp(this.defaultTileSizeFactor, this.minTileSizeFactor, this.maxTileSizeFactor);
 				this.tileSizeFactor = MathF.Clamp(this.tileSizeFactor, this.minTileSizeFactor, this.maxTileSizeFactor);
 
