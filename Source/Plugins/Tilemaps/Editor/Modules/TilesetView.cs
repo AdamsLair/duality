@@ -28,6 +28,15 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Always
 		}
 
+		[Flags]
+		public enum ZoomLevelTags
+		{
+			None    = 0x0,
+			Default = 0x1,
+			Max     = 0x2,
+			Min     = 0x4
+		}
+
 		protected enum MultiColumnMode
 		{
 			None,
@@ -35,6 +44,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Vertical
 		}
 
+		private const float         MinDisplayedSize       = 32.0f;
+		private const float         MaxDisplayedSize       = 64.0f;
 
 		private ContentRef<Tileset> tileset                = null;
 		private int                 displayedConfigIndex   = 0;
@@ -45,6 +56,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private int                 multiColumnCount       = 1;
 		private int                 multiColumnLength      = 0;
 		private int                 totalTileCount         = 0;
+		private Vector2             originalTileSize       = Vector2.Zero;
 		private Size                displayedTileSize      = Size.Empty;
 		private Point               tileCount              = Point.Empty;
 		private Size                tilesetContentSize     = Size.Empty;
@@ -56,6 +68,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private Size                spacing                = new Size(2, 2);
 		private int                 hoverIndex             = -1;
 		private bool                globalEventsSubscribed = false;
+		private float               tileSizeFactor         = 1.0f;
+		private float               defaultTileSizeFactor  = 1.0f;
+		private float               minTileSizeFactor      = 1.0f;
+		private float               maxTileSizeFactor      = 1.0f;
+		private ZoomLevelTags       specialZoomLevel       = ZoomLevelTags.None;
 
 		private RawList<TilesetViewPaintTileData> paintTileBuffer = new RawList<TilesetViewPaintTileData>();
 
@@ -98,8 +115,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			set
 			{
 				this.spacing = value;
-				this.GenerateBackgroundPattern();
 				this.UpdateContentStats();
+				this.GenerateBackgroundPattern();
 				this.Invalidate();
 			}
 		}
@@ -194,6 +211,41 @@ namespace Duality.Editor.Plugins.Tilemaps
 				return displayedTileCount;
 			}
 		}
+		/// <summary>
+		/// [GET / SET] The display size multiplier of the tiles relative to their original pixel size.
+		/// Constrained by <see cref="MinDisplayedSize"/> and <see cref="MaxDisplayedSize"/> constants.
+		/// </summary>
+		public float TileSizeFactor
+		{
+			get { return this.tileSizeFactor; }
+			set
+			{
+				Tileset tileset = this.tileset.Res;
+				if (tileset == null) return;
+
+				// Apply the specified tile size factor while limiting and tagging
+				// it in case we're exceeding limits or hitting a special zoom level.
+				float lastFactor = this.tileSizeFactor;
+				this.tileSizeFactor = value;
+				this.UpdateZoomLevel();
+
+				// If we changed the zoom / tile size, we'll need to recalculate
+				// layout values and background pattern
+				if (lastFactor != this.tileSizeFactor)
+				{
+					this.UpdateContentStats();
+					this.GenerateBackgroundPattern();
+					this.Invalidate();
+				}
+			}
+		}
+		/// <summary>
+		/// [GET] Returns <see cref="TileSizeFactor"/>'s relation to the size limits.
+		/// </summary>
+		public ZoomLevelTags SpecialZoomLevel
+		{
+			get { return this.specialZoomLevel; }
+		}
 
 
 		public TilesetView()
@@ -246,6 +298,15 @@ namespace Duality.Editor.Plugins.Tilemaps
 				1 + (this.displayedTileSize.Height + this.spacing.Height) * tileCountY + this.spacing.Height + pixelBorder * 2);
 
 			this.Invalidate(rect);
+		}
+
+		/// <summary>
+		/// Resets <see cref="TileSizeFactor"/> to the default for the currently 
+		/// displayed <see cref="Tileset"/>.
+		/// </summary>
+		public void ResetZoom()
+		{
+			this.TileSizeFactor = this.defaultTileSizeFactor;
 		}
 
 		/// <summary>
@@ -453,7 +514,35 @@ namespace Duality.Editor.Plugins.Tilemaps
 				tileIndex % this.tileCount.X,
 				tileIndex / this.tileCount.X);
 		}
-		
+
+		private void UpdateZoomLevel()
+		{
+			this.specialZoomLevel = ZoomLevelTags.None;
+			if (this.tileSizeFactor <= this.minTileSizeFactor)
+			{
+				this.tileSizeFactor = this.minTileSizeFactor;
+				this.specialZoomLevel |= ZoomLevelTags.Min;
+			}
+			if (this.tileSizeFactor >= this.maxTileSizeFactor)
+			{
+				this.tileSizeFactor = this.maxTileSizeFactor;
+				this.specialZoomLevel |= ZoomLevelTags.Max;
+			}
+			if (MathF.Abs(this.tileSizeFactor - this.defaultTileSizeFactor) < 0.1f)
+			{
+				this.tileSizeFactor = this.defaultTileSizeFactor;
+				this.specialZoomLevel |= ZoomLevelTags.Default;
+			}
+		}
+		private void UpdateDisplayedContentSize()
+		{
+			this.displayedTileSize = new Size(
+				(int)(this.originalTileSize.X * this.tileSizeFactor), 
+				(int)(this.originalTileSize.Y * this.tileSizeFactor));
+			this.tilesetContentSize = new Size(
+				this.displayedTileSize.Width * this.tileCount.X + this.spacing.Width * (this.tileCount.X - 1), 
+				this.displayedTileSize.Height * this.tileCount.Y + this.spacing.Height * (this.tileCount.Y - 1));
+		}
 		private void UpdateMultiColumnMode()
 		{
 			MultiColumnMode lastMode = this.multiColumnMode;
@@ -462,7 +551,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			// Calculate how many columns we could fit vertically and horizontally
 			Point maxColumnCount;
-			if (this.totalTileCount == 0 || !this.allowMultiColumnMode)
+			if (this.totalTileCount == 0 || !this.allowMultiColumnMode || this.tilesetContentSize.IsEmpty)
 			{
 				maxColumnCount = Point.Empty;
 			}
@@ -505,6 +594,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void UpdateContentStats()
 		{
+			this.UpdateDisplayedContentSize();
 			this.UpdateMultiColumnMode();
 
 			Rectangle contentArea = new Rectangle(
@@ -630,46 +720,43 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Retrieve tileset data and create local tileset bitmap
 			if (mainInput != null && sourceData != null)
 			{
-				Vector2 originalTileSize = tileset.TileSize;
-				float minDisplayedSize = 30.0f;
-				float maxDisplayedSize = 50.0f;
+				this.originalTileSize = tileset.TileSize;
 
-				// Find a suitable display size for the tileset
-				Vector2 displayedTileSize = originalTileSize;
-				while (displayedTileSize.X > maxDisplayedSize)
-					displayedTileSize /= 2.0f;
-				while (displayedTileSize.X < minDisplayedSize)
-					displayedTileSize *= 2.0f;
+				// Find a suitable default display size for the tileset
+				this.defaultTileSizeFactor = 1.0f;
+				while (defaultTileSizeFactor * this.originalTileSize.X > MaxDisplayedSize)
+					this.defaultTileSizeFactor /= 2.0f;
+				while (defaultTileSizeFactor * this.originalTileSize.X < MinDisplayedSize)
+					this.defaultTileSizeFactor *= 2.0f;
 
-				displayedTileSize = displayedTileSize * 
-					(MathF.Clamp(
-						displayedTileSize.X, 
-						minDisplayedSize, 
-						maxDisplayedSize) / 
-					displayedTileSize.X);
+				// Clamp tile size factors to min / max display size range
+				this.minTileSizeFactor = MinDisplayedSize / MathF.Min(this.originalTileSize.X, this.originalTileSize.Y);
+				this.maxTileSizeFactor = MaxDisplayedSize / MathF.Max(this.originalTileSize.X, this.originalTileSize.Y);
+				this.maxTileSizeFactor = MathF.Max(this.maxTileSizeFactor, this.minTileSizeFactor);
+				this.defaultTileSizeFactor = MathF.Clamp(this.defaultTileSizeFactor, this.minTileSizeFactor, this.maxTileSizeFactor);
+				this.tileSizeFactor = this.defaultTileSizeFactor;
 
 				this.tileBitmap = sourceData.MainLayer.ToBitmap();
-				this.displayedTileSize = new Size(
-					(int)displayedTileSize.X, 
-					(int)displayedTileSize.Y);
+
 				Point2 sourceTileCount = mainInput.GetSourceTileCount(this.tileBitmap.Width, this.tileBitmap.Height);
 				this.tileCount = new Point(sourceTileCount.X, sourceTileCount.Y);
 				this.totalTileCount = this.tileCount.X * this.tileCount.Y;
-				this.tilesetContentSize = new Size(
-					this.displayedTileSize.Width * this.tileCount.X + this.spacing.Width * (this.tileCount.X - 1), 
-					this.displayedTileSize.Height * this.tileCount.Y + this.spacing.Height * (this.tileCount.Y - 1));
 			}
 			else
 			{
+				this.originalTileSize = Vector2.Zero;
+				this.minTileSizeFactor = 1.0f;
+				this.maxTileSizeFactor = 1.0f;
+				this.defaultTileSizeFactor = 1.0f;
+				this.tileSizeFactor = 1.0f;
 				this.tileBitmap = null;
-				this.displayedTileSize = Size.Empty;
 				this.tileCount = Point.Empty;
 				this.totalTileCount = 0;
-				this.tilesetContentSize = Size.Empty;
 			}
 
-			this.GenerateBackgroundPattern();
+			this.UpdateZoomLevel();
 			this.UpdateContentStats();
+			this.GenerateBackgroundPattern();
 			this.Invalidate();
 		}
 		protected virtual void OnTileDisplayModeChanged() { }
@@ -815,7 +902,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Set the interpolation mode based on whether we're scaling up or down
 			Vector2 scaleFactor = new Vector2(this.displayedTileSize.Width, this.displayedTileSize.Height) / tileset.TileSize;
 			bool scalingUpClean = 
-				scaleFactor.X > 1.0f &&
+				scaleFactor.X >= 1.0f &&
 				scaleFactor.X == scaleFactor.Y &&
 				scaleFactor.X == (int)scaleFactor.X &&
 				scaleFactor.Y == (int)scaleFactor.Y;
