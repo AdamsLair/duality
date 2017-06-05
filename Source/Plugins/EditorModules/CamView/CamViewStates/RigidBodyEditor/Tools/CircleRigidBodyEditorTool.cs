@@ -56,6 +56,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			else
 			{
 				this.Environment.EndToolAction();
+				this.Environment.SelectedTool = null;
 			}
 		}
 		public override void UpdateAction()

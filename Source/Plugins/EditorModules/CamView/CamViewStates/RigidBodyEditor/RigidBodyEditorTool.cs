@@ -95,6 +95,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get { return this.env.ActiveBody != null; }
 		}
+
 		
 		/// <summary>
 		/// Begins a continuous operation with this tool. Usually invoked via left-click.

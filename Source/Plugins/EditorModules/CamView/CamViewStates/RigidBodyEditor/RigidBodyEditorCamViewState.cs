@@ -445,11 +445,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (this.selectedBody != null)
 				this.selectedBody.SynchronizeBodyShape();
 		}
-		private void EndToolAction()
-		{
-			EndToolAction(false);
-		}
-		public void EndToolAction(bool keepToolSelected) // Added to be able to keep the current tool selected (edit vertex tool needs to be selected after any action)
+		public void EndToolAction()
 		{
 			// If we don't perform an action right now, at least deselect the tool
 			if (this.actionTool == this.toolNone)
@@ -466,15 +462,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.UpdateRigidBodyToolButtons();
 			this.Invalidate();
 			UndoRedoManager.Finish();
-
-			// Since our tool actions are designed to block out other actions,
-			// by default deselect each tool after using it.
-			if (selectedTool == tools[0] || selectedTool == tools[1]) SelectedTool = tools[4]; // This should not be hardcoded this way! (0 = Create Circle, 1 = Create Polygon Shape, 4 = Edit Vertices)
-			else if (!keepToolSelected) SelectedTool = null;
-		}
-		void IRigidBodyEditorToolEnvironment.EndToolAction()
-		{
-			this.EndToolAction();
 		}
 
 		private void ApplyCursor()

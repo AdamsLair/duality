@@ -42,13 +42,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get { return 4; }
 		}
 
-		public override void OnWorldOverlayDrawcalls(Canvas canvas)
-		{
-			RigidBodyEditorCamViewState env = Environment as RigidBodyEditorCamViewState;
-			Point mousePos = env.View.RenderableControl.PointToClient(Cursor.Position);
-			Vector3 mousePosVector = canvas.DrawDevice.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, 0f));
-			overlay.Draw(base.Environment.ActiveBody, canvas, mousePosVector, selecting);
-		}
 
 		private void SetOriginalVertices()
 		{
@@ -112,6 +105,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					selecting = false;
 					overlay.SelectedVertices.Clear();
 					this.Environment.EndToolAction();
+					this.Environment.SelectedTool = null;
 				}
 			}
 		}
@@ -165,7 +159,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				selecting = false;
 			}
-			this.Environment.EndToolAction(true);
+			this.Environment.EndToolAction();
+		}
+		public override void OnWorldOverlayDrawcalls(Canvas canvas)
+		{
+			RigidBodyEditorCamViewState env = Environment as RigidBodyEditorCamViewState;
+			Point mousePos = env.View.RenderableControl.PointToClient(Cursor.Position);
+			Vector3 mousePosVector = canvas.DrawDevice.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, 0f));
+			overlay.Draw(base.Environment.ActiveBody, canvas, mousePosVector, selecting);
 		}
 	}
 }
