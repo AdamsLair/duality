@@ -170,9 +170,8 @@
     <Content Include="EmbeddedResources\ObjectVisibility.png" />
     <Content Include="EmbeddedResources\ObjectVisibilityFiltered.png" />
     <Content Include="EmbeddedResources\SnapToGrid.png" />
-    <None Include="Resources\iconCmpEditVertices.png" />
-    <None Include="Resources\curArrowCreateEdge.png" />
-    <None Include="Resources\curArrowEditVertices.png" />
+    <None Include="EmbeddedResources\iconCmpEditVertices.png" />
+    <None Include="EmbeddedResources\curArrowEditVertices.png" />
     <None Include="EmbeddedResources\shape_perspective.png" />
     <None Include="EmbeddedResources\curArrowCreateCircle.png" />
     <None Include="EmbeddedResources\curArrowCreatePolygon.png" />
