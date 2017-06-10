@@ -97,8 +97,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				Vector2 worldPos = this.Environment.ActiveWorldPos.Xy;
 				Vector2 localPos = this.Environment.ActiveBodyPos;
+
 				overlay.CurrentVertex.pos = worldPos;
-				overlay.CurrentVertex.shape.Vertices[overlay.CurrentVertex.id] = localPos;
+
+				PolyShapeInfo shape = overlay.CurrentVertex.shape;
+				Vector2 oldVertexPos = shape.Vertices[overlay.CurrentVertex.id];
+				if (oldVertexPos != localPos)
+				{
+					shape.Vertices[overlay.CurrentVertex.id] = localPos;
+					shape.UpdateShape();
+				}
 			}
 		}
 		public override void EndAction() { }
