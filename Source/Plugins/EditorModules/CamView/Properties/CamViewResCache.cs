@@ -17,7 +17,8 @@ namespace Duality.Editor.Plugins.CamView.Properties
 		public static readonly Bitmap   CursorImageArrowCreateEdge    = CamViewRes.CursorArrowCreateEdge;
 		public static readonly Bitmap   CursorImageArrowCreateLoop    = CamViewRes.CursorArrowCreateLoop;
 		public static readonly Bitmap   CursorImageArrowCreatePolygon = CamViewRes.CursorArrowCreatePolygon;
-		public static readonly Bitmap	CursorImageArrowEditVertices  = CamViewRes.CursorArrowEditVertices;
+		public static readonly Bitmap   CursorImageArrowEditVertices  = CamViewRes.CursorArrowEditVertices;
+		public static readonly Bitmap   IconShapeSelect               = CamViewRes.IconShapeSelect;
 		public static readonly Bitmap   IconCmpCircleCollider         = CamViewRes.IconCmpCircleCollider;
 		public static readonly Bitmap   IconCmpEdgeCollider           = CamViewRes.IconCmpEdgeCollider;
 		public static readonly Bitmap   IconCmpLoopCollider           = CamViewRes.IconCmpLoopCollider;

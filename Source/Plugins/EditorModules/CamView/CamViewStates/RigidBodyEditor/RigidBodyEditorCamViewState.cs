@@ -110,7 +110,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				{
 					tool.Environment = this;
 				}
-				this.tools.Remove(this.toolNone);
 
 				this.selectedTool = this.toolNone;
 				this.activeTool   = this.toolNone;

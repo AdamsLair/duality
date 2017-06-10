@@ -167,6 +167,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="EmbeddedResources\iconShapeSelect.png" />
     <Content Include="EmbeddedResources\ObjectVisibility.png" />
     <Content Include="EmbeddedResources\ObjectVisibilityFiltered.png" />
     <Content Include="EmbeddedResources\SnapToGrid.png" />

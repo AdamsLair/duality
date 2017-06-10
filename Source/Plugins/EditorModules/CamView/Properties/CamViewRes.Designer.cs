@@ -450,6 +450,16 @@ namespace Duality.Editor.Plugins.CamView.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconShapeSelect {
+            get {
+                object obj = ResourceManager.GetObject("IconShapeSelect", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t remove {0} because it is required by the &apos;{1}&apos; Component..
         /// </summary>
         public static string MenuItemDesc_CantRemoveComponent {
@@ -536,6 +546,15 @@ namespace Duality.Editor.Plugins.CamView.Properties {
         public static string RigidBodyCamViewState_ItemName_CreatePolygon {
             get {
                 return ResourceManager.GetString("RigidBodyCamViewState_ItemName_CreatePolygon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select / Edit Shapes.
+        /// </summary>
+        public static string RigidBodyCamViewState_ItemName_EditShapes {
+            get {
+                return ResourceManager.GetString("RigidBodyCamViewState_ItemName_EditShapes", resourceCulture);
             }
         }
         
