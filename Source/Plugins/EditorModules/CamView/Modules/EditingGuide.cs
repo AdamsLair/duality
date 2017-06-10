@@ -37,12 +37,15 @@ namespace Duality.Editor.Plugins.CamView
 		/// <returns></returns>
 		public Vector3 SnapPosition(Vector3 pos)
 		{
-			pos -= this.snapPosOrigin;
-			pos /= this.snapScaleOrigin;
-			return this.snapPosOrigin + this.snapScaleOrigin * new Vector3(
-				this.gridSize.X > 0.001f ? this.gridSize.X * (int)(pos.X / this.gridSize.X) : pos.X,
-				this.gridSize.Y > 0.001f ? this.gridSize.Y * (int)(pos.Y / this.gridSize.Y) : pos.Y,
-				this.gridSize.Z > 0.001f ? this.gridSize.Z * (int)(pos.Z / this.gridSize.Z) : pos.Z);
+			Vector3 localPos = (pos - this.snapPosOrigin) / this.snapScaleOrigin;
+			Vector3 snapLocalPos = localPos;
+
+			if (this.gridSize.X > 0.001f) snapLocalPos.X = this.gridSize.X * MathF.RoundToInt(pos.X / this.gridSize.X);
+			if (this.gridSize.Y > 0.001f) snapLocalPos.Y = this.gridSize.Y * MathF.RoundToInt(pos.Y / this.gridSize.Y);
+			if (this.gridSize.Z > 0.001f) snapLocalPos.Z = this.gridSize.Z * MathF.RoundToInt(pos.Z / this.gridSize.Z);
+
+			Vector3 snapPos = this.snapPosOrigin + this.snapScaleOrigin * snapLocalPos;
+			return snapPos;
 		}
 		/// <summary>
 		/// Snaps the specified world position to this editing guide.
