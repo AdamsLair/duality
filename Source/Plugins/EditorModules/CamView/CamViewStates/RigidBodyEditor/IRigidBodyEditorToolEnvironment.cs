@@ -55,5 +55,33 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// <param name="shapes"></param>
 		/// <param name="mode"></param>
 		void SelectShapes(IEnumerable<ShapeInfo> shapes, SelectMode mode = SelectMode.Set);
+
+		/// <summary>
+		/// Determines whether a world space with the given radius is visible in the
+		/// <see cref="RigidBodyEditorCamViewState"/> view.
+		/// </summary>
+		/// <param name="worldPos"></param>
+		/// <param name="radius"></param>
+		/// <returns></returns>
+		bool IsCoordInView(Vector3 worldPos, float radius = 1.0f);
+		/// <summary>
+		/// Determins the view scale at a given world space Z position.
+		/// </summary>
+		/// <param name="z"></param>
+		/// <returns></returns>
+		float GetScaleAtZ(float z);
+		/// <summary>
+		/// Determins the world space position of a given point in screen space.
+		/// The Z coordinate of that point will be evaluated as the assumed Z position.
+		/// </summary>
+		/// <param name="screenCoord"></param>
+		/// <returns></returns>
+		Vector3 GetSpaceCoord(Vector3 screenCoord);
+		/// <summary>
+		/// Determines the screen space position of a given point in world space.
+		/// </summary>
+		/// <param name="spaceCoord"></param>
+		/// <returns></returns>
+		Vector3 GetScreenCoord(Vector3 spaceCoord);
 	}
 }
