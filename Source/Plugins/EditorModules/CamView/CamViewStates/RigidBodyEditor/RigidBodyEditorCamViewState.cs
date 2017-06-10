@@ -453,7 +453,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (this.selectedBody != null)
 				this.selectedBody.SynchronizeBodyShape();
 		}
-		public void EndToolAction()
+		private void EndToolAction()
 		{
 			// If we don't perform an action right now, at least deselect the tool
 			if (this.actionTool == this.toolNone)
@@ -470,6 +470,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.UpdateRigidBodyToolButtons();
 			this.Invalidate();
 			UndoRedoManager.Finish();
+		}
+		void IRigidBodyEditorToolEnvironment.EndToolAction()
+		{
+			this.EndToolAction();
 		}
 
 		private void ApplyCursor()
@@ -633,16 +637,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
-
-			// If there is no tool active, don't do selection changes or begin an action
-			if (this.activeTool == this.toolNone) return;
-
-			this.actionTool.OnActionKeyReleased();
+			if (this.actionTool != null)
+				this.actionTool.OnActionKeyReleased(e.Button);
 		}
 		protected override void OnLostFocus()
 		{
 			base.OnLostFocus();
-			//this.EndToolAction();
+			this.EndToolAction();
 		}
 		protected override void OnBeginAction(ObjectEditorAction action)
 		{

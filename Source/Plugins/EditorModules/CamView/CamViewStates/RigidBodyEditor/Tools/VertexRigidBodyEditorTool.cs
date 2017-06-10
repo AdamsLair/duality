@@ -142,9 +142,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// ToDo: Move any hover checks in here.
 			// Not sure where exactly they currently are - probably in the overlay class?
 		}
-		public override void OnActionKeyReleased()
+		public override void OnActionKeyReleased(MouseButtons mouseButton)
 		{
-			base.OnActionKeyReleased();
+			base.OnActionKeyReleased(mouseButton);
 
 			if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.Selected)
 			{

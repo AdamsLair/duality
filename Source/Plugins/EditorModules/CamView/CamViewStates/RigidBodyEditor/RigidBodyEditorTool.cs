@@ -140,11 +140,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// <summary>
 		/// Called when the action key has been pressed after the action has already begun.
 		/// </summary>
+		/// <param name="mouseButton"></param>
 		public virtual void OnActionKeyPressed(MouseButtons mouseButton) { }
 		/// <summary>
 		/// Called when the action key has been released after the action has already begun.
 		/// </summary>
-		public virtual void OnActionKeyReleased() { }
+		/// <param name="mouseButton"></param>
+		public virtual void OnActionKeyReleased(MouseButtons mouseButton) { }
 		/// <summary>
 		/// Called when the tool is selected and allowed to draw an overlay inside the <see cref="CamView"/>.
 		/// </summary>
