@@ -40,6 +40,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get { return -950; }
 		}
+		public override bool IsHoveringAction
+		{
+			get { return overlay.CurrentVertex.type != PolygonRigidBodyEditorOverlay.VertexType.None; }
+		}
 
 
 		private void SetOriginalVertices()
@@ -55,30 +59,51 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 		}
 
+		public override bool CanBeginAction(MouseButtons mouseButton)
+		{
+			if (mouseButton == MouseButtons.Left)
+			{
+				if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleNew)
+					return true;
+				else if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleSelect)
+					return true;
+			}
+			else if (mouseButton == MouseButtons.Right)
+			{
+				if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleSelect)
+					return true;
+			}
+			return false;
+		}
 		public override void BeginAction(MouseButtons mouseButton)
 		{
+			base.BeginAction(mouseButton);
+
 			SetOriginalVertices();
-
-			if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleNew)
+			
+			if (mouseButton == MouseButtons.Left)
 			{
-				List<Vector2> temp = overlay.CurrentVertex.shape.Vertices.ToList();
-				int id = overlay.CurrentVertex.id + 1;
-				temp.Insert(id, overlay.CurrentVertex.pos);
-				overlay.CurrentVertex.shape.Vertices = temp.ToArray();
+				if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleNew)
+				{
+					List<Vector2> temp = overlay.CurrentVertex.shape.Vertices.ToList();
+					int id = overlay.CurrentVertex.id + 1;
+					temp.Insert(id, overlay.CurrentVertex.pos);
+					overlay.CurrentVertex.shape.Vertices = temp.ToArray();
 
-				UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(overlay.CurrentVertex.shape, originalVertices));
+					UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(overlay.CurrentVertex.shape, originalVertices));
 
-				SetOriginalVertices(); // Needed for a good undo experience (the move vertext starts from here)
-				overlay.CurrentVertex.id = id;
-				overlay.CurrentVertex.type = PolygonRigidBodyEditorOverlay.VertexType.Selected;
-			}
-			else if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleSelect)
-			{
-				if (mouseButton == MouseButtons.Left) // Move current vertex
+					SetOriginalVertices(); // Needed for a good undo experience (the move vertext starts from here)
+					overlay.CurrentVertex.id = id;
+					overlay.CurrentVertex.type = PolygonRigidBodyEditorOverlay.VertexType.Selected;
+				}
+				else if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleSelect)
 				{
 					overlay.CurrentVertex.type = PolygonRigidBodyEditorOverlay.VertexType.Selected;
 				}
-				else if (mouseButton == MouseButtons.Right) // Delete current vertex
+			}
+			else if (mouseButton == MouseButtons.Right)
+			{
+				if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleSelect)
 				{
 					if (overlay.CurrentVertex.shape.Vertices.Length > 3)
 					{
@@ -111,6 +136,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		public override void EndAction() { }
 
+		public override void OnMouseMove()
+		{
+			base.OnMouseMove();
+			// ToDo: Move any hover checks in here.
+			// Not sure where exactly they currently are - probably in the overlay class?
+		}
 		public override void OnActionKeyReleased()
 		{
 			base.OnActionKeyReleased();

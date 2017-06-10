@@ -23,6 +23,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get { return 1024; }
 		}
+		public override bool IsHoveringAction
+		{
+			get { return true; }
+		}
 
 		protected virtual Vector2[] GetInitialVertices(Vector2 basePos)
 		{
@@ -37,34 +41,31 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected abstract Vector2[] GetVertices(ShapeInfo shape);
 		protected abstract void SetVertices(ShapeInfo shape, Vector2[] vertices);
 
+		public override bool CanBeginAction(MouseButtons mouseButton)
+		{
+			if (mouseButton != MouseButtons.Left) return false;
+			return true;
+		}
 		public override void BeginAction(MouseButtons mouseButton) 
 		{
 			base.BeginAction(mouseButton);
 
-			if (mouseButton == MouseButtons.Left)
-			{
-				Vector2[] initialVertices = this.GetInitialVertices(this.Environment.ActiveBodyPos);
+			Vector2[] initialVertices = this.GetInitialVertices(this.Environment.ActiveBodyPos);
 
-				this.currentVertex = 1;
-				this.actionShape = this.CreateShapeInfo(initialVertices);
-				this.initialVertexCount = initialVertices.Length;
+			this.currentVertex = 1;
+			this.actionShape = this.CreateShapeInfo(initialVertices);
+			this.initialVertexCount = initialVertices.Length;
 
-				// Add the shape to the body. We're not doing an actual UndoRedoAction
-				// just yet, because we don't want a potentially invalid under-construction
-				// polygon to show up in the UndoRedo stack. We'll do a proper UndoRedoAction
-				// when finishing up the shape.
-				this.Environment.ActiveBody.AddShape(this.actionShape);
-				DualityEditorApp.NotifyObjPropChanged(this,
-					new ObjectSelection(this.Environment.ActiveBody),
-					ReflectionInfo.Property_RigidBody_Shapes);
+			// Add the shape to the body. We're not doing an actual UndoRedoAction
+			// just yet, because we don't want a potentially invalid under-construction
+			// polygon to show up in the UndoRedo stack. We'll do a proper UndoRedoAction
+			// when finishing up the shape.
+			this.Environment.ActiveBody.AddShape(this.actionShape);
+			DualityEditorApp.NotifyObjPropChanged(this,
+				new ObjectSelection(this.Environment.ActiveBody),
+				ReflectionInfo.Property_RigidBody_Shapes);
 
-				this.Environment.SelectShapes(new ShapeInfo[] { this.actionShape });
-			}
-			else
-			{
-				this.Environment.EndToolAction();
-				this.Environment.SelectedTool = null;
-			}
+			this.Environment.SelectShapes(new ShapeInfo[] { this.actionShape });
 		}
 		public override void UpdateAction()
 		{

@@ -421,9 +421,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			return result;
 		}
 
-		private void BeginToolAction(RigidBodyEditorTool action, MouseButtons mouseButton)
+		private bool BeginToolAction(RigidBodyEditorTool action, MouseButtons mouseButton)
 		{
-			if (this.actionTool == action) return;
+			if (this.actionTool == action) return true;
+			if (!action.CanBeginAction(mouseButton)) return false;
+
 			if (this.actionTool != this.toolNone)
 				this.EndToolAction();
 
@@ -441,6 +443,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			if (Sandbox.State == SandboxState.Playing)
 				Sandbox.Pause();
+
+			return true;
 		}
 		private void UpdateToolAction()
 		{
@@ -501,9 +505,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// If an action is currently being performed, that action will always be the active tool
 			if (this.actionTool != this.toolNone)
 				this.activeTool = this.actionTool;
-			// Otherwise, we'll go with the user-selected tool
-			else
+			// Otherwise, ask the user-selected tool if its action is available right now
+			else if (this.selectedTool.IsHoveringAction)
 				this.activeTool = this.selectedTool;
+			// Fallback to shape editing
+			else
+				this.activeTool = this.toolNone;
 
 			// Apply our own cursor. We'll need to do this continuously, since the object editor base
 			// class will inject its regular move-scale-select cursors.
@@ -580,31 +587,44 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			// We have an active tool that is willing to handle user input.
+			bool handledByTool = false;
+			if (this.activeTool != this.toolNone)
+			{
+				if (this.actionTool == this.activeTool)
+				{
+					// Notify an already active action that the action key has
+					// been pressed again. This can be used for "action checkpoints",
+					// such as finishing the current vertex and adding another one.
+					this.actionTool.OnActionKeyPressed(e.Button);
+					handledByTool = true;
+				}
+				else
+				{
+					// Begin a new action with the proposed action tool
+					handledByTool = this.BeginToolAction(this.activeTool, e.Button);
+				}
+			}
+
+			// If no tool handled the action and we happened to right-click,
+			// end any ongoing action and deselect the tool.
+			if (!handledByTool && e.Button == MouseButtons.Right)
+			{
+				this.EndToolAction();
+				this.SelectedTool = null;
+			}
+
+			// Invoke the base class mousedown handler. We'll do this after starting
+			// a tool action, so it has the chance to block any inherited mouse actions
+			// before they can even start.
 			base.OnMouseDown(e);
-
-			// Because selection events may change the currently active tool,
-			// start by agreeing on what tool we're dealing with in this mouse event.
-			RigidBodyEditorTool proposedAction = this.activeTool;
-
-			// If there is no tool active, don't do selection changes or begin an action
-			if (proposedAction == this.toolNone) return;
-
-			if (this.actionTool == proposedAction)
-			{
-				// Notify an already active action that the action key has
-				// been pressed again. This can be used for "action checkpoints",
-				// such as finishing the current vertex and adding another one.
-				this.actionTool.OnActionKeyPressed(e.Button);
-			}
-			else
-			{
-				// Begin a new action with the proposed action tool
-				this.BeginToolAction(proposedAction, e.Button);
-			}
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+
+			// Allow the selected tool to handle the mouse move event
+			this.selectedTool.OnMouseMove();
 
 			// Update what is considered the "active" state, e.g. active tools and data
 			this.UpdateActiveState();

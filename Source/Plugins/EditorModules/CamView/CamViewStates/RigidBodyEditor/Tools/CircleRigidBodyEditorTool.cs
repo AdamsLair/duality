@@ -39,25 +39,24 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get { return 1; }
 		}
+		public override bool IsHoveringAction
+		{
+			get { return true; }
+		}
 
+		public override bool CanBeginAction(MouseButtons mouseButton)
+		{
+			if (mouseButton != MouseButtons.Left) return false;
+			return true;
+		}
 		public override void BeginAction(MouseButtons mouseButton)
 		{
 			base.BeginAction(mouseButton);
 
-			if (mouseButton == MouseButtons.Left)
-			{
-				this.beginLocalPos = this.Environment.ActiveBodyPos;
-
-				this.actionCircle = new CircleShapeInfo(1.0f, this.Environment.ActiveBodyPos, 1.0f);
-				UndoRedoManager.Do(new CreateRigidBodyShapeAction(this.Environment.ActiveBody, this.actionCircle));
-
-				this.Environment.SelectShapes(new ShapeInfo[] { this.actionCircle });
-			}
-			else
-			{
-				this.Environment.EndToolAction();
-				this.Environment.SelectedTool = null;
-			}
+			this.beginLocalPos = this.Environment.ActiveBodyPos;
+			this.actionCircle = new CircleShapeInfo(1.0f, this.Environment.ActiveBodyPos, 1.0f);
+			UndoRedoManager.Do(new CreateRigidBodyShapeAction(this.Environment.ActiveBody, this.actionCircle));
+			this.Environment.SelectShapes(new ShapeInfo[] { this.actionCircle });
 		}
 		public override void UpdateAction()
 		{
