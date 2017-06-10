@@ -431,10 +431,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.MouseActionAllowed = false;
 			this.selectedBody.BeginUpdateBodyShape();
-			DualityEditorApp.Deselect(this, ObjectSelection.Category.Other);
 
 			this.lockedWorldPos = this.activeWorldPos;
-
 			this.actionTool = action;
 			this.actionTool.BeginAction(mouseButton);
 
