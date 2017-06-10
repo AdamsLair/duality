@@ -47,9 +47,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			float radius = SELECTOR_RADIUS / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0f));
 
-			canvas.PushState();
 			canvas.State.ColorTint = ColorRgba.White;
-				
 			if (currentVertex.type == VertexType.Selected)
 			{
 				canvas.DrawCircle(currentVertex.pos.X, currentVertex.pos.Y, radius * 2f); // Draw selected vertex circle (single mode is different that multiple/pinned mode)
@@ -106,8 +104,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					}
 				}
 			}
-
-			canvas.PopState();
 		}
 	}
 }

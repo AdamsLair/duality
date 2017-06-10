@@ -544,11 +544,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.selectedBody.BoundRadius * 4);
 			}
 
-			// RigidBodyEditorSelVertices
-			if (selectedTool != this.toolNone)
-			{
-				this.selectedTool.OnWorldOverlayDrawcalls(canvas); 
-			}
+			// Allow the selected tool to draw an overlay
+			canvas.PushState();
+			this.selectedTool.OnWorldOverlayDrawcalls(canvas); 
+			canvas.PopState();
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{

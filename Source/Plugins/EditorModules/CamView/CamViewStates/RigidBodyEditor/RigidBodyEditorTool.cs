@@ -96,7 +96,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get { return this.env.ActiveBody != null; }
 		}
 
-		
+
+		/// <summary>
+		/// While performing a continuous operation, this method can provide an optional
+		/// action text that will be displayed in the status area of the <see cref="RigidBody"/> editor.
+		/// </summary>
+		/// <returns></returns>
+		public virtual string GetActionText()
+		{
+			return null;
+		}
 		/// <summary>
 		/// Begins a continuous operation with this tool. Usually invoked via left-click.
 		/// </summary>
@@ -109,6 +118,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// Ends a previously started continuous operation of this tool.
 		/// </summary>
 		public virtual void EndAction() { }
+
 		/// <summary>
 		/// Called when the action key has been pressed after the action has already begun.
 		/// </summary>
@@ -118,15 +128,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// </summary>
 		public virtual void OnActionKeyReleased() { }
 		/// <summary>
-		/// While performing a continuous operation, this method can provide an optional
-		/// action text that will be displayed in the status area of the <see cref="RigidBody"/> editor.
+		/// Called when the tool is selected and allowed to draw an overlay inside the <see cref="CamView"/>.
 		/// </summary>
-		/// <returns></returns>
-		public virtual string GetActionText()
-		{
-			return null;
-		}
-		
+		/// <param name="canvas"></param>
 		public virtual void OnWorldOverlayDrawcalls(Canvas canvas) { }
 
 		/// <summary>
