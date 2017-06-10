@@ -30,7 +30,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		private const float SELECTOR_RADIUS = 5f;
 
-		private bool rendering = false;
 		private VertexInfo currentVertex = new VertexInfo();
 		
 		public VertexInfo CurrentVertex
@@ -43,62 +42,55 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			if (body == null) return;
 
-			if (!rendering)
+			float radius = SELECTOR_RADIUS / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0f));
+
+			canvas.PushState();
+			canvas.State.ColorTint = ColorRgba.White;
+				
+			if (currentVertex.type == VertexType.Selected)
 			{
-				rendering = true;
-				
-				float radius = SELECTOR_RADIUS / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0f));
+				canvas.DrawCircle(currentVertex.pos.X, currentVertex.pos.Y, radius * 2f); // Draw selected vertex circle (single mode is different that multiple/pinned mode)
+			}
+			else
+			{
+				currentVertex = new VertexInfo();
+			}
 
-				canvas.PushState();
-				canvas.State.ColorTint = ColorRgba.White;
-				
-				if (currentVertex.type == VertexType.Selected)
+			IEnumerable<PolyShapeInfo> shapes = body.Shapes.Where(x => x.GetType() == typeof(PolyShapeInfo)).Cast<PolyShapeInfo>();
+			foreach (PolyShapeInfo shape in shapes)
+			{
+				Vector2[] vertices = shape.Vertices;
+				for (int i = 0; i < vertices.Length; i++)
 				{
-					canvas.DrawCircle(currentVertex.pos.X, currentVertex.pos.Y, radius * 2f); // Draw selected vertex circle (single mode is different that multiple/pinned mode)
-				}
-				else
-				{
-					currentVertex = new VertexInfo();
-				}
+					int iNext = i < vertices.Length - 1 ? i + 1 : 0; // This works only if the shape is a closed polygon
+					Vector2 pA = vertices[i];
+					Vector2 pB = vertices[iNext];
 
-				IEnumerable<PolyShapeInfo> shapes = body.Shapes.Where(x => x.GetType() == typeof(PolyShapeInfo)).Cast<PolyShapeInfo>();
-				foreach (PolyShapeInfo shape in shapes)
-				{
-					Vector2[] vertices = shape.Vertices;
-					for (int i = 0; i < vertices.Length; i++)
+					canvas.FillCircle(pA.X, pA.Y, radius); // Draw vertex
+
+					if (currentVertex.type == VertexType.None) // Try to find a posible action (select or new)
 					{
-						int iNext = i < vertices.Length - 1 ? i + 1 : 0; // This works only if the shape is a closed polygon
-						Vector2 pA = vertices[i];
-						Vector2 pB = vertices[iNext];
-
-						canvas.FillCircle(pA.X, pA.Y, radius); // Draw vertex
-
-						if (currentVertex.type == VertexType.None) // Try to find a posible action (select or new)
+						if (MathF.Distance(pA.X, pA.Y, mousePos.X, mousePos.Y) <= radius) // Posible selection point found
 						{
-							if (MathF.Distance(pA.X, pA.Y, mousePos.X, mousePos.Y) <= radius) // Posible selection point found
+							currentVertex = new VertexInfo() { shape = shape, type = VertexType.PosibleSelect, id = i, pos = pA };
+							canvas.DrawCircle(pA.X, pA.Y, radius * 2f);
+						}
+						else if (MathF.Distance(pB.X, pB.Y, mousePos.X, mousePos.Y) > radius) // Posible new point found
+						{
+							Vector2 p = MathF.PointLineNearestPoint(mousePos.X, mousePos.Y, pA.X, pA.Y, pB.X, pB.Y);
+							if (MathF.Distance(p.X, p.Y, mousePos.X, mousePos.Y) < radius)
 							{
-								currentVertex = new VertexInfo() { shape = shape, type = VertexType.PosibleSelect, id = i, pos = pA };
-								canvas.DrawCircle(pA.X, pA.Y, radius * 2f);
-							}
-							else if (MathF.Distance(pB.X, pB.Y, mousePos.X, mousePos.Y) > radius) // Posible new point found
-							{
-								Vector2 p = MathF.PointLineNearestPoint(mousePos.X, mousePos.Y, pA.X, pA.Y, pB.X, pB.Y);
-								if (MathF.Distance(p.X, p.Y, mousePos.X, mousePos.Y) < radius)
-								{
-									currentVertex = new VertexInfo() { shape = shape, type = VertexType.PosibleNew, id = i, pos = p };
+								currentVertex = new VertexInfo() { shape = shape, type = VertexType.PosibleNew, id = i, pos = p };
 
-									canvas.DrawCircle(p.X, p.Y, radius);
-									canvas.DrawCircle(p.X, p.Y, radius * 2f);
-								}
+								canvas.DrawCircle(p.X, p.Y, radius);
+								canvas.DrawCircle(p.X, p.Y, radius * 2f);
 							}
 						}
 					}
 				}
-
-				canvas.PopState();
-
-				rendering = false;
 			}
+
+			canvas.PopState();
 		}
 	}
 }
