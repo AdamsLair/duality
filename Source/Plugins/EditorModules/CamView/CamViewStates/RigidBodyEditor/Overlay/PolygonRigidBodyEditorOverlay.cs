@@ -1,11 +1,14 @@
-﻿using Duality.Components.Physics;
-using Duality.Drawing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using Duality;
+using Duality.Drawing;
+using Duality.Components;
+using Duality.Components.Physics;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
@@ -56,6 +59,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				currentVertex = new VertexInfo();
 			}
 
+			// Prepare the transform matrix for this object, so 
+			// we can move the RigidBody vertices into world space quickly
+			Transform transform = body.GameObj.Transform;
+			Vector2 bodyPos = transform.Pos.Xy;
+			Vector2 bodyDotX;
+			Vector2 bodyDotY;
+			MathF.GetTransformDotVec(transform.Angle, transform.Scale, out bodyDotX, out bodyDotY);
+
 			IEnumerable<PolyShapeInfo> shapes = body.Shapes.Where(x => x.GetType() == typeof(PolyShapeInfo)).Cast<PolyShapeInfo>();
 			foreach (PolyShapeInfo shape in shapes)
 			{
@@ -65,6 +76,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					int iNext = i < vertices.Length - 1 ? i + 1 : 0; // This works only if the shape is a closed polygon
 					Vector2 pA = vertices[i];
 					Vector2 pB = vertices[iNext];
+
+					// Transform vertices from object space to world space
+					MathF.TransformDotVec(ref pA, ref bodyDotX, ref bodyDotY);
+					MathF.TransformDotVec(ref pB, ref bodyDotX, ref bodyDotY);
+					pA += bodyPos;
+					pB += bodyPos;
 
 					canvas.FillCircle(pA.X, pA.Y, radius); // Draw vertex
 

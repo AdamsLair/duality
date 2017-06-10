@@ -95,9 +95,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.Selected)
 			{
-				Vector2 origin = new Vector2(overlay.CurrentVertex.shape.Vertices[overlay.CurrentVertex.id].X, overlay.CurrentVertex.shape.Vertices[overlay.CurrentVertex.id].Y);
-				overlay.CurrentVertex.pos = this.Environment.ActiveWorldPos.Xy;
-				overlay.CurrentVertex.shape.Vertices[overlay.CurrentVertex.id] = this.Environment.ActiveWorldPos.Xy;
+				Vector2 worldPos = this.Environment.ActiveWorldPos.Xy;
+				Vector2 localPos = this.Environment.ActiveBodyPos;
+				overlay.CurrentVertex.pos = worldPos;
+				overlay.CurrentVertex.shape.Vertices[overlay.CurrentVertex.id] = localPos;
 			}
 		}
 		public override void EndAction() { }
