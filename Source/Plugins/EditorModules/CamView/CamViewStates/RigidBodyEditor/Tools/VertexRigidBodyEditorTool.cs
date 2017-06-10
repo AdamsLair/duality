@@ -39,7 +39,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		public override int SortOrder
 		{
-			get { return 4; }
+			get { return -950; }
 		}
 
 

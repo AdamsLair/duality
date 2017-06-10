@@ -128,6 +128,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.toolstrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 				this.toolstrip.BackColor = Color.FromArgb(212, 212, 212);
 
+				int lastSortOrder = int.MinValue;
 				foreach (RigidBodyEditorTool tool in this.tools)
 				{
 					tool.InitToolButton();
@@ -135,10 +136,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					if (tool.ToolButton == null)
 						continue;
 
+					// Insert a separator when the sorting order between two items is very large
+					if (lastSortOrder != int.MinValue && Math.Abs(tool.SortOrder - lastSortOrder) >= 100)
+						this.toolstrip.Items.Add(new ToolStripSeparator());
+
 					tool.ToolButton.Tag = tool.HelpInfo;
 					tool.ToolButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 					tool.ToolButton.AutoToolTip = true;
 					this.toolstrip.Items.Add(tool.ToolButton);
+
+					lastSortOrder = tool.SortOrder;
 				}
 
 				this.View.Controls.Add(this.toolstrip);

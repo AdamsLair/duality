@@ -28,5 +28,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get { return CursorHelper.Arrow; }
 		}
+		public override int SortOrder
+		{
+			get { return -1000; }
+		}
 	}
 }
