@@ -5,7 +5,9 @@ using System.Linq;
 using System.Windows.Forms;
 
 using Duality.Drawing;
+using Duality.Components;
 using Duality.Components.Physics;
+
 using Duality.Editor.Plugins.CamView.Properties;
 using Duality.Editor.Plugins.CamView.UndoRedoActions;
 
@@ -17,8 +19,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// </summary>
 	public class VertexRigidBodyEditorTool : RigidBodyEditorTool
 	{
-		private PolygonRigidBodyEditorOverlay overlay = new PolygonRigidBodyEditorOverlay();
-		private Vector2[] originalVertices;
+		private bool          isMovingVertex       = false;
+		private PolyShapeInfo activeShape          = null;
+		private int           activeVertex         = -1;
+		private int           activeEdge           = -1;
+		private Vector2       activeEdgeWorldPos   = Vector2.Zero;
+
+		private PolyShapeInfo backedUpShape        = null;
+		private Vector2[]     backedUpVertices     = null;
+
 
 		public override string Name
 		{
@@ -42,129 +51,252 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		public override bool IsHoveringAction
 		{
-			get { return overlay.CurrentVertex.type != PolygonRigidBodyEditorOverlay.VertexType.None; }
+			get { return this.activeShape != null; }
 		}
 
-
-		private void SetOriginalVertices()
-		{
-			if (overlay.CurrentVertex.shape != null)
-			{
-				Vector2[] vertices = overlay.CurrentVertex.shape.Vertices;
-				originalVertices = new Vector2[vertices.Length];
-				for (int i = 0; i < vertices.Length; i++)
-				{
-					this.originalVertices[i] = new Vector2(vertices[i].X, vertices[i].Y);
-				}
-			}
-		}
 
 		public override bool CanBeginAction(MouseButtons mouseButton)
 		{
 			if (mouseButton == MouseButtons.Left)
-			{
-				if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleNew)
-					return true;
-				else if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleSelect)
-					return true;
-			}
+				return this.activeShape != null;
 			else if (mouseButton == MouseButtons.Right)
-			{
-				if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleSelect)
-					return true;
-			}
-			return false;
+				return this.activeShape != null && this.activeVertex != -1;
+			else
+				return false;
 		}
 		public override void BeginAction(MouseButtons mouseButton)
 		{
 			base.BeginAction(mouseButton);
 
-			SetOriginalVertices();
+			Log.Editor.Write("BeginAction");
+			// Create a backup of the polygons vertices before our edit operation,
+			// so we can go back via Undo later.
+			this.backedUpShape = this.activeShape;
+			this.backedUpVertices = (Vector2[])this.activeShape.Vertices.Clone();
 			
 			if (mouseButton == MouseButtons.Left)
 			{
-				if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleNew)
+				if (this.activeEdge != -1)
 				{
-					List<Vector2> temp = overlay.CurrentVertex.shape.Vertices.ToList();
-					int id = overlay.CurrentVertex.id + 1;
-					temp.Insert(id, overlay.CurrentVertex.pos);
-					overlay.CurrentVertex.shape.Vertices = temp.ToArray();
+					int newIndex = this.activeEdge + 1;
+					List<Vector2> newVertices = this.activeShape.Vertices.ToList();
+					newVertices.Insert(newIndex, this.Environment.ActiveBodyPos);
 
-					UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(overlay.CurrentVertex.shape, originalVertices));
-
-					SetOriginalVertices(); // Needed for a good undo experience (the move vertext starts from here)
-					overlay.CurrentVertex.id = id;
-					overlay.CurrentVertex.type = PolygonRigidBodyEditorOverlay.VertexType.Selected;
-				}
-				else if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleSelect)
-				{
-					overlay.CurrentVertex.type = PolygonRigidBodyEditorOverlay.VertexType.Selected;
+					this.activeShape.Vertices = newVertices.ToArray();
+					this.activeVertex = newIndex;
 				}
 			}
 			else if (mouseButton == MouseButtons.Right)
 			{
-				if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.PosibleSelect)
+				if (this.activeShape.Vertices.Length > 3)
 				{
-					if (overlay.CurrentVertex.shape.Vertices.Length > 3)
-					{
-						List<Vector2> vertices = overlay.CurrentVertex.shape.Vertices.ToList();
-						vertices.RemoveAt(overlay.CurrentVertex.id);
-						overlay.CurrentVertex.shape.Vertices = vertices.ToArray();
+					List<Vector2> newVertices = this.activeShape.Vertices.ToList();
+					newVertices.RemoveAt(this.activeVertex);
 
-						UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(overlay.CurrentVertex.shape, originalVertices));
-					}
+					this.activeShape.Vertices = newVertices.ToArray();
 				}
 			}
 		}
 		public override void UpdateAction()
 		{
-			if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.Selected)
+			Vector2 worldPos = this.Environment.ActiveWorldPos.Xy;
+			Vector2 localPos = this.Environment.ActiveBodyPos;
+			Vector2 oldLocalPos = this.activeShape.Vertices[this.activeVertex];
+			if (oldLocalPos != localPos)
 			{
-				Vector2 worldPos = this.Environment.ActiveWorldPos.Xy;
-				Vector2 localPos = this.Environment.ActiveBodyPos;
-
-				overlay.CurrentVertex.pos = worldPos;
-
-				PolyShapeInfo shape = overlay.CurrentVertex.shape;
-				Vector2 oldVertexPos = shape.Vertices[overlay.CurrentVertex.id];
-				if (oldVertexPos != localPos)
-				{
-					shape.Vertices[overlay.CurrentVertex.id] = localPos;
-					shape.UpdateShape();
-				}
+				this.activeEdgeWorldPos = worldPos;
+				this.activeShape.Vertices[this.activeVertex] = localPos;
+				this.activeShape.UpdateShape();
 			}
 		}
-		public override void EndAction() { }
+		public override void EndAction()
+		{
+			Log.Editor.Write("EndAction");
+			UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(
+				this.backedUpShape, 
+				this.backedUpVertices,
+				this.backedUpShape.Vertices));
+		}
 
 		public override void OnMouseMove()
 		{
 			base.OnMouseMove();
-			// ToDo: Move any hover checks in here.
-			// Not sure where exactly they currently are - probably in the overlay class?
+			if (!this.isMovingVertex)
+				this.UpdateHoverState();
 		}
 		public override void OnActionKeyReleased(MouseButtons mouseButton)
 		{
 			base.OnActionKeyReleased(mouseButton);
 
-			if (overlay.CurrentVertex.type == PolygonRigidBodyEditorOverlay.VertexType.Selected)
-			{
-				// If the vertex is not moved, don't do anything
-				if (originalVertices[overlay.CurrentVertex.id] != overlay.CurrentVertex.pos)
-				{
-					overlay.CurrentVertex.shape.Vertices = overlay.CurrentVertex.shape.Vertices;
+			this.activeShape = null;
+			this.activeVertex = -1;
+			this.activeEdge = -1;
 
-					UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(overlay.CurrentVertex.shape, originalVertices));
-				}
-				overlay.CurrentVertex = new PolygonRigidBodyEditorOverlay.VertexInfo();
-			}
 			this.Environment.EndToolAction();
 		}
 		public override void OnWorldOverlayDrawcalls(Canvas canvas)
 		{
-			RigidBodyEditorCamViewState env = Environment as RigidBodyEditorCamViewState;
-			Point mousePos = env.View.RenderableControl.PointToClient(Cursor.Position);
-			Vector3 mousePosVector = canvas.DrawDevice.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, 0f));
-			overlay.Draw(base.Environment.ActiveBody, canvas, mousePosVector);
+			float radius = 5.0f;
+			float worldRadius = radius / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0.0f));
+
+			// Interaction indicator for an existing vertex
+			if (this.activeVertex != -1)
+			{
+				canvas.DrawCircle(
+					this.activeEdgeWorldPos.X, 
+					this.activeEdgeWorldPos.Y, 
+					worldRadius * 2.0f);
+			}
+			// Interaction indicator for a vertex-to-be-created
+			else if (this.activeEdge != -1)
+			{
+				canvas.DrawCircle(
+					this.activeEdgeWorldPos.X, 
+					this.activeEdgeWorldPos.Y, 
+					worldRadius * 1.0f);
+				canvas.DrawCircle(
+					this.activeEdgeWorldPos.X, 
+					this.activeEdgeWorldPos.Y, 
+					worldRadius * 2.0f);
+			}
+
+			// Draw an interaction indicator for every vertex of the active bodies shapes
+			RigidBody body = this.Environment.ActiveBody;
+			if (body != null)
+			{
+				// Prepare the transform matrix for this object, so 
+				// we can move the RigidBody vertices into world space quickly
+				Transform transform = body.GameObj.Transform;
+				Vector2 bodyPos = transform.Pos.Xy;
+				Vector2 bodyDotX;
+				Vector2 bodyDotY;
+				MathF.GetTransformDotVec(transform.Angle, transform.Scale, out bodyDotX, out bodyDotY);
+
+				Vector3 mousePosWorld = this.Environment.ActiveWorldPos;
+				foreach (ShapeInfo shape in body.Shapes)
+				{
+					PolyShapeInfo polygon = shape as PolyShapeInfo;
+					if (polygon == null) continue;
+
+					Vector2[] vertices = polygon.Vertices;
+					Vector2[] worldVertices = new Vector2[vertices.Length];
+
+					// Transform the shapes vertices into world space
+					for (int index = 0; index < vertices.Length; index++)
+					{
+						Vector2 vertex = vertices[index];
+						MathF.TransformDotVec(ref vertex, ref bodyDotX, ref bodyDotY);
+						worldVertices[index] = bodyPos + vertex;
+					}
+
+					// Draw the vertex
+					for (int i = 0; i < vertices.Length; i++)
+					{
+						canvas.FillCircle(
+							worldVertices[i].X, 
+							worldVertices[i].Y, 
+							worldRadius);
+					}
+				}
+			}
+		}
+		
+		private void UpdateHoverState()
+		{
+			this.activeShape = null;
+			this.activeVertex = -1;
+			this.activeEdge = -1;
+			this.activeEdgeWorldPos = Vector2.Zero;
+			
+			RigidBody body = this.Environment.ActiveBody;
+			if (body == null) return;
+
+			// Prepare the transform matrix for this object, so 
+			// we can move the RigidBody vertices into world space quickly
+			Transform transform = body.GameObj.Transform;
+			Vector2 bodyPos = transform.Pos.Xy;
+			Vector2 bodyDotX;
+			Vector2 bodyDotY;
+			MathF.GetTransformDotVec(transform.Angle, transform.Scale, out bodyDotX, out bodyDotY);
+
+			Vector3 mousePosWorld = this.Environment.ActiveWorldPos;
+			foreach (ShapeInfo shape in body.Shapes)
+			{
+				PolyShapeInfo polygon = shape as PolyShapeInfo;
+				if (polygon == null) continue;
+
+				Vector2[] vertices = polygon.Vertices;
+				Vector2[] worldVertices = new Vector2[vertices.Length];
+
+				// Transform the shapes vertices into world space
+				for (int index = 0; index < vertices.Length; index++)
+				{
+					Vector2 vertex = vertices[index];
+					MathF.TransformDotVec(ref vertex, ref bodyDotX, ref bodyDotY);
+					worldVertices[index] = bodyPos + vertex;
+				}
+
+				// Determine whether the cursor is hovering something it can interact with
+				float radius = 5.0f;
+				float worldRadius = radius / MathF.Max(0.0001f, this.Environment.GetScaleAtZ(0.0f));
+				bool anythingHovered = 
+					this.GetHoveredVertex(worldVertices, mousePosWorld.Xy, worldRadius, out this.activeVertex, out this.activeEdgeWorldPos) ||
+					this.GetHoveredEdge(worldVertices, mousePosWorld.Xy, worldRadius, out this.activeEdge, out this.activeEdgeWorldPos);
+				if (anythingHovered)
+				{
+					this.activeShape = polygon;
+					break;
+				}
+			}
+		}
+
+		private bool GetHoveredVertex(Vector2[] vertices, Vector2 targetPos, float radius, out int hoverIndex, out Vector2 hoverPos)
+		{
+			hoverIndex = -1;
+			hoverPos = targetPos;
+
+			for (int index = 0; index < vertices.Length; index++)
+			{
+				Vector2 vertex = vertices[index];
+
+				if ((vertex - targetPos).Length <= radius)
+				{
+					hoverIndex = index;
+					hoverPos = vertex;
+					return true;
+				}
+			}
+
+			return false;
+		}
+		private bool GetHoveredEdge(Vector2[] vertices, Vector2 targetPos, float radius, out int edgeStartIndex, out Vector2 hoverPos)
+		{
+			hoverPos = targetPos;
+			edgeStartIndex = -1;
+
+			for (int index = 0; index < vertices.Length; index++)
+			{
+				int nextIndex = (index + 1) % vertices.Length;
+				Vector2 vertex = vertices[index];
+				Vector2 nextVertex = vertices[nextIndex];
+				
+				Vector2 pointOnEdge = MathF.PointLineNearestPoint(
+					targetPos.X, 
+					targetPos.Y, 
+					vertex.X, 
+					vertex.Y, 
+					nextVertex.X, 
+					nextVertex.Y);
+
+				if ((pointOnEdge - targetPos).Length <= radius)
+				{
+					edgeStartIndex = index;
+					hoverPos = pointOnEdge;
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }

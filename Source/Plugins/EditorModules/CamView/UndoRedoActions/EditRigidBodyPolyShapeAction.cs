@@ -12,54 +12,71 @@ using Duality.Editor.Plugins.CamView.Properties;
 
 namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 {
-	public class EditRigidBodyPolyShapeAction : RigidBodyShapeVertexAction
+	public class EditRigidBodyPolyShapeAction : UndoRedoAction
 	{
-		private PolyShapeInfo targetParentObj = null;
+		private Vector2[]     originalVertices = null;
+		private Vector2[]     newVertices      = null;
+		private PolyShapeInfo targetShape      = null;
+		private bool          sameVertices     = false;
 
-		protected override string NameBase
+		public override string Name
 		{
 			get
 			{
 				if (originalVertices.Length == newVertices.Length)
-				{
 					return CamViewRes.UndoRedo_MoveRigidBodyShapeVertex;
-				}
-				else
-				{
-					return originalVertices.Length > newVertices.Length ? CamViewRes.UndoRedo_DeleteRigidBodyShapeVertex : CamViewRes.UndoRedo_CreateRigidBodyShapeVertex;
-				}
+				else if (originalVertices.Length > newVertices.Length)
+					return CamViewRes.UndoRedo_DeleteRigidBodyShapeVertex;
+				else 
+					return CamViewRes.UndoRedo_CreateRigidBodyShapeVertex;
 			}
 		}
-		public Vector2[] Result
+		public override bool IsVoid
 		{
-			get { return this.newVertices; }
+			get { return this.sameVertices; }
 		}
 
-		public EditRigidBodyPolyShapeAction(PolyShapeInfo parent, Vector2[] originalVertices) : base(originalVertices, parent.Vertices)
+		public EditRigidBodyPolyShapeAction(PolyShapeInfo shape, Vector2[] originalVertices, Vector2[] newVertices)
 		{
-			this.targetParentObj = parent;
+			this.targetShape = shape;
+			this.originalVertices = (Vector2[])originalVertices.Clone();
+			this.newVertices = (Vector2[])newVertices.Clone();
+			this.sameVertices = this.AreVerticesEqual(this.originalVertices, this.newVertices);
 		}
 
 		public override void Do()
 		{
-			Vector2[] temp = new Vector2[newVertices.Length];
-			for (int i = 0; i < newVertices.Length; i++)
-			{
-				temp[i] = new Vector2(newVertices[i].X, newVertices[i].Y);
-			}
-			this.targetParentObj.Vertices = temp;
+			Vector2[] temp = (Vector2[])this.newVertices.Clone();
+			this.targetShape.Vertices = temp;
             
-			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(targetParentObj.Parent), ReflectionInfo.Property_RigidBody_Shapes);
+			DualityEditorApp.NotifyObjPropChanged(
+				this, 
+				new ObjectSelection(targetShape.Parent), 
+				ReflectionInfo.Property_RigidBody_Shapes);
 		}
 		public override void Undo()
 		{
-			Vector2[] temp = new Vector2[originalVertices.Length];
-			for (int i = 0; i < originalVertices.Length; i++)
+			Vector2[] temp = (Vector2[])this.originalVertices.Clone();
+			this.targetShape.Vertices = temp;
+
+			DualityEditorApp.NotifyObjPropChanged(
+				this, 
+				new ObjectSelection(targetShape.Parent), 
+				ReflectionInfo.Property_RigidBody_Shapes);
+		}
+
+		private bool AreVerticesEqual(Vector2[] a, Vector2[] b)
+		{
+			if (a == b) return true;
+			if (a == null || b == null) return false;
+			if (a.Length != b.Length) return false;
+			
+			for (int i = 0; i < a.Length; i++)
 			{
-				temp[i] = new Vector2(originalVertices[i].X, originalVertices[i].Y);
+				if (a[i] != b[i]) return false;
 			}
-			this.targetParentObj.Vertices = temp;
-			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(targetParentObj.Parent), ReflectionInfo.Property_RigidBody_Shapes);
+
+			return true;
 		}
 	}
 }

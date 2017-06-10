@@ -455,12 +455,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		private void EndToolAction()
 		{
-			// If we don't perform an action right now, at least deselect the tool
 			if (this.actionTool == this.toolNone)
-			{
-				this.SelectedTool = null;
 				return;
-			}
 			
 			this.actionTool.EndAction();
 			this.actionTool = this.toolNone;

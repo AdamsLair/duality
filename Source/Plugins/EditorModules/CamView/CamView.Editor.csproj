@@ -67,7 +67,6 @@
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelCircleShape.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelShape.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelBody.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\Overlay\PolygonRigidBodyEditorOverlay.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\ChainRigidBodyEditorTool.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\VertexRigidBodyEditorTool.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\PolyLikeRigidBodyEditorTool.cs" />
@@ -123,7 +122,6 @@
     <Compile Include="UndoRedoActions\CreateRigidBodyShapeAction.cs" />
     <Compile Include="UndoRedoActions\DeleteRigidBodyShapeAction.cs" />
     <Compile Include="UndoRedoActions\DropGameObjectInSceneAction.cs" />
-    <Compile Include="UndoRedoActions\RigidBodyShapeVertexAction.cs" />
     <Compile Include="UndoRedoActions\RigidBodyShapeAction.cs" />
     <Compile Include="UndoRedoActions\ScaleCamViewObjAction.cs" />
     <Compile Include="UndoRedoActions\RotateCamViewObjAction.cs" />
