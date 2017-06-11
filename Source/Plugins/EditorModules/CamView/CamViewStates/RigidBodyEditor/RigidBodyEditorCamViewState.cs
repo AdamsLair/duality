@@ -429,7 +429,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (this.actionTool != this.toolNone)
 				this.EndToolAction();
 
-			this.MouseActionAllowed = false;
 			this.selectedBody.BeginUpdateBodyShape();
 
 			this.lockedWorldPos = this.activeWorldPos;
@@ -461,7 +460,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.actionTool.EndAction();
 			this.actionTool = this.toolNone;
 
-			this.MouseActionAllowed = true;
 			this.selectedBody.EndUpdateBodyShape();
 			this.UpdateRigidBodyToolButtons();
 			this.Invalidate();
@@ -514,6 +512,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// class will inject its regular move-scale-select cursors.
 			if (this.activeTool != this.toolNone)
 				this.ApplyCursor();
+
+			// Block inherited shape transform actions while a tool is active.
+			this.MouseActionAllowed = (
+				this.activeTool == this.toolNone && 
+				this.actionTool == this.toolNone);
 		}
 
 		protected IEnumerable<RigidBody> QueryVisibleColliders()
@@ -612,15 +615,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.SelectedTool = null;
 			}
 
-			// Invoke the base class mousedown handler. We'll do this after starting
+			// Invoke the base class mouse down handler. We'll do this after starting
 			// a tool action, so it has the chance to block any inherited mouse actions
 			// before they can even start.
 			base.OnMouseDown(e);
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			base.OnMouseMove(e);
-
 			// Allow the selected tool to handle the mouse move event
 			this.selectedTool.OnMouseMove();
 
@@ -629,6 +630,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			// Update the current tools active action
 			this.UpdateToolAction();
+			
+			// Invoke the base class mouse move handler. We'll do this after updating our
+			// own state, so an active tool has the chance to block inherited mouse actions.
+			base.OnMouseMove(e);
 		}
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
