@@ -84,7 +84,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			// Initial resize event to apply a proper size to the layer view main column
 			this.layerView_Resize(this, EventArgs.Empty);
-			UpdateZoomButtons();
+			this.UpdateZoomButtons();
 		}
 		
 		internal void SaveUserData(XElement node)
@@ -426,6 +426,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.ApplyGlobalTilesetSelection(e.ChangeReason);
 		}
 		
+		private void tilesetView_SpecialZoomLevelChanged(object sender, EventArgs e)
+		{
+			this.UpdateZoomButtons();
+		}
 		private void treeColumnMain_DrawColHeaderBg(object sender, DrawColHeaderBgEventArgs e)
 		{
 			e.Graphics.FillRectangle(new SolidBrush(this.layerView.BackColor), e.Bounds);

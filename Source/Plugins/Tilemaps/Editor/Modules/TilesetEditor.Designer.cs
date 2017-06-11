@@ -271,6 +271,7 @@
 			this.tilesetView.Spacing = new System.Drawing.Size(0, 0);
 			this.tilesetView.TabIndex = 2;
 			this.tilesetView.TileSizeFactor = 1F;
+			this.tilesetView.SpecialZoomLevelChanged += new System.EventHandler(this.tilesetView_SpecialZoomLevelChanged);
 			// 
 			// panelBottom
 			// 
