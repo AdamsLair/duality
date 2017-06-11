@@ -136,25 +136,34 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			float radius = 5.0f;
 			float worldRadius = radius / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0.0f));
+			ColorRgba markerColor = ColorRgba.White;
+
+			canvas.State.ZOffset = -1.0f;
 
 			// Interaction indicator for an existing vertex
 			if (this.activeVertex != -1)
 			{
-				canvas.DrawCircle(
-					this.activeEdgeWorldPos.X, 
-					this.activeEdgeWorldPos.Y, 
+				canvas.State.ColorTint = markerColor;
+				canvas.DrawRect(
+					this.activeEdgeWorldPos.X - worldRadius, 
+					this.activeEdgeWorldPos.Y - worldRadius, 
+					worldRadius * 2.0f, 
 					worldRadius * 2.0f);
 			}
 			// Interaction indicator for a vertex-to-be-created
 			else if (this.activeEdge != -1)
 			{
-				canvas.DrawCircle(
-					this.activeEdgeWorldPos.X, 
-					this.activeEdgeWorldPos.Y, 
+				canvas.State.ColorTint = markerColor.WithAlpha(0.35f);
+				canvas.FillRect(
+					this.activeEdgeWorldPos.X - worldRadius * 0.5f, 
+					this.activeEdgeWorldPos.Y - worldRadius * 0.5f, 
+					worldRadius * 1.0f, 
 					worldRadius * 1.0f);
-				canvas.DrawCircle(
-					this.activeEdgeWorldPos.X, 
-					this.activeEdgeWorldPos.Y, 
+				canvas.State.ColorTint = markerColor;
+				canvas.DrawRect(
+					this.activeEdgeWorldPos.X - worldRadius, 
+					this.activeEdgeWorldPos.Y - worldRadius, 
+					worldRadius * 2.0f, 
 					worldRadius * 2.0f);
 			}
 
@@ -190,9 +199,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					// Draw the vertex
 					for (int i = 0; i < vertices.Length; i++)
 					{
-						canvas.FillCircle(
-							worldVertices[i].X, 
-							worldVertices[i].Y, 
+						canvas.State.ColorTint = markerColor;
+						canvas.FillRect(
+							worldVertices[i].X - worldRadius * 0.5f, 
+							worldVertices[i].Y - worldRadius * 0.5f, 
+							worldRadius,
 							worldRadius);
 					}
 				}
