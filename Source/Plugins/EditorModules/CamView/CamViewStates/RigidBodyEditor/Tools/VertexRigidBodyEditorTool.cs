@@ -68,6 +68,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			base.BeginAction(mouseButton);
 
+			this.isMovingVertex = true;
+
 			// Create a backup of the polygons vertices before our edit operation,
 			// so we can go back via Undo later.
 			this.backedUpShape = this.activeShape;
@@ -110,6 +112,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		public override void EndAction()
 		{
+			this.isMovingVertex = false;
 			UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(
 				this.backedUpShape, 
 				this.backedUpVertices,
@@ -228,7 +231,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Vector2 bodyDotY;
 			MathF.GetTransformDotVec(transform.Angle, transform.Scale, out bodyDotX, out bodyDotY);
 
-			Vector3 mousePosWorld = this.Environment.ActiveWorldPos;
+			Vector3 mousePosWorld = this.Environment.HoveredWorldPos;
 			foreach (ShapeInfo shape in body.Shapes)
 			{
 				PolyShapeInfo polygon = shape as PolyShapeInfo;

@@ -24,16 +24,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// </summary>
 	public partial class RigidBodyEditorCamViewState : ObjectEditorCamViewState, IRigidBodyEditorToolEnvironment
 	{
-		private RigidBodyEditorTool       toolNone       = new NoRigidBodyEditorTool();
-		private List<RigidBodyEditorTool> tools          = new List<RigidBodyEditorTool>();
-		private RigidBody                 selectedBody   = null;
-		private RigidBodyEditorTool       selectedTool   = null;
-		private Vector3                   lockedWorldPos = Vector3.Zero;
-		private Vector3                   activeWorldPos = Vector3.Zero;
-		private Vector2                   activeObjPos   = Vector2.Zero;
-		private RigidBodyEditorTool       activeTool     = null;
-		private RigidBodyEditorTool       actionTool     = null;
-		private ToolStrip                 toolstrip      = null;
+		private RigidBodyEditorTool       toolNone        = new NoRigidBodyEditorTool();
+		private List<RigidBodyEditorTool> tools           = new List<RigidBodyEditorTool>();
+		private RigidBody                 selectedBody    = null;
+		private RigidBodyEditorTool       selectedTool    = null;
+		private Vector3                   lockedWorldPos  = Vector3.Zero;
+		private Vector3                   hoveredWorldPos = Vector3.Zero;
+		private Vector2                   hoveredObjPos   = Vector2.Zero;
+		private Vector3                   activeWorldPos  = Vector3.Zero;
+		private Vector2                   activeObjPos    = Vector2.Zero;
+		private RigidBodyEditorTool       activeTool      = null;
+		private RigidBodyEditorTool       actionTool      = null;
+		private ToolStrip                 toolstrip       = null;
 
 		public override string StateName
 		{
@@ -68,6 +70,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public Vector3 ActiveWorldPos
 		{
 			get { return this.activeWorldPos; }
+		}
+		public Vector2 HoveredBodyPos
+		{
+			get { return this.hoveredObjPos; }
+		}
+		public Vector3 HoveredWorldPos
+		{
+			get { return this.hoveredWorldPos; }
 		}
 		public Vector3 LockedWorldPos
 		{
@@ -455,7 +465,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.selectedBody.BeginUpdateBodyShape();
 
-			this.lockedWorldPos = this.activeWorldPos;
+			this.lockedWorldPos = this.hoveredWorldPos;
 			this.actionTool = action;
 			this.actionTool.BeginAction(mouseButton);
 
@@ -513,9 +523,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Transform selTransform = selGameObj != null ? selGameObj.Transform : null;
 			Point mousePos = this.PointToClient(Cursor.Position);
 			if (selTransform != null)
-				this.activeWorldPos = this.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, selTransform.Pos.Z));
+			{
+				this.hoveredWorldPos = this.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, selTransform.Pos.Z));
+				this.activeWorldPos = this.hoveredWorldPos;
+			}
 			else
+			{
+				this.hoveredWorldPos = Vector3.Zero;
 				this.activeWorldPos = Vector3.Zero;
+			}
 			
 			// Snap active position to user guides
 			if ((this.SnapToUserGuides & UserGuideType.Position) != UserGuideType.None)
@@ -526,9 +542,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			// Calculate object-local active position
 			if (selTransform != null)
+			{
+				this.hoveredObjPos = selTransform.GetLocalPoint(this.hoveredWorldPos).Xy;
 				this.activeObjPos = selTransform.GetLocalPoint(this.activeWorldPos).Xy;
+			}
 			else
+			{
+				this.hoveredObjPos = Vector2.Zero;
 				this.activeObjPos = Vector2.Zero;
+			}
 
 			// If an action is currently being performed, that action will always be the active tool
 			if (this.actionTool != this.toolNone)
