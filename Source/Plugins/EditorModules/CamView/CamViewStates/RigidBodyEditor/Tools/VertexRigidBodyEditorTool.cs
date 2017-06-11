@@ -68,7 +68,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			base.BeginAction(mouseButton);
 
-			Log.Editor.Write("BeginAction");
 			// Create a backup of the polygons vertices before our edit operation,
 			// so we can go back via Undo later.
 			this.backedUpShape = this.activeShape;
@@ -111,7 +110,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		public override void EndAction()
 		{
-			Log.Editor.Write("EndAction");
 			UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(
 				this.backedUpShape, 
 				this.backedUpVertices,
