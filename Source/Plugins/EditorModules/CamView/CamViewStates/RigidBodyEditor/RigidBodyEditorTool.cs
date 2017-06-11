@@ -196,7 +196,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		private void toolButton_Click(object sender, EventArgs e)
 		{
-			this.env.SelectedTool = this;
+			this.env.SelectTool(this.GetType());
 		}
 	}
 }

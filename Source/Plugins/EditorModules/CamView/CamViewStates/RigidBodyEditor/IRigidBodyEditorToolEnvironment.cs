@@ -18,7 +18,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// <summary>
 		/// [GET / SET] The currently selected <see cref="RigidBodyEditorTool"/>.
 		/// </summary>
-		RigidBodyEditorTool SelectedTool { get; set; }
+		RigidBodyEditorTool SelectedTool { get; }
 		/// <summary>
 		/// [GET] The <see cref="RigidBody"/> that is currently being edited 
 		/// by the <see cref="RigidBodyEditorCamViewState"/>.
@@ -55,6 +55,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// <param name="shapes"></param>
 		/// <param name="mode"></param>
 		void SelectShapes(IEnumerable<ShapeInfo> shapes, SelectMode mode = SelectMode.Set);
+		/// <summary>
+		/// Selects the tool of the specified type.
+		/// </summary>
+		/// <param name="toolType"></param>
+		void SelectTool(Type toolType);
 
 		/// <summary>
 		/// Determines whether a world space with the given radius is visible in the

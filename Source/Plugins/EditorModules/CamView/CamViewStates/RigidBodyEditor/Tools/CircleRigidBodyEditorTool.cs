@@ -77,6 +77,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public override void EndAction()
 		{
 			base.EndAction();
+			this.Environment.SelectTool(typeof(VertexRigidBodyEditorTool));
 			this.actionCircle = null;
 		}
 	}

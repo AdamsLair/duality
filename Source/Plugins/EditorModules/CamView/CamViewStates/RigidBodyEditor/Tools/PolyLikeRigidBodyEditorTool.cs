@@ -129,6 +129,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					// show up in the UndoRedo stack.
 					this.Environment.ActiveBody.RemoveShape(this.actionShape);
 					UndoRedoManager.Do(new CreateRigidBodyShapeAction(this.Environment.ActiveBody, this.actionShape));
+					this.Environment.SelectTool(typeof(VertexRigidBodyEditorTool));
 				}
 				else
 				{

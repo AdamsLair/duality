@@ -42,7 +42,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public RigidBodyEditorTool SelectedTool
 		{
 			get { return this.selectedTool; }
-			set
+			private set
 			{
 				value = value ?? this.toolNone;
 
@@ -317,7 +317,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			return result;
 		}
-
 		private bool IsOutlineBoxIntersection(Transform transform, Vector2[] vertices, Rect box)
 		{
 			bool hit = false;
@@ -420,7 +419,32 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			return result;
 		}
+		
+		public void SelectTool(Type toolType)
+		{
+			if (toolType == null)
+			{
+				this.SelectedTool = null;
+			}
+			else
+			{
+				if (!typeof(RigidBodyEditorTool).IsAssignableFrom(toolType)) throw new ArgumentException(
+					string.Format("Tool type has to be a type that derives from {0}.", typeof(RigidBodyEditorTool).Name),
+					"toolType");
 
+				foreach (RigidBodyEditorTool tool in this.tools)
+				{
+					if (!tool.IsAvailable) continue;
+
+					Type type = tool.GetType();
+					if (toolType.IsAssignableFrom(type))
+					{
+						this.SelectedTool = tool;
+						break;
+					}
+				}
+			}
+		}
 		private bool BeginToolAction(RigidBodyEditorTool action, MouseButtons mouseButton)
 		{
 			if (this.actionTool == action) return true;
@@ -457,10 +481,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (this.actionTool == this.toolNone)
 				return;
 			
-			this.actionTool.EndAction();
+			// Since EndAction might change tools or selections, remember what
+			// we were originally using.
+			RigidBodyEditorTool editingTool = this.actionTool;
+			RigidBody editedBody = this.selectedBody;
+
+			// Make sure we know we're done with the action when EndAction invokes
+			// other code.
 			this.actionTool = this.toolNone;
 
-			this.selectedBody.EndUpdateBodyShape();
+			editingTool.EndAction();
+			editedBody.EndUpdateBodyShape();
+
 			this.UpdateRigidBodyToolButtons();
 			this.Invalidate();
 			UndoRedoManager.Finish();
