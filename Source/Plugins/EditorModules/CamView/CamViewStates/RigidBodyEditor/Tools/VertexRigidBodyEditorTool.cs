@@ -68,6 +68,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			base.BeginAction(mouseButton);
 
+			// Deselect any potentially selected shapes so the overlay rendering
+			// is less cluttered with shape transform areas.
+			this.Environment.SelectShapes(null);
+
 			Vector2[] activeShapeVertices = this.GetVertices(this.activeShape);
 			this.isMovingVertex = true;
 
