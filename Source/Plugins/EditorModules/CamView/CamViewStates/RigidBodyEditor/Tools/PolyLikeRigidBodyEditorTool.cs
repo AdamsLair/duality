@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Duality.Components.Physics;
 using Duality.Editor.Plugins.CamView.Properties;
 using Duality.Editor.Plugins.CamView.UndoRedoActions;
-
+using Duality.Drawing;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
@@ -23,6 +23,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get { return 1024; }
 		}
+		public override bool IsHoveringAction
+		{
+			get { return true; }
+		}
 
 		protected virtual Vector2[] GetInitialVertices(Vector2 basePos)
 		{
@@ -37,9 +41,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected abstract Vector2[] GetVertices(ShapeInfo shape);
 		protected abstract void SetVertices(ShapeInfo shape, Vector2[] vertices);
 
-		public override void BeginAction()
+		public override bool CanBeginAction(MouseButtons mouseButton)
 		{
-			base.BeginAction();
+			if (mouseButton != MouseButtons.Left) return false;
+			return true;
+		}
+		public override void BeginAction(MouseButtons mouseButton) 
+		{
+			base.BeginAction(mouseButton);
 
 			Vector2[] initialVertices = this.GetInitialVertices(this.Environment.ActiveBodyPos);
 
@@ -52,8 +61,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// polygon to show up in the UndoRedo stack. We'll do a proper UndoRedoAction
 			// when finishing up the shape.
 			this.Environment.ActiveBody.AddShape(this.actionShape);
-			DualityEditorApp.NotifyObjPropChanged(this, 
-				new ObjectSelection(this.Environment.ActiveBody), 
+			DualityEditorApp.NotifyObjPropChanged(this,
+				new ObjectSelection(this.Environment.ActiveBody),
 				ReflectionInfo.Property_RigidBody_Shapes);
 
 			this.Environment.SelectShapes(new ShapeInfo[] { this.actionShape });
@@ -91,79 +100,90 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public override void EndAction()
 		{
 			base.EndAction();
-			Vector2[] vertices = this.GetVertices(this.actionShape);
-
-			// If we're in the process of placing another vertex, remove that unplaced one
-			if (!this.pendingAdvance)
+			if (this.actionShape != null)
 			{
-				List<Vector2> prevVertices = vertices.ToList();
-				prevVertices.RemoveAt(this.currentVertex);
-				vertices = prevVertices.ToArray();
-			}
+				Vector2[] vertices = this.GetVertices(this.actionShape);
 
-			// Apply the new polygon and force an immediate body update / sync, so
-			// we can get a useful result from the shape's IsValid method.
-			this.SetVertices(this.actionShape, vertices);
-			this.Environment.ActiveBody.SynchronizeBodyShape();
-
-			// Check if we have a fully defined, valid polygon to apply
-			bool isValidShape = this.actionShape != null && this.actionShape.IsValid;
-			bool isMinVertexCountReached = 
-				vertices.Length >= this.initialVertexCount && 
-				this.currentVertex >= this.initialVertexCount - 1;
-			if (isValidShape && isMinVertexCountReached)
-			{
-				// Remove the shape and re-add it properly using an UndoRedoAction.
-				// Now that we're sure the shape is valid, we want its creation to
-				// show up in the UndoRedo stack.
-				this.Environment.ActiveBody.RemoveShape(this.actionShape);
-				UndoRedoManager.Do(new CreateRigidBodyShapeAction(this.Environment.ActiveBody, this.actionShape));
-			}
-			else
-			{
-				this.Environment.SelectShapes(null);
-				this.Environment.ActiveBody.RemoveShape(this.actionShape);
-			}
-			
-			DualityEditorApp.NotifyObjPropChanged(this,
-				new ObjectSelection(this.Environment.ActiveBody),
-				ReflectionInfo.Property_RigidBody_Shapes);
-			this.actionShape = null;
-		}
-		public override void OnActionKeyPressed()
-		{
-			base.OnActionKeyPressed();
-
-			// Ignore further placements while waiting for the next vertex advance
-			if (this.pendingAdvance)
-				return;
-
-			Vector2[] vertices = this.GetVertices(this.actionShape);
-			vertices[this.currentVertex] = this.Environment.ActiveBodyPos;
-
-			// Apply the current vertex and move on to the next.
-			// Note that it is possible to place vertices in a way that
-			// the polygon becomes invalid now, but will be valid again
-			// later when some more vertices are in place.
-			bool allowAdvance = this.actionShape.IsValid || this.CheckVertexPlacement(vertices, this.currentVertex);
-			if (allowAdvance)
-			{
-				// Defer advancing to the next vertex until the cursor moved, so
-				// we don't immediately enter an invalid state with the polygon we're creating.
-				if (vertices.Length < this.MaxVertexCount)
+				// If we're in the process of placing another vertex, remove that unplaced one
+				if (!this.pendingAdvance)
 				{
-					this.pendingAdvance = true;
-					this.lastPlacedVertexPos = this.Environment.ActiveBodyPos;
+					List<Vector2> prevVertices = vertices.ToList();
+					prevVertices.RemoveAt(this.currentVertex);
+					vertices = prevVertices.ToArray();
+				}
+
+				// Apply the new polygon and force an immediate body update / sync, so
+				// we can get a useful result from the shape's IsValid method.
+				this.SetVertices(this.actionShape, vertices);
+				this.Environment.ActiveBody.SynchronizeBodyShape();
+
+				// Check if we have a fully defined, valid polygon to apply
+				bool isValidShape = this.actionShape != null && this.actionShape.IsValid;
+				bool isMinVertexCountReached =
+					vertices.Length >= this.initialVertexCount &&
+					this.currentVertex >= this.initialVertexCount - 1;
+				if (isValidShape && isMinVertexCountReached)
+				{
+					// Remove the shape and re-add it properly using an UndoRedoAction.
+					// Now that we're sure the shape is valid, we want its creation to
+					// show up in the UndoRedo stack.
+					this.Environment.ActiveBody.RemoveShape(this.actionShape);
+					UndoRedoManager.Do(new CreateRigidBodyShapeAction(this.Environment.ActiveBody, this.actionShape));
+					this.Environment.SelectTool(typeof(VertexRigidBodyEditorTool));
 				}
 				else
 				{
-					this.AdvanceToNextVertex();
-					this.Environment.EndToolAction();
+					this.Environment.SelectShapes(null);
+					this.Environment.ActiveBody.RemoveShape(this.actionShape);
 				}
 
 				DualityEditorApp.NotifyObjPropChanged(this,
 					new ObjectSelection(this.Environment.ActiveBody),
 					ReflectionInfo.Property_RigidBody_Shapes);
+				this.actionShape = null;
+			}
+		}
+		public override void OnActionKeyPressed(MouseButtons mouseButton)
+		{
+			base.OnActionKeyPressed(mouseButton);
+
+			if (mouseButton == MouseButtons.Left)
+			{
+				// Ignore further placements while waiting for the next vertex advance
+				if (this.pendingAdvance)
+					return;
+
+				Vector2[] vertices = this.GetVertices(this.actionShape);
+				vertices[this.currentVertex] = this.Environment.ActiveBodyPos;
+
+				// Apply the current vertex and move on to the next.
+				// Note that it is possible to place vertices in a way that
+				// the polygon becomes invalid now, but will be valid again
+				// later when some more vertices are in place.
+				bool allowAdvance = this.actionShape.IsValid || this.CheckVertexPlacement(vertices, this.currentVertex);
+				if (allowAdvance)
+				{
+					// Defer advancing to the next vertex until the cursor moved, so
+					// we don't immediately enter an invalid state with the polygon we're creating.
+					if (vertices.Length < this.MaxVertexCount)
+					{
+						this.pendingAdvance = true;
+						this.lastPlacedVertexPos = this.Environment.ActiveBodyPos;
+					}
+					else
+					{
+						this.AdvanceToNextVertex();
+						this.Environment.EndToolAction();
+					}
+
+					DualityEditorApp.NotifyObjPropChanged(this,
+						new ObjectSelection(this.Environment.ActiveBody),
+						ReflectionInfo.Property_RigidBody_Shapes);
+				}
+			}
+			else if(mouseButton == MouseButtons.Right)
+			{
+				this.Environment.EndToolAction();
 			}
 		}
 

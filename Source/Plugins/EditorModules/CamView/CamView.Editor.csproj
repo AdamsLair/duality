@@ -68,6 +68,7 @@
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelShape.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelBody.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\ChainRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\VertexRigidBodyEditorTool.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\PolyLikeRigidBodyEditorTool.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\LoopRigidBodyEditorTool.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\PolygonRigidBodyEditorTool.cs" />
@@ -117,6 +118,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UndoRedoActions\CamViewObjAction.cs" />
+    <Compile Include="UndoRedoActions\EditRigidBodyPolyShapeAction.cs" />
     <Compile Include="UndoRedoActions\CreateRigidBodyShapeAction.cs" />
     <Compile Include="UndoRedoActions\DeleteRigidBodyShapeAction.cs" />
     <Compile Include="UndoRedoActions\DropGameObjectInSceneAction.cs" />
@@ -163,10 +165,13 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="EmbeddedResources\iconShapeSelect.png" />
     <Content Include="EmbeddedResources\ObjectVisibility.png" />
     <Content Include="EmbeddedResources\ObjectVisibilityFiltered.png" />
     <None Include="EmbeddedResources\RenderSetup.png" />
     <Content Include="EmbeddedResources\SnapToGrid.png" />
+    <None Include="EmbeddedResources\iconCmpEditVertices.png" />
+    <None Include="EmbeddedResources\curArrowEditVertices.png" />
     <None Include="EmbeddedResources\shape_perspective.png" />
     <None Include="EmbeddedResources\curArrowCreateCircle.png" />
     <None Include="EmbeddedResources\curArrowCreatePolygon.png" />

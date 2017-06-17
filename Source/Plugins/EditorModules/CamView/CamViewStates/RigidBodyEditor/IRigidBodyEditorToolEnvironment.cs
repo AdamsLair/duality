@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using Duality.Drawing;
 using Duality.Components.Physics;
 
 
@@ -18,7 +19,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// <summary>
 		/// [GET / SET] The currently selected <see cref="RigidBodyEditorTool"/>.
 		/// </summary>
-		RigidBodyEditorTool SelectedTool { get; set; }
+		RigidBodyEditorTool SelectedTool { get; }
 		/// <summary>
 		/// [GET] The <see cref="RigidBody"/> that is currently being edited 
 		/// by the <see cref="RigidBodyEditorCamViewState"/>.
@@ -26,12 +27,24 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		RigidBody ActiveBody { get; }
 		/// <summary>
 		/// [GET] The cursor-hovered local position relative to the current <see cref="ActiveBody"/>.
+		/// Unlike <see cref="HoveredBodyPos"/>, this property will take into account snap-to-grid and axis lock constraints.
 		/// </summary>
 		Vector2 ActiveBodyPos { get; }
 		/// <summary>
 		/// [GET] The cursor-hovered world position on the Z-plane of the current <see cref="ActiveBody"/>.
+		/// Unlike <see cref="HoveredWorldPos"/>, this property will take into account snap-to-grid and axis lock constraints.
 		/// </summary>
 		Vector3 ActiveWorldPos { get; }
+		/// <summary>
+		/// [GET] The cursor-hovered local position relative to the current <see cref="ActiveBody"/>.
+		/// Unlike <see cref="ActiveBodyPos"/>, this property will ignore snap-to-grid and axis lock constraints.
+		/// </summary>
+		Vector2 HoveredBodyPos { get; }
+		/// <summary>
+		/// [GET] The cursor-hovered world position on the Z-plane of the current <see cref="ActiveBody"/>.
+		/// Unlike <see cref="ActiveBodyPos"/>, this property will ignore snap-to-grid and axis lock constraints.
+		/// </summary>
+		Vector3 HoveredWorldPos { get; }
 		/// <summary>
 		/// [GET] The world position to which cursor movement will be locked when using the
 		/// axis lock editor feature.
@@ -41,6 +54,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// [GET] Returns whether the key that was used to start this action is still pressed.
 		/// </summary>
 		bool IsActionKeyPressed { get; }
+		/// <summary>
+		/// [GET] The preferred background color to be used when rendering a tool overlay.
+		/// </summary>
+		ColorRgba BgColor { get; }
+		/// <summary>
+		/// [GET] The preferred foreground color to be used when rendering a tool overlay.
+		/// </summary>
+		ColorRgba FgColor { get; }
 
 		/// <summary>
 		/// Stops the currently active tool action. Call this when you want a custom tool action
@@ -55,5 +76,38 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// <param name="shapes"></param>
 		/// <param name="mode"></param>
 		void SelectShapes(IEnumerable<ShapeInfo> shapes, SelectMode mode = SelectMode.Set);
+		/// <summary>
+		/// Selects the tool of the specified type.
+		/// </summary>
+		/// <param name="toolType"></param>
+		void SelectTool(Type toolType);
+
+		/// <summary>
+		/// Determines whether a world space with the given radius is visible in the
+		/// <see cref="RigidBodyEditorCamViewState"/> view.
+		/// </summary>
+		/// <param name="worldPos"></param>
+		/// <param name="radius"></param>
+		/// <returns></returns>
+		bool IsCoordInView(Vector3 worldPos, float radius = 1.0f);
+		/// <summary>
+		/// Determins the view scale at a given world space Z position.
+		/// </summary>
+		/// <param name="z"></param>
+		/// <returns></returns>
+		float GetScaleAtZ(float z);
+		/// <summary>
+		/// Determins the world space position of a given point in screen space.
+		/// The Z coordinate of that point will be evaluated as the assumed Z position.
+		/// </summary>
+		/// <param name="screenCoord"></param>
+		/// <returns></returns>
+		Vector3 GetSpaceCoord(Vector3 screenCoord);
+		/// <summary>
+		/// Determines the screen space position of a given point in world space.
+		/// </summary>
+		/// <param name="spaceCoord"></param>
+		/// <returns></returns>
+		Vector3 GetScreenCoord(Vector3 spaceCoord);
 	}
 }

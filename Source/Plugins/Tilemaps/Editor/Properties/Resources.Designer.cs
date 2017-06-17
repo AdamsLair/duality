@@ -123,6 +123,36 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconZoomDefault {
+            get {
+                object obj = ResourceManager.GetObject("IconZoomDefault", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconZoomIn {
+            get {
+                object obj = ResourceManager.GetObject("IconZoomIn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconZoomOut {
+            get {
+                object obj = ResourceManager.GetObject("IconZoomOut", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap TilesetViewBrightness {
             get {
                 object obj = ResourceManager.GetObject("TilesetViewBrightness", resourceCulture);

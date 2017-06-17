@@ -24,16 +24,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// </summary>
 	public partial class RigidBodyEditorCamViewState : ObjectEditorCamViewState, IRigidBodyEditorToolEnvironment
 	{
-		private RigidBodyEditorTool       toolNone       = new NoRigidBodyEditorTool();
-		private List<RigidBodyEditorTool> tools          = new List<RigidBodyEditorTool>();
-		private RigidBody                 selectedBody   = null;
-		private RigidBodyEditorTool       selectedTool   = null;
-		private Vector3                   lockedWorldPos = Vector3.Zero;
-		private Vector3                   activeWorldPos = Vector3.Zero;
-		private Vector2                   activeObjPos   = Vector2.Zero;
-		private RigidBodyEditorTool       activeTool     = null;
-		private RigidBodyEditorTool       actionTool     = null;
-		private ToolStrip                 toolstrip      = null;
+		private RigidBodyEditorTool       toolNone        = new NoRigidBodyEditorTool();
+		private List<RigidBodyEditorTool> tools           = new List<RigidBodyEditorTool>();
+		private RigidBody                 selectedBody    = null;
+		private RigidBodyEditorTool       selectedTool    = null;
+		private Vector3                   lockedWorldPos  = Vector3.Zero;
+		private Vector3                   hoveredWorldPos = Vector3.Zero;
+		private Vector2                   hoveredObjPos   = Vector2.Zero;
+		private Vector3                   activeWorldPos  = Vector3.Zero;
+		private Vector2                   activeObjPos    = Vector2.Zero;
+		private RigidBodyEditorTool       activeTool      = null;
+		private RigidBodyEditorTool       actionTool      = null;
+		private ToolStrip                 toolstrip       = null;
 
 		public override string StateName
 		{
@@ -42,7 +44,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public RigidBodyEditorTool SelectedTool
 		{
 			get { return this.selectedTool; }
-			set
+			private set
 			{
 				value = value ?? this.toolNone;
 
@@ -68,6 +70,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public Vector3 ActiveWorldPos
 		{
 			get { return this.activeWorldPos; }
+		}
+		public Vector2 HoveredBodyPos
+		{
+			get { return this.hoveredObjPos; }
+		}
+		public Vector3 HoveredWorldPos
+		{
+			get { return this.hoveredWorldPos; }
 		}
 		public Vector3 LockedWorldPos
 		{
@@ -110,7 +120,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				{
 					tool.Environment = this;
 				}
-				this.tools.Remove(this.toolNone);
 
 				this.selectedTool = this.toolNone;
 				this.activeTool   = this.toolNone;
@@ -129,6 +138,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.toolstrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 				this.toolstrip.BackColor = Color.FromArgb(212, 212, 212);
 
+				int lastSortOrder = int.MinValue;
 				foreach (RigidBodyEditorTool tool in this.tools)
 				{
 					tool.InitToolButton();
@@ -136,10 +146,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					if (tool.ToolButton == null)
 						continue;
 
+					// Insert a separator when the sorting order between two items is very large
+					if (lastSortOrder != int.MinValue && Math.Abs(tool.SortOrder - lastSortOrder) >= 100)
+						this.toolstrip.Items.Add(new ToolStripSeparator());
+
 					tool.ToolButton.Tag = tool.HelpInfo;
 					tool.ToolButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 					tool.ToolButton.AutoToolTip = true;
 					this.toolstrip.Items.Add(tool.ToolButton);
+
+					lastSortOrder = tool.SortOrder;
 				}
 
 				this.View.Controls.Add(this.toolstrip);
@@ -312,7 +328,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			return result;
 		}
-
 		private bool IsOutlineBoxIntersection(Transform transform, Vector2[] vertices, Rect box)
 		{
 			bool hit = false;
@@ -415,27 +430,53 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			return result;
 		}
-
-		private void BeginToolAction(RigidBodyEditorTool action)
+		
+		public void SelectTool(Type toolType)
 		{
-			if (this.actionTool == action) return;
+			if (toolType == null)
+			{
+				this.SelectedTool = null;
+			}
+			else
+			{
+				if (!typeof(RigidBodyEditorTool).IsAssignableFrom(toolType)) throw new ArgumentException(
+					string.Format("Tool type has to be a type that derives from {0}.", typeof(RigidBodyEditorTool).Name),
+					"toolType");
+
+				foreach (RigidBodyEditorTool tool in this.tools)
+				{
+					if (!tool.IsAvailable) continue;
+
+					Type type = tool.GetType();
+					if (toolType.IsAssignableFrom(type))
+					{
+						this.SelectedTool = tool;
+						break;
+					}
+				}
+			}
+		}
+		private bool BeginToolAction(RigidBodyEditorTool action, MouseButtons mouseButton)
+		{
+			if (this.actionTool == action) return true;
+			if (!action.CanBeginAction(mouseButton)) return false;
+
 			if (this.actionTool != this.toolNone)
 				this.EndToolAction();
 
-			this.MouseActionAllowed = false;
 			this.selectedBody.BeginUpdateBodyShape();
-			DualityEditorApp.Deselect(this, ObjectSelection.Category.Other);
 
-			this.lockedWorldPos = this.activeWorldPos;
-
+			this.lockedWorldPos = this.hoveredWorldPos;
 			this.actionTool = action;
-			this.actionTool.BeginAction();
+			this.actionTool.BeginAction(mouseButton);
 
 			this.UpdateRigidBodyToolButtons();
 			this.Invalidate();
 
 			if (Sandbox.State == SandboxState.Playing)
 				Sandbox.Pause();
+
+			return true;
 		}
 		private void UpdateToolAction()
 		{
@@ -448,25 +489,24 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		private void EndToolAction()
 		{
-			// If we don't perform an action right now, at least deselect the tool
 			if (this.actionTool == this.toolNone)
-			{
-				this.SelectedTool = null;
 				return;
-			}
 			
-			this.actionTool.EndAction();
+			// Since EndAction might change tools or selections, remember what
+			// we were originally using.
+			RigidBodyEditorTool editingTool = this.actionTool;
+			RigidBody editedBody = this.selectedBody;
+
+			// Make sure we know we're done with the action when EndAction invokes
+			// other code.
 			this.actionTool = this.toolNone;
 
-			this.MouseActionAllowed = true;
-			this.selectedBody.EndUpdateBodyShape();
+			editingTool.EndAction();
+			editedBody.EndUpdateBodyShape();
+
 			this.UpdateRigidBodyToolButtons();
 			this.Invalidate();
 			UndoRedoManager.Finish();
-
-			// Since our tool actions are designed to block out other actions,
-			// by default deselect each tool after using it.
-			this.SelectedTool = null;
 		}
 		void IRigidBodyEditorToolEnvironment.EndToolAction()
 		{
@@ -484,9 +524,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Transform selTransform = selGameObj != null ? selGameObj.Transform : null;
 			Point mousePos = this.PointToClient(Cursor.Position);
 			if (selTransform != null)
-				this.activeWorldPos = this.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, selTransform.Pos.Z));
+			{
+				this.hoveredWorldPos = this.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, selTransform.Pos.Z));
+				this.activeWorldPos = this.hoveredWorldPos;
+			}
 			else
+			{
+				this.hoveredWorldPos = Vector3.Zero;
 				this.activeWorldPos = Vector3.Zero;
+			}
 			
 			// Snap active position to user guides
 			if ((this.SnapToUserGuides & UserGuideType.Position) != UserGuideType.None)
@@ -497,21 +543,35 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			// Calculate object-local active position
 			if (selTransform != null)
+			{
+				this.hoveredObjPos = selTransform.GetLocalPoint(this.hoveredWorldPos).Xy;
 				this.activeObjPos = selTransform.GetLocalPoint(this.activeWorldPos).Xy;
+			}
 			else
+			{
+				this.hoveredObjPos = Vector2.Zero;
 				this.activeObjPos = Vector2.Zero;
+			}
 
 			// If an action is currently being performed, that action will always be the active tool
 			if (this.actionTool != this.toolNone)
 				this.activeTool = this.actionTool;
-			// Otherwise, we'll go with the user-selected tool
-			else
+			// Otherwise, ask the user-selected tool if its action is available right now
+			else if (this.selectedTool.IsHoveringAction)
 				this.activeTool = this.selectedTool;
+			// Fallback to shape editing
+			else
+				this.activeTool = this.toolNone;
 
 			// Apply our own cursor. We'll need to do this continuously, since the object editor base
 			// class will inject its regular move-scale-select cursors.
 			if (this.activeTool != this.toolNone)
 				this.ApplyCursor();
+
+			// Block inherited shape transform actions while a tool is active.
+			this.MouseActionAllowed = (
+				this.activeTool == this.toolNone && 
+				this.actionTool == this.toolNone);
 		}
 
 		protected IEnumerable<RigidBody> QueryVisibleColliders()
@@ -546,6 +606,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.activeWorldPos.Z, 
 					this.selectedBody.BoundRadius * 4);
 			}
+
+			// Allow the selected tool to draw an overlay
+			canvas.PushState();
+			this.selectedTool.OnWorldOverlayDrawcalls(canvas); 
+			canvas.PopState();
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
@@ -578,45 +643,58 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			base.OnMouseDown(e);
-			
-			if (e.Button == MouseButtons.Left)
+			// We have an active tool that is willing to handle user input.
+			bool handledByTool = false;
+			if (this.activeTool != this.toolNone)
 			{
-				// Because selection events may change the currently active tool,
-				// start by agreeing on what tool we're dealing with in this mouse event.
-				RigidBodyEditorTool proposedAction = this.activeTool;
-
-				// If there is no tool active, don't do selection changes or begin an action
-				if (proposedAction == this.toolNone) return;
-
-				if (this.actionTool == proposedAction)
+				if (this.actionTool == this.activeTool)
 				{
 					// Notify an already active action that the action key has
 					// been pressed again. This can be used for "action checkpoints",
 					// such as finishing the current vertex and adding another one.
-					this.actionTool.OnActionKeyPressed();
+					this.actionTool.OnActionKeyPressed(e.Button);
+					handledByTool = true;
 				}
 				else
 				{
 					// Begin a new action with the proposed action tool
-					this.BeginToolAction(proposedAction);
+					handledByTool = this.BeginToolAction(this.activeTool, e.Button);
 				}
 			}
-			else if (e.Button == MouseButtons.Right)
+
+			// If no tool handled the action and we happened to right-click,
+			// end any ongoing action and deselect the tool.
+			if (!handledByTool && e.Button == MouseButtons.Right)
 			{
-				// A right-click signals the end of our current tool action
 				this.EndToolAction();
+				this.SelectedTool = null;
 			}
+
+			// Invoke the base class mouse down handler. We'll do this after starting
+			// a tool action, so it has the chance to block any inherited mouse actions
+			// before they can even start.
+			base.OnMouseDown(e);
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			base.OnMouseMove(e);
+			// Allow the selected tool to handle the mouse move event
+			this.selectedTool.OnMouseMove();
 
 			// Update what is considered the "active" state, e.g. active tools and data
 			this.UpdateActiveState();
 
 			// Update the current tools active action
 			this.UpdateToolAction();
+			
+			// Invoke the base class mouse move handler. We'll do this after updating our
+			// own state, so an active tool has the chance to block inherited mouse actions.
+			base.OnMouseMove(e);
+		}
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			base.OnMouseUp(e);
+			if (this.actionTool != null)
+				this.actionTool.OnActionKeyReleased(e.Button);
 		}
 		protected override void OnLostFocus()
 		{

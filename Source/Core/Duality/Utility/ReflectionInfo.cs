@@ -44,6 +44,8 @@ namespace Duality
 		
 		public static readonly PropertyInfo	Property_RigidBody_Shapes;
 		public static readonly PropertyInfo	Property_RigidBody_Joints;
+		public static readonly PropertyInfo	Property_CircleShapeInfo_Position;
+		public static readonly PropertyInfo	Property_CircleShapeInfo_Radius;
 
 		public static readonly PropertyInfo	Property_DrawTechnique_PreferredVertexFormat;
 
@@ -101,6 +103,10 @@ namespace Duality
 			Property_RigidBody_Shapes			= GetProperty(collider, "Shapes");
 			Property_RigidBody_Joints			= GetProperty(collider, "Joints");
 
+			Type circleShapeInfo = typeof(CircleShapeInfo);
+			Property_CircleShapeInfo_Position	= GetProperty(circleShapeInfo, "Position");
+			Property_CircleShapeInfo_Radius		= GetProperty(circleShapeInfo, "Radius");
+
 			Type drawTech = typeof(DrawTechnique);
 			Property_DrawTechnique_PreferredVertexFormat	= GetProperty(drawTech, "PreferredVertexFormat");
 			
@@ -133,11 +139,27 @@ namespace Duality
 		
 		private static PropertyInfo GetProperty(Type type, string name)
 		{
-			return type.GetRuntimeProperties().FirstOrDefault(m => !m.IsStatic() && m.Name == name);
+			PropertyInfo result = type.GetRuntimeProperties().FirstOrDefault(m => !m.IsStatic() && m.Name == name);
+			if (result == null)
+			{
+				Logs.Core.WriteError(
+					"Unable to retrieve property '{0}' of type '{1}'.",
+					name,
+					LogFormat.Type(type));
+		}
+			return result;
 		}
 		private static FieldInfo GetField(Type type, string name)
 		{
-			return type.GetRuntimeFields().FirstOrDefault(m => !m.IsStatic && m.Name == name);
+			FieldInfo result = type.GetRuntimeFields().FirstOrDefault(m => !m.IsStatic && m.Name == name);
+			if (result == null)
+			{
+				Logs.Core.WriteError(
+					"Unable to retrieve field '{0}' of type '{1}'.",
+					name,
+					LogFormat.Type(type));
 		}
+			return result;
+	}
 	}
 }

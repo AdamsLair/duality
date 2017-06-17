@@ -34,8 +34,6 @@ namespace Duality.Components.Physics
 			set
 			{
 				this.vertices = value ?? new Vector2[] { Vector2.Zero, Vector2.UnitX, Vector2.UnitY };
-				if (this.convexPolygons != null)
-					this.convexPolygons.Clear();
 				this.UpdateInternalShape(true);
 			}
 		}
@@ -83,13 +81,18 @@ namespace Duality.Components.Physics
 
 		protected override void DestroyFixtures()
 		{
-			if (this.fixtures == null) return;
+			if (this.convexPolygons != null)
+				this.convexPolygons.Clear();
+
+			if (this.fixtures != null)
+			{
 			foreach (Fixture fixture in this.fixtures)
 			{
 				if (fixture.Body != null)
 					fixture.Body.DestroyFixture(fixture);
-		}
+				}
 			this.fixtures.Clear();
+		}
 		}
 		protected override void SyncFixtures()
 		{
