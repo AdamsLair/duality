@@ -8,6 +8,7 @@ using Duality.Drawing;
 using Duality.Components;
 using Duality.Components.Physics;
 
+using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.CamView.Properties;
 using Duality.Editor.Plugins.CamView.UndoRedoActions;
 
@@ -57,10 +58,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		public override bool CanBeginAction(MouseButtons mouseButton)
 		{
-			if (mouseButton == MouseButtons.Left)
+			if (mouseButton == MouseButtons.Left || mouseButton == MouseButtons.Right)
 				return this.activeShape != null;
-			else if (mouseButton == MouseButtons.Right)
-				return this.activeShape != null && this.activeVertex != -1;
 			else
 				return false;
 		}
@@ -71,58 +70,117 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Deselect any potentially selected shapes so the overlay rendering
 			// is less cluttered with shape transform areas.
 			this.Environment.SelectShapes(null);
-
-			Vector2[] activeShapeVertices = this.GetVertices(this.activeShape);
 			this.isMovingVertex = true;
 
-			// Create a backup of the polygons vertices before our edit operation,
-			// so we can go back via Undo later.
-			this.backedUpShape = this.activeShape;
-			this.backedUpVertices = (Vector2[])activeShapeVertices.Clone();
-			
-			if (mouseButton == MouseButtons.Left)
+			if (this.activeShape is CircleShapeInfo)
 			{
-				if (this.activeEdge != -1)
-				{
-					int newIndex = this.activeEdge + 1;
-					List<Vector2> newVertices = activeShapeVertices.ToList();
-					newVertices.Insert(newIndex, this.Environment.ActiveBodyPos);
-
-					this.SetVertices(this.activeShape, newVertices.ToArray());
-					this.activeVertex = newIndex;
-				}
+				this.backedUpShape = null;
+				this.backedUpVertices = null;
 			}
-			else if (mouseButton == MouseButtons.Right)
+			else
 			{
-				if (activeShapeVertices.Length > 3)
-				{
-					List<Vector2> newVertices = activeShapeVertices.ToList();
-					newVertices.RemoveAt(this.activeVertex);
+				Vector2[] activeShapeVertices = this.GetVertices(this.activeShape);
 
-					this.SetVertices(this.activeShape, newVertices.ToArray());
+				// Create a backup of the polygons vertices before our edit operation,
+				// so we can go back via Undo later.
+				this.backedUpShape = this.activeShape;
+				this.backedUpVertices = (Vector2[])activeShapeVertices.Clone();
+			
+				// Create a new vertex when hovering the polygon edge where none exists yet
+				if (mouseButton == MouseButtons.Left)
+				{
+					if (this.activeEdge != -1)
+					{
+						int newIndex = this.activeEdge + 1;
+						List<Vector2> newVertices = activeShapeVertices.ToList();
+						newVertices.Insert(newIndex, this.Environment.ActiveBodyPos);
+
+						this.SetVertices(this.activeShape, newVertices.ToArray());
+						this.activeVertex = newIndex;
+					}
+				}
+				// Remove an existing vertex when right-clicking on it
+				else if (mouseButton == MouseButtons.Right)
+				{
+					if (this.activeVertex != -1 && activeShapeVertices.Length > 3)
+					{
+						List<Vector2> newVertices = activeShapeVertices.ToList();
+						newVertices.RemoveAt(this.activeVertex);
+
+						this.SetVertices(this.activeShape, newVertices.ToArray());
+						this.activeVertex = -1;
+					}
 				}
 			}
 		}
 		public override void UpdateAction()
 		{
-			Vector2[] activeShapeVertices = this.GetVertices(this.activeShape);
 			Vector2 worldPos = this.Environment.ActiveWorldPos.Xy;
 			Vector2 localPos = this.Environment.ActiveBodyPos;
-			Vector2 oldLocalPos = activeShapeVertices[this.activeVertex];
-			if (oldLocalPos != localPos)
+
+			// For circles, emit regular EditProperty UndoRedo actions that adjust
+			// Position and Radius properties.
+			if (this.activeShape is CircleShapeInfo)
 			{
-				this.activeEdgeWorldPos = worldPos;
-				activeShapeVertices[this.activeVertex] = localPos;
-				this.SetVertices(this.activeShape, activeShapeVertices);
+				CircleShapeInfo circle = this.activeShape as CircleShapeInfo;
+				bool isEditingRadius = this.activeEdge != -1;
+				if (isEditingRadius)
+				{
+					float oldLocalRadius = circle.Radius;
+					float newLocalRadius = (localPos - circle.Position).Length;
+					if (oldLocalRadius != newLocalRadius)
+					{
+						this.activeEdgeWorldPos = worldPos;
+						UndoRedoManager.Do(new EditPropertyAction(
+							null,
+							ReflectionInfo.Property_CircleShapeInfo_Radius,
+							new object[] { this.activeShape },
+							new object[] { newLocalRadius }));
+					}
+				}
+				else
+				{
+					Vector2 oldLocalPos = circle.Position;
+					Vector2 newLocalPos = localPos;
+					if (oldLocalPos != newLocalPos)
+					{
+						this.activeEdgeWorldPos = worldPos;
+						UndoRedoManager.Do(new EditPropertyAction(
+							null,
+							ReflectionInfo.Property_CircleShapeInfo_Position,
+							new object[] { this.activeShape },
+							new object[] { newLocalPos }));
+					}
+				}
+				circle.UpdateShape();
+			}
+			// For polygons, just edit the vertices directly. We'll emit a custom 
+			// UndoRedo action when ending the operation.
+			else
+			{
+				Vector2[] activeShapeVertices = this.GetVertices(this.activeShape);
+				Vector2 oldLocalPos = activeShapeVertices[this.activeVertex];
+				if (oldLocalPos != localPos)
+				{
+					this.activeEdgeWorldPos = worldPos;
+					activeShapeVertices[this.activeVertex] = localPos;
+					this.SetVertices(this.activeShape, activeShapeVertices);
+				}
 			}
 		}
 		public override void EndAction()
 		{
 			this.isMovingVertex = false;
-			UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(
-				this.backedUpShape, 
-				this.backedUpVertices,
-				this.GetVertices(this.backedUpShape)));
+
+			// Emit a vertex edit UndoRedo action for polygon operations. It will
+			// replace the entire vertex array with the backed up version on undo.
+			if (this.backedUpShape != null)
+			{
+				UndoRedoManager.Do(new EditRigidBodyPolyShapeAction(
+					this.backedUpShape, 
+					this.backedUpVertices,
+					this.GetVertices(this.backedUpShape)));
+			}
 		}
 
 		public override void OnMouseMove()
@@ -151,6 +209,74 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			canvas.State.ZOffset = -1.0f;
 
+			// Draw an interaction indicator for every vertex of the active bodies shapes
+			RigidBody body = this.Environment.ActiveBody;
+			if (body != null)
+			{
+				// Prepare the transform matrix for this object, so 
+				// we can move the RigidBody vertices into world space quickly
+				Transform transform = body.GameObj.Transform;
+				Vector2 bodyPos = transform.Pos.Xy;
+				Vector2 bodyDotX;
+				Vector2 bodyDotY;
+				MathF.GetTransformDotVec(transform.Angle, transform.Scale, out bodyDotX, out bodyDotY);
+
+				Vector3 mousePosWorld = this.Environment.ActiveWorldPos;
+				foreach (ShapeInfo shape in body.Shapes)
+				{
+					if (shape is CircleShapeInfo)
+					{
+						CircleShapeInfo circle = shape as CircleShapeInfo;
+
+						Vector2 circleWorldPos = circle.Position;
+						MathF.TransformDotVec(ref circleWorldPos, ref bodyDotX, ref bodyDotY);
+						circleWorldPos = bodyPos + circleWorldPos;
+
+						// Draw the circles center as a vertex
+						if (this.activeVertex == 0 && this.activeShape == shape)
+							canvas.State.ColorTint = markerColor;
+						else
+							canvas.State.ColorTint = markerColor.WithAlpha(0.75f);
+
+						canvas.FillRect(
+							circleWorldPos.X - worldKnobSize * 0.5f, 
+							circleWorldPos.Y - worldKnobSize * 0.5f, 
+							worldKnobSize,
+							worldKnobSize);
+					}
+					else
+					{
+						Vector2[] vertices = this.GetVertices(shape);
+						if (vertices == null) continue;
+
+						Vector2[] worldVertices = new Vector2[vertices.Length];
+
+						// Transform the shapes vertices into world space
+						for (int index = 0; index < vertices.Length; index++)
+						{
+							Vector2 vertex = vertices[index];
+							MathF.TransformDotVec(ref vertex, ref bodyDotX, ref bodyDotY);
+							worldVertices[index] = bodyPos + vertex;
+						}
+
+						// Draw the vertices
+						for (int i = 0; i < worldVertices.Length; i++)
+						{
+							if (this.activeVertex == i && this.activeShape == shape)
+								canvas.State.ColorTint = markerColor;
+							else
+								canvas.State.ColorTint = markerColor.WithAlpha(0.75f);
+
+							canvas.FillRect(
+								worldVertices[i].X - worldKnobSize * 0.5f, 
+								worldVertices[i].Y - worldKnobSize * 0.5f, 
+								worldKnobSize,
+								worldKnobSize);
+						}
+					}
+				}
+			}
+
 			// Interaction indicator for an existing vertex
 			if (this.activeVertex != -1)
 			{
@@ -177,51 +303,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					worldKnobSize * 2.0f, 
 					worldKnobSize * 2.0f);
 			}
-
-			// Draw an interaction indicator for every vertex of the active bodies shapes
-			RigidBody body = this.Environment.ActiveBody;
-			if (body != null)
-			{
-				// Prepare the transform matrix for this object, so 
-				// we can move the RigidBody vertices into world space quickly
-				Transform transform = body.GameObj.Transform;
-				Vector2 bodyPos = transform.Pos.Xy;
-				Vector2 bodyDotX;
-				Vector2 bodyDotY;
-				MathF.GetTransformDotVec(transform.Angle, transform.Scale, out bodyDotX, out bodyDotY);
-
-				Vector3 mousePosWorld = this.Environment.ActiveWorldPos;
-				foreach (ShapeInfo shape in body.Shapes)
-				{
-					Vector2[] vertices = this.GetVertices(shape);
-					if (vertices == null) continue;
-					
-					Vector2[] worldVertices = new Vector2[vertices.Length];
-
-					// Transform the shapes vertices into world space
-					for (int index = 0; index < vertices.Length; index++)
-					{
-						Vector2 vertex = vertices[index];
-						MathF.TransformDotVec(ref vertex, ref bodyDotX, ref bodyDotY);
-						worldVertices[index] = bodyPos + vertex;
-					}
-
-					// Draw the vertex
-					for (int i = 0; i < vertices.Length; i++)
-					{
-						if (this.activeVertex == i && this.activeShape == shape)
-							canvas.State.ColorTint = markerColor;
-						else
-							canvas.State.ColorTint = markerColor.WithAlpha(0.75f);
-
-						canvas.FillRect(
-							worldVertices[i].X - worldKnobSize * 0.5f, 
-							worldVertices[i].Y - worldKnobSize * 0.5f, 
-							worldKnobSize,
-							worldKnobSize);
-					}
-				}
-			}
 		}
 		
 		private void UpdateHoverState()
@@ -237,33 +318,69 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Prepare the transform matrix for this object, so 
 			// we can move the RigidBody vertices into world space quickly
 			Transform transform = body.GameObj.Transform;
+			float bodyScale = transform.Scale;
 			Vector2 bodyPos = transform.Pos.Xy;
 			Vector2 bodyDotX;
 			Vector2 bodyDotY;
-			MathF.GetTransformDotVec(transform.Angle, transform.Scale, out bodyDotX, out bodyDotY);
+			MathF.GetTransformDotVec(transform.Angle, bodyScale, out bodyDotX, out bodyDotY);
 
 			Vector3 mousePosWorld = this.Environment.HoveredWorldPos;
 			foreach (ShapeInfo shape in body.Shapes)
 			{
-				Vector2[] vertices = this.GetVertices(shape);
-				if (vertices == null) continue;
-
-				Vector2[] worldVertices = new Vector2[vertices.Length];
-
-				// Transform the shapes vertices into world space
-				for (int index = 0; index < vertices.Length; index++)
-				{
-					Vector2 vertex = vertices[index];
-					MathF.TransformDotVec(ref vertex, ref bodyDotX, ref bodyDotY);
-					worldVertices[index] = bodyPos + vertex;
-				}
-
 				// Determine whether the cursor is hovering something it can interact with
+				bool anythingHovered = false;
 				float hotRadius = 8.0f;
 				float worldHotRadius = hotRadius / MathF.Max(0.0001f, this.Environment.GetScaleAtZ(0.0f));
-				bool anythingHovered = 
-					this.GetHoveredVertex(worldVertices, mousePosWorld.Xy, worldHotRadius, out this.activeVertex, out this.activeEdgeWorldPos) ||
-					this.GetHoveredEdge(worldVertices, mousePosWorld.Xy, worldHotRadius, out this.activeEdge, out this.activeEdgeWorldPos);
+				if (shape is CircleShapeInfo)
+				{
+					CircleShapeInfo circle = shape as CircleShapeInfo;
+
+					// Determine world space position and radius of the circle shape
+					float circleWorldRadius = circle.Radius * bodyScale;
+					Vector2 circleWorldPos = circle.Position;
+					MathF.TransformDotVec(ref circleWorldPos, ref bodyDotX, ref bodyDotY);
+					circleWorldPos = bodyPos + circleWorldPos;
+
+					float hoverDist = (circleWorldPos - mousePosWorld.Xy).Length;
+
+					// Hovering the center
+					if (hoverDist <= worldHotRadius)
+					{
+						this.activeVertex = 0;
+						this.activeEdge = -1;
+						this.activeEdgeWorldPos = circleWorldPos;
+						anythingHovered = true;
+					}
+					// Hovering the edge
+					else if (MathF.Abs(hoverDist - circleWorldRadius) <= worldHotRadius)
+					{
+						this.activeVertex = -1;
+						this.activeEdge = 0;
+						this.activeEdgeWorldPos = 
+							circleWorldPos + 
+							circleWorldRadius * (mousePosWorld.Xy - circleWorldPos).Normalized;
+						anythingHovered = true;
+					}
+				}
+				else
+				{
+					Vector2[] vertices = this.GetVertices(shape);
+					if (vertices == null) continue;
+
+					Vector2[] worldVertices = new Vector2[vertices.Length];
+
+					// Transform the shapes vertices into world space
+					for (int index = 0; index < vertices.Length; index++)
+					{
+						Vector2 vertex = vertices[index];
+						MathF.TransformDotVec(ref vertex, ref bodyDotX, ref bodyDotY);
+						worldVertices[index] = bodyPos + vertex;
+					}
+					anythingHovered = 
+						this.GetHoveredVertex(worldVertices, mousePosWorld.Xy, worldHotRadius, out this.activeVertex, out this.activeEdgeWorldPos) ||
+						this.GetHoveredEdge(worldVertices, mousePosWorld.Xy, worldHotRadius, out this.activeEdge, out this.activeEdgeWorldPos);
+				}
+
 				if (anythingHovered)
 				{
 					this.activeShape = shape;
