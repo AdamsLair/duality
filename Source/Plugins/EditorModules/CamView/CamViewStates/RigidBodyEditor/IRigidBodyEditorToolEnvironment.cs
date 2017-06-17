@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using Duality.Drawing;
 using Duality.Components.Physics;
 
 
@@ -53,6 +54,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// [GET] Returns whether the key that was used to start this action is still pressed.
 		/// </summary>
 		bool IsActionKeyPressed { get; }
+		/// <summary>
+		/// [GET] The preferred background color to be used when rendering a tool overlay.
+		/// </summary>
+		ColorRgba BgColor { get; }
+		/// <summary>
+		/// [GET] The preferred foreground color to be used when rendering a tool overlay.
+		/// </summary>
+		ColorRgba FgColor { get; }
 
 		/// <summary>
 		/// Stops the currently active tool action. Call this when you want a custom tool action
