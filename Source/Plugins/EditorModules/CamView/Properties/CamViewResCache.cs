@@ -17,10 +17,13 @@ namespace Duality.Editor.Plugins.CamView.Properties
 		public static readonly Bitmap   CursorImageArrowCreateEdge    = CamViewRes.CursorArrowCreateEdge;
 		public static readonly Bitmap   CursorImageArrowCreateLoop    = CamViewRes.CursorArrowCreateLoop;
 		public static readonly Bitmap   CursorImageArrowCreatePolygon = CamViewRes.CursorArrowCreatePolygon;
+		public static readonly Bitmap   CursorImageArrowEditVertices  = CamViewRes.CursorArrowEditVertices;
+		public static readonly Bitmap   IconShapeSelect               = CamViewRes.IconShapeSelect;
 		public static readonly Bitmap   IconCmpCircleCollider         = CamViewRes.IconCmpCircleCollider;
 		public static readonly Bitmap   IconCmpEdgeCollider           = CamViewRes.IconCmpEdgeCollider;
 		public static readonly Bitmap   IconCmpLoopCollider           = CamViewRes.IconCmpLoopCollider;
 		public static readonly Bitmap   IconCmpRectCollider           = CamViewRes.IconCmpRectCollider;
+		public static readonly Bitmap   IconCmpEditVertices           = CamViewRes.IconCmpEditVertices;
 		public static readonly Icon     IconEye                       = CamViewRes.IconEye;
 
 		public static readonly Bitmap   ObjectVisibility              = Resources.ObjectVisibility;
@@ -30,5 +33,6 @@ namespace Duality.Editor.Plugins.CamView.Properties
 		public static readonly Cursor   CursorArrowCreateEdge         = CursorHelper.CreateCursor(CursorImageArrowCreateEdge,    0, 0);
 		public static readonly Cursor   CursorArrowCreateLoop         = CursorHelper.CreateCursor(CursorImageArrowCreateLoop,    0, 0);
 		public static readonly Cursor   CursorArrowCreatePolygon      = CursorHelper.CreateCursor(CursorImageArrowCreatePolygon, 0, 0);
+		public static readonly Cursor   CursorArrowEditVertices		  = CursorHelper.CreateCursor(CursorImageArrowEditVertices, 0, 0);
 	}
 }
