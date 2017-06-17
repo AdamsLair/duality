@@ -12,7 +12,6 @@ using Duality.Components.Physics;
 using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Plugins.CamView.CamViewStates;
-using Duality.Input;
 
 namespace Duality.Editor.Plugins.CamView.CamViewLayers
 {
