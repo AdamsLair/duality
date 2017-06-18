@@ -61,9 +61,7 @@
     <Compile Include="CamViewStates\ObjectEditor\ObjectEditorAction.cs" />
     <Compile Include="CamViewStates\ObjectEditor\ObjectEditorSelObj.cs" />
     <Compile Include="CamViewStates\ObjectEditor\ObjectEditorCamViewState.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelLoopShape.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyShape.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyLikeShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelVertexShape.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelCircleShape.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelShape.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelBody.cs" />
@@ -92,7 +90,6 @@
     <Compile Include="CamViewLayers\RigidBodyJointCamViewLayer.cs" />
     <Compile Include="CamViewLayers\RigidBodyShapeCamViewLayer.cs" />
     <Compile Include="CamViewStates\CamViewState.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelChainShape.cs" />
     <Compile Include="CamViewPlugin.cs" />
     <Compile Include="CamViewStates\GameViewCamViewState.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorCamViewState.cs" />

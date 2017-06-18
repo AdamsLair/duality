@@ -123,11 +123,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				int shapeIndex = 0;
 				foreach (ShapeInfo shape in body.Shapes)
 				{
-					CircleShapeInfo circle = shape as CircleShapeInfo;
-					PolyShapeInfo poly = shape as PolyShapeInfo;
-					ChainShapeInfo chain = shape as ChainShapeInfo;
-					LoopShapeInfo loop = shape as LoopShapeInfo;
-
 					bool isShapeSelected = isBodySelected && editorSelectedObjects.Contains(shape);
 
 					float shapeAlpha = bodyAlpha * (isShapeSelected ? 1.0f : (isAnyShapeSelected && isBodySelected ? 0.75f : 1.0f));
@@ -145,16 +140,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 					// Calculate the center coordinate 
 					Vector2 shapeCenter = Vector2.Zero;
-					if (circle != null)
+					if (shape is CircleShapeInfo)
 					{
-						shapeCenter = circle.Position * objScale;
+						CircleShapeInfo circleShape = shape as CircleShapeInfo;
+						shapeCenter = circleShape.Position * objScale;
 					}
-					else
+					else if (shape is VertexBasedShapeInfo)
 					{
-					Vector2[] shapeVertices = null;
-					if      (poly  != null) shapeVertices = poly .Vertices;
-					else if (loop  != null) shapeVertices = loop .Vertices;
-					else if (chain != null) shapeVertices = chain.Vertices;
+						VertexBasedShapeInfo vertexShape = shape as VertexBasedShapeInfo;
+						Vector2[] shapeVertices = vertexShape.Vertices;
 
 						for (int i = 0; i < shapeVertices.Length; i++)
 							shapeCenter += shapeVertices[i];
@@ -214,18 +208,21 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		
 		private void DrawShape(Canvas canvas, Transform transform, ShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
 		{
-			if      (shape is CircleShapeInfo) this.DrawShape(canvas, transform, shape as CircleShapeInfo, fillColor, outlineColor);
-			else if (shape is LoopShapeInfo)   this.DrawShape(canvas, transform, shape as LoopShapeInfo  , fillColor, outlineColor);
-			else if (shape is ChainShapeInfo)  this.DrawShape(canvas, transform, shape as ChainShapeInfo , fillColor, outlineColor);
-			else if (shape is PolyShapeInfo)   this.DrawShape(canvas, transform, shape as PolyShapeInfo  , fillColor, outlineColor);
+			if      (shape is CircleShapeInfo)      this.DrawShape(canvas, transform, shape as CircleShapeInfo     , fillColor, outlineColor);
+			else if (shape is PolyShapeInfo)        this.DrawShape(canvas, transform, shape as PolyShapeInfo       , fillColor, outlineColor);
+			else if (shape is VertexBasedShapeInfo) this.DrawShape(canvas, transform, shape as VertexBasedShapeInfo, fillColor, outlineColor);
 		}
-		private void DrawShape(Canvas canvas, Transform transform, LoopShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
+		private void DrawShape(Canvas canvas, Transform transform, VertexBasedShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
 		{
-			this.DrawPolygonOutline(canvas, transform, shape.Vertices, outlineColor, true);
-		}
-		private void DrawShape(Canvas canvas, Transform transform, ChainShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
-		{
-			this.DrawPolygonOutline(canvas, transform, shape.Vertices, outlineColor, false);
+			bool isSolid = (shape.ShapeTraits & VertexShapeTrait.IsSolid) != VertexShapeTrait.None;
+			bool isLoop = (shape.ShapeTraits & VertexShapeTrait.IsLoop) != VertexShapeTrait.None;
+
+			if (isSolid)
+			{
+				this.FillPolygon(canvas, transform, shape.Vertices, fillColor);
+			}
+
+			this.DrawPolygonOutline(canvas, transform, shape.Vertices, outlineColor, isLoop);
 		}
 		private void DrawShape(Canvas canvas, Transform transform, PolyShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
 		{

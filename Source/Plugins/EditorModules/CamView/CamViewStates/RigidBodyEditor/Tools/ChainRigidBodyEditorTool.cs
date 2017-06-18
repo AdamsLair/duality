@@ -14,7 +14,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// <summary>
 	/// Creates a new chain shape in the selected <see cref="RigidBody"/>.
 	/// </summary>
-	public class ChainRigidBodyEditorTool : PolyLikeRigidBodyEditorTool
+	public class ChainRigidBodyEditorTool : VertexShapeRigidBodyEditorTool
 	{
 		public override string Name
 		{
@@ -49,17 +49,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				basePos + Vector2.UnitX
 			};
 		}
-		protected override ShapeInfo CreateShapeInfo(Vector2[] vertices)
+		protected override VertexBasedShapeInfo CreateShapeInfo(Vector2[] vertices)
 		{
 			return new ChainShapeInfo(vertices);
-		}
-		protected override Vector2[] GetVertices(ShapeInfo shape)
-		{
-			return (shape as ChainShapeInfo).Vertices;
-		}
-		protected override void SetVertices(ShapeInfo shape, Vector2[] vertices)
-		{
-			(shape as ChainShapeInfo).Vertices = vertices;
 		}
 	}
 }

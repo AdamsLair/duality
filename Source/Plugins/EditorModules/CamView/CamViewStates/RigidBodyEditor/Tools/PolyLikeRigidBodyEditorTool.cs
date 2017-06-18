@@ -11,13 +11,13 @@ using Duality.Drawing;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
-	public abstract class PolyLikeRigidBodyEditorTool : RigidBodyEditorTool
+	public abstract class VertexShapeRigidBodyEditorTool : RigidBodyEditorTool
 	{
 		private int initialVertexCount = 0;
 		private int currentVertex = 0;
 		private bool pendingAdvance = false;
 		private Vector2 lastPlacedVertexPos = Vector2.Zero;
-		private ShapeInfo actionShape = null;
+		private VertexBasedShapeInfo actionShape = null;
 
 		protected virtual int MaxVertexCount
 		{
@@ -37,9 +37,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				basePos + Vector2.One
 			};
 		}
-		protected abstract ShapeInfo CreateShapeInfo(Vector2[] vertices);
-		protected abstract Vector2[] GetVertices(ShapeInfo shape);
-		protected abstract void SetVertices(ShapeInfo shape, Vector2[] vertices);
+		protected abstract VertexBasedShapeInfo CreateShapeInfo(Vector2[] vertices);
 
 		public override bool CanBeginAction(MouseButtons mouseButton)
 		{
@@ -83,7 +81,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.AdvanceToNextVertex();
 			}
 
-			Vector2[] vertices = this.GetVertices(this.actionShape);
+			Vector2[] vertices = this.actionShape.Vertices;
 			vertices[this.currentVertex] = this.Environment.ActiveBodyPos;
 
 			// Before we've defined the first two vertices, we won't have
@@ -91,7 +89,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// useful can come out of it. Not updating yet will result in
 			// remaining with the initially defined, valid dummy shape.
 			if (this.currentVertex >= this.initialVertexCount - 1)
-				this.SetVertices(this.actionShape, vertices);
+				this.actionShape.Vertices = vertices;
 
 			DualityEditorApp.NotifyObjPropChanged(this,
 				new ObjectSelection(this.Environment.ActiveBody),
@@ -102,7 +100,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			base.EndAction();
 			if (this.actionShape != null)
 			{
-				Vector2[] vertices = this.GetVertices(this.actionShape);
+				Vector2[] vertices = this.actionShape.Vertices;
 
 				// If we're in the process of placing another vertex, remove that unplaced one
 				if (!this.pendingAdvance)
@@ -114,7 +112,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 				// Apply the new polygon and force an immediate body update / sync, so
 				// we can get a useful result from the shape's IsValid method.
-				this.SetVertices(this.actionShape, vertices);
+				this.actionShape.Vertices = vertices;
 				this.Environment.ActiveBody.SynchronizeBodyShape();
 
 				// Check if we have a fully defined, valid polygon to apply
@@ -153,7 +151,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				if (this.pendingAdvance)
 					return;
 
-				Vector2[] vertices = this.GetVertices(this.actionShape);
+				Vector2[] vertices = this.actionShape.Vertices;
 				vertices[this.currentVertex] = this.Environment.ActiveBodyPos;
 
 				// Apply the current vertex and move on to the next.
@@ -191,13 +189,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			this.Environment.LockedWorldPos = new Vector3(this.lastPlacedVertexPos, 0.0f);
 
-			Vector2[] vertices = this.GetVertices(this.actionShape);
+			Vector2[] vertices = this.actionShape.Vertices;
 			List<Vector2> vertexList = vertices.ToList();
 			
 			if (this.currentVertex >= vertexList.Count - 1)
 				vertexList.Add(this.Environment.ActiveBodyPos);
 			
-			this.SetVertices(this.actionShape, vertexList.ToArray());
+			this.actionShape.Vertices = vertexList.ToArray();
 			this.currentVertex++;
 		}
 		private bool CheckVertexPlacement(Vector2[] vertices, int currentVertex)

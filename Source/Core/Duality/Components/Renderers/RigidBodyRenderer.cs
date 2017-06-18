@@ -157,9 +157,10 @@ namespace Duality.Components.Renderers
 		private void DrawShapeArea(Canvas canvas, Transform transform, ShapeInfo shape)
 		{
 			canvas.PushState();
-			if      (shape is CircleShapeInfo)                         this.DrawShapeArea(canvas, transform, shape as CircleShapeInfo);
-			else if (shape is LoopShapeInfo && this.fillHollowShapes)  this.DrawShapeArea(canvas, transform, (shape as LoopShapeInfo).Vertices);
-			else if (shape is ChainShapeInfo && this.fillHollowShapes) this.DrawShapeArea(canvas, transform, (shape as ChainShapeInfo).Vertices);
+			if (shape is CircleShapeInfo)
+			{
+				this.DrawShapeArea(canvas, transform, shape as CircleShapeInfo);
+			}
 			else if (shape is PolyShapeInfo)
 			{
 				PolyShapeInfo polyShape = shape as PolyShapeInfo;
@@ -182,6 +183,15 @@ namespace Duality.Components.Renderers
 							texRect.H * localBounds.H / bounds.H);
 						this.DrawShapeArea(canvas, transform, convexPolygon, localTexRect);
 					}
+				}
+			}
+			else if (shape is VertexBasedShapeInfo)
+			{
+				VertexBasedShapeInfo vertexShape = shape as VertexBasedShapeInfo;
+				bool isSolid = (vertexShape.ShapeTraits & VertexShapeTrait.IsSolid) != VertexShapeTrait.None;
+				if (isSolid || this.fillHollowShapes)
+				{
+					this.DrawShapeArea(canvas, transform, vertexShape.Vertices);
 				}
 			}
 			canvas.PopState();
@@ -237,10 +247,16 @@ namespace Duality.Components.Renderers
 		private void DrawShapeOutline(Canvas canvas, Transform transform, ShapeInfo shape)
 		{
 			canvas.PushState();
-			if      (shape is CircleShapeInfo) this.DrawShapeOutline(canvas, transform, shape as CircleShapeInfo);
-			else if (shape is PolyShapeInfo)   this.DrawShapeOutline(canvas, transform, (shape as PolyShapeInfo).Vertices, true);
-			else if (shape is LoopShapeInfo)   this.DrawShapeOutline(canvas, transform, (shape as LoopShapeInfo).Vertices, true);
-			else if (shape is ChainShapeInfo)  this.DrawShapeOutline(canvas, transform, (shape as ChainShapeInfo).Vertices, false);
+			if (shape is CircleShapeInfo)
+			{
+				this.DrawShapeOutline(canvas, transform, shape as CircleShapeInfo);
+			}
+			else if (shape is VertexBasedShapeInfo)
+			{
+				VertexBasedShapeInfo vertexShape = shape as VertexBasedShapeInfo;
+				bool isLoop = (vertexShape.ShapeTraits & VertexShapeTrait.IsLoop) != VertexShapeTrait.None;
+				this.DrawShapeOutline(canvas, transform, vertexShape.Vertices, isLoop);
+			}
 			canvas.PopState();
 		}
 		private void DrawShapeOutline(Canvas canvas, Transform transform, CircleShapeInfo shape)

@@ -283,17 +283,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		private ShapeInfo PickShape(RigidBody body, Vector2 worldCoord)
 		{
-			// Special case for Loop- and ChainShapes, because they are by definition unpickable
+			// Special case for non-solid / "outline only" shapes, because they are by definition unpickable
 			Rect worldRect = Rect.Align(Alignment.Center, worldCoord.X, worldCoord.Y, 10.0f, 10.0f);
 			foreach (ShapeInfo shape in body.Shapes)
 			{
-				LoopShapeInfo loop = shape as LoopShapeInfo;
-				ChainShapeInfo chain = shape as ChainShapeInfo;
+				VertexBasedShapeInfo vertexShape = shape as VertexBasedShapeInfo;
+				if (vertexShape == null) continue;
+				if ((vertexShape.ShapeTraits & VertexShapeTrait.IsSolid) != VertexShapeTrait.None) continue;
 				
-				Vector2[] vertices = null;
-				if (loop != null) vertices = loop.Vertices;
-				if (chain != null) vertices = chain.Vertices;
-
+				Vector2[] vertices = vertexShape.Vertices;
 				if (vertices != null && IsOutlineBoxIntersection(body.GameObj.Transform, vertices, worldRect))
 					return shape;
 			}
@@ -309,16 +307,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			List<ShapeInfo> result = new List<ShapeInfo>();
 			body.PickShapes(worldCoord, worldSize, result);
 
-			// Special case for Loop- and ChainShapes, because they are by definition unpickable
+			// Special case for non-solid / "outline only" shapes, because they are by definition unpickable
 			foreach (ShapeInfo shape in body.Shapes)
 			{
-				LoopShapeInfo loop = shape as LoopShapeInfo;
-				ChainShapeInfo chain = shape as ChainShapeInfo;
+				VertexBasedShapeInfo vertexShape = shape as VertexBasedShapeInfo;
+				if (vertexShape == null) continue;
+				if ((vertexShape.ShapeTraits & VertexShapeTrait.IsSolid) != VertexShapeTrait.None) continue;
 				
-				Vector2[] vertices = null;
-				if (loop != null) vertices = loop.Vertices;
-				if (chain != null) vertices = chain.Vertices;
-
+				Vector2[] vertices = vertexShape.Vertices;
 				if (vertices != null && IsOutlineBoxIntersection(body.GameObj.Transform, vertices, worldRect))
 				{
 					result.Add(shape);
