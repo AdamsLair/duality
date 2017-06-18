@@ -65,7 +65,7 @@ namespace Duality.Components.Physics
 			this.fixture.Friction = this.friction;
 			
 			ChainShape shape = this.fixture.Shape as ChainShape;
-			shape.Density = this.density;
+			shape.Density = this.density * PhysicsUnit.DensityToPhysical;
 		}
 
 		private bool EnsureFixtures()
