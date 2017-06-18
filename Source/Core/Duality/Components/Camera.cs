@@ -300,7 +300,12 @@ namespace Duality.Components
 		private void SetupDevice()
 		{
 			if (this.drawDevice != null && !this.drawDevice.Disposed) return;
+			
 			this.drawDevice = new DrawDevice();
+
+			// Default to world space render mode, so coordinate conversions
+			// work as expected regardless of rendering state.
+			this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
 		}
 		private void ReleaseDevice()
 		{
