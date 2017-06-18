@@ -96,6 +96,8 @@
     <Compile Include="Components\Other\RequiredComponentAttribute.cs" />
     <Compile Include="Components\ICmpInterfaces\ICmpSpriteRenderer.cs" />
     <Compile Include="Components\Physics\Shapes\ChainShapeInfo.cs" />
+    <Compile Include="Components\Physics\Shapes\VertexShapeTrait.cs" />
+    <Compile Include="Components\Physics\Shapes\VertexBasedShapeInfo.cs" />
     <Compile Include="Drawing\SpriteIndexBlend.cs" />
     <Compile Include="DualityPlugin.cs" />
     <Compile Include="PluginManager.cs" />

@@ -14,29 +14,13 @@ namespace Duality.Components.Physics
 	/// <summary>
 	/// Describes a <see cref="RigidBody">Colliders</see> polygon shape.
 	/// </summary>
-	public sealed class PolyShapeInfo : ShapeInfo
+	public sealed class PolyShapeInfo : VertexBasedShapeInfo
 	{
 		[DontSerialize]
 		private List<Fixture> fixtures;
-		private	Vector2[]	vertices;
 		private List<Vector2[]> convexPolygons;
 
 
-		/// <summary>
-		/// [GET / SET] The polygons vertices. While assinging the array will cause an automatic update, simply modifying it will require you to call <see cref="ShapeInfo.UpdateShape"/> manually.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.ForceWriteback)]
-		[EditorHintIncrement(1)]
-		[EditorHintDecimalPlaces(1)]
-		public Vector2[] Vertices
-		{
-			get { return this.vertices; }
-			set
-			{
-				this.vertices = value ?? new Vector2[] { Vector2.Zero, Vector2.UnitX, Vector2.UnitY };
-				this.UpdateInternalShape(true);
-			}
-		}
 		/// <summary>
 		/// [GET] A read-only list of convex polygons that were generated 
 		/// from the shapes <see cref="Vertices"/>. Do not modify any of the
@@ -47,37 +31,32 @@ namespace Duality.Components.Physics
 		{
 			get { return this.convexPolygons; }
 		}
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public override Rect AABB
+		/// <inheritdoc />
+		public override VertexShapeTrait ShapeTraits
 		{
-			get 
-			{
-				float minX = float.MaxValue;
-				float minY = float.MaxValue;
-				float maxX = float.MinValue;
-				float maxY = float.MinValue;
-				for (int i = 0; i < this.vertices.Length; i++)
-				{
-					minX = MathF.Min(minX, this.vertices[i].X);
-					minY = MathF.Min(minY, this.vertices[i].Y);
-					maxX = MathF.Max(maxX, this.vertices[i].X);
-					maxY = MathF.Max(maxY, this.vertices[i].Y);
-				}
-				return new Rect(minX, minY, maxX - minX, maxY - minY);
-			}
+			get { return VertexShapeTrait.IsLoop | VertexShapeTrait.IsSolid; }
 		}
 		protected override bool IsInternalShapeCreated
 		{
 			get { return this.fixtures != null && this.fixtures.Count > 0; }
 		}
 
-			
+		
+		/// <summary>
+		/// Creates a new, empty polygon shape.
+		/// </summary>
 		public PolyShapeInfo() {}
-		public PolyShapeInfo(IEnumerable<Vector2> vertices, float density)
+		/// <summary>
+		/// Creates a new polygon shape. Note that it will assume ownership of
+		/// the specified vertex array, so no copy will be made.
+		/// </summary>
+		/// <param name="vertices"></param>
+		/// <param name="density"></param>
+		public PolyShapeInfo(Vector2[] vertices, float density) : base(vertices)
 		{
-			this.vertices = vertices.ToArray();
 			this.density = density;
 		}
+
 
 		protected override void DestroyFixtures()
 		{

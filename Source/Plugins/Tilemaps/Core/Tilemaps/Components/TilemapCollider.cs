@@ -724,9 +724,12 @@ namespace Duality.Plugins.Tilemaps
 							vertexBuffer.Add(currentVert);
 					}
 				}
+
+				Vector2[] vertices = new Vector2[vertexBuffer.Count];
+				vertexBuffer.CopyTo(vertices, 0);
 				shapeList.Add(isLoop ? 
-					(ShapeInfo)new LoopShapeInfo(vertexBuffer) : 
-					(ShapeInfo)new ChainShapeInfo(vertexBuffer));
+					(ShapeInfo)new LoopShapeInfo(vertices) : 
+					(ShapeInfo)new ChainShapeInfo(vertices));
 			}
 		}
 	}
