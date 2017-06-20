@@ -35,6 +35,7 @@ namespace Duality.Components.Physics
 		/// <summary>
 		/// [GET] A flagged enum describing traits of the geometry that is formed by this shapes <see cref="Vertices"/>.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public abstract VertexShapeTrait ShapeTraits { get; }
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public override Rect AABB
