@@ -63,6 +63,7 @@
 			// 
 			this.folderView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.folderView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.folderView.ColumnHeaderHeight = 0;
 			this.folderView.DefaultToolTipProvider = null;
 			this.folderView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.folderView.DragDropMarkColor = System.Drawing.Color.Black;
@@ -122,7 +123,8 @@
 			this.splitFolderTemplate.Panel2MinSize = 250;
 			this.splitFolderTemplate.Size = new System.Drawing.Size(486, 176);
 			this.splitFolderTemplate.SplitterDistance = 158;
-			this.splitFolderTemplate.TabIndex = 2;
+			this.splitFolderTemplate.TabIndex = 0;
+			this.splitFolderTemplate.TabStop = false;
 			// 
 			// templateView
 			// 
@@ -164,7 +166,7 @@
 			this.buttonCancel.Location = new System.Drawing.Point(398, 332);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-			this.buttonCancel.TabIndex = 3;
+			this.buttonCancel.TabIndex = 8;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
@@ -175,7 +177,7 @@
 			this.buttonOk.Location = new System.Drawing.Point(317, 332);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(75, 23);
-			this.buttonOk.TabIndex = 4;
+			this.buttonOk.TabIndex = 7;
 			this.buttonOk.Text = "Ok";
 			this.buttonOk.UseVisualStyleBackColor = true;
 			this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
@@ -206,7 +208,7 @@
 			this.buttonBrowseFolder.Location = new System.Drawing.Point(402, 293);
 			this.buttonBrowseFolder.Name = "buttonBrowseFolder";
 			this.buttonBrowseFolder.Size = new System.Drawing.Size(71, 23);
-			this.buttonBrowseFolder.TabIndex = 7;
+			this.buttonBrowseFolder.TabIndex = 6;
 			this.buttonBrowseFolder.Text = "Browse...";
 			this.buttonBrowseFolder.UseVisualStyleBackColor = true;
 			this.buttonBrowseFolder.Click += new System.EventHandler(this.buttonBrowseFolder_Click);
@@ -252,7 +254,7 @@
 			this.buttonBrowseTemplate.Location = new System.Drawing.Point(402, 242);
 			this.buttonBrowseTemplate.Name = "buttonBrowseTemplate";
 			this.buttonBrowseTemplate.Size = new System.Drawing.Size(71, 23);
-			this.buttonBrowseTemplate.TabIndex = 14;
+			this.buttonBrowseTemplate.TabIndex = 3;
 			this.buttonBrowseTemplate.Text = "Browse...";
 			this.buttonBrowseTemplate.UseVisualStyleBackColor = true;
 			this.buttonBrowseTemplate.Click += new System.EventHandler(this.buttonBrowseTemplate_Click);
@@ -277,7 +279,7 @@
 			this.labelHeader.Margin = new System.Windows.Forms.Padding(0);
 			this.labelHeader.Name = "labelHeader";
 			this.labelHeader.Size = new System.Drawing.Size(407, 22);
-			this.labelHeader.TabIndex = 16;
+			this.labelHeader.TabIndex = 0;
 			this.labelHeader.Text = "Create new Duality Project";
 			this.labelHeader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
@@ -289,7 +291,7 @@
 			this.textBoxTemplate.Location = new System.Drawing.Point(105, 244);
 			this.textBoxTemplate.Name = "textBoxTemplate";
 			this.textBoxTemplate.Size = new System.Drawing.Size(291, 20);
-			this.textBoxTemplate.TabIndex = 13;
+			this.textBoxTemplate.TabIndex = 2;
 			this.textBoxTemplate.TextChanged += new System.EventHandler(this.textBoxTemplate_TextChanged);
 			// 
 			// textBoxName
@@ -300,7 +302,7 @@
 			this.textBoxName.Location = new System.Drawing.Point(105, 270);
 			this.textBoxName.Name = "textBoxName";
 			this.textBoxName.Size = new System.Drawing.Size(291, 20);
-			this.textBoxName.TabIndex = 10;
+			this.textBoxName.TabIndex = 4;
 			// 
 			// textBoxFolder
 			// 
@@ -310,7 +312,7 @@
 			this.textBoxFolder.Location = new System.Drawing.Point(105, 296);
 			this.textBoxFolder.Name = "textBoxFolder";
 			this.textBoxFolder.Size = new System.Drawing.Size(291, 20);
-			this.textBoxFolder.TabIndex = 8;
+			this.textBoxFolder.TabIndex = 5;
 			// 
 			// NewProjectDialog
 			// 

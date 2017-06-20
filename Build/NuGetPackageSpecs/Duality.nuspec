@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.12.8</version>
+    <version>2.12.9</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,8 +13,8 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>
-</releaseNotes>
+    <releaseNotes>Startup Error Log Bugfix
+#FIX: Removed internal legacy Font property lookups. This also fixes the startup error log "Unable to retrieve property 'Family' of type 'Font'".</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.4" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
