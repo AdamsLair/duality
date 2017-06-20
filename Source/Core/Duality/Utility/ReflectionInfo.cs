@@ -50,12 +50,6 @@ namespace Duality
 
 		public static readonly PropertyInfo	Property_Resource_AssetInfo;
 
-		public static readonly PropertyInfo	Property_Font_Family;
-		public static readonly PropertyInfo	Property_Font_Size;
-		public static readonly PropertyInfo	Property_Font_Style;
-		public static readonly PropertyInfo	Property_Font_GlyphRenderMode;
-		public static readonly PropertyInfo	Property_Font_MonoSpace;
-
 		public static readonly PropertyInfo	Property_Pixmap_AnimCols;
 		public static readonly PropertyInfo	Property_Pixmap_AnimRows;
 		public static readonly PropertyInfo	Property_Pixmap_AnimFrameBorder;
@@ -113,13 +107,6 @@ namespace Duality
 			
 			Type resource = typeof(Resource);
 			Property_Resource_AssetInfo		= GetProperty(resource, "AssetInfo");
-
-			Type font = typeof(Font);
-			Property_Font_Family			= GetProperty(font, "Family");
-			Property_Font_Size				= GetProperty(font, "Size");
-			Property_Font_Style				= GetProperty(font, "Style");
-			Property_Font_GlyphRenderMode	= GetProperty(font, "GlyphRenderMode");
-			Property_Font_MonoSpace			= GetProperty(font, "MonoSpace");
 
 			Type pixmap = typeof(Pixmap);
 			Property_Pixmap_AnimCols		= GetProperty(pixmap, "AnimCols");
