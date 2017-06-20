@@ -17,7 +17,7 @@
 		/// <summary>
 		/// SI unit: kg / m²
 		/// </summary>
-		public static readonly float DensityToDuality         = 1.0f; // Legacy support: Expressed as kg / m². Should actually be: "MassToDuality / (LengthToDuality * LengthToDuality);"
+		public static readonly float DensityToDuality         = MassToDuality / (LengthToDuality * LengthToDuality);
 		/// <summary>
 		/// SI unit: s
 		/// </summary>

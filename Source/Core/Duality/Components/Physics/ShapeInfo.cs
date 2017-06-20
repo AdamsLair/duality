@@ -34,7 +34,7 @@ namespace Duality.Components.Physics
 			internal set { this.parent = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The shapes density.
+		/// [GET / SET] The shapes density, expressed as mass units per solid 10x10 space units.
 		/// </summary>
 		[EditorHintIncrement(0.05f)]
 		[EditorHintRange(0.0f, 100.0f)]

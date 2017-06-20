@@ -85,7 +85,7 @@ namespace Duality.Components.Physics
 				fixture.Friction = this.friction;
 				
 				PolygonShape shape = fixture.Shape as PolygonShape;
-				shape.Density = this.density * PhysicsUnit.DensityToPhysical;
+				shape.Density = this.density * PhysicsUnit.DensityToPhysical / (10.0f * 10.0f);
 			}
 		}
 

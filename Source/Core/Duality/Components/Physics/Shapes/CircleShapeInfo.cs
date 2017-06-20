@@ -74,7 +74,7 @@ namespace Duality.Components.Physics
 			this.fixture.Friction = this.friction;
 
 			CircleShape circle = this.fixture.Shape as CircleShape;
-			circle.Density = this.density * PhysicsUnit.DensityToPhysical;
+			circle.Density = this.density * PhysicsUnit.DensityToPhysical / (10.0f * 10.0f);
 		}
 
 		private bool EnsureFixtures()
