@@ -34,6 +34,11 @@ namespace Duality.Editor.Controls.ToolStrip
 				this.textBox.BackColor = value;
 			}
 		}
+		public override Color ForeColor
+		{
+			get { return this.textBox.ForeColor; }
+			set { this.textBox.ForeColor = value; }
+		}
 		public override bool Focused
 		{
 			get { return this.textBox.Focused; }
