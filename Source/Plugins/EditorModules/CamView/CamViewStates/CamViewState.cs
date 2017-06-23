@@ -567,6 +567,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected virtual void OnCurrentCameraChanged(CamView.CameraChangedEventArgs e) {}
 		protected virtual void OnGotFocus() {}
 		protected virtual void OnLostFocus() {}
+		protected virtual void OnResize() {}
 
 		protected virtual void OnDragEnter(DragEventArgs e) {}
 		protected virtual void OnDragOver(DragEventArgs e) {}
@@ -964,6 +965,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private void RenderableControl_Resize(object sender, EventArgs e)
 		{
 			this.UpdateFormattedTextRenderers();
+			this.OnResize();
 		}
 		private void View_FocusDistChanged(object sender, EventArgs e)
 		{
