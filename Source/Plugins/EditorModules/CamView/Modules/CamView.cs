@@ -1005,17 +1005,21 @@ namespace Duality.Editor.Plugins.CamView
 				ReflectionInfo.Property_Transform_RelativeAngle,
 				ReflectionInfo.Property_Transform_RelativePos);
 		}
-		public void SetToolbarCamSettingsEnabled(bool value)
+		public void SetEditingToolsAvailable(bool value)
 		{
-			this.snapToGridSelector.Enabled = value;
-			this.perspectiveDropDown.Enabled = value;
-			this.focusDist.Enabled = value;
-			this.camSelector.Enabled = value;
-			this.showBgColorDialog.Enabled = value;
+			// Editing-related settings
 			this.layerSelector.Enabled = value;
 			this.objectVisibilitySelector.Enabled = value;
-			this.renderSetupSelector.Enabled = value;
-			this.buttonResetZoom.Enabled = value;
+			this.snapToGridSelector.Enabled = value;
+
+			// Camera-specific rendering settings
+			this.perspectiveDropDown.Visible = value;
+			this.focusDist.Visible = value;
+			this.camSelector.Visible = value;
+			this.showBgColorDialog.Visible = value;
+			this.renderSetupSelector.Visible = value;
+			this.buttonResetZoom.Visible = value;
+			this.renderToPerspectiveSeparator.Visible = value;
 		}
 
 		public void ResetCamera()

@@ -30,9 +30,9 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CamView));
 			this.stateSelector = new System.Windows.Forms.ToolStripComboBox();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.viewToEditSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.focusDist = new Duality.Editor.Controls.ToolStrip.ToolStripNumericUpDown();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.renderToPerspectiveSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.camSelector = new System.Windows.Forms.ToolStripComboBox();
 			this.toolbarCamera = new System.Windows.Forms.ToolStrip();
 			this.layerSelector = new System.Windows.Forms.ToolStripDropDownButton();
@@ -62,10 +62,10 @@
 			this.stateSelector.DropDownClosed += new System.EventHandler(this.stateSelector_DropDownClosed);
 			this.stateSelector.SelectedIndexChanged += new System.EventHandler(this.stateSelector_SelectedIndexChanged);
 			// 
-			// toolStripSeparator1
+			// viewToEditSeparator
 			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+			this.viewToEditSeparator.Name = "viewToEditSeparator";
+			this.viewToEditSeparator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// focusDist
 			// 
@@ -90,12 +90,12 @@
             0});
 			this.focusDist.ValueChanged += new System.EventHandler(this.focusDist_ValueChanged);
 			// 
-			// toolStripSeparator2
+			// renderToPerspectiveSeparator
 			// 
-			this.toolStripSeparator2.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.toolStripSeparator2.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+			this.renderToPerspectiveSeparator.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.renderToPerspectiveSeparator.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.renderToPerspectiveSeparator.Name = "renderToPerspectiveSeparator";
+			this.renderToPerspectiveSeparator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// camSelector
 			// 
@@ -119,11 +119,11 @@
             this.stateSelector,
             this.layerSelector,
             this.objectVisibilitySelector,
-            this.toolStripSeparator1,
+            this.viewToEditSeparator,
             this.buttonResetZoom,
             this.perspectiveDropDown,
             this.focusDist,
-            this.toolStripSeparator2,
+            this.renderToPerspectiveSeparator,
             this.renderSetupSelector,
             this.showBgColorDialog,
             this.camSelector,
@@ -278,9 +278,9 @@
 		#endregion
 
 		private System.Windows.Forms.ToolStripComboBox stateSelector;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripSeparator viewToEditSeparator;
 		private Duality.Editor.Controls.ToolStrip.ToolStripNumericUpDown focusDist;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripSeparator renderToPerspectiveSeparator;
 		private System.Windows.Forms.ToolStripButton showBgColorDialog;
 		private System.Windows.Forms.ToolStripComboBox camSelector;
 		private System.Windows.Forms.ToolStrip toolbarCamera;
