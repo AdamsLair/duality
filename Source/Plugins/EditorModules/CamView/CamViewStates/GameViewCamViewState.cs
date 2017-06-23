@@ -20,7 +20,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// </summary>
 	public class GameViewCamViewState : CamViewState
 	{
-		private ToolStrip toolstrip = null;
+		private List<ToolStripItem> toolbarItems = new List<ToolStripItem>();
 		private ToolStripTextBoxAdv textBoxRenderWidth = null;
 		private ToolStripTextBoxAdv textBoxRenderHeight = null;
 
@@ -37,18 +37,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.EngineUserInput = true;
 		}
 
-		private void AddToolbar()
+		private void AddToolbarItems()
 		{
-			this.View.SuspendLayout();
-			this.toolstrip = new ToolStrip();
-			this.toolstrip.SuspendLayout();
-
-			this.toolstrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-			this.toolstrip.Name = "toolstrip";
-			this.toolstrip.Text = "GameView Tools";
-			this.toolstrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
-			this.toolstrip.BackColor = Color.FromArgb(212, 212, 212);
-
 			this.textBoxRenderWidth = new ToolStripTextBoxAdv("textBoxRenderWidth");
 			this.textBoxRenderWidth.BackColor = Color.FromArgb(196, 196, 196);
 			this.textBoxRenderWidth.AutoSize = false;
@@ -63,20 +53,30 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.textBoxRenderHeight.MaxLength = 4;
 			this.textBoxRenderHeight.ProceedRequested += (sender, e) => this.textBoxRenderWidth.Focus();
 
-			this.toolstrip.Items.Add(new ToolStripLabel("Screen Size "));
-			this.toolstrip.Items.Add(this.textBoxRenderWidth);
-			this.toolstrip.Items.Add(new ToolStripLabel("x"));
-			this.toolstrip.Items.Add(this.textBoxRenderHeight);
+			this.toolbarItems.Add(new ToolStripLabel("Screen Size "));
+			this.toolbarItems.Add(this.textBoxRenderWidth);
+			this.toolbarItems.Add(new ToolStripLabel("x"));
+			this.toolbarItems.Add(this.textBoxRenderHeight);
 
-			this.View.Controls.Add(this.toolstrip);
-			this.View.Controls.SetChildIndex(this.toolstrip, this.View.Controls.IndexOf(this.View.ToolbarCamera));
-			this.toolstrip.ResumeLayout(true);
-			this.View.ResumeLayout(true);
+			this.View.ToolbarCamera.SuspendLayout();
+			for (int i = this.toolbarItems.Count - 1; i >= 0; i--)
+			{
+				ToolStripItem item = this.toolbarItems[i];
+				item.Alignment = ToolStripItemAlignment.Right;
+				this.View.ToolbarCamera.Items.Add(item);
+			}
+			this.View.ToolbarCamera.ResumeLayout();
 		}
-		private void RemoveToolbar()
+		private void RemoveToolbarItems()
 		{
-			this.toolstrip.Dispose();
-			this.toolstrip = null;
+			this.View.ToolbarCamera.SuspendLayout();
+			foreach (ToolStripItem item in this.toolbarItems)
+			{
+				this.View.ToolbarCamera.Items.Remove(item);
+			}
+			this.View.ToolbarCamera.ResumeLayout();
+
+			this.toolbarItems.Clear();
 			this.textBoxRenderWidth = null;
 			this.textBoxRenderHeight = null;
 		}
@@ -84,15 +84,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected internal override void OnEnterState()
 		{
 			base.OnEnterState();
-			this.View.SetToolbarCamSettingsEnabled(false);
+			this.View.SetEditingToolsAvailable(false);
 			this.CameraObj.Active = false;
-			this.AddToolbar();
+			this.AddToolbarItems();
 		}
 		protected internal override void OnLeaveState()
 		{
 			base.OnLeaveState();
-			this.RemoveToolbar();
-			this.View.SetToolbarCamSettingsEnabled(true);
+			this.RemoveToolbarItems();
+			this.View.SetEditingToolsAvailable(true);
 			this.CameraObj.Active = true;
 		}
 		protected override void OnRenderState()
