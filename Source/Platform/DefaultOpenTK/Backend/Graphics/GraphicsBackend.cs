@@ -203,7 +203,7 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				GL.Scale(1.0f, -1.0f, 1.0f);
 				if (options.RenderMode == RenderMatrix.ScreenSpace)
-					GL.Translate(0.0f, -options.Viewport.H, 0.0f);
+					GL.Translate(0.0f, -device.TargetSize.Y, 0.0f);
 			}
 		}
 		void IGraphicsBackend.Render(IReadOnlyList<IDrawBatch> batches)
