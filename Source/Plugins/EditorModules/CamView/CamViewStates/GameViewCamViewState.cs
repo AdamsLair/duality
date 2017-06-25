@@ -78,12 +78,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get
 			{
+				TargetResize resizeMode = this.TargetSizeFitsClientArea ? 
+					TargetResize.None : 
+					TargetResize.Fit;
+				
+				Vector2 clientSize = new Vector2(this.ClientSize.Width, this.ClientSize.Height);
+				Vector2 localWindowSize = resizeMode.Apply(this.TargetRenderSize, clientSize);
+
 				return Rect.Align(
 					Alignment.Center,
-					this.ClientSize.Width * 0.5f,
-					this.ClientSize.Height * 0.5f,
-					this.TargetRenderSize.X,
-					this.TargetRenderSize.Y);
+					clientSize.X * 0.5f,
+					clientSize.Y * 0.5f,
+					localWindowSize.X,
+					localWindowSize.Y);
 			}
 		}
 
@@ -187,8 +194,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (!int.TryParse(this.textBoxRenderHeight.Text, out height))
 				height = this.TargetRenderSize.Y;
 
-			width = MathF.Clamp(width, 1, 7680);
-			height = MathF.Clamp(height, 1, 4320);
+			width = MathF.Clamp(width, 1, 3840);
+			height = MathF.Clamp(height, 1, 2160);
 
 			this.TargetRenderSize = new Point2(width, height);
 		}
@@ -309,10 +316,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					DrawTechnique.Solid, 
 					ColorRgba.White, 
 					this.outputTexture);
-				bool isSmallerThanWindow = 
-					this.outputTarget.Size.X < clientSize.X && 
-					this.outputTarget.Size.Y < clientSize.Y;
-				TargetResize blitResize = isSmallerThanWindow ? 
+				TargetResize blitResize = this.TargetSizeFitsClientArea ? 
 					TargetResize.None : 
 					TargetResize.Fit;
 
@@ -342,19 +346,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.ResetTargetRenderSize();
 		}
 
-		private void OnTargetRenderSizeUIEditingFinished()
-		{
-			if (this.isUpdatingUI) return;
-			this.ParseAndValidateTargetRenderSize();
-		}
-
 		private void textBoxRenderWidth_ProceedRequested(object sender, EventArgs e)
 		{
 			this.textBoxRenderHeight.Focus();
 		}
 		private void textBoxRenderWidth_EditingFinished(object sender, EventArgs e)
 		{
-			this.OnTargetRenderSizeUIEditingFinished();
+			if (this.isUpdatingUI) return;
+			this.ParseAndValidateTargetRenderSize();
 		}
 		private void textBoxRenderHeight_ProceedRequested(object sender, EventArgs e)
 		{
@@ -362,7 +361,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		private void textBoxRenderHeight_EditingFinished(object sender, EventArgs e)
 		{
-			this.OnTargetRenderSizeUIEditingFinished();
+			if (this.isUpdatingUI) return;
+			this.ParseAndValidateTargetRenderSize();
 		}
 	}
 }

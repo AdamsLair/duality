@@ -1177,9 +1177,6 @@ namespace Duality.Editor.Plugins.CamView
 			{
 				Vector2 gameSize = this.activeState.RenderedImageSize;
 				Rect inputArea = this.activeState.RenderedViewport;
-				Logs.Editor.Write("Mouse Pos: {0:F}, {1:F}",
-					(e.X - inputArea.X) / inputArea.W,
-					(e.Y - inputArea.Y) / inputArea.H);
 
 				this.inputMouseX = MathF.RoundToInt(gameSize.X * (e.X - inputArea.X) / inputArea.W);
 				this.inputMouseY = MathF.RoundToInt(gameSize.Y * (e.Y - inputArea.Y) / inputArea.H);
