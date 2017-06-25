@@ -23,7 +23,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private List<ToolStripItem> toolbarItems = new List<ToolStripItem>();
 		private ToolStripTextBoxAdv textBoxRenderWidth = null;
 		private ToolStripTextBoxAdv textBoxRenderHeight = null;
-		private Size targetRenderSize = Size.Empty;
+		private Point2 targetRenderSize = Point2.Zero;
 		private bool isNativeRenderSize = false;
 		private bool isUpdatingUI = false;
 		private RenderTarget outputTarget = null;
@@ -35,16 +35,29 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get { return Properties.CamViewRes.CamViewState_GameView_Name; }
 		}
-		private Size TargetRenderSize
+		public override Rect RenderedViewport
+		{
+			get { return this.LocalGameWindowRect; }
+		}
+		public override Point2 RenderedImageSize
+		{
+			get { return this.TargetRenderSize; }
+		}
+		private Point2 TargetRenderSize
 		{
 			get { return this.targetRenderSize; }
 			set
 			{
 				if (this.targetRenderSize != value)
 				{
-					this.isNativeRenderSize = (this.ClientSize == value);
+					Point2 nativeSize = new Point2(
+						this.RenderableControl.ClientSize.Width, 
+						this.RenderableControl.ClientSize.Height);
+
+					this.isNativeRenderSize = (nativeSize == value);
 					this.targetRenderSize = value;
 					this.UpdateTargetRenderSizeUI();
+					this.Invalidate();
 				}
 			}
 		}
@@ -53,13 +66,25 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get
 			{
 				return 
-					this.targetRenderSize.Width <= this.ClientSize.Width &&
-					this.targetRenderSize.Height <= this.ClientSize.Height;
+					this.targetRenderSize.X <= this.RenderableControl.ClientSize.Width &&
+					this.targetRenderSize.Y <= this.RenderableControl.ClientSize.Height;
 			}
 		}
 		private bool UseOffscreenBuffer
 		{
 			get { return !this.TargetSizeFitsClientArea; }
+		}
+		private Rect LocalGameWindowRect
+		{
+			get
+			{
+				return Rect.Align(
+					Alignment.Center,
+					this.ClientSize.Width * 0.5f,
+					this.ClientSize.Height * 0.5f,
+					this.TargetRenderSize.X,
+					this.TargetRenderSize.Y);
+			}
 		}
 
 
@@ -121,7 +146,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		private void ResetTargetRenderSize()
 		{
-			this.TargetRenderSize = this.ClientSize;
+			this.TargetRenderSize = new Point2(
+				this.RenderableControl.ClientSize.Width,
+				this.RenderableControl.ClientSize.Height);
 		}
 		private void UpdateTargetRenderSizeUI()
 		{
@@ -139,8 +166,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			else
 				backColor = overSizedColor;
 
-			this.textBoxRenderWidth.Text = this.targetRenderSize.Width.ToString();
-			this.textBoxRenderHeight.Text = this.targetRenderSize.Height.ToString();
+			this.textBoxRenderWidth.Text = this.targetRenderSize.X.ToString();
+			this.textBoxRenderHeight.Text = this.targetRenderSize.Y.ToString();
 			this.textBoxRenderWidth.BackColor = backColor;
 			this.textBoxRenderHeight.BackColor = backColor;
 
@@ -151,14 +178,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			int width;
 			int height;
 			if (!int.TryParse(this.textBoxRenderWidth.Text, out width))
-				width = this.TargetRenderSize.Width;
+				width = this.TargetRenderSize.X;
 			if (!int.TryParse(this.textBoxRenderHeight.Text, out height))
-				height = this.TargetRenderSize.Height;
+				height = this.TargetRenderSize.Y;
 
 			width = MathF.Clamp(width, 1, 7680);
 			height = MathF.Clamp(height, 1, 4320);
 
-			this.TargetRenderSize = new Size(width, height);
+			this.TargetRenderSize = new Point2(width, height);
 		}
 
 		private void CleanupRenderTarget()
@@ -192,7 +219,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				};
 			}
 
-			Point2 outputSize = new Point2(this.TargetRenderSize.Width, this.TargetRenderSize.Height);
+			Point2 outputSize = new Point2(this.TargetRenderSize.X, this.TargetRenderSize.Y);
 			if (this.outputTarget.Size != outputSize)
 			{
 				this.outputTexture.Size = outputSize;
@@ -243,14 +270,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			//
 			// base.OnRenderState();
 
-			Point2 clientSize = new Point2(this.ClientSize.Width, this.ClientSize.Height);
-			Point2 targetSize = new Point2(this.TargetRenderSize.Width, this.TargetRenderSize.Height);
-			Rect windowRect = Rect.Align(
-				Alignment.Center,
-				clientSize.X * 0.5f,
-				clientSize.Y * 0.5f,
-				targetSize.X,
-				targetSize.Y);
+			Point2 clientSize = new Point2(this.RenderableControl.ClientSize.Width, this.RenderableControl.ClientSize.Height);
+			Point2 targetSize = this.TargetRenderSize;
+			Rect windowRect = this.LocalGameWindowRect;
 			
 			Vector2 imageSize;
 			Rect viewportRect;
@@ -310,6 +332,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected override void OnResize()
 		{
 			base.OnResize();
+
 			if (this.isNativeRenderSize)
 				this.ResetTargetRenderSize();
 		}

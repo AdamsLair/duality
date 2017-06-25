@@ -845,9 +845,8 @@ namespace Duality.Editor.Plugins.CamView
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
 
 			activeCamView = this;
-
-			Control mainControl = (this.graphicsControl != null ? this.graphicsControl.Control : null) ?? this;
-			DualityApp.WindowSize = new Point2(mainControl.ClientSize.Width, mainControl.ClientSize.Height);
+			
+			DualityApp.WindowSize = this.activeState.RenderedImageSize;
 			DualityApp.Mouse.Source = this;
 			DualityApp.Keyboard.Source = this;
 
@@ -1139,11 +1138,6 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void graphicsControl_MouseEnter(object sender, EventArgs e)
 		{
-			if (this.activeState.EngineUserInput)
-			{
-				this.inputMouseInView = true;
-			}
-
 			this.InstallFocusHook();
 
 			if (this.activeLayers.Any(l => l.MouseTracking))
@@ -1181,10 +1175,19 @@ namespace Duality.Editor.Plugins.CamView
 
 			if (this.activeState.EngineUserInput)
 			{
-				int lastX = this.inputMouseX;
-				int lastY = this.inputMouseY;
-				this.inputMouseX = e.X;
-				this.inputMouseY = e.Y;
+				Vector2 gameSize = this.activeState.RenderedImageSize;
+				Rect inputArea = this.activeState.RenderedViewport;
+				Logs.Editor.Write("Mouse Pos: {0:F}, {1:F}",
+					(e.X - inputArea.X) / inputArea.W,
+					(e.Y - inputArea.Y) / inputArea.H);
+
+				this.inputMouseX = MathF.RoundToInt(gameSize.X * (e.X - inputArea.X) / inputArea.W);
+				this.inputMouseY = MathF.RoundToInt(gameSize.Y * (e.Y - inputArea.Y) / inputArea.H);
+				this.inputMouseInView = 
+					this.inputMouseX >= 0.0f &&
+					this.inputMouseX <= gameSize.X &&
+					this.inputMouseY >= 0.0f &&
+					this.inputMouseY <= gameSize.Y;
 			}
 
 			if (this.activeLayers.Any(l => l.MouseTracking))
@@ -1276,8 +1279,7 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			if (activeCamView == this)
 			{
-				Control mainControl = (this.graphicsControl != null ? this.graphicsControl.Control : null) ?? this;
-				DualityApp.WindowSize = new Point2(mainControl.ClientSize.Width, mainControl.ClientSize.Height);
+				DualityApp.WindowSize = this.activeState.RenderedImageSize;
 			}
 			this.RenderableControl.Invalidate();
 		}
@@ -1608,8 +1610,19 @@ namespace Duality.Editor.Plugins.CamView
 			get { return new Point2(this.inputMouseX, this.inputMouseY); }
 			set
 			{
-				if (this.activeState.EngineUserInput && this.RenderableControl.Focused && this.inputMouseCapture)
-					Cursor.Position = this.RenderableControl.PointToScreen(new Point(value.X, value.Y));
+				if (!this.activeState.EngineUserInput) return;
+				if (!this.RenderableControl.Focused) return;
+				if (!this.inputMouseCapture) return;
+				
+				Vector2 gameSize = this.activeState.RenderedImageSize;
+				Rect inputArea = this.activeState.RenderedViewport;
+
+				Point targetLocalPoint = new Point(
+					MathF.RoundToInt(inputArea.X + inputArea.W * value.X / gameSize.X),
+					MathF.RoundToInt(inputArea.Y + inputArea.H * value.Y / gameSize.Y));
+				Point targetScreenPoint = this.RenderableControl.PointToScreen(targetLocalPoint);
+
+				Cursor.Position = targetScreenPoint;
 			}
 		}
 		float IMouseInputSource.Wheel

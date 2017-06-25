@@ -89,6 +89,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get { return this.engineUserInput; }
 			protected set { this.engineUserInput = value; }
 		}
+		public virtual Rect RenderedViewport
+		{
+			get { return new Rect(this.RenderedImageSize); }
+		}
+		public virtual Point2 RenderedImageSize
+		{
+			get
+			{
+				return new Point2(
+					this.RenderableControl.ClientSize.Width, 
+					this.RenderableControl.ClientSize.Height);
+			}
+		}
 		public bool CameraActionAllowed
 		{
 			get { return this.camActionAllowed; }
@@ -228,7 +241,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			if (Scene.Current != null) this.Scene_Changed(this, EventArgs.Empty);
 			
-			// Initial Camera update
 			this.OnCurrentCameraChanged(new CamView.CameraChangedEventArgs(null, this.CameraComponent));
 			this.UpdateFormattedTextRenderers();
 
@@ -964,6 +976,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		private void RenderableControl_Resize(object sender, EventArgs e)
 		{
+			if (this.ClientSize == Size.Empty) return;
+
 			this.UpdateFormattedTextRenderers();
 			this.OnResize();
 		}

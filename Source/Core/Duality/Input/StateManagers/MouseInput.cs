@@ -86,7 +86,7 @@ namespace Duality.Input
 			get { return this.currentState.IsAvailable; }
 		}
 		/// <summary>
-		/// [GET] The current window-local cursor position in native window coordinates.
+		/// [GET / SET] The current window-local cursor position in native window coordinates.
 		/// </summary>
 		public Point2 WindowPos
 		{
