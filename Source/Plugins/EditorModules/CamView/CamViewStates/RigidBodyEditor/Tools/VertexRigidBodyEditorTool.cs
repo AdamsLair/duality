@@ -201,78 +201,79 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		public override void OnWorldOverlayDrawcalls(Canvas canvas)
 		{
+			RigidBody body = this.Environment.ActiveBody;
+			if (body == null) return;
+
+			DesignTimeObjectData designTimeData = DesignTimeObjectData.Get(body.GameObj);
+			if (designTimeData.IsHidden) return;
+
 			float knobSize = 7.0f;
 			float worldKnobSize = knobSize / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0.0f));
 
 			// Determine the color in which we'll draw the interaction markers
 			ColorRgba markerColor = this.Environment.FgColor;
-
 			canvas.State.ZOffset = -1.0f;
 
+			// Prepare the transform matrix for this object, so 
+			// we can move the RigidBody vertices into world space quickly
+			Transform transform = body.GameObj.Transform;
+			Vector2 bodyPos = transform.Pos.Xy;
+			Vector2 bodyDotX;
+			Vector2 bodyDotY;
+			MathF.GetTransformDotVec(transform.Angle, transform.Scale, out bodyDotX, out bodyDotY);
+
 			// Draw an interaction indicator for every vertex of the active bodies shapes
-			RigidBody body = this.Environment.ActiveBody;
-			if (body != null)
+			Vector3 mousePosWorld = this.Environment.ActiveWorldPos;
+			foreach (ShapeInfo shape in body.Shapes)
 			{
-				// Prepare the transform matrix for this object, so 
-				// we can move the RigidBody vertices into world space quickly
-				Transform transform = body.GameObj.Transform;
-				Vector2 bodyPos = transform.Pos.Xy;
-				Vector2 bodyDotX;
-				Vector2 bodyDotY;
-				MathF.GetTransformDotVec(transform.Angle, transform.Scale, out bodyDotX, out bodyDotY);
-
-				Vector3 mousePosWorld = this.Environment.ActiveWorldPos;
-				foreach (ShapeInfo shape in body.Shapes)
+				if (shape is CircleShapeInfo)
 				{
-					if (shape is CircleShapeInfo)
+					CircleShapeInfo circle = shape as CircleShapeInfo;
+
+					Vector2 circleWorldPos = circle.Position;
+					MathF.TransformDotVec(ref circleWorldPos, ref bodyDotX, ref bodyDotY);
+					circleWorldPos = bodyPos + circleWorldPos;
+
+					// Draw the circles center as a vertex
+					if (this.activeVertex == 0 && this.activeShape == shape)
+						canvas.State.ColorTint = markerColor;
+					else
+						canvas.State.ColorTint = markerColor.WithAlpha(0.75f);
+
+					canvas.FillRect(
+						circleWorldPos.X - worldKnobSize * 0.5f, 
+						circleWorldPos.Y - worldKnobSize * 0.5f, 
+						worldKnobSize,
+						worldKnobSize);
+				}
+				else
+				{
+					Vector2[] vertices = this.GetVertices(shape);
+					if (vertices == null) continue;
+
+					Vector2[] worldVertices = new Vector2[vertices.Length];
+
+					// Transform the shapes vertices into world space
+					for (int index = 0; index < vertices.Length; index++)
 					{
-						CircleShapeInfo circle = shape as CircleShapeInfo;
+						Vector2 vertex = vertices[index];
+						MathF.TransformDotVec(ref vertex, ref bodyDotX, ref bodyDotY);
+						worldVertices[index] = bodyPos + vertex;
+					}
 
-						Vector2 circleWorldPos = circle.Position;
-						MathF.TransformDotVec(ref circleWorldPos, ref bodyDotX, ref bodyDotY);
-						circleWorldPos = bodyPos + circleWorldPos;
-
-						// Draw the circles center as a vertex
-						if (this.activeVertex == 0 && this.activeShape == shape)
+					// Draw the vertices
+					for (int i = 0; i < worldVertices.Length; i++)
+					{
+						if (this.activeVertex == i && this.activeShape == shape)
 							canvas.State.ColorTint = markerColor;
 						else
 							canvas.State.ColorTint = markerColor.WithAlpha(0.75f);
 
 						canvas.FillRect(
-							circleWorldPos.X - worldKnobSize * 0.5f, 
-							circleWorldPos.Y - worldKnobSize * 0.5f, 
+							worldVertices[i].X - worldKnobSize * 0.5f, 
+							worldVertices[i].Y - worldKnobSize * 0.5f, 
 							worldKnobSize,
 							worldKnobSize);
-					}
-					else
-					{
-						Vector2[] vertices = this.GetVertices(shape);
-						if (vertices == null) continue;
-
-						Vector2[] worldVertices = new Vector2[vertices.Length];
-
-						// Transform the shapes vertices into world space
-						for (int index = 0; index < vertices.Length; index++)
-						{
-							Vector2 vertex = vertices[index];
-							MathF.TransformDotVec(ref vertex, ref bodyDotX, ref bodyDotY);
-							worldVertices[index] = bodyPos + vertex;
-						}
-
-						// Draw the vertices
-						for (int i = 0; i < worldVertices.Length; i++)
-						{
-							if (this.activeVertex == i && this.activeShape == shape)
-								canvas.State.ColorTint = markerColor;
-							else
-								canvas.State.ColorTint = markerColor.WithAlpha(0.75f);
-
-							canvas.FillRect(
-								worldVertices[i].X - worldKnobSize * 0.5f, 
-								worldVertices[i].Y - worldKnobSize * 0.5f, 
-								worldKnobSize,
-								worldKnobSize);
-						}
 					}
 				}
 			}
@@ -314,6 +315,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			
 			RigidBody body = this.Environment.ActiveBody;
 			if (body == null) return;
+
+			DesignTimeObjectData designTimeData = DesignTimeObjectData.Get(body.GameObj);
+			if (designTimeData.IsHidden) return;
 
 			// Prepare the transform matrix for this object, so 
 			// we can move the RigidBody vertices into world space quickly
