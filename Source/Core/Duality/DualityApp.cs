@@ -550,11 +550,15 @@ namespace Duality
 		/// <summary>
 		/// Performs a single render cycle.
 		/// </summary>
+		/// <param name="target">
+		/// The <see cref="RenderTarget"/> which will be used for all rendering output. 
+		/// "null" means rendering directly to the output buffer of the game window / screen.
+		/// </param>
 		/// <param name="viewportRect">The viewport to render to, in pixel coordinates.</param>
 		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
-		public static void Render(Rect viewportRect, Vector2 imageSize)
+		public static void Render(ContentRef<RenderTarget> target, Rect viewportRect, Vector2 imageSize)
 		{
-			Scene.Current.Render(viewportRect, imageSize);
+			Scene.Current.Render(target, viewportRect, imageSize);
 		}
 
 		/// <summary>

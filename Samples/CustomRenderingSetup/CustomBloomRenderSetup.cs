@@ -92,6 +92,7 @@ namespace CustomRenderingSetup
 		}
 		private void ProcessBloomStep(RenderStep step, DrawDevice drawDevice)
 		{
+			ContentRef<RenderTarget> outputTarget = drawDevice.Target;
 			Vector2 imageSize = drawDevice.TargetSize;
 			Rect viewportRect = drawDevice.ViewportRect;
 
@@ -128,7 +129,7 @@ namespace CustomRenderingSetup
 				this.Blit(drawDevice, material, this.targetPingPongA[i]);
 			}
 
-			// Combine all targets into the final image
+			// Combine all targets into the final image using the draw device's original target
 			{
 				BatchInfo material = new BatchInfo(this.techCombineFinal, ColorRgba.White);
 				material.MainTexture = step.Input.MainTexture;
@@ -136,7 +137,7 @@ namespace CustomRenderingSetup
 				material.SetTexture("blurHalfTex", this.targetPingPongA[1].Targets[0]);
 				material.SetTexture("blurQuarterTex", this.targetPingPongA[2].Targets[0]);
 				material.SetTexture("blurEighthTex", this.targetPingPongA[3].Targets[0]);
-				this.Blit(drawDevice, material, viewportRect);
+				this.Blit(drawDevice, material, outputTarget.Res, imageSize, viewportRect);
 			}
 		}
 		
@@ -150,11 +151,11 @@ namespace CustomRenderingSetup
 			device.AddFullscreenQuad(source, TargetResize.Stretch);
 			device.Render();
 		}
-		private void Blit(DrawDevice device, BatchInfo source, Rect screenRect)
+		private void Blit(DrawDevice device, BatchInfo source, RenderTarget target, Vector2 targetSize, Rect viewportRect)
 		{
-			device.Target = null;
-			device.TargetSize = screenRect.Size;
-			device.ViewportRect = screenRect;
+			device.Target = target;
+			device.TargetSize = targetSize;
+			device.ViewportRect = viewportRect;
 
 			device.PrepareForDrawcalls();
 			device.AddFullscreenQuad(source, TargetResize.Stretch);

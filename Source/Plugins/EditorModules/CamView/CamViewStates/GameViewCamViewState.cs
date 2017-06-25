@@ -180,7 +180,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			if (isRenderableScene)
 			{
-				DualityApp.Render(viewportRect, imageSize);
+				DualityApp.Render(null, viewportRect, imageSize);
 			}
 		}
 		protected override void OnResize()

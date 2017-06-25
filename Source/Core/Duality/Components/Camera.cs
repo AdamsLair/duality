@@ -155,12 +155,9 @@ namespace Duality.Components
 			// are set up properly.
 			this.UpdateDeviceConfig();
 			
-			// Determine the local viewport and image size, either derived from screen (parameters) or the render target
-			Vector2 localImageSize = this.renderTarget.IsAvailable ? this.renderTarget.Res.Size : imageSize;
-			Rect localViewport = this.renderTarget.IsAvailable ? new Rect(this.renderTarget.Res.Size) : viewportRect;
-
-			// When rendering to screen, adjust the local render size and viewport 
-			// according to the camera target rect
+			// Adjust the local render size and viewport according to the camera target rect
+			Vector2 localImageSize = imageSize;
+			Rect localViewport = viewportRect;
 			localViewport.Pos += localViewport.Size * this.targetRect.Pos;
 			localViewport.Size *= this.targetRect.Size;
 			localImageSize *= this.targetRect.Size;

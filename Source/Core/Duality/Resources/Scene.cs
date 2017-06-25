@@ -472,9 +472,13 @@ namespace Duality.Resources
 		/// <summary>
 		/// Renders the Scene
 		/// </summary>
+		/// <param name="target">
+		/// The <see cref="RenderTarget"/> which will be used for all rendering output. 
+		/// "null" means rendering directly to the output buffer of the game window / screen.
+		/// </param>
 		/// <param name="viewportRect">The viewport to which will be rendered.</param>
 		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
-		internal void Render(Rect viewportRect, Vector2 imageSize)
+		internal void Render(ContentRef<RenderTarget> target, Rect viewportRect, Vector2 imageSize)
 		{
 			if (!this.IsCurrent) throw new InvalidOperationException("Can't render non-current Scene!");
 			switchLock++;
@@ -485,7 +489,7 @@ namespace Duality.Resources
 				RenderSetup.Default.Res;
 
 			// Render the scene
-			setup.RenderScene(this, viewportRect, imageSize);
+			setup.RenderScene(this, target, viewportRect, imageSize);
 
 			switchLock--;
 		}

@@ -158,13 +158,17 @@ namespace Duality.Resources
 		/// all <see cref="Camera"/> objects contained within.
 		/// </summary>
 		/// <param name="scene">The <see cref="Scene"/> that should be rendered.</param>
+		/// <param name="target">
+		/// The <see cref="RenderTarget"/> which will be used for all rendering output. 
+		/// "null" means rendering directly to the output buffer of the game window / screen.
+		/// </param>
 		/// <param name="viewportRect">The viewport to render to, in pixel coordinates.</param>
 		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
-		public void RenderScene(Scene scene, Rect viewportRect, Vector2 imageSize)
+		public void RenderScene(Scene scene, ContentRef<RenderTarget> target, Rect viewportRect, Vector2 imageSize)
 		{
 			try
 			{
-				this.OnRenderScene(scene, viewportRect, imageSize);
+				this.OnRenderScene(scene, target, viewportRect, imageSize);
 			}
 			catch (Exception e)
 			{
@@ -263,7 +267,7 @@ namespace Duality.Resources
 		}
 		
 		/// <summary>
-		/// Performs the specified <see cref="RenderStep"/>. This method will perform some basic, localized configuration on
+		/// Performs the specified <see cref="RenderStep"/>. This method will do some basic, localized configuration on
 		/// the drawing device and then invoke <see cref="OnRenderSingleStep"/> for running the actual rendering operations.
 		/// </summary>
 		/// <param name="step"></param>
@@ -278,13 +282,25 @@ namespace Duality.Resources
 			VisibilityFlag oldDeviceMask = drawDevice.VisibilityMask;
 			ColorRgba oldDeviceClearColor = drawDevice.ClearColor;
 			ContentRef<RenderTarget> oldDeviceTarget = drawDevice.Target;
+			
+			Rect localViewport;
+			Vector2 localTargetSize;
+			ContentRef<RenderTarget> renderTarget;
 
-			// Determine the render target we'll use. Can be null to render to the backbuffer.
-			ContentRef<RenderTarget> renderTarget = step.Output.IsExplicitNull ? oldDeviceTarget : step.Output;
-
-			// Determine the local viewport and image size, either derived from screen (parameters) or the render target
-			Vector2 localTargetSize = renderTarget.IsAvailable ? renderTarget.Res.Size : imageSize;
-			Rect localViewport = renderTarget.IsAvailable ? new Rect(renderTarget.Res.Size) : viewportRect;
+			// If this step is using a custom render target, override image and viewport sizes
+			if (step.Output.IsAvailable)
+			{
+				renderTarget = step.Output;
+				localTargetSize = step.Output.Res.Size;
+				localViewport = new Rect(step.Output.Res.Size);
+			}
+			// Otherwise, use the provided parameter values
+			else
+			{
+				renderTarget = oldDeviceTarget;
+				localTargetSize = imageSize;
+				localViewport = viewportRect;
+			}
 
 			// Regardless of rendering targets, adjust the local render size and viewport 
 			// according to the rendering step target rect
@@ -401,16 +417,47 @@ namespace Duality.Resources
 		/// all <see cref="Camera"/> objects contained within.
 		/// </summary>
 		/// <param name="scene">The <see cref="Scene"/> that should be rendered.</param>
+		/// <param name="target">
+		/// The <see cref="RenderTarget"/> which will be used for all rendering output. 
+		/// "null" means rendering directly to the output buffer of the game window / screen.
+		/// </param>
 		/// <param name="viewportRect">The viewport to render to, in pixel coordinates.</param>
 		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
-		protected virtual void OnRenderScene(Scene scene, Rect viewportRect, Vector2 imageSize)
+		protected virtual void OnRenderScene(Scene scene, ContentRef<RenderTarget> target, Rect viewportRect, Vector2 imageSize)
 		{
-			Camera[] activeCams = scene.FindComponents<Camera>()
+			Camera[] activeSceneCameras = scene.FindComponents<Camera>()
 				.Where(c => c.Active)
 				.ToArray();
 
-			foreach (Camera c in activeCams)
-				c.Render(viewportRect, imageSize);
+			foreach (Camera camera in activeSceneCameras)
+			{
+				Vector2 cameraImageSize = imageSize;
+				Rect cameraViewport = viewportRect;
+				bool isOutputCamera = false;
+
+				// Cameras with a custom render target will use its size to override image and viewport size
+				if (camera.Target.IsAvailable)
+				{
+					cameraImageSize = camera.Target.Res.Size;
+					cameraViewport = new Rect(camera.Target.Res.Size);
+				}
+				// Cameras without a custom render target will use the provided parameters
+				else
+				{
+					camera.Target = target;
+					isOutputCamera = true;
+				}
+				
+				try
+				{
+					camera.Render(cameraViewport, cameraImageSize);
+				}
+				finally
+				{
+					if (isOutputCamera)
+						camera.Target = null;
+				}
+			}
 		}
 		/// <summary>
 		/// Called to render a scene from the perspective of a single, pre-configured drawing device.

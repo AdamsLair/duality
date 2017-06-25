@@ -279,7 +279,7 @@ namespace Duality.Backend.DefaultOpenTK
 			Rect viewportRect;
 			DualityApp.CalculateGameViewport(this.Size, out viewportRect, out imageSize);
 
-			DualityApp.Render(viewportRect, imageSize);
+			DualityApp.Render(null, viewportRect, imageSize);
 			Profile.TimeRender.BeginMeasure();
 			Profile.TimeSwapBuffers.BeginMeasure();
 			this.internalWindow.SwapBuffers();
