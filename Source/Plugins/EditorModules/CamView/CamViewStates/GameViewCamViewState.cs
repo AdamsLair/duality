@@ -60,16 +60,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.textBoxRenderWidth.AutoSize = false;
 			this.textBoxRenderWidth.Width = 35;
 			this.textBoxRenderWidth.MaxLength = 4;
+			this.textBoxRenderWidth.AcceptsOnlyNumbers = true;
+			this.textBoxRenderWidth.EditingFinished += (sender, e) => this.OnTargetRenderSizeUIEditingFinished();
 			this.textBoxRenderWidth.ProceedRequested += (sender, e) => this.textBoxRenderHeight.Focus();
-			this.textBoxRenderWidth.ValueChanged += (sender, e) => this.OnTargetRenderSizeUIValueChanged();
 
 			this.textBoxRenderHeight = new ToolStripTextBoxAdv("textBoxRenderHeight");
 			this.textBoxRenderHeight.BackColor = Color.FromArgb(196, 196, 196);
 			this.textBoxRenderHeight.AutoSize = false;
 			this.textBoxRenderHeight.Width = 35;
 			this.textBoxRenderHeight.MaxLength = 4;
+			this.textBoxRenderHeight.AcceptsOnlyNumbers = true;
+			this.textBoxRenderHeight.EditingFinished += (sender, e) => this.OnTargetRenderSizeUIEditingFinished();
 			this.textBoxRenderHeight.ProceedRequested += (sender, e) => this.textBoxRenderWidth.Focus();
-			this.textBoxRenderHeight.ValueChanged += (sender, e) => this.OnTargetRenderSizeUIValueChanged();
 
 			this.toolbarItems.Add(new ToolStripLabel("Screen Size "));
 			this.toolbarItems.Add(this.textBoxRenderWidth);
@@ -119,6 +121,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.textBoxRenderHeight.BackColor = backColor;
 
 			this.isUpdatingUI = false;
+		}
+		private void ParseAndValidateTargetRenderSize()
+		{
+			int width;
+			int height;
+			if (!int.TryParse(this.textBoxRenderWidth.Text, out width))
+				width = this.TargetRenderSize.Width;
+			if (!int.TryParse(this.textBoxRenderHeight.Text, out height))
+				height = this.TargetRenderSize.Height;
+
+			width = MathF.Clamp(width, 1, 7680);
+			height = MathF.Clamp(height, 1, 4320);
+
+			this.TargetRenderSize = new Size(width, height);
 		}
 
 		protected internal override void OnEnterState()
@@ -173,16 +189,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (this.isNativeRenderSize)
 				this.ResetTargetRenderSize();
 		}
-		private void OnTargetRenderSizeUIValueChanged()
+
+		private void OnTargetRenderSizeUIEditingFinished()
 		{
 			if (this.isUpdatingUI) return;
-
-			int width;
-			int height;
-			if (!int.TryParse(this.textBoxRenderWidth.Text, out width)) return;
-			if (!int.TryParse(this.textBoxRenderHeight.Text, out height)) return;
-
-			this.TargetRenderSize = new Size(width, height);
+			this.ParseAndValidateTargetRenderSize();
 		}
 	}
 }

@@ -11,8 +11,10 @@ namespace Duality.Editor.Controls.ToolStrip
 	{
 		private Panel container = null;
 		private TextBox textBox = null;
+		private bool acceptsOnlyNumbers = false;
 		private bool selectAllOnClick = false;
 
+		public event EventHandler EditingFinished = null;
 		public event EventHandler ProceedRequested = null;
 		public event EventHandler ValueChanged
 		{
@@ -23,7 +25,17 @@ namespace Duality.Editor.Controls.ToolStrip
 		public override string Text
 		{
 			get { return this.textBox.Text; }
-			set { this.textBox.Text = value; }
+			set
+			{
+				bool selectAllAfterChange = 
+					this.textBox.SelectionStart != 0 || 
+					this.textBox.SelectionLength > 0;
+
+				this.textBox.Text = value;
+
+				if (selectAllAfterChange)
+					this.textBox.SelectAll();
+			}
 		}
 		public override Color BackColor
 		{
@@ -48,6 +60,11 @@ namespace Duality.Editor.Controls.ToolStrip
 			get { return this.textBox.MaxLength; }
 			set { this.textBox.MaxLength = value; }
 		}
+		public bool AcceptsOnlyNumbers
+		{
+			get { return this.acceptsOnlyNumbers; }
+			set { this.acceptsOnlyNumbers = value; }
+		}
 
 		public ToolStripTextBoxAdv(string name) : base(new Panel(), name)
 		{
@@ -64,13 +81,22 @@ namespace Duality.Editor.Controls.ToolStrip
 			this.textBox.BackColor = this.BackColor;
 			this.textBox.Multiline = false;
 			this.textBox.GotFocus += this.textBox_GotFocus;
+			this.textBox.LostFocus += this.textBox_LostFocus;
 			this.textBox.MouseClick += this.textBox_MouseClick;
 			this.textBox.KeyUp += this.textBox_KeyUp;
 			this.textBox.KeyDown += this.textBox_KeyDown;
+			this.textBox.KeyPress += this.textBox_KeyPress;
 
 			this.container.Controls.Add(this.textBox);
 		}
 
+		private bool IsFilteredChar(char input)
+		{
+			if (this.acceptsOnlyNumbers && !char.IsNumber(input) && !char.IsPunctuation(input))
+				return true;
+
+			return false;
+		}
 		private bool IsProceedKey(Keys keyCode)
 		{
 			return
@@ -81,6 +107,7 @@ namespace Duality.Editor.Controls.ToolStrip
 		private bool IsKeyInputExceedingLength()
 		{
 			return 
+				this.textBox.MaxLength > 0 &&
 				this.textBox.SelectionLength == 0 &&
 				this.textBox.TextLength >= this.textBox.MaxLength;
 		}
@@ -89,6 +116,16 @@ namespace Duality.Editor.Controls.ToolStrip
 		{
 			base.OnGotFocus(e);
 			this.textBox.Focus();
+		}
+		private void OnEditingFinished()
+		{
+			if (this.EditingFinished != null)
+				this.EditingFinished(this, EventArgs.Empty);
+		}
+		private void OnProceedRequested()
+		{
+			if (this.ProceedRequested != null)
+				this.ProceedRequested(this, EventArgs.Empty);
 		}
 
 		private void textBox_MouseClick(object sender, MouseEventArgs e)
@@ -104,6 +141,10 @@ namespace Duality.Editor.Controls.ToolStrip
 			this.textBox.SelectAll();
 			this.selectAllOnClick = true;
 		}
+		private void textBox_LostFocus(object sender, EventArgs e)
+		{
+			this.OnEditingFinished();
+		}
 		private void textBox_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (this.IsProceedKey(e.KeyCode) || this.IsKeyInputExceedingLength())
@@ -111,8 +152,8 @@ namespace Duality.Editor.Controls.ToolStrip
 				e.Handled = true;
 				e.SuppressKeyPress = true;
 
-				if (this.ProceedRequested != null)
-					this.ProceedRequested(this, EventArgs.Empty);
+				this.OnEditingFinished();
+				this.OnProceedRequested();
 			}
 		}
 		private void textBox_KeyDown(object sender, KeyEventArgs e)
@@ -122,6 +163,11 @@ namespace Duality.Editor.Controls.ToolStrip
 				e.Handled = true;
 				e.SuppressKeyPress = true;
 			}
+		}
+		private void textBox_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (this.IsFilteredChar(e.KeyChar))
+				e.Handled = true;
 		}
 
 	}
