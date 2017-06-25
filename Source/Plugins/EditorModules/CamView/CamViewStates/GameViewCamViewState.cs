@@ -237,7 +237,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.outputTexture.Size = outputSize;
 				this.outputTexture.ReloadData();
 
-				this.outputTarget.Multisampling = DualityApp.UserData.AntialiasingQuality;
+				this.outputTarget.Multisampling = 
+					DualityApp.AppData.MultisampleBackBuffer ?
+					DualityApp.UserData.AntialiasingQuality : 
+					AAQuality.Off;
 				this.outputTarget.SetupTarget();
 			}
 		}
