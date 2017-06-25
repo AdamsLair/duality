@@ -26,6 +26,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private Size targetRenderSize = Size.Empty;
 		private bool isNativeRenderSize = false;
 		private bool isUpdatingUI = false;
+		private RenderTarget outputTarget = null;
+		private Texture outputTexture = null;
+		private DrawDevice blitDevice = null;
 
 
 		public override string StateName
@@ -44,6 +47,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.UpdateTargetRenderSizeUI();
 				}
 			}
+		}
+		private bool TargetSizeFitsClientArea
+		{
+			get
+			{
+				return 
+					this.targetRenderSize.Width <= this.ClientSize.Width &&
+					this.targetRenderSize.Height <= this.ClientSize.Height;
+			}
+		}
+		private bool UseOffscreenBuffer
+		{
+			get { return !this.TargetSizeFitsClientArea; }
 		}
 
 
@@ -73,7 +89,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.textBoxRenderHeight.EditingFinished += (sender, e) => this.OnTargetRenderSizeUIEditingFinished();
 			this.textBoxRenderHeight.ProceedRequested += (sender, e) => this.textBoxRenderWidth.Focus();
 
-			this.toolbarItems.Add(new ToolStripLabel("Screen Size "));
+			this.toolbarItems.Add(new ToolStripLabel("Window Size "));
 			this.toolbarItems.Add(this.textBoxRenderWidth);
 			this.toolbarItems.Add(new ToolStripLabel("x"));
 			this.toolbarItems.Add(this.textBoxRenderHeight);
@@ -111,9 +127,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			this.isUpdatingUI = true;
 
-			Color backColor = this.isNativeRenderSize ? 
-				Color.FromArgb(196, 196, 196) : 
-				Color.FromArgb(196, 224, 255);
+			Color normalColor = Color.FromArgb(196, 196, 196);
+			Color customSizeColor = Color.FromArgb(196, 224, 255);
+			Color overSizedColor = Color.FromArgb(255, 196, 196);
+
+			Color backColor;
+			if (this.isNativeRenderSize)
+				backColor = normalColor;
+			else if (this.TargetSizeFitsClientArea)
+				backColor = customSizeColor;
+			else
+				backColor = overSizedColor;
 
 			this.textBoxRenderWidth.Text = this.targetRenderSize.Width.ToString();
 			this.textBoxRenderHeight.Text = this.targetRenderSize.Height.ToString();
@@ -135,6 +159,58 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			height = MathF.Clamp(height, 1, 4320);
 
 			this.TargetRenderSize = new Size(width, height);
+		}
+
+		private void CleanupRenderTarget()
+		{
+			if (this.outputTarget != null)
+			{
+				this.outputTarget.Dispose();
+				this.outputTarget = null;
+			}
+			if (this.outputTexture != null)
+			{
+				this.outputTexture.Dispose();
+				this.outputTexture = null;
+			}
+		}
+		private void SetupOutputRenderTarget()
+		{
+			if (this.outputTarget == null)
+			{
+				this.outputTexture = new Texture(
+					1, 
+					1, 
+					TextureSizeMode.NonPowerOfTwo, 
+					TextureMagFilter.Nearest, 
+					TextureMinFilter.Linear);
+				this.outputTarget = new RenderTarget();
+				this.outputTarget.DepthBuffer = true;
+				this.outputTarget.Targets = new ContentRef<Texture>[]
+				{
+					this.outputTexture
+				};
+			}
+
+			Point2 outputSize = new Point2(this.TargetRenderSize.Width, this.TargetRenderSize.Height);
+			if (this.outputTarget.Size != outputSize)
+			{
+				this.outputTexture.Size = outputSize;
+				this.outputTexture.ReloadData();
+
+				this.outputTarget.Multisampling = DualityApp.UserData.AntialiasingQuality;
+				this.outputTarget.SetupTarget();
+			}
+		}
+		private void SetupBlitDevice()
+		{
+			if (this.blitDevice == null)
+			{
+				this.blitDevice = new DrawDevice();
+				this.blitDevice.ClearFlags = ClearFlag.Depth;
+				this.blitDevice.Perspective = PerspectiveMode.Flat;
+				this.blitDevice.RenderMode = RenderMatrix.ScreenSpace;
+			}
 		}
 
 		protected internal override void OnEnterState()
@@ -168,19 +244,67 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// base.OnRenderState();
 
 			Point2 clientSize = new Point2(this.ClientSize.Width, this.ClientSize.Height);
-			bool isRenderableScene = Scene.Current.FindComponents<Camera>().Any();
+			Point2 targetSize = new Point2(this.TargetRenderSize.Width, this.TargetRenderSize.Height);
+			Rect windowRect = Rect.Align(
+				Alignment.Center,
+				clientSize.X * 0.5f,
+				clientSize.Y * 0.5f,
+				targetSize.X,
+				targetSize.Y);
 			
 			Vector2 imageSize;
 			Rect viewportRect;
-			DualityApp.CalculateGameViewport(clientSize, out viewportRect, out imageSize);
+			DualityApp.CalculateGameViewport(targetSize, out viewportRect, out imageSize);
 
-			// In case we're not using the entire viewport area, no cameras are
-			// rendering on screen or similar, clear the entire available area first.
-			DrawDevice.RenderVoid(new Rect(clientSize));
+			// Render the game view background using a background color matching editor UI,
+			// so users can discern between an area that isn't rendered to and a rendered
+			// area of the game that happens to be black or outside the game viewport.
+			DrawDevice.RenderVoid(new Rect(clientSize), new ColorRgba(64, 64, 64));
 
-			if (isRenderableScene)
+			bool isRenderableScene = Scene.Current.FindComponents<Camera>().Any();
+			if (!isRenderableScene)
 			{
-				DualityApp.Render(null, viewportRect, imageSize);
+				// If there is nothing to render, fill the window area with emptiness
+				DrawDevice.RenderVoid(windowRect);
+			}
+			else if (this.UseOffscreenBuffer)
+			{
+				// Render the scene to an offscreen buffer of matching size first
+				this.SetupOutputRenderTarget();
+				DualityApp.Render(this.outputTarget, viewportRect, imageSize);
+
+				// Blit the offscreen buffer to the window area
+				this.SetupBlitDevice();
+				this.blitDevice.TargetSize = clientSize;
+				this.blitDevice.ViewportRect = new Rect(clientSize);
+
+				BatchInfo blitMaterial = new BatchInfo(
+					DrawTechnique.Solid, 
+					ColorRgba.White, 
+					this.outputTexture);
+				bool isSmallerThanWindow = 
+					this.outputTarget.Size.X < clientSize.X && 
+					this.outputTarget.Size.Y < clientSize.Y;
+				TargetResize blitResize = isSmallerThanWindow ? 
+					TargetResize.None : 
+					TargetResize.Fit;
+
+				this.blitDevice.PrepareForDrawcalls();
+				this.blitDevice.AddFullscreenQuad(blitMaterial, blitResize);
+				this.blitDevice.Render();
+			}
+			else
+			{
+				Rect windowViewportRect = new Rect(
+					windowRect.X + viewportRect.X, 
+					windowRect.Y + viewportRect.Y, 
+					viewportRect.W, 
+					viewportRect.H);
+
+				// Render the scene centered into the designated viewport area
+				this.CleanupRenderTarget();
+				DrawDevice.RenderVoid(windowRect);
+				DualityApp.Render(null, windowViewportRect, imageSize);
 			}
 		}
 		protected override void OnResize()

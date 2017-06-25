@@ -799,12 +799,16 @@ namespace Duality.Drawing
 
 		public static void RenderVoid(Rect viewportRect)
 		{
+			RenderVoid(viewportRect, ColorRgba.TransparentBlack);
+		}
+		public static void RenderVoid(Rect viewportRect, ColorRgba color)
+		{
 			if (DualityApp.GraphicsBackend == null) return;
 
 			RenderOptions options = new RenderOptions
 			{
 				ClearFlags = ClearFlag.All,
-				ClearColor = ColorRgba.TransparentBlack,
+				ClearColor = color,
 				ClearDepth = 1.0f,
 				Viewport = viewportRect,
 				RenderMode = RenderMatrix.ScreenSpace

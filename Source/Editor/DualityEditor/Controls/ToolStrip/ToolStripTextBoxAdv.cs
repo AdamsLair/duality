@@ -92,6 +92,7 @@ namespace Duality.Editor.Controls.ToolStrip
 
 		private bool IsFilteredChar(char input)
 		{
+			if (char.IsControl(input)) return false;
 			if (this.acceptsOnlyNumbers && !char.IsNumber(input) && !char.IsPunctuation(input))
 				return true;
 
@@ -103,13 +104,6 @@ namespace Duality.Editor.Controls.ToolStrip
 				keyCode == Keys.Return || 
 				keyCode == Keys.Enter ||
 				keyCode == Keys.Tab;
-		}
-		private bool IsKeyInputExceedingLength()
-		{
-			return 
-				this.textBox.MaxLength > 0 &&
-				this.textBox.SelectionLength == 0 &&
-				this.textBox.TextLength >= this.textBox.MaxLength;
 		}
 
 		protected override void OnGotFocus(EventArgs e)
@@ -147,7 +141,7 @@ namespace Duality.Editor.Controls.ToolStrip
 		}
 		private void textBox_KeyUp(object sender, KeyEventArgs e)
 		{
-			if (this.IsProceedKey(e.KeyCode) || this.IsKeyInputExceedingLength())
+			if (this.IsProceedKey(e.KeyCode))
 			{
 				e.Handled = true;
 				e.SuppressKeyPress = true;
@@ -158,7 +152,9 @@ namespace Duality.Editor.Controls.ToolStrip
 		}
 		private void textBox_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (this.IsProceedKey(e.KeyCode) || this.IsKeyInputExceedingLength())
+			// Avoid Windows "ding" sound by handling both KeyDown
+			// and KeyUp events for (otherwise invalid) proceed keys.
+			if (this.IsProceedKey(e.KeyCode))
 			{
 				e.Handled = true;
 				e.SuppressKeyPress = true;
