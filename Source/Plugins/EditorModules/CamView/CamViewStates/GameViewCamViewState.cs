@@ -102,8 +102,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.textBoxRenderWidth.Width = 35;
 			this.textBoxRenderWidth.MaxLength = 4;
 			this.textBoxRenderWidth.AcceptsOnlyNumbers = true;
-			this.textBoxRenderWidth.EditingFinished += (sender, e) => this.OnTargetRenderSizeUIEditingFinished();
-			this.textBoxRenderWidth.ProceedRequested += (sender, e) => this.textBoxRenderHeight.Focus();
+			this.textBoxRenderWidth.EditingFinished += this.textBoxRenderWidth_EditingFinished;
+			this.textBoxRenderWidth.ProceedRequested += this.textBoxRenderWidth_ProceedRequested;
 
 			this.textBoxRenderHeight = new ToolStripTextBoxAdv("textBoxRenderHeight");
 			this.textBoxRenderHeight.BackColor = Color.FromArgb(196, 196, 196);
@@ -111,8 +111,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.textBoxRenderHeight.Width = 35;
 			this.textBoxRenderHeight.MaxLength = 4;
 			this.textBoxRenderHeight.AcceptsOnlyNumbers = true;
-			this.textBoxRenderHeight.EditingFinished += (sender, e) => this.OnTargetRenderSizeUIEditingFinished();
-			this.textBoxRenderHeight.ProceedRequested += (sender, e) => this.textBoxRenderWidth.Focus();
+			this.textBoxRenderHeight.EditingFinished += this.textBoxRenderHeight_EditingFinished;
+			this.textBoxRenderHeight.ProceedRequested += this.textBoxRenderHeight_ProceedRequested;
 
 			this.toolbarItems.Add(new ToolStripLabel("Window Size "));
 			this.toolbarItems.Add(this.textBoxRenderWidth);
@@ -138,6 +138,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.View.ToolbarCamera.Items.Remove(item);
 			}
 			this.View.ToolbarCamera.ResumeLayout();
+			
+			this.textBoxRenderWidth.EditingFinished -= this.textBoxRenderWidth_EditingFinished;
+			this.textBoxRenderWidth.ProceedRequested -= this.textBoxRenderWidth_ProceedRequested;
+			this.textBoxRenderHeight.EditingFinished -= this.textBoxRenderHeight_EditingFinished;
+			this.textBoxRenderHeight.ProceedRequested -= this.textBoxRenderHeight_ProceedRequested;
 
 			this.toolbarItems.Clear();
 			this.textBoxRenderWidth = null;
@@ -341,6 +346,23 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			if (this.isUpdatingUI) return;
 			this.ParseAndValidateTargetRenderSize();
+		}
+
+		private void textBoxRenderWidth_ProceedRequested(object sender, EventArgs e)
+		{
+			this.textBoxRenderHeight.Focus();
+		}
+		private void textBoxRenderWidth_EditingFinished(object sender, EventArgs e)
+		{
+			this.OnTargetRenderSizeUIEditingFinished();
+		}
+		private void textBoxRenderHeight_ProceedRequested(object sender, EventArgs e)
+		{
+			this.textBoxRenderWidth.Focus();
+		}
+		private void textBoxRenderHeight_EditingFinished(object sender, EventArgs e)
+		{
+			this.OnTargetRenderSizeUIEditingFinished();
 		}
 	}
 }
