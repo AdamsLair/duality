@@ -163,6 +163,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="EmbeddedResources\iconShapeSelect.png" />
+    <Content Include="EmbeddedResources\monitor.png" />
     <Content Include="EmbeddedResources\ObjectVisibility.png" />
     <Content Include="EmbeddedResources\ObjectVisibilityFiltered.png" />
     <None Include="EmbeddedResources\RenderSetup.png" />

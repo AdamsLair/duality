@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
 
+using AdamsLair.WinForms.ItemModels;
+using AdamsLair.WinForms.ItemViews;
+
 using Duality;
 using Duality.Components;
 using Duality.Resources;
 using Duality.Drawing;
 
 using Duality.Editor.Controls.ToolStrip;
+using Duality.Editor.Plugins.CamView.Properties;
 
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
@@ -23,6 +27,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private List<ToolStripItem> toolbarItems = new List<ToolStripItem>();
 		private ToolStripTextBoxAdv textBoxRenderWidth = null;
 		private ToolStripTextBoxAdv textBoxRenderHeight = null;
+		private ToolStripDropDownButton dropdownResolution = null;
+		private MenuModel resolutionMenuModel = new MenuModel();
+		private MenuStripMenuView resolutionMenuView = null;
+
 		private Point2 targetRenderSize = Point2.Zero;
 		private bool isNativeRenderSize = false;
 		private bool isUpdatingUI = false;
@@ -42,6 +50,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public override Point2 RenderedImageSize
 		{
 			get { return this.TargetRenderSize; }
+		}
+		private Point2 GameTargetSize
+		{
+			get
+			{
+				bool isUsingForcedSize = 
+					DualityApp.AppData.ForcedRenderSize.X != 0 && 
+					DualityApp.AppData.ForcedRenderSize.Y != 0;
+				return isUsingForcedSize ? 
+					DualityApp.AppData.ForcedRenderSize : 
+					DualityApp.UserData.WindowSize;
+			}
 		}
 		private Point2 TargetRenderSize
 		{
@@ -121,10 +141,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.textBoxRenderHeight.EditingFinished += this.textBoxRenderHeight_EditingFinished;
 			this.textBoxRenderHeight.ProceedRequested += this.textBoxRenderHeight_ProceedRequested;
 
+			this.dropdownResolution = new ToolStripDropDownButton(CamViewResCache.IconMonitor);
+			this.dropdownResolution.DropDownOpening += this.dropdownResolution_DropDownOpening;
+
 			this.toolbarItems.Add(new ToolStripLabel("Window Size "));
 			this.toolbarItems.Add(this.textBoxRenderWidth);
 			this.toolbarItems.Add(new ToolStripLabel("x"));
 			this.toolbarItems.Add(this.textBoxRenderHeight);
+			this.toolbarItems.Add(this.dropdownResolution);
+			
+			this.resolutionMenuView = new MenuStripMenuView(this.dropdownResolution.DropDownItems);
+			this.resolutionMenuView.Model = this.resolutionMenuModel;
 
 			this.View.ToolbarCamera.SuspendLayout();
 			for (int i = this.toolbarItems.Count - 1; i >= 0; i--)
@@ -145,15 +172,66 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.View.ToolbarCamera.Items.Remove(item);
 			}
 			this.View.ToolbarCamera.ResumeLayout();
-			
+
 			this.textBoxRenderWidth.EditingFinished -= this.textBoxRenderWidth_EditingFinished;
 			this.textBoxRenderWidth.ProceedRequested -= this.textBoxRenderWidth_ProceedRequested;
 			this.textBoxRenderHeight.EditingFinished -= this.textBoxRenderHeight_EditingFinished;
 			this.textBoxRenderHeight.ProceedRequested -= this.textBoxRenderHeight_ProceedRequested;
+			this.dropdownResolution.DropDownOpening -= this.dropdownResolution_DropDownOpening;
+			
+			this.resolutionMenuView.Model = null;
+			this.resolutionMenuView = null;
+			this.resolutionMenuModel.ClearItems();
 
 			this.toolbarItems.Clear();
 			this.textBoxRenderWidth = null;
 			this.textBoxRenderHeight = null;
+		}
+		private void InitResolutionDropDownItems()
+		{
+			// Remove old items
+			this.resolutionMenuModel.ClearItems();
+
+			// Add dynamic presets
+			MenuModelItem gameViewItem = this.resolutionMenuModel.RequestItem("GameView Size");
+			gameViewItem.ActionHandler = this.dropdownResolution_GameViewSizeClicked;
+			gameViewItem.SortValue = MenuModelItem.SortValue_Top;
+			gameViewItem.Checked = this.isNativeRenderSize;
+			MenuModelItem targetSizeItem = this.resolutionMenuModel.RequestItem("Target Size");
+			targetSizeItem.ActionHandler = this.dropdownResolution_TargetSizeClicked;
+			targetSizeItem.SortValue = MenuModelItem.SortValue_Top;
+			targetSizeItem.Checked = (this.TargetRenderSize == this.GameTargetSize);
+			this.resolutionMenuModel.AddItem(new MenuModelItem
+			{
+				Name      = "TopSeparator",
+				TypeHint  = MenuItemTypeHint.Separator,
+				SortValue = MenuModelItem.SortValue_Top + 1
+			});
+
+			// Add fixed presets
+			Point2[] fixedPresets = new Point2[]
+			{
+				new Point2(1920, 1080),
+				new Point2(1280, 1024),
+				new Point2(800, 600),
+				new Point2(320, 300)
+			};
+			for (int i = 0; i < fixedPresets.Length; i++)
+			{
+				Point2 size = fixedPresets[i];
+				string itemName = string.Format("{0} x {1}", size.X, size.Y);
+				MenuModelItem item = this.resolutionMenuModel.RequestItem(itemName);
+				item.Tag = size;
+				item.ActionHandler = this.dropdownResolution_FixedSizeClicked;
+				item.SortValue = MenuModelItem.SortValue_UnderTop + i;
+				item.Checked = (this.TargetRenderSize == size);
+			}
+			this.resolutionMenuModel.AddItem(new MenuModelItem
+			{
+				Name      = "UnderTopSeparator",
+				TypeHint  = MenuItemTypeHint.Separator,
+				SortValue = MenuModelItem.SortValue_UnderTop + fixedPresets.Length + 1
+			});
 		}
 
 		private void ResetTargetRenderSize()
@@ -366,6 +444,24 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			if (this.isUpdatingUI) return;
 			this.ParseAndValidateTargetRenderSize();
+		}
+		private void dropdownResolution_DropDownOpening(object sender, EventArgs e)
+		{
+			this.InitResolutionDropDownItems();
+		}
+		private void dropdownResolution_GameViewSizeClicked(object sender, EventArgs e)
+		{
+			this.ResetTargetRenderSize();
+		}
+		private void dropdownResolution_TargetSizeClicked(object sender, EventArgs e)
+		{
+			this.TargetRenderSize = this.GameTargetSize;
+		}
+		private void dropdownResolution_FixedSizeClicked(object sender, EventArgs e)
+		{
+			MenuModelItem item = sender as MenuModelItem;
+			Point2 size = (Point2)item.Tag;
+			this.TargetRenderSize = size;
 		}
 	}
 }
