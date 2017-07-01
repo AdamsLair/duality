@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
@@ -24,6 +26,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// </summary>
 	public class GameViewCamViewState : CamViewState
 	{
+		private enum SpecialRenderSize
+		{
+			Fixed,
+			CamView,
+			GameTarget
+		}
+
 		private List<ToolStripItem> toolbarItems = new List<ToolStripItem>();
 		private ToolStripTextBoxAdv textBoxRenderWidth = null;
 		private ToolStripTextBoxAdv textBoxRenderHeight = null;
@@ -32,7 +41,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private MenuStripMenuView resolutionMenuView = null;
 
 		private Point2 targetRenderSize = Point2.Zero;
-		private bool isNativeRenderSize = false;
+		private SpecialRenderSize specialRenderSize = SpecialRenderSize.CamView;
 		private bool isUpdatingUI = false;
 		private RenderTarget outputTarget = null;
 		private Texture outputTexture = null;
@@ -70,15 +79,22 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				if (this.targetRenderSize != value)
 				{
-					Point2 nativeSize = new Point2(
-						this.RenderableControl.ClientSize.Width, 
-						this.RenderableControl.ClientSize.Height);
-
-					this.isNativeRenderSize = (nativeSize == value);
 					this.targetRenderSize = value;
 					this.UpdateTargetRenderSizeUI();
 					this.Invalidate();
 				}
+			}
+		}
+		private SpecialRenderSize TargetRenderSizeMode
+		{
+			get { return this.specialRenderSize; }
+			set
+			{
+				this.specialRenderSize = value;
+				if (this.specialRenderSize == SpecialRenderSize.CamView)
+					this.ResetTargetRenderSize();
+				else if (this.specialRenderSize == SpecialRenderSize.GameTarget)
+					this.TargetRenderSize = this.GameTargetSize;
 			}
 		}
 		private bool TargetSizeFitsClientArea
@@ -196,11 +212,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			MenuModelItem gameViewItem = this.resolutionMenuModel.RequestItem("GameView Size");
 			gameViewItem.ActionHandler = this.dropdownResolution_GameViewSizeClicked;
 			gameViewItem.SortValue = MenuModelItem.SortValue_Top;
-			gameViewItem.Checked = this.isNativeRenderSize;
+			gameViewItem.Checked = (this.specialRenderSize == SpecialRenderSize.CamView);
 			MenuModelItem targetSizeItem = this.resolutionMenuModel.RequestItem("Target Size");
 			targetSizeItem.ActionHandler = this.dropdownResolution_TargetSizeClicked;
 			targetSizeItem.SortValue = MenuModelItem.SortValue_Top;
-			targetSizeItem.Checked = (this.TargetRenderSize == this.GameTargetSize);
+			targetSizeItem.Checked = (this.specialRenderSize == SpecialRenderSize.GameTarget);
 			this.resolutionMenuModel.AddItem(new MenuModelItem
 			{
 				Name      = "TopSeparator",
@@ -249,7 +265,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Color overSizedColor = Color.FromArgb(255, 196, 196);
 
 			Color backColor;
-			if (this.isNativeRenderSize)
+			if (this.specialRenderSize == SpecialRenderSize.CamView)
 				backColor = normalColor;
 			else if (this.TargetSizeFitsClientArea)
 				backColor = customSizeColor;
@@ -275,6 +291,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			width = MathF.Clamp(width, 1, 3840);
 			height = MathF.Clamp(height, 1, 2160);
 
+			this.TargetRenderSizeMode = SpecialRenderSize.Fixed;
 			this.TargetRenderSize = new Point2(width, height);
 		}
 
@@ -423,7 +440,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			base.OnResize();
 
-			if (this.isNativeRenderSize)
+			if (this.specialRenderSize == SpecialRenderSize.CamView)
 				this.ResetTargetRenderSize();
 		}
 
@@ -451,16 +468,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		private void dropdownResolution_GameViewSizeClicked(object sender, EventArgs e)
 		{
-			this.ResetTargetRenderSize();
+			this.TargetRenderSizeMode = SpecialRenderSize.CamView;
 		}
 		private void dropdownResolution_TargetSizeClicked(object sender, EventArgs e)
 		{
-			this.TargetRenderSize = this.GameTargetSize;
+			this.TargetRenderSizeMode = SpecialRenderSize.GameTarget;
 		}
 		private void dropdownResolution_FixedSizeClicked(object sender, EventArgs e)
 		{
 			MenuModelItem item = sender as MenuModelItem;
 			Point2 size = (Point2)item.Tag;
+			this.TargetRenderSizeMode = SpecialRenderSize.Fixed;
 			this.TargetRenderSize = size;
 		}
 	}
