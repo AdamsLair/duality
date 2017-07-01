@@ -64,8 +64,6 @@ namespace Duality
 			this.name = name ?? string.Empty;
 			this.id = id ?? string.Empty;
 			this.customInfo = customInfo;
-			this.output.AddRange(output);
-			this.syncOutput = this.output.ToArray();
 		}
 
 		/// <summary>
