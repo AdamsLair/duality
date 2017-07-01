@@ -41,7 +41,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private MenuStripMenuView resolutionMenuView = null;
 
 		private Point2 targetRenderSize = Point2.Zero;
-		private SpecialRenderSize specialRenderSize = SpecialRenderSize.CamView;
+		private SpecialRenderSize targetRenderSizeMode = SpecialRenderSize.CamView;
 		private bool isUpdatingUI = false;
 		private RenderTarget outputTarget = null;
 		private Texture outputTexture = null;
@@ -72,6 +72,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					DualityApp.UserData.WindowSize;
 			}
 		}
+		private Point2 CamViewTargetSize
+		{
+			get
+			{
+				return new Point2(
+					this.RenderableControl.ClientSize.Width,
+					this.RenderableControl.ClientSize.Height);
+			}
+		}
 		private Point2 TargetRenderSize
 		{
 			get { return this.targetRenderSize; }
@@ -87,14 +96,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		private SpecialRenderSize TargetRenderSizeMode
 		{
-			get { return this.specialRenderSize; }
+			get { return this.targetRenderSizeMode; }
 			set
 			{
-				this.specialRenderSize = value;
-				if (this.specialRenderSize == SpecialRenderSize.CamView)
-					this.ResetTargetRenderSize();
-				else if (this.specialRenderSize == SpecialRenderSize.GameTarget)
-					this.TargetRenderSize = this.GameTargetSize;
+				this.targetRenderSizeMode = value;
+				this.ApplyTargetRenderSizeMode();
 			}
 		}
 		private bool TargetSizeFitsClientArea
@@ -212,11 +218,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			MenuModelItem gameViewItem = this.resolutionMenuModel.RequestItem("GameView Size");
 			gameViewItem.ActionHandler = this.dropdownResolution_GameViewSizeClicked;
 			gameViewItem.SortValue = MenuModelItem.SortValue_Top;
-			gameViewItem.Checked = (this.specialRenderSize == SpecialRenderSize.CamView);
+			gameViewItem.Checked = (this.targetRenderSizeMode == SpecialRenderSize.CamView);
 			MenuModelItem targetSizeItem = this.resolutionMenuModel.RequestItem("Target Size");
 			targetSizeItem.ActionHandler = this.dropdownResolution_TargetSizeClicked;
 			targetSizeItem.SortValue = MenuModelItem.SortValue_Top;
-			targetSizeItem.Checked = (this.specialRenderSize == SpecialRenderSize.GameTarget);
+			targetSizeItem.Checked = (this.targetRenderSizeMode == SpecialRenderSize.GameTarget);
 			this.resolutionMenuModel.AddItem(new MenuModelItem
 			{
 				Name      = "TopSeparator",
@@ -250,11 +256,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			});
 		}
 
-		private void ResetTargetRenderSize()
+		private void ApplyTargetRenderSizeMode()
 		{
-			this.TargetRenderSize = new Point2(
-				this.RenderableControl.ClientSize.Width,
-				this.RenderableControl.ClientSize.Height);
+			if (this.targetRenderSizeMode == SpecialRenderSize.CamView)
+				this.TargetRenderSize = this.CamViewTargetSize;
+			else if (this.targetRenderSizeMode == SpecialRenderSize.GameTarget)
+				this.TargetRenderSize = this.GameTargetSize;
 		}
 		private void UpdateTargetRenderSizeUI()
 		{
@@ -265,7 +272,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Color overSizedColor = Color.FromArgb(255, 196, 196);
 
 			Color backColor;
-			if (this.specialRenderSize == SpecialRenderSize.CamView)
+			if (this.targetRenderSizeMode == SpecialRenderSize.CamView)
 				backColor = normalColor;
 			else if (this.TargetSizeFitsClientArea)
 				backColor = customSizeColor;
@@ -349,6 +356,43 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.blitDevice.RenderMode = RenderMatrix.ScreenSpace;
 			}
 		}
+		
+		protected internal override void SaveUserData(XElement node)
+		{
+			base.SaveUserData(node);
+			if (this.targetRenderSizeMode == SpecialRenderSize.Fixed)
+			{
+				XElement renderSizeElement = new XElement("RenderSize");
+				renderSizeElement.SetElementValue("X", this.targetRenderSize.X);
+				renderSizeElement.SetElementValue("Y", this.targetRenderSize.Y);
+				node.Add(renderSizeElement);
+			}
+			else
+			{
+				node.Add(new XElement(
+					"SpecialRenderSize", 
+					this.targetRenderSizeMode));
+			}
+		}
+		protected internal override void LoadUserData(XElement node)
+		{
+			base.LoadUserData(node);
+
+			XElement renderSizeElement = node.Element("RenderSize");
+
+			SpecialRenderSize specialSize = SpecialRenderSize.CamView;
+			if (node.TryGetElementValue("SpecialRenderSize", ref specialSize) && specialSize != SpecialRenderSize.Fixed)
+			{
+				this.targetRenderSizeMode = specialSize;
+			}
+			else if (renderSizeElement != null)
+			{
+				this.targetRenderSizeMode = SpecialRenderSize.Fixed;
+				this.targetRenderSize = new Point2(
+					renderSizeElement.GetElementValue("X", this.targetRenderSize.X),
+					renderSizeElement.GetElementValue("Y", this.targetRenderSize.Y));
+			}
+		}
 
 		protected internal override void OnEnterState()
 		{
@@ -359,7 +403,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.CameraObj.Active = false;
 
 			this.AddToolbarItems();
-			this.ResetTargetRenderSize();
+			this.ApplyTargetRenderSizeMode();
 		}
 		protected internal override void OnLeaveState()
 		{
@@ -393,13 +437,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// area of the game that happens to be black or outside the game viewport.
 			DrawDevice.RenderVoid(new Rect(clientSize), new ColorRgba(64, 64, 64));
 
-			bool isRenderableScene = Scene.Current.FindComponents<Camera>().Any();
-			if (!isRenderableScene)
-			{
-				// If there is nothing to render, fill the window area with emptiness
-				DrawDevice.RenderVoid(windowRect);
-			}
-			else if (this.UseOffscreenBuffer)
+			if (this.UseOffscreenBuffer)
 			{
 				// Render the scene to an offscreen buffer of matching size first
 				this.SetupOutputRenderTarget();
@@ -440,8 +478,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			base.OnResize();
 
-			if (this.specialRenderSize == SpecialRenderSize.CamView)
-				this.ResetTargetRenderSize();
+			// Update target size when fitting to cam view size
+			if (this.targetRenderSizeMode == SpecialRenderSize.CamView)
+				this.TargetRenderSize = this.CamViewTargetSize;
+			// Otherwise update the UI, because whether or not we're rendering at superresolution may have changed.
+			else
+				this.UpdateTargetRenderSizeUI();
 		}
 
 		private void textBoxRenderWidth_ProceedRequested(object sender, EventArgs e)
