@@ -42,6 +42,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		private Point2 targetRenderSize = Point2.Zero;
 		private SpecialRenderSize targetRenderSizeMode = SpecialRenderSize.CamView;
+		private List<Point2> recentTargetRenderSizes = new List<Point2>();
 		private bool isUpdatingUI = false;
 		private RenderTarget outputTarget = null;
 		private Texture outputTexture = null;
@@ -254,6 +255,28 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				TypeHint  = MenuItemTypeHint.Separator,
 				SortValue = MenuModelItem.SortValue_UnderTop + fixedPresets.Length + 1
 			});
+
+			// Add recently used custom fixed resolutions
+			int addedItemCount = 0;
+			for (int i = 0; i < this.recentTargetRenderSizes.Count; i++)
+			{
+				Point2 size = this.recentTargetRenderSizes[i];
+
+				// Skip those that are already part of the fixed presets
+				if (Array.IndexOf(fixedPresets, size) != -1)
+					continue;
+
+				string itemName = string.Format("{0} x {1}", size.X, size.Y);
+				MenuModelItem item = this.resolutionMenuModel.RequestItem(itemName);
+				item.Tag = size;
+				item.ActionHandler = this.dropdownResolution_FixedSizeClicked;
+				item.SortValue = MenuModelItem.SortValue_Main + i;
+				item.Checked = (this.TargetRenderSize == size);
+
+				// Add a maximum of three custom resolutions
+				addedItemCount++;
+				if (addedItemCount >= 3) break;
+			}
 		}
 
 		private void ApplyTargetRenderSizeMode()
@@ -300,6 +323,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.TargetRenderSizeMode = SpecialRenderSize.Fixed;
 			this.TargetRenderSize = new Point2(width, height);
+		}
+		private void SampleRecentTargetRenderSize()
+		{
+			if (this.targetRenderSizeMode != SpecialRenderSize.Fixed)
+				return;
+
+			this.recentTargetRenderSizes.Remove(this.targetRenderSize);
+			this.recentTargetRenderSizes.Insert(0, this.targetRenderSize);
+
+			if (this.recentTargetRenderSizes.Count > 10)
+				this.recentTargetRenderSizes.RemoveRange(10, this.recentTargetRenderSizes.Count - 10);
 		}
 
 		private void CleanupRenderTarget()
@@ -373,13 +407,21 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					"SpecialRenderSize", 
 					this.targetRenderSizeMode));
 			}
+
+			XElement recentSizesElement = new XElement("RecentRenderSizes");
+			foreach (Point2 recentSize in this.recentTargetRenderSizes)
+			{
+				recentSizesElement.Add(new XElement("RenderSize", 
+					new XElement("X", recentSize.X),
+					new XElement("Y", recentSize.Y)));
+			}
+			node.Add(recentSizesElement);
 		}
 		protected internal override void LoadUserData(XElement node)
 		{
 			base.LoadUserData(node);
 
 			XElement renderSizeElement = node.Element("RenderSize");
-
 			SpecialRenderSize specialSize = SpecialRenderSize.CamView;
 			if (node.TryGetElementValue("SpecialRenderSize", ref specialSize) && specialSize != SpecialRenderSize.Fixed)
 			{
@@ -391,6 +433,22 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.targetRenderSize = new Point2(
 					renderSizeElement.GetElementValue("X", this.targetRenderSize.X),
 					renderSizeElement.GetElementValue("Y", this.targetRenderSize.Y));
+			}
+
+			XElement recentSizesElement = node.Element("RecentRenderSizes");
+			if (recentSizesElement != null)
+			{
+				this.recentTargetRenderSizes.Clear();
+				foreach (XElement item in recentSizesElement.Elements("RenderSize"))
+				{
+					Point2 recentSize = new Point2(
+						item.GetElementValue("X", 0),
+						item.GetElementValue("Y", 0));
+					if (recentSize.X == 0) continue;
+					if (recentSize.Y == 0) continue;
+
+					this.recentTargetRenderSizes.Insert(0, recentSize);
+				}
 			}
 		}
 
@@ -484,6 +542,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Otherwise update the UI, because whether or not we're rendering at superresolution may have changed.
 			else
 				this.UpdateTargetRenderSizeUI();
+		}
+		protected override void OnGotFocus()
+		{
+			base.OnGotFocus();
+			this.SampleRecentTargetRenderSize();
 		}
 
 		private void textBoxRenderWidth_ProceedRequested(object sender, EventArgs e)
