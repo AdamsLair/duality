@@ -26,41 +26,62 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// </summary>
 	public class GameViewCamViewState : CamViewState
 	{
+		/// <summary>
+		/// Describes rendering size preset roles that may have special behaviour.
+		/// </summary>
 		private enum SpecialRenderSize
 		{
+			/// <summary>
+			/// A fixed size is used, regardless of game settings or window sizes.
+			/// </summary>
 			Fixed,
+			/// <summary>
+			/// Matches the <see cref="CamView"/> client size.
+			/// </summary>
 			CamView,
+			/// <summary>
+			/// Matches the target size of the game, based on forced rendering size
+			/// settings and default screen resolution.
+			/// </summary>
 			GameTarget
 		}
 
-		private List<ToolStripItem> toolbarItems = new List<ToolStripItem>();
-		private ToolStripTextBoxAdv textBoxRenderWidth = null;
-		private ToolStripTextBoxAdv textBoxRenderHeight = null;
-		private ToolStripDropDownButton dropdownResolution = null;
-		private MenuModel resolutionMenuModel = new MenuModel();
-		private MenuStripMenuView resolutionMenuView = null;
 
-		private Point2 targetRenderSize = Point2.Zero;
-		private SpecialRenderSize targetRenderSizeMode = SpecialRenderSize.CamView;
-		private List<Point2> recentTargetRenderSizes = new List<Point2>();
-		private bool isUpdatingUI = false;
-		private RenderTarget outputTarget = null;
-		private Texture outputTexture = null;
-		private DrawDevice blitDevice = null;
+		private List<ToolStripItem>     toolbarItems        = new List<ToolStripItem>();
+		private ToolStripTextBoxAdv     textBoxRenderWidth  = null;
+		private ToolStripTextBoxAdv     textBoxRenderHeight = null;
+		private ToolStripDropDownButton dropdownResolution  = null;
+		private MenuModel               resolutionMenuModel = new MenuModel();
+		private MenuStripMenuView       resolutionMenuView  = null;
+
+		private Point2            targetRenderSize        = Point2.Zero;
+		private SpecialRenderSize targetRenderSizeMode    = SpecialRenderSize.CamView;
+		private List<Point2>      recentTargetRenderSizes = new List<Point2>();
+		private bool              isUpdatingUI            = false;
+		private RenderTarget      outputTarget            = null;
+		private Texture           outputTexture           = null;
+		private DrawDevice        blitDevice              = null;
 
 
+		/// <inheritdoc />
 		public override string StateName
 		{
 			get { return Properties.CamViewRes.CamViewState_GameView_Name; }
 		}
+		/// <inheritdoc />
 		public override Rect RenderedViewport
 		{
 			get { return this.LocalGameWindowRect; }
 		}
+		/// <inheritdoc />
 		public override Point2 RenderedImageSize
 		{
 			get { return this.TargetRenderSize; }
 		}
+		/// <summary>
+		/// [GET] The target rendering size that is preferred by the game.
+		/// Depends on default window size and forced resolution settings.
+		/// </summary>
 		private Point2 GameTargetSize
 		{
 			get
@@ -73,6 +94,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					DualityApp.UserData.WindowSize;
 			}
 		}
+		/// <summary>
+		/// [GET] The target rendering size that is preferred by the <see cref="CamView"/>
+		/// client area.
+		/// </summary>
 		private Point2 CamViewTargetSize
 		{
 			get
@@ -82,6 +107,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.RenderableControl.ClientSize.Height);
 			}
 		}
+		/// <summary>
+		/// [GET / SET] The rendering size that will be used for displaying the
+		/// game in this <see cref="CamViewState"/>.
+		/// </summary>
 		private Point2 TargetRenderSize
 		{
 			get { return this.targetRenderSize; }
@@ -95,6 +124,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				}
 			}
 		}
+		/// <summary>
+		/// [GET / SET] The special rendering size role that is currently active
+		/// for dynamically choosing rendering size in this <see cref="CamViewState"/>.
+		/// </summary>
 		private SpecialRenderSize TargetRenderSizeMode
 		{
 			get { return this.targetRenderSizeMode; }
@@ -104,6 +137,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.ApplyTargetRenderSizeMode();
 			}
 		}
+		/// <summary>
+		/// [GET] Whether the currently used <see cref="TargetRenderSize"/> fits
+		/// completely inside the available client area without having to downscale.
+		/// </summary>
 		private bool TargetSizeFitsClientArea
 		{
 			get
@@ -113,10 +150,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.targetRenderSize.Y <= this.RenderableControl.ClientSize.Height;
 			}
 		}
+		/// <summary>
+		/// [GET] Whether an offscreen buffer should be used for rendering the game.
+		/// </summary>
 		private bool UseOffscreenBuffer
 		{
 			get { return !this.TargetSizeFitsClientArea; }
 		}
+		/// <summary>
+		/// [GET] The rect inside the local <see cref="CamView"/> client area that
+		/// will be occupied by the game rendering. Pixels outside this rect will
+		/// not be rendered to by the game.
+		/// </summary>
 		private Rect LocalGameWindowRect
 		{
 			get
@@ -144,6 +189,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.EngineUserInput = true;
 		}
 
+		/// <summary>
+		/// Creates the <see cref="CamView"/> main toolbar items that are only available while
+		/// the <see cref="GameViewCamViewState"/> is active.
+		/// </summary>
 		private void AddToolbarItems()
 		{
 			this.textBoxRenderWidth = new ToolStripTextBoxAdv("textBoxRenderWidth");
@@ -187,6 +236,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.UpdateTargetRenderSizeUI();
 		}
+		/// <summary>
+		/// Disposes any <see cref="CamView"/> main toolbar items that have been created
+		/// during <see cref="AddToolbarItems"/>.
+		/// </summary>
 		private void RemoveToolbarItems()
 		{
 			this.View.ToolbarCamera.SuspendLayout();
@@ -210,6 +263,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.textBoxRenderWidth = null;
 			this.textBoxRenderHeight = null;
 		}
+		/// <summary>
+		/// Initializes dropdown menu items for the rendering size preset toolbar button.
+		/// Will clean up or update previous contents when called multiple times.
+		/// </summary>
 		private void InitResolutionDropDownItems()
 		{
 			// Remove old items
@@ -279,6 +336,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 		}
 
+		/// <summary>
+		/// Applies the dynamic rendering size that is defined by the currently
+		/// used <see cref="TargetRenderSizeMode"/>. Does nothing if that mode is
+		/// <see cref="SpecialRenderSize.Fixed"/>.
+		/// </summary>
 		private void ApplyTargetRenderSizeMode()
 		{
 			if (this.targetRenderSizeMode == SpecialRenderSize.CamView)
@@ -286,6 +348,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			else if (this.targetRenderSizeMode == SpecialRenderSize.GameTarget)
 				this.TargetRenderSize = this.GameTargetSize;
 		}
+		/// <summary>
+		/// Updates the render size UI textboxes to display the current internal
+		/// rendering size value.
+		/// </summary>
 		private void UpdateTargetRenderSizeUI()
 		{
 			this.isUpdatingUI = true;
@@ -309,6 +375,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.isUpdatingUI = false;
 		}
+		/// <summary>
+		/// Parses the render size UI textbox contents, and applies the validated
+		/// and clamped values to the internal rendering size value.
+		/// </summary>
 		private void ParseAndValidateTargetRenderSize()
 		{
 			int width;
@@ -324,6 +394,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.TargetRenderSizeMode = SpecialRenderSize.Fixed;
 			this.TargetRenderSize = new Point2(width, height);
 		}
+		/// <summary>
+		/// Flags the currently applied rendering size as recently used. Shouldn't
+		/// be called on every change, because users generally do multiple changes
+		/// (modify X and Y, potentially mistype, etc.) until the final value is entered.
+		/// </summary>
 		private void SampleRecentTargetRenderSize()
 		{
 			if (this.targetRenderSizeMode != SpecialRenderSize.Fixed)
@@ -336,6 +411,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.recentTargetRenderSizes.RemoveRange(10, this.recentTargetRenderSizes.Count - 10);
 		}
 
+		/// <summary>
+		/// Disposes any potentially allocated internal offscreen rendering
+		/// target for rendering the game.
+		/// </summary>
 		private void CleanupRenderTarget()
 		{
 			if (this.outputTarget != null)
@@ -349,6 +428,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.outputTexture = null;
 			}
 		}
+		/// <summary>
+		/// Sets up an offscreen rendering target for rendering the game. If
+		/// one was already available, the existing target is updated to match
+		/// the current rendering size and settings.
+		/// </summary>
 		private void SetupOutputRenderTarget()
 		{
 			if (this.outputTarget == null)
@@ -380,6 +464,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.outputTarget.SetupTarget();
 			}
 		}
+		/// <summary>
+		/// Sets up a <see cref="DrawDevice"/> to be used for blitting an internal
+		/// offscreen rendering target to the actual window surface.
+		/// </summary>
 		private void SetupBlitDevice()
 		{
 			if (this.blitDevice == null)
@@ -391,6 +479,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 		}
 		
+		/// <inheritdoc />
 		protected internal override void SaveUserData(XElement node)
 		{
 			base.SaveUserData(node);
@@ -417,6 +506,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			node.Add(recentSizesElement);
 		}
+		/// <inheritdoc />
 		protected internal override void LoadUserData(XElement node)
 		{
 			base.LoadUserData(node);
@@ -452,6 +542,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 		}
 
+		/// <inheritdoc />
 		protected internal override void OnEnterState()
 		{
 			base.OnEnterState();
@@ -463,6 +554,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.AddToolbarItems();
 			this.ApplyTargetRenderSizeMode();
 		}
+		/// <inheritdoc />
 		protected internal override void OnLeaveState()
 		{
 			base.OnLeaveState();
@@ -473,6 +565,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.View.SetEditingToolsAvailable(true);
 			this.CameraObj.Active = true;
 		}
+		/// <inheritdoc />
 		protected override void OnRenderState()
 		{
 			// We're not calling the base implementation, because the default is to
@@ -532,6 +625,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				DualityApp.Render(null, windowViewportRect, imageSize);
 			}
 		}
+		/// <inheritdoc />
 		protected override void OnResize()
 		{
 			base.OnResize();
@@ -543,6 +637,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			else
 				this.UpdateTargetRenderSizeUI();
 		}
+		/// <inheritdoc />
 		protected override void OnGotFocus()
 		{
 			base.OnGotFocus();
