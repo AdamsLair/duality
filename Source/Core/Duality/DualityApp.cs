@@ -577,9 +577,28 @@ namespace Duality
 			renderTargetSize = windowSize;
 			windowViewport = new Rect(renderTargetSize);
 
-			if (forcedSize.X > 0 && forcedSize.Y > 0 && forcedSize != renderTargetSize)
+			bool forcedResizeActive = 
+				forcedResizeMode != TargetResize.None && 
+				forcedSize.X > 0 && forcedSize.Y > 0 && 
+				forcedSize != renderTargetSize;
+			if (forcedResizeActive)
 			{
 				Vector2 adjustedViewportSize = forcedResizeMode.Apply(forcedSize, windowViewport.Size);
+
+				// Clip viewport and target size, so they don't exceed the window size.
+				// This, strictly speaking, violates the forced rendering size, but for
+				// resize modes like Fill, there is no other way to solve this.
+				if (adjustedViewportSize.X > windowSize.X)
+				{
+					forcedSize.X = MathF.RoundToInt((float)forcedSize.X * (float)windowSize.X / (float)adjustedViewportSize.X);
+					adjustedViewportSize.X = windowSize.X;
+				}
+				if (adjustedViewportSize.Y > windowSize.Y)
+				{
+					forcedSize.Y = MathF.RoundToInt((float)forcedSize.Y * (float)windowSize.Y / (float)adjustedViewportSize.Y);
+					adjustedViewportSize.Y = windowSize.Y;
+				}
+
 				renderTargetSize = forcedSize;
 				windowViewport = Rect.Align(
 					Alignment.Center, 
