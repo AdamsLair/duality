@@ -99,6 +99,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get
 			{
 				bool isUsingForcedSize = 
+					DualityApp.AppData.ForcedRenderResizeMode != TargetResize.None &&
 					DualityApp.AppData.ForcedRenderSize.X != 0 && 
 					DualityApp.AppData.ForcedRenderSize.Y != 0;
 				return isUsingForcedSize ? 
