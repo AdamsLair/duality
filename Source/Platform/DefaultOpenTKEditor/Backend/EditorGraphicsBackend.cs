@@ -36,9 +36,9 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 		}
 		void IDualityBackend.Shutdown() { }
 
-		INativeEditorGraphicsContext IEditorGraphicsBackend.CreateContext()
+		INativeEditorGraphicsContext IEditorGraphicsBackend.CreateContext(AAQuality antialiasingQuality)
 		{
-			return new NativeEditorGraphicsContext();
+			return new NativeEditorGraphicsContext(antialiasingQuality);
 		}
 	}
 }

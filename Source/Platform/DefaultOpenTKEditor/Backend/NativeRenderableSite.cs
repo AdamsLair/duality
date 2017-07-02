@@ -16,7 +16,11 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 		private NativeEditorGraphicsContext context;
 		private GLControl control;
 
-		Control INativeRenderableSite.Control
+		public AAQuality AntialiasingQuality
+		{
+			get { return this.context.AntialiasingQuality; }
+		}
+		public Control Control
 		{
 			get { return this.control; }
 		}

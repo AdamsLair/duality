@@ -555,7 +555,12 @@ namespace Duality.Editor
 
 			try
 			{
-				mainGraphicsContext = graphicsBack.CreateContext();
+				// Currently bound to game-specific settings. Should be decoupled
+				// from them at some point, so the editor can use independent settings.
+				mainGraphicsContext = graphicsBack.CreateContext(
+					DualityApp.AppData.MultisampleBackBuffer ?
+					DualityApp.UserData.AntialiasingQuality :
+					AAQuality.Off);
 			}
 			catch (Exception e)
 			{

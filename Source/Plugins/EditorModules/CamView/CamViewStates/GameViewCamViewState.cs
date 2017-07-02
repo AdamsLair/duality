@@ -79,6 +79,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get { return this.TargetRenderSize; }
 		}
 		/// <summary>
+		/// [GET] The antialiasing quality that is preferred by the game.
+		/// </summary>
+		private AAQuality GameAntialiasingQuality
+		{
+			get
+			{
+				return DualityApp.AppData.MultisampleBackBuffer ?
+					DualityApp.UserData.AntialiasingQuality : 
+					AAQuality.Off;
+			}
+		}
+		/// <summary>
 		/// [GET] The target rendering size that is preferred by the game.
 		/// Depends on default window size and forced resolution settings.
 		/// </summary>
@@ -155,7 +167,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// </summary>
 		private bool UseOffscreenBuffer
 		{
-			get { return !this.TargetSizeFitsClientArea; }
+			get
+			{
+				return 
+					!this.TargetSizeFitsClientArea || 
+					this.RenderableSite.AntialiasingQuality != this.GameAntialiasingQuality;
+			}
 		}
 		/// <summary>
 		/// [GET] The rect inside the local <see cref="CamView"/> client area that
@@ -452,15 +469,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 
 			Point2 outputSize = new Point2(this.TargetRenderSize.X, this.TargetRenderSize.Y);
-			if (this.outputTarget.Size != outputSize)
+			if (this.outputTarget.Size != outputSize || this.outputTarget.Multisampling != this.GameAntialiasingQuality)
 			{
 				this.outputTexture.Size = outputSize;
 				this.outputTexture.ReloadData();
 
-				this.outputTarget.Multisampling = 
-					DualityApp.AppData.MultisampleBackBuffer ?
-					DualityApp.UserData.AntialiasingQuality : 
-					AAQuality.Off;
+				this.outputTarget.Multisampling = this.GameAntialiasingQuality;
 				this.outputTarget.SetupTarget();
 			}
 		}

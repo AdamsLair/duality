@@ -9,6 +9,6 @@ namespace Duality.Editor.Backend
 {
 	public interface IEditorGraphicsBackend : IDualityBackend
 	{
-		INativeEditorGraphicsContext CreateContext();
+		INativeEditorGraphicsContext CreateContext(AAQuality antialiasingQuality);
 	}
 }
