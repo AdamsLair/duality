@@ -69,8 +69,8 @@ namespace Duality.Samples.Benchmarks
 				// Scale the rendering size, clamp results
 				Vector2 scaledSize = (this.renderingSize * clampedScale);
 				return new Point2(
-					MathF.Clamp((int)scaledSize.X, 1, 4096), 
-					MathF.Clamp((int)scaledSize.Y, 1, 4096));
+					MathF.Clamp(MathF.RoundToInt(scaledSize.X), 1, 4096), 
+					MathF.Clamp(MathF.RoundToInt(scaledSize.Y), 1, 4096));
 			}
 		}
 
