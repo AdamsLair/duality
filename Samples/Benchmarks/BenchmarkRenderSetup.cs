@@ -22,7 +22,7 @@ namespace Duality.Samples.Benchmarks
 
 		[DontSerialize] private RenderTarget sceneTarget;
 		[DontSerialize] private Texture sceneTargetTex;
-		[DontSerialize] private DrawDevice blitDevice;
+		[DontSerialize] private DrawDevice drawDevice;
 		
 		
 		/// <summary>
@@ -131,19 +131,14 @@ namespace Duality.Samples.Benchmarks
 				this.sceneTarget.SetupTarget();
 			}
 		}
+
 		/// <summary>
-		/// Sets up a <see cref="DrawDevice"/> to be used for blitting an internal
-		/// offscreen rendering target to the actual output surface.
+		/// Collects drawcalls for the diagnostic benchmark overlay in screen space.
 		/// </summary>
-		private void SetupBlitDevice()
+		private void DrawDiagnosticOverlay(IDrawDevice device)
 		{
-			if (this.blitDevice == null)
-			{
-				this.blitDevice = new DrawDevice();
-				this.blitDevice.ClearFlags = ClearFlag.Depth;
-				this.blitDevice.Perspective = PerspectiveMode.Flat;
-				this.blitDevice.RenderMode = RenderMatrix.ScreenSpace;
-			}
+			Canvas canvas = new Canvas(device);
+			canvas.DrawCircle(50, 50, 10 + 5 * MathF.Sin((float)Time.GameTimer.TotalSeconds));
 		}
 
 		protected override void OnDisposing(bool manually)
@@ -160,12 +155,21 @@ namespace Duality.Samples.Benchmarks
 				this.sceneTarget, 
 				new Rect(this.sceneTarget.Size), 
 				this.renderingSize);
+			
+			// Ensure we have a drawing device for screen space operations
+			if (this.drawDevice == null)
+			{
+				this.drawDevice = new DrawDevice();
+				this.drawDevice.Perspective = PerspectiveMode.Flat;
+				this.drawDevice.RenderMode = RenderMatrix.ScreenSpace;
+			}
+
+			// Configure the drawing device to match parameters and settings
+			this.drawDevice.Target = target;
+			this.drawDevice.TargetSize = imageSize;
+			this.drawDevice.ViewportRect = viewportRect;
 
 			// Blit the results to screen
-			this.SetupBlitDevice();
-			this.blitDevice.TargetSize = imageSize;
-			this.blitDevice.ViewportRect = viewportRect;
-
 			BatchInfo blitMaterial = new BatchInfo(
 				DrawTechnique.Solid, 
 				ColorRgba.White, 
@@ -177,9 +181,16 @@ namespace Duality.Samples.Benchmarks
 				TargetResize.None : 
 				TargetResize.Fit;
 
-			this.blitDevice.PrepareForDrawcalls();
-			this.blitDevice.AddFullscreenQuad(blitMaterial, blitResize);
-			this.blitDevice.Render();
+			this.drawDevice.ClearFlags = ClearFlag.All;
+			this.drawDevice.PrepareForDrawcalls();
+			this.drawDevice.AddFullscreenQuad(blitMaterial, blitResize);
+			this.drawDevice.Render();
+
+			// Draw a screen space diagnostic overlay
+			this.drawDevice.ClearFlags = ClearFlag.Depth;
+			this.drawDevice.PrepareForDrawcalls();
+			this.DrawDiagnosticOverlay(this.drawDevice);
+			this.drawDevice.Render();
 		}
 	}
 }
