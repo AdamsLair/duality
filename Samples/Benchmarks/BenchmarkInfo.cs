@@ -22,7 +22,7 @@ namespace Duality.Samples.Benchmarks
 		private string generalControls = "General Controls.";
 		
 		[DontSerialize] 
-		private string textTemplate = "/f[1]Benchmark: {0}/f[0]/n/n{1}/n/n{2}";
+		private string textTemplate = "/f[1]{0}/f[0]/n/n{1}/n/n{2}";
 		[DontSerialize] 
 		private FormattedText text = new FormattedText();
 

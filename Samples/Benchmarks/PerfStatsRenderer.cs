@@ -16,11 +16,31 @@ namespace Duality.Samples.Benchmarks
 	[EditorHintCategory("Benchmarks")]
 	public class PerfStatsRenderer : Component, ICmpUpdatable, ICmpBenchmarkOverlayRenderer
 	{
+		private struct Measurement
+		{
+			public float LowPassValue;
+			public float Min;
+			public float Max;
+			public float Avg;
+
+			public void Reset()
+			{
+				this.Max = 0.0f;
+				this.Min = 100000.0f;
+				this.Avg = this.LowPassValue;
+			}
+			public void Update(float time)
+			{
+				this.Max = MathF.Max(this.Max, time);
+				this.Min = MathF.Min(this.Min, time);
+				this.LowPassValue += (time - this.LowPassValue) * 0.1f;
+			}
+		}
+
 		[DontSerialize] private float displayUpdateTimer;
-		[DontSerialize] private float smoothedFrameTime;
-		[DontSerialize] private float displayedMinTime;
-		[DontSerialize] private float displayedMaxTime;
-		[DontSerialize] private float displayedSmoothTime;
+		[DontSerialize] private Measurement frameTime;
+		[DontSerialize] private Measurement renderTime;
+		[DontSerialize] private Measurement updateTime;
 
 
 		void ICmpUpdatable.OnUpdate()
@@ -29,23 +49,31 @@ namespace Duality.Samples.Benchmarks
 			if (this.displayUpdateTimer >= 0.25f)
 			{
 				this.displayUpdateTimer -= 0.25f;
-				this.displayedMaxTime = 0.0f;
-				this.displayedMinTime = 100000.0f;
-				this.displayedSmoothTime = this.smoothedFrameTime;
+				this.frameTime.Reset();
+				this.renderTime.Reset();
+				this.updateTime.Reset();
 			}
 
-			this.displayedMaxTime = MathF.Max(this.displayedMaxTime, Profile.TimeFrame.LastValue);
-			this.displayedMinTime = MathF.Min(this.displayedMinTime, Profile.TimeFrame.LastValue);
-			this.smoothedFrameTime += (Profile.TimeFrame.LastValue - this.smoothedFrameTime) * 0.1f;
+			this.frameTime.Update(Profile.TimeFrame.LastValue);
+			this.renderTime.Update(Profile.TimeRender.LastValue);
+			this.updateTime.Update(Profile.TimeUpdate.LastValue);
 		}
 		void ICmpBenchmarkOverlayRenderer.DrawOverlay(Canvas canvas)
 		{
-			canvas.DrawText(new string[] 
+			string[] text = new string[] 
 				{
-					string.Format("Min: {0:F} ms", this.displayedMinTime),
-					string.Format("Max: {0:F} ms", this.displayedMaxTime),
-					string.Format("Avg: {0:F} ms", this.displayedSmoothTime)
-				}, 
+					"       Frame  |   Render |   Update",
+					string.Format("Min: {0,5:F} ms | {1,5:F} ms | {2,5:F} ms", this.frameTime.Min, this.renderTime.Min, this.updateTime.Min),
+					string.Format("Max: {0,5:F} ms | {1,5:F} ms | {2,5:F} ms", this.frameTime.Max, this.renderTime.Max, this.updateTime.Max),
+					string.Format("Avg: {0,5:F} ms | {1,5:F} ms | {2,5:F} ms", this.frameTime.Avg, this.renderTime.Avg, this.updateTime.Avg),
+					"",
+					string.Format("Drawcalls: {0}", Profile.StatNumDrawcalls.LastValue),
+					string.Format("Batches (raw, mrg, opt): {0}, {1}, {2}", Profile.StatNumRawBatches.LastValue, Profile.StatNumMergedBatches.LastValue, Profile.StatNumOptimizedBatches.LastValue),
+					string.Format("GC Collections (0, 1, 2): {0}, {1}, {2}", Profile.StatMemoryGarbageCollect0.LastValue, Profile.StatMemoryGarbageCollect1.LastValue, Profile.StatMemoryGarbageCollect2.LastValue)
+				};
+
+			canvas.DrawText(
+				text, 
 				10, 
 				canvas.Height - 10, 
 				0, 
