@@ -23,6 +23,8 @@ namespace Duality.Samples.Benchmarks
 		[DontSerialize] private RenderTarget sceneTarget;
 		[DontSerialize] private Texture sceneTargetTex;
 		[DontSerialize] private DrawDevice drawDevice;
+		[DontSerialize] private Canvas overlayCanvas;
+		[DontSerialize] private CanvasBuffer overlayBuffer;
 		
 		
 		/// <summary>
@@ -135,10 +137,25 @@ namespace Duality.Samples.Benchmarks
 		/// <summary>
 		/// Collects drawcalls for the diagnostic benchmark overlay in screen space.
 		/// </summary>
-		private void DrawDiagnosticOverlay(IDrawDevice device)
+		private void DrawDiagnosticOverlay(Scene scene)
 		{
-			Canvas canvas = new Canvas(device);
-			canvas.DrawCircle(50, 50, 10 + 5 * MathF.Sin((float)Time.GameTimer.TotalSeconds));
+			// Initialize a canvas and canvas buffer for rendering if not done yet
+			if (this.overlayCanvas == null)
+			{
+				this.overlayBuffer = new CanvasBuffer();
+				this.overlayCanvas = new Canvas(this.drawDevice, this.overlayBuffer);
+			}
+
+			// Notify the buffer that we're doing a new frame now, so it can
+			// re-use buffered vertex arrays from previous frames
+			this.overlayBuffer.Reset();
+
+			// Collect drawcalls from all overlay renderers
+			IEnumerable<ICmpBenchmarkOverlayRenderer> overlayRenderers = scene.FindComponents<ICmpBenchmarkOverlayRenderer>();
+			foreach (ICmpBenchmarkOverlayRenderer renderer in overlayRenderers)
+			{
+				renderer.DrawOverlay(this.overlayCanvas);
+			}
 		}
 
 		protected override void OnDisposing(bool manually)
@@ -189,7 +206,7 @@ namespace Duality.Samples.Benchmarks
 			// Draw a screen space diagnostic overlay
 			this.drawDevice.ClearFlags = ClearFlag.Depth;
 			this.drawDevice.PrepareForDrawcalls();
-			this.DrawDiagnosticOverlay(this.drawDevice);
+			this.DrawDiagnosticOverlay(scene);
 			this.drawDevice.Render();
 		}
 	}
