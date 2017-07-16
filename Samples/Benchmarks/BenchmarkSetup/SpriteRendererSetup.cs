@@ -39,6 +39,7 @@ namespace Duality.Samples.Benchmarks
 			SpriteRenderer sprite = obj.AddComponent<SpriteRenderer>();
 
 			transform.Pos = pos;
+			transform.Angle = MathF.Rnd.NextFloat(MathF.RadAngle360);
 			sprite.SharedMaterial = material;
 			sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, 64.0f, 64.0f);
 

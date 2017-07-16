@@ -47,6 +47,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BenchmarkSetup\BenchmarkMultiSpriteRenderer.cs" />
+    <Compile Include="BenchmarkSetup\MultiSpriteRendererSetup.cs" />
     <Compile Include="BenchmarkSetup\SpriteRendererSetup.cs" />
     <Compile Include="RenderSetupInfo.cs" />
     <Compile Include="PerfStatsRenderer.cs" />
