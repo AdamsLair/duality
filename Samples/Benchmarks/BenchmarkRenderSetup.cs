@@ -154,7 +154,9 @@ namespace Duality.Samples.Benchmarks
 			IEnumerable<ICmpBenchmarkOverlayRenderer> overlayRenderers = scene.FindComponents<ICmpBenchmarkOverlayRenderer>();
 			foreach (ICmpBenchmarkOverlayRenderer renderer in overlayRenderers)
 			{
+				this.overlayCanvas.PushState();
 				renderer.DrawOverlay(this.overlayCanvas);
+				this.overlayCanvas.PopState();
 			}
 		}
 
