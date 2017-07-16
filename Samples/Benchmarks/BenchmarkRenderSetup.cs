@@ -6,6 +6,7 @@ using System.Text;
 using Duality;
 using Duality.Drawing;
 using Duality.Resources;
+using Duality.Editor;
 
 namespace Duality.Samples.Benchmarks
 {
@@ -14,6 +15,7 @@ namespace Duality.Samples.Benchmarks
 	/// controlled conditions (resolution, antialiasing), then blit the result to
 	/// its target output and draw diagnostic info on top of it.
 	/// </summary>
+	[EditorHintCategory("Benchmarks")]
 	public class BenchmarkRenderSetup : RenderSetup
 	{
 		private Point2 renderingSize = new Point2(800, 600);

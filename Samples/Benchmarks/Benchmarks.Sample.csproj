@@ -51,6 +51,8 @@
     <Compile Include="ICmpBenchmarkOverlayRenderer.cs" />
     <Compile Include="BenchmarkRenderSetup.cs" />
     <Compile Include="CorePlugin.cs" />
+    <Compile Include="BenchmarkInfo.cs" />
+    <Compile Include="BenchmarkController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

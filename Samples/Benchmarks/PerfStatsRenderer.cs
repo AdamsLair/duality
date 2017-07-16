@@ -5,10 +5,15 @@ using System.Text;
 
 using Duality;
 using Duality.Drawing;
+using Duality.Editor;
 using Duality.Resources;
 
 namespace Duality.Samples.Benchmarks
 {
+	/// <summary>
+	/// Renders minimalistic perf stats for the current benchmark in the bottom left corner of the screen.
+	/// </summary>
+	[EditorHintCategory("Benchmarks")]
 	public class PerfStatsRenderer : Component, ICmpUpdatable, ICmpBenchmarkOverlayRenderer
 	{
 		[DontSerialize] private float displayUpdateTimer;
@@ -16,7 +21,8 @@ namespace Duality.Samples.Benchmarks
 		[DontSerialize] private float displayedMinTime;
 		[DontSerialize] private float displayedMaxTime;
 		[DontSerialize] private float displayedSmoothTime;
-		
+
+
 		void ICmpUpdatable.OnUpdate()
 		{
 			this.displayUpdateTimer += Time.DeltaTime;

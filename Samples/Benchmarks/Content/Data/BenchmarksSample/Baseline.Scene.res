@@ -203,6 +203,104 @@
       <parent />
       <prefabLink />
     </item>
+    <item dataType="Struct" type="Duality.GameObject" id="2553104036">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2630841882">
+        <_items dataType="Array" type="Duality.Component[]" id="693412224" length="4">
+          <item dataType="Struct" type="Duality.Samples.Benchmarks.BenchmarkInfo" id="1073141920">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">2553104036</gameobj>
+          </item>
+        </_items>
+        <_size dataType="Int">1</_size>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1821943098" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Object[]" id="3538251104">
+            <item dataType="Type" id="770661596" value="Duality.Samples.Benchmarks.BenchmarkInfo" />
+          </keys>
+          <values dataType="Array" type="System.Object[]" id="2166146190">
+            <item dataType="ObjectRef">1073141920</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform />
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="1193037692">WQoTPT4btkyqdb709SZCSw==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">BenchmarkInfo</name>
+      <parent />
+      <prefabLink dataType="Struct" type="Duality.Resources.PrefabLink" id="802018458">
+        <changes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Resources.PrefabLink+VarMod]]" id="100392704">
+          <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="2309943964" length="4">
+            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
+              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="4282201288">
+                <_items dataType="Array" type="System.Int32[]" id="2869756524"></_items>
+                <_size dataType="Int">0</_size>
+              </childIndex>
+              <componentType dataType="ObjectRef">770661596</componentType>
+              <prop dataType="MemberInfo" id="3706604254" value="P:Duality.Samples.Benchmarks.BenchmarkInfo:BenchmarkName" />
+              <val dataType="String">Baseline</val>
+            </item>
+            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
+              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1807907124">
+                <_items dataType="ObjectRef">2869756524</_items>
+                <_size dataType="Int">0</_size>
+              </childIndex>
+              <componentType dataType="ObjectRef">770661596</componentType>
+              <prop dataType="MemberInfo" id="2532933410" value="P:Duality.Samples.Benchmarks.BenchmarkInfo:BenchmarkDesc" />
+              <val dataType="String">This benchmark does nothing but rendering a single sprite, allowing you to check the baseline cost of updating and rendering regardless of scene complexity./n/nNote that, depending on your application settings, Duality might use high quality multisampling up to 16x resolution for the backbuffer, which is usually the main reason for a high baseline value. You can disable this in /cFF8888FFSettings &gt; Default User Data/cFFFFFFFF./n/nAlso note that you need to run this sample using /cFF8888FFRun &gt; Profile Game/cFFFFFFFF in order to disable VSync and frame time locking.</val>
+            </item>
+          </_items>
+          <_size dataType="Int">2</_size>
+        </changes>
+        <obj dataType="ObjectRef">2553104036</obj>
+        <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
+          <contentPath dataType="String">Data\BenchmarksSample\Content\BenchmarkInfo.Prefab.res</contentPath>
+        </prefab>
+      </prefabLink>
+    </item>
+    <item dataType="Struct" type="Duality.GameObject" id="2231991091">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2115976961">
+        <_items dataType="Array" type="Duality.Component[]" id="3842158894" length="4">
+          <item dataType="Struct" type="Duality.Samples.Benchmarks.BenchmarkController" id="1355404571">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">2231991091</gameobj>
+          </item>
+        </_items>
+        <_size dataType="Int">1</_size>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3657569120" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Object[]" id="833597643">
+            <item dataType="Type" id="976499702" value="Duality.Samples.Benchmarks.BenchmarkController" />
+          </keys>
+          <values dataType="Array" type="System.Object[]" id="3035340872">
+            <item dataType="ObjectRef">1355404571</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform />
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="930614145">VzMz9zp4TUi0lwrjon6gKQ==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">BenchmarkController</name>
+      <parent />
+      <prefabLink />
+    </item>
   </serializeObj>
   <visibilityStrategy dataType="Struct" type="Duality.Components.DefaultRendererVisibilityStrategy" id="2035693768" />
 </root>
