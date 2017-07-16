@@ -14,7 +14,7 @@
           <benchmarkDesc dataType="String">Benchmark Description.</benchmarkDesc>
           <benchmarkName dataType="String">Benchmark Name</benchmarkName>
           <gameobj dataType="ObjectRef">361452877</gameobj>
-          <generalControls dataType="String">/cFF8888FFArrow Keys:/cFFFFFFFF Select benchmark</generalControls>
+          <generalControls dataType="String">/cFF8888FFArrow Keys:/cFFFFFFFF Select benchmark/n/cFF8888FFW Key:/cFFFFFFFF Cycle rendering size/n/cFF8888FFS Key:/cFFFFFFFF Cycle resolution scaling/n/cFF8888FFA Key:/cFFFFFFFF Cycle AA quality</generalControls>
           <headlineFont dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
             <contentPath dataType="String">Data\BenchmarksSample\Content\SourceSansProRegular28.Font.res</contentPath>
           </headlineFont>

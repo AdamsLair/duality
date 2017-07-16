@@ -47,6 +47,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="RenderSetupInfo.cs" />
     <Compile Include="PerfStatsRenderer.cs" />
     <Compile Include="ICmpBenchmarkOverlayRenderer.cs" />
     <Compile Include="BenchmarkRenderSetup.cs" />

@@ -274,6 +274,31 @@
           <item dataType="Struct" type="Duality.Samples.Benchmarks.BenchmarkController" id="1355404571">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">2231991091</gameobj>
+            <renderResolutionScales dataType="Struct" type="System.Collections.Generic.List`1[[System.Single]]" id="2020561467">
+              <_items dataType="Array" type="System.Single[]" id="3140372182">0, 0.5, 1, 2, 4, 0, 0, 0</_items>
+              <_size dataType="Int">5</_size>
+            </renderResolutionScales>
+            <renderSizes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Point2]]" id="528930344">
+              <_items dataType="Array" type="Duality.Point2[]" id="2920198481">
+                <item dataType="Struct" type="Duality.Point2">
+                  <X dataType="Int">320</X>
+                  <Y dataType="Int">300</Y>
+                </item>
+                <item dataType="Struct" type="Duality.Point2">
+                  <X dataType="Int">800</X>
+                  <Y dataType="Int">600</Y>
+                </item>
+                <item dataType="Struct" type="Duality.Point2">
+                  <X dataType="Int">1024</X>
+                  <Y dataType="Int">768</Y>
+                </item>
+                <item dataType="Struct" type="Duality.Point2">
+                  <X dataType="Int">1920</X>
+                  <Y dataType="Int">1080</Y>
+                </item>
+              </_items>
+              <_size dataType="Int">4</_size>
+            </renderSizes>
           </item>
         </_items>
         <_size dataType="Int">1</_size>
@@ -298,6 +323,41 @@
       </identifier>
       <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
       <name dataType="String">BenchmarkController</name>
+      <parent />
+      <prefabLink />
+    </item>
+    <item dataType="Struct" type="Duality.GameObject" id="2517825367">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3287372501">
+        <_items dataType="Array" type="Duality.Component[]" id="3500709366" length="4">
+          <item dataType="Struct" type="Duality.Samples.Benchmarks.RenderSetupInfo" id="592990701">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">2517825367</gameobj>
+          </item>
+        </_items>
+        <_size dataType="Int">1</_size>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1785417288" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Object[]" id="1158790143">
+            <item dataType="Type" id="3261511470" value="Duality.Samples.Benchmarks.RenderSetupInfo" />
+          </keys>
+          <values dataType="Array" type="System.Object[]" id="626675040">
+            <item dataType="ObjectRef">592990701</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform />
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="2071439789">J7mafIh9iU6aIJcgvq2o+Q==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">RenderSetupInfo</name>
       <parent />
       <prefabLink />
     </item>
