@@ -104,6 +104,7 @@ namespace Duality.Samples.Physics
 			Canvas canvas = new Canvas(device);
 
 			Vector2 textBlockSize = this.text.TextMetrics.Size;
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
 			canvas.State.ColorTint = ColorRgba.Black.WithAlpha(0.75f);
 			canvas.FillRect(10, 10, textBlockSize.X + this.margin.X * 2, textBlockSize.Y + this.margin.Y * 2);
 
