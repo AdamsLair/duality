@@ -598,7 +598,25 @@ namespace VersionUpdater
 						if (commitMessageToken.Length > 1)
 						{
 							commitTitle = commitMessageToken[0].Trim();
-							commitMessage = "#" + string.Join(Environment.NewLine + "#", commitMessageToken, 1, commitMessageToken.Length - 1);
+
+							// Filter out invalid hashtags by re-joining their token
+							List<string> filteredMessageToken = new List<string>();
+							for (int i = 1; i < commitMessageToken.Length; i++)
+							{ 
+								string token = commitMessageToken[i];
+								bool startsWithValidHashtag = Regex.IsMatch(token, @"\b[A-Z]+\:\s");
+								if (startsWithValidHashtag)
+								{
+									filteredMessageToken.Add(token);
+								}
+								else
+								{
+									string lastToken = filteredMessageToken[filteredMessageToken.Count - 1];
+									filteredMessageToken.RemoveAt(filteredMessageToken.Count - 1);
+									filteredMessageToken.Add(lastToken + "#" + token);
+								}
+							}
+							commitMessage = "#" + string.Join(Environment.NewLine + "#", filteredMessageToken);
 						}
 						// Received an unexpected message format
 						else
