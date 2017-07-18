@@ -16,6 +16,8 @@ namespace Duality.Components.Physics
 	/// </summary>
 	public abstract class ShapeInfo
 	{
+		protected static readonly Vector2[] EmptyVertices = new Vector2[0];
+
 		[CloneBehavior(CloneBehavior.WeakReference)]
 		private RigidBody parent      = null;
 		protected float   density     = 1.0f;

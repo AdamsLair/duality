@@ -30,7 +30,7 @@ namespace Duality.Components.Physics
 		[EditorHintDecimalPlaces(1)]
 		public Vector2[] Vertices
 		{
-			get { return this.vertices; }
+			get { return this.vertices ?? EmptyVertices; }
 			set
 			{
 				this.vertices = value ?? new Vector2[] { Vector2.Zero, Vector2.UnitX, Vector2.UnitY };
@@ -52,6 +52,9 @@ namespace Duality.Components.Physics
 		{
 			get 
 			{
+				if (this.vertices == null || this.vertices.Length == 0)
+					return Rect.Empty;
+
 				float minX = float.MaxValue;
 				float minY = float.MaxValue;
 				float maxX = float.MinValue;
