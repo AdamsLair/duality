@@ -204,18 +204,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		public override void OnWorldOverlayDrawcalls(Canvas canvas)
 		{
+			RigidBody body = this.Environment.ActiveBody;
+			if (body == null) return;
+
+			DesignTimeObjectData designTimeData = DesignTimeObjectData.Get(body.GameObj);
+			if (designTimeData.IsHidden) return;
+
 			float knobSize = 7.0f;
 			float worldKnobSize = knobSize / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0.0f));
 
 			// Determine the color in which we'll draw the interaction markers
 			ColorRgba markerColor = this.Environment.FgColor;
-
 			canvas.State.DepthOffset = -1.0f;
 
-			// Draw an interaction indicator for every vertex of the active bodies shapes
-			RigidBody body = this.Environment.ActiveBody;
-			if (body != null)
-			{
 				// Prepare the transform matrix for this object, so 
 				// we can move the RigidBody vertices into world space quickly
 				Transform transform = body.GameObj.Transform;
@@ -224,6 +225,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				Vector2 bodyDotY;
 				MathF.GetTransformDotVec(transform.Angle, transform.Scale, out bodyDotX, out bodyDotY);
 
+			// Draw an interaction indicator for every vertex of the active bodies shapes
 				Vector3 mousePosWorld = this.Environment.ActiveWorldPos;
 				foreach (ShapeInfo shape in body.Shapes)
 				{
@@ -279,7 +281,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 						}
 					}
 				}
-			}
 
 			// Interaction indicator for an existing vertex
 			if (this.activeVertex != -1)
@@ -318,6 +319,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			
 			RigidBody body = this.Environment.ActiveBody;
 			if (body == null) return;
+
+			DesignTimeObjectData designTimeData = DesignTimeObjectData.Get(body.GameObj);
+			if (designTimeData.IsHidden) return;
 
 			// Prepare the transform matrix for this object, so 
 			// we can move the RigidBody vertices into world space quickly
