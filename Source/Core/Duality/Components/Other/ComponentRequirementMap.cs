@@ -101,6 +101,10 @@ namespace Duality
 
 					// Don't require itself
 					if (reqType == this.Component) continue;
+					
+					// Ignore invalid constraints
+					if (!this.IsValidRequirement(a))
+						continue;
 
 					this.Requirements.AddRange(map.GetRequirements(reqType).Where(t => !this.Requirements.Contains(t)));
 					if (!this.Requirements.Contains(reqType))
@@ -114,6 +118,10 @@ namespace Duality
 				IEnumerable<RequiredComponentAttribute> attributes = this.Component.GetTypeInfo().GetAttributesCached<RequiredComponentAttribute>();
 				foreach (RequiredComponentAttribute attrib in attributes)
 				{
+					// Ignore invalid constraints
+					if (!this.IsValidRequirement(attrib))
+						continue;
+
 					// If this is a conditional creation, add the sub-chain of the Component to create
 					if (attrib.CreateDefaultType != attrib.RequiredComponentType)
 						this.AddCreationChainElements(map, attrib, attrib.CreateDefaultType);
@@ -124,6 +132,24 @@ namespace Duality
 
 				// Remove any duplicates that we might have generated in the creation chain
 				this.RemoveCreationChainDuplicates();
+			}
+
+			private bool IsValidRequirement(RequiredComponentAttribute attrib)
+			{
+				Type reqType = attrib.RequiredComponentType;
+				TypeInfo reqTypeInfo = reqType.GetTypeInfo();
+
+				// Ignore requirements to non-exported / internal types, as
+				// Duality will ignore them as well.
+				if (reqTypeInfo.IsNotPublic)
+					return false;
+
+				// Ignore requirements to non-Components
+				TypeInfo componentTypeInfo = typeof(Component).GetTypeInfo();
+				if (!reqTypeInfo.IsInterface && !componentTypeInfo.IsAssignableFrom(reqTypeInfo))
+					return false;
+
+				return true;
 			}
 
 			private void AddCreationChainElements(ComponentRequirementMap map, RequiredComponentAttribute attrib, Type subChainType)
