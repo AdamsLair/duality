@@ -539,6 +539,23 @@ namespace Duality.Tests.Components
 				new[] { typeof(TestComponentH2), typeof(TestComponentI2) }, 
 				types);
 		}
+		[Test] public void ExecOrderInvalidType()
+		{
+			ComponentExecutionOrder order = new ComponentExecutionOrder();
+
+			// Explicitly trigger execution order calculation for types that we
+			// know define invalid constraints. We expect them to be ignored without
+			// an exception being thrown.
+			List<Type> types = new List<Type>();
+			types.Add(typeof(TestComponentJ1));
+			types.Add(typeof(TestComponentJ2));
+			types.Add(typeof(TestComponentJ3));
+			types.Add(typeof(TestComponentJ4));
+			types.Add(typeof(TestComponentJ5));
+			types.Add(typeof(TestComponentJ6));
+
+			order.SortTypes(types, false);
+		}
 		[Test] public void RequirementAttribute()
 		{
 			ComponentExecutionOrder order = new ComponentExecutionOrder();
@@ -749,5 +766,21 @@ namespace Duality.Tests.Components
 		public class TestComponentI1 : TestComponent { }
 		[ExecutionOrder(ExecutionRelation.Before, typeof(ITestComponentH))]
 		public class TestComponentI2 : TestComponent { }
+
+		[RequiredComponent(typeof(Pixmap))]
+		public class TestComponentJ1 : TestComponent { }
+		[ExecutionOrder(ExecutionRelation.Before, typeof(Texture))]
+		public class TestComponentJ2 : TestComponent { }
+		[ExecutionOrder(ExecutionRelation.After, typeof(Material))]
+		public class TestComponentJ3 : TestComponent { }
+
+		[RequiredComponent(typeof(NonPublicComponent))]
+		public class TestComponentJ4 : TestComponent { }
+		[ExecutionOrder(ExecutionRelation.Before, typeof(NonPublicComponent))]
+		public class TestComponentJ5 : TestComponent { }
+		[ExecutionOrder(ExecutionRelation.After, typeof(NonPublicComponent))]
+		public class TestComponentJ6 : TestComponent { }
+
+		internal class NonPublicComponent : Component { }
 	}
 }

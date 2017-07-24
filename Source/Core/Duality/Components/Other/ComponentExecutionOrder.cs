@@ -64,7 +64,10 @@ namespace Duality
 
 			public override int GetHashCode()
 			{
-				return unchecked(this.FirstType.GetHashCode() * 13 + this.LastType.GetHashCode());
+				return unchecked(
+					this.FirstType.GetHashCode() * 17 + 
+					this.LastType.GetHashCode() * 13 + 
+					(int)this.Priority);
 			}
 			public override bool Equals(object obj)
 			{
@@ -96,7 +99,10 @@ namespace Duality
 			}
 			public int GetHashCode(OrderConstraint obj)
 			{
-				return unchecked(obj.FirstType.GetHashCode() * 13 + obj.LastType.GetHashCode());
+				return unchecked(
+					obj.FirstType.GetHashCode() * 17 + 
+					obj.LastType.GetHashCode() * 13 + 
+					(this.IgnorePriority ? 0 : (int)obj.Priority));
 			}
 		}
 
@@ -241,15 +247,15 @@ namespace Duality
 		/// Generates a list of normalized execution order constraints from a set of <see cref="Component"/>
 		/// types.
 		/// </summary>
-		/// <param name="types"></param>
+		/// <param name="typeSet"></param>
 		/// <returns></returns>
-		private static List<OrderConstraint> GatherConstraints(IEnumerable<Type> types)
+		private static List<OrderConstraint> GatherConstraints(HashSet<Type> typeSet)
 		{
 			// This hashset will store a distinct set of constraints, but allow constraining
 			// the same two component types with different priorities. We'll resolve this later.
 			HashSet<OrderConstraint> constraintSet = new HashSet<OrderConstraint>(new OrderConstraintComparer());
 
-			foreach (Type type in types)
+			foreach (Type type in typeSet)
 			{
 				TypeInfo typeInfo = type.GetTypeInfo();
 
@@ -260,10 +266,12 @@ namespace Duality
 				// Gather explicit execution order statements made by the user via attribute
 				foreach (ExecutionOrderAttribute orderAttrib in typeInfo.GetAttributesCached<ExecutionOrderAttribute>())
 				{
+					if (orderAttrib.Anchor == null) continue;
+
 					TypeInfo anchorInfo = orderAttrib.Anchor.GetTypeInfo();
 					if (anchorInfo.IsAbstract || anchorInfo.IsInterface)
 					{
-						foreach (Type typeB in types)
+						foreach (Type typeB in typeSet)
 						{
 							TypeInfo typeInfoB = typeB.GetTypeInfo();
 							if (!anchorInfo.IsAssignableFrom(typeInfoB)) continue;
@@ -275,7 +283,7 @@ namespace Duality
 								ConstraintPriority.ExplicitWeak));
 						}
 					}
-					else
+					else if (typeSet.Contains(orderAttrib.Anchor))
 					{
 						constraintSet.Add(new OrderConstraint(
 							type, 
@@ -292,7 +300,7 @@ namespace Duality
 					TypeInfo anchorInfo = anchor.GetTypeInfo();
 					if (anchorInfo.IsAbstract || anchorInfo.IsInterface)
 					{
-						foreach (Type typeB in types)
+						foreach (Type typeB in typeSet)
 						{
 							TypeInfo typeInfoB = typeB.GetTypeInfo();
 							if (!anchorInfo.IsAssignableFrom(typeInfoB)) continue;
@@ -304,7 +312,7 @@ namespace Duality
 								ConstraintPriority.ImplicitWeak));
 						}
 					}
-					else
+					else if (typeSet.Contains(anchor))
 					{
 						constraintSet.Add(new OrderConstraint(
 							type, 

@@ -205,6 +205,22 @@ namespace Duality.Tests.Components
 				new [] { typeof(TestComponentD6) },
 				new [] { typeof(TestComponentD5) });
 		}
+		[Test] public void InvalidRequirements()
+		{
+			ComponentRequirementMap map = new ComponentRequirementMap();
+
+			// Expect that all invalid requirements have been ignored
+			CollectionAssert.AreEquivalent(new Type[0], map.GetRequirements(typeof(TestComponentE1)));
+			CollectionAssert.AreEquivalent(new Type[0], map.GetRequirements(typeof(TestComponentE2)));
+			CollectionAssert.AreEqual(new Type[0], map.GetRequirementsToCreate(new GameObject(), typeof(TestComponentE1)));
+			CollectionAssert.AreEqual(new Type[0], map.GetRequirementsToCreate(new GameObject(), typeof(TestComponentE2)));
+			
+			Assert.IsFalse(map.IsRequired(typeof(TestComponentE1), typeof(Pixmap)));
+			Assert.IsFalse(map.IsRequired(typeof(TestComponentE2), typeof(NonPublicComponent)));
+
+			Assert.IsTrue(map.IsRequirementMet(new GameObject(), typeof(TestComponentE1)));
+			Assert.IsTrue(map.IsRequirementMet(new GameObject(), typeof(TestComponentE2)));
+		}
 
 		private static void AssertCreationChain(ComponentRequirementMap map, Type newComponent, Type[] existingComponents = null, Type[] expectedChain = null)
 		{
@@ -273,5 +289,12 @@ namespace Duality.Tests.Components
 		public class TestComponentD4 : Component, ITestComponentDY { }
 		public class TestComponentD5 : Component, ITestComponentDY { }
 		public class TestComponentD6 : Component { }
+
+		[RequiredComponent(typeof(Pixmap))]
+		public class TestComponentE1 : Component { }
+		[RequiredComponent(typeof(NonPublicComponent))]
+		public class TestComponentE2 : Component { }
+
+		internal class NonPublicComponent : Component { }
 	}
 }
