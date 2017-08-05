@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.12.11</version>
+    <version>2.12.12</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,9 +13,8 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>Component Attribute Bugfixes
-#FIX: Specifying invalid constraints (such as non-Component classes) in RequiredComponent and ExecutionOrder attributes can no longer lead to a crash. Fixes issue #553. 
-#ADD: Added tests to check whether invalid constraints are handled without errors.</releaseNotes>
+    <releaseNotes>Transform Bugfix
+#FIX: Fixed Transform changes in deeply nested hierarchies not being propagated all the way down to leaf objects. Fixes issue #555, where dependent leaf RigidBodies in those hierarchies wouldn't move as expected.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.4" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
