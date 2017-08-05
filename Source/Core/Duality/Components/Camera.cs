@@ -537,7 +537,12 @@ namespace Duality.Components
 		}
 		private void RenderSinglePass(Rect viewportRect, Pass p)
 		{
-			this.drawDevice.VisibilityMask = this.visibilityMask & p.VisibilityMask;
+			// ScreenOverlay is a special flag that is set on a per-pass basis
+			// and that shouldn't be affected by camera settings. Keep it separate.
+			this.drawDevice.VisibilityMask = 
+				(this.visibilityMask & p.VisibilityMask & ~VisibilityFlag.ScreenOverlay) | 
+				(p.VisibilityMask & VisibilityFlag.ScreenOverlay);
+
 			this.drawDevice.RenderMode = p.MatrixMode;
 			this.drawDevice.Target = p.Output;
 			this.drawDevice.ViewportRect = p.Output.IsAvailable ? new Rect(p.Output.Res.Width, p.Output.Res.Height) : viewportRect;
