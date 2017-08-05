@@ -309,7 +309,6 @@ namespace Duality.Resources
 			localTargetSize *= step.TargetRect.Size;
 
 			// Set up the draw device with rendering step settings
-			drawDevice.VisibilityMask &= step.VisibilityMask;
 			drawDevice.RenderMode = step.MatrixMode;
 			drawDevice.Target = renderTarget;
 			drawDevice.TargetSize = localTargetSize;
@@ -317,6 +316,12 @@ namespace Duality.Resources
 			drawDevice.ClearFlags = step.ClearFlags;
 			drawDevice.ClearColor = step.DefaultClearColor ? oldDeviceClearColor : step.ClearColor;
 			drawDevice.ClearDepth = step.ClearDepth;
+			
+			// ScreenOverlay is a special flag that is set on a per-rendering-step basis
+			// and that shouldn't be affected by overall device settings. Keep it separate.
+			drawDevice.VisibilityMask = 
+				(drawDevice.VisibilityMask & step.VisibilityMask & ~VisibilityFlag.ScreenOverlay) | 
+				(step.VisibilityMask & VisibilityFlag.ScreenOverlay);
 			
 			try
 			{
