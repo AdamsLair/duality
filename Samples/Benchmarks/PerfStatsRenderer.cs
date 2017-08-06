@@ -16,47 +16,95 @@ namespace Duality.Samples.Benchmarks
 	[EditorHintCategory("Benchmarks")]
 	public class PerfStatsRenderer : Component, ICmpUpdatable, ICmpBenchmarkOverlayRenderer
 	{
-		private struct Measurement
+		private struct TimeMeasurement
 		{
 			public float LowPassValue;
 			public float Min;
 			public float Max;
 			public float Avg;
 
-			public void Reset()
+			public void UpdateDisplay()
 			{
 				this.Max = 0.0f;
 				this.Min = 100000.0f;
 				this.Avg = this.LowPassValue;
 			}
-			public void Update(float time)
+			public void TickFrame(float time)
 			{
 				this.Max = MathF.Max(this.Max, time);
 				this.Min = MathF.Min(this.Min, time);
 				this.LowPassValue += (time - this.LowPassValue) * 0.1f;
 			}
 		}
+		private struct GCCollectMeasurement
+		{
+			public int LastCount;
+			public int LastFrameIndex;
+			public int TotalFrames;
+			public int TotalCount;
+			public float GCsPerMinute;
 
-		[DontSerialize] private float displayUpdateTimer;
-		[DontSerialize] private Measurement frameTime;
-		[DontSerialize] private Measurement renderTime;
-		[DontSerialize] private Measurement updateTime;
+			public void UpdateDisplay()
+			{
+				if (this.TotalFrames == 0)
+				{
+					this.GCsPerMinute = 0.0f;
+				}
+				else
+				{
+					float gcsPerFrame = (float)this.TotalCount / (float)this.TotalFrames;
+					float gcsPerMinuteAtDefaultFps = 60.0f * Time.FramesPerSecond * gcsPerFrame;
+					this.GCsPerMinute = gcsPerMinuteAtDefaultFps;
+				}
+			}
+			public void TickFrame(int gcCountSinceStart)
+			{
+				if (this.LastCount > 0)
+				{
+					int frames = Time.FrameCount - this.LastFrameIndex;
+					int increase = gcCountSinceStart - this.LastCount;
+				
+					this.TotalFrames += frames;
+					this.TotalCount += increase;
+				}
+				this.LastFrameIndex = Time.FrameCount;
+				this.LastCount = gcCountSinceStart;
+			}
+		}
+
+		[DontSerialize] private float initialWarmupTimer = 2.0f;
+		[DontSerialize] private float resetMinMaxTimer;
+		[DontSerialize] private TimeMeasurement frameTime;
+		[DontSerialize] private TimeMeasurement renderTime;
+		[DontSerialize] private TimeMeasurement updateTime;
+		[DontSerialize] private GCCollectMeasurement gcGen0;
+		[DontSerialize] private GCCollectMeasurement gcGen1;
+		[DontSerialize] private GCCollectMeasurement gcGen2;
 
 
 		void ICmpUpdatable.OnUpdate()
 		{
-			this.displayUpdateTimer += Time.DeltaTime;
-			if (this.displayUpdateTimer >= 0.25f)
+			this.initialWarmupTimer -= Time.DeltaTime;
+			if (this.initialWarmupTimer > 0.0f) return;
+
+			this.resetMinMaxTimer -= Time.DeltaTime;
+			if (this.resetMinMaxTimer <= 0.0f)
 			{
-				this.displayUpdateTimer -= 0.25f;
-				this.frameTime.Reset();
-				this.renderTime.Reset();
-				this.updateTime.Reset();
+				this.resetMinMaxTimer += 0.25f;
+				this.frameTime.UpdateDisplay();
+				this.renderTime.UpdateDisplay();
+				this.updateTime.UpdateDisplay();
+				this.gcGen0.UpdateDisplay();
+				this.gcGen1.UpdateDisplay();
+				this.gcGen2.UpdateDisplay();
 			}
 
-			this.frameTime.Update(Profile.TimeFrame.LastValue);
-			this.renderTime.Update(Profile.TimeRender.LastValue);
-			this.updateTime.Update(Profile.TimeUpdate.LastValue);
+			this.frameTime.TickFrame(Profile.TimeFrame.LastValue);
+			this.renderTime.TickFrame(Profile.TimeRender.LastValue);
+			this.updateTime.TickFrame(Profile.TimeUpdate.LastValue);
+			this.gcGen0.TickFrame(Profile.StatMemoryGarbageCollect0.LastValue);
+			this.gcGen1.TickFrame(Profile.StatMemoryGarbageCollect1.LastValue);
+			this.gcGen2.TickFrame(Profile.StatMemoryGarbageCollect2.LastValue);
 		}
 		void ICmpBenchmarkOverlayRenderer.DrawOverlay(Canvas canvas)
 		{
@@ -69,7 +117,7 @@ namespace Duality.Samples.Benchmarks
 					"",
 					string.Format("Drawcalls: {0}", Profile.StatNumDrawcalls.LastValue),
 					string.Format("Batches (raw, mrg, opt): {0}, {1}, {2}", Profile.StatNumRawBatches.LastValue, Profile.StatNumMergedBatches.LastValue, Profile.StatNumOptimizedBatches.LastValue),
-					string.Format("GC Collections (0, 1, 2): {0}, {1}, {2}", Profile.StatMemoryGarbageCollect0.LastValue, Profile.StatMemoryGarbageCollect1.LastValue, Profile.StatMemoryGarbageCollect2.LastValue)
+					string.Format("GC Collections (0, 1, 2): {0:F1}, {1:F1}, {2:F1} / minute", this.gcGen0.GCsPerMinute, this.gcGen1.GCsPerMinute, this.gcGen2.GCsPerMinute)
 				};
 
 			canvas.DrawText(
