@@ -11,8 +11,7 @@ using Duality.Components;
 
 namespace Duality.Samples.Benchmarks
 {
-	[EditorHintCategory("Benchmarks")]
-    public class BenchmarkController : Component, ICmpInitializable, ICmpUpdatable
+	public class BenchmarkController
 	{
 		private List<Point2> renderSizes = new List<Point2>
 		{
@@ -44,14 +43,14 @@ namespace Duality.Samples.Benchmarks
 		private void SwitchToSample(int index)
 		{
 			// Force reload of current sample later on by disposing it.
-			this.GameObj.ParentScene.DisposeLater();
+			Scene.Current.DisposeLater();
 			// Switch to new sample
 			Scene.SwitchTo(this.benchmarkScenes[index]);
 		}
 		private void AdvanceSampleBy(int indexOffset)
 		{
 			// Determine the current samples' index and advance it
-			int currentIndex = this.benchmarkScenes.IndexOf(this.GameObj.ParentScene);
+			int currentIndex = this.benchmarkScenes.IndexOf(Scene.Current);
 			int newIndex = (currentIndex + indexOffset + this.benchmarkScenes.Count) % this.benchmarkScenes.Count;
 			this.SwitchToSample(newIndex);
 		}
@@ -78,7 +77,16 @@ namespace Duality.Samples.Benchmarks
 		}
 
 
-		void ICmpUpdatable.OnUpdate()
+		public void PrepareBenchmarks()
+		{
+			// Retrieve a list of all available scenes to cycle through.
+			this.benchmarkScenes = ContentProvider.GetAvailableContent<Scene>();
+			this.renderSetup = ContentProvider.GetAvailableContent<BenchmarkRenderSetup>().FirstOrDefault();
+
+			// Make sure the benchmark setup is used globally
+			DualityApp.AppData.RenderingSetup = this.renderSetup.As<RenderSetup>();
+		}
+		public void Update()
 		{
 			// Pressing an arrow key: Switch benchmark scenes
 			if (DualityApp.Keyboard.KeyHit(Key.Left) || DualityApp.Keyboard.KeyHit(Key.Up))
@@ -98,16 +106,5 @@ namespace Duality.Samples.Benchmarks
 			if (DualityApp.Keyboard.KeyHit(Key.A))
 				this.CycleAntialiasingQuality();
 		}
-
-		void ICmpInitializable.OnInit(Component.InitContext context)
-		{
-			if (context == InitContext.Activate && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-			{
-				// Retrieve a list of all available scenes to cycle through.
-				this.benchmarkScenes = ContentProvider.GetAvailableContent<Scene>();
-				this.renderSetup = DualityApp.AppData.RenderingSetup.As<BenchmarkRenderSetup>();
-			}
-		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
 	}
 }
