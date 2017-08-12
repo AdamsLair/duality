@@ -73,7 +73,7 @@ namespace Duality.Samples.Benchmarks
 		}
 
 		[DontSerialize] private float initialWarmupTimer = 2.0f;
-		[DontSerialize] private float resetMinMaxTimer;
+		[DontSerialize] private float resetMinMaxTimer = 0.1f;
 		[DontSerialize] private TimeMeasurement frameTime;
 		[DontSerialize] private TimeMeasurement renderTime;
 		[DontSerialize] private TimeMeasurement updateTime;
@@ -81,6 +81,31 @@ namespace Duality.Samples.Benchmarks
 		[DontSerialize] private GCCollectMeasurement gcGen1;
 		[DontSerialize] private GCCollectMeasurement gcGen2;
 
+		private string[] text;
+
+
+		public void ExportText(StringBuilder targetBuilder)
+		{
+			for (int i = 0; i < this.text.Length; i++)
+			{
+				targetBuilder.AppendLine(this.text[i]);
+			}
+		}
+
+		private void UpdateText()
+		{
+			if (this.text == null)
+				this.text = new string[8];
+
+			this.text[0] = "       Frame  |   Render |   Update";
+			this.text[1] = string.Format("Min: {0,5:F} ms | {1,5:F} ms | {2,5:F} ms", this.frameTime.Min, this.renderTime.Min, this.updateTime.Min);
+			this.text[2] = string.Format("Max: {0,5:F} ms | {1,5:F} ms | {2,5:F} ms", this.frameTime.Max, this.renderTime.Max, this.updateTime.Max);
+			this.text[3] = string.Format("Avg: {0,5:F} ms | {1,5:F} ms | {2,5:F} ms", this.frameTime.Avg, this.renderTime.Avg, this.updateTime.Avg);
+			this.text[4] = "";
+			this.text[5] = string.Format("Drawcalls: {0}", Profile.StatNumDrawcalls.LastValue);
+			this.text[6] = string.Format("Batches (raw, mrg, opt): {0}, {1}, {2}", Profile.StatNumRawBatches.LastValue, Profile.StatNumMergedBatches.LastValue, Profile.StatNumOptimizedBatches.LastValue);
+			this.text[7] = string.Format("GC Collections (0, 1, 2): {0:F1}, {1:F1}, {2:F1} / minute", this.gcGen0.GCsPerMinute, this.gcGen1.GCsPerMinute, this.gcGen2.GCsPerMinute);
+		}
 
 		void ICmpUpdatable.OnUpdate()
 		{
@@ -90,7 +115,7 @@ namespace Duality.Samples.Benchmarks
 			this.resetMinMaxTimer -= Time.DeltaTime;
 			if (this.resetMinMaxTimer <= 0.0f)
 			{
-				this.resetMinMaxTimer += 0.25f;
+				this.resetMinMaxTimer += 1.0f;
 				this.frameTime.UpdateDisplay();
 				this.renderTime.UpdateDisplay();
 				this.updateTime.UpdateDisplay();
@@ -105,23 +130,13 @@ namespace Duality.Samples.Benchmarks
 			this.gcGen0.TickFrame(Profile.StatMemoryGarbageCollect0.LastValue);
 			this.gcGen1.TickFrame(Profile.StatMemoryGarbageCollect1.LastValue);
 			this.gcGen2.TickFrame(Profile.StatMemoryGarbageCollect2.LastValue);
+
+			this.UpdateText();
 		}
 		void ICmpBenchmarkOverlayRenderer.DrawOverlay(Canvas canvas)
 		{
-			string[] text = new string[] 
-				{
-					"       Frame  |   Render |   Update",
-					string.Format("Min: {0,5:F} ms | {1,5:F} ms | {2,5:F} ms", this.frameTime.Min, this.renderTime.Min, this.updateTime.Min),
-					string.Format("Max: {0,5:F} ms | {1,5:F} ms | {2,5:F} ms", this.frameTime.Max, this.renderTime.Max, this.updateTime.Max),
-					string.Format("Avg: {0,5:F} ms | {1,5:F} ms | {2,5:F} ms", this.frameTime.Avg, this.renderTime.Avg, this.updateTime.Avg),
-					"",
-					string.Format("Drawcalls: {0}", Profile.StatNumDrawcalls.LastValue),
-					string.Format("Batches (raw, mrg, opt): {0}, {1}, {2}", Profile.StatNumRawBatches.LastValue, Profile.StatNumMergedBatches.LastValue, Profile.StatNumOptimizedBatches.LastValue),
-					string.Format("GC Collections (0, 1, 2): {0:F1}, {1:F1}, {2:F1} / minute", this.gcGen0.GCsPerMinute, this.gcGen1.GCsPerMinute, this.gcGen2.GCsPerMinute)
-				};
-
 			canvas.DrawText(
-				text, 
+				this.text, 
 				10, 
 				canvas.Height - 10, 
 				0, 

@@ -39,3 +39,4 @@ Build/Output/
 Test/Duality.VisualState.xml
 Test/TestResult.xml
 Source/Core/Primitives/DualityPrimitives.xml
+Samples/Benchmarks/Content/BenchmarkTestReport.txt

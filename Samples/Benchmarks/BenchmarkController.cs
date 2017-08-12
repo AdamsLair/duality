@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 using Duality;
+using Duality.IO;
 using Duality.Editor;
 using Duality.Input;
 using Duality.Resources;
@@ -39,13 +41,23 @@ namespace Duality.Samples.Benchmarks
 		[DontSerialize] private ContentRef<BenchmarkRenderSetup> renderSetup;
 		[DontSerialize] private List<ContentRef<Scene>> benchmarkScenes;
 
+		private bool testRunActive = false;
+		private int testRunSampleIndex = 0;
+		private float testRunSampleTimer = 0.0f;
+		private StringBuilder testRunDataCollector = null;
+
 		
 		private void SwitchToSample(int index)
 		{
+			// Determine which scene we're going to switch to, and
+			// don't do it if we're already there.
+			ContentRef<Scene> targetScene = this.benchmarkScenes[index];
+			if (Scene.Current == targetScene) return;
+
 			// Force reload of current sample later on by disposing it.
 			Scene.Current.DisposeLater();
 			// Switch to new sample
-			Scene.SwitchTo(this.benchmarkScenes[index]);
+			Scene.SwitchTo(targetScene);
 		}
 		private void AdvanceSampleBy(int indexOffset)
 		{
@@ -76,17 +88,74 @@ namespace Duality.Samples.Benchmarks
 			setup.AntialiasingQuality = this.renderAAQualityLevels[newIndex];
 		}
 
-
-		public void PrepareBenchmarks()
+		private void StartStandardTestRun()
 		{
-			// Retrieve a list of all available scenes to cycle through.
-			this.benchmarkScenes = ContentProvider.GetAvailableContent<Scene>();
-			this.renderSetup = ContentProvider.GetAvailableContent<BenchmarkRenderSetup>().FirstOrDefault();
-
-			// Make sure the benchmark setup is used globally
-			DualityApp.AppData.RenderingSetup = this.renderSetup.As<RenderSetup>();
+			Logs.Game.Write("Starting benchmark test run.");
+			this.testRunActive = true;
+			this.testRunSampleIndex = 0;
+			this.testRunSampleTimer = 0.0f;
+			this.testRunDataCollector = new StringBuilder();
+			this.StartTestRunSample();
 		}
-		public void Update()
+		private void StartTestRunSample()
+		{
+			Logs.Game.Write("Sample {0}, index {1}...", 
+				this.benchmarkScenes[this.testRunSampleIndex].FullName, 
+				this.testRunSampleIndex);
+			this.SwitchToSample(this.testRunSampleIndex);
+		}
+		private void CompleteTestRun()
+		{
+			Logs.Game.Write("Benchmark test run complete.");
+
+			string reportFileName = "BenchmarkTestReport.txt";
+			string report = this.testRunDataCollector.ToString();
+
+			Logs.Game.Write("Saving report to '{0}'...", reportFileName);
+			using (Stream stream = FileOp.Create(reportFileName))
+			using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8))
+			{
+				writer.Write(report);
+			}
+
+			this.testRunActive = false;
+			this.testRunSampleIndex = 0;
+			this.testRunSampleTimer = 0.0f;
+			this.SwitchToSample(0);
+		}
+		private void RetrieveTestRunData()
+		{
+			Logs.Game.Write("Retrieving test run data.");
+
+			this.testRunDataCollector.AppendFormat("### Sample {0}, index {1} ###", this.benchmarkScenes[this.testRunSampleIndex].Name, this.testRunSampleIndex);
+			this.testRunDataCollector.AppendLine();
+			this.testRunDataCollector.AppendLine();
+
+			// Find the renderer that displays the perf stats and ask it to
+			// append its text data to our collector.
+			PerfStatsRenderer perfStats = Scene.Current.FindComponent<PerfStatsRenderer>();
+			perfStats.ExportText(this.testRunDataCollector);
+
+			this.testRunDataCollector.AppendLine();
+			this.testRunDataCollector.AppendLine();
+		}
+
+		private void UpdateTestRun()
+		{
+			this.testRunSampleTimer += Time.DeltaTime;
+			if (this.testRunSampleTimer > 15.0f)
+			{
+				this.testRunSampleTimer = 0.0f;
+				this.RetrieveTestRunData();
+
+				this.testRunSampleIndex++;
+				if (this.testRunSampleIndex < this.benchmarkScenes.Count)
+					this.StartTestRunSample();
+				else
+					this.CompleteTestRun();
+			}
+		}
+		private void UpdateManual()
 		{
 			// Pressing an arrow key: Switch benchmark scenes
 			if (DualityApp.Keyboard.KeyHit(Key.Left) || DualityApp.Keyboard.KeyHit(Key.Up))
@@ -105,6 +174,27 @@ namespace Duality.Samples.Benchmarks
 			// Pressing the A key: Cycle AA quality
 			if (DualityApp.Keyboard.KeyHit(Key.A))
 				this.CycleAntialiasingQuality();
+
+			// Pressing the T key: Start the standard test run
+			if (DualityApp.Keyboard.KeyHit(Key.T))
+				this.StartStandardTestRun();
+		}
+
+		public void PrepareBenchmarks()
+		{
+			// Retrieve a list of all available scenes to cycle through.
+			this.benchmarkScenes = ContentProvider.GetAvailableContent<Scene>();
+			this.renderSetup = ContentProvider.GetAvailableContent<BenchmarkRenderSetup>().FirstOrDefault();
+
+			// Make sure the benchmark setup is used globally
+			DualityApp.AppData.RenderingSetup = this.renderSetup.As<RenderSetup>();
+		}
+		public void Update()
+		{
+			if (this.testRunActive)
+				this.UpdateTestRun();
+			else
+				this.UpdateManual();
 		}
 	}
 }
