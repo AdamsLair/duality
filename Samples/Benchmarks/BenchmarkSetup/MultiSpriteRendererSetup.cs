@@ -28,7 +28,7 @@ namespace Duality.Samples.Benchmarks
 
 		private GameObject CreateMultiSprite(Vector3 pos, int spriteCount)
 		{
-			GameObject obj = new GameObject("Sprite");
+			GameObject obj = new GameObject("LotsOfSprites");
 			Transform transform = obj.AddComponent<Transform>();
 			BenchmarkMultiSpriteRenderer multiSprite = obj.AddComponent<BenchmarkMultiSpriteRenderer>();
 			transform.Pos = pos;
