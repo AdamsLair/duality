@@ -80,8 +80,8 @@ namespace Duality.Samples.Benchmarks
 		[DontSerialize] private GCCollectMeasurement gcGen0;
 		[DontSerialize] private GCCollectMeasurement gcGen1;
 		[DontSerialize] private GCCollectMeasurement gcGen2;
-
-		private string[] text;
+		[DontSerialize] private string[] text;
+		[DontSerialize] private VertexC1P3T2[][] textBufferGlyphs;
 
 
 		public void ExportText(StringBuilder targetBuilder)
@@ -116,6 +116,9 @@ namespace Duality.Samples.Benchmarks
 			if (this.resetMinMaxTimer <= 0.0f)
 			{
 				this.resetMinMaxTimer += 1.0f;
+
+				this.UpdateText();
+
 				this.frameTime.UpdateDisplay();
 				this.renderTime.UpdateDisplay();
 				this.updateTime.UpdateDisplay();
@@ -130,13 +133,12 @@ namespace Duality.Samples.Benchmarks
 			this.gcGen0.TickFrame(Profile.StatMemoryGarbageCollect0.LastValue);
 			this.gcGen1.TickFrame(Profile.StatMemoryGarbageCollect1.LastValue);
 			this.gcGen2.TickFrame(Profile.StatMemoryGarbageCollect2.LastValue);
-
-			this.UpdateText();
 		}
 		void ICmpBenchmarkOverlayRenderer.DrawOverlay(Canvas canvas)
 		{
 			canvas.DrawText(
 				this.text, 
+				ref this.textBufferGlyphs,
 				10, 
 				canvas.Height - 10, 
 				0, 

@@ -18,6 +18,12 @@ namespace Duality.Samples.Benchmarks
 	{
 		[DontSerialize] private FormattedText text;
 		[DontSerialize] private ContentRef<BenchmarkRenderSetup> renderSetup;
+		[DontSerialize] private VertexC1P3T2[][] textBufferGlyphs;
+		[DontSerialize] private VertexC1P3T2[] textBufferIcons;
+
+		[DontSerialize] private Point2 displayedRenderSize;
+		[DontSerialize] private float displayedRenderScale;
+		[DontSerialize] private AAQuality displayedAAQuality;
 
 		
 		void ICmpBenchmarkOverlayRenderer.DrawOverlay(Canvas canvas)
@@ -25,14 +31,28 @@ namespace Duality.Samples.Benchmarks
 			BenchmarkRenderSetup setup = this.renderSetup.Res;
 			if (setup == null) return;
 
-			this.text.SourceText = string.Format(
-				"Render Size: {0} x {1}/n" + 
-				"Res. Scaling: {2:F}x/n" +
-				"AA Quality: {3}",
-				setup.RenderingSize.X, setup.RenderingSize.Y,
-				setup.ResolutionScale,
-				setup.AntialiasingQuality);
+			// Update the displayed info text only when the data changes.
+			// This is a benchmark. We don't want any allocation or perf
+			// noise in our setup.
+			if (this.displayedRenderSize != setup.RenderingSize ||
+				this.displayedRenderScale != setup.ResolutionScale ||
+				this.displayedAAQuality != setup.AntialiasingQuality)
+			{
+				this.displayedRenderSize = setup.RenderingSize;
+				this.displayedRenderScale = setup.ResolutionScale;
+				this.displayedAAQuality = setup.AntialiasingQuality;
+				this.text.SourceText = string.Format(
+					"Render Size: {0} x {1}/n" + 
+					"Res. Scaling: {2:F}x/n" +
+					"AA Quality: {3}",
+					this.displayedRenderSize.X, this.displayedRenderSize.Y,
+					this.displayedRenderScale,
+					this.displayedAAQuality);
+			}
+
 			canvas.DrawText(this.text, 
+				ref this.textBufferGlyphs,
+				ref this.textBufferIcons,
 				canvas.Width - 10,
 				10, 
 				0, 

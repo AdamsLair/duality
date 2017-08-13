@@ -21,10 +21,10 @@ namespace Duality.Samples.Benchmarks
 		private string benchmarkDesc = "Benchmark Description.";
 		private string generalControls = "General Controls.";
 		
-		[DontSerialize] 
-		private string textTemplate = "/f[1]{0}/f[0]/n/n{1}/n/n{2}";
-		[DontSerialize] 
-		private FormattedText text = new FormattedText();
+		[DontSerialize] private string textTemplate = "/f[1]{0}/f[0]/n/n{1}/n/n{2}";
+		[DontSerialize] private FormattedText text = new FormattedText();
+		[DontSerialize] private VertexC1P3T2[][] textBufferGlyphs;
+		[DontSerialize] private VertexC1P3T2[] textBufferIcons;
 
 
 		public ContentRef<Font> MainFont
@@ -87,7 +87,12 @@ namespace Duality.Samples.Benchmarks
 			canvas.FillRect(10, 10, textBlockSize.X + this.margin.X * 2, textBlockSize.Y + this.margin.Y * 2);
 
 			canvas.State.ColorTint = ColorRgba.White;
-			canvas.DrawText(this.text, 10 + this.margin.X, 10 + this.margin.Y);
+			canvas.DrawText(
+				this.text, 
+				ref this.textBufferGlyphs,
+				ref this.textBufferIcons,
+				10 + this.margin.X, 
+				10 + this.margin.Y);
 		}
 		void ICmpInitializable.OnInit(Component.InitContext context)
 		{
