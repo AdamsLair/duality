@@ -48,6 +48,7 @@ namespace Duality.Resources
 		private List<RenderSetupTargetResize> autoResizeTargets = new List<RenderSetupTargetResize>();
 
 		[DontSerialize] private Dictionary<ContentRef<RenderTarget>,Point2> originalTargetSizes = new Dictionary<ContentRef<RenderTarget>,Point2>();
+		[DontSerialize] private RawList<ICmpRenderer> collectRendererBuffer = new RawList<ICmpRenderer>();
 		[DontSerialize] private List<Predicate<ICmpRenderer>> rendererFilter = new List<Predicate<ICmpRenderer>>();
 		[DontSerialize] private EventHandler<CollectDrawcallEventArgs> eventCollectDrawcalls = null;
 
@@ -357,29 +358,30 @@ namespace Duality.Resources
 
 				// Query renderers
 				IRendererVisibilityStrategy visibilityStrategy = scene.VisibilityStrategy;
-				RawList<ICmpRenderer> visibleRenderers;
+				if (visibilityStrategy == null) return;
+
+				Profile.TimeQueryVisibleRenderers.BeginMeasure();
+
+				if (this.collectRendererBuffer == null)
+					this.collectRendererBuffer = new RawList<ICmpRenderer>();
+				this.collectRendererBuffer.Clear();
+
+				visibilityStrategy.QueryVisibleRenderers(drawDevice, this.collectRendererBuffer);
+				if (this.rendererFilter.Count > 0)
 				{
-					if (visibilityStrategy == null) return;
-					Profile.TimeQueryVisibleRenderers.BeginMeasure();
-
-					visibleRenderers = new RawList<ICmpRenderer>();
-					visibilityStrategy.QueryVisibleRenderers(drawDevice, visibleRenderers);
-					if (this.rendererFilter.Count > 0)
+					this.collectRendererBuffer.RemoveAll(r =>
 					{
-						visibleRenderers.RemoveAll(r =>
+						for (int i = 0; i < this.rendererFilter.Count; i++)
 						{
-							for (int i = 0; i < this.rendererFilter.Count; i++)
-							{
-								if (!this.rendererFilter[i](r)) return true;
-							}
-							return false;
-						});
-					}
-
-					Profile.TimeQueryVisibleRenderers.EndMeasure();
+							if (!this.rendererFilter[i](r)) return true;
+						}
+						return false;
+					});
 				}
 
-				this.OnCollectRendererDrawcalls(drawDevice, visibleRenderers, visibilityStrategy.IsRendererQuerySorted);
+				Profile.TimeQueryVisibleRenderers.EndMeasure();
+
+				this.OnCollectRendererDrawcalls(drawDevice, this.collectRendererBuffer, visibilityStrategy.IsRendererQuerySorted);
 			}
 			catch (Exception e)
 			{

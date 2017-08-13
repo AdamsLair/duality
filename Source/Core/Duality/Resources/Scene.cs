@@ -382,6 +382,11 @@ namespace Duality.Resources
 		[CloneField(CloneFieldFlags.DontSkip)]
 		private Dictionary<TypeInfo,List<Component>> componentsByType = new Dictionary<TypeInfo,List<Component>>();
 
+		// Temporary buffers used during scene updates, stored and re-used for efficiency
+		[DontSerialize] private List<Type> updateTypeOrder = new List<Type>();
+		[DontSerialize] private RawList<Component> updatableComponents = new RawList<Component>(256);
+		[DontSerialize] private RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
+
 		
 		/// <summary>
 		/// [GET / SET] The strategy that is used to determine which <see cref="ICmpRenderer">renderers</see> are visible.
@@ -601,41 +606,41 @@ namespace Duality.Resources
 			Profile.TimeUpdateSceneComponents.BeginMeasure();
 
 			// Create a sorted list of updatable component types
-			List<Type> updateTypeOrder = new List<Type>();
+			this.updateTypeOrder.Clear();
 			foreach (var pair in this.componentsByType)
 			{
 				// Skip Component types that aren't updatable anyway
-				Component sampleComponent = pair.Value.FirstOrDefault();
+				Component sampleComponent = pair.Value.Count > 0 ? pair.Value[0] : null;
 				if (!(sampleComponent is T))
 					continue;
 
-				updateTypeOrder.Add(pair.Key.AsType());
+				this.updateTypeOrder.Add(pair.Key.AsType());
 			}
-			Component.ExecOrder.SortTypes(updateTypeOrder, false);
+			Component.ExecOrder.SortTypes(this.updateTypeOrder, false);
 
 			// Gather a list of updatable Components
-			RawList<Component> updatableComponents = new RawList<Component>(256);
-			RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
-			foreach (Type type in updateTypeOrder)
+			this.updatableComponents.Clear();
+			this.updateMap.Clear();
+			foreach (Type type in this.updateTypeOrder)
 			{
 				TypeInfo typeInfo = type.GetTypeInfo();
 				List<Component> components = this.componentsByType[typeInfo];
-				int oldCount = updatableComponents.Count;
+				int oldCount = this.updatableComponents.Count;
 
 				// Collect Components
-				updatableComponents.Reserve(updatableComponents.Count + components.Count);
+				this.updatableComponents.Reserve(this.updatableComponents.Count + components.Count);
 				for (int i = 0; i < components.Count; i++)
 				{
-					updatableComponents.Add(components[i]);
+					this.updatableComponents.Add(components[i]);
 				}
 
 				// Keep in mind how many Components of each type we have in what order
-				if (updatableComponents.Count - oldCount > 0)
+				if (this.updatableComponents.Count - oldCount > 0)
 				{
-					updateMap.Add(new UpdateEntry
+					this.updateMap.Add(new UpdateEntry
 					{
 						Type = typeInfo,
-						Count = updatableComponents.Count - oldCount,
+						Count = this.updatableComponents.Count - oldCount,
 						Profiler = Profile.RequestCounter<TimeCounter>(Profile.TimeUpdateScene.FullName + @"\" + typeInfo.Name)
 					});
 				}
@@ -646,12 +651,12 @@ namespace Duality.Resources
 				int updateMapIndex = -1;
 				int updateMapBegin = -1;
 				TimeCounter activeProfiler = null;
-				Component[] data = updatableComponents.Data;
-				UpdateEntry[] updateData = updateMap.Data;
+				Component[] data = this.updatableComponents.Data;
+				UpdateEntry[] updateData = this.updateMap.Data;
 
 				for (int i = 0; i < data.Length; i++)
 				{
-					if (i >= updatableComponents.Count) break;
+					if (i >= this.updatableComponents.Count) break;
 
 					// Manage profilers per Component type
 					if (i == 0 || i - updateMapBegin >= updateData[updateMapIndex].Count)
