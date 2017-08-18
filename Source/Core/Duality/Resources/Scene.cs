@@ -503,7 +503,7 @@ namespace Duality.Resources
 			if (!this.IsCurrent) throw new InvalidOperationException("Can't render non-current Scene!");
 			switchLock++;
 
-			Camera[] activeCams = this.FindComponents<Camera>().Where(c => c.Active && (camPredicate == null || camPredicate(c))).ToArray();
+			Camera[] activeCams = this.FindComponents<Camera>().Where(c => c.Active && (camPredicate == null || camPredicate(c))).OrderByDescending(c => c.Priority).ToArray();
 			// Maybe sort / process list first later on.
 			foreach (Camera c in activeCams)
 				c.Render(viewportRect);
