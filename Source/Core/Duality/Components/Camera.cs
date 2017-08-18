@@ -252,7 +252,9 @@ namespace Duality.Components
 					this.passes = new List<Pass>();
 			}
 		}
-
+		/// <summary>
+		/// [GET / SET] Cameras with higher priority values render first
+		/// </summary>
 		public int Priority
 		{
 			get { return this.priority; }
