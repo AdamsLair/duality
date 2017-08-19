@@ -253,7 +253,7 @@ namespace Duality.Components
 			}
 		}
 		/// <summary>
-		/// [GET / SET] Cameras with higher priority values render first
+		/// [GET / SET] Cameras with higher priority values render first.
 		/// </summary>
 		public int Priority
 		{
