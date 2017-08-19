@@ -866,6 +866,11 @@ namespace Duality
 			if (DiscardPluginData != null)
 				DiscardPluginData(sender, e);
 
+			// Save user and app data, they'll be reloaded after plugin reload is done,
+			// as they can reference plugin data as well.
+			SaveUserData();
+			SaveAppData();
+
 			// Dispose any existing Resources that could reference plugin data
 			VisualLog.ClearAll();
 			if (!Scene.Current.IsEmpty)
@@ -891,6 +896,10 @@ namespace Duality
 			// Clean event bindings that are still linked to the disposed Assembly.
 			foreach (CorePlugin plugin in e.Plugins)
 				CleanEventBindings(plugin.PluginAssembly);
+
+			// Reload user and app data
+			LoadAppData();
+			LoadUserData();
 		}
 
 		private static void CleanEventBindings(Assembly invalidAssembly)
