@@ -434,8 +434,9 @@ namespace Duality.Resources
 		{
 			Camera[] activeSceneCameras = scene.FindComponents<Camera>()
 				.Where(c => c.Active)
+				.OrderByDescending(c => c.Priority)
 				.ToArray();
-
+			
 			foreach (Camera camera in activeSceneCameras)
 			{
 				Vector2 cameraImageSize = imageSize;

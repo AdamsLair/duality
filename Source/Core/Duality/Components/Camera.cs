@@ -28,6 +28,7 @@ namespace Duality.Components
 		private ColorRgba                clearColor            = ColorRgba.TransparentBlack;
 		private ContentRef<RenderTarget> renderTarget          = null;
 		private ContentRef<RenderSetup>  renderSetup           = null;
+		private int             priority       = 0;
 
 		[DontSerialize] private DrawDevice         drawDevice   = null;
 		[DontSerialize] private PickingRenderSetup pickingSetup = null;
@@ -137,6 +138,14 @@ namespace Duality.Components
 					DualityApp.AppData.RenderingSetup.Res ?? 
 					RenderSetup.Default.Res;
 			}
+		}
+		/// <summary>
+		/// [GET / SET] Cameras with higher priority values render first.
+		/// </summary>
+		public int Priority
+		{
+			get { return this.priority; }
+			set { this.priority = value; }
 		}
 
 
