@@ -162,6 +162,7 @@ namespace Duality.Components
 		private PerspectiveMode perspective    = PerspectiveMode.Parallax;
 		private VisibilityFlag  visibilityMask = VisibilityFlag.All;
 		private List<Pass>      passes         = new List<Pass>();
+		private int             priority       = 0;
 
 		[DontSerialize] private DrawDevice                    drawDevice         = null;
 		[DontSerialize] private List<ICmpRenderer>            pickingMap         = null;
@@ -250,6 +251,14 @@ namespace Duality.Components
 				else
 					this.passes = new List<Pass>();
 			}
+		}
+		/// <summary>
+		/// [GET / SET] Cameras with higher priority values render first.
+		/// </summary>
+		public int Priority
+		{
+			get { return this.priority; }
+			set { this.priority = value; }
 		}
 
 
