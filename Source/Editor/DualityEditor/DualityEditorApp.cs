@@ -1275,9 +1275,6 @@ namespace Duality.Editor
 				if (!dualityAppSuspended)
 				{
 					bool fixedSingleStep = Sandbox.TakeSingleStep();
-					DualityApp.ExecutionContext lastContext = DualityApp.ExecContext;
-					if (fixedSingleStep) DualityApp.ExecContext = DualityApp.ExecutionContext.Game;
-
 					try
 					{
 						DualityApp.EditorUpdate(
@@ -1291,8 +1288,6 @@ namespace Duality.Editor
 						Log.Editor.WriteError("An error occurred during a core update: {0}", Log.Exception(exception));
 					}
 					OnUpdatingEngine();
-
-					if (fixedSingleStep) DualityApp.ExecContext = lastContext;
 				}
 				
 				// Perform a buffer swap

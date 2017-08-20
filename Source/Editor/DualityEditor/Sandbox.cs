@@ -83,7 +83,6 @@ namespace Duality.Editor
 			{
 				OnUnpausingSandbox();
 				state = SandboxState.Playing;
-				DualityApp.ExecContext = DualityApp.ExecutionContext.Game;
 			}
 			else
 			{
@@ -118,7 +117,6 @@ namespace Duality.Editor
 			stateChange = true;
 
 			state = SandboxState.Paused;
-			DualityApp.ExecContext = DualityApp.ExecutionContext.Editor;
 
 			OnPausedSandbox();
 			OnSandboxStateChanged();
