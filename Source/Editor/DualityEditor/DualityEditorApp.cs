@@ -1282,9 +1282,8 @@ namespace Duality.Editor
 					{
 						DualityApp.EditorUpdate(
 							editorObjects.ActiveObjects.Concat(updateObjects), 
-							Sandbox.IsFreezed, 
-							fixedSingleStep && Sandbox.State != SandboxState.Playing,
-							Sandbox.State == SandboxState.Playing);
+							fixedSingleStep || (Sandbox.State == SandboxState.Playing && !Sandbox.IsFreezed), 
+							fixedSingleStep);
 						updateObjects.Clear();
 					}
 					catch (Exception exception)
