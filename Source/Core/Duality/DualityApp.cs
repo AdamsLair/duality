@@ -529,28 +529,26 @@ namespace Duality
 
 			if (terminateScheduled) Terminate();
 		}
-		internal static void EditorUpdate(IEnumerable<GameObject> updateObjects, bool freezeScene, bool forceFixedStep)
+		internal static void EditorUpdate(IEnumerable<GameObject> updateObjects, bool freezeScene, bool forceFixedStep, bool advanceGameTimer)
 		{
 			isUpdating = true;
 			Profile.TimeUpdate.BeginMeasure();
 
-			Time.FrameTick(forceFixedStep);
+			Time.FrameTick(forceFixedStep, !freezeScene && advanceGameTimer);
 			Profile.FrameTick();
 			if (execContext == ExecutionContext.Game && !freezeScene)
 			{
 				VisualLog.UpdateLogEntries();
 			}
 			pluginManager.InvokeBeforeUpdate();
-			if (execContext == ExecutionContext.Game)
+			if (execContext == ExecutionContext.Game && !freezeScene)
 			{
-				if (!freezeScene)	UpdateUserInput();
-
-				if (!freezeScene)	Scene.Current.Update();
-				else				Scene.Current.EditorUpdate();
+				UpdateUserInput();
+				Scene.Current.Update();
 
 				foreach (GameObject obj in updateObjects)
 				{
-					if (!freezeScene && obj.ParentScene == Scene.Current)
+					if (obj.ParentScene == Scene.Current)
 						continue;
 					
 					obj.IterateComponents<ICmpUpdatable>(
