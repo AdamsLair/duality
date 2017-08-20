@@ -138,7 +138,7 @@ namespace Duality.Editor
 			if (!activeScene.IsRuntimeResource)
 				activeScene.Res.Dispose();
 
-			// Stopp all audio that might not have been taken care of manually by the user
+			// Stop all audio that might not have been taken care of manually by the user
 			DualityApp.Sound.StopAll();
 
 			Time.TimeScale = 1.0f; // Reset time scale
