@@ -293,7 +293,14 @@ namespace Duality
 				{
 					ExecutionContext previous = execContext;
 					execContext = value;
+					
+					if (previous == ExecutionContext.Game && value != ExecutionContext.Game)
+						pluginManager.InvokeGameEnded();
+
 					pluginManager.InvokeExecContextChanged(previous);
+
+					if (previous != ExecutionContext.Game && value == ExecutionContext.Game)
+						pluginManager.InvokeGameStarting();
 				}
 			}
 		}
@@ -434,6 +441,13 @@ namespace Duality
 		public static void InitPostWindow()
 		{
 			ContentProvider.InitDefaultContent();
+
+			// Post-Window init is the last thing that happens before loading game
+			// content and entering simulation. When done in a game context, notify
+			// plugins that the game is about to start - otherwise, exec context changes
+			// will trigger the same code later.
+			if (execContext == ExecutionContext.Game)
+				pluginManager.InvokeGameStarting();
 		}
 		/// <summary>
 		/// Terminates this DualityApp. This does not end the current Process, but will instruct the engine to
@@ -451,7 +465,7 @@ namespace Duality
 			if (environment == ExecutionEnvironment.Editor && execContext == ExecutionContext.Game)
 			{
 				Scene.Current.Dispose();
-				Log.Core.Write("DualityApp Sandbox terminated");
+				Log.Core.Write("DualityApp terminated in sandbox mode.");
 				terminateScheduled = false;
 				return;
 			}
@@ -461,6 +475,10 @@ namespace Duality
 				OnTerminating();
 				SaveUserData();
 			}
+
+			// Signal that the game simulation has ended.
+			if (execContext == ExecutionContext.Game)
+				pluginManager.InvokeGameEnded();
 
 			// Discard plugin data (Resources, current Scene) ahead of time. Otherwise, it'll get shut down in ClearPlugins, after the backend is gone.
 			pluginManager.DiscardPluginData();

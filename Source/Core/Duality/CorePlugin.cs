@@ -24,5 +24,13 @@ namespace Duality
 		/// Called when Dualitys <see cref="DualityApp.ExecutionContext"/> changes.
 		/// </summary>
 		internal protected virtual void OnExecContextChanged(DualityApp.ExecutionContext previousContext) {}
+		/// <summary>
+		/// Called right before game simulation starts, e.g. when running the launcher or entering editor sandbox mode.
+		/// </summary>
+		internal protected virtual void OnGameStarting() {}
+		/// <summary>
+		/// Called right after game simulation has ended, e.g. by closing the launcher or exiting editor sandbox mode.
+		/// </summary>
+		internal protected virtual void OnGameEnded() {}
 	}
 }
