@@ -728,7 +728,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			this.ValidateSelectionStats();
 			base.OnUpdateState();
-			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+			if (Sandbox.State == SandboxState.Playing)
 			{
 				this.InvalidateSelectionStats();
 			}

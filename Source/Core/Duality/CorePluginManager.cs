@@ -127,6 +127,22 @@ namespace Duality
 			foreach (CorePlugin plugin in this.LoadedPlugins)
 				plugin.OnExecContextChanged(previousContext);
 		}
+		/// <summary>
+		/// Invokes each plugin's <see cref="CorePlugin.OnGameStarting"/> event handler.
+		/// </summary>
+		public void InvokeGameStarting()
+		{
+			foreach (CorePlugin plugin in this.LoadedPlugins)
+				plugin.OnGameStarting();
+		}
+		/// <summary>
+		/// Invokes each plugin's <see cref="CorePlugin.OnGameEnded"/> event handler.
+		/// </summary>
+		public void InvokeGameEnded()
+		{
+			foreach (CorePlugin plugin in this.LoadedPlugins)
+				plugin.OnGameEnded();
+		}
 		
 		protected override void OnInit()
 		{

@@ -9,16 +9,13 @@ namespace DualStickSpaceShooter
 {
     public class DualStickSpaceShooterCorePlugin : CorePlugin
 	{
-		private bool contentLoaded = false;
-		protected override void OnBeforeUpdate()
+		protected override void OnGameStarting()
 		{
-			base.OnBeforeUpdate();
+			base.OnGameStarting();
 
-			// Load all available content so we don't need on-demand loading during runtime.
+			// Load all available content so we don't need on-demand loading at runtime.
 			// It's probably not a good idea for content-rich games, consider having a per-level
 			// loading screen instead, or something similar.
-			if (!this.contentLoaded && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-			{
 				Logs.Game.Write("Loading game content...");
 				Logs.Game.PushIndent();
 				{
@@ -29,8 +26,6 @@ namespace DualStickSpaceShooter
 					}
 				}
 				Logs.Game.PopIndent();
-				this.contentLoaded = true;
 			}
 		}
-	}
 }

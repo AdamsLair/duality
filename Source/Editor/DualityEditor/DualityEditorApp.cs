@@ -1275,15 +1275,12 @@ namespace Duality.Editor
 				if (!dualityAppSuspended)
 				{
 					bool fixedSingleStep = Sandbox.TakeSingleStep();
-					DualityApp.ExecutionContext lastContext = DualityApp.ExecContext;
-					if (fixedSingleStep) DualityApp.ExecContext = DualityApp.ExecutionContext.Game;
-
 					try
 					{
 						DualityApp.EditorUpdate(
 							editorObjects.ActiveObjects.Concat(updateObjects), 
-							Sandbox.IsFreezed, 
-							fixedSingleStep && Sandbox.State != SandboxState.Playing);
+							fixedSingleStep || (Sandbox.State == SandboxState.Playing && !Sandbox.IsFreezed), 
+							fixedSingleStep);
 						updateObjects.Clear();
 					}
 					catch (Exception exception)
@@ -1291,8 +1288,6 @@ namespace Duality.Editor
 						Logs.Editor.WriteError("An error occurred during a core update: {0}", LogFormat.Exception(exception));
 					}
 					OnUpdatingEngine();
-
-					if (fixedSingleStep) DualityApp.ExecContext = lastContext;
 				}
 				
 				// Perform a buffer swap

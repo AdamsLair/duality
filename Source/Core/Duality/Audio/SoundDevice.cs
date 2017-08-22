@@ -117,6 +117,7 @@ namespace Duality.Audio
 		public SoundDevice()
 		{
 			DualityApp.AppDataChanged += this.DualityApp_AppDataChanged;
+			UpdateWorldSettings();
 		}
 		~SoundDevice()
 		{
@@ -225,6 +226,12 @@ namespace Duality.Audio
 				this.ListenerAngle * AudioUnit.AngleToPhysical,
 				this.mute);
 		}
+		private void UpdateWorldSettings()
+		{
+			DualityApp.AudioBackend.UpdateWorldSettings(
+				DualityApp.AppData.SpeedOfSound, // Already in meters per second / audio units
+				DualityApp.AppData.SoundDopplerFactor);
+		}
 		
 		/// <summary>
 		/// Plays a sound.
@@ -288,9 +295,7 @@ namespace Duality.Audio
 		
 		private void DualityApp_AppDataChanged(object sender, EventArgs e)
 		{
-			DualityApp.AudioBackend.UpdateWorldSettings(
-				DualityApp.AppData.SpeedOfSound, // Already in meters per second / audio units
-				DualityApp.AppData.SoundDopplerFactor);
+			UpdateWorldSettings();
 		}
 	}
 }
