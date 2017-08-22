@@ -609,7 +609,7 @@ namespace VersionUpdater
 								{
 									filteredMessageToken.Add(token);
 								}
-								else
+								else if (filteredMessageToken.Count > 0)
 								{
 									string lastToken = filteredMessageToken[filteredMessageToken.Count - 1];
 									filteredMessageToken.RemoveAt(filteredMessageToken.Count - 1);
