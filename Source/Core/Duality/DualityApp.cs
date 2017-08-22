@@ -489,7 +489,7 @@ namespace Duality
 			isUpdating = true;
 			Profile.TimeUpdate.BeginMeasure();
 
-			Time.FrameTick();
+			Time.FrameTick(false, true);
 			Profile.FrameTick();
 			VisualLogs.UpdateLogEntries();
 			pluginManager.InvokeBeforeUpdate();

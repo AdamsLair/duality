@@ -134,7 +134,7 @@ namespace Duality
 				Resume();
 		}
 
-		internal static void FrameTick(bool forceFixedStep = false, bool advanceGameTime = false)
+		internal static void FrameTick(bool forceFixedStep, bool advanceGameTime)
 		{
 			// Initial timer start
 			if (!watch.IsRunning) watch.Restart();
