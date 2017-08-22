@@ -13,11 +13,11 @@ namespace Duality
 		/// </summary>
 		internal protected virtual void InitPlugin() {}
 		/// <summary>
-		/// Called before Duality updates the game scene
+		/// Called before Duality updates the game simulation.
 		/// </summary>
 		internal protected virtual void OnBeforeUpdate() {}
 		/// <summary>
-		/// Called after Duality updates the game scene
+		/// Called after Duality updates the game simulation.
 		/// </summary>
 		internal protected virtual void OnAfterUpdate() {}
 		/// <summary>

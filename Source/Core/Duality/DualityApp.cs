@@ -512,13 +512,12 @@ namespace Duality
 
 			Time.FrameTick(forceFixedStep, simulateGame);
 			Profile.FrameTick();
+
 			if (simulateGame)
 			{
 				VisualLogs.UpdateLogEntries();
-			}
-			pluginManager.InvokeBeforeUpdate();
-			if (simulateGame)
-			{
+				pluginManager.InvokeBeforeUpdate();
+
 				UpdateUserInput();
 				Scene.Current.Update();
 
@@ -536,6 +535,8 @@ namespace Duality
 						updatables[i].OnUpdate();
 					}
 				}
+
+				pluginManager.InvokeAfterUpdate();
 			}
 			else
 			{
@@ -553,8 +554,8 @@ namespace Duality
 					}
 				}
 			}
+
 			sound.Update();
-			pluginManager.InvokeAfterUpdate();
 			VisualLogs.PrepareRenderLogEntries();
 			RunCleanup();
 
