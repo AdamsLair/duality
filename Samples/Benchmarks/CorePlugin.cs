@@ -14,15 +14,12 @@ namespace Duality.Samples.Benchmarks
 		protected override void OnAfterUpdate()
 		{
 			base.OnAfterUpdate();
-			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+			if (this.controller == null)
 			{
-				if (this.controller == null)
-				{
-					this.controller = new BenchmarkController();
-					this.controller.PrepareBenchmarks();
-				}
-				this.controller.Update();
+				this.controller = new BenchmarkController();
+				this.controller.PrepareBenchmarks();
 			}
+			this.controller.Update();
 		}
 		protected override void OnExecContextChanged(DualityApp.ExecutionContext previousContext)
 		{
