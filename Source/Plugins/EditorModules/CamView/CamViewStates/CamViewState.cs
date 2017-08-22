@@ -524,7 +524,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			
 			// If we're currently executing the game, invalidate every frame
-			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+			if (Sandbox.State == SandboxState.Playing)
 				this.Invalidate();
 
 			// If we previously skipped a repaint event because we already rendered

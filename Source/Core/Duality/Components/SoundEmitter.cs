@@ -16,7 +16,7 @@ namespace Duality.Components
 	[RequiredComponent(typeof(Transform))]
 	[EditorHintCategory(CoreResNames.CategorySound)]
 	[EditorHintImage(CoreResNames.ImageSoundEmitter)]
-	public sealed class SoundEmitter : Component, ICmpUpdatable, ICmpInitializable, ICmpEditorUpdatable
+	public sealed class SoundEmitter : Component, ICmpUpdatable, ICmpInitializable
 	{
 		/// <summary>
 		/// A single sound source.
@@ -206,25 +206,21 @@ namespace Duality.Components
 		void ICmpUpdatable.OnUpdate()
 		{
 			for (int i = this.sources.Count - 1; i >= 0; i--)
-				if (this.sources[i] != null && !this.sources[i].Update(this)) this.sources.RemoveAt(i);
-		}
-		void ICmpEditorUpdatable.OnUpdate()
-		{
-			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Game)
 			{
-				for (int i = this.sources.Count - 1; i >= 0; i--)
-					if (this.sources[i].Instance != null) this.sources[i].Instance.Stop();
+				if (this.sources[i] != null && !this.sources[i].Update(this))
+					this.sources.RemoveAt(i);
 			}
 		}
-		void ICmpInitializable.OnInit(InitContext context)
-		{
-		}
+		void ICmpInitializable.OnInit(InitContext context) {}
 		void ICmpInitializable.OnShutdown(ShutdownContext context)
 		{
 			if (context == ShutdownContext.Deactivate)
 			{
 				for (int i = this.sources.Count - 1; i >= 0; i--)
-					if (this.sources[i].Instance != null) this.sources[i].Instance.Stop();
+				{
+					if (this.sources[i].Instance != null)
+						this.sources[i].Instance.Stop();
+				}
 			}
 		}
 	}

@@ -293,7 +293,14 @@ namespace Duality
 				{
 					ExecutionContext previous = execContext;
 					execContext = value;
+					
+					if (previous == ExecutionContext.Game && value != ExecutionContext.Game)
+						pluginManager.InvokeGameEnded();
+
 					pluginManager.InvokeExecContextChanged(previous);
+
+					if (previous != ExecutionContext.Game && value == ExecutionContext.Game)
+						pluginManager.InvokeGameStarting();
 				}
 			}
 		}
@@ -434,6 +441,13 @@ namespace Duality
 		public static void InitPostWindow()
 		{
 			ContentProvider.InitDefaultContent();
+
+			// Post-Window init is the last thing that happens before loading game
+			// content and entering simulation. When done in a game context, notify
+			// plugins that the game is about to start - otherwise, exec context changes
+			// will trigger the same code later.
+			if (execContext == ExecutionContext.Game)
+				pluginManager.InvokeGameStarting();
 		}
 		/// <summary>
 		/// Terminates this DualityApp. This does not end the current Process, but will instruct the engine to
@@ -451,7 +465,7 @@ namespace Duality
 			if (environment == ExecutionEnvironment.Editor && execContext == ExecutionContext.Game)
 			{
 				Scene.Current.Dispose();
-				Log.Core.Write("DualityApp Sandbox terminated");
+				Log.Core.Write("DualityApp terminated in sandbox mode.");
 				terminateScheduled = false;
 				return;
 			}
@@ -461,6 +475,10 @@ namespace Duality
 				OnTerminating();
 				SaveUserData();
 			}
+
+			// Signal that the game simulation has ended.
+			if (execContext == ExecutionContext.Game)
+				pluginManager.InvokeGameEnded();
 
 			// Discard plugin data (Resources, current Scene) ahead of time. Otherwise, it'll get shut down in ClearPlugins, after the backend is gone.
 			pluginManager.DiscardPluginData();
@@ -529,28 +547,26 @@ namespace Duality
 
 			if (terminateScheduled) Terminate();
 		}
-		internal static void EditorUpdate(IEnumerable<GameObject> updateObjects, bool freezeScene, bool forceFixedStep)
+		internal static void EditorUpdate(IEnumerable<GameObject> updateObjects, bool simulateGame, bool forceFixedStep)
 		{
 			isUpdating = true;
 			Profile.TimeUpdate.BeginMeasure();
 
-			Time.FrameTick(forceFixedStep);
+			Time.FrameTick(forceFixedStep, simulateGame);
 			Profile.FrameTick();
-			if (execContext == ExecutionContext.Game && !freezeScene)
+			if (simulateGame)
 			{
 				VisualLog.UpdateLogEntries();
 			}
 			pluginManager.InvokeBeforeUpdate();
-			if (execContext == ExecutionContext.Game)
+			if (simulateGame)
 			{
-				if (!freezeScene)	UpdateUserInput();
-
-				if (!freezeScene)	Scene.Current.Update();
-				else				Scene.Current.EditorUpdate();
+				UpdateUserInput();
+				Scene.Current.Update();
 
 				foreach (GameObject obj in updateObjects)
 				{
-					if (!freezeScene && obj.ParentScene == Scene.Current)
+					if (obj.ParentScene == Scene.Current)
 						continue;
 					
 					obj.IterateComponents<ICmpUpdatable>(
@@ -558,7 +574,7 @@ namespace Duality
 						l => (l as Component).Active);
 				}
 			}
-			else if (execContext == ExecutionContext.Editor)
+			else
 			{
 				Scene.Current.EditorUpdate();
 				foreach (GameObject obj in updateObjects)

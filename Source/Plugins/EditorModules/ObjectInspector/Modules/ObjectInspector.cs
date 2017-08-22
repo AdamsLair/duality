@@ -165,7 +165,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		
 		private void EditorForm_AfterUpdateDualityApp(object sender, EventArgs e)
 		{
-			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game && 
+			if (Sandbox.State == SandboxState.Playing && 
 				this.buttonAutoRefresh.Checked && 
 				Time.MainTimer.TotalMilliseconds - this.lastAutoRefresh > 100.0f)
 			{
