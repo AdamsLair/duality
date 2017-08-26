@@ -64,7 +64,7 @@ namespace Duality.Tests.Utility
 
 			// Test precondition: The numbers really are out of order, but each item knows its original place
 			Assert.IsTrue(workingList.Length < 10 || !workingList.IsSorted(sortIndex, sortCount, comparer), "Items shuffled before sort.");
-			Assert.IsTrue(workingList.IsStable(sortIndex, sortCount, originalList, comparer), "Equivalent items in sequential order before sort.");
+			Assert.IsTrue(workingList.IsStableOrder(sortIndex, sortCount, originalList, comparer), "Equivalent items in sequential order before sort.");
 
 			// Sort the shuffled numbers again
 			workingList.StableSort(sortIndex, sortCount, comparer);
@@ -72,7 +72,7 @@ namespace Duality.Tests.Utility
 			// Assert that we didn't lose any items, and that they're now stable-sorted
 			CollectionAssert.AreEquivalent(originalList, workingList, "Same items before and after sort.");
 			Assert.IsTrue(workingList.IsSorted(sortIndex, sortCount, comparer), "Items in order after sort.");
-			Assert.IsTrue(workingList.IsStable(sortIndex, sortCount, originalList, comparer), "Equivalent items in same order after sort than before.");
+			Assert.IsTrue(workingList.IsStableOrder(sortIndex, sortCount, originalList, comparer), "Equivalent items in same order after sort than before.");
 
 			// If we only sorted part of the list, assert that all the other parts stayed the same
 			if (sortIndex > 0)
