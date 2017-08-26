@@ -81,6 +81,7 @@
     <Compile Include="Components\ExecutionOrderTest\TestComponent.cs" />
     <Compile Include="Components\TransformTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
+    <Compile Include="Testing\ExtMethodsIList.cs" />
     <Compile Include="Resources\RenderTargetTest.cs" />
     <Compile Include="Testing\ExtMethodsPixelData.cs" />
     <Compile Include="Math\Vector4Test.cs" />
@@ -119,8 +120,11 @@
     <Compile Include="CorePlugin.cs" />
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Drawing\CanvasTest.cs" />
+    <Compile Include="Testing\IdentityComparer.cs" />
+    <Compile Include="Utility\SortingIntContainer.cs" />
     <Compile Include="Utility\ExtMethodsMemberInfoTest.cs" />
     <Compile Include="Math\RectTest.cs" />
+    <Compile Include="Utility\ExtMethodsIListTest.cs" />
     <Compile Include="Utility\ExtMethodsTypeInfoTest.cs" />
     <Compile Include="Utility\ObjectCreatorTest.cs" />
     <Compile Include="Utility\ReflectionHelperTest.cs" />
