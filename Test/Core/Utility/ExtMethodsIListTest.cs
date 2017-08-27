@@ -35,7 +35,7 @@ namespace Duality.Tests.Utility
 				Enumerable.Range(0, itemCount)
 				.Select(i => i / 3)
 				.ToArray();
-			values = values.Shuffle(rnd).ToArray();
+			rnd.Shuffle(values);
 
 			TestStableSort(values, sortIndex, sortCount);
 		}
@@ -49,7 +49,7 @@ namespace Duality.Tests.Utility
 				.Select(i => i / 3)
 				.Select(i => new SortingIntContainer(i))
 				.ToArray();
-			values = values.Shuffle(rnd).ToArray();
+			rnd.Shuffle(values);
 
 			TestStableSort(values, sortIndex, sortCount);
 		}
