@@ -15,11 +15,15 @@ namespace Duality.Tests.Utility
 		[Test] public void Shuffle()
 		{
 			int[] numbers = Enumerable.Range(0, 10).ToArray();
-			Assert.IsTrue(IsSorted(numbers));
+			int[] shuffledNumbers = numbers.Clone() as int[];
+
+			Assert.IsTrue(IsSorted(shuffledNumbers));
 
 			Random rnd = new Random(1);
-			rnd.Shuffle(numbers);
-			Assert.IsFalse(IsSorted(numbers));
+			rnd.Shuffle(shuffledNumbers);
+
+			Assert.IsFalse(IsSorted(shuffledNumbers));
+			CollectionAssert.AreEquivalent(numbers, shuffledNumbers);
 		}
 
 		private static bool IsSorted<T>(IEnumerable<T> values, Comparer<T> comparer = null)
