@@ -73,7 +73,7 @@ namespace Duality.Tests.Utility
 			Assert.IsTrue(workingList.IsStableOrder(sortIndex, sortCount, originalList, comparer), "Equivalent items in sequential order before sort.");
 
 			// Sort the shuffled numbers again
-			workingList.StableSort(sortIndex, sortCount, comparer);
+			workingList.StableSort(sortIndex, sortCount, comparer.Compare);
 
 			// Assert that we didn't lose any items, and that they're now stable-sorted
 			CollectionAssert.AreEquivalent(originalList, workingList, "Same items before and after sort.");

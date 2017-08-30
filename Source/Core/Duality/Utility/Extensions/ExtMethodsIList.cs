@@ -17,17 +17,7 @@ namespace Duality
 		/// <param name="list">List to perform the sort operation on.</param>
 		public static void StableSort<T>(this IList<T> list)
 		{
-			StableSort<T>(list, Comparer<T>.Default);
-		}
-		/// <summary>
-		/// Performs a stable sort.
-		/// </summary>
-		/// <typeparam name="T">The lists object type.</typeparam>
-		/// <param name="list">List to perform the sort operation on.</param>
-		/// <param name="comparer">The comparer to use.</param>
-		public static void StableSort<T>(this IList<T> list, IComparer<T> comparer)
-		{
-			StableSort<T>(list, comparer.Compare);
+			StableSort<T>(list, Comparer<T>.Default.Compare);
 		}
 		/// <summary>
 		/// Performs a stable sort.
@@ -49,18 +39,6 @@ namespace Duality
 		public static void StableSort<T>(this IList<T> list, int index, int count)
 		{
 			StableSort<T>(list, index, count, Comparer<T>.Default.Compare);
-		}
-		/// <summary>
-		/// Performs a stable sort.
-		/// </summary>
-		/// <typeparam name="T">The lists object type.</typeparam>
-		/// <param name="list">List to perform the sort operation on.</param>
-		/// <param name="index"></param>
-		/// <param name="count"></param>
-		/// <param name="comparer">The comparer to use.</param>
-		public static void StableSort<T>(this IList<T> list, int index, int count, IComparer<T> comparer)
-		{
-			StableSort<T>(list, index, count, comparer.Compare);
 		}
 		/// <summary>
 		/// Performs a stable sort.
@@ -94,18 +72,6 @@ namespace Duality
 		/// <typeparam name="T">The array element type.</typeparam>
 		/// <param name="array">Array to perform the sort operation on.</param>
 		/// <param name="buffer"></param>
-		/// <param name="comparer"></param>
-		public static void StableSort<T>(this IList<T> list, IList<T> buffer, IComparer<T> comparer)
-		{
-			StableSort<T>(list, buffer, 0, list.Count, (comparer ?? Comparer<T>.Default).Compare);
-		}
-		/// <summary>
-		/// Performs a zero-alloc stable sort on the specified list. Requires
-		/// a buffer of at least the size of the array that is to be sorted.
-		/// </summary>
-		/// <typeparam name="T">The array element type.</typeparam>
-		/// <param name="array">Array to perform the sort operation on.</param>
-		/// <param name="buffer"></param>
 		/// <param name="comparison"></param>
 		public static void StableSort<T>(this IList<T> list, IList<T> buffer, Comparison<T> comparison)
 		{
@@ -123,20 +89,6 @@ namespace Duality
 		public static void StableSort<T>(this IList<T> list, IList<T> buffer, int index, int count)
 		{
 			StableSort<T>(list, buffer, index, count, Comparer<T>.Default.Compare);
-		}
-		/// <summary>
-		/// Performs a zero-alloc stable sort on the specified list. Requires
-		/// a buffer of at least the size of the array that is to be sorted.
-		/// </summary>
-		/// <typeparam name="T">The array element type.</typeparam>
-		/// <param name="array">Array to perform the sort operation on.</param>
-		/// <param name="buffer"></param>
-		/// <param name="index"></param>
-		/// <param name="count"></param>
-		/// <param name="comparer"></param>
-		public static void StableSort<T>(this IList<T> list, IList<T> buffer, int index, int count, IComparer<T> comparer)
-		{
-			StableSort<T>(list, buffer, index, count, (comparer ?? Comparer<T>.Default).Compare);
 		}
 		/// <summary>
 		/// Performs a zero-alloc stable sort on the specified list. Requires
