@@ -1302,6 +1302,14 @@ namespace Duality.Drawing
 		/// <param name="closedLoop"></param>
 		private void FillThickOutline(Vector2[] points, float width, float inOutFactor, float x, float y, float z, bool closedLoop)
 		{
+			// When specifying a negative width, flip the in / out factor
+			// and work with a positive width from here.
+			if (width < 0.0f)
+			{
+				inOutFactor = -inOutFactor;
+				width = MathF.Abs(width);
+			}
+
 			width *= 0.5f;
 			Vector3 pos = new Vector3(x, y, z);
 
