@@ -218,7 +218,7 @@ namespace Duality.Drawing
 		private	int					pickingIndex	= 0;
 		private	RawList<IDrawBatch>	drawBuffer		= new RawList<IDrawBatch>();
 		private	RawList<IDrawBatch>	drawBufferZSort	= new RawList<IDrawBatch>();
-		private	RawList<IDrawBatch>	drawBufferOpt	= new RawList<IDrawBatch>();
+		private	RawList<IDrawBatch>	tempBatchBuffer	= new RawList<IDrawBatch>();
 		private	int					numRawBatches	= 0;
 		private	ContentRef<RenderTarget> renderTarget = null;
 
@@ -694,7 +694,6 @@ namespace Duality.Drawing
 			DualityApp.GraphicsBackend.EndRendering();
 			this.drawBuffer.Clear();
 			this.drawBufferZSort.Clear();
-			this.drawBufferOpt.Clear();
 		}
 
 
@@ -759,22 +758,19 @@ namespace Duality.Drawing
 			int batchCountBefore = this.drawBuffer.Count + this.drawBufferZSort.Count;
 			if (this.pickingIndex == 0) Profile.TimeOptimizeDrawcalls.BeginMeasure();
 
-			// Prepare a shared buffer for zero-alloc stable sort operations
-			this.drawBufferOpt.Count = Math.Max(this.drawBuffer.Count, this.drawBufferZSort.Count);
-
 			// Non-ZSorted
 			if (this.drawBuffer.Count > 1)
 			{
-				this.drawBuffer.StableSort(this.drawBufferOpt, DrawBatchComparer);
-				this.drawBuffer = this.OptimizeBatches(this.drawBuffer);
+				this.SortBatches(this.drawBuffer, DrawBatchComparer);
+				this.OptimizeBatches(this.drawBuffer);
 			}
 
 			// Z-Sorted
 			if (this.drawBufferZSort.Count > 1)
 			{
 				// Stable sort assures maintaining draw order for batches of equal ZOrderIndex
-				this.drawBufferZSort.StableSort(this.drawBufferOpt, DrawBatchComparerZSort);
-				this.drawBufferZSort = this.OptimizeBatches(this.drawBufferZSort);
+				this.SortBatches(this.drawBufferZSort, DrawBatchComparerZSort);
+				this.OptimizeBatches(this.drawBufferZSort);
 			}
 
 			if (this.pickingIndex == 0) Profile.TimeOptimizeDrawcalls.EndMeasure();
@@ -785,12 +781,24 @@ namespace Duality.Drawing
 			Profile.StatNumOptimizedBatches.Add(batchCountAfter);
 			this.numRawBatches = 0;
 		}
-		private RawList<IDrawBatch> OptimizeBatches(RawList<IDrawBatch> sortedBuffer)
+		private void SortBatches(RawList<IDrawBatch> batchBuffer, Comparison<IDrawBatch> comparison)
 		{
-			RawList<IDrawBatch> optimized = new RawList<IDrawBatch>(sortedBuffer.Count);
+			this.tempBatchBuffer.Clear();
+			this.tempBatchBuffer.Count = batchBuffer.Count;
+			batchBuffer.StableSort(this.tempBatchBuffer, comparison);
+			this.tempBatchBuffer.Clear();
+		}
+		private void OptimizeBatches(RawList<IDrawBatch> sortedBuffer)
+		{
 			IDrawBatch current = sortedBuffer[0];
 			IDrawBatch next;
-			optimized.Add(current);
+
+			// Prepare a temporary batch buffer to store our optimized batches in.
+			this.tempBatchBuffer.Clear();
+			this.tempBatchBuffer.Add(current);
+
+			// Combine consecutive batches wherever possible and store the
+			// results in a temporary batch buffer.
 			for (int i = 1; i < sortedBuffer.Count; i++)
 			{
 				next = sortedBuffer[i];
@@ -802,11 +810,16 @@ namespace Duality.Drawing
 				else
 				{
 					current = next;
-					optimized.Add(current);
+					this.tempBatchBuffer.Add(current);
 				}
 			}
 
-			return optimized;
+			// Move all batches from the batch buffer back to the sorted buffer
+			// that was provided.
+			sortedBuffer.Clear();
+			sortedBuffer.Count = this.tempBatchBuffer.Count;
+			this.tempBatchBuffer.CopyTo(sortedBuffer, 0, this.tempBatchBuffer.Count);
+			this.tempBatchBuffer.Clear();
 		}
 
 		public static void RenderVoid(Rect viewportRect)
