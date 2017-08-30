@@ -72,81 +72,47 @@ namespace Duality
 		/// <param name="comparison">The comparison to use.</param>
 		public static void StableSort<T>(this IList<T> list, int index, int count, Comparison<T> comparison)
 		{
-			if (count < 2) return;
-
-			int middle = index + count / 2;
-			T[] left = new T[middle - index];
-			T[] right = new T[count - left.Length];
-
-			if (list is T[])
-			{
-				T[] array = list as T[];
-				Array.Copy(array, index, left, 0, left.Length);
-				Array.Copy(array, middle, right, 0, right.Length);
-			}
-			else
-			{
-				ListCopy(list, index, left, 0, left.Length);
-				ListCopy(list, middle, right, 0, right.Length);
-			}
-
-			StableSort(left, 0, left.Length, comparison);
-			StableSort(right, 0, right.Length, comparison);
-
-			int leftptr = 0;
-			int rightptr = 0;
-			for (int k = index ; k < index + count; k++)
-			{
-				if (rightptr == right.Length || ((leftptr < left.Length ) && comparison(left[leftptr], right[rightptr]) <= 0))
-				{
-					list[k] = left[leftptr];
-					leftptr++;
-				}
-				else if (leftptr == left.Length || ((rightptr < right.Length ) && comparison(right[rightptr], left[leftptr]) <= 0))
-				{
-					list[k] = right[rightptr];
-					rightptr++;
-				}
-			}
+			T[] buffer = new T[list.Count];
+			StableSort<T>(list, buffer, index, count, comparison);
 		}
 		
 		/// <summary>
-		/// Performs an optimized zero-alloc stable sort on the specified array. Requires
+		/// Performs a zero-alloc stable sort on the specified list. Requires
 		/// a buffer of at least the size of the array that is to be sorted.
 		/// </summary>
 		/// <typeparam name="T">The array element type.</typeparam>
 		/// <param name="array">Array to perform the sort operation on.</param>
 		/// <param name="buffer"></param>
-		public static void StableSortZeroAlloc<T>(this IList<T> list, IList<T> buffer)
+		public static void StableSort<T>(this IList<T> list, IList<T> buffer)
 		{
-			StableSortZeroAlloc<T>(list, buffer, 0, list.Count, Comparer<T>.Default.Compare);
+			StableSort<T>(list, buffer, 0, list.Count, Comparer<T>.Default.Compare);
 		}
 		/// <summary>
-		/// Performs an optimized zero-alloc stable sort on the specified array. Requires
+		/// Performs a zero-alloc stable sort on the specified list. Requires
 		/// a buffer of at least the size of the array that is to be sorted.
 		/// </summary>
 		/// <typeparam name="T">The array element type.</typeparam>
 		/// <param name="array">Array to perform the sort operation on.</param>
 		/// <param name="buffer"></param>
 		/// <param name="comparer"></param>
-		public static void StableSortZeroAlloc<T>(this IList<T> list, IList<T> buffer, IComparer<T> comparer)
+		public static void StableSort<T>(this IList<T> list, IList<T> buffer, IComparer<T> comparer)
 		{
-			StableSortZeroAlloc<T>(list, buffer, 0, list.Count, (comparer ?? Comparer<T>.Default).Compare);
+			StableSort<T>(list, buffer, 0, list.Count, (comparer ?? Comparer<T>.Default).Compare);
 		}
 		/// <summary>
-		/// Performs an optimized zero-alloc stable sort on the specified array. Requires
+		/// Performs a zero-alloc stable sort on the specified list. Requires
 		/// a buffer of at least the size of the array that is to be sorted.
 		/// </summary>
 		/// <typeparam name="T">The array element type.</typeparam>
 		/// <param name="array">Array to perform the sort operation on.</param>
 		/// <param name="buffer"></param>
 		/// <param name="comparison"></param>
-		public static void StableSortZeroAlloc<T>(this IList<T> list, IList<T> buffer, Comparison<T> comparison)
+		public static void StableSort<T>(this IList<T> list, IList<T> buffer, Comparison<T> comparison)
 		{
-			StableSortZeroAlloc<T>(list, buffer, 0, list.Count, comparison);
+			StableSort<T>(list, buffer, 0, list.Count, comparison);
 		}
 		/// <summary>
-		/// Performs an optimized zero-alloc stable sort on the specified array. Requires
+		/// Performs a zero-alloc stable sort on the specified list. Requires
 		/// a buffer of at least the size of the array that is to be sorted.
 		/// </summary>
 		/// <typeparam name="T">The array element type.</typeparam>
@@ -154,12 +120,12 @@ namespace Duality
 		/// <param name="buffer"></param>
 		/// <param name="index"></param>
 		/// <param name="count"></param>
-		public static void StableSortZeroAlloc<T>(this IList<T> list, IList<T> buffer, int index, int count)
+		public static void StableSort<T>(this IList<T> list, IList<T> buffer, int index, int count)
 		{
-			StableSortZeroAlloc<T>(list, buffer, index, count, Comparer<T>.Default.Compare);
+			StableSort<T>(list, buffer, index, count, Comparer<T>.Default.Compare);
 		}
 		/// <summary>
-		/// Performs an optimized zero-alloc stable sort on the specified array. Requires
+		/// Performs a zero-alloc stable sort on the specified list. Requires
 		/// a buffer of at least the size of the array that is to be sorted.
 		/// </summary>
 		/// <typeparam name="T">The array element type.</typeparam>
@@ -168,12 +134,12 @@ namespace Duality
 		/// <param name="index"></param>
 		/// <param name="count"></param>
 		/// <param name="comparer"></param>
-		public static void StableSortZeroAlloc<T>(this IList<T> list, IList<T> buffer, int index, int count, IComparer<T> comparer)
+		public static void StableSort<T>(this IList<T> list, IList<T> buffer, int index, int count, IComparer<T> comparer)
 		{
-			StableSortZeroAlloc<T>(list, buffer, index, count, (comparer ?? Comparer<T>.Default).Compare);
+			StableSort<T>(list, buffer, index, count, (comparer ?? Comparer<T>.Default).Compare);
 		}
 		/// <summary>
-		/// Performs an optimized zero-alloc stable sort on the specified array. Requires
+		/// Performs a zero-alloc stable sort on the specified list. Requires
 		/// a buffer of at least the size of the array that is to be sorted.
 		/// </summary>
 		/// <typeparam name="T">The array element type.</typeparam>
@@ -182,7 +148,7 @@ namespace Duality
 		/// <param name="index"></param>
 		/// <param name="count"></param>
 		/// <param name="comparison"></param>
-		public static void StableSortZeroAlloc<T>(this IList<T> list, IList<T> buffer, int index, int count, Comparison<T> comparison)
+		public static void StableSort<T>(this IList<T> list, IList<T> buffer, int index, int count, Comparison<T> comparison)
 		{
 			if (list == null) throw new ArgumentNullException("array");
 			if (buffer == null) throw new ArgumentNullException("buffer");
@@ -196,25 +162,25 @@ namespace Duality
 			// Use an optimized array-based version when possible
 			if (list is T[] && buffer is T[])
 			{
-				StableSortZeroAllocArray<T>(
+				StableSortArray<T>(
 					list as T[], 
 					buffer as T[], 
 					index, count, comparison);
 			}
 			else if (list is RawList<T> && buffer is RawList<T>)
 			{
-				StableSortZeroAllocArray<T>(
+				StableSortArray<T>(
 					(list as RawList<T>).Data, 
 					(buffer as RawList<T>).Data, 
 					index, count, comparison);
 			}
 			else
 			{
-				StableSortZeroAllocGeneric<T>(list, buffer, index, count, comparison);
+				StableSortGeneric<T>(list, buffer, index, count, comparison);
 			}
 		}
 
-		private static void StableSortZeroAllocArray<T>(T[] list, T[] buffer, int index, int count, Comparison<T> comparison)
+		private static void StableSortArray<T>(T[] list, T[] buffer, int index, int count, Comparison<T> comparison)
 		{
 			// This is a variant of merge sort that skips the split step and
 			// instead merges back and forth between two arrays of equal size.
@@ -301,7 +267,7 @@ namespace Duality
 				Array.Copy(source, index, list, index, count);
 			}
 		}
-		private static void StableSortZeroAllocGeneric<T>(IList<T> list, IList<T> buffer, int index, int count, Comparison<T> comparison)
+		private static void StableSortGeneric<T>(IList<T> list, IList<T> buffer, int index, int count, Comparison<T> comparison)
 		{
 			// This is a variant of merge sort that skips the split step and
 			// instead merges back and forth between two arrays of equal size.
