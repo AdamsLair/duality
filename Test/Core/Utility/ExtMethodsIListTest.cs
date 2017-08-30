@@ -36,8 +36,11 @@ namespace Duality.Tests.Utility
 				.Select(i => i / 3)
 				.ToArray();
 			values = values.Shuffle(rnd).ToArray();
-
-			TestStableSort(values, sortIndex, sortCount);
+			
+			// Test sorting algorithm on various list container types
+			TestStableSort(values.ToArray(), sortIndex, sortCount);
+			TestStableSort(values.ToList(), sortIndex, sortCount);
+			TestStableSort(new RawList<int>(values.ToArray()), sortIndex, sortCount);
 		}
 		[TestCaseSource("SortingTestCases")]
 		[Test] public void StableSortClass(int itemCount, int sortIndex, int sortCount)
@@ -50,20 +53,23 @@ namespace Duality.Tests.Utility
 				.Select(i => new SortingIntContainer(i))
 				.ToArray();
 			values = values.Shuffle(rnd).ToArray();
-
-			TestStableSort(values, sortIndex, sortCount);
+			
+			// Test sorting algorithm on various list container types
+			TestStableSort(values.ToArray(), sortIndex, sortCount);
+			TestStableSort(values.ToList(), sortIndex, sortCount);
+			TestStableSort(new RawList<SortingIntContainer>(values.ToArray()), sortIndex, sortCount);
 		}
-
-		private void TestStableSort<T>(T[] values, int sortIndex, int sortCount)
+		
+		private void TestStableSort<T>(IList<T> values, int sortIndex, int sortCount)
 		{
 			Comparer<T> comparer = Comparer<T>.Default;
 
 			// Create a list of wrapped numbers where each knows its original place
-			T[] originalList = values;
-			T[] workingList = originalList.Clone() as T[];
+			IList<T> originalList = values.ToArray();
+			IList<T> workingList = values;
 
 			// Test precondition: The numbers really are out of order, but each item knows its original place
-			Assert.IsTrue(workingList.Length < 10 || !workingList.IsSorted(sortIndex, sortCount, comparer), "Items shuffled before sort.");
+			Assert.IsTrue(workingList.Count < 10 || !workingList.IsSorted(sortIndex, sortCount, comparer), "Items shuffled before sort.");
 			Assert.IsTrue(workingList.IsStableOrder(sortIndex, sortCount, originalList, comparer), "Equivalent items in sequential order before sort.");
 
 			// Sort the shuffled numbers again
@@ -83,7 +89,7 @@ namespace Duality.Tests.Utility
 					comparer, 
 					"Did not modify items outside the sorted range.");
 			}
-			if (sortIndex + sortCount < values.Length)
+			if (sortIndex + sortCount < values.Count)
 			{
 				CollectionAssert.AreEqual(
 					originalList.Skip(sortIndex + sortCount), 
