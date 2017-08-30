@@ -375,34 +375,33 @@ namespace Duality.Drawing
 		}
 		private void UpdateHashCode()
 		{
-			this.hashCode = MathF.CombineHashCode(17,
-				this.mainColor.GetHashCode(),
-				this.technique.GetHashCode(),
-				this.GetTextureHashCode(),
-				this.GetUniformHashCode());
-		}
-		private int GetTextureHashCode()
-		{
-			if (this.textures == null) return 0;
-			int texHash = 17;
-			foreach (var pair in this.textures)
+			this.hashCode = 17;
+			unchecked
 			{
-				MathF.CombineHashCode(ref texHash, pair.Key.GetHashCode());
-				MathF.CombineHashCode(ref texHash, pair.Value.GetHashCode());
+				this.hashCode = this.hashCode * 23 + this.mainColor.GetHashCode();
+				this.hashCode = this.hashCode * 23 + this.technique.GetHashCode();
+
+				if (this.textures != null && this.textures.Count > 0)
+				{
+					foreach (var pair in this.textures)
+					{
+						this.hashCode = this.hashCode * 23 + pair.Key.GetHashCode();
+						this.hashCode = this.hashCode * 23 + pair.Value.GetHashCode();
+					}
+				}
+
+				if (this.uniforms != null && this.uniforms.Count > 0)
+				{
+					foreach (var pair in this.uniforms)
+					{
+						this.hashCode = this.hashCode * 23 + pair.Key.GetHashCode();
+						for (int i = 0; i < pair.Value.Length; i++)
+						{
+							this.hashCode = this.hashCode * 23 + pair.Value[i].GetHashCode();
+						}
+					}
+				}
 			}
-			return texHash;
-		}
-		private int GetUniformHashCode()
-		{
-			if (this.uniforms == null) return 0;
-			int uniformHash = 17;
-			foreach (var pair in this.uniforms)
-			{
-				MathF.CombineHashCode(ref uniformHash, pair.Key.GetHashCode());
-				for (int i = 0; i < pair.Value.Length; i++)
-					MathF.CombineHashCode(ref uniformHash, pair.Value[i].GetHashCode());
-			}
-			return uniformHash;
 		}
 
 		public override string ToString()
