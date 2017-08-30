@@ -216,8 +216,8 @@ namespace Duality.Drawing
 		private	Matrix4				matFinal		= Matrix4.Identity;
 		private	VisibilityFlag		visibilityMask	= VisibilityFlag.All;
 		private	int					pickingIndex	= 0;
-		private	List<IDrawBatch>	drawBuffer		= new List<IDrawBatch>();
-		private	List<IDrawBatch>	drawBufferZSort	= new List<IDrawBatch>();
+		private	RawList<IDrawBatch>	drawBuffer		= new RawList<IDrawBatch>();
+		private	RawList<IDrawBatch>	drawBufferZSort	= new RawList<IDrawBatch>();
 		private	int					numRawBatches	= 0;
 		private	ContentRef<RenderTarget> renderTarget = null;
 
@@ -573,7 +573,7 @@ namespace Duality.Drawing
 			
 			// When rendering without depth writing, use z sorting everywhere - there's no real depth buffering!
 			bool zSort = !this.DepthWrite || material.Technique.Res.NeedsZSort;
-			List<IDrawBatch> buffer = zSort ? this.drawBufferZSort : this.drawBuffer;
+			RawList<IDrawBatch> buffer = zSort ? this.drawBufferZSort : this.drawBuffer;
 			float zSortIndex = zSort ? DrawBatch<T>.CalcZSortIndex(vertexBuffer, vertexCount) : 0.0f;
 
 			// Determine if we can append the incoming vertices into the previous batch
@@ -780,9 +780,9 @@ namespace Duality.Drawing
 			Profile.StatNumOptimizedBatches.Add(batchCountAfter);
 			this.numRawBatches = 0;
 		}
-		private List<IDrawBatch> OptimizeBatches(List<IDrawBatch> sortedBuffer)
+		private RawList<IDrawBatch> OptimizeBatches(RawList<IDrawBatch> sortedBuffer)
 		{
-			List<IDrawBatch> optimized = new List<IDrawBatch>(sortedBuffer.Count);
+			RawList<IDrawBatch> optimized = new RawList<IDrawBatch>(sortedBuffer.Count);
 			IDrawBatch current = sortedBuffer[0];
 			IDrawBatch next;
 			optimized.Add(current);
