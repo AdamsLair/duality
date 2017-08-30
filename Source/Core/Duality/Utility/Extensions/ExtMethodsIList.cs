@@ -86,10 +86,8 @@ namespace Duality
 			}
 			else
 			{
-				for (int i = 0; i < middle; i++)
-					left[i] = list[i + index];
-				for (int i = 0; i < count - middle; i++)
-					right[i] = list[i + middle];
+				ListCopy(list, index, left, 0, left.Length);
+				ListCopy(list, middle, right, 0, right.Length);
 			}
 
 			StableSort(left, 0, left.Length, comparison);
@@ -109,6 +107,14 @@ namespace Duality
 					list[k] = right[rightptr];
 					rightptr++;
 				}
+			}
+		}
+		
+		private static void ListCopy<T>(IList<T> source, int sourceIndex, IList<T> target, int targetIndex, int count)
+		{
+			for (int i = 0; i < count; i++)
+			{
+				target[targetIndex + i] = source[sourceIndex + i];
 			}
 		}
 
