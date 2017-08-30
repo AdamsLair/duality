@@ -21,6 +21,7 @@ namespace Duality.Samples.Benchmarks
 		private Point2 renderingSize = new Point2(800, 600);
 		private float resolutionScale = 1.0f;
 		private AAQuality antialiasingQuality = AAQuality.Off;
+		private bool displayTestRunActive = false;
 
 		[DontSerialize] private RenderTarget sceneTarget;
 		[DontSerialize] private Texture sceneTargetTex;
@@ -53,6 +54,15 @@ namespace Duality.Samples.Benchmarks
 		{
 			get { return this.antialiasingQuality; }
 			set { this.antialiasingQuality = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Whether the diagnostic overlay should display an indicator
+		/// that represents an active benchmark test run.
+		/// </summary>
+		public bool DisplayTestRunActive
+		{
+			get { return this.displayTestRunActive; }
+			set { this.displayTestRunActive = value; }
 		}
 		/// <summary>
 		/// [GET] The internal <see cref="RenderingSize"/>, scaled by <see cref="ResolutionScale"/>.
@@ -159,6 +169,18 @@ namespace Duality.Samples.Benchmarks
 				this.overlayCanvas.PushState();
 				renderer.DrawOverlay(this.overlayCanvas);
 				this.overlayCanvas.PopState();
+			}
+
+			// Display an "active benchmark test run" indicator when needed
+			if (this.displayTestRunActive)
+			{
+				this.overlayCanvas.State.ColorTint = ColorRgba.Red;
+				this.overlayCanvas.FillRect(
+					this.overlayCanvas.Width - 30, 
+					this.overlayCanvas.Height - 30, 
+					20, 
+					20);
+				this.overlayCanvas.State.ColorTint = ColorRgba.White;
 			}
 		}
 

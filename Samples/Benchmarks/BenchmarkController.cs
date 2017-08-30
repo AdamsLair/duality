@@ -191,6 +191,7 @@ namespace Duality.Samples.Benchmarks
 		}
 		public void Update()
 		{
+			this.renderSetup.Res.DisplayTestRunActive = this.testRunActive;
 			if (this.testRunActive)
 				this.UpdateTestRun();
 			else
