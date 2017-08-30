@@ -53,7 +53,73 @@ namespace Duality.Tests.Utility
 
 			TestStableSort(values, sortIndex, sortCount);
 		}
+		[TestCaseSource("SortingTestCases")]
+		[Test] public void StableSortZeroAllocPrimitive(int itemCount, int sortIndex, int sortCount)
+		{
+			// Generate a shuffled sequence of numbers
+			Random rnd = new Random(1);
+			int[] values = 
+				Enumerable.Range(0, itemCount)
+				.Select(i => i / 3)
+				.ToArray();
+			rnd.Shuffle(values);
 
+			TestStableSortZeroAlloc(values, sortIndex, sortCount);
+		}
+		[TestCaseSource("SortingTestCases")]
+		[Test] public void StableSortZeroAllocClass(int itemCount, int sortIndex, int sortCount)
+		{
+			// Generate a shuffled sequence of numbers, wrapped in a container instance each
+			Random rnd = new Random(1);
+			SortingIntContainer[] values = 
+				Enumerable.Range(0, itemCount)
+				.Select(i => i / 3)
+				.Select(i => new SortingIntContainer(i))
+				.ToArray();
+			rnd.Shuffle(values);
+
+			TestStableSortZeroAlloc(values, sortIndex, sortCount);
+		}
+		
+		private void TestStableSortZeroAlloc<T>(T[] values, int sortIndex, int sortCount)
+		{
+			Comparer<T> comparer = Comparer<T>.Default;
+
+			// Create a list of wrapped numbers where each knows its original place
+			T[] originalList = values;
+			T[] workingList = originalList.Clone() as T[];
+			T[] buffer = new T[workingList.Length];
+
+			// Test precondition: The numbers really are out of order, but each item knows its original place
+			Assert.IsTrue(workingList.Length < 10 || !workingList.IsSorted(sortIndex, sortCount, comparer), "Items shuffled before sort.");
+			Assert.IsTrue(workingList.IsStableOrder(sortIndex, sortCount, originalList, comparer), "Equivalent items in sequential order before sort.");
+
+			// Sort the shuffled numbers again
+			workingList.StableSortZeroAlloc(buffer, sortIndex, sortCount, comparer);
+
+			// Assert that we didn't lose any items, and that they're now stable-sorted
+			CollectionAssert.AreEquivalent(originalList, workingList, "Same items before and after sort.");
+			Assert.IsTrue(workingList.IsSorted(sortIndex, sortCount, comparer), "Items in order after sort.");
+			Assert.IsTrue(workingList.IsStableOrder(sortIndex, sortCount, originalList, comparer), "Equivalent items in same order after sort than before.");
+
+			// If we only sorted part of the list, assert that all the other parts stayed the same
+			if (sortIndex > 0)
+			{
+				CollectionAssert.AreEqual(
+					originalList.Take(sortIndex), 
+					workingList.Take(sortIndex), 
+					comparer, 
+					"Did not modify items outside the sorted range.");
+			}
+			if (sortIndex + sortCount < values.Length)
+			{
+				CollectionAssert.AreEqual(
+					originalList.Skip(sortIndex + sortCount), 
+					workingList.Skip(sortIndex + sortCount), 
+					comparer, 
+					"Did not modify items outside the sorted range.");
+			}
+		}
 		private void TestStableSort<T>(T[] values, int sortIndex, int sortCount)
 		{
 			Comparer<T> comparer = Comparer<T>.Default;
