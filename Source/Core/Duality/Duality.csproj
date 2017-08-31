@@ -99,6 +99,7 @@
     <Compile Include="Components\Physics\Shapes\VertexShapeTrait.cs" />
     <Compile Include="Components\Physics\Shapes\VertexBasedShapeInfo.cs" />
     <Compile Include="Drawing\SpriteIndexBlend.cs" />
+    <Compile Include="Drawing\VertexData\VertexSegment.cs" />
     <Compile Include="DualityPlugin.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="CorePluginManager.cs" />
