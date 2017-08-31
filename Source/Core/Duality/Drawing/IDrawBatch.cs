@@ -27,6 +27,6 @@ namespace Duality.Drawing
 
 	public interface IVertexUploader
 	{
-		void UploadBatchVertices<T>(VertexDeclaration declaration, T[] vertices, int vertexCount) where T : struct, IVertexData;
+		void UploadBatchVertices(VertexDeclaration declaration, IntPtr vertices, int vertexCount);
 	}
 }

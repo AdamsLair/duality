@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 using Duality.Resources;
 using Duality.Backend;
@@ -117,7 +118,16 @@ namespace Duality.Drawing
 				}
 
 				// Submit vertex data to the GPU
-				target.UploadBatchVertices<T>(this.vertices[0].Declaration, vertexData, vertexCount);
+				GCHandle vertexDataHandle = GCHandle.Alloc(vertexData, GCHandleType.Pinned);
+				try
+				{
+					IntPtr vertexDataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(vertexData, 0);
+					target.UploadBatchVertices(VertexDeclaration.Get<T>(), vertexDataPtr, vertexCount);
+				}
+				finally
+				{
+					vertexDataHandle.Free();
+				}
 			}
 
 			public bool SameVertexType(IDrawBatch other)
