@@ -31,9 +31,5 @@ namespace DynamicLighting
 			get { return this.Color; }
 			set { this.Color = value; }
 		}
-		VertexDeclaration IVertexData.Declaration
-		{
-			get { return Declaration; }
-		}
 	}
 }

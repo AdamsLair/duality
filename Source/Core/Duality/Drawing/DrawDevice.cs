@@ -40,7 +40,7 @@ namespace Duality.Drawing
 			}
 			public VertexDeclaration VertexDeclaration
 			{
-				get { return this.vertices[0].Declaration; }
+				get { return VertexDeclaration.Get<T>(); }
 			}
 			public BatchInfo Material
 			{
@@ -61,7 +61,7 @@ namespace Duality.Drawing
 				// Determine sorting index for non-Z-Sort materials
 				if (!this.material.Technique.Res.NeedsZSort)
 				{
-					int vTypeSI = vertices[0].Declaration.TypeIndex;
+					int vTypeSI = VertexDeclaration.Get<T>().TypeIndex;
 					int matHash;
 					unchecked
 					{

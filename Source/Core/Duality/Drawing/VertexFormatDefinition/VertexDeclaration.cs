@@ -11,24 +11,12 @@ namespace Duality.Drawing
 	{
 		private static class Cache<T> where T : struct, IVertexData
 		{
-			public static readonly VertexDeclaration Instance = new VertexDeclaration(typeof(T));
+			public static readonly VertexDeclaration Instance = new VertexDeclaration(typeof(T), vertexTypeCounter++);
 		}
-		private static Dictionary<string,int> vertexTypeIndexMap = new Dictionary<string,int>();
-		private static int GetVertexTypeIndex(Type dataType)
-		{
-			int index;
-			string name = dataType.FullName;
-			if (vertexTypeIndexMap.TryGetValue(name, out index)) return index;
 
-			index = 0;
-			while (vertexTypeIndexMap.Values.Contains(index))
-			{
-				index++;
-			}
+		private static int vertexTypeCounter = 0;
+		private static MethodInfo genericGetDeclarationMethod = null;
 
-			vertexTypeIndexMap[name] = index;
-			return index;
-		}
 
 		public static VertexDeclaration Get<T>() where T : struct, IVertexData
 		{
@@ -41,8 +29,23 @@ namespace Duality.Drawing
 			TypeInfo vertexTypeInfo = vertexType.GetTypeInfo();
 			if (!typeof(IVertexData).GetTypeInfo().IsAssignableFrom(vertexTypeInfo)) return null;
 
-			IVertexData dummyVertex = vertexTypeInfo.CreateInstanceOf() as IVertexData;
-			return dummyVertex != null ? dummyVertex.Declaration : null;
+			if (genericGetDeclarationMethod == null)
+			{
+				TypeInfo declarationTypeInfo = typeof(VertexDeclaration).GetTypeInfo();
+				foreach (MethodInfo method in declarationTypeInfo.DeclaredMethods)
+				{
+					if (!method.IsStatic) continue;
+					if (!method.IsGenericMethodDefinition) continue;
+					if (method.Name != "Get") continue;
+
+					genericGetDeclarationMethod = method;
+					break;
+				}
+			}
+
+			MethodInfo specializedGet = genericGetDeclarationMethod.MakeGenericMethod(vertexType);
+			VertexDeclaration declaration = specializedGet.Invoke(null, null) as VertexDeclaration;
+			return declaration;
 		}
 
 		private Type dataType;
@@ -67,7 +70,7 @@ namespace Duality.Drawing
 			get { return this.elements; }
 		}
 
-		private VertexDeclaration(Type dataType)
+		private VertexDeclaration(Type dataType, int typeIndex)
 		{
 			TypeInfo dataTypeInfo = dataType.GetTypeInfo();
 			if (dataTypeInfo.IsClass) throw new InvalidOperationException("Vertex formats need to be structs. Classes are not supported.");
@@ -75,7 +78,7 @@ namespace Duality.Drawing
 			FieldInfo[] fields = dataTypeInfo.DeclaredFieldsDeep().Where(m => !m.IsStatic).ToArray();
 
 			this.dataType = dataType;
-			this.typeIndex = GetVertexTypeIndex(dataType);
+			this.typeIndex = typeIndex;
 			this.size = Marshal.SizeOf(dataType);
 			this.elements = new VertexElement[fields.Length];
 
