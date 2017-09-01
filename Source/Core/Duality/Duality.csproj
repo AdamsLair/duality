@@ -99,6 +99,10 @@
     <Compile Include="Components\Physics\Shapes\VertexShapeTrait.cs" />
     <Compile Include="Components\Physics\Shapes\VertexBasedShapeInfo.cs" />
     <Compile Include="Drawing\SpriteIndexBlend.cs" />
+    <Compile Include="Drawing\VertexData\IVertexArray.cs" />
+    <Compile Include="Drawing\VertexData\VertexArrayLock.cs" />
+    <Compile Include="Drawing\VertexData\VertexArray.cs" />
+    <Compile Include="Drawing\VertexData\DynamicVertexStore.cs" />
     <Compile Include="Drawing\VertexData\VertexSlice.cs" />
     <Compile Include="DualityPlugin.cs" />
     <Compile Include="PluginManager.cs" />
