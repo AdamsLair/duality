@@ -281,7 +281,7 @@ namespace Duality.Drawing
 		}
 		public override string ToString()
 		{
-			return string.Format("ColorHSVA ({0:F}, {1:F}, {2:F}, {3:F} / #{4:X8})", this.H, this.S, this.V, this.A, this.ToIntRgba());
+			return string.Format("HSVA ({0:F}, {1:F}, {2:F}, {3:F})", this.H, this.S, this.V, this.A);
 		}
 		
 		/// <summary>

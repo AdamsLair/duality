@@ -316,7 +316,7 @@ namespace Duality.Drawing
 		}
 		public override string ToString()
 		{
-			return string.Format("ColorRGBA ({0}, {1}, {2}, {3} / #{4:X8})", this.R, this.G, this.B, this.A, this.ToIntRgba());
+			return string.Format("RGBA ({0}, {1}, {2}, {3} / #{4:X8})", this.R, this.G, this.B, this.A, this.ToIntRgba());
 		}
 
 		/// <summary>

@@ -37,5 +37,14 @@ namespace Duality.Drawing
 			get { return this.Color; }
 			set { this.Color = value; }
 		}
+
+		public override string ToString()
+		{
+			return string.Format(
+				"Pos {0}, Color {1}, TexCoord {2}", 
+				this.Pos, 
+				this.Color, 
+				this.TexCoord);
+		}
 	}
 }
