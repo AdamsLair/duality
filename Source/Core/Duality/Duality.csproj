@@ -100,7 +100,7 @@
     <Compile Include="Components\Physics\Shapes\VertexBasedShapeInfo.cs" />
     <Compile Include="Drawing\SpriteIndexBlend.cs" />
     <Compile Include="Drawing\VertexData\IVertexArray.cs" />
-    <Compile Include="Drawing\VertexData\VertexArrayLock.cs" />
+    <Compile Include="Utility\PinnedArrayHandle.cs" />
     <Compile Include="Drawing\VertexData\VertexArray.cs" />
     <Compile Include="Drawing\VertexData\DynamicVertexStore.cs" />
     <Compile Include="Drawing\VertexData\VertexSlice.cs" />

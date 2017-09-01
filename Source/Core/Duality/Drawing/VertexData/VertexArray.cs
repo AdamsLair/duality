@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace Duality.Drawing
 {
@@ -25,9 +24,9 @@ namespace Duality.Drawing
 		{
 			this.vertices.Clear();
 		}
-		public VertexArrayLock Lock()
+		public PinnedArrayHandle Lock()
 		{
-			return new VertexArrayLock(this.vertices.Data);
+			return new PinnedArrayHandle(this.vertices.Data);
 		}
 
 		RawList<U> IVertexArray.GetTypedData<U>()

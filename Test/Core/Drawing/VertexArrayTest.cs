@@ -74,14 +74,14 @@ namespace Duality.Tests.Drawing
 			int vertexSize = layout.Size;
 			int colorElementIndex = layout.Elements.IndexOfFirst(item => item.Role == VertexElementRole.Color);
 			int colorOffset = (int)layout.Elements[colorElementIndex].Offset;
-			using (VertexArrayLock locked = typedArray.Lock())
+			using (PinnedArrayHandle locked = typedArray.Lock())
 			{
 				Assert.AreEqual(new ColorRgba(0), ReadColor(locked.Address, vertexSize * 0 + colorOffset));
 				Assert.AreEqual(new ColorRgba(1), ReadColor(locked.Address, vertexSize * 1 + colorOffset));
 				Assert.AreEqual(new ColorRgba(2), ReadColor(locked.Address, vertexSize * 2 + colorOffset));
 				Assert.AreEqual(new ColorRgba(3), ReadColor(locked.Address, vertexSize * 3 + colorOffset));
 			}
-			using (VertexArrayLock locked = abstractArray.Lock())
+			using (PinnedArrayHandle locked = abstractArray.Lock())
 			{
 				Assert.AreEqual(new ColorRgba(0), ReadColor(locked.Address, vertexSize * 0 + colorOffset));
 				Assert.AreEqual(new ColorRgba(1), ReadColor(locked.Address, vertexSize * 1 + colorOffset));
