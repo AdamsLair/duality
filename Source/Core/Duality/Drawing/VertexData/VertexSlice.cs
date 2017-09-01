@@ -5,29 +5,29 @@ using System.Runtime.CompilerServices;
 namespace Duality.Drawing
 {
 	/// <summary>
-	/// Defines a writable segment in a shared vertex array. This type sacrifices
+	/// Defines a writable slice in a shared vertex array. This type sacrifices
 	/// validation and parameter checking for some extra performance - when specifying
 	/// parameters, reading and writing data, do so with the same caution that you
 	/// would apply to unsafe code.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public struct VertexSegment<T> where T : struct, IVertexData
+	public struct VertexSlice<T> where T : struct, IVertexData
 	{
 		/// <summary>
-		/// The shared vertex array that is addressed in this segment.
+		/// The shared vertex array that is addressed in this slice.
 		/// </summary>
 		public T[] Data;
 		/// <summary>
-		/// The index offset to the beginning of <see cref="Data"/> at which this segments starts.
+		/// The index offset to the beginning of <see cref="Data"/> at which this slice starts.
 		/// </summary>
 		public int Offset;
 		/// <summary>
-		/// The length of this segment.
+		/// The length of this slice.
 		/// </summary>
 		public int Length;
 
 		/// <summary>
-		/// Addresses the underlying <see cref="Data"/> starting at the <see cref="Offset"/> of this segment.
+		/// Addresses the underlying <see cref="Data"/> starting at the <see cref="Offset"/> of this slice.
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
@@ -55,7 +55,7 @@ namespace Duality.Drawing
 			}
 		}
 
-		public VertexSegment(T[] data, int offset, int length)
+		public VertexSlice(T[] data, int offset, int length)
 		{
 			// No argument validation for performance reasons.
 			// Keeping it simple allows the JIT compiler to inline
