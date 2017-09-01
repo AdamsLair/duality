@@ -6,6 +6,9 @@ using System.Linq;
 
 namespace Duality.Drawing
 {
+	/// <summary>
+	/// Describes memory layout and semantics of a vertex type struct.
+	/// </summary>
 	[DontSerialize]
 	public class VertexDeclaration
 	{
@@ -18,10 +21,23 @@ namespace Duality.Drawing
 		private static MethodInfo genericGetDeclarationMethod = null;
 
 
+		/// <summary>
+		/// Retrieves the <see cref="VertexDeclaration"/> for the vertex type specified
+		/// via generic parameter. This is a very efficient compile-time lookup.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
 		public static VertexDeclaration Get<T>() where T : struct, IVertexData
 		{
 			return Cache<T>.Instance;
 		}
+		/// <summary>
+		/// Retrieves the <see cref="VertexDeclaration"/> for the vertex type specified
+		/// via reflection <see cref="Type"/> parameter. Slow and reflection-based. When
+		/// possible, use the generic <see cref="Get{T}()"/> method instead.
+		/// </summary>
+		/// <param name="vertexType"></param>
+		/// <returns></returns>
 		public static VertexDeclaration Get(Type vertexType)
 		{
 			if (vertexType == null) return null;
@@ -53,18 +69,32 @@ namespace Duality.Drawing
 		private int size;
 		private VertexElement[] elements;
 
+		/// <summary>
+		/// [GET] The vertex type that is described by this <see cref="VertexDeclaration"/>.
+		/// </summary>
 		public Type DataType
 		{
 			get { return this.dataType; }
 		}
+		/// <summary>
+		/// [GET] A unique, but non-persistent type index that represents the described vertex type.
+		/// Type indices start at zero and increase to a maximum of the number of different known
+		/// vertex types.
+		/// </summary>
 		public int TypeIndex
 		{
 			get { return this.typeIndex; }
 		}
+		/// <summary>
+		/// [GET] Size of a single vertex in bytes.
+		/// </summary>
 		public int Size
 		{
 			get { return this.size; }
 		}
+		/// <summary>
+		/// [GET] Descriptions of the vertices individual elements.
+		/// </summary>
 		public VertexElement[] Elements
 		{
 			get { return this.elements; }
