@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace Duality.Drawing
 {
@@ -11,6 +12,8 @@ namespace Duality.Drawing
 	/// would apply to unsafe code.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
+	[DebuggerTypeProxy(typeof(VertexSlice<>.DebuggerTypeProxy))]
+	[DebuggerDisplay("Length = {Length}")]
 	public struct VertexSlice<T> where T : struct, IVertexData
 	{
 		/// <summary>
@@ -68,6 +71,43 @@ namespace Duality.Drawing
 			this.Data = data;
 			this.Offset = offset;
 			this.Length = length;
+		}
+
+		public override string ToString()
+		{
+			return string.Format(
+				"{0}, Offset {1}, Length {2}", 
+				(this.Data != null) ? this.Data.ToString() : "null", 
+				this.Offset, 
+				this.Length);
+		}
+
+		internal sealed class DebuggerTypeProxy
+		{
+			private VertexSlice<T> slice;
+
+			public DebuggerTypeProxy(VertexSlice<T> slice)
+			{
+				this.slice = slice;
+			}
+
+			[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+			public T[] Items
+			{
+				get
+				{
+					if (this.slice.Data == null) return null;
+					if (this.slice.Offset < 0 || this.slice.Offset >= this.slice.Data.Length) return null;
+					if (this.slice.Length < 0 || this.slice.Length > this.slice.Data.Length - this.slice.Offset) return null;
+
+					T[] array = new T[this.slice.Length];
+					for (int i = 0; i < this.slice.Length; i++)
+					{
+						array[i] = this.slice[i];
+					}
+					return array;
+				}
+			}
 		}
 	}
 }
