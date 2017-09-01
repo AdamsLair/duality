@@ -49,10 +49,5 @@ namespace Duality.Drawing
 		{
 			return new PinnedArrayHandle(this.vertices.Data);
 		}
-
-		RawList<U> IVertexBatch.GetTypedData<U>()
-		{
-			return this.vertices as RawList<U>;
-		}
 	}
 }

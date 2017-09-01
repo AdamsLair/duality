@@ -23,14 +23,6 @@ namespace Duality.Drawing
 		/// </summary>
 		void Clear();
 		/// <summary>
-		/// Retrieves the batches internal vertex list for direct access.
-		/// Will return null if the batches vertex type does not match the generic
-		/// type parameter.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		RawList<T> GetTypedData<T>() where T : struct, IVertexData;
-		/// <summary>
 		/// Locks the batch in order to access its vertex data directly using an <see cref="IntPtr"/>.
 		/// </summary>
 		/// <returns></returns>

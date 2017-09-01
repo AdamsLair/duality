@@ -25,8 +25,6 @@ namespace Duality.Tests.Drawing
 
 			Assert.AreEqual(0, abstractBatch.Count);
 			Assert.AreEqual(VertexDeclaration.Get<VertexC1P3>(), abstractBatch.Declaration);
-			Assert.IsNotNull(abstractBatch.GetTypedData<VertexC1P3>());
-			Assert.AreEqual(0, abstractBatch.GetTypedData<VertexC1P3>().Count);
 		}
 		[Test] public void VertexAccess()
 		{
@@ -46,18 +44,12 @@ namespace Duality.Tests.Drawing
 			Assert.AreEqual(new ColorRgba(3), typedBatch.Vertices[3].Color);
 
 			Assert.AreEqual(4, abstractBatch.Count);
-			Assert.AreEqual(4, abstractBatch.GetTypedData<VertexC1P3>().Count);
-			Assert.AreEqual(new ColorRgba(0), abstractBatch.GetTypedData<VertexC1P3>()[0].Color);
-			Assert.AreEqual(new ColorRgba(1), abstractBatch.GetTypedData<VertexC1P3>()[1].Color);
-			Assert.AreEqual(new ColorRgba(2), abstractBatch.GetTypedData<VertexC1P3>()[2].Color);
-			Assert.AreEqual(new ColorRgba(3), abstractBatch.GetTypedData<VertexC1P3>()[3].Color);
 
 			typedBatch.Clear();
 
 			Assert.AreEqual(0, typedBatch.Count);
 			Assert.AreEqual(0, typedBatch.Vertices.Count);
 			Assert.AreEqual(0, abstractBatch.Count);
-			Assert.AreEqual(0, abstractBatch.GetTypedData<VertexC1P3>().Count);
 		}
 		[Test] public void Locking()
 		{

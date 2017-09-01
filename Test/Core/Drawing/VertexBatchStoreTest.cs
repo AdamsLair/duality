@@ -40,14 +40,14 @@ namespace Duality.Tests.Drawing
 			}
 
 			// Retrieve specific internal vertex arrays
-			IVertexBatch arrayA = memory.VerticesByType[VertexDeclaration.Get<VertexC1P3>().TypeIndex];
-			IVertexBatch arrayB = memory.VerticesByType[VertexDeclaration.Get<VertexC1P3T2>().TypeIndex];
-			RawList<VertexC1P3> verticesA = arrayA.GetTypedData<VertexC1P3>();
-			RawList<VertexC1P3T2> verticesB = arrayB.GetTypedData<VertexC1P3T2>();
+			VertexBatch<VertexC1P3> batchA = memory.GetBatch<VertexC1P3>();
+			VertexBatch<VertexC1P3T2> batchB = memory.GetBatch<VertexC1P3T2>();
+			RawList<VertexC1P3> verticesA = batchA.Vertices;
+			RawList<VertexC1P3T2> verticesB = batchB.Vertices;
 
 			// Assert that they contain all the data we submitted in the correct order
-			Assert.AreEqual(7, arrayA.Count);
-			Assert.AreEqual(3, arrayB.Count);
+			Assert.AreEqual(7, batchA.Count);
+			Assert.AreEqual(3, batchB.Count);
 			Assert.AreEqual(7, verticesA.Count);
 			Assert.AreEqual(3, verticesB.Count);
 
@@ -68,8 +68,8 @@ namespace Duality.Tests.Drawing
 			memory.Clear();
 
 			// Assert that the vertices are gone, but capacity isn't
-			Assert.AreEqual(0, arrayA.Count);
-			Assert.AreEqual(0, arrayB.Count);
+			Assert.AreEqual(0, batchA.Count);
+			Assert.AreEqual(0, batchB.Count);
 			Assert.AreEqual(0, verticesA.Count);
 			Assert.AreEqual(0, verticesB.Count);
 			Assert.GreaterOrEqual(verticesA.Capacity, 7);
