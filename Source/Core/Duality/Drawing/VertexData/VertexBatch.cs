@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Duality.Drawing
 {
-	public class VertexArray<T> : IVertexArray where T : struct, IVertexData
+	public class VertexBatch<T> : IVertexBatch where T : struct, IVertexData
 	{
 		private RawList<T> vertices = new RawList<T>();
 
@@ -29,7 +29,7 @@ namespace Duality.Drawing
 			return new PinnedArrayHandle(this.vertices.Data);
 		}
 
-		RawList<U> IVertexArray.GetTypedData<U>()
+		RawList<U> IVertexBatch.GetTypedData<U>()
 		{
 			return this.vertices as RawList<U>;
 		}

@@ -8,16 +8,16 @@ namespace Duality.Drawing
 	/// Manages and provides CPU-side storage space for dynamically gathered vertex data.
 	/// </summary>
 	[DontSerialize]
-	public class DynamicVertexStore
+	public class VertexBatchStore
 	{
-		private IVertexArray[] verticesPerType = new IVertexArray[4];
+		private IVertexBatch[] verticesPerType = new IVertexBatch[4];
 
 		/// <summary>
 		/// [GET] An list of stored vertex arrays where each one is located at
 		/// the type index of its matching <see cref="VertexDeclaration"/>. May contain
 		/// null at indices where no vertex data of that type has been stored.
 		/// </summary>
-		public IReadOnlyList<IVertexArray> VerticesByType
+		public IReadOnlyList<IVertexBatch> VerticesByType
 		{
 			get { return this.verticesPerType; }
 		}
@@ -26,7 +26,7 @@ namespace Duality.Drawing
 		/// Rents a slice of the specified length in an appropriately typed vertex array,
 		/// allowing to write vertex data into it.
 		/// 
-		/// Ownership remains in <see cref="DynamicVertexStore"/> and there is no tracking of
+		/// Ownership remains in <see cref="VertexBatchStore"/> and there is no tracking of
 		/// rented slices. Invoke <see cref="Clear"/> to reset all data and start over with
 		/// no slices in use.
 		/// </summary>
@@ -35,7 +35,7 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public VertexSlice<T> Rent<T>(int length) where T : struct, IVertexData
 		{
-			IVertexArray array = this.GetArray<T>();
+			IVertexBatch array = this.GetArray<T>();
 			RawList<T> typedArray = array.GetTypedData<T>();
 			typedArray.Count += length;
 			return new VertexSlice<T>(
@@ -56,18 +56,18 @@ namespace Duality.Drawing
 			}
 		}
 
-		private IVertexArray GetArray<T>() where T : struct, IVertexData
+		private IVertexBatch GetArray<T>() where T : struct, IVertexData
 		{
 			int typeIndex = VertexDeclaration.Get<T>().TypeIndex;
-			IVertexArray array = null;
+			IVertexBatch array = null;
 			if (typeIndex >= this.verticesPerType.Length || (array = this.verticesPerType[typeIndex]) == null)
 			{
-				array = new VertexArray<T>();
+				array = new VertexBatch<T>();
 				this.AssignArray(typeIndex, array);
 			}
 			return array;
 		}
-		private void AssignArray(int typeIndex, IVertexArray array)
+		private void AssignArray(int typeIndex, IVertexBatch array)
 		{
 			if (this.verticesPerType.Length <= typeIndex)
 			{

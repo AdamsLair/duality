@@ -81,8 +81,8 @@
     <Compile Include="Components\ExecutionOrderTest\TestComponent.cs" />
     <Compile Include="Components\TransformTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
-    <Compile Include="Drawing\DynamicVertexStoreTest.cs" />
-    <Compile Include="Drawing\VertexArrayTest.cs" />
+    <Compile Include="Drawing\VertexBatchStoreTest.cs" />
+    <Compile Include="Drawing\VertexBatchTest.cs" />
     <Compile Include="Drawing\VertexSliceTest.cs" />
     <Compile Include="Testing\ExtMethodsIList.cs" />
     <Compile Include="Resources\RenderTargetTest.cs" />

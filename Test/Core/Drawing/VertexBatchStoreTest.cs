@@ -9,11 +9,11 @@ using NUnit.Framework;
 
 namespace Duality.Tests.Drawing
 {
-	public class DynamicVertexStoreTest
+	public class VertexBatchStoreTest
 	{
 		[Test] public void RentAndClear()
 		{
-			DynamicVertexStore memory = new DynamicVertexStore();
+			VertexBatchStore memory = new VertexBatchStore();
 
 			// Repeatedly rent slices of varying types from memory
 			{
@@ -40,8 +40,8 @@ namespace Duality.Tests.Drawing
 			}
 
 			// Retrieve specific internal vertex arrays
-			IVertexArray arrayA = memory.VerticesByType[VertexDeclaration.Get<VertexC1P3>().TypeIndex];
-			IVertexArray arrayB = memory.VerticesByType[VertexDeclaration.Get<VertexC1P3T2>().TypeIndex];
+			IVertexBatch arrayA = memory.VerticesByType[VertexDeclaration.Get<VertexC1P3>().TypeIndex];
+			IVertexBatch arrayB = memory.VerticesByType[VertexDeclaration.Get<VertexC1P3T2>().TypeIndex];
 			RawList<VertexC1P3> verticesA = arrayA.GetTypedData<VertexC1P3>();
 			RawList<VertexC1P3T2> verticesB = arrayB.GetTypedData<VertexC1P3T2>();
 

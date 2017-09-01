@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Duality.Drawing
 {
-	public interface IVertexArray
+	public interface IVertexBatch
 	{
 		int Count { get; }
 		VertexDeclaration Declaration { get; }
