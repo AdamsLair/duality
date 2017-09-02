@@ -284,7 +284,6 @@ namespace Duality.Backend.DefaultOpenTK
 					}
 
 					// Draw the current batch
-					drawCalls++;
 					GL.DrawArrays(
 						GetOpenTKVertexMode(batch.VertexMode), 
 						batch.VertexOffset, 
