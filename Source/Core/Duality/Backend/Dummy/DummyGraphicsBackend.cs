@@ -38,7 +38,7 @@ namespace Duality.Backend.Dummy
 		void IDualityBackend.Init() { }
 		void IDualityBackend.Shutdown() { }
 
-		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats) { }
+		void IGraphicsBackend.BeginRendering(IDrawDevice device, VertexBatchStore vertexData, RenderOptions options, RenderStats stats) { }
 		void IGraphicsBackend.Render(IReadOnlyList<IDrawBatch> batches) { }
 		void IGraphicsBackend.EndRendering() { }
 

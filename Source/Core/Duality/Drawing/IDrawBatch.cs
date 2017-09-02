@@ -11,22 +11,16 @@ namespace Duality.Drawing
 	{
 		int SortIndex { get; }
 		float ZSortIndex { get; }
+		int VertexOffset { get; }
 		int VertexCount { get; }
 		VertexMode VertexMode { get; }
 		BatchInfo Material { get; }
 		VertexDeclaration VertexDeclaration { get; }
 
-		void UploadVertices(IVertexUploader target, List<IDrawBatch> uploadBatches);
-
 		bool SameVertexType(IDrawBatch other);
-		bool CanAppendJIT<T>(float invZSortAccuracy, float zSortIndex, BatchInfo material, VertexMode vertexMode) where T : struct, IVertexData;
-		void AppendJIT(object vertexData, int length);
+		bool CanAppendJIT(VertexDeclaration vertexType, float invZSortAccuracy, float zSortIndex, BatchInfo material, VertexMode vertexMode);
+		void AppendJIT(float zSortIndex, int count);
 		bool CanAppend(IDrawBatch other);
 		void Append(IDrawBatch other);
-	}
-
-	public interface IVertexUploader
-	{
-		void UploadBatchVertices(VertexDeclaration declaration, IntPtr vertices, int vertexCount);
 	}
 }

@@ -14,7 +14,7 @@ using Duality.Resources;
 namespace Duality.Backend.DefaultOpenTK
 {
 	[DontSerialize]
-	public class GraphicsBackend : IGraphicsBackend, IVertexUploader
+	public class GraphicsBackend : IGraphicsBackend
 	{
 		private static readonly Version MinOpenGLVersion = new Version(2, 1);
 
@@ -28,7 +28,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private RenderStats           renderStats             = null;
 		private HashSet<GraphicsMode> availGraphicsModes      = null;
 		private GraphicsMode          defaultGraphicsMode     = null;
-		private uint                  primaryVBO              = 0;
+		private RawList<uint>         perVertexTypeVBO        = new RawList<uint>();
 		private NativeWindow          activeWindow            = null;
 		private Point2                externalBackbufferSize  = Point2.Zero;
 		private bool                  useAlphaToCoverageBlend = false;
@@ -100,12 +100,18 @@ namespace Duality.Backend.DefaultOpenTK
 			if (activeInstance == this)
 				activeInstance = null;
 
-			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
-				this.primaryVBO != 0)
+			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
 			{
 				DefaultOpenTKBackendPlugin.GuardSingleThreadState();
-				GL.DeleteBuffers(1, ref this.primaryVBO);
-				this.primaryVBO = 0;
+				for (int i = 0; i < this.perVertexTypeVBO.Count; i++)
+				{
+					uint handle = this.perVertexTypeVBO[i];
+					if (handle != 0)
+					{
+						GL.DeleteBuffers(1, ref handle);
+					}
+				}
+				this.perVertexTypeVBO.Clear();
 			}
 
 			// Since the window outlives the graphics backend in the usual launcher setup, 
@@ -117,13 +123,41 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 		}
 
-		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats)
+		void IGraphicsBackend.BeginRendering(IDrawDevice device, VertexBatchStore vertexData, RenderOptions options, RenderStats stats)
 		{
 			DebugCheckOpenGLErrors();
 			this.CheckContextCaps();
 
 			this.currentDevice = device;
 			this.renderStats = stats;
+
+			// Upload all vertex data that we'll need during rendering
+			if (vertexData != null)
+			{
+				this.perVertexTypeVBO.Count = Math.Max(this.perVertexTypeVBO.Count, vertexData.Batches.Count);
+				for (int typeIndex = 0; typeIndex < vertexData.Batches.Count; typeIndex++)
+				{
+					// Filter out unused vertex types
+					IVertexBatch vertexBatch = vertexData.Batches[typeIndex];
+					if (vertexBatch == null) continue;
+
+					// Generate a VBO for this vertex type if it didn't exist yet
+					if (this.perVertexTypeVBO[typeIndex] == 0)
+					{
+						GL.GenBuffers(1, out this.perVertexTypeVBO.Data[typeIndex]);
+					}
+					GL.BindBuffer(BufferTarget.ArrayBuffer, this.perVertexTypeVBO[typeIndex]);
+				
+					// Upload all data of this vertex type as a single block
+					int vertexDataLength = vertexBatch.Declaration.Size * vertexBatch.Count;
+					using (PinnedArrayHandle pinned = vertexBatch.Lock())
+					{
+						GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)vertexDataLength, IntPtr.Zero, BufferUsageHint.StreamDraw);
+						GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)vertexDataLength, pinned.Address, BufferUsageHint.StreamDraw);
+					}
+				}
+			}
+			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
 			// Prepare the target surface for rendering
 			NativeRenderTarget.Bind(options.Target as NativeRenderTarget);
@@ -136,10 +170,7 @@ namespace Duality.Backend.DefaultOpenTK
 			else if (this.activeWindow != null)
 				this.useAlphaToCoverageBlend = this.activeWindow.IsMultisampled; 
 			else
-				this.useAlphaToCoverageBlend = this.defaultGraphicsMode.Samples > 0; 
-
-			if (this.primaryVBO == 0) GL.GenBuffers(1, out this.primaryVBO);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.primaryVBO);
+				this.useAlphaToCoverageBlend = this.defaultGraphicsMode.Samples > 0;
 
 			// Determine the available size on the active rendering surface
 			Point2 availableSize;
@@ -225,19 +256,19 @@ namespace Duality.Backend.DefaultOpenTK
 
 				if (this.renderBatchesSharingVBO.Count > 0 && (nextBatch == null || !currentBatch.SameVertexType(nextBatch)))
 				{
-					int vertexOffset = 0;
-					this.renderBatchesSharingVBO[0].UploadVertices(this, this.renderBatchesSharingVBO);
 					drawCalls++;
+
+					VertexDeclaration vertexType = this.renderBatchesSharingVBO[0].VertexDeclaration;
+					GL.BindBuffer(BufferTarget.ArrayBuffer, this.perVertexTypeVBO[vertexType.TypeIndex]);
 
 					foreach (IDrawBatch batch in this.renderBatchesSharingVBO)
 					{
 						drawCalls++;
 
 						this.PrepareRenderBatch(batch);
-						this.RenderBatch(batch, vertexOffset, lastBatchRendered);
+						this.RenderBatch(batch, lastBatchRendered);
 						this.FinishRenderBatch(batch);
 
-						vertexOffset += batch.VertexCount;
 						lastBatchRendered = batch;
 					}
 
@@ -245,8 +276,12 @@ namespace Duality.Backend.DefaultOpenTK
 					lastBatch = null;
 				}
 				else
+				{
 					lastBatch = currentBatch;
+				}
 			}
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
 			if (lastBatchRendered != null)
 			{
@@ -264,11 +299,6 @@ namespace Duality.Backend.DefaultOpenTK
 			this.currentDevice = null;
 
 			DebugCheckOpenGLErrors();
-		}
-		void IVertexUploader.UploadBatchVertices(VertexDeclaration declaration, IntPtr vertices, int vertexCount)
-		{
-			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(declaration.Size * vertexCount), IntPtr.Zero, BufferUsageHint.StreamDraw);
-			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(declaration.Size * vertexCount), vertices, BufferUsageHint.StreamDraw);
 		}
 		
 		INativeTexture IGraphicsBackend.CreateTexture()
@@ -502,12 +532,15 @@ namespace Duality.Backend.DefaultOpenTK
 				}
 			}
 		}
-		private void RenderBatch(IDrawBatch renderBatch, int vertexOffset, IDrawBatch lastBatchRendered)
+		private void RenderBatch(IDrawBatch renderBatch, IDrawBatch lastBatchRendered)
 		{
 			if (lastBatchRendered == null || lastBatchRendered.Material != renderBatch.Material)
 				this.SetupMaterial(renderBatch.Material, lastBatchRendered == null ? null : lastBatchRendered.Material);
 
-			GL.DrawArrays(GetOpenTKVertexMode(renderBatch.VertexMode), vertexOffset, renderBatch.VertexCount);
+			GL.DrawArrays(
+				GetOpenTKVertexMode(renderBatch.VertexMode), 
+				renderBatch.VertexOffset, 
+				renderBatch.VertexCount);
 
 			lastBatchRendered = renderBatch;
 		}

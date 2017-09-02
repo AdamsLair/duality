@@ -11,16 +11,15 @@ namespace Duality.Drawing
 	[DontSerialize]
 	public class DrawDevice : IDrawDevice, IDisposable
 	{
-		private class DrawBatch<T> : IDrawBatch where T : struct, IVertexData
+		private class DrawBatch : IDrawBatch
 		{
-			private static T[] uploadBuffer = null;
-
-			private	T[]			vertices	= null;
-			private	int			vertexCount	= 0;
-			private	int			sortIndex	= 0;
-			private	float		zSortIndex	= 0.0f;
-			private	VertexMode	vertexMode	= VertexMode.Points;
-			private	BatchInfo	material	= null;
+			private	VertexDeclaration	vertexType		= null;
+			private	int					vertexOffset	= 0;
+			private	int					vertexCount		= 0;
+			private	int					sortIndex		= 0;
+			private	float				zSortIndex		= 0.0f;
+			private	VertexMode			vertexMode		= VertexMode.Points;
+			private	BatchInfo			material		= null;
 
 			public int SortIndex
 			{
@@ -29,6 +28,10 @@ namespace Duality.Drawing
 			public float ZSortIndex
 			{
 				get { return this.zSortIndex; }
+			}
+			public int VertexOffset
+			{
+				get { return this.vertexOffset; }
 			}
 			public int VertexCount
 			{
@@ -40,20 +43,19 @@ namespace Duality.Drawing
 			}
 			public VertexDeclaration VertexDeclaration
 			{
-				get { return VertexDeclaration.Get<T>(); }
+				get { return this.vertexType; }
 			}
 			public BatchInfo Material
 			{
 				get { return this.material; }
 			}
 
-			public DrawBatch(BatchInfo material, VertexMode vertexMode, T[] vertices, int vertexCount, float zSortIndex)
+			public DrawBatch(BatchInfo material, VertexMode vertexMode, VertexDeclaration vertexType, int vertexOffset, int vertexCount, float zSortIndex)
 			{
-				if (vertices == null || vertices.Length == 0) throw new ArgumentException("A zero-vertex DrawBatch is invalid.");
-				
 				// Assign data
-				this.vertexCount = Math.Min(vertexCount, vertices.Length);
-				this.vertices = vertices;
+				this.vertexType = vertexType;
+				this.vertexOffset = vertexOffset;
+				this.vertexCount = vertexCount;
 				this.material = material;
 				this.vertexMode = vertexMode;
 				this.zSortIndex = zSortIndex;
@@ -61,7 +63,7 @@ namespace Duality.Drawing
 				// Determine sorting index for non-Z-Sort materials
 				if (!this.material.Technique.Res.NeedsZSort)
 				{
-					int vTypeSI = VertexDeclaration.Get<T>().TypeIndex;
+					int vTypeSI = vertexType.TypeIndex;
 					int matHash;
 					unchecked
 					{
@@ -83,121 +85,52 @@ namespace Duality.Drawing
 				}
 			}
 
-			public void UploadVertices(IVertexUploader target, List<IDrawBatch> uploadBatches)
-			{
-				int vertexCount = 0;
-				T[] vertexData = null;
-
-				if (uploadBatches.Count == 1)
-				{
-					// Only one batch? Don't bother copying data
-					DrawBatch<T> b = uploadBatches[0] as DrawBatch<T>;
-					vertexData = b.vertices;
-					vertexCount = b.VertexCount;
-				}
-				else
-				{
-					// Check how many vertices we got
-					vertexCount = uploadBatches.Sum(t => t.VertexCount);
-					
-					// Allocate a static / shared buffer for uploading vertices
-					if (uploadBuffer == null)
-						uploadBuffer = new T[Math.Max(vertexCount, 64)];
-					else if (uploadBuffer.Length < vertexCount)
-						Array.Resize(ref uploadBuffer, Math.Max(vertexCount, uploadBuffer.Length * 2));
-
-					// Collect vertex data in one array
-					int curVertexPos = 0;
-					vertexData = uploadBuffer;
-					for (int i = 0; i < uploadBatches.Count; i++)
-					{
-						DrawBatch<T> b = uploadBatches[i] as DrawBatch<T>;
-						Array.Copy(b.vertices, 0, vertexData, curVertexPos, b.vertexCount);
-						curVertexPos += b.vertexCount;
-					}
-				}
-
-				// Submit vertex data to the GPU
-				GCHandle vertexDataHandle = GCHandle.Alloc(vertexData, GCHandleType.Pinned);
-				try
-				{
-					IntPtr vertexDataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(vertexData, 0);
-					target.UploadBatchVertices(VertexDeclaration.Get<T>(), vertexDataPtr, vertexCount);
-				}
-				finally
-				{
-					vertexDataHandle.Free();
-				}
-			}
-
 			public bool SameVertexType(IDrawBatch other)
 			{
-				return other is DrawBatch<T>;
+				DrawBatch batch = other as DrawBatch;
+				return batch.vertexType == this.vertexType;
 			}
-			public bool CanAppendJIT<U>(float invZSortAccuracy, float zSortIndex, BatchInfo material, VertexMode vertexMode) where U : struct, IVertexData
+			public bool CanAppendJIT(VertexDeclaration vertexType, float invZSortAccuracy, float zSortIndex, BatchInfo material, VertexMode vertexMode)
 			{
 				if (invZSortAccuracy != 0.0f && Math.Abs(zSortIndex - this.ZSortIndex) > 0.0000001f) return false;
 				return 
 					vertexMode == this.vertexMode && 
-					this is DrawBatch<U> &&
+					this.vertexType == vertexType &&
 					this.vertexMode.IsBatchableMode() &&
 					material == this.material;
 			}
-			public void AppendJIT(object vertexData, int length)
+			public void AppendJIT(float zSortIndex, int count)
 			{
-				this.AppendJIT((T[])vertexData, length);
-			}
-			public void AppendJIT(T[] data, int length)
-			{
-				if (this.vertexCount + length > this.vertices.Length)
-				{
-					int newArrSize = MathF.Max(16, this.vertexCount * 2, this.vertexCount + length);
-					Array.Resize<T>(ref this.vertices, newArrSize);
-				}
-				Array.Copy(data, 0, this.vertices, this.vertexCount, length);
-				this.vertexCount += length;
-				
 				if (this.material.Technique.Res.NeedsZSort)
-					this.zSortIndex = CalcZSortIndex(this.vertices, this.vertexCount);
+				{
+					this.zSortIndex = 
+						(float)(this.vertexCount * this.zSortIndex + count * zSortIndex) /
+						(float)(this.vertexCount + count);
+				}
+				this.vertexCount += count;
 			}
 			public bool CanAppend(IDrawBatch other)
 			{
 				return
+					other.VertexOffset == this.vertexOffset + this.vertexCount &&
 					other.VertexMode == this.vertexMode && 
-					other is DrawBatch<T> &&
-					this.vertexCount + other.VertexCount < 1024 &&
+					this.SameVertexType(other) &&
 					this.vertexMode.IsBatchableMode() &&
 					other.Material == this.material;
 			}
 			public void Append(IDrawBatch other)
 			{
-				this.Append((DrawBatch<T>)other);
+				this.Append((DrawBatch)other);
 			}
-			public void Append(DrawBatch<T> other)
+			public void Append(DrawBatch other)
 			{
-				if (this.vertexCount + other.vertexCount > this.vertices.Length)
-				{
-					int newArrSize = MathF.Max(16, this.vertexCount * 2, this.vertexCount + other.vertexCount);
-					Array.Resize<T>(ref this.vertices, newArrSize);
-				}
-				Array.Copy(other.vertices, 0, this.vertices, this.vertexCount, other.vertexCount);
-				this.vertexCount += other.vertexCount;
-				
 				if (this.material.Technique.Res.NeedsZSort)
-					this.zSortIndex = CalcZSortIndex(this.vertices, this.vertexCount);
-			}
-
-			public static float CalcZSortIndex(T[] vertices, int count = -1)
-			{
-				if (count < 0) count = vertices.Length;
-
-				// Require double precision, so we don't get "z fighting" issues in our sort.
-				double zSortIndex = 0.0d;
-				for (int i = 0; i < count; i++)
 				{
-					zSortIndex += vertices[i].Pos.Z;
+					this.zSortIndex = 
+						(float)(this.vertexCount * this.zSortIndex + other.vertexCount * other.zSortIndex) /
+						(float)(this.vertexCount + other.vertexCount);
 				}
-				return (float)(zSortIndex / (double)count);
+				this.vertexCount += other.vertexCount;
 			}
 		}
 		
@@ -226,6 +159,7 @@ namespace Duality.Drawing
 		private	Matrix4				matFinal		= Matrix4.Identity;
 		private	VisibilityFlag		visibilityMask	= VisibilityFlag.All;
 		private	int					pickingIndex	= 0;
+		private	VertexBatchStore	drawVertices	= new VertexBatchStore();
 		private	RawList<IDrawBatch>	drawBuffer		= new RawList<IDrawBatch>();
 		private	RawList<IDrawBatch>	drawBufferZSort	= new RawList<IDrawBatch>();
 		private	RawList<IDrawBatch>	tempBatchBuffer	= new RawList<IDrawBatch>();
@@ -582,10 +516,14 @@ namespace Duality.Drawing
 				material.Technique = DrawTechnique.Solid;
 			}
 			
+			// Gather vertices
+			VertexSlice<T> slice = this.drawVertices.Rent<T>(vertexCount);
+			Array.Copy(vertexBuffer, 0, slice.Data, slice.Offset, slice.Length);
+
 			// When rendering without depth writing, use z sorting everywhere - there's no real depth buffering!
 			bool zSort = !this.DepthWrite || material.Technique.Res.NeedsZSort;
 			RawList<IDrawBatch> buffer = zSort ? this.drawBufferZSort : this.drawBuffer;
-			float zSortIndex = zSort ? DrawBatch<T>.CalcZSortIndex(vertexBuffer, vertexCount) : 0.0f;
+			float zSortIndex = zSort ? CalcZSortIndex<T>(vertexBuffer, vertexCount) : 0.0f;
 
 			// Determine if we can append the incoming vertices into the previous batch
 			IDrawBatch prevBatch = buffer.Count > 0 ? buffer[buffer.Count - 1] : null;
@@ -595,17 +533,18 @@ namespace Duality.Drawing
 				// because this will trigger lots and lots of Gen2 collections over time.
 				vertexCount + prevBatch.VertexCount < 1024 &&
 				// Check if the batches do match enough for being merged
-				prevBatch.CanAppendJIT<T>(	
+				prevBatch.CanAppendJIT(
+					VertexDeclaration.Get<T>(),
 					zSort ? 1.0f : 0.0f, // Obsolete as of 2016-06-17, can be replcaed with zSort bool.
 					zSortIndex, 
 					material, 
 					vertexMode))
 			{
-				prevBatch.AppendJIT(vertexBuffer, vertexCount);
+				prevBatch.AppendJIT(zSortIndex, vertexCount);
 			}
 			else
 			{
-				buffer.Add(new DrawBatch<T>(material, vertexMode, vertexBuffer, vertexCount, zSortIndex));
+				buffer.Add(new DrawBatch(material, vertexMode, VertexDeclaration.Get<T>(), slice.Offset, slice.Length, zSortIndex));
 			}
 			++this.numRawBatches;
 		}
@@ -686,7 +625,7 @@ namespace Duality.Drawing
 				Target = this.renderTarget.IsAvailable ? this.renderTarget.Res.Native : null
 			};
 			RenderStats stats = new RenderStats();
-			DualityApp.GraphicsBackend.BeginRendering(this, options, stats);
+			DualityApp.GraphicsBackend.BeginRendering(this, this.drawVertices, options, stats);
 
 			{
 				if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.BeginMeasure();
@@ -704,8 +643,22 @@ namespace Duality.Drawing
 			DualityApp.GraphicsBackend.EndRendering();
 			this.drawBuffer.Clear();
 			this.drawBufferZSort.Clear();
+			this.drawVertices.Clear();
 		}
 
+
+		private float CalcZSortIndex<T>(T[] vertices, int count) where T : struct, IVertexData
+		{
+			if (count < 0) count = vertices.Length;
+
+			// Require double precision, so we don't get "z fighting" issues in our sort.
+			double zSortIndex = 0.0d;
+			for (int i = 0; i < count; i++)
+			{
+				zSortIndex += vertices[i].Pos.Z;
+			}
+			return (float)(zSortIndex / (double)count);
+		}
 
 		private void GenerateModelView(out Matrix4 mvMat)
 		{
@@ -848,7 +801,7 @@ namespace Duality.Drawing
 				Viewport = viewportRect,
 				RenderMode = RenderMatrix.ScreenSpace
 			};
-			DualityApp.GraphicsBackend.BeginRendering(null, options);
+			DualityApp.GraphicsBackend.BeginRendering(null, null, options);
 			DualityApp.GraphicsBackend.EndRendering();
 		}
 	}
