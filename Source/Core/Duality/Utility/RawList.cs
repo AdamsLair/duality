@@ -73,12 +73,12 @@ namespace Duality
 		{
 			get
 			{
-				if (index >= count) throw new IndexOutOfRangeException();
+				if (index >= count) ThrowIndexOutOfRangeException();
 				return this.data[index];
 			}
 			set
 			{
-				if (index >= count) throw new IndexOutOfRangeException();
+				if (index >= count) ThrowIndexOutOfRangeException();
 				this.data[index] = value;
 			}
 		}
@@ -492,6 +492,11 @@ namespace Duality
 					Array.Clear(this.data, index + count - clearCount, clearCount);
 				}
 			}
+		}
+
+		private static void ThrowIndexOutOfRangeException()
+		{
+			throw new IndexOutOfRangeException();
 		}
 
 
