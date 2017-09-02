@@ -291,6 +291,8 @@ namespace Duality.Backend.DefaultOpenTK
 
 					lastRendered = batch;
 				}
+
+				renderBegin = sweepIndex;
 			}
 
 			// Cleanup after rendering
