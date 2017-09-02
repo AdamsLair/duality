@@ -9,8 +9,6 @@ namespace Duality.Drawing
 {
 	public interface IDrawBatch
 	{
-		int SortIndex { get; }
-		float ZSortIndex { get; }
 		int VertexOffset { get; }
 		int VertexCount { get; }
 		VertexMode VertexMode { get; }
@@ -18,9 +16,5 @@ namespace Duality.Drawing
 		VertexDeclaration VertexDeclaration { get; }
 
 		bool SameVertexType(IDrawBatch other);
-		bool CanAppendJIT(VertexDeclaration vertexType, float invZSortAccuracy, float zSortIndex, BatchInfo material, VertexMode vertexMode);
-		void AppendJIT(float zSortIndex, int count);
-		bool CanAppend(IDrawBatch other);
-		void Append(IDrawBatch other);
 	}
 }

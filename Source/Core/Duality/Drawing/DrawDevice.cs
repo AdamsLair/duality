@@ -13,13 +13,13 @@ namespace Duality.Drawing
 	{
 		private class DrawBatch : IDrawBatch
 		{
-			private	VertexDeclaration	vertexType		= null;
-			private	int					vertexOffset	= 0;
-			private	int					vertexCount		= 0;
-			private	int					sortIndex		= 0;
-			private	float				zSortIndex		= 0.0f;
-			private	VertexMode			vertexMode		= VertexMode.Points;
-			private	BatchInfo			material		= null;
+			private VertexDeclaration vertexType   = null;
+			private int               vertexOffset = 0;
+			private int               vertexCount  = 0;
+			private int               sortIndex    = 0;
+			private float             zSortIndex   = 0.0f;
+			private VertexMode        vertexMode   = VertexMode.Points;
+			private BatchInfo         material     = null;
 
 			public int SortIndex
 			{
@@ -109,18 +109,14 @@ namespace Duality.Drawing
 				}
 				this.vertexCount += count;
 			}
-			public bool CanAppend(IDrawBatch other)
+			public bool CanAppend(DrawBatch other)
 			{
 				return
-					other.VertexOffset == this.vertexOffset + this.vertexCount &&
-					other.VertexMode == this.vertexMode && 
+					other.vertexOffset == this.vertexOffset + this.vertexCount &&
+					other.vertexMode == this.vertexMode && 
 					this.SameVertexType(other) &&
 					this.vertexMode.IsBatchableMode() &&
-					other.Material == this.material;
-			}
-			public void Append(IDrawBatch other)
-			{
-				this.Append((DrawBatch)other);
+					other.material == this.material;
 			}
 			public void Append(DrawBatch other)
 			{
@@ -160,9 +156,9 @@ namespace Duality.Drawing
 		private	VisibilityFlag		visibilityMask	= VisibilityFlag.All;
 		private	int					pickingIndex	= 0;
 		private	VertexBatchStore	drawVertices	= new VertexBatchStore();
-		private	RawList<IDrawBatch>	drawBuffer		= new RawList<IDrawBatch>();
-		private	RawList<IDrawBatch>	drawBufferZSort	= new RawList<IDrawBatch>();
-		private	RawList<IDrawBatch>	tempBatchBuffer	= new RawList<IDrawBatch>();
+		private	RawList<DrawBatch>	drawBuffer		= new RawList<DrawBatch>();
+		private	RawList<DrawBatch>	drawBufferZSort	= new RawList<DrawBatch>();
+		private	RawList<DrawBatch>	tempBatchBuffer	= new RawList<DrawBatch>();
 		private	int					numRawBatches	= 0;
 		private	ContentRef<RenderTarget> renderTarget = null;
 
@@ -522,11 +518,11 @@ namespace Duality.Drawing
 
 			// When rendering without depth writing, use z sorting everywhere - there's no real depth buffering!
 			bool zSort = !this.DepthWrite || material.Technique.Res.NeedsZSort;
-			RawList<IDrawBatch> buffer = zSort ? this.drawBufferZSort : this.drawBuffer;
+			RawList<DrawBatch> buffer = zSort ? this.drawBufferZSort : this.drawBuffer;
 			float zSortIndex = zSort ? CalcZSortIndex<T>(vertexBuffer, vertexCount) : 0.0f;
 
 			// Determine if we can append the incoming vertices into the previous batch
-			IDrawBatch prevBatch = buffer.Count > 0 ? buffer[buffer.Count - 1] : null;
+			DrawBatch prevBatch = buffer.Count > 0 ? buffer[buffer.Count - 1] : null;
 			if (prevBatch != null &&
 				// ToDo: Move into CanAppendJIT on next major version step:
 				// Make sure to not generate batches that will be in the Large Object Heap (>= 85k bytes)
@@ -702,11 +698,11 @@ namespace Duality.Drawing
 			}
 		}
 
-		private static int DrawBatchComparer(IDrawBatch first, IDrawBatch second)
+		private static int DrawBatchComparer(DrawBatch first, DrawBatch second)
 		{
 			return first.SortIndex - second.SortIndex;
 		}
-		private static int DrawBatchComparerZSort(IDrawBatch first, IDrawBatch second)
+		private static int DrawBatchComparerZSort(DrawBatch first, DrawBatch second)
 		{
 			if (second.ZSortIndex < first.ZSortIndex) return -1;
 			if (second.ZSortIndex > first.ZSortIndex) return 1;
@@ -744,17 +740,17 @@ namespace Duality.Drawing
 			Profile.StatNumOptimizedBatches.Add(batchCountAfter);
 			this.numRawBatches = 0;
 		}
-		private void SortBatches(RawList<IDrawBatch> batchBuffer, Comparison<IDrawBatch> comparison)
+		private void SortBatches(RawList<DrawBatch> batchBuffer, Comparison<DrawBatch> comparison)
 		{
 			this.tempBatchBuffer.Clear();
 			this.tempBatchBuffer.Count = batchBuffer.Count;
 			batchBuffer.StableSort(this.tempBatchBuffer, comparison);
 			this.tempBatchBuffer.Clear();
 		}
-		private void OptimizeBatches(RawList<IDrawBatch> sortedBuffer)
+		private void OptimizeBatches(RawList<DrawBatch> sortedBuffer)
 		{
-			IDrawBatch current = sortedBuffer[0];
-			IDrawBatch next;
+			DrawBatch current = sortedBuffer[0];
+			DrawBatch next;
 
 			// Prepare a temporary batch buffer to store our optimized batches in.
 			this.tempBatchBuffer.Clear();
