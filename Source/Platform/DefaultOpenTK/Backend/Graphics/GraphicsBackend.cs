@@ -237,19 +237,19 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void IGraphicsBackend.Render(IReadOnlyList<IDrawBatch> batches)
 		{
-			IDrawBatch lastBatchRendered = null;
+			IDrawBatch lastRendered = null;
 			int drawCalls = 0;
 
 			int renderBegin = 0;
 			for (int sweepIndex = 1; sweepIndex <= batches.Count; sweepIndex++)
 			{
-				IDrawBatch lastBatch = batches[sweepIndex - 1];
-
-				if (sweepIndex < batches.Count && lastBatch.SameVertexType(batches[sweepIndex]))
+				// Skip batches until we found a switch in vertex types
+				if (sweepIndex < batches.Count && 
+					batches[sweepIndex - 1].SameVertexType(batches[sweepIndex]))
 					continue;
 
+				// Render all batches sharing this vertex type without switching VBOs
 				drawCalls++;
-
 				VertexDeclaration vertexType = batches[renderBegin].VertexDeclaration;
 				GL.BindBuffer(BufferTarget.ArrayBuffer, this.perVertexTypeVBO[vertexType.TypeIndex]);
 
@@ -257,21 +257,49 @@ namespace Duality.Backend.DefaultOpenTK
 				{
 					IDrawBatch batch = batches[renderIndex];
 
+					bool first = renderIndex == renderBegin;
+					bool sameMaterial = 
+						lastRendered != null && 
+						lastRendered.Material == batch.Material;
+
+					// Setup vertex binding when changed. Note that the setup
+					// differs based on the materials shader, so material changes
+					// can be vertex binding changes.
+					if (!sameMaterial || first)
+					{
+						drawCalls++;
+						if (lastRendered != null)
+						{
+							this.FinishVertexFormat(lastRendered.Material, lastRendered.VertexDeclaration);
+						}
+						this.SetupVertexFormat(batch.Material, vertexType);
+					}
+					// Setup material when changed.
+					if (!sameMaterial)
+					{
+						drawCalls++;
+						this.SetupMaterial(
+							batch.Material, 
+							lastRendered != null ? lastRendered.Material : null);
+					}
+
+					// Draw the current batch
 					drawCalls++;
+					GL.DrawArrays(
+						GetOpenTKVertexMode(batch.VertexMode), 
+						batch.VertexOffset, 
+						batch.VertexCount);
 
-					this.PrepareRenderBatch(batch);
-					this.RenderBatch(batch, lastBatchRendered);
-					this.FinishRenderBatch(batch);
-
-					lastBatchRendered = batch;
+					lastRendered = batch;
 				}
 			}
 
+			// Cleanup after rendering
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-			
-			if (lastBatchRendered != null)
+			if (lastRendered != null)
 			{
-				this.FinishMaterial(lastBatchRendered.Material);
+				this.FinishMaterial(lastRendered.Material);
+				this.FinishVertexFormat(lastRendered.Material, lastRendered.VertexDeclaration);
 			}
 
 			if (this.renderStats != null)
@@ -424,12 +452,11 @@ namespace Duality.Backend.DefaultOpenTK
 			Logs.Core.PopIndent();
 		}
 
-		private void PrepareRenderBatch(IDrawBatch renderBatch)
+		private void SetupVertexFormat(BatchInfo material, VertexDeclaration vertexDeclaration)
 		{
-			DrawTechnique technique = renderBatch.Material.Technique.Res ?? DrawTechnique.Solid.Res;
+			DrawTechnique technique = material.Technique.Res ?? DrawTechnique.Solid.Res;
 			NativeShaderProgram program = (technique.Shader.Res != null ? technique.Shader.Res.Native : null) as NativeShaderProgram;
 
-			VertexDeclaration vertexDeclaration = renderBatch.VertexDeclaration;
 			VertexElement[] elements = vertexDeclaration.Elements;
 
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
@@ -518,78 +545,8 @@ namespace Duality.Backend.DefaultOpenTK
 				}
 			}
 		}
-		private void RenderBatch(IDrawBatch renderBatch, IDrawBatch lastBatchRendered)
-		{
-			if (lastBatchRendered == null || lastBatchRendered.Material != renderBatch.Material)
-				this.SetupMaterial(renderBatch.Material, lastBatchRendered == null ? null : lastBatchRendered.Material);
-
-			GL.DrawArrays(
-				GetOpenTKVertexMode(renderBatch.VertexMode), 
-				renderBatch.VertexOffset, 
-				renderBatch.VertexCount);
-
-			lastBatchRendered = renderBatch;
-		}
-		private void FinishRenderBatch(IDrawBatch renderBatch)
-		{
-			DrawTechnique technique = renderBatch.Material.Technique.Res ?? DrawTechnique.Solid.Res;
-			NativeShaderProgram program = (technique.Shader.Res != null ? technique.Shader.Res.Native : null) as NativeShaderProgram;
-
-			VertexDeclaration vertexDeclaration = renderBatch.VertexDeclaration;
-			VertexElement[] elements = vertexDeclaration.Elements;
-
-			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
-			{
-				switch (elements[elementIndex].Role)
-				{
-					case VertexElementRole.Position:
-					{
-						GL.DisableClientState(ArrayCap.VertexArray);
-						break;
-					}
-					case VertexElementRole.TexCoord:
-					{
-						GL.DisableClientState(ArrayCap.TextureCoordArray);
-						break;
-					}
-					case VertexElementRole.Color:
-					{
-						GL.DisableClientState(ArrayCap.ColorArray);
-						break;
-					}
-					default:
-					{
-						if (program != null)
-						{
-							ShaderFieldInfo[] varInfo = program.Fields;
-							int[] locations = program.FieldLocations;
-
-							int selectedVar = -1;
-							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
-							{
-								if (locations[varIndex] == -1) continue;
-								if (!ShaderVarMatches(
-									ref varInfo[varIndex],
-									elements[elementIndex].Type, 
-									elements[elementIndex].Count))
-									continue;
-								
-								selectedVar = varIndex;
-								break;
-							}
-							if (selectedVar == -1) break;
-
-							GL.DisableVertexAttribArray(locations[selectedVar]);
-						}
-						break;
-					}
-				}
-			}
-		}
-
 		private void SetupMaterial(BatchInfo material, BatchInfo lastMaterial)
 		{
-			if (material == lastMaterial) return;
 			DrawTechnique tech = material.Technique.Res ?? DrawTechnique.Solid.Res;
 			DrawTechnique lastTech = lastMaterial != null ? lastMaterial.Technique.Res : null;
 			
@@ -741,6 +698,62 @@ namespace Duality.Backend.DefaultOpenTK
 					GL.Disable(EnableCap.SampleAlphaToCoverage);
 					GL.BlendFunc(BlendingFactorSrc.OneMinusDstColor, BlendingFactorDest.OneMinusSrcColor);
 					break;
+			}
+		}
+
+		private void FinishVertexFormat(BatchInfo material, VertexDeclaration vertexDeclaration)
+		{
+			DrawTechnique technique = material.Technique.Res ?? DrawTechnique.Solid.Res;
+			NativeShaderProgram program = (technique.Shader.Res != null ? technique.Shader.Res.Native : null) as NativeShaderProgram;
+
+			VertexElement[] elements = vertexDeclaration.Elements;
+
+			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+			{
+				switch (elements[elementIndex].Role)
+				{
+					case VertexElementRole.Position:
+					{
+						GL.DisableClientState(ArrayCap.VertexArray);
+						break;
+					}
+					case VertexElementRole.TexCoord:
+					{
+						GL.DisableClientState(ArrayCap.TextureCoordArray);
+						break;
+					}
+					case VertexElementRole.Color:
+					{
+						GL.DisableClientState(ArrayCap.ColorArray);
+						break;
+					}
+					default:
+					{
+						if (program != null)
+						{
+							ShaderFieldInfo[] varInfo = program.Fields;
+							int[] locations = program.FieldLocations;
+
+							int selectedVar = -1;
+							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
+							{
+								if (locations[varIndex] == -1) continue;
+								if (!ShaderVarMatches(
+									ref varInfo[varIndex],
+									elements[elementIndex].Type, 
+									elements[elementIndex].Count))
+									continue;
+								
+								selectedVar = varIndex;
+								break;
+							}
+							if (selectedVar == -1) break;
+
+							GL.DisableVertexAttribArray(locations[selectedVar]);
+						}
+						break;
+					}
+				}
 			}
 		}
 		private void FinishMaterial(BatchInfo material)
