@@ -90,10 +90,11 @@ namespace Duality.Drawing
 				DrawBatch batch = other as DrawBatch;
 				return batch != null && batch.vertexType == this.vertexType;
 			}
-			public bool CanAppendJIT(VertexDeclaration vertexType, bool zSort, float zSortIndex, BatchInfo material, VertexMode vertexMode)
+			public bool CanAppendJIT(VertexDeclaration vertexType, bool zSort, float zSortIndex, BatchInfo material, VertexMode vertexMode, int vertexOffset)
 			{
 				if (zSort && Math.Abs(zSortIndex - this.ZSortIndex) > 0.00001f) return false;
 				return 
+					vertexOffset == this.vertexOffset + this.vertexCount &&
 					vertexMode == this.vertexMode && 
 					this.vertexType == vertexType &&
 					this.vertexMode.IsBatchableMode() &&
@@ -529,7 +530,8 @@ namespace Duality.Drawing
 					zSort,
 					zSortIndex, 
 					material, 
-					vertexMode))
+					vertexMode,
+					slice.Offset))
 			{
 				prevBatch.AppendJIT(zSortIndex, vertexCount);
 			}
