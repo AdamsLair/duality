@@ -34,8 +34,6 @@ namespace Duality.Backend.DefaultOpenTK
 		private bool                  useAlphaToCoverageBlend = false;
 		private bool                  msaaIsDriverDisabled    = false;
 		private bool                  contextCapsRetrieved    = false;
-
-		private List<IDrawBatch>      renderBatchesSharingVBO = new List<IDrawBatch>();
 		
 
 		public GraphicsMode DefaultGraphicsMode
@@ -240,49 +238,37 @@ namespace Duality.Backend.DefaultOpenTK
 		void IGraphicsBackend.Render(IReadOnlyList<IDrawBatch> batches)
 		{
 			IDrawBatch lastBatchRendered = null;
-			IDrawBatch lastBatch = null;
 			int drawCalls = 0;
 
-			this.renderBatchesSharingVBO.Clear();
-			for (int i = 0; i < batches.Count; i++)
+			int renderBegin = 0;
+			for (int sweepIndex = 1; sweepIndex <= batches.Count; sweepIndex++)
 			{
-				IDrawBatch currentBatch = batches[i];
-				IDrawBatch nextBatch = (i < batches.Count - 1) ? batches[i + 1] : null;
+				IDrawBatch lastBatch = batches[sweepIndex - 1];
 
-				if (lastBatch == null || lastBatch.SameVertexType(currentBatch))
-				{
-					this.renderBatchesSharingVBO.Add(currentBatch);
-				}
+				if (sweepIndex < batches.Count && lastBatch.SameVertexType(batches[sweepIndex]))
+					continue;
 
-				if (this.renderBatchesSharingVBO.Count > 0 && (nextBatch == null || !currentBatch.SameVertexType(nextBatch)))
+				drawCalls++;
+
+				VertexDeclaration vertexType = batches[renderBegin].VertexDeclaration;
+				GL.BindBuffer(BufferTarget.ArrayBuffer, this.perVertexTypeVBO[vertexType.TypeIndex]);
+
+				for (int renderIndex = renderBegin; renderIndex < sweepIndex; renderIndex++)
 				{
+					IDrawBatch batch = batches[renderIndex];
+
 					drawCalls++;
 
-					VertexDeclaration vertexType = this.renderBatchesSharingVBO[0].VertexDeclaration;
-					GL.BindBuffer(BufferTarget.ArrayBuffer, this.perVertexTypeVBO[vertexType.TypeIndex]);
+					this.PrepareRenderBatch(batch);
+					this.RenderBatch(batch, lastBatchRendered);
+					this.FinishRenderBatch(batch);
 
-					foreach (IDrawBatch batch in this.renderBatchesSharingVBO)
-					{
-						drawCalls++;
-
-						this.PrepareRenderBatch(batch);
-						this.RenderBatch(batch, lastBatchRendered);
-						this.FinishRenderBatch(batch);
-
-						lastBatchRendered = batch;
-					}
-
-					this.renderBatchesSharingVBO.Clear();
-					lastBatch = null;
-				}
-				else
-				{
-					lastBatch = currentBatch;
+					lastBatchRendered = batch;
 				}
 			}
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
+			
 			if (lastBatchRendered != null)
 			{
 				this.FinishMaterial(lastBatchRendered.Material);
