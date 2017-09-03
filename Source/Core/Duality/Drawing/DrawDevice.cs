@@ -351,15 +351,6 @@ namespace Duality.Drawing
 			return screenPos;
 		}
 		/// <summary>
-		/// Transforms screen space coordinates to world space coordinates.
-		/// </summary>
-		/// <param name="screenPos"></param>
-		/// <returns></returns>
-		public Vector3 GetSpaceCoord(Vector2 screenPos)
-		{
-			return this.GetSpaceCoord(new Vector3(screenPos));
-		}
-		/// <summary>
 		/// Transforms world space coordinates to screen space coordinates.
 		/// </summary>
 		/// <param name="spacePos"></param>
@@ -398,15 +389,6 @@ namespace Duality.Drawing
 			// Since the result Z value is expected to be a world coordinate, make it absolute
 			spacePos.Z += gameObjPos.Z;
 			return spacePos;
-		}
-		/// <summary>
-		/// Transforms world space coordinates to screen space coordinates.
-		/// </summary>
-		/// <param name="spacePos"></param>
-		/// <returns></returns>
-		public Vector3 GetScreenCoord(Vector2 spacePos)
-		{
-			return this.GetScreenCoord(new Vector3(spacePos));
 		}
 
 		public void PreprocessCoords(ref Vector3 pos, ref float scale)
@@ -468,18 +450,6 @@ namespace Duality.Drawing
 				c.Y <= 1.0f + boundRadVec.Y;
 		}
 
-		public void AddVertices<T>(ContentRef<Material> material, VertexMode vertexMode, params T[] vertices) where T : struct, IVertexData
-		{
-			this.AddVertices<T>(material.IsAvailable ? material.Res.InfoDirect : Material.Checkerboard.Res.InfoDirect, vertexMode, vertices, vertices.Length);
-		}
-		public void AddVertices<T>(BatchInfo material, VertexMode vertexMode, params T[] vertices) where T : struct, IVertexData
-		{
-			this.AddVertices<T>(material, vertexMode, vertices, vertices.Length);
-		}
-		public void AddVertices<T>(ContentRef<Material> material, VertexMode vertexMode, T[] vertexBuffer, int vertexCount) where T : struct, IVertexData
-		{
-			this.AddVertices<T>(material.IsAvailable ? material.Res.InfoDirect : Material.Checkerboard.Res.InfoDirect, vertexMode, vertexBuffer, vertexCount);
-		}
 		public void AddVertices<T>(BatchInfo material, VertexMode vertexMode, T[] vertexBuffer, int vertexCount) where T : struct, IVertexData
 		{
 			if (vertexCount == 0) return;
