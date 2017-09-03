@@ -12,7 +12,7 @@ namespace Duality.Backend
 		Point2 ExternalBackbufferSize { get; set; }
 
 		void BeginRendering(IDrawDevice device, VertexBatchStore vertexData, RenderOptions options, RenderStats stats = null);
-		void Render(IReadOnlyList<IDrawBatch> batches);
+		void Render(IReadOnlyList<VertexDrawBatch> batches);
 		void EndRendering();
 
 		INativeTexture CreateTexture();

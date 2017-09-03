@@ -39,7 +39,7 @@ namespace Duality.Backend.Dummy
 		void IDualityBackend.Shutdown() { }
 
 		void IGraphicsBackend.BeginRendering(IDrawDevice device, VertexBatchStore vertexData, RenderOptions options, RenderStats stats) { }
-		void IGraphicsBackend.Render(IReadOnlyList<IDrawBatch> batches) { }
+		void IGraphicsBackend.Render(IReadOnlyList<VertexDrawBatch> batches) { }
 		void IGraphicsBackend.EndRendering() { }
 
 		INativeTexture IGraphicsBackend.CreateTexture()

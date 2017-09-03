@@ -11,123 +11,66 @@ namespace Duality.Drawing
 	[DontSerialize]
 	public class DrawDevice : IDrawDevice, IDisposable
 	{
-		private class DrawBatch : IDrawBatch
+		private struct VertexDrawItem
 		{
-			private VertexDeclaration vertexType   = null;
-			private int               vertexOffset = 0;
-			private int               vertexCount  = 0;
-			private int               sortIndex    = 0;
-			private float             zSortIndex   = 0.0f;
-			private VertexMode        vertexMode   = VertexMode.Points;
-			private BatchInfo         material     = null;
+			public VertexDeclaration Type;
+			public int Offset;
+			public int Count;
+			public VertexMode Mode;
+			public BatchInfo Material;
 
-			public int SortIndex
-			{
-				get { return this.sortIndex; }
-			}
-			public float ZSortIndex
-			{
-				get { return this.zSortIndex; }
-			}
-			public int VertexOffset
-			{
-				get { return this.vertexOffset; }
-			}
-			public int VertexCount
-			{
-				get { return this.vertexCount; }
-			}
-			public VertexMode VertexMode
-			{
-				get { return this.vertexMode; }
-			}
-			public VertexDeclaration VertexDeclaration
-			{
-				get { return this.vertexType; }
-			}
-			public BatchInfo Material
-			{
-				get { return this.material; }
-			}
-
-			public DrawBatch(BatchInfo material, VertexMode vertexMode, VertexDeclaration vertexType, int vertexOffset, int vertexCount, float zSortIndex)
-			{
-				// Assign data
-				this.vertexType = vertexType;
-				this.vertexOffset = vertexOffset;
-				this.vertexCount = vertexCount;
-				this.material = material;
-				this.vertexMode = vertexMode;
-				this.zSortIndex = zSortIndex;
-
-				// Determine sorting index for non-Z-Sort materials
-				if (!this.material.Technique.Res.NeedsZSort)
-				{
-					int vTypeSI = vertexType.TypeIndex;
-					int matHash;
-					unchecked
-					{
-						// Avoid just "cutting off" parts of the original hash,
-						// as this is likely to lead to collisions.
-						matHash = this.material.GetHashCode();
-						matHash = (13 * matHash + 17 * (matHash >> 9)) % (1 << 23);
-					}
-
-					// Bit significancy is used to achieve sorting by multiple traits at once.
-					// The higher a traits bit significancy, the higher its priority when sorting.
-					this.sortIndex = 
-						(((int)vertexMode & 15) << 0) |		//							  XXXX	4 Bit	Vertex Mode		Offset 4
-						((matHash & 8388607) << 4) |		//	   XXXXXXXXXXXXXXXXXXXXXXXaaaa	23 Bit	Material		Offset 27
-						((vTypeSI & 15) << 27);				//	XXXbbbbbbbbbbbbbbbbbbbbbbbaaaa	4 Bit	Vertex Type		Offset 31
-
-					// Keep an eye on this. If for example two material hash codes randomly have the same 23 lower bits, they
-					// will be sorted as if equal, resulting in blocking batch aggregation.
-				}
-			}
-
-			public bool SameVertexType(IDrawBatch other)
-			{
-				DrawBatch batch = other as DrawBatch;
-				return batch != null && batch.vertexType == this.vertexType;
-			}
-			public bool CanAppendJIT(VertexDeclaration vertexType, bool zSort, float zSortIndex, BatchInfo material, VertexMode vertexMode, int vertexOffset)
-			{
-				if (zSort && Math.Abs(zSortIndex - this.ZSortIndex) > 0.00001f) return false;
-				return 
-					vertexOffset == this.vertexOffset + this.vertexCount &&
-					vertexMode == this.vertexMode && 
-					this.vertexType == vertexType &&
-					this.vertexMode.IsBatchableMode() &&
-					material == this.material;
-			}
-			public void AppendJIT(float zSortIndex, int count)
-			{
-				if (this.material.Technique.Res.NeedsZSort)
-				{
-					this.zSortIndex = 
-						(float)(this.vertexCount * this.zSortIndex + count * zSortIndex) /
-						(float)(this.vertexCount + count);
-				}
-				this.vertexCount += count;
-			}
-			public bool CanAppend(DrawBatch other)
+			public bool CanShareBatchWith(ref VertexDrawItem other)
 			{
 				return
-					other.vertexOffset == this.vertexOffset + this.vertexCount &&
-					other.vertexMode == this.vertexMode && 
-					this.SameVertexType(other) &&
-					this.vertexMode.IsBatchableMode() &&
-					other.material == this.material;
+					this.Mode == other.Mode &&
+					this.Type == other.Type &&
+					this.Material == other.Material;
 			}
-			public void Append(DrawBatch other)
+			public bool CanAppend(ref VertexDrawItem other)
 			{
-				if (this.material.Technique.Res.NeedsZSort)
-				{
-					this.zSortIndex = 
-						(float)(this.vertexCount * this.zSortIndex + other.vertexCount * other.zSortIndex) /
-						(float)(this.vertexCount + other.vertexCount);
-				}
-				this.vertexCount += other.vertexCount;
+				return
+					this.Offset + this.Count == other.Offset &&
+					this.Mode == other.Mode &&
+					this.Type == other.Type &&
+					this.Material == other.Material;
+			}
+
+			public override string ToString()
+			{
+				return string.Format(
+					"{0}[{1}@{2}] as {3}, '{4}'",
+					this.Type.DataType.Name,
+					this.Count,
+					this.Offset,
+					this.Mode,
+					this.Material);
+			}
+		}
+		[StructLayout(LayoutKind.Explicit)]
+		private struct SortItem
+		{
+			[FieldOffset(0)] public int DrawItemIndex;
+			[FieldOffset(4)] public int SortIndex;
+			[FieldOffset(4)] public float SortDepth;
+
+			public bool CanShareDepth(float otherDepth)
+			{
+				 return Math.Abs(this.SortDepth - otherDepth) < 0.00001f;
+			}
+			public void MergeDepth(float otherDepth, int count, int otherCount)
+			{
+				this.SortDepth = 
+					(float)(count * this.SortDepth + otherCount * otherDepth) /
+					(float)(count + otherCount);
+			}
+
+			public override string ToString()
+			{
+				return string.Format(
+					"Item {0}, Sort Index {1} / Depth {2:F}",
+					this.DrawItemIndex,
+					this.SortIndex,
+					this.SortDepth);
 			}
 		}
 		
@@ -138,30 +81,34 @@ namespace Duality.Drawing
 		public const float DefaultFocusDist	= 500.0f;
 
 		
-		private	bool				disposed		= false;
-		private	float				nearZ			= 0.0f;
-		private	float				farZ			= 10000.0f;
-		private	float				focusDist		= DefaultFocusDist;
-		private	ClearFlag			clearFlags		= ClearFlag.All;
-		private	ColorRgba			clearColor		= ColorRgba.TransparentBlack;
-		private	float				clearDepth		= 1.0f;
-		private	Vector2				targetSize		= Vector2.Zero;
-		private	Rect				viewportRect	= Rect.Empty;
-		private	Vector3				refPos			= Vector3.Zero;
-		private	float				refAngle		= 0.0f;
-		private	RenderMatrix		renderMode		= RenderMatrix.ScreenSpace;
-		private	PerspectiveMode		perspective		= PerspectiveMode.Parallax;
-		private	Matrix4				matModelView	= Matrix4.Identity;
-		private	Matrix4				matProjection	= Matrix4.Identity;
-		private	Matrix4				matFinal		= Matrix4.Identity;
-		private	VisibilityFlag		visibilityMask	= VisibilityFlag.All;
-		private	int					pickingIndex	= 0;
-		private	VertexBatchStore	drawVertices	= new VertexBatchStore();
-		private	RawList<DrawBatch>	drawBuffer		= new RawList<DrawBatch>();
-		private	RawList<DrawBatch>	drawBufferZSort	= new RawList<DrawBatch>();
-		private	RawList<DrawBatch>	tempBatchBuffer	= new RawList<DrawBatch>();
-		private	int					numRawBatches	= 0;
-		private	ContentRef<RenderTarget> renderTarget = null;
+		private bool                     disposed       = false;
+		private float                    nearZ          = 0.0f;
+		private float                    farZ           = 10000.0f;
+		private float                    focusDist      = DefaultFocusDist;
+		private ClearFlag                clearFlags     = ClearFlag.All;
+		private ColorRgba                clearColor     = ColorRgba.TransparentBlack;
+		private float                    clearDepth     = 1.0f;
+		private Vector2                  targetSize     = Vector2.Zero;
+		private Rect                     viewportRect   = Rect.Empty;
+		private Vector3                  refPos         = Vector3.Zero;
+		private float                    refAngle       = 0.0f;
+		private ContentRef<RenderTarget> renderTarget   = null;
+		private RenderMatrix             renderMode     = RenderMatrix.ScreenSpace;
+		private PerspectiveMode          perspective    = PerspectiveMode.Parallax;
+		private Matrix4                  matModelView   = Matrix4.Identity;
+		private Matrix4                  matProjection  = Matrix4.Identity;
+		private Matrix4                  matFinal       = Matrix4.Identity;
+		private VisibilityFlag           visibilityMask = VisibilityFlag.All;
+		private int                      pickingIndex   = 0;
+
+		private VertexBatchStore          drawVertices           = new VertexBatchStore();
+		private RawList<VertexDrawItem>   drawBuffer             = new RawList<VertexDrawItem>();
+		private RawList<SortItem>         sortBufferSolid        = new RawList<SortItem>();
+		private RawList<SortItem>         sortBufferBlended      = new RawList<SortItem>();
+		private RawList<SortItem>         sortBufferTemp         = new RawList<SortItem>();
+		private RawList<VertexDrawBatch>  batchBufferSolid       = new RawList<VertexDrawBatch>();
+		private RawList<VertexDrawBatch>  batchBufferBlended     = new RawList<VertexDrawBatch>();
+		private int                       numRawBatches          = 0;
 
 
 		public bool Disposed
@@ -495,8 +442,10 @@ namespace Duality.Drawing
 			if (vertexCount == 0) return;
 			if (vertexBuffer == null || vertexBuffer.Length == 0) return;
 			if (vertexCount > vertexBuffer.Length) vertexCount = vertexBuffer.Length;
-			if (material == null) material = Material.Checkerboard.Res.InfoDirect;
+			if (object.ReferenceEquals(material, null)) material = Material.Checkerboard.Res.InfoDirect;
 
+			// In picking mode, override incoming vertices material and vertex colors
+			// to generate a lookup texture by which we can retrieve each pixels object.
 			if (this.pickingIndex != 0)
 			{
 				ColorRgba clr = new ColorRgba((this.pickingIndex << 8) | 0xFF);
@@ -517,28 +466,61 @@ namespace Duality.Drawing
 			VertexSlice<T> slice = this.drawVertices.Rent<T>(vertexCount);
 			Array.Copy(vertexBuffer, 0, slice.Data, slice.Offset, slice.Length);
 
-			// When rendering without depth writing, use z sorting everywhere - there's no real depth buffering!
-			bool zSort = !this.DepthWrite || material.Technique.Res.NeedsZSort;
-			RawList<DrawBatch> buffer = zSort ? this.drawBufferZSort : this.drawBuffer;
-			float zSortIndex = zSort ? CalcZSortIndex<T>(vertexBuffer, vertexCount) : 0.0f;
-
-			// Determine if we can append the incoming vertices into the previous batch
-			DrawBatch prevBatch = buffer.Count > 0 ? buffer[buffer.Count - 1] : null;
-			if (prevBatch != null &&
-				prevBatch.CanAppendJIT(
-					VertexDeclaration.Get<T>(),
-					zSort,
-					zSortIndex, 
-					material, 
-					vertexMode,
-					slice.Offset))
+			// Aggregate all info we have about our incoming vertices
+			VertexDrawItem drawItem = new VertexDrawItem
 			{
-				prevBatch.AppendJIT(zSortIndex, vertexCount);
+				Type = VertexDeclaration.Get<T>(),
+				Offset = slice.Offset,
+				Count = slice.Length,
+				Mode = vertexMode,
+				Material = material
+			};
+			
+			// Determine whether we need depth sorting and calculate a reference depth
+			bool sortByDepth = !this.DepthWrite || material.Technique.Res.NeedsZSort;
+			RawList<SortItem> sortBuffer = sortByDepth ? this.sortBufferBlended : this.sortBufferSolid;
+			SortItem sortItem = new SortItem();
+			if (sortByDepth)
+			{
+				sortItem.SortDepth = this.CalcZSortIndex<T>(vertexBuffer, vertexCount);
+			}
+
+			// Determine whether we can batch the new vertex item with the previous one
+			int prevDrawIndex = -1;
+			if (vertexMode.IsBatchableMode() && sortBuffer.Count > 0)
+			{
+				// Since we require a complete material match to append items, we can
+				// assume that the previous items sortByDepth value is the same as ours.
+				SortItem prevSortItem = sortBuffer.Data[sortBuffer.Count - 1];
+
+				// Compare the previously added item with the new one. If everything
+				// except the vertices themselves is the same, we can append them directly.
+				if (this.drawBuffer.Data[prevSortItem.DrawItemIndex].CanAppend(ref drawItem) && 
+					(!sortByDepth || sortItem.CanShareDepth(prevSortItem.SortDepth)))
+				{
+					prevDrawIndex = prevSortItem.DrawItemIndex;
+				}
+			}
+
+			// Append the new item directly to the previous one, or add it as a new one
+			if (prevDrawIndex != -1)
+			{
+				if (sortByDepth)
+				{
+					sortBuffer.Data[sortBuffer.Count - 1].MergeDepth(
+						sortItem.SortDepth, 
+						this.drawBuffer.Data[prevDrawIndex].Count, 
+						drawItem.Count);
+				}
+				this.drawBuffer.Data[prevDrawIndex].Count += drawItem.Count;
 			}
 			else
 			{
-				buffer.Add(new DrawBatch(material, vertexMode, VertexDeclaration.Get<T>(), slice.Offset, slice.Length, zSortIndex));
+				sortItem.DrawItemIndex = this.drawBuffer.Count;
+				sortBuffer.Add(sortItem);
+				this.drawBuffer.Add(drawItem);
 			}
+
 			++this.numRawBatches;
 		}
 		
@@ -605,7 +587,7 @@ namespace Duality.Drawing
 			if (DualityApp.GraphicsBackend == null) return;
 
 			// Process drawcalls
-			this.OptimizeBatches();
+			this.AggregateBatches();
 			RenderOptions options = new RenderOptions
 			{
 				ClearFlags = this.clearFlags,
@@ -624,10 +606,10 @@ namespace Duality.Drawing
 				if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.BeginMeasure();
 
 				// Z-Independent: Sorted as needed by batch optimizer
-				DualityApp.GraphicsBackend.Render(this.drawBuffer);
+				DualityApp.GraphicsBackend.Render(this.batchBufferSolid);
 
 				// Z-Sorted: Back to Front
-				DualityApp.GraphicsBackend.Render(this.drawBufferZSort);
+				DualityApp.GraphicsBackend.Render(this.batchBufferBlended);
 
 				if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.EndMeasure();
 			}
@@ -635,7 +617,11 @@ namespace Duality.Drawing
 
 			DualityApp.GraphicsBackend.EndRendering();
 			this.drawBuffer.Clear();
-			this.drawBufferZSort.Clear();
+			this.sortBufferSolid.Clear();
+			this.sortBufferBlended.Clear();
+			this.sortBufferTemp.Clear();
+			this.batchBufferSolid.Clear();
+			this.batchBufferBlended.Clear();
 			this.drawVertices.Clear();
 		}
 
@@ -695,87 +681,142 @@ namespace Duality.Drawing
 			}
 		}
 
-		private static int DrawBatchComparer(DrawBatch first, DrawBatch second)
+		private static int MaterialSortComparison(SortItem first, SortItem second)
 		{
 			return first.SortIndex - second.SortIndex;
 		}
-		private static int DrawBatchComparerZSort(DrawBatch first, DrawBatch second)
+		private static int DepthSortComparison(SortItem first, SortItem second)
 		{
-			if (second.ZSortIndex < first.ZSortIndex) return -1;
-			if (second.ZSortIndex > first.ZSortIndex) return 1;
-			if (second.ZSortIndex == first.ZSortIndex) return 0;
-			if (float.IsNaN(second.ZSortIndex))
-				return (float.IsNaN(first.ZSortIndex) ? 0 : -1);
+			if (second.SortDepth < first.SortDepth) return -1;
+			if (second.SortDepth > first.SortDepth) return 1;
+			if (second.SortDepth == first.SortDepth) return 0;
+			if (float.IsNaN(second.SortDepth))
+				return (float.IsNaN(first.SortDepth) ? 0 : -1);
 			else
 				return 1;
 		}
-		private void OptimizeBatches()
+		private void AggregateBatches()
 		{
-			int batchCountBefore = this.drawBuffer.Count + this.drawBufferZSort.Count;
+			int batchCountBefore = this.sortBufferSolid.Count + this.sortBufferBlended.Count;
 			if (this.pickingIndex == 0) Profile.TimeOptimizeDrawcalls.BeginMeasure();
 
-			// Non-ZSorted
-			if (this.drawBuffer.Count > 1)
+			// Material-sorted (solid) batches
+			if (this.sortBufferSolid.Count > 0)
 			{
-				this.SortBatches(this.drawBuffer, DrawBatchComparer);
-				this.OptimizeBatches(this.drawBuffer);
+				// Assign material and vertex type based sort indices to each item
+				this.AssignMaterialSortIDs(this.sortBufferSolid, this.drawBuffer);
+
+				// Stable sort assures maintaining draw order for batches of equal material
+				this.sortBufferTemp.Count = this.sortBufferSolid.Count;
+				this.sortBufferSolid.StableSort(this.sortBufferTemp, MaterialSortComparison);
+				this.sortBufferTemp.Clear();
+
+				// Sweep over the sorted draws and aggregate as many as possible into a single batch
+				this.AggregateBatches(this.sortBufferSolid, this.drawBuffer, this.batchBufferSolid, false);
 			}
 
-			// Z-Sorted
-			if (this.drawBufferZSort.Count > 1)
+			// Depth-sorted (blended) batches
+			if (this.sortBufferBlended.Count > 0)
 			{
-				// Stable sort assures maintaining draw order for batches of equal ZOrderIndex
-				this.SortBatches(this.drawBufferZSort, DrawBatchComparerZSort);
-				this.OptimizeBatches(this.drawBufferZSort);
+				// Stable sort assures maintaining draw order for batches of equal depth
+				this.sortBufferTemp.Count = this.sortBufferBlended.Count;
+				this.sortBufferBlended.StableSort(this.sortBufferTemp, DepthSortComparison);
+				this.sortBufferTemp.Clear();
+
+				// Sweep over the sorted draws and aggregate as many as possible into a single batch
+				this.AggregateBatches(this.sortBufferBlended, this.drawBuffer, this.batchBufferBlended, true);
 			}
 
 			if (this.pickingIndex == 0) Profile.TimeOptimizeDrawcalls.EndMeasure();
-			int batchCountAfter = this.drawBuffer.Count + this.drawBufferZSort.Count;
+			int batchCountAfter = this.batchBufferSolid.Count + this.batchBufferBlended.Count;
 
 			Profile.StatNumRawBatches.Add(this.numRawBatches);
 			Profile.StatNumMergedBatches.Add(batchCountBefore);
 			Profile.StatNumOptimizedBatches.Add(batchCountAfter);
 			this.numRawBatches = 0;
 		}
-		private void SortBatches(RawList<DrawBatch> batchBuffer, Comparison<DrawBatch> comparison)
+		private void AssignMaterialSortIDs(RawList<SortItem> sortItems, RawList<VertexDrawItem> drawItems)
 		{
-			this.tempBatchBuffer.Clear();
-			this.tempBatchBuffer.Count = batchBuffer.Count;
-			batchBuffer.StableSort(this.tempBatchBuffer, comparison);
-			this.tempBatchBuffer.Clear();
-		}
-		private void OptimizeBatches(RawList<DrawBatch> sortedBuffer)
-		{
-			DrawBatch current = sortedBuffer[0];
-			DrawBatch next;
-
-			// Prepare a temporary batch buffer to store our optimized batches in.
-			this.tempBatchBuffer.Clear();
-			this.tempBatchBuffer.Add(current);
-
-			// Combine consecutive batches wherever possible and store the
-			// results in a temporary batch buffer.
-			for (int i = 1; i < sortedBuffer.Count; i++)
+			VertexDrawItem[] drawData = drawItems.Data;
+			SortItem[] sortData = sortItems.Data;
+			int count = sortItems.Count;
+			for (int i = 0; i < sortData.Length; i++)
 			{
-				next = sortedBuffer[i];
+				if (i >= count) break;
+				
+				int drawIndex = sortData[i].DrawItemIndex;
+				int vertexTypeIndex = drawData[drawIndex].Type.TypeIndex;
+				VertexMode vertexMode = drawData[drawIndex].Mode;
+				BatchInfo material = drawData[drawIndex].Material;
 
-				if (current.CanAppend(next))
+				int matHash;
+				unchecked
 				{
-					current.Append(next);
+					// Avoid just "cutting off" parts of the original hash,
+					// as this is likely to lead to collisions.
+					matHash = material.GetHashCode();
+					matHash = (13 * matHash + 17 * (matHash >> 9)) % (1 << 23);
 				}
-				else
+
+				// Bit significancy is used to achieve sorting by multiple traits at once.
+				// The higher a traits bit significancy, the higher its priority when sorting.
+				sortData[i].SortIndex = 
+					(((int)vertexMode & 15) << 0) | //                           XXXX  4 Bit   Vertex Mode  Offset 4
+					((matHash & 8388607) << 4) |    //    XXXXXXXXXXXXXXXXXXXXXXXaaaa  23 Bit  Material     Offset 27
+					((vertexTypeIndex & 15) << 27); // XXXbbbbbbbbbbbbbbbbbbbbbbbaaaa  4 Bit   Vertex Type  Offset 31
+
+				// Keep an eye on this. If for example two material hash codes randomly have the same 23 lower bits, they
+				// will be sorted as if equal, resulting in blocking batch aggregation.
+			}
+		}
+		private void AggregateBatches(RawList<SortItem> sortItems, RawList<VertexDrawItem> drawItems, RawList<VertexDrawBatch> batches, bool isDepthSorted)
+		{
+			VertexDrawItem[] drawData = drawItems.Data;
+			SortItem[] sortData = sortItems.Data;
+
+			SortItem activeSortItem = sortData[0];
+			VertexDrawItem activeItem = drawData[activeSortItem.DrawItemIndex];
+			int beginBatchIndex = 0;
+
+			// Find sequences of draw items that can be batched together
+			int count = sortItems.Count;
+			for (int sortIndex = 1; sortIndex <= count; sortIndex++)
+			{
+				// Skip items until we can no longer put the next one into the same batch
+				if (sortIndex < count)
 				{
-					current = next;
-					this.tempBatchBuffer.Add(current);
+					SortItem sortItem = sortData[sortIndex];
+					if (activeItem.CanShareBatchWith(ref drawData[sortItem.DrawItemIndex]) &&
+						(!isDepthSorted || sortItem.CanShareDepth(activeSortItem.SortDepth)))
+						continue;
+				}
+
+				// Create a batch for all previous items
+				VertexDrawBatch batch = new VertexDrawBatch(
+					activeItem.Type, 
+					new RawList<VertexDrawRange>(), 
+					activeItem.Mode,
+					activeItem.Material);
+
+				for (int i = beginBatchIndex; i < sortIndex; i++)
+				{
+					batch.VertexRanges.Add(new VertexDrawRange
+					{
+						Index = drawData[sortData[i].DrawItemIndex].Offset,
+						Count = drawData[sortData[i].DrawItemIndex].Count
+					});
+				}
+
+				batches.Add(batch);
+
+				// Proceed with the current item being the new sharing reference
+				if (sortIndex < count)
+				{
+					beginBatchIndex = sortIndex;
+					activeSortItem = sortData[sortIndex];
+					activeItem = drawData[activeSortItem.DrawItemIndex];
 				}
 			}
-
-			// Move all batches from the batch buffer back to the sorted buffer
-			// that was provided.
-			sortedBuffer.Clear();
-			sortedBuffer.Count = this.tempBatchBuffer.Count;
-			this.tempBatchBuffer.CopyTo(sortedBuffer, 0, this.tempBatchBuffer.Count);
-			this.tempBatchBuffer.Clear();
 		}
 
 		public static void RenderVoid(Rect viewportRect)

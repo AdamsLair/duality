@@ -138,6 +138,7 @@ namespace Duality.Backend.DefaultOpenTK
 					// Filter out unused vertex types
 					IVertexBatch vertexBatch = vertexData.Batches[typeIndex];
 					if (vertexBatch == null) continue;
+					if (vertexBatch.Count == 0) continue;
 
 					// Generate a VBO for this vertex type if it didn't exist yet
 					if (this.perVertexTypeVBO[typeIndex] == 0)
@@ -235,72 +236,60 @@ namespace Duality.Backend.DefaultOpenTK
 					GL.Translate(0.0f, -device.TargetSize.Y, 0.0f);
 			}
 		}
-		void IGraphicsBackend.Render(IReadOnlyList<IDrawBatch> batches)
+		void IGraphicsBackend.Render(IReadOnlyList<VertexDrawBatch> batches)
 		{
-			IDrawBatch lastRendered = null;
+			VertexDrawBatch lastRendered = null;
 			int drawCalls = 0;
 
-			int renderBegin = 0;
-			for (int sweepIndex = 1; sweepIndex <= batches.Count; sweepIndex++)
+			for (int i = 0; i < batches.Count; i++)
 			{
-				// Skip batches until we found a switch in vertex types
-				if (sweepIndex < batches.Count && 
-					batches[sweepIndex - 1].SameVertexType(batches[sweepIndex]))
-					continue;
+				VertexDrawBatch batch = batches[i];
+				VertexDeclaration vertexType = batch.VertexType;
 
-				// Render all batches sharing this vertex type without switching VBOs
-				drawCalls++;
-				VertexDeclaration vertexType = batches[renderBegin].VertexDeclaration;
 				GL.BindBuffer(BufferTarget.ArrayBuffer, this.perVertexTypeVBO[vertexType.TypeIndex]);
+				
+				bool first = (i == 0);
+				bool sameMaterial = 
+					lastRendered != null && 
+					lastRendered.Material == batch.Material;
 
-				for (int renderIndex = renderBegin; renderIndex < sweepIndex; renderIndex++)
+				// Setup vertex bindings. Note that the setup differs based on the 
+				// materials shader, so material changes can be vertex binding changes.
+				if (lastRendered != null)
 				{
-					IDrawBatch batch = batches[renderIndex];
+					this.FinishVertexFormat(lastRendered.Material, lastRendered.VertexType);
+				}
+				this.SetupVertexFormat(batch.Material, vertexType);
 
-					bool first = renderIndex == renderBegin;
-					bool sameMaterial = 
-						lastRendered != null && 
-						lastRendered.Material == batch.Material;
-
-					// Setup vertex binding when changed. Note that the setup
-					// differs based on the materials shader, so material changes
-					// can be vertex binding changes.
-					if (!sameMaterial || first)
-					{
-						drawCalls++;
-						if (lastRendered != null)
-						{
-							this.FinishVertexFormat(lastRendered.Material, lastRendered.VertexDeclaration);
-						}
-						this.SetupVertexFormat(batch.Material, vertexType);
-					}
-					// Setup material when changed.
-					if (!sameMaterial)
-					{
-						drawCalls++;
-						this.SetupMaterial(
-							batch.Material, 
-							lastRendered != null ? lastRendered.Material : null);
-					}
-
-					// Draw the current batch
-					GL.DrawArrays(
-						GetOpenTKVertexMode(batch.VertexMode), 
-						batch.VertexOffset, 
-						batch.VertexCount);
-
-					lastRendered = batch;
+				// Setup material when changed.
+				if (!sameMaterial)
+				{
+					this.SetupMaterial(
+						batch.Material, 
+						lastRendered != null ? lastRendered.Material : null);
 				}
 
-				renderBegin = sweepIndex;
-			}
+				// Draw the current batch
+				VertexDrawRange[] rangeData = batch.VertexRanges.Data;
+				int rangeCount = batch.VertexRanges.Count;
+				for (int r = 0; r < rangeCount; r++)
+				{
+					GL.DrawArrays(
+						GetOpenTKVertexMode(batch.VertexMode), 
+						rangeData[r].Index, 
+						rangeData[r].Count);
+				}
 
+				drawCalls++;
+				lastRendered = batch;
+			}
+			
 			// Cleanup after rendering
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 			if (lastRendered != null)
 			{
 				this.FinishMaterial(lastRendered.Material);
-				this.FinishVertexFormat(lastRendered.Material, lastRendered.VertexDeclaration);
+				this.FinishVertexFormat(lastRendered.Material, lastRendered.VertexType);
 			}
 
 			if (this.renderStats != null)
