@@ -144,14 +144,14 @@ namespace Duality.Drawing
 		private VisibilityFlag           visibilityMask = VisibilityFlag.All;
 		private int                      pickingIndex   = 0;
 
-		private VertexBatchStore          drawVertices           = new VertexBatchStore();
-		private RawList<VertexDrawItem>   drawBuffer             = new RawList<VertexDrawItem>();
-		private RawList<SortItem>         sortBufferSolid        = new RawList<SortItem>();
-		private RawList<SortItem>         sortBufferBlended      = new RawList<SortItem>();
-		private RawList<SortItem>         sortBufferTemp         = new RawList<SortItem>();
-		private RawList<DrawBatch>  batchBufferSolid       = new RawList<DrawBatch>();
-		private RawList<DrawBatch>  batchBufferBlended     = new RawList<DrawBatch>();
-		private int                       numRawBatches          = 0;
+		private VertexBatchStore        drawVertices       = new VertexBatchStore();
+		private RawList<VertexDrawItem> drawBuffer         = new RawList<VertexDrawItem>();
+		private RawList<SortItem>       sortBufferSolid    = new RawList<SortItem>();
+		private RawList<SortItem>       sortBufferBlended  = new RawList<SortItem>();
+		private RawList<SortItem>       sortBufferTemp     = new RawList<SortItem>();
+		private RawList<DrawBatch>      batchBufferSolid   = new RawList<DrawBatch>();
+		private RawList<DrawBatch>      batchBufferBlended = new RawList<DrawBatch>();
+		private int                     numRawBatches      = 0;
 
 
 		public bool Disposed
