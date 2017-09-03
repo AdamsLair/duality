@@ -236,14 +236,14 @@ namespace Duality.Backend.DefaultOpenTK
 					GL.Translate(0.0f, -device.TargetSize.Y, 0.0f);
 			}
 		}
-		void IGraphicsBackend.Render(IReadOnlyList<VertexDrawBatch> batches)
+		void IGraphicsBackend.Render(IReadOnlyList<DrawBatch> batches)
 		{
-			VertexDrawBatch lastRendered = null;
+			DrawBatch lastRendered = null;
 			int drawCalls = 0;
 
 			for (int i = 0; i < batches.Count; i++)
 			{
-				VertexDrawBatch batch = batches[i];
+				DrawBatch batch = batches[i];
 				VertexDeclaration vertexType = batch.VertexType;
 
 				GL.BindBuffer(BufferTarget.ArrayBuffer, this.perVertexTypeVBO[vertexType.TypeIndex]);

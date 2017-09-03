@@ -11,7 +11,7 @@ namespace Duality.Drawing
 	/// <summary>
 	/// Describes a continuous range of vertex indices to be rendered.
 	/// </summary>
-	/// <see cref="VertexDrawBatch"/>
+	/// <see cref="DrawBatch"/>
 	public struct VertexDrawRange
 	{
 		/// <summary>

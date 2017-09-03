@@ -12,7 +12,7 @@ namespace Duality.Drawing
 	/// Describes a rendering batch that can be executed as a whole without state changes.
 	/// </summary>
 	[DontSerialize]
-	public class VertexDrawBatch
+	public class DrawBatch
 	{
 		private VertexDeclaration        vertexType   = null;
 		private RawList<VertexDrawRange> vertexRanges = null;
@@ -49,7 +49,7 @@ namespace Duality.Drawing
 			get { return this.material; }
 		}
 
-		public VertexDrawBatch(VertexDeclaration type, RawList<VertexDrawRange> ranges, VertexMode mode, BatchInfo material)
+		public DrawBatch(VertexDeclaration type, RawList<VertexDrawRange> ranges, VertexMode mode, BatchInfo material)
 		{
 			this.vertexType = type;
 			this.vertexRanges = ranges;

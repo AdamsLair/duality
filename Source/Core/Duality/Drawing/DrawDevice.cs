@@ -24,7 +24,7 @@ namespace Duality.Drawing
 			public BatchInfo Material;
 
 			/// <summary>
-			/// Determines whether this item could share the same <see cref="VertexDrawBatch"/>
+			/// Determines whether this item could share the same <see cref="DrawBatch"/>
 			/// with the specified other item.
 			/// </summary>
 			/// <param name="other"></param>
@@ -149,8 +149,8 @@ namespace Duality.Drawing
 		private RawList<SortItem>         sortBufferSolid        = new RawList<SortItem>();
 		private RawList<SortItem>         sortBufferBlended      = new RawList<SortItem>();
 		private RawList<SortItem>         sortBufferTemp         = new RawList<SortItem>();
-		private RawList<VertexDrawBatch>  batchBufferSolid       = new RawList<VertexDrawBatch>();
-		private RawList<VertexDrawBatch>  batchBufferBlended     = new RawList<VertexDrawBatch>();
+		private RawList<DrawBatch>  batchBufferSolid       = new RawList<DrawBatch>();
+		private RawList<DrawBatch>  batchBufferBlended     = new RawList<DrawBatch>();
 		private int                       numRawBatches          = 0;
 
 
@@ -782,7 +782,7 @@ namespace Duality.Drawing
 				// will be sorted as if equal, resulting in blocking batch aggregation.
 			}
 		}
-		private void AggregateBatches(RawList<SortItem> sortItems, RawList<VertexDrawItem> drawItems, RawList<VertexDrawBatch> batches)
+		private void AggregateBatches(RawList<SortItem> sortItems, RawList<VertexDrawItem> drawItems, RawList<DrawBatch> batches)
 		{
 			VertexDrawItem[] drawData = drawItems.Data;
 			SortItem[] sortData = sortItems.Data;
@@ -804,7 +804,7 @@ namespace Duality.Drawing
 				}
 
 				// Create a batch for all previous items
-				VertexDrawBatch batch = new VertexDrawBatch(
+				DrawBatch batch = new DrawBatch(
 					activeItem.Type, 
 					new RawList<VertexDrawRange>(), 
 					activeItem.Mode,
