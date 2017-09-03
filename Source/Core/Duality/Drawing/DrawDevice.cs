@@ -11,6 +11,10 @@ namespace Duality.Drawing
 	[DontSerialize]
 	public class DrawDevice : IDrawDevice, IDisposable
 	{
+		/// <summary>
+		/// Represents a drawing input from <see cref="AddVertices"/> using 
+		/// dynamically gathered vertices.
+		/// </summary>
 		private struct VertexDrawItem
 		{
 			public VertexDeclaration Type;
@@ -19,6 +23,12 @@ namespace Duality.Drawing
 			public VertexMode Mode;
 			public BatchInfo Material;
 
+			/// <summary>
+			/// Determines whether this item could share the same <see cref="VertexDrawBatch"/>
+			/// with the specified other item.
+			/// </summary>
+			/// <param name="other"></param>
+			/// <returns></returns>
 			public bool CanShareBatchWith(ref VertexDrawItem other)
 			{
 				return
@@ -26,6 +36,11 @@ namespace Duality.Drawing
 					this.Type == other.Type &&
 					this.Material == other.Material;
 			}
+			/// <summary>
+			/// Determines whether the specified item could be appended as-is to this item.
+			/// </summary>
+			/// <param name="other"></param>
+			/// <returns></returns>
 			public bool CanAppend(ref VertexDrawItem other)
 			{
 				return
@@ -46,17 +61,45 @@ namespace Duality.Drawing
 					this.Material);
 			}
 		}
+		/// <summary>
+		/// Represents an item in a sorting queue that is associated with 
+		/// a <see cref="VertexDrawItem"/>. This struct is actually a union
+		/// that uses either <see cref="SortDepth"/> or <see cref="SortIndex"/>
+		/// depending on whether sorting is done based on material or depth.
+		/// </summary>
 		[StructLayout(LayoutKind.Explicit)]
 		private struct SortItem
 		{
+			/// <summary>
+			/// A drawing buffer index where the associated <see cref="VertexDrawItem"/>
+			/// can be found.
+			/// </summary>
 			[FieldOffset(0)] public int DrawItemIndex;
+			/// <summary>
+			/// The material sorting index for this item.
+			/// </summary>
 			[FieldOffset(4)] public int SortIndex;
+			/// <summary>
+			/// The depth sorting reference value for this item.
+			/// </summary>
 			[FieldOffset(4)] public float SortDepth;
 
+			/// <summary>
+			/// Determines whether this item shares roughly the specified reference depth.
+			/// </summary>
+			/// <param name="otherDepth"></param>
+			/// <returns></returns>
 			public bool CanShareDepth(float otherDepth)
 			{
 				 return Math.Abs(this.SortDepth - otherDepth) < 0.00001f;
 			}
+			/// <summary>
+			/// Adjusts this items <see cref="SortDepth"/> value to account for a merge
+			/// with another item.
+			/// </summary>
+			/// <param name="otherDepth"></param>
+			/// <param name="count"></param>
+			/// <param name="otherCount"></param>
 			public void MergeDepth(float otherDepth, int count, int otherCount)
 			{
 				this.SortDepth = 
@@ -712,7 +755,7 @@ namespace Duality.Drawing
 				this.sortBufferTemp.Clear();
 
 				// Sweep over the sorted draws and aggregate as many as possible into a single batch
-				this.AggregateBatches(this.sortBufferSolid, this.drawBuffer, this.batchBufferSolid, false);
+				this.AggregateBatches(this.sortBufferSolid, this.drawBuffer, this.batchBufferSolid);
 			}
 
 			// Depth-sorted (blended) batches
@@ -724,7 +767,7 @@ namespace Duality.Drawing
 				this.sortBufferTemp.Clear();
 
 				// Sweep over the sorted draws and aggregate as many as possible into a single batch
-				this.AggregateBatches(this.sortBufferBlended, this.drawBuffer, this.batchBufferBlended, true);
+				this.AggregateBatches(this.sortBufferBlended, this.drawBuffer, this.batchBufferBlended);
 			}
 
 			if (this.pickingIndex == 0) Profile.TimeOptimizeDrawcalls.EndMeasure();
@@ -769,7 +812,7 @@ namespace Duality.Drawing
 				// will be sorted as if equal, resulting in blocking batch aggregation.
 			}
 		}
-		private void AggregateBatches(RawList<SortItem> sortItems, RawList<VertexDrawItem> drawItems, RawList<VertexDrawBatch> batches, bool isDepthSorted)
+		private void AggregateBatches(RawList<SortItem> sortItems, RawList<VertexDrawItem> drawItems, RawList<VertexDrawBatch> batches)
 		{
 			VertexDrawItem[] drawData = drawItems.Data;
 			SortItem[] sortData = sortItems.Data;
@@ -786,8 +829,7 @@ namespace Duality.Drawing
 				if (sortIndex < count)
 				{
 					SortItem sortItem = sortData[sortIndex];
-					if (activeItem.CanShareBatchWith(ref drawData[sortItem.DrawItemIndex]) &&
-						(!isDepthSorted || sortItem.CanShareDepth(activeSortItem.SortDepth)))
+					if (activeItem.CanShareBatchWith(ref drawData[sortItem.DrawItemIndex]))
 						continue;
 				}
 
