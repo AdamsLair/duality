@@ -483,10 +483,7 @@ namespace Duality
 				if (resetToDefault)
 				{
 					int clearCount = Math.Min(moveBy, count);
-					if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
-					{
-						Array.Clear(this.data, index, clearCount);
-					}
+					Array.Clear(this.data, index, clearCount);
 				}
 			}
 			else
@@ -505,10 +502,7 @@ namespace Duality
 				if (resetToDefault)
 				{
 					int clearCount = Math.Min(-moveBy, count);
-					if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
-					{
-						Array.Clear(this.data, index + count - clearCount, clearCount);
-					}
+					Array.Clear(this.data, index + count - clearCount, clearCount);
 				}
 			}
 		}
