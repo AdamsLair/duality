@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Duality
 {
@@ -310,7 +311,10 @@ namespace Duality
 		/// </summary>
 		public void Clear()
 		{
-			Array.Clear(this.data, 0, this.count);
+			if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+			{
+				Array.Clear(this.data, 0, this.count);
+			}
 			this.count = 0;
 		}
 
