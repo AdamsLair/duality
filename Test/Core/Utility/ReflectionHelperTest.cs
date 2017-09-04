@@ -66,39 +66,39 @@ namespace Duality.Tests.Utility
 			ReflectionHelper.VisitObjectsDeep<string>(visitedRoot, s => { visitedCount++; return s; });
 			Assert.AreEqual(3, visitedCount);
 		}
-		[Test] public void IsPlainOldData()
+		[Test] public void IsDeepCopyByAssignment()
 		{
 			// Primitives
-			Assert.IsTrue(typeof(bool).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(byte).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(sbyte).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(short).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(ushort).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(int).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(uint).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(long).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(ulong).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(float).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(double).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(bool).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(byte).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(sbyte).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(short).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(ushort).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(int).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(uint).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(long).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(ulong).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(float).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(double).GetTypeInfo().IsDeepCopyByAssignment());
 
 			// Primitive special cases
-			Assert.IsTrue(typeof(decimal).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(string).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(Alignment).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(decimal).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(string).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(Alignment).GetTypeInfo().IsDeepCopyByAssignment());
 
 			// Pure POD compound types
-			Assert.IsTrue(typeof(Vector2).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(Vector2).GetTypeInfo().IsDeepCopyByAssignment());
 
 			// Non-pure compound types
-			Assert.IsFalse(typeof(ContentRef<Resource>).GetTypeInfo().IsPlainOldData());
+			Assert.IsFalse(typeof(ContentRef<Resource>).GetTypeInfo().IsDeepCopyByAssignment());
 
 			// Various kinds of by-reference types
-			Assert.IsFalse(typeof(object).GetTypeInfo().IsPlainOldData());
-			Assert.IsFalse(typeof(int[]).GetTypeInfo().IsPlainOldData());
-			Assert.IsFalse(typeof(GameObject).GetTypeInfo().IsPlainOldData());
-			Assert.IsFalse(typeof(IComparable).GetTypeInfo().IsPlainOldData());
-			Assert.IsFalse(typeof(IContentRef).GetTypeInfo().IsPlainOldData());
-			Assert.IsFalse(typeof(IComparable<int>).GetTypeInfo().IsPlainOldData());
+			Assert.IsFalse(typeof(object).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(typeof(int[]).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(typeof(GameObject).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(typeof(IComparable).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(typeof(IContentRef).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(typeof(IComparable<int>).GetTypeInfo().IsDeepCopyByAssignment());
 		}
 
 		private class TestVisitorClass

@@ -27,7 +27,7 @@ namespace Duality
 
 		private	static	Dictionary<string,Type>				typeResolveCache			= new Dictionary<string,Type>();
 		private	static	Dictionary<string,MemberInfo>		memberResolveCache			= new Dictionary<string,MemberInfo>();
-		private	static	Dictionary<TypeInfo,bool>			plainOldDataTypeCache		= new Dictionary<TypeInfo,bool>();
+		private	static	Dictionary<TypeInfo,bool>			deepCopyByAssignmentCache	= new Dictionary<TypeInfo,bool>();
 		private	static	Dictionary<MemberInfo,Attribute[]>	customMemberAttribCache		= new Dictionary<MemberInfo,Attribute[]>();
 		private	static	Dictionary<KeyValuePair<Type,Type>,bool>	resRefCache			= new Dictionary<KeyValuePair<Type,Type>,bool>();
 
@@ -395,11 +395,11 @@ namespace Duality
 
 		/// <summary>
 		/// Returns whether the specified type is a primitive, enum, string, decimal, or struct that
-		/// consists only of those types.
+		/// consists only of those types, allowing to do a deep-copy by simply assigning it.
 		/// </summary>
 		/// <param name="baseObj"></param>
 		/// <returns></returns>
-		public static bool IsPlainOldData(this TypeInfo typeInfo)
+		public static bool IsDeepCopyByAssignment(this TypeInfo typeInfo)
 		{
 			// Early-out for some obvious cases
 			if (typeInfo.IsArray) return false;
@@ -417,7 +417,7 @@ namespace Duality
 
 			// If we have no evidence so far, check the cache and iterate fields
 			bool isPlainOldData;
-			if (plainOldDataTypeCache.TryGetValue(typeInfo, out isPlainOldData))
+			if (deepCopyByAssignmentCache.TryGetValue(typeInfo, out isPlainOldData))
 			{
 				return isPlainOldData;
 			}
@@ -428,13 +428,13 @@ namespace Duality
 				{
 					if (field.IsStatic) continue;
 					TypeInfo fieldTypeInfo = field.FieldType.GetTypeInfo();
-					if (!IsPlainOldData(fieldTypeInfo))
+					if (!IsDeepCopyByAssignment(fieldTypeInfo))
 					{
 						isPlainOldData = false;
 						break;
 					}
 				}
-				plainOldDataTypeCache[typeInfo] = isPlainOldData;
+				deepCopyByAssignmentCache[typeInfo] = isPlainOldData;
 				return isPlainOldData;
 			}
 		}
@@ -698,7 +698,7 @@ namespace Duality
 		{
 			typeResolveCache.Clear();
 			memberResolveCache.Clear();
-			plainOldDataTypeCache.Clear();
+			deepCopyByAssignmentCache.Clear();
 			resRefCache.Clear();
 			customMemberAttribCache.Clear();
 		}
