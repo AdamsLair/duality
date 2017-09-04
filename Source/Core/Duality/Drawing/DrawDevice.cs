@@ -144,14 +144,15 @@ namespace Duality.Drawing
 		private VisibilityFlag           visibilityMask = VisibilityFlag.All;
 		private int                      pickingIndex   = 0;
 
-		private VertexBatchStore        drawVertices       = new VertexBatchStore();
-		private RawList<VertexDrawItem> drawBuffer         = new RawList<VertexDrawItem>();
-		private RawList<SortItem>       sortBufferSolid    = new RawList<SortItem>();
-		private RawList<SortItem>       sortBufferBlended  = new RawList<SortItem>();
-		private RawList<SortItem>       sortBufferTemp     = new RawList<SortItem>();
-		private RawList<DrawBatch>      batchBufferSolid   = new RawList<DrawBatch>();
-		private RawList<DrawBatch>      batchBufferBlended = new RawList<DrawBatch>();
-		private int                     numRawBatches      = 0;
+		private VertexBatchStore             drawVertices       = new VertexBatchStore();
+		private RawList<VertexDrawItem>      drawBuffer         = new RawList<VertexDrawItem>();
+		private RawList<SortItem>            sortBufferSolid    = new RawList<SortItem>();
+		private RawList<SortItem>            sortBufferBlended  = new RawList<SortItem>();
+		private RawList<SortItem>            sortBufferTemp     = new RawList<SortItem>();
+		private RawList<DrawBatch>           batchBufferSolid   = new RawList<DrawBatch>();
+		private RawList<DrawBatch>           batchBufferBlended = new RawList<DrawBatch>();
+		private RawListPool<VertexDrawRange> batchIndexPool     = new RawListPool<VertexDrawRange>();
+		private int                          numRawBatches      = 0;
 
 
 		public bool Disposed
@@ -271,6 +272,18 @@ namespace Duality.Drawing
 			{
 				// Release Resources
 				this.disposed = true;
+
+				// Set big object references to null to make
+				// sure they're garbage collected even when keeping
+				// a reference to the disposed DrawDevice around.
+				this.drawBuffer = null;
+				this.sortBufferSolid = null;
+				this.sortBufferBlended = null;
+				this.sortBufferTemp = null;
+				this.batchBufferSolid = null;
+				this.batchBufferBlended = null;
+				this.drawVertices = null;
+				this.batchIndexPool = null;
 			}
 		}
 
@@ -636,6 +649,7 @@ namespace Duality.Drawing
 			this.batchBufferSolid.Clear();
 			this.batchBufferBlended.Clear();
 			this.drawVertices.Clear();
+			this.batchIndexPool.Reset();
 		}
 
 
@@ -806,7 +820,7 @@ namespace Duality.Drawing
 				// Create a batch for all previous items
 				DrawBatch batch = new DrawBatch(
 					activeItem.Type, 
-					new RawList<VertexDrawRange>(), 
+					this.batchIndexPool.Rent(sortIndex - beginBatchIndex), 
 					activeItem.Mode,
 					activeItem.Material);
 
