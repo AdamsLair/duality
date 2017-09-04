@@ -253,13 +253,19 @@ namespace Duality
 			if (index + count >= this.count)
 			{
 				this.count -= count;
-				Array.Clear(this.data, this.count, count);
+				if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+				{
+					Array.Clear(this.data, this.count, count);
+				}
 			}
 			else
 			{
 				this.MoveInternal(index + count, this.count - (index + count), -count, false);
 				this.count -= count;
-				Array.Clear(this.data, this.count, count);
+				if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+				{
+					Array.Clear(this.data, this.count, count);
+				}
 			}
 		}
 		/// <summary>
@@ -300,7 +306,10 @@ namespace Duality
 			{
 				int removedCount = this.count - count;
 				this.count -= removedCount;
-				Array.Clear(this.data, this.count, removedCount);
+				if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+				{
+					Array.Clear(this.data, this.count, removedCount);
+				}
 				return removedCount;
 			}
 
@@ -474,7 +483,10 @@ namespace Duality
 				if (resetToDefault)
 				{
 					int clearCount = Math.Min(moveBy, count);
-					Array.Clear(this.data, index, clearCount);
+					if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+					{
+						Array.Clear(this.data, index, clearCount);
+					}
 				}
 			}
 			else
@@ -493,7 +505,10 @@ namespace Duality
 				if (resetToDefault)
 				{
 					int clearCount = Math.Min(-moveBy, count);
-					Array.Clear(this.data, index + count - clearCount, clearCount);
+					if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+					{
+						Array.Clear(this.data, index + count - clearCount, clearCount);
+					}
 				}
 			}
 		}
