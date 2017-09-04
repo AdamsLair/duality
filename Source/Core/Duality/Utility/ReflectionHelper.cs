@@ -444,7 +444,7 @@ namespace Duality
 						break;
 					}
 				}
-				deepCopyByAssignmentCache[typeInfo] = isRefOrHasRef;
+				isRefOrHasRefCache[typeInfo] = isRefOrHasRef;
 				return isRefOrHasRef;
 			}
 		}
