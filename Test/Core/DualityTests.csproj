@@ -126,6 +126,7 @@
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Drawing\CanvasTest.cs" />
     <Compile Include="Testing\IdentityComparer.cs" />
+    <Compile Include="Utility\RawListPoolTest.cs" />
     <Compile Include="Utility\SortingIntContainer.cs" />
     <Compile Include="Utility\ExtMethodsRandomTest.cs" />
     <Compile Include="Utility\ExtMethodsMemberInfoTest.cs" />
