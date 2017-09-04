@@ -17,6 +17,12 @@ namespace Duality
 	/// </summary>
 	public static class ReflectionHelper
 	{
+		private static class StaticLookup<T>
+		{
+			public static readonly bool IsDeepCopyByAssignment = typeof(T).GetTypeInfo().IsDeepCopyByAssignment();
+			public static readonly bool IsReferenceOrContainsReferences = typeof(T).GetTypeInfo().IsReferenceOrContainsReferences();
+		}
+		
 		private const char MemberTokenUndefined			= 'U';
 		private const char MemberTokenTypeInfo			= 'T';
 		private const char MemberTokenFieldInfo			= 'F';
@@ -393,7 +399,17 @@ namespace Duality
 
 			return result;
 		}
-
+		
+		/// <summary>
+		/// Returns whether the specified type is a reference or could contain references.
+		/// Types where this is false are completely irrelevant to garbage collection.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public static bool IsReferenceOrContainsReferences<T>()
+		{
+			return StaticLookup<T>.IsReferenceOrContainsReferences;
+		}
 		/// <summary>
 		/// Returns whether the specified type is a reference or could contain references.
 		/// Types where this is false are completely irrelevant to garbage collection.
@@ -431,6 +447,16 @@ namespace Duality
 				deepCopyByAssignmentCache[typeInfo] = isRefOrHasRef;
 				return isRefOrHasRef;
 			}
+		}
+		/// <summary>
+		/// Returns whether the specified type is a primitive, enum, string, decimal, or struct that
+		/// consists only of those types, allowing to do a deep-copy by simply assigning it.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public static bool IsDeepCopyByAssignment<T>()
+		{
+			return StaticLookup<T>.IsDeepCopyByAssignment;
 		}
 		/// <summary>
 		/// Returns whether the specified type is a primitive, enum, string, decimal, or struct that
