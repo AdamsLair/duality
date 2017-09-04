@@ -28,6 +28,7 @@ namespace Duality
 		private	static	Dictionary<string,Type>				typeResolveCache			= new Dictionary<string,Type>();
 		private	static	Dictionary<string,MemberInfo>		memberResolveCache			= new Dictionary<string,MemberInfo>();
 		private	static	Dictionary<TypeInfo,bool>			deepCopyByAssignmentCache	= new Dictionary<TypeInfo,bool>();
+		private	static	Dictionary<TypeInfo,bool>			isRefOrHasRefCache			= new Dictionary<TypeInfo,bool>();
 		private	static	Dictionary<MemberInfo,Attribute[]>	customMemberAttribCache		= new Dictionary<MemberInfo,Attribute[]>();
 		private	static	Dictionary<KeyValuePair<Type,Type>,bool>	resRefCache			= new Dictionary<KeyValuePair<Type,Type>,bool>();
 
@@ -394,6 +395,44 @@ namespace Duality
 		}
 
 		/// <summary>
+		/// Returns whether the specified type is a reference or could contain references.
+		/// Types where this is false are completely irrelevant to garbage collection.
+		/// </summary>
+		/// <param name="typeInfo"></param>
+		/// <returns></returns>
+		public static bool IsReferenceOrContainsReferences(this TypeInfo typeInfo)
+		{
+			// Early-out for some obvious cases
+			if (typeInfo.IsArray) return true;
+			if (typeInfo.IsPrimitive) return false;
+			if (typeInfo.IsEnum) return false;
+			if (typeInfo.IsClass) return true;
+			if (typeInfo.IsInterface) return true;
+
+			// If we have no evidence so far, check the cache and iterate fields
+			bool isRefOrHasRef;
+			if (isRefOrHasRefCache.TryGetValue(typeInfo, out isRefOrHasRef))
+			{
+				return isRefOrHasRef;
+			}
+			else
+			{
+				isRefOrHasRef = true;
+				foreach (FieldInfo field in typeInfo.DeclaredFieldsDeep())
+				{
+					if (field.IsStatic) continue;
+					TypeInfo fieldTypeInfo = field.FieldType.GetTypeInfo();
+					if (!IsReferenceOrContainsReferences(fieldTypeInfo))
+					{
+						isRefOrHasRef = false;
+						break;
+					}
+				}
+				deepCopyByAssignmentCache[typeInfo] = isRefOrHasRef;
+				return isRefOrHasRef;
+			}
+		}
+		/// <summary>
 		/// Returns whether the specified type is a primitive, enum, string, decimal, or struct that
 		/// consists only of those types, allowing to do a deep-copy by simply assigning it.
 		/// </summary>
@@ -699,6 +738,7 @@ namespace Duality
 			typeResolveCache.Clear();
 			memberResolveCache.Clear();
 			deepCopyByAssignmentCache.Clear();
+			isRefOrHasRefCache.Clear();
 			resRefCache.Clear();
 			customMemberAttribCache.Clear();
 		}

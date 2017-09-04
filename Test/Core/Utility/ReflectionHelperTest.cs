@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using Duality;
+using Duality.Drawing;
 using Duality.Serialization;
 
 using NUnit.Framework;
@@ -66,6 +67,41 @@ namespace Duality.Tests.Utility
 			ReflectionHelper.VisitObjectsDeep<string>(visitedRoot, s => { visitedCount++; return s; });
 			Assert.AreEqual(3, visitedCount);
 		}
+		[Test] public void IsReferenceOrContainsReferences()
+		{
+			// Primitives
+			Assert.IsFalse(typeof(bool).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(byte).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(sbyte).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(short).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(ushort).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(int).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(uint).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(long).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(ulong).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(float).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(double).GetTypeInfo().IsReferenceOrContainsReferences());
+
+			// Primitive special cases
+			Assert.IsFalse(typeof(decimal).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(Alignment).GetTypeInfo().IsReferenceOrContainsReferences());
+
+			// Pure POD compound types
+			Assert.IsFalse(typeof(Vector2).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(ColorRgba).GetTypeInfo().IsReferenceOrContainsReferences());
+
+			// Non-pure compound types
+			Assert.IsTrue(typeof(ContentRef<Resource>).GetTypeInfo().IsReferenceOrContainsReferences());
+
+			// Various kinds of by-reference types
+			Assert.IsTrue(typeof(string).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(object).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(int[]).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(GameObject).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(IComparable).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(IContentRef).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(IComparable<int>).GetTypeInfo().IsReferenceOrContainsReferences());
+		}
 		[Test] public void IsDeepCopyByAssignment()
 		{
 			// Primitives
@@ -88,6 +124,7 @@ namespace Duality.Tests.Utility
 
 			// Pure POD compound types
 			Assert.IsTrue(typeof(Vector2).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(ColorRgba).GetTypeInfo().IsDeepCopyByAssignment());
 
 			// Non-pure compound types
 			Assert.IsFalse(typeof(ContentRef<Resource>).GetTypeInfo().IsDeepCopyByAssignment());
