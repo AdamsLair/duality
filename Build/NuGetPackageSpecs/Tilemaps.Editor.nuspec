@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.Tilemaps</id>
-    <version>1.1.18</version>
+    <version>1.1.19</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Editor)</title>
@@ -13,15 +13,12 @@
     <summary>Defines the editor integration of the dependent core tilemap plugin.</summary>
     <description>Defines the editor integration of the dependent core tilemap plugin.</description>
     <tags>Duality Editor Plugin Tilemaps</tags>
-    <releaseNotes>TilesetView Zoom Bugfixes, API Tweaks
-#FIX: Fixed a bug that would reset a TilesetView's zoom value when the displayed Tileset was modified. 
-#FIX: Fixed a bug that would throw an exception for negative tile sizes. 
-#FIX: Fixed a bug that would cause tileset view zoom buttons to be out of sync. 
-#CHANGE: Adjusted internal structure of TilesetView update code to hopefully be slightly more understandable.</releaseNotes>
+    <releaseNotes>TilesetView Rendering Improvements
+#CHANGE: Upscaled small tile sizes no longer result in a distorted tile rendering when in pixel-perfect mode.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.1.13" />
-      <dependency id="AdamsLair.Duality" version="2.12.7" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.9.0" />
+      <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.1.14" />
+      <dependency id="AdamsLair.Duality" version="2.13.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.10.0" />
     </dependencies>
   </metadata>
   <files>
