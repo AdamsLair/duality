@@ -75,7 +75,6 @@
               </item>
             </_items>
             <_size dataType="Int">1</_size>
-            <_version dataType="Int">2</_version>
           </emitters>
           <fadeInAt dataType="Float">0.25</fadeInAt>
           <fadeOutAt dataType="Float">0.75</fadeOutAt>
@@ -93,7 +92,6 @@
         </item>
       </_items>
       <_size dataType="Int">2</_size>
-      <_version dataType="Int">2</_version>
     </compList>
     <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2733287690" surrogate="true">
       <header />

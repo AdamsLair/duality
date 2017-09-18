@@ -15,6 +15,6 @@
   <startScene dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Scene]]">
     <contentPath dataType="String">Data\CameraController\ExampleScene.Scene.res</contentPath>
   </startScene>
-  <version dataType="UInt">13</version>
+  <version dataType="UInt">14</version>
 </root>
 <!-- XmlFormatterBase Document Separator -->

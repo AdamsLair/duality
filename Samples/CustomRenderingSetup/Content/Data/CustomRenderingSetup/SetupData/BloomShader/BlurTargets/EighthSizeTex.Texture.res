@@ -7,7 +7,7 @@
   <pixelformat dataType="Enum" type="Duality.Drawing.TexturePixelFormat" name="Rgba" value="3" />
   <size dataType="Struct" type="Duality.Point2">
     <X dataType="Int">144</X>
-    <Y dataType="Int">46</Y>
+    <Y dataType="Int">112</Y>
   </size>
   <texSizeMode dataType="Enum" type="Duality.Drawing.TextureSizeMode" name="NonPowerOfTwo" value="2" />
   <wrapX dataType="Enum" type="Duality.Drawing.TextureWrapMode" name="Clamp" value="0" />

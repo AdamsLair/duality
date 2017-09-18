@@ -14,7 +14,6 @@
       </item>
     </_items>
     <_size dataType="Int">1</_size>
-    <_version dataType="Int">13</_version>
   </autoResizeTargets>
   <steps dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Resources.RenderStep]]" id="2035693768">
     <_items dataType="Array" type="Duality.Resources.RenderStep[]" id="2696347487" length="4">
@@ -104,7 +103,6 @@
       </item>
     </_items>
     <_size dataType="Int">3</_size>
-    <_version dataType="Int">3</_version>
   </steps>
 </root>
 <!-- XmlFormatterBase Document Separator -->

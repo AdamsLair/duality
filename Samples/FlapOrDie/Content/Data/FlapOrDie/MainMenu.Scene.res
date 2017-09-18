@@ -37,12 +37,18 @@
           </item>
           <item dataType="Struct" type="Duality.Components.Camera" id="4224591850">
             <active dataType="Bool">true</active>
-            <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba" />
+            <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba">
+              <A dataType="Byte">0</A>
+              <B dataType="Byte">211</B>
+              <G dataType="Byte">114</G>
+              <R dataType="Byte">147</R>
+            </clearColor>
             <farZ dataType="Float">10000</farZ>
             <focusDist dataType="Float">500</focusDist>
             <gameobj dataType="ObjectRef">3687316043</gameobj>
             <nearZ dataType="Float">0</nearZ>
             <perspective dataType="Enum" type="Duality.Drawing.PerspectiveMode" name="Parallax" value="1" />
+            <priority dataType="Int">0</priority>
             <renderSetup dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderSetup]]" />
             <renderTarget dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
             <targetRect dataType="Struct" type="Duality.Rect">
@@ -62,7 +68,6 @@
           </item>
         </_items>
         <_size dataType="Int">3</_size>
-        <_version dataType="Int">5</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="905242368" surrogate="true">
         <header />
@@ -159,7 +164,7 @@
                   <gameobj dataType="ObjectRef">3291293494</gameobj>
                   <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
                   <index dataType="Int">0</index>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <speed dataType="Float">200</speed>
                   <strings dataType="Struct" type="System.Collections.Generic.List`1[[System.String]]" id="3716477522">
                     <_items dataType="Array" type="System.String[]" id="2424767824" length="8">
@@ -170,7 +175,6 @@
                       <item dataType="String">music by: Eric Matyas - www.soundimage.org</item>
                     </_items>
                     <_size dataType="Int">5</_size>
-                    <_version dataType="Int">345</_version>
                   </strings>
                   <text dataType="Struct" type="Duality.Drawing.FormattedText" id="743578314">
                     <flowAreas />
@@ -190,7 +194,6 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">2</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4247671610" surrogate="true">
               <header />
@@ -219,14 +222,12 @@
           </item>
         </_items>
         <_size dataType="Int">1</_size>
-        <_version dataType="Int">1</_version>
       </children>
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2987550904">
         <_items dataType="Array" type="Duality.Component[]" id="2774391721" length="4">
           <item dataType="ObjectRef">1976445045</item>
         </_items>
         <_size dataType="Int">1</_size>
-        <_version dataType="Int">1</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3784543977" surrogate="true">
         <header />
@@ -292,7 +293,7 @@
             <customMat />
             <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
             <gameobj dataType="ObjectRef">4178634203</gameobj>
-            <offset dataType="Int">0</offset>
+            <offset dataType="Float">0</offset>
             <pixelGrid dataType="Bool">false</pixelGrid>
             <rect dataType="Struct" type="Duality.Rect">
               <H dataType="Float">264</H>
@@ -309,7 +310,6 @@
           </item>
         </_items>
         <_size dataType="Int">2</_size>
-        <_version dataType="Int">2</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4289384384" surrogate="true">
         <header />

@@ -676,7 +676,6 @@
       </item>
     </_items>
     <_size dataType="Int">3</_size>
-    <_version dataType="Int">3</_version>
   </autoTileConfig>
   <baseMaterial dataType="Struct" type="Duality.Drawing.BatchInfo" id="2035693768">
     <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
@@ -723,7 +722,6 @@
       </item>
     </_items>
     <_size dataType="Int">1</_size>
-    <_version dataType="Int">1</_version>
   </renderConfig>
   <tileInput dataType="Struct" type="Duality.RawList`1[[Duality.Plugins.Tilemaps.TileInput]]" id="2716248726">
     <count dataType="Int">352</count>

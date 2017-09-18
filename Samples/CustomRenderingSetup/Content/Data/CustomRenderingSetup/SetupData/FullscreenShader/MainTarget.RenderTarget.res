@@ -9,7 +9,6 @@
       </item>
     </_items>
     <_size dataType="Int">1</_size>
-    <_version dataType="Int">4</_version>
   </targets>
 </root>
 <!-- XmlFormatterBase Document Separator -->

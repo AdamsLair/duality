@@ -32,7 +32,6 @@
           </item>
         </_items>
         <_size dataType="Int">5</_size>
-        <_version dataType="Int">9</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="617595904" surrogate="true">
         <header />
@@ -70,7 +69,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="4066257096">
                 <_items dataType="Array" type="System.Int32[]" id="3998382700"></_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
               <prop dataType="MemberInfo" id="771728094" value="P:Duality.Components.Transform:RelativePos" />
@@ -84,7 +82,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="2243493172">
                 <_items dataType="Array" type="System.Int32[]" id="1315571016"></_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="MemberInfo" id="3301130018" value="P:Steering.Agent:Target" />
@@ -99,7 +96,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1158369158">
                 <_items dataType="Array" type="System.Int32[]" id="993453730"></_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="MemberInfo" id="2206450092" value="P:Steering.Agent:Characteristics" />
@@ -111,7 +107,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1840298872">
                 <_items dataType="Array" type="System.Int32[]" id="950995964"></_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2771621414</componentType>
               <prop dataType="MemberInfo" id="1291869230" value="P:Duality.Components.Renderers.RigidBodyRenderer:ColorTint" />
@@ -124,7 +119,6 @@
             </item>
           </_items>
           <_size dataType="Int">4</_size>
-          <_version dataType="Int">111</_version>
         </changes>
         <obj dataType="ObjectRef">3959643605</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -159,7 +153,6 @@
           </item>
         </_items>
         <_size dataType="Int">5</_size>
-        <_version dataType="Int">5</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2124598538" surrogate="true">
         <header />
@@ -197,7 +190,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="372639176">
                 <_items dataType="Array" type="System.Int32[]" id="1626048108"></_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
               <prop dataType="ObjectRef">771728094</prop>
@@ -211,7 +203,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="2208595678">
                 <_items dataType="ObjectRef">1315571016</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="ObjectRef">3301130018</prop>
@@ -226,7 +217,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1644117794">
                 <_items dataType="ObjectRef">993453730</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="ObjectRef">2206450092</prop>
@@ -238,7 +228,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="2084416390">
                 <_items dataType="ObjectRef">950995964</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2771621414</componentType>
               <prop dataType="ObjectRef">1291869230</prop>
@@ -251,7 +240,6 @@
             </item>
           </_items>
           <_size dataType="Int">4</_size>
-          <_version dataType="Int">426</_version>
         </changes>
         <obj dataType="ObjectRef">1396203244</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -286,7 +274,6 @@
           </item>
         </_items>
         <_size dataType="Int">5</_size>
-        <_version dataType="Int">5</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="452958536" surrogate="true">
         <header />
@@ -324,7 +311,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="2820327496">
                 <_items dataType="ObjectRef">3998382700</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
               <prop dataType="ObjectRef">771728094</prop>
@@ -338,7 +324,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="2670287070">
                 <_items dataType="ObjectRef">1315571016</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="ObjectRef">3301130018</prop>
@@ -353,7 +338,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="4145318946">
                 <_items dataType="ObjectRef">993453730</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="ObjectRef">2206450092</prop>
@@ -365,7 +349,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1708567942">
                 <_items dataType="ObjectRef">950995964</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2771621414</componentType>
               <prop dataType="ObjectRef">1291869230</prop>
@@ -378,7 +361,6 @@
             </item>
           </_items>
           <_size dataType="Int">4</_size>
-          <_version dataType="Int">464</_version>
         </changes>
         <obj dataType="ObjectRef">2587165737</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -413,7 +395,6 @@
           </item>
         </_items>
         <_size dataType="Int">5</_size>
-        <_version dataType="Int">5</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2875611374" surrogate="true">
         <header />
@@ -451,7 +432,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3220388264">
                 <_items dataType="ObjectRef">3998382700</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
               <prop dataType="ObjectRef">771728094</prop>
@@ -465,7 +445,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="2991546270">
                 <_items dataType="ObjectRef">1315571016</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="ObjectRef">3301130018</prop>
@@ -480,7 +459,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1511702050">
                 <_items dataType="ObjectRef">993453730</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="ObjectRef">2206450092</prop>
@@ -492,7 +470,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="833600582">
                 <_items dataType="ObjectRef">950995964</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2771621414</componentType>
               <prop dataType="ObjectRef">1291869230</prop>
@@ -505,7 +482,6 @@
             </item>
           </_items>
           <_size dataType="Int">4</_size>
-          <_version dataType="Int">86</_version>
         </changes>
         <obj dataType="ObjectRef">354782310</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -540,7 +516,6 @@
           </item>
         </_items>
         <_size dataType="Int">5</_size>
-        <_version dataType="Int">5</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1743336222" surrogate="true">
         <header />
@@ -578,7 +553,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="4212997544">
                 <_items dataType="ObjectRef">3998382700</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="ObjectRef">3301130018</prop>
@@ -593,7 +567,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="41213844">
                 <_items dataType="ObjectRef">993453730</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="ObjectRef">2206450092</prop>
@@ -605,7 +578,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3147937632">
                 <_items dataType="Array" type="System.Int32[]" id="310302644"></_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
               <prop dataType="ObjectRef">771728094</prop>
@@ -619,7 +591,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="2658337862">
                 <_items dataType="Array" type="System.Int32[]" id="3598879618"></_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
               <prop dataType="MemberInfo" id="2095813132" value="P:Duality.Components.Transform:RelativeScale" />
@@ -629,7 +600,6 @@
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1555916554">
                 <_items dataType="ObjectRef">950995964</_items>
                 <_size dataType="Int">0</_size>
-                <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2771621414</componentType>
               <prop dataType="ObjectRef">1291869230</prop>
@@ -642,7 +612,6 @@
             </item>
           </_items>
           <_size dataType="Int">5</_size>
-          <_version dataType="Int">194</_version>
         </changes>
         <obj dataType="ObjectRef">1918743486</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -692,7 +661,7 @@
             <customMat />
             <gameobj dataType="ObjectRef">4122790825</gameobj>
             <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-            <offset dataType="Int">0</offset>
+            <offset dataType="Float">0</offset>
             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1374418591">
               <flowAreas />
               <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1511162734">
@@ -711,7 +680,6 @@
           </item>
         </_items>
         <_size dataType="Int">2</_size>
-        <_version dataType="Int">2</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="128211016" surrogate="true">
         <header />

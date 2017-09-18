@@ -7,7 +7,6 @@
       </item>
     </_items>
     <_size dataType="Int">1</_size>
-    <_version dataType="Int">1</_version>
   </audioData>
   <fadeOutAt dataType="Float">0</fadeOutAt>
   <fadeOutTime dataType="Float">0</fadeOutTime>

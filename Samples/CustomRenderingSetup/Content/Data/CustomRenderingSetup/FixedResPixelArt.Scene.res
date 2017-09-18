@@ -48,6 +48,7 @@
             <gameobj dataType="ObjectRef">1381564491</gameobj>
             <nearZ dataType="Float">0</nearZ>
             <perspective dataType="Enum" type="Duality.Drawing.PerspectiveMode" name="Parallax" value="1" />
+            <priority dataType="Int">0</priority>
             <renderSetup dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderSetup]]">
               <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FixedResPixelArt\PixelArtSetup.RenderSetup.res</contentPath>
             </renderSetup>
@@ -66,7 +67,6 @@
           </item>
         </_items>
         <_size dataType="Int">3</_size>
-        <_version dataType="Int">3</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1097513728" surrogate="true">
         <header />
@@ -128,7 +128,7 @@
             <customMat />
             <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
             <gameobj dataType="ObjectRef">877495893</gameobj>
-            <offset dataType="Int">0</offset>
+            <offset dataType="Float">0</offset>
             <pixelGrid dataType="Bool">false</pixelGrid>
             <rect dataType="Struct" type="Duality.Rect">
               <H dataType="Float">128</H>
@@ -145,7 +145,6 @@
           </item>
         </_items>
         <_size dataType="Int">2</_size>
-        <_version dataType="Int">2</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3035385344" surrogate="true">
         <header />
@@ -214,7 +213,7 @@
             <customMat />
             <gameobj dataType="ObjectRef">3054162509</gameobj>
             <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-            <offset dataType="Int">0</offset>
+            <offset dataType="Float">0</offset>
             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1336814819">
               <flowAreas />
               <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1313519846">
@@ -233,7 +232,6 @@
           </item>
         </_items>
         <_size dataType="Int">2</_size>
-        <_version dataType="Int">2</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3893028192" surrogate="true">
         <header />
@@ -293,7 +291,7 @@
             <customMat />
             <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
             <gameobj dataType="ObjectRef">1174671154</gameobj>
-            <offset dataType="Int">1</offset>
+            <offset dataType="Float">1</offset>
             <pixelGrid dataType="Bool">false</pixelGrid>
             <rect dataType="Struct" type="Duality.Rect">
               <H dataType="Float">256</H>
@@ -315,7 +313,6 @@
           </item>
         </_items>
         <_size dataType="Int">3</_size>
-        <_version dataType="Int">3</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="71929110" surrogate="true">
         <header />
@@ -355,7 +352,6 @@
           </item>
         </_items>
         <_size dataType="Int">1</_size>
-        <_version dataType="Int">1</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2007183912" surrogate="true">
         <header />
@@ -395,7 +391,6 @@
                 <item dataType="String">Duality\Stats\Memory\TotalUsage</item>
               </_items>
               <_size dataType="Int">4</_size>
-              <_version dataType="Int">4</_version>
             </counterGraphs>
             <drawGraphs dataType="Bool">false</drawGraphs>
             <gameobj dataType="ObjectRef">2125880755</gameobj>
@@ -410,7 +405,6 @@
           </item>
         </_items>
         <_size dataType="Int">1</_size>
-        <_version dataType="Int">1</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2579465568" surrogate="true">
         <header />

@@ -100,7 +100,6 @@
               </item>
             </_items>
             <_size dataType="Int">1</_size>
-            <_version dataType="Int">5</_version>
           </emitters>
           <fadeInAt dataType="Float">0.25</fadeInAt>
           <fadeOutAt dataType="Float">0.75</fadeOutAt>
@@ -128,7 +127,7 @@
           <customMat />
           <gameobj dataType="ObjectRef">2717718507</gameobj>
           <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-          <offset dataType="Int">0</offset>
+          <offset dataType="Float">0</offset>
           <text dataType="Struct" type="Duality.Drawing.FormattedText" id="639194685">
             <flowAreas />
             <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="3328578598">
@@ -147,13 +146,13 @@
         </item>
         <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="1485527735">
           <active dataType="Bool">true</active>
+          <allowParent dataType="Bool">false</allowParent>
           <angularDamp dataType="Float">0.3</angularDamp>
           <angularVel dataType="Float">0</angularVel>
           <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Static" value="0" />
           <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
           <colFilter />
           <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-          <continous dataType="Bool">false</continous>
           <explicitInertia dataType="Float">0</explicitInertia>
           <explicitMass dataType="Float">0</explicitMass>
           <fixedAngle dataType="Bool">false</fixedAngle>
@@ -173,11 +172,12 @@
                 <radius dataType="Float">150</radius>
                 <restitution dataType="Float">0.3</restitution>
                 <sensor dataType="Bool">true</sensor>
+                <userTag dataType="Int">0</userTag>
               </item>
             </_items>
             <_size dataType="Int">1</_size>
-            <_version dataType="Int">18</_version>
           </shapes>
+          <useCCD dataType="Bool">false</useCCD>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.Trigger" id="1223525211">
           <active dataType="Bool">true</active>
@@ -190,7 +190,6 @@
         </item>
       </_items>
       <_size dataType="Int">6</_size>
-      <_version dataType="Int">6</_version>
     </compList>
     <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="866486430" surrogate="true">
       <header />

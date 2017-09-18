@@ -32,13 +32,13 @@
         </item>
         <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="325582691">
           <active dataType="Bool">true</active>
+          <allowParent dataType="Bool">false</allowParent>
           <angularDamp dataType="Float">0.3</angularDamp>
           <angularVel dataType="Float">0</angularVel>
           <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
           <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
           <colFilter />
           <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="None" value="0" />
-          <continous dataType="Bool">false</continous>
           <explicitInertia dataType="Float">0</explicitInertia>
           <explicitMass dataType="Float">0</explicitMass>
           <fixedAngle dataType="Bool">false</fixedAngle>
@@ -58,11 +58,12 @@
                 <radius dataType="Float">40</radius>
                 <restitution dataType="Float">0.3</restitution>
                 <sensor dataType="Bool">false</sensor>
+                <userTag dataType="Int">0</userTag>
               </item>
             </_items>
             <_size dataType="Int">1</_size>
-            <_version dataType="Int">1</_version>
           </shapes>
+          <useCCD dataType="Bool">false</useCCD>
         </item>
         <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2156466653">
           <active dataType="Bool">true</active>
@@ -79,7 +80,7 @@
           <customOutlineMaterial />
           <fillHollowShapes dataType="Bool">false</fillHollowShapes>
           <gameobj dataType="ObjectRef">1557773463</gameobj>
-          <offset dataType="Int">0</offset>
+          <offset dataType="Float">0</offset>
           <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
             <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
           </outlineMaterial>
@@ -110,7 +111,6 @@
         </item>
       </_items>
       <_size dataType="Int">5</_size>
-      <_version dataType="Int">5</_version>
     </compList>
     <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2884270870" surrogate="true">
       <header />

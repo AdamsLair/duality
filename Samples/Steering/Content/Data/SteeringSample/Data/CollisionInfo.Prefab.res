@@ -42,7 +42,7 @@
           <customMat />
           <gameobj dataType="ObjectRef">422295141</gameobj>
           <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-          <offset dataType="Int">0</offset>
+          <offset dataType="Float">0</offset>
           <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3727897359">
             <flowAreas />
             <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="216848302">
@@ -61,7 +61,6 @@
         </item>
       </_items>
       <_size dataType="Int">2</_size>
-      <_version dataType="Int">2</_version>
     </compList>
     <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1234171194" surrogate="true">
       <header />

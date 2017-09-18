@@ -37,12 +37,18 @@
           </item>
           <item dataType="Struct" type="Duality.Components.Camera" id="838474558">
             <active dataType="Bool">true</active>
-            <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba" />
+            <clearColor dataType="Struct" type="Duality.Drawing.ColorRgba">
+              <A dataType="Byte">0</A>
+              <B dataType="Byte">64</B>
+              <G dataType="Byte">53</G>
+              <R dataType="Byte">44</R>
+            </clearColor>
             <farZ dataType="Float">10000</farZ>
             <focusDist dataType="Float">500</focusDist>
             <gameobj dataType="ObjectRef">301198751</gameobj>
             <nearZ dataType="Float">0</nearZ>
             <perspective dataType="Enum" type="Duality.Drawing.PerspectiveMode" name="Parallax" value="1" />
+            <priority dataType="Int">0</priority>
             <renderSetup dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderSetup]]" />
             <renderTarget dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
             <targetRect dataType="Struct" type="Duality.Rect">
@@ -59,7 +65,6 @@
           </item>
         </_items>
         <_size dataType="Int">3</_size>
-        <_version dataType="Int">3</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3085315960" surrogate="true">
         <header />
@@ -133,7 +138,7 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">760442718</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
                     <H dataType="Float">128</H>
@@ -145,7 +150,7 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\Explosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndex dataType="Int">0</spriteIndex>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="4073803880">
@@ -161,7 +166,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">5</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1225737098" surrogate="true">
               <header />
@@ -231,8 +235,8 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">3879173251</gameobj>
-                  <nextSpriteIndex dataType="Int">-1</nextSpriteIndex>
-                  <offset dataType="Int">0</offset>
+                  <nextSpriteIndex dataType="Int">1</nextSpriteIndex>
+                  <offset dataType="Float">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
                     <H dataType="Float">128</H>
@@ -244,7 +248,7 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\SmoothAnimExplosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndex dataType="Int">0</spriteIndex>
                   <spriteIndexBlend dataType="Float">0</spriteIndexBlend>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
@@ -261,7 +265,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">7</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2257967936" surrogate="true">
               <header />
@@ -331,7 +334,7 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">2365849191</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
                     <H dataType="Float">128</H>
@@ -343,7 +346,7 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\Explosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndex dataType="Int">0</spriteIndex>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1384243057">
@@ -359,7 +362,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">5</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2729278200" surrogate="true">
               <header />
@@ -429,8 +431,8 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">2876061338</gameobj>
-                  <nextSpriteIndex dataType="Int">-1</nextSpriteIndex>
-                  <offset dataType="Int">0</offset>
+                  <nextSpriteIndex dataType="Int">1</nextSpriteIndex>
+                  <offset dataType="Float">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
                     <H dataType="Float">128</H>
@@ -442,7 +444,7 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\SmoothAnimExplosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndex dataType="Int">0</spriteIndex>
                   <spriteIndexBlend dataType="Float">0</spriteIndexBlend>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
@@ -459,7 +461,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">5</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1703085642" surrogate="true">
               <header />
@@ -490,12 +491,10 @@
           </item>
         </_items>
         <_size dataType="Int">4</_size>
-        <_version dataType="Int">8</_version>
       </children>
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1122582042">
         <_items dataType="Array" type="Duality.Component[]" id="2367506372" length="0" />
         <_size dataType="Int">0</_size>
-        <_version dataType="Int">0</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2155998742" surrogate="true">
         <header />
@@ -561,7 +560,7 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">2949386683</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
                     <H dataType="Float">128</H>
@@ -573,7 +572,7 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\Explosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndex dataType="Int">0</spriteIndex>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="1967780549">
@@ -589,7 +588,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">5</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="724363624" surrogate="true">
               <header />
@@ -659,8 +657,8 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">3765178736</gameobj>
-                  <nextSpriteIndex dataType="Int">-1</nextSpriteIndex>
-                  <offset dataType="Int">0</offset>
+                  <nextSpriteIndex dataType="Int">1</nextSpriteIndex>
+                  <offset dataType="Float">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
                     <H dataType="Float">128</H>
@@ -672,7 +670,7 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\SmoothAnimExplosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndex dataType="Int">0</spriteIndex>
                   <spriteIndexBlend dataType="Float">0</spriteIndexBlend>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
@@ -689,7 +687,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">5</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2744606742" surrogate="true">
               <header />
@@ -759,7 +756,7 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">524220528</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
                     <H dataType="Float">128</H>
@@ -771,7 +768,7 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\Explosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndex dataType="Int">0</spriteIndex>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteAnimator" id="3837581690">
@@ -787,7 +784,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">5</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="383756822" surrogate="true">
               <header />
@@ -857,8 +853,8 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">2588695353</gameobj>
-                  <nextSpriteIndex dataType="Int">-1</nextSpriteIndex>
-                  <offset dataType="Int">0</offset>
+                  <nextSpriteIndex dataType="Int">1</nextSpriteIndex>
+                  <offset dataType="Float">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
                     <H dataType="Float">128</H>
@@ -870,7 +866,7 @@
                   <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Data\SmoothAnimation\Visuals\SmoothAnimExplosion.Material.res</contentPath>
                   </sharedMat>
-                  <spriteIndex dataType="Int">-1</spriteIndex>
+                  <spriteIndex dataType="Int">0</spriteIndex>
                   <spriteIndexBlend dataType="Float">0</spriteIndexBlend>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                 </item>
@@ -887,7 +883,6 @@
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
-              <_version dataType="Int">5</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="370277184" surrogate="true">
               <header />
@@ -918,12 +913,10 @@
           </item>
         </_items>
         <_size dataType="Int">4</_size>
-        <_version dataType="Int">4</_version>
       </children>
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2346866208">
         <_items dataType="ObjectRef">2367506372</_items>
         <_size dataType="Int">0</_size>
-        <_version dataType="Int">0</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2276983923" surrogate="true">
         <header />
@@ -981,7 +974,7 @@
                   <customMat />
                   <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                   <gameobj dataType="ObjectRef">1216753297</gameobj>
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
                     <H dataType="Float">512</H>
@@ -998,7 +991,6 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">2</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1712830392" surrogate="true">
               <header />
@@ -1067,7 +1059,7 @@
                   <customMat />
                   <gameobj dataType="ObjectRef">3651443245</gameobj>
                   <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <text dataType="Struct" type="Duality.Drawing.FormattedText" id="4162120963">
                     <flowAreas />
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="3460735270">
@@ -1086,7 +1078,6 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">2</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3340345376" surrogate="true">
               <header />
@@ -1155,7 +1146,7 @@
                   <customMat />
                   <gameobj dataType="ObjectRef">235791753</gameobj>
                   <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
-                  <offset dataType="Int">0</offset>
+                  <offset dataType="Float">0</offset>
                   <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1919672383">
                     <flowAreas />
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="26623150">
@@ -1174,7 +1165,6 @@
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
-              <_version dataType="Int">2</_version>
             </compList>
             <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4079224392" surrogate="true">
               <header />
@@ -1203,12 +1193,10 @@
           </item>
         </_items>
         <_size dataType="Int">3</_size>
-        <_version dataType="Int">3</_version>
       </children>
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1696618974">
         <_items dataType="Array" type="Duality.Component[]" id="3829162058" length="0" />
         <_size dataType="Int">0</_size>
-        <_version dataType="Int">0</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1048746356" surrogate="true">
         <header />

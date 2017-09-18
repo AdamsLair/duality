@@ -14,7 +14,6 @@
       </item>
     </_items>
     <_size dataType="Int">1</_size>
-    <_version dataType="Int">10</_version>
   </autoResizeTargets>
   <bloomStrength dataType="Float">1</bloomStrength>
   <minBrightness dataType="Float">0.75</minBrightness>
@@ -101,7 +100,6 @@
       </item>
     </_items>
     <_size dataType="Int">3</_size>
-    <_version dataType="Int">3</_version>
   </steps>
   <techBlur dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
     <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\Shaders\BlurTechnique.DrawTechnique.res</contentPath>

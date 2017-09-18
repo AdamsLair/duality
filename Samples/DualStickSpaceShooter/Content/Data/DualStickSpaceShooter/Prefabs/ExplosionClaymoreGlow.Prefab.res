@@ -5,7 +5,6 @@
     <children dataType="Struct" type="System.Collections.Generic.List`1[[Duality.GameObject]]" id="1261459200">
       <_items dataType="Array" type="Duality.GameObject[]" id="1585975964" length="4" />
       <_size dataType="Int">0</_size>
-      <_version dataType="Int">4</_version>
     </children>
     <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="65001934">
       <_items dataType="Array" type="Duality.Component[]" id="3332403154" length="4">
@@ -82,7 +81,6 @@
               </item>
             </_items>
             <_size dataType="Int">1</_size>
-            <_version dataType="Int">2</_version>
           </emitters>
           <fadeInAt dataType="Float">0</fadeInAt>
           <fadeOutAt dataType="Float">0.75</fadeOutAt>
@@ -100,7 +98,6 @@
         </item>
       </_items>
       <_size dataType="Int">2</_size>
-      <_version dataType="Int">4</_version>
     </compList>
     <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2037649820" surrogate="true">
       <header />
