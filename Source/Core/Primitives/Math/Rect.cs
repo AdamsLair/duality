@@ -131,14 +131,7 @@ namespace Duality
 		/// </summary>
 		public float BoundingRadius
 		{
-			get 
-			{ 
-				return MathF.Max(
-					MathF.Distance(this.RightX, this.BottomY),
-					MathF.Distance(this.LeftX, this.TopY),
-					MathF.Distance(this.RightX, this.TopY),
-					MathF.Distance(this.LeftX, this.BottomY)); 
-			}
+			get { return MathF.Distance(this.W, this.H) * 0.5f; }
 		}
 		
 		/// <summary>
