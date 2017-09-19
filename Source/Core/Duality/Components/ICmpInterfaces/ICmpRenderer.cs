@@ -11,6 +11,11 @@ namespace Duality
 	/// </summary>
 	public interface ICmpRenderer
 	{
+		/// <summary>
+		/// Retrieves information that can be used to decide whether this renderer could 
+		/// be visible to any given observer or not.
+		/// </summary>
+		/// <param name="info"></param>
 		void GetCullingInfo(out CullingInfo info);
 		/// <summary>
 		/// Draws the object.

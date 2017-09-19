@@ -37,6 +37,11 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="device"></param>
 		public abstract void Draw(IDrawDevice device);
+		/// <summary>
+		/// Retrieves information that can be used to decide whether this <see cref="Renderer"/> could 
+		/// be visible to any given observer or not.
+		/// </summary>
+		/// <param name="info"></param>
 		public virtual void GetCullingInfo(out CullingInfo info)
 		{
 			info.Position = this.gameobj.Transform.Pos;
