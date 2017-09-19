@@ -37,17 +37,11 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="device"></param>
 		public abstract void Draw(IDrawDevice device);
-		/// <summary>
-		/// Determines if the Renderer is visible to the specified <see cref="IDrawDevice"/>.
-		/// This is usually the case if they share at least one mutual <see cref="VisibilityGroup">visibility group</see>.
-		/// </summary>
-		/// <param name="device"></param>
-		/// <returns></returns>
-		public virtual bool IsVisible(IDrawDevice device)
+		public virtual void GetCullingInfo(out CullingInfo info)
 		{
-			if ((device.VisibilityMask & VisibilityFlag.ScreenOverlay) != (this.visibilityGroup & VisibilityFlag.ScreenOverlay)) return false;
-			if ((this.visibilityGroup & device.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) return false;
-			return device.IsCoordInView(this.gameobj.Transform.Pos, this.BoundRadius);
+			info.Position = this.gameobj.Transform.Pos;
+			info.Radius = this.BoundRadius;
+			info.Visibility = this.visibilityGroup;
 		}
 
 		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)

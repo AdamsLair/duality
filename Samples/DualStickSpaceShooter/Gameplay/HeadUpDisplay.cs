@@ -20,17 +20,12 @@ namespace DualStickSpaceShooter
 			get { return this.font; }
 			set { this.font = value; }
 		}
-		float ICmpRenderer.BoundRadius
-		{
-			get { return float.MaxValue; }
-		}
 
-		bool ICmpRenderer.IsVisible(IDrawDevice device)
+		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
 		{
-			// Only render when in screen overlay mode and the visibility mask is non-empty.
-			return 
-				(device.VisibilityMask & VisibilityFlag.AllGroups) != VisibilityFlag.None &&
-				(device.VisibilityMask & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None;
+			info.Position = Vector3.Zero;
+			info.Radius = float.MaxValue;
+			info.Visibility = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{

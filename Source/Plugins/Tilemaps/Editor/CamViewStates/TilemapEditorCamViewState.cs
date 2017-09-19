@@ -269,13 +269,16 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 		private IEnumerable<ICmpTilemapRenderer> QueryVisibleTilemapRenderers()
 		{
-			return Scene.Current.FindComponents<ICmpTilemapRenderer>().Where(r => 
+			return Scene.Current.FindComponents<ICmpTilemapRenderer>().Where(renderer => 
 			{
-				Component cmp = r as Component;
+				CullingInfo culling;
+				renderer.GetCullingInfo(out culling);
+
+				Component component = renderer as Component;
 				return
-					cmp.Active && 
-					!DesignTimeObjectData.Get(cmp.GameObj).IsHidden && 
-					this.IsCoordInView(cmp.GameObj.Transform.Pos, r.BoundRadius);
+					component.Active && 
+					!DesignTimeObjectData.Get(component.GameObj).IsHidden && 
+					this.IsCoordInView(component.GameObj.Transform.Pos, culling.Radius);
 			});
 		}
 		private IEnumerable<Tilemap> QueryTilemapsInScene()

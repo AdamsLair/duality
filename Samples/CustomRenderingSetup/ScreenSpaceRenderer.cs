@@ -10,16 +10,11 @@ namespace CustomRenderingSetup
 {
 	public class ScreenSpaceRenderer : Component, ICmpRenderer
 	{
-		float ICmpRenderer.BoundRadius
+		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
 		{
-			get { return float.MaxValue; }
-		}
-
-		bool ICmpRenderer.IsVisible(IDrawDevice device)
-		{
-			return 
-				(device.VisibilityMask & VisibilityFlag.AllGroups) != VisibilityFlag.None &&
-				(device.VisibilityMask & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None;
+			info.Position = Vector3.Zero;
+			info.Radius = float.MaxValue;
+			info.Visibility = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{

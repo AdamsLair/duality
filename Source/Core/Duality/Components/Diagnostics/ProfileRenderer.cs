@@ -45,10 +45,6 @@ namespace Duality.Components.Diagnostics
 		[DontSerialize] private Dictionary<string,GraphCacheEntry> graphCache = new Dictionary<string,GraphCacheEntry>();
 
 
-		float ICmpRenderer.BoundRadius
-		{
-			get { return float.MaxValue; }
-		}
 		/// <summary>
 		/// [GET / SET] Whether or not a text report of the current time profiling results is drawn.
 		/// </summary>
@@ -131,15 +127,16 @@ namespace Duality.Components.Diagnostics
 		}
 
 
-		bool ICmpRenderer.IsVisible(IDrawDevice device)
+		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
 		{
-			return 
-				DualityApp.ExecContext == DualityApp.ExecutionContext.Game &&
-				(device.VisibilityMask & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None &&
-				(device.VisibilityMask & VisibilityFlag.AllGroups) != VisibilityFlag.None;
+			info.Position = Vector3.Zero;
+			info.Radius = float.MaxValue;
+			info.Visibility = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
+			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Game) return;
+
 			Profile.BeginMeasure(@"ProfileRenderer");
 			Canvas canvas = new Canvas(device);
 			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White, null));

@@ -71,10 +71,6 @@ namespace Duality.Samples.Physics
 			get { return this.generalControls; }
 			set { this.generalControls = value; this.UpdateText(); }
 		}
-		float ICmpRenderer.BoundRadius
-		{
-			get { return float.MaxValue; }
-		}
 
 
 		private void UpdateText()
@@ -93,11 +89,11 @@ namespace Duality.Samples.Physics
 				this.generalControls);
 		}
 
-		bool ICmpRenderer.IsVisible(IDrawDevice device)
+		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
 		{
-			return 
-				(device.VisibilityMask & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None &&
-				(device.VisibilityMask & VisibilityFlag.AllGroups) != VisibilityFlag.None;
+			info.Position = Vector3.Zero;
+			info.Radius = float.MaxValue;
+			info.Visibility = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{

@@ -41,7 +41,15 @@ namespace Duality.Components
 				{
 					if (i >= pair.Value.Count) break;
 
-					if ((data[i] as Component).Active && data[i].IsVisible(device))
+					CullingInfo cullingInfo;
+					data[i].GetCullingInfo(out cullingInfo);
+
+					bool isVisible = 
+						(cullingInfo.Visibility & device.VisibilityMask & VisibilityFlag.AllGroups) != VisibilityFlag.None &&
+						(cullingInfo.Visibility & VisibilityFlag.ScreenOverlay) == (device.VisibilityMask & VisibilityFlag.ScreenOverlay) &&
+						device.IsCoordInView(cullingInfo.Position, cullingInfo.Radius);
+
+					if ((data[i] as Component).Active && isVisible)
 					{
 						targetData[visibleCount] = data[i];
 						visibleCount++;

@@ -98,6 +98,7 @@
     <Compile Include="Components\Physics\Shapes\ChainShapeInfo.cs" />
     <Compile Include="Components\Physics\Shapes\VertexShapeTrait.cs" />
     <Compile Include="Components\Physics\Shapes\VertexBasedShapeInfo.cs" />
+    <Compile Include="Drawing\CullingInfo.cs" />
     <Compile Include="Utility\RawListPool.cs" />
     <Compile Include="Drawing\VertexData\VertexDrawRange.cs" />
     <Compile Include="Drawing\DrawBatch.cs" />

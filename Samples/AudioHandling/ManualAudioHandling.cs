@@ -39,17 +39,12 @@ namespace AudioHandling
 			set { this.soundsInside = value ?? new ContentRef<Sound>[0]; }
 		}
 
-		float ICmpRenderer.BoundRadius
+		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
 		{
-			get { return float.MaxValue; }
+			info.Position = Vector3.Zero;
+			info.Radius = float.MaxValue;
+			info.Visibility = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 		}
-		bool ICmpRenderer.IsVisible(IDrawDevice device)
-		{
-			return 
-				(device.VisibilityMask & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None &&
-				(device.VisibilityMask & VisibilityFlag.AllGroups) != VisibilityFlag.None;
-		}
-
 		void ICmpUpdatable.OnUpdate()
 		{
 			// Allow the user to input where to go
