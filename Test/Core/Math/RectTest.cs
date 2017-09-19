@@ -79,6 +79,23 @@ namespace Duality.Tests.Utility
 			rect.Size = new Vector2(4, 3);
 			Assert.AreEqual(new Vector2(4, 3), rect.Size);
 		}
+		[Test] public void BoundingRadius()
+		{
+			Assert.AreEqual(MathF.Distance(1, 1), new Rect(0, 0, 1, 1).BoundingRadius);
+			Assert.AreEqual(MathF.Distance(1, 1), new Rect(0, 0, -1, 1).BoundingRadius);
+			Assert.AreEqual(MathF.Distance(1, 1), new Rect(0, 0, 1, -1).BoundingRadius);
+			Assert.AreEqual(MathF.Distance(1, 1), new Rect(0, 0, -1, -1).BoundingRadius);
+
+			Assert.AreEqual(MathF.Distance(4, 2), new Rect(0, 0, 4, 2).BoundingRadius);
+			Assert.AreEqual(MathF.Distance(4, 2), new Rect(0, 0, -4, 2).BoundingRadius);
+			Assert.AreEqual(MathF.Distance(4, 2), new Rect(0, 0, 4, -2).BoundingRadius);
+			Assert.AreEqual(MathF.Distance(4, 2), new Rect(0, 0, -4, -2).BoundingRadius);
+
+			Assert.AreEqual(MathF.Distance(10, 16), new Rect(3, 5, 7, 11).BoundingRadius);
+			Assert.AreEqual(MathF.Distance(4, 16), new Rect(-3, 5, 7, 11).BoundingRadius);
+			Assert.AreEqual(MathF.Distance(10, 6), new Rect(3, -5, 7, 11).BoundingRadius);
+			Assert.AreEqual(MathF.Distance(4, 6), new Rect(-3, -5, 7, 11).BoundingRadius);
+		}
 		[Test] public void BasicTransformation()
 		{
 			Rect original = new Rect(1, 2, 3, 4);
