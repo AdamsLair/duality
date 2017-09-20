@@ -282,6 +282,13 @@ namespace Duality.Resources
 						initList[i].OnInit(Component.InitContext.Activate);
 					}
 				});
+
+				// Update object visibility / culling info, so a scheduled switch at the
+				// end of a frame will get up-to-date culling for rendering
+				DualityApp.EditorGuard(() =>
+				{
+					current.ResWeak.VisibilityStrategy.Update();
+				});
 			}
 			isSwitching = false;
 			if (Entered != null) Entered(current, null);
@@ -1115,8 +1122,6 @@ namespace Duality.Resources
 			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
 			for (int i = 0; i < initList.Count; i++)
 				initList[i].OnInit(Component.InitContext.Loaded);
-
-			this.visibilityStrategy.Update();
 		}
 		protected override void OnDisposing(bool manually)
 		{
