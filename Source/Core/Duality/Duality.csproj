@@ -88,6 +88,7 @@
     <Compile Include="Backend\PluginLoader\AssemblyResolveEventArgs.cs" />
     <Compile Include="Cloning\Surrogates\CultureInfoSurrogate.cs" />
     <Compile Include="Cloning\Surrogates\RegexSurrogate.cs" />
+    <Compile Include="Components\Diagnostics\VisualLogLayerRenderer.cs" />
     <Compile Include="Components\Other\ComponentExecutionOrder.cs" />
     <Compile Include="Components\Other\ComponentRequirementMap.cs" />
     <Compile Include="Components\Other\ComponentTypeComparer.cs" />

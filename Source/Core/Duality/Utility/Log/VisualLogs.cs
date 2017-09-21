@@ -64,10 +64,7 @@ namespace Duality
 				if (renderer == null)
 				{
 					GameObject obj = new GameObject("VisualLogRenderer");
-					GameObject worldRenderer = new GameObject("World", obj);
-					GameObject overlayRenderer = new GameObject("Overlay", obj);
-					worldRenderer.AddComponent<VisualLogRenderer>().Overlay = false;
-					overlayRenderer.AddComponent<VisualLogRenderer>().Overlay = true;
+					obj.AddComponent<VisualLogRenderer>();
 					Scene.Current.AddObject(obj);
 				}
 			}
