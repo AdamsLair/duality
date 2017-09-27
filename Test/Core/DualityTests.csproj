@@ -82,6 +82,7 @@
     <Compile Include="Components\TransformTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
     <Compile Include="Drawing\VertexBatchStoreTest.cs" />
+    <Compile Include="Drawing\ShaderParametersTest.cs" />
     <Compile Include="Drawing\VertexBatchTest.cs" />
     <Compile Include="Drawing\VertexSliceTest.cs" />
     <Compile Include="Testing\ExtMethodsIList.cs" />
