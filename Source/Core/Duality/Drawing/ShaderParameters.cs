@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using Duality.Editor;
 using Duality.Resources;
@@ -13,12 +14,22 @@ namespace Duality.Drawing
 	/// It's a CPU side key-value store for values that can be applied to a shader
 	/// program by the <see cref="Duality.Backend.IGraphicsBackend"/>.
 	/// </summary>
-	public class ShaderParameters : IEquatable<ShaderParameters>
+	public class ShaderParameters : IEquatable<ShaderParameters>, ISerializeExplicit
 	{
 		private Dictionary<string,ContentRef<Texture>> textures = null;
 		private Dictionary<string,float[]>             uniforms = null;
 		private long                                   hash     = 0;
 		
+		
+		/// <summary>
+		/// [GET / SET] Shortcut for accessing the <see cref="ShaderFieldInfo.DefaultNameMainTex"/> texture variable.
+		/// </summary>
+		public ContentRef<Texture> MainTexture
+		{
+			get { return this.Get<ContentRef<Texture>>(ShaderFieldInfo.DefaultNameMainTex); }
+			set { this.Set(ShaderFieldInfo.DefaultNameMainTex, value); }
+		}
+
 
 		public ShaderParameters()
 		{
@@ -474,6 +485,53 @@ namespace Duality.Drawing
 			// of different materials at any time tends to be low for perf reasons,
 			// collisions should be unlikely enough for this optimization to hold.
 			return this.hash == other.hash;
+		}
+
+		public override string ToString()
+		{
+			StringBuilder builder = new StringBuilder();
+			
+			ContentRef<Texture> mainTex = this.MainTexture;
+			if (mainTex != null)
+			{
+				builder.Append(mainTex.Name);
+			}
+			if (this.textures.Count > 1)
+			{
+				if (builder.Length != 0) builder.Append(", ");
+				builder.Append(this.textures.Count);
+				builder.Append(" textures");
+			}
+			if (this.uniforms.Count > 1)
+			{
+				if (builder.Length != 0) builder.Append(", ");
+				builder.Append(this.uniforms.Count);
+				builder.Append(" uniforms");
+			}
+
+			return builder.ToString();
+		}
+
+		void ISerializeExplicit.WriteData(IDataWriter writer)
+		{
+			writer.WriteValue("textures", this.textures);
+			writer.WriteValue("uniforms", this.uniforms);
+		}
+		void ISerializeExplicit.ReadData(IDataReader reader)
+		{
+			reader.ReadValue("textures", out this.textures);
+			reader.ReadValue("uniforms", out this.uniforms);
+
+			// Retrieve references to all textures, to the ContentRefs
+			// we store don't have to do a lookup on access.
+			foreach (var texPair in this.textures.ToList())
+			{
+				ContentRef<Texture> texRef = texPair.Value;
+				texRef.MakeAvailable();
+				this.textures[texPair.Key] = texRef;
+			}
+
+			this.UpdateHash();
 		}
 	}
 }
