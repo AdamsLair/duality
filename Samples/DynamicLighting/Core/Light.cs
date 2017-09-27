@@ -279,10 +279,10 @@ namespace DynamicLighting
 			}
 			if (i + 1 < _lightCount) _lightCount = i + 1;
 
-			material.SetUniform("_lightCount", _lightCount);
-			material.SetUniform("_lightPos", _lightPos);
-			material.SetUniform("_lightDir", _lightDir);
-			material.SetUniform("_lightColor", _lightColor);
+			material.Parameters.Set("_lightCount", _lightCount);
+			material.Parameters.SetArray("_lightPos", _lightPos);
+			material.Parameters.SetArray("_lightDir", _lightDir);
+			material.Parameters.SetArray("_lightColor", _lightColor);
 		}
 		public static void GetLightAtWorldPos(Vector3 worldPos, out Vector4 lightColor, float translucency = 0.0f)
 		{

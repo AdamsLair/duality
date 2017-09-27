@@ -45,7 +45,7 @@ namespace Duality.Drawing
 		/// </summary>
 		public bool IsDefaultMaterial
 		{
-			get { return this.batchInfo == DefaultMaterial; }
+			get { return this.batchInfo.Equals(DefaultMaterial); }
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="Duality.Resources.Font"/> to use for text rendering.
@@ -214,9 +214,9 @@ namespace Duality.Drawing
 			if (material.IsExplicitNull)
 				this.batchInfo = DefaultMaterial;
 			else if (material.IsAvailable)
-				this.batchInfo = material.Res.InfoDirect;
+				this.batchInfo = material.Res.Info;
 			else
-				this.batchInfo = Resources.Material.Checkerboard.Res.InfoDirect;
+				this.batchInfo = Resources.Material.Checkerboard.Res.Info;
 
 			if (this.batchInfo.MainTexture.IsAvailable)
 			{

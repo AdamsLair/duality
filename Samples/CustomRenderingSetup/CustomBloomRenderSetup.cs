@@ -102,8 +102,8 @@ namespace CustomRenderingSetup
 			{
 				BatchInfo material = new BatchInfo(this.techFilterBrightness, ColorRgba.White);
 				material.MainTexture = step.Input.MainTexture;
-				material.SetUniform("minBrightness", this.minBrightness);
-				material.SetUniform("bloomStrength", this.bloomStrength);
+				material.Parameters.Set("minBrightness", this.minBrightness);
+				material.Parameters.Set("bloomStrength", this.bloomStrength);
 				this.Blit(drawDevice, material, this.targetPingPongA[0]);
 			}
 
@@ -121,11 +121,11 @@ namespace CustomRenderingSetup
 				BatchInfo material = new BatchInfo(this.techBlur, ColorRgba.White);
 
 				material.MainTexture = this.targetPingPongA[i].Targets[0];
-				material.SetUniform("blurDirection", 1.0f, 0.0f);
+				material.Parameters.Set("blurDirection", new Vector2(1.0f, 0.0f));
 				this.Blit(drawDevice, material, this.targetPingPongB[i]);
 
 				material.MainTexture = this.targetPingPongB[i].Targets[0];
-				material.SetUniform("blurDirection", 0.0f, 1.0f);
+				material.Parameters.Set("blurDirection", new Vector2(0.0f, 1.0f));
 				this.Blit(drawDevice, material, this.targetPingPongA[i]);
 			}
 
@@ -133,10 +133,10 @@ namespace CustomRenderingSetup
 			{
 				BatchInfo material = new BatchInfo(this.techCombineFinal, ColorRgba.White);
 				material.MainTexture = step.Input.MainTexture;
-				material.SetTexture("blurFullTex", this.targetPingPongA[0].Targets[0]);
-				material.SetTexture("blurHalfTex", this.targetPingPongA[1].Targets[0]);
-				material.SetTexture("blurQuarterTex", this.targetPingPongA[2].Targets[0]);
-				material.SetTexture("blurEighthTex", this.targetPingPongA[3].Targets[0]);
+				material.Parameters.Set("blurFullTex", this.targetPingPongA[0].Targets[0]);
+				material.Parameters.Set("blurHalfTex", this.targetPingPongA[1].Targets[0]);
+				material.Parameters.Set("blurQuarterTex", this.targetPingPongA[2].Targets[0]);
+				material.Parameters.Set("blurEighthTex", this.targetPingPongA[3].Targets[0]);
 				this.Blit(drawDevice, material, outputTarget.Res, imageSize, viewportRect);
 			}
 		}

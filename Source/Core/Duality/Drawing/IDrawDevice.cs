@@ -139,7 +139,7 @@ namespace Duality.Drawing
 		public static void AddVertices<T>(this IDrawDevice device, ContentRef<Material> material, VertexMode vertexMode, params T[] vertices) where T : struct, IVertexData
 		{
 			device.AddVertices<T>(
-				material.IsAvailable ? material.Res.InfoDirect : Material.Checkerboard.Res.InfoDirect, 
+				material.IsAvailable ? material.Res.Info : Material.Checkerboard.Res.Info, 
 				vertexMode, 
 				vertices, 
 				vertices.Length);
@@ -172,7 +172,7 @@ namespace Duality.Drawing
 		public static void AddVertices<T>(this IDrawDevice device, ContentRef<Material> material, VertexMode vertexMode, T[] vertexBuffer, int vertexCount) where T : struct, IVertexData
 		{
 			device.AddVertices<T>(
-				material.IsAvailable ? material.Res.InfoDirect : Material.Checkerboard.Res.InfoDirect, 
+				material.IsAvailable ? material.Res.Info : Material.Checkerboard.Res.Info, 
 				vertexMode, 
 				vertexBuffer, 
 				vertexCount);

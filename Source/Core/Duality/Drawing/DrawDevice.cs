@@ -34,7 +34,7 @@ namespace Duality.Drawing
 				return
 					this.Mode == other.Mode &&
 					this.Type == other.Type &&
-					this.Material == other.Material;
+					this.Material.Equals(other.Material);
 			}
 			/// <summary>
 			/// Determines whether the specified item could be appended as-is to this item.
@@ -47,7 +47,7 @@ namespace Duality.Drawing
 					this.Offset + this.Count == other.Offset &&
 					this.Mode == other.Mode &&
 					this.Type == other.Type &&
-					this.Material == other.Material;
+					this.Material.Equals(other.Material);
 			}
 
 			public override string ToString()
@@ -468,7 +468,7 @@ namespace Duality.Drawing
 			if (vertexCount == 0) return;
 			if (vertexBuffer == null || vertexBuffer.Length == 0) return;
 			if (vertexCount > vertexBuffer.Length) vertexCount = vertexBuffer.Length;
-			if (object.ReferenceEquals(material, null)) material = Material.Checkerboard.Res.InfoDirect;
+			if (material == null) material = Material.Checkerboard.Res.Info;
 
 			// In picking mode, override incoming vertices material and vertex colors
 			// to generate a lookup texture by which we can retrieve each pixels object.
@@ -480,7 +480,8 @@ namespace Duality.Drawing
 
 				material = new BatchInfo(material);
 				material.Technique = DrawTechnique.Picking;
-				if (material.Textures == null) material.MainTexture = Texture.White;
+				if (material.MainTexture == null)
+					material.MainTexture = Texture.White;
 			}
 			else if (material.Technique == null || !material.Technique.IsAvailable)
 			{

@@ -494,20 +494,27 @@ namespace Duality.Drawing
 			ContentRef<Texture> mainTex = this.MainTexture;
 			if (mainTex != null)
 			{
+				builder.Append(ShaderFieldInfo.DefaultNameMainTex);
+				builder.Append(" \"");
 				builder.Append(mainTex.Name);
+				builder.Append('"');
+
+				if (this.textures.Count > 1)
+				{
+					builder.Append(", +");
+					builder.Append(this.textures.Count - 1);
+					builder.Append(" textures");
+				}
 			}
-			if (this.textures.Count > 1)
+			else
 			{
-				if (builder.Length != 0) builder.Append(", ");
 				builder.Append(this.textures.Count);
 				builder.Append(" textures");
 			}
-			if (this.uniforms.Count > 1)
-			{
-				if (builder.Length != 0) builder.Append(", ");
-				builder.Append(this.uniforms.Count);
-				builder.Append(" uniforms");
-			}
+
+			if (builder.Length != 0) builder.Append(", ");
+			builder.Append(this.uniforms.Count);
+			builder.Append(" uniforms");
 
 			return builder.ToString();
 		}

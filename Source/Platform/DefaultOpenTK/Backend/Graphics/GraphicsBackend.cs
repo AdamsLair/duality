@@ -251,7 +251,7 @@ namespace Duality.Backend.DefaultOpenTK
 				bool first = (i == 0);
 				bool sameMaterial = 
 					lastRendered != null && 
-					lastRendered.Material == batch.Material;
+					lastRendered.Material.Equals(batch.Material);
 
 				// Setup vertex bindings. Note that the setup differs based on the 
 				// materials shader, so material changes can be vertex binding changes.
@@ -561,37 +561,32 @@ namespace Duality.Backend.DefaultOpenTK
 				ShaderFieldInfo[] varInfo = shader.Fields;
 				int[] locations = shader.FieldLocations;
 				int[] builtinIndices = shader.BuiltinVariableIndex;
+				ShaderParameters shaderParams = material.Parameters;
 
 				// Setup sampler bindings automatically
 				int curSamplerIndex = 0;
-				if (material.Textures != null)
+				for (int i = 0; i < varInfo.Length; i++)
 				{
-					for (int i = 0; i < varInfo.Length; i++)
-					{
-						if (locations[i] == -1) continue;
-						if (varInfo[i].Type != ShaderFieldType.Sampler2D) continue;
+					if (locations[i] == -1) continue;
+					if (varInfo[i].Type != ShaderFieldType.Sampler2D) continue;
 
-						// Bind Texture
-						ContentRef<Texture> texRef = material.GetTexture(varInfo[i].Name);
-						NativeTexture.Bind(texRef, curSamplerIndex);
-						GL.Uniform1(locations[i], curSamplerIndex);
+					// Bind Texture
+					ContentRef<Texture> texRef = shaderParams.GetInternalTexture(varInfo[i].Name);
+					NativeTexture.Bind(texRef, curSamplerIndex);
+					GL.Uniform1(locations[i], curSamplerIndex);
 
-						curSamplerIndex++;
-					}
+					curSamplerIndex++;
 				}
 				NativeTexture.ResetBinding(curSamplerIndex);
 
 				// Transfer uniform data from material to actual shader
-				if (material.Uniforms != null)
+				for (int i = 0; i < varInfo.Length; i++)
 				{
-					for (int i = 0; i < varInfo.Length; i++)
-					{
-						if (locations[i] == -1) continue;
-						float[] data = material.GetUniform(varInfo[i].Name);
-						if (data == null) continue;
+					if (locations[i] == -1) continue;
+					float[] data = shaderParams.GetInternalValue(varInfo[i].Name);
+					if (data == null) continue;
 
-						NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);
-					}
+					NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);
 				}
 
 				// Specify builtin shader variables, if requested
@@ -606,18 +601,8 @@ namespace Duality.Backend.DefaultOpenTK
 			else
 			{
 				// Fixed function texture binding
-				if (material.Textures != null)
-				{
-					int samplerIndex = 0;
-					foreach (var pair in material.Textures)
-					{
-						NativeTexture.Bind(pair.Value, samplerIndex);
-						samplerIndex++;
-					}
-					NativeTexture.ResetBinding(samplerIndex);
-				}
-				else
-					NativeTexture.ResetBinding();
+				NativeTexture.Bind(material.MainTexture, 0);
+				NativeTexture.ResetBinding(1);
 			}
 		}
 		private void SetupBlendType(BlendMode mode, bool depthWrite = true)

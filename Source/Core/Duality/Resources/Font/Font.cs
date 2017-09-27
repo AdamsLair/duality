@@ -232,7 +232,7 @@ namespace Duality.Resources
 			BatchInfo matInfo = new BatchInfo(technique, ColorRgba.White, this.texture);
 			if (technique == DrawTechnique.SharpAlpha)
 			{
-				matInfo.SetUniform("smoothness", this.fontData.Metrics.Size * 4.0f);
+				matInfo.Parameters.Set("smoothness", this.fontData.Metrics.Size * 4.0f);
 			}
 			this.material = new Material(matInfo);
 		}

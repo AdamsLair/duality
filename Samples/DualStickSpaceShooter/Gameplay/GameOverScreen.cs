@@ -110,7 +110,7 @@ namespace DualStickSpaceShooter
 					if (this.gameOver)
 					{
 						// Set up our special blending Material and specify the threshold to blend to
-						this.blendMaterial.SetUniform("threshold", 1.0f - blendAnimProgress);
+						this.blendMaterial.Parameters.Set("threshold", 1.0f - blendAnimProgress);
 						canvas.State.SetMaterial(this.blendMaterial);
 						canvas.State.ColorTint = ColorRgba.Black;
 

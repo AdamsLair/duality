@@ -55,8 +55,7 @@ namespace Duality
 
 		public static readonly PropertyInfo	Property_BatchInfo_Technique;
 		public static readonly PropertyInfo	Property_BatchInfo_MainColor;
-		public static readonly PropertyInfo	Property_BatchInfo_Textures;
-		public static readonly PropertyInfo	Property_BatchInfo_Uniforms;
+		public static readonly PropertyInfo	Property_BatchInfo_Parameters;
 
 		public static readonly FieldInfo Field_Material_Info;
 
@@ -113,8 +112,7 @@ namespace Duality
 			Type batchInfo = typeof(BatchInfo);
 			Property_BatchInfo_Technique	= GetProperty(batchInfo, "Technique");
 			Property_BatchInfo_MainColor	= GetProperty(batchInfo, "MainColor");
-			Property_BatchInfo_Textures		= GetProperty(batchInfo, "Textures");
-			Property_BatchInfo_Uniforms		= GetProperty(batchInfo, "Uniforms");
+			Property_BatchInfo_Parameters	= GetProperty(batchInfo, "Parameters");
 			
 			Type soundEmitter = typeof(SoundEmitter);
 			Property_SoundEmitter_Sources	= GetProperty(soundEmitter, "Sources");
