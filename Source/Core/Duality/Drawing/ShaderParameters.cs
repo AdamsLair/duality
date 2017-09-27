@@ -4,9 +4,15 @@ using System.Linq;
 
 using Duality.Editor;
 using Duality.Resources;
+using Duality.Serialization;
 
 namespace Duality.Drawing
 {
+	/// <summary>
+	/// Describes a set of shader parameters independently from any specific shader.
+	/// It's a CPU side key-value store for values that can be applied to a shader
+	/// program by the <see cref="Duality.Backend.IGraphicsBackend"/>.
+	/// </summary>
 	public class ShaderParameters : IEquatable<ShaderParameters>
 	{
 		private Dictionary<string,ContentRef<Texture>> textures = null;
@@ -31,6 +37,27 @@ namespace Duality.Drawing
 			this.hash = other.hash;
 		}
 
+		/// <summary>
+		/// Removes all variables and values from the <see cref="ShaderParameters"/> instance.
+		/// </summary>
+		public void Clear()
+		{
+			this.textures.Clear();
+			this.uniforms.Clear();
+			this.UpdateHash();
+		}
+
+		/// <summary>
+		/// Assigns an array of values to the specified variable. All values may be converted into
+		/// a shared internal format.
+		/// 
+		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
+		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
+		/// <see cref="Point2"/>, <see cref="Boolean"/> and <see cref="ContentRef<Texture>"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public void SetArray<T>(string name, params T[] value) where T : struct
 		{
 			if (string.IsNullOrEmpty(name)) throw new ArgumentException("The parameter name cannot be null or empty.", "name");
@@ -162,6 +189,17 @@ namespace Duality.Drawing
 
 			this.UpdateHash();
 		}
+		/// <summary>
+		/// Retrieves an array of values from the specified variable. If the internally 
+		/// stored type does not match the specified type, it will be converted before returning.
+		/// 
+		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
+		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
+		/// <see cref="Point2"/>, <see cref="Boolean"/> and <see cref="ContentRef<Texture>"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public T[] GetArray<T>(string name) where T : struct
 		{
 			if (string.IsNullOrEmpty(name)) return null;
@@ -304,10 +342,32 @@ namespace Duality.Drawing
 			}
 		}
 
+		/// <summary>
+		/// Assigns a values to the specified variable. All values may be converted into
+		/// a shared internal format.
+		/// 
+		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
+		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
+		/// <see cref="Point2"/>, <see cref="Boolean"/> and <see cref="ContentRef<Texture>"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public void Set<T>(string name, T value) where T : struct
 		{
 			this.SetArray<T>(name, value);
 		}
+		/// <summary>
+		/// Retrieves a values from the specified variable. If the internally 
+		/// stored type does not match the specified type, it will be converted before returning.
+		/// 
+		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
+		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
+		/// <see cref="Point2"/>, <see cref="Boolean"/> and <see cref="ContentRef<Texture>"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public T Get<T>(string name) where T : struct
 		{
 			T[] array = this.GetArray<T>(name);
@@ -317,6 +377,12 @@ namespace Duality.Drawing
 				return array[0];
 		}
 
+		/// <summary>
+		/// Retrieves the internal representation of the specified variables numeric value.
+		/// The returned array should be treated as read-only.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public float[] GetInternalValue(string name)
 		{
 			float[] value;
@@ -325,6 +391,12 @@ namespace Duality.Drawing
 			else
 				return null;
 		}
+		/// <summary>
+		/// Retrieves the internal representation of the specified variables texture value.
+		/// The returned value should be treated as read-only.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public ContentRef<Texture> GetInternalTexture(string name)
 		{
 			ContentRef<Texture> value;
