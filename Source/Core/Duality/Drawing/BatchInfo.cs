@@ -46,8 +46,8 @@ namespace Duality.Drawing
 		/// </summary>
 		public ContentRef<Texture> MainTexture
 		{
-			get { return this.parameters.Get<ContentRef<Texture>>(ShaderFieldInfo.DefaultNameMainTex); }
-			set { this.parameters.Set(ShaderFieldInfo.DefaultNameMainTex, value); }
+			get { return this.parameters.MainTexture; }
+			set { this.parameters.MainTexture = value; }
 		}
 
 		/// <summary>
