@@ -512,9 +512,12 @@ namespace Duality.Drawing
 				builder.Append(" textures");
 			}
 
-			if (builder.Length != 0) builder.Append(", ");
-			builder.Append(this.uniforms.Count);
-			builder.Append(" uniforms");
+			if (this.uniforms.Count > 0)
+			{
+				if (builder.Length != 0) builder.Append(", ");
+				builder.Append(this.uniforms.Count);
+				builder.Append(" uniforms");
+			}
 
 			return builder.ToString();
 		}
