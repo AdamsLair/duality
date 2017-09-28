@@ -18,8 +18,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	[PropertyEditorAssignment(typeof(BatchInfo), PropertyEditorAssignmentAttribute.PrioritySpecialized)]
 	public class BatchInfoPropertyEditor : MemberwisePropertyEditor
 	{
-		private	Point	dragBeginPos	= Point.Empty;
-		private	Dictionary<string,PropertyEditor>	shaderVarEditors = new Dictionary<string,PropertyEditor>();
+		private struct FieldEditorItem
+		{
+			public PropertyEditor Editor;
+			public ShaderFieldInfo Field;
+		}
+
+		private Point dragBeginPos = Point.Empty;
+		private Dictionary<string,FieldEditorItem> fieldEditors = new Dictionary<string,FieldEditorItem>();
 
 		public BatchInfoPropertyEditor()
 		{
@@ -30,7 +36,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public override void ClearContent()
 		{
  			base.ClearContent();
-			this.shaderVarEditors.Clear();
+			this.fieldEditors.Clear();
 		}
 
 		protected override bool IsAutoCreateMember(MemberInfo info)
@@ -48,7 +54,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				IEnumerable<BatchInfo> batchInfos = values.Cast<BatchInfo>();
 				DrawTechnique refTech = batchInfos.NotNull().First().Technique.Res;
 
-				// Retrieve data about shader variables
+				// Retrieve a list of shader variables to edit
 				ShaderFieldInfo[] shaderFields = null;
 				if (refTech != null && refTech.Shader.IsAvailable)
 				{
@@ -64,55 +70,74 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						ShaderFieldScope.Uniform) };
 				}
 
-				// Create editors according to shader variables. Some of them may already have
-				// backing values, others may not, in which case they're written on change.
-				Dictionary<string,PropertyEditor> oldEditors = new Dictionary<string,PropertyEditor>(this.shaderVarEditors);
-				HashSet<string> usedFields = new HashSet<string>();
-				foreach (ShaderFieldInfo field in shaderFields)
+				// Remove editors that are no longer needed or no longer match their shader field
+				List<string> removeEditors = null;
+				foreach (var pair in this.fieldEditors)
 				{
-					if (field.IsPrivate) continue;
-					if (field.Scope != ShaderFieldScope.Uniform) continue;
-					
-					usedFields.Add(field.Name);
-					if (field.Type == ShaderFieldType.Sampler2D)
+					int matchingIndex = Array.FindIndex(shaderFields, f => f.Name == pair.Key);
+					bool isMatchingEditor = 
+						matchingIndex != -1 &&
+						shaderFields[matchingIndex].Scope == pair.Value.Field.Scope &&
+						shaderFields[matchingIndex].Type == pair.Value.Field.Type &&
+						shaderFields[matchingIndex].ArrayLength == pair.Value.Field.ArrayLength;
+					if (!isMatchingEditor)
 					{
-						PropertyEditor oldEditor;
-						this.shaderVarEditors.TryGetValue(field.Name, out oldEditor);
-						if (oldEditor == null || oldEditor.EditedType != typeof(ContentRef<Texture>))
-						{
-							PropertyEditor editor = this.ParentGrid.CreateEditor(typeof(ContentRef<Texture>), this);
-							editor.Getter = this.CreateTextureValueGetter(field.Name);
-							editor.Setter = !this.ReadOnly ? this.CreateTextureValueSetter(field.Name) : null;
-							editor.PropertyName = field.Name;
-							this.shaderVarEditors[field.Name] = editor;
-							this.ParentGrid.ConfigureEditor(editor);
-							this.AddPropertyEditor(editor);
-						}
+						if (removeEditors != null)
+							removeEditors = new List<string>();
+						removeEditors.Add(pair.Key);
 					}
-					else
+				}
+				if (removeEditors != null)
+				{
+					foreach (string fieldName in removeEditors)
 					{
-						this.CreateOrUpdateUniformEditor(field);
+						this.RemovePropertyEditor(this.fieldEditors[fieldName].Editor);
+						this.fieldEditors.Remove(fieldName);
 					}
 				}
 
-				// Remove old editors that aren't needed anymore
-				foreach (var pair in oldEditors)
+				// Create editors for fields that do not yet have a matching editor, or which
+				// were removed because they did no longer match.
+				int autoCreateEditorCount = 2;
+				int displayedFieldIndex = 0;
+				for (int i = 0; i < shaderFields.Length; i++)
 				{
-					PropertyEditor oldEditor = pair.Value;
-					PropertyEditor newEditor = this.shaderVarEditors[pair.Key];
-					bool editorFieldInUse = usedFields.Contains(pair.Key);
+					ShaderFieldInfo field = shaderFields[i];
 
-					// Replaced an old editor with a new one for an existing field
-					if (oldEditor != newEditor)
+					// Skip fields that shouldn't be displayed
+					if (field.IsPrivate) continue;
+					if (field.Scope != ShaderFieldScope.Uniform) continue;
+
+					displayedFieldIndex++;
+
+					// Skip fields that already have a matching editor
+					if (this.fieldEditors.ContainsKey(field.Name)) continue;
+
+					// Create a new editor for this field
+					PropertyEditor editor;
+					if (field.Type == ShaderFieldType.Sampler2D)
 					{
-						this.RemovePropertyEditor(oldEditor);
+						editor = this.ParentGrid.CreateEditor(typeof(ContentRef<Texture>), this);
+						editor.Getter = this.CreateTextureValueGetter(field.Name);
+						editor.Setter = !this.ReadOnly ? this.CreateTextureValueSetter(field.Name) : null;
+						editor.PropertyName = field.Name;
+						this.ParentGrid.ConfigureEditor(editor);
 					}
-					// An existing editor for a field is no longer is use
-					else if (!editorFieldInUse)
+					else
 					{
-						this.shaderVarEditors.Remove(pair.Key);
-						this.RemovePropertyEditor(oldEditor);
+						editor = this.CreateUniformEditor(field);
 					}
+
+					// Add and register this editor
+					this.fieldEditors[field.Name] = new FieldEditorItem
+					{
+						Editor = editor,
+						Field = field
+					};
+					if (autoCreateEditorCount + displayedFieldIndex <= this.ChildEditors.Count)
+						this.AddPropertyEditor(editor, autoCreateEditorCount + displayedFieldIndex);
+					else
+						this.AddPropertyEditor(editor);
 				}
 			}
 		}
@@ -124,198 +149,127 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			// Run a GetValue-pass to make sure automatic changes are applied if necessary.
 			this.PerformGetValue();
 		}
-		protected void CreateOrUpdateUniformEditor(ShaderFieldInfo varInfo)
+		protected PropertyEditor CreateUniformEditor(ShaderFieldInfo field)
 		{
-			PropertyEditor oldEditor;
-			this.shaderVarEditors.TryGetValue(varInfo.Name, out oldEditor);
 			List<EditorHintAttribute> configData = new List<EditorHintAttribute>();
+			PropertyEditor editor = null;
 
-			if (varInfo.ArrayLength == 1)
+			if (field.ArrayLength == 1)
 			{
-				if (varInfo.Type == ShaderFieldType.Float || varInfo.Type == ShaderFieldType.Int)
+				if (field.Type == ShaderFieldType.Float || field.Type == ShaderFieldType.Int)
 				{
 					Type editType = typeof(float);
-					if (varInfo.Type == ShaderFieldType.Int) editType = typeof(int);
+					if (field.Type == ShaderFieldType.Int) editType = typeof(int);
 
-					if (oldEditor == null || oldEditor.EditedType != editType)
+					editor = this.ParentGrid.CreateEditor(editType, this);
+					if (field.Type == ShaderFieldType.Int)
 					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(editType, this);
-						if (varInfo.Type == ShaderFieldType.Int)
-						{
-							e.Getter = this.CreateUniformValueGetter<int>(varInfo.Name);
-							e.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<int>(varInfo.Name) : null;
-						}
-						else
-						{
-							e.Getter = this.CreateUniformValueGetter<float>(varInfo.Name);
-							e.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<float>(varInfo.Name) : null;
-							configData.Add(new EditorHintIncrementAttribute(0.1f));
-						}
-						e.PropertyName = varInfo.Name;
-						this.ParentGrid.ConfigureEditor(e, configData);
-						this.shaderVarEditors[varInfo.Name] = e;
-						this.AddPropertyEditor(e);
+						editor.Getter = this.CreateUniformValueGetter<int>(field.Name);
+						editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<int>(field.Name) : null;
+					}
+					else
+					{
+						editor.Getter = this.CreateUniformValueGetter<float>(field.Name);
+						editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<float>(field.Name) : null;
+						configData.Add(new EditorHintIncrementAttribute(0.1f));
 					}
 				}
-				else if (varInfo.Type == ShaderFieldType.Vec2)
+				else if (field.Type == ShaderFieldType.Vec2)
 				{
-					if (oldEditor == null || oldEditor.EditedType != typeof(Vector2))
-					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(Vector2), this);
-						e.Getter = this.CreateUniformValueGetter<Vector2>(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector2>(varInfo.Name) : null;
-						e.PropertyName = varInfo.Name;
-						configData.Add(new EditorHintIncrementAttribute(0.1f));
-						this.ParentGrid.ConfigureEditor(e, configData);
-						this.shaderVarEditors[varInfo.Name] = e;
-						this.AddPropertyEditor(e);
-					}
+					editor = this.ParentGrid.CreateEditor(typeof(Vector2), this);
+					editor.Getter = this.CreateUniformValueGetter<Vector2>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector2>(field.Name) : null;
+					configData.Add(new EditorHintIncrementAttribute(0.1f));
 				}
-				else if (varInfo.Type == ShaderFieldType.Vec3)
+				else if (field.Type == ShaderFieldType.Vec3)
 				{
-					if (oldEditor == null || oldEditor.EditedType != typeof(Vector3))
-					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(Vector3), this);
-						e.Getter = this.CreateUniformValueGetter<Vector3>(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector3>(varInfo.Name) : null;
-						e.PropertyName = varInfo.Name;
-						configData.Add(new EditorHintIncrementAttribute(0.1f));
-						this.ParentGrid.ConfigureEditor(e, configData);
-						this.shaderVarEditors[varInfo.Name] = e;
-						this.AddPropertyEditor(e);
-					}
+					editor = this.ParentGrid.CreateEditor(typeof(Vector3), this);
+					editor.Getter = this.CreateUniformValueGetter<Vector3>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector3>(field.Name) : null;
+					configData.Add(new EditorHintIncrementAttribute(0.1f));
 				}
-				else if (varInfo.Type == ShaderFieldType.Vec4)
+				else if (field.Type == ShaderFieldType.Vec4)
 				{
-					if (oldEditor == null || oldEditor.EditedType != typeof(Vector4))
-					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(Vector4), this);
-						e.Getter = this.CreateUniformValueGetter<Vector4>(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector4>(varInfo.Name) : null;
-						e.PropertyName = varInfo.Name;
-						configData.Add(new EditorHintIncrementAttribute(0.1f));
-						this.ParentGrid.ConfigureEditor(e, configData);
-						this.shaderVarEditors[varInfo.Name] = e;
-						this.AddPropertyEditor(e);
-					}
+					editor = this.ParentGrid.CreateEditor(typeof(Vector4), this);
+					editor.Getter = this.CreateUniformValueGetter<Vector4>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector4>(field.Name) : null;
+					configData.Add(new EditorHintIncrementAttribute(0.1f));
 				}
 				else
 				{
-					if (oldEditor == null || oldEditor.EditedType != typeof(float[]))
+					editor = this.ParentGrid.CreateEditor(typeof(float[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<float>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(field.Name) : null;
+					if (editor is GroupedPropertyEditor)
 					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(float[]), this);
-						e.Getter = this.CreateUniformArrayValueGetter<float>(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(varInfo.Name) : null;
-						e.PropertyName = varInfo.Name;
-						if (e is GroupedPropertyEditor)
-						{
-							(e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						this.shaderVarEditors[varInfo.Name] = e;
-						this.AddPropertyEditor(e);
+						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
 					}
 				}
 			}
 			else
 			{
-				Array oldValue = oldEditor != null ? (oldEditor as IListPropertyEditor).DisplayedValue as Array : null;
-				Type oldElementType = oldValue != null ? oldValue.GetType().GetElementType() : null;
-				int oldLen = oldValue != null ? oldValue.Length : -1;
-
-				if (varInfo.Type == ShaderFieldType.Float || varInfo.Type == ShaderFieldType.Int)
+				if (field.Type == ShaderFieldType.Float || field.Type == ShaderFieldType.Int)
 				{
 					Type editType = typeof(float);
-					if (varInfo.Type == ShaderFieldType.Int) editType = typeof(int);
+					if (field.Type == ShaderFieldType.Int) editType = typeof(int);
 
-					if (oldLen != varInfo.ArrayLength || oldElementType != editType)
+					editor = this.ParentGrid.CreateEditor(editType.MakeArrayType(), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<float>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(field.Name) : null;
+					editor.ForceWriteBack = true;
+					if (editor is GroupedPropertyEditor)
 					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(editType.MakeArrayType(), this);
-						e.Getter = this.CreateUniformArrayValueGetter<float>(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(varInfo.Name) : null;
-						e.PropertyName = varInfo.Name;
-						e.ForceWriteBack = true;
-						if (e is GroupedPropertyEditor)
-						{
-							if (varInfo.Type == ShaderFieldType.Float) (e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						this.shaderVarEditors[varInfo.Name] = e;
-						this.AddPropertyEditor(e);
+						if (field.Type == ShaderFieldType.Float) (editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
 					}
 				}
-				else if (varInfo.Type == ShaderFieldType.Vec2)
+				else if (field.Type == ShaderFieldType.Vec2)
 				{
-					if (oldLen != varInfo.ArrayLength || oldElementType != typeof(Vector2))
+					editor = this.ParentGrid.CreateEditor(typeof(Vector2[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<Vector2>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector2>(field.Name) : null;
+					editor.ForceWriteBack = true;
+					if (editor is GroupedPropertyEditor)
 					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(Vector2[]), this);
-						e.Getter = this.CreateUniformArrayValueGetter<Vector2>(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector2>(varInfo.Name) : null;
-						e.PropertyName = varInfo.Name;
-						e.ForceWriteBack = true;
-						if (e is GroupedPropertyEditor)
-						{
-							(e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						this.shaderVarEditors[varInfo.Name] = e;
-						this.AddPropertyEditor(e);
+						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
 					}
 				}
-				else if (varInfo.Type == ShaderFieldType.Vec3)
+				else if (field.Type == ShaderFieldType.Vec3)
 				{
-					if (oldLen != varInfo.ArrayLength || oldElementType != typeof(Vector3))
+					editor = this.ParentGrid.CreateEditor(typeof(Vector3[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<Vector3>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector3>(field.Name) : null;
+					editor.ForceWriteBack = true;
+					if (editor is GroupedPropertyEditor)
 					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(Vector3[]), this);
-						e.Getter = this.CreateUniformArrayValueGetter<Vector3>(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector3>(varInfo.Name) : null;
-						e.PropertyName = varInfo.Name;
-						e.ForceWriteBack = true;
-						if (e is GroupedPropertyEditor)
-						{
-							(e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						this.shaderVarEditors[varInfo.Name] = e;
-						this.AddPropertyEditor(e);
+						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
 					}
 				}
-				else if (varInfo.Type == ShaderFieldType.Vec4)
+				else if (field.Type == ShaderFieldType.Vec4)
 				{
-					if (oldLen != varInfo.ArrayLength || oldElementType != typeof(Vector4))
+					editor = this.ParentGrid.CreateEditor(typeof(Vector4[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<Vector4>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector4>(field.Name) : null;
+					editor.ForceWriteBack = true;
+					if (editor is GroupedPropertyEditor)
 					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(Vector4[]), this);
-						e.Getter = this.CreateUniformArrayValueGetter<Vector4>(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector4>(varInfo.Name) : null;
-						e.PropertyName = varInfo.Name;
-						e.ForceWriteBack = true;
-						if (e is GroupedPropertyEditor)
-						{
-							(e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						this.shaderVarEditors[varInfo.Name] = e;
-						this.AddPropertyEditor(e);
+						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
 					}
 				}
 				else
 				{
-					if (oldEditor == null || oldEditor.EditedType != typeof(float[]))
+					editor = this.ParentGrid.CreateEditor(typeof(float[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<float>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(field.Name) : null;
+					if (editor is GroupedPropertyEditor)
 					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(float[]), this);
-						e.Getter = this.CreateUniformArrayValueGetter<float>(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(varInfo.Name) : null;
-						e.PropertyName = varInfo.Name;
-						if (e is GroupedPropertyEditor)
-						{
-							(e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						this.shaderVarEditors[varInfo.Name] = e;
-						this.AddPropertyEditor(e);
+						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
 					}
 				}
 			}
+
+			editor.PropertyName = field.Name;
+			this.ParentGrid.ConfigureEditor(editor, configData);
+			return editor;
 		}
 		
 		protected Func<IEnumerable<object>> CreateTextureValueGetter(string name)
