@@ -521,13 +521,31 @@ namespace Duality.Drawing
 
 		void ISerializeExplicit.WriteData(IDataWriter writer)
 		{
-			writer.WriteValue("textures", this.textures);
-			writer.WriteValue("uniforms", this.uniforms);
+			foreach (var pair in this.textures)
+			{
+				writer.WriteValue(pair.Key, pair.Value);
+			}
+			foreach (var pair in this.uniforms)
+			{
+				writer.WriteValue(pair.Key, pair.Value);
+			}
 		}
 		void ISerializeExplicit.ReadData(IDataReader reader)
 		{
-			reader.ReadValue("textures", out this.textures);
-			reader.ReadValue("uniforms", out this.uniforms);
+			this.textures.Clear();
+			this.uniforms.Clear();
+			foreach (string key in reader.Keys)
+			{
+				object value = reader.ReadValue(key);
+				if (value is ContentRef<Texture>)
+				{
+					this.textures[key] = (ContentRef<Texture>)value;
+				}
+				else if (value is float[])
+				{
+					this.uniforms[key] = (float[])value;
+				}
+			}
 
 			// Retrieve references to all textures, to the ContentRefs
 			// we store don't have to do a lookup on access.
