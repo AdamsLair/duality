@@ -18,7 +18,7 @@ namespace Duality.Drawing
 	{
 		private Dictionary<string,ContentRef<Texture>> textures = null;
 		private Dictionary<string,float[]>             uniforms = null;
-		private long                                   hash     = 0;
+		private ulong                                  hash     = 0L;
 		
 		
 		/// <summary>
@@ -28,6 +28,15 @@ namespace Duality.Drawing
 		{
 			get { return this.Get<ContentRef<Texture>>(ShaderFieldInfo.DefaultNameMainTex); }
 			set { this.Set(ShaderFieldInfo.DefaultNameMainTex, value); }
+		}
+		/// <summary>
+		/// [GET] A 64 bit hash value that represents this particular collection of
+		/// shader parameters. The same set of parameters will always have the same
+		/// hash value.
+		/// </summary>
+		public ulong Hash
+		{
+			get { return this.hash; }
 		}
 
 
@@ -439,9 +448,11 @@ namespace Duality.Drawing
 				{
 					foreach (var pair in this.textures)
 					{
-						this.hash ^= 19L * 
-							(long)pair.Key.GetHashCode() * 
-							(long)pair.Value.GetHashCode();
+						ulong localHash = 23L;
+						localHash = localHash * 29L + (ulong)pair.Key.GetHashCode();
+						localHash = localHash * 31L + (ulong)pair.Value.GetHashCode();
+
+						this.hash ^= localHash;
 					}
 				}
 
@@ -449,14 +460,14 @@ namespace Duality.Drawing
 				{
 					foreach (var pair in this.uniforms)
 					{
-						long arrayHash = 23L;
+						ulong localHash = 37L;
+						localHash = localHash * 41L + (ulong)pair.Key.GetHashCode();
 						for (int i = 0; i < pair.Value.Length; i++)
 						{
-							arrayHash = arrayHash * 29L + (long)pair.Value[i].GetHashCode();
+							localHash = localHash * 43L + (ulong)pair.Value[i].GetHashCode();
 						}
-						this.hash ^= 31L * 
-							(long)pair.Key.GetHashCode() * 
-							(long)arrayHash;
+
+						this.hash ^= localHash;
 					}
 				}
 			}

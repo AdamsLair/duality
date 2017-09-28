@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using Duality;
 using Duality.Drawing;
@@ -200,6 +201,82 @@ namespace Duality.Tests.Drawing
 			// Assert that each instance has its own values and no accidental shallow copy was made
 			CollectionAssert.AreEqual(new[] { 1.0f, 2.0f, 3.0f, 4.0f }, first.GetArray<float>("Foo"));
 			CollectionAssert.AreEqual(new[] { 5.0f, 6.0f, 7.0f, 8.0f }, second.GetArray<float>("Foo"));
+		}
+
+		[TestCase(1000)]
+		[TestCase(10000)]
+		[TestCase(100000)]
+		[TestCase(1000000)]
+		[Test] public void HashCollisions(int instanceCount)
+		{
+			// Keep randomness deterministic so we can reproduce test failures
+			Random rnd = new Random(1);
+
+			// Generate random variable names
+			StringBuilder builder = new StringBuilder();
+			string[] names = new string[100];
+			for (int i = 0; i < names.Length; i++)
+			{
+				builder.Clear();
+				for (int k = rnd.Next(3, 20); k >= 0; k--)
+				{
+					// Digits
+					if (rnd.Next(10) == 0)
+						builder.Append((char)rnd.Next(48, 58));
+					// Letters (caps)
+					else if (rnd.Next(5) == 0)
+						builder.Append((char)rnd.Next(65, 91));
+					// Letters (small)
+					else
+						builder.Append((char)rnd.Next(97, 123));
+				}
+				names[i] = builder.ToString();
+			}
+
+			// Prepare a uniform value for every variable
+			ShaderParameters data = new ShaderParameters();
+			float[][] values = new float[names.Length][];
+			for (int i = 0; i < names.Length; i++)
+			{
+				values[i] = new float[rnd.Next(1, 17)];
+				for (int k = 0; k < values[i].Length; k++)
+				{
+					values[i][k] = 
+						rnd.NextFloat(-1000.0f, 1000.0f) * 
+						rnd.NextFloat(0.0f, 1.0f) * 
+						rnd.NextFloat(0.0f, 1.0f);
+				}
+				data.SetArray(names[i], values[i]);
+			}
+
+			// We'll make the test a little harder by masking each hash value to 
+			// effectively steal a few bits. If we can do well at less than 64 bits,
+			// we can be even more confident that our 64 bit hash is "collision free".
+			// The value below steals 20 bits all over the available range.
+			ulong hashMask = 0xE3F5DAFCB3F57AFC;
+
+			// For every instance, randomly adjust one variable and check for collisions
+			HashSet<ulong> observedHashes = new HashSet<ulong>();
+			for (int i = 0; i < instanceCount; i++)
+			{
+				// Adjust one variable randomly. We'll need to do this efficiently, or
+				// the test will take way too long for fast iteration.
+				int changeIndex = rnd.Next(names.Length);
+				string name = names[changeIndex];
+				float[] value = values[changeIndex];
+				value[rnd.Next(value.Length)] = 
+					rnd.NextFloat(-1000.0f, 1000.0f) * 
+					rnd.NextFloat(0.0f, 1.0f) * 
+					rnd.NextFloat(0.0f, 1.0f);
+				data.SetArray(name, value);
+
+				// Assert that we did not have a hash collision
+				ulong maskedHash = hashMask & data.Hash;
+				if (!observedHashes.Add(maskedHash))
+				{
+					Assert.Fail("Hash collision after {0} items", observedHashes.Count);
+				}
+			}
 		}
 
 		private static ShaderParameters GetModified<T>(ShaderParameters baseParams, string name, params T[] value) where T : struct
