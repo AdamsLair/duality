@@ -514,31 +514,23 @@
           <item dataType="Struct" type="DualStickSpaceShooter.GameOverScreen" id="1153684968">
             <active dataType="Bool">true</active>
             <blendMaterial dataType="Struct" type="Duality.Drawing.BatchInfo" id="972466776">
-              <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
-              <hashCode dataType="Int">340838081</hashCode>
               <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
                 <A dataType="Byte">215</A>
                 <B dataType="Byte">255</B>
                 <G dataType="Byte">255</G>
                 <R dataType="Byte">255</R>
               </mainColor>
-              <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-                <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\AlphaThreshold.DrawTechnique.res</contentPath>
-              </technique>
-              <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="3776988844" surrogate="true">
-                <header />
+              <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="3776988844" custom="true">
                 <body>
                   <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                     <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\Mosaic.Texture.res</contentPath>
                   </mainTex>
+                  <threshold dataType="Array" type="System.Single[]" id="3513321188">0</threshold>
                 </body>
-              </textures>
-              <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="283169206" surrogate="true">
-                <header />
-                <body>
-                  <threshold dataType="Array" type="System.Single[]" id="1154518758">0</threshold>
-                </body>
-              </uniforms>
+              </parameters>
+              <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
+                <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\AlphaThreshold.DrawTechnique.res</contentPath>
+              </technique>
             </blendMaterial>
             <controlInfoGamepad dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
               <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\ControlInfo\ControlGamepadRestart.Material.res</contentPath>
@@ -43597,31 +43589,23 @@
                                 <R dataType="Byte">121</R>
                               </colorTint>
                               <customMat dataType="Struct" type="Duality.Drawing.BatchInfo" id="817255054">
-                                <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
-                                <hashCode dataType="Int">-396185925</hashCode>
                                 <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
                                   <A dataType="Byte">255</A>
                                   <B dataType="Byte">255</B>
                                   <G dataType="Byte">255</G>
                                   <R dataType="Byte">255</R>
                                 </mainColor>
-                                <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-                                  <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\SharpAdd.DrawTechnique.res</contentPath>
-                                </technique>
-                                <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="146643152" surrogate="true">
-                                  <header />
+                                <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="146643152" custom="true">
                                   <body>
                                     <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                                       <contentPath dataType="String">Default:Texture:White</contentPath>
                                     </mainTex>
+                                    <smoothness dataType="Array" type="System.Single[]" id="485657276">100</smoothness>
                                   </body>
-                                </textures>
-                                <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="1845002862" surrogate="true">
-                                  <header />
-                                  <body>
-                                    <smoothness dataType="Array" type="System.Single[]" id="2787574690">100</smoothness>
-                                  </body>
-                                </uniforms>
+                                </parameters>
+                                <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
+                                  <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\SharpAdd.DrawTechnique.res</contentPath>
+                                </technique>
                               </customMat>
                               <gameobj dataType="ObjectRef">156939300</gameobj>
                               <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />

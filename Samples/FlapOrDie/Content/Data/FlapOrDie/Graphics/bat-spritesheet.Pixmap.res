@@ -32,7 +32,6 @@
       </item>
     </_items>
     <_size dataType="Int">4</_size>
-    <_version dataType="Int">49</_version>
   </atlas>
   <layers dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Drawing.PixelData]]" id="876525375">
     <_items dataType="Array" type="Duality.Drawing.PixelData[]" id="295733828" length="4">
@@ -45,7 +44,6 @@
       </item>
     </_items>
     <_size dataType="Int">1</_size>
-    <_version dataType="Int">3</_version>
   </layers>
 </root>
 <!-- XmlFormatterBase Document Separator -->

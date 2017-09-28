@@ -5,6 +5,7 @@
     <_items dataType="Array" type="Duality.Resources.RenderSetupTargetResize[]" id="1100841590" length="0" />
     <_size dataType="Int">0</_size>
   </autoResizeTargets>
+  <displayTestRunActive dataType="Bool">false</displayTestRunActive>
   <renderingSize dataType="Struct" type="Duality.Point2">
     <X dataType="Int">800</X>
     <Y dataType="Int">600</Y>

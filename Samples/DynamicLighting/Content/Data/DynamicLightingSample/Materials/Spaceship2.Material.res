@@ -1,19 +1,13 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Material" id="129723834">
   <assetInfo />
   <info dataType="Struct" type="Duality.Drawing.BatchInfo" id="427169525">
-    <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
-    <hashCode dataType="Int">1660747882</hashCode>
     <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
       <A dataType="Byte">255</A>
       <B dataType="Byte">255</B>
       <G dataType="Byte">255</G>
       <R dataType="Byte">255</R>
     </mainColor>
-    <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-      <contentPath dataType="String">Data\DynamicLightingSample\PerPixelLighting\LightMask.LightingTechnique.res</contentPath>
-    </technique>
-    <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="1100841590" surrogate="true">
-      <header />
+    <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="1100841590" custom="true">
       <body>
         <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
           <contentPath dataType="String">Data\DynamicLightingSample\Materials\ship3_c.Texture.res</contentPath>
@@ -24,19 +18,17 @@
         <specularTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
           <contentPath dataType="String">Data\DynamicLightingSample\Materials\ship3_s.Texture.res</contentPath>
         </specularTex>
+        <_camRefDist dataType="Array" type="System.Single[]" id="2824927200">0</_camRefDist>
+        <_camWorldPos dataType="Array" type="System.Single[]" id="3573126030">0, 0, 0</_camWorldPos>
+        <_lightCount dataType="Array" type="System.Single[]" id="117753596">0</_lightCount>
+        <_lightPos dataType="Array" type="System.Single[]" id="4053440274">0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0</_lightPos>
+        <_lightDir dataType="Array" type="System.Single[]" id="3270588056">0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0</_lightDir>
+        <_lightColor dataType="Array" type="System.Single[]" id="3742083494">0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0</_lightColor>
       </body>
-    </textures>
-    <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="649525530" surrogate="true">
-      <header />
-      <body>
-        <_camRefDist dataType="Array" type="System.Single[]" id="411997508">0</_camRefDist>
-        <_camWorldPos dataType="Array" type="System.Single[]" id="1885627030">0, 0, 0</_camWorldPos>
-        <_lightCount dataType="Array" type="System.Single[]" id="766962944">0</_lightCount>
-        <_lightPos dataType="Array" type="System.Single[]" id="1352645666">0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0</_lightPos>
-        <_lightDir dataType="Array" type="System.Single[]" id="3754462812">0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0</_lightDir>
-        <_lightColor dataType="Array" type="System.Single[]" id="3208881918">0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0</_lightColor>
-      </body>
-    </uniforms>
+    </parameters>
+    <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
+      <contentPath dataType="String">Data\DynamicLightingSample\PerPixelLighting\LightMask.LightingTechnique.res</contentPath>
+    </technique>
   </info>
 </root>
 <!-- XmlFormatterBase Document Separator -->

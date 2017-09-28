@@ -66,26 +66,22 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id dataType="String">Bloom</id>
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1307056800">
-          <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
-          <hashCode dataType="Int">-1381342454</hashCode>
           <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
             <A dataType="Byte">255</A>
             <B dataType="Byte">255</B>
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-            <contentPath dataType="String">Default:DrawTechnique:Solid</contentPath>
-          </technique>
-          <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="2583301340" surrogate="true">
-            <header />
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2583301340" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTargetTex.Texture.res</contentPath>
               </mainTex>
             </body>
-          </textures>
-          <uniforms />
+          </parameters>
+          <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
+            <contentPath dataType="String">Default:DrawTechnique:Solid</contentPath>
+          </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
         <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="ScreenSpace" value="1" />

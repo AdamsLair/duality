@@ -678,29 +678,22 @@
     <_size dataType="Int">3</_size>
   </autoTileConfig>
   <baseMaterial dataType="Struct" type="Duality.Drawing.BatchInfo" id="2035693768">
-    <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
-    <hashCode dataType="Int">2037530614</hashCode>
     <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
       <A dataType="Byte">255</A>
       <B dataType="Byte">255</B>
       <G dataType="Byte">255</G>
       <R dataType="Byte">255</R>
     </mainColor>
-    <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-      <contentPath dataType="String">Default:DrawTechnique:Mask</contentPath>
-    </technique>
-    <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="2696347487" surrogate="true">
-      <header />
+    <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2696347487" custom="true">
       <body>
         <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
           <contentPath dataType="String">Default:Texture:White</contentPath>
         </mainTex>
       </body>
-    </textures>
-    <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="847900448" surrogate="true">
-      <header />
-      <body />
-    </uniforms>
+    </parameters>
+    <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
+      <contentPath dataType="String">Default:DrawTechnique:Mask</contentPath>
+    </technique>
   </baseMaterial>
   <renderConfig dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Plugins.Tilemaps.TilesetRenderInput]]" id="876525375">
     <_items dataType="Array" type="Duality.Plugins.Tilemaps.TilesetRenderInput[]" id="295733828" length="4">

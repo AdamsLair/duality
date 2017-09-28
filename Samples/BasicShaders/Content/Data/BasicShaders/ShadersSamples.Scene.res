@@ -252,26 +252,22 @@
                           <R dataType="Byte">0</R>
                         </colorTint>
                         <customMat dataType="Struct" type="Duality.Drawing.BatchInfo" id="210691619">
-                          <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="All" value="3" />
-                          <hashCode dataType="Int">1535780293</hashCode>
                           <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
                             <A dataType="Byte">255</A>
                             <B dataType="Byte">255</B>
                             <G dataType="Byte">255</G>
                             <R dataType="Byte">255</R>
                           </mainColor>
-                          <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-                            <contentPath dataType="String">Default:DrawTechnique:Alpha</contentPath>
-                          </technique>
-                          <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="2466170982" surrogate="true">
-                            <header />
+                          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2466170982" custom="true">
                             <body>
                               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                                 <contentPath dataType="String">Default:Texture:White</contentPath>
                               </mainTex>
                             </body>
-                          </textures>
-                          <uniforms />
+                          </parameters>
+                          <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
+                            <contentPath dataType="String">Default:DrawTechnique:Alpha</contentPath>
+                          </technique>
                         </customMat>
                         <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                         <gameobj dataType="ObjectRef">639040715</gameobj>
@@ -522,26 +518,22 @@
                           <R dataType="Byte">0</R>
                         </colorTint>
                         <customMat dataType="Struct" type="Duality.Drawing.BatchInfo" id="1149277390">
-                          <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="All" value="3" />
-                          <hashCode dataType="Int">1535780293</hashCode>
                           <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
                             <A dataType="Byte">255</A>
                             <B dataType="Byte">255</B>
                             <G dataType="Byte">255</G>
                             <R dataType="Byte">255</R>
                           </mainColor>
-                          <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-                            <contentPath dataType="String">Default:DrawTechnique:Alpha</contentPath>
-                          </technique>
-                          <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="839090128" surrogate="true">
-                            <header />
+                          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="839090128" custom="true">
                             <body>
                               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                                 <contentPath dataType="String">Default:Texture:White</contentPath>
                               </mainTex>
                             </body>
-                          </textures>
-                          <uniforms />
+                          </parameters>
+                          <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
+                            <contentPath dataType="String">Default:DrawTechnique:Alpha</contentPath>
+                          </technique>
                         </customMat>
                         <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                         <gameobj dataType="ObjectRef">2208302950</gameobj>
@@ -800,26 +792,22 @@
                           <R dataType="Byte">0</R>
                         </colorTint>
                         <customMat dataType="Struct" type="Duality.Drawing.BatchInfo" id="2251088226">
-                          <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="All" value="3" />
-                          <hashCode dataType="Int">1535780293</hashCode>
                           <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
                             <A dataType="Byte">255</A>
                             <B dataType="Byte">255</B>
                             <G dataType="Byte">255</G>
                             <R dataType="Byte">255</R>
                           </mainColor>
-                          <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-                            <contentPath dataType="String">Default:DrawTechnique:Alpha</contentPath>
-                          </technique>
-                          <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="2834756496" surrogate="true">
-                            <header />
+                          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2834756496" custom="true">
                             <body>
                               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                                 <contentPath dataType="String">Default:Texture:White</contentPath>
                               </mainTex>
                             </body>
-                          </textures>
-                          <uniforms />
+                          </parameters>
+                          <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
+                            <contentPath dataType="String">Default:DrawTechnique:Alpha</contentPath>
+                          </technique>
                         </customMat>
                         <flipMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+FlipMode" name="None" value="0" />
                         <gameobj dataType="ObjectRef">3343803490</gameobj>

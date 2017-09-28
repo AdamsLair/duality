@@ -81,32 +81,6 @@
                     <vel dataType="Struct" type="Duality.Vector3" />
                     <velAbs dataType="Struct" type="Duality.Vector3" />
                   </item>
-                  <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="1523684570">
-                    <active dataType="Bool">true</active>
-                    <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-                      <A dataType="Byte">255</A>
-                      <B dataType="Byte">255</B>
-                      <G dataType="Byte">255</G>
-                      <R dataType="Byte">255</R>
-                    </colorTint>
-                    <customMat />
-                    <depthScale dataType="Float">0.01</depthScale>
-                    <gameobj dataType="ObjectRef">1593919710</gameobj>
-                    <height dataType="Float">0</height>
-                    <isVertical dataType="Bool">true</isVertical>
-                    <offset dataType="Float">-0.08</offset>
-                    <rect dataType="Struct" type="Duality.Rect">
-                      <H dataType="Float">48</H>
-                      <W dataType="Float">32</W>
-                      <X dataType="Float">-16</X>
-                      <Y dataType="Float">-40</Y>
-                    </rect>
-                    <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                      <contentPath dataType="String">Data\TilemapsSample\Actors\Cylinder.Material.res</contentPath>
-                    </sharedMat>
-                    <spriteIndex dataType="Int">0</spriteIndex>
-                    <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-                  </item>
                   <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="361728938">
                     <active dataType="Bool">true</active>
                     <allowParent dataType="Bool">false</allowParent>
@@ -145,12 +119,31 @@
                     </shapes>
                     <useCCD dataType="Bool">false</useCCD>
                   </item>
-                  <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.CharacterController" id="3117089289">
-                    <acceleration dataType="Float">0.15</acceleration>
+                  <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="1523684570">
                     <active dataType="Bool">true</active>
+                    <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+                      <A dataType="Byte">255</A>
+                      <B dataType="Byte">255</B>
+                      <G dataType="Byte">255</G>
+                      <R dataType="Byte">255</R>
+                    </colorTint>
+                    <customMat />
+                    <depthScale dataType="Float">0.01</depthScale>
                     <gameobj dataType="ObjectRef">1593919710</gameobj>
-                    <speed dataType="Float">3.5</speed>
-                    <targetMovement dataType="Struct" type="Duality.Vector2" />
+                    <height dataType="Float">0</height>
+                    <isVertical dataType="Bool">true</isVertical>
+                    <offset dataType="Float">-0.08</offset>
+                    <rect dataType="Struct" type="Duality.Rect">
+                      <H dataType="Float">48</H>
+                      <W dataType="Float">32</W>
+                      <X dataType="Float">-16</X>
+                      <Y dataType="Float">-40</Y>
+                    </rect>
+                    <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+                      <contentPath dataType="String">Data\TilemapsSample\Actors\Cylinder.Material.res</contentPath>
+                    </sharedMat>
+                    <spriteIndex dataType="Int">0</spriteIndex>
+                    <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                   </item>
                   <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorAnimator" id="2825026600">
                     <active dataType="Bool">true</active>
@@ -222,6 +215,13 @@
                     <animTime dataType="Float">0</animTime>
                     <gameobj dataType="ObjectRef">1593919710</gameobj>
                   </item>
+                  <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.CharacterController" id="3117089289">
+                    <acceleration dataType="Float">0.15</acceleration>
+                    <active dataType="Bool">true</active>
+                    <gameobj dataType="ObjectRef">1593919710</gameobj>
+                    <speed dataType="Float">3.5</speed>
+                    <targetMovement dataType="Struct" type="Duality.Vector2" />
+                  </item>
                 </_items>
                 <_size dataType="Int">5</_size>
               </compList>
@@ -288,32 +288,6 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="752913360">
-                            <active dataType="Bool">true</active>
-                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-                              <A dataType="Byte">255</A>
-                              <B dataType="Byte">255</B>
-                              <G dataType="Byte">255</G>
-                              <R dataType="Byte">255</R>
-                            </colorTint>
-                            <customMat />
-                            <depthScale dataType="Float">0.01</depthScale>
-                            <gameobj dataType="ObjectRef">823148500</gameobj>
-                            <height dataType="Float">0</height>
-                            <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.1</offset>
-                            <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">34</H>
-                              <W dataType="Float">32</W>
-                              <X dataType="Float">-16</X>
-                              <Y dataType="Float">-26</Y>
-                            </rect>
-                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
-                            </sharedMat>
-                            <spriteIndex dataType="Int">-1</spriteIndex>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-                          </item>
                           <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3885925024">
                             <active dataType="Bool">true</active>
                             <allowParent dataType="Bool">false</allowParent>
@@ -351,6 +325,32 @@
                               <_size dataType="Int">1</_size>
                             </shapes>
                             <useCCD dataType="Bool">false</useCCD>
+                          </item>
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="752913360">
+                            <active dataType="Bool">true</active>
+                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+                              <A dataType="Byte">255</A>
+                              <B dataType="Byte">255</B>
+                              <G dataType="Byte">255</G>
+                              <R dataType="Byte">255</R>
+                            </colorTint>
+                            <customMat />
+                            <depthScale dataType="Float">0.01</depthScale>
+                            <gameobj dataType="ObjectRef">823148500</gameobj>
+                            <height dataType="Float">0</height>
+                            <isVertical dataType="Bool">true</isVertical>
+                            <offset dataType="Float">-0.1</offset>
+                            <rect dataType="Struct" type="Duality.Rect">
+                              <H dataType="Float">34</H>
+                              <W dataType="Float">32</W>
+                              <X dataType="Float">-16</X>
+                              <Y dataType="Float">-26</Y>
+                            </rect>
+                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
+                            </sharedMat>
+                            <spriteIndex dataType="Int">-1</spriteIndex>
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                           </item>
                           <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="2894164495">
                             <active dataType="Bool">true</active>
@@ -408,7 +408,6 @@
                                               <children />
                                               <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3123208323">
                                                 <_items dataType="Array" type="Duality.Component[]" id="1229118246" length="4">
-                                                  <item dataType="ObjectRef">668293575</item>
                                                   <item dataType="Struct" type="Duality.Components.Transform" id="1026756490">
                                                     <active dataType="Bool">true</active>
                                                     <angle dataType="Float">0</angle>
@@ -426,6 +425,7 @@
                                                     <vel dataType="Struct" type="Duality.Vector3" />
                                                     <velAbs dataType="Struct" type="Duality.Vector3" />
                                                   </item>
+                                                  <item dataType="ObjectRef">668293575</item>
                                                   <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapRenderer" id="1659517006">
                                                     <active dataType="Bool">true</active>
                                                     <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
@@ -480,19 +480,6 @@
                                                       <children />
                                                       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1153350704">
                                                         <_items dataType="Array" type="Duality.Component[]" id="2733980348" length="4">
-                                                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Tilemap" id="792658929">
-                                                            <active dataType="Bool">true</active>
-                                                            <gameobj dataType="ObjectRef">3085774208</gameobj>
-                                                            <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="154550861" custom="true">
-                                                              <body>
-                                                                <version dataType="Int">3</version>
-                                                                <data dataType="Array" type="System.Byte[]" id="2892059174">H4sIAAAAAAAEAN2YyWpVQRCGb6ImoCYXzYQaNQ8gWRkXLhScsvQV7sKFSxdqIE7giHNUFNRFNGJUnIkzGF/hZukb+BhK/tr88FOnus85MeTC5aO6u7qrTldXDyONRmPk3/9IY/G3sMLxnaRpkn5k9vnt/6h3Fjd5ER7d+0qBD1mNeu4XXEF4TFgWJpXEWpKeEazwOHACOJk50HSmXjUYU9JYxyJOQzoDnKWWE8Dr4hECizkXgdE9XAQuAZcBc/McMAfs6Ejsepak55kGzpG0G0b0Q1oPeLlnCArjwHlykyd8Z9i/R0CbCttUF486Dr59MGIY0v5ik0bRpAlcQ+H1sBESM+QRY6Zc18lJZxcc6wbuovAe1bF6P0kP1QhtVch13ET2Is0tCZvNPcBe5d8wSU9VLweAgwqHqKWt6SepdvJitqxv6TBwtjH0YvQuJ8p5kQxQnYzPNrW0NS2XGmMQGFJ1nA49j7qBNUAXFXp6Zu7W4pYL1HIgrLAN2O408TZhTrE9QG+qubJuKlMvHp+G5E24SVIrVd0WwtVMHwyryqnHcTRT785SGRiHPBAcK9ZrOXXxeZDXMmmSl5CWxRR7N0wJ6fS7THPXpSoEprgOfKmv6/hmWiPk9vkGeEuFs6plHeDV+D5VPaDwCfhcibk/VeGvsPrX1PE8BTmbS52JSg7LPsg3iAlH3Ttf14Hcu+9hQL5B2GmU70CTwCnqRe5cgWvLPBAP01zIN4grqqXd3y9UMuzvVIU+QAatd8W4AdwEbgG3gXGaP+/+Xv9BcItTJ/fi1YDF4H1ID4BRtbj4/m6FndSLHP0l8CrTsVamXjXw0tMf4APwkfQCt1aDd64LhI2XOJtqVniqvPQ0SM9vyZ/OQiNwrtsAbFR10jKr4zDtIckenQLpSQZ7HPJ4YLD0uwnYDPAj118H+k2ZCBwAAA==</data>
-                                                              </body>
-                                                            </tileData>
-                                                            <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
-                                                              <contentPath dataType="String">Data\TilemapsSample\Tilesets\MagicTown.Tileset.res</contentPath>
-                                                            </tileset>
-                                                          </item>
                                                           <item dataType="Struct" type="Duality.Components.Transform" id="1151121844">
                                                             <active dataType="Bool">true</active>
                                                             <angle dataType="Float">0</angle>
@@ -509,6 +496,19 @@
                                                             <scaleAbs dataType="Float">1</scaleAbs>
                                                             <vel dataType="Struct" type="Duality.Vector3" />
                                                             <velAbs dataType="Struct" type="Duality.Vector3" />
+                                                          </item>
+                                                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Tilemap" id="792658929">
+                                                            <active dataType="Bool">true</active>
+                                                            <gameobj dataType="ObjectRef">3085774208</gameobj>
+                                                            <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="154550861" custom="true">
+                                                              <body>
+                                                                <version dataType="Int">3</version>
+                                                                <data dataType="Array" type="System.Byte[]" id="2892059174">H4sIAAAAAAAEAN2YyWpVQRCGb6ImoCYXzYQaNQ8gWRkXLhScsvQV7sKFSxdqIE7giHNUFNRFNGJUnIkzGF/hZukb+BhK/tr88FOnus85MeTC5aO6u7qrTldXDyONRmPk3/9IY/G3sMLxnaRpkn5k9vnt/6h3Fjd5ER7d+0qBD1mNeu4XXEF4TFgWJpXEWpKeEazwOHACOJk50HSmXjUYU9JYxyJOQzoDnKWWE8Dr4hECizkXgdE9XAQuAZcBc/McMAfs6Ejsepak55kGzpG0G0b0Q1oPeLlnCArjwHlykyd8Z9i/R0CbCttUF486Dr59MGIY0v5ik0bRpAlcQ+H1sBESM+QRY6Zc18lJZxcc6wbuovAe1bF6P0kP1QhtVch13ET2Is0tCZvNPcBe5d8wSU9VLweAgwqHqKWt6SepdvJitqxv6TBwtjH0YvQuJ8p5kQxQnYzPNrW0NS2XGmMQGFJ1nA49j7qBNUAXFXp6Zu7W4pYL1HIgrLAN2O408TZhTrE9QG+qubJuKlMvHp+G5E24SVIrVd0WwtVMHwyryqnHcTRT785SGRiHPBAcK9ZrOXXxeZDXMmmSl5CWxRR7N0wJ6fS7THPXpSoEprgOfKmv6/hmWiPk9vkGeEuFs6plHeDV+D5VPaDwCfhcibk/VeGvsPrX1PE8BTmbS52JSg7LPsg3iAlH3Ttf14Hcu+9hQL5B2GmU70CTwCnqRe5cgWvLPBAP01zIN4grqqXd3y9UMuzvVIU+QAatd8W4AdwEbgG3gXGaP+/+Xv9BcItTJ/fi1YDF4H1ID4BRtbj4/m6FndSLHP0l8CrTsVamXjXw0tMf4APwkfQCt1aDd64LhI2XOJtqVniqvPQ0SM9vyZ/OQiNwrtsAbFR10jKr4zDtIckenQLpSQZ7HPJ4YLD0uwnYDPAj118H+k2ZCBwAAA==</data>
+                                                              </body>
+                                                            </tileData>
+                                                            <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
+                                                              <contentPath dataType="String">Data\TilemapsSample\Tilesets\MagicTown.Tileset.res</contentPath>
+                                                            </tileset>
                                                           </item>
                                                           <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapRenderer" id="1783882360">
                                                             <active dataType="Bool">true</active>
@@ -562,19 +562,6 @@
                                                       <children />
                                                       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2041346404">
                                                         <_items dataType="Array" type="Duality.Component[]" id="3346320324" length="4">
-                                                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Tilemap" id="3405903949">
-                                                            <active dataType="Bool">true</active>
-                                                            <gameobj dataType="ObjectRef">1404051932</gameobj>
-                                                            <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="2178647969" custom="true">
-                                                              <body>
-                                                                <version dataType="Int">3</version>
-                                                                <data dataType="Array" type="System.Byte[]" id="2318784622">H4sIAAAAAAAEAO2YsU7DMBCGbaA7IIaCGPoAZSsTEh0QMxsMSLDwEGWDJ2HkFRBPEd6EFiJBIBKov5E46XRxnTg5S6lUfbITx/8f3zm2R8aY0e//xix/Lz169FCCV2AOLEjlQoPAmvgAPoGCVLrSG5BrkCthC9gGdgisXWLNuuL/0hfqSg0eJOwCe8A+QQa4oXoHcnIt0+CB4sj63mnIUH0DpXZ/J1D95N1gHQ02gIH361GBtqfDzcBroSha9jcETjkMI/THTh7xbWYC6J2H9fKBnTwuCVTkUc38k6wk7bZY1V9iNj3Ep+lvbBm5/jZVeJAwWdWfJptucfJcfScbfKmMUTP5xzZQIT7Un4QZcKtBfKP+XIM74F6DeA9MMc2wJxJpRiSFW3GyJxIqBNaEW3G6rSw9kYjY7UOTD3Of8gNO9YDEZ2u7wcfAduxuYlI9HPRwrKNYulJ7NOCxixx3Iz73FiiB3UX+hRRAg4jG2QVKZxFeQVktUALN29AjqGs0OI/gby4IPAamQrc0b6WvaEf4AV6zwTUIHAAA</data>
-                                                              </body>
-                                                            </tileData>
-                                                            <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
-                                                              <contentPath dataType="String">Data\TilemapsSample\Tilesets\MagicTown.Tileset.res</contentPath>
-                                                            </tileset>
-                                                          </item>
                                                           <item dataType="Struct" type="Duality.Components.Transform" id="3764366864">
                                                             <active dataType="Bool">true</active>
                                                             <angle dataType="Float">0</angle>
@@ -591,6 +578,19 @@
                                                             <scaleAbs dataType="Float">1</scaleAbs>
                                                             <vel dataType="Struct" type="Duality.Vector3" />
                                                             <velAbs dataType="Struct" type="Duality.Vector3" />
+                                                          </item>
+                                                          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Tilemap" id="3405903949">
+                                                            <active dataType="Bool">true</active>
+                                                            <gameobj dataType="ObjectRef">1404051932</gameobj>
+                                                            <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="2178647969" custom="true">
+                                                              <body>
+                                                                <version dataType="Int">3</version>
+                                                                <data dataType="Array" type="System.Byte[]" id="2318784622">H4sIAAAAAAAEAO2YsU7DMBCGbaA7IIaCGPoAZSsTEh0QMxsMSLDwEGWDJ2HkFRBPEd6EFiJBIBKov5E46XRxnTg5S6lUfbITx/8f3zm2R8aY0e//xix/Lz169FCCV2AOLEjlQoPAmvgAPoGCVLrSG5BrkCthC9gGdgisXWLNuuL/0hfqSg0eJOwCe8A+QQa4oXoHcnIt0+CB4sj63mnIUH0DpXZ/J1D95N1gHQ02gIH361GBtqfDzcBroSha9jcETjkMI/THTh7xbWYC6J2H9fKBnTwuCVTkUc38k6wk7bZY1V9iNj3Ep+lvbBm5/jZVeJAwWdWfJptucfJcfScbfKmMUTP5xzZQIT7Un4QZcKtBfKP+XIM74F6DeA9MMc2wJxJpRiSFW3GyJxIqBNaEW3G6rSw9kYjY7UOTD3Of8gNO9YDEZ2u7wcfAduxuYlI9HPRwrKNYulJ7NOCxixx3Iz73FiiB3UX+hRRAg4jG2QVKZxFeQVktUALN29AjqGs0OI/gby4IPAamQrc0b6WvaEf4AV6zwTUIHAAA</data>
+                                                              </body>
+                                                            </tileData>
+                                                            <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
+                                                              <contentPath dataType="String">Data\TilemapsSample\Tilesets\MagicTown.Tileset.res</contentPath>
+                                                            </tileset>
                                                           </item>
                                                           <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapRenderer" id="102160084">
                                                             <active dataType="Bool">true</active>
@@ -795,32 +795,6 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="373442139">
-                            <active dataType="Bool">true</active>
-                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-                              <A dataType="Byte">255</A>
-                              <B dataType="Byte">255</B>
-                              <G dataType="Byte">255</G>
-                              <R dataType="Byte">255</R>
-                            </colorTint>
-                            <customMat />
-                            <depthScale dataType="Float">0.01</depthScale>
-                            <gameobj dataType="ObjectRef">443677279</gameobj>
-                            <height dataType="Float">0</height>
-                            <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.1</offset>
-                            <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">34</H>
-                              <W dataType="Float">32</W>
-                              <X dataType="Float">-16</X>
-                              <Y dataType="Float">-26</Y>
-                            </rect>
-                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
-                            </sharedMat>
-                            <spriteIndex dataType="Int">-1</spriteIndex>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-                          </item>
                           <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3506453803">
                             <active dataType="Bool">true</active>
                             <allowParent dataType="Bool">false</allowParent>
@@ -858,6 +832,32 @@
                               <_size dataType="Int">1</_size>
                             </shapes>
                             <useCCD dataType="Bool">false</useCCD>
+                          </item>
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="373442139">
+                            <active dataType="Bool">true</active>
+                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+                              <A dataType="Byte">255</A>
+                              <B dataType="Byte">255</B>
+                              <G dataType="Byte">255</G>
+                              <R dataType="Byte">255</R>
+                            </colorTint>
+                            <customMat />
+                            <depthScale dataType="Float">0.01</depthScale>
+                            <gameobj dataType="ObjectRef">443677279</gameobj>
+                            <height dataType="Float">0</height>
+                            <isVertical dataType="Bool">true</isVertical>
+                            <offset dataType="Float">-0.1</offset>
+                            <rect dataType="Struct" type="Duality.Rect">
+                              <H dataType="Float">34</H>
+                              <W dataType="Float">32</W>
+                              <X dataType="Float">-16</X>
+                              <Y dataType="Float">-26</Y>
+                            </rect>
+                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
+                            </sharedMat>
+                            <spriteIndex dataType="Int">-1</spriteIndex>
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                           </item>
                           <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="2514693274">
                             <active dataType="Bool">true</active>
@@ -928,32 +928,6 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="117627162">
-                            <active dataType="Bool">true</active>
-                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-                              <A dataType="Byte">255</A>
-                              <B dataType="Byte">255</B>
-                              <G dataType="Byte">255</G>
-                              <R dataType="Byte">255</R>
-                            </colorTint>
-                            <customMat />
-                            <depthScale dataType="Float">0.01</depthScale>
-                            <gameobj dataType="ObjectRef">187862302</gameobj>
-                            <height dataType="Float">0</height>
-                            <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.1</offset>
-                            <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">34</H>
-                              <W dataType="Float">32</W>
-                              <X dataType="Float">-16</X>
-                              <Y dataType="Float">-26</Y>
-                            </rect>
-                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
-                            </sharedMat>
-                            <spriteIndex dataType="Int">-1</spriteIndex>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-                          </item>
                           <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3250638826">
                             <active dataType="Bool">true</active>
                             <allowParent dataType="Bool">false</allowParent>
@@ -991,6 +965,32 @@
                               <_size dataType="Int">1</_size>
                             </shapes>
                             <useCCD dataType="Bool">false</useCCD>
+                          </item>
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="117627162">
+                            <active dataType="Bool">true</active>
+                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+                              <A dataType="Byte">255</A>
+                              <B dataType="Byte">255</B>
+                              <G dataType="Byte">255</G>
+                              <R dataType="Byte">255</R>
+                            </colorTint>
+                            <customMat />
+                            <depthScale dataType="Float">0.01</depthScale>
+                            <gameobj dataType="ObjectRef">187862302</gameobj>
+                            <height dataType="Float">0</height>
+                            <isVertical dataType="Bool">true</isVertical>
+                            <offset dataType="Float">-0.1</offset>
+                            <rect dataType="Struct" type="Duality.Rect">
+                              <H dataType="Float">34</H>
+                              <W dataType="Float">32</W>
+                              <X dataType="Float">-16</X>
+                              <Y dataType="Float">-26</Y>
+                            </rect>
+                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
+                            </sharedMat>
+                            <spriteIndex dataType="Int">-1</spriteIndex>
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                           </item>
                           <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="2258878297">
                             <active dataType="Bool">true</active>
@@ -1061,32 +1061,6 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="4094229293">
-                            <active dataType="Bool">true</active>
-                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-                              <A dataType="Byte">255</A>
-                              <B dataType="Byte">255</B>
-                              <G dataType="Byte">255</G>
-                              <R dataType="Byte">255</R>
-                            </colorTint>
-                            <customMat />
-                            <depthScale dataType="Float">0.01</depthScale>
-                            <gameobj dataType="ObjectRef">4164464433</gameobj>
-                            <height dataType="Float">0</height>
-                            <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.1</offset>
-                            <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">34</H>
-                              <W dataType="Float">32</W>
-                              <X dataType="Float">-16</X>
-                              <Y dataType="Float">-26</Y>
-                            </rect>
-                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
-                            </sharedMat>
-                            <spriteIndex dataType="Int">-1</spriteIndex>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-                          </item>
                           <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="2932273661">
                             <active dataType="Bool">true</active>
                             <allowParent dataType="Bool">false</allowParent>
@@ -1124,6 +1098,32 @@
                               <_size dataType="Int">1</_size>
                             </shapes>
                             <useCCD dataType="Bool">false</useCCD>
+                          </item>
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="4094229293">
+                            <active dataType="Bool">true</active>
+                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+                              <A dataType="Byte">255</A>
+                              <B dataType="Byte">255</B>
+                              <G dataType="Byte">255</G>
+                              <R dataType="Byte">255</R>
+                            </colorTint>
+                            <customMat />
+                            <depthScale dataType="Float">0.01</depthScale>
+                            <gameobj dataType="ObjectRef">4164464433</gameobj>
+                            <height dataType="Float">0</height>
+                            <isVertical dataType="Bool">true</isVertical>
+                            <offset dataType="Float">-0.1</offset>
+                            <rect dataType="Struct" type="Duality.Rect">
+                              <H dataType="Float">34</H>
+                              <W dataType="Float">32</W>
+                              <X dataType="Float">-16</X>
+                              <Y dataType="Float">-26</Y>
+                            </rect>
+                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
+                            </sharedMat>
+                            <spriteIndex dataType="Int">-1</spriteIndex>
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                           </item>
                           <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="1940513132">
                             <active dataType="Bool">true</active>
@@ -1194,32 +1194,6 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="804871825">
-                            <active dataType="Bool">true</active>
-                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-                              <A dataType="Byte">255</A>
-                              <B dataType="Byte">255</B>
-                              <G dataType="Byte">255</G>
-                              <R dataType="Byte">255</R>
-                            </colorTint>
-                            <customMat />
-                            <depthScale dataType="Float">0.01</depthScale>
-                            <gameobj dataType="ObjectRef">875106965</gameobj>
-                            <height dataType="Float">0</height>
-                            <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.1</offset>
-                            <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">34</H>
-                              <W dataType="Float">32</W>
-                              <X dataType="Float">-16</X>
-                              <Y dataType="Float">-26</Y>
-                            </rect>
-                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
-                            </sharedMat>
-                            <spriteIndex dataType="Int">-1</spriteIndex>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-                          </item>
                           <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3937883489">
                             <active dataType="Bool">true</active>
                             <allowParent dataType="Bool">false</allowParent>
@@ -1257,6 +1231,32 @@
                               <_size dataType="Int">1</_size>
                             </shapes>
                             <useCCD dataType="Bool">false</useCCD>
+                          </item>
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="804871825">
+                            <active dataType="Bool">true</active>
+                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+                              <A dataType="Byte">255</A>
+                              <B dataType="Byte">255</B>
+                              <G dataType="Byte">255</G>
+                              <R dataType="Byte">255</R>
+                            </colorTint>
+                            <customMat />
+                            <depthScale dataType="Float">0.01</depthScale>
+                            <gameobj dataType="ObjectRef">875106965</gameobj>
+                            <height dataType="Float">0</height>
+                            <isVertical dataType="Bool">true</isVertical>
+                            <offset dataType="Float">-0.1</offset>
+                            <rect dataType="Struct" type="Duality.Rect">
+                              <H dataType="Float">34</H>
+                              <W dataType="Float">32</W>
+                              <X dataType="Float">-16</X>
+                              <Y dataType="Float">-26</Y>
+                            </rect>
+                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
+                            </sharedMat>
+                            <spriteIndex dataType="Int">-1</spriteIndex>
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                           </item>
                           <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="2946122960">
                             <active dataType="Bool">true</active>
@@ -1327,32 +1327,6 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="3025898446">
-                            <active dataType="Bool">true</active>
-                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-                              <A dataType="Byte">255</A>
-                              <B dataType="Byte">255</B>
-                              <G dataType="Byte">255</G>
-                              <R dataType="Byte">255</R>
-                            </colorTint>
-                            <customMat />
-                            <depthScale dataType="Float">0.01</depthScale>
-                            <gameobj dataType="ObjectRef">3096133586</gameobj>
-                            <height dataType="Float">0</height>
-                            <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.1</offset>
-                            <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">34</H>
-                              <W dataType="Float">32</W>
-                              <X dataType="Float">-16</X>
-                              <Y dataType="Float">-26</Y>
-                            </rect>
-                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
-                            </sharedMat>
-                            <spriteIndex dataType="Int">-1</spriteIndex>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-                          </item>
                           <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="1863942814">
                             <active dataType="Bool">true</active>
                             <allowParent dataType="Bool">false</allowParent>
@@ -1390,6 +1364,32 @@
                               <_size dataType="Int">1</_size>
                             </shapes>
                             <useCCD dataType="Bool">false</useCCD>
+                          </item>
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="3025898446">
+                            <active dataType="Bool">true</active>
+                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+                              <A dataType="Byte">255</A>
+                              <B dataType="Byte">255</B>
+                              <G dataType="Byte">255</G>
+                              <R dataType="Byte">255</R>
+                            </colorTint>
+                            <customMat />
+                            <depthScale dataType="Float">0.01</depthScale>
+                            <gameobj dataType="ObjectRef">3096133586</gameobj>
+                            <height dataType="Float">0</height>
+                            <isVertical dataType="Bool">true</isVertical>
+                            <offset dataType="Float">-0.1</offset>
+                            <rect dataType="Struct" type="Duality.Rect">
+                              <H dataType="Float">34</H>
+                              <W dataType="Float">32</W>
+                              <X dataType="Float">-16</X>
+                              <Y dataType="Float">-26</Y>
+                            </rect>
+                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
+                            </sharedMat>
+                            <spriteIndex dataType="Int">-1</spriteIndex>
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                           </item>
                           <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="872182285">
                             <active dataType="Bool">true</active>
@@ -1460,32 +1460,6 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="2087920298">
-                            <active dataType="Bool">true</active>
-                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-                              <A dataType="Byte">255</A>
-                              <B dataType="Byte">255</B>
-                              <G dataType="Byte">255</G>
-                              <R dataType="Byte">255</R>
-                            </colorTint>
-                            <customMat />
-                            <depthScale dataType="Float">0.01</depthScale>
-                            <gameobj dataType="ObjectRef">2158155438</gameobj>
-                            <height dataType="Float">0</height>
-                            <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.1</offset>
-                            <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">34</H>
-                              <W dataType="Float">32</W>
-                              <X dataType="Float">-16</X>
-                              <Y dataType="Float">-26</Y>
-                            </rect>
-                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
-                            </sharedMat>
-                            <spriteIndex dataType="Int">-1</spriteIndex>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-                          </item>
                           <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="925964666">
                             <active dataType="Bool">true</active>
                             <allowParent dataType="Bool">false</allowParent>
@@ -1523,6 +1497,32 @@
                               <_size dataType="Int">1</_size>
                             </shapes>
                             <useCCD dataType="Bool">false</useCCD>
+                          </item>
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="2087920298">
+                            <active dataType="Bool">true</active>
+                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+                              <A dataType="Byte">255</A>
+                              <B dataType="Byte">255</B>
+                              <G dataType="Byte">255</G>
+                              <R dataType="Byte">255</R>
+                            </colorTint>
+                            <customMat />
+                            <depthScale dataType="Float">0.01</depthScale>
+                            <gameobj dataType="ObjectRef">2158155438</gameobj>
+                            <height dataType="Float">0</height>
+                            <isVertical dataType="Bool">true</isVertical>
+                            <offset dataType="Float">-0.1</offset>
+                            <rect dataType="Struct" type="Duality.Rect">
+                              <H dataType="Float">34</H>
+                              <W dataType="Float">32</W>
+                              <X dataType="Float">-16</X>
+                              <Y dataType="Float">-26</Y>
+                            </rect>
+                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
+                            </sharedMat>
+                            <spriteIndex dataType="Int">-1</spriteIndex>
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                           </item>
                           <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="4229171433">
                             <active dataType="Bool">true</active>
@@ -1593,32 +1593,6 @@
                             <vel dataType="Struct" type="Duality.Vector3" />
                             <velAbs dataType="Struct" type="Duality.Vector3" />
                           </item>
-                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="1478642646">
-                            <active dataType="Bool">true</active>
-                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-                              <A dataType="Byte">255</A>
-                              <B dataType="Byte">255</B>
-                              <G dataType="Byte">255</G>
-                              <R dataType="Byte">255</R>
-                            </colorTint>
-                            <customMat />
-                            <depthScale dataType="Float">0.01</depthScale>
-                            <gameobj dataType="ObjectRef">1548877786</gameobj>
-                            <height dataType="Float">0</height>
-                            <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.1</offset>
-                            <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">34</H>
-                              <W dataType="Float">32</W>
-                              <X dataType="Float">-16</X>
-                              <Y dataType="Float">-26</Y>
-                            </rect>
-                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
-                            </sharedMat>
-                            <spriteIndex dataType="Int">-1</spriteIndex>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-                          </item>
                           <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="316687014">
                             <active dataType="Bool">true</active>
                             <allowParent dataType="Bool">false</allowParent>
@@ -1656,6 +1630,32 @@
                               <_size dataType="Int">1</_size>
                             </shapes>
                             <useCCD dataType="Bool">false</useCCD>
+                          </item>
+                          <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.ActorRenderer" id="1478642646">
+                            <active dataType="Bool">true</active>
+                            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+                              <A dataType="Byte">255</A>
+                              <B dataType="Byte">255</B>
+                              <G dataType="Byte">255</G>
+                              <R dataType="Byte">255</R>
+                            </colorTint>
+                            <customMat />
+                            <depthScale dataType="Float">0.01</depthScale>
+                            <gameobj dataType="ObjectRef">1548877786</gameobj>
+                            <height dataType="Float">0</height>
+                            <isVertical dataType="Bool">true</isVertical>
+                            <offset dataType="Float">-0.1</offset>
+                            <rect dataType="Struct" type="Duality.Rect">
+                              <H dataType="Float">34</H>
+                              <W dataType="Float">32</W>
+                              <X dataType="Float">-16</X>
+                              <Y dataType="Float">-26</Y>
+                            </rect>
+                            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+                              <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
+                            </sharedMat>
+                            <spriteIndex dataType="Int">-1</spriteIndex>
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                           </item>
                           <item dataType="Struct" type="Duality.Samples.Tilemaps.RpgLike.MoveableObjectPhysics" id="3619893781">
                             <active dataType="Bool">true</active>
