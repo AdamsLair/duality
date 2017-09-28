@@ -375,7 +375,104 @@ namespace Duality.Drawing
 		/// <param name="value"></param>
 		public void Set<T>(string name, T value) where T : struct
 		{
-			this.SetArray<T>(name, value);
+			if (string.IsNullOrEmpty(name)) throw new ArgumentException("The parameter name cannot be null or empty.", "name");
+
+			float[] rawData;
+			if (typeof(T) == typeof(float))
+			{
+				float typedValue = (float)(object)value;
+				this.EnsureUniformData(name, 1, out rawData);
+				rawData[0] = typedValue;
+			}
+			else if (typeof(T) == typeof(Vector2))
+			{
+				Vector2 typedValue = (Vector2)(object)value;
+				this.EnsureUniformData(name, 2, out rawData);
+				rawData[0] = typedValue.X;
+				rawData[1] = typedValue.Y;
+			}
+			else if (typeof(T) == typeof(Vector3))
+			{
+				Vector3 typedValue = (Vector3)(object)value;
+				this.EnsureUniformData(name, 3, out rawData);
+				rawData[0] = typedValue.X;
+				rawData[1] = typedValue.Y;
+				rawData[2] = typedValue.Z;
+			}
+			else if (typeof(T) == typeof(Vector4))
+			{
+				Vector4 typedValue = (Vector4)(object)value;
+				this.EnsureUniformData(name, 4, out rawData);
+				rawData[0] = typedValue.X;
+				rawData[1] = typedValue.Y;
+				rawData[2] = typedValue.Z;
+				rawData[3] = typedValue.W;
+			}
+			else if (typeof(T) == typeof(Matrix3))
+			{
+				Matrix3 typedValue = (Matrix3)(object)value;
+				this.EnsureUniformData(name, 9, out rawData);
+				rawData[0] = typedValue.Row0.X;
+				rawData[1] = typedValue.Row0.Y;
+				rawData[2] = typedValue.Row0.Z;
+				rawData[3] = typedValue.Row1.X;
+				rawData[4] = typedValue.Row1.Y;
+				rawData[5] = typedValue.Row1.Z;
+				rawData[6] = typedValue.Row2.X;
+				rawData[7] = typedValue.Row2.Y;
+				rawData[8] = typedValue.Row2.Z;
+			}
+			else if (typeof(T) == typeof(Matrix4))
+			{
+				Matrix4 typedValue = (Matrix4)(object)value;
+				this.EnsureUniformData(name, 16, out rawData);
+				rawData[ 0] = typedValue.Row0.X;
+				rawData[ 1] = typedValue.Row0.Y;
+				rawData[ 2] = typedValue.Row0.Z;
+				rawData[ 3] = typedValue.Row0.W;
+				rawData[ 4] = typedValue.Row1.X;
+				rawData[ 5] = typedValue.Row1.Y;
+				rawData[ 6] = typedValue.Row1.Z;
+				rawData[ 7] = typedValue.Row1.W;
+				rawData[ 8] = typedValue.Row2.X;
+				rawData[ 9] = typedValue.Row2.Y;
+				rawData[10] = typedValue.Row2.Z;
+				rawData[11] = typedValue.Row2.W;
+				rawData[12] = typedValue.Row3.X;
+				rawData[13] = typedValue.Row3.Y;
+				rawData[14] = typedValue.Row3.Z;
+				rawData[15] = typedValue.Row3.W;
+			}
+			else if (typeof(T) == typeof(int))
+			{
+				int typedValue = (int)(object)value;
+				this.EnsureUniformData(name, 1, out rawData);
+				rawData[0] = typedValue;
+			}
+			else if (typeof(T) == typeof(Point2))
+			{
+				Point2 typedValue = (Point2)(object)value;
+				this.EnsureUniformData(name, 2, out rawData);
+				rawData[0] = typedValue.X;
+				rawData[1] = typedValue.Y;
+			}
+			else if (typeof(T) == typeof(bool))
+			{
+				bool typedValue = (bool)(object)value;
+				this.EnsureUniformData(name, 1, out rawData);
+				rawData[0] = typedValue ? 1.0f : 0.0f;
+			}
+			else if (typeof(T) == typeof(ContentRef<Texture>))
+			{
+				this.textures[name] = (ContentRef<Texture>)(object)value;
+				this.uniforms.Remove(name);
+			}
+			else
+			{
+				throw new NotSupportedException("Setting shader parameters to values of this type is not supported.");
+			}
+
+			this.UpdateHash();
 		}
 		/// <summary>
 		/// Retrieves a values from the specified variable. If the internally 
@@ -390,11 +487,78 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public T Get<T>(string name) where T : struct
 		{
-			T[] array = this.GetArray<T>(name);
-			if (array == null || array.Length == 0)
-				return default(T);
+			if (string.IsNullOrEmpty(name)) return default(T);
+
+			if (typeof(T) == typeof(ContentRef<Texture>))
+			{
+				ContentRef<Texture> tex;
+				if (!this.textures.TryGetValue(name, out tex))
+					return default(T);
+				else
+					return (T)(object)tex;
+			}
+			
+			float[] rawData;
+			if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
+
+			if (typeof(T) == typeof(float))
+			{
+				if (rawData.Length < 1) return default(T);
+				return (T)(object)rawData[0];
+			}
+			else if (typeof(T) == typeof(Vector2))
+			{
+				if (rawData.Length < 2) return default(T);
+				return (T)(object)new Vector2(rawData[0], rawData[1]);
+			}
+			else if (typeof(T) == typeof(Vector3))
+			{
+				if (rawData.Length < 3) return default(T);
+				return (T)(object)new Vector3(rawData[0], rawData[1], rawData[2]);
+			}
+			else if (typeof(T) == typeof(Vector4))
+			{
+				if (rawData.Length < 4) return default(T);
+				return (T)(object)new Vector4(rawData[0], rawData[1], rawData[2], rawData[3]);
+			}
+			else if (typeof(T) == typeof(Matrix3))
+			{
+				if (rawData.Length < 9) return default(T);
+				return (T)(object)new Matrix3(
+					rawData[0], rawData[1], rawData[2], 
+					rawData[3], rawData[4], rawData[5], 
+					rawData[6], rawData[7], rawData[8]);
+			}
+			else if (typeof(T) == typeof(Matrix4))
+			{
+				if (rawData.Length < 16) return default(T);
+				return (T)(object)new Matrix4(
+					rawData[0], rawData[1], rawData[2], rawData[3], 
+					rawData[4], rawData[5], rawData[6], rawData[7], 
+					rawData[8], rawData[9], rawData[10], rawData[11], 
+					rawData[12], rawData[13], rawData[14], rawData[15]);
+			}
+			else if (typeof(T) == typeof(int))
+			{
+				if (rawData.Length < 1) return default(T);
+				return (T)(object)MathF.RoundToInt(rawData[0]);
+			}
+			else if (typeof(T) == typeof(Point2))
+			{
+				if (rawData.Length < 2) return default(T);
+				return (T)(object)new Point2(
+					MathF.RoundToInt(rawData[0]), 
+					MathF.RoundToInt(rawData[1]));
+			}
+			else if (typeof(T) == typeof(bool))
+			{
+				if (rawData.Length < 1) return default(T);
+				return (T)(object)(rawData[0] != 0.0f);
+			}
 			else
-				return array[0];
+			{
+				throw new NotSupportedException("Getting shader parameters as values of this type is not supported.");
+			}
 		}
 
 		/// <summary>
