@@ -326,7 +326,7 @@ namespace Duality.Drawing
 		/// <param name="value"></param>
 		public void SetTexture(string name, ContentRef<Texture> value)
 		{
-			if (string.IsNullOrEmpty(name)) throw new ArgumentException("The parameter name cannot be null or empty.", "name");
+			if (string.IsNullOrEmpty(name)) ThrowInvalidName();
 			
 			this.textures[name] = value;
 			this.uniforms.Remove(name);
