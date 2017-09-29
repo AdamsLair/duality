@@ -30,7 +30,10 @@ namespace Duality.Backend.Dummy
 		{
 			return true;
 		}
-		void IDualityBackend.Init() { }
+		void IDualityBackend.Init()
+		{
+			Log.Core.WriteWarning("DummyGraphicsBackend initialized. This is unusual and may cause problems when someone tries to load images.");
+		}
 		void IDualityBackend.Shutdown() { }
 
 		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats) { }
