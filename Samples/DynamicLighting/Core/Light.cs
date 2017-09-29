@@ -221,9 +221,9 @@ namespace DynamicLighting
 			DeviceLightInfo info = UpdateLighting(device);
 
 			// Prepare shader dara
-			float[] _lightPos = new float[4 * MaxVisible];
-			float[] _lightDir = new float[4 * MaxVisible];
-			float[] _lightColor = new float[3 * MaxVisible];
+			Vector4[] _lightPos = new Vector4[MaxVisible];
+			Vector4[] _lightDir = new Vector4[MaxVisible];
+			Vector3[] _lightColor = new Vector3[MaxVisible];
 			int _lightCount = MathF.Min(MaxVisible, info.PriorizedLights.Count);
 
 			int i = 0;
@@ -252,34 +252,34 @@ namespace DynamicLighting
 
 				if (directional)
 				{
-					_lightPos[i * 4 + 0] = (float)light.ambientColor.R * light.ambientIntensity / 255.0f;
-					_lightPos[i * 4 + 1] = (float)light.ambientColor.G * light.ambientIntensity / 255.0f;
-					_lightPos[i * 4 + 2] = (float)light.ambientColor.B * light.ambientIntensity / 255.0f;
-					_lightPos[i * 4 + 3] = 0.0f;
+					_lightPos[i].X = (float)light.ambientColor.R * light.ambientIntensity / 255.0f;
+					_lightPos[i].Y = (float)light.ambientColor.G * light.ambientIntensity / 255.0f;
+					_lightPos[i].Z = (float)light.ambientColor.B * light.ambientIntensity / 255.0f;
+					_lightPos[i].W = 0.0f;
 				}
 				else
 				{
-					_lightPos[i * 4 + 0] = pos.X;
-					_lightPos[i * 4 + 1] = pos.Y;
-					_lightPos[i * 4 + 2] = pos.Z;
-					_lightPos[i * 4 + 3] = light.range * uniformScale;
+					_lightPos[i].X = pos.X;
+					_lightPos[i].Y = pos.Y;
+					_lightPos[i].Z = pos.Z;
+					_lightPos[i].W = light.range * uniformScale;
 				}
 
-				_lightDir[i * 4 + 0] = dir.X;
-				_lightDir[i * 4 + 1] = dir.Y;
-				_lightDir[i * 4 + 2] = dir.Z;
-				_lightDir[i * 4 + 3] = dir == Vector3.Zero ? 0.0f : MathF.Max(light.spotFocus, 1.0f);
+				_lightDir[i].X = dir.X;
+				_lightDir[i].Y = dir.Y;
+				_lightDir[i].Z = dir.Z;
+				_lightDir[i].W = dir == Vector3.Zero ? 0.0f : MathF.Max(light.spotFocus, 1.0f);
 
-				_lightColor[i * 3 + 0] = (float)light.color.R * light.intensity / 255.0f;
-				_lightColor[i * 3 + 1] = (float)light.color.G * light.intensity / 255.0f;
-				_lightColor[i * 3 + 2] = (float)light.color.B * light.intensity / 255.0f;
+				_lightColor[i].X = (float)light.color.R * light.intensity / 255.0f;
+				_lightColor[i].Y = (float)light.color.G * light.intensity / 255.0f;
+				_lightColor[i].Z = (float)light.color.B * light.intensity / 255.0f;
 
 				i++;
 				if (i >= _lightCount) break;
 			}
 			if (i + 1 < _lightCount) _lightCount = i + 1;
 
-			material.Parameters.Set("_lightCount", _lightCount);
+			material.Parameters.SetValue("_lightCount", _lightCount);
 			material.Parameters.SetArray("_lightPos", _lightPos);
 			material.Parameters.SetArray("_lightDir", _lightDir);
 			material.Parameters.SetArray("_lightColor", _lightColor);

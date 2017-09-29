@@ -26,8 +26,8 @@ namespace Duality.Drawing
 		/// </summary>
 		public ContentRef<Texture> MainTexture
 		{
-			get { return this.Get<ContentRef<Texture>>(ShaderFieldInfo.DefaultNameMainTex); }
-			set { this.Set(ShaderFieldInfo.DefaultNameMainTex, value); }
+			get { return this.GetTexture(ShaderFieldInfo.DefaultNameMainTex); }
+			set { this.SetTexture(ShaderFieldInfo.DefaultNameMainTex, value); }
 		}
 		/// <summary>
 		/// [GET] A 64 bit hash value that represents this particular collection of
@@ -66,23 +66,32 @@ namespace Duality.Drawing
 			this.uniforms.Clear();
 			this.UpdateHash();
 		}
-
 		/// <summary>
-		/// Assigns an array of values to the specified variable. All values may be converted into
+		/// Removes a variable from storage inside this <see cref="ShaderParameters"/> instance.
+		/// </summary>
+		/// <param name="name"></param>
+		public void Remove(string name)
+		{
+			this.textures.Remove(name);
+			this.uniforms.Remove(name);
+			this.UpdateHash();
+		}
+		
+		/// <summary>
+		/// Assigns an array of values to the specified variable. All values are copied and converted into
 		/// a shared internal format.
 		/// 
 		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
 		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
-		/// <see cref="Point2"/>, <see cref="Boolean"/> and <see cref="ContentRef<Texture>"/>.
+		/// <see cref="Point2"/> and <see cref="Boolean"/>.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetArray<T>(string name, params T[] value) where T : struct
+		public void SetArray<T>(string name, T[] value) where T : struct
 		{
-			if (string.IsNullOrEmpty(name)) throw new ArgumentException("The parameter name cannot be null or empty.", "name");
-			if (value == null) throw new ArgumentNullException("value");
-			if (value.Length == 0) throw new ArgumentException("At least one parameter value needs to be specified.", "value");
+			if (string.IsNullOrEmpty(name)) ThrowInvalidName();;
+			if (value == null || value.Length == 0) ThrowInvalidValue();
 
 			float[] rawData;
 			if (typeof(T) == typeof(float))
@@ -196,26 +205,141 @@ namespace Duality.Drawing
 					rawData[i] = typedValue[i] ? 1.0f : 0.0f;
 				}
 			}
-			else if (typeof(T) == typeof(ContentRef<Texture>))
-			{
-				if (value.Length > 1) throw new ArgumentException("Can't assign more than one texture to a single shader parameter.", "value");
-				this.textures[name] = (ContentRef<Texture>)(object)value[0];
-				this.uniforms.Remove(name);
-			}
 			else
 			{
-				throw new NotSupportedException("Setting shader parameters to values of this type is not supported.");
+				ThrowUnsupportedValueType<T>();
 			}
 
 			this.UpdateHash();
 		}
 		/// <summary>
-		/// Retrieves an array of values from the specified variable. If the internally 
+		/// Assigns a blittable value to the specified variable. All values are copied and converted into
+		/// a shared internal format.
+		/// 
+		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
+		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
+		/// <see cref="Point2"/> and <see cref="Boolean"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public void SetValue<T>(string name, T value) where T : struct
+		{
+			if (string.IsNullOrEmpty(name)) ThrowInvalidName();
+
+			float[] rawData;
+			if (typeof(T) == typeof(float))
+			{
+				float typedValue = (float)(object)value;
+				this.EnsureUniformData(name, 1, out rawData);
+				rawData[0] = typedValue;
+			}
+			else if (typeof(T) == typeof(Vector2))
+			{
+				Vector2 typedValue = (Vector2)(object)value;
+				this.EnsureUniformData(name, 2, out rawData);
+				rawData[0] = typedValue.X;
+				rawData[1] = typedValue.Y;
+			}
+			else if (typeof(T) == typeof(Vector3))
+			{
+				Vector3 typedValue = (Vector3)(object)value;
+				this.EnsureUniformData(name, 3, out rawData);
+				rawData[0] = typedValue.X;
+				rawData[1] = typedValue.Y;
+				rawData[2] = typedValue.Z;
+			}
+			else if (typeof(T) == typeof(Vector4))
+			{
+				Vector4 typedValue = (Vector4)(object)value;
+				this.EnsureUniformData(name, 4, out rawData);
+				rawData[0] = typedValue.X;
+				rawData[1] = typedValue.Y;
+				rawData[2] = typedValue.Z;
+				rawData[3] = typedValue.W;
+			}
+			else if (typeof(T) == typeof(Matrix3))
+			{
+				Matrix3 typedValue = (Matrix3)(object)value;
+				this.EnsureUniformData(name, 9, out rawData);
+				rawData[0] = typedValue.Row0.X;
+				rawData[1] = typedValue.Row0.Y;
+				rawData[2] = typedValue.Row0.Z;
+				rawData[3] = typedValue.Row1.X;
+				rawData[4] = typedValue.Row1.Y;
+				rawData[5] = typedValue.Row1.Z;
+				rawData[6] = typedValue.Row2.X;
+				rawData[7] = typedValue.Row2.Y;
+				rawData[8] = typedValue.Row2.Z;
+			}
+			else if (typeof(T) == typeof(Matrix4))
+			{
+				Matrix4 typedValue = (Matrix4)(object)value;
+				this.EnsureUniformData(name, 16, out rawData);
+				rawData[ 0] = typedValue.Row0.X;
+				rawData[ 1] = typedValue.Row0.Y;
+				rawData[ 2] = typedValue.Row0.Z;
+				rawData[ 3] = typedValue.Row0.W;
+				rawData[ 4] = typedValue.Row1.X;
+				rawData[ 5] = typedValue.Row1.Y;
+				rawData[ 6] = typedValue.Row1.Z;
+				rawData[ 7] = typedValue.Row1.W;
+				rawData[ 8] = typedValue.Row2.X;
+				rawData[ 9] = typedValue.Row2.Y;
+				rawData[10] = typedValue.Row2.Z;
+				rawData[11] = typedValue.Row2.W;
+				rawData[12] = typedValue.Row3.X;
+				rawData[13] = typedValue.Row3.Y;
+				rawData[14] = typedValue.Row3.Z;
+				rawData[15] = typedValue.Row3.W;
+			}
+			else if (typeof(T) == typeof(int))
+			{
+				int typedValue = (int)(object)value;
+				this.EnsureUniformData(name, 1, out rawData);
+				rawData[0] = typedValue;
+			}
+			else if (typeof(T) == typeof(Point2))
+			{
+				Point2 typedValue = (Point2)(object)value;
+				this.EnsureUniformData(name, 2, out rawData);
+				rawData[0] = typedValue.X;
+				rawData[1] = typedValue.Y;
+			}
+			else if (typeof(T) == typeof(bool))
+			{
+				bool typedValue = (bool)(object)value;
+				this.EnsureUniformData(name, 1, out rawData);
+				rawData[0] = typedValue ? 1.0f : 0.0f;
+			}
+			else
+			{
+				ThrowUnsupportedValueType<T>();
+			}
+
+			this.UpdateHash();
+		}
+		/// <summary>
+		/// Assigns a texture to the specified variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public void SetTexture(string name, ContentRef<Texture> value)
+		{
+			if (string.IsNullOrEmpty(name)) throw new ArgumentException("The parameter name cannot be null or empty.", "name");
+			
+			this.textures[name] = value;
+			this.uniforms.Remove(name);
+			this.UpdateHash();
+		}
+		
+		/// <summary>
+		/// Retrieves a copy of the values that are assigned the specified variable. If the internally 
 		/// stored type does not match the specified type, it will be converted before returning.
 		/// 
 		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
 		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
-		/// <see cref="Point2"/>, <see cref="Boolean"/> and <see cref="ContentRef<Texture>"/>.
+		/// <see cref="Point2"/> and <see cref="Boolean"/>.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
@@ -224,15 +348,6 @@ namespace Duality.Drawing
 		{
 			if (string.IsNullOrEmpty(name)) return null;
 
-			if (typeof(T) == typeof(ContentRef<Texture>))
-			{
-				ContentRef<Texture> tex;
-				if (!this.textures.TryGetValue(name, out tex))
-					return null;
-				else
-					return (T[])(object)new ContentRef<Texture>[] { tex };
-			}
-			
 			float[] rawData;
 			if (!this.uniforms.TryGetValue(name, out rawData)) return null;
 
@@ -358,171 +473,53 @@ namespace Duality.Drawing
 			}
 			else
 			{
-				throw new NotSupportedException("Getting shader parameters as values of this type is not supported.");
+				ThrowUnsupportedValueType<T>();
+				return null;
 			}
 		}
-
 		/// <summary>
-		/// Assigns a values to the specified variable. All values may be converted into
+		/// Retrieves a blittable value from the specified variable. All values are copied and converted into
 		/// a shared internal format.
 		/// 
 		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
 		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
-		/// <see cref="Point2"/>, <see cref="Boolean"/> and <see cref="ContentRef<Texture>"/>.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="name"></param>
-		/// <param name="value"></param>
-		public void Set<T>(string name, T value) where T : struct
-		{
-			if (string.IsNullOrEmpty(name)) throw new ArgumentException("The parameter name cannot be null or empty.", "name");
-
-			float[] rawData;
-			if (typeof(T) == typeof(float))
-			{
-				float typedValue = (float)(object)value;
-				this.EnsureUniformData(name, 1, out rawData);
-				rawData[0] = typedValue;
-			}
-			else if (typeof(T) == typeof(Vector2))
-			{
-				Vector2 typedValue = (Vector2)(object)value;
-				this.EnsureUniformData(name, 2, out rawData);
-				rawData[0] = typedValue.X;
-				rawData[1] = typedValue.Y;
-			}
-			else if (typeof(T) == typeof(Vector3))
-			{
-				Vector3 typedValue = (Vector3)(object)value;
-				this.EnsureUniformData(name, 3, out rawData);
-				rawData[0] = typedValue.X;
-				rawData[1] = typedValue.Y;
-				rawData[2] = typedValue.Z;
-			}
-			else if (typeof(T) == typeof(Vector4))
-			{
-				Vector4 typedValue = (Vector4)(object)value;
-				this.EnsureUniformData(name, 4, out rawData);
-				rawData[0] = typedValue.X;
-				rawData[1] = typedValue.Y;
-				rawData[2] = typedValue.Z;
-				rawData[3] = typedValue.W;
-			}
-			else if (typeof(T) == typeof(Matrix3))
-			{
-				Matrix3 typedValue = (Matrix3)(object)value;
-				this.EnsureUniformData(name, 9, out rawData);
-				rawData[0] = typedValue.Row0.X;
-				rawData[1] = typedValue.Row0.Y;
-				rawData[2] = typedValue.Row0.Z;
-				rawData[3] = typedValue.Row1.X;
-				rawData[4] = typedValue.Row1.Y;
-				rawData[5] = typedValue.Row1.Z;
-				rawData[6] = typedValue.Row2.X;
-				rawData[7] = typedValue.Row2.Y;
-				rawData[8] = typedValue.Row2.Z;
-			}
-			else if (typeof(T) == typeof(Matrix4))
-			{
-				Matrix4 typedValue = (Matrix4)(object)value;
-				this.EnsureUniformData(name, 16, out rawData);
-				rawData[ 0] = typedValue.Row0.X;
-				rawData[ 1] = typedValue.Row0.Y;
-				rawData[ 2] = typedValue.Row0.Z;
-				rawData[ 3] = typedValue.Row0.W;
-				rawData[ 4] = typedValue.Row1.X;
-				rawData[ 5] = typedValue.Row1.Y;
-				rawData[ 6] = typedValue.Row1.Z;
-				rawData[ 7] = typedValue.Row1.W;
-				rawData[ 8] = typedValue.Row2.X;
-				rawData[ 9] = typedValue.Row2.Y;
-				rawData[10] = typedValue.Row2.Z;
-				rawData[11] = typedValue.Row2.W;
-				rawData[12] = typedValue.Row3.X;
-				rawData[13] = typedValue.Row3.Y;
-				rawData[14] = typedValue.Row3.Z;
-				rawData[15] = typedValue.Row3.W;
-			}
-			else if (typeof(T) == typeof(int))
-			{
-				int typedValue = (int)(object)value;
-				this.EnsureUniformData(name, 1, out rawData);
-				rawData[0] = typedValue;
-			}
-			else if (typeof(T) == typeof(Point2))
-			{
-				Point2 typedValue = (Point2)(object)value;
-				this.EnsureUniformData(name, 2, out rawData);
-				rawData[0] = typedValue.X;
-				rawData[1] = typedValue.Y;
-			}
-			else if (typeof(T) == typeof(bool))
-			{
-				bool typedValue = (bool)(object)value;
-				this.EnsureUniformData(name, 1, out rawData);
-				rawData[0] = typedValue ? 1.0f : 0.0f;
-			}
-			else if (typeof(T) == typeof(ContentRef<Texture>))
-			{
-				this.textures[name] = (ContentRef<Texture>)(object)value;
-				this.uniforms.Remove(name);
-			}
-			else
-			{
-				throw new NotSupportedException("Setting shader parameters to values of this type is not supported.");
-			}
-
-			this.UpdateHash();
-		}
-		/// <summary>
-		/// Retrieves a values from the specified variable. If the internally 
-		/// stored type does not match the specified type, it will be converted before returning.
-		/// 
-		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
-		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
-		/// <see cref="Point2"/>, <see cref="Boolean"/> and <see cref="ContentRef<Texture>"/>.
+		/// <see cref="Point2"/> and <see cref="Boolean"/>.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public T Get<T>(string name) where T : struct
+		public T GetValue<T>(string name) where T : struct
 		{
 			if (string.IsNullOrEmpty(name)) return default(T);
 
-			if (typeof(T) == typeof(ContentRef<Texture>))
-			{
-				ContentRef<Texture> tex;
-				if (!this.textures.TryGetValue(name, out tex))
-					return default(T);
-				else
-					return (T)(object)tex;
-			}
-			
 			float[] rawData;
-			if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
-
 			if (typeof(T) == typeof(float))
 			{
+				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
 				if (rawData.Length < 1) return default(T);
 				return (T)(object)rawData[0];
 			}
 			else if (typeof(T) == typeof(Vector2))
 			{
+				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
 				if (rawData.Length < 2) return default(T);
 				return (T)(object)new Vector2(rawData[0], rawData[1]);
 			}
 			else if (typeof(T) == typeof(Vector3))
 			{
+				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
 				if (rawData.Length < 3) return default(T);
 				return (T)(object)new Vector3(rawData[0], rawData[1], rawData[2]);
 			}
 			else if (typeof(T) == typeof(Vector4))
 			{
+				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
 				if (rawData.Length < 4) return default(T);
 				return (T)(object)new Vector4(rawData[0], rawData[1], rawData[2], rawData[3]);
 			}
 			else if (typeof(T) == typeof(Matrix3))
 			{
+				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
 				if (rawData.Length < 9) return default(T);
 				return (T)(object)new Matrix3(
 					rawData[0], rawData[1], rawData[2], 
@@ -531,6 +528,7 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(Matrix4))
 			{
+				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
 				if (rawData.Length < 16) return default(T);
 				return (T)(object)new Matrix4(
 					rawData[0], rawData[1], rawData[2], rawData[3], 
@@ -540,11 +538,13 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(int))
 			{
+				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
 				if (rawData.Length < 1) return default(T);
 				return (T)(object)MathF.RoundToInt(rawData[0]);
 			}
 			else if (typeof(T) == typeof(Point2))
 			{
+				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
 				if (rawData.Length < 2) return default(T);
 				return (T)(object)new Point2(
 					MathF.RoundToInt(rawData[0]), 
@@ -552,13 +552,24 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(bool))
 			{
+				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
 				if (rawData.Length < 1) return default(T);
 				return (T)(object)(rawData[0] != 0.0f);
 			}
 			else
 			{
-				throw new NotSupportedException("Getting shader parameters as values of this type is not supported.");
+				ThrowUnsupportedValueType<T>();
+				return default(T);
 			}
+		}
+		/// <summary>
+		/// Retrieves a texture from the specified variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public ContentRef<Texture> GetTexture(string name)
+		{
+			return this.GetInternalTexture(name);
 		}
 
 		/// <summary>
@@ -567,7 +578,7 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public float[] GetInternalValue(string name)
+		public float[] GetInternalData(string name)
 		{
 			float[] value;
 			if (this.uniforms.TryGetValue(name, out value))
@@ -735,6 +746,21 @@ namespace Duality.Drawing
 			}
 
 			this.UpdateHash();
+		}
+
+		private static void ThrowInvalidName()
+		{
+			throw new ArgumentException("The name parameter cannot be null or empty.", "name");
+		}
+		private static void ThrowInvalidValue()
+		{
+			throw new ArgumentException("The array of parameter values cannot be null or empty.", "value");
+		}
+		private static void ThrowUnsupportedValueType<T>()
+		{
+			throw new NotSupportedException(string.Format(
+				"Getting or setting shader parameters as values of type {0} is not supported.", 
+				typeof(T).Name));
 		}
 	}
 }

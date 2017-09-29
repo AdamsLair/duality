@@ -274,7 +274,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		
 		protected Func<IEnumerable<object>> CreateTextureValueGetter(string name)
 		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.Parameters.Get<ContentRef<Texture>>(name) : null);
+			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.Parameters.GetTexture(name) : null);
 		}
 		protected Func<IEnumerable<object>> CreateUniformArrayValueGetter<T>(string name) where T : struct
 		{
@@ -282,7 +282,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 		protected Func<IEnumerable<object>> CreateUniformValueGetter<T>(string name) where T : struct
 		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.Parameters.Get<T>(name) : null);
+			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.Parameters.GetValue<T>(name) : null);
 		}
 
 		protected Action<IEnumerable<object>> CreateTextureValueSetter(string name)
@@ -296,7 +296,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				foreach (BatchInfo info in batchInfoArray)
 				{
-					if (info != null) info.Parameters.Set(name, curValue);
+					if (info != null) info.Parameters.SetTexture(name, curValue);
 					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				}
 				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Parameters, batchInfoArray);
@@ -330,7 +330,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				foreach (BatchInfo info in batchInfoArray)
 				{
-					if (info != null) info.Parameters.Set(name, curValue);
+					if (info != null) info.Parameters.SetValue(name, curValue);
 					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				}
 				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Parameters, batchInfoArray);

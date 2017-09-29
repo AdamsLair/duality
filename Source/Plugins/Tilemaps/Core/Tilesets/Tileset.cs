@@ -249,7 +249,7 @@ namespace Duality.Plugins.Tilemaps
 			this.renderMaterial = new Material(this.baseMaterial);
 			for (int i = 0; i < this.renderConfig.Count; i++)
 			{
-				this.renderMaterial.Parameters.Set(this.renderConfig[i].Id, this.renderData[i] ?? Texture.Checkerboard);
+				this.renderMaterial.Parameters.SetTexture(this.renderConfig[i].Id, this.renderData[i] ?? Texture.Checkerboard);
 			}
 		}
 		/// <summary>

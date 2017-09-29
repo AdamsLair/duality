@@ -583,7 +583,7 @@ namespace Duality.Backend.DefaultOpenTK
 				for (int i = 0; i < varInfo.Length; i++)
 				{
 					if (locations[i] == -1) continue;
-					float[] data = shaderParams.GetInternalValue(varInfo[i].Name);
+					float[] data = shaderParams.GetInternalData(varInfo[i].Name);
 					if (data == null) continue;
 
 					NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);
