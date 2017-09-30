@@ -104,7 +104,7 @@ namespace Duality.Samples.Benchmarks
 			this.text[4] = "";
 			this.text[5] = string.Format("Drawcalls: {0}", Profile.StatNumDrawcalls.LastValue);
 			this.text[6] = string.Format("Batches (raw, mrg, opt): {0}, {1}, {2}", Profile.StatNumRawBatches.LastValue, Profile.StatNumMergedBatches.LastValue, Profile.StatNumOptimizedBatches.LastValue);
-			this.text[7] = string.Format("GC Collections (0, 1, 2): {0:F1}, {1:F1}, {2:F1} / minute", this.gcGen0.GCsPerMinute, this.gcGen1.GCsPerMinute, this.gcGen2.GCsPerMinute);
+			this.text[7] = string.Format("GC Collections (0, 1, 2): {0:F1}, {1:F1}, {2:F1} / minute at 60 FPS", this.gcGen0.GCsPerMinute, this.gcGen1.GCsPerMinute, this.gcGen2.GCsPerMinute);
 		}
 
 		void ICmpUpdatable.OnUpdate()
