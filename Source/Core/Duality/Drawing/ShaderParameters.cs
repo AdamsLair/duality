@@ -16,9 +16,24 @@ namespace Duality.Drawing
 	/// </summary>
 	public class ShaderParameters : IEquatable<ShaderParameters>, ISerializeExplicit
 	{
-		private Dictionary<string,ContentRef<Texture>> textures = null;
-		private Dictionary<string,float[]>             uniforms = null;
-		private ulong                                  hash     = 0L;
+		private struct NameComparer : IComparer<ValueItem>
+		{
+			public int Compare(ValueItem x, ValueItem y)
+			{
+				return string.CompareOrdinal(x.Name, y.Name);
+			}
+		}
+		private struct ValueItem
+		{
+			public string Name;
+			public ContentRef<Texture> Texture;
+			public float[] Uniform;
+		}
+
+		private static readonly IComparer<ValueItem> nameComparer = new NameComparer();
+
+		private RawList<ValueItem> values = null;
+		private ulong              hash   = 0L;
 		
 		
 		/// <summary>
@@ -42,17 +57,21 @@ namespace Duality.Drawing
 
 		public ShaderParameters()
 		{
-			this.uniforms = new Dictionary<string,float[]>();
-			this.textures = new Dictionary<string,ContentRef<Texture>>();
 			this.UpdateHash();
 		}
 		public ShaderParameters(ShaderParameters other)
 		{
-			this.textures = new Dictionary<string,ContentRef<Texture>>(other.textures);
-			this.uniforms = new Dictionary<string,float[]>(other.uniforms.Count);
-			foreach (var pair in other.uniforms)
+			if (other.values != null)
 			{
-				this.uniforms[pair.Key] = (float[])pair.Value.Clone();
+				this.values = new RawList<ValueItem>(other.values);
+				int count = this.values.Count;
+				ValueItem[] data = this.values.Data;
+				for (int i = 0; i < data.Length; i++)
+				{
+					if (i > count) break;
+					if (data[i].Uniform == null) continue;
+					data[i].Uniform = (float[])data[i].Uniform.Clone();
+				}
 			}
 			this.hash = other.hash;
 		}
@@ -62,8 +81,8 @@ namespace Duality.Drawing
 		/// </summary>
 		public void Clear()
 		{
-			this.textures.Clear();
-			this.uniforms.Clear();
+			if (this.values != null)
+				this.values.Clear();
 			this.UpdateHash();
 		}
 		/// <summary>
@@ -72,8 +91,8 @@ namespace Duality.Drawing
 		/// <param name="name"></param>
 		public void Remove(string name)
 		{
-			this.textures.Remove(name);
-			this.uniforms.Remove(name);
+			int index = this.FindIndex(name);
+			if (index != -1) this.values.RemoveAt(index);
 			this.UpdateHash();
 		}
 		
@@ -328,8 +347,24 @@ namespace Duality.Drawing
 		{
 			if (string.IsNullOrEmpty(name)) ThrowInvalidName();
 			
-			this.textures[name] = value;
-			this.uniforms.Remove(name);
+			int index = this.FindIndex(name);
+			if (index == -1)
+			{
+				if (this.values == null)
+					this.values = new RawList<ValueItem>();
+				this.values.Add(new ValueItem
+				{
+					Name = name,
+					Texture = value
+				});
+				this.EnsureSortedByName();
+			}
+			else
+			{
+				this.values.Data[index].Texture = value;
+				this.values.Data[index].Uniform = null;
+			}
+
 			this.UpdateHash();
 		}
 		
@@ -348,12 +383,10 @@ namespace Duality.Drawing
 		{
 			if (string.IsNullOrEmpty(name)) return null;
 
-			float[] rawData;
-			if (!this.uniforms.TryGetValue(name, out rawData)) return null;
-
+			float[] rawData = this.GetInternalData(name);
 			if (typeof(T) == typeof(float))
 			{
-				if (rawData.Length < 1) return null;
+				if (rawData == null || rawData.Length < 1) return null;
 				float[] result = new float[rawData.Length / 1];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -363,7 +396,7 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(Vector2))
 			{
-				if (rawData.Length < 2) return null;
+				if (rawData == null || rawData.Length < 2) return null;
 				Vector2[] result = new Vector2[rawData.Length / 2];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -374,7 +407,7 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(Vector3))
 			{
-				if (rawData.Length < 3) return null;
+				if (rawData == null || rawData.Length < 3) return null;
 				Vector3[] result = new Vector3[rawData.Length / 3];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -386,7 +419,7 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(Vector4))
 			{
-				if (rawData.Length < 4) return null;
+				if (rawData == null || rawData.Length < 4) return null;
 				Vector4[] result = new Vector4[rawData.Length / 4];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -399,7 +432,7 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(Matrix3))
 			{
-				if (rawData.Length < 9) return null;
+				if (rawData == null || rawData.Length < 9) return null;
 				Matrix3[] result = new Matrix3[rawData.Length / 9];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -417,7 +450,7 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(Matrix4))
 			{
-				if (rawData.Length < 16) return null;
+				if (rawData == null || rawData.Length < 16) return null;
 				Matrix4[] result = new Matrix4[rawData.Length / 16];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -442,7 +475,7 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(int))
 			{
-				if (rawData.Length < 1) return null;
+				if (rawData == null || rawData.Length < 1) return null;
 				int[] result = new int[rawData.Length / 1];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -452,7 +485,7 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(Point2))
 			{
-				if (rawData.Length < 2) return null;
+				if (rawData == null || rawData.Length < 2) return null;
 				Point2[] result = new Point2[rawData.Length / 2];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -463,7 +496,7 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(bool))
 			{
-				if (rawData.Length < 1) return null;
+				if (rawData == null || rawData.Length < 1) return null;
 				bool[] result = new bool[rawData.Length / 1];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -492,35 +525,30 @@ namespace Duality.Drawing
 		{
 			if (string.IsNullOrEmpty(name)) return default(T);
 
-			float[] rawData;
+			float[] rawData = this.GetInternalData(name);
 			if (typeof(T) == typeof(float))
 			{
-				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
-				if (rawData.Length < 1) return default(T);
+				if (rawData == null || rawData.Length < 1) return default(T);
 				return (T)(object)rawData[0];
 			}
 			else if (typeof(T) == typeof(Vector2))
 			{
-				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
-				if (rawData.Length < 2) return default(T);
+				if (rawData == null || rawData.Length < 2) return default(T);
 				return (T)(object)new Vector2(rawData[0], rawData[1]);
 			}
 			else if (typeof(T) == typeof(Vector3))
 			{
-				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
-				if (rawData.Length < 3) return default(T);
+				if (rawData == null || rawData.Length < 3) return default(T);
 				return (T)(object)new Vector3(rawData[0], rawData[1], rawData[2]);
 			}
 			else if (typeof(T) == typeof(Vector4))
 			{
-				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
-				if (rawData.Length < 4) return default(T);
+				if (rawData == null || rawData.Length < 4) return default(T);
 				return (T)(object)new Vector4(rawData[0], rawData[1], rawData[2], rawData[3]);
 			}
 			else if (typeof(T) == typeof(Matrix3))
 			{
-				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
-				if (rawData.Length < 9) return default(T);
+				if (rawData == null || rawData.Length < 9) return default(T);
 				return (T)(object)new Matrix3(
 					rawData[0], rawData[1], rawData[2], 
 					rawData[3], rawData[4], rawData[5], 
@@ -528,8 +556,7 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(Matrix4))
 			{
-				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
-				if (rawData.Length < 16) return default(T);
+				if (rawData == null || rawData.Length < 16) return default(T);
 				return (T)(object)new Matrix4(
 					rawData[0], rawData[1], rawData[2], rawData[3], 
 					rawData[4], rawData[5], rawData[6], rawData[7], 
@@ -538,22 +565,19 @@ namespace Duality.Drawing
 			}
 			else if (typeof(T) == typeof(int))
 			{
-				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
-				if (rawData.Length < 1) return default(T);
+				if (rawData == null || rawData.Length < 1) return default(T);
 				return (T)(object)MathF.RoundToInt(rawData[0]);
 			}
 			else if (typeof(T) == typeof(Point2))
 			{
-				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
-				if (rawData.Length < 2) return default(T);
+				if (rawData == null || rawData.Length < 2) return default(T);
 				return (T)(object)new Point2(
 					MathF.RoundToInt(rawData[0]), 
 					MathF.RoundToInt(rawData[1]));
 			}
 			else if (typeof(T) == typeof(bool))
 			{
-				if (!this.uniforms.TryGetValue(name, out rawData)) return default(T);
-				if (rawData.Length < 1) return default(T);
+				if (rawData == null || rawData.Length < 1) return default(T);
 				return (T)(object)(rawData[0] != 0.0f);
 			}
 			else
@@ -580,11 +604,11 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public float[] GetInternalData(string name)
 		{
-			float[] value;
-			if (this.uniforms.TryGetValue(name, out value))
-				return value;
-			else
+			int index = this.FindIndex(name);
+			if (index == -1)
 				return null;
+			else
+				return this.values.Data[index].Uniform;
 		}
 		/// <summary>
 		/// Retrieves the internal representation of the specified variables texture value.
@@ -594,20 +618,72 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public ContentRef<Texture> GetInternalTexture(string name)
 		{
-			ContentRef<Texture> value;
-			if (this.textures.TryGetValue(name, out value))
-				return value;
-			else
+			int index = this.FindIndex(name);
+			if (index == -1)
 				return null;
+			else
+				return this.values.Data[index].Texture;
 		}
 
+		private int FindIndex(string name)
+		{
+			if (this.values == null) return -1;
+
+			int count = this.values.Count;
+			ValueItem[] data = this.values.Data;
+
+			// Do a binary search, implemented manually so we can compare
+			// names directly without copying entire value elements in the process
+			// and invoking delegates.
+			int lowerBound = 0;
+			int upperBound = count - 1;
+			while (lowerBound <= upperBound)
+			{
+				int mid = lowerBound + ((upperBound - lowerBound) / 2);
+				int compareResult = string.CompareOrdinal(data[mid].Name, name);
+ 
+				if (compareResult == 0)
+					return mid;
+				else if (compareResult < 0)
+					lowerBound = mid + 1;
+				else
+					upperBound = mid - 1;
+			}
+ 
+			return -1;
+		}
+		private void EnsureSortedByName()
+		{
+			Array.Sort(
+				this.values.Data, 
+				0, 
+				this.values.Count, 
+				nameComparer);
+		}
 		private void EnsureUniformData(string name, int size, out float[] data)
 		{
-			if (!this.uniforms.TryGetValue(name, out data) || data.Length != size)
+			int index = this.FindIndex(name);
+			if (index == -1)
 			{
 				data = new float[size];
-				this.uniforms[name] = data;
-				this.textures.Remove(name);
+				if (this.values == null)
+					this.values = new RawList<ValueItem>();
+				this.values.Add(new ValueItem
+				{
+					Name = name,
+					Uniform = data
+				});
+				this.EnsureSortedByName();
+			}
+			else
+			{
+				data = this.values.Data[index].Uniform;
+				if (data == null || data.Length != size)
+				{
+					data = new float[size];
+					this.values.Data[index].Uniform = data;
+					this.values.Data[index].Texture = null;
+				}
 			}
 		}
 
@@ -616,33 +692,35 @@ namespace Duality.Drawing
 			this.hash = 17L;
 			unchecked
 			{
-				// Note: The order of values in a dictionary is non-deterministic,
-				// thus our hash algorithm must not depend on enumeration order.
-
-				if (this.textures.Count > 0)
+				// Note: For increased flexibility in internal storage, this hash
+				// algorithm does not depend in item order.
+				if (this.values != null)
 				{
-					foreach (var pair in this.textures)
+					int count = this.values.Count;
+					ValueItem[] data = this.values.Data;
+					for (int i = 0; i < data.Length; i++)
 					{
-						ulong localHash = 23L;
-						localHash = localHash * 29L + (ulong)pair.Key.GetHashCode();
-						localHash = localHash * 31L + (ulong)pair.Value.GetHashCode();
+						if (i >= count) break;
 
-						this.hash ^= localHash;
-					}
-				}
-
-				if (this.uniforms.Count > 0)
-				{
-					foreach (var pair in this.uniforms)
-					{
-						ulong localHash = 37L;
-						localHash = localHash * 41L + (ulong)pair.Key.GetHashCode();
-						for (int i = 0; i < pair.Value.Length; i++)
+						if (data[i].Uniform != null)
 						{
-							localHash = localHash * 43L + (ulong)pair.Value[i].GetHashCode();
-						}
+							ulong localHash = 37L;
+							localHash = localHash * 41L + (ulong)data[i].Name.GetHashCode();
+							for (int k = 0; k < data[i].Uniform.Length; k++)
+							{
+								localHash = localHash * 43L + (ulong)data[i].Uniform[k].GetHashCode();
+							}
 
-						this.hash ^= localHash;
+							this.hash ^= localHash;
+						}
+						else
+						{
+							ulong localHash = 23L;
+							localHash = localHash * 29L + (ulong)data[i].Name.GetHashCode();
+							localHash = localHash * 31L + (ulong)data[i].Texture.GetHashCode();
+
+							this.hash ^= localHash;
+						}
 					}
 				}
 			}
@@ -678,6 +756,24 @@ namespace Duality.Drawing
 			StringBuilder builder = new StringBuilder();
 			
 			ContentRef<Texture> mainTex = this.MainTexture;
+			int texCount = 0;
+			int uniformCount = 0;
+
+			// Count textures and uniforms
+			if (this.values != null)
+			{
+				int count = this.values.Count;
+				ValueItem[] data = this.values.Data;
+				for (int i = 0; i < data.Length; i++)
+				{
+					if (i >= count) break;
+					if (data[i].Uniform != null)
+						uniformCount++;
+					else
+						texCount++;
+				}
+			}
+
 			if (mainTex != null)
 			{
 				builder.Append(ShaderFieldInfo.DefaultNameMainTex);
@@ -685,23 +781,23 @@ namespace Duality.Drawing
 				builder.Append(mainTex.Name);
 				builder.Append('"');
 
-				if (this.textures.Count > 1)
+				if (texCount > 1)
 				{
 					builder.Append(", +");
-					builder.Append(this.textures.Count - 1);
+					builder.Append(texCount - 1);
 					builder.Append(" textures");
 				}
 			}
 			else
 			{
-				builder.Append(this.textures.Count);
+				builder.Append(texCount);
 				builder.Append(" textures");
 			}
 
-			if (this.uniforms.Count > 0)
+			if (uniformCount > 0)
 			{
 				if (builder.Length != 0) builder.Append(", ");
-				builder.Append(this.uniforms.Count);
+				builder.Append(uniformCount);
 				builder.Append(" uniforms");
 			}
 
@@ -710,41 +806,55 @@ namespace Duality.Drawing
 
 		void ISerializeExplicit.WriteData(IDataWriter writer)
 		{
-			foreach (var pair in this.textures)
+			if (this.values != null)
 			{
-				writer.WriteValue(pair.Key, pair.Value);
-			}
-			foreach (var pair in this.uniforms)
-			{
-				writer.WriteValue(pair.Key, pair.Value);
+				int count = this.values.Count;
+				ValueItem[] data = this.values.Data;
+				for (int i = 0; i < data.Length; i++)
+				{
+					if (i >= count) break;
+					if (data[i].Uniform != null)
+					{
+						writer.WriteValue(data[i].Name, data[i].Uniform);
+					}
+					else
+					{
+						writer.WriteValue(data[i].Name, data[i].Texture);
+					}
+				}
 			}
 		}
 		void ISerializeExplicit.ReadData(IDataReader reader)
 		{
-			this.textures.Clear();
-			this.uniforms.Clear();
+			if (this.values == null)
+				this.values = new RawList<ValueItem>();
+			else
+				this.values.Clear();
+
 			foreach (string key in reader.Keys)
 			{
 				object value = reader.ReadValue(key);
 				if (value is ContentRef<Texture>)
 				{
-					this.textures[key] = (ContentRef<Texture>)value;
+					ContentRef<Texture> tex = (ContentRef<Texture>)value;
+					tex.MakeAvailable();
+					this.values.Add(new ValueItem
+					{
+						Name = key,
+						Texture = tex
+					});
 				}
 				else if (value is float[])
 				{
-					this.uniforms[key] = (float[])value;
+					this.values.Add(new ValueItem
+					{
+						Name = key,
+						Uniform = (float[])value
+					});
 				}
 			}
 
-			// Retrieve references to all textures, to the ContentRefs
-			// we store don't have to do a lookup on access.
-			foreach (var texPair in this.textures.ToList())
-			{
-				ContentRef<Texture> texRef = texPair.Value;
-				texRef.MakeAvailable();
-				this.textures[texPair.Key] = texRef;
-			}
-
+			this.EnsureSortedByName();
 			this.UpdateHash();
 		}
 
