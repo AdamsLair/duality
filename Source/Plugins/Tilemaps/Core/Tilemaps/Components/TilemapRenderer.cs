@@ -286,7 +286,7 @@ namespace Duality.Plugins.Tilemaps
 
 			// Determine rendering parameters
 			Material material = (tileset != null ? tileset.RenderMaterial : null) ?? Material.Checkerboard.Res;
-			ColorRgba mainColor = material.MainColor * this.colorTint;
+			ColorRgba mainColor = this.colorTint;
 
 			// Reserve the required space for vertex data in our locally cached buffer
 			if (this.vertices == null) this.vertices = new RawList<VertexC1P3T2>();

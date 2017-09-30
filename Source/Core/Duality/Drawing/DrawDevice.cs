@@ -590,10 +590,10 @@ namespace Duality.Drawing
 			vertices[2].TexCoord = new Vector2(uvRatio.X, uvRatio.Y);
 			vertices[3].TexCoord = new Vector2(0.0f, uvRatio.Y);
 
-			vertices[0].Color = material.MainColor;
-			vertices[1].Color = material.MainColor;
-			vertices[2].Color = material.MainColor;
-			vertices[3].Color = material.MainColor;
+			vertices[0].Color = ColorRgba.White;
+			vertices[1].Color = ColorRgba.White;
+			vertices[2].Color = ColorRgba.White;
+			vertices[3].Color = ColorRgba.White;
 
 			this.AddVertices(material, VertexMode.Quads, vertices);
 		}

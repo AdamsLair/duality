@@ -149,14 +149,13 @@ namespace SmoothAnimation
 		public override void Draw(IDrawDevice device)
 		{
 			Texture mainTex = this.RetrieveMainTex();
-			ColorRgba mainClr = this.RetrieveMainColor();
 
 			Rect uvRect;
 			Rect uvRectNext;
 			this.GetUVRect(mainTex, this.spriteIndex, out uvRect);
 			this.GetUVRect(mainTex, this.nextSpriteIndex, out uvRectNext);
 			
-			this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.spriteIndexBlend, mainClr, uvRect, uvRectNext);
+			this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.spriteIndexBlend, this.colorTint, uvRect, uvRectNext);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.verticesSmooth);
 			else

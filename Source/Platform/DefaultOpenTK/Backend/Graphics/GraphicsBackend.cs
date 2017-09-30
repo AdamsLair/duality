@@ -552,57 +552,55 @@ namespace Duality.Backend.DefaultOpenTK
 				this.SetupBlendType(tech.Blending, this.currentDevice.DepthWrite);
 
 			// Bind Shader
-			NativeShaderProgram shader = (tech.Shader.Res != null ? tech.Shader.Res.Native : null) as NativeShaderProgram;
-			NativeShaderProgram.Bind(shader);
+			ShaderProgram shader = tech.Shader.Res ?? ShaderProgram.Minimal.Res;
+			NativeShaderProgram nativeShader = shader.Native as NativeShaderProgram;
+			NativeShaderProgram.Bind(nativeShader);
 
 			// Setup shader data
-			if (shader != null)
+			ShaderFieldInfo[] varInfo = nativeShader.Fields;
+			int[] locations = nativeShader.FieldLocations;
+			int[] builtinIndices = nativeShader.BuiltinVariableIndex;
+			ShaderParameters shaderParams = material.Parameters;
+			ShaderParameters defaultParams = nativeShader.DefaultParameters;
+
+			// Setup sampler bindings automatically
+			int curSamplerIndex = 0;
+			for (int i = 0; i < varInfo.Length; i++)
 			{
-				ShaderFieldInfo[] varInfo = shader.Fields;
-				int[] locations = shader.FieldLocations;
-				int[] builtinIndices = shader.BuiltinVariableIndex;
-				ShaderParameters shaderParams = material.Parameters;
+				if (locations[i] == -1) continue;
+				if (varInfo[i].Type != ShaderFieldType.Sampler2D) continue;
 
-				// Setup sampler bindings automatically
-				int curSamplerIndex = 0;
-				for (int i = 0; i < varInfo.Length; i++)
-				{
-					if (locations[i] == -1) continue;
-					if (varInfo[i].Type != ShaderFieldType.Sampler2D) continue;
+				// Bind Texture
+				ContentRef<Texture> texRef = 
+					shaderParams.GetInternalTexture(varInfo[i].Name).Res ?? 
+					defaultParams.GetInternalTexture(varInfo[i].Name).Res;
+				NativeTexture.Bind(texRef, curSamplerIndex);
+				GL.Uniform1(locations[i], curSamplerIndex);
 
-					// Bind Texture
-					ContentRef<Texture> texRef = shaderParams.GetInternalTexture(varInfo[i].Name);
-					NativeTexture.Bind(texRef, curSamplerIndex);
-					GL.Uniform1(locations[i], curSamplerIndex);
-
-					curSamplerIndex++;
-				}
-				NativeTexture.ResetBinding(curSamplerIndex);
-
-				// Transfer uniform data from material to actual shader
-				for (int i = 0; i < varInfo.Length; i++)
-				{
-					if (locations[i] == -1) continue;
-					float[] data = shaderParams.GetInternalData(varInfo[i].Name);
-					if (data == null) continue;
-
-					NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);
-				}
-
-				// Specify builtin shader variables, if requested
-				float[] fieldValue = null;
-				for (int i = 0; i < builtinIndices.Length; i++)
-				{
-					if (BuiltinShaderFields.TryGetValue(this.currentDevice, builtinIndices[i], ref fieldValue))
-						NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], fieldValue);
-				}
+				curSamplerIndex++;
 			}
-			// Setup fixed function data
-			else
+			NativeTexture.ResetBinding(curSamplerIndex);
+
+			// Transfer uniform data from material to the shader
+			for (int i = 0; i < varInfo.Length; i++)
 			{
-				// Fixed function texture binding
-				NativeTexture.Bind(material.MainTexture, 0);
-				NativeTexture.ResetBinding(1);
+				if (locations[i] == -1) continue;
+				if (varInfo[i].Type == ShaderFieldType.Sampler2D) continue;
+
+				float[] data = 
+					shaderParams.GetInternalData(varInfo[i].Name) ?? 
+					defaultParams.GetInternalData(varInfo[i].Name);
+				if (data == null) continue;
+		
+				NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);
+			}
+
+			// Specify builtin shader variables, if requested
+			float[] fieldValue = null;
+			for (int i = 0; i < builtinIndices.Length; i++)
+			{
+				if (BuiltinShaderFields.TryGetValue(this.currentDevice, builtinIndices[i], ref fieldValue))
+					NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], fieldValue);
 			}
 		}
 		private void SetupBlendType(BlendMode mode, bool depthWrite = true)

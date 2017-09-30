@@ -34,7 +34,7 @@ namespace DualStickSpaceShooter
 
 			// Create a Canvas to auto-generate vertices from high-level drawing commands.
 			Canvas canvas = new Canvas(device, this.buffer);
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
 			canvas.State.TextFont = this.font;
 
 			// Retrieve players

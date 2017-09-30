@@ -103,7 +103,8 @@ namespace Duality.Resources
 			get { return this.info.Parameters; }
 		}
 		/// <summary>
-		/// [GET / SET] The main color, typically used for coloring displayed vertices.
+		/// [GET / SET] The main color of the material. This property is a shortcut for
+		/// a regular shader parameter as accessible via <see cref="Parameters"/>.
 		/// </summary>
 		public ColorRgba MainColor
 		{
@@ -111,7 +112,8 @@ namespace Duality.Resources
 			set { this.info.MainColor = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The Materials main texture.
+		/// [GET / SET] The main texture of the material. This property is a shortcut for
+		/// a regular shader parameter as accessible via <see cref="Parameters"/>.
 		/// </summary>
 		public ContentRef<Texture> MainTexture
 		{

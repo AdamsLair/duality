@@ -388,7 +388,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				if (this.camAction != CameraAction.None)
 				{
 					canvas.PushState();
-					canvas.State.ColorTint = ColorRgba.White.WithAlpha(0.5f);
+					canvas.State.ColorTint *= ColorRgba.White.WithAlpha(0.5f);
 					if (this.camAction == CameraAction.DragScene)
 					{
 						// Don't draw anything.
@@ -431,7 +431,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				ColorRgba focusColor = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.25f).WithAlpha(255);
 				ColorRgba noFocusColor = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f).WithAlpha(255);
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.Focused ? focusColor : noFocusColor));
+				canvas.State.ColorTint *= this.Focused ? focusColor : noFocusColor;
 				canvas.DrawRect(0, 0, canvas.DrawDevice.TargetSize.X, canvas.DrawDevice.TargetSize.Y);
 			}
 			canvas.PopState();
@@ -1012,28 +1012,28 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (e.RenderStepId == this.camPassBg.Id)
 			{
 				Canvas canvas = new Canvas(e.Device);
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
+				canvas.State.ColorTint = this.FgColor;
 				canvas.State.TextFont = Duality.Resources.Font.GenericMonospace8;
 				this.OnCollectStateBackgroundDrawcalls(canvas);
 			}
 			else if (e.RenderStepId == this.camPassEdWorld.Id)
 			{
 				Canvas canvas = new Canvas(e.Device);
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
+				canvas.State.ColorTint = this.FgColor;
 				canvas.State.TextFont = Duality.Resources.Font.GenericMonospace8;
 				this.OnCollectStateDrawcalls(canvas);
 			}
 			else if (e.RenderStepId == this.camPassEdWorldNoDepth.Id)
 			{
 				Canvas canvas = new Canvas(e.Device);
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
+				canvas.State.ColorTint = this.FgColor;
 				canvas.State.TextFont = Duality.Resources.Font.GenericMonospace8;
 				this.OnCollectStateWorldOverlayDrawcalls(canvas);
 			}
 			else if (e.RenderStepId == this.camPassEdScreen.Id)
 			{
 				Canvas canvas = new Canvas(e.Device);
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
+				canvas.State.ColorTint = this.FgColor;
 				canvas.State.TextFont = OverlayFont;
 				this.OnCollectStateOverlayDrawcalls(canvas);
 			}

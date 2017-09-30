@@ -157,12 +157,11 @@ namespace DynamicLighting
 		public override void Draw(IDrawDevice device)
 		{
 			Texture mainTex = this.RetrieveMainTex();
-			ColorRgba mainClr = this.RetrieveMainColor();
 			DrawTechnique tech = this.RetrieveDrawTechnique();
 
 			Rect uvRect;
 			this.GetUVRect(mainTex, this.spriteIndex, out uvRect);
-			this.PrepareVerticesLight(ref this.verticesLight, device, mainClr, uvRect, tech);
+			this.PrepareVerticesLight(ref this.verticesLight, device, this.colorTint, uvRect, tech);
 
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.verticesLight);

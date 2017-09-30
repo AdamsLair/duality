@@ -100,7 +100,7 @@ namespace CustomRenderingSetup
 
 			// Extract bright spots from the rendered image
 			{
-				BatchInfo material = new BatchInfo(this.techFilterBrightness, ColorRgba.White);
+				BatchInfo material = new BatchInfo(this.techFilterBrightness);
 				material.MainTexture = step.Input.MainTexture;
 				material.Parameters.SetValue("minBrightness", this.minBrightness);
 				material.Parameters.SetValue("bloomStrength", this.bloomStrength);
@@ -110,7 +110,7 @@ namespace CustomRenderingSetup
 			// Downsample to lowest target
 			for (int i = 1; i < this.targetPingPongA.Length; i++)
 			{
-				BatchInfo material = new BatchInfo(this.techDownsample, ColorRgba.White);
+				BatchInfo material = new BatchInfo(this.techDownsample);
 				material.MainTexture = this.targetPingPongA[i - 1].Targets[0];
 				this.Blit(drawDevice, material, this.targetPingPongA[i]);
 			}
@@ -118,7 +118,7 @@ namespace CustomRenderingSetup
 			// Blur all targets, separating horizontal and vertical blur
 			for (int i = 0; i < this.targetPingPongA.Length; i++)
 			{
-				BatchInfo material = new BatchInfo(this.techBlur, ColorRgba.White);
+				BatchInfo material = new BatchInfo(this.techBlur);
 
 				material.MainTexture = this.targetPingPongA[i].Targets[0];
 				material.Parameters.SetValue("blurDirection", new Vector2(1.0f, 0.0f));
@@ -131,7 +131,7 @@ namespace CustomRenderingSetup
 
 			// Combine all targets into the final image using the draw device's original target
 			{
-				BatchInfo material = new BatchInfo(this.techCombineFinal, ColorRgba.White);
+				BatchInfo material = new BatchInfo(this.techCombineFinal);
 				material.MainTexture = step.Input.MainTexture;
 				material.Parameters.SetValue("blurFullTex", this.targetPingPongA[0].Targets[0]);
 				material.Parameters.SetValue("blurHalfTex", this.targetPingPongA[1].Targets[0]);

@@ -45,6 +45,25 @@ namespace Duality.Drawing
 			set { this.SetTexture(ShaderFieldInfo.DefaultNameMainTex, value); }
 		}
 		/// <summary>
+		/// [GET / SET] Shortcut for accessing the <see cref="ShaderFieldInfo.DefaultNameMainColor"/> variable.
+		/// </summary>
+		public ColorRgba MainColor
+		{
+			get
+			{
+				Vector4 color = this.GetValue<Vector4>(ShaderFieldInfo.DefaultNameMainColor);
+				return new ColorRgba(color.X, color.Y, color.Z, color.W);
+			}
+			set
+			{
+				this.SetValue<Vector4>(ShaderFieldInfo.DefaultNameMainColor, new Vector4(
+					value.R / 255.0f, 
+					value.G / 255.0f, 
+					value.B / 255.0f, 
+					value.A / 255.0f));
+			}
+		}
+		/// <summary>
 		/// [GET] A 64 bit hash value that represents this particular collection of
 		/// shader parameters. The same set of parameters will always have the same
 		/// hash value.
@@ -89,11 +108,29 @@ namespace Duality.Drawing
 		/// Removes a variable from storage inside this <see cref="ShaderParameters"/> instance.
 		/// </summary>
 		/// <param name="name"></param>
-		public void Remove(string name)
+		public bool Remove(string name)
 		{
 			int index = this.FindIndex(name);
-			if (index != -1) this.values.RemoveAt(index);
-			this.UpdateHash();
+			if (index != -1)
+			{
+				this.values.RemoveAt(index);
+				this.UpdateHash();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		/// <summary>
+		/// Returns whether a variable with the specified name is defined in this parameter set.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public bool HasValue(string name)
+		{
+			int index = this.FindIndex(name);
+			return index != -1;
 		}
 		
 		/// <summary>

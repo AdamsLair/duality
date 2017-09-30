@@ -161,15 +161,6 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			else
 				return null;
 		}
-		private ColorRgba RetrieveMainColor()
-		{
-			if (this.customMat != null)
-				return this.customMat.MainColor * this.colorTint;
-			else if (this.sharedMat.IsAvailable)
-				return this.sharedMat.Res.MainColor * this.colorTint;
-			else
-				return this.colorTint;
-		}
 		private void PrepareVertices(ref VertexC1P3T2[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect)
 		{
 			Transform transform = this.GameObj.Transform;
@@ -254,7 +245,6 @@ namespace Duality.Samples.Tilemaps.RpgLike
 		public override void Draw(IDrawDevice device)
 		{
 			Texture mainTex = this.RetrieveMainTex();
-			ColorRgba mainClr = this.RetrieveMainColor();
 
 			Rect uvRect;
 			if (mainTex != null)
@@ -269,7 +259,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 				uvRect = new Rect(1.0f, 1.0f);
 			}
 
-			this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
+			this.PrepareVertices(ref this.vertices, device, this.colorTint, uvRect);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);
 			else

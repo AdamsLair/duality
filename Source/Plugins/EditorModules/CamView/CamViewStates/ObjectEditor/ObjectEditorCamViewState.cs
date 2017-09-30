@@ -191,7 +191,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					canvas.DrawDevice.PreprocessCoords(ref posTemp, ref scaleTemp);
 					posTemp.Z = 0.0f;
 					{
-						ColorRgba color = canvas.State.ColorTint * canvas.State.Material.MainColor;
+						ColorRgba color = canvas.State.ColorTint;
 						VertexC1P3[] vertices = new VertexC1P3[4];
 						vertices[0].Pos = posTemp - right * 5.0f;
 						vertices[1].Pos = posTemp + right * 5.0f;
@@ -228,17 +228,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			canvas.PushState();
 			if (this.actionLockedAxis == ObjectEditorAxisLock.X)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Red, 0.5f)));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid));
+				canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, ColorRgba.Red, 0.5f);
 				canvas.DrawLine(x - r, y, z, x + r, y, z);
 			}
 			if (this.actionLockedAxis == ObjectEditorAxisLock.Y)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Green, 0.5f)));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid));
+				canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, ColorRgba.Green, 0.5f);
 				canvas.DrawLine(x, y - r, z, x, y + r, z);
 			}
 			if (this.actionLockedAxis == ObjectEditorAxisLock.Z)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Blue, 0.5f)));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid));
+				canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, ColorRgba.Blue, 0.5f);
 				canvas.DrawLine(x, y, MathF.Max(z - r, refPos.Z + nearZ + 10), x, y, z);
 				canvas.DrawLine(x, y, z, x, y, z + r);
 			}
@@ -594,15 +597,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Point cursorPos = this.PointToClient(Cursor.Position);
 			canvas.PushState();
 			canvas.State.DepthOffset = -1.0f;
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid));
 			
 			// Draw indirectly selected object overlay
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f)));
+			canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f);
 			this.DrawSelectionMarkers(canvas, this.indirectObjSel);
 			if (this.mouseoverObject != null && (this.mouseoverAction == ObjectEditorAction.RectSelect || this.mouseoverSelect) && !transformObjSel.Contains(this.mouseoverObject)) 
 				this.DrawSelectionMarkers(canvas, new [] { this.mouseoverObject });
 
 			// Draw selected object overlay
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
+			canvas.State.ColorTint = this.FgColor;
 			this.DrawSelectionMarkers(canvas, transformObjSel);
 
 			// Draw overall selection boundary
@@ -612,7 +616,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				float maxZDiff = transformObjSel.Max(t => MathF.Abs(t.Pos.Z - midZ));
 				if (maxZDiff > 0.001f)
 				{
-					canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f)));
+					canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f);
 					canvas.DrawSphere(
 						this.selectionCenter.X, 
 						this.selectionCenter.Y, 
@@ -621,7 +625,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				}
 				else
 				{
-					canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f)));
+					canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f);
 					canvas.DrawCircle(
 						this.selectionCenter.X, 
 						this.selectionCenter.Y, 
@@ -637,7 +641,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				float dotR = 3.0f / this.GetScaleAtZ(this.selectionCenter.Z);
 				canvas.State.DepthOffset -= 0.1f;
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
+				canvas.State.ColorTint = this.FgColor;
 				canvas.FillCircle(
 					this.selectionCenter.X + this.selectionRadius, 
 					this.selectionCenter.Y, 

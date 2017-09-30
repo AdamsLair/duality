@@ -14,7 +14,6 @@ namespace Duality.Drawing
 	public class BatchInfo : IEquatable<BatchInfo>
 	{
 		private ContentRef<DrawTechnique> technique  = DrawTechnique.Mask;
-		private ColorRgba                 mainColor  = ColorRgba.White;
 		private ShaderParameters          parameters = null;
 		
 		/// <summary>
@@ -34,15 +33,17 @@ namespace Duality.Drawing
 			get { return this.parameters; }
 		}
 		/// <summary>
-		/// [GET / SET] The main color, typically used for coloring displayed vertices.
+		/// [GET / SET] The main color of the material. This property is a shortcut for
+		/// a regular shader parameter as accessible via <see cref="Parameters"/>.
 		/// </summary>
 		public ColorRgba MainColor
 		{
-			get { return this.mainColor; }
-			set { this.mainColor = value; }
+			get { return this.parameters.MainColor; }
+			set { this.parameters.MainColor = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The main texture.
+		/// [GET / SET] The main texture of the material. This property is a shortcut for
+		/// a regular shader parameter as accessible via <see cref="Parameters"/>.
 		/// </summary>
 		public ContentRef<Texture> MainTexture
 		{
@@ -69,7 +70,6 @@ namespace Duality.Drawing
 		public BatchInfo(BatchInfo source)
 		{
 			this.technique = source.technique;
-			this.mainColor = source.mainColor;
 			this.parameters = new ShaderParameters(source.parameters);
 		}
 		/// <summary>
@@ -77,10 +77,18 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="technique">The <see cref="Duality.Resources.DrawTechnique"/> to use.</param>
 		/// <param name="mainColor">The <see cref="MainColor"/> to use.</param>
-		public BatchInfo(ContentRef<DrawTechnique> technique, ColorRgba mainColor) : this()
+		public BatchInfo(ContentRef<DrawTechnique> technique) : this()
 		{
 			this.technique = technique;
-			this.mainColor = mainColor;
+		}
+		/// <summary>
+		/// Creates a new color-only BatchInfo.
+		/// </summary>
+		/// <param name="technique">The <see cref="Duality.Resources.DrawTechnique"/> to use.</param>
+		/// <param name="mainColor">The <see cref="MainColor"/> to use.</param>
+		public BatchInfo(ContentRef<DrawTechnique> technique, ColorRgba mainColor) : this(technique)
+		{
+			this.MainColor = mainColor;
 		}
 		/// <summary>
 		/// Creates a new single-texture BatchInfo.
@@ -88,10 +96,8 @@ namespace Duality.Drawing
 		/// <param name="technique">The <see cref="Duality.Resources.DrawTechnique"/> to use.</param>
 		/// <param name="mainColor">The <see cref="MainColor"/> to use.</param>
 		/// <param name="mainTex">The main <see cref="Duality.Resources.Texture"/> to use.</param>
-		public BatchInfo(ContentRef<DrawTechnique> technique, ColorRgba mainColor, ContentRef<Texture> mainTex) : this() 
+		public BatchInfo(ContentRef<DrawTechnique> technique, ColorRgba mainColor, ContentRef<Texture> mainTex) : this(technique, mainColor) 
 		{
-			this.technique = technique;
-			this.mainColor = mainColor;
 			this.MainTexture = mainTex;
 		}
 
@@ -107,7 +113,6 @@ namespace Duality.Drawing
 			unchecked
 			{
 				hashCode = hashCode * 23 + this.technique.GetHashCode();
-				hashCode = hashCode * 23 + this.mainColor.GetHashCode();
 				hashCode = hashCode * 23 + this.parameters.GetHashCode();
 			}
 			return hashCode;
@@ -124,7 +129,6 @@ namespace Duality.Drawing
 		{
 			return
 				this.technique == other.technique &&
-				this.mainColor == other.mainColor &&
 				this.parameters.Equals(other.parameters);
 		}
 	}

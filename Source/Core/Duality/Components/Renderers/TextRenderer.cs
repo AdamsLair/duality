@@ -132,14 +132,13 @@ namespace Duality.Components.Renderers
 					posTemp.Y += 0.5f;
 			}
 
-			ColorRgba matColor = this.customMat != null ? this.customMat.MainColor : ColorRgba.White;
 			int[] vertLen = this.text.EmitVertices(
 				ref this.vertFont, 
 				ref this.vertIcon, 
 				posTemp.X, 
 				posTemp.Y, 
 				posTemp.Z + this.offset, 
-				this.colorTint * matColor, 
+				this.colorTint, 
 				xDot, 
 				yDot);
 			if (this.text.Fonts != null)

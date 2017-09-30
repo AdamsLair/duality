@@ -28,7 +28,7 @@ namespace Duality.Backend.DefaultOpenTK
 				curBound = prog;
 			}
 		}
-		public static void SetUniform(ref ShaderFieldInfo field, int location, params float[] data)
+		public static void SetUniform(ref ShaderFieldInfo field, int location, float[] data)
 		{
 			if (field.Scope != ShaderFieldScope.Uniform) return;
 			if (location == -1) return;
@@ -68,6 +68,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private ShaderFieldInfo[] fields;
 		private int[] fieldLocations;
 		private int[] builtinIndex;
+		private ShaderParameters defaultParameters;
 
 		public int Handle
 		{
@@ -89,6 +90,10 @@ namespace Duality.Backend.DefaultOpenTK
 		public int[] BuiltinVariableIndex
 		{
 			get { return this.builtinIndex; }
+		}
+		public ShaderParameters DefaultParameters
+		{
+			get { return this.defaultParameters; }
 		}
 
 		void INativeShaderProgram.LoadProgram(INativeShaderPart vertex, INativeShaderPart fragment)
@@ -163,6 +168,11 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			if (!anyBuildinUsed)
 				this.builtinIndex = new int[0];
+
+			// Setup default shader variable values - for now, just a few hardcoded ones
+			this.defaultParameters = new ShaderParameters();
+			this.defaultParameters.MainColor = ColorRgba.White;
+			this.defaultParameters.MainTexture = Texture.White;
 		}
 		ShaderFieldInfo[] INativeShaderProgram.GetFields()
 		{

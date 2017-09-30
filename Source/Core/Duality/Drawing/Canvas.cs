@@ -145,7 +145,7 @@ namespace Duality.Drawing
 			float scale = 1.0f;
 			this.device.PreprocessCoords(ref pos, ref scale);
 
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(points.Length);
 			for (int i = 0; i < points.Length; i++)
@@ -182,7 +182,7 @@ namespace Duality.Drawing
 			int segmentNum = MathF.Clamp(MathF.RoundToInt(MathF.Pow(r * scale, 0.65f) * 2.5f), 4, 128);
 			Vector2 shapeHandle = pos.Xy;
 			float shapeHandleScale = scale;
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices;
 			float angle;
@@ -258,7 +258,7 @@ namespace Duality.Drawing
 			device.PreprocessCoords(ref target, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(2);
 
@@ -317,7 +317,7 @@ namespace Duality.Drawing
 			device.PreprocessCoords(ref target, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(2);
 			vertices[0].Pos = pos + new Vector3(0.5f, 0.5f, 0.0f);
 			vertices[1].Pos = target + new Vector3(0.5f, 0.5f, 0.0f);
@@ -368,7 +368,7 @@ namespace Duality.Drawing
 			Vector2 right2 = dir.PerpendicularRight * width * 0.5f * scale2;
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
 
@@ -420,7 +420,7 @@ namespace Duality.Drawing
 			device.PreprocessCoords(ref pos, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
 
@@ -492,7 +492,7 @@ namespace Duality.Drawing
 			int segmentNum = MathF.Clamp(MathF.RoundToInt(MathF.Pow(MathF.Max(width, height), 0.65f) * 3.5f * angleRange / MathF.RadAngle360), 4, 128);
 			float angleStep = angleRange / segmentNum;
 			Vector2 shapeHandle = pos.Xy - new Vector2(width, height);
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			int vertexCount = segmentNum + (loop ? 0 : 1) + (outline ? 2 : 0);
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(vertexCount);
@@ -639,7 +639,7 @@ namespace Duality.Drawing
 			float scale = 1.0f;
 			this.device.PreprocessCoords(ref pos, ref scale);
 
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 
 			// Determine bounding box
@@ -715,7 +715,7 @@ namespace Duality.Drawing
 			Vector2 right2 = dir.PerpendicularRight * width * 0.5f * scale2;
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
 
@@ -812,7 +812,7 @@ namespace Duality.Drawing
 			int segmentNum = MathF.Clamp(MathF.RoundToInt(MathF.Pow(MathF.Max(width, height), 0.65f) * 3.5f * angleRange / MathF.RadAngle360), 4, 128);
 			float angleStep = angleRange / segmentNum;
 			Vector2 shapeHandle = pos.Xy - new Vector2(width, height);
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			int vertexCount;
 			VertexC1P3T2[] vertices;
@@ -982,7 +982,7 @@ namespace Duality.Drawing
 			device.PreprocessCoords(ref pos, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
 
@@ -1066,16 +1066,14 @@ namespace Duality.Drawing
 				padding.Y = padding.H * this.State.TransformScale.Y * 0.5f;
 				MathF.TransformCoord(ref padding.X, ref padding.Y, this.State.TransformAngle);
 
-				ColorRgba baseColor = this.State.MaterialDirect.MainColor * this.State.ColorTint;
+				ColorRgba baseColor = this.State.ColorTint;
 				const float backAlpha = 0.65f;
 				float baseAlpha = (float)baseColor.A / 255.0f;
 				float baseLuminance = baseColor.GetLuminance();
 
 				this.PushState();
-				this.State.SetMaterial(new BatchInfo(
-					Resources.DrawTechnique.Alpha, 
-					(baseLuminance > 0.5f ? ColorRgba.Black : ColorRgba.White).WithAlpha(baseAlpha * backAlpha)));
-				this.State.ColorTint = ColorRgba.White;
+				this.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+				this.State.ColorTint = (baseLuminance > 0.5f ? ColorRgba.Black : ColorRgba.White).WithAlpha(baseAlpha * backAlpha);
 				this.State.DepthOffset += 1.0f;
 				this.FillRect(
 					x - padding.X, 
@@ -1126,7 +1124,7 @@ namespace Duality.Drawing
 				if (vertices[i] == null || vertices[i].Length < text[i].Length * 4)
 					vertices[i] = this.buffer.RequestVertexArray(text[i].Length * 4);
 
-				int vertexCount = font.EmitTextVertices(text[i], ref vertices[i], pos.X, pos.Y, pos.Z, this.State.ColorTint * this.State.MaterialDirect.MainColor, 0.0f, scale);
+				int vertexCount = font.EmitTextVertices(text[i], ref vertices[i], pos.X, pos.Y, pos.Z, this.State.ColorTint, 0.0f, scale);
 
 				this.State.TransformVertices(vertices[i], shapeHandle, scale);
 				device.AddVertices(material, VertexMode.Quads, vertices[i], vertexCount);
@@ -1186,16 +1184,14 @@ namespace Duality.Drawing
 				padding.Y = padding.H * this.State.TransformScale.Y * 0.5f;
 				MathF.TransformCoord(ref padding.X, ref padding.Y, this.State.TransformAngle);
 
-				ColorRgba baseColor = this.State.MaterialDirect.MainColor * this.State.ColorTint;
+				ColorRgba baseColor = this.State.ColorTint;
 				const float backAlpha = 0.65f;
 				float baseAlpha = (float)baseColor.A / 255.0f;
 				float baseLuminance = baseColor.GetLuminance();
 
 				this.PushState();
-				this.State.SetMaterial(new BatchInfo(
-					Resources.DrawTechnique.Alpha, 
-					(baseLuminance > 0.5f ? ColorRgba.Black : ColorRgba.White).WithAlpha(baseAlpha * backAlpha)));
-				this.State.ColorTint = ColorRgba.White;
+				this.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+				this.State.ColorTint = (baseLuminance > 0.5f ? ColorRgba.Black : ColorRgba.White).WithAlpha(baseAlpha * backAlpha);
 				this.FillRect(
 					x - padding.X, 
 					y - padding.Y, 
@@ -1222,7 +1218,7 @@ namespace Duality.Drawing
 				}
 			}
 			Vector2 shapeHandle = pos.Xy;
-			int[] vertLen = text.EmitVertices(ref vertText, ref vertIcon, pos.X, pos.Y, pos.Z, this.State.ColorTint * this.State.MaterialDirect.MainColor, 0.0f, scale);
+			int[] vertLen = text.EmitVertices(ref vertText, ref vertIcon, pos.X, pos.Y, pos.Z, this.State.ColorTint, 0.0f, scale);
 			
 			if (text.Fonts != null)
 			{
@@ -1316,7 +1312,7 @@ namespace Duality.Drawing
 			float scale = 1.0f;
 			this.device.PreprocessCoords(ref pos, ref scale);
 
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			
 			// Determine line width on the inside and outside of the original polygon

@@ -167,15 +167,6 @@ namespace Duality.Components.Renderers
 			else
 				return null;
 		}
-		protected ColorRgba RetrieveMainColor()
-		{
-			if (this.customMat != null)
-				return this.customMat.MainColor * this.colorTint;
-			else if (this.sharedMat.IsAvailable)
-				return this.sharedMat.Res.MainColor * this.colorTint;
-			else
-				return this.colorTint;
-		}
 		protected DrawTechnique RetrieveDrawTechnique()
 		{
 			if (this.customMat != null)
@@ -316,11 +307,10 @@ namespace Duality.Components.Renderers
 		public override void Draw(IDrawDevice device)
 		{
 			Texture mainTex = this.RetrieveMainTex();
-			ColorRgba mainClr = this.RetrieveMainColor();
 
 			Rect uvRect;
 			this.GetUVRect(mainTex, this.spriteIndex, out uvRect);
-			this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
+			this.PrepareVertices(ref this.vertices, device, this.colorTint, uvRect);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);
 			else

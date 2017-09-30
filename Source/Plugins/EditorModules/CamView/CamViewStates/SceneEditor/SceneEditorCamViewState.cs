@@ -80,7 +80,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (this.ObjAction == ObjectEditorAction.None && this.DragMustWait && !this.dragLastLoc.IsEmpty)
 			{
 				canvas.PushState();
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
 				canvas.State.ColorTint = ColorRgba.White.WithAlpha(this.DragMustWaitProgress);
 				canvas.FillCircle(
 					this.dragLastLoc.X, 

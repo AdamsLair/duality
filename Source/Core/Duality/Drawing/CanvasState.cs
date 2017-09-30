@@ -12,7 +12,7 @@ namespace Duality.Drawing
 	/// </summary>
 	public class CanvasState : ICloneExplicit
 	{
-		private static readonly BatchInfo DefaultMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
+		private static readonly BatchInfo DefaultMaterial = new BatchInfo(DrawTechnique.Mask);
 
 		private	BatchInfo			batchInfo;
 		private	ColorRgba			color;

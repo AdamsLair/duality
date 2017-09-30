@@ -46,7 +46,7 @@ namespace Duality.Components.Diagnostics
 				VisualLogs.All;
 			
 			Canvas target = new Canvas(device, this.vertexBuffer);
-			target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
+			target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
 			target.State.DepthOffset = this.overlay ? 0.0f : -1.0f;
 			
 			foreach (VisualLog log in logs)
@@ -55,7 +55,8 @@ namespace Duality.Components.Diagnostics
 				if (log.BaseColor.A == 0) continue;
 				if ((log.VisibilityGroup & device.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) continue;
 
-				target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, log.BaseColor));
+				target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+				target.State.ColorTint = log.BaseColor;
 				foreach (VisualLogEntry logEntry in log.Entries)
 				{
 					bool isOverlayLog = logEntry.Anchor == VisualLogAnchor.Screen;
@@ -64,9 +65,9 @@ namespace Duality.Components.Diagnostics
 					target.PushState();
 					target.State.DepthOffset += logEntry.DepthOffset;
 					if (logEntry.LifetimeAsAlpha)
-						target.State.ColorTint = new ColorRgba(1.0f, logEntry.LifetimeRatio);
-					else
-						target.State.ColorTint = ColorRgba.White;
+					{
+						target.State.ColorTint *= new ColorRgba(1.0f, logEntry.LifetimeRatio);
+					}
 					
 					if (logEntry.Anchor == VisualLogAnchor.Object && logEntry.AnchorObj != null && logEntry.AnchorObj.Transform != null)
 					{

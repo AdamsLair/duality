@@ -289,7 +289,7 @@ namespace Duality.Components.Diagnostics
 			
 			IDrawDevice device = canvas.DrawDevice;
 
-			ColorRgba baseColor = canvas.State.ColorTint * canvas.State.MaterialDirect.MainColor;
+			ColorRgba baseColor = canvas.State.ColorTint;
 			float sampleXRatio = w / (float)(values.Length - 1);
 			
 			if (vertices == null)
