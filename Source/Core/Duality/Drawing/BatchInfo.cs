@@ -125,7 +125,7 @@ namespace Duality.Drawing
 			return
 				this.technique == other.technique &&
 				this.mainColor == other.mainColor &&
-				this.parameters == other.parameters;
+				this.parameters.Equals(other.parameters);
 		}
 	}
 }
