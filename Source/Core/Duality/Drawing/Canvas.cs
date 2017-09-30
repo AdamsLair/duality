@@ -1104,15 +1104,15 @@ namespace Duality.Drawing
 			}
 			Vector2 shapeHandle = pos.Xy;
 			
-			BatchInfo customMat;
+			BatchInfo material;
 			if (this.State.IsDefaultMaterial)
 			{
-				customMat = new BatchInfo(font.Material);
+				material = font.Material.Info;
 			}
 			else
 			{
-				customMat = new BatchInfo(this.State.MaterialDirect);
-				customMat.MainTexture = font.Material.MainTexture;
+				material = new BatchInfo(this.State.MaterialDirect);
+				material.MainTexture = font.Material.MainTexture;
 			}
 
 			// Prepare for attempt to use Canvas buffering
@@ -1129,7 +1129,7 @@ namespace Duality.Drawing
 				int vertexCount = font.EmitTextVertices(text[i], ref vertices[i], pos.X, pos.Y, pos.Z, this.State.ColorTint * this.State.MaterialDirect.MainColor, 0.0f, scale);
 
 				this.State.TransformVertices(vertices[i], shapeHandle, scale);
-				device.AddVertices(customMat, VertexMode.Quads, vertices[i], vertexCount);
+				device.AddVertices(material, VertexMode.Quads, vertices[i], vertexCount);
 
 				pos.Y += font.LineSpacing * scale;
 			}
@@ -1231,17 +1231,17 @@ namespace Duality.Drawing
 					if (text.Fonts[i] != null && text.Fonts[i].IsAvailable) 
 					{
 						this.State.TransformVertices(vertText[i], shapeHandle, scale);
-						BatchInfo customMat;
+						BatchInfo material;
 						if (this.State.IsDefaultMaterial)
 						{
-							customMat = new BatchInfo(text.Fonts[i].Res.Material);
+							material = text.Fonts[i].Res.Material.Info;
 						}
 						else
 						{
-							customMat = new BatchInfo(this.State.MaterialDirect);
-							customMat.MainTexture = text.Fonts[i].Res.Material.MainTexture;
+							material = new BatchInfo(this.State.MaterialDirect);
+							material.MainTexture = text.Fonts[i].Res.Material.MainTexture;
 						}
-						device.AddVertices(customMat, VertexMode.Quads, vertText[i], vertLen[i + 1]);
+						device.AddVertices(material, VertexMode.Quads, vertText[i], vertLen[i + 1]);
 					}
 				}
 			}
