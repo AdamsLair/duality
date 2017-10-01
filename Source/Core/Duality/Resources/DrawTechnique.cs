@@ -77,11 +77,13 @@ namespace Duality.Resources
 		}
 		
 
-		private	BlendMode					blendType	= BlendMode.Solid;
-		private	ContentRef<ShaderProgram>	shader		= null;
-		private	Type						prefType	= null;
+		private BlendMode                 blendType         = BlendMode.Solid;
+		private ContentRef<ShaderProgram> shader            = null;
+		private Type                      prefType          = null;
 		[DontSerialize]
-		private	VertexDeclaration		prefFormat	= null;
+		private VertexDeclaration         prefFormat        = null;
+		[DontSerialize]
+		private ShaderParameters          defaultParameters = null;
 
 		/// <summary>
 		/// [GET / SET] Specifies how incoming color values interact with the existing background color.
@@ -99,6 +101,27 @@ namespace Duality.Resources
 		{
 			get { return this.shader; }
 			set { this.shader = value; }
+		}
+		/// <summary>
+		/// [GET] The set of default parameters that acts as a fallback in cases
+		/// where a parameter has not been set by a <see cref="Material"/> or <see cref="BatchInfo"/>.
+		/// 
+		/// The result of this property should be treated as read-only.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public ShaderParameters DefaultParameters
+		{
+			get
+			{
+				if (this.defaultParameters == null)
+				{
+					// Setup default values on demand - for now, just a few hardcoded ones
+					this.defaultParameters = new ShaderParameters();
+					this.defaultParameters.MainColor = ColorRgba.White;
+					this.defaultParameters.MainTexture = Texture.White;
+				}
+				return this.defaultParameters;
+			}
 		}
 		/// <summary>
 		/// [GET / SET] The vertex format that is preferred by this DrawTechnique. If there is no specific preference,
