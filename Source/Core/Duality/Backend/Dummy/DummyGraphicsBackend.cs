@@ -32,7 +32,7 @@ namespace Duality.Backend.Dummy
 		}
 		void IDualityBackend.Init()
 		{
-			Log.Core.WriteWarning("DummyGraphicsBackend initialized. This is unusual and may cause problems when someone tries to load images.");
+			Log.Core.WriteWarning("DummyGraphicsBackend initialized. This is unusual and may cause problems when interacting with graphic devices or rendering.");
 		}
 		void IDualityBackend.Shutdown() { }
 
