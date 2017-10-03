@@ -95,16 +95,8 @@ namespace Duality.Resources
 			set { this.info.Technique = value; }
 		}
 		/// <summary>
-		/// [GET] The collection of shader parameters that will be used when setting up 
-		/// a shader program for rendering with this <see cref="Material"/>.
-		/// </summary>
-		public ShaderParameterCollection Parameters
-		{
-			get { return this.info.Parameters; }
-		}
-		/// <summary>
 		/// [GET / SET] The main color of the material. This property is a shortcut for
-		/// a regular shader parameter as accessible via <see cref="Parameters"/>.
+		/// a regular shader parameter as accessible via <see cref="GetValue"/>.
 		/// </summary>
 		public ColorRgba MainColor
 		{
@@ -113,7 +105,7 @@ namespace Duality.Resources
 		}
 		/// <summary>
 		/// [GET / SET] The main texture of the material. This property is a shortcut for
-		/// a regular shader parameter as accessible via <see cref="Parameters"/>.
+		/// a regular shader parameter as accessible via <see cref="GetTexture"/>.
 		/// </summary>
 		public ContentRef<Texture> MainTexture
 		{
@@ -154,6 +146,76 @@ namespace Duality.Resources
 		public Material(BatchInfo info)
 		{
 			this.info = new BatchInfo(info);
+		}
+
+		/// <summary>
+		/// Assigns an array of values to the specified variable. All values are copied and converted into
+		/// a shared internal format.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		/// <seealso cref="BatchInfo.SetArray"/>
+		public void SetArray<T>(string name, T[] value) where T : struct
+		{
+			this.info.SetArray<T>(name, value);
+		}
+		/// <summary>
+		/// Assigns a blittable value to the specified variable. All values are copied and converted into
+		/// a shared internal format.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		/// <seealso cref="BatchInfo.SetValue"/>
+		public void SetValue<T>(string name, T value) where T : struct
+		{
+			this.info.SetValue<T>(name, value);
+		}
+		/// <summary>
+		/// Assigns a texture to the specified variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		/// <seealso cref="BatchInfo.SetTexture"/>
+		public void SetTexture(string name, ContentRef<Texture> value)
+		{
+			this.info.SetTexture(name, value);
+		}
+		
+		/// <summary>
+		/// Retrieves a copy of the values that are assigned the specified variable. If the internally 
+		/// stored type does not match the specified type, it will be converted before returning.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		/// <seealso cref="BatchInfo.GetArray"/>
+		public T[] GetArray<T>(string name) where T : struct
+		{
+			return this.info.GetArray<T>(name);
+		}
+		/// <summary>
+		/// Retrieves a blittable value from the specified variable. All values are copied and converted into
+		/// a shared internal format.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		/// <seealso cref="BatchInfo.GetValue"/>
+		public T GetValue<T>(string name) where T : struct
+		{
+			return this.info.GetValue<T>(name);
+		}
+		/// <summary>
+		/// Retrieves a texture from the specified variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		/// <seealso cref="BatchInfo.GetTexture"/>
+		public ContentRef<Texture> GetTexture(string name)
+		{
+			return this.info.GetTexture(name);
 		}
 	}
 }

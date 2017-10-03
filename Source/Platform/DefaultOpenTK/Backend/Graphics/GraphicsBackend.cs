@@ -560,8 +560,6 @@ namespace Duality.Backend.DefaultOpenTK
 			ShaderFieldInfo[] varInfo = nativeShader.Fields;
 			int[] locations = nativeShader.FieldLocations;
 			int[] builtinIndices = nativeShader.BuiltinVariableIndex;
-			ShaderParameterCollection shaderParams = material.Parameters;
-			ShaderParameterCollection defaultParams = tech.DefaultParameters;
 
 			// Setup sampler bindings automatically
 			int curSamplerIndex = 0;
@@ -571,9 +569,7 @@ namespace Duality.Backend.DefaultOpenTK
 				if (varInfo[i].Type != ShaderFieldType.Sampler2D) continue;
 
 				// Bind Texture
-				ContentRef<Texture> texRef = 
-					shaderParams.GetInternalTexture(varInfo[i].Name).Res ?? 
-					defaultParams.GetInternalTexture(varInfo[i].Name).Res;
+				ContentRef<Texture> texRef = material.GetInternalTexture(varInfo[i].Name);
 				NativeTexture.Bind(texRef, curSamplerIndex);
 				GL.Uniform1(locations[i], curSamplerIndex);
 
@@ -587,9 +583,7 @@ namespace Duality.Backend.DefaultOpenTK
 				if (locations[i] == -1) continue;
 				if (varInfo[i].Type == ShaderFieldType.Sampler2D) continue;
 
-				float[] data = 
-					shaderParams.GetInternalData(varInfo[i].Name) ?? 
-					defaultParams.GetInternalData(varInfo[i].Name);
+				float[] data = material.GetInternalData(varInfo[i].Name);
 				if (data == null) continue;
 		
 				NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);

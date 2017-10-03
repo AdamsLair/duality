@@ -83,7 +83,7 @@ namespace Duality.Resources
 		[DontSerialize]
 		private VertexDeclaration         prefFormat        = null;
 		[DontSerialize]
-		private ShaderParameterCollection          defaultParameters = null;
+		private ShaderParameterCollection defaultParameters = null;
 
 		/// <summary>
 		/// [GET / SET] Specifies how incoming color values interact with the existing background color.
@@ -117,8 +117,8 @@ namespace Duality.Resources
 				{
 					// Setup default values on demand - for now, just a few hardcoded ones
 					this.defaultParameters = new ShaderParameterCollection();
-					this.defaultParameters.MainColor = ColorRgba.White;
-					this.defaultParameters.MainTexture = Texture.White;
+					this.defaultParameters.Set(ShaderFieldInfo.DefaultNameMainColor, Vector4.One);
+					this.defaultParameters.Set(ShaderFieldInfo.DefaultNameMainTex, Texture.White);
 				}
 				return this.defaultParameters;
 			}

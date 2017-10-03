@@ -25,30 +25,33 @@ namespace Duality.Drawing
 			set { this.technique = value; }
 		}
 		/// <summary>
-		/// [GET] The collection of shader parameters that will be used when setting up 
-		/// a shader program for rendering with this <see cref="BatchInfo"/>.
-		/// </summary>
-		public ShaderParameterCollection Parameters
-		{
-			get { return this.parameters; }
-		}
-		/// <summary>
-		/// [GET / SET] The main color of the material. This property is a shortcut for
-		/// a regular shader parameter as accessible via <see cref="Parameters"/>.
-		/// </summary>
-		public ColorRgba MainColor
-		{
-			get { return this.parameters.MainColor; }
-			set { this.parameters.MainColor = value; }
-		}
-		/// <summary>
 		/// [GET / SET] The main texture of the material. This property is a shortcut for
-		/// a regular shader parameter as accessible via <see cref="Parameters"/>.
+		/// a regular shader parameter as accessible via <see cref="GetTexture"/>.
 		/// </summary>
 		public ContentRef<Texture> MainTexture
 		{
-			get { return this.parameters.MainTexture; }
-			set { this.parameters.MainTexture = value; }
+			get { return this.GetTexture(ShaderFieldInfo.DefaultNameMainTex); }
+			set { this.SetTexture(ShaderFieldInfo.DefaultNameMainTex, value); }
+		}
+		/// <summary>
+		/// [GET / SET] The main color of the material. This property is a shortcut for
+		/// a regular shader parameter as accessible via <see cref="GetValue"/>.
+		/// </summary>
+		public ColorRgba MainColor
+		{
+			get
+			{
+				Vector4 color = this.GetValue<Vector4>(ShaderFieldInfo.DefaultNameMainColor);
+				return new ColorRgba(color.X, color.Y, color.Z, color.W);
+			}
+			set
+			{
+				this.SetValue<Vector4>(ShaderFieldInfo.DefaultNameMainColor, new Vector4(
+					value.R / 255.0f, 
+					value.G / 255.0f, 
+					value.B / 255.0f, 
+					value.A / 255.0f));
+			}
 		}
 
 		/// <summary>
@@ -100,11 +103,153 @@ namespace Duality.Drawing
 		{
 			this.MainTexture = mainTex;
 		}
+		
+		/// <summary>
+		/// Assigns an array of values to the specified variable. All values are copied and converted into
+		/// a shared internal format.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		/// <seealso cref="ShaderParameterCollection.Set"/>
+		public void SetArray<T>(string name, T[] value) where T : struct
+		{
+			this.parameters.Set(name, value);
+		}
+		/// <summary>
+		/// Assigns a blittable value to the specified variable. All values are copied and converted into
+		/// a shared internal format.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		/// <seealso cref="ShaderParameterCollection.Set"/>
+		public void SetValue<T>(string name, T value) where T : struct
+		{
+			this.parameters.Set(name, value);
+		}
+		/// <summary>
+		/// Assigns a texture to the specified variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		/// <seealso cref="ShaderParameterCollection.Set"/>
+		public void SetTexture(string name, ContentRef<Texture> value)
+		{
+			this.parameters.Set(name, value);
+		}
+		
+		/// <summary>
+		/// Retrieves a copy of the values that are assigned the specified variable. If the internally 
+		/// stored type does not match the specified type, it will be converted before returning.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		/// <seealso cref="ShaderParameterCollection.TryGet"/>
+		public T[] GetArray<T>(string name) where T : struct
+		{
+			// Retrieve the material parameter if available
+			T[] result;
+			if (this.parameters != null && this.parameters.TryGet(name, out result))
+				return result;
+
+			// Fall back to the used techniques default parameter value
+			DrawTechnique tech = this.technique.Res;
+			if (tech != null && tech.DefaultParameters.TryGet(name, out result))
+				return result;
+
+			return null;
+		}
+		/// <summary>
+		/// Retrieves a blittable value from the specified variable. All values are copied and converted into
+		/// a shared internal format.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		/// <seealso cref="ShaderParameterCollection.TryGet"/>
+		public T GetValue<T>(string name) where T : struct
+		{
+			// Retrieve the material parameter if available
+			T result;
+			if (this.parameters != null && this.parameters.TryGet(name, out result))
+				return result;
+
+			// Fall back to the used techniques default parameter value
+			DrawTechnique tech = this.technique.Res;
+			if (tech != null && tech.DefaultParameters.TryGet(name, out result))
+				return result;
+
+			return default(T);
+		}
+		/// <summary>
+		/// Retrieves a texture from the specified variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		/// <seealso cref="ShaderParameterCollection.TryGet"/>
+		public ContentRef<Texture> GetTexture(string name)
+		{
+			// Retrieve the material parameter if available
+			ContentRef<Texture> result;
+			if (this.parameters != null && this.parameters.TryGet(name, out result))
+				return result;
+
+			// Fall back to the used techniques default parameter value
+			DrawTechnique tech = this.technique.Res;
+			if (tech != null && tech.DefaultParameters.TryGet(name, out result))
+				return result;
+
+			return null;
+		}
+
+		/// <summary>
+		/// Retrieves the internal representation of the specified variables numeric value.
+		/// The returned array should be treated as read-only.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public float[] GetInternalData(string name)
+		{
+			// Retrieve the material parameter if available
+			float[] result;
+			if (this.parameters != null && this.parameters.TryGetInternal(name, out result))
+				return result;
+
+			// Fall back to the used techniques default parameter value
+			DrawTechnique tech = this.technique.Res;
+			if (tech != null && tech.DefaultParameters.TryGetInternal(name, out result))
+				return result;
+
+			return null;
+		}
+		/// <summary>
+		/// Retrieves the internal representation of the specified variables texture value.
+		/// The returned value should be treated as read-only.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public ContentRef<Texture> GetInternalTexture(string name)
+		{
+			// Retrieve the material parameter if available
+			ContentRef<Texture> result;
+			if (this.parameters != null && this.parameters.TryGetInternal(name, out result))
+				return result;
+
+			// Fall back to the used techniques default parameter value
+			DrawTechnique tech = this.technique.Res;
+			if (tech != null && tech.DefaultParameters.TryGetInternal(name, out result))
+				return result;
+
+			return null;
+		}
 
 		public override string ToString()
 		{
-			return string.Format("{0} ({1})",
-				this.parameters, 
+			return string.Format("{0}, #{1:X8} ({2})",
+				this.MainTexture.Name, 
+				this.MainColor.ToIntRgba(),
 				this.technique.Name);
 		}
 		public override int GetHashCode()

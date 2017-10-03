@@ -480,8 +480,7 @@ namespace Duality.Drawing
 
 				material = new BatchInfo(material);
 				material.Technique = DrawTechnique.Picking;
-				if (material.MainTexture == null)
-					material.MainTexture = Texture.White;
+				material.MainColor = ColorRgba.White;
 			}
 			else if (material.Technique == null || !material.Technique.IsAvailable)
 			{

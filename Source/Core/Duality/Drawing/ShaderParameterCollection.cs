@@ -28,6 +28,14 @@ namespace Duality.Drawing
 			public string Name;
 			public ContentRef<Texture> Texture;
 			public float[] Uniform;
+
+			public override string ToString()
+			{
+				if (this.Uniform != null)
+					return string.Format("{0}: {1}", this.Name, this.Uniform.ToString(", "));
+				else
+					return string.Format("{0}: {1}", this.Name, this.Texture);
+			}
 		}
 
 		private static readonly IComparer<ValueItem> nameComparer = new NameComparer();
@@ -37,33 +45,6 @@ namespace Duality.Drawing
 		
 		
 		/// <summary>
-		/// [GET / SET] Shortcut for accessing the <see cref="ShaderFieldInfo.DefaultNameMainTex"/> texture variable.
-		/// </summary>
-		public ContentRef<Texture> MainTexture
-		{
-			get { return this.GetTexture(ShaderFieldInfo.DefaultNameMainTex); }
-			set { this.SetTexture(ShaderFieldInfo.DefaultNameMainTex, value); }
-		}
-		/// <summary>
-		/// [GET / SET] Shortcut for accessing the <see cref="ShaderFieldInfo.DefaultNameMainColor"/> variable.
-		/// </summary>
-		public ColorRgba MainColor
-		{
-			get
-			{
-				Vector4 color = this.GetValue<Vector4>(ShaderFieldInfo.DefaultNameMainColor);
-				return new ColorRgba(color.X, color.Y, color.Z, color.W);
-			}
-			set
-			{
-				this.SetValue<Vector4>(ShaderFieldInfo.DefaultNameMainColor, new Vector4(
-					value.R / 255.0f, 
-					value.G / 255.0f, 
-					value.B / 255.0f, 
-					value.A / 255.0f));
-			}
-		}
-		/// <summary>
 		/// [GET] A 64 bit hash value that represents this particular collection of
 		/// shader parameters. The same set of parameters will always have the same
 		/// hash value.
@@ -71,6 +52,19 @@ namespace Duality.Drawing
 		public ulong Hash
 		{
 			get { return this.hash; }
+		}
+		/// <summary>
+		/// [GET] Enumerates all variables in this collection by name.
+		/// </summary>
+		public IEnumerable<string> Names
+		{
+			get
+			{
+				for (int i = 0; i < this.values.Count; i++)
+				{
+					yield return this.values.Data[i].Name;
+				}
+			}
 		}
 
 
@@ -144,7 +138,7 @@ namespace Duality.Drawing
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetArray<T>(string name, T[] value) where T : struct
+		public void Set<T>(string name, T[] value) where T : struct
 		{
 			if (string.IsNullOrEmpty(name)) ThrowInvalidName();;
 			if (value == null || value.Length == 0) ThrowInvalidValue();
@@ -279,7 +273,7 @@ namespace Duality.Drawing
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetValue<T>(string name, T value) where T : struct
+		public void Set<T>(string name, T value) where T : struct
 		{
 			if (string.IsNullOrEmpty(name)) ThrowInvalidName();
 
@@ -380,7 +374,7 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetTexture(string name, ContentRef<Texture> value)
+		public void Set(string name, ContentRef<Texture> value)
 		{
 			if (string.IsNullOrEmpty(name)) ThrowInvalidName();
 			
@@ -416,35 +410,40 @@ namespace Duality.Drawing
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public T[] GetArray<T>(string name) where T : struct
+		public bool TryGet<T>(string name, out T[] value) where T : struct
 		{
-			if (string.IsNullOrEmpty(name)) return null;
+			value = null;
+			if (string.IsNullOrEmpty(name)) return false;
 
-			float[] rawData = this.GetInternalData(name);
+			float[] rawData;
+			if (!this.TryGetInternal(name, out rawData)) return false;
+
 			if (typeof(T) == typeof(float))
 			{
-				if (rawData == null || rawData.Length < 1) return null;
+				if (rawData.Length < 1) return false;
 				float[] result = new float[rawData.Length / 1];
 				for (int i = 0; i < result.Length; i++)
 				{
 					result[i] = rawData[i];
 				}
-				return (T[])(object)result;
+				value = (T[])(object)result;
+				return true;
 			}
 			else if (typeof(T) == typeof(Vector2))
 			{
-				if (rawData == null || rawData.Length < 2) return null;
+				if (rawData.Length < 2) return false;
 				Vector2[] result = new Vector2[rawData.Length / 2];
 				for (int i = 0; i < result.Length; i++)
 				{
 					result[i].X = rawData[i * 2 + 0];
 					result[i].Y = rawData[i * 2 + 1];
 				}
-				return (T[])(object)result;
+				value = (T[])(object)result;
+				return true;
 			}
 			else if (typeof(T) == typeof(Vector3))
 			{
-				if (rawData == null || rawData.Length < 3) return null;
+				if (rawData.Length < 3) return false;
 				Vector3[] result = new Vector3[rawData.Length / 3];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -452,11 +451,12 @@ namespace Duality.Drawing
 					result[i].Y = rawData[i * 3 + 1];
 					result[i].Z = rawData[i * 3 + 2];
 				}
-				return (T[])(object)result;
+				value = (T[])(object)result;
+				return true;
 			}
 			else if (typeof(T) == typeof(Vector4))
 			{
-				if (rawData == null || rawData.Length < 4) return null;
+				if (rawData.Length < 4) return false;
 				Vector4[] result = new Vector4[rawData.Length / 4];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -465,11 +465,12 @@ namespace Duality.Drawing
 					result[i].Z = rawData[i * 4 + 2];
 					result[i].W = rawData[i * 4 + 3];
 				}
-				return (T[])(object)result;
+				value = (T[])(object)result;
+				return true;
 			}
 			else if (typeof(T) == typeof(Matrix3))
 			{
-				if (rawData == null || rawData.Length < 9) return null;
+				if (rawData.Length < 9) return false;
 				Matrix3[] result = new Matrix3[rawData.Length / 9];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -483,11 +484,12 @@ namespace Duality.Drawing
 					result[i].Row2.Y = rawData[i * 9 + 7];
 					result[i].Row2.Z = rawData[i * 9 + 8];
 				}
-				return (T[])(object)result;
+				value = (T[])(object)result;
+				return true;
 			}
 			else if (typeof(T) == typeof(Matrix4))
 			{
-				if (rawData == null || rawData.Length < 16) return null;
+				if (rawData.Length < 16) return false;
 				Matrix4[] result = new Matrix4[rawData.Length / 16];
 				for (int i = 0; i < result.Length; i++)
 				{
@@ -508,43 +510,47 @@ namespace Duality.Drawing
 					result[i].Row3.Z = rawData[i * 16 + 14];
 					result[i].Row3.W = rawData[i * 16 + 15];
 				}
-				return (T[])(object)result;
+				value = (T[])(object)result;
+				return true;
 			}
 			else if (typeof(T) == typeof(int))
 			{
-				if (rawData == null || rawData.Length < 1) return null;
+				if (rawData.Length < 1) return false;
 				int[] result = new int[rawData.Length / 1];
 				for (int i = 0; i < result.Length; i++)
 				{
 					result[i] = MathF.RoundToInt(rawData[i]);
 				}
-				return (T[])(object)result;
+				value = (T[])(object)result;
+				return true;
 			}
 			else if (typeof(T) == typeof(Point2))
 			{
-				if (rawData == null || rawData.Length < 2) return null;
+				if (rawData.Length < 2) return false;
 				Point2[] result = new Point2[rawData.Length / 2];
 				for (int i = 0; i < result.Length; i++)
 				{
 					result[i].X = MathF.RoundToInt(rawData[i * 2 + 0]);
 					result[i].Y = MathF.RoundToInt(rawData[i * 2 + 1]);
 				}
-				return (T[])(object)result;
+				value = (T[])(object)result;
+				return true;
 			}
 			else if (typeof(T) == typeof(bool))
 			{
-				if (rawData == null || rawData.Length < 1) return null;
+				if (rawData.Length < 1) return false;
 				bool[] result = new bool[rawData.Length / 1];
 				for (int i = 0; i < result.Length; i++)
 				{
 					result[i] = rawData[i] != 0.0f;
 				}
-				return (T[])(object)result;
+				value = (T[])(object)result;
+				return true;
 			}
 			else
 			{
 				ThrowUnsupportedValueType<T>();
-				return null;
+				return false;
 			}
 		}
 		/// <summary>
@@ -558,69 +564,81 @@ namespace Duality.Drawing
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public T GetValue<T>(string name) where T : struct
+		public bool TryGet<T>(string name, out T value) where T : struct
 		{
-			if (string.IsNullOrEmpty(name)) return default(T);
+			value = default(T);
+			if (string.IsNullOrEmpty(name)) return false;
+			
+			float[] rawData;
+			if (!this.TryGetInternal(name, out rawData)) return false;
 
-			float[] rawData = this.GetInternalData(name);
 			if (typeof(T) == typeof(float))
 			{
-				if (rawData == null || rawData.Length < 1) return default(T);
-				return (T)(object)rawData[0];
+				if (rawData.Length < 1) return false;
+				value = (T)(object)rawData[0];
+				return true;
 			}
 			else if (typeof(T) == typeof(Vector2))
 			{
-				if (rawData == null || rawData.Length < 2) return default(T);
-				return (T)(object)new Vector2(rawData[0], rawData[1]);
+				if (rawData.Length < 2) return false;
+				value = (T)(object)new Vector2(rawData[0], rawData[1]);
+				return true;
 			}
 			else if (typeof(T) == typeof(Vector3))
 			{
-				if (rawData == null || rawData.Length < 3) return default(T);
-				return (T)(object)new Vector3(rawData[0], rawData[1], rawData[2]);
+				if (rawData.Length < 3) return false;
+				value = (T)(object)new Vector3(rawData[0], rawData[1], rawData[2]);
+				return true;
 			}
 			else if (typeof(T) == typeof(Vector4))
 			{
-				if (rawData == null || rawData.Length < 4) return default(T);
-				return (T)(object)new Vector4(rawData[0], rawData[1], rawData[2], rawData[3]);
+				if (rawData.Length < 4) return false;
+				value = (T)(object)new Vector4(rawData[0], rawData[1], rawData[2], rawData[3]);
+				return true;
 			}
 			else if (typeof(T) == typeof(Matrix3))
 			{
-				if (rawData == null || rawData.Length < 9) return default(T);
-				return (T)(object)new Matrix3(
+				if (rawData.Length < 9) return false;
+				value = (T)(object)new Matrix3(
 					rawData[0], rawData[1], rawData[2], 
 					rawData[3], rawData[4], rawData[5], 
 					rawData[6], rawData[7], rawData[8]);
+				return true;
 			}
 			else if (typeof(T) == typeof(Matrix4))
 			{
-				if (rawData == null || rawData.Length < 16) return default(T);
-				return (T)(object)new Matrix4(
+				if (rawData.Length < 16) return false;
+				value = (T)(object)new Matrix4(
 					rawData[0], rawData[1], rawData[2], rawData[3], 
 					rawData[4], rawData[5], rawData[6], rawData[7], 
 					rawData[8], rawData[9], rawData[10], rawData[11], 
 					rawData[12], rawData[13], rawData[14], rawData[15]);
+				return true;
 			}
 			else if (typeof(T) == typeof(int))
 			{
-				if (rawData == null || rawData.Length < 1) return default(T);
-				return (T)(object)MathF.RoundToInt(rawData[0]);
+				if (rawData.Length < 1) return false;
+				value = (T)(object)MathF.RoundToInt(rawData[0]);
+				return true;
 			}
 			else if (typeof(T) == typeof(Point2))
 			{
-				if (rawData == null || rawData.Length < 2) return default(T);
-				return (T)(object)new Point2(
+				if (rawData.Length < 2) return false;
+				value = (T)(object)new Point2(
 					MathF.RoundToInt(rawData[0]), 
 					MathF.RoundToInt(rawData[1]));
+				return true;
 			}
 			else if (typeof(T) == typeof(bool))
 			{
-				if (rawData == null || rawData.Length < 1) return default(T);
-				return (T)(object)(rawData[0] != 0.0f);
+				if (rawData.Length < 1) return false;
+				value = (T)(object)(rawData[0] != 0.0f);
+				return true;
 			}
 			else
 			{
 				ThrowUnsupportedValueType<T>();
-				return default(T);
+				return false;
 			}
 		}
 		/// <summary>
@@ -628,9 +646,9 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public ContentRef<Texture> GetTexture(string name)
+		public bool TryGet(string name, out ContentRef<Texture> value)
 		{
-			return this.GetInternalTexture(name);
+			return this.TryGetInternal(name, out value);
 		}
 
 		/// <summary>
@@ -639,13 +657,19 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public float[] GetInternalData(string name)
+		public bool TryGetInternal(string name, out float[] value)
 		{
 			int index = this.FindIndex(name);
 			if (index == -1)
-				return null;
+			{
+				value = null;
+				return false;
+			}
 			else
-				return this.values.Data[index].Uniform;
+			{
+				value = this.values.Data[index].Uniform;
+				return true;
+			}
 		}
 		/// <summary>
 		/// Retrieves the internal representation of the specified variables texture value.
@@ -653,13 +677,19 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public ContentRef<Texture> GetInternalTexture(string name)
+		public bool TryGetInternal(string name, out ContentRef<Texture> value)
 		{
 			int index = this.FindIndex(name);
 			if (index == -1)
-				return null;
+			{
+				value = null;
+				return false;
+			}
 			else
-				return this.values.Data[index].Texture;
+			{
+				value = this.values.Data[index].Texture;
+				return true;
+			}
 		}
 
 		private int FindIndex(string name)
@@ -791,51 +821,20 @@ namespace Duality.Drawing
 		public override string ToString()
 		{
 			StringBuilder builder = new StringBuilder();
-			
-			ContentRef<Texture> mainTex = this.MainTexture;
-			int texCount = 0;
-			int uniformCount = 0;
+			int otherCount = this.values.Count;
 
-			// Count textures and uniforms
-			if (this.values != null)
+			ContentRef<Texture> mainTex;
+			if (this.TryGet(ShaderFieldInfo.DefaultNameMainTex, out mainTex))
 			{
-				int count = this.values.Count;
-				ValueItem[] data = this.values.Data;
-				for (int i = 0; i < data.Length; i++)
-				{
-					if (i >= count) break;
-					if (data[i].Uniform != null)
-						uniformCount++;
-					else
-						texCount++;
-				}
-			}
-
-			if (mainTex != null)
-			{
-				builder.Append(ShaderFieldInfo.DefaultNameMainTex);
-				builder.Append(" \"");
 				builder.Append(mainTex.Name);
-				builder.Append('"');
-
-				if (texCount > 1)
-				{
-					builder.Append(", +");
-					builder.Append(texCount - 1);
-					builder.Append(" textures");
-				}
-			}
-			else
-			{
-				builder.Append(texCount);
-				builder.Append(" textures");
+				otherCount--;
 			}
 
-			if (uniformCount > 0)
+			if (otherCount > 0)
 			{
-				if (builder.Length != 0) builder.Append(", ");
-				builder.Append(uniformCount);
-				builder.Append(" uniforms");
+				if (builder.Length != 0) builder.Append(", +");
+				builder.Append(otherCount);
+				builder.Append(" vars");
 			}
 
 			return builder.ToString();

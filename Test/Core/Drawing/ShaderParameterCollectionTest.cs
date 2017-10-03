@@ -12,7 +12,7 @@ using NUnit.Framework;
 
 namespace Duality.Tests.Drawing
 {
-	public class ShaderParametersTest
+	public class ShaderParameterCollectionTest
 	{
 		[Test] public void GetSetCasting()
 		{
@@ -20,48 +20,48 @@ namespace Duality.Tests.Drawing
 			string[] names = new string[] { "Foo", "Bar" };
 
 			// Set some value with various names and types which can be used interchangably
-			data.SetArray(names[0], new[] { 1.0f, 2.0f, 3.0f, 4.0f });
-			data.SetArray(names[1], new[] { 1, 2, 3, 4 });
+			data.Set(names[0], new[] { 1.0f, 2.0f, 3.0f, 4.0f });
+			data.Set(names[1], new[] { 1, 2, 3, 4 });
 
 			// Add more data that is unrelated to the test
-			data.SetValue("Unrelated", 42);
-			data.SetTexture("Unrelated2", Texture.Checkerboard);
+			data.Set("Unrelated", 42);
+			data.Set("Unrelated2", Texture.Checkerboard);
 
 			// Assert that we can retrieve set values using any supported type
 			foreach (string name in names)
 			{
 				// Float-based types
-				Assert.AreEqual(1.0f, data.GetValue<float>(name));
-				Assert.AreEqual(new Vector2(1.0f, 2.0f), data.GetValue<Vector2>(name));
-				Assert.AreEqual(new Vector3(1.0f, 2.0f, 3.0f), data.GetValue<Vector3>(name));
-				Assert.AreEqual(new Vector4(1.0f, 2.0f, 3.0f, 4.0f), data.GetValue<Vector4>(name));
+				Assert.AreEqual(1.0f, GetValue<float>(data, name));
+				Assert.AreEqual(new Vector2(1.0f, 2.0f), GetValue<Vector2>(data, name));
+				Assert.AreEqual(new Vector3(1.0f, 2.0f, 3.0f), GetValue<Vector3>(data, name));
+				Assert.AreEqual(new Vector4(1.0f, 2.0f, 3.0f, 4.0f), GetValue<Vector4>(data, name));
 
 				// Int-based types
-				Assert.AreEqual(1, data.GetValue<int>(name));
-				Assert.AreEqual(new Point2(1, 2), data.GetValue<Point2>(name));
+				Assert.AreEqual(1, GetValue<int>(data, name));
+				Assert.AreEqual(new Point2(1, 2), GetValue<Point2>(data, name));
 
 				// Arrays of float-based types
-				CollectionAssert.AreEqual(new [] { 1.0f, 2.0f,3.0f, 4.0f }, data.GetArray<float>(name) );
-				CollectionAssert.AreEqual(new [] { new Vector2(1.0f, 2.0f), new Vector2(3.0f, 4.0f) }, data.GetArray<Vector2>(name) );
-				CollectionAssert.AreEqual(new [] { new Vector3(1.0f, 2.0f, 3.0f) }, data.GetArray<Vector3>(name) );
+				CollectionAssert.AreEqual(new [] { 1.0f, 2.0f,3.0f, 4.0f }, GetArray<float>(data, name) );
+				CollectionAssert.AreEqual(new [] { new Vector2(1.0f, 2.0f), new Vector2(3.0f, 4.0f) }, GetArray<Vector2>(data, name) );
+				CollectionAssert.AreEqual(new [] { new Vector3(1.0f, 2.0f, 3.0f) }, GetArray<Vector3>(data, name) );
 
 				// Arrays of int-based types
-				CollectionAssert.AreEqual(new [] { 1, 2, 3, 4 }, data.GetArray<int>(name) );
-				CollectionAssert.AreEqual(new [] { new Point2(1, 2), new Point2(3, 4) }, data.GetArray<Point2>(name) );
+				CollectionAssert.AreEqual(new [] { 1, 2, 3, 4 }, GetArray<int>(data, name) );
+				CollectionAssert.AreEqual(new [] { new Point2(1, 2), new Point2(3, 4) }, GetArray<Point2>(data, name) );
 
 				// Booleans
-				Assert.AreEqual(true, data.GetValue<bool>(name));
+				Assert.AreEqual(true, GetValue<bool>(data, name));
 
 				// Types we don't have enough data for
-				Assert.AreEqual(default(Matrix3), data.GetValue<Matrix3>(name));
-				Assert.AreEqual(default(Matrix4), data.GetValue<Matrix4>(name));
-				Assert.AreEqual(null, data.GetArray<Matrix3>(name));
-				Assert.AreEqual(null, data.GetArray<Matrix4>(name));
+				Assert.AreEqual(default(Matrix3), GetValue<Matrix3>(data, name));
+				Assert.AreEqual(default(Matrix4), GetValue<Matrix4>(data, name));
+				Assert.AreEqual(null, GetArray<Matrix3>(data, name));
+				Assert.AreEqual(null, GetArray<Matrix4>(data, name));
 			}
 
 			// Check if the unrelated data is still there as well
-			Assert.AreEqual(42, data.GetValue<int>("Unrelated"));
-			Assert.AreEqual(Texture.Checkerboard, data.GetTexture("Unrelated2"));
+			Assert.AreEqual(42, GetValue<int>(data, "Unrelated"));
+			Assert.AreEqual(Texture.Checkerboard, GetTexture(data, "Unrelated2"));
 		}
 		[Test] public void GetSetArray()
 		{
@@ -96,23 +96,23 @@ namespace Duality.Tests.Drawing
 			ShaderParameterCollection data = new ShaderParameterCollection();
 			
 			// Set the specified data and expect to get it back when asking
-			data.SetTexture("Foo", Texture.DualityIcon);
-			Assert.AreEqual(Texture.DualityIcon, data.GetTexture("Foo"));
+			data.Set("Foo", Texture.DualityIcon);
+			Assert.AreEqual(Texture.DualityIcon, GetTexture(data, "Foo"));
 		}
 		[Test] public void EqualityCheck()
 		{
 			// Create a base instance of shader parameters to compare to
 			ShaderParameterCollection first = new ShaderParameterCollection();
 
-			first.SetArray("A", new[] { 1.0f, 2.0f, 3.0f, 4.0f });
-			first.SetArray("B", new[] { new Vector4(1.0f, 2.0f, 3.0f, 4.0f) });
-			first.SetArray("C", new[] { new Vector2(1.0f, 2.0f), new Vector2(3.0f, 4.0f) });
-			first.SetArray("D", new[] { true, false });
-			first.SetArray("E", new[] { 1, 2, 3, 4 });
-			first.SetArray("F", new[] { new Point2(1, 2), new Point2(3, 4) });
-			first.SetTexture("G", Texture.Checkerboard);
-			first.SetArray("H", new[] { Matrix3.Identity });
-			first.SetArray("I", new[] { Matrix4.Identity });
+			first.Set("A", new[] { 1.0f, 2.0f, 3.0f, 4.0f });
+			first.Set("B", new[] { new Vector4(1.0f, 2.0f, 3.0f, 4.0f) });
+			first.Set("C", new[] { new Vector2(1.0f, 2.0f), new Vector2(3.0f, 4.0f) });
+			first.Set("D", new[] { true, false });
+			first.Set("E", new[] { 1, 2, 3, 4 });
+			first.Set("F", new[] { new Point2(1, 2), new Point2(3, 4) });
+			first.Set("G", Texture.Checkerboard);
+			first.Set("H", new[] { Matrix3.Identity });
+			first.Set("I", new[] { Matrix4.Identity });
 
 			// Assert that the base instance equals itself and copies of itself
 			Assert.AreEqual(first, first);
@@ -124,15 +124,15 @@ namespace Duality.Tests.Drawing
 
 			Assert.AreNotEqual(first, second);
 
-			second.SetArray("A", new[] { 1.0f, 2.0f, 3.0f, 4.0f });
-			second.SetArray("B", new[] { new Vector4(1.0f, 2.0f, 3.0f, 4.0f) });
-			second.SetArray("C", new[] { new Vector2(1.0f, 2.0f), new Vector2(3.0f, 4.0f) });
-			second.SetArray("D", new[] { true, false });
-			second.SetArray("E", new[] { 1, 2, 3, 4 });
-			second.SetArray("F", new[] { new Point2(1, 2), new Point2(3, 4) });
-			second.SetTexture("G", Texture.Checkerboard);
-			second.SetArray("H", new[] { Matrix3.Identity });
-			second.SetArray("I", new[] { Matrix4.Identity });
+			second.Set("A", new[] { 1.0f, 2.0f, 3.0f, 4.0f });
+			second.Set("B", new[] { new Vector4(1.0f, 2.0f, 3.0f, 4.0f) });
+			second.Set("C", new[] { new Vector2(1.0f, 2.0f), new Vector2(3.0f, 4.0f) });
+			second.Set("D", new[] { true, false });
+			second.Set("E", new[] { 1, 2, 3, 4 });
+			second.Set("F", new[] { new Point2(1, 2), new Point2(3, 4) });
+			second.Set("G", Texture.Checkerboard);
+			second.Set("H", new[] { Matrix3.Identity });
+			second.Set("I", new[] { Matrix4.Identity });
 
 			Assert.AreEqual(first, second);
 
@@ -168,14 +168,14 @@ namespace Duality.Tests.Drawing
 		{
 			// Create a new params instance via copy and modify its values
 			ShaderParameterCollection first = new ShaderParameterCollection();
-			first.SetArray("Foo", new[] { 1.0f, 2.0f, 3.0f, 4.0f });
+			first.Set("Foo", new[] { 1.0f, 2.0f, 3.0f, 4.0f });
 
 			ShaderParameterCollection second = new ShaderParameterCollection(first);
-			second.SetArray("Foo", new[] { 5.0f, 6.0f, 7.0f, 8.0f });
+			second.Set("Foo", new[] { 5.0f, 6.0f, 7.0f, 8.0f });
 
 			// Assert that each instance has its own values and no accidental shallow copy was made
-			CollectionAssert.AreEqual(new[] { 1.0f, 2.0f, 3.0f, 4.0f }, first.GetArray<float>("Foo"));
-			CollectionAssert.AreEqual(new[] { 5.0f, 6.0f, 7.0f, 8.0f }, second.GetArray<float>("Foo"));
+			CollectionAssert.AreEqual(new[] { 1.0f, 2.0f, 3.0f, 4.0f }, GetArray<float>(first, "Foo"));
+			CollectionAssert.AreEqual(new[] { 5.0f, 6.0f, 7.0f, 8.0f }, GetArray<float>(second, "Foo"));
 		}
 
 		[TestCase(1000)]
@@ -212,7 +212,7 @@ namespace Duality.Tests.Drawing
 						rnd.NextFloat(0.0f, 1.0f) * 
 						rnd.NextFloat(0.0f, 1.0f);
 				}
-				data.SetArray(names[i], values[i]);
+				data.Set(names[i], values[i]);
 			}
 
 			// We'll make the test a little harder by masking each hash value to 
@@ -233,7 +233,7 @@ namespace Duality.Tests.Drawing
 					int changeIndex = rnd.Next(TextureVariableCount);
 					string name = names[ValueVariableCount + changeIndex];
 					ContentRef<Texture> tex = new ContentRef<Texture>(null, GetRandomString(rnd, builder));
-					data.SetTexture(name, tex);
+					data.Set(name, tex);
 				}
 				else
 				{
@@ -244,7 +244,7 @@ namespace Duality.Tests.Drawing
 						rnd.NextFloat(-1000.0f, 1000.0f) * 
 						rnd.NextFloat(0.0f, 1.0f) * 
 						rnd.NextFloat(0.0f, 1.0f);
-					data.SetArray(name, value);
+					data.Set(name, value);
 				}
 
 				// Assert that we did not have a hash collision
@@ -256,6 +256,32 @@ namespace Duality.Tests.Drawing
 			}
 		}
 		
+
+		private static T GetValue<T>(ShaderParameterCollection parameters, string name) where T : struct
+		{
+			T result;
+			if (parameters.TryGet(name, out result))
+				return result;
+			else
+				return default(T);
+		}
+		private static T[] GetArray<T>(ShaderParameterCollection parameters, string name) where T : struct
+		{
+			T[] result;
+			if (parameters.TryGet(name, out result))
+				return result;
+			else
+				return null;
+		}
+		private static ContentRef<Texture> GetTexture(ShaderParameterCollection parameters, string name)
+		{
+			ContentRef<Texture> result;
+			if (parameters.TryGet(name, out result))
+				return result;
+			else
+				return null;
+		}
+
 		private static string GetRandomString(Random rnd, StringBuilder builder)
 		{
 			builder.Clear();
@@ -276,29 +302,30 @@ namespace Duality.Tests.Drawing
 		private static void AssertSetGetValue<T>(ShaderParameterCollection data, T value) where T : struct
 		{
 			// Set the specified data and expect to get it back when asking
-			data.SetValue("Foo", value);
-			Assert.AreEqual(value, data.GetValue<T>("Foo"));
+			data.Set("Foo", value);
+			Assert.AreEqual(value, GetValue<T>(data, "Foo"));
 		}
 		private static void AssertSetGetArray<T>(ShaderParameterCollection data, T[] array) where T : struct
 		{
 			// Set the specified array data
-			data.SetArray("Foo", array);
+			data.Set("Foo", array);
 
 			// Assert that all data we put in can be retrieved unaltered, but 
 			// we won't get the same array instance back, avoiding exposing internals.
-			Assert.AreNotSame(array, data.GetArray<T>("Foo"));
-			CollectionAssert.AreEqual(array, data.GetArray<T>("Foo"));
+			Assert.AreNotSame(array, GetArray<T>(data, "Foo"));
+			CollectionAssert.AreEqual(array, GetArray<T>(data, "Foo"));
 		}
+
 		private static ShaderParameterCollection GetModifiedArray<T>(ShaderParameterCollection baseParams, string name, params T[] value) where T : struct
 		{
 			ShaderParameterCollection modified = new ShaderParameterCollection(baseParams);
-			modified.SetArray(name, value);
+			modified.Set(name, value);
 			return modified;
 		}
 		private static ShaderParameterCollection GetModifiedTexture(ShaderParameterCollection baseParams, string name, ContentRef<Texture> tex)
 		{
 			ShaderParameterCollection modified = new ShaderParameterCollection(baseParams);
-			modified.SetTexture(name, tex);
+			modified.Set(name, tex);
 			return modified;
 		}
 	}

@@ -15,6 +15,7 @@ namespace Duality.Plugins.Compatibility
 		public override void HandleError(SerializeError error)
 		{
 			AssignFieldError assignFieldError = error as AssignFieldError;
+			ResolveTypeError resolveTypeError = error as ResolveTypeError;
 
 			// BatchInfo uniforms and textures were moved to a nested ShaderParameters
 			if (assignFieldError != null)
@@ -29,7 +30,7 @@ namespace Duality.Plugins.Compatibility
 						{
 							foreach (var pair in uniforms)
 							{
-								batchInfo.Parameters.SetArray(pair.Key, pair.Value);
+								batchInfo.SetArray(pair.Key, pair.Value);
 							}
 							assignFieldError.AssignSuccess = true;
 						}
@@ -43,7 +44,7 @@ namespace Duality.Plugins.Compatibility
 							{
 								ContentRef<Texture> texRef = pair.Value;
 								texRef.MakeAvailable();
-								batchInfo.Parameters.SetTexture(pair.Key, texRef);
+								batchInfo.SetTexture(pair.Key, texRef);
 							}
 							assignFieldError.AssignSuccess = true;
 						}

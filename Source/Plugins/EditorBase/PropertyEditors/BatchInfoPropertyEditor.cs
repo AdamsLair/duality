@@ -107,6 +107,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					// Skip fields that shouldn't be displayed
 					if (field.IsPrivate) continue;
 					if (field.Scope != ShaderFieldScope.Uniform) continue;
+					if (field.Name == ShaderFieldInfo.DefaultNameMainColor) continue;
 
 					displayedFieldIndex++;
 
@@ -274,15 +275,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		
 		protected Func<IEnumerable<object>> CreateTextureValueGetter(string name)
 		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.Parameters.GetTexture(name) : null);
+			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.GetTexture(name) : null);
 		}
 		protected Func<IEnumerable<object>> CreateUniformArrayValueGetter<T>(string name) where T : struct
 		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.Parameters.GetArray<T>(name) : null);
+			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.GetArray<T>(name) : null);
 		}
 		protected Func<IEnumerable<object>> CreateUniformValueGetter<T>(string name) where T : struct
 		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.Parameters.GetValue<T>(name) : null);
+			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.GetValue<T>(name) : null);
 		}
 
 		protected Action<IEnumerable<object>> CreateTextureValueSetter(string name)
@@ -296,10 +297,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				foreach (BatchInfo info in batchInfoArray)
 				{
-					if (info != null) info.Parameters.SetTexture(name, curValue);
+					if (info != null) info.SetTexture(name, curValue);
 					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Parameters, batchInfoArray);
+				this.OnPropertySet(null, batchInfoArray);
 			};
 		}
 		protected Action<IEnumerable<object>> CreateUniformArrayValueSetter<T>(string name) where T : struct
@@ -313,10 +314,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				foreach (BatchInfo info in batchInfoArray)
 				{
-					if (info != null) info.Parameters.SetArray(name, curValue);
+					if (info != null) info.SetArray(name, curValue);
 					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Parameters, batchInfoArray);
+				this.OnPropertySet(null, batchInfoArray);
 			};
 		}
 		protected Action<IEnumerable<object>> CreateUniformValueSetter<T>(string name) where T : struct
@@ -330,10 +331,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				foreach (BatchInfo info in batchInfoArray)
 				{
-					if (info != null) info.Parameters.SetValue(name, curValue);
+					if (info != null) info.SetValue(name, curValue);
 					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Parameters, batchInfoArray);
+				this.OnPropertySet(null, batchInfoArray);
 			};
 		}
 
