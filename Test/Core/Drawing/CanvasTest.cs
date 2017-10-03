@@ -72,7 +72,7 @@ namespace Duality.Tests.Drawing
 				this.DrawTestImageRow(c, 100, 100);
 
 				// Textured shapes
-				c.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, ColorRgba.White, this.texCoordUV));
+				c.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.texCoordUV));
 				this.DrawTestImageRow(c, 100, 300);
 			});
 		}
@@ -93,7 +93,7 @@ namespace Duality.Tests.Drawing
 
 				// Textured shapes
 				c.PushState();
-				c.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, ColorRgba.White, this.texCoordUV));
+				c.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.texCoordUV));
 				this.DrawTestImageRow(c, 100, 300);
 				c.PopState();
 			});

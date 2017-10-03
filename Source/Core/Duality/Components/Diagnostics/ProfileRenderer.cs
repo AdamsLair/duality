@@ -139,7 +139,7 @@ namespace Duality.Components.Diagnostics
 
 			Profile.BeginMeasure(@"ProfileRenderer");
 			Canvas canvas = new Canvas(device);
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White, null));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
 			
 			bool anyTextReport = this.textReportPerf || this.textReportStat;
 			bool anyGraph = this.drawGraphs && this.counterGraphs.Count > 0;

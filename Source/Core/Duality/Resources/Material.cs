@@ -67,12 +67,12 @@ namespace Duality.Resources
 				{ "SolidWhite", new Material(DrawTechnique.Solid, ColorRgba.White) },
 				{ "SolidBlack", new Material(DrawTechnique.Solid, ColorRgba.Black) },
 				{ "InvertWhite", new Material(DrawTechnique.Invert, ColorRgba.White) },
-				{ "DualityIcon", new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityIcon) },
-				{ "DualityIconB", new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityIconB) },
-				{ "DualityLogoBig", new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoBig) },
-				{ "DualityLogoMedium", new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoMedium) },
-				{ "DualityLogoSmall", new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoSmall) },
-				{ "Checkerboard", new Material(DrawTechnique.Solid, ColorRgba.White, Texture.Checkerboard) },
+				{ "DualityIcon", new Material(DrawTechnique.Mask, Texture.DualityIcon) },
+				{ "DualityIconB", new Material(DrawTechnique.Mask, Texture.DualityIconB) },
+				{ "DualityLogoBig", new Material(DrawTechnique.Alpha, Texture.DualityLogoBig) },
+				{ "DualityLogoMedium", new Material(DrawTechnique.Alpha, Texture.DualityLogoMedium) },
+				{ "DualityLogoSmall", new Material(DrawTechnique.Alpha, Texture.DualityLogoSmall) },
+				{ "Checkerboard", new Material(DrawTechnique.Solid, Texture.Checkerboard) },
 			});
 		}
 
@@ -121,6 +121,14 @@ namespace Duality.Resources
 			this.info = new BatchInfo();
 		}
 		/// <summary>
+		/// Creates a new Material based on the specified <see cref="DrawTechnique"/>.
+		/// </summary>
+		/// <param name="technique">The <see cref="Duality.Resources.DrawTechnique"/> to use.</param>
+		public Material(ContentRef<DrawTechnique> technique)
+		{
+			this.info = new BatchInfo(technique);
+		}
+		/// <summary>
 		/// Creates a new color-only Material.
 		/// </summary>
 		/// <param name="technique">The <see cref="Duality.Resources.DrawTechnique"/> to use.</param>
@@ -133,11 +141,10 @@ namespace Duality.Resources
 		/// Creates a new single-texture Material.
 		/// </summary>
 		/// <param name="technique">The <see cref="Duality.Resources.DrawTechnique"/> to use.</param>
-		/// <param name="mainColor">The <see cref="MainColor"/> to use.</param>
 		/// <param name="mainTex">The main <see cref="Duality.Resources.Texture"/> to use.</param>
-		public Material(ContentRef<DrawTechnique> technique, ColorRgba mainColor, ContentRef<Texture> mainTex)
+		public Material(ContentRef<DrawTechnique> technique, ContentRef<Texture> mainTex)
 		{
-			this.info = new BatchInfo(technique, mainColor, mainTex);
+			this.info = new BatchInfo(technique, mainTex);
 		}
 		/// <summary>
 		/// Creates a new Material based on the specified BatchInfo

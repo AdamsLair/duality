@@ -616,7 +616,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 				BatchInfo blitMaterial = new BatchInfo(
 					DrawTechnique.Solid, 
-					ColorRgba.White, 
 					this.outputTexture);
 				TargetResize blitResize = this.TargetSizeFitsClientArea ? 
 					TargetResize.None : 

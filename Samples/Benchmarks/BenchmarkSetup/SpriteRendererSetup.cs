@@ -50,45 +50,27 @@ namespace Duality.Samples.Benchmarks
 			List<Material> materials = new List<Material>();
 			if (this.alternatingMaterials)
 			{
-				materials.Add(new Material(
-					DrawTechnique.Mask,
+				ColorRgba[] colors = new ColorRgba[]
+				{
 					ColorRgba.White,
-					Texture.DualityIcon));
-				materials.Add(new Material(
-					DrawTechnique.Mask,
 					ColorRgba.Black,
-					Texture.DualityIcon));
-				materials.Add(new Material(
-					DrawTechnique.Mask,
 					ColorRgba.Red,
-					Texture.DualityIcon));
-				materials.Add(new Material(
-					DrawTechnique.Mask,
 					ColorRgba.Green,
-					Texture.DualityIcon));
-				materials.Add(new Material(
-					DrawTechnique.Mask,
 					ColorRgba.Blue,
-					Texture.DualityIcon));
-				materials.Add(new Material(
-					DrawTechnique.Mask,
 					ColorRgba.Red + ColorRgba.Green,
-					Texture.DualityIcon));
-				materials.Add(new Material(
-					DrawTechnique.Mask,
 					ColorRgba.Red + ColorRgba.Blue,
-					Texture.DualityIcon));
-				materials.Add(new Material(
-					DrawTechnique.Mask,
-					ColorRgba.Green + ColorRgba.Blue,
-					Texture.DualityIcon));
+					ColorRgba.Green + ColorRgba.Blue
+				};
+				for (int i = 0; i < colors.Length; i++)
+				{
+					Material material = new Material(DrawTechnique.Mask, Texture.DualityIcon);
+					material.MainColor = colors[i];
+					materials.Add(material);
+				}
 			}
 			else
 			{
-				materials.Add(new Material(
-					DrawTechnique.Mask,
-					ColorRgba.White,
-					Texture.DualityIcon));
+				materials.Add(new Material(DrawTechnique.Mask, Texture.DualityIcon));
 			}
 
 			List<GameObject> sprites = new List<GameObject>();

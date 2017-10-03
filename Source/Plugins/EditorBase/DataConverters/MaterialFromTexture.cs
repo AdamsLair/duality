@@ -55,7 +55,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				if (targetRes == null && convert.AllowedOperations.HasFlag(ConvertOperation.Operation.CreateRes))
 				{
 					string resPath = PathHelper.GetFreePath(baseRes.FullName, Resource.GetFileExtByType<Material>());
-					targetRes = new Material(DrawTechnique.Mask, ColorRgba.White, baseRes);
+					targetRes = new Material(DrawTechnique.Mask, baseRes);
 					targetRes.Save(resPath);
 				}
 

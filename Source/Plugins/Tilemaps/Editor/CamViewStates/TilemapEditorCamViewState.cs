@@ -1108,11 +1108,15 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 						TexturePixelFormat.Rgba);
 				}
 			}
-
-			BatchInfo defaultMaterial = new BatchInfo(DrawTechnique.Alpha, canvas.State.Material.MainColor);
-			BatchInfo strippleMaterial = new BatchInfo(DrawTechnique.Alpha, canvas.State.Material.MainColor, strippledLineTex);
+			
 			bool uncertain = (mode & TileHighlightMode.Uncertain) != 0;
 			bool selection = (mode & TileHighlightMode.Selection) != 0;
+
+			BatchInfo canvasMaterial = canvas.State.Material;
+			BatchInfo defaultMaterial = new BatchInfo(DrawTechnique.Alpha);
+			BatchInfo strippleMaterial = new BatchInfo(DrawTechnique.Alpha, strippledLineTex);
+			defaultMaterial.MainColor = canvasMaterial.MainColor;
+			strippleMaterial.MainColor = canvasMaterial.MainColor;
 			
 			Component component = renderer as Component;
 			Transform transform = component.GameObj.Transform;

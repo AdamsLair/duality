@@ -18,7 +18,7 @@ namespace Duality.Samples.Benchmarks
 	{
 		private int spriteCount = 1000;
 
-		[DontSerialize] private Material sharedMaterial = new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityIcon);
+		[DontSerialize] private Material sharedMaterial = new Material(DrawTechnique.Mask, Texture.DualityIcon);
 		[DontSerialize] private RawList<Vector2> spritePositions = new RawList<Vector2>();
 		[DontSerialize] private RawList<float> spriteAngles = new RawList<float>();
 		[DontSerialize] private RawList<VertexC1P3T2> vertices = new RawList<VertexC1P3T2>();

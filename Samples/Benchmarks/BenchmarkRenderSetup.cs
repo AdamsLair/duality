@@ -215,7 +215,6 @@ namespace Duality.Samples.Benchmarks
 			// Blit the results to screen
 			BatchInfo blitMaterial = new BatchInfo(
 				DrawTechnique.Solid, 
-				ColorRgba.White, 
 				this.sceneTargetTex);
 			bool sceneTargetFitsOutput = 
 				this.sceneTarget.Size.X <= imageSize.X && 
