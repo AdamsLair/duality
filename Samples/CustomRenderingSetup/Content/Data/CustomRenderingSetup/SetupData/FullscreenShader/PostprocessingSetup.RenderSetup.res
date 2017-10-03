@@ -70,7 +70,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2583301340" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2583301340" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\MainTargetTex.Texture.res</contentPath>

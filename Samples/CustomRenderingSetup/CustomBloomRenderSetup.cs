@@ -102,8 +102,8 @@ namespace CustomRenderingSetup
 			{
 				BatchInfo material = new BatchInfo(this.techFilterBrightness);
 				material.MainTexture = step.Input.MainTexture;
-				material.Parameters.SetValue("minBrightness", this.minBrightness);
-				material.Parameters.SetValue("bloomStrength", this.bloomStrength);
+				material.SetValue("minBrightness", this.minBrightness);
+				material.SetValue("bloomStrength", this.bloomStrength);
 				this.Blit(drawDevice, material, this.targetPingPongA[0]);
 			}
 
@@ -121,11 +121,11 @@ namespace CustomRenderingSetup
 				BatchInfo material = new BatchInfo(this.techBlur);
 
 				material.MainTexture = this.targetPingPongA[i].Targets[0];
-				material.Parameters.SetValue("blurDirection", new Vector2(1.0f, 0.0f));
+				material.SetValue("blurDirection", new Vector2(1.0f, 0.0f));
 				this.Blit(drawDevice, material, this.targetPingPongB[i]);
 
 				material.MainTexture = this.targetPingPongB[i].Targets[0];
-				material.Parameters.SetValue("blurDirection", new Vector2(0.0f, 1.0f));
+				material.SetValue("blurDirection", new Vector2(0.0f, 1.0f));
 				this.Blit(drawDevice, material, this.targetPingPongA[i]);
 			}
 
@@ -133,10 +133,10 @@ namespace CustomRenderingSetup
 			{
 				BatchInfo material = new BatchInfo(this.techCombineFinal);
 				material.MainTexture = step.Input.MainTexture;
-				material.Parameters.SetValue("blurFullTex", this.targetPingPongA[0].Targets[0]);
-				material.Parameters.SetValue("blurHalfTex", this.targetPingPongA[1].Targets[0]);
-				material.Parameters.SetValue("blurQuarterTex", this.targetPingPongA[2].Targets[0]);
-				material.Parameters.SetValue("blurEighthTex", this.targetPingPongA[3].Targets[0]);
+				material.SetValue("blurFullTex", this.targetPingPongA[0].Targets[0]);
+				material.SetValue("blurHalfTex", this.targetPingPongA[1].Targets[0]);
+				material.SetValue("blurQuarterTex", this.targetPingPongA[2].Targets[0]);
+				material.SetValue("blurEighthTex", this.targetPingPongA[3].Targets[0]);
 				this.Blit(drawDevice, material, outputTarget.Res, imageSize, viewportRect);
 			}
 		}

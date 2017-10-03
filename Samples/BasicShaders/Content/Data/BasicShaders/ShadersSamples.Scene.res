@@ -258,7 +258,7 @@
                             <G dataType="Byte">255</G>
                             <R dataType="Byte">255</R>
                           </mainColor>
-                          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2466170982" custom="true">
+                          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2466170982" custom="true">
                             <body>
                               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                                 <contentPath dataType="String">Default:Texture:White</contentPath>
@@ -524,7 +524,7 @@
                             <G dataType="Byte">255</G>
                             <R dataType="Byte">255</R>
                           </mainColor>
-                          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="839090128" custom="true">
+                          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="839090128" custom="true">
                             <body>
                               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                                 <contentPath dataType="String">Default:Texture:White</contentPath>
@@ -798,7 +798,7 @@
                             <G dataType="Byte">255</G>
                             <R dataType="Byte">255</R>
                           </mainColor>
-                          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2834756496" custom="true">
+                          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2834756496" custom="true">
                             <body>
                               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                                 <contentPath dataType="String">Default:Texture:White</contentPath>

@@ -150,7 +150,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2583301340" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2583301340" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTargetTex.Texture.res</contentPath>
@@ -189,7 +189,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="3403320516" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3403320516" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeCTex.Texture.res</contentPath>
@@ -226,7 +226,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="3577988412" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3577988412" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSizeTex.Texture.res</contentPath>
@@ -263,7 +263,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="439787428" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="439787428" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSizeTex.Texture.res</contentPath>
@@ -300,7 +300,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="3732335388" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3732335388" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeCTex.Texture.res</contentPath>
@@ -338,7 +338,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="1959635780" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="1959635780" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeBTex.Texture.res</contentPath>
@@ -376,7 +376,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2987236156" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2987236156" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSizeTex.Texture.res</contentPath>
@@ -414,7 +414,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2745605860" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2745605860" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSizeBTex.Texture.res</contentPath>
@@ -452,7 +452,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2981548252" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2981548252" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSizeTex.Texture.res</contentPath>
@@ -490,7 +490,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="3392803780" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3392803780" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSizeBTex.Texture.res</contentPath>
@@ -528,7 +528,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2010963644" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2010963644" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\EighthSizeTex.Texture.res</contentPath>
@@ -566,7 +566,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="965404836" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="965404836" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\EighthSizeBTex.Texture.res</contentPath>
@@ -604,7 +604,7 @@
             <G dataType="Byte">255</G>
             <R dataType="Byte">255</R>
           </mainColor>
-          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2143216028" custom="true">
+          <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2143216028" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTargetTex.Texture.res</contentPath>

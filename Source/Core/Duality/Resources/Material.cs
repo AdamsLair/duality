@@ -98,7 +98,7 @@ namespace Duality.Resources
 		/// [GET] The collection of shader parameters that will be used when setting up 
 		/// a shader program for rendering with this <see cref="Material"/>.
 		/// </summary>
-		public ShaderParameters Parameters
+		public ShaderParameterCollection Parameters
 		{
 			get { return this.info.Parameters; }
 		}

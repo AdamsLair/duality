@@ -14,7 +14,7 @@ namespace Duality.Drawing
 	/// It's a CPU side key-value store for values that can be applied to a shader
 	/// program by the <see cref="Duality.Backend.IGraphicsBackend"/>.
 	/// </summary>
-	public class ShaderParameters : IEquatable<ShaderParameters>, ISerializeExplicit
+	public class ShaderParameterCollection : IEquatable<ShaderParameterCollection>, ISerializeExplicit
 	{
 		private struct NameComparer : IComparer<ValueItem>
 		{
@@ -74,11 +74,11 @@ namespace Duality.Drawing
 		}
 
 
-		public ShaderParameters()
+		public ShaderParameterCollection()
 		{
 			this.UpdateHash();
 		}
-		public ShaderParameters(ShaderParameters other)
+		public ShaderParameterCollection(ShaderParameterCollection other)
 		{
 			if (other.values != null)
 			{
@@ -96,7 +96,7 @@ namespace Duality.Drawing
 		}
 
 		/// <summary>
-		/// Removes all variables and values from the <see cref="ShaderParameters"/> instance.
+		/// Removes all variables and values from the <see cref="ShaderParameterCollection"/> instance.
 		/// </summary>
 		public void Clear()
 		{
@@ -105,7 +105,7 @@ namespace Duality.Drawing
 			this.UpdateHash();
 		}
 		/// <summary>
-		/// Removes a variable from storage inside this <see cref="ShaderParameters"/> instance.
+		/// Removes a variable from storage inside this <see cref="ShaderParameterCollection"/> instance.
 		/// </summary>
 		/// <param name="name"></param>
 		public bool Remove(string name)
@@ -773,13 +773,13 @@ namespace Duality.Drawing
 		}
 		public override bool Equals(object obj)
 		{
-			ShaderParameters other = obj as ShaderParameters;
+			ShaderParameterCollection other = obj as ShaderParameterCollection;
 			if (other != null)
 				return this.Equals(other);
 			else
 				return false;
 		}
-		public bool Equals(ShaderParameters other)
+		public bool Equals(ShaderParameterCollection other)
 		{
 			// Quick equality heuristic for perf reasons by comparing hashes only.
 			// This will fail on hash collisions. However, given that the number

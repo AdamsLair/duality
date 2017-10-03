@@ -295,7 +295,7 @@
                 <G dataType="Byte">255</G>
                 <R dataType="Byte">255</R>
               </mainColor>
-              <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2876121088" custom="true">
+              <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2876121088" custom="true">
                 <body>
                   <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                     <contentPath dataType="String">Default:Texture:Checkerboard</contentPath>
@@ -489,7 +489,7 @@
                 <G dataType="Byte">255</G>
                 <R dataType="Byte">255</R>
               </mainColor>
-              <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="3608199470" custom="true">
+              <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3608199470" custom="true">
                 <body>
                   <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                     <contentPath dataType="String">Default:Texture:Checkerboard</contentPath>

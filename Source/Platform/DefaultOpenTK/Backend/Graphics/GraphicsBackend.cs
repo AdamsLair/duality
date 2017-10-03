@@ -560,8 +560,8 @@ namespace Duality.Backend.DefaultOpenTK
 			ShaderFieldInfo[] varInfo = nativeShader.Fields;
 			int[] locations = nativeShader.FieldLocations;
 			int[] builtinIndices = nativeShader.BuiltinVariableIndex;
-			ShaderParameters shaderParams = material.Parameters;
-			ShaderParameters defaultParams = tech.DefaultParameters;
+			ShaderParameterCollection shaderParams = material.Parameters;
+			ShaderParameterCollection defaultParams = tech.DefaultParameters;
 
 			// Setup sampler bindings automatically
 			int curSamplerIndex = 0;

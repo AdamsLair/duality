@@ -16,7 +16,7 @@ namespace Duality.Tests.Drawing
 	{
 		[Test] public void GetSetCasting()
 		{
-			ShaderParameters data = new ShaderParameters();
+			ShaderParameterCollection data = new ShaderParameterCollection();
 			string[] names = new string[] { "Foo", "Bar" };
 
 			// Set some value with various names and types which can be used interchangably
@@ -65,7 +65,7 @@ namespace Duality.Tests.Drawing
 		}
 		[Test] public void GetSetArray()
 		{
-			ShaderParameters data = new ShaderParameters();
+			ShaderParameterCollection data = new ShaderParameterCollection();
 			
 			AssertSetGetArray(data, new float[] { 1.0f, 2.0f, 3.0f, 4.0f });
 			AssertSetGetArray(data, new Vector2[] { new Vector2(1.0f, 2.0f), new Vector2(3.0f, 4.0f) });
@@ -79,7 +79,7 @@ namespace Duality.Tests.Drawing
 		}
 		[Test] public void GetSetValue()
 		{
-			ShaderParameters data = new ShaderParameters();
+			ShaderParameterCollection data = new ShaderParameterCollection();
 			
 			AssertSetGetValue(data, 1.0f);
 			AssertSetGetValue(data, new Vector2(1.0f, 2.0f));
@@ -93,7 +93,7 @@ namespace Duality.Tests.Drawing
 		}
 		[Test] public void GetSetTexture()
 		{
-			ShaderParameters data = new ShaderParameters();
+			ShaderParameterCollection data = new ShaderParameterCollection();
 			
 			// Set the specified data and expect to get it back when asking
 			data.SetTexture("Foo", Texture.DualityIcon);
@@ -102,7 +102,7 @@ namespace Duality.Tests.Drawing
 		[Test] public void EqualityCheck()
 		{
 			// Create a base instance of shader parameters to compare to
-			ShaderParameters first = new ShaderParameters();
+			ShaderParameterCollection first = new ShaderParameterCollection();
 
 			first.SetArray("A", new[] { 1.0f, 2.0f, 3.0f, 4.0f });
 			first.SetArray("B", new[] { new Vector4(1.0f, 2.0f, 3.0f, 4.0f) });
@@ -116,11 +116,11 @@ namespace Duality.Tests.Drawing
 
 			// Assert that the base instance equals itself and copies of itself
 			Assert.AreEqual(first, first);
-			Assert.AreEqual(first, new ShaderParameters(first));
+			Assert.AreEqual(first, new ShaderParameterCollection(first));
 
 			// Create a second parameter instance and assert that it becomes 
 			// equal after setting all the same values
-			ShaderParameters second = new ShaderParameters();
+			ShaderParameterCollection second = new ShaderParameterCollection();
 
 			Assert.AreNotEqual(first, second);
 
@@ -167,10 +167,10 @@ namespace Duality.Tests.Drawing
 		[Test] public void CopyInstance()
 		{
 			// Create a new params instance via copy and modify its values
-			ShaderParameters first = new ShaderParameters();
+			ShaderParameterCollection first = new ShaderParameterCollection();
 			first.SetArray("Foo", new[] { 1.0f, 2.0f, 3.0f, 4.0f });
 
-			ShaderParameters second = new ShaderParameters(first);
+			ShaderParameterCollection second = new ShaderParameterCollection(first);
 			second.SetArray("Foo", new[] { 5.0f, 6.0f, 7.0f, 8.0f });
 
 			// Assert that each instance has its own values and no accidental shallow copy was made
@@ -200,7 +200,7 @@ namespace Duality.Tests.Drawing
 			}
 
 			// Prepare a uniform value for every variable
-			ShaderParameters data = new ShaderParameters();
+			ShaderParameterCollection data = new ShaderParameterCollection();
 			float[][] values = new float[ValueVariableCount][];
 			for (int i = 0; i < values.Length; i++)
 			{
@@ -273,13 +273,13 @@ namespace Duality.Tests.Drawing
 			}
 			return builder.ToString();
 		}
-		private static void AssertSetGetValue<T>(ShaderParameters data, T value) where T : struct
+		private static void AssertSetGetValue<T>(ShaderParameterCollection data, T value) where T : struct
 		{
 			// Set the specified data and expect to get it back when asking
 			data.SetValue("Foo", value);
 			Assert.AreEqual(value, data.GetValue<T>("Foo"));
 		}
-		private static void AssertSetGetArray<T>(ShaderParameters data, T[] array) where T : struct
+		private static void AssertSetGetArray<T>(ShaderParameterCollection data, T[] array) where T : struct
 		{
 			// Set the specified array data
 			data.SetArray("Foo", array);
@@ -289,15 +289,15 @@ namespace Duality.Tests.Drawing
 			Assert.AreNotSame(array, data.GetArray<T>("Foo"));
 			CollectionAssert.AreEqual(array, data.GetArray<T>("Foo"));
 		}
-		private static ShaderParameters GetModifiedArray<T>(ShaderParameters baseParams, string name, params T[] value) where T : struct
+		private static ShaderParameterCollection GetModifiedArray<T>(ShaderParameterCollection baseParams, string name, params T[] value) where T : struct
 		{
-			ShaderParameters modified = new ShaderParameters(baseParams);
+			ShaderParameterCollection modified = new ShaderParameterCollection(baseParams);
 			modified.SetArray(name, value);
 			return modified;
 		}
-		private static ShaderParameters GetModifiedTexture(ShaderParameters baseParams, string name, ContentRef<Texture> tex)
+		private static ShaderParameterCollection GetModifiedTexture(ShaderParameterCollection baseParams, string name, ContentRef<Texture> tex)
 		{
-			ShaderParameters modified = new ShaderParameters(baseParams);
+			ShaderParameterCollection modified = new ShaderParameterCollection(baseParams);
 			modified.SetTexture(name, tex);
 			return modified;
 		}

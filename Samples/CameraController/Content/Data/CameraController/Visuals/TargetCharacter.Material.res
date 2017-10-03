@@ -7,7 +7,7 @@
       <G dataType="Byte">255</G>
       <R dataType="Byte">255</R>
     </mainColor>
-    <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="1100841590" custom="true">
+    <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="1100841590" custom="true">
       <body>
         <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
           <contentPath dataType="String">Data\CameraController\Visuals\TargetCharacter.Texture.res</contentPath>

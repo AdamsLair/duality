@@ -684,7 +684,7 @@
       <G dataType="Byte">255</G>
       <R dataType="Byte">255</R>
     </mainColor>
-    <parameters dataType="Struct" type="Duality.Drawing.ShaderParameters" id="2696347487" custom="true">
+    <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2696347487" custom="true">
       <body>
         <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
           <contentPath dataType="String">Default:Texture:White</contentPath>

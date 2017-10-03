@@ -14,7 +14,7 @@ namespace Duality.Drawing
 	public class BatchInfo : IEquatable<BatchInfo>
 	{
 		private ContentRef<DrawTechnique> technique  = DrawTechnique.Mask;
-		private ShaderParameters          parameters = null;
+		private ShaderParameterCollection parameters = null;
 		
 		/// <summary>
 		/// [GET / SET] The <see cref="Duality.Resources.DrawTechnique"/> that is used.
@@ -28,7 +28,7 @@ namespace Duality.Drawing
 		/// [GET] The collection of shader parameters that will be used when setting up 
 		/// a shader program for rendering with this <see cref="BatchInfo"/>.
 		/// </summary>
-		public ShaderParameters Parameters
+		public ShaderParameterCollection Parameters
 		{
 			get { return this.parameters; }
 		}
@@ -56,7 +56,7 @@ namespace Duality.Drawing
 		/// </summary>
 		public BatchInfo()
 		{
-			this.parameters = new ShaderParameters();
+			this.parameters = new ShaderParameterCollection();
 		}
 		/// <summary>
 		/// Creates a new BatchInfo based on an existing <see cref="Material"/>.
@@ -70,7 +70,7 @@ namespace Duality.Drawing
 		public BatchInfo(BatchInfo source)
 		{
 			this.technique = source.technique;
-			this.parameters = new ShaderParameters(source.parameters);
+			this.parameters = new ShaderParameterCollection(source.parameters);
 		}
 		/// <summary>
 		/// Creates a new color-only BatchInfo.
