@@ -201,7 +201,7 @@ namespace Duality.Tests.Drawing
 			ColorRgba[] firstData = first.Data;
 			ColorRgba[] secondData = second.Data;
 			float error = 0;
-			float maxError = firstData.Length; // (1/255) off per pixel is probably okay.
+			float maxError = firstData.Length / 10.0f; // (1/255) off per ten pixels is probably okay.
 			for (int i = 0; i < firstData.Length; i++)
 			{
 				error += MathF.Abs(firstData[i].R * (firstData[i].A / 255.0f) - secondData[i].R * (secondData[i].A / 255.0f));
