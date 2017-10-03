@@ -82,7 +82,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						shaderFields[matchingIndex].ArrayLength == pair.Value.Field.ArrayLength;
 					if (!isMatchingEditor)
 					{
-						if (removeEditors != null)
+						if (removeEditors == null)
 							removeEditors = new List<string>();
 						removeEditors.Add(pair.Key);
 					}
