@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Collections.Generic;
 
 using Duality.IO;
+using System.Text;
 
 namespace Duality.Backend
 {
@@ -99,42 +100,53 @@ namespace Duality.Backend
 			// and more reliably.
 			{
 				string osName = Environment.OSVersion != null ? Environment.OSVersion.ToString() : "Unknown";
-				string osFriendlyName = null;
-				if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+				osName = "(" + osName + ")";
+
+				string osFriendlyName = "Other OS";
+
+				switch (Environment.OSVersion.Platform)
 				{
-					if (Environment.OSVersion.Version >= new Version(10, 0, 0))
-						osFriendlyName = "Windows 10";
-					else if (Environment.OSVersion.Version >= new Version(6, 3, 0))
-						osFriendlyName = "Windows 8.1";
-					else if (Environment.OSVersion.Version >= new Version(6, 2, 0))
-						osFriendlyName = "Windows 8";
-					else if (Environment.OSVersion.Version >= new Version(6, 1, 0))
-						osFriendlyName = "Windows 7";
-					else if (Environment.OSVersion.Version >= new Version(6, 0, 0))
-						osFriendlyName = "Windows Vista";
-					else if (Environment.OSVersion.Version >= new Version(5, 2, 0))
-						osFriendlyName = "Windows XP 64 Bit Edition";
-					else if (Environment.OSVersion.Version >= new Version(5, 1, 0))
-						osFriendlyName = "Windows XP";
-					else if (Environment.OSVersion.Version >= new Version(5, 0, 0))
-						osFriendlyName = "Windows 2000";
+					case PlatformID.Win32NT:
+						if (Environment.OSVersion.Version >= new Version(6, 2, 0))
+							osFriendlyName = "Windows 8 or higher";
+						else if (Environment.OSVersion.Version >= new Version(6, 1, 0))
+							osFriendlyName = "Windows 7";
+						else if (Environment.OSVersion.Version >= new Version(6, 0, 0))
+							osFriendlyName = "Windows Vista";
+						else if (Environment.OSVersion.Version >= new Version(5, 2, 0))
+							osFriendlyName = "Windows XP 64 Bit Edition";
+						else if (Environment.OSVersion.Version >= new Version(5, 1, 0))
+							osFriendlyName = "Windows XP";
+						else if (Environment.OSVersion.Version >= new Version(5, 0, 0))
+							osFriendlyName = "Windows 2000";
+						break;
+
+					case PlatformID.MacOSX:
+						osFriendlyName = "OSX";
+						break;
+
+					case PlatformID.Unix:
+						osFriendlyName = "Generic UNIX";
+						break;
 				}
-				Log.Core.Write(
-					"Environment Info: " + Environment.NewLine +
-					"  Current Directory: {0}" + Environment.NewLine +
-					"  Command Line: {1}" + Environment.NewLine +
-					"  Operating System: {2}" + Environment.NewLine +
-					"  64 Bit OS: {3}" + Environment.NewLine +
-					"  64 Bit Process: {4}" + Environment.NewLine +
-					"  CLR Version: {5}" + Environment.NewLine +
-					"  Processor Count: {6}",
-					Environment.CurrentDirectory,
-					Environment.CommandLine,
-					osName + (osFriendlyName != null ? (" (" + osFriendlyName + ")") : ""),
-					Environment.Is64BitOperatingSystem,
-					Environment.Is64BitProcess,
-					Environment.Version,
-					Environment.ProcessorCount);
+
+				StringBuilder envInfo = new StringBuilder();
+				envInfo.AppendLine("Environment Info:")
+					.AppendLine(string.Format("  Current Directory: {0}", Environment.CurrentDirectory))
+					.AppendLine(string.Format("  Command Line: {0}", Environment.CommandLine))
+					.AppendLine(string.Format("  Operating System: {0} {1}", osFriendlyName, osName))
+					.AppendLine(string.Format("  64 Bit OS: {0}", Environment.Is64BitOperatingSystem))
+					.AppendLine(string.Format("  64 Bit Process: {0}", Environment.Is64BitProcess))
+					.AppendLine(string.Format("  CLR Version: {0}", Environment.Version))
+					.AppendLine(string.Format("  Processor Count: {0}", Environment.ProcessorCount));
+
+				if(Environment.OSVersion.Platform == PlatformID.Win32NT)
+				{
+					envInfo.AppendLine(string.Format("  Processor Type: {0}", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")))
+						.AppendLine(string.Format("  Processor Architecture: {0}", Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")));
+				}
+
+				Log.Core.Write(envInfo.ToString().TrimEnd(Environment.NewLine.ToCharArray()));
 			}
 			AppDomain.CurrentDomain.AssemblyResolve += this.CurrentDomain_AssemblyResolve;
 			AppDomain.CurrentDomain.AssemblyLoad += this.CurrentDomain_AssemblyLoad;
