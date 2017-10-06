@@ -566,6 +566,26 @@ namespace Duality.Tests.Serialization
 			}
 		}
 
+		[Test] public void CalcUniqueIdentifier()
+		{
+			const string singleChar = "a";
+			const string testString = "testString Here";
+			const string guidString = "01234567-89ab-cdef-0123-456789abcdef";
+			const int testStringUid = 1454634143;
+
+			Guid testGuid = Guid.Parse(guidString);
+
+			UniqueIdentifyableHelper.GetIdentifier(singleChar);
+			UniqueIdentifyableHelper.GetIdentifier(testGuid);
+
+			int uidString = UniqueIdentifyableHelper.GetIdentifier(testString);
+			int uidGuid = UniqueIdentifyableHelper.GetIdentifier(guidString);
+			int uidGuidToString = UniqueIdentifyableHelper.GetIdentifier(testGuid.ToString());
+
+			Assert.AreEqual(uidString, testStringUid);
+			Assert.AreEqual(uidGuid, uidGuidToString);
+		}
+
 		
 		private string GetReferenceResourceName(string name, Type format)
 		{
