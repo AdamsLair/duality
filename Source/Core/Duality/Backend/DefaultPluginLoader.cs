@@ -94,15 +94,13 @@ namespace Duality.Backend
 		
 		public void Init()
 		{
-			// Log environment specs for diagnostic purposes
+			// Log environment specs for diagnostic purposes.
 			// Even though more fitted for the system backend, we'll
-			// do this here, because the plugin loader available much sooner
-			// and more reliably.
+			// do this here, because the plugin loader available much 
+			// sooner, and more reliably.
 			{
 				string osName = Environment.OSVersion != null ? Environment.OSVersion.ToString() : "Unknown";
-				osName = "(" + osName + ")";
-
-				string osFriendlyName = "Other OS";
+				string osFriendlyName = "Other";
 
 				switch (Environment.OSVersion.Platform)
 				{
@@ -134,7 +132,7 @@ namespace Duality.Backend
 				envInfo.AppendLine("Environment Info:");
 				envInfo.AppendFormat("  Current Directory: {0}", Environment.CurrentDirectory).AppendLine();
 				envInfo.AppendFormat("  Command Line: {0}", Environment.CommandLine).AppendLine();
-				envInfo.AppendFormat("  Operating System: {0} {1}", osFriendlyName, osName).AppendLine();
+				envInfo.AppendFormat("  Operating System: {0} ({1})", osFriendlyName, osName).AppendLine();
 				envInfo.AppendFormat("  64 Bit OS: {0}", Environment.Is64BitOperatingSystem).AppendLine();
 				envInfo.AppendFormat("  64 Bit Process: {0}", Environment.Is64BitProcess).AppendLine();
 				envInfo.AppendFormat("  CLR Version: {0}", Environment.Version).AppendLine();
