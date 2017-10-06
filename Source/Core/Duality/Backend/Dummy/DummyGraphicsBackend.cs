@@ -35,7 +35,10 @@ namespace Duality.Backend.Dummy
 		{
 			return true;
 		}
-		void IDualityBackend.Init() { }
+		void IDualityBackend.Init()
+		{
+			Logs.Core.WriteWarning("DummyGraphicsBackend initialized. This is unusual and may cause problems when interacting with graphic devices or rendering.");
+		}
 		void IDualityBackend.Shutdown() { }
 
 		void IGraphicsBackend.BeginRendering(IDrawDevice device, VertexBatchStore vertexData, RenderOptions options, RenderStats stats) { }
