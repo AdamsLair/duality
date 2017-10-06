@@ -1246,34 +1246,6 @@ namespace Duality
 		/// <param name="baseHash"></param>
 		/// <param name="otherHash"></param>
 		/// <returns></returns>
-		public static void CombineHashCodeUint(ref uint baseHash, uint otherHash)
-		{
-			unchecked { baseHash = baseHash * 23 + otherHash; }
-		}
-		/// <summary>
-		/// Combines any number of hash codes.
-		/// </summary>
-		/// <param name="hashes"></param>
-		/// <returns></returns>
-		public static uint CombineHashCodeUint(params uint[] hashes)
-		{
-			uint result = hashes[0];
-			unchecked
-			{
-				for (int i = 1; i < hashes.Length; i++)
-				{
-					result = result * 23 + hashes[i];
-				}
-			}
-			return result;
-		}
-
-		/// <summary>
-		/// Combines two hash codes.
-		/// </summary>
-		/// <param name="baseHash"></param>
-		/// <param name="otherHash"></param>
-		/// <returns></returns>
 		public static void CombineHashCode(ref int baseHash, int otherHash)
 		{
 			unchecked { baseHash = baseHash * 23 + otherHash; }

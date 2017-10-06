@@ -139,10 +139,10 @@ namespace Duality
 			{
 				unchecked
 				{
-					uint idTemp = UniqueIdentifyableHelper.GetIdentifier(this.GetType().GetTypeId());
+					int idTemp = UniqueIdentifyableHelper.GetIdentifier(this.GetType().GetTypeId());
 					if (this.gameobj != null)
-						MathF.CombineHashCodeUint(ref idTemp, UniqueIdentifyableHelper.GetIdentifier(this.gameobj.Id));
-					return idTemp;
+						MathF.CombineHashCode(ref idTemp, UniqueIdentifyableHelper.GetIdentifier(this.gameobj.Id));
+					return (uint)idTemp;
 				}
 			}
 		}

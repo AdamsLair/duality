@@ -9,18 +9,18 @@ namespace Duality.Serialization
 	public static class UniqueIdentifyableHelper
 	{
 		// Based on https://stackoverflow.com/a/2351171
-		private const uint Multipler = 37;
-		public static uint GetIdentifier(string value)
+		private const int Multipler = 37;
+		public static int GetIdentifier(string value)
 		{
-			uint result = 0;
-			foreach (char c in value) result = (Multipler * result) + c;
+			int result = 0;
+			unchecked { foreach (char c in value) result = (Multipler * result) + c; }
 			return result;
 		}
 
-		public static uint GetIdentifier(Guid guid)
+		public static int GetIdentifier(Guid guid)
 		{
-			uint result = 0;
-			foreach (byte b in guid.ToByteArray()) result = (Multipler * result) + b;
+			int result = 0;
+			unchecked { foreach (byte b in guid.ToByteArray()) result = (Multipler * result) + b; }
 			return result;
 		}
 	}

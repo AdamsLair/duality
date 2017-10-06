@@ -252,7 +252,7 @@ namespace Duality
 
 		uint IUniqueIdentifyable.PreferredId
 		{
-			get { unchecked { return UniqueIdentifyableHelper.GetIdentifier(this.identifier); } }
+			get { unchecked { return (uint)UniqueIdentifyableHelper.GetIdentifier(this.identifier); } }
 		}
 		
 		

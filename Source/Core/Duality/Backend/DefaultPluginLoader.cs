@@ -131,19 +131,19 @@ namespace Duality.Backend
 				}
 
 				StringBuilder envInfo = new StringBuilder();
-				envInfo.AppendLine("Environment Info:")
-					.AppendLine(string.Format("  Current Directory: {0}", Environment.CurrentDirectory))
-					.AppendLine(string.Format("  Command Line: {0}", Environment.CommandLine))
-					.AppendLine(string.Format("  Operating System: {0} {1}", osFriendlyName, osName))
-					.AppendLine(string.Format("  64 Bit OS: {0}", Environment.Is64BitOperatingSystem))
-					.AppendLine(string.Format("  64 Bit Process: {0}", Environment.Is64BitProcess))
-					.AppendLine(string.Format("  CLR Version: {0}", Environment.Version))
-					.AppendLine(string.Format("  Processor Count: {0}", Environment.ProcessorCount));
+				envInfo.AppendLine("Environment Info:");
+				envInfo.AppendFormat("  Current Directory: {0}", Environment.CurrentDirectory).AppendLine();
+				envInfo.AppendFormat("  Command Line: {0}", Environment.CommandLine).AppendLine();
+				envInfo.AppendFormat("  Operating System: {0} {1}", osFriendlyName, osName).AppendLine();
+				envInfo.AppendFormat("  64 Bit OS: {0}", Environment.Is64BitOperatingSystem).AppendLine();
+				envInfo.AppendFormat("  64 Bit Process: {0}", Environment.Is64BitProcess).AppendLine();
+				envInfo.AppendFormat("  CLR Version: {0}", Environment.Version).AppendLine();
+				envInfo.AppendFormat("  Processor Count: {0}", Environment.ProcessorCount).AppendLine();
 
 				if(Environment.OSVersion.Platform == PlatformID.Win32NT)
 				{
-					envInfo.AppendLine(string.Format("  Processor Type: {0}", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")))
-						.AppendLine(string.Format("  Processor Architecture: {0}", Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")));
+					envInfo.AppendFormat("  Processor Type: {0}", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")).AppendLine();
+					envInfo.AppendFormat("  Processor Architecture: {0}", Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")).AppendLine();
 				}
 
 				Log.Core.Write(envInfo.ToString().TrimEnd(Environment.NewLine.ToCharArray()));

@@ -571,19 +571,19 @@ namespace Duality.Tests.Serialization
 			const string singleChar = "a";
 			const string testString = "testString Here";
 			const string guidString = "01234567-89ab-cdef-0123-456789abcdef";
-			const uint testStringUid = 1454634143;
+			const int testStringUid = 1454634143;
 
 			Guid testGuid = Guid.Parse(guidString);
 
 			UniqueIdentifyableHelper.GetIdentifier(singleChar);
 			UniqueIdentifyableHelper.GetIdentifier(testGuid);
 
-			uint idString = UniqueIdentifyableHelper.GetIdentifier(testString);
-			uint idGuid = UniqueIdentifyableHelper.GetIdentifier(guidString);
-			uint idGuidToString = UniqueIdentifyableHelper.GetIdentifier(testGuid.ToString());
+			int uidString = UniqueIdentifyableHelper.GetIdentifier(testString);
+			int uidGuid = UniqueIdentifyableHelper.GetIdentifier(guidString);
+			int uidGuidToString = UniqueIdentifyableHelper.GetIdentifier(testGuid.ToString());
 
-			Assert.AreEqual(idString, testStringUid);
-			Assert.AreEqual(idGuid, idGuidToString);
+			Assert.AreEqual(uidString, testStringUid);
+			Assert.AreEqual(uidGuid, uidGuidToString);
 		}
 
 		
