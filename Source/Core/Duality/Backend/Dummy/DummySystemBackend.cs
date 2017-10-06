@@ -32,7 +32,10 @@ namespace Duality.Backend.Dummy
 		{
 			return true;
 		}
-		void IDualityBackend.Init() { }
+		void IDualityBackend.Init()
+		{
+			Logs.Core.WriteWarning("DummySystemBackend initialized. This is unusual and may cause problems when someone tries to access disk or system features.");
+		}
 		void IDualityBackend.Shutdown() { }
 
 		string ISystemBackend.GetNamedPath(NamedDirectory dir)
