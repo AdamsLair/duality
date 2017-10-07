@@ -152,14 +152,6 @@ namespace Duality.Resources
 					this.blendType == BlendMode.Light; 
 			}
 		}
-		/// <summary>
-		/// [GET] Returns whether this DrawTechnique requires any <see cref="PrepareRendering">rendering preparation</see>.
-		/// This is false for all standard DrawTechniques, but may return true when deriving custom DrawTechniques.
-		/// </summary>
-		public virtual bool NeedsPreparation
-		{
-			get { return false; }
-		}
 
 		/// <summary>
 		/// Creates a new, default DrawTechnique
@@ -186,13 +178,6 @@ namespace Duality.Resources
 			this.prefFormat = formatPref;
 			this.prefType = formatPref != null ? formatPref.DataType : null;
 		}
-
-		/// <summary>
-		/// Prepares rendering using this DrawTechnique.
-		/// </summary>
-		/// <param name="device"></param>
-		/// <param name="material"></param>
-		public virtual void PrepareRendering(IDrawDevice device, BatchInfo material) {}
 
 		protected override void OnLoaded()
 		{
