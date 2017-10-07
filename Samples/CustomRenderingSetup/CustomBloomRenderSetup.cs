@@ -133,10 +133,10 @@ namespace CustomRenderingSetup
 			{
 				BatchInfo material = new BatchInfo(this.techCombineFinal);
 				material.MainTexture = step.Input.MainTexture;
-				material.SetValue("blurFullTex", this.targetPingPongA[0].Targets[0]);
-				material.SetValue("blurHalfTex", this.targetPingPongA[1].Targets[0]);
-				material.SetValue("blurQuarterTex", this.targetPingPongA[2].Targets[0]);
-				material.SetValue("blurEighthTex", this.targetPingPongA[3].Targets[0]);
+				material.SetTexture("blurFullTex", this.targetPingPongA[0].Targets[0]);
+				material.SetTexture("blurHalfTex", this.targetPingPongA[1].Targets[0]);
+				material.SetTexture("blurQuarterTex", this.targetPingPongA[2].Targets[0]);
+				material.SetTexture("blurEighthTex", this.targetPingPongA[3].Targets[0]);
 				this.Blit(drawDevice, material, outputTarget.Res, imageSize, viewportRect);
 			}
 		}
