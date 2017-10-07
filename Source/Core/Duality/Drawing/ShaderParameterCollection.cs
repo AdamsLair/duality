@@ -77,16 +77,35 @@ namespace Duality.Drawing
 			if (other.values != null)
 			{
 				this.values = new RawList<ValueItem>(other.values);
+
 				int count = this.values.Count;
 				ValueItem[] data = this.values.Data;
 				for (int i = 0; i < data.Length; i++)
 				{
 					if (i > count) break;
-					if (data[i].Uniform == null) continue;
-					data[i].Uniform = (float[])data[i].Uniform.Clone();
+					if (data[i].Uniform != null)
+						data[i].Uniform = (float[])data[i].Uniform.Clone();
 				}
 			}
 			this.hash = other.hash;
+		}
+		
+		/// <summary>
+		/// Copies all values from this collection of shader parameters
+		/// to the target one. Does not overwrite or remove items in the
+		/// target that are not defined in this collection.
+		/// </summary>
+		/// <param name="target"></param>
+		public void CopyTo(ShaderParameterCollection target)
+		{
+			if (this.values == null) return;
+			for (int i = 0; i < this.values.Count; i++)
+			{
+				if (this.values.Data[i].Uniform != null)
+					target.Set(this.values.Data[i].Name, this.values.Data[i].Uniform);
+				else
+					target.Set(this.values.Data[i].Name, this.values.Data[i].Texture);
+			}
 		}
 
 		/// <summary>
@@ -821,7 +840,7 @@ namespace Duality.Drawing
 		public override string ToString()
 		{
 			StringBuilder builder = new StringBuilder();
-			int otherCount = this.values.Count;
+			int otherCount = this.values != null ? this.values.Count : 0;
 
 			ContentRef<Texture> mainTex;
 			if (this.TryGet(ShaderFieldInfo.DefaultNameMainTex, out mainTex))
@@ -834,7 +853,7 @@ namespace Duality.Drawing
 			{
 				if (builder.Length != 0) builder.Append(", +");
 				builder.Append(otherCount);
-				builder.Append(" vars");
+				builder.Append(" variables");
 			}
 
 			return builder.ToString();
