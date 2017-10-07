@@ -169,6 +169,7 @@ namespace Duality.Tests.Drawing
 			// Create a new params instance via copy and modify its values
 			ShaderParameterCollection first = new ShaderParameterCollection();
 			first.Set("Foo", new[] { 1.0f, 2.0f, 3.0f, 4.0f });
+			first.Set("Bar", new[] { 42.0f });
 
 			ShaderParameterCollection second = new ShaderParameterCollection(first);
 			second.Set("Foo", new[] { 5.0f, 6.0f, 7.0f, 8.0f });
@@ -176,6 +177,8 @@ namespace Duality.Tests.Drawing
 			// Assert that each instance has its own values and no accidental shallow copy was made
 			CollectionAssert.AreEqual(new[] { 1.0f, 2.0f, 3.0f, 4.0f }, GetArray<float>(first, "Foo"));
 			CollectionAssert.AreEqual(new[] { 5.0f, 6.0f, 7.0f, 8.0f }, GetArray<float>(second, "Foo"));
+			CollectionAssert.AreEqual(new[] { 42.0f }, GetArray<float>(first, "Bar"));
+			CollectionAssert.AreEqual(new[] { 42.0f }, GetArray<float>(second, "Bar"));
 		}
 
 		[TestCase(1000)]
