@@ -75,7 +75,7 @@
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\MainTargetTex.Texture.res</contentPath>
               </mainTex>
-              <GameTime dataType="Array" type="System.Single[]" id="4030560964">0</GameTime>
+              <_GameTime dataType="Array" type="System.Single[]" id="4030560964">0</_GameTime>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">

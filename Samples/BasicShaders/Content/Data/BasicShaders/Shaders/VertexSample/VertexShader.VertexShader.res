@@ -4,9 +4,9 @@
     <importerId dataType="String">BasicShaderAssetImporter</importerId>
     <sourceFileHint />
   </assetInfo>
-  <source dataType="String">uniform float GameTime;
-uniform float CameraFocusDist;
-uniform bool CameraParallax;
+  <source dataType="String">uniform float _GameTime;
+uniform float _CameraFocusDist;
+uniform bool _CameraParallax;
 
 uniform float FloatStrength;
 
@@ -18,15 +18,15 @@ void main()
 	
 	// Reverse-engineer the scale that was previously applied to the vertex
 	float scale = 1.0;
-	if (CameraParallax)
+	if (_CameraParallax)
 	{
-		scale = CameraFocusDist / vertex.z;
+		scale = _CameraFocusDist / vertex.z;
 	}
 	
 	// Move the vertex around, keeping scale in mind
 	vertex.xy += FloatStrength * scale * vec2(
-		sin(GameTime + mod(gl_VertexID, 4)), 
-		cos(GameTime + mod(gl_VertexID, 4)));
+		sin(_GameTime + mod(gl_VertexID, 4)), 
+		cos(_GameTime + mod(gl_VertexID, 4)));
 	
 	gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * vertex;
 	gl_TexCoord[0] = gl_MultiTexCoord0;

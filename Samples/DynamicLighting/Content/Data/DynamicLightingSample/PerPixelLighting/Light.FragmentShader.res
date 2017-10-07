@@ -10,7 +10,7 @@ uniform sampler2D mainTex;
 uniform sampler2D normalTex;
 uniform sampler2D specularTex;
 
-uniform vec3 CameraPosition;
+uniform vec3 _CameraPosition;
 
 uniform int _lightCount;
 uniform vec4 _lightPos[8];
@@ -22,7 +22,7 @@ varying mat2 objTransform;
 
 void main()
 {
-	vec3 eyeDir = normalize(CameraPosition - worldSpacePos);
+	vec3 eyeDir = normalize(_CameraPosition - worldSpacePos);
   
 	vec4 clrDiffuse = gl_Color * texture2D(mainTex, gl_TexCoord[0].st);
 	vec4 clrNormal = texture2D(normalTex, gl_TexCoord[0].st);
