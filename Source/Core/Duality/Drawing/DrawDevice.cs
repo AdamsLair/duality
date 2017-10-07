@@ -145,6 +145,8 @@ namespace Duality.Drawing
 		private int                       pickingIndex     = 0;
 		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
 
+		private RenderOptions                renderOptions      = new RenderOptions();
+		private RenderStats                  renderStats        = new RenderStats();
 		private VertexBatchStore             drawVertices       = new VertexBatchStore();
 		private RawList<VertexDrawItem>      drawBuffer         = new RawList<VertexDrawItem>();
 		private RawList<SortItem>            sortBufferSolid    = new RawList<SortItem>();
@@ -625,36 +627,34 @@ namespace Duality.Drawing
 			this.AggregateBatches();
 			this.UpdateBuiltinShaderParameters();
 
+			this.renderOptions.ClearFlags = this.clearFlags;
+			this.renderOptions.ClearColor = this.clearColor;
+			this.renderOptions.ClearDepth = this.clearDepth;
+			this.renderOptions.Viewport = this.viewportRect;
+			this.renderOptions.RenderMode = this.renderMode;
+			this.renderOptions.ModelViewMatrix = this.matModelView;
+			this.renderOptions.ProjectionMatrix = this.matProjection;
+			this.renderOptions.Target = this.renderTarget.IsAvailable ? this.renderTarget.Res.Native : null;
+			this.renderOptions.ShaderParameters = this.shaderParameters;
+
+			this.renderStats.Reset();
+
 			// Invoke graphics backend functionality to do the rendering
-			RenderOptions options = new RenderOptions
+			DualityApp.GraphicsBackend.BeginRendering(this, this.drawVertices, this.renderOptions, this.renderStats);
 			{
-				ClearFlags = this.clearFlags,
-				ClearColor = this.clearColor,
-				ClearDepth = this.clearDepth,
-				Viewport = this.viewportRect,
-				RenderMode = this.renderMode,
-				ModelViewMatrix = this.matModelView,
-				ProjectionMatrix = this.matProjection,
-				Target = this.renderTarget.IsAvailable ? this.renderTarget.Res.Native : null,
-				ShaderParameters = this.shaderParameters
-			};
-			RenderStats stats = new RenderStats();
-			DualityApp.GraphicsBackend.BeginRendering(this, this.drawVertices, options, stats);
+				Profile.TimeProcessDrawcalls.BeginMeasure();
 
-			{
-				if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.BeginMeasure();
-
-				// Z-Independent: Sorted as needed by batch optimizer
+				// Sorted as needed by batch optimizer
 				DualityApp.GraphicsBackend.Render(this.batchBufferSolid);
-
-				// Z-Sorted: Back to Front
+				// Z-Sorted, back to Front
 				DualityApp.GraphicsBackend.Render(this.batchBufferBlended);
 
-				if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.EndMeasure();
+				Profile.TimeProcessDrawcalls.EndMeasure();
 			}
-			Profile.StatNumDrawcalls.Add(stats.DrawCalls);
-
 			DualityApp.GraphicsBackend.EndRendering();
+
+			Profile.StatNumDrawcalls.Add(this.renderStats.DrawCalls);
+
 			this.drawBuffer.Clear();
 			this.sortBufferSolid.Clear();
 			this.sortBufferBlended.Clear();
