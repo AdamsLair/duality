@@ -9,14 +9,15 @@ namespace Duality.Backend
 {
 	public class RenderOptions
 	{
-		private INativeRenderTarget	target			= null;
-		private ClearFlag		clearFlags			= ClearFlag.All;
-		private ColorRgba		clearColor			= ColorRgba.TransparentBlack;
-		private float			clearDepth			= 1.0f;
-		private	Rect			viewport			= new Rect(0, 0, 256, 256);
-		private	RenderMatrix	renderMode			= RenderMatrix.ScreenSpace;
-		private	Matrix4			modelViewMatrix		= Matrix4.Identity;
-		private	Matrix4			projectionMatrix	= Matrix4.Identity;
+		private INativeRenderTarget       target           = null;
+		private ClearFlag                 clearFlags       = ClearFlag.All;
+		private ColorRgba                 clearColor       = ColorRgba.TransparentBlack;
+		private float                     clearDepth       = 1.0f;
+		private Rect                      viewport         = new Rect(0, 0, 256, 256);
+		private RenderMatrix              renderMode       = RenderMatrix.ScreenSpace;
+		private Matrix4                   modelViewMatrix  = Matrix4.Identity;
+		private Matrix4                   projectionMatrix = Matrix4.Identity;
+		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
 		
 		public INativeRenderTarget Target
 		{
@@ -57,6 +58,11 @@ namespace Duality.Backend
 		{
 			get { return this.projectionMatrix; }
 			set { this.projectionMatrix = value; }
+		}
+		public ShaderParameterCollection ShaderParameters
+		{
+			get { return this.shaderParameters; }
+			set { this.shaderParameters = value; }
 		}
 	}
 }

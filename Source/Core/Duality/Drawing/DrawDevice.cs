@@ -124,25 +124,26 @@ namespace Duality.Drawing
 		public const float DefaultFocusDist	= 500.0f;
 
 		
-		private bool                     disposed       = false;
-		private float                    nearZ          = 0.0f;
-		private float                    farZ           = 10000.0f;
-		private float                    focusDist      = DefaultFocusDist;
-		private ClearFlag                clearFlags     = ClearFlag.All;
-		private ColorRgba                clearColor     = ColorRgba.TransparentBlack;
-		private float                    clearDepth     = 1.0f;
-		private Vector2                  targetSize     = Vector2.Zero;
-		private Rect                     viewportRect   = Rect.Empty;
-		private Vector3                  refPos         = Vector3.Zero;
-		private float                    refAngle       = 0.0f;
-		private ContentRef<RenderTarget> renderTarget   = null;
-		private RenderMatrix             renderMode     = RenderMatrix.ScreenSpace;
-		private PerspectiveMode          perspective    = PerspectiveMode.Parallax;
-		private Matrix4                  matModelView   = Matrix4.Identity;
-		private Matrix4                  matProjection  = Matrix4.Identity;
-		private Matrix4                  matFinal       = Matrix4.Identity;
-		private VisibilityFlag           visibilityMask = VisibilityFlag.All;
-		private int                      pickingIndex   = 0;
+		private bool                      disposed         = false;
+		private float                     nearZ            = 0.0f;
+		private float                     farZ             = 10000.0f;
+		private float                     focusDist        = DefaultFocusDist;
+		private ClearFlag                 clearFlags       = ClearFlag.All;
+		private ColorRgba                 clearColor       = ColorRgba.TransparentBlack;
+		private float                     clearDepth       = 1.0f;
+		private Vector2                   targetSize       = Vector2.Zero;
+		private Rect                      viewportRect     = Rect.Empty;
+		private Vector3                   refPos           = Vector3.Zero;
+		private float                     refAngle         = 0.0f;
+		private ContentRef<RenderTarget>  renderTarget     = null;
+		private RenderMatrix              renderMode       = RenderMatrix.ScreenSpace;
+		private PerspectiveMode           perspective      = PerspectiveMode.Parallax;
+		private Matrix4                   matModelView     = Matrix4.Identity;
+		private Matrix4                   matProjection    = Matrix4.Identity;
+		private Matrix4                   matFinal         = Matrix4.Identity;
+		private VisibilityFlag            visibilityMask   = VisibilityFlag.All;
+		private int                       pickingIndex     = 0;
+		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
 
 		private VertexBatchStore             drawVertices       = new VertexBatchStore();
 		private RawList<VertexDrawItem>      drawBuffer         = new RawList<VertexDrawItem>();
@@ -253,6 +254,15 @@ namespace Duality.Drawing
 		public bool DepthWrite
 		{
 			get { return this.renderMode != RenderMatrix.ScreenSpace; }
+		}
+		/// <summary>
+		/// [GET] Provides access to the drawing devices shared <see cref="ShaderParameterCollection"/>,
+		/// which allows to specify a parameter value globally across all materials rendered by this
+		/// <see cref="DrawDevice"/>.
+		/// </summary>
+		public ShaderParameterCollection ShaderParameters
+		{
+			get { return this.shaderParameters; }
 		}
 
 
@@ -549,7 +559,6 @@ namespace Duality.Drawing
 
 			++this.numRawBatches;
 		}
-		
 		/// <summary>
 		/// Generates a single drawcall that renders a fullscreen quad using the specified material.
 		/// Assumes that the <see cref="DrawDevice"/> is set up to render in screen space.
@@ -612,8 +621,11 @@ namespace Duality.Drawing
 		{
 			if (DualityApp.GraphicsBackend == null) return;
 
-			// Process drawcalls
+			// Prepare forwarding the collected data and parameters to the graphics backend
 			this.AggregateBatches();
+			this.UpdateBuiltinShaderParameters();
+
+			// Invoke graphics backend functionality to do the rendering
 			RenderOptions options = new RenderOptions
 			{
 				ClearFlags = this.clearFlags,
@@ -623,7 +635,8 @@ namespace Duality.Drawing
 				RenderMode = this.renderMode,
 				ModelViewMatrix = this.matModelView,
 				ProjectionMatrix = this.matProjection,
-				Target = this.renderTarget.IsAvailable ? this.renderTarget.Res.Native : null
+				Target = this.renderTarget.IsAvailable ? this.renderTarget.Res.Native : null,
+				ShaderParameters = this.shaderParameters
 			};
 			RenderStats stats = new RenderStats();
 			DualityApp.GraphicsBackend.BeginRendering(this, this.drawVertices, options, stats);
@@ -706,6 +719,22 @@ namespace Duality.Drawing
 				// Flip Z direction from "out of the screen" to "into the screen".
 				projMat.M33 = -projMat.M33;
 			}
+		}
+
+		/// <summary>
+		/// Updates all <see cref="BuiltinShaderFields"/> in the devices shared <see cref="ShaderParameters"/>
+		/// to match its current configuration.
+		/// </summary>
+		private void UpdateBuiltinShaderParameters()
+		{
+			this.shaderParameters.Set(BuiltinShaderFields.RealTime, (float)Time.MainTimer.TotalSeconds);
+			this.shaderParameters.Set(BuiltinShaderFields.GameTime, (float)Time.GameTimer.TotalSeconds);
+			this.shaderParameters.Set(BuiltinShaderFields.DeltaTime, Time.DeltaTime);
+			this.shaderParameters.Set(BuiltinShaderFields.FrameCount, Time.FrameCount);
+
+			this.shaderParameters.Set(BuiltinShaderFields.CameraPosition, this.refPos);
+			this.shaderParameters.Set(BuiltinShaderFields.CameraParallax, this.perspective == PerspectiveMode.Parallax);
+			this.shaderParameters.Set(BuiltinShaderFields.CameraFocusDist, this.focusDist);
 		}
 
 		private static int MaterialSortComparison(SortItem first, SortItem second)

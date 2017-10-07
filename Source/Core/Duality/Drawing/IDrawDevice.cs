@@ -54,6 +54,12 @@ namespace Duality.Drawing
 		/// [GET] The size of the image that is rendered by this device.
 		/// </summary>
 		Vector2 TargetSize { get; }
+		/// <summary>
+		/// [GET] Provides access to the drawing devices shared <see cref="ShaderParameterCollection"/>,
+		/// which allows to specify a parameter value globally across all materials rendered by this
+		/// <see cref="DrawDevice"/>.
+		/// </summary>
+		ShaderParameterCollection ShaderParameters { get; }
 		
 		
 		/// <summary>

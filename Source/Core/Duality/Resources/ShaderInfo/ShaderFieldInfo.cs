@@ -71,10 +71,7 @@ namespace Duality.Resources
 			this.type = type;
 			this.scope = scope;
 			this.arrayLength = arrayLength;
-			this.isPrivate = 
-				string.IsNullOrEmpty(name) || 
-				name[0] == '_' || 
-				BuiltinShaderFields.GetIndex(name) != BuiltinShaderFields.InvalidIndex;
+			this.isPrivate = string.IsNullOrEmpty(name) || name[0] == '_';
 		}
 
 		public override string ToString()

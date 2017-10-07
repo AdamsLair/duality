@@ -19,16 +19,17 @@ namespace Duality.Components
 	[EditorHintImage(CoreResNames.ImageCamera)]
 	public sealed class Camera : Component, ICmpInitializable
 	{
-		private float                    nearZ                 = 0.0f;
-		private float                    farZ                  = 10000.0f;
-		private float                    focusDist             = DrawDevice.DefaultFocusDist;
-		private Rect                     targetRect            = new Rect(1.0f, 1.0f);
-		private PerspectiveMode          perspective           = PerspectiveMode.Parallax;
-		private VisibilityFlag           visibilityMask        = VisibilityFlag.All;
-		private ColorRgba                clearColor            = ColorRgba.TransparentBlack;
-		private ContentRef<RenderTarget> renderTarget          = null;
-		private ContentRef<RenderSetup>  renderSetup           = null;
-		private int             priority       = 0;
+		private float                     nearZ            = 0.0f;
+		private float                     farZ             = 10000.0f;
+		private float                     focusDist        = DrawDevice.DefaultFocusDist;
+		private Rect                      targetRect       = new Rect(1.0f, 1.0f);
+		private PerspectiveMode           perspective      = PerspectiveMode.Parallax;
+		private VisibilityFlag            visibilityMask   = VisibilityFlag.All;
+		private ColorRgba                 clearColor       = ColorRgba.TransparentBlack;
+		private ContentRef<RenderTarget>  renderTarget     = null;
+		private ContentRef<RenderSetup>   renderSetup      = null;
+		private int                       priority         = 0;
+		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
 
 		[DontSerialize] private DrawDevice         drawDevice   = null;
 		[DontSerialize] private PickingRenderSetup pickingSetup = null;
@@ -146,6 +147,15 @@ namespace Duality.Components
 		{
 			get { return this.priority; }
 			set { this.priority = value; }
+		}
+		/// <summary>
+		/// [GET] Provides access to the cameras shared <see cref="ShaderParameterCollection"/>,
+		/// which allows to specify a parameter value globally across all materials rendered by
+		/// this <see cref="Camera"/>.
+		/// </summary>
+		public ShaderParameterCollection ShaderParameters
+		{
+			get { return this.shaderParameters; }
 		}
 
 
@@ -333,6 +343,8 @@ namespace Duality.Components
 			this.drawDevice.VisibilityMask = this.visibilityMask;
 			this.drawDevice.ClearColor = this.clearColor;
 			this.drawDevice.Target = this.renderTarget;
+
+			this.shaderParameters.CopyTo(this.drawDevice.ShaderParameters);
 		}
 
 		void ICmpInitializable.OnInit(Component.InitContext context)
