@@ -156,6 +156,10 @@ namespace DynamicLighting
 
 		public override void Draw(IDrawDevice device)
 		{
+			// When rendering a sprite that uses dynamic lighting, make sure to update
+			// the devices shared / global lighting variables this frame
+			Light.UpdateLighting(device);
+
 			Texture mainTex = this.RetrieveMainTex();
 			DrawTechnique tech = this.RetrieveDrawTechnique();
 

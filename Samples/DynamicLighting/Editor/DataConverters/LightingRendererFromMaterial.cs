@@ -43,12 +43,11 @@ namespace DynamicLighting.DataConverters
 				if (convert.IsObjectHandled(mat)) continue;
 
 				DrawTechnique tech = mat.Technique.Res;
-				LightingTechnique lightTech = tech as LightingTechnique;
 				if (tech == null) continue;
 
-				bool isDynamicLighting = lightTech != null ||
-					tech.PreferredVertexFormat == VertexC1P3T2A4.Declaration ||
-					tech.PreferredVertexFormat == VertexC1P3T4A4A1.Declaration;
+				bool isDynamicLighting = 
+					tech is LightingTechnique ||
+					tech.PreferredVertexFormat == VertexC1P3T2A4.Declaration;
 				if (!isDynamicLighting) continue;
 
 				Texture mainTex = mat.MainTexture.Res;

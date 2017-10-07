@@ -30,7 +30,6 @@ namespace DynamicLighting
 			public	List<Light>		PriorizedLights;
 			public	int				FrameId;
 		}
-		private	static	DeviceLightInfo	nullDeviceInfo = null;
 		private	static	Dictionary<IDrawDevice,DeviceLightInfo>	deviceInfo	= new Dictionary<IDrawDevice,DeviceLightInfo>();
 
 		public	const	int	MaxVisible	= 8;
@@ -182,43 +181,21 @@ namespace DynamicLighting
 			}
 		}
 
-		private static DeviceLightInfo UpdateLighting(IDrawDevice device)
+		public static void UpdateLighting(IDrawDevice device)
 		{
+			// Only update lighting info once per frame and device
 			DeviceLightInfo info;
+			if (deviceInfo.TryGetValue(device, out info) && info != null && info.FrameId == Time.FrameCount)
+				return;
 
-			if (device == null)
+			if (info == null)
 			{
-				info = nullDeviceInfo;
-				if (info != null && info.FrameId == Time.FrameCount) return info;
-
-				if (info == null)
-				{
-					info = new DeviceLightInfo();
-					nullDeviceInfo = info;
-				}
-				info.FrameId = Time.FrameCount;
-				
-				info.PriorizedLights = Scene.Current.FindComponents<Light>().Where(l => l.Active).ToList();
+				info = new DeviceLightInfo();
+				deviceInfo[device] = info;
 			}
-			else
-			{
-				if (deviceInfo.TryGetValue(device, out info) && info != null && info.FrameId == Time.FrameCount) return info;
-
-				if (info == null)
-				{
-					info = new DeviceLightInfo();
-					deviceInfo[device] = info;
-				}
-				info.FrameId = Time.FrameCount;
-				info.PriorizedLights = Scene.Current.FindComponents<Light>().Where(l => l.Active).Where(l => l.IsVisibleTo(device)).ToList();
-				info.PriorizedLights.StableSort((Light a, Light b) => a.CalcPriority(device) - b.CalcPriority(device));
-			}
-
-			return info;
-		}
-		public static void SetupLighting(IDrawDevice device, BatchInfo material)
-		{
-			DeviceLightInfo info = UpdateLighting(device);
+			info.FrameId = Time.FrameCount;
+			info.PriorizedLights = Scene.Current.FindComponents<Light>().Where(l => l.Active).Where(l => l.IsVisibleTo(device)).ToList();
+			info.PriorizedLights.StableSort((Light a, Light b) => a.CalcPriority(device) - b.CalcPriority(device));
 
 			// Prepare shader dara
 			Vector4[] _lightPos = new Vector4[MaxVisible];
@@ -279,19 +256,20 @@ namespace DynamicLighting
 			}
 			if (i + 1 < _lightCount) _lightCount = i + 1;
 
-			material.SetValue("_lightCount", _lightCount);
-			material.SetArray("_lightPos", _lightPos);
-			material.SetArray("_lightDir", _lightDir);
-			material.SetArray("_lightColor", _lightColor);
+			device.ShaderParameters.Set("_lightCount", _lightCount);
+			device.ShaderParameters.Set("_lightPos", _lightPos);
+			device.ShaderParameters.Set("_lightDir", _lightDir);
+			device.ShaderParameters.Set("_lightColor", _lightColor);
 		}
 		public static void GetLightAtWorldPos(Vector3 worldPos, out Vector4 lightColor, float translucency = 0.0f)
 		{
-			DeviceLightInfo info = UpdateLighting(null);
 			lightColor = Vector4.UnitW;
 
-			foreach (Light light in info.PriorizedLights)
+			IEnumerable<Light> lights = Scene.Current.FindComponents<Light>();
+			foreach (Light light in lights)
 			{
 				if (light.Disposed) continue;
+				if (!light.Active) continue;
 				if (light.IsDirectional)
 				{
 					float translucencyFactor = Vector3.Dot(light.dir, Vector3.UnitZ);
