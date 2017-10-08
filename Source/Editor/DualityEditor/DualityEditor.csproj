@@ -29,6 +29,7 @@
     <DebugType>full</DebugType>
     <DefineConstants>DEBUG</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
@@ -40,6 +41,7 @@
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AdamsLair.WinForms, Version=1.1.12.0, Culture=neutral, processorArchitecture=MSIL">
