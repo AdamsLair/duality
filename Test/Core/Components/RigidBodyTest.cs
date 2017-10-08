@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Reflection;
-
-using Duality;
-using Duality.Cloning;
+﻿using System.Linq;
+using System.Threading;
 using Duality.Components;
 using Duality.Components.Physics;
-
+using Duality.Resources;
 using NUnit.Framework;
 
 namespace Duality.Tests.Components
@@ -16,6 +10,46 @@ namespace Duality.Tests.Components
 	[TestFixture]
 	public class RigidBodyTest
 	{
+		[Test]
+		public void FallingBall()
+		{
+			var scene = new Scene();
+			Scene.SwitchTo(scene);
+
+			//Create the ball
+			var ball = new GameObject("Ball");
+			var ballTransform = ball.AddComponent<Transform>();
+			var ballBody = ball.AddComponent<RigidBody>();
+			var listener = ball.AddComponent<CollisionListener>();
+			bool onCollisionBeginCalled = false, onCollisionEndCalled = false, onCollisionSolveCalled = false;
+			listener.CollisionBegin += (sender, args) => onCollisionBeginCalled = true;
+			listener.CollisionEnd += (sender, args) => onCollisionEndCalled = true;
+			listener.CollisionSolve += (sender, args) => onCollisionSolveCalled = true;
+			ballBody.AddShape(new CircleShapeInfo(1, new Vector2(0, 0), 1));
+			scene.AddObject(ball);
+
+			//Create the platform
+			var platform = new GameObject("Platform");
+			var platformTrans = platform.AddComponent<Transform>();
+			var platformBody = platform.AddComponent<RigidBody>();
+			platformBody.AddShape(new ChainShapeInfo(new[] { new Vector2(-1, 0), new Vector2(1, 0), }));
+			platformBody.BodyType = BodyType.Static;
+			scene.AddObject(platform);
+			platformTrans.Pos = new Vector3(0, 5, 0);
+
+			for (int i = 0; i < 6; i++)
+			{
+				Thread.Sleep(16); //Simulate ~60 fps.
+				DualityApp.Update();
+			}
+			Assert.IsTrue(ballTransform.Pos.Y > 0);
+			Assert.IsTrue(ballTransform.Pos.X == 0);
+			Assert.IsTrue(ballTransform.Pos.Z == 0);
+			Assert.IsTrue(onCollisionBeginCalled);
+			Assert.IsTrue(onCollisionEndCalled);
+			Assert.IsTrue(onCollisionSolveCalled);
+		}
+
 		[Test] public void CreateEmptyBody()
 		{
 			// Create a new RigidBody
