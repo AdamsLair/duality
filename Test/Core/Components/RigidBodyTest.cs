@@ -4,7 +4,6 @@ using System.Linq;
 using Duality.Components;
 using Duality.Components.Physics;
 using Duality.Resources;
-using static Duality.Tests.Components.CollisionEventReceiver.CollisionEvent;
 
 using NUnit.Framework;
 
@@ -51,9 +50,9 @@ namespace Duality.Tests.Components
 
 			// Check if the collision events were triggered
 			// First one should always be a begin
-			Assert.IsTrue(listener.Collisions[0].Type == CollisionType.Begin); 
+			Assert.IsTrue(listener.Collisions[0].Type == CollisionEventReceiver.CollisionType.Begin); 
 			// The ones after that should all be of type Solve. There should be no event of type End since there is no bouncing.
-			Assert.IsTrue(listener.Collisions.Skip(1).All(x => x.Type == CollisionType.Solve)); 
+			Assert.IsTrue(listener.Collisions.Skip(1).All(x => x.Type == CollisionEventReceiver.CollisionType.Solve)); 
 		}
 
 		[Test] public void CreateEmptyBody()

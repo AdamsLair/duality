@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-using static Duality.Tests.Components.CollisionEventReceiver.CollisionEvent;
-
 namespace Duality.Tests.Components
 {
 	/// <summary>
@@ -10,27 +8,27 @@ namespace Duality.Tests.Components
 	/// </summary>
 	public class CollisionEventReceiver : Component, ICmpCollisionListener
 	{
+		public enum CollisionType
+		{
+			/// <summary>
+			/// This event was created during <see cref="ICmpCollisionListener.OnCollisionBegin(Component, CollisionEventArgs)"/>
+			/// </summary>
+			Begin,
+
+			/// <summary>
+			/// This event was created during <see cref="ICmpCollisionListener.OnCollisionSolve(Component, CollisionEventArgs)(Component, CollisionEventArgs)"/>
+			/// </summary>
+			Solve,
+
+			/// <summary>
+			/// This event was created during <see cref="ICmpCollisionListener.OnCollisionEnd(Component, CollisionEventArgs)(Component, CollisionEventArgs)"/>
+			/// </summary>
+			End
+		}
+
 		[DebuggerDisplay("{Type} event with {Args.CollideWith}")]
 		public struct CollisionEvent
 		{
-			public enum CollisionType
-			{
-				/// <summary>
-				/// This event was created during <see cref="ICmpCollisionListener.OnCollisionBegin(Component, CollisionEventArgs)"/>
-				/// </summary>
-				Begin,
-
-				/// <summary>
-				/// This event was created during <see cref="ICmpCollisionListener.OnCollisionSolve(Component, CollisionEventArgs)(Component, CollisionEventArgs)"/>
-				/// </summary>
-				Solve,
-
-				/// <summary>
-				/// This event was created during <see cref="ICmpCollisionListener.OnCollisionEnd(Component, CollisionEventArgs)(Component, CollisionEventArgs)"/>
-				/// </summary>
-				End
-			}
-
 			public readonly Component Sender;
 			public readonly CollisionEventArgs Args;
 			public readonly CollisionType Type;
