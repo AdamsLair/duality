@@ -10,8 +10,7 @@ namespace Duality.Tests.Components
 	[TestFixture]
 	public class RigidBodyTest
 	{
-		[Test]
-		public void FallingBallOnPlatform()
+		[Test] public void FallingBallOnPlatform()
 		{
 			var scene = new Scene();
 			Scene.SwitchTo(scene);
