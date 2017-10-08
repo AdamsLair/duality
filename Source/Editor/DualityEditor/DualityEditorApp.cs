@@ -31,7 +31,8 @@ namespace Duality.Editor
 	public static class DualityEditorApp
 	{
 		public	const	string	EditorLogfilePath		= "logfile_editor.txt";
-		public	const	string	EditorPrevLogfilePath	= "logfile_editor_prev.txt";
+		public	const	string	EditorPrevLogfileName	= "logfile_editor_{0}.txt";
+		public	const	string	EditorPrevLogfileDir	= "Temp";
 		public	const	string	DesignTimeDataFile		= "DesignTimeData.dat";
 		public	const	string	UserDataFile			= "EditorUserData.xml";
 		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";
@@ -183,9 +184,6 @@ namespace Duality.Editor
 			// Set up an in-memory data log so plugins can access the log history when needed
 			memoryLogOutput = new InMemoryLogOutput();
 			Log.AddGlobalOutput(memoryLogOutput);
-			
-			// Set up a global exception handler to log errors
-			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
 			// Create working directories, if not existing yet.
 			if (!Directory.Exists(DualityApp.DataDirectory))
@@ -258,8 +256,8 @@ namespace Duality.Editor
 			Resource.ResourceSaved += Resource_ResourceSaved;
 			Resource.ResourceSaving += Resource_ResourceSaving;
 			FileEventManager.PluginChanged += FileEventManager_PluginChanged;
-			editorObjects.GameObjectAdded += editorObjects_Registered;
-			editorObjects.GameObjectRemoved += editorObjects_Unregistered;
+			editorObjects.GameObjectsAdded += editorObjects_GameObjectsAdded;
+			editorObjects.GameObjectsRemoved += editorObjects_GameObjectsRemoved;
 			editorObjects.ComponentAdded += editorObjects_ComponentAdded;
 			editorObjects.ComponentRemoving += editorObjects_ComponentRemoved;
 
@@ -346,8 +344,8 @@ namespace Duality.Editor
 			Resource.ResourceSaving -= Resource_ResourceSaving;
 			Resource.ResourceDisposing -= Resource_ResourceDisposing;
 			FileEventManager.PluginChanged -= FileEventManager_PluginChanged;
-			editorObjects.GameObjectAdded -= editorObjects_Registered;
-			editorObjects.GameObjectRemoved -= editorObjects_Unregistered;
+			editorObjects.GameObjectsAdded -= editorObjects_GameObjectsAdded;
+			editorObjects.GameObjectsRemoved -= editorObjects_GameObjectsRemoved;
 			editorObjects.ComponentAdded -= editorObjects_ComponentAdded;
 			editorObjects.ComponentRemoving -= editorObjects_ComponentRemoved;
 
@@ -1277,15 +1275,12 @@ namespace Duality.Editor
 				if (!dualityAppSuspended)
 				{
 					bool fixedSingleStep = Sandbox.TakeSingleStep();
-					DualityApp.ExecutionContext lastContext = DualityApp.ExecContext;
-					if (fixedSingleStep) DualityApp.ExecContext = DualityApp.ExecutionContext.Game;
-
 					try
 					{
 						DualityApp.EditorUpdate(
 							editorObjects.ActiveObjects.Concat(updateObjects), 
-							Sandbox.IsFreezed, 
-							fixedSingleStep && Sandbox.State != SandboxState.Playing);
+							fixedSingleStep || (Sandbox.State == SandboxState.Playing && !Sandbox.IsFreezed), 
+							fixedSingleStep);
 						updateObjects.Clear();
 					}
 					catch (Exception exception)
@@ -1293,8 +1288,6 @@ namespace Duality.Editor
 						Log.Editor.WriteError("An error occurred during a core update: {0}", Log.Exception(exception));
 					}
 					OnUpdatingEngine();
-
-					if (fixedSingleStep) DualityApp.ExecContext = lastContext;
 				}
 				
 				// Perform a buffer swap
@@ -1395,15 +1388,48 @@ namespace Duality.Editor
 				DualityEditorApp.UpdatePluginSourceCode();
 		}
 
-		private static void editorObjects_Registered(object sender, GameObjectEventArgs e)
+		private static void editorObjects_GameObjectsAdded(object sender, GameObjectGroupEventArgs e)
 		{
-			if (e.Object.Active)
-				e.Object.OnActivate();
+			// Gather a list of components to activate
+			int objCount = 0;
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
+			foreach (GameObject obj in e.Objects)
+			{
+				if (!obj.ActiveSingle) continue;
+				obj.GatherInitComponents(initList, false);
+				objCount++;
+			}
+
+			// If we collected components from more than one object, sort by exec order.
+			// Otherwise, we can safely assume that the list is already sorted.
+			if (objCount > 1) Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
+
+			// Invoke the init event on all gathered components in the right order
+			foreach (ICmpInitializable component in initList)
+				component.OnInit(Component.InitContext.Activate);
 		}
-		private static void editorObjects_Unregistered(object sender, GameObjectEventArgs e)
+		private static void editorObjects_GameObjectsRemoved(object sender, GameObjectGroupEventArgs e)
 		{
-			if (e.Object.Active || e.Object.Disposed)
-				e.Object.OnDeactivate();
+			// Gather a list of components to deactivate
+			int objCount = 0;
+			List<ICmpInitializable> initList = new List<ICmpInitializable>();
+			foreach (GameObject obj in e.Objects)
+			{
+				if (!obj.ActiveSingle && !obj.Disposed) continue;
+				obj.GatherInitComponents(initList, false);
+				objCount++;
+			}
+
+			// If we collected components from more than one object, sort by exec order.
+			// Otherwise, we can safely assume that the list is already sorted.
+			if (objCount > 1)
+				Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
+			else
+				initList.Reverse();
+
+			// Invoke the init event on all gathered components in the right order
+			foreach (ICmpInitializable component in initList)
+				component.OnShutdown(Component.ShutdownContext.Deactivate);
 		}
 		private static void editorObjects_ComponentAdded(object sender, ComponentEventArgs e)
 		{
@@ -1437,10 +1463,6 @@ namespace Duality.Editor
 			{
 				AnalyzeCorePlugin(plugin);
 			}
-		}
-		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			Log.Core.WriteError(Log.Exception(e.ExceptionObject as Exception));
 		}
 		private static object EditorHintImageResolver(string manifestResourceName)
 		{

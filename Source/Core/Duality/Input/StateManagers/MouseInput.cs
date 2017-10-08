@@ -140,14 +140,14 @@ namespace Duality.Input
 		/// </summary>
 		public int WheelSpeed
 		{
-			get { return MathF.RoundToInt(this.currentState.Wheel - this.lastState.Wheel); }
+			get { return (this.currentState.IsAvailable && this.lastState.IsAvailable) ? MathF.RoundToInt(this.currentState.Wheel - this.lastState.Wheel) : 0; }
 		}
 		/// <summary>
 		/// [GET] Returns the (precise, high resolution) change of the mouse wheel value since last frame.
 		/// </summary>
 		public float WheelSpeedPrecise
 		{
-			get { return this.currentState.Wheel - this.lastState.Wheel; }
+			get { return (this.currentState.IsAvailable && this.lastState.IsAvailable) ? this.currentState.Wheel - this.lastState.Wheel : 0.0f; }
 		}
 		/// <summary>
 		/// [GET] Returns whether a specific <see cref="MouseButton"/> is currently pressed.
@@ -234,7 +234,7 @@ namespace Duality.Input
 							this.currentState.X,
 							this.currentState.Y,
 							MathF.RoundToInt(this.currentState.Wheel),
-							MathF.RoundToInt(this.currentState.Wheel - this.lastState.Wheel)));
+							(this.currentState.IsAvailable && this.lastState.IsAvailable) ? MathF.RoundToInt(this.currentState.Wheel - this.lastState.Wheel) : 0));
 					}
 				}
 				for (int i = 0; i < this.currentState.ButtonPressed.Length; i++)

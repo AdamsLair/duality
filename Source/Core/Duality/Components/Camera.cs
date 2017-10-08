@@ -162,6 +162,7 @@ namespace Duality.Components
 		private PerspectiveMode perspective    = PerspectiveMode.Parallax;
 		private VisibilityFlag  visibilityMask = VisibilityFlag.All;
 		private List<Pass>      passes         = new List<Pass>();
+		private int             priority       = 0;
 
 		[DontSerialize] private DrawDevice                    drawDevice         = null;
 		[DontSerialize] private List<ICmpRenderer>            pickingMap         = null;
@@ -250,6 +251,14 @@ namespace Duality.Components
 				else
 					this.passes = new List<Pass>();
 			}
+		}
+		/// <summary>
+		/// [GET / SET] Cameras with higher priority values render first.
+		/// </summary>
+		public int Priority
+		{
+			get { return this.priority; }
+			set { this.priority = value; }
 		}
 
 
@@ -537,7 +546,12 @@ namespace Duality.Components
 		}
 		private void RenderSinglePass(Rect viewportRect, Pass p)
 		{
-			this.drawDevice.VisibilityMask = this.visibilityMask & p.VisibilityMask;
+			// ScreenOverlay is a special flag that is set on a per-pass basis
+			// and that shouldn't be affected by camera settings. Keep it separate.
+			this.drawDevice.VisibilityMask = 
+				(this.visibilityMask & p.VisibilityMask & ~VisibilityFlag.ScreenOverlay) | 
+				(p.VisibilityMask & VisibilityFlag.ScreenOverlay);
+
 			this.drawDevice.RenderMode = p.MatrixMode;
 			this.drawDevice.Target = p.Output;
 			this.drawDevice.ViewportRect = p.Output.IsAvailable ? new Rect(p.Output.Res.Width, p.Output.Res.Height) : viewportRect;

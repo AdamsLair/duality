@@ -116,7 +116,7 @@ namespace Duality.Backend.DefaultOpenTK
 				if (this.isFirstUpdate || this.lastState.RelativeToListener != state.RelativeToListener)
 					AL.Source(handle, ALSourceb.SourceRelative, state.RelativeToListener);
 				if (this.isFirstUpdate || this.lastState.Position != state.Position)
-					AL.Source(handle, ALSource3f.Position, state.Position.X, -state.Position.Y, -state.Position.Z * 0.5f);
+					AL.Source(handle, ALSource3f.Position, state.Position.X, -state.Position.Y, -state.Position.Z);
 				if (this.isFirstUpdate || this.lastState.Velocity != state.Velocity)
 					AL.Source(handle, ALSource3f.Velocity, state.Velocity.X, -state.Velocity.Y, -state.Velocity.Z);
 				if (this.isFirstUpdate || this.lastState.MaxDistance != state.MaxDistance)

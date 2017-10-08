@@ -43,16 +43,12 @@ namespace Duality
 		
 		public static readonly PropertyInfo	Property_RigidBody_Shapes;
 		public static readonly PropertyInfo	Property_RigidBody_Joints;
+		public static readonly PropertyInfo	Property_CircleShapeInfo_Position;
+		public static readonly PropertyInfo	Property_CircleShapeInfo_Radius;
 
 		public static readonly PropertyInfo	Property_DrawTechnique_PreferredVertexFormat;
 
 		public static readonly PropertyInfo	Property_Resource_AssetInfo;
-
-		public static readonly PropertyInfo	Property_Font_Family;
-		public static readonly PropertyInfo	Property_Font_Size;
-		public static readonly PropertyInfo	Property_Font_Style;
-		public static readonly PropertyInfo	Property_Font_GlyphRenderMode;
-		public static readonly PropertyInfo	Property_Font_MonoSpace;
 
 		public static readonly PropertyInfo	Property_Pixmap_AnimCols;
 		public static readonly PropertyInfo	Property_Pixmap_AnimRows;
@@ -102,24 +98,21 @@ namespace Duality
 			Property_RigidBody_Shapes			= GetProperty(collider, "Shapes");
 			Property_RigidBody_Joints			= GetProperty(collider, "Joints");
 
+			Type circleShapeInfo = typeof(CircleShapeInfo);
+			Property_CircleShapeInfo_Position	= GetProperty(circleShapeInfo, "Position");
+			Property_CircleShapeInfo_Radius		= GetProperty(circleShapeInfo, "Radius");
+
 			Type drawTech = typeof(DrawTechnique);
 			Property_DrawTechnique_PreferredVertexFormat	= GetProperty(drawTech, "PreferredVertexFormat");
 			
 			Type resource = typeof(Resource);
 			Property_Resource_AssetInfo		= GetProperty(resource, "AssetInfo");
 
-			Type font = typeof(Font);
-			Property_Font_Family			= GetProperty(font, "Family");
-			Property_Font_Size				= GetProperty(font, "Size");
-			Property_Font_Style				= GetProperty(font, "Style");
-			Property_Font_GlyphRenderMode	= GetProperty(font, "GlyphRenderMode");
-			Property_Font_MonoSpace			= GetProperty(font, "MonoSpace");
-
 			Type pixmap = typeof(Pixmap);
-			Property_Pixmap_AnimCols			= GetProperty(pixmap, "AnimCols");
-			Property_Pixmap_AnimRows			= GetProperty(pixmap, "AnimRows");
-			Property_Pixmap_AnimFrameBorder		= GetProperty(pixmap, "AnimFrameBorder");
-			Property_Pixmap_Atlas				= GetProperty(pixmap, "Atlas");
+			Property_Pixmap_AnimCols		= GetProperty(pixmap, "AnimCols");
+			Property_Pixmap_AnimRows		= GetProperty(pixmap, "AnimRows");
+			Property_Pixmap_AnimFrameBorder	= GetProperty(pixmap, "AnimFrameBorder");
+			Property_Pixmap_Atlas			= GetProperty(pixmap, "Atlas");
 
 			Type batchInfo = typeof(BatchInfo);
 			Property_BatchInfo_Technique	= GetProperty(batchInfo, "Technique");
@@ -137,11 +130,27 @@ namespace Duality
 		
 		private static PropertyInfo GetProperty(Type type, string name)
 		{
-			return type.GetRuntimeProperties().FirstOrDefault(m => !m.IsStatic() && m.Name == name);
+			PropertyInfo result = type.GetRuntimeProperties().FirstOrDefault(m => !m.IsStatic() && m.Name == name);
+			if (result == null)
+			{
+				Log.Core.WriteError(
+					"Unable to retrieve property '{0}' of type '{1}'.",
+					name,
+					Log.Type(type));
+			}
+			return result;
 		}
 		private static FieldInfo GetField(Type type, string name)
 		{
-			return type.GetRuntimeFields().FirstOrDefault(m => !m.IsStatic && m.Name == name);
+			FieldInfo result = type.GetRuntimeFields().FirstOrDefault(m => !m.IsStatic && m.Name == name);
+			if (result == null)
+			{
+				Log.Core.WriteError(
+					"Unable to retrieve field '{0}' of type '{1}'.",
+					name,
+					Log.Type(type));
+			}
+			return result;
 		}
 	}
 }

@@ -83,7 +83,6 @@ namespace Duality.Editor
 			{
 				OnUnpausingSandbox();
 				state = SandboxState.Playing;
-				DualityApp.ExecContext = DualityApp.ExecutionContext.Game;
 			}
 			else
 			{
@@ -118,7 +117,6 @@ namespace Duality.Editor
 			stateChange = true;
 
 			state = SandboxState.Paused;
-			DualityApp.ExecContext = DualityApp.ExecutionContext.Editor;
 
 			OnPausedSandbox();
 			OnSandboxStateChanged();
@@ -138,7 +136,7 @@ namespace Duality.Editor
 			if (!activeScene.IsRuntimeResource)
 				activeScene.Res.Dispose();
 
-			// Stopp all audio that might not have been taken care of manually by the user
+			// Stop all audio that might not have been taken care of manually by the user
 			DualityApp.Sound.StopAll();
 
 			Time.TimeScale = 1.0f; // Reset time scale

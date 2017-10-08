@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using Duality.Components.Physics;
-
+using Duality.Drawing;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
@@ -95,23 +95,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get { return this.env.ActiveBody != null; }
 		}
-		
 		/// <summary>
-		/// Begins a continuous operation with this tool. Usually invoked via left-click.
+		/// [GET] Whether this tool, while selected, indicates that there is an action that
+		/// can potentially be performed at the current mouse position.
 		/// </summary>
-		public virtual void BeginAction() { }
-		/// <summary>
-		/// Updates the currently active continuous operation of this tool.
-		/// </summary>
-		public virtual void UpdateAction() { }
-		/// <summary>
-		/// Ends a previously started continuous operation of this tool.
-		/// </summary>
-		public virtual void EndAction() { }
-		/// <summary>
-		/// Called when the action key has been pressed after the action has already begun.
-		/// </summary>
-		public virtual void OnActionKeyPressed() { }
+		public virtual bool IsHoveringAction
+		{
+			get { return false; }
+		}
+
+
 		/// <summary>
 		/// While performing a continuous operation, this method can provide an optional
 		/// action text that will be displayed in the status area of the <see cref="RigidBody"/> editor.
@@ -121,6 +114,51 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			return null;
 		}
+		/// <summary>
+		/// Checks whether this tool can start a continuous operation given the specified
+		/// user input and environment state.
+		/// </summary>
+		/// <returns></returns>
+		public virtual bool CanBeginAction(MouseButtons mouseButton)
+		{
+			return false;
+		}
+		/// <summary>
+		/// Attempts to begin a continuous operation with this tool. Returns false when no
+		/// operation is possible or associated with the specified mouse button.
+		/// </summary>
+		public virtual void BeginAction(MouseButtons mouseButton) { }
+		/// <summary>
+		/// Updates the currently active continuous operation of this tool.
+		/// </summary>
+		public virtual void UpdateAction() { }
+		/// <summary>
+		/// Ends a previously started continuous operation of this tool.
+		/// </summary>
+		public virtual void EndAction() { }
+
+		/// <summary>
+		/// Called when the action key has been pressed after the action has already begun.
+		/// </summary>
+		/// <param name="mouseButton"></param>
+		public virtual void OnActionKeyPressed(MouseButtons mouseButton) { }
+		/// <summary>
+		/// Called when the action key has been released after the action has already begun.
+		/// </summary>
+		/// <param name="mouseButton"></param>
+		public virtual void OnActionKeyReleased(MouseButtons mouseButton) { }
+		/// <summary>
+		/// Called when the tool is selected and allowed to draw an overlay inside the <see cref="CamView"/>.
+		/// </summary>
+		/// <param name="canvas"></param>
+		public virtual void OnWorldOverlayDrawcalls(Canvas canvas) { }
+		/// <summary>
+		/// Called when the tool is selected and allowed to handle mouse movement events. Unlike <see cref="UpdateAction"/>,
+		/// this method will also be called while the tool is not performing any continuous action, allowing it to
+		/// update its internal state that may then be used to make <see cref="CanBeginAction"/> and <see cref="IsHoveringAction"/>
+		/// more efficient.
+		/// </summary>
+		public virtual void OnMouseMove() { }
 
 		/// <summary>
 		/// Initializes the tool's internal toolbar button.
@@ -158,7 +196,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		private void toolButton_Click(object sender, EventArgs e)
 		{
-			this.env.SelectedTool = this;
+			this.env.SelectTool(this.GetType());
 		}
 	}
 }

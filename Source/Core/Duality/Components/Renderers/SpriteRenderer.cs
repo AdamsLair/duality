@@ -207,16 +207,6 @@ namespace Duality.Components.Renderers
 			Vector2 edge3 = rectTemp.BottomRight;
 			Vector2 edge4 = rectTemp.TopRight;
 
-			MathF.TransformDotVec(ref edge1, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
-            
-			float left   = uvRect.X;
-			float right  = uvRect.RightX;
-			float top    = uvRect.Y;
-			float bottom = uvRect.BottomY;
-
 			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
 			{ 
 				edge1.X = -edge1.X;
@@ -231,6 +221,16 @@ namespace Duality.Components.Renderers
 				edge3.Y = -edge3.Y;
 				edge4.Y = -edge4.Y;
 			}
+
+			MathF.TransformDotVec(ref edge1, ref xDot, ref yDot);
+			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
+			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
+			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
+            
+			float left   = uvRect.X;
+			float right  = uvRect.RightX;
+			float top    = uvRect.Y;
+			float bottom = uvRect.BottomY;
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2[4];
 
@@ -331,10 +331,12 @@ namespace Duality.Components.Renderers
 			base.OnCopyDataTo(targetObj, operation);
 			SpriteRenderer target = targetObj as SpriteRenderer;
 			
-			target.rect			= this.rect;
-			target.colorTint	= this.colorTint;
-			target.rectMode		= this.rectMode;
-			target.offset		= this.offset;
+			target.rect      = this.rect;
+			target.colorTint = this.colorTint;
+			target.rectMode  = this.rectMode;
+			target.offset    = this.offset;
+			target.pixelGrid = this.pixelGrid;
+			target.flipMode  = this.flipMode;
 
 			operation.HandleValue(ref this.sharedMat, ref target.sharedMat);
 			operation.HandleObject(this.customMat, ref target.customMat);

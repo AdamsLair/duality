@@ -67,7 +67,7 @@ namespace Duality.Plugins.Tilemaps
 		public Point2 SourceTileSize
 		{
 			get { return this.sourceTileSize; }
-			set { this.sourceTileSize = value; }
+			set { this.sourceTileSize = Point2.Max(new Point2(1, 1), value); }
 		}
 		/// <summary>
 		/// [GET / SET] The spacing (in pixels) around each tile in the source data. A spacing of one means that there is a 1-pixel-wide space between
@@ -122,8 +122,8 @@ namespace Duality.Plugins.Tilemaps
 			get
 			{
 				return new Point2(
-					this.sourceTileSize.X + this.sourceTileSpacing, 
-					this.sourceTileSize.Y + this.sourceTileSpacing);
+					MathF.Max(1, this.sourceTileSize.X + this.sourceTileSpacing), 
+					MathF.Max(1, this.sourceTileSize.Y + this.sourceTileSpacing));
 			}
 		}
 		/// <summary>
@@ -135,8 +135,8 @@ namespace Duality.Plugins.Tilemaps
 			get
 			{
 				return new Point2(
-					this.sourceTileSize.X + this.targetTileMargin * 2, 
-					this.sourceTileSize.Y + this.targetTileMargin * 2);
+					MathF.Max(1, this.sourceTileSize.X + this.targetTileMargin * 2), 
+					MathF.Max(1, this.sourceTileSize.Y + this.targetTileMargin * 2));
 			}
 		}
 

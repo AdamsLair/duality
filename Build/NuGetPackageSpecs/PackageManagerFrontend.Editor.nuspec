@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.PackageManagerFrontend</id>
-    <version>2.0.6</version>
+    <version>2.1.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Package Manager Frontend</title>
@@ -13,11 +13,12 @@
     <summary>A user interface for conveniently managing Duality packages.</summary>
     <description>A user interface for conveniently managing Duality packages.</description>
     <tags>Duality Editor Plugin PackageManagerFrontend</tags>
-    <releaseNotes>Improved Project Structure (
-#437)</releaseNotes>
+    <releaseNotes>PackageManager API, PackageManager API
+#CHANGE: Renamed public PackageName properties to Name properties for better readability.
+#CHANGE: Adjusted PackageManager API to work based on PackageNames (ID / version) rather than specific objects.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.8.3" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.7.7" />
+      <dependency id="AdamsLair.Duality" version="2.12.4" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.9.0" />
     </dependencies>
   </metadata>
   <files>

@@ -127,21 +127,24 @@ namespace Duality
 				{
 					if (this.scene != null && this.scene.IsCurrent)
 					{
+						List<ICmpInitializable> initList = new List<ICmpInitializable>();
+						bool hasChildren = this.children != null && this.children.Count > 0;
+						this.GatherInitComponents(initList, hasChildren);
 						if (value)
 						{
-							this.OnActivate();
-							foreach (GameObject child in this.ChildrenDeep)
-							{
-								if (!child.Active) child.OnActivate();
-							}
+							if (hasChildren)
+								Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
+							foreach (ICmpInitializable component in initList)
+								component.OnInit(Component.InitContext.Activate);
 						}
 						else
 						{
-							this.OnDeactivate();
-							foreach (GameObject child in this.ChildrenDeep)
-							{
-								if (child.Active) child.OnDeactivate();
-							}
+							if (hasChildren)
+								Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
+							else
+								initList.Reverse();
+							foreach (ICmpInitializable component in initList)
+								component.OnShutdown(Component.ShutdownContext.Deactivate);
 						}
 					}
 
@@ -249,7 +252,7 @@ namespace Duality
 
 		uint IUniqueIdentifyable.PreferredId
 		{
-			get { unchecked { return (uint)this.identifier.GetHashCode(); } }
+			get { unchecked { return (uint)UniqueIdentifyableHelper.GetIdentifier(this.identifier); } }
 		}
 		
 		
@@ -290,7 +293,7 @@ namespace Duality
 		/// <param name="parent"></param>
 		public GameObject(string name, GameObject parent = null)
 		{
-			this.name = name;
+			this.Name = name;
 			this.Parent = parent;
 		}
 		/// <summary>
@@ -589,9 +592,24 @@ namespace Duality
 		{
 			newComp.gameobj = this;
 			this.compMap.Add(type, newComp);
-			this.compList.Add(newComp);
+			
+			bool added = false;
+			int newSortIndex = Component.ExecOrder.GetSortIndex(type);
+			for (int i = 0; i < this.compList.Count; i++)
+			{
+				Type itemType = this.compList[i].GetType();
+				int itemSortIndex = Component.ExecOrder.GetSortIndex(itemType);
+				if (itemSortIndex > newSortIndex)
+				{
+					this.compList.Insert(i, newComp);
+					added = true;
+					break;
+				}
+			}
+			if (!added)
+				this.compList.Add(newComp);
 
-			if (newComp is Components.Transform) this.compTransform = (Components.Transform)(Component)newComp;
+			if (newComp is Transform) this.compTransform = newComp as Transform;
 
 			this.OnComponentAdded(newComp);
 		}
@@ -665,18 +683,13 @@ namespace Duality
 		/// <param name="where">An optional predicate that needs to return true in order to perform the operation.</param>
 		public void IterateComponents<T>(Action<T> forEach, Predicate<T> where = null) where T : class
 		{
-			for (int i = this.compList.Count - 1; i >= 0; --i)
+			Component[] iterateList = this.compList.ToArray();
+			for (int i = 0; i < iterateList.Length; i++)
 			{
-				T cmp = this.compList[i] as T;
-
 				// Perform operation on elements matching predicate and Type
+				T cmp = iterateList[i] as T;
 				if (cmp != null && (where == null || where(cmp)))
-				{
 					forEach(cmp);
-
-					// Fix index, in case the collection changed
-					if (i > this.compList.Count) i = this.compList.Count;
-				}
 			}
 		}
 		/// <summary>
@@ -689,18 +702,14 @@ namespace Duality
 		public void IterateChildren(Action<GameObject> forEach, Predicate<GameObject> where = null)
 		{
 			if (this.children == null) return;
-			for (int i = this.children.Count - 1; i >= 0; --i)
+
+			GameObject[] iterateList = this.children.ToArray();
+			for (int i = 0; i < iterateList.Length; i++)
 			{
-				GameObject obj = this.children[i];
-
 				// Perform operation on elements matching the predicate
+				GameObject obj = iterateList[i];
 				if (where == null || where(obj))
-				{
 					forEach(obj);
-
-					// Fix index, in case the collection changed
-					if (i > this.children.Count) i = this.children.Count;
-				}
 			}
 		}
 
@@ -854,9 +863,42 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Sanitary check in case something failed deserializing
+		/// Gathers a list of components that would be affected if this <see cref="GameObject"/>
+		/// changed its activation state. This excludes components and child objects that
+		/// are inactive in their own right.
 		/// </summary>
-		internal void PerformSanitaryCheck()
+		/// <param name="initList"></param>
+		/// <param name="deep"></param>
+		internal void GatherInitComponents(List<ICmpInitializable> initList, bool deep)
+		{
+			for (int i = 0; i < this.compList.Count; i++)
+			{
+				Component component = this.compList[i];
+				ICmpInitializable init = component as ICmpInitializable;
+
+				if (init == null) continue;
+				if (!component.ActiveSingle) continue;
+
+				initList.Add(init);
+			}
+
+			if (deep && this.children != null)
+			{
+				for (int i = 0; i < this.children.Count; i++)
+				{
+					GameObject child = this.children[i];
+					if (!child.ActiveSingle && !child.Disposed) continue;
+					child.GatherInitComponents(initList, deep);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Checks all internal data for consistency and fixes problems where possible.
+		/// This helps mitigate serialization problems that arise from changing data
+		/// structures during dev time.
+		/// </summary>
+		internal void EnsureConsistentData()
 		{
 			// Check for null or disposed child objects
 			if (this.children != null)
@@ -918,41 +960,35 @@ namespace Duality
 					this);
 			}
 		}
-		internal void OnLoaded(bool deep = false)
+		/// <summary>
+		/// Checks the objects internal <see cref="Component"/> containers for the correct
+		/// execution order and sorts them where necessary.
+		/// </summary>
+		internal void EnsureComponentOrder()
 		{
-			// Notify Components
-			this.IterateComponents<ICmpInitializable>(l => l.OnInit(Component.InitContext.Loaded));
-			// Notify children
-			if (deep) this.IterateChildren(c => c.OnLoaded(deep));
+			// Using insertion sort here, because it achieves best performance for already 
+			// sorted lists, and nearly sorted lists, as well as small lists.
+			ComponentExecutionOrder execOrder = Component.ExecOrder;
+			for (int k = 1; k < this.compList.Count; k++)
+			{
+				Component swapComponent = this.compList[k];
+				int swapSortIndex = execOrder.GetSortIndex(swapComponent.GetType());
+				int index = k - 1;
+				while (index >= 0)
+				{
+					int sortIndex = execOrder.GetSortIndex(this.compList[index].GetType());
+					if (sortIndex > swapSortIndex)
+					{
+						this.compList[index + 1] = this.compList[index];
+						index--;
+						continue;
+					}
+					break;
+				}
+				this.compList[index + 1] = swapComponent;
+			}
 		}
-		internal void OnSaving(bool deep = false)
-		{
-			// Notify Components
-			this.IterateComponents<ICmpInitializable>(l => l.OnShutdown(Component.ShutdownContext.Saving));
-			// Notify children
-			if (deep) this.IterateChildren(c => c.OnSaving(deep));
-		}
-		internal void OnSaved(bool deep = false)
-		{
-			// Notify Components
-			this.IterateComponents<ICmpInitializable>(l => l.OnInit(Component.InitContext.Saved));
-			// Notify children
-			if (deep) this.IterateChildren(c => c.OnSaved(deep));
-		}
-		internal void OnActivate()
-		{
-			// Notify Components
-			this.IterateComponents<ICmpInitializable>(
-				l => l.OnInit(Component.InitContext.Activate),
-				l => (l as Component).ActiveSingle);
-		}
-		internal void OnDeactivate()
-		{
-			// Notify Components
-			this.IterateComponents<ICmpInitializable>(
-				l => l.OnShutdown(Component.ShutdownContext.Deactivate),
-				l => (l as Component).ActiveSingle);
-		}
+
 		private void OnParentChanged(GameObject oldParent, GameObject newParent)
 		{
 			// Public event

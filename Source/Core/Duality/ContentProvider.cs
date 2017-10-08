@@ -441,6 +441,7 @@ namespace Duality
 		}
 		private static Resource LoadContent(string path)
 		{
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return null;
 			if (string.IsNullOrEmpty(path) || IsDefaultContentPath(path) || !FileOp.Exists(path)) return null;
 
 			Log.Core.Write("Loading Resource '{0}'", path);

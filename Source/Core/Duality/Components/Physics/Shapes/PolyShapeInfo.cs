@@ -4,6 +4,8 @@ using System.Linq;
 
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Common.Decomposition;
+using FarseerPhysics.Common;
 
 using Duality.Editor;
 
@@ -14,9 +16,11 @@ namespace Duality.Components.Physics
 	/// </summary>
 	public sealed class PolyShapeInfo : ShapeInfo
 	{
-		public const int MaxVertices = FarseerPhysics.Settings.MaxPolygonVertices;
+		[DontSerialize]
+		private List<Fixture> fixtures;
+		private Vector2[] vertices;
+		private List<Vector2[]> convexPolygons;
 
-		private	Vector2[]	vertices;
 
 		/// <summary>
 		/// [GET / SET] The polygons vertices. While assinging the array will cause an automatic update, simply modifying it will require you to call <see cref="ShapeInfo.UpdateShape"/> manually.
@@ -26,18 +30,31 @@ namespace Duality.Components.Physics
 		[EditorHintDecimalPlaces(1)]
 		public Vector2[] Vertices
 		{
-			get { return this.vertices; }
+			get { return this.vertices ?? EmptyVertices; }
 			set
 			{
 				this.vertices = value ?? new Vector2[] { Vector2.Zero, Vector2.UnitX, Vector2.UnitY };
-				this.UpdateFixture(true);
+				this.UpdateInternalShape(true);
 			}
+		}
+		/// <summary>
+		/// [GET] A read-only list of convex polygons that were generated 
+		/// from the shapes <see cref="Vertices"/>. Do not modify any of the
+		/// returned values.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public IReadOnlyList<Vector2[]> ConvexPolygons
+		{
+			get { return this.convexPolygons; }
 		}
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public override Rect AABB
 		{
 			get 
 			{
+				if (this.vertices == null || this.vertices.Length == 0)
+					return Rect.Empty;
+
 				float minX = float.MaxValue;
 				float minY = float.MaxValue;
 				float maxX = float.MinValue;
@@ -52,101 +69,135 @@ namespace Duality.Components.Physics
 				return new Rect(minX, minY, maxX - minX, maxY - minY);
 			}
 		}
+		protected override bool IsInternalShapeCreated
+		{
+			get { return this.fixtures != null && this.fixtures.Count > 0; }
+		}
+
 			
 		public PolyShapeInfo() {}
-		public PolyShapeInfo(IEnumerable<Vector2> vertices, float density) : base(density)
+		public PolyShapeInfo(IEnumerable<Vector2> vertices, float density)
 		{
 			this.vertices = vertices.ToArray();
+			this.density = density;
 		}
 
-		protected override Fixture CreateFixture(Body body)
+		protected override void DestroyFixtures()
 		{
-			var farseerVert = this.CreateVertices(1.0f);
-			if (farseerVert == null) return null;
+			if (this.convexPolygons != null)
+				this.convexPolygons.Clear();
 
-			this.Parent.CheckValidTransform();
-
-			Fixture f = body.CreateFixture(new PolygonShape(farseerVert, 1.0f), this);
-
-			this.Parent.CheckValidTransform();
-			return f;
-		}
-		internal override void UpdateFixture(bool updateShape = false)
-		{
-			base.UpdateFixture(updateShape);
-			if (this.fixture == null) return;
-			if (this.Parent == null) return;
-				
-			float scale = 1.0f;
-			if (this.Parent.GameObj != null && this.Parent.GameObj.Transform != null)
-				scale = this.Parent.GameObj.Transform.Scale;
-
-			this.Parent.CheckValidTransform();
-
-			PolygonShape poly = this.fixture.Shape as PolygonShape;
-			poly.Set(this.CreateVertices(scale));
-
-			this.Parent.CheckValidTransform();
-		}
-		private FarseerPhysics.Common.Vertices CreateVertices(float scale)
-		{
-			if (this.vertices == null || this.vertices.Length < 3) return null;
-			if (!MathF.IsPolygonConvex(this.vertices)) return null;
-			
-			// Be sure to not exceed the maximum vertex count
-			Vector2[] sortedVertices = this.vertices.ToArray();
-			if (sortedVertices.Length > MaxVertices)
+			if (this.fixtures != null)
 			{
-				Array.Resize(ref sortedVertices, MaxVertices);
-				Log.Core.WriteWarning("Maximum Polygon Shape vertex count exceeded: {0} > {1}", this.vertices.Length, MaxVertices);
-			}
-
-			// Don't let all vertices be aligned on one axis (zero-area polygons)
-			if (sortedVertices.Length > 0)
-			{
-				Vector2 firstVertex = sortedVertices[0];
-				bool alignX = true;
-				bool alignY = true;
-				for (int i = 0; i < sortedVertices.Length; i++)
+				foreach (Fixture fixture in this.fixtures)
 				{
-					if (sortedVertices[i].X != firstVertex.X)
-						alignX = false;
-					if (sortedVertices[i].Y != firstVertex.Y)
-						alignY = false;
-					if (!alignX && !alignY)
-						break;
+					if (fixture.Body != null)
+						fixture.Body.DestroyFixture(fixture);
 				}
-				if (alignX) sortedVertices[0].X += 0.01f;
-				if (alignY) sortedVertices[0].Y += 0.01f;
+				this.fixtures.Clear();
+			}
+		}
+		protected override void SyncFixtures()
+		{
+			this.EnsureDecomposedPolygons();
+			if (!this.EnsureFixtures()) return;
+
+			foreach (Fixture fixture in this.fixtures)
+			{
+				fixture.IsSensor = this.sensor;
+				fixture.Restitution = this.restitution;
+				fixture.Friction = this.friction;
+			
+				PolygonShape shape = fixture.Shape as PolygonShape;
+				shape.Density = this.density;
+			}
+		}
+
+		private void EnsureDecomposedPolygons()
+		{
+			if (this.convexPolygons != null && this.convexPolygons.Count > 0) return;
+			if (this.convexPolygons == null)
+				this.convexPolygons = new List<Vector2[]>();
+
+			// No valid polygon defined at all: Nothing to generate.
+			if (this.vertices == null || this.vertices.Length < 3) return;
+
+			Vertices fullPolygon = VerticesToFarseer(this.vertices, 1.0f);
+
+			// Do not allow neighbor vertices that are too close to each other.
+			for (int i = 1; i < fullPolygon.Count; i++)
+			{
+				float distance = (fullPolygon[i - 1] - fullPolygon[i]).Length;
+				if (distance < 0.01f) return;
 			}
 
-			// Sort vertices clockwise before submitting them to Farseer
-			Vector2 centroid = Vector2.Zero;
-			for (int i = 0; i < sortedVertices.Length; i++)
-				centroid += sortedVertices[i];
-			centroid /= sortedVertices.Length;
-			sortedVertices.StableSort(delegate(Vector2 first, Vector2 second)
-			{
-				return MathF.RoundToInt(
-					1000000.0f * MathF.Angle(centroid.X, centroid.Y, first.X, first.Y) - 
-					1000000.0f * MathF.Angle(centroid.X, centroid.Y, second.X, second.Y));
-			});
+			// Discard non-simple and micro area polygons early, as there
+			// is nothing that decomposition can do in this case.
+			if (!fullPolygon.IsSimple()) return;
+			if (fullPolygon.GetArea() < 0.0001f) return;
 
-			// Shrink a little bit
-			//for (int i = 0; i < sortedVertices.Length; i++)
-			//{
-			//    Vector2 rel = (sortedVertices[i] - centroid);
-			//    float len = rel.Length;
-			//    sortedVertices[i] = centroid + rel.Normalized * MathF.Max(0.0f, len - 1.5f);
-			//}
-
-			// Submit vertices
-			FarseerPhysics.Common.Vertices v = new FarseerPhysics.Common.Vertices(sortedVertices.Length);
-			for (int i = 0; i < sortedVertices.Length; i++)
+			// If the polygon is small enough and convex, use it as-is.
+			if (this.vertices.Length <= FarseerPhysics.Settings.MaxPolygonVertices)
 			{
-				v.Add(PhysicsUnit.LengthToPhysical * sortedVertices[i] * scale);
+				fullPolygon.ForceCounterClockWise();
+				if (fullPolygon.IsConvex())
+				{
+					this.convexPolygons.Add(VerticesToDuality(fullPolygon));
+					return;
+				}
 			}
-			return v;
+
+			// Decompose non-convex polygons and save them persistently,
+			// so we don't need to decompose them again unless modified.
+			List<Vertices> decomposed = Triangulate.ConvexPartition(fullPolygon, TriangulationAlgorithm.Delauny);
+			foreach (Vertices polygon in decomposed)
+			{
+				this.convexPolygons.Add(VerticesToDuality(polygon));
+			}
+		}
+		private bool EnsureFixtures()
+		{
+			if (this.convexPolygons == null || this.convexPolygons.Count == 0) return false;
+
+			if (this.fixtures == null)
+				this.fixtures = new List<Fixture>();
+
+			if (this.fixtures.Count == 0)
+			{
+				Body body = this.Parent.PhysicsBody;
+				if (body != null)
+				{
+					this.Parent.CheckValidTransform();
+					float scale = this.ParentScale;
+					foreach (Vector2[] polygon in this.convexPolygons)
+					{
+						Vertices farseerPolygon = VerticesToFarseer(polygon, scale);
+						Fixture fixture = new Fixture(
+							body, 
+							new PolygonShape(farseerPolygon, this.density), 
+							this);
+						this.fixtures.Add(fixture);
+						this.Parent.CheckValidTransform();
+					}
+				}
+			}
+
+			return this.fixtures.Count > 0;
+		}
+
+		private static Vector2[] VerticesToDuality(Vertices vertices)
+		{
+			Vector2[] transformed = new Vector2[vertices.Count];
+			for (int i = 0; i < transformed.Length; i++)
+				transformed[i] = PhysicsUnit.LengthToDuality * vertices[i];
+			return transformed;
+		}
+		private static Vertices VerticesToFarseer(Vector2[] vertices, float scale)
+		{
+			Vertices transformed = new Vertices(vertices.Length);
+			for (int i = 0; i < vertices.Length; i++)
+				transformed.Add(PhysicsUnit.LengthToPhysical * vertices[i] * scale);
+			return transformed;
 		}
 	}
 }

@@ -11,14 +11,20 @@ namespace Duality.Components.Physics
 {
 	/// <summary>
 	/// Constrains two RigidBodies to keep their distance to each other in a certain range.
-	/// You can view this as a massless, rigid rod.
+	/// You can view this as a massless, rigid rod. 
+	/// 
+	/// This joint type has been flagged obsolete for its unstable behavior. 
+	/// Consider using prismatic, distance or line joints instead.
 	/// </summary>
+	[Obsolete(
+		"This joint type has been flagged obsolete for its unstable behavior. " +
+		"Consider using prismatic, distance or line joints instead.")]
 	public sealed class SliderJointInfo : JointInfo
 	{
-		private	Vector2		localAnchorA	= Vector2.Zero;
-		private	Vector2		localAnchorB	= Vector2.Zero;
-		private	float		maxLength		= 500.0f;
-		private	float		minLength		= 500.0f;
+		private Vector2 localAnchorA  = Vector2.Zero;
+		private Vector2 localAnchorB  = Vector2.Zero;
+		private float   maxLength     = 500.0f;
+		private float   minLength     = 500.0f;
 
 
 		/// <summary>

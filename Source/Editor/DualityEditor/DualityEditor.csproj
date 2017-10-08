@@ -42,8 +42,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.WinForms, Version=1.1.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AdamsLair.WinForms.1.1.9\lib\net45\AdamsLair.WinForms.dll</HintPath>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\AdamsLair.WinForms.1.1.12\lib\net45\AdamsLair.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Aga.Controls, Version=1.7.6.0, Culture=neutral, processorArchitecture=MSIL">
@@ -88,6 +88,9 @@
     <Compile Include="Backend\EditorGraphics\INativeEditorGraphicsContext.cs" />
     <Compile Include="Backend\EditorGraphics\INativeRenderableSite.cs" />
     <Compile Include="Backend\IEditorGraphicsBackend.cs" />
+    <Compile Include="Controls\AutoExpandTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\PropertyEditors\Point2PropertyEditor.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
@@ -163,6 +166,12 @@
     <Compile Include="HelpSystem\HelpStack.cs" />
     <Compile Include="HelpSystem\IHelpInfoReader.cs" />
     <Compile Include="HelpSystem\IHelpProvider.cs" />
+    <Compile Include="PackageManagement\PackageDependencyWalker.cs" />
+    <Compile Include="PackageManagement\PackageCache.cs" />
+    <Compile Include="PackageManagement\PackageManagerLogger.cs" />
+    <Compile Include="PackageManagement\PackageManagerEnvironment.cs" />
+    <Compile Include="PackageManagement\PackageUpdateSchedule.cs" />
+    <Compile Include="PackageManagement\PackageSetup.cs" />
     <Compile Include="PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
     <Compile Include="Forms\LicenseAcceptDialog.cs">
@@ -261,6 +270,7 @@
       <DependentUpon>ReloadCorePluginDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Utility\Extensions\ExtMethodsTreeViewAdv.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsTreeNodeAdv.cs" />
     <Compile Include="Forms\SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>

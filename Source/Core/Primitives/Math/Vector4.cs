@@ -121,9 +121,15 @@ namespace Duality
 		{
 			get
 			{
-				Vector4 n = this;
-				n.Normalize();
-				return n;
+				float length = this.Length;
+				if (length < 1e-15f) return Vector4.Zero;
+
+				float scale = 1.0f / length;
+				return new Vector4(
+					this.X * scale, 
+					this.Y * scale, 
+					this.Z * scale, 
+					this.W * scale);
 			}
 		}
 
@@ -151,11 +157,19 @@ namespace Duality
 		/// </summary>
 		public void Normalize()
 		{
-			float scale = 1.0f / this.Length;
-			X *= scale;
-			Y *= scale;
-			Z *= scale;
-			W *= scale;
+			float length = this.Length;
+			if (length < 1e-15f)
+			{
+				this = Vector4.Zero;
+			}
+			else
+			{
+				float scale = 1.0f / length;
+				this.X *= scale;
+				this.Y *= scale;
+				this.Z *= scale;
+				this.W *= scale;
+			}
 		}
 
 		/// <summary>
@@ -304,6 +318,62 @@ namespace Duality
 		public static void Divide(ref Vector4 vector, ref Vector4 scale, out Vector4 result)
 		{
 			result = new Vector4(vector.X / scale.X, vector.Y / scale.Y, vector.Z / scale.Z, vector.W / scale.W);
+		}
+		
+		/// <summary>
+		/// Calculate the component-wise minimum of two vectors
+		/// </summary>
+		/// <param name="a">First operand</param>
+		/// <param name="b">Second operand</param>
+		/// <returns>The component-wise minimum</returns>
+		public static Vector4 Min(Vector4 a, Vector4 b)
+		{
+			a.X = a.X < b.X ? a.X : b.X;
+			a.Y = a.Y < b.Y ? a.Y : b.Y;
+			a.Z = a.Z < b.Z ? a.Z : b.Z;
+			a.W = a.W < b.W ? a.W : b.W;
+			return a;
+		}
+		/// <summary>
+		/// Calculate the component-wise minimum of two vectors
+		/// </summary>
+		/// <param name="a">First operand</param>
+		/// <param name="b">Second operand</param>
+		/// <param name="result">The component-wise minimum</param>
+		public static void Min(ref Vector4 a, ref Vector4 b, out Vector4 result)
+		{
+			result.X = a.X < b.X ? a.X : b.X;
+			result.Y = a.Y < b.Y ? a.Y : b.Y;
+			result.Z = a.Z < b.Z ? a.Z : b.Z;
+			result.W = a.W < b.W ? a.W : b.W;
+		}
+
+		/// <summary>
+		/// Calculate the component-wise maximum of two vectors
+		/// </summary>
+		/// <param name="a">First operand</param>
+		/// <param name="b">Second operand</param>
+		/// <returns>The component-wise maximum</returns>
+		public static Vector4 Max(Vector4 a, Vector4 b)
+		{
+			a.X = a.X > b.X ? a.X : b.X;
+			a.Y = a.Y > b.Y ? a.Y : b.Y;
+			a.Z = a.Z > b.Z ? a.Z : b.Z;
+			a.W = a.W > b.W ? a.W : b.W;
+			return a;
+		}
+		/// <summary>
+		/// Calculate the component-wise maximum of two vectors
+		/// </summary>
+		/// <param name="a">First operand</param>
+		/// <param name="b">Second operand</param>
+		/// <param name="result">The component-wise maximum</param>
+		public static void Max(ref Vector4 a, ref Vector4 b, out Vector4 result)
+		{
+			result.X = a.X > b.X ? a.X : b.X;
+			result.Y = a.Y > b.Y ? a.Y : b.Y;
+			result.Z = a.Z > b.Z ? a.Z : b.Z;
+			result.W = a.W > b.W ? a.W : b.W;
 		}
 
 		/// <summary>
@@ -518,10 +588,10 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector4 operator /(Vector4 vec, Vector4 scale)
 		{
-			vec.X *= scale.X;
-			vec.Y *= scale.Y;
-			vec.Z *= scale.Z;
-			vec.W *= scale.W;
+			vec.X /= scale.X;
+			vec.Y /= scale.Y;
+			vec.Z /= scale.Z;
+			vec.W /= scale.W;
 			return vec;
 		}
 		/// <summary>

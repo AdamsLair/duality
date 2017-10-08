@@ -17,6 +17,12 @@ namespace Duality
 	/// </summary>
 	public class ComponentRequirementMap
 	{
+		private enum RecursiveInit
+		{
+			Uninitialized,
+			InProgress,
+			Initialized
+		}
 		private struct CreationChainItem
 		{
 			public Type RequiredType;
@@ -45,14 +51,49 @@ namespace Duality
 			public List<Type> Requirements;
 			public List<CreationChainItem> CreationChain;
 
+			private RecursiveInit initRequirements;
+			private RecursiveInit initCreationChain;
+
+
 			public TypeData(Type type)
 			{
 				this.Component = type;
 			}
 
-			public void InitRequirements(ComponentRequirementMap map)
+			public void EnsureRequirements(ComponentRequirementMap map)
+			{
+				if (this.initRequirements == RecursiveInit.Initialized) return;
+				if (this.initRequirements == RecursiveInit.InProgress)
+				{
+					Log.Core.WriteWarning(
+						"Detected a cyclic Component requirement in {0}. Requirements can not be ensured for cyclic dependencies.", 
+						Log.Type(this.Component));
+					return;
+				}
+
+				this.initRequirements = RecursiveInit.InProgress;
+				this.InitRequirements(map);
+				this.initRequirements = RecursiveInit.Initialized;
+			}
+			public void EnsureCreationChain(ComponentRequirementMap map)
+			{
+				if (this.initCreationChain == RecursiveInit.Initialized) return;
+				if (this.initCreationChain == RecursiveInit.InProgress)
+				{
+					Log.Core.WriteWarning(
+						"Detected a cyclic Component requirement in {0}. Requirements can not be ensured for cyclic dependencies.", 
+						Log.Type(this.Component));
+					return;
+				}
+
+				this.initCreationChain = RecursiveInit.InProgress;
+				this.InitCreationChain(map);
+				this.initCreationChain = RecursiveInit.Initialized;
+			}
+			private void InitRequirements(ComponentRequirementMap map)
 			{
 				this.Requirements = new List<Type>();
+
 				IEnumerable<RequiredComponentAttribute> attribs = this.Component.GetTypeInfo().GetAttributesCached<RequiredComponentAttribute>();
 				foreach (RequiredComponentAttribute a in attribs)
 				{
@@ -60,18 +101,27 @@ namespace Duality
 
 					// Don't require itself
 					if (reqType == this.Component) continue;
+					
+					// Ignore invalid constraints
+					if (!this.IsValidRequirement(a))
+						continue;
 
 					this.Requirements.AddRange(map.GetRequirements(reqType).Where(t => !this.Requirements.Contains(t)));
 					if (!this.Requirements.Contains(reqType))
 						this.Requirements.Add(reqType);
 				}
 			}
-			public void InitCreationChain(ComponentRequirementMap map)
+			private void InitCreationChain(ComponentRequirementMap map)
 			{
 				this.CreationChain = new List<CreationChainItem>();
+
 				IEnumerable<RequiredComponentAttribute> attributes = this.Component.GetTypeInfo().GetAttributesCached<RequiredComponentAttribute>();
 				foreach (RequiredComponentAttribute attrib in attributes)
 				{
+					// Ignore invalid constraints
+					if (!this.IsValidRequirement(attrib))
+						continue;
+
 					// If this is a conditional creation, add the sub-chain of the Component to create
 					if (attrib.CreateDefaultType != attrib.RequiredComponentType)
 						this.AddCreationChainElements(map, attrib, attrib.CreateDefaultType);
@@ -82,6 +132,24 @@ namespace Duality
 
 				// Remove any duplicates that we might have generated in the creation chain
 				this.RemoveCreationChainDuplicates();
+			}
+
+			private bool IsValidRequirement(RequiredComponentAttribute attrib)
+			{
+				Type reqType = attrib.RequiredComponentType;
+				TypeInfo reqTypeInfo = reqType.GetTypeInfo();
+
+				// Ignore requirements to non-exported / internal types, as
+				// Duality will ignore them as well.
+				if (reqTypeInfo.IsNotPublic)
+					return false;
+
+				// Ignore requirements to non-Components
+				TypeInfo componentTypeInfo = typeof(Component).GetTypeInfo();
+				if (!reqTypeInfo.IsInterface && !componentTypeInfo.IsAssignableFrom(reqTypeInfo))
+					return false;
+
+				return true;
 			}
 
 			private void AddCreationChainElements(ComponentRequirementMap map, RequiredComponentAttribute attrib, Type subChainType)
@@ -233,8 +301,7 @@ namespace Duality
 				data = new TypeData(componentType);
 				this.typeDataCache[componentType] = data;
 			}
-			if (data.Requirements == null)
-				data.InitRequirements(this);
+			data.EnsureRequirements(this);
 
 			return data.Requirements;
 		}
@@ -256,8 +323,7 @@ namespace Duality
 				data = new TypeData(targetComponentType);
 				this.typeDataCache[targetComponentType] = data;
 			}
-			if (data.CreationChain == null)
-				data.InitCreationChain(this);
+			data.EnsureCreationChain(this);
 
 			// Create a sorted list of all components that need to be instantiated
 			// in order to satisfy the requirements for adding the given component to
@@ -292,8 +358,7 @@ namespace Duality
 				data = new TypeData(cmpType);
 				this.typeDataCache[cmpType] = data;
 			}
-			if (data.CreationChain == null)
-				data.InitCreationChain(this);
+			data.EnsureCreationChain(this);
 
 			return data.CreationChain;
 		}

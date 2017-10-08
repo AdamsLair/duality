@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DefaultOpenTK</id>
-    <version>2.0.16</version>
+    <version>2.0.19</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>OpenTK Backend</title>
@@ -13,11 +13,11 @@
     <summary>The default audiovisual backend layer for Duality.</summary>
     <description>The default audiovisual backend layer for Duality. It uses OpenGL and OpenAL, as provided by OpenTK.</description>
     <tags>Duality Core Plugin Backend</tags>
-    <releaseNotes>RenderTarget Bugfixes
-#FIX: Fixed an OpenGL error in the backend that could occur when changing the sample count of a RenderTarget while in use.</releaseNotes>
+    <releaseNotes>Updated OpenTK Dependency
+#CHANGE: Updated OpenTK dependency to version 1.1.8.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.9.4" />
-      <dependency id="AdamsLair.OpenTK" version="1.1.6" />
+      <dependency id="AdamsLair.Duality" version="2.11.2" />
+      <dependency id="AdamsLair.OpenTK" version="1.1.8" />
     </dependencies>
   </metadata>
   <files>

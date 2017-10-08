@@ -74,6 +74,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="PixmapAtlasVisualizer.cs" />
+    <Compile Include="RenderTargetVisualizer.cs" />
     <Compile Include="TextureVisualizer.cs" />
     <Compile Include="PixmapVisualizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

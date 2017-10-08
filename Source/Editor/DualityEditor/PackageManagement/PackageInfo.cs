@@ -7,20 +7,20 @@ namespace Duality.Editor.PackageManagement
 {
 	public class PackageInfo
 	{
-		private	PackageName			packageName		= PackageName.None;
-		private	string				title			= null;
-		private	string				summary			= null;
-		private	string				description		= null;
-		private	string				releaseNotes	= null;
-		private	bool				requireLicense	= false;
-		private	Uri					projectUrl		= null;
-		private	Uri					licenseUrl		= null;
-		private	Uri					iconUrl			= null;
-		private	int					downloadCount	= 0;
-		private	DateTime			publishDate		= DateTime.MinValue;
-		private	List<string>		authors			= new List<string>();
-		private	List<string>		tags			= new List<string>();
-		private	List<PackageName>	dependencies	= new List<PackageName>();
+		private PackageName       name           = PackageName.None;
+		private string            title          = null;
+		private string            summary        = null;
+		private string            description    = null;
+		private string            releaseNotes   = null;
+		private bool              requireLicense = false;
+		private Uri               projectUrl     = null;
+		private Uri               licenseUrl     = null;
+		private Uri               iconUrl        = null;
+		private int               downloadCount  = 0;
+		private DateTime          publishDate    = DateTime.MinValue;
+		private List<string>      authors        = new List<string>();
+		private List<string>      tags           = new List<string>();
+		private List<PackageName> dependencies   = new List<PackageName>();
 
 
 		public bool IsDualityPackage
@@ -39,17 +39,17 @@ namespace Duality.Editor.PackageManagement
 		{
 			get { return this.tags.Contains(PackageManager.CoreTag); }
 		}
-		public PackageName PackageName
+		public PackageName Name
 		{
-			get { return this.packageName; }
+			get { return this.name; }
 		}
 		public string Id
 		{
-			get { return this.packageName.Id; }
+			get { return this.name.Id; }
 		}
 		public Version Version
 		{
-			get { return this.packageName.Version; }
+			get { return this.name.Version; }
 		}
 		public string Title
 		{
@@ -101,31 +101,76 @@ namespace Duality.Editor.PackageManagement
 			get { return this.publishDate; }
 			internal set { this.publishDate = value; }
 		}
-		public IEnumerable<string> Authors
+		public IReadOnlyList<string> Authors
 		{
 			get { return this.authors; }
-			internal set { this.authors = (value ?? Enumerable.Empty<string>()).ToList(); }
+			internal set
+			{
+				this.authors.Clear();
+				if (value != null) this.authors.AddRange(value);
+			}
 		}
-		public IEnumerable<string> Tags
+		public IReadOnlyList<string> Tags
 		{
 			get { return this.tags; }
-			internal set { this.tags = (value ?? Enumerable.Empty<string>()).ToList(); }
+			internal set
+			{
+				this.tags.Clear();
+				if (value != null) this.tags.AddRange(value);
+			}
 		}
-		public IEnumerable<PackageName> Dependencies
+		public IReadOnlyList<PackageName> Dependencies
 		{
 			get { return this.dependencies; }
-			internal set { this.dependencies = (value ?? Enumerable.Empty<PackageName>()).ToList(); }
+			internal set
+			{
+				this.dependencies.Clear();
+				if (value != null) this.dependencies.AddRange(value);
+			}
 		}
 
 
 		internal PackageInfo(PackageName package)
 		{
-			this.packageName = package;
+			this.name = package;
+		}
+		internal PackageInfo(NuGet.IPackage nuGetPackage)
+		{
+			// Retrieve package data
+			this.name           = new PackageName(nuGetPackage.Id, nuGetPackage.Version.Version);
+			this.title          = nuGetPackage.Title;
+			this.summary        = nuGetPackage.Summary;
+			this.description    = nuGetPackage.Description;
+			this.releaseNotes   = nuGetPackage.ReleaseNotes;
+			this.requireLicense = nuGetPackage.RequireLicenseAcceptance;
+			this.projectUrl     = nuGetPackage.ProjectUrl;
+			this.licenseUrl     = nuGetPackage.LicenseUrl;
+			this.iconUrl        = nuGetPackage.IconUrl;
+			this.downloadCount  = nuGetPackage.DownloadCount;
+			this.publishDate    = nuGetPackage.Published.HasValue ? nuGetPackage.Published.Value.DateTime : DateTime.MinValue;
+			
+			if (nuGetPackage.Authors != null)
+				this.authors.AddRange(nuGetPackage.Authors);
+			if (nuGetPackage.Tags != null)
+				this.tags.AddRange(nuGetPackage.Tags.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+
+			// Retrieve the matching set of dependencies. For now, don't support different sets and just pick the first one.
+			var matchingDependencySet = nuGetPackage.DependencySets.FirstOrDefault();
+			if (matchingDependencySet != null)
+			{
+				foreach (NuGet.PackageDependency dependency in matchingDependencySet.Dependencies)
+				{
+					if (dependency.VersionSpec != null && dependency.VersionSpec.MinVersion != null)
+						this.dependencies.Add(new PackageName(dependency.Id, dependency.VersionSpec.MinVersion.Version));
+					else
+						this.dependencies.Add(new PackageName(dependency.Id, null));
+				}
+			}
 		}
 
 		public override string ToString()
 		{
-			return string.Format("Package Info '{0}'", this.packageName);
+			return string.Format("Package Info '{0}'", this.name);
 		}
 	}
 }

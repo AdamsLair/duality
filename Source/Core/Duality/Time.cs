@@ -121,7 +121,7 @@ namespace Duality
 				Resume();
 		}
 
-		internal static void FrameTick(bool forceFixedStep = false)
+		internal static void FrameTick(bool forceFixedStep, bool advanceGameTime)
 		{
 			// Initial timer start
 			if (!watch.IsRunning) watch.Restart();
@@ -137,7 +137,7 @@ namespace Duality
 
 			if (timeFreeze == 0)
 			{
-				if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+				if (advanceGameTime)
 					gameTimer += TimeSpan.FromTicks((long)(lastDelta * timeScale * TimeSpan.TicksPerMillisecond));
 				timeMult = timeScale * lastDelta / MsPFMult;
 			}

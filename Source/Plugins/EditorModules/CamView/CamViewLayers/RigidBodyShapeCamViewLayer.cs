@@ -6,6 +6,7 @@ using System.Globalization;
 using Duality;
 using Duality.Drawing;
 using Duality.Resources;
+using Duality.Components;
 using Duality.Components.Physics;
 
 using Duality.Editor;
@@ -16,6 +17,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 {
 	public class RigidBodyShapeCamViewLayer : CamViewLayer
 	{
+		private float shapeOutlineWidth = 2.0f;
+		private float depthOffset = -0.5f;
+
 		public override string LayerName
 		{
 			get { return Properties.CamViewRes.CamViewLayer_RigidBodyShape_Name; }
@@ -30,9 +34,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			{
 				float fgLum = this.FgColor.GetLuminance();
 				if (fgLum > 0.5f)
-					return ColorRgba.Lerp(new ColorRgba(255, 0, 255), ColorRgba.VeryLightGrey, 0.5f);
+					return new ColorRgba(255, 128, 255);
 				else
-					return ColorRgba.Lerp(new ColorRgba(255, 0, 255), ColorRgba.VeryDarkGrey, 0.5f);
+					return new ColorRgba(192, 0, 192);
+			}
+		}
+		public ColorRgba ObjectCenterColor
+		{
+			get
+			{
+				float fgLum = this.FgColor.GetLuminance();
+				if (fgLum > 0.5f)
+					return new ColorRgba(255, 255, 128);
+				else
+					return new ColorRgba(192, 192, 0);
 			}
 		}
 		public ColorRgba ShapeColor
@@ -76,23 +91,36 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			RigidBody selectedBody = this.QuerySelectedCollider();
 
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
 			canvas.State.TextFont = Font.GenericMonospace10;
 			canvas.State.TextInvariantScale = true;
-			canvas.State.ZOffset = -0.5f;
+			canvas.State.ZOffset = this.depthOffset;
 			Font textFont = canvas.State.TextFont.Res;
+
+			// Retrieve selected shapes
+			ObjectEditorCamViewState editorState = this.View.ActiveState as ObjectEditorCamViewState;
+			object[] editorSelectedObjects = editorState != null ? editorState.SelectedObjects.Select(item => item.ActualObject).ToArray() : new object[0];
+			
+			bool isAnyBodySelected = (selectedBody != null);
+			bool isAnyShapeSelected = isAnyBodySelected && editorSelectedObjects.OfType<ShapeInfo>().Any();
 
 			// Draw Shape layer
 			foreach (RigidBody body in visibleColliders)
 			{
 				if (!body.Shapes.Any()) continue;
-				float colliderAlpha = body == selectedBody ? 1.0f : (selectedBody != null ? 0.25f : 0.5f);
-				float maxDensity = body.Shapes.Max(s => s.Density);
-				float minDensity = body.Shapes.Min(s => s.Density);
-				float avgDensity = (maxDensity + minDensity) * 0.5f;
+
 				Vector3 objPos = body.GameObj.Transform.Pos;
 				float objAngle = body.GameObj.Transform.Angle;
 				float objScale = body.GameObj.Transform.Scale;
-				int index = 0;
+
+				bool isBodySelected = (body == selectedBody);
+
+				float bodyAlpha = isBodySelected ? 1.0f : (isAnyBodySelected ? 0.5f : 1.0f);
+				float maxDensity = body.Shapes.Max(s => s.Density);
+				float minDensity = body.Shapes.Min(s => s.Density);
+				float avgDensity = (maxDensity + minDensity) * 0.5f;
+
+				int shapeIndex = 0;
 				foreach (ShapeInfo shape in body.Shapes)
 				{
 					CircleShapeInfo circle = shape as CircleShapeInfo;
@@ -100,104 +128,54 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					ChainShapeInfo chain = shape as ChainShapeInfo;
 					LoopShapeInfo loop = shape as LoopShapeInfo;
 
-					ObjectEditorCamViewState editorState = this.View.ActiveState as ObjectEditorCamViewState;
-					float shapeAlpha = colliderAlpha * (selectedBody == null || editorState == null || editorState.SelectedObjects.Any(sel => sel.ActualObject == shape) ? 1.0f : 0.5f);
+					bool isShapeSelected = isBodySelected && editorSelectedObjects.Contains(shape);
+
+					float shapeAlpha = bodyAlpha * (isShapeSelected ? 1.0f : (isAnyShapeSelected && isBodySelected ? 0.75f : 1.0f));
 					float densityRelative = MathF.Abs(maxDensity - minDensity) < 0.01f ? 1.0f : shape.Density / avgDensity;
-					ColorRgba clr = shape.IsSensor ? this.ShapeSensorColor : this.ShapeColor;
-					ColorRgba fontClr = this.FgColor;
-					Vector2 center = Vector2.Zero;
+					ColorRgba shapeColor = shape.IsSensor ? this.ShapeSensorColor : this.ShapeColor;
+					ColorRgba fontColor = this.FgColor;
 
-					if (!body.IsAwake) clr = clr.ToHsva().WithSaturation(0.0f).ToRgba();
-					if (!shape.IsValid) clr = this.ShapeErrorColor;
+					if (!body.IsAwake) shapeColor = shapeColor.ToHsva().WithSaturation(0.0f).ToRgba();
+					if (!shape.IsValid) shapeColor = this.ShapeErrorColor;
 
-					bool fillShape = (poly != null || circle != null);
-					Vector2[] shapeVertices = null;
-					if      (poly  != null) shapeVertices = poly .Vertices;
-					else if (loop  != null) shapeVertices = loop .Vertices;
-					else if (chain != null) shapeVertices = chain.Vertices;
+					// Draw the shape itself
+					ColorRgba fillColor = shapeColor.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha);
+					ColorRgba outlineColor = ColorRgba.Lerp(shapeColor, fontColor, isShapeSelected ? 0.75f : 0.25f).WithAlpha(shapeAlpha);
+					this.DrawShape(canvas, body.GameObj.Transform, shape, fillColor, outlineColor);
 
+					// Calculate the center coordinate 
+					Vector2 shapeCenter = Vector2.Zero;
 					if (circle != null)
 					{
-						Vector2 circlePos = circle.Position * objScale;
-						MathF.TransformCoord(ref circlePos.X, ref circlePos.Y, objAngle);
-
-						if (fillShape)
-						{
-							canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha)));
-							canvas.FillCircle(
-								objPos.X + circlePos.X,
-								objPos.Y + circlePos.Y,
-								objPos.Z, 
-								circle.Radius * objScale);
-						}
-						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha(shapeAlpha)));
-						canvas.DrawCircle(
-							objPos.X + circlePos.X,
-							objPos.Y + circlePos.Y,
-							objPos.Z, 
-							circle.Radius * objScale);
-
-						center = circlePos;
+						shapeCenter = circle.Position * objScale;
 					}
-					else if (shapeVertices != null)
+					else
 					{
-						ColorRgba vertexFillColor = canvas.State.ColorTint * clr.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha);
-						ColorRgba vertexOutlineColor = canvas.State.ColorTint * clr;
+						Vector2[] shapeVertices = null;
+						if      (poly  != null) shapeVertices = poly .Vertices;
+						else if (loop  != null) shapeVertices = loop .Vertices;
+						else if (chain != null) shapeVertices = chain.Vertices;
 
-						// Prepare vertices to submit. We can't use higher-level canvas functionality
-						// here, because we want direct control over the vertex mode.
-						float viewSpaceScale = objScale;
-						Vector3 viewSpacePos = objPos;
-						canvas.DrawDevice.PreprocessCoords(ref viewSpacePos, ref viewSpaceScale);
-						VertexC1P3T2[] drawVertices = new VertexC1P3T2[shapeVertices.Length];
-						for (int i = 0; i < drawVertices.Length; i++)
-						{
-							drawVertices[i].Pos.X = shapeVertices[i].X;
-							drawVertices[i].Pos.Y = shapeVertices[i].Y;
-							drawVertices[i].Pos.Z = 0.0f;
-							MathF.TransformCoord(ref drawVertices[i].Pos.X, ref drawVertices[i].Pos.Y, objAngle, viewSpaceScale);
+						for (int i = 0; i < shapeVertices.Length; i++)
+							shapeCenter += shapeVertices[i];
 
-							drawVertices[i].Pos.X += viewSpacePos.X;
-							drawVertices[i].Pos.Y += viewSpacePos.Y;
-							drawVertices[i].Pos.Z += viewSpacePos.Z;
-							drawVertices[i].Color = vertexOutlineColor;
-						}
-
-						// Calculate the center coordinate 
-						for (int i = 0; i < drawVertices.Length; i++)
-							center += shapeVertices[i];
-						center /= shapeVertices.Length;
-						MathF.TransformCoord(ref center.X, ref center.Y, objAngle, objScale);
-
-						// Make sure to render using an alpha material
-						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
-
-						// Fill the shape
-						if (fillShape)
-						{
-							VertexC1P3T2[] fillVertices = drawVertices.Clone() as VertexC1P3T2[];
-							for (int i = 0; i < fillVertices.Length; i++)
-								fillVertices[i].Color = vertexFillColor;
-							canvas.DrawVertices(fillVertices, VertexMode.TriangleFan);
-						}
-
-						// Draw the outline
-						canvas.DrawVertices(drawVertices, shape is ChainShapeInfo ? VertexMode.LineStrip : VertexMode.LineLoop);
+						shapeCenter /= shapeVertices.Length;
+						MathF.TransformCoord(ref shapeCenter.X, ref shapeCenter.Y, objAngle, objScale);
 					}
 					
 					// Draw shape index
 					if (body == selectedBody)
 					{
-						string indexText = index.ToString();
+						string indexText = shapeIndex.ToString();
 						Vector2 textSize = textFont.MeasureText(indexText);
-						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, fontClr.WithAlpha((shapeAlpha + 1.0f) * 0.5f)));
+						canvas.State.ColorTint = fontColor.WithAlpha((shapeAlpha + 1.0f) * 0.5f);
 						canvas.DrawText(indexText, 
-							objPos.X + center.X, 
-							objPos.Y + center.Y,
-							objPos.Z);
+							objPos.X + shapeCenter.X, 
+							objPos.Y + shapeCenter.Y,
+							0.0f);
 					}
 
-					index++;
+					shapeIndex++;
 				}
 				
 				// Draw center of mass
@@ -205,25 +183,219 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				{
 					Vector2 localMassCenter = body.LocalMassCenter;
 					MathF.TransformCoord(ref localMassCenter.X, ref localMassCenter.Y, objAngle, objScale);
-					canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, this.MassCenterColor.WithAlpha(colliderAlpha)));
+
+					float size = this.GetScreenConstantScale(canvas, 6.0f);
+
+					canvas.State.ColorTint = this.MassCenterColor.WithAlpha(bodyAlpha);
 					canvas.DrawLine(
-						objPos.X + localMassCenter.X - 5.0f, 
+						objPos.X + localMassCenter.X - size, 
 						objPos.Y + localMassCenter.Y, 
-						objPos.Z,
-						objPos.X + localMassCenter.X + 5.0f, 
+						0.0f,
+						objPos.X + localMassCenter.X + size, 
 						objPos.Y + localMassCenter.Y, 
-						objPos.Z);
+						0.0f);
 					canvas.DrawLine(
 						objPos.X + localMassCenter.X, 
-						objPos.Y + localMassCenter.Y - 5.0f, 
-						objPos.Z,
+						objPos.Y + localMassCenter.Y - size, 
+						0.0f,
 						objPos.X + localMassCenter.X, 
-						objPos.Y + localMassCenter.Y + 5.0f, 
-						objPos.Z);
+						objPos.Y + localMassCenter.Y + size, 
+						0.0f);
+				}
+				
+				// Draw transform center
+				{
+					float size = this.GetScreenConstantScale(canvas, 3.0f);
+					canvas.State.ColorTint = this.ObjectCenterColor.WithAlpha(bodyAlpha);
+					canvas.FillCircle(objPos.X, objPos.Y, 0.0f, size);
 				}
 			}
 		}
 		
+		private void DrawShape(Canvas canvas, Transform transform, ShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
+		{
+			if      (shape is CircleShapeInfo) this.DrawShape(canvas, transform, shape as CircleShapeInfo, fillColor, outlineColor);
+			else if (shape is LoopShapeInfo)   this.DrawShape(canvas, transform, shape as LoopShapeInfo  , fillColor, outlineColor);
+			else if (shape is ChainShapeInfo)  this.DrawShape(canvas, transform, shape as ChainShapeInfo , fillColor, outlineColor);
+			else if (shape is PolyShapeInfo)   this.DrawShape(canvas, transform, shape as PolyShapeInfo  , fillColor, outlineColor);
+		}
+		private void DrawShape(Canvas canvas, Transform transform, LoopShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
+		{
+			this.DrawPolygonOutline(canvas, transform, shape.Vertices, outlineColor, true);
+		}
+		private void DrawShape(Canvas canvas, Transform transform, ChainShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
+		{
+			this.DrawPolygonOutline(canvas, transform, shape.Vertices, outlineColor, false);
+		}
+		private void DrawShape(Canvas canvas, Transform transform, PolyShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
+		{
+			if (shape.ConvexPolygons != null)
+			{
+				// Fill each convex polygon individually
+				foreach (Vector2[] polygon in shape.ConvexPolygons)
+				{
+					this.FillPolygon(canvas, transform, polygon, fillColor);
+				}
+
+				// Draw all convex polygon edges that are not outlines
+				canvas.State.ZOffset = this.depthOffset - 0.05f;
+				this.DrawPolygonInternals(canvas, transform, shape.Vertices, shape.ConvexPolygons, outlineColor);
+				canvas.State.ZOffset = this.depthOffset;
+			}
+
+
+			// Draw the polygon outline
+			canvas.State.ZOffset = this.depthOffset - 0.1f;
+			this.DrawPolygonOutline(canvas, transform, shape.Vertices, outlineColor, true);
+			canvas.State.ZOffset = this.depthOffset;
+		}
+		private void DrawShape(Canvas canvas, Transform transform, CircleShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
+		{
+			Vector3 objPos = transform.Pos;
+			float objAngle = transform.Angle;
+			float objScale = transform.Scale;
+
+			Vector2 circlePos = shape.Position * objScale;
+			MathF.TransformCoord(ref circlePos.X, ref circlePos.Y, objAngle);
+
+			if (fillColor.A > 0)
+			{
+				canvas.State.ColorTint = fillColor;
+				canvas.FillCircle(
+					objPos.X + circlePos.X,
+					objPos.Y + circlePos.Y,
+					0.0f, 
+					shape.Radius * objScale);
+			}
+
+			float outlineWidth = this.GetScreenConstantScale(canvas, this.shapeOutlineWidth);
+			canvas.State.ColorTint = outlineColor;
+			canvas.State.ZOffset = this.depthOffset - 0.1f;
+			canvas.FillCircleSegment(
+				objPos.X + circlePos.X,
+				objPos.Y + circlePos.Y,
+				0.0f, 
+				shape.Radius * objScale,
+				0.0f,
+				MathF.RadAngle360,
+				outlineWidth);
+			canvas.State.ZOffset = this.depthOffset;
+		}
+
+		private void FillPolygon(Canvas canvas, Transform transform, Vector2[] polygon, ColorRgba fillColor)
+		{
+			Vector3 objPos = transform.Pos;
+			float objAngle = transform.Angle;
+			float objScale = transform.Scale;
+
+			canvas.State.ColorTint = fillColor;
+			canvas.State.TransformAngle = objAngle;
+			canvas.State.TransformScale = new Vector2(objScale, objScale);
+
+			canvas.FillPolygon(polygon, objPos.X, objPos.Y, 0.0f);
+
+			canvas.State.TransformAngle = 0.0f;
+			canvas.State.TransformScale = Vector2.One;
+		}
+		private void DrawPolygonOutline(Canvas canvas, Transform transform, Vector2[] polygon, ColorRgba outlineColor, bool closedLoop)
+		{
+			Vector3 objPos = transform.Pos;
+			float objAngle = transform.Angle;
+			float objScale = transform.Scale;
+
+			canvas.State.TransformAngle = objAngle;
+			canvas.State.TransformScale = new Vector2(objScale, objScale);
+			canvas.State.ColorTint = outlineColor;
+
+			float outlineWidth = this.GetScreenConstantScale(canvas, this.shapeOutlineWidth);
+			outlineWidth /= objScale;
+			if (closedLoop)
+				canvas.FillPolygonOutline(polygon, outlineWidth, objPos.X, objPos.Y, 0.0f);
+			else
+				canvas.FillThickLineStrip(polygon, outlineWidth, objPos.X, objPos.Y, 0.0f);
+
+			canvas.State.TransformAngle = 0.0f;
+			canvas.State.TransformScale = Vector2.One;
+		}
+		private void DrawPolygonInternals(Canvas canvas, Transform transform, Vector2[] hullVertices, IReadOnlyList<Vector2[]> convexPolygons, ColorRgba outlineColor)
+		{
+			if (convexPolygons.Count <= 1) return;
+
+			Vector3 objPos = transform.Pos;
+			float objAngle = transform.Angle;
+			float objScale = transform.Scale;
+
+			Vector2 xDot;
+			Vector2 yDot;
+			MathF.GetTransformDotVec(objAngle, objScale, out xDot, out yDot);
+
+			float dashPatternLength = this.GetScreenConstantScale(canvas, this.shapeOutlineWidth * 0.5f);
+
+			// Generate a lookup of drawn vertex indices, so we can
+			// avoid drawing the same edge twice. Every item is a combination
+			// of two indices.
+			HashSet<uint> drawnEdges = new HashSet<uint>();
+			for (int i = 0; i < hullVertices.Length; i++)
+			{
+				int currentHullIndex = i;
+				int nextHullIndex = (i + 1) % hullVertices.Length;
+				uint edgeId = (currentHullIndex > nextHullIndex) ?
+					((uint)currentHullIndex << 16) | (uint)nextHullIndex :
+					((uint)nextHullIndex << 16) | (uint)currentHullIndex;
+				drawnEdges.Add(edgeId);
+			}
+
+			canvas.State.ColorTint = outlineColor;
+
+			foreach (Vector2[] polygon in convexPolygons)
+			{
+				if (polygon.Length < 2) continue;
+
+				int currentHullIndex;
+				int nextHullIndex = VertexListIndex(hullVertices, polygon[0]);
+				for (int i = 0; i < polygon.Length; i++)
+				{
+					int nextIndex = (i + 1) % polygon.Length;
+					currentHullIndex = nextHullIndex;
+					nextHullIndex = VertexListIndex(hullVertices, polygon[nextIndex]);
+
+					// Filter out edges that have already been drawn
+					if (currentHullIndex >= 0 && nextHullIndex >= 0)
+					{
+						uint edgeId = (currentHullIndex > nextHullIndex) ?
+							((uint)currentHullIndex << 16) | (uint)nextHullIndex :
+							((uint)nextHullIndex << 16) | (uint)currentHullIndex;
+						if (!drawnEdges.Add(edgeId))
+							continue;
+					}
+
+					Vector2 lineStart = new Vector2(
+						polygon[i].X, 
+						polygon[i].Y);
+					Vector2 lineEnd = new Vector2(
+						polygon[nextIndex].X, 
+						polygon[nextIndex].Y);
+					MathF.TransformDotVec(ref lineStart, ref xDot, ref yDot);
+					MathF.TransformDotVec(ref lineEnd, ref xDot, ref yDot);
+
+					canvas.DrawDashLine(
+						objPos.X + lineStart.X, 
+						objPos.Y + lineStart.Y, 
+						0.0f, 
+						objPos.X + lineEnd.X, 
+						objPos.Y + lineEnd.Y,
+						0.0f, 
+						DashPattern.Dash, 
+						1.0f / dashPatternLength);
+				}
+			}
+		}
+
+		private float GetScreenConstantScale(Canvas canvas, float baseScale)
+		{
+			return baseScale / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0.0f));
+		}
+
 		private IEnumerable<RigidBody> QueryVisibleColliders()
 		{
 			var allColliders = Scene.Current.FindComponents<RigidBody>();
@@ -237,6 +409,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			return 
 				DualityEditorApp.Selection.Components.OfType<RigidBody>().FirstOrDefault() ?? 
 				DualityEditorApp.Selection.GameObjects.GetComponents<RigidBody>().FirstOrDefault();
+		}
+
+		private static int VertexListIndex(Vector2[] vertices, Vector2 checkVertex)
+		{
+			for (int i = 0; i < vertices.Length; i++)
+			{
+				if (Math.Abs(vertices[i].X - checkVertex.X) < 0.001f &&
+					Math.Abs(vertices[i].Y - checkVertex.Y) < 0.001f)
+					return i;
+			}
+
+			return -1;
 		}
 	}
 }

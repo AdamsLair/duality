@@ -15,7 +15,10 @@ namespace Duality.Components.Physics
 	/// </summary>
 	public sealed class ChainShapeInfo : ShapeInfo
 	{
+		[DontSerialize]
+		private Fixture fixture;
 		private Vector2[] vertices;
+
 
 		/// <summary>
 		/// [GET / SET] The edge chains vertices. While assinging the array will cause an automatic update, simply modifying it will require you to call <see cref="ShapeInfo.UpdateShape"/> manually.
@@ -25,11 +28,11 @@ namespace Duality.Components.Physics
 		[EditorHintDecimalPlaces(1)]
 		public Vector2[] Vertices
 		{
-			get { return this.vertices; }
+			get { return this.vertices ?? EmptyVertices; }
 			set
 			{
 				this.vertices = value ?? new Vector2[] { Vector2.Zero, Vector2.UnitX };
-				this.UpdateFixture(true);
+				this.UpdateInternalShape(true);
 			}
 		}
 		[EditorHintFlags(MemberFlags.Invisible)]
@@ -37,6 +40,9 @@ namespace Duality.Components.Physics
 		{
 			get 
 			{
+				if (this.vertices == null || this.vertices.Length == 0)
+					return Rect.Empty;
+
 				float minX = float.MaxValue;
 				float minY = float.MaxValue;
 				float maxX = float.MinValue;
@@ -51,60 +57,76 @@ namespace Duality.Components.Physics
 				return new Rect(minX, minY, maxX - minX, maxY - minY);
 			}
 		}
+		protected override bool IsInternalShapeCreated
+		{
+			get { return this.fixture != null; }
+		}
+
 			
 		public ChainShapeInfo() {}
-		public ChainShapeInfo(IEnumerable<Vector2> vertices) : base(1.0f)
+		public ChainShapeInfo(IEnumerable<Vector2> vertices)
 		{
 			this.vertices = vertices.ToArray();
 		}
-
-		protected override Fixture CreateFixture(Body body)
+		
+		protected override void DestroyFixtures()
 		{
-			if (!body.IsStatic) return null; // Chain shapes aren't allowed on nonstatic bodies.
-			if (this.vertices == null || this.vertices.Length < 2) return null;
-
-			this.Parent.CheckValidTransform();
-
-			ChainShape shape = new ChainShape();
-			this.UpdateVertices(shape, 1.0f);
-			Fixture f = body.CreateFixture(shape, this);
-
-			this.Parent.CheckValidTransform();
-			return f;
+			if (this.fixture == null) return;
+			if (this.fixture.Body != null)
+				this.fixture.Body.DestroyFixture(this.fixture);
+			this.fixture = null;
 		}
-		internal override void UpdateFixture(bool updateShape = false)
+		protected override void SyncFixtures()
 		{
-			// Chain shapes aren't allowed on nonstatic bodies.
-			if (this.Parent != null && this.Parent.BodyType != BodyType.Static)
+			// This kind of shape is not allowed on non-static bodies.
+			if (this.Parent.BodyType != BodyType.Static)
 			{
-				this.DestroyFixture(this.Parent.PhysicsBody, false);
+				this.DestroyFixtures();
 				return;
 			}
 
-			base.UpdateFixture(updateShape);
-			if (this.fixture == null) return;
-			if (this.Parent == null) return;
-				
-			float scale = 1.0f;
-			if (this.Parent.GameObj != null && this.Parent.GameObj.Transform != null)
-				scale = this.Parent.GameObj.Transform.Scale;
+			if (!this.EnsureFixtures()) return;
+
+			this.fixture.IsSensor = this.sensor;
+			this.fixture.Restitution = this.restitution;
+			this.fixture.Friction = this.friction;
+			
 
 			ChainShape shape = this.fixture.Shape as ChainShape;
-			this.UpdateVertices(shape, scale);
+			shape.Density = this.density;
+		}
+
+		private bool EnsureFixtures()
+		{
+			if (this.vertices == null || this.vertices.Length < 2) return false;
+
+			if (this.fixture == null)
+			{
+				Body body = this.Parent.PhysicsBody;
+				if (body != null)
+				{
+					if (!body.IsStatic) return false;
+
+					ChainShape shape = new ChainShape();
+					shape.Vertices = new Vertices();
+					this.UpdateVertices(shape, this.ParentScale);
+
+					this.fixture = new Fixture(
+						body, 
+						shape, 
+						this);
+				}
+			}
+
+			return this.fixture != null;
 		}
 		private void UpdateVertices(ChainShape shape, float scale)
 		{
-			if (this.vertices == null || this.vertices.Length < 2) return;
-
-			if (shape.Vertices == null)
-				shape.Vertices = new Vertices();
-			else
-				shape.Vertices.Clear();
+			shape.Vertices.Clear();
 
 			for (int i = 0; i < this.vertices.Length; i++)
-			{
 				shape.Vertices.Add(PhysicsUnit.LengthToPhysical * this.vertices[i] * scale);
-			}
+
 			shape.MakeChain();
 		}
 	}

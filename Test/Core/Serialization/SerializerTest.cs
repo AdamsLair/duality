@@ -472,7 +472,7 @@ namespace Duality.Tests.Serialization
 			this.logWatcher.AssertError();
 
 			// Sanitize the GameObject to give it a chance for cleanup of missing data
-			readObj.PerformSanitaryCheck();
+			readObj.EnsureConsistentData();
 
 			// Assert a warning log for the missing Component while sanitizing the GameObject
 			this.logWatcher.AssertWarning();
@@ -512,7 +512,7 @@ namespace Duality.Tests.Serialization
 			this.logWatcher.AssertWarning();
 
 			// Sanitize the GameObject to give it a chance for cleanup of missing data
-			readObj.PerformSanitaryCheck();
+			readObj.EnsureConsistentData();
 
 			// Assert a warning log for the missing Component while sanitizing the GameObject
 			this.logWatcher.AssertWarning();
@@ -564,6 +564,26 @@ namespace Duality.Tests.Serialization
 				Assert.AreNotSame(sourceData[i], targetData[i]);
 				Assert.AreNotSame(sourceData[i].MainLayer, targetData[i].MainLayer);
 			}
+		}
+
+		[Test] public void CalcUniqueIdentifier()
+		{
+			const string singleChar = "a";
+			const string testString = "testString Here";
+			const string guidString = "01234567-89ab-cdef-0123-456789abcdef";
+			const int testStringUid = 1454634143;
+
+			Guid testGuid = Guid.Parse(guidString);
+
+			UniqueIdentifyableHelper.GetIdentifier(singleChar);
+			UniqueIdentifyableHelper.GetIdentifier(testGuid);
+
+			int uidString = UniqueIdentifyableHelper.GetIdentifier(testString);
+			int uidGuid = UniqueIdentifyableHelper.GetIdentifier(guidString);
+			int uidGuidToString = UniqueIdentifyableHelper.GetIdentifier(testGuid.ToString());
+
+			Assert.AreEqual(uidString, testStringUid);
+			Assert.AreEqual(uidGuid, uidGuidToString);
 		}
 
 		

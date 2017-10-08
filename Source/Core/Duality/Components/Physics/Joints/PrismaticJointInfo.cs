@@ -50,7 +50,7 @@ namespace Duality.Components.Physics
 		public Vector2 MovementAxis
 		{
 			get { return this.moveAxis; }
-			set { this.moveAxis = value == Vector2.Zero ? Vector2.UnitX : value.Normalized; this.UpdateJoint(); }
+			set { this.moveAxis = (value == Vector2.Zero) ? Vector2.UnitX : value; this.UpdateJoint(); }
 		}
 		/// <summary>
 		/// [GET / SET] Is the joint limited in its movement?
@@ -89,6 +89,9 @@ namespace Duality.Components.Physics
 		/// <summary>
 		/// [GET / SET] The maximum motor force.
 		/// </summary>
+		[EditorHintIncrement(1.0f)]
+		[EditorHintDecimalPlaces(1)]
+		[EditorHintRange(0, 10000, 0, 500)]
 		public float MaxMotorForce
 		{
 			get { return this.maxMotorForce; }
@@ -151,7 +154,9 @@ namespace Duality.Components.Physics
 			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
 			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
 			j.ReferenceAngle = this.refAngle;
-			j.LocalXAxis1 = this.ParentBody.GameObj.Transform.GetWorldVector(this.moveAxis).Normalized;
+			// Farseer gotcha: Setter is in world coordinates even though getter returns local coordinates.
+			// Movement axis is relative to OtherBody, as that reflects Farseer behavior.
+			j.LocalXAxis1 = this.OtherBody.GameObj.Transform.GetWorldVector(this.moveAxis).Normalized;
 			j.LimitEnabled = this.limitEnabled;
 			j.LowerLimit = -PhysicsUnit.LengthToPhysical * this.upperLimit;
 			j.UpperLimit = -PhysicsUnit.LengthToPhysical * this.lowerLimit;
