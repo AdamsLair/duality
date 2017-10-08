@@ -526,12 +526,13 @@ namespace Duality
 		/// <summary>
 		/// Performs a single update cycle.
 		/// </summary>
-		public static void Update()
+		/// <param name="forceFixedStep">If true use a timestep thats equal to <see cref="Time.MsPFMult"/> for the update</param>
+		public static void Update(bool forceFixedStep = false)
 		{
 			isUpdating = true;
 			Profile.TimeUpdate.BeginMeasure();
 
-			Time.FrameTick(false, true);
+			Time.FrameTick(forceFixedStep, true);
 			Profile.FrameTick();
 			VisualLog.UpdateLogEntries();
 			pluginManager.InvokeBeforeUpdate();

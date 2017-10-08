@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
+
 using Duality.Components;
 using Duality.Components.Physics;
 using Duality.Resources;
+
 using NUnit.Framework;
 
 namespace Duality.Tests.Components
@@ -12,41 +15,42 @@ namespace Duality.Tests.Components
 	{
 		[Test] public void FallingBallOnPlatform()
 		{
-			var scene = new Scene();
+			Scene scene = new Scene();
 			Scene.SwitchTo(scene);
 
-			//Create the ball
-			var ball = new GameObject("Ball");
-			var ballTransform = ball.AddComponent<Transform>();
-			var ballBody = ball.AddComponent<RigidBody>();
-			var listener = ball.AddComponent<CollisionListener>();
-			bool onCollisionBeginCalled = false, onCollisionEndCalled = false, onCollisionSolveCalled = false;
-			listener.CollisionBegin += (sender, args) => onCollisionBeginCalled = true;
-			listener.CollisionEnd += (sender, args) => onCollisionEndCalled = true;
-			listener.CollisionSolve += (sender, args) => onCollisionSolveCalled = true;
+			// Create the ball
+			GameObject ball = new GameObject("Ball");
+			Transform ballTransform = ball.AddComponent<Transform>();
+			RigidBody ballBody = ball.AddComponent<RigidBody>();
+			CollisionEventReceiver listener = ball.AddComponent<CollisionEventReceiver>();
 			ballBody.AddShape(new CircleShapeInfo(1, new Vector2(0, 0), 1));
 			scene.AddObject(ball);
 
-			//Create the platform
-			var platform = new GameObject("Platform");
-			var platformTrans = platform.AddComponent<Transform>();
-			var platformBody = platform.AddComponent<RigidBody>();
+			// Create the platform
+			GameObject platform = new GameObject("Platform");
+			Transform platformTrans = platform.AddComponent<Transform>();
+			platformTrans.Pos = new Vector3(0, 5, 0);
+			RigidBody platformBody = platform.AddComponent<RigidBody>();
 			platformBody.AddShape(new ChainShapeInfo(new[] { new Vector2(-1, 0), new Vector2(1, 0), }));
 			platformBody.BodyType = BodyType.Static;
 			scene.AddObject(platform);
-			platformTrans.Pos = new Vector3(0, 5, 0);
 
+			// Simulate some update steps
 			for (int i = 0; i < 6; i++)
 			{
-				Thread.Sleep(16); //Simulate ~60 fps.
-				DualityApp.Update();
+				DualityApp.Update(true);
 			}
-			Assert.IsTrue(ballTransform.Pos.Y > 0);
-			Assert.IsTrue(ballTransform.Pos.X == 0);
-			Assert.IsTrue(ballTransform.Pos.Z == 0);
-			Assert.IsTrue(onCollisionBeginCalled);
-			Assert.IsTrue(onCollisionEndCalled);
-			Assert.IsTrue(onCollisionSolveCalled);
+
+			// Check if the position is within expected values
+			Assert.IsTrue(ballTransform.Pos.Y > 3f);
+			Assert.IsTrue(ballTransform.Pos.Y < 5f);
+			Assert.IsTrue(Math.Abs(ballTransform.Pos.X) < 0.01f);
+			Assert.IsTrue(Math.Abs(ballTransform.Pos.Z) < 0.01f);
+
+			// Check if the collision events were triggered
+			Assert.IsTrue(listener.CollisionBegin.Count == 1);
+			Assert.IsTrue(listener.CollisionEnd.Count == 0); //The ball should keep touching the platform once it collides
+			Assert.IsTrue(listener.CollisionSolve.Count == 1);
 		}
 
 		[Test] public void CreateEmptyBody()
