@@ -526,8 +526,16 @@ namespace Duality
 		/// <summary>
 		/// Performs a single update cycle.
 		/// </summary>
+		public static void Update()
+		{
+			Update(false);
+		}
+
+		/// <summary>
+		/// Performs a single update cycle.
+		/// </summary>
 		/// <param name="forceFixedStep">If true use a timestep thats equal to <see cref="Time.MsPFMult"/> for the update</param>
-		public static void Update(bool forceFixedStep = false)
+		public static void Update(bool forceFixedStep)
 		{
 			isUpdating = true;
 			Profile.TimeUpdate.BeginMeasure();

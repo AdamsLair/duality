@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 
 using Duality.Components;
 using Duality.Components.Physics;
 using Duality.Resources;
+using static Duality.Tests.Components.CollisionEventReceiver.CollisionEvent;
 
 using NUnit.Framework;
 
@@ -22,6 +22,7 @@ namespace Duality.Tests.Components
 			GameObject ball = new GameObject("Ball");
 			Transform ballTransform = ball.AddComponent<Transform>();
 			RigidBody ballBody = ball.AddComponent<RigidBody>();
+			ballBody.Restitution = 0f;
 			CollisionEventReceiver listener = ball.AddComponent<CollisionEventReceiver>();
 			ballBody.AddShape(new CircleShapeInfo(1, new Vector2(0, 0), 1));
 			scene.AddObject(ball);
@@ -31,12 +32,13 @@ namespace Duality.Tests.Components
 			Transform platformTrans = platform.AddComponent<Transform>();
 			platformTrans.Pos = new Vector3(0, 5, 0);
 			RigidBody platformBody = platform.AddComponent<RigidBody>();
+			platformBody.Restitution = 0f;
 			platformBody.AddShape(new ChainShapeInfo(new[] { new Vector2(-1, 0), new Vector2(1, 0), }));
 			platformBody.BodyType = BodyType.Static;
 			scene.AddObject(platform);
 
 			// Simulate some update steps
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < 10; i++)
 			{
 				DualityApp.Update(true);
 			}
@@ -48,9 +50,10 @@ namespace Duality.Tests.Components
 			Assert.IsTrue(Math.Abs(ballTransform.Pos.Z) < 0.01f);
 
 			// Check if the collision events were triggered
-			Assert.IsTrue(listener.CollisionBegin.Count == 1);
-			Assert.IsTrue(listener.CollisionEnd.Count == 0); //The ball should keep touching the platform once it collides
-			Assert.IsTrue(listener.CollisionSolve.Count == 1);
+			// First one should always be a begin
+			Assert.IsTrue(listener.Collisions[0].Type == CollisionType.Begin); 
+			// The ones after that should all be of type Solve. There should be no event of type End since there is no bouncing.
+			Assert.IsTrue(listener.Collisions.Skip(1).All(x => x.Type == CollisionType.Solve)); 
 		}
 
 		[Test] public void CreateEmptyBody()
