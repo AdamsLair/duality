@@ -149,16 +149,16 @@ namespace Duality.Drawing
 		/// <param name="target"></param>
 		public void CopyTo(CanvasState target)
 		{
-			target.batchInfo			= this.batchInfo;
-			target.uvGenRect			= this.uvGenRect;
-			target.texBaseSize			= this.texBaseSize;
-			target.font					= this.font;
-			target.color				= this.color;
-			target.invariantTextScale	= this.invariantTextScale;
-			target.depthOffset				= this.depthOffset;
-			target.transformAngle		= this.transformAngle;
-			target.transformHandle		= this.transformHandle;
-			target.transformScale		= this.transformScale;
+			target.batchInfo          = this.batchInfo;
+			target.uvGenRect          = this.uvGenRect;
+			target.texBaseSize        = this.texBaseSize;
+			target.font               = this.font;
+			target.color              = this.color;
+			target.invariantTextScale = this.invariantTextScale;
+			target.depthOffset        = this.depthOffset;
+			target.transformAngle     = this.transformAngle;
+			target.transformHandle    = this.transformHandle;
+			target.transformScale     = this.transformScale;
 			target.UpdateTransform();
 		}
 		/// <summary>

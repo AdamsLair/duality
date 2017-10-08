@@ -14,9 +14,10 @@ namespace Duality.Drawing
 	/// </summary>
 	public class Canvas
 	{
-		private	IDrawDevice			device		= null;
-		private	Stack<CanvasState>	stateStack	= new Stack<CanvasState>(new [] { new CanvasState() });
-		private	CanvasBuffer		buffer		= null;
+		private IDrawDevice       device     = null;
+		private List<CanvasState> stateStack = new List<CanvasState> { new CanvasState() };
+		private int               stateCount = 1;
+		private CanvasBuffer      buffer     = null;
 
 
 		/// <summary>
@@ -27,16 +28,11 @@ namespace Duality.Drawing
 			get { return this.device; }
 		}
 		/// <summary>
-		/// [GET / SET] The Canvas' current <see cref="CanvasState"/>.
+		/// [GET] The currently active <see cref="CanvasState"/>.
 		/// </summary>
 		public CanvasState State
 		{
-			get { return this.stateStack.Peek(); }
-			set 
-			{
-				this.stateStack.Pop();
-				this.stateStack.Push(value);
-			}
+			get { return this.stateStack[this.stateCount - 1]; }
 		}
 		/// <summary>
 		/// [GET] The available width to draw on this Canvas.
@@ -75,15 +71,23 @@ namespace Duality.Drawing
 		/// </summary>
 		public void PushState()
 		{
-			this.stateStack.Push(this.stateStack.Peek().Clone());
+			this.stateCount++;
+
+			if (this.stateStack.Count <= this.stateCount)
+				this.stateStack.Add(new CanvasState());
+
+			CanvasState oldState = this.stateStack[this.stateCount - 2];
+			CanvasState newState = this.stateStack[this.stateCount - 1];
+
+			oldState.CopyTo(newState);
 		}
 		/// <summary>
 		/// Removes the topmost <see cref="CanvasState"/> from the internal State stack.
 		/// </summary>
 		public void PopState()
 		{
-			this.stateStack.Pop();
-			if (this.stateStack.Count == 0) this.stateStack.Push(new CanvasState());
+			if (this.stateCount <= 1) throw new InvalidOperationException("Can't pop the last CanvasState from the stack.");
+			this.stateCount--;
 		}
 
 		/// <summary>
