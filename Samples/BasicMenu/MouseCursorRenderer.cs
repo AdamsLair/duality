@@ -19,7 +19,8 @@ namespace BasicMenu
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			Canvas canvas = new Canvas(device);
+			Canvas canvas = new Canvas();
+			canvas.Begin(device);
 
 			// Draw the mouse cursor when available
 			if (DualityApp.Mouse.IsAvailable)
@@ -30,6 +31,8 @@ namespace BasicMenu
 					DualityApp.Mouse.Pos.Y, 
 					2);
 			}
+
+			canvas.End();
 		}
 	}
 }

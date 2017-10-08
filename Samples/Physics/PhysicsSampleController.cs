@@ -75,8 +75,10 @@ namespace Duality.Samples.Physics
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			Canvas canvas = new Canvas(device);
 			Vector2 mousePos = DualityApp.Mouse.Pos;
+
+			Canvas canvas = new Canvas();
+			canvas.Begin(device);
 
 			// Make sure we'll draw below the sample info text
 			canvas.State.DepthOffset = 1.0f;
@@ -115,6 +117,8 @@ namespace Duality.Samples.Physics
 					2.0f);
 				canvas.State.ColorTint = this.defaultColor;
 			}
+
+			canvas.End();
 		}
 
 		void ICmpUpdatable.OnUpdate()

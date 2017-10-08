@@ -10,16 +10,16 @@ namespace DualStickSpaceShooter
 {
 	public class GameOverScreen : Component, ICmpRenderer, ICmpUpdatable
 	{
-		private ContentRef<Font>		font						= null;
-		private	BatchInfo				blendMaterial				= null;
-		private ContentRef<Material>	controlInfoMouseKeyboard	= null;
-		private ContentRef<Material>	controlInfoGamepad			= null;
+		private ContentRef<Font>     font                     = null;
+		private BatchInfo            blendMaterial            = null;
+		private ContentRef<Material> controlInfoMouseKeyboard = null;
+		private ContentRef<Material> controlInfoGamepad       = null;
 		
-		[DontSerialize] private	bool			gameStarted			= false;
-		[DontSerialize] private	bool			gameOver			= false;
-		[DontSerialize] private	bool			gameWin				= false;
-		[DontSerialize] private float			lastTimeAnyAlive	= 0.0f;
-		[DontSerialize] private CanvasBuffer	buffer				= null;
+		[DontSerialize] private bool   gameStarted      = false;
+		[DontSerialize] private bool   gameOver         = false;
+		[DontSerialize] private bool   gameWin          = false;
+		[DontSerialize] private float  lastTimeAnyAlive = 0.0f;
+		[DontSerialize] private Canvas canvas           = null;
 
 
 		public ContentRef<Font> Font
@@ -81,12 +81,13 @@ namespace DualStickSpaceShooter
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			// Create a buffer to cache and re-use vertices. Not required, but will boost performance.
-			if (this.buffer == null) this.buffer = new CanvasBuffer();
+			// Create a Canvas for high-level drawing commands.
+			// We'll re-use this to keep performance high and allocations low.
+			if (this.canvas == null) this.canvas = new Canvas();
 
-			// Create a Canvas to auto-generate vertices from high-level drawing commands.
-			Canvas canvas = new Canvas(device, this.buffer);
-			canvas.State.TextFont = this.font;
+			// Prepare the canvas for drawing
+			this.canvas.Begin(device);
+			this.canvas.State.TextFont = this.font;
 
 			// If the game is over or won, display "game over" screen
 			if (this.gameOver || this.gameWin)
@@ -105,47 +106,47 @@ namespace DualStickSpaceShooter
 
 				if (this.blendMaterial != null && blendAnimProgress > 0.0f)
 				{
-					canvas.PushState();
+					this.canvas.PushState();
 
 					if (this.gameOver)
 					{
 						// Set up our special blending Material and specify the threshold to blend to
 						this.blendMaterial.SetValue("threshold", 1.0f - blendAnimProgress);
-						canvas.State.SetMaterial(this.blendMaterial);
-						canvas.State.ColorTint = ColorRgba.Black;
+						this.canvas.State.SetMaterial(this.blendMaterial);
+						this.canvas.State.ColorTint = ColorRgba.Black;
 
 						// Specify a texture coordinate rect so it spans the entire screen repeating itself, instead of being stretched
 						if (this.blendMaterial.MainTexture != null)
 						{
 							Random rnd = new Random((int)this.lastTimeAnyAlive);
-							Vector2 randomTranslate = rnd.NextVector2(0.0f, 0.0f, canvas.State.TextureBaseSize.X, canvas.State.TextureBaseSize.Y);
-							canvas.State.TextureCoordinateRect = new Rect(
+							Vector2 randomTranslate = rnd.NextVector2(0.0f, 0.0f, this.canvas.State.TextureBaseSize.X, this.canvas.State.TextureBaseSize.Y);
+							this.canvas.State.TextureCoordinateRect = new Rect(
 								randomTranslate.X, 
 								randomTranslate.Y, 
-								device.TargetSize.X / canvas.State.TextureBaseSize.X, 
-								device.TargetSize.Y / canvas.State.TextureBaseSize.Y);
+								device.TargetSize.X / this.canvas.State.TextureBaseSize.X, 
+								device.TargetSize.Y / this.canvas.State.TextureBaseSize.Y);
 						}
 					}
 					else
 					{
 						// If we won, simply fade to white
-						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Add));
-						canvas.State.ColorTint = ColorRgba.White.WithAlpha(blendAnimProgress);
+						this.canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Add));
+						this.canvas.State.ColorTint = ColorRgba.White.WithAlpha(blendAnimProgress);
 					}
 
 					// Fill the screen with a rect of our Material
-					canvas.FillRect(0, 0, device.TargetSize.X, device.TargetSize.Y);
+					this.canvas.FillRect(0, 0, device.TargetSize.X, device.TargetSize.Y);
 
-					canvas.PopState();
+					this.canvas.PopState();
 				}
 
 				if (this.font != null && textAnimProgress > 0.0f)
 				{
-					canvas.PushState();
+					this.canvas.PushState();
 
 					// Determine which text to draw to screen and where to draw it
 					string gameOverText = this.gameWin ? "is it over..?" : "darkness...";
-					Vector2 fullTextSize = canvas.MeasureText(gameOverText);
+					Vector2 fullTextSize = this.canvas.MeasureText(gameOverText);
 					Vector2 textPos = (Vector2)device.TargetSize * 0.5f - fullTextSize * 0.5f;
 					gameOverText = gameOverText.Substring(0, MathF.RoundToInt(gameOverText.Length * textAnimProgress));
 
@@ -154,10 +155,10 @@ namespace DualStickSpaceShooter
 					textPos.Y = MathF.Round(textPos.Y);
 
 					// Draw the text to screen
-					canvas.State.ColorTint = this.gameWin ? ColorRgba.Black : ColorRgba.White;
-					canvas.DrawText(gameOverText, textPos.X, textPos.Y);
+					this.canvas.State.ColorTint = this.gameWin ? ColorRgba.Black : ColorRgba.White;
+					this.canvas.DrawText(gameOverText, textPos.X, textPos.Y);
 
-					canvas.PopState();
+					this.canvas.PopState();
 				}
 
 				if (controlInfoAnimProgress > 0.0f)
@@ -165,38 +166,40 @@ namespace DualStickSpaceShooter
 					Vector2 infoBasePos = (Vector2)device.TargetSize * 0.5f + new Vector2(0.0f, device.TargetSize.Y * 0.25f);
 					if (this.controlInfoMouseKeyboard != null)
 					{
-						canvas.PushState();
+						this.canvas.PushState();
 
 						Vector2 texSize = (Vector2)this.controlInfoMouseKeyboard.Res.MainTexture.Res.Size * 0.5f;
 
-						canvas.State.SetMaterial(this.controlInfoMouseKeyboard);
-						canvas.State.ColorTint = ColorRgba.White.WithAlpha(controlInfoAnimProgress);
-						canvas.FillRect(
+						this.canvas.State.SetMaterial(this.controlInfoMouseKeyboard);
+						this.canvas.State.ColorTint = ColorRgba.White.WithAlpha(controlInfoAnimProgress);
+						this.canvas.FillRect(
 							infoBasePos.X - texSize.X * 0.5f,
 							infoBasePos.Y - texSize.Y - 10,
 							texSize.X,
 							texSize.Y);
 
-						canvas.PopState();
+						this.canvas.PopState();
 					}
 					if (this.controlInfoGamepad != null)
 					{
-						canvas.PushState();
+						this.canvas.PushState();
 
 						Vector2 texSize = (Vector2)this.controlInfoGamepad.Res.MainTexture.Res.Size * 0.5f;
 
-						canvas.State.SetMaterial(this.controlInfoGamepad);
-						canvas.State.ColorTint = ColorRgba.White.WithAlpha(controlInfoAnimProgress);
-						canvas.FillRect(
+						this.canvas.State.SetMaterial(this.controlInfoGamepad);
+						this.canvas.State.ColorTint = ColorRgba.White.WithAlpha(controlInfoAnimProgress);
+						this.canvas.FillRect(
 							infoBasePos.X - texSize.X * 0.5f,
 							infoBasePos.Y + 10,
 							texSize.X,
 							texSize.Y);
 
-						canvas.PopState();
+						this.canvas.PopState();
 					}
 				}
 			}
+
+			this.canvas.End();
 		}
 	}
 }

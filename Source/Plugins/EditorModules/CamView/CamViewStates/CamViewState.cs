@@ -63,6 +63,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private List<string>  lastObjVisibility      = new List<string>();
 		private int           renderFrameLast        = -1;
 		private bool          renderFrameScheduled   = false;
+		private Canvas        overlayCanvas          = new Canvas();
 
 
 		public abstract string StateName { get; }
@@ -1011,31 +1012,43 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			if (e.RenderStepId == this.camPassBg.Id)
 			{
-				Canvas canvas = new Canvas(e.Device);
-				canvas.State.ColorTint = this.FgColor;
-				canvas.State.TextFont = Duality.Resources.Font.GenericMonospace8;
-				this.OnCollectStateBackgroundDrawcalls(canvas);
+				this.overlayCanvas.Begin(e.Device);
+				this.overlayCanvas.State.ColorTint = this.FgColor;
+				this.overlayCanvas.State.TextFont = OverlayFont;
+
+				this.OnCollectStateBackgroundDrawcalls(this.overlayCanvas);
+
+				this.overlayCanvas.End();
 			}
 			else if (e.RenderStepId == this.camPassEdWorld.Id)
 			{
-				Canvas canvas = new Canvas(e.Device);
-				canvas.State.ColorTint = this.FgColor;
-				canvas.State.TextFont = Duality.Resources.Font.GenericMonospace8;
-				this.OnCollectStateDrawcalls(canvas);
+				this.overlayCanvas.Begin(e.Device);
+				this.overlayCanvas.State.ColorTint = this.FgColor;
+				this.overlayCanvas.State.TextFont = OverlayFont;
+
+				this.OnCollectStateDrawcalls(this.overlayCanvas);
+
+				this.overlayCanvas.End();
 			}
 			else if (e.RenderStepId == this.camPassEdWorldNoDepth.Id)
 			{
-				Canvas canvas = new Canvas(e.Device);
-				canvas.State.ColorTint = this.FgColor;
-				canvas.State.TextFont = Duality.Resources.Font.GenericMonospace8;
-				this.OnCollectStateWorldOverlayDrawcalls(canvas);
+				this.overlayCanvas.Begin(e.Device);
+				this.overlayCanvas.State.ColorTint = this.FgColor;
+				this.overlayCanvas.State.TextFont = OverlayFont;
+
+				this.OnCollectStateWorldOverlayDrawcalls(this.overlayCanvas);
+
+				this.overlayCanvas.End();
 			}
 			else if (e.RenderStepId == this.camPassEdScreen.Id)
 			{
-				Canvas canvas = new Canvas(e.Device);
-				canvas.State.ColorTint = this.FgColor;
-				canvas.State.TextFont = OverlayFont;
-				this.OnCollectStateOverlayDrawcalls(canvas);
+				this.overlayCanvas.Begin(e.Device);
+				this.overlayCanvas.State.ColorTint = this.FgColor;
+				this.overlayCanvas.State.TextFont = OverlayFont;
+
+				this.OnCollectStateOverlayDrawcalls(this.overlayCanvas);
+
+				this.overlayCanvas.End();
 			}
 		}
 

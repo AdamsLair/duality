@@ -273,8 +273,10 @@ namespace Duality.Tests.Drawing
 
 				device.PrepareForDrawcalls();
 				{
-					Canvas canvas = new Canvas(device);
+					Canvas canvas = new Canvas();
+					canvas.Begin(device);
 					renderMethod(canvas);
+					canvas.End();
 				}
 				device.Render();
 

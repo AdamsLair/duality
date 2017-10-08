@@ -27,7 +27,6 @@ namespace Duality.Samples.Benchmarks
 		[DontSerialize] private Texture sceneTargetTex;
 		[DontSerialize] private DrawDevice drawDevice;
 		[DontSerialize] private Canvas overlayCanvas;
-		[DontSerialize] private CanvasBuffer overlayBuffer;
 		
 		
 		/// <summary>
@@ -151,16 +150,11 @@ namespace Duality.Samples.Benchmarks
 		/// </summary>
 		private void DrawDiagnosticOverlay(Scene scene)
 		{
-			// Initialize a canvas and canvas buffer for rendering if not done yet
+			// Initialize a canvas for rendering if not done yet
 			if (this.overlayCanvas == null)
-			{
-				this.overlayBuffer = new CanvasBuffer();
-				this.overlayCanvas = new Canvas(this.drawDevice, this.overlayBuffer);
-			}
+				this.overlayCanvas = new Canvas();
 
-			// Notify the buffer that we're doing a new frame now, so it can
-			// re-use buffered vertex arrays from previous frames
-			this.overlayBuffer.Reset();
+			this.overlayCanvas.Begin(this.drawDevice);
 
 			// Collect drawcalls from all overlay renderers
 			IEnumerable<ICmpBenchmarkOverlayRenderer> overlayRenderers = scene.FindComponents<ICmpBenchmarkOverlayRenderer>();
@@ -182,6 +176,8 @@ namespace Duality.Samples.Benchmarks
 					20);
 				this.overlayCanvas.State.ColorTint = ColorRgba.White;
 			}
+
+			this.overlayCanvas.End();
 		}
 
 		protected override void OnDisposing(bool manually)

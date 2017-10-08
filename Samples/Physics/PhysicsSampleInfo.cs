@@ -97,7 +97,8 @@ namespace Duality.Samples.Physics
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			Canvas canvas = new Canvas(device);
+			Canvas canvas = new Canvas();
+			canvas.Begin(device);
 
 			Vector2 textBlockSize = this.text.TextMetrics.Size;
 			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
@@ -106,6 +107,8 @@ namespace Duality.Samples.Physics
 
 			canvas.State.ColorTint = ColorRgba.White;
 			canvas.DrawText(this.text, 10 + this.margin.X, 10 + this.margin.Y);
+
+			canvas.End();
 		}
 		void ICmpInitializable.OnInit(Component.InitContext context)
 		{

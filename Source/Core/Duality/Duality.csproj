@@ -280,7 +280,6 @@
     <Compile Include="Drawing\DrawDevice.cs" />
     <Compile Include="Drawing\IDrawDevice.cs" />
     <Compile Include="Drawing\Enums\VisibilityFlag.cs" />
-    <Compile Include="Drawing\CanvasBuffer.cs" />
     <Compile Include="Drawing\Enums\DashPattern.cs" />
     <Compile Include="Drawing\CanvasState.cs" />
     <Compile Include="Components\Renderers\SpriteAnimator.cs" />

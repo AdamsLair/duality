@@ -103,7 +103,11 @@ namespace Duality.Drawing
 		/// <typeparam name="T">The type of vertex data to add.</typeparam>
 		/// <param name="material">The <see cref="Duality.Drawing.BatchInfo"/> to use for rendering the vertices.</param>
 		/// <param name="vertexMode">The vertices drawing mode.</param>
-		/// <param name="vertexBuffer">A vertex data buffer that stores the vertices to add.</param>
+		/// <param name="vertexBuffer">
+		/// A vertex data buffer that stores the vertices to add. Ownership of the buffer
+		/// remains at the callsite, while the <see cref="IDrawDevice"/> copies the required
+		/// data into internal storage.
+		/// </param>
 		/// <param name="vertexCount">The number of vertices to add, from the beginning of the buffer.</param>
 		void AddVertices<T>(BatchInfo material, VertexMode vertexMode, T[] vertexBuffer, int vertexCount) where T : struct, IVertexData;
 	}
@@ -141,7 +145,11 @@ namespace Duality.Drawing
 		/// <param name="device"></param>
 		/// <param name="material">The <see cref="Duality.Resources.Material"/> to use for rendering the vertices.</param>
 		/// <param name="vertexMode">The vertices drawing mode.</param>
-		/// <param name="vertices">The vertex data to add.</param>
+		/// <param name="vertices">
+		/// A vertex data buffer that stores the vertices to add. Ownership of the buffer
+		/// remains at the callsite, while the <see cref="IDrawDevice"/> copies the required
+		/// data into internal storage.
+		/// </param>
 		public static void AddVertices<T>(this IDrawDevice device, ContentRef<Material> material, VertexMode vertexMode, params T[] vertices) where T : struct, IVertexData
 		{
 			device.AddVertices<T>(
@@ -157,7 +165,11 @@ namespace Duality.Drawing
 		/// <param name="device"></param>
 		/// <param name="material">The <see cref="Duality.Drawing.BatchInfo"/> to use for rendering the vertices.</param>
 		/// <param name="vertexMode">The vertices drawing mode.</param>
-		/// <param name="vertices">The vertex data to add.</param>
+		/// <param name="vertices">
+		/// A vertex data buffer that stores the vertices to add. Ownership of the buffer
+		/// remains at the callsite, while the <see cref="IDrawDevice"/> copies the required
+		/// data into internal storage.
+		/// </param>
 		public static void AddVertices<T>(this IDrawDevice device, BatchInfo material, VertexMode vertexMode, params T[] vertices) where T : struct, IVertexData
 		{
 			device.AddVertices<T>(
@@ -173,7 +185,11 @@ namespace Duality.Drawing
 		/// <param name="device"></param>
 		/// <param name="material">The <see cref="Duality.Resources.Material"/> to use for rendering the vertices.</param>
 		/// <param name="vertexMode">The vertices drawing mode.</param>
-		/// <param name="vertexBuffer">A vertex data buffer that stores the vertices to add.</param>
+		/// <param name="vertexBuffer">
+		/// A vertex data buffer that stores the vertices to add. Ownership of the buffer
+		/// remains at the callsite, while the <see cref="IDrawDevice"/> copies the required
+		/// data into internal storage.
+		/// </param>
 		/// <param name="vertexCount">The number of vertices to add, from the beginning of the buffer.</param>
 		public static void AddVertices<T>(this IDrawDevice device, ContentRef<Material> material, VertexMode vertexMode, T[] vertexBuffer, int vertexCount) where T : struct, IVertexData
 		{

@@ -25,7 +25,8 @@ namespace InputHandling
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			Canvas canvas = new Canvas(device);
+			Canvas canvas = new Canvas();
+			canvas.Begin(device);
 			
 			// Update input stats texts for drawing
 			this.WriteInputStats(ref this.mouseStatsText, DualityApp.Mouse);
@@ -67,6 +68,8 @@ namespace InputHandling
 					DualityApp.Mouse.Pos.Y, 
 					2);
 			}
+
+			canvas.End();
 		}
 
 		private void WriteInputStats(ref FormattedText target, MouseInput input)

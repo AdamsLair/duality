@@ -29,7 +29,7 @@ namespace Duality.Components.Renderers
 		private bool                 fillHollowShapes      = false;
 		private bool                 wrapTexture           = true;
 
-		[DontSerialize] private CanvasBuffer vertexBuffer = new CanvasBuffer();
+		[DontSerialize] private Canvas canvas = new Canvas();
 
 
 		public override float BoundRadius
@@ -118,40 +118,42 @@ namespace Duality.Components.Renderers
 			Transform tranform = this.GameObj.Transform;
 			RigidBody body = this.GameObj.GetComponent<RigidBody>();
 
-			Canvas canvas = new Canvas(device, this.vertexBuffer);
+			this.canvas.Begin(device);
 
 			// Draw Shape Areas
-			canvas.State.DepthOffset = this.offset;
+			this.canvas.State.DepthOffset = this.offset;
 			if (this.customAreaMaterial != null)
-				canvas.State.SetMaterial(this.customAreaMaterial);
+				this.canvas.State.SetMaterial(this.customAreaMaterial);
 			else
-				canvas.State.SetMaterial(this.areaMaterial);
+				this.canvas.State.SetMaterial(this.areaMaterial);
 			foreach (ShapeInfo shape in body.Shapes)
 			{
 				if (!shape.IsValid)
-					canvas.State.ColorTint = this.colorTint * ColorRgba.Red;
+					this.canvas.State.ColorTint = this.colorTint * ColorRgba.Red;
 				else
-					canvas.State.ColorTint = this.colorTint;
+					this.canvas.State.ColorTint = this.colorTint;
 				this.DrawShapeArea(canvas, tranform, shape);
 			}
 
 			// Draw Shape Outlines
 			if (this.outlineWidth > 0.0f)
 			{
-				canvas.State.DepthOffset = this.offset - 0.01f;
+				this.canvas.State.DepthOffset = this.offset - 0.01f;
 				if (this.customOutlineMaterial != null)
-					canvas.State.SetMaterial(this.customOutlineMaterial);
+					this.canvas.State.SetMaterial(this.customOutlineMaterial);
 				else
-					canvas.State.SetMaterial(this.outlineMaterial);
+					this.canvas.State.SetMaterial(this.outlineMaterial);
 				foreach (ShapeInfo shape in body.Shapes)
 				{
 					if (!shape.IsValid)
-						canvas.State.ColorTint = this.colorTint * ColorRgba.Red;
+						this.canvas.State.ColorTint = this.colorTint * ColorRgba.Red;
 					else
-						canvas.State.ColorTint = this.colorTint;
+						this.canvas.State.ColorTint = this.colorTint;
 					this.DrawShapeOutline(canvas, tranform, shape);
 				}
 			}
+
+			this.canvas.End();
 		}
 
 		private void DrawShapeArea(Canvas canvas, Transform transform, ShapeInfo shape)

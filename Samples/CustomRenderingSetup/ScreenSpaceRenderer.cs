@@ -18,7 +18,8 @@ namespace CustomRenderingSetup
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			Canvas canvas = new Canvas(device);
+			Canvas canvas = new Canvas();
+			canvas.Begin(device);
 
 			// Draw screen space edge indicators
 			canvas.DrawLine(0, 10, device.TargetSize.X, 10);
@@ -31,6 +32,8 @@ namespace CustomRenderingSetup
 			canvas.DrawText("Top Right", device.TargetSize.X - 10, 10, blockAlign: Alignment.TopRight);
 			canvas.DrawText("Bottom Left", 10, device.TargetSize.Y - 10, blockAlign: Alignment.BottomLeft);
 			canvas.DrawText("Bottom Right", device.TargetSize.X - 10, device.TargetSize.Y - 10, blockAlign: Alignment.BottomRight);
+
+			canvas.End();
 		}
 	}
 }

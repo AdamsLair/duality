@@ -147,7 +147,8 @@ namespace CameraController
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			Canvas canvas = new Canvas(device);
+			Canvas canvas = new Canvas();
+			canvas.Begin(device);
 			
 			Vector2 screenSize = device.TargetSize;
 			ICameraController activeController = this.mainCameraObj.GetComponent<ICameraController>();
@@ -202,6 +203,8 @@ namespace CameraController
 
 			canvas.State.ColorTint = ColorRgba.White;
 			canvas.DrawText(this.stateText, 10, screenSize.Y - 10, 0.0f, null, Alignment.BottomLeft, true);
+
+			canvas.End();
 		}
 	}
 }

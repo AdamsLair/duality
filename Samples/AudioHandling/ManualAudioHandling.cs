@@ -86,7 +86,8 @@ namespace AudioHandling
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			Canvas canvas = new Canvas(device);
+			Canvas canvas = new Canvas();
+			canvas.Begin(device);
 			
 			Vector2 screenSize = device.TargetSize;
 
@@ -113,6 +114,8 @@ namespace AudioHandling
 			canvas.State.ColorTint = ColorRgba.White;
 			canvas.DrawText(this.stateText, 10, screenSize.Y - 10, 0.0f, null, Alignment.BottomLeft, true);
 			canvas.DrawText(string.Format("{0:F}", this.inside), 250, screenSize.Y - 10, 0.0f, Alignment.BottomLeft, true);
+
+			canvas.End();
 		}
 
 		private void SyncSounds(IList<ContentRef<Sound>> sounds, ref SoundInstance[] playing)

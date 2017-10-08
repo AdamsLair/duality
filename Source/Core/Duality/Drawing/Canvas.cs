@@ -12,16 +12,19 @@ namespace Duality.Drawing
 	/// for drawing large batches of primitives / vertices at once. For large amounts of primitives you should consider directly 
 	/// using the underlying IDrawDevice instead to achieve best Profile.
 	/// </summary>
+	[DontSerialize]
 	public class Canvas
 	{
-		private IDrawDevice       device     = null;
-		private List<CanvasState> stateStack = new List<CanvasState> { new CanvasState() };
-		private int               stateCount = 1;
-		private CanvasBuffer      buffer     = null;
+		private IDrawDevice           device     = null;
+		private List<CanvasState>     stateStack = new List<CanvasState> { new CanvasState() };
+		private int                   stateCount = 1;
+		private RawList<VertexC1P3T2> buffer     = new RawList<VertexC1P3T2>();
 
 
 		/// <summary>
 		/// [GET] The underlying <see cref="IDrawDevice"/> that is used for drawing.
+		/// Use <see cref="Begin"/> and <see cref="End"/> to tie this <see cref="Canvas"/>
+		/// to a device for rendering.
 		/// </summary>
 		public IDrawDevice DrawDevice
 		{
@@ -48,22 +51,32 @@ namespace Duality.Drawing
 		{
 			get { return MathF.RoundToInt(this.device.TargetSize.Y); }
 		}
-
+		
 
 		/// <summary>
-		/// Creates a new Canvas that uses the specified <see cref="Duality.Drawing.IDrawDevice"/>. You may optionally specify a
-		/// <see cref="Duality.Drawing.CanvasBuffer"/> for improving rendering performance and memory footprint when rendering similar
-		/// shapes throughout multiple frames.
+		/// Prepares the <see cref="Canvas"/> for drawing using the specified <see cref="IDrawDevice"/>.
 		/// </summary>
 		/// <param name="device"></param>
-		/// <param name="buffer"></param>
-		public Canvas(IDrawDevice device, CanvasBuffer buffer = null)
+		/// <seealso cref="End"/>
+		public void Begin(IDrawDevice device)
 		{
+			if (device == null) throw new ArgumentNullException("device");
+			if (this.device != null) throw new InvalidOperationException("Can't begin a drawing operation on a Canvas where one is already in progress.");
+
 			this.device = device;
-			this.buffer = buffer ?? new CanvasBuffer(true);
-			this.buffer.Reset();
 		}
-		
+		/// <summary>
+		/// Ends the drawing operation that was started using <see cref="Begin"/>.
+		/// </summary>
+		/// <seealso cref="Begin"/>
+		public void End()
+		{
+			if (this.device == null) throw new InvalidOperationException("Can't end a drawing operation on a Canvas where none is in progress.");
+
+			this.device = null;
+			this.stateCount = 1;
+			this.buffer.Count = 0;
+		}
 
 		/// <summary>
 		/// Adds a clone of the <see cref="Canvas.State">current state</see> on top of the internal
@@ -88,18 +101,6 @@ namespace Duality.Drawing
 		{
 			if (this.stateCount <= 1) throw new InvalidOperationException("Can't pop the last CanvasState from the stack.");
 			this.stateCount--;
-		}
-
-		/// <summary>
-		/// Creates or retrieves an unused vertex array with the specified minimum size.
-		/// If the Canvas has been created using a valid <see cref="CanvasBuffer"/>, old
-		/// vertex arrays will be re-used wherever possible.
-		/// </summary>
-		/// <param name="minSize">The minimum size of the requested vertex array.</param>
-		/// <returns>A vertex array with the specified minimum size. It may actually be larger.</returns>
-		public VertexC1P3T2[] RequestVertexArray(int minSize)
-		{
-			return this.buffer.RequestVertexArray(minSize);
 		}
 
 
@@ -151,7 +152,7 @@ namespace Duality.Drawing
 
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
-			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(points.Length);
+			VertexC1P3T2[] vertices = this.RentVertices(points.Length);
 			for (int i = 0; i < points.Length; i++)
 			{
 				vertices[i].Pos.X = points[i].X * scale + pos.X + 0.5f;
@@ -192,7 +193,7 @@ namespace Duality.Drawing
 			float angle;
 
 			// XY circle
-			vertices = this.buffer.RequestVertexArray(segmentNum);
+			vertices = this.RentVertices(segmentNum);
 			angle = 0.0f;
 			for (int i = 0; i < segmentNum; i++)
 			{
@@ -209,7 +210,7 @@ namespace Duality.Drawing
 			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, segmentNum);
 
 			// XZ circle
-			vertices = this.buffer.RequestVertexArray(segmentNum);
+			vertices = this.RentVertices(segmentNum);
 			angle = 0.0f;
 			for (int i = 0; i < segmentNum; i++)
 			{
@@ -226,7 +227,7 @@ namespace Duality.Drawing
 			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, segmentNum);
 
 			// YZ circle
-			vertices = this.buffer.RequestVertexArray(segmentNum);
+			vertices = this.RentVertices(segmentNum);
 			angle = 0.0f;
 			for (int i = 0; i < segmentNum; i++)
 			{
@@ -264,7 +265,7 @@ namespace Duality.Drawing
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
-			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(2);
+			VertexC1P3T2[] vertices = this.RentVertices(2);
 
 			vertices[0].Pos = pos + new Vector3(0.5f, 0.5f, 0.0f);
 			vertices[1].Pos = target + new Vector3(0.5f, 0.5f, 0.0f);
@@ -322,7 +323,7 @@ namespace Duality.Drawing
 
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.State.ColorTint;
-			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(2);
+			VertexC1P3T2[] vertices = this.RentVertices(2);
 			vertices[0].Pos = pos + new Vector3(0.5f, 0.5f, 0.0f);
 			vertices[1].Pos = target + new Vector3(0.5f, 0.5f, 0.0f);
 			vertices[0].TexCoord = new Vector2(0.0f, 0.0f);
@@ -374,7 +375,7 @@ namespace Duality.Drawing
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
-			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
+			VertexC1P3T2[] vertices = this.RentVertices(4);
 
 			vertices[0].Pos = pos + new Vector3(left);
 			vertices[1].Pos = target + new Vector3(left2);
@@ -426,7 +427,7 @@ namespace Duality.Drawing
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
-			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
+			VertexC1P3T2[] vertices = this.RentVertices(4);
 
 			vertices[0].Pos = new Vector3(pos.X + 0.5f, pos.Y + 0.5f, pos.Z);
 			vertices[1].Pos = new Vector3(pos.X + w * scale - 0.5f, pos.Y + 0.5f, pos.Z);
@@ -499,7 +500,7 @@ namespace Duality.Drawing
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			int vertexCount = segmentNum + (loop ? 0 : 1) + (outline ? 2 : 0);
-			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(vertexCount);
+			VertexC1P3T2[] vertices = this.RentVertices(vertexCount);
 			float angle = minAngle;
 			
 			if (outline)
@@ -650,7 +651,7 @@ namespace Duality.Drawing
 			Rect pointBoundingRect = points.BoundingBox();
 
 			// Set up vertex array
-			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(points.Length);
+			VertexC1P3T2[] vertices = this.RentVertices(points.Length);
 			for (int i = 0; i < points.Length; i++)
 			{
 				vertices[i].Pos.X = points[i].X * scale + pos.X;
@@ -721,7 +722,7 @@ namespace Duality.Drawing
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
-			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
+			VertexC1P3T2[] vertices = this.RentVertices(4);
 
 			vertices[0].Pos = pos + new Vector3(left);
 			vertices[1].Pos = target + new Vector3(left2);
@@ -824,7 +825,7 @@ namespace Duality.Drawing
 			if (donutWidth <= 0.0f)
 			{
 				vertexCount = segmentNum + 2;
-				vertices = this.buffer.RequestVertexArray(vertexCount);
+				vertices = this.RentVertices(vertexCount);
 				vertices[0].Pos = pos;
 				vertices[0].Color = shapeColor;
 				vertices[0].TexCoord = texCoordRect.Center;
@@ -847,7 +848,7 @@ namespace Duality.Drawing
 			else
 			{
 				vertexCount = (segmentNum + 1) * 2;
-				vertices = this.buffer.RequestVertexArray(vertexCount);
+				vertices = this.RentVertices(vertexCount);
 				float angle = minAngle;
 				Vector2 donutWidthTexCoord = 0.5f * donutWidth * Vector2.One / new Vector2(width, height);
 				for (int i = 0; i < vertexCount; i += 2)
@@ -988,7 +989,7 @@ namespace Duality.Drawing
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
-			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
+			VertexC1P3T2[] vertices = this.RentVertices(4);
 
 			vertices[0].Pos = new Vector3(pos.X, pos.Y, pos.Z);
 			vertices[1].Pos = new Vector3(pos.X + width * scale, pos.Y, pos.Z);
@@ -1124,9 +1125,9 @@ namespace Duality.Drawing
 			Vector2 size = Vector2.Zero;
 			for (int i = 0; i < text.Length; i++)
 			{
-				// Attempt to use Canvas buffering
+				// Attempt to use the internal vertex buffer of this Canvas
 				if (vertices[i] == null || vertices[i].Length < text[i].Length * 4)
-					vertices[i] = this.buffer.RequestVertexArray(text[i].Length * 4);
+					vertices[i] = this.RentVertices(text[i].Length * 4);
 
 				int vertexCount = font.EmitTextVertices(text[i], ref vertices[i], pos.X, pos.Y, pos.Z, this.State.ColorTint, 0.0f, scale);
 
@@ -1333,7 +1334,7 @@ namespace Duality.Drawing
 
 			// Set up vertex array
 			int vertexCount = points.Length * 4 + (closedLoop ? 2 : 0);
-			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(vertexCount);
+			VertexC1P3T2[] vertices = this.RentVertices(vertexCount);
 			for (int i = 0; i < points.Length; i++)
 			{
 				int vertexBase = i * 4;
@@ -1451,6 +1452,18 @@ namespace Duality.Drawing
 
 			this.State.TransformVertices(vertices, pos.Xy, scale);
 			this.device.AddVertices(this.State.MaterialDirect, VertexMode.TriangleStrip, vertices, vertexCount);
+		}
+
+		/// <summary>
+		/// Rents a chunk from the internal vertex buffer. Can only rent one chunk
+		/// at a time, to be re-used after submitting it to the device.
+		/// </summary>
+		/// <param name="minLength"></param>
+		/// <returns></returns>
+		private VertexC1P3T2[] RentVertices(int minLength)
+		{
+			this.buffer.Count = minLength;
+			return this.buffer.Data;
 		}
 	}
 }
