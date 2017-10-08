@@ -13,17 +13,17 @@ namespace Duality.Tests.Components
 
 		public void OnCollisionBegin(Component sender, CollisionEventArgs args)
 		{
-			CollisionBegin?.Invoke(sender, args);
+			if (CollisionBegin != null) CollisionBegin.Invoke(sender, args);
 		}
 
 		public void OnCollisionEnd(Component sender, CollisionEventArgs args)
 		{
-			CollisionEnd?.Invoke(sender, args);
+			if (CollisionEnd != null) CollisionEnd.Invoke(sender, args);
 		}
 
 		public void OnCollisionSolve(Component sender, CollisionEventArgs args)
 		{
-			CollisionSolve?.Invoke(sender, args);
+			if (CollisionSolve != null) CollisionSolve.Invoke(sender, args);
 		}
 	}
 }
