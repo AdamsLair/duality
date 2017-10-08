@@ -11,7 +11,7 @@ namespace Duality.Tests.Components
 	public class RigidBodyTest
 	{
 		[Test]
-		public void FallingBall()
+		public void FallingBallOnPlatform()
 		{
 			var scene = new Scene();
 			Scene.SwitchTo(scene);
