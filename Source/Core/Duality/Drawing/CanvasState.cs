@@ -174,16 +174,16 @@ namespace Duality.Drawing
 		/// </summary>
 		public void Reset()
 		{
-			this.batchInfo = DefaultMaterial;
-			this.uvGenRect = new Rect(1.0f, 1.0f);
-			this.texBaseSize = Vector2.Zero;
-			this.font = Font.GenericMonospace10;
-			this.color = ColorRgba.White;
+			this.batchInfo          = DefaultMaterial;
+			this.uvGenRect          = new Rect(1.0f, 1.0f);
+			this.texBaseSize        = Vector2.Zero;
+			this.font               = Font.GenericMonospace10;
+			this.color              = ColorRgba.White;
 			this.invariantTextScale = false;
-			this.depthOffset = 0.0f;
-			this.transformAngle = 0.0f;
-			this.transformHandle = Vector2.Zero;
-			this.transformScale = Vector2.One;
+			this.depthOffset        = 0.0f;
+			this.transformAngle     = 0.0f;
+			this.transformHandle    = Vector2.Zero;
+			this.transformScale     = Vector2.One;
 			this.UpdateTransform();
 		}
 
@@ -211,23 +211,15 @@ namespace Duality.Drawing
 		/// <param name="material"></param>
 		public void SetMaterial(ContentRef<Material> material)
 		{
+			BatchInfo info;
 			if (material.IsExplicitNull)
-				this.batchInfo = DefaultMaterial;
+				info = DefaultMaterial;
 			else if (material.IsAvailable)
-				this.batchInfo = material.Res.Info;
+				info = material.Res.Info;
 			else
-				this.batchInfo = Resources.Material.Checkerboard.Res.Info;
+				info = Resources.Material.Checkerboard.Res.Info;
 
-			if (this.batchInfo.MainTexture.IsAvailable)
-			{
-				Texture tex = this.batchInfo.MainTexture.Res;
-				this.uvGenRect = new Rect(tex.UVRatio);
-				this.texBaseSize = tex.Size;
-			}
-			else
-			{
-				this.texBaseSize = Vector2.Zero;
-			}
+			this.SetMaterial(info);
 		}
 
 		private void UpdateTransform()
