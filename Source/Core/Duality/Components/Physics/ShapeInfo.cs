@@ -35,6 +35,10 @@ namespace Duality.Components.Physics
 			get { return this.parent; }
 			internal set { this.parent = value; }
 		}
+		public Vector3 Offset
+		{
+			get { return this.Parent.GameObj.Transform.Pos; }
+		}
 		/// <summary>
 		/// [GET / SET] The shapes density.
 		/// </summary>
@@ -126,6 +130,8 @@ namespace Duality.Components.Physics
 		{
 			this.UpdateInternalShape(true);
 		}
+
+		public abstract bool IntersectsWith(Vector2 worldCoord, Vector2 size);
 		
 		internal void DestroyInternalShape()
 		{

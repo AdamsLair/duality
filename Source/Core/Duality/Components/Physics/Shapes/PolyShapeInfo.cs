@@ -199,5 +199,10 @@ namespace Duality.Components.Physics
 				transformed.Add(PhysicsUnit.LengthToPhysical * vertices[i] * scale);
 			return transformed;
 		}
+
+		public override bool IntersectsWith(Vector2 worldCoord, Vector2 size)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

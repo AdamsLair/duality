@@ -128,5 +128,10 @@ namespace Duality.Components.Physics
 
 			shape.MakeLoop();
 		}
+
+		public override bool IntersectsWith(Vector2 worldCoord, Vector2 size)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
