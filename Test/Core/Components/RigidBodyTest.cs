@@ -13,26 +13,6 @@ namespace Duality.Tests.Components
 	[TestFixture]
 	public class RigidBodyTest
 	{
-		[Test] public void TestPickShapesGlobal()
-		{
-			Scene scene = new Scene();
-			Scene.SwitchTo(scene);
-			GameObject gameobj = new GameObject("Ball");
-			Transform transform = gameobj.AddComponent<Transform>();
-			RigidBody rigidbody = gameobj.AddComponent<RigidBody>();
-			PolyShapeInfo triangleShape = new PolyShapeInfo(new[] { new Vector2(0.0f, 0.0f), new Vector2(100f, 0f), new Vector2(100f, 100f) }, 1);
-			rigidbody.AddShape(triangleShape);
-			List<ShapeInfo> shapeInfo = new List<ShapeInfo>();
-			scene.AddObject(gameobj);
-
-			rigidbody.PickShapes(new Vector2(60f, 30f), new Vector2(30f, 30f), shapeInfo);
-			Assert.IsTrue(shapeInfo.Count == 1);
-
-			shapeInfo = new List<ShapeInfo>();
-			rigidbody.PickShapes(new Vector2(95.5f, 98.5f), new Vector2(30f, 30f), shapeInfo);
-			Assert.IsTrue(shapeInfo.Count == 1);
-		}
-
 		[Test] public void FallingBallOnPlatform()
 		{
 			Scene scene = new Scene();

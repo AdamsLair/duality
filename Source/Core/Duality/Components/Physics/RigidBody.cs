@@ -770,6 +770,20 @@ namespace Duality.Components.Physics
 		/// <returns>Returns whether any new shape was found.</returns>
 		public bool PickShapes(Vector2 worldCoord, Vector2 size, List<ShapeInfo> pickedShapes)
 		{
+			int oldCount = pickedShapes.Count;
+			foreach (var shape in this.Shapes)
+			{
+				if(shape.IntersectsWith(worldCoord, size))
+				{
+					pickedShapes.Add(shape);
+				}
+			}
+
+			return pickedShapes.Count > oldCount;
+		}
+
+		public bool PickShapesOld(Vector2 worldCoord, Vector2 size, List<ShapeInfo> pickedShapes)
+		{
 			if (this.body == null) return false;
 
 			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
@@ -785,7 +799,7 @@ namespace Duality.Components.Physics
 				FarseerPhysics.Common.Transform transform;
 				this.body.GetTransform(out transform);
 				f.Shape.ComputeAABB(out fAABB, ref transform, 0);
-				
+
 				if (fsWorldAABB.Contains(ref fAABB))
 				{
 					pickedShapes.Add(s);
@@ -820,8 +834,8 @@ namespace Duality.Components.Physics
 
 			return pickedShapes.Count > oldCount;
 		}
-		
-		
+
+
 		internal bool FlagBodyShape()
 		{
 			if (this.body == null) return false;

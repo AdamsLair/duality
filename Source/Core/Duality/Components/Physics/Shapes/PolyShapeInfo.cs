@@ -202,7 +202,41 @@ namespace Duality.Components.Physics
 
 		public override bool IntersectsWith(Vector2 worldCoord, Vector2 size)
 		{
-			throw new NotImplementedException();
+			float p2X = worldCoord.X + size.X;
+			float p2Y = worldCoord.Y + size.Y;
+			// Check if one of the vertices is inside the AABB
+			for (int i = 0; i < this.vertices.Length; i++)
+			{
+				Vector2 vert = this.vertices[i];
+				if (vert.X >= worldCoord.X && vert.Y >= worldCoord.Y && vert.X <= p2X && vert.Y <= p2Y) return true;				
+			}
+
+			// Check if the polygon contains one of the points of the AABB
+			if (Contains(worldCoord.X, worldCoord.Y)) return true;
+			if (Contains(p2X, p2Y)) return true;
+			if (Contains(p2X, worldCoord.Y)) return true;
+			if (Contains(worldCoord.X, p2Y)) return true;
+
+			return false;
+		}
+
+		private bool Contains(float x, float y)
+		{
+			bool oddNodes = false;
+			int i = 0;
+			int j = this.vertices.Length - 1;
+
+			for (i = 0; i < this.vertices.Length; i++)
+			{
+				if ((this.vertices[i].Y < y && this.vertices[j].Y >= y || this.vertices[j].Y < y && this.vertices[i].Y >= y) && (this.vertices[i].X <= x || this.vertices[j].X <= x))
+				{
+					oddNodes ^= (this.vertices[i].X + (y - this.vertices[i].Y) / (this.vertices[j].Y - this.vertices[i].Y) * (this.vertices[j].X - this.vertices[i].X) < x);
+				}
+
+				j = i;
+			}
+
+			return oddNodes;
 		}
 	}
 }

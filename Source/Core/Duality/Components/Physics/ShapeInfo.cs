@@ -37,7 +37,11 @@ namespace Duality.Components.Physics
 		}
 		public Vector3 Offset
 		{
-			get { return this.Parent.GameObj.Transform.Pos; }
+			get
+			{
+				if (this.parent == null) return Vector3.Zero;
+				return this.Parent.GameObj.Transform.Pos;
+			}
 		}
 		/// <summary>
 		/// [GET / SET] The shapes density.
