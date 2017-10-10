@@ -771,9 +771,10 @@ namespace Duality.Components.Physics
 		public bool PickShapes(Vector2 worldCoord, Vector2 size, List<ShapeInfo> pickedShapes)
 		{
 			int oldCount = pickedShapes.Count;
+			Box box = new Box(worldCoord.X, worldCoord.Y, size.X, size.Y);
 			foreach (var shape in this.Shapes)
 			{
-				if(shape.IntersectsWith(worldCoord, size))
+				if(shape.IntersectsWith(box))
 				{
 					pickedShapes.Add(shape);
 				}

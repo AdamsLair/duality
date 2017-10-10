@@ -47,6 +47,7 @@
     <Compile Include="Drawing\ColorFormat\ColorRgba.cs" />
     <Compile Include="Drawing\ColorFormat\IColorData.cs" />
     <Compile Include="Math\Alignment.cs" />
+    <Compile Include="Math\Box.cs" />
     <Compile Include="Math\MathF.cs" />
     <Compile Include="Math\Matrix3.cs" />
     <Compile Include="Math\Quaternion.cs" />

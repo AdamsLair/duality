@@ -84,7 +84,9 @@
     <Compile Include="Components\ExecutionOrderTest\TestComponent.cs" />
     <Compile Include="Components\TransformTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
+    <Compile Include="Physics\ChainShapeInfoTest.cs" />
     <Compile Include="Physics\CircleShapeInfoTest.cs" />
+    <Compile Include="Physics\LoopShapeInfoTest.cs" />
     <Compile Include="Physics\PolyShapeInfoTest.cs" />
     <Compile Include="Testing\ExtMethodsIList.cs" />
     <Compile Include="Resources\RenderTargetTest.cs" />

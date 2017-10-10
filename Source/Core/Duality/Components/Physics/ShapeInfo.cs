@@ -35,12 +35,12 @@ namespace Duality.Components.Physics
 			get { return this.parent; }
 			internal set { this.parent = value; }
 		}
-		public Vector3 Offset
+		public Vector2 Offset
 		{
 			get
 			{
-				if (this.parent == null) return Vector3.Zero;
-				return this.Parent.GameObj.Transform.Pos;
+				if (this.parent == null) return Vector2.Zero;
+				return new Vector2(this.Parent.GameObj.Transform.Pos.X, this.Parent.GameObj.Transform.Pos.Y);
 			}
 		}
 		/// <summary>
@@ -135,7 +135,7 @@ namespace Duality.Components.Physics
 			this.UpdateInternalShape(true);
 		}
 
-		public abstract bool IntersectsWith(Vector2 worldCoord, Vector2 size);
+		public abstract bool IntersectsWith(Box box);
 		
 		internal void DestroyInternalShape()
 		{

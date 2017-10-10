@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using FarseerPhysics.Dynamics;
@@ -200,27 +199,26 @@ namespace Duality.Components.Physics
 			return transformed;
 		}
 
-		public override bool IntersectsWith(Vector2 worldCoord, Vector2 size)
+		public override bool IntersectsWith(Box box)
 		{
-			float p2X = worldCoord.X + size.X;
-			float p2Y = worldCoord.Y + size.Y;
-			// Check if one of the vertices is inside the AABB
+			var offset = this.Offset;
+			// Check if one of the vertices is inside the box
 			for (int i = 0; i < this.vertices.Length; i++)
 			{
-				Vector2 vert = this.vertices[i];
-				if (vert.X >= worldCoord.X && vert.Y >= worldCoord.Y && vert.X <= p2X && vert.Y <= p2Y) return true;				
+				Vector2 vert = this.vertices[i] + offset;
+				if (box.Contains(vert)) return true;
 			}
 
 			// Check if the polygon contains one of the points of the AABB
-			if (Contains(worldCoord.X, worldCoord.Y)) return true;
-			if (Contains(p2X, p2Y)) return true;
-			if (Contains(p2X, worldCoord.Y)) return true;
-			if (Contains(worldCoord.X, p2Y)) return true;
+			if (Contains(box.P1 - offset)) return true;
+			if (Contains(box.P2 - offset)) return true;
+			if (Contains(box.P3 - offset)) return true;
+			if (Contains(box.P4 - offset)) return true;
 
 			return false;
 		}
 
-		private bool Contains(float x, float y)
+		private bool Contains(Vector2 p)
 		{
 			bool oddNodes = false;
 			int i = 0;
@@ -228,9 +226,9 @@ namespace Duality.Components.Physics
 
 			for (i = 0; i < this.vertices.Length; i++)
 			{
-				if ((this.vertices[i].Y < y && this.vertices[j].Y >= y || this.vertices[j].Y < y && this.vertices[i].Y >= y) && (this.vertices[i].X <= x || this.vertices[j].X <= x))
+				if ((this.vertices[i].Y < p.Y && this.vertices[j].Y >= p.Y || this.vertices[j].Y < p.Y && this.vertices[i].Y >= p.Y) && (this.vertices[i].X <= p.X || this.vertices[j].X <= p.X))
 				{
-					oddNodes ^= (this.vertices[i].X + (y - this.vertices[i].Y) / (this.vertices[j].Y - this.vertices[i].Y) * (this.vertices[j].X - this.vertices[i].X) < x);
+					oddNodes ^= (this.vertices[i].X + (p.Y - this.vertices[i].Y) / (this.vertices[j].Y - this.vertices[i].Y) * (this.vertices[j].X - this.vertices[i].X) < p.X);
 				}
 
 				j = i;

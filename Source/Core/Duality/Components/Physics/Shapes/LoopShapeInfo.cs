@@ -38,7 +38,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public override Rect AABB
 		{
-			get 
+			get
 			{
 				if (this.vertices == null || this.vertices.Length == 0)
 					return Rect.Empty;
@@ -62,8 +62,8 @@ namespace Duality.Components.Physics
 			get { return this.fixture != null; }
 		}
 
-			
-		public LoopShapeInfo() {}
+
+		public LoopShapeInfo() { }
 		public LoopShapeInfo(IEnumerable<Vector2> vertices)
 		{
 			this.vertices = vertices.ToArray();
@@ -90,7 +90,7 @@ namespace Duality.Components.Physics
 			this.fixture.IsSensor = this.sensor;
 			this.fixture.Restitution = this.restitution;
 			this.fixture.Friction = this.friction;
-			
+
 			ChainShape shape = this.fixture.Shape as ChainShape;
 			shape.Density = this.density;
 		}
@@ -111,8 +111,8 @@ namespace Duality.Components.Physics
 					this.UpdateVertices(shape, this.ParentScale);
 
 					this.fixture = new Fixture(
-						body, 
-						shape, 
+						body,
+						shape,
 						this);
 				}
 			}
@@ -129,9 +129,22 @@ namespace Duality.Components.Physics
 			shape.MakeLoop();
 		}
 
-		public override bool IntersectsWith(Vector2 worldCoord, Vector2 size)
+		public override bool IntersectsWith(Box box)
 		{
-			throw new NotImplementedException();
+			Vector2 offset = this.Offset;
+			Vector2 p3;
+			Vector2 p4;
+			for (int i = 0; i < this.vertices.Length - 1; i++)
+			{
+				p3 = this.vertices[i] + offset;
+				p4 = this.vertices[i + 1] + offset;
+				if (box.LineIntersects(p3, p4)) return true;
+			}
+			p3 = this.vertices[0];
+			p4 = this.vertices[this.vertices.Length - 1];
+			if (box.LineIntersects(p3, p4)) return true;
+
+			return false;
 		}
 	}
 }
