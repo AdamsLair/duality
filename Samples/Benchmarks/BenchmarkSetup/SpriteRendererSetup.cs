@@ -19,6 +19,8 @@ namespace Duality.Samples.Benchmarks
 		private int spriteCount = 1000;
 		private bool alternatingMaterials = false;
 
+		[DontSerialize] private Random random = new Random(1);
+
 
 		public int SpriteCount
 		{
@@ -39,7 +41,7 @@ namespace Duality.Samples.Benchmarks
 			SpriteRenderer sprite = obj.AddComponent<SpriteRenderer>();
 
 			transform.Pos = pos;
-			transform.Angle = MathF.Rnd.NextFloat(MathF.RadAngle360);
+			transform.Angle = this.random.NextFloat(MathF.RadAngle360);
 			sprite.SharedMaterial = material;
 			sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, 64.0f, 64.0f);
 
@@ -85,7 +87,7 @@ namespace Duality.Samples.Benchmarks
 				bool isVisible = (i % 2) == 0;
 				if (isVisible)
 				{
-					pos = MathF.Rnd.NextVector3(
+					pos = this.random.NextVector3(
 						-spriteBoxSize.X * 0.5f, 
 						-spriteBoxSize.Y * 0.5f, 
 						0.0f, 

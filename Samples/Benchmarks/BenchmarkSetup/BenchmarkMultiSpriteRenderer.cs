@@ -22,6 +22,7 @@ namespace Duality.Samples.Benchmarks
 		[DontSerialize] private RawList<Vector2> spritePositions = new RawList<Vector2>();
 		[DontSerialize] private RawList<float> spriteAngles = new RawList<float>();
 		[DontSerialize] private RawList<VertexC1P3T2> vertices = new RawList<VertexC1P3T2>();
+		[DontSerialize] private Random random = new Random(1);
 
 
 		public int SpriteCount
@@ -46,12 +47,12 @@ namespace Duality.Samples.Benchmarks
 			Vector2 spriteBoxSize = new Vector2(1024, 1024);
 			for (int i = 0; i < this.spriteCount; i++)
 			{
-				pos[i] = MathF.Rnd.NextVector2(
+				pos[i] = this.random.NextVector2(
 					-spriteBoxSize.X * 0.5f, 
 					-spriteBoxSize.Y * 0.5f, 
 					spriteBoxSize.X, 
 					spriteBoxSize.Y);
-				angle[i] = MathF.Rnd.NextFloat(MathF.RadAngle360);
+				angle[i] = this.random.NextFloat(MathF.RadAngle360);
 			}
 		}
 
