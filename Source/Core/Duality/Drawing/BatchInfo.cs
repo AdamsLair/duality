@@ -54,6 +54,7 @@ namespace Duality.Drawing
 			}
 		}
 
+
 		/// <summary>
 		/// Creates a new, empty BatchInfo.
 		/// </summary>
@@ -72,8 +73,7 @@ namespace Duality.Drawing
 		/// <param name="source"></param>
 		public BatchInfo(BatchInfo source)
 		{
-			this.technique = source.technique;
-			this.parameters = new ShaderParameterCollection(source.parameters);
+			this.InitFrom(source);
 		}
 		/// <summary>
 		/// Creates a new color-only BatchInfo.
@@ -103,6 +103,34 @@ namespace Duality.Drawing
 			this.MainTexture = mainTex;
 		}
 		
+
+		/// <summary>
+		/// Initializes this <see cref="BatchInfo"/> instance to match the specified
+		/// target instance exactly, e.g. use the same <see cref="Technique"/> and
+		/// specify the same shader parameter values.
+		/// </summary>
+		/// <param name="target"></param>
+		public void InitFrom(BatchInfo source)
+		{
+			this.Reset();
+			this.technique = source.technique;
+			if (source.parameters != null)
+			{
+				if (this.parameters == null)
+					this.parameters = new ShaderParameterCollection(source.parameters);
+				else
+					source.parameters.CopyTo(this.parameters);
+			}
+		}
+		/// <summary>
+		/// Resets all shader parameters to their default value.
+		/// </summary>
+		public void Reset()
+		{
+			if (this.parameters != null)
+				this.parameters.Clear();
+		}
+
 		/// <summary>
 		/// Assigns an array of values to the specified variable. All values are copied and converted into
 		/// a shared internal format.
