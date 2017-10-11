@@ -98,6 +98,14 @@ namespace Duality.Drawing
 		bool IsCoordInView(Vector3 c, float boundRad = 1.0f);
 
 		/// <summary>
+		/// Rents a temporary material instance which can be used for rendering.
+		/// The instance is returned implicitly when the device is done with the 
+		/// current rendering operation.
+		/// </summary>
+		/// <returns></returns>
+		BatchInfo RentMaterial();
+
+		/// <summary>
 		/// Adds a parameterized set of vertices to the drawing devices rendering schedule.
 		/// </summary>
 		/// <typeparam name="T">The type of vertex data to add.</typeparam>
@@ -136,6 +144,34 @@ namespace Duality.Drawing
 		public static Vector3 GetScreenCoord(this IDrawDevice device, Vector2 spacePos)
 		{
 			return device.GetScreenCoord(new Vector3(spacePos));
+		}
+		
+		/// <summary>
+		/// Rents a temporary material instance for rendering, based on the specified <see cref="BatchInfo"/>.
+		/// The instance is returned implicitly when the device is done with the current rendering operation.
+		/// </summary>
+		/// <param name="device"></param>
+		/// <param name="baseMaterial"></param>
+		/// <returns></returns>
+		public static BatchInfo RentMaterial(this IDrawDevice device, BatchInfo baseMaterial)
+		{
+			BatchInfo material = device.RentMaterial();
+			material.InitFrom(baseMaterial);
+			return material;
+		}
+		/// <summary>
+		/// Rents a temporary material instance for rendering, based on the specified <see cref="Material"/>.
+		/// The instance is returned implicitly when the device is done with the current rendering operation.
+		/// </summary>
+		/// <param name="device"></param>
+		/// <param name="baseMaterial"></param>
+		/// <returns></returns>
+		public static BatchInfo RentMaterial(this IDrawDevice device, ContentRef<Material> baseMaterial)
+		{
+			return device.RentMaterial(
+				baseMaterial.IsAvailable ? 
+				baseMaterial.Res.Info : 
+				Material.Checkerboard.Res.Info);
 		}
 
 		/// <summary>

@@ -147,6 +147,8 @@ namespace Duality.Drawing
 
 		private RenderOptions                renderOptions      = new RenderOptions();
 		private RenderStats                  renderStats        = new RenderStats();
+		private List<BatchInfo>              tempMaterialPool   = new List<BatchInfo>();
+		private int                          tempMaterialIndex  = 0;
 		private VertexBatchStore             drawVertices       = new VertexBatchStore();
 		private RawList<VertexDrawItem>      drawBuffer         = new RawList<VertexDrawItem>();
 		private RawList<SortItem>            sortBufferSolid    = new RawList<SortItem>();
@@ -288,13 +290,16 @@ namespace Duality.Drawing
 				// Set big object references to null to make
 				// sure they're garbage collected even when keeping
 				// a reference to the disposed DrawDevice around.
+				this.renderOptions = null;
+				this.renderStats = null;
+				this.tempMaterialPool = null;
+				this.drawVertices = null;
 				this.drawBuffer = null;
 				this.sortBufferSolid = null;
 				this.sortBufferBlended = null;
 				this.sortBufferTemp = null;
 				this.batchBufferSolid = null;
 				this.batchBufferBlended = null;
-				this.drawVertices = null;
 				this.batchIndexPool = null;
 			}
 		}
@@ -474,6 +479,21 @@ namespace Duality.Drawing
 				c.X <= 1.0f + boundRadVec.X &&
 				c.Y <= 1.0f + boundRadVec.Y;
 		}
+		
+		/// <summary>
+		/// Rents a temporary material instance which can be used for rendering. The instance
+		/// is returned implicitly when the device is done with the current rendering operation.
+		/// </summary>
+		/// <returns></returns>
+		public BatchInfo RentMaterial()
+		{
+			int index = this.tempMaterialIndex++;
+
+			if (index >= this.tempMaterialPool.Count)
+				this.tempMaterialPool.Add(new BatchInfo());
+
+			return this.tempMaterialPool[index];
+		}
 
 		public void AddVertices<T>(BatchInfo material, VertexMode vertexMode, T[] vertexBuffer, int vertexCount) where T : struct, IVertexData
 		{
@@ -490,13 +510,13 @@ namespace Duality.Drawing
 				for (int i = 0; i < vertexCount; ++i)
 					vertexBuffer[i].Color = clr;
 
-				material = new BatchInfo(material);
+				material = this.RentMaterial(material);
 				material.Technique = DrawTechnique.Picking;
 				material.MainColor = ColorRgba.White;
 			}
 			else if (material.Technique == null || !material.Technique.IsAvailable)
 			{
-				material = new BatchInfo(material);
+				material = this.RentMaterial(material);
 				material.Technique = DrawTechnique.Solid;
 			}
 			
@@ -652,9 +672,17 @@ namespace Duality.Drawing
 				Profile.TimeProcessDrawcalls.EndMeasure();
 			}
 			DualityApp.GraphicsBackend.EndRendering();
-
 			Profile.StatNumDrawcalls.Add(this.renderStats.DrawCalls);
 
+			// Reset all temp materials and return them to the pool
+			for (int i = 0; i < this.tempMaterialIndex; i++)
+			{
+				this.tempMaterialPool[i].Technique = DrawTechnique.Mask;
+				this.tempMaterialPool[i].Reset();
+			}
+			this.tempMaterialIndex = 0;
+
+			// Clear all working buffers for vertex and drawcall processing
 			this.drawBuffer.Clear();
 			this.sortBufferSolid.Clear();
 			this.sortBufferBlended.Clear();
