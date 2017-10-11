@@ -14,19 +14,20 @@ namespace Duality.Drawing
 	{
 		private static readonly BatchInfo DefaultMaterial = new BatchInfo(DrawTechnique.Mask);
 
-		private	BatchInfo			batchInfo;
-		private	ColorRgba			color;
-		private	ContentRef<Font>	font;
-		private	float				depthOffset;
-		private	bool		invariantTextScale;
-		private	float		transformAngle;
-		private	Vector2		transformScale;
-		private	Vector2		transformHandle;
-		private	Rect		uvGenRect;
-
-		private	Vector2		curTX;
-		private	Vector2		curTY;
-		private	Vector2		texBaseSize;
+		private Canvas           canvas;
+		private BatchInfo        batchInfo;
+		private ColorRgba        color;
+		private ContentRef<Font> font;
+		private float            depthOffset;
+		private bool             invariantTextScale;
+		private float            transformAngle;
+		private Vector2          transformScale;
+		private Vector2          transformHandle;
+		private Rect             uvGenRect;
+		
+		private Vector2          curTX;
+		private Vector2          curTY;
+		private Vector2          texBaseSize;
 
 
 		internal BatchInfo MaterialDirect
@@ -34,11 +35,11 @@ namespace Duality.Drawing
 			get { return this.batchInfo; }
 		}
 		/// <summary>
-		/// [GET] The material that is used for drawing.
+		/// [GET] Returns a copy of the material that is used for drawing.
 		/// </summary>
 		public BatchInfo Material
 		{
-			get { return new BatchInfo(this.batchInfo); }
+			get { return this.canvas.DrawDevice.RentMaterial(this.batchInfo); }
 		}
 		/// <summary>
 		/// [GET] Returns whether the currently active material is the default one.
@@ -134,12 +135,14 @@ namespace Duality.Drawing
 		}
 
 
-		public CanvasState() 
+		public CanvasState(Canvas canvas) 
 		{
+			this.canvas = canvas;
 			this.Reset();
 		}
 		public CanvasState(CanvasState other)
 		{
+			this.canvas = other.canvas;
 			other.CopyTo(this);
 		}
 			
@@ -188,7 +191,18 @@ namespace Duality.Drawing
 		}
 
 		/// <summary>
-		/// Sets the States drawing material.
+		/// Replaces the material that will be used for rendering with a a new one that
+		/// is configured to use the specified <see cref="DrawTechnique"/>.
+		/// </summary>
+		/// <param name="technique"></param>
+		public void SetMaterial(ContentRef<DrawTechnique> technique)
+		{
+			BatchInfo material = this.canvas.DrawDevice.RentMaterial();
+			material.Technique = technique;
+			this.SetMaterial(material);
+		}
+		/// <summary>
+		/// Replaces the material that will be used for rendering with the specified one.
 		/// </summary>
 		/// <param name="material"></param>
 		public void SetMaterial(BatchInfo material)
@@ -206,7 +220,7 @@ namespace Duality.Drawing
 			}
 		}
 		/// <summary>
-		/// Sets the States drawing material.
+		/// Replaces the material that will be used for rendering with the specified one.
 		/// </summary>
 		/// <param name="material"></param>
 		public void SetMaterial(ContentRef<Material> material)

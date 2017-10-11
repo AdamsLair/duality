@@ -16,8 +16,8 @@ namespace Duality.Drawing
 	public class Canvas
 	{
 		private IDrawDevice           device     = null;
-		private List<CanvasState>     stateStack = new List<CanvasState> { new CanvasState() };
-		private int                   stateCount = 1;
+		private List<CanvasState>     stateStack = new List<CanvasState>();
+		private int                   stateCount = 0;
 		private RawList<VertexC1P3T2> buffer     = new RawList<VertexC1P3T2>();
 
 
@@ -53,6 +53,12 @@ namespace Duality.Drawing
 		}
 		
 
+		public Canvas()
+		{
+			this.stateStack.Add(new CanvasState(this));
+			this.stateCount = 1;
+		}
+
 		/// <summary>
 		/// Prepares the <see cref="Canvas"/> for drawing using the specified <see cref="IDrawDevice"/>.
 		/// </summary>
@@ -87,7 +93,7 @@ namespace Duality.Drawing
 			this.stateCount++;
 
 			if (this.stateStack.Count <= this.stateCount)
-				this.stateStack.Add(new CanvasState());
+				this.stateStack.Add(new CanvasState(this));
 
 			CanvasState oldState = this.stateStack[this.stateCount - 2];
 			CanvasState newState = this.stateStack[this.stateCount - 1];
@@ -331,7 +337,7 @@ namespace Duality.Drawing
 			vertices[0].Color = shapeColor;
 			vertices[1].Color = shapeColor;
 
-			BatchInfo customMat = new BatchInfo(this.State.MaterialDirect);
+			BatchInfo customMat = this.device.RentMaterial(this.State.MaterialDirect);
 			customMat.MainTexture = dashTexRef;
 			this.State.TransformVertices(vertices, shapeHandle, scale);
 			device.AddVertices(customMat, VertexMode.Lines, vertices, 2);
@@ -1077,7 +1083,7 @@ namespace Duality.Drawing
 				float baseLuminance = baseColor.GetLuminance();
 
 				this.PushState();
-				this.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+				this.State.SetMaterial(DrawTechnique.Alpha);
 				this.State.ColorTint = (baseLuminance > 0.5f ? ColorRgba.Black : ColorRgba.White).WithAlpha(baseAlpha * backAlpha);
 				this.State.DepthOffset += 1.0f;
 				this.FillRect(
@@ -1114,7 +1120,7 @@ namespace Duality.Drawing
 			}
 			else
 			{
-				material = new BatchInfo(this.State.MaterialDirect);
+				material = this.device.RentMaterial(this.State.MaterialDirect);
 				material.MainTexture = font.Material.MainTexture;
 			}
 
@@ -1195,7 +1201,7 @@ namespace Duality.Drawing
 				float baseLuminance = baseColor.GetLuminance();
 
 				this.PushState();
-				this.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+				this.State.SetMaterial(DrawTechnique.Alpha);
 				this.State.ColorTint = (baseLuminance > 0.5f ? ColorRgba.Black : ColorRgba.White).WithAlpha(baseAlpha * backAlpha);
 				this.FillRect(
 					x - padding.X, 
@@ -1239,7 +1245,7 @@ namespace Duality.Drawing
 						}
 						else
 						{
-							material = new BatchInfo(this.State.MaterialDirect);
+							material = this.device.RentMaterial(this.State.MaterialDirect);
 							material.MainTexture = text.Fonts[i].Res.Material.MainTexture;
 						}
 						device.AddVertices(material, VertexMode.Quads, vertText[i], vertLen[i + 1]);
