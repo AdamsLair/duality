@@ -1112,11 +1112,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			bool uncertain = (mode & TileHighlightMode.Uncertain) != 0;
 			bool selection = (mode & TileHighlightMode.Selection) != 0;
 
-			BatchInfo canvasMaterial = canvas.State.Material;
-			BatchInfo defaultMaterial = new BatchInfo(DrawTechnique.Alpha);
-			BatchInfo strippleMaterial = new BatchInfo(DrawTechnique.Alpha, strippledLineTex);
-			defaultMaterial.MainColor = canvasMaterial.MainColor;
-			strippleMaterial.MainColor = canvasMaterial.MainColor;
+			BatchInfo defaultMaterial = canvas.DrawDevice.RentMaterial();
+			defaultMaterial.Technique = DrawTechnique.Alpha;
+			BatchInfo strippleMaterial = canvas.DrawDevice.RentMaterial();
+			strippleMaterial.Technique = DrawTechnique.Alpha;
+			strippleMaterial.MainTexture = strippledLineTex;
 			
 			Component component = renderer as Component;
 			Transform transform = component.GameObj.Transform;

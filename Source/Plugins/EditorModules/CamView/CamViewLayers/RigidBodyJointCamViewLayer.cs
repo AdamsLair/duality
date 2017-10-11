@@ -67,7 +67,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			base.OnCollectWorldOverlayDrawcalls(canvas);
 			canvas.State.TextInvariantScale = true;
 			canvas.State.DepthOffset = this.depthOffset;
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+			canvas.State.SetMaterial(DrawTechnique.Alpha);
 
 			RigidBody selectedBody = this.QuerySelectedCollider();
 			bool isAnyBodySelected = (selectedBody != null);

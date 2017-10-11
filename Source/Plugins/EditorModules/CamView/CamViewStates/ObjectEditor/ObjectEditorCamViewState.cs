@@ -228,19 +228,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			canvas.PushState();
 			if (this.actionLockedAxis == ObjectEditorAxisLock.X)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid));
+				canvas.State.SetMaterial(DrawTechnique.Solid);
 				canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, ColorRgba.Red, 0.5f);
 				canvas.DrawLine(x - r, y, z, x + r, y, z);
 			}
 			if (this.actionLockedAxis == ObjectEditorAxisLock.Y)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid));
+				canvas.State.SetMaterial(DrawTechnique.Solid);
 				canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, ColorRgba.Green, 0.5f);
 				canvas.DrawLine(x, y - r, z, x, y + r, z);
 			}
 			if (this.actionLockedAxis == ObjectEditorAxisLock.Z)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid));
+				canvas.State.SetMaterial(DrawTechnique.Solid);
 				canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, ColorRgba.Blue, 0.5f);
 				canvas.DrawLine(x, y, MathF.Max(z - r, refPos.Z + nearZ + 10), x, y, z);
 				canvas.DrawLine(x, y, z, x, y, z + r);
@@ -597,7 +597,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Point cursorPos = this.PointToClient(Cursor.Position);
 			canvas.PushState();
 			canvas.State.DepthOffset = -1.0f;
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid));
+			canvas.State.SetMaterial(DrawTechnique.Solid);
 			
 			// Draw indirectly selected object overlay
 			canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f);

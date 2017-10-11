@@ -31,7 +31,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		protected internal override void OnCollectBackgroundDrawcalls(Canvas canvas)
 		{
 			base.OnCollectBackgroundDrawcalls(canvas);
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+			canvas.State.SetMaterial(DrawTechnique.Alpha);
 			canvas.State.ColorTint = this.BgColor.WithAlpha(0.75f);
 			canvas.FillRect(0, 0, canvas.DrawDevice.TargetSize.X, canvas.DrawDevice.TargetSize.Y);
 		}

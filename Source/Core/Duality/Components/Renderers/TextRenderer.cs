@@ -153,7 +153,7 @@ namespace Duality.Components.Renderers
 						}
 						else
 						{
-							BatchInfo cm = new BatchInfo(this.customMat);
+							BatchInfo cm = device.RentMaterial(this.customMat);
 							cm.MainTexture = this.text.Fonts[i].Res.Material.MainTexture;
 							device.AddVertices(cm, VertexMode.Quads, this.vertFont[i], vertLen[i + 1]);
 						}

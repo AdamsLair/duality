@@ -35,7 +35,7 @@ namespace DualStickSpaceShooter
 
 			// Prepare the canvas for drawing
 			this.canvas.Begin(device);
-			this.canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+			this.canvas.State.SetMaterial(DrawTechnique.Alpha);
 			this.canvas.State.TextFont = this.font;
 
 			// Retrieve players

@@ -614,9 +614,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.blitDevice.TargetSize = clientSize;
 				this.blitDevice.ViewportRect = new Rect(clientSize);
 
-				BatchInfo blitMaterial = new BatchInfo(
-					DrawTechnique.Solid, 
-					this.outputTexture);
+				BatchInfo blitMaterial = this.blitDevice.RentMaterial();
+				blitMaterial.Technique = DrawTechnique.Solid;
+				blitMaterial.MainTexture = this.outputTexture;
+
 				TargetResize blitResize = this.TargetSizeFitsClientArea ? 
 					TargetResize.None : 
 					TargetResize.Fit;

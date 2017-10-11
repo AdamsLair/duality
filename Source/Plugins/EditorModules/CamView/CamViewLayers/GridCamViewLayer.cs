@@ -125,7 +125,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 	        }
 			vertOff += lineCountY * 2;
 
-	        device.AddVertices(new BatchInfo(DrawTechnique.Alpha), VertexMode.Lines, vertices, this.vertexBuffer.Count);
+			BatchInfo material = device.RentMaterial();
+			material.Technique = DrawTechnique.Alpha;
+	        device.AddVertices(material, VertexMode.Lines, vertices, this.vertexBuffer.Count);
 	    }
 		protected internal override void OnCollectOverlayDrawcalls(Canvas canvas)
 		{

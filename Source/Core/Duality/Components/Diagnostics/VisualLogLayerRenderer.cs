@@ -46,7 +46,7 @@ namespace Duality.Components.Diagnostics
 				VisualLogs.All;
 			
 			this.canvas.Begin(device);
-			this.canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+			this.canvas.State.SetMaterial(DrawTechnique.Alpha);
 			this.canvas.State.DepthOffset = this.overlay ? 0.0f : -1.0f;
 			
 			foreach (VisualLog log in logs)
@@ -55,7 +55,7 @@ namespace Duality.Components.Diagnostics
 				if (log.BaseColor.A == 0) continue;
 				if ((log.VisibilityGroup & device.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) continue;
 
-				this.canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+				this.canvas.State.SetMaterial(DrawTechnique.Alpha);
 				this.canvas.State.ColorTint = log.BaseColor;
 				foreach (VisualLogEntry logEntry in log.Entries)
 				{

@@ -91,7 +91,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			RigidBody selectedBody = this.QuerySelectedCollider();
 
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+			canvas.State.SetMaterial(DrawTechnique.Alpha);
 			canvas.State.TextFont = Font.GenericMonospace10;
 			canvas.State.TextInvariantScale = true;
 			canvas.State.DepthOffset = this.depthOffset;

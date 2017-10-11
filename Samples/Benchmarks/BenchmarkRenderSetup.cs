@@ -209,9 +209,9 @@ namespace Duality.Samples.Benchmarks
 			this.drawDevice.ViewportRect = viewportRect;
 
 			// Blit the results to screen
-			BatchInfo blitMaterial = new BatchInfo(
-				DrawTechnique.Solid, 
-				this.sceneTargetTex);
+			BatchInfo blitMaterial = this.drawDevice.RentMaterial();
+			blitMaterial.Technique = DrawTechnique.Solid;
+			blitMaterial.MainTexture = this.sceneTargetTex;
 			bool sceneTargetFitsOutput = 
 				this.sceneTarget.Size.X <= imageSize.X && 
 				this.sceneTarget.Size.Y <= imageSize.Y;

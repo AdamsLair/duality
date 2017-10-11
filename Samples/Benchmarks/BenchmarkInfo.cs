@@ -82,7 +82,7 @@ namespace Duality.Samples.Benchmarks
 		void ICmpBenchmarkOverlayRenderer.DrawOverlay(Canvas canvas)
 		{
 			Vector2 textBlockSize = this.text.TextMetrics.Size;
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha));
+			canvas.State.SetMaterial(DrawTechnique.Alpha);
 			canvas.State.ColorTint = ColorRgba.Black.WithAlpha(0.75f);
 			canvas.FillRect(10, 10, textBlockSize.X + this.margin.X * 2, textBlockSize.Y + this.margin.Y * 2);
 

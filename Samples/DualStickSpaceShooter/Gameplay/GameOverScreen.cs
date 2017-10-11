@@ -130,7 +130,7 @@ namespace DualStickSpaceShooter
 					else
 					{
 						// If we won, simply fade to white
-						this.canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Add));
+						this.canvas.State.SetMaterial(DrawTechnique.Add);
 						this.canvas.State.ColorTint = ColorRgba.White.WithAlpha(blendAnimProgress);
 					}
 
