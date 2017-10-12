@@ -772,7 +772,7 @@ namespace Duality.Components.Physics
 		{
 			int oldCount = pickedShapes.Count;
 			Box box = new Box(worldCoord.X, worldCoord.Y, size.X, size.Y);
-			foreach (var shape in this.Shapes)
+			foreach (ShapeInfo shape in this.Shapes)
 			{
 				if(shape.IntersectsWith(box))
 				{

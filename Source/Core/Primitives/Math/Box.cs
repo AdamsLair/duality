@@ -24,32 +24,24 @@
 
 		public bool LineIntersects(Vector2 lineStart, Vector2 lineEnd)
 		{
-			return LineIntersectsLine(lineStart, lineEnd, this.P1, this.P2) ||
+			return Contains(lineStart) || 
+				   Contains(lineEnd) ||
+				   LineIntersectsLine(lineStart, lineEnd, this.P1, this.P2) ||
 				   LineIntersectsLine(lineStart, lineEnd, this.P2, this.P3) ||
 				   LineIntersectsLine(lineStart, lineEnd, this.P3, this.P4) ||
-				   LineIntersectsLine(lineStart, lineEnd, this.P4, this.P1) ||
-				   (Contains(lineStart) && Contains(lineEnd));
+				   LineIntersectsLine(lineStart, lineEnd, this.P4, this.P1);
 		}
 
-		private static bool LineIntersectsLine(Vector2 l1p1, Vector2 l1p2, Vector2 l2p1, Vector2 l2p2)
+		private static bool LineIntersectsLine(Vector2 startLine1, Vector2 endLine1, Vector2 startLine2, Vector2 endLine2)
 		{
-			float q = (l1p1.Y - l2p1.Y) * (l2p2.X - l2p1.X) - (l1p1.X - l2p1.X) * (l2p2.Y - l2p1.Y);
-			float d = (l1p2.X - l1p1.X) * (l2p2.Y - l2p1.Y) - (l1p2.Y - l1p1.Y) * (l2p2.X - l2p1.X);
+			float d = Vector2.Cross(endLine1.X - startLine1.X, endLine1.Y - startLine1.Y, endLine2.X - startLine2.X, endLine2.Y - startLine2.Y);
+			if (d == 0) return false;
 
-			if (d == 0)
-			{
-				return false;
-			}
+			float r = Vector2.Cross(startLine1.Y - startLine2.Y, startLine1.X - startLine2.X, endLine2.Y - startLine2.Y, endLine2.X - startLine2.X) / d;
+			if (r < 0 || r > 1) return false;
 
-			float r = q / d;
-
-			q = (l1p1.Y - l2p1.Y) * (l1p2.X - l1p1.X) - (l1p1.X - l2p1.X) * (l1p2.Y - l1p1.Y);
-			float s = q / d;
-
-			if (r < 0 || r > 1 || s < 0 || s > 1)
-			{
-				return false;
-			}
+			float s = Vector2.Cross(startLine1.Y - startLine2.Y, startLine1.X - startLine2.X, endLine1.Y - startLine1.Y, endLine1.X - startLine1.X) / d;
+			if (s < 0 || s > 1) return false;
 
 			return true;
 		}
