@@ -320,6 +320,30 @@ namespace Duality
 		}
 
 		/// <summary>
+		/// Calculates the cross product of the vectors
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static float Cross(Vector2 left, Vector2 right)
+		{
+			return Cross(left.X, left.Y, right.X, right.Y);
+		}
+
+		/// <summary>
+		/// Calculates the cross product
+		/// </summary>
+		/// <param name="x1"></param>
+		/// <param name="y1"></param>
+		/// <param name="x2"></param>
+		/// <param name="y2"></param>
+		/// <returns></returns>
+		public static float Cross(float x1, float y1, float x2, float y2)
+		{
+			return x1 * y2 - y1 * x2;
+		}
+
+		/// <summary>
 		/// Calculate the dot (scalar) product of two vectors
 		/// </summary>
 		/// <param name="left">First operand</param>

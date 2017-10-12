@@ -42,7 +42,7 @@ namespace Duality.Components.Physics
 		}
 		public override Rect AABB
 		{
-			get { return Rect.Align(Alignment.Center, position.X, position.Y, radius * 2, radius * 2); }
+			get { return Rect.Align(Alignment.Center, this.position.X, this.position.Y, this.radius * 2, this.radius * 2); }
 		}
 		protected override bool IsInternalShapeCreated
 		{
@@ -98,6 +98,28 @@ namespace Duality.Components.Physics
 			}
 
 			return this.fixture != null;
+		}
+
+		public override bool IntersectsWith(Box box)
+		{
+			Transform transform = this.Transform;
+			Vector2 worldPosition = transform.GetWorldPoint(this.position);
+			float worldRadius = transform.Scale * this.radius;
+
+			float halfBoxSizeX = box.Size.X / 2;
+			float distX = MathF.Abs(worldPosition.X - box.P1.X - halfBoxSizeX);
+			if (distX > (halfBoxSizeX + worldRadius)) { return false; }
+
+			float halfBoxSizeY = box.Size.Y / 2;
+			float distY = MathF.Abs(worldPosition.Y - box.P1.Y - halfBoxSizeY);
+			if (distY > (halfBoxSizeY + worldRadius)) { return false; }
+
+			if (distX <= (halfBoxSizeX)) { return true; }
+			if (distY <= (halfBoxSizeY)) { return true; }
+
+			float dx = distX - halfBoxSizeX;
+			float dy = distY - halfBoxSizeY;
+			return (dx * dx + dy * dy <= (worldRadius * worldRadius));
 		}
 	}
 }

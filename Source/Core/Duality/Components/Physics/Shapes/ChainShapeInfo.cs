@@ -129,5 +129,28 @@ namespace Duality.Components.Physics
 
 			shape.MakeChain();
 		}
+
+		public override bool IntersectsWith(Box box)
+		{
+			Transform transform = this.Transform;
+			return ChainIntersectsWithBox(box, transform, this.vertices);
+		}
+
+		internal static bool ChainIntersectsWithBox(Box box, Transform transform, Vector2[] vertices)
+		{
+			Vector2 lineStart;
+			Vector2 lineEnd;
+			for (int i = 0; i < vertices.Length - 1; i++)
+			{
+				lineStart = transform.GetWorldPoint(vertices[i]);
+				lineEnd = transform.GetWorldPoint(vertices[i + 1]);
+				if (box.LineIntersects(lineStart, lineEnd)) return true;
+			}
+			lineStart = transform.GetWorldPoint(vertices[0]);
+			lineEnd = transform.GetWorldPoint(vertices[vertices.Length - 1]);
+			if (box.LineIntersects(lineStart, lineEnd)) return true;
+
+			return false;
+		}
 	}
 }

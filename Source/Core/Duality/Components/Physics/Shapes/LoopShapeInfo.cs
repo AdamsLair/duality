@@ -38,7 +38,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public override Rect AABB
 		{
-			get 
+			get
 			{
 				if (this.vertices == null || this.vertices.Length == 0)
 					return Rect.Empty;
@@ -62,8 +62,8 @@ namespace Duality.Components.Physics
 			get { return this.fixture != null; }
 		}
 
-			
-		public LoopShapeInfo() {}
+
+		public LoopShapeInfo() { }
 		public LoopShapeInfo(IEnumerable<Vector2> vertices)
 		{
 			this.vertices = vertices.ToArray();
@@ -90,7 +90,7 @@ namespace Duality.Components.Physics
 			this.fixture.IsSensor = this.sensor;
 			this.fixture.Restitution = this.restitution;
 			this.fixture.Friction = this.friction;
-			
+
 			ChainShape shape = this.fixture.Shape as ChainShape;
 			shape.Density = this.density;
 		}
@@ -111,8 +111,8 @@ namespace Duality.Components.Physics
 					this.UpdateVertices(shape, this.ParentScale);
 
 					this.fixture = new Fixture(
-						body, 
-						shape, 
+						body,
+						shape,
 						this);
 				}
 			}
@@ -127,6 +127,12 @@ namespace Duality.Components.Physics
 				shape.Vertices.Add(PhysicsUnit.LengthToPhysical * this.vertices[i] * scale);
 
 			shape.MakeLoop();
+		}
+
+		public override bool IntersectsWith(Box box)
+		{
+			Transform transform = this.Transform;
+			return ChainShapeInfo.ChainIntersectsWithBox(box, transform, this.vertices);
 		}
 	}
 }

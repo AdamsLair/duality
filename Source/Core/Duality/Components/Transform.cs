@@ -14,6 +14,8 @@ namespace Duality.Components
 	[EditorHintImage(CoreResNames.ImageTransform)]
 	public sealed class Transform : Component, ICmpUpdatable, ICmpEditorUpdatable, ICmpInitializable
 	{
+		public static readonly Transform ZeroTransform = new Transform();
+
 		/// <summary>
 		/// Flags that are used to specify, whether certain Properties have been changed.
 		/// </summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Duality.Components;
@@ -12,6 +13,25 @@ namespace Duality.Tests.Components
 	[TestFixture]
 	public class RigidBodyTest
 	{
+		[Test] public void PickshapesOnShapeWithTransform()
+		{
+			CircleShapeInfo circleShape = new CircleShapeInfo(100, new Vector2(100, 400), 1);
+			GameObject gameObject = new GameObject("RigidBodyObject");
+			Transform transform = gameObject.AddComponent<Transform>();
+			transform.Angle = -45;
+			transform.Pos = new Vector3(1000, 1000, 0);
+			RigidBody rigidBody = gameObject.AddComponent<RigidBody>();
+			rigidBody.AddShape(circleShape);
+
+			List<ShapeInfo> pickedShapes = new List<ShapeInfo>();
+			Scene scene = new Scene();
+			Scene.SwitchTo(scene);
+			scene.AddObject(gameObject);
+			rigidBody.PickShapes(new Vector2(1000f, 1000f), new Vector2(1000f, 100f), pickedShapes);
+
+			Assert.IsTrue(pickedShapes.Contains(circleShape));
+		}
+
 		[Test] public void FallingBallOnPlatform()
 		{
 			Scene scene = new Scene();

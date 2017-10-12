@@ -17,7 +17,7 @@ namespace Duality.Components.Physics
 	public abstract class ShapeInfo
 	{
 		protected static readonly Vector2[] EmptyVertices = new Vector2[0];
-
+		
 		[CloneBehavior(CloneBehavior.WeakReference)]
 		private RigidBody parent      = null;
 		protected float   density     = 1.0f;
@@ -35,6 +35,23 @@ namespace Duality.Components.Physics
 			get { return this.parent; }
 			internal set { this.parent = value; }
 		}
+
+		/// <summary>
+		/// [GET] A transform to transfrom the shapes defintion to worldcoordinates
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public Transform Transform
+		{
+			get
+			{
+				Transform transform;
+				if (this.Parent != null)
+					transform = this.Parent.GameObj.Transform;
+				else transform = Transform.ZeroTransform;
+				return transform;
+			}
+		}
+
 		/// <summary>
 		/// [GET / SET] The shapes density.
 		/// </summary>
@@ -126,6 +143,8 @@ namespace Duality.Components.Physics
 		{
 			this.UpdateInternalShape(true);
 		}
+
+		public abstract bool IntersectsWith(Box box);
 		
 		internal void DestroyInternalShape()
 		{
