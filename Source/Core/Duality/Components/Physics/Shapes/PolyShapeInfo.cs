@@ -204,20 +204,17 @@ namespace Duality.Components.Physics
 			Transform transform = this.Transform;
 			foreach (Vector2[] convexPolygon in this.convexPolygons)
 			{
-				Vector2[] transformedConvexPolygon = new Vector2[convexPolygon.Length];
-
-				// Check if one of the vertices is inside the box
-				for (int i = 0; i < transformedConvexPolygon.Length; i++)
+				//// Check if one of the vertices is inside the box
+				for (int i = 0; i < convexPolygon.Length; i++)
 				{
-					transformedConvexPolygon[i] = transform.GetWorldPoint(convexPolygon[i]);
-					if (box.Contains(transformedConvexPolygon[i])) return true;
+					if (box.Contains(transform.GetWorldPoint(convexPolygon[i]))) return true;
 				}
 
-				// Check if the polygon contains one of the points of the AABB
-				if (Contains(box.P1, transformedConvexPolygon)) return true;
-				if (Contains(box.P2, transformedConvexPolygon)) return true;
-				if (Contains(box.P3, transformedConvexPolygon)) return true;
-				if (Contains(box.P4, transformedConvexPolygon)) return true;
+				//// Check if the polygon contains one of the points of the AABB
+				if (Contains(transform.GetLocalPoint(box.P1), convexPolygon)) return true;
+				if (Contains(transform.GetLocalPoint(box.P2), convexPolygon)) return true;
+				if (Contains(transform.GetLocalPoint(box.P3), convexPolygon)) return true;
+				if (Contains(transform.GetLocalPoint(box.P4), convexPolygon)) return true;
 			}
 			return false;
 		}
