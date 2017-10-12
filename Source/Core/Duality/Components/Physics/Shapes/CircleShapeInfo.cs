@@ -105,17 +105,20 @@ namespace Duality.Components.Physics
 			Transform transform = this.Transform;
 			Vector2 worldPosition = transform.GetWorldPoint(this.position);
 			float worldRadius = transform.Scale * this.radius;
-			float distX = MathF.Abs(worldPosition.X - box.P1.X - box.Size.X / 2);
-			float distY = MathF.Abs(worldPosition.Y - box.P1.Y - box.Size.Y / 2);
-			
-			if (distX > (box.Size.X / 2 + worldRadius)) { return false; }
-			if (distY > (box.Size.Y / 2 + worldRadius)) { return false; }
 
-			if (distX <= (box.Size.X / 2)) { return true; }
-			if (distY <= (box.Size.Y / 2)) { return true; }
+			float halfBoxSizeX = box.Size.X / 2;
+			float distX = MathF.Abs(worldPosition.X - box.P1.X - halfBoxSizeX);
+			if (distX > (halfBoxSizeX + worldRadius)) { return false; }
 
-			float dx = distX - box.Size.X / 2;
-			float dy = distY - box.Size.Y / 2;
+			float halfBoxSizeY = box.Size.Y / 2;
+			float distY = MathF.Abs(worldPosition.Y - box.P1.Y - halfBoxSizeY);
+			if (distY > (halfBoxSizeY + worldRadius)) { return false; }
+
+			if (distX <= (halfBoxSizeX)) { return true; }
+			if (distY <= (halfBoxSizeY)) { return true; }
+
+			float dx = distX - halfBoxSizeX;
+			float dy = distY - halfBoxSizeY;
 			return (dx * dx + dy * dy <= (worldRadius * worldRadius));
 		}
 	}

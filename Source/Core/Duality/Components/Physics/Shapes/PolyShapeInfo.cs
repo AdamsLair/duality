@@ -205,14 +205,11 @@ namespace Duality.Components.Physics
 			foreach (Vector2[] convexPolygon in this.convexPolygons)
 			{
 				Vector2[] transformedConvexPolygon = new Vector2[convexPolygon.Length];
-				for (int i = 0; i < transformedConvexPolygon.Length; i++)
-				{
-					transformedConvexPolygon[i] = transform.GetWorldPoint(convexPolygon[i]);
-				}
 
 				// Check if one of the vertices is inside the box
 				for (int i = 0; i < transformedConvexPolygon.Length; i++)
 				{
+					transformedConvexPolygon[i] = transform.GetWorldPoint(convexPolygon[i]);
 					if (box.Contains(transformedConvexPolygon[i])) return true;
 				}
 
