@@ -49,7 +49,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public override Rect AABB
 		{
-			get 
+			get
 			{
 				if (this.vertices == null || this.vertices.Length == 0)
 					return Rect.Empty;
@@ -73,8 +73,8 @@ namespace Duality.Components.Physics
 			get { return this.fixtures != null && this.fixtures.Count > 0; }
 		}
 
-			
-		public PolyShapeInfo() {}
+
+		public PolyShapeInfo() { }
 		public PolyShapeInfo(IEnumerable<Vector2> vertices, float density)
 		{
 			this.vertices = vertices.ToArray();
@@ -106,13 +106,13 @@ namespace Duality.Components.Physics
 				fixture.IsSensor = this.sensor;
 				fixture.Restitution = this.restitution;
 				fixture.Friction = this.friction;
-			
+
 				PolygonShape shape = fixture.Shape as PolygonShape;
 				shape.Density = this.density;
 			}
 		}
 
-		private void EnsureDecomposedPolygons()
+		internal void EnsureDecomposedPolygons()
 		{
 			if (this.convexPolygons != null && this.convexPolygons.Count > 0) return;
 			if (this.convexPolygons == null)
@@ -172,8 +172,8 @@ namespace Duality.Components.Physics
 					{
 						Vertices farseerPolygon = VerticesToFarseer(polygon, scale);
 						Fixture fixture = new Fixture(
-							body, 
-							new PolygonShape(farseerPolygon, this.density), 
+							body,
+							new PolygonShape(farseerPolygon, this.density),
 							this);
 						this.fixtures.Add(fixture);
 						this.Parent.CheckValidTransform();
@@ -201,34 +201,41 @@ namespace Duality.Components.Physics
 
 		public override bool IntersectsWith(Box box)
 		{
-			var offset = this.Offset;
-			// Check if one of the vertices is inside the box
-			for (int i = 0; i < this.vertices.Length; i++)
+			Transform transform = this.Transform;
+			foreach (Vector2[] convexPolygon in this.convexPolygons)
 			{
-				Vector2 vert = this.vertices[i] + offset;
-				if (box.Contains(vert)) return true;
+				Vector2[] transformedConvexPolygon = new Vector2[convexPolygon.Length];
+				for (int i = 0; i < transformedConvexPolygon.Length; i++)
+				{
+					transformedConvexPolygon[i] = transform.GetWorldPoint(convexPolygon[i]);
+				}
+
+				// Check if one of the vertices is inside the box
+				for (int i = 0; i < transformedConvexPolygon.Length; i++)
+				{
+					if (box.Contains(transformedConvexPolygon[i])) return true;
+				}
+
+				// Check if the polygon contains one of the points of the AABB
+				if (Contains(box.P1, transformedConvexPolygon)) return true;
+				if (Contains(box.P2, transformedConvexPolygon)) return true;
+				if (Contains(box.P3, transformedConvexPolygon)) return true;
+				if (Contains(box.P4, transformedConvexPolygon)) return true;
 			}
-
-			// Check if the polygon contains one of the points of the AABB
-			if (Contains(box.P1 - offset)) return true;
-			if (Contains(box.P2 - offset)) return true;
-			if (Contains(box.P3 - offset)) return true;
-			if (Contains(box.P4 - offset)) return true;
-
 			return false;
 		}
 
-		private bool Contains(Vector2 p)
+		private bool Contains(Vector2 p, Vector2[] convexPolygon)
 		{
 			bool oddNodes = false;
 			int i = 0;
-			int j = this.vertices.Length - 1;
+			int j = convexPolygon.Length - 1;
 
-			for (i = 0; i < this.vertices.Length; i++)
+			for (i = 0; i < convexPolygon.Length; i++)
 			{
-				if ((this.vertices[i].Y < p.Y && this.vertices[j].Y >= p.Y || this.vertices[j].Y < p.Y && this.vertices[i].Y >= p.Y) && (this.vertices[i].X <= p.X || this.vertices[j].X <= p.X))
+				if ((convexPolygon[i].Y < p.Y && convexPolygon[j].Y >= p.Y || convexPolygon[j].Y < p.Y && convexPolygon[i].Y >= p.Y) && (convexPolygon[i].X <= p.X || convexPolygon[j].X <= p.X))
 				{
-					oddNodes ^= (this.vertices[i].X + (p.Y - this.vertices[i].Y) / (this.vertices[j].Y - this.vertices[i].Y) * (this.vertices[j].X - this.vertices[i].X) < p.X);
+					oddNodes ^= (convexPolygon[i].X + (p.Y - convexPolygon[i].Y) / (convexPolygon[j].Y - convexPolygon[i].Y) * (convexPolygon[j].X - convexPolygon[i].X) < p.X);
 				}
 
 				j = i;

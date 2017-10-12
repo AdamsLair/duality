@@ -101,20 +101,22 @@ namespace Duality.Components.Physics
 		}
 
 		public override bool IntersectsWith(Box box)
-		{			
-			Vector2 offset = this.Offset;
-			float distX = MathF.Abs(this.position.X + offset.X - box.P1.X - box.Size.X / 2);
-			float distY = MathF.Abs(this.position.Y + offset.Y - box.P1.Y - box.Size.Y / 2);
+		{
+			Transform transform = this.Transform;
+			Vector2 worldPosition = transform.GetWorldPoint(this.position);
+			float worldRadius = transform.Scale * this.radius;
+			float distX = MathF.Abs(worldPosition.X - box.P1.X - box.Size.X / 2);
+			float distY = MathF.Abs(worldPosition.Y - box.P1.Y - box.Size.Y / 2);
 			
-			if (distX > (box.Size.X / 2 + this.radius)) { return false; }
-			if (distY > (box.Size.Y / 2 + this.radius)) { return false; }
+			if (distX > (box.Size.X / 2 + worldRadius)) { return false; }
+			if (distY > (box.Size.Y / 2 + worldRadius)) { return false; }
 
 			if (distX <= (box.Size.X / 2)) { return true; }
 			if (distY <= (box.Size.Y / 2)) { return true; }
 
 			float dx = distX - box.Size.X / 2;
 			float dy = distY - box.Size.Y / 2;
-			return (dx * dx + dy * dy <= (this.radius * this.radius));
+			return (dx * dx + dy * dy <= (worldRadius * worldRadius));
 		}
 	}
 }

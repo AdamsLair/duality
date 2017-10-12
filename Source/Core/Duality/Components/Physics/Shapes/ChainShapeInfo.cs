@@ -132,18 +132,23 @@ namespace Duality.Components.Physics
 
 		public override bool IntersectsWith(Box box)
 		{
-			Vector2 offset = this.Offset;
-			Vector2 p3;
-			Vector2 p4;
-			for (int i = 0; i < this.vertices.Length - 1; i++)
+			Transform transform = this.Transform;
+			return ChainIntersectsWithBox(box, transform, this.vertices);
+		}
+
+		internal static bool ChainIntersectsWithBox(Box box, Transform transform, Vector2[] vertices)
+		{
+			Vector2 lineStart;
+			Vector2 lineEnd;
+			for (int i = 0; i < vertices.Length - 1; i++)
 			{
-				p3 = this.vertices[i] + offset;
-				p4 = this.vertices[i + 1] + offset;
-				if (box.LineIntersects(p3, p4)) return true;
+				lineStart = transform.GetWorldPoint(vertices[i]);
+				lineEnd = transform.GetWorldPoint(vertices[i + 1]);
+				if (box.LineIntersects(lineStart, lineEnd)) return true;
 			}
-			p3 = this.vertices[0];
-			p4 = this.vertices[this.vertices.Length - 1];
-			if (box.LineIntersects(p3, p4)) return true;
+			lineStart = transform.GetWorldPoint(vertices[0]);
+			lineEnd = transform.GetWorldPoint(vertices[vertices.Length - 1]);
+			if (box.LineIntersects(lineStart, lineEnd)) return true;
 
 			return false;
 		}
