@@ -783,60 +783,6 @@ namespace Duality.Components.Physics
 			return pickedShapes.Count > oldCount;
 		}
 
-		public bool PickShapesOld(Vector2 worldCoord, Vector2 size, List<ShapeInfo> pickedShapes)
-		{
-			if (this.body == null) return false;
-
-			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
-			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsUnit.LengthToPhysical * (worldCoord + size));
-
-			int oldCount = pickedShapes.Count;
-			for (int i = 0; i < this.body.FixtureList.Count; i++)
-			{
-				Fixture f = this.body.FixtureList[i];
-				ShapeInfo s = f.UserData as ShapeInfo;
-
-				FarseerPhysics.Collision.AABB fAABB;
-				FarseerPhysics.Common.Transform transform;
-				this.body.GetTransform(out transform);
-				f.Shape.ComputeAABB(out fAABB, ref transform, 0);
-
-				if (fsWorldAABB.Contains(ref fAABB))
-				{
-					pickedShapes.Add(s);
-					continue;
-				}
-				else if (!FarseerPhysics.Collision.AABB.TestOverlap(ref fsWorldAABB, ref fAABB))
-					continue;
-
-				FarseerPhysics.Collision.AABB fAABBIntersect;
-				fAABBIntersect.LowerBound = Vector2.Max(fAABB.LowerBound, fsWorldAABB.LowerBound);
-				fAABBIntersect.UpperBound = Vector2.Min(fAABB.UpperBound, fsWorldAABB.UpperBound);
-
-				Vector2 fsWorldCoordStep = PhysicsUnit.LengthToPhysical * (new Vector2(MathF.Max(s.AABB.W, 1.0f), MathF.Max(s.AABB.H, 1.0f)) * 0.05f);
-				Vector2 fsTemp = fAABBIntersect.LowerBound;
-				do
-				{
-					if (f.TestPoint(ref fsTemp))
-					{
-						pickedShapes.Add(s);
-						break;
-					}
-
-					fsTemp.X += fsWorldCoordStep.X;
-					if (fsTemp.X > fAABBIntersect.UpperBound.X)
-					{
-						fsTemp.X = fAABBIntersect.LowerBound.X;
-						fsTemp.Y += fsWorldCoordStep.Y;
-					}
-					if (fsTemp.Y > fAABBIntersect.UpperBound.Y) break;
-				} while (true);
-			}
-
-			return pickedShapes.Count > oldCount;
-		}
-
-
 		internal bool FlagBodyShape()
 		{
 			if (this.body == null) return false;
