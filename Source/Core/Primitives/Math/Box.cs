@@ -24,7 +24,7 @@
 
 		public bool LineIntersects(Vector2 lineStart, Vector2 lineEnd)
 		{
-			return Contains(lineStart) || 
+			return Contains(lineStart) ||
 				   Contains(lineEnd) ||
 				   LineIntersectsLine(lineStart, lineEnd, this.P1, this.P2) ||
 				   LineIntersectsLine(lineStart, lineEnd, this.P2, this.P3) ||
@@ -34,13 +34,19 @@
 
 		private static bool LineIntersectsLine(Vector2 startLine1, Vector2 endLine1, Vector2 startLine2, Vector2 endLine2)
 		{
-			float d = Vector2.Cross(endLine1.X - startLine1.X, endLine1.Y - startLine1.Y, endLine2.X - startLine2.X, endLine2.Y - startLine2.Y);
+			float line1dX = endLine1.X - startLine1.X;
+			float line1dY = endLine1.Y - startLine1.Y;
+			float line2dX = endLine2.X - startLine2.X;
+			float line2dY = endLine2.Y - startLine2.Y;
+			float d = Vector2.Cross(line1dX, line1dY, line2dX, line2dY);
 			if (d == 0) return false;
 
-			float r = Vector2.Cross(startLine1.Y - startLine2.Y, startLine1.X - startLine2.X, endLine2.Y - startLine2.Y, endLine2.X - startLine2.X) / d;
+			float line1line2dX = startLine1.X - startLine2.X;
+			float line1line2dY = startLine1.Y - startLine2.Y;
+			float r = Vector2.Cross(line1line2dY, line1line2dX, line2dY, line2dX) / d;
 			if (r < 0 || r > 1) return false;
 
-			float s = Vector2.Cross(startLine1.Y - startLine2.Y, startLine1.X - startLine2.X, endLine1.Y - startLine1.Y, endLine1.X - startLine1.X) / d;
+			float s = Vector2.Cross(line1line2dY, line1line2dX, line1dY, line1dX) / d;
 			if (s < 0 || s > 1) return false;
 
 			return true;
