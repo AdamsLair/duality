@@ -9,6 +9,9 @@ using Duality.Editor;
 using Duality.Cloning;
 using Duality.Resources;
 using Duality.Properties;
+using FarseerPhysics.Common;
+using FarseerPhysics.Collision;
+using FarseerPhysics.Collision.Shapes;
 
 namespace Duality.Components.Physics
 {
@@ -208,7 +211,7 @@ namespace Duality.Components.Physics
 			{
 				if (this.shapes != null)
 				{
-					foreach (var s in this.shapes)
+					foreach (ShapeInfo s in this.shapes)
 						s.Friction = value;
 				}
 			}
@@ -225,7 +228,7 @@ namespace Duality.Components.Physics
 			{
 				if (this.shapes != null)
 				{
-					foreach (var s in this.shapes)
+					foreach (ShapeInfo s in this.shapes)
 						s.Restitution = value;
 				}
 			}
@@ -772,50 +775,65 @@ namespace Duality.Components.Physics
 		{
 			if (this.body == null) return false;
 
-			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
-			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsUnit.LengthToPhysical * (worldCoord + size));
-
+			PolygonShape boxShape = new PolygonShape(new Vertices(new List<Vector2>() {
+				PhysicsUnit.LengthToPhysical * worldCoord,
+				PhysicsUnit.LengthToPhysical * new Vector2(worldCoord.X + size.X, worldCoord.Y),
+				PhysicsUnit.LengthToPhysical * (worldCoord + size),
+				PhysicsUnit.LengthToPhysical * new Vector2(worldCoord.X, worldCoord.Y + size.Y) }), 1);
+			Mat22 rot = new Mat22();
+			rot.SetIdentity();
+			Vector2 pos = new Vector2(0, 0);
+			FarseerPhysics.Common.Transform boxTransform = new FarseerPhysics.Common.Transform(ref pos, ref rot);
+			Manifold manifold = new Manifold();
 			int oldCount = pickedShapes.Count;
+
+			FarseerPhysics.Common.Transform bodyTransform;
+			this.body.GetTransform(out bodyTransform);
+
 			for (int i = 0; i < this.body.FixtureList.Count; i++)
 			{
 				Fixture f = this.body.FixtureList[i];
 				ShapeInfo s = f.UserData as ShapeInfo;
-
-				FarseerPhysics.Collision.AABB fAABB;
-				FarseerPhysics.Common.Transform transform;
-				this.body.GetTransform(out transform);
-				f.Shape.ComputeAABB(out fAABB, ref transform, 0);
-				
-				if (fsWorldAABB.Contains(ref fAABB))
+				PolygonShape polygonShape = f.Shape as PolygonShape;
+				if (polygonShape != null)
 				{
-					pickedShapes.Add(s);
-					continue;
-				}
-				else if (!FarseerPhysics.Collision.AABB.TestOverlap(ref fsWorldAABB, ref fAABB))
-					continue;
-
-				FarseerPhysics.Collision.AABB fAABBIntersect;
-				fAABBIntersect.LowerBound = Vector2.Max(fAABB.LowerBound, fsWorldAABB.LowerBound);
-				fAABBIntersect.UpperBound = Vector2.Min(fAABB.UpperBound, fsWorldAABB.UpperBound);
-
-				Vector2 fsWorldCoordStep = PhysicsUnit.LengthToPhysical * (new Vector2(MathF.Max(s.AABB.W, 1.0f), MathF.Max(s.AABB.H, 1.0f)) * 0.05f);
-				Vector2 fsTemp = fAABBIntersect.LowerBound;
-				do
-				{
-					if (f.TestPoint(ref fsTemp))
+					Collision.CollidePolygons(ref manifold, boxShape, ref boxTransform, polygonShape, ref bodyTransform);
+					if (manifold.PointCount > 0)
 					{
 						pickedShapes.Add(s);
-						break;
+						continue;
 					}
+				}
 
-					fsTemp.X += fsWorldCoordStep.X;
-					if (fsTemp.X > fAABBIntersect.UpperBound.X)
+				CircleShape circleShape = f.Shape as CircleShape;
+				if (circleShape != null)
+				{
+					Collision.CollidePolygonAndCircle(ref manifold, boxShape, ref boxTransform, circleShape, ref bodyTransform);
+					if (manifold.PointCount > 0)
 					{
-						fsTemp.X = fAABBIntersect.LowerBound.X;
-						fsTemp.Y += fsWorldCoordStep.Y;
+						pickedShapes.Add(s);
+						continue;
 					}
-					if (fsTemp.Y > fAABBIntersect.UpperBound.Y) break;
-				} while (true);
+				}
+
+				// This one is still buggy
+				//var chainShape = f.Shape as ChainShape;
+				//if (chainShape != null)
+				//{
+
+				//	for (int j = 0; j < chainShape.Vertices.Count - 1; j++)
+				//	{
+				//		var jNext = j + 1;
+				//		if (jNext >= chainShape.Vertices.Count) jNext = 0;
+				//		var edgeShape = new EdgeShape(chainShape.Vertices[j], chainShape.Vertices[jNext]);
+				//		Collision.CollideEdgeAndPolygon(ref manifold, edgeShape, ref bodyTransform, boxShape, ref boxTransform);
+				//		if (manifold.PointCount > 0)
+				//		{
+				//			pickedShapes.Add(s);
+				//			break;
+				//		}
+				//	}
+				//}
 			}
 
 			return pickedShapes.Count > oldCount;
