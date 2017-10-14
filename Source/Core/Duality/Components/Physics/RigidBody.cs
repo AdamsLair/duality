@@ -1584,6 +1584,7 @@ namespace Duality.Components.Physics
 		{
 			List<RigidBody> potentialBodies = new List<RigidBody>();
 			QueryRectGlobal(worldCoord, size, potentialBodies);
+			if (potentialBodies.Count == 0) return false;
 
 			PolygonShape boxShape = new PolygonShape(new Vertices(new List<Vector2>
 			{
