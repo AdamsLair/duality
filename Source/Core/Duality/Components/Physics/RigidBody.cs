@@ -746,6 +746,7 @@ namespace Duality.Components.Physics
 
 			return pickedShapes.Count > oldCount;
 		}
+
 		/// <summary>
 		/// Performs a physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
 		/// intersect the specified world coordinate area.
@@ -760,6 +761,7 @@ namespace Duality.Components.Physics
 			this.PickShapes(worldCoord, size, picked);
 			return picked;
 		}
+
 		/// <summary>
 		/// Performs a physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
 		/// intersect the specified world coordinate area.
@@ -792,6 +794,7 @@ namespace Duality.Components.Physics
 		private bool PickShapes(PolygonShape boxShape, FarseerPhysics.Common.Transform boxTransform, List<ShapeInfo> pickedShapes)
 		{			
 			Manifold manifold = new Manifold();
+
 			FarseerPhysics.Common.Transform bodyTransform;
 			this.body.GetTransform(out bodyTransform);
 
@@ -827,8 +830,7 @@ namespace Duality.Components.Physics
 			}
 			return pickedShapes.Count > oldCount;
 		}
-		
-		
+				
 		internal bool FlagBodyShape()
 		{
 			if (this.body == null) return false;
