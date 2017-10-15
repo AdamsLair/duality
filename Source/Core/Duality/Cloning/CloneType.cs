@@ -174,7 +174,11 @@ namespace Duality.Cloning
 				typeof(MemberInfo).GetTypeInfo().IsAssignableFrom(this.type); /* Handle MemberInfo like POD */ 
 			this.investigateOwnership = !this.plainOldData;
 			this.surrogate = CloneProvider.GetSurrogateFor(this.type);
-			if (this.type.IsArray) this.elementType = CloneProvider.GetCloneType(this.type.GetElementType());
+			if (this.type.IsArray)
+			{
+				if (this.type.GetArrayRank() > 1) throw new NotSupportedException("Duality does not support multidimensional arrays. Please use a single dimensional array or use the Grid<T> class");
+				this.elementType = CloneProvider.GetCloneType(this.type.GetElementType());
+			}
 
 			CloneBehaviorAttribute defaultBehaviorAttrib = CloneProvider.GetCloneBehaviorAttribute(this.type);
 			if (defaultBehaviorAttrib != null && defaultBehaviorAttrib.Behavior != CloneBehavior.Default)
