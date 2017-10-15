@@ -796,16 +796,16 @@ namespace Duality.Components.Physics
 			this.body.GetTransform(out bodyTransform);
 
 			int oldCount = pickedShapes.Count;
-			foreach (Fixture f in this.body.FixtureList)
+			foreach (Fixture fixture in this.body.FixtureList)
 			{
-				switch (f.ShapeType)
+				switch (fixture.ShapeType)
 				{
 					case ShapeType.Circle:
-						CircleShape circleShape = (CircleShape)f.Shape;
+						CircleShape circleShape = (CircleShape)fixture.Shape;
 						Collision.CollidePolygonAndCircle(ref manifold, boxShape, ref boxTransform, circleShape, ref bodyTransform);
 						break;
 					case ShapeType.Polygon:
-						PolygonShape polygonShape = (PolygonShape)f.Shape;
+						PolygonShape polygonShape = (PolygonShape)fixture.Shape;
 						Collision.CollidePolygons(ref manifold, boxShape, ref boxTransform, polygonShape, ref bodyTransform);
 						break;
 					case ShapeType.Chain:
@@ -824,7 +824,7 @@ namespace Duality.Components.Physics
 				}
 				if (manifold.PointCount > 0)
 				{
-					ShapeInfo shape = f.UserData as ShapeInfo;
+					ShapeInfo shape = fixture.UserData as ShapeInfo;
 					if (shape != null && !pickedShapes.Contains(shape))
 					{
 						pickedShapes.Add(shape);
