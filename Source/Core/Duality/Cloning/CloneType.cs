@@ -176,7 +176,13 @@ namespace Duality.Cloning
 			this.surrogate = CloneProvider.GetSurrogateFor(this.type);
 			if (this.type.IsArray)
 			{
-				if (this.type.GetArrayRank() > 1) throw new NotSupportedException("Duality does not support multidimensional arrays. Please use a single dimensional array or use the Grid<T> class");
+				if (this.type.GetArrayRank() > 1)
+				{
+					throw new NotSupportedException(
+						"Cloning multidimensional arrays is not supported in Duality. " +
+						"Consider skipping the referring field via [CloneField] or [DontSerialize] " +
+						"attribute, or use a regular array instead.");
+				}
 				this.elementType = CloneProvider.GetCloneType(this.type.GetElementType());
 			}
 
