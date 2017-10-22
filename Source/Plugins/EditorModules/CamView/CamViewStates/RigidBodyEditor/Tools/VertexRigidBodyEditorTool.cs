@@ -156,7 +156,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			// For polygons, just edit the vertices directly. We'll emit a custom 
 			// UndoRedo action when ending the operation.
-			else
+			else if (this.activeVertex != -1)
 			{
 				Vector2[] activeShapeVertices = this.GetVertices(this.activeShape);
 				Vector2 oldLocalPos = activeShapeVertices[this.activeVertex];
