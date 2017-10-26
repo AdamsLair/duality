@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>0649, 0169, 0067</NoWarn>
+    <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,6 +43,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>0649, 0169, 0067</NoWarn>
+    <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
@@ -74,6 +76,7 @@
     <Compile Include="Cloning\HelperObjects\TestData.cs" />
     <Compile Include="Cloning\HelperObjects\TestResource.cs" />
     <Compile Include="Cloning\SpecificCloningTest.cs" />
+    <Compile Include="Components\CollisionEventReceiver.cs" />
     <Compile Include="Components\ComponentExecutionOrderTest.cs" />
     <Compile Include="Components\ComponentRequirementMapTest.cs" />
     <Compile Include="Components\ExecutionOrderTest\EventOrderLog.cs" />

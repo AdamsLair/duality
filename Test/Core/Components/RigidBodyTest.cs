@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.IO;
-using System.Reflection;
 
-using Duality;
-using Duality.Cloning;
 using Duality.Components;
 using Duality.Components.Physics;
+using Duality.Resources;
 
 using NUnit.Framework;
 
@@ -16,6 +12,49 @@ namespace Duality.Tests.Components
 	[TestFixture]
 	public class RigidBodyTest
 	{
+		[Test] public void FallingBallOnPlatform()
+		{
+			Scene scene = new Scene();
+			Scene.SwitchTo(scene);
+
+			// Create the ball
+			GameObject ball = new GameObject("Ball");
+			Transform ballTransform = ball.AddComponent<Transform>();
+			RigidBody ballBody = ball.AddComponent<RigidBody>();
+			ballBody.Restitution = 0f;
+			CollisionEventReceiver listener = ball.AddComponent<CollisionEventReceiver>();
+			ballBody.AddShape(new CircleShapeInfo(1, new Vector2(0, 0), 1));
+			scene.AddObject(ball);
+
+			// Create the platform
+			GameObject platform = new GameObject("Platform");
+			Transform platformTrans = platform.AddComponent<Transform>();
+			platformTrans.Pos = new Vector3(0, 5, 0);
+			RigidBody platformBody = platform.AddComponent<RigidBody>();
+			platformBody.Restitution = 0f;
+			platformBody.AddShape(new ChainShapeInfo(new[] { new Vector2(-1, 0), new Vector2(1, 0), }));
+			platformBody.BodyType = BodyType.Static;
+			scene.AddObject(platform);
+
+			// Simulate some update steps
+			for (int i = 0; i < 10; i++)
+			{
+				DualityApp.Update(true);
+			}
+
+			// Check if the position is within expected values
+			Assert.IsTrue(ballTransform.Pos.Y > 3f);
+			Assert.IsTrue(ballTransform.Pos.Y < 5f);
+			Assert.IsTrue(Math.Abs(ballTransform.Pos.X) < 0.01f);
+			Assert.IsTrue(Math.Abs(ballTransform.Pos.Z) < 0.01f);
+
+			// Check if the collision events were triggered
+			// First one should always be a begin
+			Assert.IsTrue(listener.Collisions[0].Type == CollisionEventReceiver.CollisionType.Begin); 
+			// The ones after that should all be of type Solve. There should be no event of type End since there is no bouncing.
+			Assert.IsTrue(listener.Collisions.Skip(1).All(x => x.Type == CollisionEventReceiver.CollisionType.Solve)); 
+		}
+
 		[Test] public void CreateEmptyBody()
 		{
 			// Create a new RigidBody

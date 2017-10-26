@@ -459,7 +459,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private bool BeginToolAction(RigidBodyEditorTool action, MouseButtons mouseButton)
 		{
 			if (this.actionTool == action) return true;
-			if (!action.CanBeginAction(mouseButton)) return false;
+			if (!action.CanBeginAction(mouseButton) || this.selectedBody == null) return false;
 
 			if (this.actionTool != this.toolNone)
 				this.EndToolAction();
