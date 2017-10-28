@@ -26,7 +26,7 @@ namespace Duality.Editor
 		public const string SourceCodeDirectory					= SourceDirectory + @"\Code";
 		public const string SourceCodeProjectCorePluginDir		= SourceCodeDirectory + @"\CorePlugin";
 		public const string SourceCodeProjectEditorPluginDir	= SourceCodeDirectory + @"\EditorPlugin";
-		public const string SourceCodeSolutionFile				= SourceCodeDirectory + @"\ProjectPlugins.sln";
+		public const string DefaultSourceCodeSolutionFile		= SourceCodeDirectory + @"\ProjectPlugins.sln";
 		public const string SourceCodeProjectCorePluginFile		= SourceCodeProjectCorePluginDir + @"\CorePlugin.csproj";
 		public const string SourceCodeProjectEditorPluginFile	= SourceCodeProjectEditorPluginDir + @"\EditorPlugin.csproj";
 		public const string SourceCodeErrorHandlerFile			= SourceCodeProjectCorePluginDir + @"\Properties\ErrorHandlers.cs";
@@ -39,6 +39,17 @@ namespace Duality.Editor
 
 		private static bool isJitDebuggerAvailable;
 		private static VisualStudioEdition vsEdition;
+
+		/// <summary>
+		/// The path to the *.sln solution file. Will return null if the solution file has not yet been created.
+		/// </summary>
+		public static string SourceCodeSolutionFilePath
+		{
+			get
+			{
+				return Directory.EnumerateFiles(SourceCodeDirectory, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
+			}
+		}
 
 		public static string CurrentProjectName
 		{
@@ -240,7 +251,7 @@ namespace Duality.Editor
 				}
 
 				// Compile plugins
-				BuildHelper.BuildSolutionFile(EditorHelper.SourceCodeSolutionFile, "Release");
+				BuildHelper.BuildSolutionFile(EditorHelper.SourceCodeSolutionFilePath, "Release");
 			}
 			finally
 			{

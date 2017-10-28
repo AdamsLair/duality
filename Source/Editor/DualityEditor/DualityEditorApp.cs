@@ -737,15 +737,20 @@ namespace Duality.Editor
 		
 		public static void UpdatePluginSourceCode()
 		{
+			string sourceCodeSolutionFile = EditorHelper.SourceCodeSolutionFilePath;
 			// Initially generate source code, if not existing yet
-			if (!File.Exists(EditorHelper.SourceCodeSolutionFile)) InitPluginSourceCode();
-			
+			if (sourceCodeSolutionFile == null)
+			{
+				InitPluginSourceCode();
+				sourceCodeSolutionFile = EditorHelper.DefaultSourceCodeSolutionFile;
+			}
+
 			// Replace exec path in user files, since VS doesn't support relative paths there..
 			{
 				XDocument projectDoc;
 				string coreProjectFile = EditorHelper.SourceCodeProjectCorePluginFile;
 				string editorProjectFile = EditorHelper.SourceCodeProjectEditorPluginFile;
-				string solutionDir = Path.GetFullPath(Path.GetDirectoryName(EditorHelper.SourceCodeSolutionFile));
+				string solutionDir = Path.GetFullPath(Path.GetDirectoryName(sourceCodeSolutionFile));
 
 				// Adjust the core plugin startup parameters, if a core plugin exists under the expected name
 				if (File.Exists(coreProjectFile))
@@ -850,7 +855,7 @@ namespace Duality.Editor
 		public static void InitPluginSourceCode()
 		{
 			// Check if the solution file has to be created		
-			if (!Directory.EnumerateFiles(EditorHelper.SourceCodeDirectory, "*.sln", SearchOption.AllDirectories).Any())
+			if (EditorHelper.SourceCodeSolutionFilePath == null)
 			{
 				// Create solution file
 				using (MemoryStream gamePluginStream = new MemoryStream(Properties.GeneralRes.GamePluginTemplate))
