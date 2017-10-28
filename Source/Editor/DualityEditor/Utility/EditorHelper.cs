@@ -26,7 +26,6 @@ namespace Duality.Editor
 		public const string SourceCodeDirectory					= SourceDirectory + @"\Code";
 		public const string SourceCodeProjectCorePluginDir		= SourceCodeDirectory + @"\CorePlugin";
 		public const string SourceCodeProjectEditorPluginDir	= SourceCodeDirectory + @"\EditorPlugin";
-		[Obsolete("Use DualityEditorApp.SolutionFileName")]
 		public const string SourceCodeSolutionFile				= SourceCodeDirectory + @"\ProjectPlugins.sln";
 		public const string SourceCodeProjectCorePluginFile		= SourceCodeProjectCorePluginDir + @"\CorePlugin.csproj";
 		public const string SourceCodeProjectEditorPluginFile	= SourceCodeProjectEditorPluginDir + @"\EditorPlugin.csproj";
@@ -241,7 +240,7 @@ namespace Duality.Editor
 				}
 
 				// Compile plugins
-				BuildHelper.BuildSolutionFile(DualityEditorApp.SolutionFileName, "Release");
+				BuildHelper.BuildSolutionFile(EditorHelper.SourceCodeSolutionFile, "Release");
 			}
 			finally
 			{

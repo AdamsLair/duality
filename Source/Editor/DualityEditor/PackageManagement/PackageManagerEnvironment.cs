@@ -105,7 +105,7 @@ namespace Duality.Editor.PackageManagement
 		/// </summary>
 		public string TargetSolutionPathRelative
 		{
-			get { return DualityEditorApp.SolutionFileName; }
+			get { return EditorHelper.SourceCodeSolutionFile; }
 		}
 
 
