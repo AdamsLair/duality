@@ -739,7 +739,7 @@ namespace Duality.Editor
 		{
 			string sourceCodeSolutionFile = EditorHelper.SourceCodeSolutionFilePath;
 			// Initially generate source code, if not existing yet
-			if (sourceCodeSolutionFile == null)
+			if (!File.Exists(sourceCodeSolutionFile))
 			{
 				InitPluginSourceCode();
 				sourceCodeSolutionFile = EditorHelper.DefaultSourceCodeSolutionFile;
