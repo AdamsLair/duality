@@ -45,3 +45,9 @@ artifacts:
 #    name: "All NuGet Packages"
   - path: 'Build\NightlyBuild\NuGetPackages\*.nupkg'
     name: "NuGet Packages"
+
+deploy:
+  - provider: Environment
+    name: NuGetPackageRelease
+    on:
+      branch: release
