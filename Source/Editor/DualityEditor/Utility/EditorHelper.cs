@@ -41,13 +41,14 @@ namespace Duality.Editor
 		private static VisualStudioEdition vsEdition;
 
 		/// <summary>
-		/// The path to the *.sln solution file. Will return null if the solution file has not yet been created.
+		/// The path to the *.sln solution file. Will return <see cref="DefaultSourceCodeSolutionFile"/> if the solution file has not yet been created.
 		/// </summary>
 		public static string SourceCodeSolutionFilePath
 		{
 			get
 			{
-				return Directory.EnumerateFiles(SourceCodeDirectory, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
+				string sourceCodeSolutionFilePath = Directory.EnumerateFiles(SourceCodeDirectory, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
+				return sourceCodeSolutionFilePath ?? DefaultSourceCodeSolutionFile;
 			}
 		}
 
