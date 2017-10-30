@@ -47,7 +47,15 @@ namespace Duality.Editor
 		{
 			get
 			{
-				string sourceCodeSolutionFilePath = Directory.EnumerateFiles(SourceCodeDirectory, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
+				string sourceCodeSolutionFilePath = null;
+				if (Directory.Exists(SourceCodeDirectory))
+				{
+					sourceCodeSolutionFilePath = Directory.EnumerateFiles(
+						SourceCodeDirectory, 
+						"*.sln", 
+						SearchOption.AllDirectories)
+						.FirstOrDefault();
+				}
 				return sourceCodeSolutionFilePath ?? DefaultSourceCodeSolutionFile;
 			}
 		}
