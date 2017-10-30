@@ -566,7 +566,7 @@ namespace Duality.Editor.Forms
 		private void actionOpenCode_Click(object sender, EventArgs e)
 		{
 			DualityEditorApp.UpdatePluginSourceCode();
-			System.Diagnostics.Process.Start(EditorHelper.SourceCodeSolutionFile);
+			System.Diagnostics.Process.Start(EditorHelper.SourceCodeSolutionFilePath);
 		}
 		private void actionPublishGame_Click(object sender, EventArgs e) {
 			PublishGameDialog dialog = new PublishGameDialog();
