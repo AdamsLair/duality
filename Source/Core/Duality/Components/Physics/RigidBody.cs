@@ -9,6 +9,9 @@ using Duality.Editor;
 using Duality.Cloning;
 using Duality.Resources;
 using Duality.Properties;
+using FarseerPhysics.Common;
+using FarseerPhysics.Collision;
+using FarseerPhysics.Collision.Shapes;
 
 namespace Duality.Components.Physics
 {
@@ -209,7 +212,7 @@ namespace Duality.Components.Physics
 			{
 				if (this.shapes != null)
 				{
-					foreach (var s in this.shapes)
+					foreach (ShapeInfo s in this.shapes)
 						s.Friction = value;
 				}
 			}
@@ -226,7 +229,7 @@ namespace Duality.Components.Physics
 			{
 				if (this.shapes != null)
 				{
-					foreach (var s in this.shapes)
+					foreach (ShapeInfo s in this.shapes)
 						s.Restitution = value;
 				}
 			}
@@ -746,56 +749,66 @@ namespace Duality.Components.Physics
 		{
 			if (this.body == null) return false;
 
-			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
-			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsUnit.LengthToPhysical * (worldCoord + size));
+			PolygonShape boxShape = new PolygonShape(new Vertices(new List<Vector2>
+			{
+				PhysicsUnit.LengthToPhysical * worldCoord,
+				PhysicsUnit.LengthToPhysical * new Vector2(worldCoord.X + size.X, worldCoord.Y),
+				PhysicsUnit.LengthToPhysical * (worldCoord + size),
+				PhysicsUnit.LengthToPhysical * new Vector2(worldCoord.X, worldCoord.Y + size.Y) 
+			}), 1);
+
+			FarseerPhysics.Common.Transform boxTransform = new FarseerPhysics.Common.Transform();
+			boxTransform.SetIdentity();
+			
+			return this.PickShapes(boxShape, boxTransform, pickedShapes);
+		}
+		private bool PickShapes(PolygonShape boxShape, FarseerPhysics.Common.Transform boxTransform, List<ShapeInfo> pickedShapes)
+		{			
+			Manifold manifold = new Manifold();
+
+			FarseerPhysics.Common.Transform bodyTransform;
+			this.body.GetTransform(out bodyTransform);
 
 			int oldCount = pickedShapes.Count;
-			for (int i = 0; i < this.body.FixtureList.Count; i++)
+			foreach (Fixture fixture in this.body.FixtureList)
 			{
-				Fixture f = this.body.FixtureList[i];
-				ShapeInfo s = f.UserData as ShapeInfo;
-
-				FarseerPhysics.Collision.AABB fAABB;
-				FarseerPhysics.Common.Transform transform;
-				this.body.GetTransform(out transform);
-				f.Shape.ComputeAABB(out fAABB, ref transform, 0);
-				
-				if (fsWorldAABB.Contains(ref fAABB))
+				switch (fixture.ShapeType)
 				{
-					pickedShapes.Add(s);
-					continue;
-				}
-				else if (!FarseerPhysics.Collision.AABB.TestOverlap(ref fsWorldAABB, ref fAABB))
-					continue;
-
-				FarseerPhysics.Collision.AABB fAABBIntersect;
-				fAABBIntersect.LowerBound = Vector2.Max(fAABB.LowerBound, fsWorldAABB.LowerBound);
-				fAABBIntersect.UpperBound = Vector2.Min(fAABB.UpperBound, fsWorldAABB.UpperBound);
-
-				Vector2 fsWorldCoordStep = PhysicsUnit.LengthToPhysical * (new Vector2(MathF.Max(s.AABB.W, 1.0f), MathF.Max(s.AABB.H, 1.0f)) * 0.05f);
-				Vector2 fsTemp = fAABBIntersect.LowerBound;
-				do
-				{
-					if (f.TestPoint(ref fsTemp))
-					{
-						pickedShapes.Add(s);
+					case ShapeType.Circle:
+						CircleShape circleShape = (CircleShape)fixture.Shape;
+						Collision.CollidePolygonAndCircle(ref manifold, boxShape, ref boxTransform, circleShape, ref bodyTransform);
 						break;
-					}
-
-					fsTemp.X += fsWorldCoordStep.X;
-					if (fsTemp.X > fAABBIntersect.UpperBound.X)
+					case ShapeType.Polygon:
+						PolygonShape polygonShape = (PolygonShape)fixture.Shape;
+						Collision.CollidePolygons(ref manifold, boxShape, ref boxTransform, polygonShape, ref bodyTransform);
+						break;
+					case ShapeType.Chain:
+						// This one is still buggy. Will be fixed in a later PR. For now just leave this disabled.
+						//ChainShape chainShape = (ChainShape)f.Shape;
+						//EdgeShape edgeShape = new EdgeShape(Vector2.Zero, Vector2.Zero);
+						//for (int j = 0; j < chainShape.Vertices.Count - 1; j++)
+						//{
+						//	chainShape.GetChildEdge(ref edgeShape, i);
+						//	Collision.CollideEdgeAndPolygon(ref manifold, edgeShape, ref bodyTransform, boxShape, ref boxTransform);
+						//	if (manifold.PointCount > 0) break;
+						//}
+						break;
+					default:
+						break;
+				}
+				if (manifold.PointCount > 0)
+				{
+					ShapeInfo shape = fixture.UserData as ShapeInfo;
+					if (shape != null && !pickedShapes.Contains(shape))
 					{
-						fsTemp.X = fAABBIntersect.LowerBound.X;
-						fsTemp.Y += fsWorldCoordStep.Y;
+						pickedShapes.Add(shape);
 					}
-					if (fsTemp.Y > fAABBIntersect.UpperBound.Y) break;
-				} while (true);
+				}
+				manifold.PointCount = 0;
 			}
-
 			return pickedShapes.Count > oldCount;
 		}
-		
-		
+				
 		internal bool FlagBodyShape()
 		{
 			if (this.body == null) return false;
@@ -1499,11 +1512,23 @@ namespace Duality.Components.Physics
 		{
 			List<RigidBody> potentialBodies = new List<RigidBody>();
 			QueryRectGlobal(worldCoord, size, potentialBodies);
+			if (potentialBodies.Count == 0) return false;
+
+			PolygonShape boxShape = new PolygonShape(new Vertices(new List<Vector2>
+			{
+				PhysicsUnit.LengthToPhysical * worldCoord,
+				PhysicsUnit.LengthToPhysical * new Vector2(worldCoord.X + size.X, worldCoord.Y),
+				PhysicsUnit.LengthToPhysical * (worldCoord + size),
+				PhysicsUnit.LengthToPhysical * new Vector2(worldCoord.X, worldCoord.Y + size.Y)
+			}), 1);
+
+			FarseerPhysics.Common.Transform boxTransform = new FarseerPhysics.Common.Transform();
+			boxTransform.SetIdentity();
 
 			int oldResultCount = pickedShapes.Count;
 			foreach (RigidBody body in potentialBodies)
 			{
-				body.PickShapes(worldCoord, size, pickedShapes);
+				body.PickShapes(boxShape, boxTransform, pickedShapes);
 			}
 
 			return pickedShapes.Count > oldResultCount;

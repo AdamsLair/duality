@@ -686,7 +686,7 @@ namespace Duality.Editor.PackageManagement
 				if (schemeName != null && Uri.CheckSchemeName(schemeName))
 					repositoryUrl = new Uri(repositoryUrl).AbsoluteUri;
 				else
-					repositoryUrl = new Uri("file:///" + Path.GetFullPath(Path.Combine(this.env.RootPath, repositoryUrl))).AbsolutePath;
+					repositoryUrl = Path.GetFullPath(Path.Combine(this.env.RootPath, repositoryUrl));
 			}
 			catch (UriFormatException)
 			{
