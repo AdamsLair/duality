@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Duality.Backend
 {
 	/// <summary>
-	/// Specifies an API for enumerating and loading plugin Assemblies.
+	/// Specifies an API for enumerating and dynamically loading Assemblies.
 	/// </summary>
 	public interface IAssemblyLoader
 	{
@@ -27,7 +27,7 @@ namespace Duality.Backend
 		/// </summary>
 		IEnumerable<string> BaseDirectories { get; }
 		/// <summary>
-		/// [GET] Enumerates all plugin Assemblies that are available for loading.
+		/// [GET] Enumerates all Assemblies that are available for loading.
 		/// </summary>
 		IEnumerable<string> AvailableAssemblyPaths { get; }
 		/// <summary>

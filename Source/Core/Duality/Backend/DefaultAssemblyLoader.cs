@@ -21,12 +21,12 @@ namespace Duality.Backend
 		{
 			get
 			{
-				List<string> availLibFiles = new List<string>();
+				List<string> searchDirectories = new List<string>();
 
 				// Add the working directory plugin folder
 				if (Directory.Exists(DualityApp.PluginDirectory)) 
 				{
-					availLibFiles.Add(DualityApp.PluginDirectory);
+					searchDirectories.Add(DualityApp.PluginDirectory);
 				}
 
 				// Add the executing directory plugin folder
@@ -37,10 +37,10 @@ namespace Duality.Backend
 					StringComparison.InvariantCultureIgnoreCase);
 				if (!sameDir && Directory.Exists(execPluginDir))
 				{
-					availLibFiles.Add(execPluginDir);
+					searchDirectories.Add(execPluginDir);
 				}
 
-				return availLibFiles;
+				return searchDirectories;
 			}
 		}
 		public IEnumerable<string> AvailableAssemblyPaths
@@ -184,19 +184,19 @@ namespace Duality.Backend
 			}
 			if (!isResourceAssembly)
 			{
-			if (args.RequestingAssembly != null)
-			{
-				Logs.Core.WriteWarning(
-					"Can't resolve Assembly '{0}' (as requested by '{1}'): None of the available assembly paths matches the requested name.",
-					args.Name,
-					LogFormat.Assembly(args.RequestingAssembly));
-			}
-			else
-			{
-				Logs.Core.WriteWarning(
-					"Can't resolve Assembly '{0}': None of the available assembly paths matches the requested name.",
-					args.Name);
-			}
+				if (args.RequestingAssembly != null)
+				{
+					Logs.Core.WriteWarning(
+						"Can't resolve Assembly '{0}' (as requested by '{1}'): None of the available assembly paths matches the requested name.",
+						args.Name,
+						LogFormat.Assembly(args.RequestingAssembly));
+				}
+				else
+				{
+					Logs.Core.WriteWarning(
+						"Can't resolve Assembly '{0}': None of the available assembly paths matches the requested name.",
+						args.Name);
+				}
 			}
 			return null;
 		}
