@@ -16,12 +16,12 @@
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
-    <DocumentationFile>Duality.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>full</DebugType>
@@ -30,10 +30,8 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <DocumentationFile>Duality.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -463,4 +461,13 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)FarseerDuality.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)FarseerDuality.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)NVorbis.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)NVorbis.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+  </Target>
 </Project>
