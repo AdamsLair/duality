@@ -30,7 +30,7 @@ namespace Duality.Editor
 		public static readonly string DefaultSourceCodeSolutionFile 	= Path.Combine(SourceCodeDirectory, @"ProjectPlugins.sln");
 		public static readonly string SourceCodeProjectCorePluginFile 	= Path.Combine(SourceCodeProjectCorePluginDir, @"CorePlugin.csproj");
 		public static readonly string SourceCodeProjectEditorPluginFile = Path.Combine(SourceCodeProjectEditorPluginDir, @"EditorPlugin.csproj");
-		public static readonly string SourceCodeErrorHandlerFile 		= Path.Combine(SourceCodeProjectCorePluginDir, @"Properties\ErrorHandlers.cs");
+		public static readonly string SourceCodeErrorHandlerFile 		= Path.Combine(SourceCodeProjectCorePluginDir, @"Properties", "ErrorHandlers.cs");
 		public static readonly string SourceCodeCorePluginFile 			= Path.Combine(SourceCodeProjectCorePluginDir, @"CorePlugin.cs");
 		public static readonly string SourceCodeComponentExampleFile 	= Path.Combine(SourceCodeProjectCorePluginDir, @"YourCustomComponentType.cs");
 		public static readonly string SourceCodeEditorPluginFile 		= Path.Combine(SourceCodeProjectEditorPluginDir, @"EditorPlugin.cs");
