@@ -42,6 +42,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		private		int			prevHash			= -1;
 
 		public abstract string ReferenceName { get; }
+		public abstract Type ReferenceType { get; }
 		public abstract bool ReferenceBroken { get; }
 
 
