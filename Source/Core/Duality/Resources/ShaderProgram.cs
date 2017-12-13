@@ -142,8 +142,8 @@ namespace Duality.Resources
 			List<AbstractShader> parts = new List<AbstractShader>();
 			parts.Add(VertexShader.BuiltinShaderFunctions.Res);
 			parts.Add(FragmentShader.BuiltinShaderFunctions.Res);
-			if (this.vert.Res != null) parts.Add(this.vert.Res);
-			if (this.frag.Res != null) parts.Add(this.frag.Res);
+			parts.Add(this.vert.Res ?? VertexShader.Minimal.Res);
+			parts.Add(this.frag.Res ?? FragmentShader.Minimal.Res);
 
 			// Ensure all shader parts are compiled
 			List<INativeShaderPart> nativeParts = new List<INativeShaderPart>();
