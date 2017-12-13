@@ -28,6 +28,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			get { return this.gameObj != null ? this.gameObj.FullName : null; }
 		}
+		public override Type ReferenceType
+		{
+			get { return typeof(GameObject); }
+		}
 		public override bool ReferenceBroken
 		{
 			get { return this.gameObj != null && this.gameObj.Disposed; }

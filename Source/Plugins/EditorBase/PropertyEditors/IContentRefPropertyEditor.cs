@@ -42,6 +42,11 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				return r.IsExplicitNull ? null : r.FullName;
 			}
 		}
+
+		public override Type ReferenceType
+		{
+			get { return this.editedResType; }
+		}
 		public override bool ReferenceBroken
 		{
 			get
