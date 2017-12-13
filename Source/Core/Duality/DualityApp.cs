@@ -492,7 +492,7 @@ namespace Duality
 		/// <summary>
 		/// Performs a single update cycle.
 		/// </summary>
-		/// <param name="forceFixedStep">If true use a timestep thats equal to <see cref="Time.MsPFMult"/> for the update</param>
+		/// <param name="forceFixedStep">If true use a timestep thats equal to <see cref="Time.MillisecondsPerFrame"/> for the update</param>
 		public static void Update(bool forceFixedStep)
 		{
 			isUpdating = true;

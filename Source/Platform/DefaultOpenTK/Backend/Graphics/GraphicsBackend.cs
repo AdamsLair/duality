@@ -345,7 +345,7 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 
 			// Create a window and keep track of it
-			this.activeWindow = new NativeWindow(defaultGraphicsMode, options);
+			this.activeWindow = new NativeWindow(this.defaultGraphicsMode, options);
 			return this.activeWindow;
 		}
 
