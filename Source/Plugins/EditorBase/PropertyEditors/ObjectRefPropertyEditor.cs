@@ -323,25 +323,37 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
+
+			bool leftMouseButtonUp = (e.Button & MouseButtons.Left) != MouseButtons.None;
+
 			this.panelDragBegin = Point.Empty;
-			if (this.buttonResetPressed && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			if (this.buttonResetPressed && leftMouseButtonUp)
 			{
 				if (this.buttonResetPressed && this.buttonResetHovered) this.ResetReference();
 				this.buttonResetPressed = false;
-				this.Invalidate();
 			}
-			else if (this.buttonShowPressed && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			else if (this.buttonShowPressed && leftMouseButtonUp)
 			{
-				if (this.buttonShowPressed && this.buttonShowHovered) this.ShowReferencedContent();
+				if (this.buttonShowPressed && this.buttonShowHovered)
+				{
+					// TODO: Open filtered selection view
+				}
 				this.buttonShowPressed = false;
-				this.Invalidate();
 			}
+			else if (this.panelHovered && leftMouseButtonUp)
+			{
+				this.ShowReferencedContent();
+			}
+
+			this.Invalidate();
 		}
 		protected override void OnMouseDoubleClick(MouseEventArgs e)
 		{
 			base.OnMouseDoubleClick(e);
 			if (this.panelHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
-				this.ShowReferencedContent();
+			{
+				// TODO: Select Object
+			}
 		}
 		protected override void OnDragOver(DragEventArgs e)
 		{
