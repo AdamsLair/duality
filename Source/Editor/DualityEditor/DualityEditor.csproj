@@ -122,6 +122,12 @@
     <Compile Include="Extensibility\Previews\PreviewQuery.cs" />
     <Compile Include="Extensibility\Previews\IPreviewQuery.cs" />
     <Compile Include="Extensibility\Previews\PreviewSizeMode.cs" />
+    <Compile Include="Forms\ContentSelectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ContentSelectionDialog.Designer.cs">
+      <DependentUpon>ContentSelectionDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\CreateObjectDialog.cs">
       <SubType>Form</SubType>
     </Compile>
