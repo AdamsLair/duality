@@ -394,6 +394,8 @@
     <EmbeddedResource Include="EmbeddedResources\SharpAlpha.frag" />
     <EmbeddedResource Include="EmbeddedResources\Cousine10.Font.res" />
     <EmbeddedResource Include="EmbeddedResources\Cousine8.Font.res" />
+    <EmbeddedResource Include="EmbeddedResources\BuiltinShaderFunctions.vert" />
+    <EmbeddedResource Include="EmbeddedResources\BuiltinShaderFunctions.frag" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -15,6 +15,11 @@ namespace Duality.Resources
 	public class FragmentShader : AbstractShader
 	{
 		/// <summary>
+		/// [GET] An abstract shader that contains all builtin shader functions provided
+		/// by Duality.
+		/// </summary>
+		public static ContentRef<FragmentShader> BuiltinShaderFunctions { get; private set; }
+		/// <summary>
 		/// [GET] A minimal FragmentShader. It performs a texture lookup
 		/// and applies vertex-coloring.
 		/// </summary>

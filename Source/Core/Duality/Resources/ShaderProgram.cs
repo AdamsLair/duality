@@ -138,16 +138,25 @@ namespace Duality.Resources
 			if (this.native == null)
 				this.native = DualityApp.GraphicsBackend.CreateShaderProgram();
 
-			// Assure both shaders are compiled
-			this.CompileIfRequired(this.vert.Res);
-			this.CompileIfRequired(this.frag.Res);
+			// Create a list of all shader parts that we'll be linking
+			List<AbstractShader> parts = new List<AbstractShader>();
+			parts.Add(VertexShader.BuiltinShaderFunctions.Res);
+			parts.Add(FragmentShader.BuiltinShaderFunctions.Res);
+			if (this.vert.Res != null) parts.Add(this.vert.Res);
+			if (this.frag.Res != null) parts.Add(this.frag.Res);
 
-			// Load the program with both shaders attached
-			INativeShaderPart nativeVert = this.vert.Res != null ? this.vert.Res.Native : null;
-			INativeShaderPart nativeFrag = this.frag.Res != null ? this.frag.Res.Native : null;
+			// Ensure all shader parts are compiled
+			List<INativeShaderPart> nativeParts = new List<INativeShaderPart>();
+			foreach (AbstractShader part in parts)
+			{
+				this.CompileIfRequired(part);
+				nativeParts.Add(part.Native);
+			}
+
+			// Load the program with all shader parts attached
 			try
 			{
-				this.native.LoadProgram(nativeVert, nativeFrag);
+				this.native.LoadProgram(nativeParts);
 				this.fields = this.native.GetFields();
 			}
 			catch (Exception e)

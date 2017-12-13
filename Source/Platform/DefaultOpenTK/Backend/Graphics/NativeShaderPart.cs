@@ -117,8 +117,8 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			switch (type)
 			{
-				case ShaderType.Vertex:		return GLShaderType.VertexShader;
-				case ShaderType.Fragment:	return GLShaderType.FragmentShader;
+				case ShaderType.Vertex:   return GLShaderType.VertexShader;
+				case ShaderType.Fragment: return GLShaderType.FragmentShader;
 			}
 			return GLShaderType.VertexShader;
 		}

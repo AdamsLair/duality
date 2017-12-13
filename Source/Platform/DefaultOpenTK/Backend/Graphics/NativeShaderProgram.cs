@@ -81,7 +81,7 @@ namespace Duality.Backend.DefaultOpenTK
 			get { return this.fieldLocations; }
 		}
 
-		void INativeShaderProgram.LoadProgram(INativeShaderPart vertex, INativeShaderPart fragment)
+		void INativeShaderProgram.LoadProgram(IEnumerable<INativeShaderPart> shaderParts)
 		{
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
@@ -90,11 +90,11 @@ namespace Duality.Backend.DefaultOpenTK
 			else
 				this.DetachShaders();
 			
-			// Attach both shaders
-			if (vertex != null)
-				GL.AttachShader(this.handle, (vertex as NativeShaderPart).Handle);
-			if (fragment != null)
-				GL.AttachShader(this.handle, (fragment as NativeShaderPart).Handle);
+			// Attach all individual shaders to the program
+			foreach (INativeShaderPart part in shaderParts)
+			{
+				GL.AttachShader(this.handle, (part as NativeShaderPart).Handle);
+			}
 
 			// Link the shader program
 			GL.LinkProgram(this.handle);
@@ -107,23 +107,18 @@ namespace Duality.Backend.DefaultOpenTK
 				this.RollbackAtFault();
 				throw new BackendException(string.Format("Linker error:{1}{0}", errorLog, Environment.NewLine));
 			}
-			
+
 			// Collect variable infos from sub programs
+			HashSet<ShaderFieldInfo> fieldSet = new HashSet<ShaderFieldInfo>();
+			foreach (INativeShaderPart item in shaderParts)
 			{
-				NativeShaderPart vert = vertex as NativeShaderPart;
-				NativeShaderPart frag = fragment as NativeShaderPart;
-
-				ShaderFieldInfo[] fragVarArray = frag != null ? frag.Fields : null;
-				ShaderFieldInfo[] vertVarArray = vert != null ? vert.Fields : null;
-
-				if (fragVarArray != null && vertVarArray != null)
-					this.fields = vertVarArray.Union(fragVarArray).ToArray();
-				else if (vertVarArray != null)
-					this.fields = vertVarArray.ToArray();
-				else
-					this.fields = fragVarArray.ToArray();
-				
+				NativeShaderPart shaderPart = item as NativeShaderPart;
+				for (int i = 0; i < shaderPart.Fields.Length; i++)
+				{
+					fieldSet.Add(shaderPart.Fields[i]);
+				}
 			}
+			this.fields = fieldSet.ToArray();
 
 			// Determine each variables location
 			this.fieldLocations = new int[this.fields.Length];
