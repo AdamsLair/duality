@@ -46,6 +46,8 @@
 					tmpLVI.Selected = true;
 				}
 			}
+
+			this.resourceListing.Focus();
 		}
 
 		private void ResourceListingOnDoubleClick(object sender, EventArgs eventArgs)

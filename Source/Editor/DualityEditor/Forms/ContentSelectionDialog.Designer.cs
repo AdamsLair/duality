@@ -55,7 +55,7 @@
 			this.buttonCancel.Location = new System.Drawing.Point(277, 13);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-			this.buttonCancel.TabIndex = 4;
+			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
@@ -66,7 +66,7 @@
 			this.buttonOk.Location = new System.Drawing.Point(196, 13);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(75, 23);
-			this.buttonOk.TabIndex = 3;
+			this.buttonOk.TabIndex = 1;
 			this.buttonOk.Text = "Ok";
 			this.buttonOk.UseVisualStyleBackColor = true;
 			// 
@@ -144,7 +144,7 @@
 			this.resourceListing.ShowItemToolTips = true;
 			this.resourceListing.Size = new System.Drawing.Size(364, 276);
 			this.resourceListing.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.resourceListing.TabIndex = 7;
+			this.resourceListing.TabIndex = 0;
 			this.resourceListing.TileSize = new System.Drawing.Size(400, 38);
 			this.resourceListing.UseCompatibleStateImageBehavior = false;
 			this.resourceListing.View = System.Windows.Forms.View.Tile;
