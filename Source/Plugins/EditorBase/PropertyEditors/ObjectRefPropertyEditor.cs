@@ -23,6 +23,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	public abstract class ObjectRefPropertyEditor : PropertyEditor
 	{
 		private static readonly IconImage iconShow = new IconImage(Properties.EditorBaseResCache.IconEye.ToBitmap());
+		private static readonly IconImage referenceIcon = new IconImage(Properties.EditorBaseResCache.IconReferenceInput);
 		private static readonly IconImage iconReset = new IconImage(Properties.EditorBaseResCache.IconAbortCross);
 
 		protected	bool		multiple			= false;
@@ -234,8 +235,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				e.Graphics, 
 				this.rectButtonShow, 
 				buttonStateShow, 
-				null, 
-				iconShow);
+				null,
+				referenceIcon);
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
