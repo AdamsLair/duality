@@ -2,9 +2,7 @@
 {
 	using System;
 	using System.Drawing;
-	using System.IO;
 	using System.Windows.Forms;
-	using Controls.TreeModels.FileSystem;
 
 	public partial class ContentSelectionDialog : Form
 	{
@@ -71,6 +69,10 @@
 			this.resourceListing.TileSize = new Size(this.resourceListing.ClientSize.Width, this.resourceListing.TileSize.Height);
 		}
 
+		/// <summary>
+		/// Set the content reference to the currently selected elements value.
+		/// </summary>
+		/// <param name="data">a reference to a DataObject instance</param>
 		public void SerializeToData(DataObject data)
 		{
 			data.SetContentRefs(new[] { this.ContentReference });
