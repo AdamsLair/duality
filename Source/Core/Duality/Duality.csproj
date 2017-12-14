@@ -101,6 +101,7 @@
     <Compile Include="Components\Physics\Shapes\VertexBasedShapeInfo.cs" />
     <Compile Include="Drawing\ShaderParameterCollection.cs" />
     <Compile Include="Drawing\CullingInfo.cs" />
+    <Compile Include="Resources\Shaders\ShaderSourceBuilder.cs" />
     <Compile Include="Utility\RawListPool.cs" />
     <Compile Include="Drawing\VertexData\VertexDrawRange.cs" />
     <Compile Include="Drawing\DrawBatch.cs" />
