@@ -166,8 +166,8 @@
     <Compile Include="Resources\Font\FontGlyphData.cs" />
     <Compile Include="Resources\Font\FontMetrics.cs" />
     <Compile Include="Resources\Font\FontCharSet.cs" />
-    <Compile Include="Resources\ShaderInfo\BuiltinShaderFields.cs" />
-    <Compile Include="Resources\ShaderInfo\ShaderType.cs" />
+    <Compile Include="Resources\Shaders\BuiltinShaderFields.cs" />
+    <Compile Include="Resources\Shaders\ShaderType.cs" />
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
     <Compile Include="Drawing\Enums\PerspectiveMode.cs" />
     <Compile Include="Drawing\Enums\VertexMode.cs" />
@@ -194,9 +194,9 @@
     <Compile Include="Input\Key.cs" />
     <Compile Include="Input\MouseEventArgs.cs" />
     <Compile Include="Input\MouseButton.cs" />
-    <Compile Include="Resources\ShaderInfo\ShaderFieldScope.cs" />
-    <Compile Include="Resources\ShaderInfo\ShaderFieldInfo.cs" />
-    <Compile Include="Resources\ShaderInfo\ShaderFieldType.cs" />
+    <Compile Include="Resources\Shaders\ShaderFieldScope.cs" />
+    <Compile Include="Resources\Shaders\ShaderFieldInfo.cs" />
+    <Compile Include="Resources\Shaders\ShaderFieldType.cs" />
     <Compile Include="Backend\Dummy\DummyAssemblyLoader.cs" />
     <Compile Include="Serialization\Surrogates\CultureInfoSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\RegexSurrogate.cs" />
