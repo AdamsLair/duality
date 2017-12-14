@@ -327,6 +327,9 @@
     <EmbeddedResource Include="AssetManagement\SelectAssetImporterDialog.resx">
       <DependentUpon>SelectAssetImporterDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ContentSelectionDialog.resx">
+      <DependentUpon>ContentSelectionDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\CreateObjectDialog.resx">
       <DependentUpon>CreateObjectDialog.cs</DependentUpon>
     </EmbeddedResource>

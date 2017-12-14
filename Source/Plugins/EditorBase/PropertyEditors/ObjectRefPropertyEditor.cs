@@ -18,6 +18,8 @@ using Duality.Editor.Plugins.Base.Properties;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	using Forms;
+
 	public abstract class ObjectRefPropertyEditor : PropertyEditor
 	{
 		private static readonly IconImage iconShow = new IconImage(Properties.EditorBaseResCache.IconEye.ToBitmap());
@@ -336,7 +338,18 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			{
 				if (this.buttonShowPressed && this.buttonShowHovered)
 				{
-					// TODO: Open filtered selection view
+					var tmpResourceSelectionForm = new ContentSelectionDialog
+					{
+						FilteredType = this.ReferenceType,
+						ResourcePath = this.ReferenceName
+					};
+
+					var result = tmpResourceSelectionForm.ShowDialog();
+
+					if (result == DialogResult.OK)
+					{
+						Log.Editor.Write(tmpResourceSelectionForm.ResourcePath);
+					}
 				}
 				this.buttonShowPressed = false;
 			}
