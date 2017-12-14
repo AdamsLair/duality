@@ -45,9 +45,12 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		private		int			prevHash			= -1;
 
 		public abstract string ReferenceName { get; }
-		public abstract Type ReferenceType { get; }
 		public abstract bool ReferenceBroken { get; }
 
+		/// <summary>
+		/// Type for this resource reference
+		/// </summary>
+		public abstract Type ReferenceType { get; }
 
 		public ObjectRefPropertyEditor()
 		{
