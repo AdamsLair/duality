@@ -23,21 +23,16 @@
 			base.OnShown(e);
 
 			this.Text = string.Format("Select a {0} Resource", this.FilteredType.Name);
-			Log.Editor.Write(string.Format("PATH: {0}", this.ResourcePath));
 
 			this.imageListResourceListing.Images.Clear();
 			this.resourceListing.Items.Clear();
 
 			foreach (var contentRef in ContentProvider.GetAvailableContent(this.FilteredType))
 			{
-				Log.Editor.Write(contentRef.FullName);
-
 				var tmpLVI = new ListViewItem(new string[] { contentRef.Name, contentRef.FullName }, contentRef.FullName ?? contentRef.ResType.ToString())
 				{
 					Tag = contentRef
 				};
-
-				Log.Editor.Write("{0} - {1}", contentRef.Name, contentRef.ResType.ToString());
 
 				this.resourceListing.Items.Add(tmpLVI);
 
@@ -64,8 +59,6 @@
 
 				if (contentRef != null)
 				{
-					Log.Editor.Write("Selected {0}, updated to reference {1}", contentRef.Name, contentRef.FullName);
-
 					this.ContentReference = contentRef;
 					this.ResourcePath = this.ContentReference.FullName;
 				}
