@@ -63,5 +63,10 @@
 		{
 			this.resourceListing.TileSize = new Size(this.resourceListing.ClientSize.Width, this.resourceListing.TileSize.Height);
 		}
+
+		public void SerializeToData(DataObject data)
+		{
+			data.SetContentRefs(new[] { this.ContentReference });
+		}
 	}
 }
