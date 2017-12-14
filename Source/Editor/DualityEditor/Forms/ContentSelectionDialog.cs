@@ -40,10 +40,17 @@
 				Log.Editor.Write("{0} - {1}", contentRef.Name, contentRef.ResType.ToString());
 
 				this.resourceListing.Items.Add(tmpLVI);
+				this.resourceListing.DoubleClick += this.ResourceListingOnDoubleClick;
 			}
 		}
 
-		private void resourceListing_SelectedIndexChanged(object sender, EventArgs e)
+		private void ResourceListingOnDoubleClick(object sender, EventArgs eventArgs)
+		{
+			this.ResourceListingOnSelectedIndexChanged(sender, eventArgs);
+			this.AcceptButton.PerformClick();
+		}
+
+		private void ResourceListingOnSelectedIndexChanged(object sender, EventArgs eventArgs)
 		{
 			foreach (ListViewItem resourceListingSelectedItem in this.resourceListing.SelectedItems)
 			{

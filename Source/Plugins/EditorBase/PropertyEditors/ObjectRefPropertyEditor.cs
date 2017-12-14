@@ -338,22 +338,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			{
 				if (this.buttonShowPressed && this.buttonShowHovered)
 				{
-					var tmpResourceSelectionForm = new ContentSelectionDialog
-					{
-						FilteredType = this.ReferenceType,
-						ResourcePath = this.ReferenceName
-					};
-
-					var result = tmpResourceSelectionForm.ShowDialog();
-
-					if (result == DialogResult.OK)
-					{
-						var tmpDataObject = new DataObject();
-
-						tmpResourceSelectionForm.SerializeToData(tmpDataObject);
-
-						DeserializeFromData(tmpDataObject);
-					}
+					ShowContentSelectionDialog();
 				}
 
 				this.buttonShowPressed = false;
@@ -368,11 +353,33 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void OnMouseDoubleClick(MouseEventArgs e)
 		{
 			base.OnMouseDoubleClick(e);
+
 			if (this.panelHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
 			{
-				// TODO: Select Object
+				ShowContentSelectionDialog();
 			}
 		}
+
+		protected void ShowContentSelectionDialog()
+		{
+			var tmpResourceSelectionForm = new ContentSelectionDialog
+			{
+				FilteredType = this.ReferenceType,
+				ResourcePath = this.ReferenceName
+			};
+
+			var result = tmpResourceSelectionForm.ShowDialog();
+
+			if (result == DialogResult.OK)
+			{
+				var tmpDataObject = new DataObject();
+
+				tmpResourceSelectionForm.SerializeToData(tmpDataObject);
+
+				DeserializeFromData(tmpDataObject);
+			}
+		}
+
 		protected override void OnDragOver(DragEventArgs e)
 		{
 			base.OnDragOver(e);

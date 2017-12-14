@@ -148,7 +148,7 @@
 			this.resourceListing.TileSize = new System.Drawing.Size(400, 38);
 			this.resourceListing.UseCompatibleStateImageBehavior = false;
 			this.resourceListing.View = System.Windows.Forms.View.Tile;
-			this.resourceListing.SelectedIndexChanged += new System.EventHandler(this.resourceListing_SelectedIndexChanged);
+			this.resourceListing.SelectedIndexChanged += new System.EventHandler(this.ResourceListingOnSelectedIndexChanged);
 			this.resourceListing.Resize += new System.EventHandler(this.resourceListing_Resize);
 			// 
 			// columnName
