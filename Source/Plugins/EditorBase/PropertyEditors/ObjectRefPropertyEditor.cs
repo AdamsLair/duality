@@ -348,9 +348,13 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 					if (result == DialogResult.OK)
 					{
-						Log.Editor.Write(tmpResourceSelectionForm.ResourcePath);
+						var tmpDataObject = new DataObject();
+						tmpDataObject.SetContentRefs(new[] { tmpResourceSelectionForm.ContentReference });
+
+						DeserializeFromData(tmpDataObject);
 					}
 				}
+
 				this.buttonShowPressed = false;
 			}
 			else if (this.panelHovered && leftMouseButtonUp)
