@@ -18,9 +18,11 @@ namespace Duality.Resources
 	[ExplicitResourceReference()]
 	public abstract class AbstractShader : Resource
 	{
-		private	string source = null;
-		[DontSerialize] private	INativeShaderPart	native		= null;
-		[DontSerialize] private	bool				compiled	= false;
+		private string source = null;
+
+		[DontSerialize] private INativeShaderPart native   = null;
+		[DontSerialize] private bool              compiled = false;
+
 
 		/// <summary>
 		/// [GET] The shaders native backend. Don't use this unless you know exactly what you're doing.
