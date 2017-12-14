@@ -14,6 +14,8 @@
 		public ContentSelectionDialog()
 		{
 			InitializeComponent();
+
+			this.resourceListing.DoubleClick += this.ResourceListingOnDoubleClick;
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -38,7 +40,11 @@
 				Log.Editor.Write("{0} - {1}", contentRef.Name, contentRef.ResType.ToString());
 
 				this.resourceListing.Items.Add(tmpLVI);
-				this.resourceListing.DoubleClick += this.ResourceListingOnDoubleClick;
+
+				if (contentRef.FullName == this.ResourcePath)
+				{
+					tmpLVI.Selected = true;
+				}
 			}
 		}
 
