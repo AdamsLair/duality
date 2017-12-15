@@ -7,8 +7,14 @@ using System.Text.RegularExpressions;
 
 namespace Duality.Resources
 {
+	/// <summary>
+	/// A utility class for preprocessing and merging chunks of shader source code.
+	/// </summary>
 	public class ShaderSourceBuilder
 	{
+		/// <summary>
+		/// Describes a range via index and length.
+		/// </summary>
 		private struct IndexRange
 		{
 			public int Index;
@@ -38,26 +44,44 @@ namespace Duality.Resources
 		private static readonly Regex RegexVariableDeclaration = new Regex(@"(uniform|varying|attribute|in|out)\s+(\w+)\s+(\w+)\s*;", RegexOptions.Singleline);
 		private static readonly Regex RegexVersionDirective = new Regex(@"#version\s+(\d+)\s+");
 
+
 		private string mainChunk = string.Empty;
 		private List<string> sharedChunk = new List<string>();
-
 		private StringBuilder textBuilder = new StringBuilder();
 
 
+		/// <summary>
+		/// Clears this <see cref="ShaderSourceBuilder"/> instance of all content.
+		/// </summary>
 		public void Clear()
 		{
 			this.mainChunk = string.Empty;
 			this.sharedChunk.Clear();
 		}
+		/// <summary>
+		/// Specifies the main chunk of source code to use. The main chunk is the one
+		/// where line numbers remain unchanged due to preprocessing.
+		/// </summary>
+		/// <param name="sourceCode"></param>
 		public void SetMainChunk(string sourceCode)
 		{
 			this.mainChunk = sourceCode ?? string.Empty;
 		}
+		/// <summary>
+		/// Adds a shared chunk of source code to use. Shared chunks do not retain their
+		/// line numbers during preprocessing, but will be re-assigned to individual (virtual)
+		/// ranges in the 10000s.
+		/// </summary>
+		/// <param name="sourceCode"></param>
 		public void AddSharedChunk(string sourceCode)
 		{
 			this.sharedChunk.Add(sourceCode);
 		}
 
+		/// <summary>
+		/// Builds the merged, preprocessed source code.
+		/// </summary>
+		/// <returns></returns>
 		public string Build()
 		{
 			this.textBuilder.Clear();
@@ -145,12 +169,25 @@ namespace Duality.Resources
 			return rawMerge;
 		}
 
+		/// <summary>
+		/// Given an index, length, and text they're referring to, this method will expand
+		/// the specified range to include all overlapped full lines from start to end.
+		/// </summary>
+		/// <param name="text"></param>
+		/// <param name="range"></param>
+		/// <returns></returns>
 		private IndexRange ExpandToLine(string text, IndexRange range)
 		{
 			int lineBeginIndex = text.LastIndexOfAny(new char[] { '\n', '\r' }, range.Index) + 1;
 			int lineEndIndex = text.IndexOfAny(new char[] { '\n', '\r' }, range.Index + range.Length);
 			return new IndexRange(lineBeginIndex, lineEndIndex - lineBeginIndex);
 		}
+		/// <summary>
+		/// Determines whether the specified range overlaps with any of the comparison ranges.
+		/// </summary>
+		/// <param name="range"></param>
+		/// <param name="compareToRanges"></param>
+		/// <returns></returns>
 		private bool AnyRangeOverlap(IndexRange range, List<IndexRange> compareToRanges)
 		{
 			foreach (IndexRange ignoreRange in compareToRanges)
@@ -160,6 +197,11 @@ namespace Duality.Resources
 			}
 			return false;
 		}
+		/// <summary>
+		/// Turns the specified lines into commented-out lines.
+		/// </summary>
+		/// <param name="builder"></param>
+		/// <param name="lines"></param>
 		private void CommentOutLines(StringBuilder builder, List<IndexRange> lines)
 		{
 			for (int i = lines.Count - 1; i >= 0; i--)
