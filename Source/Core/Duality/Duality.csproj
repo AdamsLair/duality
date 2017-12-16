@@ -101,6 +101,7 @@
     <Compile Include="Components\Physics\Shapes\VertexBasedShapeInfo.cs" />
     <Compile Include="Drawing\ShaderParameterCollection.cs" />
     <Compile Include="Drawing\CullingInfo.cs" />
+    <Compile Include="Drawing\VertexData\IVertexData.cs" />
     <Compile Include="Resources\Shaders\ShaderSourceBuilder.cs" />
     <Compile Include="Utility\RawListPool.cs" />
     <Compile Include="Drawing\VertexData\VertexDrawRange.cs" />
@@ -381,7 +382,6 @@
     <Compile Include="Serialization\Surrogates\DictionarySurrogate.cs" />
     <Compile Include="Serialization\TypeDataLayout.cs" />
     <Compile Include="Time.cs" />
-    <Compile Include="Drawing\VertexData\IVertexData.cs" />
     <Compile Include="Drawing\VertexData\VertexC1P3T2.cs" />
     <Compile Include="Drawing\VertexData\VertexC1P3.cs" />
   </ItemGroup>

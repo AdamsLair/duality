@@ -19,6 +19,7 @@ namespace DynamicLighting
 		public ColorRgba Color;
 		[VertexElement(VertexElementRole.Position)]
 		public Vector3 Pos;
+		public float DepthOffset;
 		[VertexElement(VertexElementRole.TexCoord)]
 		public Vector2 TexCoord;
 		public Vector4 LightingParam;
@@ -28,6 +29,11 @@ namespace DynamicLighting
 		{
 			get { return this.Pos; }
 			set { this.Pos = value; }
+		}
+		float IVertexData.DepthOffset
+		{
+			get { return this.DepthOffset; }
+			set { this.DepthOffset = value; }
 		}
 		ColorRgba IVertexData.Color
 		{

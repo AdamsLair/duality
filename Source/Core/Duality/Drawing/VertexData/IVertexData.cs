@@ -13,5 +13,10 @@
 		/// [GET] The vertices color.
 		/// </summary>
 		ColorRgba Color { get; set; }
+		/// <summary>
+		/// [GET] A depth offset that is applied after the vertex has been transformed.
+		/// Used for adjusting rendering order of objects without affecting projection.
+		/// </summary>
+		float DepthOffset { get; set; }
 	}
 }

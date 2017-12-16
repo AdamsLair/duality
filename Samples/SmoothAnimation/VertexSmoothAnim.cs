@@ -19,6 +19,7 @@ namespace SmoothAnimation
 		public ColorRgba Color;
 		[VertexElement(VertexElementRole.Position)]
 		public Vector3 Pos;
+		public float DepthOffset;
 		[VertexElement(VertexElementRole.TexCoord)]
 		public Vector4 TexCoord;
 		public float AnimBlend;
@@ -27,6 +28,11 @@ namespace SmoothAnimation
 		{
 			get { return this.Pos; }
 			set { this.Pos = value; }
+		}
+		float IVertexData.DepthOffset
+		{
+			get { return this.DepthOffset; }
+			set { this.DepthOffset = value; }
 		}
 		ColorRgba IVertexData.Color
 		{
