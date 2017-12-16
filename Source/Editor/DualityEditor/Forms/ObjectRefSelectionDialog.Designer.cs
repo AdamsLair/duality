@@ -1,5 +1,7 @@
 ﻿namespace Duality.Editor.Forms
 {
+	using Aga.Controls.Tree;
+
 	partial class ObjectRefSelectionDialog
 	{
 		/// <summary>
@@ -31,7 +33,7 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.labelInfo = new System.Windows.Forms.Label();
-			this.autoExpandTreeView1 = new Duality.Editor.Controls.AutoExpandTreeView();
+			this.autoExpandTreeView1 = new Aga.Controls.Tree.TreeViewAdv();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -71,7 +73,7 @@
 			this.autoExpandTreeView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.autoExpandTreeView1.AutoExpandDelay = 750;
+
 			this.autoExpandTreeView1.BackColor = System.Drawing.SystemColors.Window;
 			this.autoExpandTreeView1.ColumnHeaderHeight = 0;
 			this.autoExpandTreeView1.DefaultToolTipProvider = null;
@@ -117,6 +119,6 @@
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonOk;
 		private System.Windows.Forms.Label labelInfo;
-		private Controls.AutoExpandTreeView autoExpandTreeView1;
+		private TreeViewAdv autoExpandTreeView1;
 	}
 }
