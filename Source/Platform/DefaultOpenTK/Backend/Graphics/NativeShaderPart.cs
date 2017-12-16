@@ -16,11 +16,16 @@ namespace Duality.Backend.DefaultOpenTK
 	public class NativeShaderPart : INativeShaderPart
 	{
 		private int handle;
+		private ShaderType type;
 		private ShaderFieldInfo[] fields;
 
 		public int Handle
 		{
 			get { return this.handle; }
+		}
+		public ShaderType Type
+		{
+			get { return this.type; }
 		}
 		public ShaderFieldInfo[] Fields
 		{
@@ -31,7 +36,9 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
-			if (this.handle == 0) this.handle = GL.CreateShader(GetOpenTKShaderType(type));
+			this.type = type;
+			if (this.handle == 0)
+				this.handle = GL.CreateShader(GetOpenTKShaderType(type));
 			GL.ShaderSource(this.handle, sourceCode);
 			GL.CompileShader(this.handle);
 

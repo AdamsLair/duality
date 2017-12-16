@@ -85,11 +85,30 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
+			// Verify that we have exactly one shader part for each stage.
+			// Other scenarios are valid in desktop GL, but not GL ES, so 
+			// we'll enforce the stricter rules manually to ease portability.
+			int vertexCount = 0;
+			int fragmentCount = 0;
+			foreach (INativeShaderPart part in shaderParts)
+			{
+				Resources.ShaderType type = (part as NativeShaderPart).Type;
+				if (type == Resources.ShaderType.Fragment)
+					fragmentCount++;
+				else if (type == Resources.ShaderType.Vertex)
+					vertexCount++;
+			}
+			if (vertexCount == 0) throw new ArgumentException("Cannot load program without vertex shader.");
+			if (fragmentCount == 0) throw new ArgumentException("Cannot load program without fragment shader.");
+			if (vertexCount > 1) throw new ArgumentException("Cannot attach multiple vertex shaders to the same program.");
+			if (fragmentCount > 1) throw new ArgumentException("Cannot attach multiple fragment shaders to the same program.");
+
+			// Create or reset GL program
 			if (this.handle == 0) 
 				this.handle = GL.CreateProgram();
 			else
 				this.DetachShaders();
-			
+
 			// Attach all individual shaders to the program
 			foreach (INativeShaderPart part in shaderParts)
 			{
