@@ -226,17 +226,17 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				null, 
 				iconReset);
 
-			ButtonState buttonStateShow = ButtonState.Disabled;
+			ButtonState buttonStateSelect = ButtonState.Disabled;
 			if (this.Enabled && this.ReferenceName != null)
 			{
-				if (this.buttonSelectPressed)							buttonStateShow = ButtonState.Pressed;
-				else if (this.buttonSelectHovered || this.Focused)	buttonStateShow = ButtonState.Hot;
-				else												buttonStateShow = ButtonState.Normal;
+				if (this.buttonSelectPressed) buttonStateSelect = ButtonState.Pressed;
+				else if (this.buttonSelectHovered || this.Focused) buttonStateSelect = ButtonState.Hot;
+				else buttonStateSelect = ButtonState.Normal;
 			}
 			ControlRenderer.DrawButton(
 				e.Graphics, 
 				this.rectButtonSelect, 
-				buttonStateShow, 
+				buttonStateSelect, 
 				null,
 				iconSelect);
 		}
