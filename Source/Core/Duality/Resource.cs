@@ -385,9 +385,9 @@ namespace Duality
 		/// <returns>The Resource that has been loaded.</returns>
 		public static T Load<T>(Stream str, string resPath = null, Action<T> loadCallback = null, bool initResource = true) where T : Resource
 		{
-			using (var formatter = Serializer.Create(str))
+			using (Serializer serializer = Serializer.Create(str))
 			{
-				return Load<T>(formatter, resPath, loadCallback, initResource);
+				return Load<T>(serializer, resPath, loadCallback, initResource);
 			}
 		}
 		/// <summary>
@@ -566,15 +566,19 @@ namespace Duality
 			}
 		}
 
-		internal static void InitDefaultContent<T>(string embeddedNameExt, Func<Stream,T> resourceCreator) where T : Resource
+		internal static Stream GetEmbeddedResourceStream(string name)
 		{
 			string embeddedNameBase = "Duality.EmbeddedResources.";
 			Assembly embeddingAssembly = typeof(Resource).GetTypeInfo().Assembly;
-
+			return embeddingAssembly.GetManifestResourceStream(embeddedNameBase + name);
+		}
+		internal static void InitDefaultContent<T>(string embeddedNameExt, Func<Stream,T> resourceCreator) where T : Resource
+		{
 			InitDefaultContent<T>(name => 
 			{
-				using (Stream stream = embeddingAssembly.GetManifestResourceStream(embeddedNameBase + name + embeddedNameExt))
+				using (Stream stream = GetEmbeddedResourceStream(name + embeddedNameExt))
 				{
+					if (stream == null) return null;
 					return resourceCreator(stream);
 				}
 			});
@@ -590,7 +594,7 @@ namespace Duality
 					return null;
 			});
 		}
-		internal static void InitDefaultContent<T>(Func<string,T> resourceCreator) where T : Resource
+		internal static void InitDefaultContent<T>(Func<string, T> resourceCreator) where T : Resource
 		{
 			string contentPathBase = ContentProvider.VirtualContentPath + typeof(T).Name + ":";
 

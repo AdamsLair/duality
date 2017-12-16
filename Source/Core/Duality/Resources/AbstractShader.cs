@@ -18,6 +18,35 @@ namespace Duality.Resources
 	[ExplicitResourceReference()]
 	public abstract class AbstractShader : Resource
 	{
+		private static List<string> commonChunks = null;
+
+		/// <summary>
+		/// [GET] A list of shader source code chunks that are shared among all loaded shaders.
+		/// They contain builtin Duality functions and other shared code.
+		/// </summary>
+		public static IReadOnlyList<string> CommonSourceChunks
+		{
+			get
+			{
+				if (commonChunks == null)
+				{
+					commonChunks = new List<string>();
+					commonChunks.Add(LoadEmbeddedShader("BuiltinShaderFunctions.glsl"));
+				}
+				return commonChunks;
+			}
+		}
+
+		private static string LoadEmbeddedShader(string name)
+		{
+			using (Stream stream = GetEmbeddedResourceStream(name))
+			using (StreamReader reader = new StreamReader(stream))
+			{
+				return reader.ReadToEnd();
+			}
+		}
+
+
 		private string source = null;
 
 		[DontSerialize] private INativeShaderPart native   = null;
@@ -76,9 +105,19 @@ namespace Duality.Resources
 			if (this.native == null)
 				this.native = DualityApp.GraphicsBackend.CreateShaderPart();
 
+			// Preprocess the source code to include builtin shader functions
+			ShaderSourceBuilder builder = new ShaderSourceBuilder();
+
+			builder.SetMainChunk(this.source);
+			foreach (string sharedChunk in CommonSourceChunks)
+			{
+				builder.AddSharedChunk(sharedChunk);
+			}
+			
 			try
 			{
-				this.native.LoadSource(this.source, this.Type);
+				string processedSource = builder.Build();
+				this.native.LoadSource(processedSource, this.Type);
 			}
 			catch (Exception e)
 			{

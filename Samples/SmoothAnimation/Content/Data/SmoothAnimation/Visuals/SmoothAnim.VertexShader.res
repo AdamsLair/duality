@@ -9,11 +9,9 @@
   <source dataType="String">attribute float animBlend;
 varying float animBlendVar;
 
-vec4 _transformWorldToClip(vec4 pos);
-
 void main()
 {
-	gl_Position = _transformWorldToClip(gl_Vertex);
+	gl_Position = TransformWorldToClip(gl_Vertex);
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	gl_FrontColor = gl_Color;
 	animBlendVar = animBlend;

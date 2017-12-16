@@ -15,11 +15,6 @@ namespace Duality.Resources
 	public class VertexShader : AbstractShader
 	{
 		/// <summary>
-		/// [GET] An abstract shader that contains all builtin shader functions provided
-		/// by Duality.
-		/// </summary>
-		public static ContentRef<VertexShader> BuiltinShaderFunctions { get; private set; }
-		/// <summary>
 		/// [GET] A minimal vertex shader. It performs OpenGLs default transformation
 		/// and forwards a single texture coordinate and color to the fragment stage.
 		/// </summary>

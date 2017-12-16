@@ -140,8 +140,6 @@ namespace Duality.Resources
 
 			// Create a list of all shader parts that we'll be linking
 			List<AbstractShader> parts = new List<AbstractShader>();
-			parts.Add(VertexShader.BuiltinShaderFunctions.Res);
-			parts.Add(FragmentShader.BuiltinShaderFunctions.Res);
 			parts.Add(this.vert.Res ?? VertexShader.Minimal.Res);
 			parts.Add(this.frag.Res ?? FragmentShader.Minimal.Res);
 

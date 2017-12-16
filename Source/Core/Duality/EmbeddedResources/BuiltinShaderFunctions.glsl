@@ -3,7 +3,7 @@
 // Transforms the specified vertex from world space into clip space.
 // (Clip space is the expected vertex shader output)
 //
-vec4 _transformWorldToClip(vec4 pos)
+vec4 TransformWorldToClip(vec4 pos)
 {
 	return gl_ModelViewProjectionMatrix * pos;
 }
@@ -11,7 +11,7 @@ vec4 _transformWorldToClip(vec4 pos)
 //
 // Transforms the specified vertex from world space into view space.
 //
-vec4 _transformWorldToView(vec4 pos)
+vec4 TransformWorldToView(vec4 pos)
 {
 	return gl_ModelViewMatrix * pos;
 }
@@ -20,7 +20,7 @@ vec4 _transformWorldToView(vec4 pos)
 // Transforms the specified vertex from view space into clip space.
 // (Clip space is the expected vertex shader output)
 //
-vec4 _transformViewToClip(vec4 pos)
+vec4 TransformViewToClip(vec4 pos)
 {
 	return gl_ProjectionMatrix * pos;
 }
