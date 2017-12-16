@@ -22,10 +22,10 @@ namespace SmoothAnimation
 		private int nextSpriteIndex = -1;
 		private float spriteIndexBlend = 0.0f;
 
-		[DontSerialize] private VertexC1P3T4A1[] verticesSmooth   = null;
+		[DontSerialize] private VertexSmoothAnim[] verticesSmooth   = null;
 
 		
-		private void PrepareVerticesSmooth(ref VertexC1P3T4A1[] vertices, IDrawDevice device, float curAnimFrameFade, ColorRgba mainClr, Rect uvRect, Rect uvRectNext)
+		private void PrepareVerticesSmooth(ref VertexSmoothAnim[] vertices, IDrawDevice device, float curAnimFrameFade, ColorRgba mainClr, Rect uvRect, Rect uvRectNext)
 		{
 			Vector3 posTemp = this.GameObj.Transform.Pos;
 			float scaleTemp = 1.0f;
@@ -69,7 +69,7 @@ namespace SmoothAnimation
 				edge4.Y = -edge4.Y;
 			}
 
-			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T4A1[4];
+			if (vertices == null || vertices.Length != 4) vertices = new VertexSmoothAnim[4];
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
@@ -79,7 +79,7 @@ namespace SmoothAnimation
 			vertices[0].TexCoord.Z = nextLeft;
 			vertices[0].TexCoord.W = nextTop;
 			vertices[0].Color = mainClr;
-			vertices[0].Attrib = curAnimFrameFade;
+			vertices[0].AnimBlend = curAnimFrameFade;
 
 			vertices[1].Pos.X = posTemp.X + edge2.X;
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
@@ -89,7 +89,7 @@ namespace SmoothAnimation
 			vertices[1].TexCoord.Z = nextLeft;
 			vertices[1].TexCoord.W = nextBottom;
 			vertices[1].Color = mainClr;
-			vertices[1].Attrib = curAnimFrameFade;
+			vertices[1].AnimBlend = curAnimFrameFade;
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
@@ -99,7 +99,7 @@ namespace SmoothAnimation
 			vertices[2].TexCoord.Z = nextRight;
 			vertices[2].TexCoord.W = nextBottom;
 			vertices[2].Color = mainClr;
-			vertices[2].Attrib = curAnimFrameFade;
+			vertices[2].AnimBlend = curAnimFrameFade;
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
@@ -109,7 +109,7 @@ namespace SmoothAnimation
 			vertices[3].TexCoord.Z = nextRight;
 			vertices[3].TexCoord.W = nextTop;
 			vertices[3].Color = mainClr;
-			vertices[3].Attrib = curAnimFrameFade;
+			vertices[3].AnimBlend = curAnimFrameFade;
 
 			if (this.pixelGrid)
 			{

@@ -11,11 +11,19 @@ namespace Duality.Drawing
 	/// </summary>
 	public struct VertexElement
 	{
+		private string fieldName;
 		private IntPtr offset;
 		private VertexElementType type;
 		private int count;
 		private VertexElementRole role;
 
+		/// <summary>
+		/// [GET] The vertex elements preferred shader field name to map to.
+		/// </summary>
+		public string FieldName
+		{
+			get { return this.fieldName; }
+		}
 		/// <summary>
 		/// [GET] Byte offset of this element relative to the vertex start address.
 		/// </summary>
@@ -45,8 +53,9 @@ namespace Duality.Drawing
 			get { return this.role; }
 		}
 
-		internal VertexElement(IntPtr offset, VertexElementType type, int count, VertexElementRole role)
+		internal VertexElement(string fieldName, IntPtr offset, VertexElementType type, int count, VertexElementRole role)
 		{
+			this.fieldName = fieldName;
 			this.offset = offset;
 			this.type = type;
 			this.count = count;

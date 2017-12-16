@@ -3,23 +3,25 @@ using System.Runtime.InteropServices;
 
 using Duality;
 using Duality.Drawing;
-using Duality.Resources;
 
-namespace DynamicLighting
+namespace SmoothAnimation
 {
+	/// <summary>
+	/// Extended vertex data format that provides an additional field for smooth 
+	/// blending between animation frames.
+	/// </summary>
 	[StructLayout(LayoutKind.Sequential)]
-	public struct VertexC1P3T2A4 : IVertexData
+	public struct VertexSmoothAnim : IVertexData
 	{
-		public static readonly VertexDeclaration Declaration = VertexDeclaration.Get<VertexC1P3T2A4>();
+		public static readonly VertexDeclaration Declaration = VertexDeclaration.Get<VertexSmoothAnim>();
 
 		[VertexElement(VertexElementRole.Color)]
 		public ColorRgba Color;
 		[VertexElement(VertexElementRole.Position)]
 		public Vector3 Pos;
 		[VertexElement(VertexElementRole.TexCoord)]
-		public Vector2 TexCoord;
-		public Vector4 Attrib;
-		// Add Vector3 for lighting world position, see note in Light.cs
+		public Vector4 TexCoord;
+		public float AnimBlend;
 
 		Vector3 IVertexData.Pos
 		{

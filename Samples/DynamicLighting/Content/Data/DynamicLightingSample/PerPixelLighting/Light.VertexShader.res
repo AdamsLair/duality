@@ -10,7 +10,7 @@ uniform vec3 _CameraPosition;
 varying vec3 worldSpacePos;
 varying mat2 objTransform;
 
-attribute vec4 objTrAttrib;
+attribute vec4 VertexLightingParam;
 
 void main()
 {
@@ -21,7 +21,11 @@ void main()
 	float camDistScaleInv = gl_Vertex.z / _CameraFocusDist;
 	worldSpacePos = _CameraPosition + vec3(gl_Vertex.xy * camDistScaleInv, gl_Vertex.z);
 	
-	objTransform = mat2(objTrAttrib.x, objTrAttrib.y, objTrAttrib.z, objTrAttrib.w);
+	objTransform = mat2(
+		VertexLightingParam.x, 
+		VertexLightingParam.y, 
+		VertexLightingParam.z, 
+		VertexLightingParam.w);
 }</source>
 </root>
 <!-- XmlFormatterBase Document Separator -->

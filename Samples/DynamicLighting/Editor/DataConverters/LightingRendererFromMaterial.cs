@@ -47,7 +47,7 @@ namespace DynamicLighting.DataConverters
 
 				bool isDynamicLighting = 
 					tech is LightingTechnique ||
-					tech.PreferredVertexFormat == VertexC1P3T2A4.Declaration;
+					tech.PreferredVertexFormat == VertexDynamicLighting.Declaration;
 				if (!isDynamicLighting) continue;
 
 				Texture mainTex = mat.MainTexture.Res;

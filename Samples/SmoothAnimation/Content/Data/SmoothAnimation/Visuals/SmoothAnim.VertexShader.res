@@ -6,7 +6,7 @@
       <item dataType="String">{Name}.vert</item>
     </sourceFileHint>
   </assetInfo>
-  <source dataType="String">attribute float animBlend;
+  <source dataType="String">attribute float VertexAnimBlend;
 varying float animBlendVar;
 
 void main()
@@ -14,7 +14,7 @@ void main()
 	gl_Position = TransformWorldToClip(gl_Vertex);
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	gl_FrontColor = gl_Color;
-	animBlendVar = animBlend;
+	animBlendVar = VertexAnimBlend;
 }</source>
 </root>
 <!-- XmlFormatterBase Document Separator -->

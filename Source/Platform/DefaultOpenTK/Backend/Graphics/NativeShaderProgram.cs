@@ -170,10 +170,22 @@ namespace Duality.Backend.DefaultOpenTK
 		/// <returns></returns>
 		public int SelectField(ref VertexElement element)
 		{
-			// Until there is any other indication, select fields purely by type.
-			// This is error prone and fails when multiple vertex elements have the
-			// same type and length.
-			// ToDo: Replace this legacy solution with something reasonable.
+			// Check for fields matching the elements preferred name
+			for (int i = 0; i < this.fields.Length; i++)
+			{
+				// Skip invalid and non-attribute fields
+				if (this.fieldLocations[i] == -1) continue;
+				if (this.fields[i].Scope != ShaderFieldScope.Attribute) continue;
+
+				// We do not check for type or data length matches. When matching
+				// explicitly, this is the users responsibility.
+				if (this.fields[i].Name == element.FieldName)
+					return i;
+			}
+
+			// As a fallback, select elements purely by type match. This is error prone 
+			// and fails when multiple vertex elements have the same type and length.
+			// Legacy support. Remove later. (Written 2017-12-16)
 			for (int i = 0; i < this.fields.Length; i++)
 			{
 				// Skip invalid and non-attribute fields

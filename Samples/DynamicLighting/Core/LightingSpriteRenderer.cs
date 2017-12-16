@@ -18,7 +18,7 @@ namespace DynamicLighting
 	public class LightingSpriteRenderer : SpriteRenderer
 	{
 		private float vertexTranslucency = 0.0f;
-		[DontSerialize] private VertexC1P3T2A4[] verticesLight = null;
+		[DontSerialize] private VertexDynamicLighting[] verticesLight = null;
 
 		/// <summary>
 		/// [GET / SET] Specifies the objects translucency for Light when using vertex lighting.
@@ -33,7 +33,7 @@ namespace DynamicLighting
 			set { this.vertexTranslucency = value; }
 		}
 
-		protected void PrepareVerticesLight(ref VertexC1P3T2A4[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect, DrawTechnique tech)
+		protected void PrepareVerticesLight(ref VertexDynamicLighting[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect, DrawTechnique tech)
 		{
 			bool perPixel = tech is LightingTechnique;
 
@@ -89,7 +89,7 @@ namespace DynamicLighting
 			if ((this.flipMode & FlipMode.Vertical) != FlipMode.None)
 				MathF.Swap(ref top, ref bottom);
 
-			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2A4[4];
+			if (vertices == null || vertices.Length != 4) vertices = new VertexDynamicLighting[4];
 
 			// Directly pass World Position with each vertex, see note in Light.cs
 			vertices[0].Pos.X = posTemp.X + edge1.X;
@@ -98,7 +98,7 @@ namespace DynamicLighting
 			vertices[0].TexCoord.X = left;
 			vertices[0].TexCoord.Y = top;
 			vertices[0].Color = mainClr;
-			vertices[0].Attrib = perPixel ? objRotMat : vertexLight[0];
+			vertices[0].LightingParam = perPixel ? objRotMat : vertexLight[0];
 
 			vertices[1].Pos.X = posTemp.X + edge2.X;
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
@@ -106,7 +106,7 @@ namespace DynamicLighting
 			vertices[1].TexCoord.X = left;
 			vertices[1].TexCoord.Y = bottom;
 			vertices[1].Color = mainClr;
-			vertices[1].Attrib = perPixel ? objRotMat : vertexLight[1];
+			vertices[1].LightingParam = perPixel ? objRotMat : vertexLight[1];
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
@@ -114,7 +114,7 @@ namespace DynamicLighting
 			vertices[2].TexCoord.X = right;
 			vertices[2].TexCoord.Y = bottom;
 			vertices[2].Color = mainClr;
-			vertices[2].Attrib = perPixel ? objRotMat : vertexLight[2];
+			vertices[2].LightingParam = perPixel ? objRotMat : vertexLight[2];
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
@@ -122,7 +122,7 @@ namespace DynamicLighting
 			vertices[3].TexCoord.X = right;
 			vertices[3].TexCoord.Y = top;
 			vertices[3].Color = mainClr;
-			vertices[3].Attrib = perPixel ? objRotMat : vertexLight[3];
+			vertices[3].LightingParam = perPixel ? objRotMat : vertexLight[3];
 			
 			if (this.pixelGrid)
 			{

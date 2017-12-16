@@ -138,7 +138,12 @@ namespace Duality.Drawing
 						fields[i].Name));
 				}
 
-				this.elements[i] = new VertexElement(Marshal.OffsetOf(dataType, fields[i].Name), type, count, role);
+				this.elements[i] = new VertexElement(
+					"Vertex" + fields[i].Name,
+					Marshal.OffsetOf(dataType, fields[i].Name), 
+					type, 
+					count, 
+					role);
 			}
 		}
 

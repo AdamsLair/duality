@@ -55,7 +55,7 @@
     <Compile Include="LightingSpriteRenderer.cs" />
     <Compile Include="LightingTechnique.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VertexC1P3T2A4.cs" />
+    <Compile Include="VertexDynamicLighting.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Source\Core\Primitives\DualityPrimitives.csproj">
