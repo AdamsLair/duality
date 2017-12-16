@@ -132,7 +132,7 @@ namespace Duality.Components.Renderers
 					this.canvas.State.ColorTint = this.colorTint * ColorRgba.Red;
 				else
 					this.canvas.State.ColorTint = this.colorTint;
-				this.DrawShapeArea(canvas, tranform, shape);
+				this.DrawShapeArea(this.canvas, tranform, shape);
 			}
 
 			// Draw Shape Outlines
@@ -149,7 +149,7 @@ namespace Duality.Components.Renderers
 						this.canvas.State.ColorTint = this.colorTint * ColorRgba.Red;
 					else
 						this.canvas.State.ColorTint = this.colorTint;
-					this.DrawShapeOutline(canvas, tranform, shape);
+					this.DrawShapeOutline(this.canvas, tranform, shape);
 				}
 			}
 

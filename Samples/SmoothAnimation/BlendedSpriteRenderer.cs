@@ -73,7 +73,8 @@ namespace SmoothAnimation
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
-			vertices[0].Pos.Z = posTemp.Z + this.offset;
+			vertices[0].Pos.Z = posTemp.Z;
+			vertices[0].DepthOffset = this.offset;
 			vertices[0].TexCoord.X = left;
 			vertices[0].TexCoord.Y = top;
 			vertices[0].TexCoord.Z = nextLeft;
@@ -83,7 +84,8 @@ namespace SmoothAnimation
 
 			vertices[1].Pos.X = posTemp.X + edge2.X;
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
-			vertices[1].Pos.Z = posTemp.Z + this.offset;
+			vertices[1].Pos.Z = posTemp.Z;
+			vertices[1].DepthOffset = this.offset;
 			vertices[1].TexCoord.X = left;
 			vertices[1].TexCoord.Y = bottom;
 			vertices[1].TexCoord.Z = nextLeft;
@@ -93,7 +95,8 @@ namespace SmoothAnimation
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
-			vertices[2].Pos.Z = posTemp.Z + this.offset;
+			vertices[2].Pos.Z = posTemp.Z;
+			vertices[2].DepthOffset = this.offset;
 			vertices[2].TexCoord.X = right;
 			vertices[2].TexCoord.Y = bottom;
 			vertices[2].TexCoord.Z = nextRight;
@@ -103,7 +106,8 @@ namespace SmoothAnimation
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
-			vertices[3].Pos.Z = posTemp.Z + this.offset;
+			vertices[3].Pos.Z = posTemp.Z;
+			vertices[3].DepthOffset = this.offset;
 			vertices[3].TexCoord.X = right;
 			vertices[3].TexCoord.Y = top;
 			vertices[3].TexCoord.Z = nextRight;

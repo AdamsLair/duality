@@ -137,10 +137,24 @@ namespace Duality.Components.Renderers
 				ref this.vertIcon, 
 				posTemp.X, 
 				posTemp.Y, 
-				posTemp.Z + this.offset, 
+				posTemp.Z, 
 				this.colorTint, 
 				xDot, 
 				yDot);
+
+			// Apply depth offset to generated vertices
+			for (int i = 0; i < this.vertFont.Length; i++)
+			{
+				for (int j = 0; j < vertLen[i + 1]; j++)
+				{
+					this.vertFont[i][j].DepthOffset = this.offset;
+				}
+			}
+			for (int i = 0; i < vertLen[0]; i++)
+			{
+				this.vertIcon[i].DepthOffset = this.offset;
+			}
+
 			if (this.text.Fonts != null)
 			{
 				for (int i = 0; i < this.text.Fonts.Length; i++)

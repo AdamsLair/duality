@@ -156,6 +156,7 @@ namespace Duality.Drawing
 			float scale = 1.0f;
 			this.device.PreprocessCoords(ref pos, ref scale);
 
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.RentVertices(points.Length);
@@ -164,6 +165,7 @@ namespace Duality.Drawing
 				vertices[i].Pos.X = points[i].X * scale + pos.X + 0.5f;
 				vertices[i].Pos.Y = points[i].Y * scale + pos.Y + 0.5f;
 				vertices[i].Pos.Z = pos.Z;
+				vertices[i].DepthOffset = offset;
 				vertices[i].TexCoord.X = texCoordRect.X + texCoordRect.W * (float)i / (float)(points.Length - 1);
 				vertices[i].TexCoord.Y = texCoordRect.Y;
 				vertices[i].Color = shapeColor;
@@ -193,6 +195,7 @@ namespace Duality.Drawing
 			int segmentNum = MathF.Clamp(MathF.RoundToInt(MathF.Pow(r * scale, 0.65f) * 2.5f), 4, 128);
 			Vector2 shapeHandle = pos.Xy;
 			float shapeHandleScale = scale;
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices;
@@ -206,6 +209,7 @@ namespace Duality.Drawing
 				vertices[i].Pos.X = pos.X + (float)Math.Sin(angle) * r;
 				vertices[i].Pos.Y = pos.Y - (float)Math.Cos(angle) * r;
 				vertices[i].Pos.Z = pos.Z;
+				vertices[i].DepthOffset = offset;
 				vertices[i].TexCoord.X = texCoordRect.X + texCoordRect.W * (float)i / (float)(segmentNum - 1);
 				vertices[i].TexCoord.Y = texCoordRect.Y;
 				vertices[i].Color = shapeColor;
@@ -223,6 +227,7 @@ namespace Duality.Drawing
 				vertices[i].Pos.X = pos.X + (float)Math.Sin(angle) * r;
 				vertices[i].Pos.Y = pos.Y;
 				vertices[i].Pos.Z = pos.Z - (float)Math.Cos(angle) * r;
+				vertices[i].DepthOffset = offset;
 				vertices[i].TexCoord.X = texCoordRect.X + texCoordRect.W * (float)i / (float)(segmentNum - 1);
 				vertices[i].TexCoord.Y = texCoordRect.Y;
 				vertices[i].Color = shapeColor;
@@ -240,6 +245,7 @@ namespace Duality.Drawing
 				vertices[i].Pos.X = pos.X;
 				vertices[i].Pos.Y = pos.Y + (float)Math.Sin(angle) * r;
 				vertices[i].Pos.Z = pos.Z - (float)Math.Cos(angle) * r;
+				vertices[i].DepthOffset = offset;
 				vertices[i].TexCoord.X = texCoordRect.X + texCoordRect.W * (float)i / (float)(segmentNum - 1);
 				vertices[i].TexCoord.Y = texCoordRect.Y;
 				vertices[i].Color = shapeColor;
@@ -269,13 +275,17 @@ namespace Duality.Drawing
 			this.device.PreprocessCoords(ref target, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.RentVertices(2);
 
 			vertices[0].Pos = pos + new Vector3(0.5f, 0.5f, 0.0f);
 			vertices[1].Pos = target + new Vector3(0.5f, 0.5f, 0.0f);
-			
+
+			vertices[0].DepthOffset = offset;
+			vertices[1].DepthOffset = offset;
+
 			vertices[0].TexCoord = new Vector2(texCoordRect.X, 0.0f);
 			vertices[1].TexCoord = new Vector2(texCoordRect.X + texCoordRect.W, 0.0f);
 
@@ -328,10 +338,13 @@ namespace Duality.Drawing
 			this.device.PreprocessCoords(ref target, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			VertexC1P3T2[] vertices = this.RentVertices(2);
 			vertices[0].Pos = pos + new Vector3(0.5f, 0.5f, 0.0f);
 			vertices[1].Pos = target + new Vector3(0.5f, 0.5f, 0.0f);
+			vertices[0].DepthOffset = offset;
+			vertices[1].DepthOffset = offset;
 			vertices[0].TexCoord = new Vector2(0.0f, 0.0f);
 			vertices[1].TexCoord = new Vector2(lineLength * patternLen / 32.0f, 0.0f);
 			vertices[0].Color = shapeColor;
@@ -379,6 +392,7 @@ namespace Duality.Drawing
 			Vector2 right2 = dir.PerpendicularRight * width * 0.5f * scale2;
 
 			Vector2 shapeHandle = pos.Xy;
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.RentVertices(4);
@@ -387,6 +401,11 @@ namespace Duality.Drawing
 			vertices[1].Pos = target + new Vector3(left2);
 			vertices[2].Pos = target + new Vector3(right2);
 			vertices[3].Pos = pos + new Vector3(right);
+
+			vertices[0].DepthOffset = offset;
+			vertices[1].DepthOffset = offset;
+			vertices[2].DepthOffset = offset;
+			vertices[3].DepthOffset = offset;
 
 			vertices[0].TexCoord = new Vector2(texCoordRect.X, 0.0f);
 			vertices[1].TexCoord = new Vector2(texCoordRect.X + texCoordRect.W * 0.3333333f, 0.0f);
@@ -431,6 +450,7 @@ namespace Duality.Drawing
 			this.device.PreprocessCoords(ref pos, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.RentVertices(4);
@@ -439,6 +459,11 @@ namespace Duality.Drawing
 			vertices[1].Pos = new Vector3(pos.X + w * scale - 0.5f, pos.Y + 0.5f, pos.Z);
 			vertices[2].Pos = new Vector3(pos.X + w * scale - 0.5f, pos.Y + h * scale - 0.5f, pos.Z);
 			vertices[3].Pos = new Vector3(pos.X + 0.5f, pos.Y + h * scale - 0.5f, pos.Z);
+
+			vertices[0].DepthOffset = offset;
+			vertices[1].DepthOffset = offset;
+			vertices[2].DepthOffset = offset;
+			vertices[3].DepthOffset = offset;
 
 			vertices[0].TexCoord = new Vector2(texCoordRect.X, 0.0f);
 			vertices[1].TexCoord = new Vector2(texCoordRect.X + texCoordRect.W * 0.3333333f, 0.0f);
@@ -503,6 +528,7 @@ namespace Duality.Drawing
 			int segmentNum = MathF.Clamp(MathF.RoundToInt(MathF.Pow(MathF.Max(width, height), 0.65f) * 3.5f * angleRange / MathF.RadAngle360), 4, 128);
 			float angleStep = angleRange / segmentNum;
 			Vector2 shapeHandle = pos.Xy - new Vector2(width, height);
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			int vertexCount = segmentNum + (loop ? 0 : 1) + (outline ? 2 : 0);
@@ -514,6 +540,7 @@ namespace Duality.Drawing
 				vertices[0].Pos.X = pos.X + 0.5f;
 				vertices[0].Pos.Y = pos.Y + 0.5f;
 				vertices[0].Pos.Z = pos.Z;
+				vertices[0].DepthOffset = offset;
 				vertices[0].TexCoord.X = texCoordRect.X;
 				vertices[0].TexCoord.Y = texCoordRect.Y;
 				vertices[0].Color = shapeColor;
@@ -525,6 +552,7 @@ namespace Duality.Drawing
 				vertices[i].Pos.X = pos.X + (float)Math.Sin(angle) * (width - 0.5f);
 				vertices[i].Pos.Y = pos.Y - (float)Math.Cos(angle) * (height - 0.5f);
 				vertices[i].Pos.Z = pos.Z;
+				vertices[i].DepthOffset = offset;
 				vertices[i].TexCoord.X = texCoordRect.X + texCoordRect.W * (float)i / (float)(vertexCount - 1);
 				vertices[i].TexCoord.Y = texCoordRect.Y;
 				vertices[i].Color = shapeColor;
@@ -650,6 +678,7 @@ namespace Duality.Drawing
 			float scale = 1.0f;
 			this.device.PreprocessCoords(ref pos, ref scale);
 
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 
@@ -663,6 +692,7 @@ namespace Duality.Drawing
 				vertices[i].Pos.X = points[i].X * scale + pos.X;
 				vertices[i].Pos.Y = points[i].Y * scale + pos.Y;
 				vertices[i].Pos.Z = pos.Z;
+				vertices[i].DepthOffset = offset;
 				vertices[i].TexCoord.X = texCoordRect.X + ((points[i].X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
 				vertices[i].TexCoord.Y = texCoordRect.Y + ((points[i].Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[i].Color = shapeColor;
@@ -726,6 +756,7 @@ namespace Duality.Drawing
 			Vector2 right2 = dir.PerpendicularRight * width * 0.5f * scale2;
 
 			Vector2 shapeHandle = pos.Xy;
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.RentVertices(4);
@@ -734,6 +765,11 @@ namespace Duality.Drawing
 			vertices[1].Pos = target + new Vector3(left2);
 			vertices[2].Pos = target + new Vector3(right2);
 			vertices[3].Pos = pos + new Vector3(right);
+
+			vertices[0].DepthOffset = offset;
+			vertices[1].DepthOffset = offset;
+			vertices[2].DepthOffset = offset;
+			vertices[3].DepthOffset = offset;
 
 			vertices[0].TexCoord = texCoordRect.TopLeft;
 			vertices[1].TexCoord = texCoordRect.TopRight;
@@ -823,6 +859,7 @@ namespace Duality.Drawing
 			int segmentNum = MathF.Clamp(MathF.RoundToInt(MathF.Pow(MathF.Max(width, height), 0.65f) * 3.5f * angleRange / MathF.RadAngle360), 4, 128);
 			float angleStep = angleRange / segmentNum;
 			Vector2 shapeHandle = pos.Xy - new Vector2(width, height);
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			int vertexCount;
@@ -833,6 +870,7 @@ namespace Duality.Drawing
 				vertexCount = segmentNum + 2;
 				vertices = this.RentVertices(vertexCount);
 				vertices[0].Pos = pos;
+				vertices[0].DepthOffset = offset;
 				vertices[0].Color = shapeColor;
 				vertices[0].TexCoord = texCoordRect.Center;
 				float angle = minAngle;
@@ -843,6 +881,7 @@ namespace Duality.Drawing
 					vertices[i].Pos.X = pos.X + sin * width;
 					vertices[i].Pos.Y = pos.Y - cos * height;
 					vertices[i].Pos.Z = pos.Z;
+					vertices[i].DepthOffset = offset;
 					vertices[i].Color = shapeColor;
 					vertices[i].TexCoord.X = texCoordRect.X + (0.5f + 0.5f * sin) * texCoordRect.W;
 					vertices[i].TexCoord.Y = texCoordRect.Y + (0.5f - 0.5f * cos) * texCoordRect.H;
@@ -865,6 +904,7 @@ namespace Duality.Drawing
 					vertices[i + 0].Pos.X = pos.X + sin * width;
 					vertices[i + 0].Pos.Y = pos.Y - cos * height;
 					vertices[i + 0].Pos.Z = pos.Z;
+					vertices[i + 0].DepthOffset = offset;
 					vertices[i + 0].Color = shapeColor;
 					vertices[i + 0].TexCoord.X = texCoordRect.X + (0.5f + 0.5f * sin) * texCoordRect.W;
 					vertices[i + 0].TexCoord.Y = texCoordRect.Y + (0.5f - 0.5f * cos) * texCoordRect.H;
@@ -872,6 +912,7 @@ namespace Duality.Drawing
 					vertices[i + 1].Pos.X = pos.X + sin * (width - donutWidth);
 					vertices[i + 1].Pos.Y = pos.Y - cos * (height - donutWidth);
 					vertices[i + 1].Pos.Z = pos.Z;
+					vertices[i + 1].DepthOffset = offset;
 					vertices[i + 1].Color = shapeColor;
 					vertices[i + 1].TexCoord.X = texCoordRect.X + (0.5f + (0.5f - donutWidthTexCoord.X) * sin) * texCoordRect.W;
 					vertices[i + 1].TexCoord.Y = texCoordRect.Y + (0.5f - (0.5f - donutWidthTexCoord.Y) * cos) * texCoordRect.H;
@@ -993,6 +1034,7 @@ namespace Duality.Drawing
 			this.device.PreprocessCoords(ref pos, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.RentVertices(4);
@@ -1001,6 +1043,11 @@ namespace Duality.Drawing
 			vertices[1].Pos = new Vector3(pos.X + width * scale, pos.Y, pos.Z);
 			vertices[2].Pos = new Vector3(pos.X + width * scale, pos.Y + height * scale, pos.Z);
 			vertices[3].Pos = new Vector3(pos.X, pos.Y + height * scale, pos.Z);
+
+			vertices[0].DepthOffset = offset;
+			vertices[1].DepthOffset = offset;
+			vertices[2].DepthOffset = offset;
+			vertices[3].DepthOffset = offset;
 
 			vertices[0].TexCoord = texCoordRect.TopLeft;
 			vertices[1].TexCoord = texCoordRect.TopRight;
@@ -1137,6 +1184,13 @@ namespace Duality.Drawing
 
 				int vertexCount = font.EmitTextVertices(text[i], ref vertices[i], pos.X, pos.Y, pos.Z, this.State.ColorTint, 0.0f, scale);
 
+				// Apply depth offset to generated vertices
+				float offset = this.State.DepthOffset;
+				for (int k = 0; k < vertexCount; k++)
+				{
+					vertices[i][k].DepthOffset = offset;
+				}
+
 				this.State.TransformVertices(vertices[i], shapeHandle, scale);
 				this.device.AddVertices(material, VertexMode.Quads, vertices[i], vertexCount);
 
@@ -1230,7 +1284,21 @@ namespace Duality.Drawing
 			}
 			Vector2 shapeHandle = pos.Xy;
 			int[] vertLen = text.EmitVertices(ref vertText, ref vertIcon, pos.X, pos.Y, pos.Z, this.State.ColorTint, 0.0f, scale);
-			
+
+			// Apply depth offset to generated vertices
+			float offset = this.State.DepthOffset;
+			for (int i = 0; i < vertText.Length; i++)
+			{
+				for (int j = 0; j < vertLen[i + 1]; j++)
+				{
+					vertText[i][j].DepthOffset = offset;
+				}
+			}
+			for (int i = 0; i < vertLen[0]; i++)
+			{
+				vertIcon[i].DepthOffset = offset;
+			}
+
 			if (text.Fonts != null)
 			{
 				for (int i = 0; i < text.Fonts.Length; i++)
@@ -1323,6 +1391,7 @@ namespace Duality.Drawing
 			float scale = 1.0f;
 			this.device.PreprocessCoords(ref pos, ref scale);
 
+			float offset = this.State.DepthOffset;
 			ColorRgba shapeColor = this.State.ColorTint;
 			Rect texCoordRect = this.State.TextureCoordinateRect;
 			
@@ -1424,6 +1493,7 @@ namespace Duality.Drawing
 				vertices[vertexBase + 0].Pos.X = (current.X - offsetA.X * innerScale) * scale + pos.X;
 				vertices[vertexBase + 0].Pos.Y = (current.Y - offsetA.Y * innerScale) * scale + pos.Y;
 				vertices[vertexBase + 0].Pos.Z = pos.Z;
+				vertices[vertexBase + 0].DepthOffset = offset;
 				vertices[vertexBase + 0].TexCoord.X = texCoordRect.X + ((current.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
 				vertices[vertexBase + 0].TexCoord.Y = texCoordRect.Y + ((current.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[vertexBase + 0].Color = shapeColor;
@@ -1431,6 +1501,7 @@ namespace Duality.Drawing
 				vertices[vertexBase + 1].Pos.X = (current.X + offsetA.X * outerScale) * scale + pos.X;
 				vertices[vertexBase + 1].Pos.Y = (current.Y + offsetA.Y * outerScale) * scale + pos.Y;
 				vertices[vertexBase + 1].Pos.Z = pos.Z;
+				vertices[vertexBase + 1].DepthOffset = offset;
 				vertices[vertexBase + 1].TexCoord.X = texCoordRect.X + ((current.X + offsetA.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
 				vertices[vertexBase + 1].TexCoord.Y = texCoordRect.Y + ((current.Y + offsetA.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[vertexBase + 1].Color = shapeColor;
@@ -1438,6 +1509,7 @@ namespace Duality.Drawing
 				vertices[vertexBase + 2].Pos.X = (current.X - offsetB.X * innerScale) * scale + pos.X;
 				vertices[vertexBase + 2].Pos.Y = (current.Y - offsetB.Y * innerScale) * scale + pos.Y;
 				vertices[vertexBase + 2].Pos.Z = pos.Z;
+				vertices[vertexBase + 2].DepthOffset = offset;
 				vertices[vertexBase + 2].TexCoord.X = texCoordRect.X + ((current.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
 				vertices[vertexBase + 2].TexCoord.Y = texCoordRect.Y + ((current.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[vertexBase + 2].Color = shapeColor;
@@ -1445,6 +1517,7 @@ namespace Duality.Drawing
 				vertices[vertexBase + 3].Pos.X = (current.X + offsetB.X * outerScale) * scale + pos.X;
 				vertices[vertexBase + 3].Pos.Y = (current.Y + offsetB.Y * outerScale) * scale + pos.Y;
 				vertices[vertexBase + 3].Pos.Z = pos.Z;
+				vertices[vertexBase + 3].DepthOffset = offset;
 				vertices[vertexBase + 3].TexCoord.X = texCoordRect.X + ((current.X + offsetB.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
 				vertices[vertexBase + 3].TexCoord.Y = texCoordRect.Y + ((current.Y + offsetB.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[vertexBase + 3].Color = shapeColor;
