@@ -526,10 +526,10 @@ namespace Duality.Backend.DefaultOpenTK
 		private void SetupVertexFormat(BatchInfo material, VertexDeclaration vertexDeclaration)
 		{
 			DrawTechnique technique = material.Technique.Res ?? DrawTechnique.Solid.Res;
-			NativeShaderProgram program = (technique.Shader.Res != null ? technique.Shader.Res.Native : null) as NativeShaderProgram;
+			ShaderProgram program = technique.Shader.Res ?? ShaderProgram.Minimal.Res;
+			NativeShaderProgram nativeProgram = (program.Native ?? ShaderProgram.Minimal.Res.Native) as NativeShaderProgram;
 
 			VertexElement[] elements = vertexDeclaration.Elements;
-
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
 			{
 				switch (elements[elementIndex].Role)
@@ -574,43 +574,26 @@ namespace Duality.Backend.DefaultOpenTK
 					}
 					default:
 					{
-						if (program != null)
+						int fieldIndex = nativeProgram.SelectField(ref elements[elementIndex]);
+						if (fieldIndex == -1) break;
+
+						VertexAttribPointerType attribType;
+						switch (elements[elementIndex].Type)
 						{
-							ShaderFieldInfo[] varInfo = program.Fields;
-							int[] locations = program.FieldLocations;
-
-							int selectedVar = -1;
-							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
-							{
-								if (locations[varIndex] == -1) continue;
-								if (!ShaderVarMatches(
-									ref varInfo[varIndex],
-									elements[elementIndex].Type, 
-									elements[elementIndex].Count))
-									continue;
-								
-								selectedVar = varIndex;
-								break;
-							}
-							if (selectedVar == -1) break;
-
-							VertexAttribPointerType attribType;
-							switch (elements[elementIndex].Type)
-							{
-								default:
-								case VertexElementType.Float: attribType = VertexAttribPointerType.Float; break;
-								case VertexElementType.Byte: attribType = VertexAttribPointerType.UnsignedByte; break;
-							}
-
-							GL.EnableVertexAttribArray(locations[selectedVar]);
-							GL.VertexAttribPointer(
-								locations[selectedVar], 
-								elements[elementIndex].Count, 
-								attribType, 
-								false, 
-								vertexDeclaration.Size, 
-								elements[elementIndex].Offset);
+							default:
+							case VertexElementType.Float: attribType = VertexAttribPointerType.Float; break;
+							case VertexElementType.Byte: attribType = VertexAttribPointerType.UnsignedByte; break;
 						}
+
+						int fieldLocation = nativeProgram.FieldLocations[fieldIndex];
+						GL.EnableVertexAttribArray(fieldLocation);
+						GL.VertexAttribPointer(
+							fieldLocation, 
+							elements[elementIndex].Count, 
+							attribType, 
+							false, 
+							vertexDeclaration.Size, 
+							elements[elementIndex].Offset);
 						break;
 					}
 				}
@@ -745,10 +728,10 @@ namespace Duality.Backend.DefaultOpenTK
 		private void FinishVertexFormat(BatchInfo material, VertexDeclaration vertexDeclaration)
 		{
 			DrawTechnique technique = material.Technique.Res ?? DrawTechnique.Solid.Res;
-			NativeShaderProgram program = (technique.Shader.Res != null ? technique.Shader.Res.Native : null) as NativeShaderProgram;
+			ShaderProgram program = technique.Shader.Res ?? ShaderProgram.Minimal.Res;
+			NativeShaderProgram nativeProgram = (program.Native ?? ShaderProgram.Minimal.Res.Native) as NativeShaderProgram;
 
 			VertexElement[] elements = vertexDeclaration.Elements;
-
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
 			{
 				switch (elements[elementIndex].Role)
@@ -770,28 +753,11 @@ namespace Duality.Backend.DefaultOpenTK
 					}
 					default:
 					{
-						if (program != null)
-						{
-							ShaderFieldInfo[] varInfo = program.Fields;
-							int[] locations = program.FieldLocations;
-
-							int selectedVar = -1;
-							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
-							{
-								if (locations[varIndex] == -1) continue;
-								if (!ShaderVarMatches(
-									ref varInfo[varIndex],
-									elements[elementIndex].Type, 
-									elements[elementIndex].Count))
-									continue;
-								
-								selectedVar = varIndex;
-								break;
-							}
-							if (selectedVar == -1) break;
-
-							GL.DisableVertexAttribArray(locations[selectedVar]);
-						}
+						int fieldIndex = nativeProgram.SelectField(ref elements[elementIndex]);
+						if (fieldIndex == -1) break;
+							
+						int fieldLocation = nativeProgram.FieldLocations[fieldIndex];
+						GL.DisableVertexAttribArray(fieldLocation);
 						break;
 					}
 				}
@@ -827,30 +793,6 @@ namespace Duality.Backend.DefaultOpenTK
 				source.M21, source.M22, source.M23, source.M24,
 				source.M31, source.M32, source.M33, source.M34,
 				source.M41, source.M42, source.M43, source.M44);
-		}
-		private static bool ShaderVarMatches(ref ShaderFieldInfo varInfo, VertexElementType type, int count)
-		{
-			if (varInfo.Scope != ShaderFieldScope.Attribute) return false;
-
-			Type elementPrimitive = varInfo.Type.GetElementPrimitive();
-			Type requiredPrimitive = null;
-			switch (type)
-			{
-				case VertexElementType.Byte:
-					requiredPrimitive = typeof(byte);
-					break;
-				case VertexElementType.Float:
-					requiredPrimitive = typeof(float);
-					break;
-			}
-			if (elementPrimitive != requiredPrimitive)
-				return false;
-
-			int elementCount = varInfo.Type.GetElementCount();
-			if (count != elementCount * varInfo.ArrayLength)
-				return false;
-
-			return true;
 		}
 
 		public static void LogDisplayDevices()
