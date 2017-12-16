@@ -227,7 +227,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				iconReset);
 
 			ButtonState buttonStateSelect = ButtonState.Disabled;
-			if (this.Enabled && this.ReferenceName != null)
+			if (this.Enabled)
 			{
 				if (this.buttonSelectPressed) buttonStateSelect = ButtonState.Pressed;
 				else if (this.buttonSelectHovered || this.Focused) buttonStateSelect = ButtonState.Hot;
