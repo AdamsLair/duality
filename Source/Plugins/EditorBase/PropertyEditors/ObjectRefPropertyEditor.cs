@@ -365,17 +365,17 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 		protected void ShowContentSelectionDialog()
 		{
-			var tmpResourceSelectionForm = new ObjectRefSelectionDialog
+			ObjectRefSelectionDialog tmpResourceSelectionForm = new ObjectRefSelectionDialog
 			{
 				FilteredType = this.ReferenceType,
 				ResourcePath = this.ReferenceName
 			};
 
-			var result = tmpResourceSelectionForm.ShowDialog();
+			DialogResult result = tmpResourceSelectionForm.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				var tmpDataObject = new DataObject();
+				DataObject tmpDataObject = new DataObject();
 
 				tmpResourceSelectionForm.SerializeToData(tmpDataObject);
 

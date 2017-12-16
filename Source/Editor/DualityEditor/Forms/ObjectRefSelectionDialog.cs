@@ -1,21 +1,49 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Aga.Controls.Tree;
+using Aga.Controls.Tree.NodeControls;
 
 namespace Duality.Editor.Forms
-{	
+{
+
 	public partial class ObjectRefSelectionDialog : Form
 	{
+		public class ReferenceNode : Node
+		{
+			public ReferenceNode(string name, string path) : base(name)
+			{
+				this.FullName = path;
+			}
+
+			public string FullName { get; set; }
+		}
+
 		public Type FilteredType { get; set; }
 
 		public string ResourcePath { get; set; }
 		public IContentRef ContentReference { get; set; }
 
+		public TreeModel model { get; set; }
+
 		public ObjectRefSelectionDialog()
 		{
 			InitializeComponent();
 
-			// this.resourceListing.DoubleClick += this.ResourceListingOnDoubleClick;
+			this.model = new TreeModel();
+
+			this.objectReferenceListing.DoubleClick += this.ResourceListingOnDoubleClick;
+
+			this.nodeName.DrawText += this.NodeNameOnDrawText;
+			this.nodePath.DrawText += this.NodePathOnDrawText;
+		}
+
+		private void NodePathOnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
+		{
+		}
+
+		private void NodeNameOnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
+		{
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -24,24 +52,23 @@ namespace Duality.Editor.Forms
 
 			this.Text = string.Format("Select a {0} Resource", this.FilteredType.Name);
 
-			// this.resourceListing.Items.Clear();
+			this.objectReferenceListing.ClearSelection();
+			this.objectReferenceListing.Model = this.model;
 
-			foreach (var contentRef in ContentProvider.GetAvailableContent(this.FilteredType))
+			this.model.Nodes.Clear();
+
+			foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(this.FilteredType))
 			{
-				var tmpLVI = new ListViewItem(new string[] { contentRef.Name, contentRef.FullName }, contentRef.FullName ?? contentRef.ResType.ToString())
-				{
-					Tag = contentRef
-				};
+				ReferenceNode tmpNode = new ReferenceNode(contentRef.Name, contentRef.FullName);
 
-				// this.resourceListing.Items.Add(tmpLVI);
+				this.model.Nodes.Add(tmpNode);
 
 				if (contentRef.FullName == this.ResourcePath)
 				{
-					tmpLVI.Selected = true;
 				}
 			}
 
-			// this.resourceListing.Focus();
+			this.objectReferenceListing.Focus();
 		}
 
 		private void ResourceListingOnDoubleClick(object sender, EventArgs eventArgs)
@@ -52,21 +79,7 @@ namespace Duality.Editor.Forms
 
 		private void ResourceListingOnSelectedIndexChanged(object sender, EventArgs eventArgs)
 		{
-			/*foreach (ListViewItem resourceListingSelectedItem in this.resourceListing.SelectedItems)
-			{
-				var contentRef = resourceListingSelectedItem.Tag as IContentRef;
-
-				if (contentRef != null)
-				{
-					this.ContentReference = contentRef;
-					this.ResourcePath = this.ContentReference.FullName;
-				}
-			}*/
-		}
-
-		private void resourceListing_Resize(object sender, EventArgs e)
-		{
-			// this.resourceListing.TileSize = new Size(this.resourceListing.ClientSize.Width, this.resourceListing.TileSize.Height);
+			// TODO: Handle selection
 		}
 
 		/// <summary>

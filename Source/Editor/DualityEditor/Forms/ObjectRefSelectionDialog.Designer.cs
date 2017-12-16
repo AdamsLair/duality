@@ -33,7 +33,9 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.labelInfo = new System.Windows.Forms.Label();
-			this.autoExpandTreeView1 = new Aga.Controls.Tree.TreeViewAdv();
+			this.objectReferenceListing = new Aga.Controls.Tree.TreeViewAdv();
+			this.nodeName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
+			this.nodePath = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -66,29 +68,43 @@
 			this.labelInfo.Name = "labelInfo";
 			this.labelInfo.Size = new System.Drawing.Size(340, 23);
 			this.labelInfo.TabIndex = 6;
-			this.labelInfo.Text = "Please select the resource you would like to use.";
+			this.labelInfo.Text = "Please select the reference you would like to use.";
 			// 
-			// autoExpandTreeView1
+			// objectReferenceListing
 			// 
-			this.autoExpandTreeView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.objectReferenceListing.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-
-			this.autoExpandTreeView1.BackColor = System.Drawing.SystemColors.Window;
-			this.autoExpandTreeView1.ColumnHeaderHeight = 0;
-			this.autoExpandTreeView1.DefaultToolTipProvider = null;
-			this.autoExpandTreeView1.DragDropMarkColor = System.Drawing.Color.Black;
-			this.autoExpandTreeView1.FullRowSelectActiveColor = System.Drawing.Color.Empty;
-			this.autoExpandTreeView1.FullRowSelectInactiveColor = System.Drawing.Color.Empty;
-			this.autoExpandTreeView1.LineColor = System.Drawing.SystemColors.ControlDark;
-			this.autoExpandTreeView1.Location = new System.Drawing.Point(15, 36);
-			this.autoExpandTreeView1.Model = null;
-			this.autoExpandTreeView1.Name = "autoExpandTreeView1";
-			this.autoExpandTreeView1.NodeFilter = null;
-			this.autoExpandTreeView1.SelectedNode = null;
-			this.autoExpandTreeView1.Size = new System.Drawing.Size(337, 284);
-			this.autoExpandTreeView1.TabIndex = 7;
-			this.autoExpandTreeView1.Text = "autoExpandTreeView1";
+			this.objectReferenceListing.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
+			this.objectReferenceListing.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.objectReferenceListing.ColumnHeaderHeight = 0;
+			this.objectReferenceListing.DefaultToolTipProvider = null;
+			this.objectReferenceListing.DragDropMarkColor = System.Drawing.Color.Black;
+			this.objectReferenceListing.FullRowSelect = true;
+			this.objectReferenceListing.FullRowSelectActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+			this.objectReferenceListing.FullRowSelectInactiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
+			this.objectReferenceListing.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
+			this.objectReferenceListing.Location = new System.Drawing.Point(15, 36);
+			this.objectReferenceListing.Model = null;
+			this.objectReferenceListing.Name = "objectReferenceListing";
+			this.objectReferenceListing.NodeControls.Add(this.nodeName);
+			this.objectReferenceListing.NodeControls.Add(this.nodePath);
+			this.objectReferenceListing.NodeFilter = null;
+			this.objectReferenceListing.SelectedNode = null;
+			this.objectReferenceListing.Size = new System.Drawing.Size(337, 284);
+			this.objectReferenceListing.TabIndex = 7;
+			// 
+			// nodeName
+			// 
+			this.nodeName.IncrementalSearchEnabled = true;
+			this.nodeName.LeftMargin = 3;
+			this.nodeName.ParentColumn = null;
+			// 
+			// nodePath
+			// 
+			this.nodePath.IncrementalSearchEnabled = true;
+			this.nodePath.LeftMargin = 3;
+			this.nodePath.ParentColumn = null;
 			// 
 			// ObjectRefSelectionDialog
 			// 
@@ -99,7 +115,7 @@
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(364, 361);
-			this.Controls.Add(this.autoExpandTreeView1);
+			this.Controls.Add(this.objectReferenceListing);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.labelInfo);
 			this.Controls.Add(this.buttonOk);
@@ -109,7 +125,7 @@
 			this.Name = "ObjectRefSelectionDialog";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Select a Resource...";
+			this.Text = "Select a Reference...";
 			this.ResumeLayout(false);
 
 		}
@@ -119,6 +135,8 @@
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonOk;
 		private System.Windows.Forms.Label labelInfo;
-		private TreeViewAdv autoExpandTreeView1;
+		private TreeViewAdv objectReferenceListing;
+		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeName;
+		private Aga.Controls.Tree.NodeControls.NodeTextBox nodePath;
 	}
 }
