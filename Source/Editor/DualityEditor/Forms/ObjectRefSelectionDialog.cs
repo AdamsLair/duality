@@ -15,7 +15,7 @@ namespace Duality.Editor.Forms
 		{
 			InitializeComponent();
 
-			this.resourceListing.DoubleClick += this.ResourceListingOnDoubleClick;
+			// this.resourceListing.DoubleClick += this.ResourceListingOnDoubleClick;
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -24,8 +24,7 @@ namespace Duality.Editor.Forms
 
 			this.Text = string.Format("Select a {0} Resource", this.FilteredType.Name);
 
-			this.imageListResourceListing.Images.Clear();
-			this.resourceListing.Items.Clear();
+			// this.resourceListing.Items.Clear();
 
 			foreach (var contentRef in ContentProvider.GetAvailableContent(this.FilteredType))
 			{
@@ -34,7 +33,7 @@ namespace Duality.Editor.Forms
 					Tag = contentRef
 				};
 
-				this.resourceListing.Items.Add(tmpLVI);
+				// this.resourceListing.Items.Add(tmpLVI);
 
 				if (contentRef.FullName == this.ResourcePath)
 				{
@@ -42,7 +41,7 @@ namespace Duality.Editor.Forms
 				}
 			}
 
-			this.resourceListing.Focus();
+			// this.resourceListing.Focus();
 		}
 
 		private void ResourceListingOnDoubleClick(object sender, EventArgs eventArgs)
@@ -53,7 +52,7 @@ namespace Duality.Editor.Forms
 
 		private void ResourceListingOnSelectedIndexChanged(object sender, EventArgs eventArgs)
 		{
-			foreach (ListViewItem resourceListingSelectedItem in this.resourceListing.SelectedItems)
+			/*foreach (ListViewItem resourceListingSelectedItem in this.resourceListing.SelectedItems)
 			{
 				var contentRef = resourceListingSelectedItem.Tag as IContentRef;
 
@@ -62,12 +61,12 @@ namespace Duality.Editor.Forms
 					this.ContentReference = contentRef;
 					this.ResourcePath = this.ContentReference.FullName;
 				}
-			}
+			}*/
 		}
 
 		private void resourceListing_Resize(object sender, EventArgs e)
 		{
-			this.resourceListing.TileSize = new Size(this.resourceListing.ClientSize.Width, this.resourceListing.TileSize.Height);
+			// this.resourceListing.TileSize = new Size(this.resourceListing.ClientSize.Width, this.resourceListing.TileSize.Height);
 		}
 
 		/// <summary>
