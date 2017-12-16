@@ -6,12 +6,13 @@
       <item dataType="String">{Name}.vert</item>
     </sourceFileHint>
   </assetInfo>
-  <source dataType="String">attribute float VertexAnimBlend;
+  <source dataType="String">attribute float VertexDepthOffset;
+attribute float VertexAnimBlend;
 varying float animBlendVar;
 
 void main()
 {
-	gl_Position = TransformWorldToClip(gl_Vertex);
+	gl_Position = TransformVertexDefault(gl_Vertex.xyz, VertexDepthOffset);
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	gl_FrontColor = gl_Color;
 	animBlendVar = VertexAnimBlend;

@@ -10,11 +10,12 @@ uniform vec3 _CameraPosition;
 varying vec3 worldSpacePos;
 varying mat2 objTransform;
 
+attribute float VertexDepthOffset;
 attribute vec4 VertexLightingParam;
 
 void main()
 {
-	gl_Position = TransformWorldToClip(gl_Vertex);
+	gl_Position = TransformVertexDefault(gl_Vertex.xyz, VertexDepthOffset);
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	gl_FrontColor = gl_Color;
 	

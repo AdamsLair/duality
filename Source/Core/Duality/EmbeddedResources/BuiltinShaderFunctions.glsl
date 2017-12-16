@@ -21,3 +21,14 @@ vec4 TransformViewToClip(vec4 viewPos)
 {
 	return gl_ProjectionMatrix * viewPos;
 }
+
+// Performs the default vertex shader coordinate transformation that
+// Duality uses. This accounts for both parallax and flat rendering,
+// as well as separate depth offsets.
+vec4 TransformVertexDefault(vec3 worldPos, float depthOffset)
+{
+	vec4 viewPos = TransformWorldToView(vec4(worldPos, 1.0));
+	viewPos.z += depthOffset;
+	vec4 clipPos = TransformViewToClip(viewPos);
+	return clipPos;
+}
