@@ -1,9 +1,9 @@
-﻿namespace Duality.Editor.Forms
-{
-	using System;
-	using System.Drawing;
-	using System.Windows.Forms;
+﻿using System;
+using System.Drawing;
+using System.Windows.Forms;
 
+namespace Duality.Editor.Forms
+{	
 	public partial class ObjectRefSelectionDialog : Form
 	{
 		public Type FilteredType { get; set; }

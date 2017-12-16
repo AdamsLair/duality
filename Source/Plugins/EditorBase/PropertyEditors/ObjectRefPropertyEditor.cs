@@ -14,11 +14,11 @@ using Duality;
 using Duality.Audio;
 using Duality.Resources;
 using Duality.Editor;
+using Duality.Editor.Forms;
 using Duality.Editor.Plugins.Base.Properties;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
-	using Forms;
 
 	public abstract class ObjectRefPropertyEditor : PropertyEditor
 	{
