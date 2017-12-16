@@ -22,20 +22,19 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 	public abstract class ObjectRefPropertyEditor : PropertyEditor
 	{
-		private static readonly IconImage iconShow = new IconImage(Properties.EditorBaseResCache.IconEye.ToBitmap());
-		private static readonly IconImage referenceIcon = new IconImage(Properties.EditorBaseResCache.IconReferenceInput);
+		private static readonly IconImage iconSelect = new IconImage(Properties.EditorBaseResCache.IconReferenceInput);
 		private static readonly IconImage iconReset = new IconImage(Properties.EditorBaseResCache.IconAbortCross);
 
 		protected	bool		multiple			= false;
 		protected	bool		dragHover			= false;
 		protected	Rectangle	rectPanel			= Rectangle.Empty;
 		protected	Rectangle	rectButtonReset		= Rectangle.Empty;
-		protected	Rectangle	rectButtonShow		= Rectangle.Empty;
+		protected	Rectangle	rectButtonSelect		= Rectangle.Empty;
 		protected	Rectangle	rectPrevSound		= Rectangle.Empty;
 		protected	bool		buttonResetHovered	= false;
 		protected	bool		buttonResetPressed	= false;
-		protected	bool		buttonShowHovered	= false;
-		protected	bool		buttonShowPressed	= false;
+		protected	bool		buttonSelectHovered	= false;
+		protected	bool		buttonSelectPressed	= false;
 		protected	bool		panelHovered		= false;
 		protected	Point		panelDragBegin		= Point.Empty;
 		protected	Bitmap		prevImage			= null;
@@ -230,16 +229,16 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			ButtonState buttonStateShow = ButtonState.Disabled;
 			if (this.Enabled && this.ReferenceName != null)
 			{
-				if (this.buttonShowPressed)							buttonStateShow = ButtonState.Pressed;
-				else if (this.buttonShowHovered || this.Focused)	buttonStateShow = ButtonState.Hot;
+				if (this.buttonSelectPressed)							buttonStateShow = ButtonState.Pressed;
+				else if (this.buttonSelectHovered || this.Focused)	buttonStateShow = ButtonState.Hot;
 				else												buttonStateShow = ButtonState.Normal;
 			}
 			ControlRenderer.DrawButton(
 				e.Graphics, 
-				this.rectButtonShow, 
+				this.rectButtonSelect, 
 				buttonStateShow, 
 				null,
-				referenceIcon);
+				iconSelect);
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
@@ -269,15 +268,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			base.OnMouseMove(e);
 
 			bool lastButtonResetHovered = this.buttonResetHovered;
-			bool lastButtonShowHovered = this.buttonShowHovered;
+			bool lastButtonSelectHovered = this.buttonSelectHovered;
 			bool lastPanelHovered = this.panelHovered;
 
 			this.buttonResetHovered = !this.ReadOnly && this.rectButtonReset.Contains(e.Location);
-			this.buttonShowHovered = this.rectButtonShow.Contains(e.Location);
+			this.buttonSelectHovered = this.rectButtonSelect.Contains(e.Location);
 			this.panelHovered = this.rectPanel.Contains(e.Location);
 
-			if (lastButtonResetHovered != this.buttonResetHovered || 
-				lastButtonShowHovered != this.buttonShowHovered || 
+			if (lastButtonResetHovered != this.buttonResetHovered ||
+				lastButtonSelectHovered != this.buttonSelectHovered || 
 				lastPanelHovered != this.panelHovered)
 				this.Invalidate();
 
@@ -301,9 +300,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void OnMouseLeave(EventArgs e)
 		{
 			base.OnMouseLeave(e);
-			if (this.buttonResetHovered || this.buttonShowHovered || this.panelHovered) this.Invalidate();
+			if (this.buttonResetHovered || this.buttonSelectHovered || this.panelHovered) this.Invalidate();
 			this.buttonResetHovered = false;
-			this.buttonShowHovered = false;
+			this.buttonSelectHovered = false;
 			this.panelHovered = false;
 			this.panelDragBegin = Point.Empty;
 			this.StopPreviewSound();
@@ -316,9 +315,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.buttonResetPressed = true;
 				this.Invalidate();
 			}
-			else if (this.buttonShowHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			else if (this.buttonSelectHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
 			{
-				this.buttonShowPressed = true;
+				this.buttonSelectPressed = true;
 				this.Invalidate();
 			}
 			else if (this.panelHovered)
@@ -338,14 +337,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				if (this.buttonResetPressed && this.buttonResetHovered) this.ResetReference();
 				this.buttonResetPressed = false;
 			}
-			else if (this.buttonShowPressed && leftMouseButtonUp)
+			else if (this.buttonSelectPressed && leftMouseButtonUp)
 			{
-				if (this.buttonShowPressed && this.buttonShowHovered)
+				if (this.buttonSelectPressed && this.buttonSelectHovered)
 				{
 					ShowContentSelectionDialog();
 				}
 
-				this.buttonShowPressed = false;
+				this.buttonSelectPressed = false;
 			}
 			else if (this.panelHovered && leftMouseButtonUp)
 			{
@@ -429,14 +428,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			if (this.Height >= 44)
 			{
-				this.rectButtonShow = new Rectangle(
+				this.rectButtonSelect = new Rectangle(
 					this.ClientRectangle.Right - buttonWidth,
 					this.ClientRectangle.Top + this.ClientRectangle.Height / 2 - buttonWidth,
 					buttonWidth,
 					buttonWidth);
 				this.rectButtonReset = new Rectangle(
 					this.ClientRectangle.Right - buttonWidth,
-					this.rectButtonShow.Bottom,
+					this.rectButtonSelect.Bottom,
 					buttonWidth,
 					buttonWidth);
 				this.rectPanel = new Rectangle(
@@ -447,7 +446,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			}
 			else
 			{
-				this.rectButtonShow = new Rectangle(
+				this.rectButtonSelect = new Rectangle(
 					this.ClientRectangle.Right - buttonWidth - buttonWidth,
 					this.ClientRectangle.Top,
 					buttonWidth,
