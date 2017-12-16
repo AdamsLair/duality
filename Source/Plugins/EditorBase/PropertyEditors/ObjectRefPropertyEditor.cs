@@ -366,7 +366,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 		protected void ShowContentSelectionDialog()
 		{
-			var tmpResourceSelectionForm = new ContentSelectionDialog
+			var tmpResourceSelectionForm = new ObjectRefSelectionDialog
 			{
 				FilteredType = this.ReferenceType,
 				ResourcePath = this.ReferenceName

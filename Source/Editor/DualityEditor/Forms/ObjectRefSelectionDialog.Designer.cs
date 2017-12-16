@@ -1,6 +1,6 @@
 ﻿namespace Duality.Editor.Forms
 {
-	partial class ContentSelectionDialog
+	partial class ObjectRefSelectionDialog
 	{
 		/// <summary>
 		/// Required designer variable.

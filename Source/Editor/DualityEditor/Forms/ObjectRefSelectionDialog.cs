@@ -4,14 +4,14 @@
 	using System.Drawing;
 	using System.Windows.Forms;
 
-	public partial class ContentSelectionDialog : Form
+	public partial class ObjectRefSelectionDialog : Form
 	{
 		public Type FilteredType { get; set; }
 
 		public string ResourcePath { get; set; }
 		public IContentRef ContentReference { get; set; }
 
-		public ContentSelectionDialog()
+		public ObjectRefSelectionDialog()
 		{
 			InitializeComponent();
 
