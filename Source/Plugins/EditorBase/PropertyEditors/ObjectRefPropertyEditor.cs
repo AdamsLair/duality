@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -10,10 +8,8 @@ using AdamsLair.WinForms.Drawing;
 using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
 using BorderStyle = AdamsLair.WinForms.Drawing.BorderStyle;
 
-using Duality;
 using Duality.Audio;
 using Duality.Resources;
-using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Plugins.Base.Properties;
 
