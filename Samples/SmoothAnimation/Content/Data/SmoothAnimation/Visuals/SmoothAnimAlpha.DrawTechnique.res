@@ -1,7 +1,7 @@
 ﻿<root dataType="Struct" type="Duality.Resources.DrawTechnique" id="129723834">
   <assetInfo />
   <blendType dataType="Enum" type="Duality.Drawing.BlendMode" name="Alpha" value="3" />
-  <prefType dataType="Type" id="427169525" value="SmoothAnimation.VertexC1P3T4A1" />
+  <prefType dataType="Type" id="427169525" value="SmoothAnimation.VertexSmoothAnim" />
   <shader dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.ShaderProgram]]">
     <contentPath dataType="String">Data\SmoothAnimation\Visuals\SmoothAnim.ShaderProgram.res</contentPath>
   </shader>
