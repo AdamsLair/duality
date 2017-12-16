@@ -136,7 +136,7 @@ namespace Duality.Drawing
 
 			Vector3 pos = vertices[0].Pos;
 			float scale = 1.0f;
-			device.PreprocessCoords(ref pos, ref scale);
+			this.device.PreprocessCoords(ref pos, ref scale);
 
 			this.State.TransformVertices(vertices, pos.Xy, scale, vertexCount);
 			this.device.AddVertices<T>(this.State.MaterialDirect, mode, vertices, vertexCount);
@@ -264,9 +264,9 @@ namespace Duality.Drawing
 			Vector3 pos = new Vector3(x, y, z);
 			Vector3 target = new Vector3(x2, y2, z2);
 			float scale = 1.0f;
-			
-			device.PreprocessCoords(ref pos, ref scale);
-			device.PreprocessCoords(ref target, ref scale);
+
+			this.device.PreprocessCoords(ref pos, ref scale);
+			this.device.PreprocessCoords(ref target, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.State.ColorTint;
@@ -283,7 +283,7 @@ namespace Duality.Drawing
 			vertices[1].Color = shapeColor;
 
 			this.State.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.State.MaterialDirect, VertexMode.Lines, vertices, 2);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.Lines, vertices, 2);
 		}
 		/// <summary>
 		/// Draws a flat line.
@@ -323,9 +323,9 @@ namespace Duality.Drawing
 			Vector3 target = new Vector3(x2, y2, z2);
 			float scale = 1.0f;
 			float lineLength = (target - pos).Length;
-			
-			device.PreprocessCoords(ref pos, ref scale);
-			device.PreprocessCoords(ref target, ref scale);
+
+			this.device.PreprocessCoords(ref pos, ref scale);
+			this.device.PreprocessCoords(ref target, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.State.ColorTint;
@@ -340,7 +340,7 @@ namespace Duality.Drawing
 			BatchInfo customMat = this.device.RentMaterial(this.State.MaterialDirect);
 			customMat.MainTexture = dashTexRef;
 			this.State.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(customMat, VertexMode.Lines, vertices, 2);
+			this.device.AddVertices(customMat, VertexMode.Lines, vertices, 2);
 		}
 		/// <summary>
 		/// Draws a flat line.
@@ -368,9 +368,9 @@ namespace Duality.Drawing
 			Vector3 target = new Vector3(x2, y2, z2);
 			float scale = 1.0f;
 			float scale2 = 1.0f;
-			
-			device.PreprocessCoords(ref pos, ref scale);
-			device.PreprocessCoords(ref target, ref scale2);
+
+			this.device.PreprocessCoords(ref pos, ref scale);
+			this.device.PreprocessCoords(ref target, ref scale2);
 
 			Vector2 dir = (target.Xy - pos.Xy).Normalized;
 			Vector2 left = dir.PerpendicularLeft * width * 0.5f * scale;
@@ -399,7 +399,7 @@ namespace Duality.Drawing
 			vertices[3].Color = shapeColor;
 
 			this.State.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, 4);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, 4);
 		}
 		/// <summary>
 		/// Draws a thick, flat line.
@@ -428,7 +428,7 @@ namespace Duality.Drawing
 
 			Vector3 pos = new Vector3(x, y, z);
 			float scale = 1.0f;
-			device.PreprocessCoords(ref pos, ref scale);
+			this.device.PreprocessCoords(ref pos, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.State.ColorTint;
@@ -451,7 +451,7 @@ namespace Duality.Drawing
 			vertices[3].Color = shapeColor;
 
 			this.State.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, 4);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, 4);
 		}
 		/// <summary>
 		/// Draws a rectangle.
@@ -715,9 +715,9 @@ namespace Duality.Drawing
 			Vector3 target = new Vector3(x2, y2, z2);
 			float scale = 1.0f;
 			float scale2 = 1.0f;
-			
-			device.PreprocessCoords(ref pos, ref scale);
-			device.PreprocessCoords(ref target, ref scale2);
+
+			this.device.PreprocessCoords(ref pos, ref scale);
+			this.device.PreprocessCoords(ref target, ref scale2);
 
 			Vector2 dir = (target.Xy - pos.Xy).Normalized;
 			Vector2 left = dir.PerpendicularLeft * width * 0.5f * scale;
@@ -746,7 +746,7 @@ namespace Duality.Drawing
 			vertices[3].Color = shapeColor;
 
 			this.State.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.State.MaterialDirect, VertexMode.Quads, vertices, 4);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.Quads, vertices, 4);
 		}
 		/// <summary>
 		/// Fills a thick, flat line.
@@ -990,7 +990,7 @@ namespace Duality.Drawing
 
 			Vector3 pos = new Vector3(x, y, z);
 			float scale = 1.0f;
-			device.PreprocessCoords(ref pos, ref scale);
+			this.device.PreprocessCoords(ref pos, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.State.ColorTint;
@@ -1013,7 +1013,7 @@ namespace Duality.Drawing
 			vertices[3].Color = shapeColor;
 
 			this.State.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.State.MaterialDirect, VertexMode.Quads, vertices, 4);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.Quads, vertices, 4);
 		}
 		/// <summary>
 		/// Fills a rectangle.
@@ -1097,7 +1097,7 @@ namespace Duality.Drawing
 
 			Vector3 pos = new Vector3(x, y, z);
 			float scale = 1.0f;
-			device.PreprocessCoords(ref pos, ref scale);
+			this.device.PreprocessCoords(ref pos, ref scale);
 			if (this.State.TextInvariantScale) scale = 1.0f;
 			bool worldSpace = (pos != new Vector3(x, y, z));
 			
@@ -1107,8 +1107,8 @@ namespace Duality.Drawing
 				pos.Y = MathF.Round(pos.Y);
 				if (worldSpace)
 				{
-					if (MathF.RoundToInt(device.TargetSize.X) != (MathF.RoundToInt(device.TargetSize.X) / 2) * 2) pos.X += 0.5f;
-					if (MathF.RoundToInt(device.TargetSize.Y) != (MathF.RoundToInt(device.TargetSize.Y) / 2) * 2) pos.Y += 0.5f;
+					if (MathF.RoundToInt(this.device.TargetSize.X) != (MathF.RoundToInt(this.device.TargetSize.X) / 2) * 2) pos.X += 0.5f;
+					if (MathF.RoundToInt(this.device.TargetSize.Y) != (MathF.RoundToInt(this.device.TargetSize.Y) / 2) * 2) pos.Y += 0.5f;
 				}
 			}
 			Vector2 shapeHandle = pos.Xy;
@@ -1138,7 +1138,7 @@ namespace Duality.Drawing
 				int vertexCount = font.EmitTextVertices(text[i], ref vertices[i], pos.X, pos.Y, pos.Z, this.State.ColorTint, 0.0f, scale);
 
 				this.State.TransformVertices(vertices[i], shapeHandle, scale);
-				device.AddVertices(material, VertexMode.Quads, vertices[i], vertexCount);
+				this.device.AddVertices(material, VertexMode.Quads, vertices[i], vertexCount);
 
 				pos.Y += font.LineSpacing * scale;
 			}
@@ -1214,7 +1214,7 @@ namespace Duality.Drawing
 
 			Vector3 pos = new Vector3(x, y, z);
 			float scale = 1.0f;
-			device.PreprocessCoords(ref pos, ref scale);
+			this.device.PreprocessCoords(ref pos, ref scale);
 			if (this.State.TextInvariantScale) scale = 1.0f;
 			bool worldSpace = (pos != new Vector3(x, y, z));
 			
@@ -1224,8 +1224,8 @@ namespace Duality.Drawing
 				pos.Y = MathF.Round(pos.Y);
 				if (worldSpace)
 				{
-					if (MathF.RoundToInt(device.TargetSize.X) != (MathF.RoundToInt(device.TargetSize.X) / 2) * 2) pos.X += 0.5f;
-					if (MathF.RoundToInt(device.TargetSize.Y) != (MathF.RoundToInt(device.TargetSize.Y) / 2) * 2) pos.Y += 0.5f;
+					if (MathF.RoundToInt(this.device.TargetSize.X) != (MathF.RoundToInt(this.device.TargetSize.X) / 2) * 2) pos.X += 0.5f;
+					if (MathF.RoundToInt(this.device.TargetSize.Y) != (MathF.RoundToInt(this.device.TargetSize.Y) / 2) * 2) pos.Y += 0.5f;
 				}
 			}
 			Vector2 shapeHandle = pos.Xy;
@@ -1248,13 +1248,13 @@ namespace Duality.Drawing
 							material = this.device.RentMaterial(this.State.MaterialDirect);
 							material.MainTexture = text.Fonts[i].Res.Material.MainTexture;
 						}
-						device.AddVertices(material, VertexMode.Quads, vertText[i], vertLen[i + 1]);
+						this.device.AddVertices(material, VertexMode.Quads, vertText[i], vertLen[i + 1]);
 					}
 				}
 			}
 			if (text.Icons != null && iconMat != null)
 			{
-				device.AddVertices(iconMat, VertexMode.Quads, vertIcon, vertLen[0]);
+				this.device.AddVertices(iconMat, VertexMode.Quads, vertIcon, vertLen[0]);
 			}
 		}
 		/// <summary>
