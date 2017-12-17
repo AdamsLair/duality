@@ -138,7 +138,7 @@ namespace Duality.Drawing
 		private ContentRef<RenderTarget>  renderTarget     = null;
 		private RenderMatrix              renderMode       = RenderMatrix.ScreenSpace;
 		private PerspectiveMode           perspective      = PerspectiveMode.Parallax;
-		private Matrix4                   matModelView     = Matrix4.Identity;
+		private Matrix4                   matView          = Matrix4.Identity;
 		private Matrix4                   matProjection    = Matrix4.Identity;
 		private Matrix4                   matFinal         = Matrix4.Identity;
 		private VisibilityFlag            visibilityMask   = VisibilityFlag.All;
@@ -630,9 +630,9 @@ namespace Duality.Drawing
 
 		public void UpdateMatrices()
 		{
-			this.GenerateModelView(out this.matModelView);
-			this.GenerateProjection(new Rect(this.targetSize), out this.matProjection);
-			this.matFinal = this.matModelView * this.matProjection;
+			this.GenerateViewMatrix(out this.matView);
+			this.GenerateProjectionMatrix(new Rect(this.targetSize), out this.matProjection);
+			this.matFinal = this.matView * this.matProjection;
 		}
 		public void PrepareForDrawcalls()
 		{
@@ -652,7 +652,7 @@ namespace Duality.Drawing
 			this.renderOptions.ClearDepth = this.clearDepth;
 			this.renderOptions.Viewport = this.viewportRect;
 			this.renderOptions.RenderMode = this.renderMode;
-			this.renderOptions.ModelViewMatrix = this.matModelView;
+			this.renderOptions.ViewMatrix = this.matView;
 			this.renderOptions.ProjectionMatrix = this.matProjection;
 			this.renderOptions.Target = this.renderTarget.IsAvailable ? this.renderTarget.Res.Native : null;
 			this.renderOptions.ShaderParameters = this.shaderParameters;
@@ -707,7 +707,7 @@ namespace Duality.Drawing
 			return (float)(zSortIndex / (double)count);
 		}
 
-		private void GenerateModelView(out Matrix4 mvMat)
+		private void GenerateViewMatrix(out Matrix4 mvMat)
 		{
 			mvMat = Matrix4.Identity;
 			if (this.renderMode == RenderMatrix.ScreenSpace) return;
@@ -719,7 +719,7 @@ namespace Duality.Drawing
 			// Rotate them according to the camera angle
 			mvMat *= Matrix4.CreateRotationZ(-this.refAngle);
 		}
-		private void GenerateProjection(Rect orthoAbs, out Matrix4 projMat)
+		private void GenerateProjectionMatrix(Rect orthoAbs, out Matrix4 projMat)
 		{
 			if (this.renderMode == RenderMatrix.ScreenSpace)
 			{

@@ -221,7 +221,7 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			
 			OpenTK.Matrix4 openTkModelView;
-			Matrix4 modelView = options.ModelViewMatrix;
+			Matrix4 modelView = options.ViewMatrix;
 			GetOpenTKMatrix(ref modelView, out openTkModelView);
 
 			GL.MatrixMode(MatrixMode.Modelview);

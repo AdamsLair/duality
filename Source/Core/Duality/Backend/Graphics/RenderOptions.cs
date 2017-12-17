@@ -15,7 +15,7 @@ namespace Duality.Backend
 		private float                     clearDepth       = 1.0f;
 		private Rect                      viewport         = new Rect(0, 0, 256, 256);
 		private RenderMatrix              renderMode       = RenderMatrix.ScreenSpace;
-		private Matrix4                   modelViewMatrix  = Matrix4.Identity;
+		private Matrix4                   viewMatrix       = Matrix4.Identity;
 		private Matrix4                   projectionMatrix = Matrix4.Identity;
 		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
 		
@@ -49,10 +49,10 @@ namespace Duality.Backend
 			get { return this.renderMode; }
 			set { this.renderMode = value; }
 		}
-		public Matrix4 ModelViewMatrix
+		public Matrix4 ViewMatrix
 		{
-			get { return this.modelViewMatrix; }
-			set { this.modelViewMatrix = value; }
+			get { return this.viewMatrix; }
+			set { this.viewMatrix = value; }
 		}
 		public Matrix4 ProjectionMatrix
 		{
