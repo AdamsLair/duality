@@ -125,7 +125,7 @@ namespace Duality.Drawing
 
 		
 		private bool                      disposed         = false;
-		private float                     nearZ            = 0.0f;
+		private float                     nearZ            = 50.0f;
 		private float                     farZ             = 10000.0f;
 		private float                     focusDist        = DefaultFocusDist;
 		private ClearFlag                 clearFlags       = ClearFlag.All;
@@ -421,34 +421,7 @@ namespace Duality.Drawing
 			return spacePos;
 		}
 
-		public void PreprocessCoords(ref Vector3 pos, ref float scale)
-		{
-			if (this.renderMode == RenderMatrix.ScreenSpace) return;
-			
-			// Make coordinates relative to the Camera
-			pos.X -= this.refPos.X;
-			pos.Y -= this.refPos.Y;
-			pos.Z -= this.refPos.Z;
-
-			// Apply active perspective effect
-			float scaleTemp;
-			if (this.perspective == PerspectiveMode.Flat)
-			{
-				// Scale globally
-				scaleTemp = this.focusDist / DefaultFocusDist;
-				pos.X *= scaleTemp;
-				pos.Y *= scaleTemp;
-				scale *= scaleTemp;
-			}
-			else if (this.perspective == PerspectiveMode.Parallax)
-			{
-				// Scale distance-based
-				scaleTemp = this.focusDist / Math.Max(pos.Z, this.nearZ);
-				pos.X *= scaleTemp;
-				pos.Y *= scaleTemp;
-				scale *= scaleTemp;
-			}
-		}
+		public void PreprocessCoords(ref Vector3 pos, ref float scale) { }
 		public bool IsCoordInView(Vector3 c, float boundRad)
 		{
 			if (this.renderMode == RenderMatrix.ScreenSpace)
@@ -707,17 +680,16 @@ namespace Duality.Drawing
 			return (float)(zSortIndex / (double)count);
 		}
 
-		private void GenerateViewMatrix(out Matrix4 mvMat)
+		private void GenerateViewMatrix(out Matrix4 viewMat)
 		{
-			mvMat = Matrix4.Identity;
-			if (this.renderMode == RenderMatrix.ScreenSpace) return;
-
-			// Translate objects contrary to the camera
-			// Removed: Do this in software now for custom perspective / parallax support
-			// modelViewMat *= Matrix4.CreateTranslation(-this.GameObj.Transform.Pos);
-
-			// Rotate them according to the camera angle
-			mvMat *= Matrix4.CreateRotationZ(-this.refAngle);
+			viewMat = Matrix4.Identity;
+			if (this.renderMode == RenderMatrix.WorldSpace)
+			{
+				// Translate opposite to camera position
+				viewMat *= Matrix4.CreateTranslation(-this.refPos);
+				// Rotate opposite to camera angle
+				viewMat *= Matrix4.CreateRotationZ(-this.refAngle);
+			}
 		}
 		private void GenerateProjectionMatrix(Rect orthoAbs, out Matrix4 projMat)
 		{
@@ -731,21 +703,36 @@ namespace Duality.Drawing
 					this.nearZ, 
 					this.farZ,
 					out projMat);
+
 				// Flip Z direction from "out of the screen" to "into the screen".
-				projMat.M33 = -projMat.M33;
+				Matrix4 flipZDir;
+				Matrix4.CreateScale(1.0f, 1.0f, -1.0f, out flipZDir);
+				projMat = flipZDir * projMat;
 			}
 			else
 			{
-				Matrix4.CreateOrthographicOffCenter(
+				// Clamp near plane to above-zero, so we avoid division by zero problems
+				float clampedNear = MathF.Max(this.nearZ, 1.0f);
+
+				Matrix4.CreatePerspectiveOffCenter(
 					orthoAbs.X - orthoAbs.W * 0.5f, 
 					orthoAbs.X + orthoAbs.W * 0.5f, 
 					orthoAbs.Y + orthoAbs.H * 0.5f, 
 					orthoAbs.Y - orthoAbs.H * 0.5f, 
-					this.nearZ, 
+					clampedNear, 
 					this.farZ,
 					out projMat);
+
 				// Flip Z direction from "out of the screen" to "into the screen".
-				projMat.M33 = -projMat.M33;
+				Matrix4 flipZDir;
+				Matrix4.CreateScale(1.0f, 1.0f, -1.0f, out flipZDir);
+				projMat = flipZDir * projMat;
+
+				// Apply custom "focus distance", where objects appear at 1:1 scale.
+				// Otherwise, that distance would be the near plane. 
+				projMat.M33 *= clampedNear / this.focusDist; // Output Z scale
+				projMat.M43 *= clampedNear / this.focusDist; // Output Z offset
+				projMat.M34 *= clampedNear / this.focusDist; // Perspective divide scale
 			}
 		}
 
