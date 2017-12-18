@@ -41,13 +41,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			GridLayerData displayedData = default(GridLayerData);
 			this.View.ActiveState.GetDisplayedGridData(Point.Empty, ref displayedData);
 
-	        float scaleTemp = 1.0f;
-	        Vector3 posTemp = Vector3.Zero;
-	        device.PreprocessCoords(ref posTemp, ref scaleTemp);
-	        if (posTemp.Z <= canvas.DrawDevice.NearZ) return;
+	        float distanceToCamera = 0.0f - device.RefCoord.Z;
+	        if (distanceToCamera <= device.NearZ) return;
 
 	        float alphaTemp = 0.5f;
-	        alphaTemp *= (float)Math.Min(1.0d, ((posTemp.Z - device.NearZ) / (device.NearZ * 5.0f)));
+	        alphaTemp *= (float)Math.Min(1.0d, ((distanceToCamera - device.NearZ) / (device.NearZ * 5.0f)));
 	        if (alphaTemp <= 0.005f) return;
 	        ColorRgba gridColor = this.FgColor.WithAlpha(alphaTemp);
 
@@ -60,16 +58,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			adjustedGridBaseSize.X = gridBaseSize.X * MathF.NextPowerOfTwo((int)MathF.Ceiling(gridVisualMinSize / gridBaseSize.X));
 			adjustedGridBaseSize.Y = gridBaseSize.Y * MathF.NextPowerOfTwo((int)MathF.Ceiling(gridVisualMinSize / gridBaseSize.Y));
 
-			float scaleAdjustmentFactor = 4.0f * MathF.Pow(2.0f, -MathF.Round(1.0f - MathF.Log(1.0f / scaleTemp, 2.0f)));
+			float scaleAtGrid = device.GetScaleAtZ(0.0f);
+			float scaleAdjustmentFactor = 4.0f * MathF.Pow(2.0f, -MathF.Round(1.0f - MathF.Log(1.0f / scaleAtGrid, 2.0f)));
 			Vector2 adjustedGridSize;
 			adjustedGridSize.X = MathF.Max(adjustedGridBaseSize.X * scaleAdjustmentFactor, gridBaseSize.X);
 			adjustedGridSize.Y = MathF.Max(adjustedGridBaseSize.Y * scaleAdjustmentFactor, gridBaseSize.Y);
 
-	        Vector2 stepTemp = adjustedGridSize;
-	        Vector2 scaledStep = stepTemp * scaleTemp;
-	        float viewBoundRad = MathF.Distance(device.TargetSize.X, device.TargetSize.Y) * 0.5f;
-	        int lineCountX = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / scaledStep.X)) * 4;
-	        int lineCountY = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / scaledStep.Y)) * 4;
+	        Vector2 stepSize = adjustedGridSize;
+	        float viewBoundRad = MathF.Distance(device.TargetSize.X, device.TargetSize.Y) * 0.5f / scaleAtGrid;
+	        int lineCountX = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / stepSize.X)) * 4;
+	        int lineCountY = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / stepSize.Y)) * 4;
 			int vertexCount = (lineCountX * 2 + lineCountY * 2);
 
 			if (this.vertexBuffer == null) this.vertexBuffer = new RawList<VertexC1P3>(vertexCount);
@@ -81,7 +79,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			int lineIndex;
 			int vertOff = 0;
 
-	        beginPos = posTemp.X % scaledStep.X - (lineCountX / 8) * scaledStep.X;
+	        beginPos = stepSize.X * (int)(device.RefCoord.X / stepSize.X - (lineCountX / 8));
 			pos = beginPos;
 			lineIndex = 0;
 	        for (int x = 0; x < lineCountX; x++)
@@ -92,18 +90,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 	            vertices[vertOff + x * 2 + 0].Color = primaryLine ? gridColor : gridColor.WithAlpha(alphaTemp * (secondaryLine ? 0.5f : 0.25f));
 
 	            vertices[vertOff + x * 2 + 0].Pos.X = pos;
-	            vertices[vertOff + x * 2 + 0].Pos.Y = -viewBoundRad;
-	            vertices[vertOff + x * 2 + 0].Pos.Z = posTemp.Z + 1;
+	            vertices[vertOff + x * 2 + 0].Pos.Y = device.RefCoord.Y - viewBoundRad;
+	            vertices[vertOff + x * 2 + 0].Pos.Z = 0.0f;
+	            vertices[vertOff + x * 2 + 0].DepthOffset = 1.0f;
 
 	            vertices[vertOff + x * 2 + 1] = vertices[vertOff + x * 2 + 0];
-	            vertices[vertOff + x * 2 + 1].Pos.Y = viewBoundRad;
+	            vertices[vertOff + x * 2 + 1].Pos.Y = device.RefCoord.Y + viewBoundRad;
 
-				pos += scaledStep.X / 4;
+				pos += stepSize.X / 4;
 				lineIndex++;
 	        }
 			vertOff += lineCountX * 2;
 
-	        beginPos = posTemp.Y % scaledStep.Y - (lineCountY / 8) * scaledStep.Y;
+	        beginPos = stepSize.Y * (int)(device.RefCoord.Y / stepSize.Y - (lineCountY / 8));
 			pos = beginPos;
 			lineIndex = 0;
 	        for (int y = 0; y < lineCountY; y++)
@@ -113,14 +112,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 	            vertices[vertOff + y * 2 + 0].Color = primaryLine ? gridColor : gridColor.WithAlpha(alphaTemp * (secondaryLine ? 0.5f : 0.25f));
 
-	            vertices[vertOff + y * 2 + 0].Pos.X = -viewBoundRad;
+	            vertices[vertOff + y * 2 + 0].Pos.X = device.RefCoord.X - viewBoundRad;
 	            vertices[vertOff + y * 2 + 0].Pos.Y = pos;
-	            vertices[vertOff + y * 2 + 0].Pos.Z = posTemp.Z + 1;
+	            vertices[vertOff + y * 2 + 0].Pos.Z = 0.0f;
+				vertices[vertOff + y * 2 + 0].DepthOffset = 1.0f;
 
 	            vertices[vertOff + y * 2 + 1] = vertices[vertOff + y * 2 + 0];
-	            vertices[vertOff + y * 2 + 1].Pos.X = viewBoundRad;
+	            vertices[vertOff + y * 2 + 1].Pos.X = device.RefCoord.X + viewBoundRad;
 
-				pos += scaledStep.Y / 4;
+				pos += stepSize.Y / 4;
 				lineIndex++;
 	        }
 			vertOff += lineCountY * 2;
