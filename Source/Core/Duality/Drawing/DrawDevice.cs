@@ -693,46 +693,63 @@ namespace Duality.Drawing
 		}
 		private void GenerateProjectionMatrix(Rect orthoAbs, out Matrix4 projMat)
 		{
+			// Flip Z direction from "out of the screen" to "into the screen".
+			Matrix4 flipZDir;
+			Matrix4.CreateScale(1.0f, 1.0f, -1.0f, out flipZDir);
+
 			if (this.renderMode == RenderMatrix.ScreenSpace)
 			{
+				// When rendering in screen space, all reasonable positive depth should be valid,
+				// so we'll ignore any of the projection specific near and far plane settings.
 				Matrix4.CreateOrthographicOffCenter(
 					orthoAbs.X,
 					orthoAbs.X + orthoAbs.W, 
 					orthoAbs.Y + orthoAbs.H, 
 					orthoAbs.Y, 
-					this.nearZ, 
-					this.farZ,
+					// These values give us a linear depth precision of ~0.006 at 24 bit
+					0.0f, 
+					100000.0f,
 					out projMat);
 
-				// Flip Z direction from "out of the screen" to "into the screen".
-				Matrix4 flipZDir;
-				Matrix4.CreateScale(1.0f, 1.0f, -1.0f, out flipZDir);
 				projMat = flipZDir * projMat;
 			}
 			else
 			{
-				// Clamp near plane to above-zero, so we avoid division by zero problems
-				float clampedNear = MathF.Max(this.nearZ, 1.0f);
+				if (this.perspective == PerspectiveMode.Flat)
+				{
+					Matrix4.CreateOrthographicOffCenter(
+						orthoAbs.X - orthoAbs.W * 0.5f,
+						orthoAbs.X + orthoAbs.W * 0.5f, 
+						orthoAbs.Y + orthoAbs.H * 0.5f, 
+						orthoAbs.Y - orthoAbs.H * 0.5f,
+						this.nearZ, 
+						this.farZ,
+						out projMat);
 
-				Matrix4.CreatePerspectiveOffCenter(
-					orthoAbs.X - orthoAbs.W * 0.5f, 
-					orthoAbs.X + orthoAbs.W * 0.5f, 
-					orthoAbs.Y + orthoAbs.H * 0.5f, 
-					orthoAbs.Y - orthoAbs.H * 0.5f, 
-					clampedNear, 
-					this.farZ,
-					out projMat);
+					projMat = flipZDir * projMat;
+				}
+				else
+				{
+					// Clamp near plane to above-zero, so we avoid division by zero problems
+					float clampedNear = MathF.Max(this.nearZ, 1.0f);
 
-				// Flip Z direction from "out of the screen" to "into the screen".
-				Matrix4 flipZDir;
-				Matrix4.CreateScale(1.0f, 1.0f, -1.0f, out flipZDir);
-				projMat = flipZDir * projMat;
+					Matrix4.CreatePerspectiveOffCenter(
+						orthoAbs.X - orthoAbs.W * 0.5f, 
+						orthoAbs.X + orthoAbs.W * 0.5f, 
+						orthoAbs.Y + orthoAbs.H * 0.5f, 
+						orthoAbs.Y - orthoAbs.H * 0.5f, 
+						clampedNear, 
+						this.farZ,
+						out projMat);
 
-				// Apply custom "focus distance", where objects appear at 1:1 scale.
-				// Otherwise, that distance would be the near plane. 
-				projMat.M33 *= clampedNear / this.focusDist; // Output Z scale
-				projMat.M43 *= clampedNear / this.focusDist; // Output Z offset
-				projMat.M34 *= clampedNear / this.focusDist; // Perspective divide scale
+					projMat = flipZDir * projMat;
+
+					// Apply custom "focus distance", where objects appear at 1:1 scale.
+					// Otherwise, that distance would be the near plane. 
+					projMat.M33 *= clampedNear / this.focusDist; // Output Z scale
+					projMat.M43 *= clampedNear / this.focusDist; // Output Z offset
+					projMat.M34 *= clampedNear / this.focusDist; // Perspective divide scale
+				}
 			}
 		}
 
