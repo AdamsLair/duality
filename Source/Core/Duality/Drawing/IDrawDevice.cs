@@ -14,9 +14,9 @@ namespace Duality.Drawing
 	public interface IDrawDevice
 	{
 		/// <summary>
-		/// [GET] The perspective projection type that is currently active in this drawing device.
+		/// [GET] The projection type that is currently active in this drawing device.
 		/// </summary>
-		PerspectiveMode Perspective { get; }
+		ProjectionMode Projection { get; }
 		/// <summary>
 		/// [GET] Reference coordinate for rendering i.e. the position of the drawing device's virtual camera.
 		/// </summary>

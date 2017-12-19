@@ -489,7 +489,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				this.blitDevice = new DrawDevice();
 				this.blitDevice.ClearFlags = ClearFlag.Depth;
-				this.blitDevice.Perspective = PerspectiveMode.Flat;
+				this.blitDevice.Projection = ProjectionMode.Orthographic;
 				this.blitDevice.RenderMode = RenderMatrix.ScreenSpace;
 			}
 		}

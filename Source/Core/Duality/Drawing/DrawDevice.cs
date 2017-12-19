@@ -137,7 +137,7 @@ namespace Duality.Drawing
 		private float                     refAngle         = 0.0f;
 		private ContentRef<RenderTarget>  renderTarget     = null;
 		private RenderMatrix              renderMode       = RenderMatrix.ScreenSpace;
-		private PerspectiveMode           perspective      = PerspectiveMode.Parallax;
+		private ProjectionMode            projection       = ProjectionMode.Perspective;
 		private Matrix4                   matView          = Matrix4.Identity;
 		private Matrix4                   matProjection    = Matrix4.Identity;
 		private Matrix4                   matFinal         = Matrix4.Identity;
@@ -219,12 +219,12 @@ namespace Duality.Drawing
 			set { this.clearFlags = value; }
 		}
 		/// <summary>
-		/// [GET / SET] Specified the perspective effect that is applied when rendering the world.
+		/// [GET / SET] Specified the projection that is applied when rendering the world.
 		/// </summary>
-		public PerspectiveMode Perspective
+		public ProjectionMode Projection
 		{
-			get { return this.perspective; }
-			set { this.perspective = value; }
+			get { return this.projection; }
+			set { this.projection = value; }
 		}
 		public ContentRef<RenderTarget> Target
 		{
@@ -312,7 +312,7 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public float GetScaleAtZ(float z)
 		{
-			if (this.perspective == PerspectiveMode.Parallax)
+			if (this.projection == ProjectionMode.Perspective)
 				return this.focusDist / Math.Max(z - this.refPos.Z, this.nearZ);
 			else
 				return this.focusDist / DefaultFocusDist;
@@ -339,14 +339,14 @@ namespace Duality.Drawing
 			
 			// Revert active perspective effect
 			float scaleTemp;
-			if (this.perspective == PerspectiveMode.Flat)
+			if (this.projection == ProjectionMode.Orthographic)
 			{
 				// Scale globally
 				scaleTemp = DefaultFocusDist / this.focusDist;
 				screenPos.X *= scaleTemp;
 				screenPos.Y *= scaleTemp;
 			}
-			else if (this.perspective == PerspectiveMode.Parallax)
+			else if (this.projection == ProjectionMode.Perspective)
 			{
 				// Scale distance-based
 				scaleTemp = Math.Max(screenPos.Z, this.nearZ) / this.focusDist;
@@ -395,14 +395,14 @@ namespace Duality.Drawing
 
 			// Apply active perspective effect
 			float scaleTemp;
-			if (this.perspective == PerspectiveMode.Flat)
+			if (this.projection == ProjectionMode.Orthographic)
 			{
 				// Scale globally
 				scaleTemp = this.focusDist / DefaultFocusDist;
 				spacePos.X *= scaleTemp;
 				spacePos.Y *= scaleTemp;
 			}
-			else if (this.perspective == PerspectiveMode.Parallax)
+			else if (this.projection == ProjectionMode.Perspective)
 			{
 				// Scale distance-based
 				scaleTemp = this.focusDist / Math.Max(spacePos.Z, this.nearZ);
@@ -715,7 +715,7 @@ namespace Duality.Drawing
 			}
 			else
 			{
-				if (this.perspective == PerspectiveMode.Flat)
+				if (this.projection == ProjectionMode.Orthographic)
 				{
 					Matrix4.CreateOrthographicOffCenter(
 						orthoAbs.X - orthoAbs.W * 0.5f,
@@ -765,7 +765,7 @@ namespace Duality.Drawing
 			this.shaderParameters.Set(BuiltinShaderFields.FrameCount, Time.FrameCount);
 
 			this.shaderParameters.Set(BuiltinShaderFields.CameraPosition, this.refPos);
-			this.shaderParameters.Set(BuiltinShaderFields.CameraParallax, this.perspective == PerspectiveMode.Parallax);
+			this.shaderParameters.Set(BuiltinShaderFields.CameraParallax, this.projection == ProjectionMode.Perspective);
 			this.shaderParameters.Set(BuiltinShaderFields.CameraFocusDist, this.focusDist);
 		}
 

@@ -67,7 +67,7 @@ namespace Duality.Tests.Resources
 				using (RenderTarget renderTarget = new RenderTarget(AAQuality.High, false, texture))
 				using (DrawDevice device = new DrawDevice())
 				{
-					device.Perspective = PerspectiveMode.Flat;
+					device.Projection = ProjectionMode.Orthographic;
 					device.VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 					device.RenderMode = RenderMatrix.ScreenSpace;
 					device.Target = renderTarget;
@@ -106,7 +106,7 @@ namespace Duality.Tests.Resources
 			using (RenderTarget renderTarget = new RenderTarget(antialiasing, false, texture))
 			using (DrawDevice device = new DrawDevice())
 			{
-				device.Perspective = PerspectiveMode.Flat;
+				device.Projection = ProjectionMode.Orthographic;
 				device.VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 				device.RenderMode = RenderMatrix.ScreenSpace;
 				device.Target = renderTarget;

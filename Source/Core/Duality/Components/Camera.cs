@@ -23,7 +23,7 @@ namespace Duality.Components
 		private float                     farZ             = 10000.0f;
 		private float                     focusDist        = DrawDevice.DefaultFocusDist;
 		private Rect                      targetRect       = new Rect(1.0f, 1.0f);
-		private PerspectiveMode           perspective      = PerspectiveMode.Parallax;
+		private ProjectionMode            projection       = ProjectionMode.Perspective;
 		private VisibilityFlag            visibilityMask   = VisibilityFlag.All;
 		private ColorRgba                 clearColor       = ColorRgba.TransparentBlack;
 		private ContentRef<RenderTarget>  renderTarget     = null;
@@ -58,7 +58,7 @@ namespace Duality.Components
 			set { this.farZ = value; }
 		}
 		/// <summary>
-		/// [GET / SET] Reference distance for calculating the view projection. When using <see cref="PerspectiveMode.Parallax"/>, 
+		/// [GET / SET] Reference distance for calculating the view projection. When using <see cref="ProjectionMode.Perspective"/>, 
 		/// an object this far away from the Camera will always appear in its original size and without offset.
 		/// </summary>
 		[EditorHintDecimalPlaces(1)]
@@ -87,12 +87,12 @@ namespace Duality.Components
 			}
 		}
 		/// <summary>
-		/// [GET / SET] Specifies the perspective effect that is applied when rendering the world.
+		/// [GET / SET] Specifies the projection that is applied when rendering the world.
 		/// </summary>
-		public PerspectiveMode Perspective
+		public ProjectionMode Projection
 		{
-			get { return this.perspective; }
-			set { this.perspective = value; }
+			get { return this.projection; }
+			set { this.projection = value; }
 		}
 		/// <summary>
 		/// [GET / SET] A bitmask flagging all visibility groups that are considered visible to this drawing device.
@@ -341,7 +341,7 @@ namespace Duality.Components
 			this.drawDevice.NearZ = this.nearZ;
 			this.drawDevice.FarZ = this.farZ;
 			this.drawDevice.FocusDist = this.focusDist;
-			this.drawDevice.Perspective = this.perspective;
+			this.drawDevice.Projection = this.projection;
 			this.drawDevice.VisibilityMask = this.visibilityMask;
 			this.drawDevice.ClearColor = this.clearColor;
 			this.drawDevice.Target = this.renderTarget;

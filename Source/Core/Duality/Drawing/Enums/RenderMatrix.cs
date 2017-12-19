@@ -5,16 +5,17 @@ using System.Linq;
 namespace Duality.Drawing
 {
 	/// <summary>
-	/// Specifies a rendering matrix setup.
+	/// Distinguishes between screen space / overlay and world space rendering.
 	/// </summary>
 	public enum RenderMatrix
 	{
 		/// <summary>
-		/// Rendering in world space, things are displayed from the point of view of an observer.
+		/// Rendering things that are in the world, from the point of view of an observer.
 		/// </summary>
 		WorldSpace,
 		/// <summary>
-		/// Rendering in screen space, things are displayed in screen coordinates and without depth.
+		/// Rendering a screen space overlay, things are displayed in screen coordinates and without depth.
+		/// This mode is like drawing directly on the camera lens.
 		/// </summary>
 		ScreenSpace
 	}

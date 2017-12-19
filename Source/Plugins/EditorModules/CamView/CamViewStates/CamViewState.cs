@@ -822,7 +822,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			if (e.Delta != 0)
 			{
-				if (this.View.PerspectiveMode == PerspectiveMode.Parallax)
+				if (this.View.PerspectiveMode == ProjectionMode.Perspective)
 				{
 					GameObject camObj = this.CameraObj;
 					float curVel = this.camVel.Length * MathF.Sign(this.camVel.Z);

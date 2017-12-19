@@ -47,7 +47,7 @@
             <focusDist dataType="Float">500</focusDist>
             <gameobj dataType="ObjectRef">1381564491</gameobj>
             <nearZ dataType="Float">0</nearZ>
-            <perspective dataType="Enum" type="Duality.Drawing.PerspectiveMode" name="Parallax" value="1" />
+            <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Perspective" value="1" />
             <priority dataType="Int">0</priority>
             <renderSetup dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderSetup]]">
               <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BloomSetup.RenderSetup.res</contentPath>

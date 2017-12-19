@@ -199,7 +199,7 @@ namespace Duality.Samples.Benchmarks
 			if (this.drawDevice == null)
 			{
 				this.drawDevice = new DrawDevice();
-				this.drawDevice.Perspective = PerspectiveMode.Flat;
+				this.drawDevice.Projection = ProjectionMode.Orthographic;
 				this.drawDevice.RenderMode = RenderMatrix.ScreenSpace;
 			}
 

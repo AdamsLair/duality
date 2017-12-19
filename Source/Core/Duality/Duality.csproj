@@ -171,7 +171,7 @@
     <Compile Include="Resources\Shaders\BuiltinShaderFields.cs" />
     <Compile Include="Resources\Shaders\ShaderType.cs" />
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
-    <Compile Include="Drawing\Enums\PerspectiveMode.cs" />
+    <Compile Include="Drawing\Enums\ProjectionMode.cs" />
     <Compile Include="Drawing\Enums\VertexMode.cs" />
     <Compile Include="Drawing\BatchInfo.cs" />
     <Compile Include="Drawing\Enums\TextureSizeMode.cs" />

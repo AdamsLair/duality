@@ -259,10 +259,10 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			get { return (float)this.focusDist.Increment; }
 		}
-		public PerspectiveMode PerspectiveMode
+		public ProjectionMode PerspectiveMode
 		{
-			get { return this.camComp.Perspective; }
-			set { this.camComp.Perspective = value; }
+			get { return this.camComp.Projection; }
+			set { this.camComp.Projection = value; }
 		}
 		public Camera CameraComponent
 		{
@@ -355,8 +355,8 @@ namespace Duality.Editor.Plugins.CamView
 			this.SetCurrentCamera(null);
 
 			// Initialize PerspectiveMode Selector
-			FieldInfo[] perspectiveModeFields = typeof(PerspectiveMode).GetTypeInfo().GetRuntimeFields().ToArray();
-			foreach (string perspectiveName in Enum.GetNames(typeof(PerspectiveMode)))
+			FieldInfo[] perspectiveModeFields = typeof(ProjectionMode).GetTypeInfo().GetRuntimeFields().ToArray();
+			foreach (string perspectiveName in Enum.GetNames(typeof(ProjectionMode)))
 			{
 				ToolStripMenuItem perspectiveItem = new ToolStripMenuItem(perspectiveName);
 				var perspectiveField = perspectiveModeFields.FirstOrDefault(m => m.Name == perspectiveName);
@@ -876,7 +876,7 @@ namespace Duality.Editor.Plugins.CamView
 
 			if (nativeCamera != null)
 			{
-				node.SetElementValue("Perspective", nativeCamera.Perspective);
+				node.SetElementValue("Perspective", nativeCamera.Projection);
 				node.SetElementValue("FocusDist", nativeCamera.FocusDist);
 				node.SetElementValue("RenderSetup", nativeCamera.RenderingSetup.Path);
 				XElement bgColorElement = new XElement("BackgroundColor");
@@ -1536,15 +1536,15 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			foreach (var item in this.perspectiveDropDown.DropDownItems.OfType<ToolStripMenuItem>())
 			{
-				item.Checked = (item.Text == this.camComp.Perspective.ToString());
+				item.Checked = (item.Text == this.camComp.Projection.ToString());
 			}
 		}
 		private void perspectiveDropDown_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			PerspectiveMode perspective;
+			ProjectionMode perspective;
 			if (Enum.TryParse(e.ClickedItem.Text, out perspective))
 			{
-				this.camComp.Perspective = perspective;
+				this.camComp.Projection = perspective;
 				this.OnPerspectiveChanged();
 			}
 		}

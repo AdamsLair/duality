@@ -264,7 +264,7 @@ namespace Duality.Tests.Drawing
 			using (RenderTarget renderTarget = new RenderTarget(AAQuality.Off, true, texture))
 			using (DrawDevice device = new DrawDevice())
 			{
-				device.Perspective = PerspectiveMode.Flat;
+				device.Projection = ProjectionMode.Orthographic;
 				device.VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 				device.RenderMode = RenderMatrix.ScreenSpace;
 				device.Target = renderTarget;
