@@ -83,12 +83,12 @@ namespace Duality.Drawing
 		Vector3 GetScreenCoord(Vector3 spacePos);
 
 		/// <summary>
-		/// Returns whether the specified world-space position is visible in the drawing devices view space.
+		/// Returns whether the specified world space sphere is visible in the drawing devices view space.
 		/// </summary>
-		/// <param name="c">The position to test.</param>
-		/// <param name="boundRad">The visual bounding radius to assume for the specified position.</param>
-		/// <returns>True, if the position or a portion of its bounding circle is visible, false if not.</returns>
-		bool IsCoordInView(Vector3 c, float boundRad = 1.0f);
+		/// <param name="worldPos">The spheres world space center position.</param>
+		/// <param name="radius">The spheres world space radius.</param>
+		/// <returns></returns>
+		bool IsSphereVisible(Vector3 worldPos, float radius = 1.0f);
 
 		/// <summary>
 		/// Rents a temporary material instance which can be used for rendering.

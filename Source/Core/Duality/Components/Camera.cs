@@ -312,7 +312,7 @@ namespace Duality.Components
 		public bool IsCoordInView(Vector3 c, float boundRad = 1.0f)
 		{
 			this.UpdateDeviceConfig();
-			return this.drawDevice.IsCoordInView(c, boundRad);
+			return this.drawDevice.IsSphereVisible(c, boundRad);
 		}
 
 		private void SetupDevice()

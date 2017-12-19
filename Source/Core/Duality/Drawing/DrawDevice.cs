@@ -421,7 +421,7 @@ namespace Duality.Drawing
 			return spacePos;
 		}
 
-		public bool IsCoordInView(Vector3 worldPos, float boundRad)
+		public bool IsSphereVisible(Vector3 worldPos, float radius)
 		{
 			// Transform coordinate into clip space
 			Vector4 worldPosFull = new Vector4(worldPos, 1.0f);
@@ -434,16 +434,16 @@ namespace Duality.Drawing
 			// Apply the perspective divide
 			float invClipW = 1.0f / clipPos.W;
 			Vector4.Multiply(ref clipPos, invClipW, out clipPos);
-			float clipBoundRad = boundRad * invClipW;
+			float clipRadius = radius * invClipW;
 
 			// Check if the result would still be within valid device coordinates
 			return 
 				clipPos.Z >= -1.0f &&
 				clipPos.Z <= 1.0f &&
-				clipPos.X >= -1.0f - clipBoundRad &&
-				clipPos.Y >= -1.0f - clipBoundRad &&
-				clipPos.X <= 1.0f + clipBoundRad &&
-				clipPos.Y <= 1.0f + clipBoundRad;
+				clipPos.X >= -1.0f - clipRadius &&
+				clipPos.Y >= -1.0f - clipRadius &&
+				clipPos.X <= 1.0f + clipRadius &&
+				clipPos.Y <= 1.0f + clipRadius;
 		}
 		
 		/// <summary>

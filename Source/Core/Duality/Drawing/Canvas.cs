@@ -179,7 +179,7 @@ namespace Duality.Drawing
 		{
 			r = MathF.Abs(r);
 			Vector3 pos = new Vector3(x, y, z);
-			if (!this.device.IsCoordInView(pos, r)) return;
+			if (!this.device.IsSphereVisible(pos, r)) return;
 
 			float projectedSizeAtPos = this.device.GetScaleAtZ(pos.Z);
 
@@ -482,7 +482,7 @@ namespace Duality.Drawing
 			height *= 0.5f; y += height;
 
 			Vector3 pos = new Vector3(x, y, z);
-			if (!this.device.IsCoordInView(pos, MathF.Max(width, height) + this.State.TransformHandle.Length)) return;
+			if (!this.device.IsSphereVisible(pos, MathF.Max(width, height) + this.State.TransformHandle.Length)) return;
 
 			if (maxAngle <= minAngle)
 				maxAngle += MathF.Ceiling((minAngle - maxAngle) / MathF.RadAngle360) * MathF.RadAngle360;
@@ -808,7 +808,7 @@ namespace Duality.Drawing
 			height *= 0.5f; y += height;
 
 			Vector3 pos = new Vector3(x, y, z);
-			if (!this.device.IsCoordInView(pos, MathF.Max(width, height) + this.State.TransformHandle.Length)) return;
+			if (!this.device.IsSphereVisible(pos, MathF.Max(width, height) + this.State.TransformHandle.Length)) return;
 
 			if (maxAngle <= minAngle)
 				maxAngle += MathF.Ceiling((minAngle - maxAngle) / MathF.RadAngle360) * MathF.RadAngle360;
