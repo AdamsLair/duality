@@ -433,7 +433,9 @@ namespace Duality.Drawing
 
 			// Apply the perspective divide
 			float invClipW = 1.0f / clipPos.W;
-			Vector4.Multiply(ref clipPos, invClipW, out clipPos);
+			clipPos.X *= invClipW;
+			clipPos.Y *= invClipW;
+			clipPos.Z *= invClipW;
 			float clipRadius = radius * invClipW;
 
 			// Check if the result would still be within valid device coordinates
