@@ -69,7 +69,7 @@ namespace Duality.Tests.Resources
 				{
 					device.Projection = ProjectionMode.Orthographic;
 					device.VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
-					device.RenderMode = RenderMatrix.ScreenSpace;
+					device.RenderMode = RenderMode.Screen;
 					device.Target = renderTarget;
 					device.TargetSize = renderTarget.Size;
 					device.ViewportRect = new Rect(renderTarget.Size);
@@ -108,7 +108,7 @@ namespace Duality.Tests.Resources
 			{
 				device.Projection = ProjectionMode.Orthographic;
 				device.VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
-				device.RenderMode = RenderMatrix.ScreenSpace;
+				device.RenderMode = RenderMode.Screen;
 				device.Target = renderTarget;
 				device.TargetSize = renderTarget.Size;
 				device.ViewportRect = new Rect(renderTarget.Size);

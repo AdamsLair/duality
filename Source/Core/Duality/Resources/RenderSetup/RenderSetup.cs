@@ -32,7 +32,7 @@ namespace Duality.Resources
 			defaultSetup.Steps.Add(new RenderStep
 			{
 				Id = "ScreenOverlay",
-				MatrixMode = RenderMatrix.ScreenSpace,
+				RenderMode = RenderMode.Screen,
 				ClearFlags = ClearFlag.None,
 				VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay
 			});
@@ -187,7 +187,7 @@ namespace Duality.Resources
 		public void RenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize)
 		{
 			// Memorize projection matrix settings, so the drawing device can be properly reset later
-			RenderMatrix oldDeviceMatrix = drawDevice.RenderMode;
+			RenderMode oldDeviceMatrix = drawDevice.RenderMode;
 			Vector2 oldDeviceTargetSize = drawDevice.TargetSize;
 
 			try
@@ -310,7 +310,7 @@ namespace Duality.Resources
 			localTargetSize *= step.TargetRect.Size;
 
 			// Set up the draw device with rendering step settings
-			drawDevice.RenderMode = step.MatrixMode;
+			drawDevice.RenderMode = step.RenderMode;
 			drawDevice.Target = renderTarget;
 			drawDevice.TargetSize = localTargetSize;
 			drawDevice.ViewportRect = localViewport;

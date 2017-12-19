@@ -207,7 +207,7 @@ namespace Duality.Backend.DefaultOpenTK
 			GL.Clear(glClearMask);
 
 			// Configure Rendering params
-			if (options.RenderMode == RenderMatrix.ScreenSpace)
+			if (options.RenderMode == RenderMode.Screen)
 			{
 				GL.Enable(EnableCap.ScissorTest);
 				GL.Enable(EnableCap.DepthTest);
@@ -237,7 +237,7 @@ namespace Duality.Backend.DefaultOpenTK
 			if (NativeRenderTarget.BoundRT != null)
 			{
 				GL.Scale(1.0f, -1.0f, 1.0f);
-				if (options.RenderMode == RenderMatrix.ScreenSpace)
+				if (options.RenderMode == RenderMode.Screen)
 					GL.Translate(0.0f, -device.TargetSize.Y, 0.0f);
 			}
 		}

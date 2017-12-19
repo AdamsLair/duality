@@ -136,7 +136,7 @@ namespace Duality.Drawing
 		private Vector3                   refPos           = Vector3.Zero;
 		private float                     refAngle         = 0.0f;
 		private ContentRef<RenderTarget>  renderTarget     = null;
-		private RenderMatrix              renderMode       = RenderMatrix.ScreenSpace;
+		private RenderMode                renderMode       = RenderMode.Screen;
 		private ProjectionMode            projection       = ProjectionMode.Perspective;
 		private Matrix4                   matView          = Matrix4.Identity;
 		private Matrix4                   matProjection    = Matrix4.Identity;
@@ -240,7 +240,7 @@ namespace Duality.Drawing
 		{
 			get { return this.pickingIndex != 0; }
 		}
-		public RenderMatrix RenderMode
+		public RenderMode RenderMode
 		{
 			get { return this.renderMode; }
 			set { this.renderMode = value; }
@@ -257,7 +257,7 @@ namespace Duality.Drawing
 		}
 		public bool DepthWrite
 		{
-			get { return this.renderMode != RenderMatrix.ScreenSpace; }
+			get { return this.renderMode != RenderMode.Screen; }
 		}
 		/// <summary>
 		/// [GET] Provides access to the drawing devices shared <see cref="ShaderParameterCollection"/>,
@@ -424,7 +424,7 @@ namespace Duality.Drawing
 		public void PreprocessCoords(ref Vector3 pos, ref float scale) { }
 		public bool IsCoordInView(Vector3 c, float boundRad)
 		{
-			if (this.renderMode == RenderMatrix.ScreenSpace)
+			if (this.renderMode == RenderMode.Screen)
 			{
 				if (c.Z < this.nearZ) return false;
 			}
@@ -683,7 +683,7 @@ namespace Duality.Drawing
 		private void GenerateViewMatrix(out Matrix4 viewMat)
 		{
 			viewMat = Matrix4.Identity;
-			if (this.renderMode == RenderMatrix.WorldSpace)
+			if (this.renderMode == RenderMode.World)
 			{
 				// Translate opposite to camera position
 				viewMat *= Matrix4.CreateTranslation(-this.refPos);
@@ -697,7 +697,7 @@ namespace Duality.Drawing
 			Matrix4 flipZDir;
 			Matrix4.CreateScale(1.0f, 1.0f, -1.0f, out flipZDir);
 
-			if (this.renderMode == RenderMatrix.ScreenSpace)
+			if (this.renderMode == RenderMode.Screen)
 			{
 				// When rendering in screen space, all reasonable positive depth should be valid,
 				// so we'll ignore any of the projection specific near and far plane settings.
@@ -920,7 +920,7 @@ namespace Duality.Drawing
 				ClearColor = color,
 				ClearDepth = 1.0f,
 				Viewport = viewportRect,
-				RenderMode = RenderMatrix.ScreenSpace
+				RenderMode = RenderMode.Screen
 			};
 			DualityApp.GraphicsBackend.BeginRendering(null, null, options);
 			DualityApp.GraphicsBackend.EndRendering();

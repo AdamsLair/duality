@@ -14,7 +14,7 @@ namespace Duality.Backend
 		private ColorRgba                 clearColor       = ColorRgba.TransparentBlack;
 		private float                     clearDepth       = 1.0f;
 		private Rect                      viewport         = new Rect(0, 0, 256, 256);
-		private RenderMatrix              renderMode       = RenderMatrix.ScreenSpace;
+		private RenderMode              renderMode       = RenderMode.Screen;
 		private Matrix4                   viewMatrix       = Matrix4.Identity;
 		private Matrix4                   projectionMatrix = Matrix4.Identity;
 		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
@@ -44,7 +44,7 @@ namespace Duality.Backend
 			get { return this.viewport; }
 			set { this.viewport = value; }
 		}
-		public RenderMatrix RenderMode
+		public RenderMode RenderMode
 		{
 			get { return this.renderMode; }
 			set { this.renderMode = value; }

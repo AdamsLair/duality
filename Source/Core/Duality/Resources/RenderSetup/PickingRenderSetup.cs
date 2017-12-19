@@ -165,7 +165,7 @@ namespace Duality.Resources
 			// Render the world
 			{
 				drawDevice.VisibilityMask = oldDeviceMask & VisibilityFlag.AllGroups;
-				drawDevice.RenderMode = RenderMatrix.WorldSpace;
+				drawDevice.RenderMode = RenderMode.World;
 				drawDevice.ClearFlags = ClearFlag.All;
 
 				drawDevice.PrepareForDrawcalls();
@@ -177,7 +177,7 @@ namespace Duality.Resources
 			if (this.renderOverlay)
 			{
 				drawDevice.VisibilityMask = oldDeviceMask;
-				drawDevice.RenderMode = RenderMatrix.ScreenSpace;
+				drawDevice.RenderMode = RenderMode.Screen;
 				drawDevice.ClearFlags = ClearFlag.None;
 
 				drawDevice.PrepareForDrawcalls();

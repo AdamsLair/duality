@@ -174,7 +174,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.camPassBg = new RenderStep
 				{
 					Id = "EditorGizmoBackground",
-					MatrixMode = RenderMatrix.ScreenSpace,
+					RenderMode = RenderMode.Screen,
 					ClearFlags = ClearFlag.None,
 					VisibilityMask = VisibilityFlag.ScreenOverlay
 				};
@@ -205,7 +205,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.camPassEdScreen = new RenderStep
 				{
 					Id = "EditorGizmoScreenOverlay",
-					MatrixMode = RenderMatrix.ScreenSpace,
+					RenderMode = RenderMode.Screen,
 					ClearFlags = ClearFlag.None,
 					VisibilityMask = VisibilityFlag.ScreenOverlay
 				};

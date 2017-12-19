@@ -19,7 +19,7 @@ namespace Duality.Resources
 		private ColorRgba                clearColor        = ColorRgba.TransparentBlack;
 		private float                    clearDepth        = 1.0f;
 		private ClearFlag                clearFlags        = ClearFlag.All;
-		private RenderMatrix             matrixMode        = RenderMatrix.WorldSpace;
+		private RenderMode               renderMode        = RenderMode.World;
 		private VisibilityFlag           visibilityMask    = VisibilityFlag.AllGroups;
 		private Rect                     targetRect        = new Rect(1.0f, 1.0f);
 		private BatchInfo                input             = null;
@@ -114,12 +114,12 @@ namespace Duality.Resources
 			set { this.clearFlags = value; }
 		}
 		/// <summary>
-		/// [GET / SET] How to set up the coordinate space before rendering
+		/// [GET / SET] Whether this step renders the world from the view of an observer, or a flat screen (overlay).
 		/// </summary>
-		public RenderMatrix MatrixMode
+		public RenderMode RenderMode
 		{
-			get { return this.matrixMode; }
-			set { this.matrixMode = value; }
+			get { return this.renderMode; }
+			set { this.renderMode = value; }
 		}
 		/// <summary>
 		/// [GET / SET] A step-local bitmask flagging all visibility groups that are considered visible to the active drawing device.

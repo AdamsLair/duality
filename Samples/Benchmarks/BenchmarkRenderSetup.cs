@@ -200,7 +200,7 @@ namespace Duality.Samples.Benchmarks
 			{
 				this.drawDevice = new DrawDevice();
 				this.drawDevice.Projection = ProjectionMode.Orthographic;
-				this.drawDevice.RenderMode = RenderMatrix.ScreenSpace;
+				this.drawDevice.RenderMode = RenderMode.Screen;
 			}
 
 			// Configure the drawing device to match parameters and settings

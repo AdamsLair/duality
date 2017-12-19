@@ -323,7 +323,7 @@ namespace Duality.Components
 
 			// Default to world space render mode, so coordinate conversions
 			// work as expected regardless of rendering state.
-			this.drawDevice.RenderMode = RenderMatrix.WorldSpace;
+			this.drawDevice.RenderMode = RenderMode.World;
 		}
 		private void ReleaseDevice()
 		{

@@ -25,7 +25,7 @@
         <id dataType="String">World</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="WorldSpace" value="0" />
+        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="World" value="0" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\MainTarget.RenderTarget.res</contentPath>
         </output>
@@ -45,7 +45,7 @@
         <id dataType="String">ScreenOverlay</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="ScreenSpace" value="1" />
+        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\MainTarget.RenderTarget.res</contentPath>
         </output>
@@ -83,7 +83,7 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMatrix" name="ScreenSpace" value="1" />
+        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
