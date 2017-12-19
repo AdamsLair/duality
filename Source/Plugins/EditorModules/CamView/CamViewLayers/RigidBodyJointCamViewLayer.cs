@@ -65,7 +65,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		protected internal override void OnCollectWorldOverlayDrawcalls(Canvas canvas)
 		{
 			base.OnCollectWorldOverlayDrawcalls(canvas);
-			canvas.State.TextInvariantScale = true;
 			canvas.State.DepthOffset = this.depthOffset;
 			canvas.State.SetMaterial(DrawTechnique.Alpha);
 

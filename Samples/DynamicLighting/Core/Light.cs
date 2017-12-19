@@ -159,8 +159,7 @@ namespace DynamicLighting
 			{
 				float uniformScale = this.GameObj.Transform.Scale;
 				Vector3 pos = this.GameObj.Transform.Pos;
-				float scale = 1.0f;
-				device.PreprocessCoords(ref pos, ref scale);
+				float scale = device.GetScaleAtZ(pos.Z);
 
 				float planarDist = (this.GameObj.Transform.Pos.Xy - device.RefCoord.Xy).Length;
 

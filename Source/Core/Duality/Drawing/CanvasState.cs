@@ -19,7 +19,6 @@ namespace Duality.Drawing
 		private ColorRgba        color;
 		private ContentRef<Font> font;
 		private float            depthOffset;
-		private bool             invariantTextScale;
 		private float            transformAngle;
 		private Vector2          transformScale;
 		private Vector2          transformHandle;
@@ -55,14 +54,6 @@ namespace Duality.Drawing
 		{
 			get { return this.font; }
 			set { this.font = value.IsAvailable ? value : Font.GenericMonospace10; }
-		}
-		/// <summary>
-		/// [GET / SET] If true, text does not scale due to its position in space
-		/// </summary>
-		public bool TextInvariantScale
-		{
-			get { return this.invariantTextScale; }
-			set { this.invariantTextScale = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The texture coordinate rect which is used for UV generation when drawing shapes.
@@ -157,7 +148,6 @@ namespace Duality.Drawing
 			target.texBaseSize        = this.texBaseSize;
 			target.font               = this.font;
 			target.color              = this.color;
-			target.invariantTextScale = this.invariantTextScale;
 			target.depthOffset        = this.depthOffset;
 			target.transformAngle     = this.transformAngle;
 			target.transformHandle    = this.transformHandle;
@@ -182,7 +172,6 @@ namespace Duality.Drawing
 			this.texBaseSize        = Vector2.Zero;
 			this.font               = Font.GenericMonospace10;
 			this.color              = ColorRgba.White;
-			this.invariantTextScale = false;
 			this.depthOffset        = 0.0f;
 			this.transformAngle     = 0.0f;
 			this.transformHandle    = Vector2.Zero;
@@ -243,7 +232,7 @@ namespace Duality.Drawing
 				out this.curTX, 
 				out this.curTY);
 		}
-		internal void TransformVertices<T>(T[] vertexData, Vector2 shapeHandle, float shapeHandleScale, int vertexCount) where T : struct, IVertexData
+		internal void TransformVertices<T>(T[] vertexData, Vector2 shapeHandle, int vertexCount) where T : struct, IVertexData
 		{
 			if (this.IsTransformIdentity) return;
 
@@ -253,8 +242,8 @@ namespace Duality.Drawing
 			for (int i = 0; i < vertexCount; i++)
 			{
 				Vector3 pos = vertexData[i].Pos;
-				pos.X -= transformHandle.X * shapeHandleScale + shapeHandle.X;
-				pos.Y -= transformHandle.Y * shapeHandleScale + shapeHandle.Y;
+				pos.X -= transformHandle.X + shapeHandle.X;
+				pos.Y -= transformHandle.Y + shapeHandle.Y;
 				pos.X *= transformScale.X;
 				pos.Y *= transformScale.Y;
 				MathF.TransformDotVec(ref pos, ref this.curTX, ref this.curTY);
@@ -263,7 +252,7 @@ namespace Duality.Drawing
 				vertexData[i].Pos = pos;
 			}
 		}
-		internal void TransformVertices(VertexC1P3T2[] vertexData, Vector2 shapeHandle, float shapeHandleScale)
+		internal void TransformVertices(VertexC1P3T2[] vertexData, Vector2 shapeHandle)
 		{
 			if (this.IsTransformIdentity) return;
 
@@ -271,8 +260,8 @@ namespace Duality.Drawing
 			Vector2 transformScale = this.transformScale;
 			for (int i = 0; i < vertexData.Length; i++)
 			{
-				vertexData[i].Pos.X -= transformHandle.X * shapeHandleScale + shapeHandle.X;
-				vertexData[i].Pos.Y -= transformHandle.Y * shapeHandleScale + shapeHandle.Y;
+				vertexData[i].Pos.X -= transformHandle.X + shapeHandle.X;
+				vertexData[i].Pos.Y -= transformHandle.Y + shapeHandle.Y;
 				vertexData[i].Pos.X *= transformScale.X;
 				vertexData[i].Pos.Y *= transformScale.Y;
 				MathF.TransformDotVec(ref vertexData[i].Pos, ref this.curTX, ref this.curTY);

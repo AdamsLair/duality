@@ -166,7 +166,6 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			Transform transform = this.GameObj.Transform;
 			Vector3 posTemp = transform.Pos;
 			float scaleTemp = transform.Scale;
-			device.PreprocessCoords(ref posTemp, ref scaleTemp);
 
 			Vector2 xDot, yDot;
 			MathF.GetTransformDotVec(transform.Angle, scaleTemp, out xDot, out yDot);

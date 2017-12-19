@@ -51,9 +51,7 @@ namespace Duality
 			// Scale anti-proportional to perspective scale in order to keep a constant size 
 			// in screen space even when actually drawing in world space.
 			{
-				float scale = 1.0f;
-				Vector3 posTemp = this.origin + basePos;
-				target.DrawDevice.PreprocessCoords(ref posTemp, ref scale);
+				float scale = target.DrawDevice.GetScaleAtZ(this.origin.Z + basePos.Z);
 				originRadius /= scale;
 				borderRadius /= scale;
 				vectorThickness /= scale;

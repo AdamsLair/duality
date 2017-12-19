@@ -28,17 +28,14 @@ namespace SmoothAnimation
 		private void PrepareVerticesSmooth(ref VertexSmoothAnim[] vertices, IDrawDevice device, float curAnimFrameFade, ColorRgba mainClr, Rect uvRect, Rect uvRectNext)
 		{
 			Vector3 posTemp = this.GameObj.Transform.Pos;
-			float scaleTemp = 1.0f;
-			device.PreprocessCoords(ref posTemp, ref scaleTemp);
 
 			Vector2 xDot, yDot;
-			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, scaleTemp, out xDot, out yDot);
+			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, this.GameObj.Transform.Scale, out xDot, out yDot);
 
-			Rect rectTemp = this.rect.Transformed(this.GameObj.Transform.Scale, this.GameObj.Transform.Scale);
-			Vector2 edge1 = rectTemp.TopLeft;
-			Vector2 edge2 = rectTemp.BottomLeft;
-			Vector2 edge3 = rectTemp.BottomRight;
-			Vector2 edge4 = rectTemp.TopRight;
+			Vector2 edge1 = this.rect.TopLeft;
+			Vector2 edge2 = this.rect.BottomLeft;
+			Vector2 edge3 = this.rect.BottomRight;
+			Vector2 edge4 = this.rect.TopRight;
 
 			MathF.TransformDotVec(ref edge1, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);

@@ -205,8 +205,6 @@ namespace DualStickSpaceShooter
 				float particleAngle = objAngle + particleData[i].Angle;
 				float particleScale = objScale;
 
-				device.PreprocessCoords(ref particlePos, ref particleScale);
-
 				Vector2 xDot, yDot;
 				MathF.GetTransformDotVec(particleAngle, particleScale, out xDot, out yDot);
 

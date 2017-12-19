@@ -179,18 +179,14 @@ namespace Duality.Components.Renderers
 		protected void PrepareVertices(ref VertexC1P3T2[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect)
 		{
 			Vector3 posTemp = this.gameobj.Transform.Pos;
-			float scaleTemp = 1.0f;
-			device.PreprocessCoords(ref posTemp, ref scaleTemp);
 
 			Vector2 xDot, yDot;
-			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, scaleTemp, out xDot, out yDot);
+			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, this.gameobj.Transform.Scale, out xDot, out yDot);
 
-			Rect rectTemp = this.rect.Transformed(this.gameobj.Transform.Scale, this.gameobj.Transform.Scale);
-
-			Vector2 edge1 = rectTemp.TopLeft;
-			Vector2 edge2 = rectTemp.BottomLeft;
-			Vector2 edge3 = rectTemp.BottomRight;
-			Vector2 edge4 = rectTemp.TopRight;
+			Vector2 edge1 = this.rect.TopLeft;
+			Vector2 edge2 = this.rect.BottomLeft;
+			Vector2 edge3 = this.rect.BottomRight;
+			Vector2 edge4 = this.rect.TopRight;
 
 			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
 			{ 

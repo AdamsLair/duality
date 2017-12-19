@@ -421,36 +421,29 @@ namespace Duality.Drawing
 			return spacePos;
 		}
 
-		public void PreprocessCoords(ref Vector3 pos, ref float scale) { }
-		public bool IsCoordInView(Vector3 c, float boundRad)
+		public bool IsCoordInView(Vector3 worldPos, float boundRad)
 		{
-			if (this.renderMode == RenderMode.Screen)
-			{
-				if (c.Z < this.nearZ) return false;
-			}
-			else if (c.Z <= this.refPos.Z) return false;
+			// Transform coordinate into clip space
+			Vector4 worldPosFull = new Vector4(worldPos, 1.0f);
+			Vector4 clipPos;
+			Vector4.Transform(ref worldPosFull, ref this.matFinal, out clipPos);
 
-			// Retrieve center vertex coord
-			float scaleTemp = 1.0f;
-			this.PreprocessCoords(ref c, ref scaleTemp);
+			// If the perspective divide near zero or negative, we know it's something behind the camera. Discard.
+			if (clipPos.W < 0.000000001f) return false;
 
-			// Apply final (modelview and projection) matrix
-			Vector3 oldPosTemp = c;
-			Vector3.Transform(ref oldPosTemp, ref this.matFinal, out c);
+			// Apply the perspective divide
+			float invClipW = 1.0f / clipPos.W;
+			Vector4.Multiply(ref clipPos, invClipW, out clipPos);
+			float clipBoundRad = boundRad * invClipW;
 
-			// Apply projection matrices XY rotation and scale to bounding radius
-			boundRad *= scaleTemp;
-			Vector2 boundRadVec = new Vector2(
-				boundRad * Math.Abs(this.matFinal.Row0.X) + boundRad * Math.Abs(this.matFinal.Row1.X),
-				boundRad * Math.Abs(this.matFinal.Row0.Y) + boundRad * Math.Abs(this.matFinal.Row1.Y));
-
+			// Check if the result would still be within valid device coordinates
 			return 
-				c.Z >= -1.0f &&
-				c.Z <= 1.0f &&
-				c.X >= -1.0f - boundRadVec.X &&
-				c.Y >= -1.0f - boundRadVec.Y &&
-				c.X <= 1.0f + boundRadVec.X &&
-				c.Y <= 1.0f + boundRadVec.Y;
+				clipPos.Z >= -1.0f &&
+				clipPos.Z <= 1.0f &&
+				clipPos.X >= -1.0f - clipBoundRad &&
+				clipPos.Y >= -1.0f - clipBoundRad &&
+				clipPos.X <= 1.0f + clipBoundRad &&
+				clipPos.Y <= 1.0f + clipBoundRad;
 		}
 		
 		/// <summary>

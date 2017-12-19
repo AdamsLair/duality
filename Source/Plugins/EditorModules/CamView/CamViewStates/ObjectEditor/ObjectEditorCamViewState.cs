@@ -180,7 +180,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				if (!selObj.HasTransform) continue;
 				Vector3 posTemp = selObj.Pos;
-				float scaleTemp = 1.0f;
 				float radTemp = selObj.BoundRadius;
 
 				if (!canvas.DrawDevice.IsCoordInView(posTemp, radTemp)) continue;
@@ -188,7 +187,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				// Draw selection marker
 				if (selObj.ShowPos)
 				{
-					canvas.DrawDevice.PreprocessCoords(ref posTemp, ref scaleTemp);
 					posTemp.Z = 0.0f;
 					{
 						ColorRgba color = canvas.State.ColorTint;

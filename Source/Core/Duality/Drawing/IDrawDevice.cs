@@ -83,13 +83,6 @@ namespace Duality.Drawing
 		Vector3 GetScreenCoord(Vector3 spacePos);
 
 		/// <summary>
-		/// Processes the specified world space position and scale values and transforms them to the IDrawDevices view space.
-		/// This usually also applies a perspective effect, if applicable.
-		/// </summary>
-		/// <param name="pos">The position to process.</param>
-		/// <param name="scale">The scale factor to process.</param>
-		void PreprocessCoords(ref Vector3 pos, ref float scale);
-		/// <summary>
 		/// Returns whether the specified world-space position is visible in the drawing devices view space.
 		/// </summary>
 		/// <param name="c">The position to test.</param>

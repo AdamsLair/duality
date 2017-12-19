@@ -59,8 +59,6 @@ namespace Duality.Samples.Benchmarks
 		public override void Draw(IDrawDevice device)
 		{
 			Vector3 posTemp = this.GameObj.Transform.Pos;
-			float scaleTemp = 1.0f;
-			device.PreprocessCoords(ref posTemp, ref scaleTemp);
 
 			int count = this.spritePositions.Count;
 			this.vertices.Count = count * 4;
@@ -91,29 +89,29 @@ namespace Duality.Samples.Benchmarks
 				MathF.TransformDotVec(ref edge3, ref spriteXDot, ref spriteYDot);
 				MathF.TransformDotVec(ref edge4, ref spriteXDot, ref spriteYDot);
 
-				vert[i * 4 + 0].Pos.X = posTemp.X + (pos[i].X + edge1.X) * scaleTemp;
-				vert[i * 4 + 0].Pos.Y = posTemp.Y + (pos[i].Y + edge1.Y) * scaleTemp;
+				vert[i * 4 + 0].Pos.X = posTemp.X + (pos[i].X + edge1.X);
+				vert[i * 4 + 0].Pos.Y = posTemp.Y + (pos[i].Y + edge1.Y);
 				vert[i * 4 + 0].Pos.Z = posTemp.Z;
 				vert[i * 4 + 0].TexCoord.X = left;
 				vert[i * 4 + 0].TexCoord.Y = top;
 				vert[i * 4 + 0].Color = mainClr;
 
-				vert[i * 4 + 1].Pos.X = posTemp.X + (pos[i].X + edge2.X) * scaleTemp;
-				vert[i * 4 + 1].Pos.Y = posTemp.Y + (pos[i].Y + edge2.Y) * scaleTemp;
+				vert[i * 4 + 1].Pos.X = posTemp.X + (pos[i].X + edge2.X);
+				vert[i * 4 + 1].Pos.Y = posTemp.Y + (pos[i].Y + edge2.Y);
 				vert[i * 4 + 1].Pos.Z = posTemp.Z;
 				vert[i * 4 + 1].TexCoord.X = left;
 				vert[i * 4 + 1].TexCoord.Y = bottom;
 				vert[i * 4 + 1].Color = mainClr;
 
-				vert[i * 4 + 2].Pos.X = posTemp.X + (pos[i].X + edge3.X) * scaleTemp;
-				vert[i * 4 + 2].Pos.Y = posTemp.Y + (pos[i].Y + edge3.Y) * scaleTemp;
+				vert[i * 4 + 2].Pos.X = posTemp.X + (pos[i].X + edge3.X);
+				vert[i * 4 + 2].Pos.Y = posTemp.Y + (pos[i].Y + edge3.Y);
 				vert[i * 4 + 2].Pos.Z = posTemp.Z;
 				vert[i * 4 + 2].TexCoord.X = right;
 				vert[i * 4 + 2].TexCoord.Y = bottom;
 				vert[i * 4 + 2].Color = mainClr;
 
-				vert[i * 4 + 3].Pos.X = posTemp.X + (pos[i].X + edge4.X) * scaleTemp;
-				vert[i * 4 + 3].Pos.Y = posTemp.Y + (pos[i].Y + edge4.Y) * scaleTemp;
+				vert[i * 4 + 3].Pos.X = posTemp.X + (pos[i].X + edge4.X);
+				vert[i * 4 + 3].Pos.Y = posTemp.Y + (pos[i].Y + edge4.Y);
 				vert[i * 4 + 3].Pos.Z = posTemp.Z;
 				vert[i * 4 + 3].TexCoord.X = right;
 				vert[i * 4 + 3].TexCoord.Y = top;

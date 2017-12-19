@@ -108,11 +108,9 @@ namespace Duality.Components.Renderers
 		public override void Draw(IDrawDevice device)
 		{
 			Vector3 posTemp = this.gameobj.Transform.Pos;
-			float scaleTemp = 1.0f;
-			device.PreprocessCoords(ref posTemp, ref scaleTemp);
 
 			Vector2 xDot, yDot;
-			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, this.gameobj.Transform.Scale * scaleTemp, out xDot, out yDot);
+			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, this.gameobj.Transform.Scale, out xDot, out yDot);
 
 			// Apply block alignment
 			Vector2 textOffset = Vector2.Zero;

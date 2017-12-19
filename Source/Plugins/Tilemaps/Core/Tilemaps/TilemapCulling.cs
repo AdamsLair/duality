@@ -102,12 +102,10 @@ namespace Duality.Plugins.Tilemaps
 			// Determine the view space transform of the tilemap
 			Vector3 objPos = input.TilemapPos;
 			float objScale = input.TilemapScale;
-			float cameraScaleAtObj = 1.0f;
-			device.PreprocessCoords(ref objPos, ref cameraScaleAtObj);
-			objScale *= cameraScaleAtObj;
+			float cameraScaleAtObj = device.GetScaleAtZ(objPos.Z);
 
 			// Early-out, if so small that it might break the math behind rendering a single tile.
-			if (objScale <= 0.000000001f) return EmptyOutput;
+			if (cameraScaleAtObj <= 0.000000001f) return EmptyOutput;
 
 			// Determine transformed X and Y axis in view and world space
 			output.XAxisView = Vector2.UnitX;
