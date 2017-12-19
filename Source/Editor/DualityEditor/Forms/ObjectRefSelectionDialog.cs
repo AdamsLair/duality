@@ -6,6 +6,7 @@ using Aga.Controls.Tree.NodeControls;
 
 namespace Duality.Editor.Forms
 {
+	using System.Drawing;
 
 	public partial class ObjectRefSelectionDialog : Form
 	{
@@ -13,10 +14,25 @@ namespace Duality.Editor.Forms
 		{
 			public ReferenceNode(string name, string path) : base(name)
 			{
-				this.FullName = path;
+				this.Name = name;
+				this.Path = path;
 			}
 
-			public string FullName { get; set; }
+			private string name;
+
+			public string Name
+			{
+				get { return this.name; }
+				set { this.name = value; }
+			}
+
+			private string path;
+
+			public string Path
+			{
+				get { return this.path; }
+				set { this.path = value; }
+			}
 		}
 
 		public Type FilteredType { get; set; }
@@ -40,10 +56,12 @@ namespace Duality.Editor.Forms
 
 		private void NodePathOnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
 		{
+			// drawTextEventArgs.TextColor = Color.Red;
 		}
 
 		private void NodeNameOnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
 		{
+			// drawTextEventArgs.TextColor = Color.Red;
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -55,11 +73,14 @@ namespace Duality.Editor.Forms
 			this.objectReferenceListing.ClearSelection();
 			this.objectReferenceListing.Model = this.model;
 
+			this.objectReferenceListing.BeginUpdate();
 			this.model.Nodes.Clear();
 
 			foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(this.FilteredType))
 			{
 				ReferenceNode tmpNode = new ReferenceNode(contentRef.Name, contentRef.FullName);
+
+				tmpNode.Text = contentRef.Name;
 
 				this.model.Nodes.Add(tmpNode);
 
@@ -68,6 +89,7 @@ namespace Duality.Editor.Forms
 				}
 			}
 
+			this.objectReferenceListing.EndUpdate();
 			this.objectReferenceListing.Focus();
 		}
 

@@ -36,6 +36,8 @@
 			this.objectReferenceListing = new Aga.Controls.Tree.TreeViewAdv();
 			this.nodeName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.nodePath = new Aga.Controls.Tree.NodeControls.NodeTextBox();
+			this.columnName = new Aga.Controls.Tree.TreeColumn();
+			this.columnPath = new Aga.Controls.Tree.TreeColumn();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -78,12 +80,15 @@
 			this.objectReferenceListing.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.objectReferenceListing.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.objectReferenceListing.ColumnHeaderHeight = 0;
+			this.objectReferenceListing.Columns.Add(this.columnName);
+			this.objectReferenceListing.Columns.Add(this.columnPath);
 			this.objectReferenceListing.DefaultToolTipProvider = null;
 			this.objectReferenceListing.DragDropMarkColor = System.Drawing.Color.Black;
 			this.objectReferenceListing.FullRowSelect = true;
 			this.objectReferenceListing.FullRowSelectActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.objectReferenceListing.FullRowSelectInactiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.objectReferenceListing.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
+			this.objectReferenceListing.LoadOnDemand = true;
 			this.objectReferenceListing.Location = new System.Drawing.Point(15, 36);
 			this.objectReferenceListing.Model = null;
 			this.objectReferenceListing.Name = "objectReferenceListing";
@@ -92,19 +97,35 @@
 			this.objectReferenceListing.NodeFilter = null;
 			this.objectReferenceListing.SelectedNode = null;
 			this.objectReferenceListing.Size = new System.Drawing.Size(337, 284);
-			this.objectReferenceListing.TabIndex = 7;
+			this.objectReferenceListing.TabIndex = 0;
 			// 
 			// nodeName
 			// 
+			this.nodeName.DataPropertyName = "Name";
 			this.nodeName.IncrementalSearchEnabled = true;
 			this.nodeName.LeftMargin = 3;
 			this.nodeName.ParentColumn = null;
 			// 
 			// nodePath
 			// 
+			this.nodePath.DataPropertyName = "Path";
 			this.nodePath.IncrementalSearchEnabled = true;
 			this.nodePath.LeftMargin = 3;
 			this.nodePath.ParentColumn = null;
+			// 
+			// columnName
+			// 
+			this.columnName.Header = "Name";
+			this.columnName.Sortable = true;
+			this.columnName.SortOrder = System.Windows.Forms.SortOrder.None;
+			this.columnName.TooltipText = null;
+			// 
+			// columnPath
+			// 
+			this.columnPath.Header = "Path";
+			this.columnPath.Sortable = true;
+			this.columnPath.SortOrder = System.Windows.Forms.SortOrder.None;
+			this.columnPath.TooltipText = null;
 			// 
 			// ObjectRefSelectionDialog
 			// 
@@ -138,5 +159,7 @@
 		private TreeViewAdv objectReferenceListing;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeName;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodePath;
+		private TreeColumn columnName;
+		private TreeColumn columnPath;
 	}
 }
