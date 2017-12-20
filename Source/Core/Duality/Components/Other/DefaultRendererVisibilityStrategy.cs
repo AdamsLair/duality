@@ -49,7 +49,7 @@ namespace Duality.Components
 				if ((cullingData[i].Visibility & VisibilityFlag.ScreenOverlay) != (mask & VisibilityFlag.ScreenOverlay)) continue;
 
 				// Check spatial visibility
-				if (!device.IsSphereVisible(cullingData[i].Position, cullingData[i].Radius)) continue;
+				if (!device.IsSphereInView(cullingData[i].Position, cullingData[i].Radius)) continue;
 
 				// Add renderer to visible result list
 				visibleRendererData[visibleCount] = rendererData[i];

@@ -182,7 +182,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				Vector3 posTemp = selObj.Pos;
 				float radTemp = selObj.BoundRadius;
 
-				if (!canvas.DrawDevice.IsSphereVisible(posTemp, radTemp)) continue;
+				if (!canvas.DrawDevice.IsSphereInView(posTemp, radTemp)) continue;
 
 				// Draw selection marker
 				if (selObj.ShowPos)

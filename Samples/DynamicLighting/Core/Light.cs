@@ -148,9 +148,9 @@ namespace DynamicLighting
 			if (uniformScale <= 0.0f) return false;
 
 			Vector3 pos = this.GameObj.Transform.Pos;
-			if (device.IsSphereVisible(pos, this.range * uniformScale)) return true;
-			if (device.IsSphereVisible(pos - Vector3.UnitZ * this.range * 0.5f * uniformScale, this.range * uniformScale)) return true;
-			if (device.IsSphereVisible(pos + Vector3.UnitZ * this.range * uniformScale, this.range * uniformScale)) return true;
+			if (device.IsSphereInView(pos, this.range * uniformScale)) return true;
+			if (device.IsSphereInView(pos - Vector3.UnitZ * this.range * 0.5f * uniformScale, this.range * uniformScale)) return true;
+			if (device.IsSphereInView(pos + Vector3.UnitZ * this.range * uniformScale, this.range * uniformScale)) return true;
 			return false;
 		}
 		public int CalcPriority(IDrawDevice device)

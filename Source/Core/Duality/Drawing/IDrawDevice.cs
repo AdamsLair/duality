@@ -88,7 +88,7 @@ namespace Duality.Drawing
 		/// <param name="worldPos">The spheres world space center position.</param>
 		/// <param name="radius">The spheres world space radius.</param>
 		/// <returns></returns>
-		bool IsSphereVisible(Vector3 worldPos, float radius = 1.0f);
+		bool IsSphereInView(Vector3 worldPos, float radius = 1.0f);
 
 		/// <summary>
 		/// Rents a temporary material instance which can be used for rendering.

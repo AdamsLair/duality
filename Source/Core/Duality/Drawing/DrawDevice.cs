@@ -421,7 +421,7 @@ namespace Duality.Drawing
 			return spacePos;
 		}
 
-		public bool IsSphereVisible(Vector3 worldPos, float radius)
+		public bool IsSphereInView(Vector3 worldPos, float radius)
 		{
 			// Transform coordinate into clip space
 			Vector4 worldPosFull = new Vector4(worldPos, 1.0f);
