@@ -161,14 +161,14 @@ namespace DynamicLighting
 				Vector3 pos = this.GameObj.Transform.Pos;
 				float scale = device.GetScaleAtZ(pos.Z);
 
-				float planarDist = (this.GameObj.Transform.Pos.Xy - device.RefCoord.Xy).Length;
+				float planarDist = (this.GameObj.Transform.Pos.Xy - device.ViewerPos.Xy).Length;
 
 				float rangeFactor = 1.0f / (this.range * uniformScale);
 				float distFactor = (MathF.Min(scale, 1.0f) * planarDist);
 
 				float spotFactor;
 				if (this.dir != Vector3.Zero)
-					spotFactor = 0.5f * (1.0f + Vector3.Dot((device.RefCoord - this.GameObj.Transform.Pos).Normalized, this.dir));
+					spotFactor = 0.5f * (1.0f + Vector3.Dot((device.ViewerPos - this.GameObj.Transform.Pos).Normalized, this.dir));
 				else
 					spotFactor = 1.0f;
 

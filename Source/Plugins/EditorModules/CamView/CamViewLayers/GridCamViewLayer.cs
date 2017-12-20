@@ -41,7 +41,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			GridLayerData displayedData = default(GridLayerData);
 			this.View.ActiveState.GetDisplayedGridData(Point.Empty, ref displayedData);
 
-	        float distanceToCamera = 0.0f - device.RefCoord.Z;
+	        float distanceToCamera = 0.0f - device.ViewerPos.Z;
 	        if (distanceToCamera <= device.NearZ) return;
 
 	        float alphaTemp = 0.5f;
@@ -79,7 +79,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			int lineIndex;
 			int vertOff = 0;
 
-	        beginPos = stepSize.X * (int)(device.RefCoord.X / stepSize.X - (lineCountX / 8));
+	        beginPos = stepSize.X * (int)(device.ViewerPos.X / stepSize.X - (lineCountX / 8));
 			pos = beginPos;
 			lineIndex = 0;
 	        for (int x = 0; x < lineCountX; x++)
@@ -90,19 +90,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 	            vertices[vertOff + x * 2 + 0].Color = primaryLine ? gridColor : gridColor.WithAlpha(alphaTemp * (secondaryLine ? 0.5f : 0.25f));
 
 	            vertices[vertOff + x * 2 + 0].Pos.X = pos;
-	            vertices[vertOff + x * 2 + 0].Pos.Y = device.RefCoord.Y - viewBoundRad;
+	            vertices[vertOff + x * 2 + 0].Pos.Y = device.ViewerPos.Y - viewBoundRad;
 	            vertices[vertOff + x * 2 + 0].Pos.Z = 0.0f;
 	            vertices[vertOff + x * 2 + 0].DepthOffset = 1.0f;
 
 	            vertices[vertOff + x * 2 + 1] = vertices[vertOff + x * 2 + 0];
-	            vertices[vertOff + x * 2 + 1].Pos.Y = device.RefCoord.Y + viewBoundRad;
+	            vertices[vertOff + x * 2 + 1].Pos.Y = device.ViewerPos.Y + viewBoundRad;
 
 				pos += stepSize.X / 4;
 				lineIndex++;
 	        }
 			vertOff += lineCountX * 2;
 
-	        beginPos = stepSize.Y * (int)(device.RefCoord.Y / stepSize.Y - (lineCountY / 8));
+	        beginPos = stepSize.Y * (int)(device.ViewerPos.Y / stepSize.Y - (lineCountY / 8));
 			pos = beginPos;
 			lineIndex = 0;
 	        for (int y = 0; y < lineCountY; y++)
@@ -112,13 +112,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 	            vertices[vertOff + y * 2 + 0].Color = primaryLine ? gridColor : gridColor.WithAlpha(alphaTemp * (secondaryLine ? 0.5f : 0.25f));
 
-	            vertices[vertOff + y * 2 + 0].Pos.X = device.RefCoord.X - viewBoundRad;
+	            vertices[vertOff + y * 2 + 0].Pos.X = device.ViewerPos.X - viewBoundRad;
 	            vertices[vertOff + y * 2 + 0].Pos.Y = pos;
 	            vertices[vertOff + y * 2 + 0].Pos.Z = 0.0f;
 				vertices[vertOff + y * 2 + 0].DepthOffset = 1.0f;
 
 	            vertices[vertOff + y * 2 + 1] = vertices[vertOff + y * 2 + 0];
-	            vertices[vertOff + y * 2 + 1].Pos.X = device.RefCoord.X + viewBoundRad;
+	            vertices[vertOff + y * 2 + 1].Pos.X = device.ViewerPos.X + viewBoundRad;
 
 				pos += stepSize.Y / 4;
 				lineIndex++;

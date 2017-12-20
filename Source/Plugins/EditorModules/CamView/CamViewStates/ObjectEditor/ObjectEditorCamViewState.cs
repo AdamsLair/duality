@@ -220,7 +220,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		protected void DrawLockedAxes(Canvas canvas, float x, float y, float z, float r)
 		{
-			Vector3 refPos = canvas.DrawDevice.RefCoord;
+			Vector3 refPos = canvas.DrawDevice.ViewerPos;
 			float nearZ = canvas.DrawDevice.NearZ;
 
 			canvas.PushState();

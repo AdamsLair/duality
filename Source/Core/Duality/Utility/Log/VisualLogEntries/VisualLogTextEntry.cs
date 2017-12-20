@@ -79,7 +79,7 @@ namespace Duality
 			// Draw text and background
 			target.State.ColorTint = target.State.ColorTint.WithAlpha(target.State.ColorTint.A * 2.0f / 255.0f);
 			target.State.ColorTint *= this.Color;
-			if (worldSpace) target.State.TransformAngle = target.DrawDevice.RefAngle;
+			if (worldSpace) target.State.TransformAngle = target.DrawDevice.ViewerAngle;
 			target.State.TransformScale = new Vector2(textScale, textScale);
 			target.DrawText(
 				this.lines,

@@ -336,8 +336,8 @@ namespace Duality.Components
 			// Lazy setup, in case someone uses this Camera despite being inactive. (Editor)
 			if (this.drawDevice == null) this.SetupDevice();
 
-			this.drawDevice.RefCoord = this.gameobj.Transform.Pos;
-			this.drawDevice.RefAngle = this.gameobj.Transform.Angle;
+			this.drawDevice.ViewerPos = this.gameobj.Transform.Pos;
+			this.drawDevice.ViewerAngle = this.gameobj.Transform.Angle;
 			this.drawDevice.NearZ = this.nearZ;
 			this.drawDevice.FarZ = this.farZ;
 			this.drawDevice.FocusDist = this.focusDist;

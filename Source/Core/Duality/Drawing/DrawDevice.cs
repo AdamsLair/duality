@@ -133,8 +133,8 @@ namespace Duality.Drawing
 		private float                     clearDepth       = 1.0f;
 		private Vector2                   targetSize       = Vector2.Zero;
 		private Rect                      viewportRect     = Rect.Empty;
-		private Vector3                   refPos           = Vector3.Zero;
-		private float                     refAngle         = 0.0f;
+		private Vector3                   viewerPos        = Vector3.Zero;
+		private float                     viewerAngle      = 0.0f;
 		private ContentRef<RenderTarget>  renderTarget     = null;
 		private RenderMode                renderMode       = RenderMode.Screen;
 		private ProjectionMode            projection       = ProjectionMode.Perspective;
@@ -164,15 +164,15 @@ namespace Duality.Drawing
 		{
 			get { return this.disposed; }
 		}
-		public Vector3 RefCoord
+		public Vector3 ViewerPos
 		{
-			get { return this.refPos; }
-			set { this.refPos = value; }
+			get { return this.viewerPos; }
+			set { this.viewerPos = value; }
 		}
-		public float RefAngle
+		public float ViewerAngle
 		{
-			get { return this.refAngle; }
-			set { this.refAngle = value; }
+			get { return this.viewerAngle; }
+			set { this.viewerAngle = value; }
 		}
 		public float FocusDist
 		{
@@ -313,7 +313,7 @@ namespace Duality.Drawing
 		public float GetScaleAtZ(float z)
 		{
 			if (this.projection == ProjectionMode.Perspective)
-				return this.focusDist / Math.Max(z - this.refPos.Z, this.nearZ);
+				return this.focusDist / Math.Max(z - this.viewerPos.Z, this.nearZ);
 			else
 				return this.focusDist / DefaultFocusDist;
 		}
@@ -328,14 +328,14 @@ namespace Duality.Drawing
 			float targetZ = screenPos.Z;
 
 			// Since screenPos.Z is expected to be a world coordinate, first make that relative
-			Vector3 gameObjPos = this.refPos;
+			Vector3 gameObjPos = this.viewerPos;
 			screenPos.Z -= gameObjPos.Z;
 
 			Vector2 targetSize = this.TargetSize;
 			screenPos.X -= targetSize.X / 2;
 			screenPos.Y -= targetSize.Y / 2;
 
-			MathF.TransformCoord(ref screenPos.X, ref screenPos.Y, this.refAngle);
+			MathF.TransformCoord(ref screenPos.X, ref screenPos.Y, this.viewerAngle);
 			
 			// Revert active perspective effect
 			float scaleTemp;
@@ -388,7 +388,7 @@ namespace Duality.Drawing
 		public Vector3 GetScreenCoord(Vector3 spacePos)
 		{
 			// Make coordinates relative to the Camera
-			Vector3 gameObjPos = this.refPos;
+			Vector3 gameObjPos = this.viewerPos;
 			spacePos.X -= gameObjPos.X;
 			spacePos.Y -= gameObjPos.Y;
 			spacePos.Z -= gameObjPos.Z;
@@ -410,7 +410,7 @@ namespace Duality.Drawing
 				spacePos.Y *= scaleTemp;
 			}
 
-			MathF.TransformCoord(ref spacePos.X, ref spacePos.Y, -this.refAngle);
+			MathF.TransformCoord(ref spacePos.X, ref spacePos.Y, -this.viewerAngle);
 
 			Vector2 targetSize = this.TargetSize;
 			spacePos.X += targetSize.X / 2;
@@ -681,9 +681,9 @@ namespace Duality.Drawing
 			if (this.renderMode == RenderMode.World)
 			{
 				// Translate opposite to camera position
-				viewMat *= Matrix4.CreateTranslation(-this.refPos);
+				viewMat *= Matrix4.CreateTranslation(-this.viewerPos);
 				// Rotate opposite to camera angle
-				viewMat *= Matrix4.CreateRotationZ(-this.refAngle);
+				viewMat *= Matrix4.CreateRotationZ(-this.viewerAngle);
 			}
 		}
 		private void GenerateProjectionMatrix(Rect orthoAbs, out Matrix4 projMat)
@@ -759,7 +759,7 @@ namespace Duality.Drawing
 			this.shaderParameters.Set(BuiltinShaderFields.DeltaTime, Time.DeltaTime);
 			this.shaderParameters.Set(BuiltinShaderFields.FrameCount, Time.FrameCount);
 
-			this.shaderParameters.Set(BuiltinShaderFields.CameraPosition, this.refPos);
+			this.shaderParameters.Set(BuiltinShaderFields.CameraPosition, this.viewerPos);
 			this.shaderParameters.Set(BuiltinShaderFields.CameraParallax, this.projection == ProjectionMode.Perspective);
 			this.shaderParameters.Set(BuiltinShaderFields.CameraFocusDist, this.focusDist);
 		}
