@@ -187,7 +187,7 @@ namespace Duality.Resources
 		public void RenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize)
 		{
 			// Memorize projection matrix settings, so the drawing device can be properly reset later
-			RenderMode oldDeviceMatrix = drawDevice.RenderMode;
+			RenderMode oldDeviceRenderMode = drawDevice.RenderMode;
 			Vector2 oldDeviceTargetSize = drawDevice.TargetSize;
 
 			try
@@ -200,9 +200,8 @@ namespace Duality.Resources
 			}
 
 			// Reset matrices for projection calculations to their previous state
-			drawDevice.RenderMode = oldDeviceMatrix;
+			drawDevice.RenderMode = oldDeviceRenderMode;
 			drawDevice.TargetSize = oldDeviceTargetSize;
-			drawDevice.UpdateMatrices();
 		}
 
 

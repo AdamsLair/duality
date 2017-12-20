@@ -193,9 +193,8 @@ namespace Duality.Components
 				localViewport, 
 				localImageSize);
 
-			// Set up drawdevice matrices so world-screen space conversions work properly
+			// Reset device config, so world / screen space conversions work properly
 			this.drawDevice.TargetSize = imageSize;
-			this.drawDevice.UpdateMatrices();
 
 			Profile.TimeRender.EndMeasure();
 			Profile.EndMeasure(counterName);

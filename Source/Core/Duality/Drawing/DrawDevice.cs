@@ -167,17 +167,17 @@ namespace Duality.Drawing
 		public Vector3 ViewerPos
 		{
 			get { return this.viewerPos; }
-			set { this.viewerPos = value; }
+			set { this.viewerPos = value; this.UpdateMatrices(); }
 		}
 		public float ViewerAngle
 		{
 			get { return this.viewerAngle; }
-			set { this.viewerAngle = value; }
+			set { this.viewerAngle = value; this.UpdateMatrices(); }
 		}
 		public float FocusDist
 		{
 			get { return this.focusDist; }
-			set { this.focusDist = value; }
+			set { this.focusDist = value; this.UpdateMatrices(); }
 		}
 		public VisibilityFlag VisibilityMask
 		{
@@ -187,12 +187,12 @@ namespace Duality.Drawing
 		public float NearZ
 		{
 			get { return this.nearZ; }
-			set { this.nearZ = value; }
+			set { this.nearZ = value; this.UpdateMatrices(); }
 		}
 		public float FarZ
 		{
 			get { return this.farZ; }
-			set { this.farZ = value; }
+			set { this.farZ = value; this.UpdateMatrices(); }
 		}
 		/// <summary>
 		/// [GET / SET] The clear color to apply when clearing the color buffer.
@@ -224,7 +224,7 @@ namespace Duality.Drawing
 		public ProjectionMode Projection
 		{
 			get { return this.projection; }
-			set { this.projection = value; }
+			set { this.projection = value; this.UpdateMatrices(); }
 		}
 		public ContentRef<RenderTarget> Target
 		{
@@ -243,7 +243,7 @@ namespace Duality.Drawing
 		public RenderMode RenderMode
 		{
 			get { return this.renderMode; }
-			set { this.renderMode = value; }
+			set { this.renderMode = value; this.UpdateMatrices(); }
 		}
 		public Rect ViewportRect
 		{
@@ -253,7 +253,7 @@ namespace Duality.Drawing
 		public Vector2 TargetSize
 		{
 			get { return this.targetSize; }
-			set { this.targetSize = value; }
+			set { this.targetSize = value; this.UpdateMatrices(); }
 		}
 		public bool DepthWrite
 		{
@@ -596,12 +596,6 @@ namespace Duality.Drawing
 			this.AddVertices(material, VertexMode.Quads, vertices);
 		}
 
-		public void UpdateMatrices()
-		{
-			this.GenerateViewMatrix(out this.matView);
-			this.GenerateProjectionMatrix(new Rect(this.targetSize), out this.matProjection);
-			this.matFinal = this.matView * this.matProjection;
-		}
 		public void PrepareForDrawcalls()
 		{
 			// Recalculate matrices according to current mode
@@ -674,20 +668,28 @@ namespace Duality.Drawing
 			}
 			return (float)(zSortIndex / (double)count);
 		}
-
-		private void GenerateViewMatrix(out Matrix4 viewMat)
+		
+		private void UpdateMatrices()
 		{
-			viewMat = Matrix4.Identity;
+			this.UpdateViewMatrix();
+			this.UpdateProjectionMatrix();
+			this.matFinal = this.matView * this.matProjection;
+		}
+		private void UpdateViewMatrix()
+		{
+			this.matView = Matrix4.Identity;
 			if (this.renderMode == RenderMode.World)
 			{
 				// Translate opposite to camera position
-				viewMat *= Matrix4.CreateTranslation(-this.viewerPos);
+				this.matView *= Matrix4.CreateTranslation(-this.viewerPos);
 				// Rotate opposite to camera angle
-				viewMat *= Matrix4.CreateRotationZ(-this.viewerAngle);
+				this.matView *= Matrix4.CreateRotationZ(-this.viewerAngle);
 			}
 		}
-		private void GenerateProjectionMatrix(Rect orthoAbs, out Matrix4 projMat)
+		private void UpdateProjectionMatrix()
 		{
+			Rect targetRect = new Rect(this.targetSize);
+
 			// Flip Z direction from "out of the screen" to "into the screen".
 			Matrix4 flipZDir;
 			Matrix4.CreateScale(1.0f, 1.0f, -1.0f, out flipZDir);
@@ -697,31 +699,31 @@ namespace Duality.Drawing
 				// When rendering in screen space, all reasonable positive depth should be valid,
 				// so we'll ignore any of the projection specific near and far plane settings.
 				Matrix4.CreateOrthographicOffCenter(
-					orthoAbs.X,
-					orthoAbs.X + orthoAbs.W, 
-					orthoAbs.Y + orthoAbs.H, 
-					orthoAbs.Y, 
+					targetRect.X,
+					targetRect.X + targetRect.W, 
+					targetRect.Y + targetRect.H, 
+					targetRect.Y, 
 					// These values give us a linear depth precision of ~0.006 at 24 bit
 					0.0f, 
 					100000.0f,
-					out projMat);
+					out this.matProjection);
 
-				projMat = flipZDir * projMat;
+				this.matProjection = flipZDir * this.matProjection;
 			}
 			else
 			{
 				if (this.projection == ProjectionMode.Orthographic)
 				{
 					Matrix4.CreateOrthographicOffCenter(
-						orthoAbs.X - orthoAbs.W * 0.5f,
-						orthoAbs.X + orthoAbs.W * 0.5f, 
-						orthoAbs.Y + orthoAbs.H * 0.5f, 
-						orthoAbs.Y - orthoAbs.H * 0.5f,
+						targetRect.X - targetRect.W * 0.5f,
+						targetRect.X + targetRect.W * 0.5f, 
+						targetRect.Y + targetRect.H * 0.5f, 
+						targetRect.Y - targetRect.H * 0.5f,
 						this.nearZ, 
 						this.farZ,
-						out projMat);
+						out this.matProjection);
 
-					projMat = flipZDir * projMat;
+					this.matProjection = flipZDir * this.matProjection;
 				}
 				else
 				{
@@ -729,21 +731,21 @@ namespace Duality.Drawing
 					float clampedNear = MathF.Max(this.nearZ, 1.0f);
 
 					Matrix4.CreatePerspectiveOffCenter(
-						orthoAbs.X - orthoAbs.W * 0.5f, 
-						orthoAbs.X + orthoAbs.W * 0.5f, 
-						orthoAbs.Y + orthoAbs.H * 0.5f, 
-						orthoAbs.Y - orthoAbs.H * 0.5f, 
+						targetRect.X - targetRect.W * 0.5f, 
+						targetRect.X + targetRect.W * 0.5f, 
+						targetRect.Y + targetRect.H * 0.5f, 
+						targetRect.Y - targetRect.H * 0.5f, 
 						clampedNear, 
 						this.farZ,
-						out projMat);
+						out this.matProjection);
 
-					projMat = flipZDir * projMat;
+					this.matProjection = flipZDir * this.matProjection;
 
 					// Apply custom "focus distance", where objects appear at 1:1 scale.
 					// Otherwise, that distance would be the near plane. 
-					projMat.M33 *= clampedNear / this.focusDist; // Output Z scale
-					projMat.M43 *= clampedNear / this.focusDist; // Output Z offset
-					projMat.M34 *= clampedNear / this.focusDist; // Perspective divide scale
+					this.matProjection.M33 *= clampedNear / this.focusDist; // Output Z scale
+					this.matProjection.M43 *= clampedNear / this.focusDist; // Output Z offset
+					this.matProjection.M34 *= clampedNear / this.focusDist; // Perspective divide scale
 				}
 			}
 		}
