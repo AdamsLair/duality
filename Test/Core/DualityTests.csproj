@@ -86,6 +86,7 @@
     <Compile Include="Drawing\VertexBatchStoreTest.cs" />
     <Compile Include="Drawing\ShaderParameterCollectionTest.cs" />
     <Compile Include="Drawing\VertexBatchTest.cs" />
+    <Compile Include="Drawing\DrawDeviceTest.cs" />
     <Compile Include="Drawing\VertexSliceTest.cs" />
     <Compile Include="Resources\Shaders\ShaderSourceBuilderTest.cs" />
     <Compile Include="Testing\ExtMethodsIList.cs" />
