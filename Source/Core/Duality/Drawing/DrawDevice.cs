@@ -141,6 +141,7 @@ namespace Duality.Drawing
 		private Matrix4                   matView          = Matrix4.Identity;
 		private Matrix4                   matProjection    = Matrix4.Identity;
 		private Matrix4                   matFinal         = Matrix4.Identity;
+		private Matrix4                   matFinalInv      = Matrix4.Identity;
 		private VisibilityFlag            visibilityMask   = VisibilityFlag.All;
 		private int                       pickingIndex     = 0;
 		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
@@ -367,60 +368,27 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public Vector3 GetWorldPos(Vector3 screenPos)
 		{
-			float targetZ = screenPos.Z;
+			// Determine which clip space depth and divide the target Z corresponds to
+			Vector4 targetWorldPos = new Vector4(0.0f, 0.0f, screenPos.Z, 1.0f);
+			Vector4 targetClipPos;
+			Vector4.Transform(ref targetWorldPos, ref this.matFinal, out targetClipPos);
 
-			// Since screenPos.Z is expected to be a world coordinate, first make that relative
-			Vector3 gameObjPos = this.viewerPos;
-			screenPos.Z -= gameObjPos.Z;
+			// Calculate the clip space position for the specified screen position
+			Vector4 clipPos;
+			clipPos.X = (2.0f * screenPos.X / this.targetSize.X) - 1.0f;
+			clipPos.Y = -(2.0f * screenPos.Y / this.targetSize.Y) + 1.0f;
+			clipPos.Z = targetClipPos.Z;
+			clipPos.W = targetClipPos.W;
 
-			Vector2 targetSize = this.TargetSize;
-			screenPos.X -= targetSize.X / 2;
-			screenPos.Y -= targetSize.Y / 2;
+			// Inverse perspective divide on the normalized screen coordinates
+			clipPos.X *= targetClipPos.W;
+			clipPos.Y *= targetClipPos.W;
 
-			MathF.TransformCoord(ref screenPos.X, ref screenPos.Y, this.viewerAngle);
-			
-			// Revert active perspective effect
-			float scaleTemp;
-			if (this.projection == ProjectionMode.Orthographic)
-			{
-				// Scale globally
-				scaleTemp = DefaultFocusDist / this.focusDist;
-				screenPos.X *= scaleTemp;
-				screenPos.Y *= scaleTemp;
-			}
-			else if (this.projection == ProjectionMode.Perspective)
-			{
-				// Scale distance-based
-				scaleTemp = Math.Max(screenPos.Z, this.nearZ) / this.focusDist;
-				screenPos.X *= scaleTemp;
-				screenPos.Y *= scaleTemp;
-			}
-			//else if (this.perspective == PerspectiveMode.Isometric)
-			//{
-			//    // Scale globally
-			//    scaleTemp = DefaultFocusDist / this.focusDist;
-			//    screenPos.X *= scaleTemp;
-			//    screenPos.Y *= scaleTemp;
-				
-			//    // Revert isometric projection
-			//    screenPos.Z += screenPos.Y;
-			//    screenPos.Y -= screenPos.Z;
-			//    screenPos.Z += this.focusDist;
-			//}
-			
-			// Make coordinates absolte
-			screenPos.X += gameObjPos.X;
-			screenPos.Y += gameObjPos.Y;
-			screenPos.Z += gameObjPos.Z;
+			// Do an inverse transformation with projection and view matrix
+			Vector4 worldPos;
+			Vector4.Transform(ref clipPos, ref this.matFinalInv, out worldPos);
 
-			//// For isometric projection, assure we'll meet the target Z value.
-			//if (this.perspective == PerspectiveMode.Isometric)
-			//{
-			//    screenPos.Y += screenPos.Z - targetZ;
-			//    screenPos.Z = targetZ;
-			//}
-
-			return screenPos;
+			return worldPos.Xyz;
 		}
 		/// <summary>
 		/// Transforms world space to screen space positions.
@@ -429,38 +397,22 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public Vector2 GetScreenPos(Vector3 worldPos)
 		{
-			// Make coordinates relative to the Camera
-			Vector3 gameObjPos = this.viewerPos;
-			worldPos.X -= gameObjPos.X;
-			worldPos.Y -= gameObjPos.Y;
-			worldPos.Z -= gameObjPos.Z;
-
-			// Apply active perspective effect
-			float scaleTemp;
-			if (this.projection == ProjectionMode.Orthographic)
-			{
-				// Scale globally
-				scaleTemp = this.focusDist / DefaultFocusDist;
-				worldPos.X *= scaleTemp;
-				worldPos.Y *= scaleTemp;
-			}
-			else if (this.projection == ProjectionMode.Perspective)
-			{
-				// Scale distance-based
-				scaleTemp = this.focusDist / Math.Max(worldPos.Z, this.nearZ);
-				worldPos.X *= scaleTemp;
-				worldPos.Y *= scaleTemp;
-			}
-
-			MathF.TransformCoord(ref worldPos.X, ref worldPos.Y, -this.viewerAngle);
-
-			Vector2 targetSize = this.TargetSize;
-			worldPos.X += targetSize.X / 2;
-			worldPos.Y += targetSize.Y / 2;
+			// Transform coordinate into clip space
+			Vector4 worldPosFull = new Vector4(worldPos, 1.0f);
+			Vector4 clipPos;
+			Vector4.Transform(ref worldPosFull, ref this.matFinal, out clipPos);
 			
-			// Since the result Z value is expected to be a world coordinate, make it absolute
-			worldPos.Z += gameObjPos.Z;
-			return worldPos.Xy;
+			// Apply the perspective divide and invert Y
+			float invClipW = 1.0f / MathF.Max(clipPos.W, 0.000001f);
+			clipPos.X *= invClipW;
+			clipPos.Y *= -invClipW;
+
+			// Transform NDC coordinates to pixel coordinates
+			Vector2 screenPos;
+			screenPos.X = (clipPos.X + 1.0f) * 0.5f * this.targetSize.X;
+			screenPos.Y = (clipPos.Y + 1.0f) * 0.5f * this.targetSize.Y;
+
+			return screenPos;
 		}
 
 		public bool IsSphereInView(Vector3 worldPos, float radius)
@@ -718,6 +670,7 @@ namespace Duality.Drawing
 			this.UpdateViewMatrix();
 			this.UpdateProjectionMatrix();
 			this.matFinal = this.matView * this.matProjection;
+			Matrix4.Invert(ref this.matFinal, out this.matFinalInv);
 		}
 		private void UpdateViewMatrix()
 		{
