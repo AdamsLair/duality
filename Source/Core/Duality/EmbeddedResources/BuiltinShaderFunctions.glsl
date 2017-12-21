@@ -27,11 +27,17 @@ vec4 TransformViewToClip(vec4 viewPos)
 // as well as separate depth offsets.
 vec4 TransformVertexDefault(vec3 worldPos, float depthOffset)
 {
+	// Transform world position into view space
 	vec4 viewPos = TransformWorldToView(vec4(worldPos, 1.0));
+
+	// Transform view space position into clip space, with and without view space Z offset
 	vec4 clipPos = TransformViewToClip(viewPos);
+	vec4 offsetClipPos = TransformViewToClip(viewPos + vec4(0, 0, depthOffset, 0));
 
-	// ToDo: Find the proper way to scale the offset post-projection (but pre-divide)
-	//clipPos.z += depthOffset * gl_ProjectionMatrix[2][2];
-
-	return clipPos;
+	// Return projection result, but override depth value, so it will
+	// have the intended offset after perspective divide.
+	return vec4(
+		clipPos.xy, 
+		offsetClipPos.z * clipPos.w / offsetClipPos.w, 
+		clipPos.w);
 }
