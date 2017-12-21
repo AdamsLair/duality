@@ -83,9 +83,16 @@ namespace Duality.Editor.Forms
 				tmpNode.Text = contentRef.Name;
 
 				this.model.Nodes.Add(tmpNode);
+			}
 
-				if (contentRef.FullName == this.ResourcePath)
+			foreach (var treeNodeAdv in this.objectReferenceListing.AllNodes)
+			{
+				ReferenceNode tmpNode = treeNodeAdv.Tag as ReferenceNode;
+
+				if (tmpNode.Path == this.ResourcePath)
 				{
+					this.objectReferenceListing.SelectedNode = treeNodeAdv;
+					break;
 				}
 			}
 
