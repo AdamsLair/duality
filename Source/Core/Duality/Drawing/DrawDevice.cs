@@ -724,8 +724,16 @@ namespace Duality.Drawing
 						this.nearZ, 
 						this.farZ,
 						out this.matProjection);
+					
+					// In non-perspective projection, we'll use FocusDist for scaling
+					Matrix4 scaleByFocusDist;
+					Matrix4.CreateScale(
+						this.focusDist / DefaultFocusDist, 
+						this.focusDist / DefaultFocusDist,
+ 						1.0f,
+						out scaleByFocusDist);
 
-					this.matProjection = flipZDir * this.matProjection;
+					this.matProjection = scaleByFocusDist * flipZDir * this.matProjection;
 				}
 				else
 				{
