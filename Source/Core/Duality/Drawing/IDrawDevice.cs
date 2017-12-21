@@ -69,18 +69,18 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		float GetScaleAtZ(float z);
 		/// <summary>
-		/// Transforms screen space coordinates to world space coordinates. The screen positions Z coordinate is
+		/// Transforms screen space to world space. The screen positions Z coordinate is
 		/// interpreted as the target world Z coordinate.
 		/// </summary>
 		/// <param name="screenPos"></param>
 		/// <returns></returns>
-		Vector3 GetSpaceCoord(Vector3 screenPos);
+		Vector3 GetWorldPos(Vector3 screenPos);
 		/// <summary>
-		/// Transforms world space coordinates to screen space coordinates.
+		/// Transforms world space to screen space.
 		/// </summary>
 		/// <param name="spacePos"></param>
 		/// <returns></returns>
-		Vector3 GetScreenCoord(Vector3 spacePos);
+		Vector2 GetScreenPos(Vector3 spacePos);
 
 		/// <summary>
 		/// Returns whether the specified world space sphere is visible in the drawing devices view space.
@@ -119,24 +119,24 @@ namespace Duality.Drawing
 	public static class ExtMethodsIDrawDevice
 	{
 		/// <summary>
-		/// Transforms screen space coordinates to world space coordinates.
+		/// Transforms screen space to world space.
 		/// </summary>
 		/// <param name="screenPos"></param>
 		/// <param name="device"></param>
 		/// <returns></returns>
-		public static Vector3 GetSpaceCoord(this IDrawDevice device, Vector2 screenPos)
+		public static Vector3 GetWorldPos(this IDrawDevice device, Vector2 screenPos)
 		{
-			return device.GetSpaceCoord(new Vector3(screenPos));
+			return device.GetWorldPos(new Vector3(screenPos));
 		}
 		/// <summary>
-		/// Transforms world space coordinates to screen space coordinates.
+		/// Transforms world space to screen space.
 		/// </summary>
-		/// <param name="spacePos"></param>
+		/// <param name="worldPos"></param>
 		/// <param name="device"></param>
 		/// <returns></returns>
-		public static Vector3 GetScreenCoord(this IDrawDevice device, Vector2 spacePos)
+		public static Vector2 GetScreenPos(this IDrawDevice device, Vector2 worldPos)
 		{
-			return device.GetScreenCoord(new Vector3(spacePos));
+			return device.GetScreenPos(new Vector3(worldPos));
 		}
 		
 		/// <summary>

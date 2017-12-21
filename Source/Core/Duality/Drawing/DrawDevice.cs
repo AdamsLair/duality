@@ -346,24 +346,26 @@ namespace Duality.Drawing
 
 		
 		/// <summary>
-		/// Returns the scale factor of objects that are located at the specified (world space) z-Coordinate.
+		/// Returns the scale factor of objects that are located at the specified world space Z position.
 		/// </summary>
 		/// <param name="z"></param>
 		/// <returns></returns>
 		public float GetScaleAtZ(float z)
 		{
-			if (this.projection == ProjectionMode.Perspective)
+			if (this.renderMode == RenderMode.Screen)
+				return 1.0f;
+			else if (this.projection == ProjectionMode.Perspective)
 				return this.focusDist / Math.Max(z - this.viewerPos.Z, this.nearZ);
 			else
 				return this.focusDist / DefaultFocusDist;
 		}
 		/// <summary>
-		/// Transforms screen space coordinates to world space coordinates. The screen positions Z coordinate is
+		/// Transforms screen space to world space positions. The screen positions Z coordinate is
 		/// interpreted as the target world Z coordinate.
 		/// </summary>
 		/// <param name="screenPos"></param>
 		/// <returns></returns>
-		public Vector3 GetSpaceCoord(Vector3 screenPos)
+		public Vector3 GetWorldPos(Vector3 screenPos)
 		{
 			float targetZ = screenPos.Z;
 
@@ -421,17 +423,17 @@ namespace Duality.Drawing
 			return screenPos;
 		}
 		/// <summary>
-		/// Transforms world space coordinates to screen space coordinates.
+		/// Transforms world space to screen space positions.
 		/// </summary>
-		/// <param name="spacePos"></param>
+		/// <param name="worldPos"></param>
 		/// <returns></returns>
-		public Vector3 GetScreenCoord(Vector3 spacePos)
+		public Vector2 GetScreenPos(Vector3 worldPos)
 		{
 			// Make coordinates relative to the Camera
 			Vector3 gameObjPos = this.viewerPos;
-			spacePos.X -= gameObjPos.X;
-			spacePos.Y -= gameObjPos.Y;
-			spacePos.Z -= gameObjPos.Z;
+			worldPos.X -= gameObjPos.X;
+			worldPos.Y -= gameObjPos.Y;
+			worldPos.Z -= gameObjPos.Z;
 
 			// Apply active perspective effect
 			float scaleTemp;
@@ -439,26 +441,26 @@ namespace Duality.Drawing
 			{
 				// Scale globally
 				scaleTemp = this.focusDist / DefaultFocusDist;
-				spacePos.X *= scaleTemp;
-				spacePos.Y *= scaleTemp;
+				worldPos.X *= scaleTemp;
+				worldPos.Y *= scaleTemp;
 			}
 			else if (this.projection == ProjectionMode.Perspective)
 			{
 				// Scale distance-based
-				scaleTemp = this.focusDist / Math.Max(spacePos.Z, this.nearZ);
-				spacePos.X *= scaleTemp;
-				spacePos.Y *= scaleTemp;
+				scaleTemp = this.focusDist / Math.Max(worldPos.Z, this.nearZ);
+				worldPos.X *= scaleTemp;
+				worldPos.Y *= scaleTemp;
 			}
 
-			MathF.TransformCoord(ref spacePos.X, ref spacePos.Y, -this.viewerAngle);
+			MathF.TransformCoord(ref worldPos.X, ref worldPos.Y, -this.viewerAngle);
 
 			Vector2 targetSize = this.TargetSize;
-			spacePos.X += targetSize.X / 2;
-			spacePos.Y += targetSize.Y / 2;
+			worldPos.X += targetSize.X / 2;
+			worldPos.Y += targetSize.Y / 2;
 			
 			// Since the result Z value is expected to be a world coordinate, make it absolute
-			spacePos.Z += gameObjPos.Z;
-			return spacePos;
+			worldPos.Z += gameObjPos.Z;
+			return worldPos.Xy;
 		}
 
 		public bool IsSphereInView(Vector3 worldPos, float radius)

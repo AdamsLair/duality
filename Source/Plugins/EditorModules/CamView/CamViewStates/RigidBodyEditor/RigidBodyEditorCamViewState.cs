@@ -221,7 +221,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			foreach (RigidBody c in visibleColliders)
 			{
-				Vector3 worldCoord = this.GetSpaceCoord(new Vector3(x, y, c.GameObj.Transform.Pos.Z));
+				Vector3 worldCoord = this.GetWorldPos(new Vector3(x, y, c.GameObj.Transform.Pos.Z));
 
 				// Do a physical picking operation
 				pickedShape = this.PickShape(c, worldCoord.Xy);
@@ -257,7 +257,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Pick a collider
 			foreach (RigidBody c in visibleColliders)
 			{
-				Vector3 worldCoord = this.GetSpaceCoord(new Vector3(x, y, c.GameObj.Transform.Pos.Z));
+				Vector3 worldCoord = this.GetWorldPos(new Vector3(x, y, c.GameObj.Transform.Pos.Z));
 				float scale = this.GetScaleAtZ(c.GameObj.Transform.Pos.Z);
 				pickedShape = this.PickShapes(c, worldCoord.Xy, new Vector2(w / scale, h / scale)).FirstOrDefault();
 				if (pickedShape != null)
@@ -272,7 +272,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Pick shapes
 			if (pickedCollider != null)
 			{
-				Vector3 worldCoord = this.GetSpaceCoord(new Vector3(x, y, pickedCollider.GameObj.Transform.Pos.Z));
+				Vector3 worldCoord = this.GetWorldPos(new Vector3(x, y, pickedCollider.GameObj.Transform.Pos.Z));
 				float scale = this.GetScaleAtZ(pickedCollider.GameObj.Transform.Pos.Z);
 				List<ShapeInfo> picked = this.PickShapes(pickedCollider, worldCoord.Xy, new Vector2(w / scale, h / scale));
 				if (picked.Count > 0) result.AddRange(picked.Select(s => RigidBodyEditorSelShape.Create(s) as ObjectEditorSelObj));
@@ -521,7 +521,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Point mousePos = this.PointToClient(Cursor.Position);
 			if (selTransform != null)
 			{
-				this.hoveredWorldPos = this.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, selTransform.Pos.Z));
+				this.hoveredWorldPos = this.GetWorldPos(new Vector3(mousePos.X, mousePos.Y, selTransform.Pos.Z));
 				this.activeWorldPos = this.hoveredWorldPos;
 			}
 			else
@@ -576,7 +576,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			return allColliders.Where(r => 
 				r.Active && 
 				!DesignTimeObjectData.Get(r.GameObj).IsHidden && 
-				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
+				this.IsSphereInView(r.GameObj.Transform.Pos, r.BoundRadius));
 		}
 		protected RigidBody QuerySelectedCollider()
 		{

@@ -255,7 +255,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 				bool lockZ = this.CameraComponent.FocusDist <= 0.0f;
 				Point mouseLoc = this.PointToClient(new Point(e.X, e.Y));
-				Vector3 spaceCoord = this.GetSpaceCoord(new Vector3(
+				Vector3 spaceCoord = this.GetWorldPos(new Vector3(
 					mouseLoc.X, 
 					mouseLoc.Y, 
 					lockZ ? 0.0f : this.CameraObj.Transform.Pos.Z + MathF.Abs(this.CameraComponent.FocusDist)));

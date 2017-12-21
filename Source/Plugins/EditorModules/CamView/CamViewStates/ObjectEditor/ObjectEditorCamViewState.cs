@@ -126,7 +126,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public void MoveSelectionToCursor()
 		{
 			Point mousePos = this.PointToClient(Cursor.Position);
-			Vector3 mouseSpaceCoord = this.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, this.selectionCenter.Z));
+			Vector3 mouseSpaceCoord = this.GetWorldPos(new Vector3(mousePos.X, mousePos.Y, this.selectionCenter.Z));
 
 			// Apply user guide snapping
 			if ((this.SnapToUserGuides & UserGuideType.Position) != UserGuideType.None)
@@ -310,7 +310,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.action = action;
 			this.actionBeginLoc = mouseLoc;
-			this.actionBeginLocSpace = this.GetSpaceCoord(new Vector3(
+			this.actionBeginLocSpace = this.GetWorldPos(new Vector3(
 				mouseLoc.X, 
 				mouseLoc.Y, 
 				(this.action == ObjectEditorAction.RectSelect) ? 0.0f : this.selectionCenter.Z));
@@ -404,7 +404,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.mouseoverObject = this.PickSelObjAt(mouseLoc.X, mouseLoc.Y);
 
 				// Determine action variables
-				Vector3 mouseSpaceCoord = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
+				Vector3 mouseSpaceCoord = this.GetWorldPos(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
 				float scale = this.GetScaleAtZ(this.selectionCenter.Z);
 				const float boundaryThickness = 10.0f;
 				bool tooSmall = this.selectionRadius * scale <= boundaryThickness * 2.0f;
@@ -512,7 +512,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			// Determine where to move the object
 			float zMovement = this.CameraObj.Transform.Pos.Z - this.actionLastLocSpace.Z;
-			Vector3 mousePosSpace = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z + zMovement)); mousePosSpace.Z = 0;
+			Vector3 mousePosSpace = this.GetWorldPos(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z + zMovement)); mousePosSpace.Z = 0;
 			Vector3 resetMovement = this.actionBeginLocSpace - this.actionLastLocSpace;
 			Vector3 targetMovement = mousePosSpace - this.actionLastLocSpace; targetMovement.Z = zMovement;
 
@@ -542,7 +542,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			this.ValidateSelectionStats();
 
-			Vector3 spaceCoord = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
+			Vector3 spaceCoord = this.GetWorldPos(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
 			float lastAngle = MathF.Angle(this.selectionCenter.X, this.selectionCenter.Y, this.actionLastLocSpace.X, this.actionLastLocSpace.Y);
 			float curAngle = MathF.Angle(this.selectionCenter.X, this.selectionCenter.Y, spaceCoord.X, spaceCoord.Y);
 			float rotation = curAngle - lastAngle;
@@ -556,7 +556,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.ValidateSelectionStats();
 			if (this.selectionRadius == 0.0f) return;
 
-			Vector3 spaceCoord = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
+			Vector3 spaceCoord = this.GetWorldPos(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
 			float lastRadius = this.selectionRadius;
 			float curRadius = (this.selectionCenter - spaceCoord).Length;
 
@@ -699,7 +699,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				else
 				{
 					obj = this.actionObjSel[0];
-					actionTextPos = this.GetScreenCoord(this.actionObjSel[0].Pos).Xy;
+					actionTextPos = this.GetScreenPos(this.actionObjSel[0].Pos);
 				}
 
 				// If the SelObj is valid, let it determine the current action text

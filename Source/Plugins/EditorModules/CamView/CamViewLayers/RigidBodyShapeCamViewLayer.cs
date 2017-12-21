@@ -400,7 +400,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			return allColliders.Where(r => 
 				r.Active && 
 				!DesignTimeObjectData.Get(r.GameObj).IsHidden && 
-				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
+				this.IsSphereInView(r.GameObj.Transform.Pos, r.BoundRadius));
 		}
 		private RigidBody QuerySelectedCollider()
 		{

@@ -154,7 +154,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public virtual void GetDisplayedGridData(Point cursorPos, ref GridLayerData data)
 		{
 			data.GridBaseSize = this.View.EditingUserGuides.GridSize.Xy;
-			data.DisplayedGridPos = this.GetSpaceCoord(new Vector2(cursorPos.X, cursorPos.Y));
+			data.DisplayedGridPos = this.GetWorldPos(new Vector2(cursorPos.X, cursorPos.Y));
 		}
 
 		/// <summary>

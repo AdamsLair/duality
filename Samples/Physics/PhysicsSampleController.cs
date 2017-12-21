@@ -88,7 +88,7 @@ namespace Duality.Samples.Physics
 			{
 				Transform dragTransform = this.dragObj.GameObj.Transform;
 				Vector2 worldAnchor = dragTransform.GetWorldPoint(this.dragAnchor);
-				Vector2 screenAnchor = device.GetScreenCoord(worldAnchor).Xy;
+				Vector2 screenAnchor = device.GetScreenPos(worldAnchor);
 				canvas.State.ColorTint = this.interactionColor;
 				if ((screenAnchor - mousePos).Length < 10.0f)
 					canvas.DrawLine(mousePos.X, mousePos.Y, screenAnchor.X, screenAnchor.Y);
@@ -126,7 +126,7 @@ namespace Duality.Samples.Physics
 			// Determine the world position of the cursor
 			Camera mainCamera = this.GameObj.ParentScene.FindComponent<Camera>();
 			Vector2 screenMousePos = DualityApp.Mouse.Pos;
-			Vector3 worldMousePos = mainCamera.GetSpaceCoord(screenMousePos);
+			Vector3 worldMousePos = mainCamera.GetWorldPos(screenMousePos);
 
 			// Pressing the right mouse button: Starting a camera drag
 			if (DualityApp.Mouse.ButtonHit(MouseButton.Right))

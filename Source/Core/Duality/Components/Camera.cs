@@ -252,66 +252,66 @@ namespace Duality.Components
 		}
 
 		/// <summary>
-		/// Returns the scale factor of objects that are located at the specified (world space) z-Coordinate.
+		/// Returns the scale factor of objects that are located at the specified world space Z position.
 		/// </summary>
 		/// <param name="z"></param>
 		/// <returns></returns>
 		public float GetScaleAtZ(float z)
 		{
-			this.UpdateDeviceConfig();
+			this.UpdateDeviceProjection();
 			return this.drawDevice.GetScaleAtZ(z);
 		}
 		/// <summary>
-		/// Transforms screen space coordinates to world space coordinates. The screen positions Z coordinate is
+		/// Transforms screen space to world space positions. The screen positions Z coordinate is
 		/// interpreted as the target world Z coordinate.
 		/// </summary>
 		/// <param name="screenPos"></param>
 		/// <returns></returns>
-		public Vector3 GetSpaceCoord(Vector3 screenPos)
+		public Vector3 GetWorldPos(Vector3 screenPos)
 		{
-			this.UpdateDeviceConfig();
-			return this.drawDevice.GetSpaceCoord(screenPos);
+			this.UpdateDeviceProjection();
+			return this.drawDevice.GetWorldPos(screenPos);
 		}
 		/// <summary>
-		/// Transforms screen space coordinates to world space coordinates.
+		/// Transforms screen space to world space.
 		/// </summary>
 		/// <param name="screenPos"></param>
 		/// <returns></returns>
-		public Vector3 GetSpaceCoord(Vector2 screenPos)
+		public Vector3 GetWorldPos(Vector2 screenPos)
 		{
-			this.UpdateDeviceConfig();
-			return this.drawDevice.GetSpaceCoord(screenPos);
+			this.UpdateDeviceProjection();
+			return this.drawDevice.GetWorldPos(screenPos);
 		}
 		/// <summary>
-		/// Transforms world space coordinates to screen space coordinates.
+		/// Transforms world space to screen space positions.
 		/// </summary>
 		/// <param name="spacePos"></param>
 		/// <returns></returns>
-		public Vector3 GetScreenCoord(Vector3 spacePos)
+		public Vector2 GetScreenPos(Vector3 spacePos)
 		{
-			this.UpdateDeviceConfig();
-			return this.drawDevice.GetScreenCoord(spacePos);
+			this.UpdateDeviceProjection();
+			return this.drawDevice.GetScreenPos(spacePos);
 		}
 		/// <summary>
-		/// Transforms world space coordinates to screen space coordinates.
+		/// Transforms world space to screen space positions.
 		/// </summary>
 		/// <param name="spacePos"></param>
 		/// <returns></returns>
-		public Vector3 GetScreenCoord(Vector2 spacePos)
+		public Vector2 GetScreenPos(Vector2 spacePos)
 		{
-			this.UpdateDeviceConfig();
-			return this.drawDevice.GetScreenCoord(spacePos);
+			this.UpdateDeviceProjection();
+			return this.drawDevice.GetScreenPos(spacePos);
 		}
 		/// <summary>
-		/// Returns whether the specified world-space position is visible in the Cameras view space.
+		/// Returns whether the specified world space sphere is visible in the cameras view.
 		/// </summary>
-		/// <param name="c">The position to test.</param>
-		/// <param name="boundRad">The visual bounding radius to assume for the specified position.</param>
-		/// <returns>True, if the position or a portion of its bounding circle is visible, false if not.</returns>
-		public bool IsCoordInView(Vector3 c, float boundRad = 1.0f)
+		/// <param name="worldPos">The spheres world space center position.</param>
+		/// <param name="radius">The spheres world space radius.</param>
+		/// <returns></returns>
+		public bool IsSphereInView(Vector3 worldPos, float radius = 1.0f)
 		{
-			this.UpdateDeviceConfig();
-			return this.drawDevice.IsSphereInView(c, boundRad);
+			this.UpdateDeviceProjection();
+			return this.drawDevice.IsSphereInView(worldPos, radius);
 		}
 
 		private void SetupDevice()
@@ -335,17 +335,25 @@ namespace Duality.Components
 			// Lazy setup, in case someone uses this Camera despite being inactive. (Editor)
 			if (this.drawDevice == null) this.SetupDevice();
 
+			this.UpdateDeviceProjection();
+
+			this.drawDevice.VisibilityMask = this.visibilityMask;
+			this.drawDevice.ClearColor = this.clearColor;
+			this.drawDevice.Target = this.renderTarget;
+
+			this.shaderParameters.CopyTo(this.drawDevice.ShaderParameters);
+		}
+		private void UpdateDeviceProjection()
+		{
+			// Lazy setup, in case someone uses this Camera despite being inactive. (Editor)
+			if (this.drawDevice == null) this.SetupDevice();
+
 			this.drawDevice.ViewerPos = this.gameobj.Transform.Pos;
 			this.drawDevice.ViewerAngle = this.gameobj.Transform.Angle;
 			this.drawDevice.NearZ = this.nearZ;
 			this.drawDevice.FarZ = this.farZ;
 			this.drawDevice.FocusDist = this.focusDist;
 			this.drawDevice.Projection = this.projection;
-			this.drawDevice.VisibilityMask = this.visibilityMask;
-			this.drawDevice.ClearColor = this.clearColor;
-			this.drawDevice.Target = this.renderTarget;
-
-			this.shaderParameters.CopyTo(this.drawDevice.ShaderParameters);
 		}
 
 		void ICmpInitializable.OnInit(Component.InitContext context)

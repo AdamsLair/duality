@@ -278,7 +278,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				return
 					component.Active && 
 					!DesignTimeObjectData.Get(component.GameObj).IsHidden && 
-					this.IsCoordInView(component.GameObj.Transform.Pos, culling.Radius);
+					this.IsSphereInView(component.GameObj.Transform.Pos, culling.Radius);
 			});
 		}
 		private IEnumerable<Tilemap> QueryTilemapsInScene()
@@ -301,7 +301,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			Transform transform = component.GameObj.Transform;
 
 			// Determine where the cursor is hovering in various coordinate systems
-			Vector3 worldCursorPos = this.CameraComponent.GetSpaceCoord(new Vector3(localPos.X, localPos.Y, transform.Pos.Z));
+			Vector3 worldCursorPos = this.CameraComponent.GetWorldPos(new Vector3(localPos.X, localPos.Y, transform.Pos.Z));
 			Vector2 localCursorPos = transform.GetLocalPoint(worldCursorPos.Xy);
 
 			// Determine tile coordinates of the cursor
