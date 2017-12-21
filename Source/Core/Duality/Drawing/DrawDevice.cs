@@ -167,17 +167,32 @@ namespace Duality.Drawing
 		public Vector3 ViewerPos
 		{
 			get { return this.viewerPos; }
-			set { this.viewerPos = value; this.UpdateMatrices(); }
+			set
+			{
+				if (this.viewerPos == value) return;
+				this.viewerPos = value;
+				this.UpdateMatrices();
+			}
 		}
 		public float ViewerAngle
 		{
 			get { return this.viewerAngle; }
-			set { this.viewerAngle = value; this.UpdateMatrices(); }
+			set
+			{
+				if (this.viewerAngle == value) return;
+				this.viewerAngle = value;
+				this.UpdateMatrices();
+			}
 		}
 		public float FocusDist
 		{
 			get { return this.focusDist; }
-			set { this.focusDist = value; this.UpdateMatrices(); }
+			set
+			{
+				if (this.focusDist == value) return;
+				this.focusDist = value;
+				this.UpdateMatrices();
+			}
 		}
 		public VisibilityFlag VisibilityMask
 		{
@@ -187,12 +202,22 @@ namespace Duality.Drawing
 		public float NearZ
 		{
 			get { return this.nearZ; }
-			set { this.nearZ = value; this.UpdateMatrices(); }
+			set
+			{
+				if (this.nearZ == value) return;
+				this.nearZ = value;
+				this.UpdateMatrices();
+			}
 		}
 		public float FarZ
 		{
 			get { return this.farZ; }
-			set { this.farZ = value; this.UpdateMatrices(); }
+			set
+			{
+				if (this.farZ == value) return;
+				this.farZ = value;
+				this.UpdateMatrices();
+			}
 		}
 		/// <summary>
 		/// [GET / SET] The clear color to apply when clearing the color buffer.
@@ -224,7 +249,12 @@ namespace Duality.Drawing
 		public ProjectionMode Projection
 		{
 			get { return this.projection; }
-			set { this.projection = value; this.UpdateMatrices(); }
+			set
+			{
+				if (this.projection == value) return;
+				this.projection = value;
+				this.UpdateMatrices();
+			}
 		}
 		public ContentRef<RenderTarget> Target
 		{
@@ -243,7 +273,12 @@ namespace Duality.Drawing
 		public RenderMode RenderMode
 		{
 			get { return this.renderMode; }
-			set { this.renderMode = value; this.UpdateMatrices(); }
+			set
+			{
+				if (this.renderMode == value) return;
+				this.renderMode = value;
+				this.UpdateMatrices();
+			}
 		}
 		public Rect ViewportRect
 		{
@@ -253,7 +288,12 @@ namespace Duality.Drawing
 		public Vector2 TargetSize
 		{
 			get { return this.targetSize; }
-			set { this.targetSize = value; this.UpdateMatrices(); }
+			set
+			{
+				if (this.targetSize == value) return;
+				this.targetSize = value;
+				this.UpdateMatrices();
+			}
 		}
 		public bool DepthWrite
 		{
