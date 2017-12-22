@@ -187,20 +187,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				// Draw selection marker
 				if (selObj.ShowPos)
 				{
-					posTemp.Z = 0.0f;
-					{
-						ColorRgba color = canvas.State.ColorTint;
-						VertexC1P3[] vertices = new VertexC1P3[4];
-						vertices[0].Pos = posTemp - right * 5.0f;
-						vertices[1].Pos = posTemp + right * 5.0f;
-						vertices[2].Pos = posTemp - down * 5.0f;
-						vertices[3].Pos = posTemp + down * 5.0f;
-						vertices[0].Color = color;
-						vertices[1].Color = color;
-						vertices[2].Color = color;
-						vertices[3].Color = color;
-						canvas.DrawDevice.AddVertices(canvas.State.Material, VertexMode.Lines, vertices);
-					}
+					canvas.DrawLine(
+						(posTemp - right * 5.0f).X,
+						(posTemp - right * 5.0f).Y,
+						posTemp.Z,
+						(posTemp + right * 5.0f).X,
+						(posTemp + right * 5.0f).Y,
+						posTemp.Z);
+					canvas.DrawLine(
+						(posTemp - down * 5.0f).X,
+						(posTemp - down * 5.0f).Y,
+						posTemp.Z,
+						(posTemp + down * 5.0f).X,
+						(posTemp + down * 5.0f).Y,
+						posTemp.Z);
 				}
 
 				// Draw angle marker
@@ -641,23 +641,23 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				canvas.State.DepthOffset -= 0.1f;
 				canvas.State.ColorTint = this.FgColor;
 				canvas.FillCircle(
-					this.selectionCenter.X + this.selectionRadius, 
-					this.selectionCenter.Y, 
+					this.selectionCenter.X + this.selectionRadius + 0.5f - 1.0f, 
+					this.selectionCenter.Y + 0.5f - 1.0f, 
 					this.selectionCenter.Z,
 					dotR);
 				canvas.FillCircle(
-					this.selectionCenter.X - this.selectionRadius, 
-					this.selectionCenter.Y, 
+					this.selectionCenter.X - this.selectionRadius + 0.5f, 
+					this.selectionCenter.Y + 0.5f, 
 					this.selectionCenter.Z,
 					dotR);
 				canvas.FillCircle(
-					this.selectionCenter.X, 
-					this.selectionCenter.Y + this.selectionRadius, 
+					this.selectionCenter.X + 0.5f - 1.0f, 
+					this.selectionCenter.Y + this.selectionRadius + 0.5f - 1.0f, 
 					this.selectionCenter.Z,
 					dotR);
 				canvas.FillCircle(
-					this.selectionCenter.X, 
-					this.selectionCenter.Y - this.selectionRadius, 
+					this.selectionCenter.X + 0.5f, 
+					this.selectionCenter.Y - this.selectionRadius + 0.5f, 
 					this.selectionCenter.Z,
 					dotR);
 				canvas.State.DepthOffset += 0.1f;
