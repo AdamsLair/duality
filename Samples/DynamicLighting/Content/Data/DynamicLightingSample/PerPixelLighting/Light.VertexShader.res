@@ -2,7 +2,9 @@
   <assetInfo dataType="Struct" type="Duality.Editor.AssetManagement.AssetInfo" id="427169525">
     <customData />
     <importerId dataType="String">BasicShaderAssetImporter</importerId>
-    <sourceFileHint />
+    <sourceFileHint dataType="Array" type="System.String[]" id="1100841590">
+      <item dataType="String">{Name}.vert</item>
+    </sourceFileHint>
   </assetInfo>
   <source dataType="String">uniform float _CameraFocusDist;
 uniform vec3 _CameraPosition;
@@ -15,12 +17,11 @@ attribute vec4 VertexLightingParam;
 
 void main()
 {
-	gl_Position = TransformVertexDefault(gl_Vertex.xyz, VertexDepthOffset);
+	worldSpacePos = gl_Vertex.xyz;
+	
+	gl_Position = TransformVertexDefault(worldSpacePos, VertexDepthOffset);
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	gl_FrontColor = gl_Color;
-	
-	float camDistScaleInv = gl_Vertex.z / _CameraFocusDist;
-	worldSpacePos = _CameraPosition + vec3(gl_Vertex.xy * camDistScaleInv, gl_Vertex.z);
 	
 	objTransform = mat2(
 		VertexLightingParam.x, 

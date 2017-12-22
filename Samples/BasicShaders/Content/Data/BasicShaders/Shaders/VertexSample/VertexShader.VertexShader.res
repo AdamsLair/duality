@@ -2,35 +2,31 @@
   <assetInfo dataType="Struct" type="Duality.Editor.AssetManagement.AssetInfo" id="427169525">
     <customData />
     <importerId dataType="String">BasicShaderAssetImporter</importerId>
-    <sourceFileHint />
+    <sourceFileHint dataType="Array" type="System.String[]" id="1100841590">
+      <item dataType="String">{Name}.vert</item>
+    </sourceFileHint>
   </assetInfo>
-  <source dataType="String">uniform float _GameTime;
-uniform float _CameraFocusDist;
-uniform bool _CameraParallax;
-
+  <source dataType="String">uniform vec4 mainColor;
 uniform float FloatStrength;
+uniform float _GameTime;
+
+attribute float VertexDepthOffset;
 
 void main()
 {
-	// Duality uses software pre-transformation of vertices
-	// gl_Vertex is already in parallax (scaled) view space when arriving here.
-	vec4 vertex = gl_Vertex;
+	// Duality submits vertices in world space coordinates
+	vec3 worldPos = gl_Vertex.xyz;
 	
-	// Reverse-engineer the scale that was previously applied to the vertex
-	float scale = 1.0;
-	if (_CameraParallax)
-	{
-		scale = _CameraFocusDist / vertex.z;
-	}
+	// Let the vertex float a bit over time, depending on its 
+	// original world space position
+	worldPos.xyz += FloatStrength * vec3(
+		sin(0.00 * 3.14 + _GameTime + worldPos.y * 0.01), 
+		sin(0.25 * 3.14 + _GameTime + worldPos.x * 0.01), 
+		sin(0.50 * 3.14 + _GameTime + worldPos.y * 0.01));
 	
-	// Move the vertex around, keeping scale in mind
-	vertex.xy += FloatStrength * scale * vec2(
-		sin(_GameTime + mod(gl_VertexID, 4)), 
-		cos(_GameTime + mod(gl_VertexID, 4)));
-	
-	gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * vertex;
+	gl_Position = TransformVertexDefault(worldPos, VertexDepthOffset);
 	gl_TexCoord[0] = gl_MultiTexCoord0;
-	gl_FrontColor = gl_Color;
+	gl_FrontColor = gl_Color * mainColor;
 }</source>
 </root>
 <!-- XmlFormatterBase Document Separator -->
