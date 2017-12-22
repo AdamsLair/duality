@@ -31,8 +31,9 @@ namespace Duality.Components
 		private int                       priority         = 0;
 		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
 
-		[DontSerialize] private DrawDevice         drawDevice   = null;
-		[DontSerialize] private PickingRenderSetup pickingSetup = null;
+		[DontSerialize] private DrawDevice         drawDevice      = null;
+		[DontSerialize] private DrawDevice         transformDevice = null;
+		[DontSerialize] private PickingRenderSetup pickingSetup    = null;
 		
 
 		/// <summary>
@@ -173,9 +174,8 @@ namespace Duality.Components
 			Profile.BeginMeasure(counterName);
 			Profile.TimeRender.BeginMeasure();
 			
-			// Configure the wrapped drawing device, so rendering matrices and settings
-			// are set up properly.
-			this.UpdateDeviceConfig();
+			// Make sure the drawing device has all the latest settings for rendering
+			this.UpdateDrawDevice();
 			
 			// Adjust the local render size and viewport according to the camera target rect
 			Vector2 localImageSize = imageSize;
@@ -194,8 +194,8 @@ namespace Duality.Components
 				localViewport, 
 				localImageSize);
 
-			// Reset device config, so world / screen space conversions work properly
-			this.drawDevice.TargetSize = imageSize;
+			// Update the transform devices target size with the size we're actually rendering in
+			this.transformDevice.TargetSize = imageSize;
 
 			Profile.TimeRender.EndMeasure();
 			Profile.EndMeasure(counterName);
@@ -211,7 +211,8 @@ namespace Duality.Components
 		{
 			Profile.TimeVisualPicking.BeginMeasure();
 
-			this.UpdateDeviceConfig();
+			// Make sure the drawing device has all the latest settings for rendering
+			this.UpdateDrawDevice();
 
 			if (this.pickingSetup == null) this.pickingSetup = new PickingRenderSetup();
 			this.pickingSetup.RenderOverlay = renderOverlay;
@@ -259,8 +260,8 @@ namespace Duality.Components
 		/// <returns></returns>
 		public float GetScaleAtZ(float z)
 		{
-			this.UpdateDeviceProjection();
-			return this.drawDevice.GetScaleAtZ(z);
+			this.UpdateTransformDevice();
+			return this.transformDevice.GetScaleAtZ(z);
 		}
 		/// <summary>
 		/// Transforms screen space to world space positions. The screen positions Z coordinate is
@@ -270,8 +271,8 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector3 GetWorldPos(Vector3 screenPos)
 		{
-			this.UpdateDeviceProjection();
-			return this.drawDevice.GetWorldPos(screenPos);
+			this.UpdateTransformDevice();
+			return this.transformDevice.GetWorldPos(screenPos);
 		}
 		/// <summary>
 		/// Transforms screen space to world space.
@@ -280,8 +281,8 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector3 GetWorldPos(Vector2 screenPos)
 		{
-			this.UpdateDeviceProjection();
-			return this.drawDevice.GetWorldPos(screenPos);
+			this.UpdateTransformDevice();
+			return this.transformDevice.GetWorldPos(screenPos);
 		}
 		/// <summary>
 		/// Transforms world space to screen space positions.
@@ -290,8 +291,8 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector2 GetScreenPos(Vector3 spacePos)
 		{
-			this.UpdateDeviceProjection();
-			return this.drawDevice.GetScreenPos(spacePos);
+			this.UpdateTransformDevice();
+			return this.transformDevice.GetScreenPos(spacePos);
 		}
 		/// <summary>
 		/// Transforms world space to screen space positions.
@@ -300,8 +301,8 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector2 GetScreenPos(Vector2 spacePos)
 		{
-			this.UpdateDeviceProjection();
-			return this.drawDevice.GetScreenPos(spacePos);
+			this.UpdateTransformDevice();
+			return this.transformDevice.GetScreenPos(spacePos);
 		}
 		/// <summary>
 		/// Returns whether the specified world space sphere is visible in the cameras view.
@@ -311,45 +312,29 @@ namespace Duality.Components
 		/// <returns></returns>
 		public bool IsSphereInView(Vector3 worldPos, float radius = 1.0f)
 		{
-			this.UpdateDeviceProjection();
-			return this.drawDevice.IsSphereInView(worldPos, radius);
+			this.UpdateTransformDevice();
+			return this.transformDevice.IsSphereInView(worldPos, radius);
 		}
 
-		private void SetupDevice()
+		private void SetupDrawDevice()
 		{
 			if (this.drawDevice != null && !this.drawDevice.Disposed) return;
-			
-			this.drawDevice = new DrawDevice();
 
-			// Default to world space render mode with the expected view sizes, 
-			// so coordinate conversions work as expected regardless of rendering state.
-			this.drawDevice.RenderMode = RenderMode.World;
-			this.drawDevice.TargetSize = DualityApp.TargetViewSize;
-			this.drawDevice.ViewportRect = new Rect(this.drawDevice.TargetSize);
+			// The draw device can just use default settings, because all rendering
+			// will overwrite the relevant values, such as render mode and target size.
+			// It will never be used by the Cameras transform methods.
+			this.drawDevice = new DrawDevice();
 		}
-		private void ReleaseDevice()
+		private void ReleaseDrawDevice()
 		{
 			if (this.drawDevice == null) return;
 			this.drawDevice.Dispose();
 			this.drawDevice = null;
 		}
-		private void UpdateDeviceConfig()
+		private void UpdateDrawDevice()
 		{
-			// Lazy setup, in case someone uses this Camera despite being inactive. (Editor)
-			if (this.drawDevice == null) this.SetupDevice();
-
-			this.UpdateDeviceProjection();
-
-			this.drawDevice.VisibilityMask = this.visibilityMask;
-			this.drawDevice.ClearColor = this.clearColor;
-			this.drawDevice.Target = this.renderTarget;
-
-			this.shaderParameters.CopyTo(this.drawDevice.ShaderParameters);
-		}
-		private void UpdateDeviceProjection()
-		{
-			// Lazy setup, in case someone uses this Camera despite being inactive. (Editor)
-			if (this.drawDevice == null) this.SetupDevice();
+			// On-demand setup, in case someone uses this Camera despite being inactive. (Editor)
+			if (this.drawDevice == null) this.SetupDrawDevice();
 
 			this.drawDevice.ViewerPos = this.gameobj.Transform.Pos;
 			this.drawDevice.ViewerAngle = this.gameobj.Transform.Angle;
@@ -357,20 +342,57 @@ namespace Duality.Components
 			this.drawDevice.FarZ = this.farZ;
 			this.drawDevice.FocusDist = this.focusDist;
 			this.drawDevice.Projection = this.projection;
+			this.drawDevice.VisibilityMask = this.visibilityMask;
+			this.drawDevice.ClearColor = this.clearColor;
+			this.drawDevice.Target = this.renderTarget;
+
+			this.shaderParameters.CopyTo(this.drawDevice.ShaderParameters);
+		}
+
+		private void SetupTransformDevice()
+		{
+			if (this.transformDevice != null && !this.transformDevice.Disposed) return;
+			
+			// The transform device always assumes world rendering, because that's
+			// what the Cameras transform methods need to use. It is never used for
+			// rendering.
+			this.transformDevice = new DrawDevice();
+			this.transformDevice.RenderMode = RenderMode.World;
+			this.transformDevice.TargetSize = DualityApp.TargetViewSize;
+		}
+		private void ReleaseTransformDevice()
+		{
+			if (this.transformDevice == null) return;
+			this.transformDevice.Dispose();
+			this.transformDevice = null;
+		}
+		private void UpdateTransformDevice()
+		{
+			// On-demand setup, in case someone uses this Camera despite being inactive. (Editor)
+			if (this.transformDevice == null) this.SetupTransformDevice();
+
+			this.transformDevice.ViewerPos = this.gameobj.Transform.Pos;
+			this.transformDevice.ViewerAngle = this.gameobj.Transform.Angle;
+			this.transformDevice.NearZ = this.nearZ;
+			this.transformDevice.FarZ = this.farZ;
+			this.transformDevice.FocusDist = this.focusDist;
+			this.transformDevice.Projection = this.projection;
 		}
 
 		void ICmpInitializable.OnInit(Component.InitContext context)
 		{
 			if (context == InitContext.Activate)
 			{
-				this.SetupDevice();
+				this.SetupTransformDevice();
+				this.SetupDrawDevice();
 			}
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
 		{
 			if (context == ShutdownContext.Deactivate)
 			{
-				this.ReleaseDevice();
+				this.ReleaseTransformDevice();
+				this.ReleaseDrawDevice();
 			}
 		}
 	}
