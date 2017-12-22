@@ -321,9 +321,11 @@ namespace Duality.Components
 			
 			this.drawDevice = new DrawDevice();
 
-			// Default to world space render mode, so coordinate conversions
-			// work as expected regardless of rendering state.
+			// Default to world space render mode with the expected view sizes, 
+			// so coordinate conversions work as expected regardless of rendering state.
 			this.drawDevice.RenderMode = RenderMode.World;
+			this.drawDevice.TargetSize = DualityApp.TargetViewSize;
+			this.drawDevice.ViewportRect = new Rect(this.drawDevice.TargetSize);
 		}
 		private void ReleaseDevice()
 		{
