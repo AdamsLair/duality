@@ -654,13 +654,11 @@ namespace Duality.Drawing
 
 		private float CalcZSortIndex<T>(T[] vertices, int count) where T : struct, IVertexData
 		{
-			if (count < 0) count = vertices.Length;
-
 			// Require double precision, so we don't get "z fighting" issues in our sort.
 			double zSortIndex = 0.0d;
 			for (int i = 0; i < count; i++)
 			{
-				zSortIndex += vertices[i].Pos.Z;
+				zSortIndex += vertices[i].Pos.Z + vertices[i].DepthOffset;
 			}
 			return (float)(zSortIndex / (double)count);
 		}
