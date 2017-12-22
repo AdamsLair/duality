@@ -83,10 +83,11 @@ namespace Duality.Drawing
 		Vector2 GetScreenPos(Vector3 spacePos);
 
 		/// <summary>
-		/// Returns whether the specified world space sphere is visible in the drawing devices view space.
+		/// Determines whether a point or sphere is inside the devices viewing frustum,
+		/// given a world space position and radius.
 		/// </summary>
-		/// <param name="worldPos">The spheres world space center position.</param>
-		/// <param name="radius">The spheres world space radius.</param>
+		/// <param name="worldPos">The points world space position.</param>
+		/// <param name="radius">A world space radius around the point.</param>
 		/// <returns></returns>
 		bool IsSphereInView(Vector3 worldPos, float radius = 1.0f);
 

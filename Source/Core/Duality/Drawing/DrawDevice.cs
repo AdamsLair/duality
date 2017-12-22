@@ -414,7 +414,14 @@ namespace Duality.Drawing
 
 			return screenPos;
 		}
-
+		
+		/// <summary>
+		/// Determines whether a point or sphere is inside the devices viewing frustum,
+		/// given a world space position and radius.
+		/// </summary>
+		/// <param name="worldPos">The points world space position.</param>
+		/// <param name="radius">A world space radius around the point.</param>
+		/// <returns></returns>
 		public bool IsSphereInView(Vector3 worldPos, float radius)
 		{
 			// Transform coordinate into clip space
@@ -458,7 +465,19 @@ namespace Duality.Drawing
 
 			return this.tempMaterialPool[index];
 		}
-
+		
+		/// <summary>
+		/// Adds a parameterized set of vertices to the drawing devices rendering schedule.
+		/// </summary>
+		/// <typeparam name="T">The type of vertex data to add.</typeparam>
+		/// <param name="material">The <see cref="Duality.Drawing.BatchInfo"/> to use for rendering the vertices.</param>
+		/// <param name="vertexMode">The vertices drawing mode.</param>
+		/// <param name="vertexBuffer">
+		/// A vertex data buffer that stores the vertices to add. Ownership of the buffer
+		/// remains at the callsite, while the <see cref="IDrawDevice"/> copies the required
+		/// data into internal storage.
+		/// </param>
+		/// <param name="vertexCount">The number of vertices to add, from the beginning of the buffer.</param>
 		public void AddVertices<T>(BatchInfo material, VertexMode vertexMode, T[] vertexBuffer, int vertexCount) where T : struct, IVertexData
 		{
 			if (vertexCount == 0) return;
