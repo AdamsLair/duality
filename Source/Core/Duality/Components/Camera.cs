@@ -155,6 +155,7 @@ namespace Duality.Components
 		/// which allows to specify a parameter value globally across all materials rendered by
 		/// this <see cref="Camera"/>.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public ShaderParameterCollection ShaderParameters
 		{
 			get { return this.shaderParameters; }
