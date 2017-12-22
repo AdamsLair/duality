@@ -27,10 +27,10 @@
         <id />
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="World" value="0" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTarget.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="World" value="0" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -47,10 +47,10 @@
         <id />
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTarget.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -66,12 +66,6 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id dataType="String">Bloom</id>
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1307056800">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2583301340" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
@@ -84,8 +78,8 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>

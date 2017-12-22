@@ -105,10 +105,10 @@
         <id dataType="String">World</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="World" value="0" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTarget.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="World" value="0" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -125,10 +125,10 @@
         <id dataType="String">ScreenOverlay</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTarget.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -144,19 +144,13 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1307056800">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2583301340" custom="true">
             <body>
+              <bloomStrength dataType="Array" type="System.Single[]" id="4030560964">1</bloomStrength>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTargetTex.Texture.res</contentPath>
               </mainTex>
-              <minBrightness dataType="Array" type="System.Single[]" id="4030560964">0.75</minBrightness>
-              <bloomStrength dataType="Array" type="System.Single[]" id="867128214">1</bloomStrength>
+              <minBrightness dataType="Array" type="System.Single[]" id="867128214">0.75</minBrightness>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
@@ -164,10 +158,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeC.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -183,12 +177,6 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="2557564508">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3403320516" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
@@ -201,10 +189,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSize.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -220,12 +208,6 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="487150448">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3577988412" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
@@ -238,10 +220,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSize.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -257,12 +239,6 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="2520991116">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="439787428" custom="true">
             <body>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
@@ -275,10 +251,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\EighthSize.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -294,18 +270,12 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1808190912">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3732335388" custom="true">
             <body>
+              <blurDirection dataType="Array" type="System.Single[]" id="3110197188">1, 0</blurDirection>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeCTex.Texture.res</contentPath>
               </mainTex>
-              <blurDirection dataType="Array" type="System.Single[]" id="3110197188">1, 0</blurDirection>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
@@ -313,10 +283,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeB.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -332,18 +302,12 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1165639164">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="1959635780" custom="true">
             <body>
+              <blurDirection dataType="Array" type="System.Single[]" id="665675332">0, 1</blurDirection>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeBTex.Texture.res</contentPath>
               </mainTex>
-              <blurDirection dataType="Array" type="System.Single[]" id="665675332">0, 1</blurDirection>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
@@ -351,10 +315,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeC.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -370,18 +334,12 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="3479145744">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2987236156" custom="true">
             <body>
+              <blurDirection dataType="Array" type="System.Single[]" id="1038063428">1, 0</blurDirection>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSizeTex.Texture.res</contentPath>
               </mainTex>
-              <blurDirection dataType="Array" type="System.Single[]" id="1038063428">1, 0</blurDirection>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
@@ -389,10 +347,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSizeB.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -408,18 +366,12 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="561019180">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2745605860" custom="true">
             <body>
+              <blurDirection dataType="Array" type="System.Single[]" id="3063656388">0, 1</blurDirection>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSizeBTex.Texture.res</contentPath>
               </mainTex>
-              <blurDirection dataType="Array" type="System.Single[]" id="3063656388">0, 1</blurDirection>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
@@ -427,10 +379,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSize.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -446,18 +398,12 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="11082592">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2981548252" custom="true">
             <body>
+              <blurDirection dataType="Array" type="System.Single[]" id="1168079556">1, 0</blurDirection>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSizeTex.Texture.res</contentPath>
               </mainTex>
-              <blurDirection dataType="Array" type="System.Single[]" id="1168079556">1, 0</blurDirection>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
@@ -465,10 +411,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSizeB.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -484,18 +430,12 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="418870428">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3392803780" custom="true">
             <body>
+              <blurDirection dataType="Array" type="System.Single[]" id="2187967812">0, 1</blurDirection>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSizeBTex.Texture.res</contentPath>
               </mainTex>
-              <blurDirection dataType="Array" type="System.Single[]" id="2187967812">0, 1</blurDirection>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
@@ -503,10 +443,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSize.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -522,18 +462,12 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="2665640496">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2010963644" custom="true">
             <body>
+              <blurDirection dataType="Array" type="System.Single[]" id="1235866180">1, 0</blurDirection>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\EighthSizeTex.Texture.res</contentPath>
               </mainTex>
-              <blurDirection dataType="Array" type="System.Single[]" id="1235866180">1, 0</blurDirection>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
@@ -541,10 +475,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\EighthSizeB.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -560,18 +494,12 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1979974348">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="965404836" custom="true">
             <body>
+              <blurDirection dataType="Array" type="System.Single[]" id="22298820">0, 1</blurDirection>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\EighthSizeBTex.Texture.res</contentPath>
               </mainTex>
-              <blurDirection dataType="Array" type="System.Single[]" id="22298820">0, 1</blurDirection>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
@@ -579,10 +507,10 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\EighthSize.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -598,29 +526,23 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1091815552">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2143216028" custom="true">
             <body>
-              <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
-                <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTargetTex.Texture.res</contentPath>
-              </mainTex>
-              <blurHalfTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
-                <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSizeTex.Texture.res</contentPath>
-              </blurHalfTex>
-              <blurQuarterTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
-                <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSizeTex.Texture.res</contentPath>
-              </blurQuarterTex>
               <blurEighthTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\EighthSizeTex.Texture.res</contentPath>
               </blurEighthTex>
               <blurFullTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeCTex.Texture.res</contentPath>
               </blurFullTex>
+              <blurHalfTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
+                <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSizeTex.Texture.res</contentPath>
+              </blurHalfTex>
+              <blurQuarterTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
+                <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSizeTex.Texture.res</contentPath>
+              </blurQuarterTex>
+              <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
+                <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTargetTex.Texture.res</contentPath>
+              </mainTex>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
@@ -628,8 +550,8 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>

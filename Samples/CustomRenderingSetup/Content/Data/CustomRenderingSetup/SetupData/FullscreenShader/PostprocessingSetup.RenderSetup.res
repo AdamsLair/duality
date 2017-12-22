@@ -25,10 +25,10 @@
         <id dataType="String">World</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="World" value="0" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\MainTarget.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="World" value="0" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -45,10 +45,10 @@
         <id dataType="String">ScreenOverlay</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\MainTarget.RenderTarget.res</contentPath>
         </output>
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -64,18 +64,12 @@
         <defaultClearColor dataType="Bool">false</defaultClearColor>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1307056800">
-          <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">255</A>
-            <B dataType="Byte">255</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">255</R>
-          </mainColor>
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2583301340" custom="true">
             <body>
+              <_GameTime dataType="Array" type="System.Single[]" id="4030560964">0</_GameTime>
               <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
                 <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FullscreenShader\MainTargetTex.Texture.res</contentPath>
               </mainTex>
-              <_GameTime dataType="Array" type="System.Single[]" id="4030560964">0</_GameTime>
             </body>
           </parameters>
           <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
@@ -83,8 +77,8 @@
           </technique>
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
+        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>

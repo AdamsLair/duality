@@ -120,12 +120,16 @@ namespace CustomRenderingSetup
 			// Blur all targets, separating horizontal and vertical blur
 			for (int i = 0; i < this.targetPingPongA.Length; i++)
 			{
-				BatchInfo material = drawDevice.RentMaterial();
+				BatchInfo material;
+				material = drawDevice.RentMaterial();
 				material.Technique = this.techBlur;
 
 				material.MainTexture = this.targetPingPongA[i].Targets[0];
 				material.SetValue("blurDirection", new Vector2(1.0f, 0.0f));
 				this.Blit(drawDevice, material, this.targetPingPongB[i]);
+				
+				material = drawDevice.RentMaterial();
+				material.Technique = this.techBlur;
 
 				material.MainTexture = this.targetPingPongB[i].Targets[0];
 				material.SetValue("blurDirection", new Vector2(0.0f, 1.0f));
