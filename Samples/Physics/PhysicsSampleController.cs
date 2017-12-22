@@ -86,9 +86,10 @@ namespace Duality.Samples.Physics
 			// Draw drag anchor markers when dragging an object
 			if (this.dragObj != null)
 			{
+				Camera mainCam = this.GameObj.ParentScene.FindComponent<Camera>();
 				Transform dragTransform = this.dragObj.GameObj.Transform;
 				Vector2 worldAnchor = dragTransform.GetWorldPoint(this.dragAnchor);
-				Vector2 screenAnchor = device.GetScreenPos(worldAnchor);
+				Vector2 screenAnchor = mainCam.GetScreenPos(worldAnchor);
 				canvas.State.ColorTint = this.interactionColor;
 				if ((screenAnchor - mousePos).Length < 10.0f)
 					canvas.DrawLine(mousePos.X, mousePos.Y, screenAnchor.X, screenAnchor.Y);

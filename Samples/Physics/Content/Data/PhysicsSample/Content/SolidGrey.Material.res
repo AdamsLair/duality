@@ -1,14 +1,9 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Material" id="129723834">
   <assetInfo />
   <info dataType="Struct" type="Duality.Drawing.BatchInfo" id="427169525">
-    <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
-      <A dataType="Byte">255</A>
-      <B dataType="Byte">191</B>
-      <G dataType="Byte">191</G>
-      <R dataType="Byte">191</R>
-    </mainColor>
     <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="1100841590" custom="true">
       <body>
+        <mainColor dataType="Array" type="System.Single[]" id="2824927200">0.7490196, 0.7490196, 0.7490196, 1</mainColor>
         <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
           <contentPath dataType="String">Default:Texture:White</contentPath>
         </mainTex>
