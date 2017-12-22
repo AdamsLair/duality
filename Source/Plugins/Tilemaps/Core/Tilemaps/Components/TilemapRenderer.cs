@@ -300,16 +300,16 @@ namespace Duality.Plugins.Tilemaps
 				depthPerTile = 0.0f;
 
 			float originDepthOffset = Rect.Align(this.origin, 0, 0, 0, tileCount.Y * depthPerTile).Y;
-
 			if (this.tileDepthMode == TileDepthOffsetMode.World)
 				originDepthOffset += (this.GameObj.Transform.Pos.Y / (float)tileSize.Y) * depthPerTile;
 
-			cullingOut.RenderOriginView.Z += this.offset + this.tileDepthOffset * depthPerTile + originDepthOffset;
+			float renderBaseOffset = this.offset + this.tileDepthOffset * depthPerTile + originDepthOffset;
 
 			// Prepare vertex generation data
-			Vector2 tileXStep = cullingOut.XAxisView * cullingIn.TileSize.X;
-			Vector2 tileYStep = cullingOut.YAxisView * cullingIn.TileSize.Y;
-			Vector3 renderPos = cullingOut.RenderOriginView;
+			Vector2 tileXStep = cullingOut.XAxisWorld * cullingIn.TileSize.X;
+			Vector2 tileYStep = cullingOut.YAxisWorld * cullingIn.TileSize.Y;
+			Vector3 renderPos = cullingOut.RenderOriginWorld;
+			float renderOffset = renderBaseOffset;
 			Point2 tileGridPos = cullingOut.VisibleTileStart;
 
 			// Prepare vertex data array for batch-submitting
@@ -331,28 +331,32 @@ namespace Duality.Plugins.Tilemaps
 					{
 						vertexData[vertexBaseIndex + 0].Pos.X = renderPos.X;
 						vertexData[vertexBaseIndex + 0].Pos.Y = renderPos.Y;
-						vertexData[vertexBaseIndex + 0].Pos.Z = renderPos.Z + localDepthOffset;
+						vertexData[vertexBaseIndex + 0].Pos.Z = renderPos.Z;
+						vertexData[vertexBaseIndex + 0].DepthOffset = renderOffset + localDepthOffset;
 						vertexData[vertexBaseIndex + 0].TexCoord.X = uvRect.X;
 						vertexData[vertexBaseIndex + 0].TexCoord.Y = uvRect.Y;
 						vertexData[vertexBaseIndex + 0].Color = mainColor;
 
 						vertexData[vertexBaseIndex + 1].Pos.X = renderPos.X + tileYStep.X;
 						vertexData[vertexBaseIndex + 1].Pos.Y = renderPos.Y + tileYStep.Y;
-						vertexData[vertexBaseIndex + 1].Pos.Z = renderPos.Z + localDepthOffset + depthPerTile;
+						vertexData[vertexBaseIndex + 1].Pos.Z = renderPos.Z;
+						vertexData[vertexBaseIndex + 1].DepthOffset = renderOffset + localDepthOffset + depthPerTile;
 						vertexData[vertexBaseIndex + 1].TexCoord.X = uvRect.X;
 						vertexData[vertexBaseIndex + 1].TexCoord.Y = uvRect.Y + uvRect.H;
 						vertexData[vertexBaseIndex + 1].Color = mainColor;
 
 						vertexData[vertexBaseIndex + 2].Pos.X = renderPos.X + tileXStep.X + tileYStep.X;
 						vertexData[vertexBaseIndex + 2].Pos.Y = renderPos.Y + tileXStep.Y + tileYStep.Y;
-						vertexData[vertexBaseIndex + 2].Pos.Z = renderPos.Z + localDepthOffset + depthPerTile;
+						vertexData[vertexBaseIndex + 2].Pos.Z = renderPos.Z;
+						vertexData[vertexBaseIndex + 2].DepthOffset = renderOffset + localDepthOffset + depthPerTile;
 						vertexData[vertexBaseIndex + 2].TexCoord.X = uvRect.X + uvRect.W;
 						vertexData[vertexBaseIndex + 2].TexCoord.Y = uvRect.Y + uvRect.H;
 						vertexData[vertexBaseIndex + 2].Color = mainColor;
 				
 						vertexData[vertexBaseIndex + 3].Pos.X = renderPos.X + tileXStep.X;
 						vertexData[vertexBaseIndex + 3].Pos.Y = renderPos.Y + tileXStep.Y;
-						vertexData[vertexBaseIndex + 3].Pos.Z = renderPos.Z + localDepthOffset;
+						vertexData[vertexBaseIndex + 3].Pos.Z = renderPos.Z;
+						vertexData[vertexBaseIndex + 3].DepthOffset = renderOffset + localDepthOffset;
 						vertexData[vertexBaseIndex + 3].TexCoord.X = uvRect.X + uvRect.W;
 						vertexData[vertexBaseIndex + 3].TexCoord.Y = uvRect.Y;
 						vertexData[vertexBaseIndex + 3].Color = mainColor;
@@ -360,8 +364,8 @@ namespace Duality.Plugins.Tilemaps
 						bool vertical = tileData[tile.Index].IsVertical;
 						if (vertical)
 						{
-							vertexData[vertexBaseIndex + 0].Pos.Z += depthPerTile;
-							vertexData[vertexBaseIndex + 3].Pos.Z += depthPerTile;
+							vertexData[vertexBaseIndex + 0].DepthOffset += depthPerTile;
+							vertexData[vertexBaseIndex + 3].DepthOffset += depthPerTile;
 						}
 
 						submittedTileCount++;
@@ -376,10 +380,10 @@ namespace Duality.Plugins.Tilemaps
 				{
 					tileGridPos.X = cullingOut.VisibleTileStart.X;
 					tileGridPos.Y++;
-					renderPos = cullingOut.RenderOriginView;
+					renderPos = cullingOut.RenderOriginWorld;
 					renderPos.X += tileYStep.X * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
 					renderPos.Y += tileYStep.Y * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
-					renderPos.Z += tileGridPos.Y * depthPerTile;
+					renderOffset = renderBaseOffset + tileGridPos.Y * depthPerTile;
 				}
 			}
 

@@ -59,18 +59,6 @@ namespace Duality.Plugins.Tilemaps
 			/// </summary>
 			public Point2 VisibleTileCount;
 			/// <summary>
-			/// The view space rendering origin of the visible tile rect.
-			/// </summary>
-			public Vector3 RenderOriginView;
-			/// <summary>
-			/// The view space x axis of the rendered <see cref="Tilemap"/>, taking rotation and scale into account.
-			/// </summary>
-			public Vector2 XAxisView;
-			/// <summary>
-			/// The view space y axis of the rendered <see cref="Tilemap"/>, taking rotation and scale into account.
-			/// </summary>
-			public Vector2 YAxisView;
-			/// <summary>
 			/// The world space rendering origin of the visible tile rect.
 			/// </summary>
 			public Vector3 RenderOriginWorld;
@@ -100,18 +88,13 @@ namespace Duality.Plugins.Tilemaps
 			TileOutput output;
 
 			// Determine the view space transform of the tilemap
-			Vector3 objPos = input.TilemapPos;
-			float objScale = input.TilemapScale;
-			float cameraScaleAtObj = device.GetScaleAtZ(objPos.Z);
+			float cameraScaleAtObj = device.GetScaleAtZ(input.TilemapPos.Z);
+			Vector3 viewCenterWorldPos = device.GetWorldPos(new Vector3(device.TargetSize * 0.5f, input.TilemapPos.Z));
 
 			// Early-out, if so small that it might break the math behind rendering a single tile.
 			if (cameraScaleAtObj <= 0.000000001f) return EmptyOutput;
 
-			// Determine transformed X and Y axis in view and world space
-			output.XAxisView = Vector2.UnitX;
-			output.YAxisView = Vector2.UnitY;
-			MathF.TransformCoord(ref output.XAxisView.X, ref output.XAxisView.Y, input.TilemapAngle, objScale);
-			MathF.TransformCoord(ref output.YAxisView.X, ref output.YAxisView.Y, input.TilemapAngle, objScale);
+			// Determine transformed X and Y axis in world space
 			output.XAxisWorld = Vector2.UnitX;
 			output.YAxisWorld = Vector2.UnitY;
 			MathF.TransformCoord(ref output.XAxisWorld.X, ref output.XAxisWorld.Y, input.TilemapAngle, input.TilemapScale);
@@ -120,12 +103,10 @@ namespace Duality.Plugins.Tilemaps
 			// Determine which tile is in the center of view space.
 			Point2 viewCenterTile = Point2.Zero;
 			{
-				// Project the view center coordinate (view space zero) into the local space of the rendered tilemap
-				Vector2 viewRenderStartPos = objPos.Xy;
-				Vector2 localViewCenter = Vector2.Zero - viewRenderStartPos;
+				Vector2 localViewCenter = (viewCenterWorldPos - input.TilemapPos).Xy;
 				localViewCenter = new Vector2(
-					Vector2.Dot(localViewCenter, output.XAxisView.Normalized),
-					Vector2.Dot(localViewCenter, output.YAxisView.Normalized)) / objScale;
+					Vector2.Dot(localViewCenter, output.XAxisWorld.Normalized),
+					Vector2.Dot(localViewCenter, output.YAxisWorld.Normalized)) / input.TilemapScale;
 				viewCenterTile = new Point2(
 					(int)MathF.Floor(localViewCenter.X / input.TileSize.X),
 					(int)MathF.Floor(localViewCenter.Y / input.TileSize.Y));
@@ -153,9 +134,6 @@ namespace Duality.Plugins.Tilemaps
 				MathF.Clamp(tileGridEndPos.Y - output.VisibleTileStart.Y, 0, input.TileCount.Y));
 
 			// Determine start position for rendering
-			output.RenderOriginView = objPos + new Vector3(
-				output.VisibleTileStart.X * output.XAxisView * input.TileSize.X + 
-				output.VisibleTileStart.Y * output.YAxisView * input.TileSize.Y);
 			output.RenderOriginWorld = input.TilemapPos + new Vector3(
 				output.VisibleTileStart.X * output.XAxisWorld * input.TileSize.X + 
 				output.VisibleTileStart.Y * output.YAxisWorld * input.TileSize.Y);

@@ -221,19 +221,19 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			{
 				// Vertical actors share the same depth offset on all four vertices
 				float baseDepthOffset = this.offset + transform.Pos.Y * depthPerUnit;
-				vertices[0].Pos.Z += baseDepthOffset;
-				vertices[1].Pos.Z += baseDepthOffset;
-				vertices[2].Pos.Z += baseDepthOffset;
-				vertices[3].Pos.Z += baseDepthOffset;
+				vertices[0].DepthOffset = baseDepthOffset;
+				vertices[1].DepthOffset = baseDepthOffset;
+				vertices[2].DepthOffset = baseDepthOffset;
+				vertices[3].DepthOffset = baseDepthOffset;
 			}
 			else
 			{
 				// Flat actors need to apply depth individually per vertex
 				float worldBaseY = transform.Pos.Y;
-				vertices[0].Pos.Z += this.offset + (worldBaseY + edge1.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
-				vertices[1].Pos.Z += this.offset + (worldBaseY + edge2.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
-				vertices[2].Pos.Z += this.offset + (worldBaseY + edge3.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
-				vertices[3].Pos.Z += this.offset + (worldBaseY + edge4.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
+				vertices[0].DepthOffset = this.offset + (worldBaseY + edge1.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
+				vertices[1].DepthOffset = this.offset + (worldBaseY + edge2.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
+				vertices[2].DepthOffset = this.offset + (worldBaseY + edge3.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
+				vertices[3].DepthOffset = this.offset + (worldBaseY + edge4.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
 			}
 		}
 		
