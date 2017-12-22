@@ -130,6 +130,14 @@ namespace Duality.Components
 			set { this.renderSetup = value; }
 		}
 		/// <summary>
+		/// [GET] The <see cref="RenderSetup"/> that will be used when <see cref="RenderPickingMap"/> is called.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public PickingRenderSetup PickingSetup
+		{
+			get { return this.pickingSetup; }
+		}
+		/// <summary>
 		/// [GET] The rendering setup that will be used by this camera.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]

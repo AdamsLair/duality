@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Duality;
 using Duality.Components;
 using Duality.Drawing;
+using Duality.Resources;
 
 using Duality.Editor;
 using Duality.Editor.Backend;
@@ -144,14 +145,32 @@ namespace Duality.Editor.Plugins.CamView
 			if (this.pickingFrameLast == Time.FrameCount) return false;
 			if (this.ClientSize.IsEmpty) return false;
 
-			this.pickingFrameLast = Time.FrameCount;
 			Point2 clientSize = new Point2(this.ClientSize.Width, this.ClientSize.Height);
+			RenderSetup renderSetup = this.CameraComponent.PickingSetup;
+
+			if (renderSetup != null)
+				renderSetup.AddRendererFilter(this.PickingRendererFilter);
+
+			this.pickingFrameLast = Time.FrameCount;
 			this.CameraComponent.RenderPickingMap(
 				clientSize / 2,
 				clientSize,
 				true);
 
+			if (renderSetup != null)
+				renderSetup.RemoveRendererFilter(this.PickingRendererFilter);
+
 			return true;
+		}
+		private bool PickingRendererFilter(ICmpRenderer r)
+		{
+			GameObject obj = (r as Component).GameObj;
+
+			if (!this.View.ObjectVisibility.Matches(obj))
+				return false;
+
+			DesignTimeObjectData data = DesignTimeObjectData.Get(obj);
+			return !data.IsHidden;
 		}
 	}
 }
