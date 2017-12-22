@@ -41,7 +41,7 @@
             <farZ dataType="Float">10000</farZ>
             <focusDist dataType="Float">500</focusDist>
             <gameobj dataType="ObjectRef">3845221357</gameobj>
-            <nearZ dataType="Float">0</nearZ>
+            <nearZ dataType="Float">50</nearZ>
             <priority dataType="Int">0</priority>
             <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Perspective" value="1" />
             <renderSetup dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderSetup]]" />
