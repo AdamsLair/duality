@@ -12,10 +12,12 @@ namespace Duality.Editor.Forms
 	{
 		public class ReferenceNode : Node
 		{
-			public ReferenceNode(string name, string path) : base(name)
+			public ReferenceNode(IContentRef resource) : base(resource.Name)
 			{
-				this.Name = name;
-				this.Path = path;
+				this.Name = resource.Name;
+				this.Path = resource.FullName;
+
+				this.ResourceReference = resource;
 			}
 
 			private string name;
@@ -33,12 +35,20 @@ namespace Duality.Editor.Forms
 				get { return this.path; }
 				set { this.path = value; }
 			}
+
+			private IContentRef resourceReference;
+
+			public IContentRef ResourceReference
+			{
+				get { return this.resourceReference; }
+				set { this.resourceReference = value; }
+			}
 		}
 
 		public Type FilteredType { get; set; }
 
 		public string ResourcePath { get; set; }
-		public IContentRef ContentReference { get; set; }
+		public IContentRef ResourceReference { get; set; }
 
 		public TreeModel model { get; set; }
 
@@ -75,10 +85,10 @@ namespace Duality.Editor.Forms
 
 			this.objectReferenceListing.BeginUpdate();
 			this.model.Nodes.Clear();
-
+			
 			foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(this.FilteredType))
 			{
-				ReferenceNode tmpNode = new ReferenceNode(contentRef.Name, contentRef.FullName);
+				ReferenceNode tmpNode = new ReferenceNode(contentRef);
 
 				tmpNode.Text = contentRef.Name;
 
@@ -108,16 +118,9 @@ namespace Duality.Editor.Forms
 
 		private void ResourceListingOnSelectedIndexChanged(object sender, EventArgs eventArgs)
 		{
-			// TODO: Handle selection
-		}
+			ReferenceNode node = this.objectReferenceListing.SelectedNode.Tag as ReferenceNode;
 
-		/// <summary>
-		/// Set the content reference to the currently selected elements value.
-		/// </summary>
-		/// <param name="data">a reference to a DataObject instance</param>
-		public void SerializeToData(DataObject data)
-		{
-			data.SetContentRefs(new[] { this.ContentReference });
+			this.ResourceReference = node.ResourceReference;
 		}
 	}
 }
