@@ -203,7 +203,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				rectText,
 				format);
 			
-			ControlRenderer.DrawBorder(e.Graphics, 
+			this.ControlRenderer.DrawBorder(e.Graphics, 
 				this.rectPanel, 
 				BorderStyle.ContentBox, 
 				(this.ReadOnly || !this.Enabled) ? BorderState.Disabled : BorderState.Normal);
@@ -215,7 +215,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				else if (this.buttonResetHovered)	buttonStateReset = ButtonState.Hot;
 				else								buttonStateReset = ButtonState.Normal;
 			}
-			ControlRenderer.DrawButton(
+			this.ControlRenderer.DrawButton(
 				e.Graphics, 
 				this.rectButtonReset, 
 				buttonStateReset, 
@@ -229,7 +229,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				else if (this.buttonSelectHovered || this.Focused) buttonStateSelect = ButtonState.Hot;
 				else buttonStateSelect = ButtonState.Normal;
 			}
-			ControlRenderer.DrawButton(
+			this.ControlRenderer.DrawButton(
 				e.Graphics, 
 				this.rectButtonSelect, 
 				buttonStateSelect, 
@@ -373,7 +373,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			{
 				DataObject tmpDataObject = new DataObject();
 
-				tmpResourceSelectionForm.SerializeToData(tmpDataObject);
+				tmpDataObject.SetContentRefs(new[] { tmpResourceSelectionForm.ResourceReference });
 
 				DeserializeFromData(tmpDataObject);
 			}

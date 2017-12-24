@@ -58,6 +58,7 @@ namespace Duality.Editor.Forms
 
 			this.model = new TreeModel();
 
+			this.objectReferenceListing.Click += this.ResourceListingOnSelectedIndexChanged;
 			this.objectReferenceListing.DoubleClick += this.ResourceListingOnDoubleClick;
 
 			this.nodeName.DrawText += this.NodeNameOnDrawText;
