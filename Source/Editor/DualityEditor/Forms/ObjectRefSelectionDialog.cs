@@ -7,6 +7,7 @@ using Aga.Controls.Tree.NodeControls;
 namespace Duality.Editor.Forms
 {
 	using System.Drawing;
+	using Resources;
 
 	public partial class ObjectRefSelectionDialog : Form
 	{
@@ -18,6 +19,13 @@ namespace Duality.Editor.Forms
 				this.Path = resource.FullName;
 
 				this.ResourceReference = resource;
+			}
+			public ReferenceNode(GameObject resource) : base(resource.Name)
+			{
+				this.Name = resource.Name;
+				this.Path = resource.FullName;
+
+				this.GameObjectReference = resource;
 			}
 
 			private string name;
@@ -43,12 +51,21 @@ namespace Duality.Editor.Forms
 				get { return this.resourceReference; }
 				set { this.resourceReference = value; }
 			}
+
+			private GameObject gameObjectReference;
+
+			public GameObject GameObjectReference
+			{
+				get { return this.gameObjectReference; }
+				set { this.gameObjectReference = value; }
+			}
 		}
 
 		public Type FilteredType { get; set; }
 
 		public string ResourcePath { get; set; }
 		public IContentRef ResourceReference { get; set; }
+		public GameObject GameObjectReference { get; set; }
 
 		public TreeModel model { get; set; }
 
@@ -86,16 +103,30 @@ namespace Duality.Editor.Forms
 
 			this.objectReferenceListing.BeginUpdate();
 			this.model.Nodes.Clear();
-			
-			foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(this.FilteredType))
+
+			if (this.FilteredType == typeof(GameObject))
 			{
-				ReferenceNode tmpNode = new ReferenceNode(contentRef);
+				foreach (GameObject currentAllObject in Scene.Current.AllObjects)
+				{
+					ReferenceNode tmpNode = new ReferenceNode(currentAllObject);
 
-				tmpNode.Text = contentRef.Name;
+					tmpNode.Text = currentAllObject.Name;
 
-				this.model.Nodes.Add(tmpNode);
+					this.model.Nodes.Add(tmpNode);
+				}
 			}
+			else
+			{
+				foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(this.FilteredType))
+				{
+					ReferenceNode tmpNode = new ReferenceNode(contentRef);
 
+					tmpNode.Text = contentRef.Name;
+
+					this.model.Nodes.Add(tmpNode);
+				}
+			}
+			
 			foreach (var treeNodeAdv in this.objectReferenceListing.AllNodes)
 			{
 				ReferenceNode tmpNode = treeNodeAdv.Tag as ReferenceNode;
@@ -113,15 +144,26 @@ namespace Duality.Editor.Forms
 
 		private void ResourceListingOnDoubleClick(object sender, EventArgs eventArgs)
 		{
+			if (this.objectReferenceListing.SelectedNode == null)
+			{
+				return;
+			}
+
 			this.ResourceListingOnSelectedIndexChanged(sender, eventArgs);
 			this.AcceptButton.PerformClick();
 		}
 
 		private void ResourceListingOnSelectedIndexChanged(object sender, EventArgs eventArgs)
 		{
+			if (this.objectReferenceListing.SelectedNode == null)
+			{
+				return;
+			}
+
 			ReferenceNode node = this.objectReferenceListing.SelectedNode.Tag as ReferenceNode;
 
 			this.ResourceReference = node.ResourceReference;
+			this.GameObjectReference = node.GameObjectReference;
 		}
 	}
 }

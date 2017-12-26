@@ -28,7 +28,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			get { return this.gameObj != null && this.gameObj.Disposed; }
 		}
 
-
 		public override void ShowReferencedContent()
 		{
 			if (this.gameObj == null) return;
