@@ -122,6 +122,7 @@
     <Compile Include="Extensibility\Previews\PreviewQuery.cs" />
     <Compile Include="Extensibility\Previews\IPreviewQuery.cs" />
     <Compile Include="Extensibility\Previews\PreviewSizeMode.cs" />
+    <Compile Include="Extensibility\DataConversion\IObjectRefHolder.cs" />
     <Compile Include="Forms\ObjectRefSelectionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
