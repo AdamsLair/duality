@@ -372,10 +372,19 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			if (result == DialogResult.OK)
 			{
 				DataObject tmpDataObject = new DataObject();
-				
-				tmpDataObject.SetContentRefs(new[] { tmpResourceSelectionForm.ResourceReference });
-				tmpDataObject.SetGameObjectRefs(new [] { tmpResourceSelectionForm.GameObjectReference });
-				tmpDataObject.SetComponentRefs(new [] {tmpResourceSelectionForm.ComponentReference });
+
+				if (tmpResourceSelectionForm.ResourceReference != null)
+				{
+					tmpDataObject.SetContentRefs(new[] {tmpResourceSelectionForm.ResourceReference});
+				}
+				else if (this.ReferenceType == typeof(GameObject))
+				{
+					tmpDataObject.SetGameObjectRefs(new[] {tmpResourceSelectionForm.GameObjectReference});
+				}
+				else
+				{
+					tmpDataObject.SetComponentRefs(new[] { tmpResourceSelectionForm.ComponentReference });
+				}
 
 				DeserializeFromData(tmpDataObject);
 			}
