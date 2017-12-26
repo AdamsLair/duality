@@ -133,7 +133,13 @@ namespace Duality.Editor.Forms
 			}
 			else
 			{
-				foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(this.FilteredType.GenericTypeArguments[0]))
+				Type tmpFilteredType = typeof(Resource);
+				if (this.FilteredType.IsGenericType)
+				{
+					tmpFilteredType = this.FilteredType.GetGenericArguments()[0];
+				}
+
+				foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(tmpFilteredType))
 				{
 					ReferenceNode tmpNode = new ReferenceNode(contentRef)
 					{
