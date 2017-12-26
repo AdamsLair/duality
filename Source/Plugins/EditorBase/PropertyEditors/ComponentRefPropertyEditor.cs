@@ -22,7 +22,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 		public override Type ReferenceType
 		{
-			get { return this.editedCmpType; }
+			get { return typeof(Component); }
 		}
 		public override bool ReferenceBroken
 		{
