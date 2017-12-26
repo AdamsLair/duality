@@ -108,8 +108,8 @@ namespace Duality.Editor.Forms
 
 			this.objectReferenceListing.BeginUpdate();
 			this.model.Nodes.Clear();
-
-			if (this.FilteredType == typeof(GameObject))
+			
+			if (this.FilteredType.IsSubclassOf(typeof(GameObject)) || this.FilteredType == typeof(GameObject))
 			{
 				foreach (GameObject currentObject in Scene.Current.AllObjects)
 				{
@@ -119,7 +119,8 @@ namespace Duality.Editor.Forms
 
 					this.model.Nodes.Add(tmpNode);
 				}
-			} else if (this.FilteredType == typeof(Component))
+			}
+			else if (this.FilteredType.IsSubclassOf(typeof(Component)) || this.FilteredType == typeof(Component))
 			{
 				foreach (Component currentComponent in Scene.Current.FindComponents(this.FilteredType))
 				{
@@ -132,7 +133,7 @@ namespace Duality.Editor.Forms
 			}
 			else
 			{
-				foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(this.FilteredType))
+				foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(this.FilteredType.GenericTypeArguments[0]))
 				{
 					ReferenceNode tmpNode = new ReferenceNode(contentRef)
 					{

@@ -363,7 +363,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			ObjectRefSelectionDialog tmpResourceSelectionForm = new ObjectRefSelectionDialog
 			{
-				FilteredType = this.ReferenceType,
+				FilteredType = this.EditedType,
 				ResourcePath = this.ReferenceName
 			};
 
