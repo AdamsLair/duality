@@ -3,13 +3,13 @@ using System.Windows.Forms;
 
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
+using Duality.Editor.Extensibility.DataConversion;
+using Duality.Resources;
+
 
 namespace Duality.Editor.Forms
 {
-	using System.Drawing;
-	using Resources;
-
-	public partial class ObjectRefSelectionDialog : Form
+	public partial class ObjectRefSelectionDialog : Form, IObjectRefHolder
 	{
 		public class ReferenceNode : Node
 		{
@@ -95,19 +95,6 @@ namespace Duality.Editor.Forms
 
 			this.objectReferenceListing.Click += this.ResourceListingOnSelectedIndexChanged;
 			this.objectReferenceListing.DoubleClick += this.ResourceListingOnDoubleClick;
-
-			this.nodeName.DrawText += this.NodeNameOnDrawText;
-			this.nodePath.DrawText += this.NodePathOnDrawText;
-		}
-
-		private void NodePathOnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
-		{
-			// drawTextEventArgs.TextColor = Color.Red;
-		}
-
-		private void NodeNameOnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
-		{
-			// drawTextEventArgs.TextColor = Color.Red;
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -147,9 +134,10 @@ namespace Duality.Editor.Forms
 			{
 				foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(this.FilteredType))
 				{
-					ReferenceNode tmpNode = new ReferenceNode(contentRef);
-
-					tmpNode.Text = contentRef.Name;
+					ReferenceNode tmpNode = new ReferenceNode(contentRef)
+					{
+						Text = contentRef.Name
+					};
 
 					this.model.Nodes.Add(tmpNode);
 				}
@@ -159,7 +147,7 @@ namespace Duality.Editor.Forms
 			{
 				ReferenceNode tmpNode = treeNodeAdv.Tag as ReferenceNode;
 
-				if (tmpNode.Path == this.ResourcePath)
+				if (tmpNode != null && tmpNode.Path == this.ResourcePath)
 				{
 					this.objectReferenceListing.SelectedNode = treeNodeAdv;
 					break;
