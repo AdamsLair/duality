@@ -20,6 +20,7 @@ namespace Duality.Editor.Forms
 
 				this.ResourceReference = resource;
 			}
+
 			public ReferenceNode(GameObject resource) : base(resource.Name)
 			{
 				this.Name = resource.Name;
@@ -28,36 +29,52 @@ namespace Duality.Editor.Forms
 				this.GameObjectReference = resource;
 			}
 
-			private string name;
+			public ReferenceNode(Component resource) : base(resource.GetType().Name)
+			{
+				this.Name = resource.GetType().Name;
+				this.Path = resource.GetType().FullName;
+
+				this.ComponentReference = resource;
+			}
+
+			private string _name;
 
 			public string Name
 			{
-				get { return this.name; }
-				set { this.name = value; }
+				get { return this._name; }
+				set { this._name = value; }
 			}
 
-			private string path;
+			private string _path;
 
 			public string Path
 			{
-				get { return this.path; }
-				set { this.path = value; }
+				get { return this._path; }
+				set { this._path = value; }
 			}
 
-			private IContentRef resourceReference;
+			private IContentRef _resourceReference;
 
 			public IContentRef ResourceReference
 			{
-				get { return this.resourceReference; }
-				set { this.resourceReference = value; }
+				get { return this._resourceReference; }
+				set { this._resourceReference = value; }
 			}
 
-			private GameObject gameObjectReference;
+			private GameObject _gameObjectReference;
 
 			public GameObject GameObjectReference
 			{
-				get { return this.gameObjectReference; }
-				set { this.gameObjectReference = value; }
+				get { return this._gameObjectReference; }
+				set { this._gameObjectReference = value; }
+			}
+
+			private Component _componentReference;
+
+			public Component ComponentReference
+			{
+				get { return this._componentReference; }
+				set { this._componentReference = value; }
 			}
 		}
 
@@ -66,6 +83,7 @@ namespace Duality.Editor.Forms
 		public string ResourcePath { get; set; }
 		public IContentRef ResourceReference { get; set; }
 		public GameObject GameObjectReference { get; set; }
+		public Component ComponentReference { get; set; }
 
 		public TreeModel model { get; set; }
 
@@ -106,11 +124,21 @@ namespace Duality.Editor.Forms
 
 			if (this.FilteredType == typeof(GameObject))
 			{
-				foreach (GameObject currentAllObject in Scene.Current.AllObjects)
+				foreach (GameObject currentObject in Scene.Current.AllObjects)
 				{
-					ReferenceNode tmpNode = new ReferenceNode(currentAllObject);
+					ReferenceNode tmpNode = new ReferenceNode(currentObject);
 
-					tmpNode.Text = currentAllObject.Name;
+					tmpNode.Text = currentObject.Name;
+
+					this.model.Nodes.Add(tmpNode);
+				}
+			} else if (this.FilteredType == typeof(Component))
+			{
+				foreach (Component currentComponent in Scene.Current.FindComponents(this.FilteredType))
+				{
+					ReferenceNode tmpNode = new ReferenceNode(currentComponent);
+
+					tmpNode.Text = currentComponent.GetType().Name;
 
 					this.model.Nodes.Add(tmpNode);
 				}
@@ -146,6 +174,10 @@ namespace Duality.Editor.Forms
 		{
 			if (this.objectReferenceListing.SelectedNode == null)
 			{
+				this.ResourceReference = null;
+				this.GameObjectReference = null;
+				this.ComponentReference = null;
+
 				return;
 			}
 
@@ -157,6 +189,10 @@ namespace Duality.Editor.Forms
 		{
 			if (this.objectReferenceListing.SelectedNode == null)
 			{
+				this.ResourceReference = null;
+				this.GameObjectReference = null;
+				this.ComponentReference = null;
+
 				return;
 			}
 
@@ -164,6 +200,7 @@ namespace Duality.Editor.Forms
 
 			this.ResourceReference = node.ResourceReference;
 			this.GameObjectReference = node.GameObjectReference;
+			this.ComponentReference = node.ComponentReference;
 		}
 	}
 }

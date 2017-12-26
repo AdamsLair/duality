@@ -375,6 +375,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				
 				tmpDataObject.SetContentRefs(new[] { tmpResourceSelectionForm.ResourceReference });
 				tmpDataObject.SetGameObjectRefs(new [] { tmpResourceSelectionForm.GameObjectReference });
+				tmpDataObject.SetComponentRefs(new [] {tmpResourceSelectionForm.ComponentReference });
 
 				DeserializeFromData(tmpDataObject);
 			}
