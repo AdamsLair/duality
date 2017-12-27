@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Reflection;
 
 using AdamsLair.WinForms.PropertyEditing;
 using AdamsLair.WinForms.Drawing;
@@ -46,6 +47,33 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		/// Type for this resource reference
 		/// </summary>
 		public abstract Type ReferenceType { get; }
+
+		protected Type FilteredType
+		{
+			get
+			{
+				Type t = null;
+
+				if (this.EditedMember != null)
+				{
+					PropertyInfo tmpPropertyInfo = this.EditedMember as PropertyInfo;
+					FieldInfo tmpFieldInfo = this.EditedMember as FieldInfo;
+					if (tmpPropertyInfo != null)
+					{
+						t = tmpPropertyInfo.PropertyType;
+					} else if (tmpFieldInfo != null) {
+						t = tmpFieldInfo.FieldType;
+					}
+				}
+
+				if (t == null)
+				{
+					t = this.EditedType != null ? this.EditedType : typeof(Component);
+				}
+
+				return t;
+			}
+		}
 
 		public ObjectRefPropertyEditor()
 		{
@@ -363,7 +391,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			ObjectRefSelectionDialog tmpResourceSelectionForm = new ObjectRefSelectionDialog
 			{
-				FilteredType = this.EditedType,
+				FilteredType = this.FilteredType,
 				ResourcePath = this.ReferenceName
 			};
 
