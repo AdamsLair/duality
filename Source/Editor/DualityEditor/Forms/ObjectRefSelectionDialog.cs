@@ -81,6 +81,7 @@ namespace Duality.Editor.Forms
 		public Type FilteredType { get; set; }
 
 		public string ResourcePath { get; set; }
+
 		public IContentRef ResourceReference { get; set; }
 		public GameObject GameObjectReference { get; set; }
 		public Component ComponentReference { get; set; }
@@ -95,6 +96,21 @@ namespace Duality.Editor.Forms
 
 			this.objectReferenceListing.Click += this.ResourceListingOnSelectedIndexChanged;
 			this.objectReferenceListing.DoubleClick += this.ResourceListingOnDoubleClick;
+
+			this.nodeName.DrawText += this.NodeName_OnDrawText;
+			this.nodePath.DrawText += this.NodeName_OnDrawText;
+		}
+
+		private void NodeName_OnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
+		{
+			ReferenceNode node = drawTextEventArgs.Node.Tag as ReferenceNode;
+
+			if (node == null)
+			{
+				return;
+			}
+
+			drawTextEventArgs.TextColor = this.objectReferenceListing.ForeColor;
 		}
 
 		protected override void OnShown(EventArgs e)

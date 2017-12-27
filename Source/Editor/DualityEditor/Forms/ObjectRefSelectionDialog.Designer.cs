@@ -34,10 +34,10 @@
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.labelInfo = new System.Windows.Forms.Label();
 			this.objectReferenceListing = new Aga.Controls.Tree.TreeViewAdv();
-			this.nodeName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
-			this.nodePath = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.columnName = new Aga.Controls.Tree.TreeColumn();
 			this.columnPath = new Aga.Controls.Tree.TreeColumn();
+			this.nodeName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
+			this.nodePath = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -99,20 +99,6 @@
 			this.objectReferenceListing.Size = new System.Drawing.Size(337, 284);
 			this.objectReferenceListing.TabIndex = 0;
 			// 
-			// nodeName
-			// 
-			this.nodeName.DataPropertyName = "Name";
-			this.nodeName.IncrementalSearchEnabled = true;
-			this.nodeName.LeftMargin = 3;
-			this.nodeName.ParentColumn = null;
-			// 
-			// nodePath
-			// 
-			this.nodePath.DataPropertyName = "Path";
-			this.nodePath.IncrementalSearchEnabled = true;
-			this.nodePath.LeftMargin = 3;
-			this.nodePath.ParentColumn = null;
-			// 
 			// columnName
 			// 
 			this.columnName.Header = "Name";
@@ -126,6 +112,20 @@
 			this.columnPath.Sortable = true;
 			this.columnPath.SortOrder = System.Windows.Forms.SortOrder.None;
 			this.columnPath.TooltipText = null;
+			// 
+			// nodeName
+			// 
+			this.nodeName.DataPropertyName = "Name";
+			this.nodeName.IncrementalSearchEnabled = true;
+			this.nodeName.LeftMargin = 3;
+			this.nodeName.ParentColumn = null;
+			// 
+			// nodePath
+			// 
+			this.nodePath.DataPropertyName = "Path";
+			this.nodePath.IncrementalSearchEnabled = true;
+			this.nodePath.LeftMargin = 3;
+			this.nodePath.ParentColumn = null;
 			// 
 			// ObjectRefSelectionDialog
 			// 
