@@ -153,11 +153,11 @@ namespace Duality.Editor.Forms
 			foreach (var treeNodeAdv in this.objectReferenceListing.AllNodes)
 			{
 				ReferenceNode tmpNode = treeNodeAdv.Tag as ReferenceNode;
+				treeNodeAdv.IsExpanded = true;
 
 				if (tmpNode != null && tmpNode.Path == this.ResourcePath)
 				{
 					this.objectReferenceListing.SelectedNode = treeNodeAdv;
-					break;
 				}
 			}
 
