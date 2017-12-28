@@ -3,13 +3,12 @@ using System.Windows.Forms;
 
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
-using Duality.Editor.Extensibility.DataConversion;
 using Duality.Resources;
 
 
 namespace Duality.Editor.Forms
 {
-	public partial class ObjectRefSelectionDialog : Form, IObjectRefHolder
+	public partial class ObjectRefSelectionDialog : Form
 	{
 		public class ReferenceNode : Node
 		{

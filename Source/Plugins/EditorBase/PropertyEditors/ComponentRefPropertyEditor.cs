@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using AdamsLair.WinForms.PropertyEditing;
-using Duality.Editor.Extensibility.DataConversion;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
@@ -158,18 +157,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				return PropertyEditorAssignmentAttribute.PriorityGeneral;
 			else
 				return PropertyEditorAssignmentAttribute.PriorityNone;
-		}
-
-		protected override void UpdateReference(IObjectRefHolder holder)
-		{
-			if (holder.ComponentReference == null)
-			{
-				return;
-			}
-
-			DataObject tmpDataObject = new DataObject();
-			tmpDataObject.SetComponentRefs(new[] { holder.ComponentReference });
-			DeserializeFromData(tmpDataObject);
 		}
 	}
 }

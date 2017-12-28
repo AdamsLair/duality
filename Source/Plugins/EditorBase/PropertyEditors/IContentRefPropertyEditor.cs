@@ -6,7 +6,6 @@ using System.Reflection;
 using AdamsLair.WinForms.PropertyEditing;
 using Duality.Resources;
 using Duality.Drawing;
-using Duality.Editor.Extensibility.DataConversion;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
@@ -166,18 +165,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.editedResType = this.EditedType.GetGenericArguments()[0];
 			else
 				this.editedResType = typeof(Resource);
-		}
-
-		protected override void UpdateReference(IObjectRefHolder holder)
-		{
-			if (holder.ResourceReference == null)
-			{
-				return;
-			}
-
-			DataObject tmpDataObject = new DataObject();
-			tmpDataObject.SetContentRefs(new[] { holder.ResourceReference });
-			DeserializeFromData(tmpDataObject);
 		}
 	}
 }

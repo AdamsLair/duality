@@ -13,7 +13,6 @@ using Duality.Audio;
 using Duality.Resources;
 using Duality.Editor.Forms;
 using Duality.Editor.Plugins.Base.Properties;
-using Duality.Editor.Extensibility.DataConversion;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
@@ -399,11 +398,24 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			if (result == DialogResult.OK)
 			{
-				this.UpdateReference(tmpResourceSelectionForm);
+				DataObject tmpDataObject = new DataObject();
+
+				if (tmpResourceSelectionForm.ResourceReference != null)
+				{
+					tmpDataObject.SetContentRefs(new[] { tmpResourceSelectionForm.ResourceReference });
+				}
+				else if (this.ReferenceType == typeof(GameObject))
+				{
+					tmpDataObject.SetGameObjectRefs(new[] { tmpResourceSelectionForm.GameObjectReference });
+				}
+				else
+				{
+					tmpDataObject.SetComponentRefs(new[] { tmpResourceSelectionForm.ComponentReference });
+				}
+
+				DeserializeFromData(tmpDataObject);
 			}
 		}
-
-		protected abstract void UpdateReference(IObjectRefHolder holder);
 
 		protected override void OnDragOver(DragEventArgs e)
 		{
