@@ -54,6 +54,11 @@ namespace Duality
 		public static readonly Vector2 One = new Vector2(1, 1);
 
 		/// <summary>
+		/// Represents a rotation matrix with angle = 0
+		/// </summary>
+		public static readonly Vector2 IdentityRotation = new Vector2(1f, 0f);
+
+		/// <summary>
 		/// The X component of the Vector2.
 		/// </summary>
 		public float X;
@@ -161,7 +166,7 @@ namespace Duality
 
 				float scale = 1.0f / length;
 				return new Vector2(
-					this.X * scale, 
+					this.X * scale,
 					this.Y * scale);
 			}
 		}
@@ -208,6 +213,11 @@ namespace Duality
 				this.X *= scale;
 				this.Y *= scale;
 			}
+		}
+
+		public static Vector2 CreateRotationMatrix(float radians)
+		{
+			return new Vector2((float) Math.Cos(radians), (float)Math.Sin(radians));
 		}
 
 		/// <summary>
@@ -390,7 +400,7 @@ namespace Duality
 			Vector2.Dot(ref first, ref second, out temp);
 			result = (float)System.Math.Acos(temp / (first.Length * second.Length));
 		}
-		
+
 		/// <summary>
 		/// Transforms a vector by a quaternion rotation.
 		/// </summary>
@@ -444,6 +454,38 @@ namespace Duality
 			Vector4 row3 = mat.Row3;
 			result.X = vec.X * row0.X + vec.Y * row1.X + row3.X;
 			result.Y = vec.X * row0.Y + vec.Y * row1.Y + row3.Y;
+		}
+
+		/// <summary>
+		/// Transforms a point in a different space to local space
+		/// Performs transformations in this order: translation, rotation, scale on <paramref name="vec"/> and return this as a new <see cref="Vector2"/>.
+		/// </summary>
+		/// <param name="vec">The vector to transform</param>
+		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
+		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="inverseScale">The inverse scale of the local space relative to the space you are transforming to</param>
+		/// <returns>A transformed <see cref="Vector2"/></returns>
+		public static Vector2 ToLocalSpace(Vector2 vec, Vector3 origin, Vector2 rotationMatrix, float inverseScale)
+		{
+			return new Vector2(
+				((vec.X - origin.X) * rotationMatrix.X + (vec.Y - origin.Y) * rotationMatrix.Y) * inverseScale,
+				((vec.X - origin.X) * -rotationMatrix.Y + (vec.Y - origin.Y) * rotationMatrix.X) * inverseScale);
+		}
+
+		/// <summary>
+		/// Transforms a point from local space to another space.
+		/// Performs transformations in this order: scale, rotation, translation on <paramref name="vec"/> and return this as a new <see cref="Vector2"/>.
+		/// </summary>
+		/// <param name="vec">The vector to transform</param>
+		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
+		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="scale">The scale of the local space relative to the space you are transforming to</param>
+		/// <returns>A transformed <see cref="Vector2"/></returns>
+		public static Vector2 FromLocalSpace(Vector2 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
+		{
+			return new Vector2(
+				vec.X * scale * rotationMatrix.X - vec.Y * scale * rotationMatrix.Y + origin.X,
+				vec.X * scale * rotationMatrix.Y + vec.Y * scale * rotationMatrix.X + origin.Y);
 		}
 
 		/// <summary>

@@ -160,8 +160,8 @@ namespace Duality
 
 				float scale = 1.0f / length;
 				return new Vector3(
-					this.X * scale, 
-					this.Y * scale, 
+					this.X * scale,
+					this.Y * scale,
 					this.Z * scale);
 			}
 		}
@@ -173,16 +173,16 @@ namespace Duality
 		{
 			get
 			{
-				if(index == 0) return X;
-				else if(index == 1) return Y;
-				else if(index == 2) return Z;
+				if (index == 0) return X;
+				else if (index == 1) return Y;
+				else if (index == 2) return Z;
 				throw new IndexOutOfRangeException("You tried to access this vector at index: " + index);
 			}
 			set
 			{
-				if(index == 0) X = value;
-				else if(index == 1) Y = value;
-				else if(index == 2) Z = value;
+				if (index == 0) X = value;
+				else if (index == 1) Y = value;
+				else if (index == 2) Z = value;
 				else throw new IndexOutOfRangeException("You tried to set this vector at index: " + index);
 			}
 		}
@@ -365,7 +365,7 @@ namespace Duality
 				left.Z * right.X - left.X * right.Z,
 				left.X * right.Y - left.Y * right.X);
 		}
-		
+
 		/// <summary>
 		/// Calculates the distance between two points described by two vectors. 
 		/// </summary>
@@ -433,7 +433,7 @@ namespace Duality
 			Vector3.Dot(ref first, ref second, out temp);
 			result = (float)System.Math.Acos(temp / (first.Length * second.Length));
 		}
-		
+
 		/// <summary>
 		/// Transform a Vector by the given Matrix</summary>
 		/// <param name="vec">The vector to transform</param>
@@ -489,6 +489,40 @@ namespace Duality
 			Vector3.Cross(ref xyz, ref temp, out temp);
 			Vector3.Multiply(ref temp, 2, out temp);
 			Vector3.Add(ref vec, ref temp, out result);
+		}
+
+		/// <summary>
+		/// Transforms a point in a different space to local space
+		/// Performs transformations in this order: translation, (z-axis) rotation, scale on <paramref name="vec"/> and return this as a new <see cref="Vector3"/>.
+		/// </summary>
+		/// <param name="vec">The vector to transform</param>
+		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
+		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="inverseScale">The inverse scale of the local space relative to the space you are transforming to</param>
+		/// <returns>A transformed <see cref="Vector3"/></returns>
+		public static Vector3 ToLocalSpace(Vector3 vec, Vector3 origin, Vector2 rotationMatrix, float inverseScale)
+		{
+			return new Vector3(
+				((vec.X - origin.X) * rotationMatrix.X + (vec.Y - origin.Y) * rotationMatrix.Y) * inverseScale,
+				((vec.X - origin.X) * -rotationMatrix.Y + (vec.Y - origin.Y) * rotationMatrix.X) * inverseScale,
+				(vec.Z - origin.Z) * inverseScale);
+		}
+
+		/// <summary>
+		/// Transforms a point from local space to another space.
+		/// Performs transformations in this order: scale, (z-axis) rotation, translation on <paramref name="vec"/> and return this as a new <see cref="Vector3"/>.
+		/// </summary>
+		/// <param name="vec">The vector to transform</param>
+		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
+		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="scale">The scale of the local space relative to the space you are transforming to</param>
+		/// <returns>A transformed <see cref="Vector3"/></returns>
+		public static Vector3 FromLocalSpace(Vector3 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
+		{
+			return new Vector3(
+				vec.X * scale * rotationMatrix.X - vec.Y * scale * rotationMatrix.Y + origin.X,
+				vec.X * scale * rotationMatrix.Y + vec.Y * scale * rotationMatrix.X + origin.Y,
+				vec.Z * scale + origin.Z);
 		}
 
 		/// <summary>

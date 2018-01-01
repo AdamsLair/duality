@@ -41,7 +41,9 @@ namespace Duality.Components
 		private Transform parentTransform = null;
 		private Vector3   posAbs          = Vector3.Zero;
 		private float     angleAbs        = 0.0f;
+		private Vector2   rotationMatrix  = Vector2.IdentityRotation;
 		private float     scaleAbs        = 1.0f;
+		private float     inverseScale    = 1.0f;
 		// Auto-calculated values
 		private Vector3   vel             = Vector3.Zero;
 		private Vector3   velAbs          = Vector3.Zero;
@@ -226,6 +228,7 @@ namespace Duality.Components
 					this.angle = this.angleAbs;
 
 				this.changes |= DirtyFlags.Angle;
+				this.UpdateRotationMatrix();
 				this.UpdateAbsChild();
 			}
 		}
@@ -256,6 +259,7 @@ namespace Duality.Components
 				}
 
 				this.changes |= DirtyFlags.Scale;
+				this.UpdateInverseScale();
 				this.UpdateAbsChild();
 			}
 		}
@@ -312,6 +316,17 @@ namespace Duality.Components
 		{
 			return this.GetWorldPoint(new Vector3(local)).Xy;
 		}
+
+		public Vector3 GetWorldPointFast(Vector3 world)
+		{
+			return Vector3.FromLocalSpace(world, this.posAbs, this.rotationMatrix, this.scale);
+		}
+
+		public Vector2 GetWorldPointFast(Vector2 world)
+		{
+			return Vector2.FromLocalSpace(world, this.posAbs, this.rotationMatrix, this.scale);
+		}
+
 		/// <summary>
 		/// Calculates a Transform-local coordinate from a world coordinate.
 		/// </summary>
@@ -327,6 +342,7 @@ namespace Duality.Components
 
 			return local;
 		}
+
 		/// <summary>
 		/// Calculates a Transform-local coordinate from a world coordinate.
 		/// </summary>
@@ -336,6 +352,17 @@ namespace Duality.Components
 		{
 			return this.GetLocalPoint(new Vector3(world)).Xy;
 		}
+
+		public Vector3 GetLocalPointFast(Vector3 world)
+		{
+			return Vector3.ToLocalSpace(world, this.posAbs, this.rotationMatrix, this.inverseScale);
+		}
+
+		public Vector2 GetLocalPointFast(Vector2 world)
+		{
+			return Vector2.ToLocalSpace(world, this.posAbs, this.rotationMatrix, this.inverseScale);
+		}
+
 		/// <summary>
 		/// Calculates a world vector from a Transform-local vector.
 		/// Does only take scale and rotation into account, but not position.
@@ -754,6 +781,16 @@ namespace Duality.Components
 			}
 		}
 
+		private void UpdateRotationMatrix()
+		{
+			this.rotationMatrix = Vector2.CreateRotationMatrix(this.angleAbs);
+		}
+
+		private void UpdateInverseScale()
+		{
+			this.inverseScale = 1f / this.scaleAbs;
+		}
+
 		private void UpdateAbs(bool updateTempVel = false)
 		{
 			this.CheckValidTransform();
@@ -781,7 +818,7 @@ namespace Duality.Components
 					this.angleAbs = this.angle;
 					if (updateTempVel) this.tempAngleVelAbs = this.tempAngleVel;
 				}
-
+				
 				this.scaleAbs = this.scale * this.parentTransform.scaleAbs;
 
 				Vector2 parentAngleAbsDotX;
@@ -806,6 +843,10 @@ namespace Duality.Components
 					this.tempVelAbs.Y += parentTurnVelAdjust.Y;
 				}
 			}
+
+			// Update cached values
+			this.UpdateRotationMatrix();
+			this.UpdateInverseScale();
 
 			// Update absolute children coordinates
 			this.UpdateAbsChild(updateTempVel);
