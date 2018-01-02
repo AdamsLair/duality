@@ -41,7 +41,7 @@ namespace Duality.Components
 		private Transform parentTransform = null;
 		private Vector3   posAbs          = Vector3.Zero;
 		private float     angleAbs        = 0.0f;
-		private Vector2   rotationDir  = new Vector2(1f, 0f);
+		private Vector2   rotationDir     = new Vector2(1f, 0f);
 		private float     scaleAbs        = 1.0f;
 		// Auto-calculated values
 		private Vector3   vel             = Vector3.Zero;
