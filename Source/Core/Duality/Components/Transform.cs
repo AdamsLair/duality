@@ -296,7 +296,7 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector3 GetWorldPoint(Vector3 world)
 		{
-			return FromLocalSpace(world, this.posAbs, this.rotationDir, this.scale);
+			return FromLocalSpace(world, this.posAbs, this.rotationDir, this.scaleAbs);
 		}
 
 		/// <summary>
@@ -306,7 +306,7 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector2 GetWorldPoint(Vector2 world)
 		{
-			return FromLocalSpace(world, this.posAbs, this.rotationDir, this.scale);
+			return FromLocalSpace(world, this.posAbs, this.rotationDir, this.scaleAbs);
 		}
 
 		/// <summary>
@@ -316,7 +316,7 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector3 GetLocalPoint(Vector3 world)
 		{
-			return ToLocalSpace(world, this.posAbs, this.rotationDir, this.scale);
+			return ToLocalSpace(world, this.posAbs, this.rotationDir, this.scaleAbs);
 		}
 
 		/// <summary>
@@ -326,7 +326,7 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector2 GetLocalPoint(Vector2 world)
 		{
-			return ToLocalSpace(world, this.posAbs, this.rotationDir, this.scale);
+			return ToLocalSpace(world, this.posAbs, this.rotationDir, this.scaleAbs);
 		}
 
 		/// <summary>
