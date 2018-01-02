@@ -12,7 +12,7 @@
     <description>A custom version of Farseer Physics for being used with the Duality framework. Forked from https://farseerphysics.codeplex.com/</description>
     <tags></tags>
     <references>
-      <reference file="DualityPrimitives.dll" />
+      <reference file="DualityPhysics.dll" />
     </references>	
   </metadata>
   <files>
