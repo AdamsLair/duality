@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Physics</id>
+    <version>3.0.0</version>
+	<authors>See original project authors</authors>
+	<owners>Fedja Adam</owners>
+    <title>Duality Physics</title>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A custom version of Farseer Physics for being used with the Duality framework. Forked from https://farseerphysics.codeplex.com/</description>
+    <tags></tags>
+    <references>
+      <reference file="DualityPrimitives.dll" />
+    </references>	
+  </metadata>
+  <files>
+    <file src="..\Output\DualityPhysics.dll" target="lib" />
+    <file src="..\Output\DualityPhysics.xml" target="lib" />
+    <file src="..\Output\DualityPhysics.pdb" target="lib" />
+  </files>
+</package>

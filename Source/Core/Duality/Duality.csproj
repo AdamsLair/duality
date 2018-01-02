@@ -41,10 +41,6 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FarseerDuality, Version=4.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AdamsLair.FarseerDuality.4.1.4\lib\portable45-net45+win8+wpa81\FarseerDuality.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="NVorbis, Version=0.7.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\AdamsLair.NVorbis.0.7.5\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\NVorbis.dll</HintPath>
       <Private>True</Private>
@@ -457,6 +453,10 @@
     <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconXmlSerializer.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Physics\DualityPhysics.csproj">
+      <Project>{5ca66347-c3da-47da-b07b-e2b89e6e712a}</Project>
+      <Name>DualityPhysics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
@@ -467,8 +467,6 @@
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)FarseerDuality.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)FarseerDuality.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)NVorbis.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)NVorbis.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
   </Target>

@@ -18,7 +18,7 @@
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.4" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
-      <dependency id="AdamsLair.FarseerDuality" version="4.1.4" />
+      <dependency id="AdamsLair.Duality.Physics" version="3.0.0" />
     </dependencies>
     <references>
       <reference file="Duality.dll" />
