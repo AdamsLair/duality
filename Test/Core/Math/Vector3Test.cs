@@ -215,50 +215,6 @@ namespace Duality.Tests.Utility
 			Assert.Throws<IndexOutOfRangeException>(() => { vector[3] = 0; });
 		}
 
-		[Test]
-		public void Transform_Translation()
-		{
-			Vector3 vec = new Vector3(3f, 8f, 9f);
-			Vector3 translation = new Vector3(1f, 2f, 3f);
-			Vector3 result = Vector3.ToLocalSpace(vec, translation, Vector2.IdentityRotation, 1f);
-			Assert.AreEqual(2f, result.X, 0.00001f);
-			Assert.AreEqual(6f, result.Y, 0.00001f);
-			Assert.AreEqual(6f, result.Z, 0.00001f);
-		}
-
-		[Test]
-		public void Transform_Rotation()
-		{
-			Vector3 vec = new Vector3(3f, 8f, 9f);
-			Vector2 rotation = Vector2.CreateRotationMatrix(MathF.DegToRad(90));
-			Vector3 result = Vector3.ToLocalSpace(vec, Vector3.Zero, rotation, 1f);
-			Assert.AreEqual(8f, result.X, 0.00001f);
-			Assert.AreEqual(-3f, result.Y, 0.00001f);
-			Assert.AreEqual(9f, result.Z, 0.00001f);
-		}
-
-		[Test]
-		public void Transform_Scale()
-		{
-			Vector3 vec = new Vector3(3f, 8f, 9f);
-			Vector3 result = Vector3.ToLocalSpace(vec, Vector3.Zero, Vector2.IdentityRotation, 1.5f);
-			Assert.AreEqual(4.5f, result.X, 0.00001f);
-			Assert.AreEqual(12f, result.Y, 0.00001f);
-			Assert.AreEqual(13.5f, result.Z, 0.00001f);
-		}
-
-		[Test]
-		public void Transform_All()
-		{
-			Vector3 vec = new Vector3(3f, 8f, 9f);
-			Vector3 translation = new Vector3(1f, 2f, 3f);
-			Vector2 rotation = Vector2.CreateRotationMatrix(MathF.DegToRad(90));
-			Vector3 result = Vector3.ToLocalSpace(vec, translation, rotation, 1.5f);
-			Assert.AreEqual(9f, result.X, 0.00001f);
-			Assert.AreEqual(-3f, result.Y, 0.00001f);
-			Assert.AreEqual(9f, result.Z, 0.00001f);
-		}
-
 		private void AssertVectorEqual(Vector3 vector, float x, float y, float z)
 		{
 			Assert.AreEqual(x, vector.X);

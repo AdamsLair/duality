@@ -492,40 +492,6 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Transforms a point in a different space to local space
-		/// Performs transformations in this order: translation, (z-axis) rotation, scale on <paramref name="vec"/> and return this as a new <see cref="Vector3"/>.
-		/// </summary>
-		/// <param name="vec">The vector to transform</param>
-		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
-		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
-		/// <param name="inverseScale">The inverse scale of the local space relative to the space you are transforming to</param>
-		/// <returns>A transformed <see cref="Vector3"/></returns>
-		public static Vector3 ToLocalSpace(Vector3 vec, Vector3 origin, Vector2 rotationMatrix, float inverseScale)
-		{
-			return new Vector3(
-				((vec.X - origin.X) * rotationMatrix.X + (vec.Y - origin.Y) * rotationMatrix.Y) * inverseScale,
-				((vec.X - origin.X) * -rotationMatrix.Y + (vec.Y - origin.Y) * rotationMatrix.X) * inverseScale,
-				(vec.Z - origin.Z) * inverseScale);
-		}
-
-		/// <summary>
-		/// Transforms a point from local space to another space.
-		/// Performs transformations in this order: scale, (z-axis) rotation, translation on <paramref name="vec"/> and return this as a new <see cref="Vector3"/>.
-		/// </summary>
-		/// <param name="vec">The vector to transform</param>
-		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
-		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
-		/// <param name="scale">The scale of the local space relative to the space you are transforming to</param>
-		/// <returns>A transformed <see cref="Vector3"/></returns>
-		public static Vector3 FromLocalSpace(Vector3 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
-		{
-			return new Vector3(
-				vec.X * scale * rotationMatrix.X - vec.Y * scale * rotationMatrix.Y + origin.X,
-				vec.X * scale * rotationMatrix.Y + vec.Y * scale * rotationMatrix.X + origin.Y,
-				vec.Z * scale + origin.Z);
-		}
-
-		/// <summary>
 		/// Adds two instances.
 		/// </summary>
 		/// <param name="left">The first instance.</param>

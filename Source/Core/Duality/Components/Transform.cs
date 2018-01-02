@@ -41,9 +41,8 @@ namespace Duality.Components
 		private Transform parentTransform = null;
 		private Vector3   posAbs          = Vector3.Zero;
 		private float     angleAbs        = 0.0f;
-		private Vector2   rotationMatrix  = Vector2.IdentityRotation;
+		private Vector2   rotationDir  = new Vector2(1f, 0f);
 		private float     scaleAbs        = 1.0f;
-		private float     inverseScale    = 1.0f;
 		// Auto-calculated values
 		private Vector3   vel             = Vector3.Zero;
 		private Vector3   velAbs          = Vector3.Zero;
@@ -259,7 +258,6 @@ namespace Duality.Components
 				}
 
 				this.changes |= DirtyFlags.Scale;
-				this.UpdateInverseScale();
 				this.UpdateAbsChild();
 			}
 		}
@@ -291,40 +289,24 @@ namespace Duality.Components
 			}
 		}
 
+		/// <summary>
+		/// Calculates a world coordinate from a Transform-local coordinate.
+		/// </summary>
+		/// <param name="local"></param>
+		/// <returns></returns>
+		public Vector3 GetWorldPoint(Vector3 world)
+		{
+			return FromLocalSpace(world, this.posAbs, this.rotationDir, this.scale);
+		}
 
 		/// <summary>
 		/// Calculates a world coordinate from a Transform-local coordinate.
 		/// </summary>
 		/// <param name="local"></param>
 		/// <returns></returns>
-		public Vector3 GetWorldPoint(Vector3 local)
+		public Vector2 GetWorldPoint(Vector2 world)
 		{
-			Vector3 world;
-
-			Vector3.Multiply(ref local, this.scaleAbs, out world);
-			MathF.TransformCoord(ref world.X, ref world.Y, this.angleAbs);
-			Vector3.Add(ref world, ref this.posAbs, out world);
-
-			return world;
-		}
-		/// <summary>
-		/// Calculates a world coordinate from a Transform-local coordinate.
-		/// </summary>
-		/// <param name="local"></param>
-		/// <returns></returns>
-		public Vector2 GetWorldPoint(Vector2 local)
-		{
-			return this.GetWorldPoint(new Vector3(local)).Xy;
-		}
-
-		public Vector3 GetWorldPointFast(Vector3 world)
-		{
-			return Vector3.FromLocalSpace(world, this.posAbs, this.rotationMatrix, this.scale);
-		}
-
-		public Vector2 GetWorldPointFast(Vector2 world)
-		{
-			return Vector2.FromLocalSpace(world, this.posAbs, this.rotationMatrix, this.scale);
+			return FromLocalSpace(world, this.posAbs, this.rotationDir, this.scale);
 		}
 
 		/// <summary>
@@ -334,13 +316,7 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector3 GetLocalPoint(Vector3 world)
 		{
-			Vector3 local;
-			
-			Vector3.Subtract(ref world, ref this.posAbs, out local);
-			MathF.TransformCoord(ref local.X, ref local.Y, -this.angleAbs);
-			Vector3.Divide(ref local, this.scaleAbs, out local);
-
-			return local;
+			return ToLocalSpace(world, this.posAbs, this.rotationDir, this.scale);
 		}
 
 		/// <summary>
@@ -350,17 +326,74 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector2 GetLocalPoint(Vector2 world)
 		{
-			return this.GetLocalPoint(new Vector3(world)).Xy;
+			return ToLocalSpace(world, this.posAbs, this.rotationDir, this.scale);
 		}
 
-		public Vector3 GetLocalPointFast(Vector3 world)
+		/// <summary>
+		/// Transforms a point in a different space to local space
+		/// Performs transformations in this order: translation, (z-axis) rotation, scale on <paramref name="vec"/> and return this as a new <see cref="Vector3"/>.
+		/// </summary>
+		/// <param name="vec">The vector to transform</param>
+		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
+		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="inverseScale">The inverse scale of the local space relative to the space you are transforming to</param>
+		/// <returns>A transformed <see cref="Vector3"/></returns>
+		private static Vector3 ToLocalSpace(Vector3 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
 		{
-			return Vector3.ToLocalSpace(world, this.posAbs, this.rotationMatrix, this.inverseScale);
+			float inverseScale = 1 / scale;
+			return new Vector3(
+				((vec.X - origin.X) * rotationMatrix.X + (vec.Y - origin.Y) * rotationMatrix.Y) * inverseScale,
+				((vec.X - origin.X) * -rotationMatrix.Y + (vec.Y - origin.Y) * rotationMatrix.X) * inverseScale,
+				(vec.Z - origin.Z) * inverseScale);
 		}
 
-		public Vector2 GetLocalPointFast(Vector2 world)
+		/// <summary>
+		/// Transforms a point from local space to another space.
+		/// Performs transformations in this order: scale, (z-axis) rotation, translation on <paramref name="vec"/> and return this as a new <see cref="Vector3"/>.
+		/// </summary>
+		/// <param name="vec">The vector to transform</param>
+		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
+		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="scale">The scale of the local space relative to the space you are transforming to</param>
+		/// <returns>A transformed <see cref="Vector3"/></returns>
+		private static Vector3 FromLocalSpace(Vector3 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
 		{
-			return Vector2.ToLocalSpace(world, this.posAbs, this.rotationMatrix, this.inverseScale);
+			return new Vector3(
+				vec.X * scale * rotationMatrix.X - vec.Y * scale * rotationMatrix.Y + origin.X,
+				vec.X * scale * rotationMatrix.Y + vec.Y * scale * rotationMatrix.X + origin.Y,
+				vec.Z * scale + origin.Z);
+		}
+
+		/// <summary>
+		/// Transforms a point in a different space to local space
+		/// Performs transformations in this order: translation, rotation, scale on <paramref name="vec"/> and return this as a new <see cref="Vector2"/>.
+		/// </summary>
+		/// <param name="vec">The vector to transform</param>
+		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
+		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="inverseScale">The inverse scale of the local space relative to the space you are transforming to</param>
+		/// <returns>A transformed <see cref="Vector2"/></returns>
+		private static Vector2 ToLocalSpace(Vector2 vec, Vector3 origin, Vector2 rotationMatrix, float inverseScale)
+		{
+			return new Vector2(
+				((vec.X - origin.X) * rotationMatrix.X + (vec.Y - origin.Y) * rotationMatrix.Y) * inverseScale,
+				((vec.X - origin.X) * -rotationMatrix.Y + (vec.Y - origin.Y) * rotationMatrix.X) * inverseScale);
+		}
+
+		/// <summary>
+		/// Transforms a point from local space to another space.
+		/// Performs transformations in this order: scale, rotation, translation on <paramref name="vec"/> and return this as a new <see cref="Vector2"/>.
+		/// </summary>
+		/// <param name="vec">The vector to transform</param>
+		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
+		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="scale">The scale of the local space relative to the space you are transforming to</param>
+		/// <returns>A transformed <see cref="Vector2"/></returns>
+		private static Vector2 FromLocalSpace(Vector2 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
+		{
+			return new Vector2(
+				vec.X * scale * rotationMatrix.X - vec.Y * scale * rotationMatrix.Y + origin.X,
+				vec.X * scale * rotationMatrix.Y + vec.Y * scale * rotationMatrix.X + origin.Y);
 		}
 
 		/// <summary>
@@ -783,12 +816,12 @@ namespace Duality.Components
 
 		private void UpdateRotationMatrix()
 		{
-			this.rotationMatrix = Vector2.CreateRotationMatrix(this.angleAbs);
+			this.rotationDir = CreateDirection(this.angleAbs);
 		}
 
-		private void UpdateInverseScale()
+		private static Vector2 CreateDirection(float radians)
 		{
-			this.inverseScale = 1f / this.scaleAbs;
+			return new Vector2((float)Math.Cos(radians), (float)Math.Sin(radians));
 		}
 
 		private void UpdateAbs(bool updateTempVel = false)
@@ -846,7 +879,6 @@ namespace Duality.Components
 
 			// Update cached values
 			this.UpdateRotationMatrix();
-			this.UpdateInverseScale();
 
 			// Update absolute children coordinates
 			this.UpdateAbsChild(updateTempVel);
