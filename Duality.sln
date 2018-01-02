@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duality", "Source\Core\Duality\Duality.csproj", "{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}"
 EndProject
@@ -104,6 +104,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.Sample", "Samples\Benchmarks\Benchmarks.Sample.csproj", "{165D83B8-EAE8-4CDC-9003-E595D4225B8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityPhysics", "Source\Core\Physics\DualityPhysics.csproj", "{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -259,6 +261,10 @@ Global
 		{165D83B8-EAE8-4CDC-9003-E595D4225B8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{165D83B8-EAE8-4CDC-9003-E595D4225B8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{165D83B8-EAE8-4CDC-9003-E595D4225B8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -304,5 +310,9 @@ Global
 		{D29F3890-96E1-491B-AFAC-AD82E70E4208} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{D220795D-8A59-432F-A8EC-CE9143DD07D5} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{165D83B8-EAE8-4CDC-9003-E595D4225B8F} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
+		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A} = {FC08D0D6-612E-4AD2-950C-8E9BA895D5D1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A945D0B-5EF2-4D0D-BE86-3AEE6659F281}
 	EndGlobalSection
 EndGlobal
