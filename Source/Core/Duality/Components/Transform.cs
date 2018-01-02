@@ -227,7 +227,7 @@ namespace Duality.Components
 					this.angle = this.angleAbs;
 
 				this.changes |= DirtyFlags.Angle;
-				this.UpdateRotationMatrix();
+				this.UpdateRotationDir();
 				this.UpdateAbsChild();
 			}
 		}
@@ -336,11 +336,11 @@ namespace Duality.Components
 		/// <param name="vec">The vector to transform</param>
 		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
 		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
-		/// <param name="inverseScale">The inverse scale of the local space relative to the space you are transforming to</param>
+		/// <param name="scale">The scale of the local space relative to the space you are transforming to</param>
 		/// <returns>A transformed <see cref="Vector3"/></returns>
 		private static Vector3 ToLocalSpace(Vector3 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
 		{
-			float inverseScale = 1 / scale;
+			float inverseScale = 1f / scale;
 			return new Vector3(
 				((vec.X - origin.X) * rotationMatrix.X + (vec.Y - origin.Y) * rotationMatrix.Y) * inverseScale,
 				((vec.X - origin.X) * -rotationMatrix.Y + (vec.Y - origin.Y) * rotationMatrix.X) * inverseScale,
@@ -371,10 +371,11 @@ namespace Duality.Components
 		/// <param name="vec">The vector to transform</param>
 		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
 		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
-		/// <param name="inverseScale">The inverse scale of the local space relative to the space you are transforming to</param>
+		/// <param name="scale">The scale of the local space relative to the space you are transforming to</param>
 		/// <returns>A transformed <see cref="Vector2"/></returns>
-		private static Vector2 ToLocalSpace(Vector2 vec, Vector3 origin, Vector2 rotationMatrix, float inverseScale)
+		private static Vector2 ToLocalSpace(Vector2 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
 		{
+			float inverseScale = 1f / scale;
 			return new Vector2(
 				((vec.X - origin.X) * rotationMatrix.X + (vec.Y - origin.Y) * rotationMatrix.Y) * inverseScale,
 				((vec.X - origin.X) * -rotationMatrix.Y + (vec.Y - origin.Y) * rotationMatrix.X) * inverseScale);
@@ -814,7 +815,7 @@ namespace Duality.Components
 			}
 		}
 
-		private void UpdateRotationMatrix()
+		private void UpdateRotationDir()
 		{
 			this.rotationDir = CreateDirection(this.angleAbs);
 		}
@@ -878,7 +879,7 @@ namespace Duality.Components
 			}
 
 			// Update cached values
-			this.UpdateRotationMatrix();
+			this.UpdateRotationDir();
 
 			// Update absolute children coordinates
 			this.UpdateAbsChild(updateTempVel);

@@ -64,8 +64,8 @@ namespace Duality.Tests.Components
 			{
 				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f) }, new Vector2(3f, 8f), new Vector2(2f, 6f)).SetName("GetLocalPointVector2Position");
 				yield return new TestCaseData(new Transform() { Angle = MathF.DegToRad(90) }, new Vector2(3f, 8f), new Vector2(8f, -3f)).SetName("GetLocalPointVector2Rotation");
-				yield return new TestCaseData(new Transform() { Scale = 1f }, new Vector2(3f, 8f), new Vector2(4.5f, 12f)).SetName("GetLocalPointVector2Scale");
-				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f), Angle = MathF.DegToRad(90), Scale = 1f }, new Vector2(3f, 8f), new Vector2(9f, -3f)).SetName("GetLocalPointVector2All");
+				yield return new TestCaseData(new Transform() { Scale = 1f / 1.5f }, new Vector2(3f, 8f), new Vector2(4.5f, 12f)).SetName("GetLocalPointVector2Scale");
+				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f), Angle = MathF.DegToRad(90), Scale = 1f / 1.5f }, new Vector2(3f, 8f), new Vector2(9f, -3f)).SetName("GetLocalPointVector2All");
 			}
 		}
 
@@ -107,7 +107,7 @@ namespace Duality.Tests.Components
 				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f) }, new Vector2(3f, 6f), new Vector2(4f, 8f)).SetName("GetWorldPointVector2Position");
 				yield return new TestCaseData(new Transform() { Angle = MathF.DegToRad(90) }, new Vector2(3f, 6f), new Vector2(-6f, 3f)).SetName("GetWorldPointVector2Rotation");
 				yield return new TestCaseData(new Transform() { Scale = 1.5f }, new Vector2(3f, 6f), new Vector2(4.5f, 9f)).SetName("GetWorldPointVector2Scale");
-				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f), Angle = MathF.DegToRad(90), Scale = 1.5f }, new Vector2(3f, 6f), new Vector2(-3f, 4f)).SetName("GetWorldPointVector2All");
+				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f), Angle = MathF.DegToRad(90), Scale = 1.5f }, new Vector2(3f, 6f), new Vector2(-8f, 6.5f)).SetName("GetWorldPointVector2All");
 			}
 		}
 
