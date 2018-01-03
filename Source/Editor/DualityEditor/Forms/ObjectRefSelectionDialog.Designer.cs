@@ -38,6 +38,7 @@
 			this.columnPath = new Aga.Controls.Tree.TreeColumn();
 			this.nodeName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.nodePath = new Aga.Controls.Tree.NodeControls.NodeTextBox();
+			this.txtFilterInput = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -45,7 +46,7 @@
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.Location = new System.Drawing.Point(369, 401);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(100, 28);
 			this.buttonCancel.TabIndex = 2;
@@ -57,7 +58,7 @@
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.buttonOk.Location = new System.Drawing.Point(261, 401);
-			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.buttonOk.Margin = new System.Windows.Forms.Padding(4);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(100, 28);
 			this.buttonOk.TabIndex = 1;
@@ -92,8 +93,8 @@
 			this.objectReferenceListing.Indent = 5;
 			this.objectReferenceListing.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
 			this.objectReferenceListing.LoadOnDemand = true;
-			this.objectReferenceListing.Location = new System.Drawing.Point(20, 44);
-			this.objectReferenceListing.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.objectReferenceListing.Location = new System.Drawing.Point(20, 72);
+			this.objectReferenceListing.Margin = new System.Windows.Forms.Padding(4);
 			this.objectReferenceListing.Model = null;
 			this.objectReferenceListing.Name = "objectReferenceListing";
 			this.objectReferenceListing.NodeControls.Add(this.nodeName);
@@ -102,7 +103,7 @@
 			this.objectReferenceListing.SelectedNode = null;
 			this.objectReferenceListing.ShowLines = false;
 			this.objectReferenceListing.ShowPlusMinus = false;
-			this.objectReferenceListing.Size = new System.Drawing.Size(449, 349);
+			this.objectReferenceListing.Size = new System.Drawing.Size(449, 321);
 			this.objectReferenceListing.TabIndex = 0;
 			this.objectReferenceListing.UseColumns = true;
 			// 
@@ -140,6 +141,17 @@
 			this.nodePath.LeftMargin = 3;
 			this.nodePath.ParentColumn = this.columnPath;
 			// 
+			// txtFilterInput
+			// 
+			this.txtFilterInput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtFilterInput.Location = new System.Drawing.Point(19, 43);
+			this.txtFilterInput.Name = "txtFilterInput";
+			this.txtFilterInput.Size = new System.Drawing.Size(450, 22);
+			this.txtFilterInput.TabIndex = 7;
+			this.txtFilterInput.TextChanged += new System.EventHandler(this.txtFilterInput_TextChanged);
+			// 
 			// ObjectRefSelectionDialog
 			// 
 			this.AcceptButton = this.buttonOk;
@@ -149,11 +161,12 @@
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(485, 444);
+			this.Controls.Add(this.txtFilterInput);
 			this.Controls.Add(this.objectReferenceListing);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.labelInfo);
 			this.Controls.Add(this.buttonOk);
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.Margin = new System.Windows.Forms.Padding(4);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(501, 482);
@@ -162,6 +175,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Select a Reference...";
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -175,5 +189,6 @@
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodePath;
 		private TreeColumn columnName;
 		private TreeColumn columnPath;
+		private System.Windows.Forms.TextBox txtFilterInput;
 	}
 }

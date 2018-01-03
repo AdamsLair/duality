@@ -212,5 +212,21 @@ namespace Duality.Editor.Forms
 			this.GameObjectReference = node.GameObjectReference;
 			this.ComponentReference = node.ComponentReference;
 		}
+
+		private void txtFilterInput_TextChanged(object sender, EventArgs e)
+		{
+			this.objectReferenceListing.NodeFilter += this.NodeFilter;
+		}
+
+		private bool NodeFilter(TreeNodeAdv nodeAdv)
+		{
+			ReferenceNode tmpNode = nodeAdv.Tag as ReferenceNode;
+
+			return tmpNode != null &&
+			    ( 
+					tmpNode.Name.ToLowerInvariant().Contains(this.txtFilterInput.Text.ToLowerInvariant()) ||
+					tmpNode.Path.ToLowerInvariant().Contains(this.txtFilterInput.Text.ToLowerInvariant())
+				);
+		}
 	}
 }
