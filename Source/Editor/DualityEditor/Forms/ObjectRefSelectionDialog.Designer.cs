@@ -45,6 +45,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.Location = new System.Drawing.Point(369, 401);
 			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
 			this.buttonCancel.Name = "buttonCancel";
@@ -57,6 +58,7 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
 			this.buttonOk.Location = new System.Drawing.Point(261, 401);
 			this.buttonOk.Margin = new System.Windows.Forms.Padding(4);
 			this.buttonOk.Name = "buttonOk";
@@ -82,7 +84,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.objectReferenceListing.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
-			this.objectReferenceListing.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.objectReferenceListing.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.objectReferenceListing.Columns.Add(this.columnName);
 			this.objectReferenceListing.Columns.Add(this.columnPath);
 			this.objectReferenceListing.DefaultToolTipProvider = null;
@@ -146,7 +148,7 @@
 			this.txtFilterInput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.txtFilterInput.CueText = "Filter Text Goes here";
+			this.txtFilterInput.CueText = "Filter Text";
 			this.txtFilterInput.Location = new System.Drawing.Point(19, 43);
 			this.txtFilterInput.Name = "txtFilterInput";
 			this.txtFilterInput.Size = new System.Drawing.Size(450, 22);
