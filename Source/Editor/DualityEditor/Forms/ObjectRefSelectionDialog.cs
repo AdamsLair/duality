@@ -20,20 +20,20 @@ namespace Duality.Editor.Forms
 				this.ResourceReference = resource;
 			}
 
-			public ReferenceNode(GameObject resource) : base(resource.Name)
+			public ReferenceNode(GameObject gameObject) : base(gameObject.Name)
 			{
-				this.Name = resource.Name;
-				this.Path = resource.FullName;
+				this.Name = gameObject.Name;
+				this.Path = gameObject.FullName;
 
-				this.GameObjectReference = resource;
+				this.GameObjectReference = gameObject;
 			}
 
-			public ReferenceNode(Component resource) : base(resource.GetType().Name)
+			public ReferenceNode(Component component) : base(component.GetType().Name)
 			{
-				this.Name = resource.GetType().Name;
-				this.Path = resource.GetType().FullName;
+				this.Name = component.GameObj.FullName;
+				this.Path = component.GetType().FullName;
 
-				this.ComponentReference = resource;
+				this.ComponentReference = component;
 			}
 
 			private string _name;
