@@ -6,7 +6,6 @@ using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
 using Duality.Resources;
 
-
 namespace Duality.Editor.Forms
 {
 	public partial class ObjectRefSelectionDialog : Form
@@ -78,6 +77,7 @@ namespace Duality.Editor.Forms
 			}
 		}
 
+		public Color PathColor { get; set; }
 		public Type FilteredType { get; set; }
 
 		public string ResourcePath { get; set; }
@@ -94,11 +94,25 @@ namespace Duality.Editor.Forms
 
 			this.Model = new TreeModel();
 
+			this.PathColor = Color.Gray;
+
 			this.objectReferenceListing.Click += this.ResourceListingOnSelectedIndexChanged;
 			this.objectReferenceListing.DoubleClick += this.ResourceListingOnDoubleClick;
 
 			this.nodeName.DrawText += this.NodeName_OnDrawText;
-			this.nodePath.DrawText += this.NodeName_OnDrawText;
+			this.nodePath.DrawText += this.NodePath_OnDrawText;
+		}
+
+		private void NodePath_OnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
+		{
+			ReferenceNode node = drawTextEventArgs.Node.Tag as ReferenceNode;
+
+			if (node == null)
+			{
+				return;
+			}
+
+			drawTextEventArgs.TextColor = this.PathColor;
 		}
 
 		private void NodeName_OnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
@@ -181,7 +195,7 @@ namespace Duality.Editor.Forms
 			}
 
 			this.objectReferenceListing.EndUpdate();
-			this.objectReferenceListing.Focus();
+			this.txtFilterInput.Focus();
 		}
 
 		private void ResourceListingOnDoubleClick(object sender, EventArgs eventArgs)
