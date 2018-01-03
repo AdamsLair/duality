@@ -102,9 +102,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void DeserializeFromData(DataObject data)
 		{
 			ConvertOperation convert = new ConvertOperation(data, ConvertOperation.Operation.Convert);
-			if (convert.CanPerform(this.editedCmpType))
+			if (convert.CanPerform(this.FilteredType))
 			{
-				var refQuery = convert.Perform(this.editedCmpType);
+				var refQuery = convert.Perform(this.FilteredType);
 				if (refQuery != null)
 				{
 					Component[] refArray = refQuery.Cast<Component>().ToArray();
