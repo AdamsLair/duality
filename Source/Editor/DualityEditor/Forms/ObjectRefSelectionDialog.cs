@@ -128,9 +128,10 @@ namespace Duality.Editor.Forms
 
 				foreach (GameObject currentObject in Scene.Current.AllObjects)
 				{
-					ReferenceNode tmpNode = new ReferenceNode(currentObject);
-
-					tmpNode.Text = currentObject.Name;
+					ReferenceNode tmpNode = new ReferenceNode(currentObject)
+					{
+						Text = currentObject.Name
+					};
 
 					this.model.Nodes.Add(tmpNode);
 				}
@@ -141,9 +142,10 @@ namespace Duality.Editor.Forms
 
 				foreach (Component currentComponent in Scene.Current.FindComponents(this.FilteredType))
 				{
-					ReferenceNode tmpNode = new ReferenceNode(currentComponent);
-
-					tmpNode.Text = currentComponent.GetType().Name;
+					ReferenceNode tmpNode = new ReferenceNode(currentComponent)
+					{
+						Text = currentComponent.GetType().Name
+					};
 
 					this.model.Nodes.Add(tmpNode);
 				}
