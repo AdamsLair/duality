@@ -267,7 +267,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			if (e.KeyCode == Keys.Return)
 			{
-				this.ShowReferencedContent();
+				this.ShowContentSelectionDialog();
 				e.Handled = true;
 			}
 			else if (e.KeyCode == Keys.C && e.Control)
