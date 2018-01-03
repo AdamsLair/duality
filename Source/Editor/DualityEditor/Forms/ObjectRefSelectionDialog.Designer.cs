@@ -105,7 +105,6 @@
 			this.objectReferenceListing.Size = new System.Drawing.Size(449, 349);
 			this.objectReferenceListing.TabIndex = 0;
 			this.objectReferenceListing.UseColumns = true;
-			this.objectReferenceListing.Click += new System.EventHandler(this.objectReferenceListing_Click);
 			// 
 			// columnName
 			// 
