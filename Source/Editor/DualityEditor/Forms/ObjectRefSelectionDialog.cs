@@ -28,10 +28,10 @@ namespace Duality.Editor.Forms
 				this.GameObjectReference = gameObject;
 			}
 
-			public ReferenceNode(Component component) : base(component.GetType().Name)
+			public ReferenceNode(Component component) : base(component.GetType().GetTypeCSCodeName())
 			{
 				this.Name = component.GameObj.FullName;
-				this.Path = component.GetType().FullName;
+				this.Path = component.GetType().GetTypeCSCodeName();
 
 				this.ComponentReference = component;
 			}
@@ -128,10 +128,7 @@ namespace Duality.Editor.Forms
 
 				foreach (GameObject currentObject in Scene.Current.AllObjects)
 				{
-					ReferenceNode tmpNode = new ReferenceNode(currentObject)
-					{
-						Text = currentObject.Name
-					};
+					ReferenceNode tmpNode = new ReferenceNode(currentObject);
 
 					this.model.Nodes.Add(tmpNode);
 				}
@@ -142,10 +139,7 @@ namespace Duality.Editor.Forms
 
 				foreach (Component currentComponent in Scene.Current.FindComponents(this.FilteredType))
 				{
-					ReferenceNode tmpNode = new ReferenceNode(currentComponent)
-					{
-						Text = currentComponent.GetType().Name
-					};
+					ReferenceNode tmpNode = new ReferenceNode(currentComponent);
 
 					this.model.Nodes.Add(tmpNode);
 				}
@@ -165,10 +159,7 @@ namespace Duality.Editor.Forms
 
 				foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(tmpFilteredType))
 				{
-					ReferenceNode tmpNode = new ReferenceNode(contentRef)
-					{
-						Text = contentRef.Name
-					};
+					ReferenceNode tmpNode = new ReferenceNode(contentRef);
 
 					this.model.Nodes.Add(tmpNode);
 				}
