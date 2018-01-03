@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 using Aga.Controls.Tree;
@@ -229,11 +230,12 @@ namespace Duality.Editor.Forms
 		private bool NodeFilter(TreeNodeAdv nodeAdv)
 		{
 			ReferenceNode tmpNode = nodeAdv.Tag as ReferenceNode;
+			string tmpFilterValue = this.txtFilterInput.Text.ToLowerInvariant();
 
 			return tmpNode != null &&
 			    ( 
-					tmpNode.Name.ToLowerInvariant().Contains(this.txtFilterInput.Text.ToLowerInvariant()) ||
-					tmpNode.Path.ToLowerInvariant().Contains(this.txtFilterInput.Text.ToLowerInvariant())
+					tmpNode.Name.ToLowerInvariant().Contains(tmpFilterValue) ||
+					tmpNode.Path.ToLowerInvariant().Contains(tmpFilterValue)
 				);
 		}
 	}
