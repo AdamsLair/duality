@@ -85,13 +85,13 @@ namespace Duality.Editor.Forms
 		public GameObject GameObjectReference { get; set; }
 		public Component ComponentReference { get; set; }
 
-		public TreeModel model { get; set; }
+		private TreeModel Model { get; set; }
 
 		public ObjectRefSelectionDialog()
 		{
 			InitializeComponent();
 
-			this.model = new TreeModel();
+			this.Model = new TreeModel();
 
 			this.objectReferenceListing.Click += this.ResourceListingOnSelectedIndexChanged;
 			this.objectReferenceListing.DoubleClick += this.ResourceListingOnDoubleClick;
@@ -117,10 +117,10 @@ namespace Duality.Editor.Forms
 			base.OnShown(e);
 
 			this.objectReferenceListing.ClearSelection();
-			this.objectReferenceListing.Model = this.model;
+			this.objectReferenceListing.Model = this.Model;
 
 			this.objectReferenceListing.BeginUpdate();
-			this.model.Nodes.Clear();
+			this.Model.Nodes.Clear();
 			
 			if (this.FilteredType.IsSubclassOf(typeof(GameObject)) || this.FilteredType == typeof(GameObject))
 			{
@@ -130,7 +130,7 @@ namespace Duality.Editor.Forms
 				{
 					ReferenceNode tmpNode = new ReferenceNode(currentObject);
 
-					this.model.Nodes.Add(tmpNode);
+					this.Model.Nodes.Add(tmpNode);
 				}
 			}
 			else if (this.FilteredType.IsSubclassOf(typeof(Component)) || this.FilteredType == typeof(Component))
@@ -141,7 +141,7 @@ namespace Duality.Editor.Forms
 				{
 					ReferenceNode tmpNode = new ReferenceNode(currentComponent);
 
-					this.model.Nodes.Add(tmpNode);
+					this.Model.Nodes.Add(tmpNode);
 				}
 			}
 			else
@@ -161,13 +161,16 @@ namespace Duality.Editor.Forms
 				{
 					ReferenceNode tmpNode = new ReferenceNode(contentRef);
 
-					this.model.Nodes.Add(tmpNode);
+					this.Model.Nodes.Add(tmpNode);
 				}
 			}
-			
+
+			this.objectReferenceListing.NodeFilter += this.NodeFilter;
+
 			foreach (var treeNodeAdv in this.objectReferenceListing.AllNodes)
 			{
 				ReferenceNode tmpNode = treeNodeAdv.Tag as ReferenceNode;
+
 				treeNodeAdv.IsExpanded = true;
 
 				if (tmpNode != null && tmpNode.Path == this.ResourcePath)
@@ -208,6 +211,11 @@ namespace Duality.Editor.Forms
 
 			ReferenceNode node = this.objectReferenceListing.SelectedNode.Tag as ReferenceNode;
 
+			if (node == null)
+			{
+				return;
+			}
+
 			this.ResourceReference = node.ResourceReference;
 			this.GameObjectReference = node.GameObjectReference;
 			this.ComponentReference = node.ComponentReference;
@@ -215,7 +223,7 @@ namespace Duality.Editor.Forms
 
 		private void txtFilterInput_TextChanged(object sender, EventArgs e)
 		{
-			this.objectReferenceListing.NodeFilter += this.NodeFilter;
+			this.objectReferenceListing.UpdateNodeFilter();
 		}
 
 		private bool NodeFilter(TreeNodeAdv nodeAdv)

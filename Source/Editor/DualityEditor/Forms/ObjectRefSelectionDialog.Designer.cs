@@ -38,7 +38,7 @@
 			this.columnPath = new Aga.Controls.Tree.TreeColumn();
 			this.nodeName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.nodePath = new Aga.Controls.Tree.NodeControls.NodeTextBox();
-			this.txtFilterInput = new System.Windows.Forms.TextBox();
+			this.txtFilterInput = new Duality.Editor.Controls.CueTextBox();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -146,11 +146,11 @@
 			this.txtFilterInput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtFilterInput.CueText = "Filter Text Goes here";
 			this.txtFilterInput.Location = new System.Drawing.Point(19, 43);
 			this.txtFilterInput.Name = "txtFilterInput";
 			this.txtFilterInput.Size = new System.Drawing.Size(450, 22);
 			this.txtFilterInput.TabIndex = 7;
-			this.txtFilterInput.Text = "Filter text goes here";
 			this.txtFilterInput.TextChanged += new System.EventHandler(this.txtFilterInput_TextChanged);
 			// 
 			// ObjectRefSelectionDialog
@@ -190,6 +190,6 @@
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodePath;
 		private TreeColumn columnName;
 		private TreeColumn columnPath;
-		private System.Windows.Forms.TextBox txtFilterInput;
+		private Controls.CueTextBox txtFilterInput;
 	}
 }
