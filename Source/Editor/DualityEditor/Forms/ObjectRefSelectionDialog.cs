@@ -116,8 +116,6 @@ namespace Duality.Editor.Forms
 		{
 			base.OnShown(e);
 
-			this.Text = string.Format("Select a {0} Resource", this.FilteredType.Name);
-
 			this.objectReferenceListing.ClearSelection();
 			this.objectReferenceListing.Model = this.model;
 
@@ -126,6 +124,8 @@ namespace Duality.Editor.Forms
 			
 			if (this.FilteredType.IsSubclassOf(typeof(GameObject)) || this.FilteredType == typeof(GameObject))
 			{
+				this.Text = "Select a GameObject";
+
 				foreach (GameObject currentObject in Scene.Current.AllObjects)
 				{
 					ReferenceNode tmpNode = new ReferenceNode(currentObject);
@@ -137,6 +137,8 @@ namespace Duality.Editor.Forms
 			}
 			else if (this.FilteredType.IsSubclassOf(typeof(Component)) || this.FilteredType == typeof(Component))
 			{
+				this.Text = string.Format("Select a {0} Component", this.FilteredType.GetTypeCSCodeName());
+
 				foreach (Component currentComponent in Scene.Current.FindComponents(this.FilteredType))
 				{
 					ReferenceNode tmpNode = new ReferenceNode(currentComponent);
@@ -152,6 +154,11 @@ namespace Duality.Editor.Forms
 				if (this.FilteredType.IsGenericType)
 				{
 					tmpFilteredType = this.FilteredType.GetGenericArguments()[0];
+					this.Text = string.Format("Select a {0} Resource", tmpFilteredType.GetTypeCSCodeName(true));
+				}
+				else
+				{
+					this.Text = "Select a Resource";
 				}
 
 				foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(tmpFilteredType))
