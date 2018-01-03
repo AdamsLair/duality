@@ -44,9 +44,10 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(277, 326);
+			this.buttonCancel.Location = new System.Drawing.Point(369, 401);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(100, 28);
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -55,9 +56,10 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(196, 326);
+			this.buttonOk.Location = new System.Drawing.Point(261, 401);
+			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(75, 23);
+			this.buttonOk.Size = new System.Drawing.Size(100, 28);
 			this.buttonOk.TabIndex = 1;
 			this.buttonOk.Text = "Ok";
 			this.buttonOk.UseVisualStyleBackColor = true;
@@ -66,9 +68,10 @@
 			// 
 			this.labelInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelInfo.Location = new System.Drawing.Point(12, 9);
+			this.labelInfo.Location = new System.Drawing.Point(16, 11);
+			this.labelInfo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelInfo.Name = "labelInfo";
-			this.labelInfo.Size = new System.Drawing.Size(340, 23);
+			this.labelInfo.Size = new System.Drawing.Size(453, 28);
 			this.labelInfo.TabIndex = 6;
 			this.labelInfo.Text = "Please select the reference you would like to use.";
 			// 
@@ -79,7 +82,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.objectReferenceListing.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.objectReferenceListing.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.objectReferenceListing.ColumnHeaderHeight = 0;
 			this.objectReferenceListing.Columns.Add(this.columnName);
 			this.objectReferenceListing.Columns.Add(this.columnPath);
 			this.objectReferenceListing.DefaultToolTipProvider = null;
@@ -87,62 +89,75 @@
 			this.objectReferenceListing.FullRowSelect = true;
 			this.objectReferenceListing.FullRowSelectActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.objectReferenceListing.FullRowSelectInactiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
+			this.objectReferenceListing.Indent = 5;
 			this.objectReferenceListing.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
 			this.objectReferenceListing.LoadOnDemand = true;
-			this.objectReferenceListing.Location = new System.Drawing.Point(15, 36);
+			this.objectReferenceListing.Location = new System.Drawing.Point(20, 44);
+			this.objectReferenceListing.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.objectReferenceListing.Model = null;
 			this.objectReferenceListing.Name = "objectReferenceListing";
 			this.objectReferenceListing.NodeControls.Add(this.nodeName);
 			this.objectReferenceListing.NodeControls.Add(this.nodePath);
 			this.objectReferenceListing.NodeFilter = null;
 			this.objectReferenceListing.SelectedNode = null;
-			this.objectReferenceListing.Size = new System.Drawing.Size(337, 284);
+			this.objectReferenceListing.ShowLines = false;
+			this.objectReferenceListing.ShowPlusMinus = false;
+			this.objectReferenceListing.Size = new System.Drawing.Size(449, 349);
 			this.objectReferenceListing.TabIndex = 0;
+			this.objectReferenceListing.UseColumns = true;
+			this.objectReferenceListing.Click += new System.EventHandler(this.objectReferenceListing_Click);
 			// 
 			// columnName
 			// 
 			this.columnName.Header = "Name";
+			this.columnName.MaxColumnWidth = 300;
+			this.columnName.MinColumnWidth = 150;
 			this.columnName.Sortable = true;
-			this.columnName.SortOrder = System.Windows.Forms.SortOrder.None;
+			this.columnName.SortOrder = System.Windows.Forms.SortOrder.Ascending;
 			this.columnName.TooltipText = null;
+			this.columnName.Width = 200;
 			// 
 			// columnPath
 			// 
 			this.columnPath.Header = "Path";
+			this.columnPath.MaxColumnWidth = 800;
+			this.columnPath.MinColumnWidth = 300;
 			this.columnPath.Sortable = true;
 			this.columnPath.SortOrder = System.Windows.Forms.SortOrder.None;
 			this.columnPath.TooltipText = null;
+			this.columnPath.Width = 300;
 			// 
 			// nodeName
 			// 
 			this.nodeName.DataPropertyName = "Name";
 			this.nodeName.IncrementalSearchEnabled = true;
 			this.nodeName.LeftMargin = 3;
-			this.nodeName.ParentColumn = null;
+			this.nodeName.ParentColumn = this.columnName;
 			// 
 			// nodePath
 			// 
 			this.nodePath.DataPropertyName = "Path";
 			this.nodePath.IncrementalSearchEnabled = true;
 			this.nodePath.LeftMargin = 3;
-			this.nodePath.ParentColumn = null;
+			this.nodePath.ParentColumn = this.columnPath;
 			// 
 			// ObjectRefSelectionDialog
 			// 
 			this.AcceptButton = this.buttonOk;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(364, 361);
+			this.ClientSize = new System.Drawing.Size(485, 444);
 			this.Controls.Add(this.objectReferenceListing);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.labelInfo);
 			this.Controls.Add(this.buttonOk);
+			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(380, 400);
+			this.MinimumSize = new System.Drawing.Size(501, 482);
 			this.Name = "ObjectRefSelectionDialog";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
