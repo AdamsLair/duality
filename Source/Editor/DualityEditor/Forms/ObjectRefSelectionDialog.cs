@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using Aga.Controls.Tree;
@@ -96,11 +97,32 @@ namespace Duality.Editor.Forms
 
 			this.PathColor = Color.Gray;
 
-			this.objectReferenceListing.Click += this.ResourceListingOnSelectedIndexChanged;
+			this.objectReferenceListing.SelectionChanged += this.ResourceListingOnSelectedIndexChanged;
 			this.objectReferenceListing.DoubleClick += this.ResourceListingOnDoubleClick;
+
+			this.txtFilterInput.KeyDown += this.TxtFilterInputOnKeyDown;
 
 			this.nodeName.DrawText += this.NodeName_OnDrawText;
 			this.nodePath.DrawText += this.NodePath_OnDrawText;
+		}
+
+		private void TxtFilterInputOnKeyDown(object sender, KeyEventArgs keyEventArgs)
+		{
+			TreeNodeAdv tmp = null;
+
+			if (keyEventArgs.KeyCode == Keys.Down)
+			{
+				tmp = this.objectReferenceListing.SelectedNode.NextNode;
+			}
+			else if (keyEventArgs.KeyCode == Keys.Up)
+			{
+				tmp = this.objectReferenceListing.SelectedNode.PreviousNode;
+			}
+
+			if (tmp != null)
+			{
+				this.objectReferenceListing.SelectedNode = tmp;
+			}
 		}
 
 		private void NodePath_OnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
@@ -239,6 +261,9 @@ namespace Duality.Editor.Forms
 		private void txtFilterInput_TextChanged(object sender, EventArgs e)
 		{
 			this.objectReferenceListing.UpdateNodeFilter();
+
+			this.objectReferenceListing.SelectedNode = this.objectReferenceListing.AllNodes
+				.Where((node, index) => { return node.IsHidden == false; }).First();
 		}
 
 		private bool NodeFilter(TreeNodeAdv nodeAdv)
