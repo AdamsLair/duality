@@ -335,15 +335,15 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="vec">The vector to transform</param>
 		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
-		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="rotationDir">The rotation direction of the local space relative to the space you are transforming to</param>
 		/// <param name="scale">The scale of the local space relative to the space you are transforming to</param>
 		/// <returns>A transformed <see cref="Vector3"/></returns>
-		private static Vector3 ToLocalSpace(Vector3 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
+		private static Vector3 ToLocalSpace(Vector3 vec, Vector3 origin, Vector2 rotationDir, float scale)
 		{
 			float inverseScale = 1f / scale;
 			return new Vector3(
-				((vec.X - origin.X) * rotationMatrix.X + (vec.Y - origin.Y) * rotationMatrix.Y) * inverseScale,
-				((vec.X - origin.X) * -rotationMatrix.Y + (vec.Y - origin.Y) * rotationMatrix.X) * inverseScale,
+				((vec.X - origin.X) * rotationDir.X + (vec.Y - origin.Y) * rotationDir.Y) * inverseScale,
+				((vec.X - origin.X) * -rotationDir.Y + (vec.Y - origin.Y) * rotationDir.X) * inverseScale,
 				(vec.Z - origin.Z) * inverseScale);
 		}
 
@@ -353,14 +353,14 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="vec">The vector to transform</param>
 		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
-		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="rotationDir">The rotation direction of the local space relative to the space you are transforming to</param>
 		/// <param name="scale">The scale of the local space relative to the space you are transforming to</param>
 		/// <returns>A transformed <see cref="Vector3"/></returns>
-		private static Vector3 FromLocalSpace(Vector3 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
+		private static Vector3 FromLocalSpace(Vector3 vec, Vector3 origin, Vector2 rotationDir, float scale)
 		{
 			return new Vector3(
-				vec.X * scale * rotationMatrix.X - vec.Y * scale * rotationMatrix.Y + origin.X,
-				vec.X * scale * rotationMatrix.Y + vec.Y * scale * rotationMatrix.X + origin.Y,
+				vec.X * scale * rotationDir.X - vec.Y * scale * rotationDir.Y + origin.X,
+				vec.X * scale * rotationDir.Y + vec.Y * scale * rotationDir.X + origin.Y,
 				vec.Z * scale + origin.Z);
 		}
 
@@ -370,15 +370,15 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="vec">The vector to transform</param>
 		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
-		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="rotationDir">The rotation direction of the local space relative to the space you are transforming to</param>
 		/// <param name="scale">The scale of the local space relative to the space you are transforming to</param>
 		/// <returns>A transformed <see cref="Vector2"/></returns>
-		private static Vector2 ToLocalSpace(Vector2 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
+		private static Vector2 ToLocalSpace(Vector2 vec, Vector3 origin, Vector2 rotationDir, float scale)
 		{
 			float inverseScale = 1f / scale;
 			return new Vector2(
-				((vec.X - origin.X) * rotationMatrix.X + (vec.Y - origin.Y) * rotationMatrix.Y) * inverseScale,
-				((vec.X - origin.X) * -rotationMatrix.Y + (vec.Y - origin.Y) * rotationMatrix.X) * inverseScale);
+				((vec.X - origin.X) * rotationDir.X + (vec.Y - origin.Y) * rotationDir.Y) * inverseScale,
+				((vec.X - origin.X) * -rotationDir.Y + (vec.Y - origin.Y) * rotationDir.X) * inverseScale);
 		}
 
 		/// <summary>
@@ -387,14 +387,14 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="vec">The vector to transform</param>
 		/// <param name="origin">The origin of the local space relative to the space you are transforming to</param>
-		/// <param name="rotationMatrix">The rotation matrix of the local space relative to the space you are transforming to</param>
+		/// <param name="RotationDir">The rotation direction of the local space relative to the space you are transforming to</param>
 		/// <param name="scale">The scale of the local space relative to the space you are transforming to</param>
 		/// <returns>A transformed <see cref="Vector2"/></returns>
-		private static Vector2 FromLocalSpace(Vector2 vec, Vector3 origin, Vector2 rotationMatrix, float scale)
+		private static Vector2 FromLocalSpace(Vector2 vec, Vector3 origin, Vector2 RotationDir, float scale)
 		{
 			return new Vector2(
-				vec.X * scale * rotationMatrix.X - vec.Y * scale * rotationMatrix.Y + origin.X,
-				vec.X * scale * rotationMatrix.Y + vec.Y * scale * rotationMatrix.X + origin.Y);
+				vec.X * scale * RotationDir.X - vec.Y * scale * RotationDir.Y + origin.X,
+				vec.X * scale * RotationDir.Y + vec.Y * scale * RotationDir.X + origin.Y);
 		}
 
 		/// <summary>
