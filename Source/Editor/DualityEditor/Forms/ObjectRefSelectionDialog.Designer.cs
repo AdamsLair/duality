@@ -150,6 +150,7 @@
 			this.txtFilterInput.Name = "txtFilterInput";
 			this.txtFilterInput.Size = new System.Drawing.Size(450, 22);
 			this.txtFilterInput.TabIndex = 7;
+			this.txtFilterInput.Text = "Filter text goes here";
 			this.txtFilterInput.TextChanged += new System.EventHandler(this.txtFilterInput_TextChanged);
 			// 
 			// ObjectRefSelectionDialog
