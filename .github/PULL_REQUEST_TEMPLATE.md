@@ -1,4 +1,4 @@
-_This is an FYI for you. **Do not add this to your Pull Request description**._
+_This is a message for you as a contributor. **Do not add this to your Pull Request description**._
 
 ### Pull Request Checklist
 
