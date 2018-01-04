@@ -19,8 +19,8 @@ _This is a message for you as a contributor. **Do not add this to your Pull Requ
 5. Work on and discuss change requests from item 4. Ping the reviewers when done. Loop back to item 4 until resolved.
 6. **Merge**
 
-This is generally what to expect, but of course we will deviate from and shorten this process where it makes sense: Small PRs might turn out to be instant merges, large PRs might take a few more review roundtrips.
+This is generally what to expect, but we will deviate from this process where it makes sense: Small PRs might turn out to be instant merges, and depending on the topic some review items might not apply.
 
 -----
 
-Thank you for your contribution, and looking forward to work with you! :+1:
+Thank you for your contribution, and looking forward to working with you! :+1:
