@@ -39,6 +39,7 @@ namespace Duality.Editor.Forms
 			@".\DualityEditor.*",
 			@".\Duality.xml",
 			@".\DualityPrimitives.xml",
+			@".\DualityPhysics.xml",
 			@".\DDoc.chm",
 			@".\" + DualityEditorApp.UserDataFile,
 			@".\" + DualityEditorApp.DesignTimeDataFile,
