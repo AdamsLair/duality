@@ -39,5 +39,6 @@ Build/Output/
 Test/Duality.VisualState.xml
 Test/TestResult.xml
 Source/Core/Primitives/DualityPrimitives.xml
+Source/Core/Physics/DualityPhysics.xml
 /.vs
 Samples/Benchmarks/Content/BenchmarkTestReport.txt
