@@ -8,6 +8,7 @@ using Duality;
 using Duality.Cloning;
 using Duality.Components;
 using Duality.Components.Physics;
+using Duality.Resources;
 
 using NUnit.Framework;
 using System.Collections;
@@ -154,7 +155,138 @@ namespace Duality.Tests.Components
 			transform.RelativeScale = 1.0f;
 			AssertEqual(new Vector3(4.0f, 7.0f, 6.0f), transform.GetWorldPoint(new Vector3(1.0f, 0.0f, 0.0f)), "Identity child transform with parent");
 		}
+		[Test] public void TransformHierarchyVelocity()
+		{
+			// In this test case, we'll set up a parent and a child transform
+			// to see if changes to the parent affect the child transforms velocity value
+			GameObject parentObj = new GameObject("Parent");
+			GameObject obj = new GameObject("Child", parentObj);
+			Transform parentTransform = parentObj.AddComponent<Transform>();
+			Transform transform = obj.AddComponent<Transform>();
 
+			// Since velocity values are only updated after the frame ends, we need
+			// a full scene setup to simulate an update cycle
+			using (Scene testScene = new Scene())
+			{
+				// Setup and enter the scene
+				testScene.AddObject(parentObj);
+				Scene.SwitchTo(testScene, true);
+				DualityApp.Update(true);
+
+				// Identity parent and a moving child
+				parentTransform.Pos = Vector3.Zero;
+				parentTransform.Angle = 0.0f;
+				parentTransform.Scale = 1.0f;
+				transform.Pos = Vector3.Zero;
+				transform.Angle = 0.0f;
+				transform.Scale = 1.0f;
+
+				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.TurnBy(MathF.DegToRad(90.0f));
+				DualityApp.Update(true);
+
+				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.RelativeVel, "Relative child velocity");
+				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.Vel, "Absolute child velocity");
+				AssertEqual(MathF.DegToRad(90.0f), transform.RelativeAngleVel, "Relative child angle velocity");
+				AssertEqual(MathF.DegToRad(90.0f), transform.AngleVel, "Absolute child angle velocity");
+
+				// Transformed parent and a moving child
+				parentTransform.Pos = new Vector3(1.0f, 2.0f, 3.0f);
+				parentTransform.Angle = MathF.DegToRad(90.0f);
+				parentTransform.Scale = 2.0f;
+				transform.Pos = Vector3.Zero;
+				transform.Angle = 0.0f;
+				transform.Scale = 1.0f;
+
+				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.TurnBy(MathF.DegToRad(90.0f));
+				DualityApp.Update(true);
+
+				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.RelativeVel, "Relative child velocity");
+				AssertEqual(new Vector3(0.0f, 2.0f, 0.0f), transform.Vel, "Absolute child velocity");
+				AssertEqual(MathF.DegToRad(90.0f), transform.RelativeAngleVel, "Relative child angle velocity");
+				AssertEqual(MathF.DegToRad(90.0f), transform.AngleVel, "Absolute child angle velocity");
+
+				// Moving parent and a transformed child
+				parentTransform.Pos = Vector3.Zero;
+				parentTransform.Angle = 0.0f;
+				parentTransform.Scale = 1.0f;
+				transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
+				transform.Angle = 0.0f;
+				transform.Scale = 1.0f;
+				
+				parentTransform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				DualityApp.Update(true);
+				
+				AssertEqual(new Vector3(0.0f, 0.0f, 0.0f), transform.RelativeVel, "Relative child velocity");
+				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.Vel, "Absolute child velocity");
+
+				// Moving parent and a transformed, moving child
+				parentTransform.Pos = Vector3.Zero;
+				parentTransform.Angle = 0.0f;
+				parentTransform.Scale = 1.0f;
+				transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
+				transform.Angle = 0.0f;
+				transform.Scale = 1.0f;
+				
+				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.TurnBy(MathF.DegToRad(90.0f));
+				parentTransform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				DualityApp.Update(true);
+				
+				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.RelativeVel, "Relative child velocity");
+				AssertEqual(new Vector3(2.0f, 0.0f, 0.0f), transform.Vel, "Absolute child velocity");
+				AssertEqual(MathF.DegToRad(90.0f), transform.RelativeAngleVel, "Relative child angle velocity");
+				AssertEqual(MathF.DegToRad(90.0f), transform.AngleVel, "Absolute child angle velocity");
+
+				// ToDo: Fix how Transform adds up velocity due to parent transform
+				// rotation in order to make the test cases below work. The current 
+				// implementation only works with small per-frame rotations, not big, 
+				// sudden ones.
+
+				// Moving parent and a transformed child
+				//parentTransform.Pos = Vector3.Zero;
+				//parentTransform.Angle = 0.0f;
+				//parentTransform.Scale = 1.0f;
+				//transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
+				//transform.Angle = 0.0f;
+				//transform.Scale = 1.0f;
+				//
+				//parentTransform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				//parentTransform.TurnBy(MathF.DegToRad(90.0f));
+				//DualityApp.Update(true);
+				//
+				//AssertEqual(new Vector3(0.0f, 0.0f, 0.0f), transform.RelativeVel, "Relative child velocity");
+				//AssertEqual(new Vector3(0.0f, 1.0f, 0.0f), transform.Vel, "Absolute child velocity");
+				//AssertEqual(MathF.DegToRad(0.0f), transform.RelativeAngleVel, "Relative child angle velocity");
+				//AssertEqual(MathF.DegToRad(90.0f), transform.AngleVel, "Absolute child angle velocity");
+
+				// Moving parent and a transformed, moving child
+				//parentTransform.Pos = Vector3.Zero;
+				//parentTransform.Angle = 0.0f;
+				//parentTransform.Scale = 1.0f;
+				//transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
+				//transform.Angle = 0.0f;
+				//transform.Scale = 1.0f;
+				//
+				//transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				//transform.TurnBy(MathF.DegToRad(90.0f));
+				//parentTransform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				//parentTransform.TurnBy(MathF.DegToRad(90.0f));
+				//DualityApp.Update(true);
+				//
+				//AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.RelativeVel, "Relative child velocity");
+				//AssertEqual(new Vector3(-1.0f, 3.0f, 0.0f), transform.Vel, "Absolute child velocity");
+				//AssertEqual(MathF.DegToRad(90.0f), transform.RelativeAngleVel, "Relative child angle velocity");
+				//AssertEqual(MathF.DegToRad(180.0f), transform.AngleVel, "Absolute child angle velocity");
+			}
+		}
+
+		private static void AssertEqual(float expected, float actual, string message)
+		{
+			float threshold = 0.00001f;
+			Assert.AreEqual(expected, actual, threshold, message);
+		}
 		private static void AssertEqual(Vector2 expected, Vector2 actual, string message)
 		{
 			float threshold = 0.00001f;
