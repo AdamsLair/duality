@@ -271,8 +271,8 @@ namespace Duality.Components
 			get 
 			{ 
 				return new Vector3(
-					MathF.Sin(this.Angle),
-					-MathF.Cos(this.Angle),
+					this.rotationDirAbs.X,
+					this.rotationDirAbs.Y,
 					0.0f);
 			}
 		}
@@ -284,8 +284,8 @@ namespace Duality.Components
 			get 
 			{
 				return new Vector3(
-					-MathF.Cos(this.Angle),
-					-MathF.Sin(this.Angle),
+					-this.rotationDirAbs.Y,
+					this.rotationDirAbs.X,
 					0.0f);
 			}
 		}
