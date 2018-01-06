@@ -42,7 +42,7 @@ namespace Duality
 		/// </summary>
 		public Vector2 Size
 		{
-			get { return new Vector2(W, H); }
+			get { return new Vector2(this.W, this.H); }
 			set { this.W = value.X; this.H = value.Y; }
 		}
 
@@ -51,42 +51,42 @@ namespace Duality
 		/// </summary>
 		public float LeftX
 		{
-			get { return MathF.Min(X, X + W); }
+			get { return MathF.Min(this.X, this.X + this.W); }
 		}
 		/// <summary>
 		/// [GET] The minimum y-Coordinate occupied by the Rect. Accounts for negative sizes.
 		/// </summary>
 		public float TopY
 		{
-			get { return MathF.Min(Y, Y + H); }
+			get { return MathF.Min(this.Y, this.Y + this.H); }
 		}
 		/// <summary>
 		/// [GET] The maximum y-Coordinate occupied by the Rect. Accounts for negative sizes.
 		/// </summary>
 		public float BottomY
 		{
-			get { return MathF.Max(Y, Y + H); }
+			get { return MathF.Max(this.Y, this.Y + this.H); }
 		}
 		/// <summary>
 		/// [GET] The maximum x-Coordinate occupied by the Rect. Accounts for negative sizes.
 		/// </summary>
 		public float RightX
 		{
-			get { return MathF.Max(X, X + W); }
+			get { return MathF.Max(this.X, this.X + this.W); }
 		}
 		/// <summary>
 		/// [GET] The center x-Coordinate occupied by the Rect.
 		/// </summary>
 		public float CenterX
 		{
-			get { return X + W * 0.5f; }
+			get { return this.X + this.W * 0.5f; }
 		}
 		/// <summary>
 		/// [GET] The center y-Coordinate occupied by the Rect.
 		/// </summary>
 		public float CenterY
 		{
-			get { return Y + H * 0.5f; }
+			get { return this.Y + this.H * 0.5f; }
 		}
 
 		/// <summary>
