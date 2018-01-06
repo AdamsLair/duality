@@ -645,7 +645,7 @@ namespace Duality
 		}
 		/// <summary>
 		/// Performs all scheduled disposal calls and cleans up internal data. This is done automatically at the
-		/// end of each <see cref="Update">frame update</see> and you shouldn't need to call this in general.
+		/// end of each <see cref="Update()">frame update</see> and you shouldn't need to call this in general.
 		/// Invoking this method while an update is still in progress may result in undefined behavior. Don't do this.
 		/// </summary>
 		public static void RunCleanup()
