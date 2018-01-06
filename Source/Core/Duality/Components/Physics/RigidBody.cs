@@ -1174,10 +1174,11 @@ namespace Duality.Components.Physics
 			}
 			if ((e.Changes & Transform.DirtyFlags.Scale) != Transform.DirtyFlags.None)
 			{
+				bool updateShape = false;
 				float scale = t.Scale;
 				if (scale == 0.0f || this.lastScale == 0.0f)
 				{
-					this.FlagBodyShape();
+					updateShape = true;
 				}
 				else
 				{
@@ -1187,7 +1188,18 @@ namespace Duality.Components.Physics
 					float lower = (boundRadius - pixelLimit) / boundRadius;
 					if (scale / this.lastScale >= upper || scale / this.lastScale <= lower)
 					{
-						this.FlagBodyShape();
+						updateShape = true;
+					}
+				}
+				if (updateShape)
+				{
+					// Flag the body for a shape update and destroy all active shapes to
+					// force a full re-creation of shapes with the new scale value.
+					this.FlagBodyShape();
+					if (this.shapes != null)
+					{
+						foreach (ShapeInfo info in this.shapes)
+							info.DestroyInternalShape();
 					}
 				}
 			}
