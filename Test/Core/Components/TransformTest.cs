@@ -127,6 +127,34 @@ namespace Duality.Tests.Components
 			AssertEqual(new Vector2(-8.0f, 6.5f), transform.GetWorldPoint(new Vector2(3.0f, 6.0f)), "2D Position, Rotation, Scale");
 		}
 
+		[Test] public void TransformHierarchy()
+		{
+			// In this test case, we'll set up a parent and a child transform
+			// to see if changes to the parent propagate to the child.
+			GameObject parentObj = new GameObject("Parent");
+			GameObject obj = new GameObject("Child", parentObj);
+			Transform parentTransform = parentObj.AddComponent<Transform>();
+			Transform transform = obj.AddComponent<Transform>();
+
+			// Start with a parent transform that does nothing
+			transform.RelativePos = new Vector3(1.0f, 2.0f, 3.0f);
+			transform.RelativeAngle = MathF.DegToRad(90.0f);
+			transform.RelativeScale = 2.0f;
+			AssertEqual(new Vector3(1.0f, 4.0f, 3.0f), transform.GetWorldPoint(new Vector3(1.0f, 0.0f, 0.0f)), "Child transform with identity parent");
+
+			// Now we'll adjust the parent transform and see if the child gets it
+			parentTransform.RelativePos = new Vector3(4.0f, 5.0f, 6.0f);
+			parentTransform.RelativeAngle = MathF.DegToRad(90.0f);
+			parentTransform.RelativeScale = 2.0f;
+			AssertEqual(new Vector3(-4.0f, 7.0f, 12.0f), transform.GetWorldPoint(new Vector3(1.0f, 0.0f, 0.0f)), "Child transform with parent");
+
+			// Adjust the child transform to identity and make sure we still have the parent transformation
+			transform.RelativePos = Vector3.Zero;
+			transform.RelativeAngle = 0.0f;
+			transform.RelativeScale = 1.0f;
+			AssertEqual(new Vector3(4.0f, 7.0f, 6.0f), transform.GetWorldPoint(new Vector3(1.0f, 0.0f, 0.0f)), "Identity child transform with parent");
+		}
+
 		private static void AssertEqual(Vector2 expected, Vector2 actual, string message)
 		{
 			float threshold = 0.00001f;
