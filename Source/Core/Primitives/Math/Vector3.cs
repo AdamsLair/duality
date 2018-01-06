@@ -160,8 +160,8 @@ namespace Duality
 
 				float scale = 1.0f / length;
 				return new Vector3(
-					this.X * scale, 
-					this.Y * scale, 
+					this.X * scale,
+					this.Y * scale,
 					this.Z * scale);
 			}
 		}
@@ -173,16 +173,16 @@ namespace Duality
 		{
 			get
 			{
-				if(index == 0) return this.X;
-				else if(index == 1) return this.Y;
-				else if(index == 2) return this.Z;
+				if (index == 0) return this.X;
+				else if (index == 1) return this.Y;
+				else if (index == 2) return this.Z;
 				throw new IndexOutOfRangeException("You tried to access this vector at index: " + index);
 			}
 			set
 			{
-				if(index == 0) this.X = value;
-				else if(index == 1) this.Y = value;
-				else if(index == 2) this.Z = value;
+				if (index == 0) this.X = value;
+				else if (index == 1) this.Y = value;
+				else if (index == 2) this.Z = value;
 				else throw new IndexOutOfRangeException("You tried to set this vector at index: " + index);
 			}
 		}
@@ -365,7 +365,7 @@ namespace Duality
 				left.Z * right.X - left.X * right.Z,
 				left.X * right.Y - left.Y * right.X);
 		}
-		
+
 		/// <summary>
 		/// Calculates the distance between two points described by two vectors. 
 		/// </summary>
@@ -433,7 +433,7 @@ namespace Duality
 			Vector3.Dot(ref first, ref second, out temp);
 			result = (float)System.Math.Acos(temp / (first.Length * second.Length));
 		}
-		
+
 		/// <summary>
 		/// Transform a Vector by the given Matrix</summary>
 		/// <param name="vec">The vector to transform</param>

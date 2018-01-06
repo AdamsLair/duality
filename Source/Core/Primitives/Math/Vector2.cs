@@ -161,7 +161,7 @@ namespace Duality
 
 				float scale = 1.0f / length;
 				return new Vector2(
-					this.X * scale, 
+					this.X * scale,
 					this.Y * scale);
 			}
 		}
@@ -390,7 +390,7 @@ namespace Duality
 			Vector2.Dot(ref first, ref second, out temp);
 			result = (float)System.Math.Acos(temp / (first.Length * second.Length));
 		}
-		
+
 		/// <summary>
 		/// Transforms a vector by a quaternion rotation.
 		/// </summary>
