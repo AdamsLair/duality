@@ -347,12 +347,10 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector3 GetWorldVector(Vector3 local)
 		{
-			Vector3 world;
-
-			Vector3.Multiply(ref local, this.scaleAbs, out world);
-			MathF.TransformCoord(ref world.X, ref world.Y, this.angleAbs);
-
-			return world;
+			return new Vector3(
+				local.X * this.scaleAbs * -this.rotationDir.Y + local.Y * this.scaleAbs * -this.rotationDir.X,
+				local.X * this.scaleAbs * this.rotationDir.X + local.Y * this.scaleAbs * -this.rotationDir.Y,
+				local.Z * this.scaleAbs);
 		}
 		/// <summary>
 		/// Calculates a world vector from a Transform-local vector.
@@ -362,7 +360,9 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector2 GetWorldVector(Vector2 local)
 		{
-			return this.GetWorldVector(new Vector3(local)).Xy;
+			return new Vector2(
+				local.X * this.scaleAbs * -this.rotationDir.Y + local.Y * this.scaleAbs * -this.rotationDir.X,
+				local.X * this.scaleAbs * this.rotationDir.X + local.Y * this.scaleAbs * -this.rotationDir.Y);
 		}
 		/// <summary>
 		/// Calculates a Transform-local vector from a world vector.
@@ -372,12 +372,11 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector3 GetLocalVector(Vector3 world)
 		{
-			Vector3 local = world;
-			
-			MathF.TransformCoord(ref local.X, ref local.Y, -this.angleAbs);
-			Vector3.Divide(ref local, this.scaleAbs, out local);
-
-			return local;
+			float inverseScale = 1f / this.scaleAbs;
+			return new Vector3(
+				(world.X * -this.rotationDir.Y + world.Y * this.rotationDir.X) * inverseScale,
+				(world.X * -this.rotationDir.X + world.Y * -this.rotationDir.Y) * inverseScale,
+				world.Z * inverseScale);
 		}
 		/// <summary>
 		/// Calculates a Transform-local vector from a world vector.
@@ -385,9 +384,12 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="world"></param>
 		/// <returns></returns>
-		public Vector2 GetLocalVector(Vector2 local)
+		public Vector2 GetLocalVector(Vector2 world)
 		{
-			return this.GetLocalVector(new Vector3(local)).Xy;
+			float inverseScale = 1f / this.scaleAbs;
+			return new Vector2(
+				(world.X * -this.rotationDir.Y + world.Y * this.rotationDir.X) * inverseScale,
+				(world.X * -this.rotationDir.X + world.Y * -this.rotationDir.Y) * inverseScale);
 		}
 
 		/// <summary>
