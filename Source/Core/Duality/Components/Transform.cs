@@ -803,24 +803,21 @@ namespace Duality.Components
 				}
 				
 				this.scaleAbs = this.scale * this.parentTransform.scaleAbs;
-
-				Vector2 parentAngleAbsDotX;
-				Vector2 parentAngleAbsDotY;
-				MathF.GetTransformDotVec(this.parentTransform.angleAbs, out parentAngleAbsDotX, out parentAngleAbsDotY);
-
-				Vector3.Multiply(ref this.pos, this.parentTransform.scaleAbs, out this.posAbs);
-				MathF.TransformDotVec(ref this.posAbs, ref parentAngleAbsDotX, ref parentAngleAbsDotY);
-				Vector3.Add(ref this.posAbs, ref this.parentTransform.posAbs, out this.posAbs);
+				this.posAbs = this.parentTransform.GetWorldPoint(this.pos);
 
 				if (updateTempVel)
 				{
-					Vector2 parentTurnVelAdjust = this.pos.Xy.PerpendicularRight;
-					Vector2.Multiply(ref parentTurnVelAdjust, this.parentTransform.tempAngleVelAbs, out parentTurnVelAdjust);
-					MathF.TransformDotVec(ref parentTurnVelAdjust, ref parentAngleAbsDotX, ref parentAngleAbsDotY);
+					this.tempVelAbs = this.parentTransform.GetWorldVector(this.tempVel);
+					this.tempVelAbs.X += this.parentTransform.tempVelAbs.X;
+					this.tempVelAbs.Y += this.parentTransform.tempVelAbs.Y;
+					this.tempVelAbs.Z += this.parentTransform.tempVelAbs.Z;
 
-					Vector3.Multiply(ref this.tempVel, this.parentTransform.scaleAbs, out this.tempVelAbs);
-					MathF.TransformDotVec(ref this.tempVelAbs, ref parentAngleAbsDotX, ref parentAngleAbsDotY);
-					Vector3.Add(ref this.tempVelAbs, ref this.parentTransform.tempVelAbs, out this.tempVelAbs);
+					// Calculate the parent rotation velocity's effect on this objects velocity.
+					// ToDo: Fix this, currently only works for small per-frame angle changes,
+					// reactivate TransformTest case when done.
+					Vector2 parentTurnVelAdjust = this.parentTransform.GetWorldVector(new Vector2(
+						-this.pos.Y * this.parentTransform.tempAngleVelAbs, 
+						this.pos.X * this.parentTransform.tempAngleVelAbs));
 
 					this.tempVelAbs.X += parentTurnVelAdjust.X;
 					this.tempVelAbs.Y += parentTurnVelAdjust.Y;
