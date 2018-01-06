@@ -41,13 +41,14 @@ namespace Duality.Components
 		private Transform parentTransform = null;
 		private Vector3   posAbs          = Vector3.Zero;
 		private float     angleAbs        = 0.0f;
-		private Vector2   rotationDirAbs  = new Vector2(0.0f, -1.0f);
 		private float     scaleAbs        = 1.0f;
 		// Auto-calculated values
 		private Vector3   vel             = Vector3.Zero;
 		private Vector3   velAbs          = Vector3.Zero;
 		private float     angleVel        = 0.0f;
 		private float     angleVelAbs     = 0.0f;
+		// Cached values, non-serialized values
+		[DontSerialize] private Vector2    rotationDirAbs  = new Vector2(0.0f, -1.0f);
 		// Temporary per-frame values
 		[DontSerialize] private DirtyFlags changes         = DirtyFlags.None;
 		[DontSerialize] private Vector3    tempVel         = Vector3.Zero;
@@ -691,6 +692,12 @@ namespace Duality.Components
 				}
 				this.UpdateRel();
 			}
+
+			// Since we're not serializing rotation dir values, recalculate them on load
+			if (context == InitContext.Loaded)
+			{
+				this.UpdateRotationDirAbs();
+			}
 		}
 		void ICmpInitializable.OnShutdown(ShutdownContext context)
 		{
@@ -933,6 +940,7 @@ namespace Duality.Components
 			target.posAbs			= this.posAbs;
 			target.angleAbs			= this.angleAbs;
 			target.scaleAbs			= this.scaleAbs;
+			target.rotationDirAbs	= this.rotationDirAbs;
 
 			target.tempVel			= this.tempVel;
 			target.tempVelAbs		= this.tempVelAbs;
