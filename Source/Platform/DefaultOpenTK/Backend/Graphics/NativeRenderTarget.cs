@@ -42,7 +42,7 @@ namespace Duality.Backend.DefaultOpenTK
 			curBound = nextBound;
 			if (curBound != null)
 				curBound.pendingPostRender = true;
-					}
+		}
 		private static void ApplyGLBind(NativeRenderTarget target)
 		{
 			if (target == null)

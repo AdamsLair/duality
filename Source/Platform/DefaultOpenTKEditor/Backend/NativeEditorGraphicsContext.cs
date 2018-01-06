@@ -85,8 +85,8 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 					// no way of checking its disposal state... so let's try it the hard way.
 					try
 					{
-						mainContextControl.Context.MakeCurrent(window);
-						mainContextControl.SwapBuffers();
+						this.mainContextControl.Context.MakeCurrent(window);
+						this.mainContextControl.SwapBuffers();
 					}
 					catch (Exception) {}
 				}
