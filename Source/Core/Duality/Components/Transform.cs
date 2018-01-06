@@ -817,12 +817,9 @@ namespace Duality.Components
 
 		private void UpdateRotationDir()
 		{
-			this.rotationDir = CreateDirection(this.angleAbs);
-		}
-
-		private static Vector2 CreateDirection(float radians)
-		{
-			return new Vector2((float)Math.Cos(radians), (float)Math.Sin(radians));
+			this.rotationDir = new Vector2(
+				MathF.Cos(this.angleAbs), 
+				MathF.Sin(this.angleAbs));
 		}
 
 		private void UpdateAbs(bool updateTempVel = false)
