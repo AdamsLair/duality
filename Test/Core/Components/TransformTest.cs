@@ -58,87 +58,87 @@ namespace Duality.Tests.Components
 			leafChanges = Transform.DirtyFlags.None;
 		}
 
-		public static IEnumerable GetLocalPointVector2Cases
+		[Test] public void GetLocalPoint()
 		{
-			get
+			Transform transform;
+
+			transform = new Transform()
 			{
-				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f) }, new Vector2(3f, 8f), new Vector2(2f, 6f)).SetName("GetLocalPointVector2Position");
-				yield return new TestCaseData(new Transform() { Angle = MathF.DegToRad(90) }, new Vector2(3f, 8f), new Vector2(8f, -3f)).SetName("GetLocalPointVector2Rotation");
-				yield return new TestCaseData(new Transform() { Scale = 1f / 1.5f }, new Vector2(3f, 8f), new Vector2(4.5f, 12f)).SetName("GetLocalPointVector2Scale");
-				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f), Angle = MathF.DegToRad(90), Scale = 1f / 1.5f }, new Vector2(3f, 8f), new Vector2(9f, -3f)).SetName("GetLocalPointVector2All");
-			}
-		}
+				Pos = new Vector3(1.0f, 2.0f, 3.0f)
+			};
+			AssertEqual(new Vector3(2.0f, 6.0f, 6.0f), transform.GetLocalPoint(new Vector3(3.0f, 8.0f, 9.0f)), "Position");
+			AssertEqual(new Vector2(2.0f, 6.0f), transform.GetLocalPoint(new Vector2(3.0f, 8.0f)), "2D Position");
 
-		[Test]
-		[TestCaseSource(typeof(TransformTest), "GetLocalPointVector2Cases")]
-		public void GetLocalPointVector2(Transform transform, Vector2 vec, Vector2 expected)
-		{
-			Vector2 result = transform.GetLocalPoint(vec);
-			Assert.AreEqual(expected.X, result.X, 0.00001f);
-			Assert.AreEqual(expected.Y, result.Y, 0.00001f);
-		}
-
-		public static IEnumerable GetLocalPointVector3Cases
-		{
-			get
+			transform = new Transform()
 			{
-				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f) }, new Vector3(3f, 8f, 9f), new Vector3(2f, 6f, 6f)).SetName("GetLocalPointVector3Position"); ;
-				yield return new TestCaseData(new Transform() { Angle = MathF.DegToRad(90) }, new Vector3(3f, 8f, 9f), new Vector3(8f, -3f, 9f)).SetName("GetLocalPointVector3Rotation"); ;
-				yield return new TestCaseData(new Transform() { Scale = 1f / 1.5f }, new Vector3(3f, 8f, 9f), new Vector3(4.5f, 12f, 13.5f)).SetName("GetLocalPointVector3Scale"); ;
-				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f), Angle = MathF.DegToRad(90), Scale = 1f / 1.5f }, new Vector3(3f, 8f, 9f), new Vector3(9f, -3f, 9f)).SetName("GetLocalPointVector3All"); ;
-			}
-		}
+				Angle = MathF.DegToRad(90.0f)
+			};
+			AssertEqual(new Vector3(8.0f, -3.0f, 9.0f), transform.GetLocalPoint(new Vector3(3.0f, 8.0f, 9.0f)), "Rotation");
+			AssertEqual(new Vector2(8.0f, -3.0f), transform.GetLocalPoint(new Vector2(3.0f, 8.0f)), "2D Rotation");
 
-		[Test]
-		[TestCaseSource(typeof(TransformTest), "GetLocalPointVector3Cases")]
-		public void GetLocalPointVector3(Transform transform, Vector3 vec, Vector3 expected)
-		{
-			Vector3 result = transform.GetLocalPoint(vec);
-			Assert.AreEqual(expected.X, result.X, 0.00001f);
-			Assert.AreEqual(expected.Y, result.Y, 0.00001f);
-			Assert.AreEqual(expected.Z, result.Z, 0.00001f);
-		}
-
-
-		public static IEnumerable GetWorldPointVector2Cases
-		{
-			get
+			transform = new Transform()
 			{
-				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f) }, new Vector2(3f, 6f), new Vector2(4f, 8f)).SetName("GetWorldPointVector2Position");
-				yield return new TestCaseData(new Transform() { Angle = MathF.DegToRad(90) }, new Vector2(3f, 6f), new Vector2(-6f, 3f)).SetName("GetWorldPointVector2Rotation");
-				yield return new TestCaseData(new Transform() { Scale = 1.5f }, new Vector2(3f, 6f), new Vector2(4.5f, 9f)).SetName("GetWorldPointVector2Scale");
-				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f), Angle = MathF.DegToRad(90), Scale = 1.5f }, new Vector2(3f, 6f), new Vector2(-8f, 6.5f)).SetName("GetWorldPointVector2All");
-			}
-		}
+				Scale = 1.0f / 1.5f
+			};
+			AssertEqual(new Vector3(4.5f, 12.0f, 13.5f), transform.GetLocalPoint(new Vector3(3.0f, 8.0f, 9.0f)), "Scale");
+			AssertEqual(new Vector2(4.5f, 12.0f), transform.GetLocalPoint(new Vector2(3.0f, 8.0f)), "2D Scale");
 
-		[Test]
-		[TestCaseSource(typeof(TransformTest), "GetWorldPointVector2Cases")]
-		public void GetWorldPointVector2(Transform transform, Vector2 vec, Vector2 expected)
-		{
-			Vector2 result = transform.GetWorldPoint(vec);
-			Assert.AreEqual(expected.X, result.X, 0.00001f);
-			Assert.AreEqual(expected.Y, result.Y, 0.00001f);
-		}
-
-		public static IEnumerable GetWorldPointVector3Cases
-		{
-			get
+			transform = new Transform()
 			{
-				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f) }, new Vector3(3f, 6f, 9f), new Vector3(4f, 8f, 12f)).SetName("GetWorldPointVector3Position"); ;
-				yield return new TestCaseData(new Transform() { Angle = MathF.DegToRad(90) }, new Vector3(3f, 6f, 9f), new Vector3(-6f, 3f, 9f)).SetName("GetWorldPointVector3Rotation"); ;
-				yield return new TestCaseData(new Transform() { Scale = 1.5f }, new Vector3(3f, 6f, 9f), new Vector3(4.5f, 9f, 13.5f)).SetName("GetWorldPointVector3Scale"); ;
-				yield return new TestCaseData(new Transform() { Pos = new Vector3(1f, 2f, 3f), Angle = MathF.DegToRad(90), Scale = 1.5f }, new Vector3(3f, 6f, 9f), new Vector3(-8f, 6.5f, 16.5f)).SetName("GetWorldPointVector3All"); ;
-			}
+				Pos = new Vector3(1.0f, 2.0f, 3.0f),
+				Angle = MathF.DegToRad(90.0f),
+				Scale = 1.0f / 1.5f
+			};
+			AssertEqual(new Vector3(9.0f, -3.0f, 9.0f), transform.GetLocalPoint(new Vector3(3.0f, 8.0f, 9.0f)), "Position, Rotation, Scale");
+			AssertEqual(new Vector2(9.0f, -3.0f), transform.GetLocalPoint(new Vector2(3.0f, 8.0f)), "2D Position, Rotation, Scale");
+		}
+		[Test] public void GetWorldPoint()
+		{
+			Transform transform;
+
+			transform = new Transform()
+			{
+				Pos = new Vector3(1.0f, 2.0f, 3.0f)
+			};
+			AssertEqual(new Vector3(4.0f, 8.0f, 12.0f), transform.GetWorldPoint(new Vector3(3.0f, 6.0f, 9.0f)), "Position");
+			AssertEqual(new Vector2(4.0f, 8.0f), transform.GetWorldPoint(new Vector2(3.0f, 6.0f)), "2D Position");
+
+			transform = new Transform()
+			{
+				Angle = MathF.DegToRad(90.0f)
+			};
+			AssertEqual(new Vector3(-6.0f, 3.0f, 9.0f), transform.GetWorldPoint(new Vector3(3.0f, 6.0f, 9.0f)), "Rotation");
+			AssertEqual(new Vector2(-6.0f, 3.0f), transform.GetWorldPoint(new Vector2(3.0f, 6.0f)), "2D Rotation");
+
+			transform = new Transform()
+			{
+				Scale = 1.5f
+			};
+			AssertEqual(new Vector3(4.5f, 9.0f, 13.5f), transform.GetWorldPoint(new Vector3(3.0f, 6.0f, 9.0f)), "Scale");
+			AssertEqual(new Vector2(4.5f, 9.0f), transform.GetWorldPoint(new Vector2(3.0f, 6.0f)), "2D Scale");
+
+			transform = new Transform()
+			{
+				Pos = new Vector3(1.0f, 2.0f, 3.0f),
+				Angle = MathF.DegToRad(90.0f),
+				Scale = 1.5f
+			};
+			AssertEqual(new Vector3(-8.0f, 6.5f, 16.5f), transform.GetWorldPoint(new Vector3(3.0f, 6.0f, 9.0f)), "Position, Rotation, Scale");
+			AssertEqual(new Vector2(-8.0f, 6.5f), transform.GetWorldPoint(new Vector2(3.0f, 6.0f)), "2D Position, Rotation, Scale");
 		}
 
-		[Test]
-		[TestCaseSource(typeof(TransformTest), "GetWorldPointVector3Cases")]
-		public void GetWorldPointVector3(Transform transform, Vector3 vec, Vector3 expected)
+		private static void AssertEqual(Vector2 expected, Vector2 actual, string message)
 		{
-			Vector3 result = transform.GetWorldPoint(vec);
-			Assert.AreEqual(expected.X, result.X, 0.00001f);
-			Assert.AreEqual(expected.Y, result.Y, 0.00001f);
-			Assert.AreEqual(expected.Z, result.Z, 0.00001f);
+			float threshold = 0.00001f;
+			Assert.AreEqual(expected.X, actual.X, threshold, message);
+			Assert.AreEqual(expected.Y, actual.Y, threshold, message);
+		}
+		private static void AssertEqual(Vector3 expected, Vector3 actual, string message)
+		{
+			float threshold = 0.00001f;
+			Assert.AreEqual(expected.X, actual.X, threshold, message);
+			Assert.AreEqual(expected.Y, actual.Y, threshold, message);
+			Assert.AreEqual(expected.Z, actual.Z, threshold, message);
 		}
 	}
 }
