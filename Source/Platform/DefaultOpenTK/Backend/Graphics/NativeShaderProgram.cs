@@ -137,17 +137,28 @@ namespace Duality.Backend.DefaultOpenTK
 					fieldSet.Add(shaderPart.Fields[i]);
 				}
 			}
-			this.fields = fieldSet.ToArray();
 
-			// Determine each variables location
-			this.fieldLocations = new int[this.fields.Length];
-			for (int i = 0; i < this.fields.Length; i++)
+			// Collect variables that are available through shader reflection, e.g.
+			// haven't been optimized of #ifdef'd away.
+			List<int> validLocations = new List<int>();
+			List<ShaderFieldInfo> validFields = new List<ShaderFieldInfo>();
+			foreach (ShaderFieldInfo field in fieldSet)
 			{
-				if (this.fields[i].Scope == ShaderFieldScope.Uniform)
-					this.fieldLocations[i] = GL.GetUniformLocation(this.handle, this.fields[i].Name);
+				int location;
+				if (field.Scope == ShaderFieldScope.Uniform)
+					location = GL.GetUniformLocation(this.handle, field.Name);
 				else
-					this.fieldLocations[i] = GL.GetAttribLocation(this.handle, this.fields[i].Name);
+					location = GL.GetAttribLocation(this.handle, field.Name);
+
+				if (location >= 0)
+				{
+					validLocations.Add(location);
+					validFields.Add(field);
+				}
 			}
+
+			this.fields = validFields.ToArray();
+			this.fieldLocations = validLocations.ToArray();
 		}
 		ShaderFieldInfo[] INativeShaderProgram.GetFields()
 		{
