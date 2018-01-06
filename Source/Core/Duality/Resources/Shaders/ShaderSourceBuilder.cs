@@ -47,6 +47,7 @@ namespace Duality.Resources
 
 		private string mainChunk = string.Empty;
 		private List<string> sharedChunk = new List<string>();
+		private List<string> conditionalSymbols = new List<string>();
 		private StringBuilder textBuilder = new StringBuilder();
 
 
@@ -77,6 +78,20 @@ namespace Duality.Resources
 		{
 			this.sharedChunk.Add(sourceCode);
 		}
+		/// <summary>
+		/// Sets or removes a shared conditional compilation symbol to be included as a 
+		/// preprocessor define in the resulting shader.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="isActive"></param>
+		public void SetConditional(string name, bool isActive)
+		{
+			bool hasSymbol = this.conditionalSymbols.Contains(name);
+			if (isActive && !hasSymbol)
+				this.conditionalSymbols.Add(name);
+			else if (!isActive && hasSymbol)
+				this.conditionalSymbols.Remove(name);
+		}
 
 		/// <summary>
 		/// Builds the merged, preprocessed source code.
@@ -86,7 +101,20 @@ namespace Duality.Resources
 		{
 			this.textBuilder.Clear();
 
-			// Append shared chunks at the top
+			// Append preprocessor defines at the top
+			if (this.conditionalSymbols.Count > 0)
+			{
+				this.textBuilder.AppendFormat("#line {0}", (this.sharedChunk.Count + 1) * 10000);
+				this.textBuilder.AppendLine();
+				for (int i = 0; i < this.conditionalSymbols.Count; i++)
+				{
+					this.textBuilder.AppendFormat("#define {0}", this.conditionalSymbols[i]);
+					this.textBuilder.AppendLine();
+				}
+				this.textBuilder.AppendLine();
+			}
+
+			// Append shared chunks before any other code
 			for (int i = 0; i < this.sharedChunk.Count; i++)
 			{
 				this.textBuilder.AppendFormat("#line {0}", (i + 1) * 10000);

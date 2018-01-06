@@ -202,5 +202,48 @@ namespace Duality.Tests.Resources
 			string resultShader = builder.Build();
 			Assert.AreEqual(expectedResultShader, resultShader);
 		}
+		[Test] public void ConditionalSymbols()
+		{
+			ShaderSourceBuilder builder = new ShaderSourceBuilder();
+			string mainShader = new StringBuilder()
+				.AppendLine("void main()")
+				.AppendLine("{")
+				.AppendLine("  gl_Position = sharedFunc(gl_Vertex);")
+				.AppendLine("}")
+				.ToString();
+			string sharedShader = new StringBuilder()
+				.AppendLine("vec4 sharedFuncA(vec4 pos)")
+				.AppendLine("{")
+				.AppendLine("  return pos + vec4(1.0, 0.0, 0.0, 0.0);")
+				.AppendLine("}")
+				.ToString();
+			string expectedResultShader = new StringBuilder()
+				.AppendLine("#line 20000")
+				.AppendLine("#define CONDITION_B")
+				.AppendLine("#define CONDITION_C")
+				.AppendLine()
+				.AppendLine("#line 10000")
+				.AppendLine("vec4 sharedFuncA(vec4 pos)")
+				.AppendLine("{")
+				.AppendLine("  return pos + vec4(1.0, 0.0, 0.0, 0.0);")
+				.AppendLine("}")
+				.AppendLine()
+				.AppendLine("#line 1")
+				.AppendLine("void main()")
+				.AppendLine("{")
+				.AppendLine("  gl_Position = sharedFunc(gl_Vertex);")
+				.AppendLine("}")
+				.ToString();
+
+			builder.SetConditional("CONDITION_A", true);
+			builder.SetConditional("CONDITION_B", true);
+			builder.SetConditional("CONDITION_C", true);
+			builder.SetConditional("CONDITION_A", false);
+			builder.SetMainChunk(mainShader);
+			builder.AddSharedChunk(sharedShader);
+
+			string resultShader = builder.Build();
+			Assert.AreEqual(expectedResultShader, resultShader);
+		}
 	}
 }

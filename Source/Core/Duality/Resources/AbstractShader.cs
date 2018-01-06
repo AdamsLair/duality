@@ -108,6 +108,8 @@ namespace Duality.Resources
 			// Preprocess the source code to include builtin shader functions
 			ShaderSourceBuilder builder = new ShaderSourceBuilder();
 
+			string typeConditional = string.Format("SHADERTYPE_{0}", this.Type).ToUpperInvariant();
+			builder.SetConditional(typeConditional, true);
 			builder.SetMainChunk(this.source);
 			foreach (string sharedChunk in CommonSourceChunks)
 			{
