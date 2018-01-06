@@ -784,7 +784,7 @@ namespace Duality.Drawing
 			this.shaderParameters.Set(BuiltinShaderFields.FrameCount, Time.FrameCount);
 
 			this.shaderParameters.Set(BuiltinShaderFields.CameraPosition, this.viewerPos);
-			this.shaderParameters.Set(BuiltinShaderFields.CameraParallax, this.projection == ProjectionMode.Perspective);
+			this.shaderParameters.Set(BuiltinShaderFields.CameraIsPerspective, this.projection == ProjectionMode.Perspective);
 			this.shaderParameters.Set(BuiltinShaderFields.CameraFocusDist, this.focusDist);
 		}
 
