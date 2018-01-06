@@ -2,24 +2,28 @@
 // You can override this on a per-shader basis by adding your own version directive.
 #version 120
 
-// Transforms the specified vertex from world space into clip space.
-// (Clip space is the expected vertex shader output)
-vec4 TransformWorldToClip(vec4 worldPos)
-{
-	return gl_ModelViewProjectionMatrix * worldPos;
-}
+uniform mat4 _ViewMatrix;
+uniform mat4 _ProjectionMatrix;
+uniform mat4 _ViewProjectionMatrix;
 
 // Transforms the specified vertex from world space into view space.
 vec4 TransformWorldToView(vec4 worldPos)
 {
-	return gl_ModelViewMatrix * worldPos;
+	return _ViewMatrix * worldPos;
 }
 
 // Transforms the specified vertex from view space into clip space.
 // (Clip space is the expected vertex shader output)
 vec4 TransformViewToClip(vec4 viewPos)
 {
-	return gl_ProjectionMatrix * viewPos;
+	return _ProjectionMatrix * viewPos;
+}
+
+// Transforms the specified vertex from world space into clip space.
+// (Clip space is the expected vertex shader output)
+vec4 TransformWorldToClip(vec4 worldPos)
+{
+	return _ViewProjectionMatrix * worldPos;
 }
 
 // Performs the default vertex shader coordinate transformation that

@@ -219,27 +219,32 @@ namespace Duality.Backend.DefaultOpenTK
 				GL.Enable(EnableCap.DepthTest);
 				GL.DepthFunc(DepthFunction.Lequal);
 			}
-			
-			OpenTK.Matrix4 openTkModelView;
-			Matrix4 modelView = options.ViewMatrix;
-			GetOpenTKMatrix(ref modelView, out openTkModelView);
 
-			GL.MatrixMode(MatrixMode.Modelview);
-			GL.LoadMatrix(ref openTkModelView);
-			
-			OpenTK.Matrix4 openTkProjection;
-			Matrix4 projection = options.ProjectionMatrix;
-			GetOpenTKMatrix(ref projection, out openTkProjection);
-
-			GL.MatrixMode(MatrixMode.Projection);
-			GL.LoadMatrix(ref openTkProjection);
+			// Prepare shared matrix stack for rendering
+			Matrix4 viewMatrix = options.ViewMatrix;
+			Matrix4 projectionMatrix = options.ProjectionMatrix;
 
 			if (NativeRenderTarget.BoundRT != null)
 			{
-				GL.Scale(1.0f, -1.0f, 1.0f);
+				Matrix4 flipOutput = Matrix4.CreateScale(1.0f, -1.0f, 1.0f);
+				projectionMatrix = flipOutput * projectionMatrix;
+
 				if (options.RenderMode == RenderMode.Screen)
-					GL.Translate(0.0f, -device.TargetSize.Y, 0.0f);
+				{
+					Matrix4 offsetOutput = Matrix4.CreateTranslation(0.0f, -device.TargetSize.Y, 0.0f);
+					projectionMatrix = offsetOutput * projectionMatrix;
+				}
 			}
+
+			this.renderOptions.ShaderParameters.Set(
+				BuiltinShaderFields.ViewMatrix,
+				viewMatrix);
+			this.renderOptions.ShaderParameters.Set(
+				BuiltinShaderFields.ProjectionMatrix,
+				projectionMatrix);
+			this.renderOptions.ShaderParameters.Set(
+				BuiltinShaderFields.ViewProjectionMatrix,
+				viewMatrix * projectionMatrix);
 		}
 		void IGraphicsBackend.Render(IReadOnlyList<DrawBatch> batches)
 		{

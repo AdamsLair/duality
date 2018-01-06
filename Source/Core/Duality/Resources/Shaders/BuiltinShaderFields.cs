@@ -21,5 +21,9 @@ namespace Duality.Resources
 		public static readonly string CameraFocusDist = "_CameraFocusDist";
 		public static readonly string CameraPosition = "_CameraPosition";
 		public static readonly string CameraIsPerspective = "_CameraIsPerspective";
+
+		public static readonly string ViewMatrix = "_ViewMatrix";
+		public static readonly string ProjectionMatrix = "_ProjectionMatrix";
+		public static readonly string ViewProjectionMatrix = "_ViewProjectionMatrix";
 	}
 }
