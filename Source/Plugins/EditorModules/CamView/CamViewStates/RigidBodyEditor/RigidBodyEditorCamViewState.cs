@@ -554,7 +554,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 
 			// If an action is currently being performed, that action will always be the active tool
-			if (this.actionTool != this.toolNone)
+			if (this.actionTool != this.toolNone || this.ObjAction != ObjectEditorAction.None)
 				this.activeTool = this.actionTool;
 			// Otherwise, ask the user-selected tool if its action is available right now
 			else if (this.selectedTool.IsHoveringAction)
@@ -677,8 +677,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			// Allow the selected tool to handle the mouse move event
-			this.selectedTool.OnMouseMove();
+			// If we're not using mouse input for a cam view action already, 
+			// allow the selected tool to handle the mouse move event.
+			if (this.ObjAction == ObjectEditorAction.None)
+			{
+				this.selectedTool.OnMouseMove();
+			}
 
 			// Update what is considered the "active" state, e.g. active tools and data
 			this.UpdateActiveState();

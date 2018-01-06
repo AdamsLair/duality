@@ -160,9 +160,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 							shapeCenter += shapeVertices[i];
 
 						shapeCenter /= shapeVertices.Length;
-						MathF.TransformCoord(ref shapeCenter.X, ref shapeCenter.Y, objAngle, objScale);
 					}
-					
+					MathF.TransformCoord(ref shapeCenter.X, ref shapeCenter.Y, objAngle, objScale);
+
 					// Draw shape index
 					if (body == selectedBody)
 					{
