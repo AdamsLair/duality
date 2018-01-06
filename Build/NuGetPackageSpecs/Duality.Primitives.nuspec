@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Primitives</id>
-    <version>2.0.4</version>
+    <version>2.0.5</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Primitives</title>
@@ -16,10 +16,8 @@
     <references>
       <reference file="DualityPrimitives.dll" />
     </references>
-    <releaseNotes>Vector Normalization Tweaks, Vector4 Math Tweaks, Fixes
-#CHANGE: Normalizing a zero-length vector no longer produces an NaN vector, but a Zero vector instead.
-#ADD: Added Vector4.Min / Vector4.Max. 
-#FIX: Fixed Vector4 / Vector4 operator.</releaseNotes>
+    <releaseNotes>
+</releaseNotes>
   </metadata>
   <files>
     <file src="..\Output\DualityPrimitives.dll" target="lib" />
