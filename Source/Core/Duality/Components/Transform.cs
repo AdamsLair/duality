@@ -41,7 +41,7 @@ namespace Duality.Components
 		private Transform parentTransform = null;
 		private Vector3   posAbs          = Vector3.Zero;
 		private float     angleAbs        = 0.0f;
-		private Vector2   rotationDir     = new Vector2(0.0f, -1.0f);
+		private Vector2   rotationDirAbs  = new Vector2(0.0f, -1.0f);
 		private float     scaleAbs        = 1.0f;
 		// Auto-calculated values
 		private Vector3   vel             = Vector3.Zero;
@@ -227,7 +227,7 @@ namespace Duality.Components
 					this.angle = this.angleAbs;
 
 				this.changes |= DirtyFlags.Angle;
-				this.UpdateRotationDir();
+				this.UpdateRotationDirAbs();
 				this.UpdateAbsChild();
 			}
 		}
@@ -298,8 +298,8 @@ namespace Duality.Components
 		public Vector3 GetWorldPoint(Vector3 local)
 		{
 			return new Vector3(
-				local.X * this.scaleAbs * -this.rotationDir.Y + local.Y * this.scaleAbs * -this.rotationDir.X + this.posAbs.X,
-				local.X * this.scaleAbs * this.rotationDir.X + local.Y * this.scaleAbs * -this.rotationDir.Y + this.posAbs.Y,
+				local.X * this.scaleAbs * -this.rotationDirAbs.Y + local.Y * this.scaleAbs * -this.rotationDirAbs.X + this.posAbs.X,
+				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y + this.posAbs.Y,
 				local.Z * this.scaleAbs + this.posAbs.Z);
 		}
 		/// <summary>
@@ -310,8 +310,8 @@ namespace Duality.Components
 		public Vector2 GetWorldPoint(Vector2 local)
 		{
 			return new Vector2(
-				local.X * this.scaleAbs * -this.rotationDir.Y + local.Y * this.scaleAbs * -this.rotationDir.X + this.posAbs.X,
-				local.X * this.scaleAbs * this.rotationDir.X + local.Y * this.scaleAbs * -this.rotationDir.Y + this.posAbs.Y);
+				local.X * this.scaleAbs * -this.rotationDirAbs.Y + local.Y * this.scaleAbs * -this.rotationDirAbs.X + this.posAbs.X,
+				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y + this.posAbs.Y);
 		}
 		/// <summary>
 		/// Calculates a Transform-local coordinate from a world coordinate.
@@ -322,8 +322,8 @@ namespace Duality.Components
 		{
 			float inverseScale = 1f / this.scaleAbs;
 			return new Vector3(
-				((world.X - this.posAbs.X) * -this.rotationDir.Y + (world.Y - this.posAbs.Y) * this.rotationDir.X) * inverseScale,
-				((world.X - this.posAbs.X) * -this.rotationDir.X + (world.Y - this.posAbs.Y) * -this.rotationDir.Y) * inverseScale,
+				((world.X - this.posAbs.X) * -this.rotationDirAbs.Y + (world.Y - this.posAbs.Y) * this.rotationDirAbs.X) * inverseScale,
+				((world.X - this.posAbs.X) * -this.rotationDirAbs.X + (world.Y - this.posAbs.Y) * -this.rotationDirAbs.Y) * inverseScale,
 				(world.Z - this.posAbs.Z) * inverseScale);
 		}
 		/// <summary>
@@ -335,8 +335,8 @@ namespace Duality.Components
 		{
 			float inverseScale = 1f / this.scaleAbs;
 			return new Vector2(
-				((world.X - this.posAbs.X) * -this.rotationDir.Y + (world.Y - this.posAbs.Y) * this.rotationDir.X) * inverseScale,
-				((world.X - this.posAbs.X) * -this.rotationDir.X + (world.Y - this.posAbs.Y) * -this.rotationDir.Y) * inverseScale);
+				((world.X - this.posAbs.X) * -this.rotationDirAbs.Y + (world.Y - this.posAbs.Y) * this.rotationDirAbs.X) * inverseScale,
+				((world.X - this.posAbs.X) * -this.rotationDirAbs.X + (world.Y - this.posAbs.Y) * -this.rotationDirAbs.Y) * inverseScale);
 		}
 
 		/// <summary>
@@ -348,8 +348,8 @@ namespace Duality.Components
 		public Vector3 GetWorldVector(Vector3 local)
 		{
 			return new Vector3(
-				local.X * this.scaleAbs * -this.rotationDir.Y + local.Y * this.scaleAbs * -this.rotationDir.X,
-				local.X * this.scaleAbs * this.rotationDir.X + local.Y * this.scaleAbs * -this.rotationDir.Y,
+				local.X * this.scaleAbs * -this.rotationDirAbs.Y + local.Y * this.scaleAbs * -this.rotationDirAbs.X,
+				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y,
 				local.Z * this.scaleAbs);
 		}
 		/// <summary>
@@ -361,8 +361,8 @@ namespace Duality.Components
 		public Vector2 GetWorldVector(Vector2 local)
 		{
 			return new Vector2(
-				local.X * this.scaleAbs * -this.rotationDir.Y + local.Y * this.scaleAbs * -this.rotationDir.X,
-				local.X * this.scaleAbs * this.rotationDir.X + local.Y * this.scaleAbs * -this.rotationDir.Y);
+				local.X * this.scaleAbs * -this.rotationDirAbs.Y + local.Y * this.scaleAbs * -this.rotationDirAbs.X,
+				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y);
 		}
 		/// <summary>
 		/// Calculates a Transform-local vector from a world vector.
@@ -374,8 +374,8 @@ namespace Duality.Components
 		{
 			float inverseScale = 1f / this.scaleAbs;
 			return new Vector3(
-				(world.X * -this.rotationDir.Y + world.Y * this.rotationDir.X) * inverseScale,
-				(world.X * -this.rotationDir.X + world.Y * -this.rotationDir.Y) * inverseScale,
+				(world.X * -this.rotationDirAbs.Y + world.Y * this.rotationDirAbs.X) * inverseScale,
+				(world.X * -this.rotationDirAbs.X + world.Y * -this.rotationDirAbs.Y) * inverseScale,
 				world.Z * inverseScale);
 		}
 		/// <summary>
@@ -388,8 +388,8 @@ namespace Duality.Components
 		{
 			float inverseScale = 1f / this.scaleAbs;
 			return new Vector2(
-				(world.X * -this.rotationDir.Y + world.Y * this.rotationDir.X) * inverseScale,
-				(world.X * -this.rotationDir.X + world.Y * -this.rotationDir.Y) * inverseScale);
+				(world.X * -this.rotationDirAbs.Y + world.Y * this.rotationDirAbs.X) * inverseScale,
+				(world.X * -this.rotationDirAbs.X + world.Y * -this.rotationDirAbs.Y) * inverseScale);
 		}
 
 		/// <summary>
@@ -760,9 +760,9 @@ namespace Duality.Components
 			}
 		}
 
-		private void UpdateRotationDir()
+		private void UpdateRotationDirAbs()
 		{
-			this.rotationDir = new Vector2(
+			this.rotationDirAbs = new Vector2(
 				MathF.Sin(this.angleAbs), 
 				-MathF.Cos(this.angleAbs));
 		}
@@ -821,7 +821,7 @@ namespace Duality.Components
 			}
 
 			// Update cached values
-			this.UpdateRotationDir();
+			this.UpdateRotationDirAbs();
 
 			// Update absolute children coordinates
 			this.UpdateAbsChild(updateTempVel);
