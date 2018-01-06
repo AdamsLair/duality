@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.CamView</id>
-    <version>2.6.1</version>
+    <version>2.6.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Camera View</title>
@@ -13,14 +13,12 @@
     <summary>A basic Camera View editor module.</summary>
     <description>A basic Camera View editor module.</description>
     <tags>Duality Editor Plugin CamView</tags>
-    <releaseNotes>Updated AdamsLair.WinForms Dependency, RigidBody Shape Editor Bugfix, Explicit C
-#FIX: Fixed a rogue exception that would occur when attempting to edit the value of a property using an enum type with no values. 
-#CHANGE: Updated AdamsLair.WinForms dependency to version 1.1.13
-#FIX: Fixed a bug where invoking the delete vertex action while not hovering a vertex would cause an exception.
-#ADD: Explicitly stated to use C# 4.0 in Duality core projects to make sure the main repository remains backwards compatible for users with older VS versions.</releaseNotes>
+    <releaseNotes>RigidBody Shape Overlay Bugfix, RigidBody Vertex Tool Bugfix
+#FIX: Fixed a bug where shape indices for circle shapes would be rendered at the wrong position.
+#FIX: Fixed a bug where the vertex editing tool would trigger while dragging a RigidBody shape.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.14.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.10.1" />
+      <dependency id="AdamsLair.Duality" version="2.14.2" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.10.3" />
     </dependencies>
   </metadata>
   <files>
