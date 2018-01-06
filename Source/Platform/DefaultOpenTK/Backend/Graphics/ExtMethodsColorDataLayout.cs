@@ -16,7 +16,6 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				default:
 				case ColorDataLayout.Rgba: return PixelFormat.Rgba;
-				case ColorDataLayout.Bgra: return PixelFormat.Bgra;
 			}
 		}
 	}
