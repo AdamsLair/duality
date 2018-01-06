@@ -74,7 +74,7 @@ namespace Duality
 		/// <summary>
 		/// Gets or sets an OpenTK.Vector2 with the X and Y components of this instance.
 		/// </summary>
-		public Vector2 Xy { get { return new Vector2(X, Y); } set { X = value.X; Y = value.Y; } }
+		public Vector2 Xy { get { return new Vector2(this.X, this.Y); } set { this.X = value.X; this.Y = value.Y; } }
 
 		/// <summary>
 		/// Constructs a new instance.
@@ -82,9 +82,9 @@ namespace Duality
 		/// <param name="value">The value that will initialize this instance.</param>
 		public Vector3(float value)
 		{
-			X = value;
-			Y = value;
-			Z = value;
+			this.X = value;
+			this.Y = value;
+			this.Z = value;
 		}
 		/// <summary>
 		/// Constructs a new Vector3.
@@ -94,9 +94,9 @@ namespace Duality
 		/// <param name="z">The z component of the Vector3.</param>
 		public Vector3(float x, float y, float z)
 		{
-			X = x;
-			Y = y;
-			Z = z;
+			this.X = x;
+			this.Y = y;
+			this.Z = z;
 		}
 		/// <summary>
 		/// Constructs a new Vector3 from the given Vector2.
@@ -104,9 +104,9 @@ namespace Duality
 		/// <param name="v">The Vector2 to copy components from.</param>
 		public Vector3(Vector2 v)
 		{
-			X = v.X;
-			Y = v.Y;
-			Z = 0.0f;
+			this.X = v.X;
+			this.Y = v.Y;
+			this.Z = 0.0f;
 		}
 		/// <summary>
 		/// Constructs a new Vector3 from the given Vector2.
@@ -115,9 +115,9 @@ namespace Duality
 		/// <param name="z"></param>
 		public Vector3(Vector2 v, float z)
 		{
-			X = v.X;
-			Y = v.Y;
-			Z = z;
+			this.X = v.X;
+			this.Y = v.Y;
+			this.Z = z;
 		}
 
 		/// <summary>
@@ -166,8 +166,8 @@ namespace Duality
 
 				float scale = 1.0f / length;
 				return new Vector3(
-					this.X * scale, 
-					this.Y * scale, 
+					this.X * scale,
+					this.Y * scale,
 					this.Z * scale);
 			}
 		}
@@ -377,7 +377,7 @@ namespace Duality
 				left.Z * right.X - left.X * right.Z,
 				left.X * right.Y - left.Y * right.X);
 		}
-		
+
 		/// <summary>
 		/// Calculates the distance between two points described by two vectors. 
 		/// </summary>
@@ -445,7 +445,7 @@ namespace Duality
 			Vector3.Dot(ref first, ref second, out temp);
 			result = (float)System.Math.Acos(temp / (first.Length * second.Length));
 		}
-		
+
 		/// <summary>
 		/// Transform a Vector by the given Matrix</summary>
 		/// <param name="vec">The vector to transform</param>
@@ -634,7 +634,7 @@ namespace Duality
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return String.Format("({0}, {1}, {2})", X, Y, Z);
+			return string.Format("({0}, {1}, {2})", this.X, this.Y, this.Z);
 		}
 		/// <summary>
 		/// Returns the hashcode for this instance.
@@ -642,7 +642,7 @@ namespace Duality
 		/// <returns>A System.Int32 containing the unique hashcode for this instance.</returns>
 		public override int GetHashCode()
 		{
-			return X.GetHashCode() ^ Y.GetHashCode() ^ Z.GetHashCode();
+			return this.X.GetHashCode() ^ this.Y.GetHashCode() ^ this.Z.GetHashCode();
 		}
 		/// <summary>
 		/// Indicates whether this instance and a specified object are equal.
@@ -665,9 +665,9 @@ namespace Duality
 		public bool Equals(Vector3 other)
 		{
 			return
-				X == other.X &&
-				Y == other.Y &&
-				Z == other.Z;
+				this.X == other.X &&
+				this.Y == other.Y &&
+				this.Z == other.Z;
 		}
 	}
 }

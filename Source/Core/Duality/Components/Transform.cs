@@ -47,6 +47,8 @@ namespace Duality.Components
 		private Vector3   velAbs          = Vector3.Zero;
 		private float     angleVel        = 0.0f;
 		private float     angleVelAbs     = 0.0f;
+		// Cached values, non-serialized values
+		[DontSerialize] private Vector2    rotationDirAbs  = new Vector2(0.0f, -1.0f);
 		// Temporary per-frame values
 		[DontSerialize] private DirtyFlags changes         = DirtyFlags.None;
 		[DontSerialize] private Vector3    tempVel         = Vector3.Zero;
@@ -226,6 +228,7 @@ namespace Duality.Components
 					this.angle = this.angleAbs;
 
 				this.changes |= DirtyFlags.Angle;
+				this.UpdateRotationDirAbs();
 				this.UpdateAbsChild();
 			}
 		}
@@ -268,8 +271,8 @@ namespace Duality.Components
 			get 
 			{ 
 				return new Vector3(
-					MathF.Sin(this.Angle),
-					-MathF.Cos(this.Angle),
+					this.rotationDirAbs.X,
+					this.rotationDirAbs.Y,
 					0.0f);
 			}
 		}
@@ -281,13 +284,13 @@ namespace Duality.Components
 			get 
 			{
 				return new Vector3(
-					-MathF.Cos(this.Angle),
-					-MathF.Sin(this.Angle),
+					-this.rotationDirAbs.Y,
+					this.rotationDirAbs.X,
 					0.0f);
 			}
 		}
 
-
+		
 		/// <summary>
 		/// Calculates a world coordinate from a Transform-local coordinate.
 		/// </summary>
@@ -295,13 +298,10 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector3 GetWorldPoint(Vector3 local)
 		{
-			Vector3 world;
-
-			Vector3.Multiply(ref local, this.scaleAbs, out world);
-			MathF.TransformCoord(ref world.X, ref world.Y, this.angleAbs);
-			Vector3.Add(ref world, ref this.posAbs, out world);
-
-			return world;
+			return new Vector3(
+				local.X * this.scaleAbs * -this.rotationDirAbs.Y + local.Y * this.scaleAbs * -this.rotationDirAbs.X + this.posAbs.X,
+				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y + this.posAbs.Y,
+				local.Z * this.scaleAbs + this.posAbs.Z);
 		}
 		/// <summary>
 		/// Calculates a world coordinate from a Transform-local coordinate.
@@ -310,7 +310,9 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector2 GetWorldPoint(Vector2 local)
 		{
-			return this.GetWorldPoint(new Vector3(local)).Xy;
+			return new Vector2(
+				local.X * this.scaleAbs * -this.rotationDirAbs.Y + local.Y * this.scaleAbs * -this.rotationDirAbs.X + this.posAbs.X,
+				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y + this.posAbs.Y);
 		}
 		/// <summary>
 		/// Calculates a Transform-local coordinate from a world coordinate.
@@ -319,13 +321,11 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector3 GetLocalPoint(Vector3 world)
 		{
-			Vector3 local;
-			
-			Vector3.Subtract(ref world, ref this.posAbs, out local);
-			MathF.TransformCoord(ref local.X, ref local.Y, -this.angleAbs);
-			Vector3.Divide(ref local, this.scaleAbs, out local);
-
-			return local;
+			float inverseScale = 1f / this.scaleAbs;
+			return new Vector3(
+				((world.X - this.posAbs.X) * -this.rotationDirAbs.Y + (world.Y - this.posAbs.Y) * this.rotationDirAbs.X) * inverseScale,
+				((world.X - this.posAbs.X) * -this.rotationDirAbs.X + (world.Y - this.posAbs.Y) * -this.rotationDirAbs.Y) * inverseScale,
+				(world.Z - this.posAbs.Z) * inverseScale);
 		}
 		/// <summary>
 		/// Calculates a Transform-local coordinate from a world coordinate.
@@ -334,8 +334,12 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector2 GetLocalPoint(Vector2 world)
 		{
-			return this.GetLocalPoint(new Vector3(world)).Xy;
+			float inverseScale = 1f / this.scaleAbs;
+			return new Vector2(
+				((world.X - this.posAbs.X) * -this.rotationDirAbs.Y + (world.Y - this.posAbs.Y) * this.rotationDirAbs.X) * inverseScale,
+				((world.X - this.posAbs.X) * -this.rotationDirAbs.X + (world.Y - this.posAbs.Y) * -this.rotationDirAbs.Y) * inverseScale);
 		}
+
 		/// <summary>
 		/// Calculates a world vector from a Transform-local vector.
 		/// Does only take scale and rotation into account, but not position.
@@ -344,12 +348,10 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector3 GetWorldVector(Vector3 local)
 		{
-			Vector3 world;
-
-			Vector3.Multiply(ref local, this.scaleAbs, out world);
-			MathF.TransformCoord(ref world.X, ref world.Y, this.angleAbs);
-
-			return world;
+			return new Vector3(
+				local.X * this.scaleAbs * -this.rotationDirAbs.Y + local.Y * this.scaleAbs * -this.rotationDirAbs.X,
+				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y,
+				local.Z * this.scaleAbs);
 		}
 		/// <summary>
 		/// Calculates a world vector from a Transform-local vector.
@@ -359,7 +361,9 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector2 GetWorldVector(Vector2 local)
 		{
-			return this.GetWorldVector(new Vector3(local)).Xy;
+			return new Vector2(
+				local.X * this.scaleAbs * -this.rotationDirAbs.Y + local.Y * this.scaleAbs * -this.rotationDirAbs.X,
+				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y);
 		}
 		/// <summary>
 		/// Calculates a Transform-local vector from a world vector.
@@ -369,12 +373,11 @@ namespace Duality.Components
 		/// <returns></returns>
 		public Vector3 GetLocalVector(Vector3 world)
 		{
-			Vector3 local = world;
-			
-			MathF.TransformCoord(ref local.X, ref local.Y, -this.angleAbs);
-			Vector3.Divide(ref local, this.scaleAbs, out local);
-
-			return local;
+			float inverseScale = 1f / this.scaleAbs;
+			return new Vector3(
+				(world.X * -this.rotationDirAbs.Y + world.Y * this.rotationDirAbs.X) * inverseScale,
+				(world.X * -this.rotationDirAbs.X + world.Y * -this.rotationDirAbs.Y) * inverseScale,
+				world.Z * inverseScale);
 		}
 		/// <summary>
 		/// Calculates a Transform-local vector from a world vector.
@@ -382,10 +385,14 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="world"></param>
 		/// <returns></returns>
-		public Vector2 GetLocalVector(Vector2 local)
+		public Vector2 GetLocalVector(Vector2 world)
 		{
-			return this.GetLocalVector(new Vector3(local)).Xy;
+			float inverseScale = 1f / this.scaleAbs;
+			return new Vector2(
+				(world.X * -this.rotationDirAbs.Y + world.Y * this.rotationDirAbs.X) * inverseScale,
+				(world.X * -this.rotationDirAbs.X + world.Y * -this.rotationDirAbs.Y) * inverseScale);
 		}
+
 		/// <summary>
 		/// Calculates the Transforms world velocity at a given world coordinate;
 		/// </summary>
@@ -687,6 +694,12 @@ namespace Duality.Components
 				}
 				this.UpdateRel();
 			}
+
+			// Since we're not serializing rotation dir values, recalculate them on load
+			if (context == InitContext.Loaded)
+			{
+				this.UpdateRotationDirAbs();
+			}
 		}
 		void ICmpInitializable.OnShutdown(ShutdownContext context)
 		{
@@ -756,6 +769,13 @@ namespace Duality.Components
 			}
 		}
 
+		private void UpdateRotationDirAbs()
+		{
+			this.rotationDirAbs = new Vector2(
+				MathF.Sin(this.angleAbs), 
+				-MathF.Cos(this.angleAbs));
+		}
+
 		private void UpdateAbs(bool updateTempVel = false)
 		{
 			this.CheckValidTransform();
@@ -783,31 +803,31 @@ namespace Duality.Components
 					this.angleAbs = this.angle;
 					if (updateTempVel) this.tempAngleVelAbs = this.tempAngleVel;
 				}
-
+				
 				this.scaleAbs = this.scale * this.parentTransform.scaleAbs;
-
-				Vector2 parentAngleAbsDotX;
-				Vector2 parentAngleAbsDotY;
-				MathF.GetTransformDotVec(this.parentTransform.angleAbs, out parentAngleAbsDotX, out parentAngleAbsDotY);
-
-				Vector3.Multiply(ref this.pos, this.parentTransform.scaleAbs, out this.posAbs);
-				MathF.TransformDotVec(ref this.posAbs, ref parentAngleAbsDotX, ref parentAngleAbsDotY);
-				Vector3.Add(ref this.posAbs, ref this.parentTransform.posAbs, out this.posAbs);
+				this.posAbs = this.parentTransform.GetWorldPoint(this.pos);
 
 				if (updateTempVel)
 				{
-					Vector2 parentTurnVelAdjust = this.pos.Xy.PerpendicularRight;
-					Vector2.Multiply(ref parentTurnVelAdjust, this.parentTransform.tempAngleVelAbs, out parentTurnVelAdjust);
-					MathF.TransformDotVec(ref parentTurnVelAdjust, ref parentAngleAbsDotX, ref parentAngleAbsDotY);
+					this.tempVelAbs = this.parentTransform.GetWorldVector(this.tempVel);
+					this.tempVelAbs.X += this.parentTransform.tempVelAbs.X;
+					this.tempVelAbs.Y += this.parentTransform.tempVelAbs.Y;
+					this.tempVelAbs.Z += this.parentTransform.tempVelAbs.Z;
 
-					Vector3.Multiply(ref this.tempVel, this.parentTransform.scaleAbs, out this.tempVelAbs);
-					MathF.TransformDotVec(ref this.tempVelAbs, ref parentAngleAbsDotX, ref parentAngleAbsDotY);
-					Vector3.Add(ref this.tempVelAbs, ref this.parentTransform.tempVelAbs, out this.tempVelAbs);
+					// Calculate the parent rotation velocity's effect on this objects velocity.
+					// ToDo: Fix this, currently only works for small per-frame angle changes,
+					// reactivate TransformTest case when done.
+					Vector2 parentTurnVelAdjust = this.parentTransform.GetWorldVector(new Vector2(
+						-this.pos.Y * this.parentTransform.tempAngleVelAbs, 
+						this.pos.X * this.parentTransform.tempAngleVelAbs));
 
 					this.tempVelAbs.X += parentTurnVelAdjust.X;
 					this.tempVelAbs.Y += parentTurnVelAdjust.Y;
 				}
 			}
+
+			// Update cached values
+			this.UpdateRotationDirAbs();
 
 			// Update absolute children coordinates
 			this.UpdateAbsChild(updateTempVel);
@@ -919,6 +939,7 @@ namespace Duality.Components
 			target.posAbs			= this.posAbs;
 			target.angleAbs			= this.angleAbs;
 			target.scaleAbs			= this.scaleAbs;
+			target.rotationDirAbs	= this.rotationDirAbs;
 
 			target.tempVel			= this.tempVel;
 			target.tempVelAbs		= this.tempVelAbs;

@@ -66,97 +66,97 @@ namespace Duality
 		/// </summary>
 		public Vector4 Column0
 		{
-			get { return new Vector4(Row0.X, Row1.X, Row2.X, Row3.X); }
-			set { Row0.X = value.X; Row1.X = value.Y; Row2.X = value.Z; Row3.X = value.W; }
+			get { return new Vector4(this.Row0.X, this.Row1.X, this.Row2.X, this.Row3.X); }
+			set { this.Row0.X = value.X; this.Row1.X = value.Y; this.Row2.X = value.Z; this.Row3.X = value.W; }
 		}
 		/// <summary>
 		/// Gets the second column of this matrix.
 		/// </summary>
 		public Vector4 Column1
 		{
-			get { return new Vector4(Row0.Y, Row1.Y, Row2.Y, Row3.Y); }
-			set { Row0.Y = value.X; Row1.Y = value.Y; Row2.Y = value.Z; Row3.Y = value.W; }
+			get { return new Vector4(this.Row0.Y, this.Row1.Y, this.Row2.Y, this.Row3.Y); }
+			set { this.Row0.Y = value.X; this.Row1.Y = value.Y; this.Row2.Y = value.Z; this.Row3.Y = value.W; }
 		}
 		/// <summary>
 		/// Gets the third column of this matrix.
 		/// </summary>
 		public Vector4 Column2
 		{
-			get { return new Vector4(Row0.Z, Row1.Z, Row2.Z, Row3.Z); }
-			set { Row0.Z = value.X; Row1.Z = value.Y; Row2.Z = value.Z; Row3.Z = value.W; }
+			get { return new Vector4(this.Row0.Z, this.Row1.Z, this.Row2.Z, this.Row3.Z); }
+			set { this.Row0.Z = value.X; this.Row1.Z = value.Y; this.Row2.Z = value.Z; this.Row3.Z = value.W; }
 		}
 		/// <summary>
 		/// Gets the fourth column of this matrix.
 		/// </summary>
 		public Vector4 Column3
 		{
-			get { return new Vector4(Row0.W, Row1.W, Row2.W, Row3.W); }
-			set { Row0.W = value.X; Row1.W = value.Y; Row2.W = value.Z; Row3.W = value.W; }
+			get { return new Vector4(this.Row0.W, this.Row1.W, this.Row2.W, this.Row3.W); }
+			set { this.Row0.W = value.X; this.Row1.W = value.Y; this.Row2.W = value.Z; this.Row3.W = value.W; }
 		}
 		/// <summary>
 		/// Gets or sets the value at row 1, column 1 of this instance.
 		/// </summary>
-		public float M11 { get { return Row0.X; } set { Row0.X = value; } }
+		public float M11 { get { return this.Row0.X; } set { this.Row0.X = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 1, column 2 of this instance.
 		/// </summary>
-		public float M12 { get { return Row0.Y; } set { Row0.Y = value; } }
+		public float M12 { get { return this.Row0.Y; } set { this.Row0.Y = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 1, column 3 of this instance.
 		/// </summary>
-		public float M13 { get { return Row0.Z; } set { Row0.Z = value; } }
+		public float M13 { get { return this.Row0.Z; } set { this.Row0.Z = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 1, column 4 of this instance.
 		/// </summary>
-		public float M14 { get { return Row0.W; } set { Row0.W = value; } }
+		public float M14 { get { return this.Row0.W; } set { this.Row0.W = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 2, column 1 of this instance.
 		/// </summary>
-		public float M21 { get { return Row1.X; } set { Row1.X = value; } }
+		public float M21 { get { return this.Row1.X; } set { this.Row1.X = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 2, column 2 of this instance.
 		/// </summary>
-		public float M22 { get { return Row1.Y; } set { Row1.Y = value; } }
+		public float M22 { get { return this.Row1.Y; } set { this.Row1.Y = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 2, column 3 of this instance.
 		/// </summary>
-		public float M23 { get { return Row1.Z; } set { Row1.Z = value; } }
+		public float M23 { get { return this.Row1.Z; } set { this.Row1.Z = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 2, column 4 of this instance.
 		/// </summary>
-		public float M24 { get { return Row1.W; } set { Row1.W = value; } }
+		public float M24 { get { return this.Row1.W; } set { this.Row1.W = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 3, column 1 of this instance.
 		/// </summary>
-		public float M31 { get { return Row2.X; } set { Row2.X = value; } }
+		public float M31 { get { return this.Row2.X; } set { this.Row2.X = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 3, column 2 of this instance.
 		/// </summary>
-		public float M32 { get { return Row2.Y; } set { Row2.Y = value; } }
+		public float M32 { get { return this.Row2.Y; } set { this.Row2.Y = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 3, column 3 of this instance.
 		/// </summary>
-		public float M33 { get { return Row2.Z; } set { Row2.Z = value; } }
+		public float M33 { get { return this.Row2.Z; } set { this.Row2.Z = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 3, column 4 of this instance.
 		/// </summary>
-		public float M34 { get { return Row2.W; } set { Row2.W = value; } }
+		public float M34 { get { return this.Row2.W; } set { this.Row2.W = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 4, column 1 of this instance.
 		/// </summary>
-		public float M41 { get { return Row3.X; } set { Row3.X = value; } }
+		public float M41 { get { return this.Row3.X; } set { this.Row3.X = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 4, column 2 of this instance.
 		/// </summary>
-		public float M42 { get { return Row3.Y; } set { Row3.Y = value; } }
+		public float M42 { get { return this.Row3.Y; } set { this.Row3.Y = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 4, column 3 of this instance.
 		/// </summary>
-		public float M43 { get { return Row3.Z; } set { Row3.Z = value; } }
+		public float M43 { get { return this.Row3.Z; } set { this.Row3.Z = value; } }
 		/// <summary>
 		/// Gets or sets the value at row 4, column 4 of this instance.
 		/// </summary>
-		public float M44 { get { return Row3.W; } set { Row3.W = value; } }
+		public float M44 { get { return this.Row3.W; } set { this.Row3.W = value; } }
 		/// <summary>
 		/// Gets or sets the value at a specified row and column.
 		/// </summary>
@@ -164,18 +164,18 @@ namespace Duality
 		{
 			get
 			{
-				if (rowIndex == 0) return Row0[columnIndex];
-				else if (rowIndex == 1) return Row1[columnIndex];
-				else if (rowIndex == 2) return Row2[columnIndex];
-				else if (rowIndex == 3) return Row3[columnIndex];
+				if (rowIndex == 0) return this.Row0[columnIndex];
+				else if (rowIndex == 1) return this.Row1[columnIndex];
+				else if (rowIndex == 2) return this.Row2[columnIndex];
+				else if (rowIndex == 3) return this.Row3[columnIndex];
 				throw new IndexOutOfRangeException("You tried to access this matrix at: (" + rowIndex + ", " + columnIndex + ")");
 			}
 			set
 			{
-				if (rowIndex == 0) Row0[columnIndex] = value;
-				else if (rowIndex == 1) Row1[columnIndex] = value;
-				else if (rowIndex == 2) Row2[columnIndex] = value;
-				else if (rowIndex == 3) Row3[columnIndex] = value;
+				if (rowIndex == 0) this.Row0[columnIndex] = value;
+				else if (rowIndex == 1) this.Row1[columnIndex] = value;
+				else if (rowIndex == 2) this.Row2[columnIndex] = value;
+				else if (rowIndex == 3) this.Row3[columnIndex] = value;
 				else throw new IndexOutOfRangeException("You tried to set this matrix at: (" + rowIndex + ", " + columnIndex + ")");
 			}
 		}
@@ -186,10 +186,10 @@ namespace Duality
 		{
 			get
 			{
-				float m11 = Row0.X, m12 = Row0.Y, m13 = Row0.Z, m14 = Row0.W,
-						m21 = Row1.X, m22 = Row1.Y, m23 = Row1.Z, m24 = Row1.W,
-						m31 = Row2.X, m32 = Row2.Y, m33 = Row2.Z, m34 = Row2.W,
-						m41 = Row3.X, m42 = Row3.Y, m43 = Row3.Z, m44 = Row3.W;
+				float m11 = this.Row0.X, m12 = this.Row0.Y, m13 = this.Row0.Z, m14 = this.Row0.W,
+						m21 = this.Row1.X, m22 = this.Row1.Y, m23 = this.Row1.Z, m24 = this.Row1.W,
+						m31 = this.Row2.X, m32 = this.Row2.Y, m33 = this.Row2.Z, m34 = this.Row2.W,
+						m41 = this.Row3.X, m42 = this.Row3.Y, m43 = this.Row3.Z, m44 = this.Row3.W;
 				return
 					m11 * m22 * m33 * m44 - m11 * m22 * m34 * m43 + m11 * m23 * m34 * m42 - m11 * m23 * m32 * m44
 					+ m11 * m24 * m32 * m43 - m11 * m24 * m33 * m42 - m12 * m23 * m34 * m41 + m12 * m23 * m31 * m44
@@ -206,20 +206,20 @@ namespace Duality
 		{
 			get
 			{
-				return new Vector4(Row0.X, Row1.Y, Row2.Z, Row3.W);
+				return new Vector4(this.Row0.X, this.Row1.Y, this.Row2.Z, this.Row3.W);
 			}
 			set
 			{
-				Row0.X = value.X;
-				Row1.Y = value.Y;
-				Row2.Z = value.Z;
-				Row3.W = value.W;
+				this.Row0.X = value.X;
+				this.Row1.Y = value.Y;
+				this.Row2.Z = value.Z;
+				this.Row3.W = value.W;
 			}
 		}
 		/// <summary>
 		/// Gets the trace of the matrix, the sum of the values along the diagonal.
 		/// </summary>
-		public float Trace { get { return Row0.X + Row1.Y + Row2.Z + Row3.W; } }
+		public float Trace { get { return this.Row0.X + this.Row1.Y + this.Row2.Z + this.Row3.W; } }
 
 		/// <summary>
 		/// Constructs a new instance.
@@ -230,10 +230,10 @@ namespace Duality
 		/// <param name="row3">Bottom row of the matrix.</param>
 		public Matrix4(Vector4 row0, Vector4 row1, Vector4 row2, Vector4 row3)
 		{
-			Row0 = row0;
-			Row1 = row1;
-			Row2 = row2;
-			Row3 = row3;
+			this.Row0 = row0;
+			this.Row1 = row1;
+			this.Row2 = row2;
+			this.Row3 = row3;
 		}
 		/// <summary>
 		/// Constructs a new instance.
@@ -260,10 +260,10 @@ namespace Duality
 			float m20, float m21, float m22, float m23,
 			float m30, float m31, float m32, float m33)
 		{
-			Row0 = new Vector4(m00, m01, m02, m03);
-			Row1 = new Vector4(m10, m11, m12, m13);
-			Row2 = new Vector4(m20, m21, m22, m23);
-			Row3 = new Vector4(m30, m31, m32, m33);
+			this.Row0 = new Vector4(m00, m01, m02, m03);
+			this.Row1 = new Vector4(m10, m11, m12, m13);
+			this.Row2 = new Vector4(m20, m21, m22, m23);
+			this.Row3 = new Vector4(m30, m31, m32, m33);
 		}
 
 
@@ -286,11 +286,11 @@ namespace Duality
 		/// </summary>
 		public void Normalize()
 		{
-			var determinant = this.Determinant;
-			Row0 /= determinant;
-			Row1 /= determinant;
-			Row2 /= determinant;
-			Row3 /= determinant;
+			float determinant = this.Determinant;
+			this.Row0 /= determinant;
+			this.Row1 /= determinant;
+			this.Row2 /= determinant;
+			this.Row3 /= determinant;
 		}
 
 		/// <summary>
@@ -357,20 +357,20 @@ namespace Duality
 		/// <summary>
 		/// Returns the translation component of this instance.
 		/// </summary>
-		public Vector3 ExtractTranslation() { return Row3.Xyz; }
+		public Vector3 ExtractTranslation() { return this.Row3.Xyz; }
 		/// <summary>
 		/// Returns the scale component of this instance.
 		/// </summary>
-		public Vector3 ExtractScale() { return new Vector3(Row0.Xyz.Length, Row1.Xyz.Length, Row2.Xyz.Length); }
+		public Vector3 ExtractScale() { return new Vector3(this.Row0.Xyz.Length, this.Row1.Xyz.Length, this.Row2.Xyz.Length); }
 		/// <summary>
 		/// Returns the rotation component of this instance. Quite slow.
 		/// </summary>
 		/// <param name="row_normalise">Whether the method should row-normalise (i.e. remove scale from) the Matrix. Pass false if you know it's already normalised.</param>
 		public Quaternion ExtractRotation(bool row_normalise = true)
 		{
-			var row0 = Row0.Xyz;
-			var row1 = Row1.Xyz;
-			var row2 = Row2.Xyz;
+			var row0 = this.Row0.Xyz;
+			var row1 = this.Row1.Xyz;
+			var row2 = this.Row2.Xyz;
 
 			if (row_normalise)
 			{
@@ -433,7 +433,7 @@ namespace Duality
 		/// </summary>
 		public Vector4 ExtractProjection()
 		{
-			return Column3;
+			return this.Column3;
 		}
         
 		/// <summary>
@@ -1333,7 +1333,7 @@ namespace Duality
 		/// <returns>The string representation of the matrix.</returns>
 		public override string ToString()
 		{
-			return String.Format("{0}\n{1}\n{2}\n{3}", Row0, Row1, Row2, Row3);
+			return string.Format("{0}\n{1}\n{2}\n{3}", this.Row0, this.Row1, this.Row2, this.Row3);
 		}
 		/// <summary>
 		/// Returns the hashcode for this instance.
@@ -1341,7 +1341,7 @@ namespace Duality
 		/// <returns>A System.Int32 containing the unique hashcode for this instance.</returns>
 		public override int GetHashCode()
 		{
-			return Row0.GetHashCode() ^ Row1.GetHashCode() ^ Row2.GetHashCode() ^ Row3.GetHashCode();
+			return this.Row0.GetHashCode() ^ this.Row1.GetHashCode() ^ this.Row2.GetHashCode() ^ this.Row3.GetHashCode();
 		}
 		/// <summary>
 		/// Indicates whether this instance and a specified object are equal.
@@ -1363,10 +1363,10 @@ namespace Duality
 		public bool Equals(Matrix4 other)
 		{
 			return
-				Row0 == other.Row0 &&
-				Row1 == other.Row1 &&
-				Row2 == other.Row2 &&
-				Row3 == other.Row3;
+				this.Row0 == other.Row0 &&
+				this.Row1 == other.Row1 &&
+				this.Row2 == other.Row2 &&
+				this.Row3 == other.Row3;
 		}
 	}
 }

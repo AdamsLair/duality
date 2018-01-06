@@ -69,8 +69,8 @@ namespace Duality
 		/// <param name="value">The value that will initialize this instance.</param>
 		public Vector2(float value)
 		{
-			X = value;
-			Y = value;
+			this.X = value;
+			this.Y = value;
 		}
 		/// <summary>
 		/// Constructs a new Vector2.
@@ -79,8 +79,8 @@ namespace Duality
 		/// <param name="y">The y coordinate of the net Vector2.</param>
 		public Vector2(float x, float y)
 		{
-			X = x;
-			Y = y;
+			this.X = x;
+			this.Y = y;
 		}
 		/// <summary>
 		/// Constructs a new vector from angle and length.
@@ -137,7 +137,7 @@ namespace Duality
 		{
 			get
 			{
-				return new Vector2(-Y, X);
+				return new Vector2(-this.Y, this.X);
 			}
 		}
 		/// <summary>
@@ -147,7 +147,7 @@ namespace Duality
 		{
 			get
 			{
-				return new Vector2(Y, -X);
+				return new Vector2(this.Y, -this.X);
 			}
 		}
 		/// <summary>
@@ -162,7 +162,7 @@ namespace Duality
 
 				float scale = 1.0f / length;
 				return new Vector2(
-					this.X * scale, 
+					this.X * scale,
 					this.Y * scale);
 			}
 		}
@@ -391,7 +391,7 @@ namespace Duality
 			Vector2.Dot(ref first, ref second, out temp);
 			result = (float)System.Math.Acos(temp / (first.Length * second.Length));
 		}
-		
+
 		/// <summary>
 		/// Transforms a vector by a quaternion rotation.
 		/// </summary>
@@ -570,7 +570,7 @@ namespace Duality
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return String.Format("({0:F}, {1:F})", X, Y);
+			return string.Format("({0:F}, {1:F})", this.X, this.Y);
 		}
 		/// <summary>
 		/// Returns the hashcode for this instance.
@@ -578,7 +578,7 @@ namespace Duality
 		/// <returns>A System.Int32 containing the unique hashcode for this instance.</returns>
 		public override int GetHashCode()
 		{
-			return X.GetHashCode() ^ Y.GetHashCode();
+			return this.X.GetHashCode() ^ this.Y.GetHashCode();
 		}
 		/// <summary>
 		/// Indicates whether this instance and a specified object are equal.
@@ -601,8 +601,8 @@ namespace Duality
 		public bool Equals(Vector2 other)
 		{
 			return
-				X == other.X &&
-				Y == other.Y;
+				this.X == other.X &&
+				this.Y == other.Y;
 		}
 	}
 }

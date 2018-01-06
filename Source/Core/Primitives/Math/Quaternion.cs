@@ -47,23 +47,23 @@ namespace Duality
 		/// <summary>
 		/// Gets or sets an OpenTK.Vector3 with the X, Y and Z components of this instance.
 		/// </summary>
-		public Vector3 Xyz { get { return xyz; } set { xyz = value; } }
+		public Vector3 Xyz { get { return this.xyz; } set { this.xyz = value; } }
 		/// <summary>
 		/// Gets or sets the X component of this instance.
 		/// </summary>
-		public float X { get { return xyz.X; } set { xyz.X = value; } }
+		public float X { get { return this.xyz.X; } set { this.xyz.X = value; } }
 		/// <summary>
 		/// Gets or sets the Y component of this instance.
 		/// </summary>
-		public float Y { get { return xyz.Y; } set { xyz.Y = value; } }
+		public float Y { get { return this.xyz.Y; } set { this.xyz.Y = value; } }
 		/// <summary>
 		/// Gets or sets the Z component of this instance.
 		/// </summary>
-		public float Z { get { return xyz.Z; } set { xyz.Z = value; } }
+		public float Z { get { return this.xyz.Z; } set { this.xyz.Z = value; } }
 		/// <summary>
 		/// Gets or sets the W component of this instance.
 		/// </summary>
-		public float W { get { return w; } set { w = value; } }
+		public float W { get { return this.w; } set { this.w = value; } }
 		/// <summary>
 		/// Gets the length (magnitude) of the quaternion.
 		/// </summary>
@@ -72,7 +72,7 @@ namespace Duality
 		{
 			get
 			{
-				return (float)System.Math.Sqrt(W * W + Xyz.LengthSquared);
+				return (float)System.Math.Sqrt(this.W * this.W + this.Xyz.LengthSquared);
 			}
 		}
 		/// <summary>
@@ -82,7 +82,7 @@ namespace Duality
 		{
 			get
 			{
-				return W * W + Xyz.LengthSquared;
+				return this.W * this.W + this.Xyz.LengthSquared;
 			}
 		}
 		
@@ -152,7 +152,7 @@ namespace Duality
 		/// </summary>
 		public void Invert()
 		{
-			W = -W;
+			this.W = -this.W;
 		}
 		/// <summary>
 		/// Scales the Quaternion to unit length.
@@ -160,15 +160,15 @@ namespace Duality
 		public void Normalize()
 		{
 			float scale = 1.0f / this.Length;
-			Xyz *= scale;
-			W *= scale;
+			this.Xyz *= scale;
+			this.W *= scale;
 		}
 		/// <summary>
 		/// Inverts the Vector3 component of this Quaternion.
 		/// </summary>
 		public void Conjugate()
 		{
-			Xyz = -Xyz;
+			this.Xyz = -this.Xyz;
 		}
 
 		/// <summary>
@@ -591,7 +591,7 @@ namespace Duality
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return String.Format("V: {0}, W: {1}", Xyz, W);
+			return string.Format("V: {0}, W: {1}", this.Xyz, this.W);
 		}
 		/// <summary>
 		/// Compares this object instance to another object for equality. 
@@ -609,7 +609,7 @@ namespace Duality
 		/// <returns>A hash code formed from the bitwise XOR of this objects members.</returns>
 		public override int GetHashCode()
 		{
-			return Xyz.GetHashCode() ^ W.GetHashCode();
+			return this.Xyz.GetHashCode() ^ this.W.GetHashCode();
 		}
 		/// <summary>
 		/// Compares this Quaternion instance to another Quaternion for equality. 
@@ -618,7 +618,7 @@ namespace Duality
 		/// <returns>True if both instances are equal; false otherwise.</returns>
 		public bool Equals(Quaternion other)
 		{
-			return Xyz == other.Xyz && W == other.W;
+			return this.Xyz == other.Xyz && this.W == other.W;
 		}
 	}
 }
