@@ -7,9 +7,7 @@ using System.Drawing;
 
 using AdamsLair.WinForms.PropertyEditing;
 
-using Duality;
 using Duality.Drawing;
-using Duality.Editor;
 using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
