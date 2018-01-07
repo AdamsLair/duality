@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 
 using AdamsLair.WinForms.PropertyEditing;
-using AdamsLair.WinForms.Drawing;
-using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
-using BorderStyle = AdamsLair.WinForms.Drawing.BorderStyle;
-
-using Duality;
-using Duality.Editor;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
@@ -28,6 +19,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public override string ReferenceName
 		{
 			get { return this.component != null ? (this.component.GameObj != null ? this.component.GameObj.FullName : this.component.ToString()) : null; }
+		}
+		public override Type ReferenceType
+		{
+			get { return typeof(Component); }
 		}
 		public override bool ReferenceBroken
 		{
@@ -107,9 +102,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void DeserializeFromData(DataObject data)
 		{
 			ConvertOperation convert = new ConvertOperation(data, ConvertOperation.Operation.Convert);
-			if (convert.CanPerform(this.editedCmpType))
+			if (convert.CanPerform(this.FilteredType))
 			{
-				var refQuery = convert.Perform(this.editedCmpType);
+				var refQuery = convert.Perform(this.FilteredType);
 				if (refQuery != null)
 				{
 					Component[] refArray = refQuery.Cast<Component>().ToArray();
@@ -165,4 +160,3 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 	}
 }
-
