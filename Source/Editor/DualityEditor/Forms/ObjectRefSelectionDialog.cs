@@ -18,26 +18,29 @@ namespace Duality.Editor.Forms
 			public GameObject GameObjectReference { get; set; }
 			public Component ComponentReference { get; set; }
 
-			public ReferenceNode(IContentRef resource) : base(resource.Name)
+			public ReferenceNode(IContentRef resource)
 			{
 				this.Name = resource.Name;
 				this.Path = resource.FullName;
+				this.Text = this.Name;
 
 				this.ResourceReference = resource;
 			}
-
-			public ReferenceNode(GameObject gameObject) : base(gameObject.Name)
+			public ReferenceNode(GameObject gameObject)
 			{
 				this.Name = gameObject.Name;
 				this.Path = gameObject.FullName;
+				this.Text = this.Name;
 
 				this.GameObjectReference = gameObject;
 			}
-
-			public ReferenceNode(Component component) : base(component.GetType().GetTypeCSCodeName())
+			public ReferenceNode(Component component)
 			{
-				this.Name = component.GameObj.FullName;
-				this.Path = component.GetType().GetTypeCSCodeName();
+				this.Name = string.Format("{0} ({1})", 
+					component.GameObj.Name, 
+					component.GetType().GetTypeCSCodeName(true));
+				this.Path = component.GameObj.FullName;
+				this.Text = this.Name;
 
 				this.ComponentReference = component;
 			}
