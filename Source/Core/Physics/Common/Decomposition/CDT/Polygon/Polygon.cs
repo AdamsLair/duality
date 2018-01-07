@@ -45,228 +45,228 @@ using FarseerPhysics.Common.Decomposition.CDT.Delaunay;
 
 namespace FarseerPhysics.Common.Decomposition.CDT.Polygon
 {
-    internal class Polygon : Triangulatable
-    {
-        protected List<Polygon> _holes;
-        protected PolygonPoint _last;
-        protected List<TriangulationPoint> _points = new List<TriangulationPoint>();
-        protected List<TriangulationPoint> _steinerPoints;
-        protected List<DelaunayTriangle> _triangles;
+	internal class Polygon : Triangulatable
+	{
+		protected List<Polygon> _holes;
+		protected PolygonPoint _last;
+		protected List<TriangulationPoint> _points = new List<TriangulationPoint>();
+		protected List<TriangulationPoint> _steinerPoints;
+		protected List<DelaunayTriangle> _triangles;
 
-        /// <summary>
-        /// Create a polygon from a list of at least 3 points with no duplicates.
-        /// </summary>
-        /// <param name="points">A list of unique points</param>
-        public Polygon(IList<PolygonPoint> points)
-        {
-            if (points.Count < 3) throw new ArgumentException("List has fewer than 3 points", "points");
+		/// <summary>
+		/// Create a polygon from a list of at least 3 points with no duplicates.
+		/// </summary>
+		/// <param name="points">A list of unique points</param>
+		public Polygon(IList<PolygonPoint> points)
+		{
+			if (points.Count < 3) throw new ArgumentException("List has fewer than 3 points", "points");
 
-            // Lets do one sanity check that first and last point hasn't got same position
-            // Its something that often happen when importing polygon data from other formats
-            if (points[0].Equals(points[points.Count - 1])) points.RemoveAt(points.Count - 1);
+			// Lets do one sanity check that first and last point hasn't got same position
+			// Its something that often happen when importing polygon data from other formats
+			if (points[0].Equals(points[points.Count - 1])) points.RemoveAt(points.Count - 1);
 
-            _points.AddRange(points.Cast<TriangulationPoint>());
-        }
+			this._points.AddRange(points.Cast<TriangulationPoint>());
+		}
 
-        /// <summary>
-        /// Create a polygon from a list of at least 3 points with no duplicates.
-        /// </summary>
-        /// <param name="points">A list of unique points.</param>
-        public Polygon(IEnumerable<PolygonPoint> points) : this((points as IList<PolygonPoint>) ?? points.ToArray())
-        {
-        }
+		/// <summary>
+		/// Create a polygon from a list of at least 3 points with no duplicates.
+		/// </summary>
+		/// <param name="points">A list of unique points.</param>
+		public Polygon(IEnumerable<PolygonPoint> points) : this((points as IList<PolygonPoint>) ?? points.ToArray())
+		{
+		}
 
-        public Polygon()
-        {
-        }
+		public Polygon()
+		{
+		}
 
-        public IList<Polygon> Holes
-        {
-            get { return _holes; }
-        }
+		public IList<Polygon> Holes
+		{
+			get { return this._holes; }
+		}
 
-        #region Triangulatable Members
+		#region Triangulatable Members
 
-        public TriangulationMode TriangulationMode
-        {
-            get { return TriangulationMode.Polygon; }
-        }
+		public TriangulationMode TriangulationMode
+		{
+			get { return TriangulationMode.Polygon; }
+		}
 
-        public IList<TriangulationPoint> Points
-        {
-            get { return _points; }
-        }
+		public IList<TriangulationPoint> Points
+		{
+			get { return this._points; }
+		}
 
-        public IList<DelaunayTriangle> Triangles
-        {
-            get { return _triangles; }
-        }
+		public IList<DelaunayTriangle> Triangles
+		{
+			get { return this._triangles; }
+		}
 
-        public void AddTriangle(DelaunayTriangle t)
-        {
-            _triangles.Add(t);
-        }
+		public void AddTriangle(DelaunayTriangle t)
+		{
+			this._triangles.Add(t);
+		}
 
-        public void AddTriangles(IEnumerable<DelaunayTriangle> list)
-        {
-            _triangles.AddRange(list);
-        }
+		public void AddTriangles(IEnumerable<DelaunayTriangle> list)
+		{
+			this._triangles.AddRange(list);
+		}
 
-        public void ClearTriangles()
-        {
-            if (_triangles != null) _triangles.Clear();
-        }
+		public void ClearTriangles()
+		{
+			if (this._triangles != null) this._triangles.Clear();
+		}
 
-        /// <summary>
-        /// Creates constraints and populates the context with points
-        /// </summary>
-        /// <param name="tcx">The context</param>
-        public void PrepareTriangulation(TriangulationContext tcx)
-        {
-            if (_triangles == null)
-            {
-                _triangles = new List<DelaunayTriangle>(_points.Count);
-            }
-            else
-            {
-                _triangles.Clear();
-            }
+		/// <summary>
+		/// Creates constraints and populates the context with points
+		/// </summary>
+		/// <param name="tcx">The context</param>
+		public void PrepareTriangulation(TriangulationContext tcx)
+		{
+			if (this._triangles == null)
+			{
+				this._triangles = new List<DelaunayTriangle>(this._points.Count);
+			}
+			else
+			{
+				this._triangles.Clear();
+			}
 
-            // Outer constraints
-            for (int i = 0; i < _points.Count - 1; i++)
-            {
-                tcx.NewConstraint(_points[i], _points[i + 1]);
-            }
-            tcx.NewConstraint(_points[0], _points[_points.Count - 1]);
-            tcx.Points.AddRange(_points);
+			// Outer constraints
+			for (int i = 0; i < this._points.Count - 1; i++)
+			{
+				tcx.NewConstraint(this._points[i], this._points[i + 1]);
+			}
+			tcx.NewConstraint(this._points[0], this._points[this._points.Count - 1]);
+			tcx.Points.AddRange(this._points);
 
-            // Hole constraints
-            if (_holes != null)
-            {
-                foreach (Polygon p in _holes)
-                {
-                    for (int i = 0; i < p._points.Count - 1; i++)
-                    {
-                        tcx.NewConstraint(p._points[i], p._points[i + 1]);
-                    }
-                    tcx.NewConstraint(p._points[0], p._points[p._points.Count - 1]);
-                    tcx.Points.AddRange(p._points);
-                }
-            }
+			// Hole constraints
+			if (this._holes != null)
+			{
+				foreach (Polygon p in this._holes)
+				{
+					for (int i = 0; i < p._points.Count - 1; i++)
+					{
+						tcx.NewConstraint(p._points[i], p._points[i + 1]);
+					}
+					tcx.NewConstraint(p._points[0], p._points[p._points.Count - 1]);
+					tcx.Points.AddRange(p._points);
+				}
+			}
 
-            if (_steinerPoints != null)
-            {
-                tcx.Points.AddRange(_steinerPoints);
-            }
-        }
+			if (this._steinerPoints != null)
+			{
+				tcx.Points.AddRange(this._steinerPoints);
+			}
+		}
 
-        #endregion
+		#endregion
 
-        public void AddSteinerPoint(TriangulationPoint point)
-        {
-            if (_steinerPoints == null)
-            {
-                _steinerPoints = new List<TriangulationPoint>();
-            }
-            _steinerPoints.Add(point);
-        }
+		public void AddSteinerPoint(TriangulationPoint point)
+		{
+			if (this._steinerPoints == null)
+			{
+				this._steinerPoints = new List<TriangulationPoint>();
+			}
+			this._steinerPoints.Add(point);
+		}
 
-        public void AddSteinerPoints(List<TriangulationPoint> points)
-        {
-            if (_steinerPoints == null)
-            {
-                _steinerPoints = new List<TriangulationPoint>();
-            }
-            _steinerPoints.AddRange(points);
-        }
+		public void AddSteinerPoints(List<TriangulationPoint> points)
+		{
+			if (this._steinerPoints == null)
+			{
+				this._steinerPoints = new List<TriangulationPoint>();
+			}
+			this._steinerPoints.AddRange(points);
+		}
 
-        public void ClearSteinerPoints()
-        {
-            if (_steinerPoints != null)
-            {
-                _steinerPoints.Clear();
-            }
-        }
+		public void ClearSteinerPoints()
+		{
+			if (this._steinerPoints != null)
+			{
+				this._steinerPoints.Clear();
+			}
+		}
 
-        /// <summary>
-        /// Add a hole to the polygon.
-        /// </summary>
-        /// <param name="poly">A subtraction polygon fully contained inside this polygon.</param>
-        public void AddHole(Polygon poly)
-        {
-            if (_holes == null) _holes = new List<Polygon>();
-            _holes.Add(poly);
-            // XXX: tests could be made here to be sure it is fully inside
-            //        addSubtraction( poly.getPoints() );
-        }
+		/// <summary>
+		/// Add a hole to the polygon.
+		/// </summary>
+		/// <param name="poly">A subtraction polygon fully contained inside this polygon.</param>
+		public void AddHole(Polygon poly)
+		{
+			if (this._holes == null) this._holes = new List<Polygon>();
+			this._holes.Add(poly);
+			// XXX: tests could be made here to be sure it is fully inside
+			//        addSubtraction( poly.getPoints() );
+		}
 
-        /// <summary>
-        /// Inserts newPoint after point.
-        /// </summary>
-        /// <param name="point">The point to insert after in the polygon</param>
-        /// <param name="newPoint">The point to insert into the polygon</param>
-        public void InsertPointAfter(PolygonPoint point, PolygonPoint newPoint)
-        {
-            // Validate that 
-            int index = _points.IndexOf(point);
-            if (index == -1)
-                throw new ArgumentException(
-                    "Tried to insert a point into a Polygon after a point not belonging to the Polygon", "point");
-            newPoint.Next = point.Next;
-            newPoint.Previous = point;
-            point.Next.Previous = newPoint;
-            point.Next = newPoint;
-            _points.Insert(index + 1, newPoint);
-        }
+		/// <summary>
+		/// Inserts newPoint after point.
+		/// </summary>
+		/// <param name="point">The point to insert after in the polygon</param>
+		/// <param name="newPoint">The point to insert into the polygon</param>
+		public void InsertPointAfter(PolygonPoint point, PolygonPoint newPoint)
+		{
+			// Validate that 
+			int index = this._points.IndexOf(point);
+			if (index == -1)
+				throw new ArgumentException(
+					"Tried to insert a point into a Polygon after a point not belonging to the Polygon", "point");
+			newPoint.Next = point.Next;
+			newPoint.Previous = point;
+			point.Next.Previous = newPoint;
+			point.Next = newPoint;
+			this._points.Insert(index + 1, newPoint);
+		}
 
-        /// <summary>
-        /// Inserts list (after last point in polygon?)
-        /// </summary>
-        /// <param name="list"></param>
-        public void AddPoints(IEnumerable<PolygonPoint> list)
-        {
-            PolygonPoint first;
-            foreach (PolygonPoint p in list)
-            {
-                p.Previous = _last;
-                if (_last != null)
-                {
-                    p.Next = _last.Next;
-                    _last.Next = p;
-                }
-                _last = p;
-                _points.Add(p);
-            }
-            first = (PolygonPoint) _points[0];
-            _last.Next = first;
-            first.Previous = _last;
-        }
+		/// <summary>
+		/// Inserts list (after last point in polygon?)
+		/// </summary>
+		/// <param name="list"></param>
+		public void AddPoints(IEnumerable<PolygonPoint> list)
+		{
+			PolygonPoint first;
+			foreach (PolygonPoint p in list)
+			{
+				p.Previous = this._last;
+				if (this._last != null)
+				{
+					p.Next = this._last.Next;
+					this._last.Next = p;
+				}
+				this._last = p;
+				this._points.Add(p);
+			}
+			first = (PolygonPoint)this._points[0];
+			this._last.Next = first;
+			first.Previous = this._last;
+		}
 
-        /// <summary>
-        /// Adds a point after the last in the polygon.
-        /// </summary>
-        /// <param name="p">The point to add</param>
-        public void AddPoint(PolygonPoint p)
-        {
-            p.Previous = _last;
-            p.Next = _last.Next;
-            _last.Next = p;
-            _points.Add(p);
-        }
+		/// <summary>
+		/// Adds a point after the last in the polygon.
+		/// </summary>
+		/// <param name="p">The point to add</param>
+		public void AddPoint(PolygonPoint p)
+		{
+			p.Previous = this._last;
+			p.Next = this._last.Next;
+			this._last.Next = p;
+			this._points.Add(p);
+		}
 
-        /// <summary>
-        /// Removes a point from the polygon.
-        /// </summary>
-        /// <param name="p"></param>
-        public void RemovePoint(PolygonPoint p)
-        {
-            PolygonPoint next, prev;
+		/// <summary>
+		/// Removes a point from the polygon.
+		/// </summary>
+		/// <param name="p"></param>
+		public void RemovePoint(PolygonPoint p)
+		{
+			PolygonPoint next, prev;
 
-            next = p.Next;
-            prev = p.Previous;
-            prev.Next = next;
-            next.Previous = prev;
-            _points.Remove(p);
-        }
-    }
+			next = p.Next;
+			prev = p.Previous;
+			prev.Next = next;
+			next.Previous = prev;
+			this._points.Remove(p);
+		}
+	}
 }
