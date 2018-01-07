@@ -272,7 +272,7 @@ namespace Duality.Editor.Forms
 			string tmpFilterValue = this.txtFilterInput.Text.ToLowerInvariant();
 
 			return tmpNode != null &&
-			    ( 
+				(
 					tmpNode.Name.ToLowerInvariant().Contains(tmpFilterValue) ||
 					tmpNode.Path.ToLowerInvariant().Contains(tmpFilterValue)
 				);
