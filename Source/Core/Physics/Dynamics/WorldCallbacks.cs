@@ -30,42 +30,42 @@ using Duality;
 
 namespace FarseerPhysics.Dynamics
 {
-    /// <summary>
-    /// Called for each fixture found in the query. You control how the ray cast
-    /// proceeds by returning a float:
-    /// <returns>-1 to filter, 0 to terminate, fraction to clip the ray for closest hit, 1 to continue</returns>
-    /// </summary>
-    public delegate float RayCastCallback(Fixture fixture, Vector2 point, Vector2 normal, float fraction);
+	/// <summary>
+	/// Called for each fixture found in the query. You control how the ray cast
+	/// proceeds by returning a float:
+	/// <returns>-1 to filter, 0 to terminate, fraction to clip the ray for closest hit, 1 to continue</returns>
+	/// </summary>
+	public delegate float RayCastCallback(Fixture fixture, Vector2 point, Vector2 normal, float fraction);
 
-    /// <summary>
-    /// This delegate is called when a contact is deleted
-    /// </summary>
-    public delegate void EndContactDelegate(Contact contact);
+	/// <summary>
+	/// This delegate is called when a contact is deleted
+	/// </summary>
+	public delegate void EndContactDelegate(Contact contact);
 
-    /// <summary>
-    /// This delegate is called when a contact is created
-    /// </summary>
-    public delegate bool BeginContactDelegate(Contact contact);
+	/// <summary>
+	/// This delegate is called when a contact is created
+	/// </summary>
+	public delegate bool BeginContactDelegate(Contact contact);
 
-    public delegate void PreSolveDelegate(Contact contact, ref Manifold oldManifold);
+	public delegate void PreSolveDelegate(Contact contact, ref Manifold oldManifold);
 
-    public delegate void PostSolveDelegate(Contact contact, ContactConstraint impulse);
+	public delegate void PostSolveDelegate(Contact contact, ContactConstraint impulse);
 
-    public delegate void FixtureDelegate(Fixture fixture);
+	public delegate void FixtureDelegate(Fixture fixture);
 
-    public delegate void JointDelegate(Joint joint);
+	public delegate void JointDelegate(Joint joint);
 
-    public delegate void BodyDelegate(Body body);
+	public delegate void BodyDelegate(Body body);
 
-    public delegate bool CollisionFilterDelegate(Fixture fixtureA, Fixture fixtureB);
+	public delegate bool CollisionFilterDelegate(Fixture fixtureA, Fixture fixtureB);
 
-    public delegate void BroadphaseDelegate(ref FixtureProxy proxyA, ref FixtureProxy proxyB);
+	public delegate void BroadphaseDelegate(ref FixtureProxy proxyA, ref FixtureProxy proxyB);
 
-    public delegate bool BeforeCollisionEventHandler(Fixture fixtureA, Fixture fixtureB);
+	public delegate bool BeforeCollisionEventHandler(Fixture fixtureA, Fixture fixtureB);
 
-    public delegate bool OnCollisionEventHandler(Fixture fixtureA, Fixture fixtureB, Contact contact);
+	public delegate bool OnCollisionEventHandler(Fixture fixtureA, Fixture fixtureB, Contact contact);
 
-    public delegate void AfterCollisionEventHandler(Fixture fixtureA, Fixture fixtureB, Contact contact);
+	public delegate void AfterCollisionEventHandler(Fixture fixtureA, Fixture fixtureB, Contact contact);
 
-    public delegate void OnSeparationEventHandler(Fixture fixtureA, Fixture fixtureB);
+	public delegate void OnSeparationEventHandler(Fixture fixtureA, Fixture fixtureB);
 }

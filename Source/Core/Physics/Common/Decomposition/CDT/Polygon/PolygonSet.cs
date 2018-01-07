@@ -39,27 +39,27 @@ using System.Collections.Generic;
 
 namespace FarseerPhysics.Common.Decomposition.CDT.Polygon
 {
-    internal class PolygonSet
-    {
-        protected List<Polygon> _polygons = new List<Polygon>();
+	internal class PolygonSet
+	{
+		protected List<Polygon> _polygons = new List<Polygon>();
 
-        public PolygonSet()
-        {
-        }
+		public PolygonSet()
+		{
+		}
 
-        public PolygonSet(Polygon poly)
-        {
-            _polygons.Add(poly);
-        }
+		public PolygonSet(Polygon poly)
+		{
+			this._polygons.Add(poly);
+		}
 
-        public IEnumerable<Polygon> Polygons
-        {
-            get { return _polygons; }
-        }
+		public IEnumerable<Polygon> Polygons
+		{
+			get { return this._polygons; }
+		}
 
-        public void Add(Polygon p)
-        {
-            _polygons.Add(p);
-        }
-    }
+		public void Add(Polygon p)
+		{
+			this._polygons.Add(p);
+		}
+	}
 }

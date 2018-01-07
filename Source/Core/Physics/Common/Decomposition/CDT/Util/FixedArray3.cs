@@ -35,84 +35,84 @@ using System.Collections.Generic;
 
 namespace FarseerPhysics.Common.Decomposition.CDT.Util
 {
-    internal struct FixedArray3<T> : IEnumerable<T> where T : class
-    {
-        public T _0, _1, _2;
+	internal struct FixedArray3<T> : IEnumerable<T> where T : class
+	{
+		public T _0, _1, _2;
 
-        public T this[int index]
-        {
-            get
-            {
-                switch (index)
-                {
-                    case 0:
-                        return _0;
-                    case 1:
-                        return _1;
-                    case 2:
-                        return _2;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
-            }
-            set
-            {
-                switch (index)
-                {
-                    case 0:
-                        _0 = value;
-                        break;
-                    case 1:
-                        _1 = value;
-                        break;
-                    case 2:
-                        _2 = value;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
-            }
-        }
+		public T this[int index]
+		{
+			get
+			{
+				switch (index)
+				{
+					case 0:
+						return this._0;
+					case 1:
+						return this._1;
+					case 2:
+						return this._2;
+					default:
+						throw new IndexOutOfRangeException();
+				}
+			}
+			set
+			{
+				switch (index)
+				{
+					case 0:
+						this._0 = value;
+						break;
+					case 1:
+						this._1 = value;
+						break;
+					case 2:
+						this._2 = value;
+						break;
+					default:
+						throw new IndexOutOfRangeException();
+				}
+			}
+		}
 
-        #region IEnumerable<T> Members
+		#region IEnumerable<T> Members
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return Enumerate().GetEnumerator();
-        }
+		public IEnumerator<T> GetEnumerator()
+		{
+			return Enumerate().GetEnumerator();
+		}
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
 
-        #endregion
+		#endregion
 
-        public bool Contains(T value)
-        {
-            for (int i = 0; i < 3; ++i) if (this[i] == value) return true;
-            return false;
-        }
+		public bool Contains(T value)
+		{
+			for (int i = 0; i < 3; ++i) if (this[i] == value) return true;
+			return false;
+		}
 
-        public int IndexOf(T value)
-        {
-            for (int i = 0; i < 3; ++i) if (this[i] == value) return i;
-            return -1;
-        }
+		public int IndexOf(T value)
+		{
+			for (int i = 0; i < 3; ++i) if (this[i] == value) return i;
+			return -1;
+		}
 
-        public void Clear()
-        {
-            _0 = _1 = _2 = null;
-        }
+		public void Clear()
+		{
+			this._0 = this._1 = this._2 = null;
+		}
 
-        public void Clear(T value)
-        {
-            for (int i = 0; i < 3; ++i) if (this[i] == value) this[i] = null;
-        }
+		public void Clear(T value)
+		{
+			for (int i = 0; i < 3; ++i) if (this[i] == value) this[i] = null;
+		}
 
-        private IEnumerable<T> Enumerate()
-        {
-            for (int i = 0; i < 3; ++i) yield return this[i];
-        }
-    }
+		private IEnumerable<T> Enumerate()
+		{
+			for (int i = 0; i < 3; ++i) yield return this[i];
+		}
+	}
 }

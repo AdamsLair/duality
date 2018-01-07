@@ -29,295 +29,295 @@ using Duality;
 
 namespace FarseerPhysics.Collision
 {
-    internal struct Pair : IComparable<Pair>
-    {
-        public int ProxyIdA;
-        public int ProxyIdB;
+	internal struct Pair : IComparable<Pair>
+	{
+		public int ProxyIdA;
+		public int ProxyIdB;
 
-        #region IComparable<Pair> Members
+		#region IComparable<Pair> Members
 
-        public int CompareTo(Pair other)
-        {
-            if (ProxyIdA < other.ProxyIdA)
-            {
-                return -1;
-            }
-            if (ProxyIdA == other.ProxyIdA)
-            {
-                if (ProxyIdB < other.ProxyIdB)
-                {
-                    return -1;
-                }
-                if (ProxyIdB == other.ProxyIdB)
-                {
-                    return 0;
-                }
-            }
+		public int CompareTo(Pair other)
+		{
+			if (this.ProxyIdA < other.ProxyIdA)
+			{
+				return -1;
+			}
+			if (this.ProxyIdA == other.ProxyIdA)
+			{
+				if (this.ProxyIdB < other.ProxyIdB)
+				{
+					return -1;
+				}
+				if (this.ProxyIdB == other.ProxyIdB)
+				{
+					return 0;
+				}
+			}
 
-            return 1;
-        }
+			return 1;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 
-    /// <summary>
-    /// The broad-phase is used for computing pairs and performing volume queries and ray casts.
-    /// This broad-phase does not persist pairs. Instead, this reports potentially new pairs.
-    /// It is up to the client to consume the new pairs and to track subsequent overlap.
-    /// </summary>
-    public class DynamicTreeBroadPhase : IBroadPhase
-    {
-        private int[] _moveBuffer;
-        private int _moveCapacity;
-        private int _moveCount;
+	/// <summary>
+	/// The broad-phase is used for computing pairs and performing volume queries and ray casts.
+	/// This broad-phase does not persist pairs. Instead, this reports potentially new pairs.
+	/// It is up to the client to consume the new pairs and to track subsequent overlap.
+	/// </summary>
+	public class DynamicTreeBroadPhase : IBroadPhase
+	{
+		private int[] _moveBuffer;
+		private int _moveCapacity;
+		private int _moveCount;
 
-        private Pair[] _pairBuffer;
-        private int _pairCapacity;
-        private int _pairCount;
-        private int _proxyCount;
-        private Func<int, bool> _queryCallback;
-        private int _queryProxyId;
-        private DynamicTree<FixtureProxy> _tree = new DynamicTree<FixtureProxy>();
+		private Pair[] _pairBuffer;
+		private int _pairCapacity;
+		private int _pairCount;
+		private int _proxyCount;
+		private Func<int, bool> _queryCallback;
+		private int _queryProxyId;
+		private DynamicTree<FixtureProxy> _tree = new DynamicTree<FixtureProxy>();
 
-        public DynamicTreeBroadPhase()
-        {
-            _queryCallback = new Func<int, bool>(QueryCallback);
+		public DynamicTreeBroadPhase()
+		{
+			this._queryCallback = new Func<int, bool>(this.QueryCallback);
 
-            _pairCapacity = 16;
-            _pairBuffer = new Pair[_pairCapacity];
+			this._pairCapacity = 16;
+			this._pairBuffer = new Pair[this._pairCapacity];
 
-            _moveCapacity = 16;
-            _moveBuffer = new int[_moveCapacity];
-        }
+			this._moveCapacity = 16;
+			this._moveBuffer = new int[this._moveCapacity];
+		}
 
-        #region IBroadPhase Members
+		#region IBroadPhase Members
 
-        /// <summary>
-        /// Get the number of proxies.
-        /// </summary>
-        /// <value>The proxy count.</value>
-        public int ProxyCount
-        {
-            get { return _proxyCount; }
-        }
+		/// <summary>
+		/// Get the number of proxies.
+		/// </summary>
+		/// <value>The proxy count.</value>
+		public int ProxyCount
+		{
+			get { return this._proxyCount; }
+		}
 
-        /// <summary>
-        /// Create a proxy with an initial AABB. Pairs are not reported until
-        /// UpdatePairs is called.
-        /// </summary>
-        /// <param name="proxy">The user data.</param>
-        /// <returns></returns>
-        public int AddProxy(ref FixtureProxy proxy)
-        {
-            int proxyId = _tree.AddProxy(ref proxy.AABB, proxy);
-            ++_proxyCount;
-            BufferMove(proxyId);
-            return proxyId;
-        }
+		/// <summary>
+		/// Create a proxy with an initial AABB. Pairs are not reported until
+		/// UpdatePairs is called.
+		/// </summary>
+		/// <param name="proxy">The user data.</param>
+		/// <returns></returns>
+		public int AddProxy(ref FixtureProxy proxy)
+		{
+			int proxyId = this._tree.AddProxy(ref proxy.AABB, proxy);
+			++this._proxyCount;
+			BufferMove(proxyId);
+			return proxyId;
+		}
 
-        /// <summary>
-        /// Destroy a proxy. It is up to the client to remove any pairs.
-        /// </summary>
-        /// <param name="proxyId">The proxy id.</param>
-        public void RemoveProxy(int proxyId)
-        {
-            UnBufferMove(proxyId);
-            --_proxyCount;
-            _tree.RemoveProxy(proxyId);
-        }
+		/// <summary>
+		/// Destroy a proxy. It is up to the client to remove any pairs.
+		/// </summary>
+		/// <param name="proxyId">The proxy id.</param>
+		public void RemoveProxy(int proxyId)
+		{
+			UnBufferMove(proxyId);
+			--this._proxyCount;
+			this._tree.RemoveProxy(proxyId);
+		}
 
-        public void MoveProxy(int proxyId, ref AABB aabb, Vector2 displacement)
-        {
-            bool buffer = _tree.MoveProxy(proxyId, ref aabb, displacement);
-            if (buffer)
-            {
-                BufferMove(proxyId);
-            }
-        }
+		public void MoveProxy(int proxyId, ref AABB aabb, Vector2 displacement)
+		{
+			bool buffer = this._tree.MoveProxy(proxyId, ref aabb, displacement);
+			if (buffer)
+			{
+				BufferMove(proxyId);
+			}
+		}
 
-        /// <summary>
-        /// Get the AABB for a proxy.
-        /// </summary>
-        /// <param name="proxyId">The proxy id.</param>
-        /// <param name="aabb">The aabb.</param>
-        public void GetFatAABB(int proxyId, out AABB aabb)
-        {
-            _tree.GetFatAABB(proxyId, out aabb);
-        }
+		/// <summary>
+		/// Get the AABB for a proxy.
+		/// </summary>
+		/// <param name="proxyId">The proxy id.</param>
+		/// <param name="aabb">The aabb.</param>
+		public void GetFatAABB(int proxyId, out AABB aabb)
+		{
+			this._tree.GetFatAABB(proxyId, out aabb);
+		}
 
-        /// <summary>
-        /// Get user data from a proxy. Returns null if the id is invalid.
-        /// </summary>
-        /// <param name="proxyId">The proxy id.</param>
-        /// <returns></returns>
-        public FixtureProxy GetProxy(int proxyId)
-        {
-            return _tree.GetUserData(proxyId);
-        }
+		/// <summary>
+		/// Get user data from a proxy. Returns null if the id is invalid.
+		/// </summary>
+		/// <param name="proxyId">The proxy id.</param>
+		/// <returns></returns>
+		public FixtureProxy GetProxy(int proxyId)
+		{
+			return this._tree.GetUserData(proxyId);
+		}
 
-        /// <summary>
-        /// Test overlap of fat AABBs.
-        /// </summary>
-        /// <param name="proxyIdA">The proxy id A.</param>
-        /// <param name="proxyIdB">The proxy id B.</param>
-        /// <returns></returns>
-        public bool TestOverlap(int proxyIdA, int proxyIdB)
-        {
-            AABB aabbA, aabbB;
-            _tree.GetFatAABB(proxyIdA, out aabbA);
-            _tree.GetFatAABB(proxyIdB, out aabbB);
-            return AABB.TestOverlap(ref aabbA, ref aabbB);
-        }
+		/// <summary>
+		/// Test overlap of fat AABBs.
+		/// </summary>
+		/// <param name="proxyIdA">The proxy id A.</param>
+		/// <param name="proxyIdB">The proxy id B.</param>
+		/// <returns></returns>
+		public bool TestOverlap(int proxyIdA, int proxyIdB)
+		{
+			AABB aabbA, aabbB;
+			this._tree.GetFatAABB(proxyIdA, out aabbA);
+			this._tree.GetFatAABB(proxyIdB, out aabbB);
+			return AABB.TestOverlap(ref aabbA, ref aabbB);
+		}
 
-        /// <summary>
-        /// Update the pairs. This results in pair callbacks. This can only add pairs.
-        /// </summary>
-        /// <param name="callback">The callback.</param>
-        public void UpdatePairs(BroadphaseDelegate callback)
-        {
-            // Reset pair buffer
-            _pairCount = 0;
+		/// <summary>
+		/// Update the pairs. This results in pair callbacks. This can only add pairs.
+		/// </summary>
+		/// <param name="callback">The callback.</param>
+		public void UpdatePairs(BroadphaseDelegate callback)
+		{
+			// Reset pair buffer
+			this._pairCount = 0;
 
-            // Perform tree queries for all moving proxies.
-            for (int j = 0; j < _moveCount; ++j)
-            {
-                _queryProxyId = _moveBuffer[j];
-                if (_queryProxyId == -1)
-                {
-                    continue;
-                }
+			// Perform tree queries for all moving proxies.
+			for (int j = 0; j < this._moveCount; ++j)
+			{
+				this._queryProxyId = this._moveBuffer[j];
+				if (this._queryProxyId == -1)
+				{
+					continue;
+				}
 
-                // We have to query the tree with the fat AABB so that
-                // we don't fail to create a pair that may touch later.
-                AABB fatAABB;
-                _tree.GetFatAABB(_queryProxyId, out fatAABB);
+				// We have to query the tree with the fat AABB so that
+				// we don't fail to create a pair that may touch later.
+				AABB fatAABB;
+				this._tree.GetFatAABB(this._queryProxyId, out fatAABB);
 
-                // Query tree, create pairs and add them pair buffer.
-                _tree.Query(_queryCallback, ref fatAABB);
-            }
+				// Query tree, create pairs and add them pair buffer.
+				this._tree.Query(this._queryCallback, ref fatAABB);
+			}
 
-            // Reset move buffer
-            _moveCount = 0;
+			// Reset move buffer
+			this._moveCount = 0;
 
-            // Sort the pair buffer to expose duplicates.
-            Array.Sort(_pairBuffer, 0, _pairCount);
+			// Sort the pair buffer to expose duplicates.
+			Array.Sort(this._pairBuffer, 0, this._pairCount);
 
-            // Send the pairs back to the client.
-            int i = 0;
-            while (i < _pairCount)
-            {
-                Pair primaryPair = _pairBuffer[i];
-                FixtureProxy userDataA = _tree.GetUserData(primaryPair.ProxyIdA);
-                FixtureProxy userDataB = _tree.GetUserData(primaryPair.ProxyIdB);
+			// Send the pairs back to the client.
+			int i = 0;
+			while (i < this._pairCount)
+			{
+				Pair primaryPair = this._pairBuffer[i];
+				FixtureProxy userDataA = this._tree.GetUserData(primaryPair.ProxyIdA);
+				FixtureProxy userDataB = this._tree.GetUserData(primaryPair.ProxyIdB);
 
-                callback(ref userDataA, ref userDataB);
-                ++i;
+				callback(ref userDataA, ref userDataB);
+				++i;
 
-                // Skip any duplicate pairs.
-                while (i < _pairCount)
-                {
-                    Pair pair = _pairBuffer[i];
-                    if (pair.ProxyIdA != primaryPair.ProxyIdA || pair.ProxyIdB != primaryPair.ProxyIdB)
-                    {
-                        break;
-                    }
-                    ++i;
-                }
-            }
+				// Skip any duplicate pairs.
+				while (i < this._pairCount)
+				{
+					Pair pair = this._pairBuffer[i];
+					if (pair.ProxyIdA != primaryPair.ProxyIdA || pair.ProxyIdB != primaryPair.ProxyIdB)
+					{
+						break;
+					}
+					++i;
+				}
+			}
 
-            // Try to keep the tree balanced.
-            _tree.Rebalance(4);
-        }
+			// Try to keep the tree balanced.
+			this._tree.Rebalance(4);
+		}
 
-        /// <summary>
-        /// Query an AABB for overlapping proxies. The callback class
-        /// is called for each proxy that overlaps the supplied AABB.
-        /// </summary>
-        /// <param name="callback">The callback.</param>
-        /// <param name="aabb">The aabb.</param>
-        public void Query(Func<int, bool> callback, ref AABB aabb)
-        {
-            _tree.Query(callback, ref aabb);
-        }
+		/// <summary>
+		/// Query an AABB for overlapping proxies. The callback class
+		/// is called for each proxy that overlaps the supplied AABB.
+		/// </summary>
+		/// <param name="callback">The callback.</param>
+		/// <param name="aabb">The aabb.</param>
+		public void Query(Func<int, bool> callback, ref AABB aabb)
+		{
+			this._tree.Query(callback, ref aabb);
+		}
 
-        /// <summary>
-        /// Ray-cast against the proxies in the tree. This relies on the callback
-        /// to perform a exact ray-cast in the case were the proxy contains a shape.
-        /// The callback also performs the any collision filtering. This has performance
-        /// roughly equal to k * log(n), where k is the number of collisions and n is the
-        /// number of proxies in the tree.
-        /// </summary>
-        /// <param name="callback">A callback class that is called for each proxy that is hit by the ray.</param>
-        /// <param name="input">The ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).</param>
-        public void RayCast(Func<RayCastInput, int, float> callback, ref RayCastInput input)
-        {
-            _tree.RayCast(callback, ref input);
-        }
+		/// <summary>
+		/// Ray-cast against the proxies in the tree. This relies on the callback
+		/// to perform a exact ray-cast in the case were the proxy contains a shape.
+		/// The callback also performs the any collision filtering. This has performance
+		/// roughly equal to k * log(n), where k is the number of collisions and n is the
+		/// number of proxies in the tree.
+		/// </summary>
+		/// <param name="callback">A callback class that is called for each proxy that is hit by the ray.</param>
+		/// <param name="input">The ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).</param>
+		public void RayCast(Func<RayCastInput, int, float> callback, ref RayCastInput input)
+		{
+			this._tree.RayCast(callback, ref input);
+		}
 
-        public void TouchProxy(int proxyId)
-        {
-            BufferMove(proxyId);
-        }
+		public void TouchProxy(int proxyId)
+		{
+			BufferMove(proxyId);
+		}
 
-        #endregion
+		#endregion
 
-        /// <summary>
-        /// Compute the height of the embedded tree.
-        /// </summary>
-        /// <returns></returns>
-        public int ComputeHeight()
-        {
-            return _tree.ComputeHeight();
-        }
+		/// <summary>
+		/// Compute the height of the embedded tree.
+		/// </summary>
+		/// <returns></returns>
+		public int ComputeHeight()
+		{
+			return this._tree.ComputeHeight();
+		}
 
-        private void BufferMove(int proxyId)
-        {
-            if (_moveCount == _moveCapacity)
-            {
-                int[] oldBuffer = _moveBuffer;
-                _moveCapacity *= 2;
-                _moveBuffer = new int[_moveCapacity];
-                Array.Copy(oldBuffer, _moveBuffer, _moveCount);
-            }
+		private void BufferMove(int proxyId)
+		{
+			if (this._moveCount == this._moveCapacity)
+			{
+				int[] oldBuffer = this._moveBuffer;
+				this._moveCapacity *= 2;
+				this._moveBuffer = new int[this._moveCapacity];
+				Array.Copy(oldBuffer, this._moveBuffer, this._moveCount);
+			}
 
-            _moveBuffer[_moveCount] = proxyId;
-            ++_moveCount;
-        }
+			this._moveBuffer[this._moveCount] = proxyId;
+			++this._moveCount;
+		}
 
-        private void UnBufferMove(int proxyId)
-        {
-            for (int i = 0; i < _moveCount; ++i)
-            {
-                if (_moveBuffer[i] == proxyId)
-                {
-                    _moveBuffer[i] = -1;
-                    return;
-                }
-            }
-        }
+		private void UnBufferMove(int proxyId)
+		{
+			for (int i = 0; i < this._moveCount; ++i)
+			{
+				if (this._moveBuffer[i] == proxyId)
+				{
+					this._moveBuffer[i] = -1;
+					return;
+				}
+			}
+		}
 
-        private bool QueryCallback(int proxyId)
-        {
-            // A proxy cannot form a pair with itself.
-            if (proxyId == _queryProxyId)
-            {
-                return true;
-            }
+		private bool QueryCallback(int proxyId)
+		{
+			// A proxy cannot form a pair with itself.
+			if (proxyId == this._queryProxyId)
+			{
+				return true;
+			}
 
-            // Grow the pair buffer as needed.
-            if (_pairCount == _pairCapacity)
-            {
-                Pair[] oldBuffer = _pairBuffer;
-                _pairCapacity *= 2;
-                _pairBuffer = new Pair[_pairCapacity];
-                Array.Copy(oldBuffer, _pairBuffer, _pairCount);
-            }
+			// Grow the pair buffer as needed.
+			if (this._pairCount == this._pairCapacity)
+			{
+				Pair[] oldBuffer = this._pairBuffer;
+				this._pairCapacity *= 2;
+				this._pairBuffer = new Pair[this._pairCapacity];
+				Array.Copy(oldBuffer, this._pairBuffer, this._pairCount);
+			}
 
-            _pairBuffer[_pairCount].ProxyIdA = Math.Min(proxyId, _queryProxyId);
-            _pairBuffer[_pairCount].ProxyIdB = Math.Max(proxyId, _queryProxyId);
-            ++_pairCount;
+			this._pairBuffer[this._pairCount].ProxyIdA = Math.Min(proxyId, this._queryProxyId);
+			this._pairBuffer[this._pairCount].ProxyIdB = Math.Max(proxyId, this._queryProxyId);
+			++this._pairCount;
 
-            return true;
-        }
-    }
+			return true;
+		}
+	}
 }
