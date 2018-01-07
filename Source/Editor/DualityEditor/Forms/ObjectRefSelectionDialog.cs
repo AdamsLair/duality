@@ -221,10 +221,12 @@ namespace Duality.Editor.Forms
 		{
 			this.objectReferenceListing.UpdateNodeFilter();
 
-			if (this.objectReferenceListing.AllNodes.Any())
+			if (this.objectReferenceListing.Root.Children.Count > 0)
 			{
-				this.objectReferenceListing.SelectedNode = this.objectReferenceListing.AllNodes
-					.Where((node, index) => { return node.IsHidden == false; }).First();
+				TreeNodeAdv firstVisibleNode = this.objectReferenceListing
+					.Root.Children
+					.FirstOrDefault(node => !node.IsHidden);;
+				this.objectReferenceListing.SelectedNode = firstVisibleNode;
 			}
 		}
 
@@ -234,10 +236,10 @@ namespace Duality.Editor.Forms
 			string filterValue = this.txtFilterInput.Text.ToLowerInvariant();
 
 			return node != null &&
-					(
-						node.Name.ToLowerInvariant().Contains(filterValue) ||
-						node.Path.ToLowerInvariant().Contains(filterValue)
-					);
+				(
+					node.Name.ToLowerInvariant().Contains(filterValue) ||
+					node.Path.ToLowerInvariant().Contains(filterValue)
+				);
 		}
 	}
 }
