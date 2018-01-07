@@ -7,10 +7,10 @@
     </sourceFileHint>
   </assetInfo>
   <source dataType="String">uniform vec4 mainColor;
-uniform float FloatStrength;
-uniform float _GameTime;
+uniform float floatStrength;
+uniform float _gameTime;
 
-attribute float VertexDepthOffset;
+attribute float vertexDepthOffset;
 
 void main()
 {
@@ -19,12 +19,12 @@ void main()
 	
 	// Let the vertex float a bit over time, depending on its 
 	// original world space position
-	worldPos.xyz += FloatStrength * vec3(
-		sin(0.00 * 3.14 + _GameTime + worldPos.y * 0.01), 
-		sin(0.25 * 3.14 + _GameTime + worldPos.x * 0.01), 
-		sin(0.50 * 3.14 + _GameTime + worldPos.y * 0.01));
+	worldPos.xyz += floatStrength * vec3(
+		sin(0.00 * 3.14 + _gameTime + worldPos.y * 0.01), 
+		sin(0.25 * 3.14 + _gameTime + worldPos.x * 0.01), 
+		sin(0.50 * 3.14 + _gameTime + worldPos.y * 0.01));
 	
-	gl_Position = TransformVertexDefault(worldPos, VertexDepthOffset);
+	gl_Position = TransformVertexDefault(worldPos, vertexDepthOffset);
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	gl_FrontColor = gl_Color * mainColor;
 }</source>

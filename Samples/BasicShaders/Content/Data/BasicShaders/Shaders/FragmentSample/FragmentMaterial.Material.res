@@ -12,11 +12,7 @@
         <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
           <contentPath dataType="String">Default:Texture:Checkerboard</contentPath>
         </mainTex>
-        <_GameTime dataType="Array" type="System.Single[]" id="2824927200">0</_GameTime>
-        <_CameraFocusDist dataType="Array" type="System.Single[]" id="3573126030">0</_CameraFocusDist>
-        <_CameraPosition dataType="Array" type="System.Single[]" id="117753596">0, 0, 0</_CameraPosition>
-        <_CameraParallax dataType="Array" type="System.Single[]" id="4053440274">0</_CameraParallax>
-        <ColorShiftSpeed dataType="Array" type="System.Single[]" id="3270588056">1</ColorShiftSpeed>
+        <colorShiftSpeed dataType="Array" type="System.Single[]" id="3270588056">1</colorShiftSpeed>
       </body>
     </parameters>
     <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">

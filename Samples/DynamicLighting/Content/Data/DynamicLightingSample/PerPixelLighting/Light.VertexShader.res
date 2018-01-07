@@ -6,28 +6,25 @@
       <item dataType="String">{Name}.vert</item>
     </sourceFileHint>
   </assetInfo>
-  <source dataType="String">uniform float _CameraFocusDist;
-uniform vec3 _CameraPosition;
-
-varying vec3 worldSpacePos;
+  <source dataType="String">varying vec3 worldSpacePos;
 varying mat2 objTransform;
 
-attribute float VertexDepthOffset;
-attribute vec4 VertexLightingParam;
+attribute float vertexDepthOffset;
+attribute vec4 vertexLightingParam;
 
 void main()
 {
 	worldSpacePos = gl_Vertex.xyz;
 	
-	gl_Position = TransformVertexDefault(worldSpacePos, VertexDepthOffset);
+	gl_Position = TransformVertexDefault(worldSpacePos, vertexDepthOffset);
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	gl_FrontColor = gl_Color;
 	
 	objTransform = mat2(
-		VertexLightingParam.x, 
-		VertexLightingParam.y, 
-		VertexLightingParam.z, 
-		VertexLightingParam.w);
+		vertexLightingParam.x, 
+		vertexLightingParam.y, 
+		vertexLightingParam.z, 
+		vertexLightingParam.w);
 }</source>
 </root>
 <!-- XmlFormatterBase Document Separator -->

@@ -13,18 +13,18 @@ namespace Duality.Resources
 	/// </summary>
 	public static class BuiltinShaderFields
 	{
-		public static readonly string DeltaTime = "_DeltaTime";
-		public static readonly string RealTime = "_RealTime";
-		public static readonly string GameTime = "_GameTime";
-		public static readonly string FrameCount = "_FrameCount";
+		public static readonly string DeltaTime = "_deltaTime";
+		public static readonly string RealTime = "_realTime";
+		public static readonly string GameTime = "_gameTime";
+		public static readonly string FrameCount = "_frameCount";
 
-		public static readonly string CameraFocusDist = "_CameraFocusDist";
-		public static readonly string CameraPosition = "_CameraPosition";
-		public static readonly string CameraIsPerspective = "_CameraIsPerspective";
+		public static readonly string CameraFocusDist = "_cameraFocusDist";
+		public static readonly string CameraPosition = "_cameraPosition";
+		public static readonly string CameraIsPerspective = "_cameraIsPerspective";
 
-		public static readonly string ViewMatrix = "_ViewMatrix";
-		public static readonly string ProjectionMatrix = "_ProjectionMatrix";
-		public static readonly string ViewProjectionMatrix = "_ViewProjectionMatrix";
+		public static readonly string ViewMatrix = "_viewMatrix";
+		public static readonly string ProjectionMatrix = "_projectionMatrix";
+		public static readonly string ViewProjectionMatrix = "_viewProjectionMatrix";
 
 		public static readonly string MainTex = "mainTex";
 		public static readonly string MainColor = "mainColor";

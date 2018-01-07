@@ -3,10 +3,7 @@
   <info dataType="Struct" type="Duality.Drawing.BatchInfo" id="427169525">
     <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="1100841590" custom="true">
       <body>
-        <FloatStrength dataType="Array" type="System.Single[]" id="2824927200">10</FloatStrength>
-        <_CameraFocusDist dataType="Array" type="System.Single[]" id="3573126030">0</_CameraFocusDist>
-        <_CameraParallax dataType="Array" type="System.Single[]" id="117753596">0</_CameraParallax>
-        <_GameTime dataType="Array" type="System.Single[]" id="4053440274">0</_GameTime>
+        <floatStrength dataType="Array" type="System.Single[]" id="2824927200">10</floatStrength>
         <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
           <contentPath dataType="String">Default:Texture:Checkerboard</contentPath>
         </mainTex>

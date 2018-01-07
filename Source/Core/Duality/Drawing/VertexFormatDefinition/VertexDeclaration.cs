@@ -139,7 +139,7 @@ namespace Duality.Drawing
 				}
 
 				this.elements[i] = new VertexElement(
-					"Vertex" + fields[i].Name,
+					"vertex" + fields[i].Name,
 					Marshal.OffsetOf(dataType, fields[i].Name), 
 					type, 
 					count, 

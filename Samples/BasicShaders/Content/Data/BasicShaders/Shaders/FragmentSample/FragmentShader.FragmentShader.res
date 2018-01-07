@@ -4,23 +4,23 @@
     <importerId dataType="String">BasicShaderAssetImporter</importerId>
     <sourceFileHint />
   </assetInfo>
-  <source dataType="String">uniform float _GameTime;
+  <source dataType="String">uniform float _gameTime;
 
 uniform sampler2D mainTex;
-uniform float ColorShiftSpeed;
+uniform float colorShiftSpeed;
 
 void main()
 {
     vec2 texCoord = gl_TexCoord[0].st;
 	texCoord += 0.1 * vec2(
-		sin(_GameTime + gl_FragCoord.x * 0.01),
-		cos(_GameTime + gl_FragCoord.y * 0.01));
+		sin(_gameTime + gl_FragCoord.x * 0.01),
+		cos(_gameTime + gl_FragCoord.y * 0.01));
 	
 	vec4 color = texture2D(mainTex, texCoord);
 	color.rgb = vec3(
-		color.r * sin(ColorShiftSpeed * _GameTime), 
-		color.g * sin(ColorShiftSpeed * _GameTime * 0.5), 
-		color.b * sin(ColorShiftSpeed * _GameTime * 0.25));
+		color.r * sin(colorShiftSpeed * _gameTime), 
+		color.g * sin(colorShiftSpeed * _gameTime * 0.5), 
+		color.b * sin(colorShiftSpeed * _gameTime * 0.25));
 	gl_FragColor = color;
 }</source>
 </root>
