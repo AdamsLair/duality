@@ -131,10 +131,7 @@ namespace FarseerPhysics.Dynamics
 			this.Body = body;
 			this.UserData = userData;
 
-			if (Settings.ConserveMemory)
-				this.Shape = shape;
-			else
-				this.Shape = shape.Clone();
+			this.Shape = shape.Clone();
 
 			RegisterFixture();
 		}
@@ -453,10 +450,7 @@ namespace FarseerPhysics.Dynamics
 			Fixture fixture = new Fixture();
 			fixture.Body = body;
 
-			if (Settings.ConserveMemory)
-				fixture.Shape = this.Shape;
-			else
-				fixture.Shape = this.Shape.Clone();
+			fixture.Shape = this.Shape.Clone();
 
 			fixture.UserData = this.UserData;
 			fixture.Restitution = this.Restitution;

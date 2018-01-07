@@ -138,6 +138,8 @@ public class QuadTree<T>
 	/// tests if ray intersects AABB
 	/// </summary>
 	/// <param name="aabb"></param>
+	/// <param name="p1"></param>
+	/// <param name="p2"></param>
 	/// <returns></returns>
 	public static bool RayCastAABB(AABB aabb, Vector2 p1, Vector2 p2)
 	{

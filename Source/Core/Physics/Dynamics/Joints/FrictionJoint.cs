@@ -155,6 +155,7 @@ namespace FarseerPhysics.Dynamics.Joints
 				this._angularMass = 1.0f / this._angularMass;
 			}
 
+#pragma warning disable CS0162 // Unreachable code detected
 			if (Settings.EnableWarmstarting)
 			{
 				// Scale impulses to support a variable time step.
@@ -174,6 +175,7 @@ namespace FarseerPhysics.Dynamics.Joints
 				this._linearImpulse = Vector2.Zero;
 				this._angularImpulse = 0.0f;
 			}
+#pragma warning restore CS0162 // Unreachable code detected
 		}
 
 		internal override void SolveVelocityConstraints(ref TimeStep step)

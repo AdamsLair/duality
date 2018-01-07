@@ -154,10 +154,12 @@ namespace FarseerPhysics.Dynamics
 			this._contactSolver.Reset(this._contacts, this.ContactCount, step.dtRatio, Settings.EnableWarmstarting);
 			this._contactSolver.InitializeVelocityConstraints();
 
+#pragma warning disable CS0162 // Unreachable code detected
 			if (Settings.EnableWarmstarting)
 			{
 				this._contactSolver.WarmStart();
 			}
+#pragma warning restore CS0162 // Unreachable code detected
 
 			if (Settings.EnableDiagnostics)
 			{

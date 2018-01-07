@@ -83,17 +83,9 @@ namespace FarseerPhysics.Collision.Shapes
 			clone.ShapeType = this.ShapeType;
 			clone._radius = this._radius;
 			clone._density = this._density;
-
-			if (Settings.ConserveMemory)
-			{
-				clone.Vertices = this.Vertices;
-				clone.Normals = this.Normals;
-			}
-			else
-			{
-				clone.Vertices = new Vertices(this.Vertices);
-				clone.Normals = new Vertices(this.Normals);
-			}
+			
+			clone.Vertices = new Vertices(this.Vertices);
+			clone.Normals = new Vertices(this.Normals);
 
 			clone.MassData = this.MassData;
 			return clone;
@@ -108,12 +100,7 @@ namespace FarseerPhysics.Collision.Shapes
 		{
 			Debug.Assert(vertices.Count >= 3 && vertices.Count <= Settings.MaxPolygonVertices);
 
-			if (Settings.ConserveMemory)
-				this.Vertices = vertices;
-			else
-				// Copy vertices.
-				this.Vertices = new Vertices(vertices);
-
+			this.Vertices = new Vertices(vertices);
 			this.Normals = new Vertices(vertices.Count);
 
 			// Compute normals. Ensure the edges have non-zero length.
@@ -451,7 +438,6 @@ namespace FarseerPhysics.Collision.Shapes
 						//Completely dry
 						return 0;
 					}
-					break;
 				case 1:
 					if (intoIndex == -1)
 					{
