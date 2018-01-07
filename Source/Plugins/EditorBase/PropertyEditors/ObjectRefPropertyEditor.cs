@@ -25,7 +25,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected	bool		dragHover			= false;
 		protected	Rectangle	rectPanel			= Rectangle.Empty;
 		protected	Rectangle	rectButtonReset		= Rectangle.Empty;
-		protected	Rectangle	rectButtonSelect		= Rectangle.Empty;
+		protected	Rectangle	rectButtonSelect	= Rectangle.Empty;
 		protected	Rectangle	rectPrevSound		= Rectangle.Empty;
 		protected	bool		buttonResetHovered	= false;
 		protected	bool		buttonResetPressed	= false;
