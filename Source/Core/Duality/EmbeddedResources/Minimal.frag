@@ -3,5 +3,9 @@
 void main()
 {
 	vec4 texClr = texture2D(mainTex, gl_TexCoord[0].st);
-	gl_FragColor = gl_Color * texClr;
+	vec4 result = gl_Color * texClr;
+
+	AlphaTest(result.a);
+
+	gl_FragColor = result;
 }

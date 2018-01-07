@@ -21,6 +21,8 @@ void main()
 		color.r * sin(colorShiftSpeed * _gameTime), 
 		color.g * sin(colorShiftSpeed * _gameTime * 0.5), 
 		color.b * sin(colorShiftSpeed * _gameTime * 0.25));
+	
+	AlphaTest(color.a);
 	gl_FragColor = color;
 }</source>
 </root>

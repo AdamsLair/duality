@@ -8,6 +8,7 @@ void main()
 {
 	vec4 color = gl_Color * texture2D(mainTex, gl_TexCoord[0].st);
 	color.rgb *= lightIntensity;
+	AlphaTest(color.a);
 	gl_FragColor = color;
 }</source>
 </root>

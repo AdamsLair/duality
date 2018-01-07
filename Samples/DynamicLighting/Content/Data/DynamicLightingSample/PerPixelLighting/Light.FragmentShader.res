@@ -68,6 +68,7 @@ void main()
 	
 	finalColor.rgb = max(finalColor.rgb, mix(clrDiffuse.xyz, finalColor.rgb, clrNormal.a));
 	
+	AlphaTest(finalColor.a);
 	gl_FragColor = finalColor;
 }</source>
 </root>

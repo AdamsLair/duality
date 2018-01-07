@@ -38,6 +38,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private HashSet<NativeShaderProgram> activeShaders           = new HashSet<NativeShaderProgram>();
 		private HashSet<string>              sharedShaderParameters  = new HashSet<string>();
 		private int                          sharedSamplerBindings   = 0;
+		private ShaderParameterCollection    internalShaderState     = new ShaderParameterCollection();
 		
 
 		public GraphicsMode DefaultGraphicsMode
@@ -608,10 +609,10 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			DrawTechnique tech = material.Technique.Res ?? DrawTechnique.Solid.Res;
 			DrawTechnique lastTech = lastMaterial != null ? lastMaterial.Technique.Res : null;
-			
+
 			// Setup BlendType
 			if (lastTech == null || tech.Blending != lastTech.Blending)
-				this.SetupBlendType(tech.Blending, this.currentDevice.DepthWrite);
+				this.SetupBlendState(tech.Blending, this.currentDevice.DepthWrite);
 
 			// Bind Shader
 			ShaderProgram shader = tech.Shader.Res ?? ShaderProgram.Minimal.Res;
@@ -631,6 +632,8 @@ namespace Duality.Backend.DefaultOpenTK
 				if (this.sharedShaderParameters.Contains(varInfo[i].Name)) continue;
 
 				ContentRef<Texture> texRef = material.GetInternalTexture(varInfo[i].Name);
+				if (texRef == null) this.internalShaderState.TryGetInternal(varInfo[i].Name, out texRef);
+
 				NativeTexture.Bind(texRef, curSamplerIndex);
 				GL.Uniform1(locations[i], curSamplerIndex);
 
@@ -646,13 +649,15 @@ namespace Duality.Backend.DefaultOpenTK
 				if (this.sharedShaderParameters.Contains(varInfo[i].Name)) continue;
 
 				float[] data = material.GetInternalData(varInfo[i].Name);
-				if (data == null) continue;
-		
+				if (data == null && !this.internalShaderState.TryGetInternal(varInfo[i].Name, out data))
+					continue;
+
 				NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);
 			}
 		}
-		private void SetupBlendType(BlendMode mode, bool depthWrite = true)
+		private void SetupBlendState(BlendMode mode, bool depthWrite)
 		{
+			bool useAlphaTesting = false;
 			switch (mode)
 			{
 				default:
@@ -660,66 +665,57 @@ namespace Duality.Backend.DefaultOpenTK
 				case BlendMode.Solid:
 					GL.DepthMask(depthWrite);
 					GL.Disable(EnableCap.Blend);
-					GL.Disable(EnableCap.AlphaTest);
 					GL.Disable(EnableCap.SampleAlphaToCoverage);
 					break;
 				case BlendMode.Mask:
 					GL.DepthMask(depthWrite);
 					GL.Disable(EnableCap.Blend);
 					if (this.useAlphaToCoverageBlend)
-					{
-						GL.Disable(EnableCap.AlphaTest);
 						GL.Enable(EnableCap.SampleAlphaToCoverage);
-					}
 					else
-					{
-						GL.Enable(EnableCap.AlphaTest);
-						GL.AlphaFunc(AlphaFunction.Gequal, 0.5f);
-					}
+						useAlphaTesting = true;
 					break;
 				case BlendMode.Alpha:
 					GL.DepthMask(false);
 					GL.Enable(EnableCap.Blend);
-					GL.Disable(EnableCap.AlphaTest);
 					GL.Disable(EnableCap.SampleAlphaToCoverage);
 					GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
 					break;
 				case BlendMode.AlphaPre:
 					GL.DepthMask(false);
 					GL.Enable(EnableCap.Blend);
-					GL.Disable(EnableCap.AlphaTest);
 					GL.Disable(EnableCap.SampleAlphaToCoverage);
 					GL.BlendFuncSeparate(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
 					break;
 				case BlendMode.Add:
 					GL.DepthMask(false);
 					GL.Enable(EnableCap.Blend);
-					GL.Disable(EnableCap.AlphaTest);
 					GL.Disable(EnableCap.SampleAlphaToCoverage);
 					GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One, BlendingFactorSrc.One, BlendingFactorDest.One);
 					break;
 				case BlendMode.Light:
 					GL.DepthMask(false);
 					GL.Enable(EnableCap.Blend);
-					GL.Disable(EnableCap.AlphaTest);
 					GL.Disable(EnableCap.SampleAlphaToCoverage);
 					GL.BlendFuncSeparate(BlendingFactorSrc.DstColor, BlendingFactorDest.One, BlendingFactorSrc.Zero, BlendingFactorDest.One);
 					break;
 				case BlendMode.Multiply:
 					GL.DepthMask(false);
 					GL.Enable(EnableCap.Blend);
-					GL.Disable(EnableCap.AlphaTest);
 					GL.Disable(EnableCap.SampleAlphaToCoverage);
 					GL.BlendFunc(BlendingFactorSrc.DstColor, BlendingFactorDest.Zero);
 					break;
 				case BlendMode.Invert:
 					GL.DepthMask(false);
 					GL.Enable(EnableCap.Blend);
-					GL.Disable(EnableCap.AlphaTest);
 					GL.Disable(EnableCap.SampleAlphaToCoverage);
 					GL.BlendFunc(BlendingFactorSrc.OneMinusDstColor, BlendingFactorDest.OneMinusSrcColor);
 					break;
 			}
+
+			this.internalShaderState.Set(
+				BuiltinShaderFields.AlphaTestThreshold, 
+				useAlphaTesting  ? 0.5f : -1.0f);
 		}
 
 		private void FinishSharedParameters()
@@ -771,7 +767,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private void FinishMaterial(BatchInfo material)
 		{
 			DrawTechnique tech = material.Technique.Res;
-			this.SetupBlendType(BlendMode.Reset);
+			this.SetupBlendState(BlendMode.Reset, true);
 			NativeShaderProgram.Bind(null);
 			NativeTexture.ResetBinding(this.sharedSamplerBindings);
 		}

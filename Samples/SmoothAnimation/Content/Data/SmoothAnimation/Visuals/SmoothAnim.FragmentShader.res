@@ -22,7 +22,10 @@ void main()
 	texClrOld.xyz = mix(texClrOld.xyz, texClrNew.xyz, max(-accOldNew, 0.0));
 
 	// Blend between frames
-	gl_FragColor = gl_Color * mix(texClrOld, texClrNew, animBlendVar);
+	vec4 result = gl_Color * mix(texClrOld, texClrNew, animBlendVar);
+	
+	AlphaTest(result.a);
+	gl_FragColor = result;
 }</source>
 </root>
 <!-- XmlFormatterBase Document Separator -->

@@ -16,5 +16,7 @@ void main()
 	texClr.a = pow(a, 1.0 / Gamma);
 
 	// Compose result color
-	gl_FragColor = gl_Color * texClr; 
+	vec4 result = gl_Color * texClr;
+	AlphaTest(result.a);
+	gl_FragColor = result;
 }
