@@ -55,13 +55,13 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 				if (this.EditedMember != null)
 				{
-					PropertyInfo tmpPropertyInfo = this.EditedMember as PropertyInfo;
-					FieldInfo tmpFieldInfo = this.EditedMember as FieldInfo;
-					if (tmpPropertyInfo != null)
+					PropertyInfo propertyInfo = this.EditedMember as PropertyInfo;
+					FieldInfo fieldInfo = this.EditedMember as FieldInfo;
+					if (propertyInfo != null)
 					{
-						t = tmpPropertyInfo.PropertyType;
-					} else if (tmpFieldInfo != null) {
-						t = tmpFieldInfo.FieldType;
+						t = propertyInfo.PropertyType;
+					} else if (fieldInfo != null) {
+						t = fieldInfo.FieldType;
 					}
 				}
 
@@ -388,32 +388,32 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 		protected void ShowContentSelectionDialog()
 		{
-			ObjectRefSelectionDialog tmpResourceSelectionForm = new ObjectRefSelectionDialog
+			ObjectRefSelectionDialog resourceSelectionForm = new ObjectRefSelectionDialog
 			{
 				FilteredType = this.FilteredType,
 				ResourcePath = this.ReferenceName
 			};
 
-			DialogResult result = tmpResourceSelectionForm.ShowDialog();
+			DialogResult result = resourceSelectionForm.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				DataObject tmpDataObject = new DataObject();
+				DataObject dataObject = new DataObject();
 
-				if (tmpResourceSelectionForm.ResourceReference != null)
+				if (resourceSelectionForm.ResourceReference != null)
 				{
-					tmpDataObject.SetContentRefs(new[] { tmpResourceSelectionForm.ResourceReference });
+					dataObject.SetContentRefs(new[] { resourceSelectionForm.ResourceReference });
 				}
 				else if (this.ReferenceType == typeof(GameObject))
 				{
-					tmpDataObject.SetGameObjectRefs(new[] { tmpResourceSelectionForm.GameObjectReference });
+					dataObject.SetGameObjectRefs(new[] { resourceSelectionForm.GameObjectReference });
 				}
 				else
 				{
-					tmpDataObject.SetComponentRefs(new[] { tmpResourceSelectionForm.ComponentReference });
+					dataObject.SetComponentRefs(new[] { resourceSelectionForm.ComponentReference });
 				}
 
-				DeserializeFromData(tmpDataObject);
+				DeserializeFromData(dataObject);
 			}
 		}
 

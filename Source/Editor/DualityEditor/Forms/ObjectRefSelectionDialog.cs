@@ -130,9 +130,7 @@ namespace Duality.Editor.Forms
 
 				foreach (GameObject currentObject in Scene.Current.AllObjects)
 				{
-					ReferenceNode tmpNode = new ReferenceNode(currentObject);
-
-					this.Model.Nodes.Add(tmpNode);
+					this.Model.Nodes.Add(new ReferenceNode(currentObject));
 				}
 			}
 			else if (typeof(Component).IsAssignableFrom(this.FilteredType))
@@ -141,29 +139,26 @@ namespace Duality.Editor.Forms
 
 				foreach (Component currentComponent in Scene.Current.FindComponents(this.FilteredType))
 				{
-					ReferenceNode tmpNode = new ReferenceNode(currentComponent);
-
-					this.Model.Nodes.Add(tmpNode);
+					this.Model.Nodes.Add(new ReferenceNode(currentComponent));
 				}
 			}
 			else
 			{
-				Type tmpFilteredType = typeof(Resource);
+				Type filteredType = typeof(Resource);
+
 				if (this.FilteredType.IsGenericType)
 				{
-					tmpFilteredType = this.FilteredType.GetGenericArguments()[0];
-					this.Text = string.Format("Select a {0} Resource", tmpFilteredType.GetTypeCSCodeName(true));
+					filteredType = this.FilteredType.GetGenericArguments()[0];
+					this.Text = string.Format("Select a {0} Resource", filteredType.GetTypeCSCodeName(true));
 				}
 				else
 				{
 					this.Text = "Select a Resource";
 				}
 
-				foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(tmpFilteredType))
+				foreach (IContentRef contentRef in ContentProvider.GetAvailableContent(filteredType))
 				{
-					ReferenceNode tmpNode = new ReferenceNode(contentRef);
-
-					this.Model.Nodes.Add(tmpNode);
+					this.Model.Nodes.Add(new ReferenceNode(contentRef));
 				}
 			}
 
@@ -171,11 +166,11 @@ namespace Duality.Editor.Forms
 
 			foreach (var treeNodeAdv in this.objectReferenceListing.AllNodes)
 			{
-				ReferenceNode tmpNode = treeNodeAdv.Tag as ReferenceNode;
+				ReferenceNode node = treeNodeAdv.Tag as ReferenceNode;
 
 				treeNodeAdv.IsExpanded = true;
 
-				if (tmpNode != null && tmpNode.Path == this.ResourcePath)
+				if (node != null && node.Path == this.ResourcePath)
 				{
 					this.objectReferenceListing.SelectedNode = treeNodeAdv;
 				}
@@ -233,13 +228,13 @@ namespace Duality.Editor.Forms
 
 		private bool NodeFilter(TreeNodeAdv nodeAdv)
 		{
-			ReferenceNode tmpNode = nodeAdv.Tag as ReferenceNode;
-			string tmpFilterValue = this.txtFilterInput.Text.ToLowerInvariant();
+			ReferenceNode node = nodeAdv.Tag as ReferenceNode;
+			string filterValue = this.txtFilterInput.Text.ToLowerInvariant();
 
-			return tmpNode != null &&
+			return node != null &&
 					(
-						tmpNode.Name.ToLowerInvariant().Contains(tmpFilterValue) ||
-						tmpNode.Path.ToLowerInvariant().Contains(tmpFilterValue)
+						node.Name.ToLowerInvariant().Contains(filterValue) ||
+						node.Path.ToLowerInvariant().Contains(filterValue)
 					);
 		}
 	}
