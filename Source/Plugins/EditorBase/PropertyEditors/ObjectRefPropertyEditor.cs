@@ -19,7 +19,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	public abstract class ObjectRefPropertyEditor : PropertyEditor
 	{
 		private static readonly IconImage iconSelect = new IconImage(Properties.EditorBaseResCache.IconReferenceInput);
-		private static readonly IconImage iconReset = new IconImage(Properties.EditorBaseResCache.IconAbortCross);
+		private static readonly IconImage iconReset  = new IconImage(Properties.EditorBaseResCache.IconAbortCross);
 
 		protected	bool		multiple			= false;
 		protected	bool		dragHover			= false;
