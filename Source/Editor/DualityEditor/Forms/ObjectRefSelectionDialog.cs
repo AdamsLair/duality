@@ -221,8 +221,11 @@ namespace Duality.Editor.Forms
 		{
 			this.objectReferenceListing.UpdateNodeFilter();
 
-			this.objectReferenceListing.SelectedNode = this.objectReferenceListing.AllNodes
-				.Where((node, index) => { return node.IsHidden == false; }).First();
+			if (this.objectReferenceListing.AllNodes.Any())
+			{
+				this.objectReferenceListing.SelectedNode = this.objectReferenceListing.AllNodes
+					.Where((node, index) => { return node.IsHidden == false; }).First();
+			}
 		}
 
 		private bool NodeFilter(TreeNodeAdv nodeAdv)
