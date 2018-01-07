@@ -14,6 +14,7 @@ namespace Duality.Editor.Plugins.Base.Properties
 	{
 		public static readonly Bitmap	DropdownSettingsBlack		= EditorBaseRes.DropdownSettingsBlack;
 		public static readonly Icon		IconEye						= EditorBaseRes.IconEye;
+		public static readonly Bitmap   IconReferenceInput			= EditorBaseRes.ReferenceInput;
 		public static readonly Bitmap	IconSpeakerBlack			= EditorBaseRes.IconSpeakerBlack;
 		public static readonly Bitmap	IconSpeakerWhite			= EditorBaseRes.IconSpeakerWhite;
 		public static readonly Bitmap	IconAbortCross				= EditorBaseRes.IconAbortCross;

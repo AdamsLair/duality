@@ -180,6 +180,7 @@
     <None Include="EmbeddedResources\DropdownSettingsBlack.png" />
     <None Include="EmbeddedResources\cross.png" />
     <None Include="EmbeddedResources\IconDownloadCodeIDE.png" />
+    <None Include="EmbeddedResources\application_side_expand.png" />
     <Content Include="EmbeddedResources\eye.ico" />
     <None Include="EmbeddedResources\IconSpeakerBlack.png" />
     <None Include="EmbeddedResources\IconSpeakerWhite.png" />
