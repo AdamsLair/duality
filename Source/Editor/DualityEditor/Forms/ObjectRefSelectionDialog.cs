@@ -124,7 +124,7 @@ namespace Duality.Editor.Forms
 			this.objectReferenceListing.BeginUpdate();
 			this.Model.Nodes.Clear();
 
-			if (this.FilteredType.IsSubclassOf(typeof(GameObject)) || this.FilteredType == typeof(GameObject))
+			if (typeof(GameObject).IsAssignableFrom(this.FilteredType))
 			{
 				this.Text = "Select a GameObject";
 
@@ -135,7 +135,7 @@ namespace Duality.Editor.Forms
 					this.Model.Nodes.Add(tmpNode);
 				}
 			}
-			else if (this.FilteredType.IsSubclassOf(typeof(Component)) || this.FilteredType == typeof(Component))
+			else if (typeof(Component).IsAssignableFrom(this.FilteredType))
 			{
 				this.Text = string.Format("Select a {0} Component", this.FilteredType.GetTypeCSCodeName());
 
