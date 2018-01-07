@@ -64,6 +64,7 @@ namespace Duality.Editor.Forms
 
 			this.objectReferenceListing.SelectionChanged += this.ResourceListingOnSelectedIndexChanged;
 			this.objectReferenceListing.DoubleClick += this.ResourceListingOnDoubleClick;
+			this.objectReferenceListing.NodeFilter += this.NodeFilter;
 
 			this.txtFilterInput.KeyDown += this.TxtFilterInputOnKeyDown;
 
@@ -161,8 +162,6 @@ namespace Duality.Editor.Forms
 					this.Model.Nodes.Add(new ReferenceNode(contentRef));
 				}
 			}
-
-			this.objectReferenceListing.NodeFilter += this.NodeFilter;
 
 			foreach (var treeNodeAdv in this.objectReferenceListing.AllNodes)
 			{
