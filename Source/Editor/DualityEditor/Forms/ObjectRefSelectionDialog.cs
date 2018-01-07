@@ -54,6 +54,7 @@ namespace Duality.Editor.Forms
 
 		private TreeModel Model { get; set; }
 
+
 		public ObjectRefSelectionDialog()
 		{
 			InitializeComponent();
@@ -70,49 +71,9 @@ namespace Duality.Editor.Forms
 
 			this.nodeName.DrawText += this.NodeName_OnDrawText;
 			this.nodePath.DrawText += this.NodePath_OnDrawText;
-		}
 
-		private void TxtFilterInputOnKeyDown(object sender, KeyEventArgs keyEventArgs)
-		{
-			TreeNodeAdv tmp = null;
-
-			if (keyEventArgs.KeyCode == Keys.Down)
-			{
-				tmp = this.objectReferenceListing.SelectedNode.NextNode;
-			}
-			else if (keyEventArgs.KeyCode == Keys.Up)
-			{
-				tmp = this.objectReferenceListing.SelectedNode.PreviousNode;
-			}
-
-			if (tmp != null)
-			{
-				this.objectReferenceListing.SelectedNode = tmp;
-			}
-		}
-
-		private void NodePath_OnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
-		{
-			ReferenceNode node = drawTextEventArgs.Node.Tag as ReferenceNode;
-
-			if (node == null)
-			{
-				return;
-			}
-
-			drawTextEventArgs.TextColor = this.PathColor;
-		}
-
-		private void NodeName_OnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
-		{
-			ReferenceNode node = drawTextEventArgs.Node.Tag as ReferenceNode;
-
-			if (node == null)
-			{
-				return;
-			}
-
-			drawTextEventArgs.TextColor = this.objectReferenceListing.ForeColor;
+			this.columnName.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
+			this.columnPath.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -178,7 +139,25 @@ namespace Duality.Editor.Forms
 			this.objectReferenceListing.EndUpdate();
 			this.txtFilterInput.Focus();
 		}
+		
+		private void TxtFilterInputOnKeyDown(object sender, KeyEventArgs keyEventArgs)
+		{
+			TreeNodeAdv tmp = null;
 
+			if (keyEventArgs.KeyCode == Keys.Down)
+			{
+				tmp = this.objectReferenceListing.SelectedNode.NextNode;
+			}
+			else if (keyEventArgs.KeyCode == Keys.Up)
+			{
+				tmp = this.objectReferenceListing.SelectedNode.PreviousNode;
+			}
+
+			if (tmp != null)
+			{
+				this.objectReferenceListing.SelectedNode = tmp;
+			}
+		}
 		private void ResourceListingOnDoubleClick(object sender, EventArgs eventArgs)
 		{
 			if (this.objectReferenceListing.SelectedNode == null)
@@ -193,7 +172,6 @@ namespace Duality.Editor.Forms
 			this.ResourceListingOnSelectedIndexChanged(sender, eventArgs);
 			this.AcceptButton.PerformClick();
 		}
-
 		private void ResourceListingOnSelectedIndexChanged(object sender, EventArgs eventArgs)
 		{
 			if (this.objectReferenceListing.SelectedNode == null)
@@ -216,7 +194,34 @@ namespace Duality.Editor.Forms
 			this.GameObjectReference = node.GameObjectReference;
 			this.ComponentReference = node.ComponentReference;
 		}
+		
+		private void NodePath_OnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
+		{
+			ReferenceNode node = drawTextEventArgs.Node.Tag as ReferenceNode;
 
+			if (node == null)
+			{
+				return;
+			}
+
+			drawTextEventArgs.TextColor = this.PathColor;
+		}
+		private void NodeName_OnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
+		{
+			ReferenceNode node = drawTextEventArgs.Node.Tag as ReferenceNode;
+
+			if (node == null)
+			{
+				return;
+			}
+
+			drawTextEventArgs.TextColor = this.objectReferenceListing.ForeColor;
+		}
+		private void treeColumn_DrawColHeaderBg(object sender, DrawColHeaderBgEventArgs e)
+		{
+			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, 212, 212, 212)), e.Bounds);
+			e.Handled = true;
+		}
 		private void txtFilterInput_TextChanged(object sender, EventArgs e)
 		{
 			this.objectReferenceListing.UpdateNodeFilter();
