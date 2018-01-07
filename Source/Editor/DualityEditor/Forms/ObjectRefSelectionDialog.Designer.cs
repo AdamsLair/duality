@@ -1,8 +1,8 @@
-﻿using System.Windows.Forms;
+﻿using Aga.Controls.Tree;
+using Duality.Editor.Controls;
 
 namespace Duality.Editor.Forms
 {
-	using Aga.Controls.Tree;
 
 	partial class ObjectRefSelectionDialog
 	{
@@ -40,18 +40,16 @@ namespace Duality.Editor.Forms
 			this.columnPath = new Aga.Controls.Tree.TreeColumn();
 			this.nodeName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.nodePath = new Aga.Controls.Tree.NodeControls.NodeTextBox();
-			this.txtFilterInput = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.txtFilterInput = new Duality.Editor.Controls.CueTextBox();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(604, 444);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
+			this.buttonCancel.Location = new System.Drawing.Point(454, 361);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(100, 28);
+			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 3;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -60,10 +58,9 @@ namespace Duality.Editor.Forms
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(496, 444);
-			this.buttonOk.Margin = new System.Windows.Forms.Padding(4);
+			this.buttonOk.Location = new System.Drawing.Point(373, 361);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(100, 28);
+			this.buttonOk.Size = new System.Drawing.Size(75, 23);
 			this.buttonOk.TabIndex = 2;
 			this.buttonOk.Text = "Ok";
 			this.buttonOk.UseVisualStyleBackColor = true;
@@ -72,10 +69,9 @@ namespace Duality.Editor.Forms
 			// 
 			this.labelInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelInfo.Location = new System.Drawing.Point(16, 11);
-			this.labelInfo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.labelInfo.Location = new System.Drawing.Point(12, 9);
 			this.labelInfo.Name = "labelInfo";
-			this.labelInfo.Size = new System.Drawing.Size(688, 28);
+			this.labelInfo.Size = new System.Drawing.Size(516, 21);
 			this.labelInfo.TabIndex = 6;
 			this.labelInfo.Text = "Please select the reference you would like to use.";
 			// 
@@ -96,8 +92,7 @@ namespace Duality.Editor.Forms
 			this.objectReferenceListing.Indent = 5;
 			this.objectReferenceListing.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
 			this.objectReferenceListing.LoadOnDemand = true;
-			this.objectReferenceListing.Location = new System.Drawing.Point(20, 64);
-			this.objectReferenceListing.Margin = new System.Windows.Forms.Padding(4);
+			this.objectReferenceListing.Location = new System.Drawing.Point(11, 57);
 			this.objectReferenceListing.Model = null;
 			this.objectReferenceListing.Name = "objectReferenceListing";
 			this.objectReferenceListing.NodeControls.Add(this.nodeName);
@@ -106,7 +101,7 @@ namespace Duality.Editor.Forms
 			this.objectReferenceListing.SelectedNode = null;
 			this.objectReferenceListing.ShowLines = false;
 			this.objectReferenceListing.ShowPlusMinus = false;
-			this.objectReferenceListing.Size = new System.Drawing.Size(684, 372);
+			this.objectReferenceListing.Size = new System.Drawing.Size(517, 298);
 			this.objectReferenceListing.TabIndex = 1;
 			this.objectReferenceListing.UseColumns = true;
 			// 
@@ -151,41 +146,31 @@ namespace Duality.Editor.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtFilterInput.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.txtFilterInput.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txtFilterInput.Location = new System.Drawing.Point(71, 35);
+			this.txtFilterInput.CueText = "Reference Filter";
+			this.txtFilterInput.Location = new System.Drawing.Point(11, 32);
+			this.txtFilterInput.Margin = new System.Windows.Forms.Padding(2);
 			this.txtFilterInput.Name = "txtFilterInput";
-			this.txtFilterInput.Size = new System.Drawing.Size(633, 22);
+			this.txtFilterInput.Size = new System.Drawing.Size(517, 20);
 			this.txtFilterInput.TabIndex = 0;
 			this.txtFilterInput.TextChanged += new System.EventHandler(this.txtFilterInput_TextChanged);
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(17, 37);
-			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(47, 17);
-			this.label1.TabIndex = 7;
-			this.label1.Text = "Filter: ";
 			// 
 			// ObjectRefSelectionDialog
 			// 
 			this.AcceptButton = this.buttonOk;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(720, 487);
-			this.Controls.Add(this.label1);
+			this.ClientSize = new System.Drawing.Size(540, 396);
 			this.Controls.Add(this.txtFilterInput);
 			this.Controls.Add(this.objectReferenceListing);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.labelInfo);
 			this.Controls.Add(this.buttonOk);
-			this.Margin = new System.Windows.Forms.Padding(4);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(501, 482);
+			this.MinimumSize = new System.Drawing.Size(380, 399);
 			this.Name = "ObjectRefSelectionDialog";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -205,7 +190,6 @@ namespace Duality.Editor.Forms
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodePath;
 		private TreeColumn columnName;
 		private TreeColumn columnPath;
-		private TextBox txtFilterInput;
-		private System.Windows.Forms.Label label1;
+		private CueTextBox txtFilterInput;
 	}
 }
