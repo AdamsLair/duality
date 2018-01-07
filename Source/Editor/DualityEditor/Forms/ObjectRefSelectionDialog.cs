@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
 using Duality.Resources;
@@ -13,6 +12,12 @@ namespace Duality.Editor.Forms
 	{
 		public class ReferenceNode : Node
 		{
+			public string Name { get; set; }
+			public string Path { get; set; }
+			public IContentRef ResourceReference { get; set; }
+			public GameObject GameObjectReference { get; set; }
+			public Component ComponentReference { get; set; }
+
 			public ReferenceNode(IContentRef resource) : base(resource.Name)
 			{
 				this.Name = resource.Name;
@@ -35,46 +40,6 @@ namespace Duality.Editor.Forms
 				this.Path = component.GetType().GetTypeCSCodeName();
 
 				this.ComponentReference = component;
-			}
-
-			private string _name;
-
-			public string Name
-			{
-				get { return this._name; }
-				set { this._name = value; }
-			}
-
-			private string _path;
-
-			public string Path
-			{
-				get { return this._path; }
-				set { this._path = value; }
-			}
-
-			private IContentRef _resourceReference;
-
-			public IContentRef ResourceReference
-			{
-				get { return this._resourceReference; }
-				set { this._resourceReference = value; }
-			}
-
-			private GameObject _gameObjectReference;
-
-			public GameObject GameObjectReference
-			{
-				get { return this._gameObjectReference; }
-				set { this._gameObjectReference = value; }
-			}
-
-			private Component _componentReference;
-
-			public Component ComponentReference
-			{
-				get { return this._componentReference; }
-				set { this._componentReference = value; }
 			}
 		}
 
@@ -158,7 +123,7 @@ namespace Duality.Editor.Forms
 
 			this.objectReferenceListing.BeginUpdate();
 			this.Model.Nodes.Clear();
-			
+
 			if (this.FilteredType.IsSubclassOf(typeof(GameObject)) || this.FilteredType == typeof(GameObject))
 			{
 				this.Text = "Select a GameObject";
@@ -272,10 +237,10 @@ namespace Duality.Editor.Forms
 			string tmpFilterValue = this.txtFilterInput.Text.ToLowerInvariant();
 
 			return tmpNode != null &&
-				(
-					tmpNode.Name.ToLowerInvariant().Contains(tmpFilterValue) ||
-					tmpNode.Path.ToLowerInvariant().Contains(tmpFilterValue)
-				);
+					(
+						tmpNode.Name.ToLowerInvariant().Contains(tmpFilterValue) ||
+						tmpNode.Path.ToLowerInvariant().Contains(tmpFilterValue)
+					);
 		}
 	}
 }
