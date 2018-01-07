@@ -145,14 +145,14 @@ namespace Duality.Drawing
 			int index = this.FindIndex(name);
 			return index != -1;
 		}
-		
+
 		/// <summary>
 		/// Assigns an array of values to the specified variable. All values are copied and converted into
 		/// a shared internal format.
 		/// 
-		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
-		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
-		/// <see cref="Point2"/> and <see cref="Boolean"/>.
+		/// Supported base types are <see cref="float"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
+		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="int"/>,
+		/// <see cref="Point2"/> and <see cref="bool"/>.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
@@ -285,9 +285,9 @@ namespace Duality.Drawing
 		/// Assigns a blittable value to the specified variable. All values are copied and converted into
 		/// a shared internal format.
 		/// 
-		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
-		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
-		/// <see cref="Point2"/> and <see cref="Boolean"/>.
+		/// Supported base types are <see cref="float"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
+		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="int"/>,
+		/// <see cref="Point2"/> and <see cref="bool"/>.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
@@ -417,14 +417,14 @@ namespace Duality.Drawing
 
 			this.UpdateHash();
 		}
-		
+
 		/// <summary>
 		/// Retrieves a copy of the values that are assigned the specified variable. If the internally 
 		/// stored type does not match the specified type, it will be converted before returning.
 		/// 
-		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
-		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
-		/// <see cref="Point2"/> and <see cref="Boolean"/>.
+		/// Supported base types are <see cref="float"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
+		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="int"/>,
+		/// <see cref="Point2"/> and <see cref="bool"/>.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
@@ -576,9 +576,9 @@ namespace Duality.Drawing
 		/// Retrieves a blittable value from the specified variable. All values are copied and converted into
 		/// a shared internal format.
 		/// 
-		/// Supported base types are <see cref="Single"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
-		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="Int32"/>,
-		/// <see cref="Point2"/> and <see cref="Boolean"/>.
+		/// Supported base types are <see cref="float"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, 
+		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="int"/>,
+		/// <see cref="Point2"/> and <see cref="bool"/>.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
