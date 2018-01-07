@@ -25,5 +25,8 @@ namespace Duality.Resources
 		public static readonly string ViewMatrix = "_ViewMatrix";
 		public static readonly string ProjectionMatrix = "_ProjectionMatrix";
 		public static readonly string ViewProjectionMatrix = "_ViewProjectionMatrix";
+
+		public static readonly string MainTex = "mainTex";
+		public static readonly string MainColor = "mainColor";
 	}
 }

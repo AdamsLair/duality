@@ -12,15 +12,6 @@ namespace Duality.Resources
 	/// </summary>
 	public struct ShaderFieldInfo
 	{
-		/// <summary>
-		/// The default variable name for a materials main texture.
-		/// </summary>
-		public const string DefaultNameMainTex = "mainTex";
-		/// <summary>
-		/// The default variable name for a materials main color.
-		/// </summary>
-		public const string DefaultNameMainColor = "mainColor";
-		
 		private ShaderFieldScope scope;
 		private ShaderFieldType type;
 		private int arrayLength;

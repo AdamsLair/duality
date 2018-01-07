@@ -843,7 +843,7 @@ namespace Duality.Drawing
 			int otherCount = this.values != null ? this.values.Count : 0;
 
 			ContentRef<Texture> mainTex;
-			if (this.TryGet(ShaderFieldInfo.DefaultNameMainTex, out mainTex))
+			if (this.TryGet(BuiltinShaderFields.MainTex, out mainTex))
 			{
 				builder.Append(mainTex.Name);
 				otherCount--;

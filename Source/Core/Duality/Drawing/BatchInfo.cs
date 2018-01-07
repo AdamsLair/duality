@@ -30,8 +30,8 @@ namespace Duality.Drawing
 		/// </summary>
 		public ContentRef<Texture> MainTexture
 		{
-			get { return this.GetTexture(ShaderFieldInfo.DefaultNameMainTex); }
-			set { this.SetTexture(ShaderFieldInfo.DefaultNameMainTex, value); }
+			get { return this.GetTexture(BuiltinShaderFields.MainTex); }
+			set { this.SetTexture(BuiltinShaderFields.MainTex, value); }
 		}
 		/// <summary>
 		/// [GET / SET] The main color of the material. This property is a shortcut for
@@ -41,12 +41,12 @@ namespace Duality.Drawing
 		{
 			get
 			{
-				Vector4 color = this.GetValue<Vector4>(ShaderFieldInfo.DefaultNameMainColor);
+				Vector4 color = this.GetValue<Vector4>(BuiltinShaderFields.MainColor);
 				return new ColorRgba(color.X, color.Y, color.Z, color.W);
 			}
 			set
 			{
-				this.SetValue<Vector4>(ShaderFieldInfo.DefaultNameMainColor, new Vector4(
+				this.SetValue<Vector4>(BuiltinShaderFields.MainColor, new Vector4(
 					value.R / 255.0f, 
 					value.G / 255.0f, 
 					value.B / 255.0f, 

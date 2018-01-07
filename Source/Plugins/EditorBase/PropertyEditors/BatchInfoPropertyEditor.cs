@@ -65,7 +65,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				else
 				{
 					shaderFields = new ShaderFieldInfo[] { new ShaderFieldInfo(
-						ShaderFieldInfo.DefaultNameMainTex,
+						BuiltinShaderFields.MainTex,
 						ShaderFieldType.Sampler2D,
 						ShaderFieldScope.Uniform) };
 				}
@@ -107,7 +107,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					// Skip fields that shouldn't be displayed
 					if (field.IsPrivate) continue;
 					if (field.Scope != ShaderFieldScope.Uniform) continue;
-					if (field.Name == ShaderFieldInfo.DefaultNameMainColor) continue;
+					if (field.Name == BuiltinShaderFields.MainColor) continue;
 
 					displayedFieldIndex++;
 

@@ -117,8 +117,8 @@ namespace Duality.Resources
 				{
 					// Setup default values on demand - for now, just a few hardcoded ones
 					this.defaultParameters = new ShaderParameterCollection();
-					this.defaultParameters.Set(ShaderFieldInfo.DefaultNameMainColor, Vector4.One);
-					this.defaultParameters.Set(ShaderFieldInfo.DefaultNameMainTex, Texture.White);
+					this.defaultParameters.Set(BuiltinShaderFields.MainColor, Vector4.One);
+					this.defaultParameters.Set(BuiltinShaderFields.MainTex, Texture.White);
 				}
 				return this.defaultParameters;
 			}
