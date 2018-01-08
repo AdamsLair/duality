@@ -63,6 +63,7 @@ namespace Duality.Editor
 		private	static AutosaveFrequency			autosaveFrequency	= AutosaveFrequency.ThirtyMinutes;
 		private	static DateTime						autosaveLast		= DateTime.Now;
 		private	static string						launcherApp			= null;
+		private static string                       lastOpenScene       = null;
 		private	static PackageManager				packageManager		= null;
 		private	static InMemoryLogOutput			memoryLogOutput		= null;
 
@@ -279,18 +280,26 @@ namespace Duality.Editor
 				if (action != null) editorActions.Add(action);
 			}
 			editorActions.StableSort((a, b) => b.Priority.CompareTo(a.Priority));
-
-			// Enter a new, empty Scene, which will trigger the usual updates
-			Scene.SwitchTo(null, true);
-
-			// If there are no Scenes in the current project, init the first one with some default objects.
-			if (!Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.GetFileExtByType<Scene>(), SearchOption.AllDirectories).Any())
+			
+			if (lastOpenScene != null && FileOp.Exists(lastOpenScene))
 			{
-				GameObject mainCam = new GameObject("MainCamera");
-				mainCam.AddComponent<Transform>().Pos = new Vector3(0, 0, -DrawDevice.DefaultFocusDist);
-				mainCam.AddComponent<Camera>();
-				mainCam.AddComponent<SoundListener>();
-				Scene.Current.AddObject(mainCam);
+				
+				Scene.SwitchTo(ContentProvider.RequestContent<Scene>(lastOpenScene), true);
+			}
+			else
+			{
+				// Enter a new, empty Scene, which will trigger the usual updates
+				Scene.SwitchTo(null, true);
+
+				// If there are no Scenes in the current project, init the first one with some default objects.
+				if (!Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.GetFileExtByType<Scene>(), SearchOption.AllDirectories).Any())
+				{
+					GameObject mainCam = new GameObject("MainCamera");
+					mainCam.AddComponent<Transform>().Pos = new Vector3(0, 0, -DrawDevice.DefaultFocusDist);
+					mainCam.AddComponent<Camera>();
+					mainCam.AddComponent<SoundListener>();
+					Scene.Current.AddObject(mainCam);
+				}
 			}
 
 			// Allow the engine to run
@@ -441,6 +450,7 @@ namespace Duality.Editor
 							editorAppElement.SetElementValue("LauncherPath", launcherApp);
 							editorAppElement.SetElementValue("FirstSession", false);
 							editorAppElement.SetElementValue("ActiveDocumentIndex", mainForm.ActiveDocumentIndex);
+							editorAppElement.SetElementValue("LastOpenScene", lastOpenScene);
 						}
 						if (!editorAppElement.IsEmpty)
 							rootElement.Add(editorAppElement);
@@ -525,6 +535,7 @@ namespace Duality.Editor
 						editorAppElement.TryGetElementValue("LauncherPath", ref launcherApp);
 						editorAppElement.TryGetElementValue("FirstSession", ref firstEditorSession);
 						editorAppElement.TryGetElementValue("ActiveDocumentIndex", ref activeDocumentIndex);
+						editorAppElement.TryGetElementValue("LastOpenScene", ref lastOpenScene);
 					}
 
 					// Load plugin editor data
@@ -1348,6 +1359,8 @@ namespace Duality.Editor
 
 				// Append restored selection to current one.
 				if (objList.Count > 0) Select(null, new ObjectSelection(objList), SelectMode.Append);
+
+				lastOpenScene = Scene.CurrentPath;
 			}
 		}
 		private static void Resource_ResourceSaved(object sender, ResourceSaveEventArgs e)
