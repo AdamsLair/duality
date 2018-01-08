@@ -64,6 +64,7 @@ namespace Duality.Editor
 		private	static DateTime						autosaveLast		= DateTime.Now;
 		private	static string						launcherApp			= null;
 		private static string                       lastOpenScene       = null;
+		private static bool                         openLastScene       = true;
 		private	static PackageManager				packageManager		= null;
 		private	static InMemoryLogOutput			memoryLogOutput		= null;
 
@@ -281,9 +282,8 @@ namespace Duality.Editor
 			}
 			editorActions.StableSort((a, b) => b.Priority.CompareTo(a.Priority));
 			
-			if (lastOpenScene != null && FileOp.Exists(lastOpenScene))
-			{
-				
+			if (openLastScene && lastOpenScene != null && FileOp.Exists(lastOpenScene))
+			{				
 				Scene.SwitchTo(ContentProvider.RequestContent<Scene>(lastOpenScene), true);
 			}
 			else
@@ -451,6 +451,7 @@ namespace Duality.Editor
 							editorAppElement.SetElementValue("FirstSession", false);
 							editorAppElement.SetElementValue("ActiveDocumentIndex", mainForm.ActiveDocumentIndex);
 							editorAppElement.SetElementValue("LastOpenScene", lastOpenScene);
+							editorAppElement.SetElementValue("OpenLastScene", openLastScene);							
 						}
 						if (!editorAppElement.IsEmpty)
 							rootElement.Add(editorAppElement);
@@ -536,6 +537,7 @@ namespace Duality.Editor
 						editorAppElement.TryGetElementValue("FirstSession", ref firstEditorSession);
 						editorAppElement.TryGetElementValue("ActiveDocumentIndex", ref activeDocumentIndex);
 						editorAppElement.TryGetElementValue("LastOpenScene", ref lastOpenScene);
+						editorAppElement.TryGetElementValue("OpenLastScene", ref openLastScene);
 					}
 
 					// Load plugin editor data
