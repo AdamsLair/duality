@@ -1342,6 +1342,7 @@ namespace Duality.Editor
 		}
 		private static void Scene_Entered(object sender, EventArgs e)
 		{
+			lastOpenScene = Scene.CurrentPath;
 			if (selectionTempScene != null)
 			{
 				// Try to restore last GameObject / Component selection
@@ -1360,9 +1361,7 @@ namespace Duality.Editor
 				}
 
 				// Append restored selection to current one.
-				if (objList.Count > 0) Select(null, new ObjectSelection(objList), SelectMode.Append);
-
-				lastOpenScene = Scene.CurrentPath;
+				if (objList.Count > 0) Select(null, new ObjectSelection(objList), SelectMode.Append);				
 			}
 		}
 		private static void Resource_ResourceSaved(object sender, ResourceSaveEventArgs e)
