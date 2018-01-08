@@ -22,8 +22,9 @@ namespace Duality.Plugins.Tilemaps
 		public  static readonly Point2             DefaultTileSize     = new Point2(32, 32);
 		private static readonly BatchInfo          DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
 
-		private List<TilesetRenderInput>   renderConfig   = new List<TilesetRenderInput>();
-		private List<TilesetAutoTileInput> autoTileConfig = new List<TilesetAutoTileInput>();
+		private List<TilesetRenderInput>   renderConfig               = new List<TilesetRenderInput>();
+		private List<TilesetAutoTileInput> autoTileConfig             = new List<TilesetAutoTileInput>();
+		private Dictionary<string, TilesetDataTagInput> dataTagConfig = new Dictionary<string, TilesetDataTagInput>();
 		private BatchInfo                  baseMaterial   = new BatchInfo(DefaultBaseMaterial);
 		private Vector2                    tileSize       = DefaultTileSize;
 		private RawList<TileInput>         tileInput      = new RawList<TileInput>();
@@ -55,6 +56,12 @@ namespace Duality.Plugins.Tilemaps
 				}
 			}
 		}
+
+		public Dictionary<string, TilesetDataTagInput> DataTagConfig
+		{
+			get { return this.dataTagConfig; }
+		}
+
 		/// <summary>
 		/// [GET] The different layers of <see cref="TilesetRenderInput"/>, which compose the look of all the tiles
 		/// that are defined in this <see cref="Tileset"/>.
