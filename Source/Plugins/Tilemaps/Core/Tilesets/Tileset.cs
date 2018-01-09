@@ -321,6 +321,15 @@ namespace Duality.Plugins.Tilemaps
 					GetTileArrayCompileHash(autoTile.TileInput.Data, autoTile.TileInput.Count));
 			}
 
+			foreach (TilesetDataTagInput autoTile in this.dataTagConfig)
+			{
+				foreach (DataTagTileItem data in autoTile.TileData.Data)
+				{
+					int value = data.Value != null ? data.Value.GetHashCode() : 0;
+					MathF.CombineHashCode(ref hash, value);
+				}			
+			}
+
 			{
 				MathF.CombineHashCode(ref hash, 
 					GetTileArrayCompileHash(this.tileInput.Data, this.tileInput.Count));

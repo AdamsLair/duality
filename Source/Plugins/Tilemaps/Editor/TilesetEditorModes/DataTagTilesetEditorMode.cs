@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
@@ -87,21 +88,23 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 		private TreeModel treeModel = new TreeModel();
 
-		protected TilesetDataTagInput SelectedDataLayer
-		{
-			get { return DualityEditorApp.Selection.Objects.OfType<TilesetDataTagInput>().FirstOrDefault(); }
-		}
+		protected TilesetDataTagInput SelectedDataLayer;
 
 		protected override void OnEnter()
 		{
 			this.UpdateTreeModel();
-			this.TilesetView.MouseDown += this.TilesetView_MouseDown;
+			this.TilesetView.MouseClick += this.TilesetView_MouseDown;
+		}
+
+		protected override void OnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args)
+		{
+			this.UpdateTreeModel();
 		}
 
 		protected override void OnLeave()
 		{
 			base.OnLeave();
-			this.TilesetView.MouseDown -= this.TilesetView_MouseDown;
+			this.TilesetView.MouseClick -= this.TilesetView_MouseDown;
 		}
 
 		private void TilesetView_MouseDown(object sender, MouseEventArgs e)
@@ -109,13 +112,13 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
 
-			TilesetDataTagInput autoTile = this.SelectedDataLayer;
-			if (autoTile == null) return;
+			TilesetDataTagInput selectedDataLayer = this.SelectedDataLayer;
+			if (selectedDataLayer == null) return;
 
 			int tileIndex = this.TilesetView.HoveredTileIndex;
 			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
 
-			DualityEditorApp.Select(this, new ObjectSelection(new object[] { autoTile.Items[tileIndex] }));
+			DualityEditorApp.Select(this, new ObjectSelection(new object[] { selectedDataLayer.TileData[tileIndex] }));
 		}
 
 		public override void AddLayer()
@@ -138,12 +141,17 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			{
 				Key = key
 			};
+			layer.TileData.Count = tileset.TileCount;
+			//for (int i = 0; i < layer.TileData.Count; i++)
+			//{
+			//	layer.TileData[i] = new DataTagTileItem();
+			//}
 			this.SelectedTileset.Res.DataTagConfig.Add(layer);
 
 			UndoRedoManager.Do(new AddTilesetConfigLayerAction<TilesetDataTagInput>(
-	tileset,
-	TilemapsReflectionInfo.Property_TilesetDataTagInput,
-	layer));
+								tileset,
+								TilemapsReflectionInfo.Property_TilesetDataTagInput,
+								layer));
 
 			DataLayerNode modelNode = this.treeModel
 			.Nodes
@@ -173,12 +181,12 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 			// If a visual layer was modified, emit an editor-wide change event for
 			// the Tileset as well, so the editor knows it will need to save this Resource.
-			if (tileset != null && args.HasAnyObject(tileset.RenderConfig))
+			if (tileset != null && args.HasAnyObject(tileset.DataTagConfig))
 			{
 				DualityEditorApp.NotifyObjPropChanged(
 					this,
 					new ObjectSelection(tileset),
-					TilemapsReflectionInfo.Property_Tileset_RenderConfig);
+					TilemapsReflectionInfo.Property_TilesetDataTagInput);
 			}
 
 			this.UpdateTreeModel();
@@ -189,10 +197,12 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			base.OnLayerSelectionChanged(args);
 			Tileset tileset = this.SelectedTileset.Res;
 			DataLayerNode selectedNode = args.SelectedNodeTag as DataLayerNode;
-
 			// Update global editor selection, so an Object Inspector can pick up the AutoTile for editing
 			if (selectedNode != null)
+			{
+				this.SelectedDataLayer = selectedNode.DataTagLayer;
 				DualityEditorApp.Select(this, new ObjectSelection(new object[] { selectedNode.DataTagLayer }));
+			}
 			else
 				DualityEditorApp.Deselect(this, obj => obj is DataLayerNode);
 
