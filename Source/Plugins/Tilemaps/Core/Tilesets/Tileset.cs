@@ -22,12 +22,12 @@ namespace Duality.Plugins.Tilemaps
 		public  static readonly Point2             DefaultTileSize     = new Point2(32, 32);
 		private static readonly BatchInfo          DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
 
-		private List<TilesetRenderInput>   renderConfig               = new List<TilesetRenderInput>();
-		private List<TilesetAutoTileInput> autoTileConfig             = new List<TilesetAutoTileInput>();
-		private Dictionary<string, TilesetDataTagInput> dataTagConfig = new Dictionary<string, TilesetDataTagInput>();
-		private BatchInfo                  baseMaterial   = new BatchInfo(DefaultBaseMaterial);
-		private Vector2                    tileSize       = DefaultTileSize;
-		private RawList<TileInput>         tileInput      = new RawList<TileInput>();
+		private List<TilesetRenderInput>   renderConfig					= new List<TilesetRenderInput>();
+		private List<TilesetAutoTileInput> autoTileConfig				= new List<TilesetAutoTileInput>();
+		private IList<TilesetDataTagInput> dataTagConfig				= new List<TilesetDataTagInput>();
+		private BatchInfo                  baseMaterial					= new BatchInfo(DefaultBaseMaterial);
+		private Vector2                    tileSize						= DefaultTileSize;
+		private RawList<TileInput>         tileInput					= new RawList<TileInput>();
 
 		[DontSerialize] private RawList<TileInfo>         tileData       = new RawList<TileInfo>();
 		[DontSerialize] private List<TilesetAutoTileInfo> autoTileData   = new List<TilesetAutoTileInfo>();
@@ -57,7 +57,8 @@ namespace Duality.Plugins.Tilemaps
 			}
 		}
 
-		public Dictionary<string, TilesetDataTagInput> DataTagConfig
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public IList<TilesetDataTagInput> DataTagConfig
 		{
 			get { return this.dataTagConfig; }
 		}
