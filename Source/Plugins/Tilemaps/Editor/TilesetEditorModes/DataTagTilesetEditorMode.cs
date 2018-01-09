@@ -142,10 +142,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				Key = key
 			};
 			layer.TileData.Count = tileset.TileCount;
-			//for (int i = 0; i < layer.TileData.Count; i++)
-			//{
-			//	layer.TileData[i] = new DataTagTileItem();
-			//}
 			this.SelectedTileset.Res.DataTagConfig.Add(layer);
 
 			UndoRedoManager.Do(new AddTilesetConfigLayerAction<TilesetDataTagInput>(
