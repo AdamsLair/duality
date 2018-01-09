@@ -10,6 +10,12 @@ namespace Duality.Plugins.Tilemaps
 	{
 		public string Key { get; set; }
 
+		private RawList<TileData> tileData = new RawList<TileData>();
+		public RawList<TileData> TileData { get { return this.tileData; } }
+	}
 
+	public class TileData
+	{
+		public string Value { get; set; }
 	}
 }

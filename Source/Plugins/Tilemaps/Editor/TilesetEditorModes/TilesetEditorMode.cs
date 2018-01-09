@@ -40,7 +40,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		/// </summary>
 		protected TilesetView TilesetView
 		{
-			get { return editor.TilesetView; }
+			get { return this.editor.TilesetView; }
 		}
 
 		/// <summary>

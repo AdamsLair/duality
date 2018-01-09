@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Duality.Editor.Plugins.Tilemaps.Properties;
 using Duality.Editor.Plugins.Tilemaps.UndoRedoActions;
@@ -11,7 +12,18 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 	{
 		private class DataLayerNode : TilesetEditorLayerNode
 		{
+			private TilesetEditor editor = null;
 			private TilesetDataTagInput layer = null;
+
+			internal void Init(TilesetEditor editor)
+			{
+				this.editor = editor;
+			}
+
+			protected TilesetView TilesetView
+			{
+				get { return this.editor.TilesetView; }
+			}
 
 			public override string Title
 			{
@@ -78,6 +90,32 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		protected TilesetDataTagInput SelectedDataLayer
 		{
 			get { return DualityEditorApp.Selection.Objects.OfType<TilesetDataTagInput>().FirstOrDefault(); }
+		}
+
+		protected override void OnEnter()
+		{
+			this.UpdateTreeModel();
+			this.TilesetView.MouseDown += this.TilesetView_MouseDown;
+		}
+
+		protected override void OnLeave()
+		{
+			base.OnLeave();
+			this.TilesetView.MouseDown -= this.TilesetView_MouseDown;
+		}
+
+		private void TilesetView_MouseDown(object sender, MouseEventArgs e)
+		{
+			Tileset tileset = this.SelectedTileset.Res;
+			if (tileset == null) return;
+
+			TilesetDataTagInput autoTile = this.SelectedDataLayer;
+			if (autoTile == null) return;
+
+			int tileIndex = this.TilesetView.HoveredTileIndex;
+			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
+
+			DualityEditorApp.Select(this, new ObjectSelection(new object[] { autoTile.Items[tileIndex] }));
 		}
 
 		public override void AddLayer()
