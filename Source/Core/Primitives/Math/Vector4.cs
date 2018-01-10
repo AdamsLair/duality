@@ -490,11 +490,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector4 operator +(Vector4 left, Vector4 right)
 		{
-			left.X += right.X;
-			left.Y += right.Y;
-			left.Z += right.Z;
-			left.W += right.W;
-			return left;
+			return new Vector4(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
 		}
 		/// <summary>
 		/// Subtracts two instances.
@@ -504,11 +500,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector4 operator -(Vector4 left, Vector4 right)
 		{
-			left.X -= right.X;
-			left.Y -= right.Y;
-			left.Z -= right.Z;
-			left.W -= right.W;
-			return left;
+			return new Vector4(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
 		}
 		/// <summary>
 		/// Negates an instance.
@@ -517,11 +509,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector4 operator -(Vector4 vec)
 		{
-			vec.X = -vec.X;
-			vec.Y = -vec.Y;
-			vec.Z = -vec.Z;
-			vec.W = -vec.W;
-			return vec;
+			return new Vector4(-vec.X, -vec.Y, -vec.Z, -vec.W);
 		}
 		/// <summary>
 		/// Multiplies an instance by a scalar.
@@ -531,11 +519,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector4 operator *(Vector4 vec, float scale)
 		{
-			vec.X *= scale;
-			vec.Y *= scale;
-			vec.Z *= scale;
-			vec.W *= scale;
-			return vec;
+			return new Vector4(vec.X * scale, vec.Y * scale, vec.Z * scale, vec.W * scale);
 		}
 		/// <summary>
 		/// Scales an instance by a vector.
@@ -545,11 +529,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector4 operator *(Vector4 vec, Vector4 scale)
 		{
-			vec.X *= scale.X;
-			vec.Y *= scale.Y;
-			vec.Z *= scale.Z;
-			vec.W *= scale.W;
-			return vec;
+			return new Vector4(vec.X * scale.X, vec.Y * scale.Y, vec.Z * scale.Z, vec.W * scale.W);
 		}
 		/// <summary>
 		/// Multiplies an instance by a scalar.
@@ -559,11 +539,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector4 operator *(float scale, Vector4 vec)
 		{
-			vec.X *= scale;
-			vec.Y *= scale;
-			vec.Z *= scale;
-			vec.W *= scale;
-			return vec;
+			return vec * scale;
 		}
 		/// <summary>
 		/// Divides an instance by a scalar.
@@ -573,12 +549,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector4 operator /(Vector4 vec, float scale)
 		{
-			float mult = 1.0f / scale;
-			vec.X *= mult;
-			vec.Y *= mult;
-			vec.Z *= mult;
-			vec.W *= mult;
-			return vec;
+			return vec * (1.0f / scale);
 		}
 		/// <summary>
 		/// Divides an instance by a vector.
@@ -588,11 +559,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector4 operator /(Vector4 vec, Vector4 scale)
 		{
-			vec.X /= scale.X;
-			vec.Y /= scale.Y;
-			vec.Z /= scale.Z;
-			vec.W /= scale.W;
-			return vec;
+			return new Vector4(vec.X / scale.X, vec.Y / scale.Y, vec.Z / scale.Z, vec.W / scale.W);
 		}
 		/// <summary>
 		/// Compares two instances for equality.
