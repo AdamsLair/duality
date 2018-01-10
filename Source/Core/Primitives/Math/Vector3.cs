@@ -499,10 +499,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator +(Vector3 left, Vector3 right)
 		{
-			left.X += right.X;
-			left.Y += right.Y;
-			left.Z += right.Z;
-			return left;
+			return new Vector3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
 		}
 		/// <summary>
 		/// Subtracts two instances.
@@ -512,10 +509,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator -(Vector3 left, Vector3 right)
 		{
-			left.X -= right.X;
-			left.Y -= right.Y;
-			left.Z -= right.Z;
-			return left;
+			return new Vector3(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
 		}
 		/// <summary>
 		/// Negates an instance.
@@ -524,10 +518,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator -(Vector3 vec)
 		{
-			vec.X = -vec.X;
-			vec.Y = -vec.Y;
-			vec.Z = -vec.Z;
-			return vec;
+			return new Vector3(-vec.X, -vec.Y, -vec.Z);
 		}
 		/// <summary>
 		/// Multiplies an instance by a scalar.
@@ -537,10 +528,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator *(Vector3 vec, float scale)
 		{
-			vec.X *= scale;
-			vec.Y *= scale;
-			vec.Z *= scale;
-			return vec;
+			return new Vector3(vec.X * scale, vec.Y * scale, vec.Z * scale);
 		}
 		/// <summary>
 		/// Multiplies an instance by a scalar.
@@ -550,10 +538,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator *(float scale, Vector3 vec)
 		{
-			vec.X *= scale;
-			vec.Y *= scale;
-			vec.Z *= scale;
-			return vec;
+			return vec * scale;
 		}
 		/// <summary>
 		/// Scales an instance by a vector.
@@ -563,10 +548,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator *(Vector3 vec, Vector3 scale)
 		{
-			vec.X *= scale.X;
-			vec.Y *= scale.Y;
-			vec.Z *= scale.Z;
-			return vec;
+			return new Vector3(vec.X * scale.X, vec.Y * scale.Y, vec.Z * scale.Z);
 		}
 		/// <summary>
 		/// Divides an instance by a scalar.
@@ -576,11 +558,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator /(Vector3 vec, float scale)
 		{
-			float mult = 1.0f / scale;
-			vec.X *= mult;
-			vec.Y *= mult;
-			vec.Z *= mult;
-			return vec;
+			return vec * (1.0f / scale);
 		}
 		/// <summary>
 		/// Divides an instance by a vector.
@@ -590,10 +568,7 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator /(Vector3 vec, Vector3 scale)
 		{
-			vec.X /= scale.X;
-			vec.Y /= scale.Y;
-			vec.Z /= scale.Z;
-			return vec;
+			return new Vector3(vec.X / scale.X, vec.Y / scale.Y, vec.Z / scale.Z);
 		}
 		/// <summary>
 		/// Compares two instances for equality.
