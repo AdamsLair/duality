@@ -102,72 +102,56 @@ namespace Duality
 		/// </summary>
 		public static Point2 operator +(Point2 left, Point2 right)
 		{
-			left.X += right.X;
-			left.Y += right.Y;
-			return left;
+			return new Point2(left.X + right.X, left.Y + right.Y);
 		}
 		/// <summary>
 		/// Subtracts the specified points component-wise.
 		/// </summary>
 		public static Point2 operator -(Point2 left, Point2 right)
 		{
-			left.X -= right.X;
-			left.Y -= right.Y;
-			return left;
+			return new Point2(left.X - right.X, left.Y - right.Y);
 		}
 		/// <summary>
 		/// Inverts the specified point component-wise,
 		/// </summary>
 		public static Point2 operator -(Point2 point)
 		{
-			point.X = -point.X;
-			point.Y = -point.Y;
-			return point;
+			return new Point2(-point.X, -point.Y);
 		}
 		/// <summary>
 		/// Multiplies the specified point component-wise with the specified factor.
 		/// </summary>
 		public static Point2 operator *(Point2 left, int right)
 		{
-			left.X *= right;
-			left.Y *= right;
-			return left;
+			return new Point2(left.X * right, left.Y * right);
 		}
 		/// <summary>
 		/// Multiplies the specified point component-wise with the specified factor.
 		/// </summary>
 		public static Point2 operator *(int left, Point2 right)
 		{
-			right.X *= left;
-			right.Y *= left;
-			return right;
+			return right * left;
 		}
 		/// <summary>
 		/// Multiplies the specified points component-wise.
 		/// </summary>
 		public static Point2 operator *(Point2 left, Point2 right)
 		{
-			left.X *= right.X;
-			left.Y *= right.Y;
-			return left;
+			return new Point2(left.X * right.X, left.Y * right.Y);
 		}
 		/// <summary>
 		/// Divides the specified point component-wise with the specified value.
 		/// </summary>
 		public static Point2 operator /(Point2 left, int right)
 		{
-			left.X /= right;
-			left.Y /= right;
-			return left;
+			return new Point2(left.X / right, left.Y / right);
 		}
 		/// <summary>
 		/// Divides the specified points component-wise.
 		/// </summary>
 		public static Point2 operator /(Point2 left, Point2 right)
 		{
-			left.X /= right.X;
-			left.Y /= right.Y;
-			return left;
+			return new Point2(left.X / right.X, left.Y / right.Y);
 		}
 
 		/// <summary>
@@ -175,20 +159,14 @@ namespace Duality
 		/// </summary>
 		public static Vector2 operator *(Point2 left, float right)
 		{
-			Vector2 result = left;
-			result.X *= right;
-			result.Y *= right;
-			return result;
+			return new Vector2(left.X * right, left.Y * right);
 		}
 		/// <summary>
 		/// Multiplies the specified point component-wise with the specified factor.
 		/// </summary>
 		public static Vector2 operator *(float left, Point2 right)
 		{
-			Vector2 result = right;
-			result.X *= left;
-			result.Y *= left;
-			return result;
+			return right * left;
 		}
 		/// <summary>
 		/// Divides the specified point component-wise with the specified value.
@@ -196,10 +174,7 @@ namespace Duality
 		public static Vector2 operator /(Point2 left, float right)
 		{
 			float mult = 1.0f / right;
-			Vector2 result = left;
-			result.X *= mult;
-			result.Y *= mult;
-			return result;
+			return new Vector2(left.X * mult, left.Y * mult);
 		}
 
 		/// <summary>
