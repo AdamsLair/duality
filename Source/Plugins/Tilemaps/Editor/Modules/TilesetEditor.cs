@@ -402,6 +402,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 					e.HasAnyObject(tileset.AutoTileConfig) || 
 					e.HasProperty(TilemapsReflectionInfo.Property_Tileset_RenderConfig) || 
 					e.HasProperty(TilemapsReflectionInfo.Property_Tileset_AutoTileConfig) ||
+					e.HasProperty(TilemapsReflectionInfo.Property_TilesetDataTagInput) ||
+					e.HasProperty(TilemapsReflectionInfo.Property_TilesetDataTagInputKey) ||
 					e.HasProperty(TilemapsReflectionInfo.Property_TileData);
 				if (affectsTileset || affectsConfigLayer)
 				{

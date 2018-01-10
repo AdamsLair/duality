@@ -24,7 +24,7 @@ namespace Duality.Plugins.Tilemaps
 
 		private List<TilesetRenderInput>   renderConfig					= new List<TilesetRenderInput>();
 		private List<TilesetAutoTileInput> autoTileConfig				= new List<TilesetAutoTileInput>();
-		private IList<TilesetDataTagInput> dataTagConfig				= new List<TilesetDataTagInput>();
+		private List<TilesetDataTagInput>  dataTagConfig				= new List<TilesetDataTagInput>();
 		private BatchInfo                  baseMaterial					= new BatchInfo(DefaultBaseMaterial);
 		private Vector2                    tileSize						= DefaultTileSize;
 		private RawList<TileInput>         tileInput					= new RawList<TileInput>();
@@ -321,9 +321,10 @@ namespace Duality.Plugins.Tilemaps
 					GetTileArrayCompileHash(autoTile.TileInput.Data, autoTile.TileInput.Count));
 			}
 
-			foreach (TilesetDataTagInput autoTile in this.dataTagConfig)
+			foreach (TilesetDataTagInput dataLayer in this.dataTagConfig)
 			{
-				foreach (DataTagTileItem data in autoTile.TileData.Data)
+				MathF.CombineHashCode(ref hash, dataLayer.Key.GetHashCode());
+				foreach (DataTagTileItem data in dataLayer.TileData.Data)
 				{
 					int value = data.Value != null ? data.Value.GetHashCode() : 0;
 					MathF.CombineHashCode(ref hash, value);

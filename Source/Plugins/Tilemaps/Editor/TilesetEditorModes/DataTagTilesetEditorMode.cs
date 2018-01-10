@@ -87,6 +87,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		}
 
 		private TreeModel treeModel = new TreeModel();
+		private int selectedTileIndex = -1;
 
 		protected TilesetDataTagInput SelectedDataLayer;
 
@@ -94,6 +95,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			this.UpdateTreeModel();
 			this.TilesetView.MouseClick += this.TilesetView_MouseDown;
+			this.TilesetView.PaintTiles += this.TilesetView_PaintTiles;
 		}
 
 		protected override void OnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args)
@@ -105,6 +107,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			base.OnLeave();
 			this.TilesetView.MouseClick -= this.TilesetView_MouseDown;
+			this.TilesetView.PaintTiles -= this.TilesetView_PaintTiles;
 		}
 
 		private void TilesetView_MouseDown(object sender, MouseEventArgs e)
@@ -115,10 +118,11 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			TilesetDataTagInput selectedDataLayer = this.SelectedDataLayer;
 			if (selectedDataLayer == null) return;
 
-			int tileIndex = this.TilesetView.HoveredTileIndex;
-			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
+			this.selectedTileIndex = this.TilesetView.HoveredTileIndex;
+			if (this.selectedTileIndex < 0 || this.selectedTileIndex > tileset.TileCount) return;
 
-			DualityEditorApp.Select(this, new ObjectSelection(new object[] { selectedDataLayer.TileData[tileIndex] }));
+			this.TilesetView.Invalidate();
+			DualityEditorApp.Select(this, new ObjectSelection(new object[] { selectedDataLayer.TileData[this.selectedTileIndex] }));
 		}
 
 		public override void AddLayer()
@@ -203,6 +207,26 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				DualityEditorApp.Deselect(this, obj => obj is DataLayerNode);
 
 			this.TilesetView.Invalidate();
+		}
+
+		private void TilesetView_PaintTiles(object sender, TilesetViewPaintTilesEventArgs e)
+		{
+			for (int i = 0; i < e.PaintedTiles.Count; i++)
+			{
+				TilesetViewPaintTileData paintData = e.PaintedTiles[i];
+				// Draw a hover indicator
+				if (paintData.TileIndex == this.selectedTileIndex)
+				{
+					Rectangle rect = paintData.ViewRect;
+					rect.Width -= 1;
+					rect.Height -= 1;
+					e.Graphics.DrawRectangle(Pens.Black, rect);
+					rect.Inflate(-1, -1);
+					e.Graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255, 255)), rect);
+					rect.Inflate(-1, -1);
+					e.Graphics.DrawRectangle(Pens.Black, rect);
+				}
+			}
 		}
 
 		private void UpdateTreeModel()
