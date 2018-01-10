@@ -81,11 +81,11 @@ namespace Duality
 		/// <summary>
 		/// Gets or sets an OpenTK.Vector2 with the X and Y components of this instance.
 		/// </summary>
-		public Vector2 Xy { get { return new Vector2(X, Y); } set { X = value.X; Y = value.Y; } }
+		public Vector2 Xy { get { return new Vector2(this.X, this.Y); } set { this.X = value.X; this.Y = value.Y; } }
 		/// <summary>
 		/// Gets or sets an OpenTK.Vector3 with the X, Y and Z components of this instance.
 		/// </summary>
-		public Vector3 Xyz { get { return new Vector3(X, Y, Z); } set { X = value.X; Y = value.Y; Z = value.Z; } }
+		public Vector3 Xyz { get { return new Vector3(this.X, this.Y, this.Z); } set { this.X = value.X; this.Y = value.Y; this.Z = value.Z; } }
 
 		
 		/// <summary>
@@ -96,7 +96,7 @@ namespace Duality
 		{
 			get
 			{
-				return (float)System.Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
+				return (float)System.Math.Sqrt(this.X * this.X + this.Y * this.Y + this.Z * this.Z + this.W * this.W);
 			}
 		}
 		/// <summary>
@@ -111,7 +111,7 @@ namespace Duality
 		{
 			get
 			{
-				return X * X + Y * Y + Z * Z + W * W;
+				return this.X * this.X + this.Y * this.Y + this.Z * this.Z + this.W * this.W;
 			}
 		}
 		/// <summary>
@@ -138,16 +138,16 @@ namespace Duality
 		/// </summary>
 		public float this[int index] {
 			get{
-				if(index == 0) return X;
-				else if(index == 1) return Y;
-				else if(index == 2) return Z;
-				else if(index == 3) return W;
+				if(index == 0) return this.X;
+				else if(index == 1) return this.Y;
+				else if(index == 2) return this.Z;
+				else if(index == 3) return this.W;
 				throw new IndexOutOfRangeException("You tried to access this vector at index: " + index);
 			} set{
-				if(index == 0) X = value;
-				else if(index == 1) Y = value;
-				else if(index == 2) Z = value;
-				else if(index == 3) W = value;
+				if(index == 0) this.X = value;
+				else if(index == 1) this.Y = value;
+				else if(index == 2) this.Z = value;
+				else if(index == 3) this.W = value;
 				else throw new IndexOutOfRangeException("You tried to set this vector at index: " + index);
 			}
 		}
@@ -178,10 +178,10 @@ namespace Duality
 		/// <param name="value">The value that will initialize this instance.</param>
 		public Vector4(float value)
 		{
-			X = value;
-			Y = value;
-			Z = value;
-			W = value;
+			this.X = value;
+			this.Y = value;
+			this.Z = value;
+			this.W = value;
 		}
 		/// <summary>
 		/// Constructs a new Vector4.
@@ -192,10 +192,10 @@ namespace Duality
 		/// <param name="w">The w component of the Vector4.</param>
 		public Vector4(float x, float y, float z, float w)
 		{
-			X = x;
-			Y = y;
-			Z = z;
-			W = w;
+			this.X = x;
+			this.Y = y;
+			this.Z = z;
+			this.W = w;
 		}
 		/// <summary>
 		/// Constructs a new Vector4 from the given Vector2.
@@ -203,10 +203,10 @@ namespace Duality
 		/// <param name="v">The Vector2 to copy components from.</param>
 		public Vector4(Vector2 v)
 		{
-			X = v.X;
-			Y = v.Y;
-			Z = 0.0f;
-			W = 0.0f;
+			this.X = v.X;
+			this.Y = v.Y;
+			this.Z = 0.0f;
+			this.W = 0.0f;
 		}
 		/// <summary>
 		/// Constructs a new Vector4 from the given Vector2.
@@ -215,10 +215,10 @@ namespace Duality
 		/// <param name="z"></param>
 		public Vector4(Vector2 v, float z)
 		{
-			X = v.X;
-			Y = v.Y;
-			Z = z;
-			W = 0.0f;
+			this.X = v.X;
+			this.Y = v.Y;
+			this.Z = z;
+			this.W = 0.0f;
 		}
 		/// <summary>
 		/// Constructs a new Vector4 from the given Vector2.
@@ -228,10 +228,10 @@ namespace Duality
 		/// <param name="w"></param>
 		public Vector4(Vector2 v, float z, float w)
 		{
-			X = v.X;
-			Y = v.Y;
-			Z = z;
-			W = w;
+			this.X = v.X;
+			this.Y = v.Y;
+			this.Z = z;
+			this.W = w;
 		}
 		/// <summary>
 		/// Constructs a new Vector4 from the given Vector3.
@@ -241,10 +241,10 @@ namespace Duality
 		/// <remarks><seealso cref="Vector4(Vector3, float)"/></remarks>
 		public Vector4(Vector3 v)
 		{
-			X = v.X;
-			Y = v.Y;
-			Z = v.Z;
-			W = 0.0f;
+			this.X = v.X;
+			this.Y = v.Y;
+			this.Z = v.Z;
+			this.W = 0.0f;
 		}
 		/// <summary>
 		/// Constructs a new Vector4 from the specified Vector3 and w component.
@@ -253,10 +253,10 @@ namespace Duality
 		/// <param name="w">The w component of the new Vector4.</param>
 		public Vector4(Vector3 v, float w)
 		{
-			X = v.X;
-			Y = v.Y;
-			Z = v.Z;
-			W = w;
+			this.X = v.X;
+			this.Y = v.Y;
+			this.Z = v.Z;
+			this.W = w;
 		}
 
 		/// <summary>
@@ -622,7 +622,7 @@ namespace Duality
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return String.Format("({0}, {1}, {2}, {3})", X, Y, Z, W);
+			return string.Format("({0}, {1}, {2}, {3})", this.X, this.Y, this.Z, this.W);
 		}
 		/// <summary>
 		/// Returns the hashcode for this instance.
@@ -630,7 +630,7 @@ namespace Duality
 		/// <returns>A System.Int32 containing the unique hashcode for this instance.</returns>
 		public override int GetHashCode()
 		{
-			return X.GetHashCode() ^ Y.GetHashCode() ^ Z.GetHashCode() ^ W.GetHashCode();
+			return this.X.GetHashCode() ^ this.Y.GetHashCode() ^ this.Z.GetHashCode() ^ this.W.GetHashCode();
 		}
 		/// <summary>
 		/// Indicates whether this instance and a specified object are equal.
@@ -652,10 +652,10 @@ namespace Duality
 		public bool Equals(Vector4 other)
 		{
 			return
-				X == other.X &&
-				Y == other.Y &&
-				Z == other.Z &&
-				W == other.W;
+				this.X == other.X &&
+				this.Y == other.Y &&
+				this.Z == other.Z &&
+				this.W == other.W;
 		}
 	}
 }

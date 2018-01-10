@@ -55,8 +55,8 @@ namespace Duality
 		/// <param name="y">The y coordinate of the Point.</param>
 		public Point2(int x, int y)
 		{
-			X = x;
-			Y = y;
+			this.X = x;
+			this.Y = y;
 		}
 
 		/// <summary>
@@ -229,7 +229,7 @@ namespace Duality
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return String.Format("({0}, {1})", X, Y);
+			return string.Format("({0}, {1})", this.X, this.Y);
 		}
 		/// <summary>
 		/// Returns the hashcode for this instance.
@@ -237,7 +237,7 @@ namespace Duality
 		/// <returns>A System.Int32 containing the unique hashcode for this instance.</returns>
 		public override int GetHashCode()
 		{
-			return X.GetHashCode() ^ Y.GetHashCode();
+			return this.X.GetHashCode() ^ this.Y.GetHashCode();
 		}
 		/// <summary>
 		/// Indicates whether this instance and a specified object are equal.
@@ -260,8 +260,8 @@ namespace Duality
 		public bool Equals(Point2 other)
 		{
 			return
-				X == other.X &&
-				Y == other.Y;
+				this.X == other.X &&
+				this.Y == other.Y;
 		}
 
 		public static implicit operator Vector2(Point2 r)

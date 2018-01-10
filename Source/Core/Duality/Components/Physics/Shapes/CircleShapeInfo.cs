@@ -42,7 +42,7 @@ namespace Duality.Components.Physics
 		}
 		public override Rect AABB
 		{
-			get { return Rect.Align(Alignment.Center, position.X, position.Y, radius * 2, radius * 2); }
+			get { return Rect.Align(Alignment.Center, this.position.X, this.position.Y, this.radius * 2, this.radius * 2); }
 		}
 		protected override bool IsInternalShapeCreated
 		{
