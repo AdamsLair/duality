@@ -11,12 +11,14 @@ using DualityFont = Duality.Resources.Font;
 using SysDrawFont = System.Drawing.Font;
 using SysDrawFontStyle = System.Drawing.FontStyle;
 using FontStyle = Duality.Drawing.FontStyle;
+using UnicodeBlock = Duality.Drawing.UnicodeBlock;
 
 using Duality;
 using Duality.Resources;
 using Duality.Drawing;
 using Duality.Editor;
 using Duality.Editor.AssetManagement;
+using System.Text;
 
 namespace Duality.Editor.Plugins.Base
 {
@@ -24,6 +26,7 @@ namespace Duality.Editor.Plugins.Base
 	{
 		public static readonly string SourceFileExtPrimary = ".ttf";
 		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary };
+		private static readonly UnicodeBlock[] DefaultBlocks = new[] { UnicodeBlock.BasicLatin, UnicodeBlock.Latin1Supplement };
 
 		private Dictionary<int, PrivateFontCollection> fontManagers;
 		
@@ -67,11 +70,65 @@ namespace Duality.Editor.Plugins.Base
 					DualityFont target = targetRef.Res;
 
 					// Retrieve import parameters
-					float       size            = env.GetOrInitParameter(targetRef, "Size"           , 16.0f            );
-					FontStyle   style           = env.GetOrInitParameter(targetRef, "Style"          , FontStyle.Regular);
-					string      extendedCharSet = env.GetOrInitParameter(targetRef, "ExtendedCharSet", string.Empty     );
-					bool        antialiasing    = env.GetOrInitParameter(targetRef, "AntiAlias"      , true             );
-					bool        monospace       = env.GetOrInitParameter(targetRef, "Monospace"      , false            );
+					float               size           = env.GetOrInitParameter(targetRef, "Size"         , 16.0f                                );
+					FontStyle           style          = env.GetOrInitParameter(targetRef, "Style"        , FontStyle.Regular                    );
+					string              customCharSet  = env.GetOrInitParameter(targetRef, "CustomCharSet", string.Empty                         );
+					List<UnicodeBlock>  unicodeBlocks  = env.GetOrInitParameter(targetRef, "UnicodeBlocks", new List<UnicodeBlock>(DefaultBlocks));
+					bool                antialiasing   = env.GetOrInitParameter(targetRef, "AntiAlias"    , true                                 );
+					bool                monospace      = env.GetOrInitParameter(targetRef, "Monospace"    , false                                );
+
+					HashSet<char> fullCharSet = new HashSet<char>();
+
+					if(!string.IsNullOrWhiteSpace(customCharSet))
+					{
+						string[] blocks = customCharSet.Split(';');
+						ulong start = 0;
+						ulong end = 0;
+
+						foreach (string block in blocks)
+						{
+							string[] limits = block.Split(new[] { '-' }, 3);
+							if (!ulong.TryParse(limits[0], NumberStyles.HexNumber, null, out start))
+								Log.Editor.WriteError("Cannot parse value " + limits[0] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
+
+							if (limits.Length == 1)
+								end = start;
+							else
+							{
+								if (limits.Length == 2 && !ulong.TryParse(limits[1], NumberStyles.HexNumber, null, out end))
+									Log.Editor.WriteError("Cannot parse value " + limits[1] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
+
+								else if (limits.Length > 2)
+									Log.Editor.WriteError("Unexpected values " + limits[2] + " in range " + block + " will be ignored. Please verify the value and repeat the import.");
+
+								if (start > end)
+									Log.Editor.WriteWarning(start + " is bigger than " + end + "; block will be ignored. Please verify the value and repeat the import.");
+							}
+
+							for (char c = (char)start; c <= (char)end; c++)
+								if(!char.IsControl(c)) fullCharSet.Add(c);
+						}
+					}
+
+					if (unicodeBlocks != null)
+					{
+						Type unicodeBlockType = typeof(UnicodeBlock);
+						Type unicodeRangeAttrType = typeof(UnicodeRangeAttribute);
+
+						foreach (UnicodeBlock block in unicodeBlocks)
+						{
+							UnicodeRangeAttribute range = unicodeBlockType.GetMember(block.ToString())
+								.First()
+								.GetCustomAttributes(unicodeRangeAttrType, false)
+								.FirstOrDefault() as UnicodeRangeAttribute;
+							
+							if (range != null)
+							{
+								for (char c = (char)range.CharStart; c <= (char)range.CharEnd; c++)
+									if (!char.IsControl(c)) fullCharSet.Add(c);
+							}
+						}
+					}
 
 					// Load the TrueType Font and render all the required glyphs
 					byte[] trueTypeData = File.ReadAllBytes(input.Path);
@@ -79,7 +136,7 @@ namespace Duality.Editor.Plugins.Base
 						trueTypeData, 
 						size, 
 						style, 
-						!string.IsNullOrEmpty(extendedCharSet) ? new FontCharSet(extendedCharSet) : null, 
+						new FontCharSet(new string(fullCharSet.ToArray())), 
 						antialiasing, 
 						monospace);
 
@@ -277,7 +334,7 @@ namespace Duality.Editor.Plugins.Base
 				for (int i = 0; i < glyphs.Length; ++i)
 				{
 					string str = glyphs[i].Glyph.ToString(CultureInfo.InvariantCulture);
-					bool isSpace = str == " ";
+					bool isSpace = char.IsWhiteSpace(glyphs[i].Glyph);
 					SizeF charSize = measureGraphics.MeasureString(str, internalFont, pixelLayer.Width, formatDef);
 
 					// Rasterize a single glyph for rendering

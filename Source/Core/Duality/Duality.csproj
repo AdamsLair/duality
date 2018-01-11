@@ -97,6 +97,8 @@
     <Compile Include="Components\Other\ExecutionOrderAttribute.cs" />
     <Compile Include="Components\Other\RequiredComponentAttribute.cs" />
     <Compile Include="Components\Physics\Shapes\ChainShapeInfo.cs" />
+    <Compile Include="Drawing\Enums\UnicodeBlock.cs" />
+    <Compile Include="Drawing\Enums\UnicodeRangeAttribute.cs" />
     <Compile Include="DualityPlugin.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="CorePluginManager.cs" />
