@@ -81,7 +81,7 @@ namespace Duality.Editor.Plugins.Base
 
 					if(!string.IsNullOrWhiteSpace(customCharSet))
 					{
-						string[] blocks = customCharSet.Split(';');
+						string[] blocks = customCharSet.Split(',');
 						ulong start = 0;
 						ulong end = 0;
 
