@@ -499,7 +499,10 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator +(Vector3 left, Vector3 right)
 		{
-			return new Vector3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
+			return new Vector3(
+				left.X + right.X, 
+				left.Y + right.Y, 
+				left.Z + right.Z);
 		}
 		/// <summary>
 		/// Subtracts two instances.
@@ -509,7 +512,10 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator -(Vector3 left, Vector3 right)
 		{
-			return new Vector3(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
+			return new Vector3(
+				left.X - right.X, 
+				left.Y - right.Y, 
+				left.Z - right.Z);
 		}
 		/// <summary>
 		/// Negates an instance.
@@ -518,7 +524,10 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator -(Vector3 vec)
 		{
-			return new Vector3(-vec.X, -vec.Y, -vec.Z);
+			return new Vector3(
+				-vec.X, 
+				-vec.Y, 
+				-vec.Z);
 		}
 		/// <summary>
 		/// Multiplies an instance by a scalar.
@@ -528,7 +537,10 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator *(Vector3 vec, float scale)
 		{
-			return new Vector3(vec.X * scale, vec.Y * scale, vec.Z * scale);
+			return new Vector3(
+				vec.X * scale, 
+				vec.Y * scale, 
+				vec.Z * scale);
 		}
 		/// <summary>
 		/// Multiplies an instance by a scalar.
@@ -548,7 +560,10 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator *(Vector3 vec, Vector3 scale)
 		{
-			return new Vector3(vec.X * scale.X, vec.Y * scale.Y, vec.Z * scale.Z);
+			return new Vector3(
+				vec.X * scale.X, 
+				vec.Y * scale.Y, 
+				vec.Z * scale.Z);
 		}
 		/// <summary>
 		/// Divides an instance by a scalar.
@@ -568,7 +583,10 @@ namespace Duality
 		/// <returns>The result of the calculation.</returns>
 		public static Vector3 operator /(Vector3 vec, Vector3 scale)
 		{
-			return new Vector3(vec.X / scale.X, vec.Y / scale.Y, vec.Z / scale.Z);
+			return new Vector3(
+				vec.X / scale.X, 
+				vec.Y / scale.Y, 
+				vec.Z / scale.Z);
 		}
 		/// <summary>
 		/// Compares two instances for equality.
