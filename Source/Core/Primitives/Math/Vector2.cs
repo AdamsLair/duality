@@ -218,9 +218,7 @@ namespace Duality
 		/// <param name="result">Result of operation.</param>
 		public static void Add(ref Vector2 a, ref Vector2 b, out Vector2 result)
 		{
-			result = new Vector2(
-				a.X + b.X, 
-				a.Y + b.Y);
+			result = new Vector2(a.X + b.X, a.Y + b.Y);
 		}
 		/// <summary>
 		/// Subtract one Vector from another
@@ -230,9 +228,7 @@ namespace Duality
 		/// <param name="result">Result of subtraction</param>
 		public static void Subtract(ref Vector2 a, ref Vector2 b, out Vector2 result)
 		{
-			result = new Vector2(
-				a.X - b.X, 
-				a.Y - b.Y);
+			result = new Vector2(a.X - b.X, a.Y - b.Y);
 		}
 		/// <summary>
 		/// Multiplies a vector by a scalar.
@@ -242,9 +238,7 @@ namespace Duality
 		/// <param name="result">Result of the operation.</param>
 		public static void Multiply(ref Vector2 vector, float scale, out Vector2 result)
 		{
-			result = new Vector2(
-				vector.X * scale, 
-				vector.Y * scale);
+			result = new Vector2(vector.X * scale, vector.Y * scale);
 		}
 		/// <summary>
 		/// Multiplies a vector by the components of a vector (scale).
@@ -254,9 +248,7 @@ namespace Duality
 		/// <param name="result">Result of the operation.</param>
 		public static void Multiply(ref Vector2 vector, ref Vector2 scale, out Vector2 result)
 		{
-			result = new Vector2(
-				vector.X * scale.X, 
-				vector.Y * scale.Y);
+			result = new Vector2(vector.X * scale.X, vector.Y * scale.Y);
 		}
 		/// <summary>
 		/// Divides a vector by a scalar.
@@ -276,9 +268,7 @@ namespace Duality
 		/// <param name="result">Result of the operation.</param>
 		public static void Divide(ref Vector2 vector, ref Vector2 scale, out Vector2 result)
 		{
-			result = new Vector2(
-				vector.X / scale.X, 
-				vector.Y / scale.Y);
+			result = new Vector2(vector.X / scale.X, vector.Y / scale.Y);
 		}
 
 		/// <summary>
@@ -464,7 +454,9 @@ namespace Duality
 		/// <returns>Result of addition.</returns>
 		public static Vector2 operator +(Vector2 left, Vector2 right)
 		{
-			return new Vector2(left.X + right.X, left.Y + right.Y);
+			return new Vector2(
+				left.X + right.X, 
+				left.Y + right.Y);
 		}
 		/// <summary>
 		/// Subtracts the specified instances.
@@ -474,7 +466,9 @@ namespace Duality
 		/// <returns>Result of subtraction.</returns>
 		public static Vector2 operator -(Vector2 left, Vector2 right)
 		{
-			return new Vector2(left.X - right.X, left.Y - right.Y);
+			return new Vector2(
+				left.X - right.X, 
+				left.Y - right.Y);
 		}
 		/// <summary>
 		/// Negates the specified instance.
@@ -483,7 +477,9 @@ namespace Duality
 		/// <returns>Result of negation.</returns>
 		public static Vector2 operator -(Vector2 vec)
 		{
-			return new Vector2(-vec.X, -vec.Y);
+			return new Vector2(
+				-vec.X, 
+				-vec.Y);
 		}
 		/// <summary>
 		/// Multiplies the specified instance by a scalar.
@@ -493,7 +489,9 @@ namespace Duality
 		/// <returns>Result of multiplication.</returns>
 		public static Vector2 operator *(Vector2 vec, float scale)
 		{
-			return new Vector2(vec.X * scale, vec.Y * scale);
+			return new Vector2(
+				vec.X * scale, 
+				vec.Y * scale);
 		}
 		/// <summary>
 		/// Multiplies the specified instance by a scalar.
@@ -513,7 +511,9 @@ namespace Duality
 		/// <returns>Result of multiplication.</returns>
 		public static Vector2 operator *(Vector2 vec, Vector2 scale)
 		{
-			return new Vector2(vec.X * scale.X, vec.Y * scale.Y);
+			return new Vector2(
+				vec.X * scale.X, 
+				vec.Y * scale.Y);
 		}
 		/// <summary>
 		/// Divides the specified instance by a scalar.
@@ -533,7 +533,9 @@ namespace Duality
 		/// <returns>Result of the division.</returns>
 		public static Vector2 operator /(Vector2 vec, Vector2 scale)
 		{
-			return new Vector2(vec.X / scale.X, vec.Y / scale.Y);
+			return new Vector2(
+				vec.X / scale.X, 
+				vec.Y / scale.Y);
 		}
 		/// <summary>
 		/// Compares the specified instances for equality.
