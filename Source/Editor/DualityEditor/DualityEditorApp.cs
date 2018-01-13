@@ -52,7 +52,7 @@ namespace Duality.Editor
 		private	static GameObjectManager			editorObjects		= new GameObjectManager();
 		private	static HashSet<GameObject>			updateObjects		= new HashSet<GameObject>();
 		private	static bool							dualityAppSuspended	= true;
-		private	static List<Resource>				unsavedResources	= new List<Resource>();
+        private	static List<Resource>				unsavedResources	= new List<Resource>();
 		private	static ObjectSelection				selectionCurrent	= ObjectSelection.Null;
 		private	static ObjectSelection				selectionPrevious	= ObjectSelection.Null;
 		private	static ObjectSelection.Category		selectionActiveCat	= ObjectSelection.Category.None;
@@ -63,7 +63,7 @@ namespace Duality.Editor
 		private	static AutosaveFrequency			autosaveFrequency	= AutosaveFrequency.ThirtyMinutes;
 		private	static DateTime						autosaveLast		= DateTime.Now;
 		private	static string						launcherApp			= null;
-		private static string                       lastOpenScene       = null;
+		private static ContentRef<Scene>            lastOpenScene       = null;
 		private static bool                         openLastScene       = true;
 		private	static PackageManager				packageManager		= null;
 		private	static InMemoryLogOutput			memoryLogOutput		= null;
@@ -282,9 +282,9 @@ namespace Duality.Editor
 			}
 			editorActions.StableSort((a, b) => b.Priority.CompareTo(a.Priority));
 			
-			if (openLastScene && lastOpenScene != null && FileOp.Exists(lastOpenScene))
+			if (openLastScene && lastOpenScene != null)
 			{				
-				Scene.SwitchTo(ContentProvider.RequestContent<Scene>(lastOpenScene), true);
+				Scene.SwitchTo(lastOpenScene, true);
 			}
 			else
 			{
@@ -450,7 +450,7 @@ namespace Duality.Editor
 							editorAppElement.SetElementValue("LauncherPath", launcherApp);
 							editorAppElement.SetElementValue("FirstSession", false);
 							editorAppElement.SetElementValue("ActiveDocumentIndex", mainForm.ActiveDocumentIndex);
-							editorAppElement.SetElementValue("LastOpenScene", lastOpenScene);
+							editorAppElement.SetElementValue("LastOpenScene", lastOpenScene.Path);
 							editorAppElement.SetElementValue("OpenLastScene", openLastScene);							
 						}
 						if (!editorAppElement.IsEmpty)
@@ -536,7 +536,10 @@ namespace Duality.Editor
 						editorAppElement.TryGetElementValue("LauncherPath", ref launcherApp);
 						editorAppElement.TryGetElementValue("FirstSession", ref firstEditorSession);
 						editorAppElement.TryGetElementValue("ActiveDocumentIndex", ref activeDocumentIndex);
-						editorAppElement.TryGetElementValue("LastOpenScene", ref lastOpenScene);
+						string scenePath;
+						editorAppElement.GetElementValue("LastOpenScene", out scenePath);
+						if (scenePath != null) lastOpenScene = ContentProvider.RequestContent<Scene>(scenePath);
+
 						editorAppElement.TryGetElementValue("OpenLastScene", ref openLastScene);
 					}
 
@@ -1342,7 +1345,7 @@ namespace Duality.Editor
 		}
 		private static void Scene_Entered(object sender, EventArgs e)
 		{
-			lastOpenScene = Scene.CurrentPath;
+			lastOpenScene = Scene.Current;
 			if (selectionTempScene != null)
 			{
 				// Try to restore last GameObject / Component selection
