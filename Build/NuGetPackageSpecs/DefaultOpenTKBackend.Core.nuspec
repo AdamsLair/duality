@@ -17,7 +17,7 @@
 #CHANGE: Updated OpenTK dependency to version 1.1.8.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.11.2" />
-      <dependency id="AdamsLair.OpenTK" version="1.1.8" />
+      <dependency id="AdamsLair.OpenTK" version="1.1.9" />
     </dependencies>
   </metadata>
   <files>
