@@ -178,6 +178,7 @@
     <Compile Include="Resources\ShaderInfo\ShaderFieldType.cs" />
     <Compile Include="Backend\Dummy\DummyPluginLoader.cs" />
     <Compile Include="Serialization\Surrogates\CultureInfoSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\HashSetSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\RegexSurrogate.cs" />
     <Compile Include="Serialization\UniqueIdentifyableHelper.cs" />
     <Compile Include="Utility\EventArgs\GameObjectGroupEventArgs.cs" />
