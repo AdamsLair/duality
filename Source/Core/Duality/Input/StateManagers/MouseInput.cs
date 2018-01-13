@@ -211,57 +211,54 @@ namespace Duality.Input
 				if (this.NoLongerAvailable != null)
 					this.NoLongerAvailable(this, EventArgs.Empty);
 			}
-			if (this.currentState.IsAvailable)
+			if (this.currentState.X != this.lastState.X || this.currentState.Y != this.lastState.Y)
 			{
-				if (this.currentState.X != this.lastState.X || this.currentState.Y != this.lastState.Y)
+				if (this.Move != null)
 				{
-					if (this.Move != null)
+					this.Move(this, new MouseMoveEventArgs(
+						this,
+						this.currentState.X, 
+						this.currentState.Y, 
+						(this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.X - this.lastState.X) : 0, 
+						(this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.Y - this.lastState.Y) : 0));
+				}
+			}
+			if (this.currentState.Wheel != this.lastState.Wheel)
+			{
+				if (this.WheelChanged != null)
+				{
+					this.WheelChanged(this, new MouseWheelEventArgs(
+						this,
+						this.currentState.X,
+						this.currentState.Y,
+						MathF.RoundToInt(this.currentState.Wheel),
+						(this.currentState.IsAvailable && this.lastState.IsAvailable) ? MathF.RoundToInt(this.currentState.Wheel - this.lastState.Wheel) : 0));
+				}
+			}
+			for (int i = 0; i < this.currentState.ButtonPressed.Length; i++)
+			{
+				if (this.currentState.ButtonPressed[i] && !this.lastState.ButtonPressed[i])
+				{
+					if (this.ButtonDown != null)
 					{
-						this.Move(this, new MouseMoveEventArgs(
+						this.ButtonDown(this, new MouseButtonEventArgs(
 							this,
 							this.currentState.X, 
 							this.currentState.Y, 
-							(this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.X - this.lastState.X) : 0, 
-							(this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.Y - this.lastState.Y) : 0));
+							(MouseButton)i, 
+							this.currentState.ButtonPressed[i]));
 					}
 				}
-				if (this.currentState.Wheel != this.lastState.Wheel)
+				if (!this.currentState.ButtonPressed[i] && this.lastState.ButtonPressed[i])
 				{
-					if (this.WheelChanged != null)
+					if (this.ButtonUp != null)
 					{
-						this.WheelChanged(this, new MouseWheelEventArgs(
+						this.ButtonUp(this, new MouseButtonEventArgs(
 							this,
-							this.currentState.X,
-							this.currentState.Y,
-							MathF.RoundToInt(this.currentState.Wheel),
-							(this.currentState.IsAvailable && this.lastState.IsAvailable) ? MathF.RoundToInt(this.currentState.Wheel - this.lastState.Wheel) : 0));
-					}
-				}
-				for (int i = 0; i < this.currentState.ButtonPressed.Length; i++)
-				{
-					if (this.currentState.ButtonPressed[i] && !this.lastState.ButtonPressed[i])
-					{
-						if (this.ButtonDown != null)
-						{
-							this.ButtonDown(this, new MouseButtonEventArgs(
-								this,
-								this.currentState.X, 
-								this.currentState.Y, 
-								(MouseButton)i, 
-								this.currentState.ButtonPressed[i]));
-						}
-					}
-					if (!this.currentState.ButtonPressed[i] && this.lastState.ButtonPressed[i])
-					{
-						if (this.ButtonUp != null)
-						{
-							this.ButtonUp(this, new MouseButtonEventArgs(
-								this,
-								this.currentState.X, 
-								this.currentState.Y, 
-								(MouseButton)i, 
-								this.currentState.ButtonPressed[i]));
-						}
+							this.currentState.X, 
+							this.currentState.Y, 
+							(MouseButton)i, 
+							this.currentState.ButtonPressed[i]));
 					}
 				}
 			}
