@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.14.2</version>
+    <version>2.14.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,10 +13,10 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>Fixed RigidBody Scale Update
-#FIX: Fixed a bug where scaling a RigidBody during game simulation would not trigger a RigidBody update.</releaseNotes>
+    <releaseNotes>Input Handling / Availability Robustness
+#FIX: Input change events are now delivered regardless of reported input availability, avoiding event loss in cases where availability is changed temporarily.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Primitives" version="2.0.5" />
+      <dependency id="AdamsLair.Duality.Primitives" version="2.0.6" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
       <dependency id="AdamsLair.Duality.Physics" version="3.0.0" />
     </dependencies>

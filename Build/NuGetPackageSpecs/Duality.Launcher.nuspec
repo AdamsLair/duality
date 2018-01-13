@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Launcher</id>
-    <version>2.3.3</version>
+    <version>2.3.4</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Launcher</title>
@@ -13,10 +13,10 @@
     <summary>The default launcher application for Duality games.</summary>
     <description>The default launcher application for Duality games.</description>
     <tags>Duality Launcher</tags>
-    <releaseNotes>PluginLoader Tweaks
-#CHANGE: The default plugin loader no longer logs warnings for unresolved Assemblies, if those Assemblies are (WinForms) Resource Assemblies.</releaseNotes>
+    <releaseNotes>Launcher Shutdown Ordering
+#FIX: Fixed a shutdown exception when the graphics backend was only shut down after the window was already closed.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.12.3" />
+      <dependency id="AdamsLair.Duality" version="2.14.3" />
     </dependencies>
   </metadata>
   <files>

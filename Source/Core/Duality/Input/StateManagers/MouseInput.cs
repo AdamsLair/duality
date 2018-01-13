@@ -192,8 +192,6 @@ namespace Duality.Input
 				if (this.NoLongerAvailable != null)
 					this.NoLongerAvailable(this, EventArgs.Empty);
 			}
-			if (this.currentState.IsAvailable)
-			{
 				if (this.currentState.ViewPos != this.lastState.ViewPos)
 				{
 					if (this.Move != null)

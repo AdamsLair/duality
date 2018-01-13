@@ -73,10 +73,10 @@ namespace Duality.Launcher
 
 				// Enter the applications update / render loop
 				window.Run();
-			}
 
-			// Shut down the Duality core
-			DualityApp.Terminate();
+				// Shut down the Duality core
+				DualityApp.Terminate();
+			}
 			
 			// Clean up the log file
 			if (logfileWriter != null)
