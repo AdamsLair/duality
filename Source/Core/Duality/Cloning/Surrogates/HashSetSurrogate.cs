@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
 namespace Duality.Cloning.Surrogates
 {
-	public class HashSetSurrogate : CloneSurrogate<dynamic>
+	public class HashSetSurrogate : CloneSurrogate<IEnumerable>
 	{
 		public override bool MatchesType(TypeInfo t)
 		{
@@ -13,7 +14,7 @@ namespace Duality.Cloning.Surrogates
 				t.GetGenericTypeDefinition() == typeof(HashSet<>);
 		}
 
-		public override void SetupCloneTargets(dynamic source, dynamic target, ICloneTargetSetup setup)
+		public override void SetupCloneTargets(IEnumerable source, IEnumerable target, ICloneTargetSetup setup)
 		{
 			Type hashSetType = source.GetType();
 			Type[] genArgs = hashSetType.GenericTypeArguments;
@@ -23,43 +24,44 @@ namespace Duality.Cloning.Surrogates
 			{
 				if (source == target)
 				{
-					foreach (dynamic key in source)
-						setup.HandleObject(key, key);
+					foreach (object value in source)
+						setup.HandleObject(value, value);
 				}
 				else
 				{
-					foreach (dynamic key in source)
-						setup.HandleObject(key, null);
+					foreach (object value in source)
+						setup.HandleObject(value, null);
 				}
 			}
 		}
-		public override void CopyDataTo(dynamic source, dynamic target, ICloneOperation operation)
+		public override void CopyDataTo(IEnumerable source, IEnumerable target, ICloneOperation operation)
 		{
 			Type hashSetType = source.GetType();
 			Type[] genArgs = hashSetType.GenericTypeArguments;
 			TypeInfo firstGenArgInfo = genArgs[0].GetTypeInfo();
 
 			// Determine unwrapping behavior to provide faster / more optimized loops.
-			bool isKeyPlainOld = firstGenArgInfo.IsPlainOldData();
+			bool isValuePlainOld = firstGenArgInfo.IsPlainOldData();
 
+			dynamic dynamicHashset = target;
 			// Copy all values.
-			target.Clear();
+			dynamicHashset.Clear();
 
-			if (!isKeyPlainOld)
+			if (!isValuePlainOld)
 			{
-				foreach (dynamic key in source)
+				foreach (object value in source)
 				{
-					dynamic keyTarget = null;
-					if (!operation.HandleObject(key, ref keyTarget)) continue;
+					dynamic dynamicValue = null;
+					if (!operation.HandleObject(value, ref dynamicValue)) continue;
 
-					target.Add(keyTarget);
+					dynamicHashset.Add(dynamicValue); //Have to use dynamic here to allow for runtime resolving of the Add method
 				}
 			}
 			else
 			{
-				foreach (dynamic key in source)
+				foreach (dynamic dynamicValue in source)
 				{
-					target.Add(key);
+					dynamicHashset.Add(dynamicValue); //Have to use dynamic here to allow for runtime resolving of the Add method
 				}
 			}
 		}

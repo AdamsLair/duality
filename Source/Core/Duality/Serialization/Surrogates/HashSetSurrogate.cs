@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Duality.Serialization.Surrogates
 {
-	public class HashSetSurrogate : SerializeSurrogate<dynamic>
+	public class HashSetSurrogate : SerializeSurrogate<IEnumerable>
 	{
 		public override bool MatchesType(TypeInfo t)
 		{
@@ -16,10 +16,11 @@ namespace Duality.Serialization.Surrogates
 		}
 		public override void WriteData(IDataWriter writer)
 		{
-			dynamic hashSet = this.RealObject;
-			object[] values = new object[hashSet.Count];
+			IEnumerable hashSet = this.RealObject;
+			dynamic dynamicHashSet = this.RealObject;
+			object[] values = new object[dynamicHashSet.Count];
 			int i = 0;
-			foreach (var item in hashSet)
+			foreach (object item in hashSet)
 			{
 				values[i] = item;
 				i++;
@@ -28,14 +29,14 @@ namespace Duality.Serialization.Surrogates
 		}
 		public override void ReadData(IDataReader reader)
 		{
-			dynamic hashSet = this.RealObject;
+			IEnumerable hashSet = this.RealObject;			
 			if (hashSet != null)
-			{
+			{				
 				Type hashSetType = hashSet.GetType();
 				Type[] genArgs = hashSetType.GenericTypeArguments;
 				TypeInfo keyTypeInfo = genArgs[0].GetTypeInfo();
-
-				hashSet.Clear();
+				dynamic dynamicHashset = hashSet;
+				dynamicHashset.Clear();
 
 				object[] values;
 				reader.ReadValue("values", out values);
@@ -43,7 +44,7 @@ namespace Duality.Serialization.Surrogates
 					foreach (dynamic obj in values)
 					{
 						if (!CheckValueType(keyTypeInfo, obj)) continue;
-						hashSet.Add(obj);
+						dynamicHashset.Add(obj); //Have to use dynamic here to allow for runtime resolving of the Add method
 					}
 			}
 		}
