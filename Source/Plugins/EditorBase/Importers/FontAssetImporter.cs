@@ -89,20 +89,20 @@ namespace Duality.Editor.Plugins.Base
 						{
 							string[] limits = block.Split(new[] { '-' }, 3);
 							if (!ulong.TryParse(limits[0], NumberStyles.HexNumber, null, out start))
-								Log.Editor.WriteError("Cannot parse value " + limits[0] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
+								Logs.Editor.WriteError("Cannot parse value " + limits[0] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
 
 							if (limits.Length == 1)
 								end = start;
 							else
 							{
 								if (limits.Length == 2 && !ulong.TryParse(limits[1], NumberStyles.HexNumber, null, out end))
-									Log.Editor.WriteError("Cannot parse value " + limits[1] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
+									Logs.Editor.WriteError("Cannot parse value " + limits[1] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
 
 								else if (limits.Length > 2)
-									Log.Editor.WriteError("Unexpected values " + limits[2] + " in range " + block + " will be ignored. Please verify the value and repeat the import.");
+									Logs.Editor.WriteError("Unexpected values " + limits[2] + " in range " + block + " will be ignored. Please verify the value and repeat the import.");
 
 								if (start > end)
-									Log.Editor.WriteWarning(start + " is bigger than " + end + "; block will be ignored. Please verify the value and repeat the import.");
+									Logs.Editor.WriteWarning(start + " is bigger than " + end + "; block will be ignored. Please verify the value and repeat the import.");
 							}
 
 							for (char c = (char)start; c <= (char)end; c++)
