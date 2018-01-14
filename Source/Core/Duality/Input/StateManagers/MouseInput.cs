@@ -192,43 +192,42 @@ namespace Duality.Input
 				if (this.NoLongerAvailable != null)
 					this.NoLongerAvailable(this, EventArgs.Empty);
 			}
-				if (this.currentState.ViewPos != this.lastState.ViewPos)
+			if (this.currentState.ViewPos != this.lastState.ViewPos)
+			{
+				if (this.Move != null)
+					this.Move(this, new MouseMoveEventArgs(
+						this,
+						this.Pos, 
+						this.Vel));
+			}
+			if (this.currentState.Wheel != this.lastState.Wheel)
+			{
+				if (this.WheelChanged != null)
+					this.WheelChanged(this, new MouseWheelEventArgs(
+						this,
+						this.Pos,
+						this.Wheel,
+						this.WheelSpeed));
+			}
+			for (int i = 0; i < this.currentState.ButtonPressed.Length; i++)
+			{
+				if (this.currentState.ButtonPressed[i] && !this.lastState.ButtonPressed[i])
 				{
-					if (this.Move != null)
-						this.Move(this, new MouseMoveEventArgs(
+					if (this.ButtonDown != null)
+						this.ButtonDown(this, new MouseButtonEventArgs(
 							this,
 							this.Pos, 
-							this.Vel));
+							(MouseButton)i, 
+							this.currentState.ButtonPressed[i]));
 				}
-				if (this.currentState.Wheel != this.lastState.Wheel)
+				if (!this.currentState.ButtonPressed[i] && this.lastState.ButtonPressed[i])
 				{
-					if (this.WheelChanged != null)
-						this.WheelChanged(this, new MouseWheelEventArgs(
+					if (this.ButtonUp != null)
+						this.ButtonUp(this, new MouseButtonEventArgs(
 							this,
-							this.Pos,
-							this.Wheel,
-							this.WheelSpeed));
-				}
-				for (int i = 0; i < this.currentState.ButtonPressed.Length; i++)
-				{
-					if (this.currentState.ButtonPressed[i] && !this.lastState.ButtonPressed[i])
-					{
-						if (this.ButtonDown != null)
-							this.ButtonDown(this, new MouseButtonEventArgs(
-								this,
-								this.Pos, 
-								(MouseButton)i, 
-								this.currentState.ButtonPressed[i]));
-					}
-					if (!this.currentState.ButtonPressed[i] && this.lastState.ButtonPressed[i])
-					{
-						if (this.ButtonUp != null)
-							this.ButtonUp(this, new MouseButtonEventArgs(
-								this,
-								this.Pos, 
-								(MouseButton)i, 
-								this.currentState.ButtonPressed[i]));
-					}
+							this.Pos, 
+							(MouseButton)i, 
+							this.currentState.ButtonPressed[i]));
 				}
 			}
 		}
