@@ -282,7 +282,7 @@ namespace FarseerPhysics.Dynamics.Joints
 				this._motorImpulse = 0.0f;
 			}
 
-#pragma warning disable CS0162 // Unreachable code detected
+#pragma warning disable 0162 // Unreachable code detected
 			if (Settings.EnableWarmstarting)
 			{
 				// Account for variable time step.
@@ -306,7 +306,7 @@ namespace FarseerPhysics.Dynamics.Joints
 				this._springImpulse = 0.0f;
 				this._motorImpulse = 0.0f;
 			}
-#pragma warning restore CS0162 // Unreachable code detected
+#pragma warning restore 0162 // Unreachable code detected
 		}
 
 		internal override void SolveVelocityConstraints(ref TimeStep step)

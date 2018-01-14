@@ -292,7 +292,7 @@ namespace FarseerPhysics.Dynamics.Joints
 			this._limitMass2 = 1.0f / this._limitMass2;
 			this._pulleyMass = 1.0f / this._pulleyMass;
 
-#pragma warning disable CS0162 // Unreachable code detected
+#pragma warning disable 0162 // Unreachable code detected
 			if (Settings.EnableWarmstarting)
 			{
 				// Scale impulses to support variable time steps.
@@ -314,7 +314,7 @@ namespace FarseerPhysics.Dynamics.Joints
 				this._limitImpulse1 = 0.0f;
 				this._limitImpulse2 = 0.0f;
 			}
-#pragma warning restore CS0162 // Unreachable code detected
+#pragma warning restore 0162 // Unreachable code detected
 		}
 
 		internal override void SolveVelocityConstraints(ref TimeStep step)
