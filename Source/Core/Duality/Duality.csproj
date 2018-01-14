@@ -108,6 +108,8 @@
     <Compile Include="Drawing\VertexData\VertexBatch.cs" />
     <Compile Include="Drawing\VertexData\VertexBatchStore.cs" />
     <Compile Include="Drawing\VertexData\VertexSlice.cs" />
+    <Compile Include="Drawing\Enums\UnicodeBlock.cs" />
+    <Compile Include="Drawing\Enums\UnicodeRangeAttribute.cs" />
     <Compile Include="DualityPlugin.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="CorePluginManager.cs" />
