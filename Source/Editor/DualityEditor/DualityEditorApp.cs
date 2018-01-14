@@ -52,7 +52,7 @@ namespace Duality.Editor
 		private	static GameObjectManager			editorObjects		= new GameObjectManager();
 		private	static HashSet<GameObject>			updateObjects		= new HashSet<GameObject>();
 		private	static bool							dualityAppSuspended	= true;
-        private	static List<Resource>				unsavedResources	= new List<Resource>();
+		private	static List<Resource>				unsavedResources	= new List<Resource>();
 		private	static ObjectSelection				selectionCurrent	= ObjectSelection.Null;
 		private	static ObjectSelection				selectionPrevious	= ObjectSelection.Null;
 		private	static ObjectSelection.Category		selectionActiveCat	= ObjectSelection.Category.None;
@@ -63,8 +63,8 @@ namespace Duality.Editor
 		private	static AutosaveFrequency			autosaveFrequency	= AutosaveFrequency.ThirtyMinutes;
 		private	static DateTime						autosaveLast		= DateTime.Now;
 		private	static string						launcherApp			= null;
-		private static ContentRef<Scene>            lastOpenScene       = null;
-		private static bool                         openLastScene       = true;
+		private	static ContentRef<Scene>			lastOpenScene		= null;
+		private	static bool							openLastScene		= true;
 		private	static PackageManager				packageManager		= null;
 		private	static InMemoryLogOutput			memoryLogOutput		= null;
 
