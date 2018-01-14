@@ -64,7 +64,7 @@ namespace Duality.Editor
 		private	static DateTime						autosaveLast		= DateTime.Now;
 		private	static string						launcherApp			= null;
 		private	static ContentRef<Scene>			lastOpenScene		= null;
-		private	static bool							openLastScene		= true;
+		private	static bool							startWithLastScene	= true;
 		private	static PackageManager				packageManager		= null;
 		private	static InMemoryLogOutput			memoryLogOutput		= null;
 
@@ -282,7 +282,7 @@ namespace Duality.Editor
 			}
 			editorActions.StableSort((a, b) => b.Priority.CompareTo(a.Priority));
 			
-			if (openLastScene && lastOpenScene != null)
+			if (startWithLastScene && lastOpenScene != null)
 			{				
 				Scene.SwitchTo(lastOpenScene, true);
 			}
@@ -451,7 +451,7 @@ namespace Duality.Editor
 							editorAppElement.SetElementValue("FirstSession", false);
 							editorAppElement.SetElementValue("ActiveDocumentIndex", mainForm.ActiveDocumentIndex);
 							editorAppElement.SetElementValue("LastOpenScene", lastOpenScene.Path);
-							editorAppElement.SetElementValue("OpenLastScene", openLastScene);							
+							editorAppElement.SetElementValue("StartWithLastScene", startWithLastScene);							
 						}
 						if (!editorAppElement.IsEmpty)
 							rootElement.Add(editorAppElement);
@@ -536,11 +536,12 @@ namespace Duality.Editor
 						editorAppElement.TryGetElementValue("LauncherPath", ref launcherApp);
 						editorAppElement.TryGetElementValue("FirstSession", ref firstEditorSession);
 						editorAppElement.TryGetElementValue("ActiveDocumentIndex", ref activeDocumentIndex);
+
 						string scenePath;
 						editorAppElement.GetElementValue("LastOpenScene", out scenePath);
-						if (scenePath != null) lastOpenScene = ContentProvider.RequestContent<Scene>(scenePath);
+						if (scenePath != null) lastOpenScene = new ContentRef<Scene>(null, scenePath);
 
-						editorAppElement.TryGetElementValue("OpenLastScene", ref openLastScene);
+						editorAppElement.TryGetElementValue("StartWithLastScene", ref startWithLastScene);
 					}
 
 					// Load plugin editor data
