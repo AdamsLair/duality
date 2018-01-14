@@ -555,15 +555,16 @@ namespace VersionUpdater
 		}
 		private static List<GitCommitInfo> ParseGitCommitsSinceLastPackage(ConfigFile config, string gitPath)
 		{
+			StringBuilder commitMessageBuilder = new StringBuilder();
 			List<GitCommitInfo> commitsSinceLastPackage = new List<GitCommitInfo>();
-			string solutionDir = Path.GetDirectoryName(config.SolutionPath);
 
 			// Retrieve the git history for the repository
+			string solutionDir = Path.GetDirectoryName(config.SolutionPath);
 			ProcessStartInfo gitStartInfo = new ProcessStartInfo
 			{
 				FileName = gitPath,
 				WorkingDirectory = solutionDir,
-				Arguments = "--no-pager log --name-only --oneline --since=\"2015\"",
+				Arguments = "--no-pager log --name-only --abbrev-commit --format=medium --since=\"2015\"",
 				UseShellExecute = false,
 				RedirectStandardOutput = true,
 				CreateNoWindow = true,
@@ -573,91 +574,109 @@ namespace VersionUpdater
 			gitProc.StartInfo = gitStartInfo;
 			gitProc.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e)
 			{
-				if (string.IsNullOrEmpty(e.Data)) return;
-
-				// Begin of a new commit
-				if (e.Data.Contains(' '))
+				// Starting the next commit? Process the last we accumulated
+				if (e.Data.StartsWith("commit ") && commitMessageBuilder.Length > 0)
 				{
-					string line = e.Data.Trim();
-					int indexOfSeparator = line.IndexOf(' ');
-					string commitId = line.Substring(0, indexOfSeparator);
+					// Parse the accumulated multi-line commit message
+					bool continueRead;
+					GitCommitInfo commitInfo = ParseGitCommitMessageChunk(
+						commitMessageBuilder.ToString(), 
+						solutionDir,
+						out continueRead);
+					if (commitInfo != null)
+						commitsSinceLastPackage.Add(commitInfo);
 
-					if (Regex.IsMatch(commitId, @"\b[0-9a-f]{5,40}\b"))
+					// Stop reading once the parse method decided we have the oldest commit we need
+					if (!continueRead)
 					{
-						string commitTitleAndMessage = line.Substring(indexOfSeparator, line.Length - indexOfSeparator).Trim();
-						string[] commitMessageToken = commitTitleAndMessage.Split('#');
-						string commitTitle;
-						string commitMessage;
-
-						// Received the expected commit message format in the form
-						//
-						// Title / Headline
-						// #CHANGE: Description
-						// #ADD: More Description
-						// ...
-						if (commitMessageToken.Length > 1)
-						{
-							commitTitle = commitMessageToken[0].Trim();
-
-							// Filter out invalid hashtags by re-joining their token
-							List<string> filteredMessageToken = new List<string>();
-							for (int i = 1; i < commitMessageToken.Length; i++)
-							{ 
-								string token = commitMessageToken[i];
-								bool startsWithValidHashtag = Regex.IsMatch(token, @"\b[A-Z]+\:\s");
-								if (startsWithValidHashtag)
-								{
-									filteredMessageToken.Add(token);
-								}
-								else if (filteredMessageToken.Count > 0)
-								{
-									string lastToken = filteredMessageToken[filteredMessageToken.Count - 1];
-									filteredMessageToken.RemoveAt(filteredMessageToken.Count - 1);
-									filteredMessageToken.Add(lastToken + "#" + token);
-								}
-							}
-							commitMessage = "#" + string.Join(Environment.NewLine + "#", filteredMessageToken);
-						}
-						// Received an unexpected message format
-						else
-						{
-							commitMessageToken = commitTitleAndMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-							commitTitle = commitMessageToken[0];
-							commitMessage = string.Empty;
-						}
-
-						// Stop reading as soon as we see a package update commit
-						if (string.Equals(commitTitle, PackageUpdateCommitTitle, StringComparison.InvariantCultureIgnoreCase) &&
-							commitMessage.IndexOf(PackageUpdateCommitMessageBegin, StringComparison.InvariantCultureIgnoreCase) >= 0)
-						{
-							gitProc.CancelOutputRead();
-							if (!gitProc.HasExited)
-								gitProc.Kill();
-							return;
-						}
-
-						// Start collecting files for the new commit
-						commitsSinceLastPackage.Add(new GitCommitInfo
-						{
-							Id = commitId,
-							Title = commitTitle,
-							Message = commitMessage
-						});
-						return;
+						gitProc.CancelOutputRead();
+						if (!gitProc.HasExited)
+							gitProc.Kill();
 					}
-				}
 
-				// File list entry
-				GitCommitInfo commitInfo = commitsSinceLastPackage[commitsSinceLastPackage.Count - 1];
-				string filePathFull = Path.GetFullPath(Path.Combine(solutionDir, e.Data));
-				commitInfo.FilePaths.Add(filePathFull);
-				return;
+					// Start over with the next commit message
+					commitMessageBuilder.Clear();
+				}
+				commitMessageBuilder.AppendLine(e.Data);
 			};
 			gitProc.Start();
 			gitProc.BeginOutputReadLine();
 			gitProc.WaitForExit();
 
+			// Handle the remaining output
+			if (commitMessageBuilder.Length > 0)
+			{
+				bool continueRead;
+				GitCommitInfo commitInfo = ParseGitCommitMessageChunk(
+					commitMessageBuilder.ToString(), 
+					solutionDir,
+					out continueRead);
+				if (commitInfo != null)
+					commitsSinceLastPackage.Add(commitInfo);
+			}
+
 			return commitsSinceLastPackage;
+		}
+		private static GitCommitInfo ParseGitCommitMessageChunk(string chunk, string baseDirectory, out bool continueRead)
+		{
+			continueRead = true;
+
+			// Gather commit chunk contents line by line
+			string commitIdLine = null;
+			string authorLine = null;
+			string dateLine = null;
+			List<string> messageLines = new List<string>();
+			List<string> fileLines = new List<string>();
+			using (StringReader reader = new StringReader(chunk))
+			{
+				commitIdLine = reader.ReadLine();
+				authorLine = reader.ReadLine();
+				dateLine = reader.ReadLine();
+				while (true)
+				{
+					string line = reader.ReadLine();
+
+					if (line == null) break;
+					if (string.IsNullOrWhiteSpace(line)) continue;
+
+					string trimmedLine = line.TrimStart();
+					bool isIndentedLine = trimmedLine.Length != line.Length;
+					if (isIndentedLine)
+						messageLines.Add(trimmedLine);
+					else
+						fileLines.Add(trimmedLine);
+				}
+			}
+
+			// Early-out, if we're missing content
+			if (string.IsNullOrEmpty(commitIdLine)) return null;
+			if (messageLines.Count == 0) return null;
+			if (fileLines.Count == 0) return null;
+
+			// Parse commit chunk contents
+			string commitId = commitIdLine.Split(' ').LastOrDefault();
+			string commitTitle = messageLines.FirstOrDefault();
+			string commitMessage = string.Join(Environment.NewLine, messageLines.Skip(1));
+			List<string> filePaths = fileLines
+				.Select(path => Path.GetFullPath(Path.Combine(baseDirectory, path)))
+				.ToList();
+
+			// Stop reading as soon as we see a package update commit
+			if (string.Equals(commitTitle, PackageUpdateCommitTitle, StringComparison.InvariantCultureIgnoreCase) &&
+				commitMessage.IndexOf(PackageUpdateCommitMessageBegin, StringComparison.InvariantCultureIgnoreCase) >= 0)
+			{
+				continueRead = false;
+				return null;
+			}
+
+			// Start collecting files for the new commit
+			return new GitCommitInfo
+			{
+				Id = commitId,
+				Title = commitTitle,
+				Message = commitMessage,
+				FilePaths = filePaths
+			};
 		}
 		private static List<ProjectChangeInfo> GetChangesPerProject(ConfigFile config, IEnumerable<ProjectInfo> allProjects, IEnumerable<GitCommitInfo> gitHistory)
 		{
