@@ -150,10 +150,12 @@ namespace Duality.Editor.Forms
 			if (keyEventArgs.KeyCode == Keys.Down)
 			{
 				tmp = this.objectReferenceListing.SelectedNode.NextNode;
+				keyEventArgs.Handled = true;
 			}
 			else if (keyEventArgs.KeyCode == Keys.Up)
 			{
 				tmp = this.objectReferenceListing.SelectedNode.PreviousNode;
+				keyEventArgs.Handled = true;
 			}
 
 			if (tmp != null)
