@@ -25,6 +25,7 @@ namespace Duality.Editor.Forms
 				this.Text = this.Name;
 
 				this.ResourceReference = resource;
+				this.Image = resource.GetType().GetEditorImage();
 			}
 			public ReferenceNode(GameObject gameObject)
 			{
@@ -33,6 +34,7 @@ namespace Duality.Editor.Forms
 				this.Text = this.Name;
 
 				this.GameObjectReference = gameObject;
+				this.Image = gameObject.GetType().GetEditorImage();
 			}
 			public ReferenceNode(Component component)
 			{
@@ -43,6 +45,7 @@ namespace Duality.Editor.Forms
 				this.Text = this.Name;
 
 				this.ComponentReference = component;
+				this.Image = component.GetType().GetEditorImage();
 			}
 		}
 
@@ -75,6 +78,7 @@ namespace Duality.Editor.Forms
 			this.nodeName.DrawText += this.NodeName_OnDrawText;
 			this.nodePath.DrawText += this.NodePath_OnDrawText;
 
+			this.columnImage.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
 			this.columnName.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
 			this.columnPath.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
 		}
