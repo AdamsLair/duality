@@ -14,9 +14,9 @@ namespace Duality.Editor.Forms
 		{
 			public string Name { get; set; }
 			public string Path { get; set; }
-			public IContentRef ResourceReference { get; set; }
-			public GameObject GameObjectReference { get; set; }
-			public Component ComponentReference { get; set; }
+			public IContentRef ResourceReference { get; private set; }
+			public GameObject GameObjectReference { get; private set; }
+			public Component ComponentReference { get; private set; }
 
 			public ReferenceNode(IContentRef resource)
 			{
