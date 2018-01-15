@@ -46,6 +46,8 @@ namespace Duality.Editor.Forms
 			}
 		}
 
+		private Size oldObjectReferenceListingSize = Size.Empty;
+
 		public Color PathColor { get; set; }
 		public Type FilteredType { get; set; }
 
@@ -66,6 +68,8 @@ namespace Duality.Editor.Forms
 
 			this.PathColor = Color.Gray;
 
+			this.oldObjectReferenceListingSize = this.objectReferenceListing.Size;
+			this.objectReferenceListing.Resize += this.objectReferenceListing_Resize;
 			this.objectReferenceListing.SelectionChanged += this.ResourceListingOnSelectedIndexChanged;
 			this.objectReferenceListing.DoubleClick += this.ResourceListingOnDoubleClick;
 			this.objectReferenceListing.NodeFilter += this.NodeFilter;
@@ -237,7 +241,16 @@ namespace Duality.Editor.Forms
 				this.objectReferenceListing.SelectedNode = firstVisibleNode;
 			}
 		}
+		private void objectReferenceListing_Resize(object sender, EventArgs e)
+		{
+			Size sizeChange = new Size(
+				this.objectReferenceListing.Width - this.oldObjectReferenceListingSize.Width,
+				this.objectReferenceListing.Height - this.oldObjectReferenceListingSize.Height);
 
+			this.columnPath.Width += sizeChange.Width;
+
+			this.oldObjectReferenceListingSize = this.objectReferenceListing.Size;
+		}
 		private bool NodeFilter(TreeNodeAdv nodeAdv)
 		{
 			ReferenceNode node = nodeAdv.Tag as ReferenceNode;
