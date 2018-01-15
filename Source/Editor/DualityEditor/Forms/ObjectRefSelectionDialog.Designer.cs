@@ -209,9 +209,9 @@ namespace Duality.Editor.Forms
 		private Aga.Controls.Tree.NodeControls.NodeStateIcon nodeImage;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeName;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodePath;
+		private TreeColumn columnImage;
 		private TreeColumn columnName;
 		private TreeColumn columnPath;
 		private CueTextBox txtFilterInput;
-		private TreeColumn columnImage;
 	}
 }
