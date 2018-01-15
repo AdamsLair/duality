@@ -53,6 +53,10 @@ namespace Duality.Drawing
 		/// </summary>
 		public	const	string	FormatNewline		= "/n";
 		/// <summary>
+		/// Format string for inserting an unicode character.
+		/// </summary>
+		public	const	string	FormatUnicode		= "/u";		
+		/// <summary>
 		/// Returns a format string for changing the current text color to the specified one.
 		/// </summary>
 		/// <returns></returns>
@@ -865,6 +869,22 @@ namespace Duality.Drawing
 					{
 						curTextElemTextBuilder.Append('/');
 					}
+					else if (this.sourceText[i] == 'u')
+					{
+						int indexOfClose = this.sourceText.IndexOf(']', i + 1);
+						if (indexOfClose != -1)
+						{
+							string unicodeStr = this.sourceText.Substring(i + 2, indexOfClose - (i + 2));
+							ulong chr = 0;
+
+							if (ulong.TryParse(unicodeStr, System.Globalization.NumberStyles.HexNumber, null, out chr))
+								curTextElemTextBuilder.Append((char)chr);
+							else
+								curTextElemTextBuilder.Append("?");
+
+							i += 2 + unicodeStr.Length;
+						}
+					}
 					else
 					{
 						if (curTextElemTextBuilder.Length > 0)
@@ -947,7 +967,6 @@ namespace Duality.Drawing
 						{
 							elemList.Add(new NewLineElement());
 						}
-
 					}
 
 					curTextElemLen = 0;
