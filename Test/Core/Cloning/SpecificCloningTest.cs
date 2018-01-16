@@ -23,7 +23,8 @@ namespace Duality.Tests.Cloning
 	[TestFixture]
 	public class SpecificCloningTest
 	{
-		[Test] public void CloneRegex()
+		[Test]
+		public void CloneRegex()
 		{
 			// Expect the source to match one phrase, but not another
 			Regex source = new Regex("H[aeu]llo", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(3));
@@ -40,7 +41,8 @@ namespace Duality.Tests.Cloning
 			Assert.AreEqual(source.Options, target.Options);
 			Assert.AreEqual(source.MatchTimeout, target.MatchTimeout);
 		}
-		[Test] public void CloneCultureInfo()
+		[Test]
+		public void CloneCultureInfo()
 		{
 			CultureInfo source = new CultureInfo("en-US");
 			CultureInfo target = source.DeepClone();
@@ -48,17 +50,44 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(source, target);
 			Assert.AreEqual(source, target);
 		}
-		[Test] public void CloneHashSet()
+		[Test]
+		public void CloneHashSet_ValueType()
 		{
 			Random rnd = new Random();
-			HashSet<int> source = new HashSet<int>(Enumerable.Range(0, 50).Select(i => rnd.Next()));
-			HashSet<int> target = source.DeepClone();
+			CloneHashSetTest(Enumerable.Range(0, 50).Select(i => rnd.Next()));
+		}
+
+		[Test]
+		public void CloneHashSet_ReferenceType()
+		{
+			CloneHashSetTest(Enumerable.Range(0, 50).Select(i => new ReferenceType()));
+		}
+
+		[Test]
+		public void CloneHashSet_ReferenceAndNulls()
+		{
+			CloneHashSetTest(Enumerable.Range(0, 50).Select(i => i % 2 == 0 ? null : new ReferenceType()));
+		}
+
+		public class ReferenceType
+		{
+			public ReferenceType()
+			{
+
+			}
+		}
+
+		private void CloneHashSetTest<TItem>(IEnumerable<TItem> items)
+		{
+			HashSet<TItem> source = new HashSet<TItem>(items);
+			HashSet<TItem> target = source.DeepClone();
 
 			Assert.AreNotSame(source, target);
 			CollectionAssert.AreEquivalent(source, target);
 		}
 
-		[Test] public void CloneContentRef()
+		[Test]
+		public void CloneContentRef()
 		{
 			Random rnd = new Random();
 			TestResource source = new TestResource(rnd);
@@ -82,7 +111,8 @@ namespace Duality.Tests.Cloning
 			TestResource targetWithSelfRef = source.DeepClone();
 			Assert.AreSame(targetWithSelfRef, targetWithSelfRef.TestContentRef.ResWeak);
 		}
-		[Test] public void CloneResource()
+		[Test]
+		public void CloneResource()
 		{
 			Random rnd = new Random();
 			TestResource source = new TestResource(rnd);
@@ -92,7 +122,8 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(source, target);
 			Assert.AreNotSame(source.TestReferenceList, target.TestReferenceList);
 		}
-		[Test] public void CloneComponent()
+		[Test]
+		public void CloneComponent()
 		{
 			Random rnd = new Random();
 			TestComponent source = new TestComponent(rnd);
@@ -102,20 +133,22 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(source, target);
 			Assert.AreNotSame(source.TestReferenceList, target.TestReferenceList);
 		}
-		[Test] public void CloneGameObject()
+		[Test]
+		public void CloneGameObject()
 		{
 			Random rnd = new Random();
 			GameObject source = new GameObject("ObjectA");
 			source.AddComponent(new TestComponent(rnd));
 			GameObject target = source.DeepClone();
-			
+
 			Assert.AreNotSame(source, target);
 			Assert.AreEqual(source.Name, target.Name);
 			Assert.AreEqual(source.GetComponent<TestComponent>(), target.GetComponent<TestComponent>());
 			Assert.AreNotSame(source.GetComponent<TestComponent>(), target.GetComponent<TestComponent>());
 			Assert.AreNotSame(source.GetComponent<TestComponent>().TestReferenceList, target.GetComponent<TestComponent>().TestReferenceList);
 		}
-		[Test] public void CloneScene()
+		[Test]
+		public void CloneScene()
 		{
 			Random rnd = new Random();
 			Scene source = new Scene();
@@ -170,7 +203,8 @@ namespace Duality.Tests.Cloning
 			}
 		}
 
-		[Test] public void CopyToGameObjectPreservation()
+		[Test]
+		public void CopyToGameObjectPreservation()
 		{
 			Random rnd = new Random();
 			GameObject source = new GameObject("ObjectA");
@@ -179,11 +213,12 @@ namespace Duality.Tests.Cloning
 			TestComponent targetComponent = target.AddComponent(new TestComponent(rnd));
 
 			source.DeepCopyTo(target);
-			
+
 			// Make sure that the target Component has been updated, but not re-created.
 			Assert.AreSame(targetComponent, target.GetComponent<TestComponent>());
 		}
-		[Test] public void CopyToGameObjectAddComponentEvent()
+		[Test]
+		public void CopyToGameObjectAddComponentEvent()
 		{
 			Random rnd = new Random();
 			bool componentAddedEventReceived = false;
@@ -196,7 +231,7 @@ namespace Duality.Tests.Cloning
 			};
 
 			source.DeepCopyTo(target);
-			
+
 			// Make sure that events are fired properly when adding completely new Components
 			Assert.IsTrue(componentAddedEventReceived);
 
@@ -206,7 +241,8 @@ namespace Duality.Tests.Cloning
 			// Don't fire the event when the Component was already there
 			Assert.IsFalse(componentAddedEventReceived);
 		}
-		[Test] public void CopyToGameObjectParentScene()
+		[Test]
+		public void CopyToGameObjectParentScene()
 		{
 			Random rnd = new Random();
 			GameObject source = new GameObject("ObjectA");
@@ -216,10 +252,11 @@ namespace Duality.Tests.Cloning
 			scene.AddObject(target);
 
 			source.DeepCopyTo(target);
-			
+
 			Assert.AreSame(scene, target.ParentScene);
 		}
-		[Test] public void CopyToGameObjectParentObject()
+		[Test]
+		public void CopyToGameObjectParentObject()
 		{
 			Random rnd = new Random();
 			GameObject source = new GameObject("ObjectA");
@@ -228,10 +265,11 @@ namespace Duality.Tests.Cloning
 			GameObject target = new GameObject("ObjectB", targetParent);
 
 			source.DeepCopyTo(target);
-			
+
 			Assert.AreSame(targetParent, target.Parent);
 		}
-		[Test] public void CopyToGameObjectAddGameObjectEvent()
+		[Test]
+		public void CopyToGameObjectAddGameObjectEvent()
 		{
 			Random rnd = new Random();
 			bool gameObjectAddedEventReceived = false;
@@ -243,9 +281,9 @@ namespace Duality.Tests.Cloning
 			testScene.AddObject(source);
 			GameObject target = new GameObject("ObjectB");
 			testScene.AddObject(target);
-			
+
 			// Listen to object added events
-			EventHandler<GameObjectGroupEventArgs> sceneHandler = delegate(object sender, GameObjectGroupEventArgs e)
+			EventHandler<GameObjectGroupEventArgs> sceneHandler = delegate (object sender, GameObjectGroupEventArgs e)
 			{
 				gameObjectAddedEventReceived = true;
 			};
@@ -257,7 +295,7 @@ namespace Duality.Tests.Cloning
 			{
 				// Copy source object to target object
 				source.DeepCopyTo(target);
-			
+
 				// Make sure that events are fired properly when adding completely new Components
 				Assert.IsTrue(gameObjectAddedEventReceived);
 
@@ -274,7 +312,8 @@ namespace Duality.Tests.Cloning
 			}
 		}
 
-		[Test] public void TransformHierarchyInitialized()
+		[Test]
+		public void TransformHierarchyInitialized()
 		{
 			Random rnd = new Random();
 
@@ -299,7 +338,7 @@ namespace Duality.Tests.Cloning
 
 				childPosRel = rnd.NextVector3();
 				child.RelativePos = childPosRel;
-			
+
 				Assert.AreEqual(parentPosAbs.X + childPosRel.X, child.Pos.X, 0.000001f);
 				Assert.AreEqual(parentPosAbs.Y + childPosRel.Y, child.Pos.Y, 0.000001f);
 				Assert.AreEqual(parentPosAbs.Z + childPosRel.Z, child.Pos.Z, 0.000001f);
@@ -326,13 +365,14 @@ namespace Duality.Tests.Cloning
 
 				childPosRel = rnd.NextVector3();
 				child.RelativePos = childPosRel;
-			
+
 				Assert.AreEqual(parentPosAbs.X + childPosRel.X, child.Pos.X, 0.000001f);
 				Assert.AreEqual(parentPosAbs.Y + childPosRel.Y, child.Pos.Y, 0.000001f);
 				Assert.AreEqual(parentPosAbs.Z + childPosRel.Z, child.Pos.Z, 0.000001f);
 			}
 		}
-		[Test] public void CloneJointRigidBodies()
+		[Test]
+		public void CloneJointRigidBodies()
 		{
 			// Create two joint bodies
 			GameObject sourceA = new GameObject("ObjectA");
@@ -360,7 +400,8 @@ namespace Duality.Tests.Cloning
 			Assert.AreSame(targetBodyA.Joints.First().OtherBody, targetBodyB);
 			Assert.AreNotSame(sourceBodyA.Joints.First(), targetBodyA.Joints.First());
 		}
-		[Test] public void RealWorldPerformanceTest()
+		[Test]
+		public void RealWorldPerformanceTest()
 		{
 
 			Random rnd = new Random(0);

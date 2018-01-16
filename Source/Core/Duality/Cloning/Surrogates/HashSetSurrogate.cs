@@ -43,7 +43,7 @@ namespace Duality.Cloning.Surrogates
 			// Determine unwrapping behavior to provide faster / more optimized loops.
 			bool isValuePlainOld = firstGenArgInfo.IsPlainOldData();
 
-			dynamic dynamicHashset = target;
+			dynamic dynamicHashset = (dynamic)target;
 			// Copy all values.
 			dynamicHashset.Clear();
 
