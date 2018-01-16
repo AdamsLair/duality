@@ -13,7 +13,7 @@ namespace Steering
 {
 	/// <summary>
 	/// This Component assigns the objects RigidBody radius (taken from its first circle shape) directly to its
-	/// Agent radius, and applies the Agents suggested velocity back to the RigidBody. The sole purpose if this
+	/// Agent radius, and applies the Agents suggested velocity back to the RigidBody. The sole purpose of this
 	/// Component is to visualize Agent behavior.
 	/// </summary>
 	[RequiredComponent(typeof(Agent))]
