@@ -7,6 +7,7 @@ namespace Duality.Cloning.Surrogates
 {
 	public class HashSetSurrogate : CloneSurrogate<IEnumerable>
 	{
+		public Dictionary<Type, ReflectedHashsetData> ReflectedData = new Dictionary<Type, ReflectedHashsetData>();
 		public override bool MatchesType(TypeInfo t)
 		{
 			return
@@ -14,13 +15,22 @@ namespace Duality.Cloning.Surrogates
 				t.GetGenericTypeDefinition() == typeof(HashSet<>);
 		}
 
+		public ReflectedHashsetData GetReflectedHashsetData(Type hashSetType)
+		{			
+			ReflectedHashsetData reflectedHashsetData;
+			if (!this.ReflectedData.TryGetValue(hashSetType, out reflectedHashsetData))
+			{
+				reflectedHashsetData = new ReflectedHashsetData(hashSetType);
+				this.ReflectedData.Add(hashSetType, reflectedHashsetData);
+			}
+
+			return reflectedHashsetData;
+		}
+
 		public override void SetupCloneTargets(IEnumerable source, IEnumerable target, ICloneTargetSetup setup)
 		{
-			Type hashSetType = source.GetType();
-			Type[] genArgs = hashSetType.GenericTypeArguments;
-			TypeInfo firstGenArgInfo = genArgs[0].GetTypeInfo();
-
-			if (!firstGenArgInfo.IsPlainOldData())
+			ReflectedHashsetData reflectedHashsetData = GetReflectedHashsetData(source.GetType());
+			if (!reflectedHashsetData.IsPlainOldData)
 			{
 				if (source == target)
 				{
@@ -36,32 +46,45 @@ namespace Duality.Cloning.Surrogates
 		}
 		public override void CopyDataTo(IEnumerable source, IEnumerable target, ICloneOperation operation)
 		{
-			Type hashSetType = source.GetType();
-			Type[] genArgs = hashSetType.GenericTypeArguments;
-			TypeInfo firstGenArgInfo = genArgs[0].GetTypeInfo();
-			var clearMethodInfo = hashSetType.GetRuntimeMethod("Clear", new Type[] { });
-			var addMethodInfo = hashSetType.GetRuntimeMethod("Add", genArgs);
-			// Determine unwrapping behavior to provide faster / more optimized loops.
-			bool isValuePlainOld = firstGenArgInfo.IsPlainOldData();
+			ReflectedHashsetData reflectedHashsetData = GetReflectedHashsetData(source.GetType());
 
 			// Copy all values.
-			clearMethodInfo.Invoke(target, new object[]{});
+			reflectedHashsetData.ClearMethod.Invoke(target, new object[] { });
 
-			if (!isValuePlainOld)
+			var parameterBuffer = new object[1];
+			// Determine unwrapping behavior to provide faster / more optimized loops.
+			if (!reflectedHashsetData.IsPlainOldData)
 			{
 				foreach (object value in source)
 				{
 					object handledObject = null;
 					if (!operation.HandleObject(value, ref handledObject)) continue;
-					addMethodInfo.Invoke(target, new[] { handledObject } );
+					parameterBuffer[0] = handledObject;
+					reflectedHashsetData.AddMethod.Invoke(target, parameterBuffer);
 				}
 			}
 			else
 			{
-				foreach (object dynamicValue in source)
+				foreach (object value in source)
 				{
-					addMethodInfo.Invoke(target, new[] { dynamicValue });
+					parameterBuffer[0] = value;
+					reflectedHashsetData.AddMethod.Invoke(target, parameterBuffer);
 				}
+			}
+		}
+
+		public class ReflectedHashsetData
+		{
+			public MethodInfo ClearMethod { get; private set; }
+			public MethodInfo AddMethod { get; private set; }
+			public bool IsPlainOldData { get; private set; }
+
+			public ReflectedHashsetData(Type hashSetType)
+			{
+				Type[] genArgs = hashSetType.GenericTypeArguments;
+				this.ClearMethod = hashSetType.GetRuntimeMethod("Clear", new Type[] { });
+				this.AddMethod = hashSetType.GetRuntimeMethod("Add", genArgs);
+				this.IsPlainOldData = genArgs[0].GetTypeInfo().IsPlainOldData();
 			}
 		}
 	}
