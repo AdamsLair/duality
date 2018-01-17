@@ -46,6 +46,8 @@ namespace Duality.Editor.Forms
 			}
 		}
 
+		private Size oldObjectReferenceListingSize = Size.Empty;
+
 		public Color PathColor { get; set; }
 		public Type FilteredType { get; set; }
 
@@ -66,6 +68,8 @@ namespace Duality.Editor.Forms
 
 			this.PathColor = Color.Gray;
 
+			this.oldObjectReferenceListingSize = this.objectReferenceListing.Size;
+			this.objectReferenceListing.Resize += this.objectReferenceListing_Resize;
 			this.objectReferenceListing.SelectionChanged += this.ResourceListingOnSelectedIndexChanged;
 			this.objectReferenceListing.DoubleClick += this.ResourceListingOnDoubleClick;
 			this.objectReferenceListing.NodeFilter += this.NodeFilter;
@@ -149,11 +153,29 @@ namespace Duality.Editor.Forms
 
 			if (keyEventArgs.KeyCode == Keys.Down)
 			{
-				tmp = this.objectReferenceListing.SelectedNode.NextNode;
+				if (this.objectReferenceListing.SelectedNode == null)
+				{
+					this.objectReferenceListing.SelectedNode = this.objectReferenceListing.FirstVisibleNode();
+					tmp = this.objectReferenceListing.SelectedNode;
+				}
+				else
+				{
+					tmp = this.objectReferenceListing.SelectedNode.NextNode;
+				}
+				keyEventArgs.Handled = true;
 			}
 			else if (keyEventArgs.KeyCode == Keys.Up)
 			{
-				tmp = this.objectReferenceListing.SelectedNode.PreviousNode;
+				if (this.objectReferenceListing.SelectedNode == null)
+				{
+					this.objectReferenceListing.SelectedNode = this.objectReferenceListing.LastVisibleNode();
+					tmp = this.objectReferenceListing.SelectedNode;
+				}
+				else
+				{
+					tmp = this.objectReferenceListing.SelectedNode.PreviousNode;
+				}
+				keyEventArgs.Handled = true;
 			}
 
 			if (tmp != null)
@@ -231,13 +253,19 @@ namespace Duality.Editor.Forms
 
 			if (this.objectReferenceListing.Root.Children.Count > 0)
 			{
-				TreeNodeAdv firstVisibleNode = this.objectReferenceListing
-					.Root.Children
-					.FirstOrDefault(node => !node.IsHidden);;
-				this.objectReferenceListing.SelectedNode = firstVisibleNode;
+				this.objectReferenceListing.SelectedNode = this.objectReferenceListing.FirstVisibleNode();
 			}
 		}
+		private void objectReferenceListing_Resize(object sender, EventArgs e)
+		{
+			Size sizeChange = new Size(
+				this.objectReferenceListing.Width - this.oldObjectReferenceListingSize.Width,
+				this.objectReferenceListing.Height - this.oldObjectReferenceListingSize.Height);
 
+			this.columnPath.Width += sizeChange.Width;
+
+			this.oldObjectReferenceListingSize = this.objectReferenceListing.Size;
+		}
 		private bool NodeFilter(TreeNodeAdv nodeAdv)
 		{
 			ReferenceNode node = nodeAdv.Tag as ReferenceNode;
