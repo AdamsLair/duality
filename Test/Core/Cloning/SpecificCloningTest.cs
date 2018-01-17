@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -54,36 +55,63 @@ namespace Duality.Tests.Cloning
 		public void CloneHashSet_ValueType()
 		{
 			Random rnd = new Random();
-			CloneHashSetTest(Enumerable.Range(0, 50).Select(i => rnd.Next()));
+			var values = Enumerable.Range(0, 50).Select(i => rnd.Next());
+			HashSet<int> source = new HashSet<int>(values);
+			HashSet<int> target = source.DeepClone();
+
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEquivalent(source, target);
 		}
 
 		[Test]
 		public void CloneHashSet_ReferenceType()
 		{
-			CloneHashSetTest(Enumerable.Range(0, 50).Select(i => new ReferenceType()));
+			var values = Enumerable.Range(0, 50).Select(i => new ReferenceType(i));
+			HashSet<ReferenceType> source = new HashSet<ReferenceType>(values);
+			HashSet<ReferenceType> target = source.DeepClone();
+
+			Assert.AreNotSame(source, target); //Check if the hashset are separate instances
+			CollectionAssert.AreNotEquivalent(source, target); //Check if the reference types contained in the hashset are separate instances
+			CollectionAssert.AreEqual(source, target, new ValueComparer()); //Check if the value of the reference type is equal
 		}
 
 		[Test]
 		public void CloneHashSet_ReferenceAndNulls()
 		{
-			CloneHashSetTest(Enumerable.Range(0, 50).Select(i => i % 2 == 0 ? null : new ReferenceType()));
+			var values = Enumerable.Range(0, 50).Select(i => i % 2 == 0 ? null : new ReferenceType(i));
+			HashSet<ReferenceType> source = new HashSet<ReferenceType>(values);
+			HashSet<ReferenceType> target = source.DeepClone();
+
+			Assert.AreNotSame(source, target); //Check if the hashset are separate instances
+			CollectionAssert.AreNotEquivalent(source, target); //Check if the reference types contained in the hashset are separate instances
+			CollectionAssert.AreEqual(source, target, new ValueComparer()); //Check if the value of the reference type is equal
 		}
 
 		public class ReferenceType
 		{
-			public ReferenceType()
-			{
+			public int Value { get; set; }
 
+			public ReferenceType(int value)
+			{
+				this.Value = value;
 			}
 		}
 
-		private void CloneHashSetTest<TItem>(IEnumerable<TItem> items)
+		public class ValueComparer : IComparer<ReferenceType>, IComparer
 		{
-			HashSet<TItem> source = new HashSet<TItem>(items);
-			HashSet<TItem> target = source.DeepClone();
+			public int Compare(object x, object y)
+			{
+				return Compare(x as ReferenceType, y as ReferenceType);				
+			}
 
-			Assert.AreNotSame(source, target);
-			CollectionAssert.AreEquivalent(source, target);
+			public int Compare(ReferenceType x, ReferenceType y)
+			{
+				if (x != null && y != null)
+				{
+					return x.Value - y.Value;
+				}				
+				return -1;
+			}
 		}
 
 		[Test]

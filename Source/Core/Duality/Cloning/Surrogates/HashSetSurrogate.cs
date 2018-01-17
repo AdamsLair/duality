@@ -39,29 +39,28 @@ namespace Duality.Cloning.Surrogates
 			Type hashSetType = source.GetType();
 			Type[] genArgs = hashSetType.GenericTypeArguments;
 			TypeInfo firstGenArgInfo = genArgs[0].GetTypeInfo();
-
+			var clearMethodInfo = hashSetType.GetRuntimeMethod("Clear", new Type[] { });
+			var addMethodInfo = hashSetType.GetRuntimeMethod("Add", genArgs);
 			// Determine unwrapping behavior to provide faster / more optimized loops.
 			bool isValuePlainOld = firstGenArgInfo.IsPlainOldData();
 
-			dynamic dynamicHashset = (dynamic)target;
 			// Copy all values.
-			dynamicHashset.Clear();
+			clearMethodInfo.Invoke(target, new object[]{});
 
 			if (!isValuePlainOld)
 			{
 				foreach (object value in source)
 				{
-					dynamic dynamicValue = null;
-					if (!operation.HandleObject(value, ref dynamicValue)) continue;
-
-					dynamicHashset.Add(dynamicValue); //Have to use dynamic here to allow for runtime resolving of the Add method
+					object handledObject = null;
+					if (!operation.HandleObject(value, ref handledObject)) continue;
+					addMethodInfo.Invoke(target, new[] { handledObject } );
 				}
 			}
 			else
 			{
-				foreach (dynamic dynamicValue in source)
+				foreach (object dynamicValue in source)
 				{
-					dynamicHashset.Add(dynamicValue); //Have to use dynamic here to allow for runtime resolving of the Add method
+					addMethodInfo.Invoke(target, new[] { dynamicValue });
 				}
 			}
 		}
