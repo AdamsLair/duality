@@ -7,7 +7,7 @@ namespace Steering
 	/// <summary>
 	/// Creates velocity samples which are going to get tested with <see cref="IAgentCharacteristics"/>. 
 	/// If the samples are poorly chosen or if there are simply not enough samples the agent won't be able to
-	/// choose "good" velocities which lead to a bad steering quality. If on the other hand to many samples are
+	/// choose "good" velocities which lead to a bad steering quality. If on the other hand too many samples are
 	/// generated the performance will suffer because for every sample the agent needs to calculate time of imapacts
 	/// with obstacles.
 	/// </summary>
@@ -26,7 +26,7 @@ namespace Steering
 		/// <returns>Velocity which should be evaluated</returns>
 		Vector2 GetCurrentSample(Agent agent);
 		/// <summary>
-		/// Feeds the evaluated cost back into the sampler. The cost value can be used to adapt and intelligent choose the next
+		/// Feeds the evaluated cost back into the sampler. The cost value can be used to adapt and intelligently choose the next
 		/// velocities.
 		/// </summary>
 		/// <param name="cost">The cost which was returned from <see cref="IAgentCharacteristics.CalculateVelocityCost"/> 

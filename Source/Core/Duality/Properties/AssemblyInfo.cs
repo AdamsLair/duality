@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 //
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
-// [assembly: AssemblyVersion("2.14.4")]
-[assembly: AssemblyVersion("2.14.4")]
+// [assembly: AssemblyVersion("2.14.5")]
+[assembly: AssemblyVersion("2.14.5")]
 [assembly: InternalsVisibleTo("DualityEditor")]
 [assembly: InternalsVisibleTo("DualityTests")]

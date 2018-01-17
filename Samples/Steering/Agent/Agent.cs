@@ -15,7 +15,7 @@ namespace Steering
 	/// An agent is the basic component you want to attach to computer-controlled characters. 
 	/// It contains functionallity to avoid collisions with other agents/obstacles and tries
 	/// to get to some defined target-location. The avoidance is only local therefore it's 
-	/// possible that the agent get stuck in local minima. For more complex navigation you
+	/// possible that the agent gets stuck in local minima. For more complex navigation you
 	/// need a high-level pathfinding layer on top of the local avoidance.
 	/// </summary>
 	[RequiredComponent(typeof(Transform))]
@@ -74,9 +74,8 @@ namespace Steering
 			}
 		}
 		/// <summary>
-		/// [GET / SET] The Agents target velocity, i.e. the one which it tries to acquire.
-		/// This is a convenience property that automatically sets <see cref="TargetSpeed"/> and 
-		/// <see cref="Target"/> to the appropriate values.
+		/// [GET / SET] The Agents target position, i.e. the position 
+		/// it moves toward while avoiding other agents.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		public Vector2 TargetPos
@@ -112,7 +111,7 @@ namespace Steering
 			}
 		}
 		/// <summary>
-		/// [GET / SET] The radius of the agent (an agent is always representet as circle)
+		/// [GET / SET] The radius of the agent (an agent is always represented as circle)
 		/// </summary>
 		[EditorHintRange(0.0f, 10000.0f)]
 		public float Radius
@@ -121,7 +120,7 @@ namespace Steering
 			set { this.radius = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The maximum time of impact wich the agent will react on. 
+		/// [GET / SET] The maximum time of impact which the agent will react on. 
 		/// If you set this too high your agent will oscillate alot in crowded situations and if you set
 		/// it too low your agent will avoid very late which looks artificial.
 		/// </summary>
