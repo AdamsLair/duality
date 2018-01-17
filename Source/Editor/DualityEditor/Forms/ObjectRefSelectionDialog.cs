@@ -153,11 +153,29 @@ namespace Duality.Editor.Forms
 
 			if (keyEventArgs.KeyCode == Keys.Down)
 			{
-				tmp = this.objectReferenceListing.SelectedNode.NextNode;
+				if (this.objectReferenceListing.SelectedNode == null)
+				{
+					this.objectReferenceListing.SelectedNode = this.objectReferenceListing.FirstVisibleNode();
+					tmp = this.objectReferenceListing.SelectedNode;
+				}
+				else
+				{
+					tmp = this.objectReferenceListing.SelectedNode.NextNode;
+				}
+				keyEventArgs.Handled = true;
 			}
 			else if (keyEventArgs.KeyCode == Keys.Up)
 			{
-				tmp = this.objectReferenceListing.SelectedNode.PreviousNode;
+				if (this.objectReferenceListing.SelectedNode == null)
+				{
+					this.objectReferenceListing.SelectedNode = this.objectReferenceListing.LastVisibleNode();
+					tmp = this.objectReferenceListing.SelectedNode;
+				}
+				else
+				{
+					tmp = this.objectReferenceListing.SelectedNode.PreviousNode;
+				}
+				keyEventArgs.Handled = true;
 			}
 
 			if (tmp != null)
@@ -235,10 +253,7 @@ namespace Duality.Editor.Forms
 
 			if (this.objectReferenceListing.Root.Children.Count > 0)
 			{
-				TreeNodeAdv firstVisibleNode = this.objectReferenceListing
-					.Root.Children
-					.FirstOrDefault(node => !node.IsHidden);;
-				this.objectReferenceListing.SelectedNode = firstVisibleNode;
+				this.objectReferenceListing.SelectedNode = this.objectReferenceListing.FirstVisibleNode();
 			}
 		}
 		private void objectReferenceListing_Resize(object sender, EventArgs e)
