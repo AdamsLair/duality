@@ -25,7 +25,7 @@ namespace Duality.Editor.Plugins.Base
 	public class FontAssetImporter : IAssetImporter
 	{
 		public static readonly string SourceFileExtPrimary = ".ttf";
-		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary };
+		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary, ".otf" };
 		private static readonly UnicodeBlock[] DefaultBlocks = new[] { UnicodeBlock.BasicLatin, UnicodeBlock.Latin1Supplement };
 
 		private Dictionary<int, PrivateFontCollection> fontManagers;

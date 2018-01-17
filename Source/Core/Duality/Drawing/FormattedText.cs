@@ -853,6 +853,8 @@ namespace Duality.Drawing
 			int curTextElemLen = 0;
 			int curFontIndex = 0;
 			int srcTextLen = this.sourceText != null ? this.sourceText.Length : 0;
+			int indexOfClose = 0;
+
 			for (int i = 0; i < srcTextLen; i++)
 			{
 				if (this.sourceText[i] == '/' && i + 1 < this.sourceText.Length)
@@ -878,76 +880,77 @@ namespace Duality.Drawing
 							fontGlyphCounter[curFontIndex] += textElem.Length;
 						}
 
-						if (this.sourceText[i] == 'c')
+						switch (this.sourceText[i])
 						{
-							if (this.sourceText.Length > i + 8)
-							{
-								int	clr;
-								string	clrString = new StringBuilder().Append(this.sourceText, i + 1, 8).ToString();
-								if (int.TryParse(clrString, System.Globalization.NumberStyles.HexNumber, System.Globalization.NumberFormatInfo.InvariantInfo, out clr))
-									elemList.Add(new ColorChangeElement(ColorRgba.FromIntRgba(clr)));
-								else
-									elemList.Add(new ColorChangeElement(ColorRgba.White));
+							case 'c':
+								if (this.sourceText.Length > i + 8)
+								{
+									int clr;
+									string clrString = new StringBuilder().Append(this.sourceText, i + 1, 8).ToString();
+									if (int.TryParse(clrString, System.Globalization.NumberStyles.HexNumber, System.Globalization.NumberFormatInfo.InvariantInfo, out clr))
+										elemList.Add(new ColorChangeElement(ColorRgba.FromIntRgba(clr)));
+									else
+										elemList.Add(new ColorChangeElement(ColorRgba.White));
 
-								i += 8;
-							}
-						}
-						if (this.sourceText[i] == 'e')
-						{
-							// Just separates elements
-						}
-						else if (this.sourceText[i] == 'a')
-						{
-							if (this.sourceText.Length > i + 1)
-							{
-								string alignString = new StringBuilder().Append(this.sourceText, i + 1, 1).ToString();
-								if (alignString == "l")
-									elemList.Add(new AlignChangeElement(Alignment.Left));
-								else if (alignString == "r")
-									elemList.Add(new AlignChangeElement(Alignment.Right));
-								else
-									elemList.Add(new AlignChangeElement(Alignment.Center));
+									i += 8;
+								}
+								break;
 
-								i += 1;
-							}
-						}
-						else if (this.sourceText[i] == 'f')
-						{
-							int indexOfClose = this.sourceText.IndexOf(']', i + 1);
-							if (indexOfClose != -1)
-							{
-								string numStr = this.sourceText.Substring(i + 2, indexOfClose - (i + 2));
-								int num;
-								if (int.TryParse(numStr, out num))
-									elemList.Add(new FontChangeElement(num));
-								else
-									elemList.Add(new FontChangeElement(0));
+							case 'e':
+								// Just separates elements
+								break;
 
-								curFontIndex = num;
-								i += 2 + numStr.Length;
-							}
-						}
-						else if (this.sourceText[i] == 'i')
-						{
-							int indexOfClose = this.sourceText.IndexOf(']', i + 1);
-							if (indexOfClose != -1)
-							{
-								string numStr = this.sourceText.Substring(i + 2, indexOfClose - (i + 2));
-								int num;
-								if (int.TryParse(numStr, out num))
-									elemList.Add(new IconElement(num));
-								else
-									elemList.Add(new IconElement(0));
+							case 'a':
+								if (this.sourceText.Length > i + 1)
+								{
+									string alignString = new StringBuilder().Append(this.sourceText, i + 1, 1).ToString();
+									if (alignString == "l")
+										elemList.Add(new AlignChangeElement(Alignment.Left));
+									else if (alignString == "r")
+										elemList.Add(new AlignChangeElement(Alignment.Right));
+									else
+										elemList.Add(new AlignChangeElement(Alignment.Center));
 
-								this.iconCount++;
-								i += 2 + numStr.Length;
-							}
-						}
-						else if (this.sourceText[i] == 'n')
-						{
-							elemList.Add(new NewLineElement());
-						}
+									i += 1;
+								}
+								break;
 
+							case 'f':
+								indexOfClose = this.sourceText.IndexOf(']', i + 1);
+								if (indexOfClose != -1)
+								{
+									string numStr = this.sourceText.Substring(i + 2, indexOfClose - (i + 2));
+									int num;
+									if (int.TryParse(numStr, out num))
+										elemList.Add(new FontChangeElement(num));
+									else
+										elemList.Add(new FontChangeElement(0));
+
+									curFontIndex = num;
+									i += 2 + numStr.Length;
+								}
+								break;
+
+							case 'i':
+								indexOfClose = this.sourceText.IndexOf(']', i + 1);
+								if (indexOfClose != -1)
+								{
+									string numStr = this.sourceText.Substring(i + 2, indexOfClose - (i + 2));
+									int num;
+									if (int.TryParse(numStr, out num))
+										elemList.Add(new IconElement(num));
+									else
+										elemList.Add(new IconElement(0));
+
+									this.iconCount++;
+									i += 2 + numStr.Length;
+								}
+								break;
+
+							case 'n':
+								elemList.Add(new NewLineElement());
+								break;
+						}
 					}
 
 					curTextElemLen = 0;
