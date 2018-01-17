@@ -7,13 +7,16 @@
     </sourceFileHint>
   </assetInfo>
   <source dataType="String">uniform sampler2D mainTex;
+
+varying vec4 programColor;
+varying vec4 programTexCoord;
 varying float animBlendVar;
 
 void main()
 {
 	// Retrieve frames
-	vec4 texClrOld = texture2D(mainTex, gl_TexCoord[0].st);
-	vec4 texClrNew = texture2D(mainTex, gl_TexCoord[0].pq);
+	vec4 texClrOld = texture2D(mainTex, programTexCoord.xy);
+	vec4 texClrNew = texture2D(mainTex, programTexCoord.zw);
 
 	// This code prevents nasty artifacts when blending between differently masked frames
 	float accOldNew = (texClrOld.w - texClrNew.w) / (texClrOld.w + texClrNew.w);
@@ -22,7 +25,7 @@ void main()
 	texClrOld.xyz = mix(texClrOld.xyz, texClrNew.xyz, max(-accOldNew, 0.0));
 
 	// Blend between frames
-	vec4 result = gl_Color * mix(texClrOld, texClrNew, animBlendVar);
+	vec4 result = programColor * mix(texClrOld, texClrNew, animBlendVar);
 	
 	AlphaTest(result.a);
 	gl_FragColor = result;

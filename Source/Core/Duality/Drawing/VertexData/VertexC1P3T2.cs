@@ -14,7 +14,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// The vertices position.
 		/// </summary>
-		[VertexElement(VertexElementRole.Position)]
 		public Vector3 Pos;
 		/// <summary>
 		/// A depth offset that is applied after the vertex has been transformed.
@@ -24,12 +23,10 @@ namespace Duality.Drawing
 		/// <summary>
 		/// The vertices color.
 		/// </summary>
-		[VertexElement(VertexElementRole.Color)]
 		public ColorRgba Color;
 		/// <summary>
 		/// The vertices texture coordinate.
 		/// </summary>
-		[VertexElement(VertexElementRole.TexCoord)]
 		public Vector2 TexCoord;
 
 		Vector3 IVertexData.Pos

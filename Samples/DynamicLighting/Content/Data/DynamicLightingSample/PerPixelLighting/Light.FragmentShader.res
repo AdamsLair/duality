@@ -17,6 +17,8 @@ uniform vec4 _lightPos[8];
 uniform vec4 _lightDir[8];
 uniform vec3 _lightColor[8];
 
+varying vec4 programColor;
+varying vec2 programTexCoord;
 varying vec3 worldSpacePos;
 varying mat2 objTransform;
 
@@ -24,9 +26,9 @@ void main()
 {
 	vec3 eyeDir = normalize(_cameraPosition - worldSpacePos);
   
-	vec4 clrDiffuse = gl_Color * texture2D(mainTex, gl_TexCoord[0].st);
-	vec4 clrNormal = texture2D(normalTex, gl_TexCoord[0].st);
-	vec4 clrSpecular = texture2D(specularTex, gl_TexCoord[0].st);
+	vec4 clrDiffuse = programColor * texture2D(mainTex, programTexCoord);
+	vec4 clrNormal = texture2D(normalTex, programTexCoord);
+	vec4 clrSpecular = texture2D(specularTex, programTexCoord);
 	vec4 finalColor = vec4(0.0, 0.0, 0.0, clrDiffuse.a);
 	
 	vec3 normal = normalize(clrNormal.xyz - vec3(0.5, 0.5, 0.5));

@@ -538,71 +538,26 @@ namespace Duality.Backend.DefaultOpenTK
 			VertexElement[] elements = vertexDeclaration.Elements;
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
 			{
-				switch (elements[elementIndex].Role)
+				int fieldIndex = nativeProgram.SelectField(ref elements[elementIndex]);
+				if (fieldIndex == -1) break;
+
+				VertexAttribPointerType attribType;
+				switch (elements[elementIndex].Type)
 				{
-					case VertexElementRole.Position:
-					{
-						GL.EnableClientState(ArrayCap.VertexArray);
-						GL.VertexPointer(
-							elements[elementIndex].Count, 
-							VertexPointerType.Float, 
-							vertexDeclaration.Size, 
-							elements[elementIndex].Offset);
-						break;
-					}
-					case VertexElementRole.TexCoord:
-					{
-						GL.EnableClientState(ArrayCap.TextureCoordArray);
-						GL.TexCoordPointer(
-							elements[elementIndex].Count, 
-							TexCoordPointerType.Float, 
-							vertexDeclaration.Size, 
-							elements[elementIndex].Offset);
-						break;
-					}
-					case VertexElementRole.Color:
-					{
-						ColorPointerType attribType;
-						switch (elements[elementIndex].Type)
-						{
-							default:
-							case VertexElementType.Float: attribType = ColorPointerType.Float; break;
-							case VertexElementType.Byte: attribType = ColorPointerType.UnsignedByte; break;
-						}
-
-						GL.EnableClientState(ArrayCap.ColorArray);
-						GL.ColorPointer(
-							elements[elementIndex].Count, 
-							attribType, 
-							vertexDeclaration.Size, 
-							elements[elementIndex].Offset);
-						break;
-					}
 					default:
-					{
-						int fieldIndex = nativeProgram.SelectField(ref elements[elementIndex]);
-						if (fieldIndex == -1) break;
-
-						VertexAttribPointerType attribType;
-						switch (elements[elementIndex].Type)
-						{
-							default:
-							case VertexElementType.Float: attribType = VertexAttribPointerType.Float; break;
-							case VertexElementType.Byte: attribType = VertexAttribPointerType.UnsignedByte; break;
-						}
-
-						int fieldLocation = nativeProgram.FieldLocations[fieldIndex];
-						GL.EnableVertexAttribArray(fieldLocation);
-						GL.VertexAttribPointer(
-							fieldLocation, 
-							elements[elementIndex].Count, 
-							attribType, 
-							false, 
-							vertexDeclaration.Size, 
-							elements[elementIndex].Offset);
-						break;
-					}
+					case VertexElementType.Float: attribType = VertexAttribPointerType.Float; break;
+					case VertexElementType.Byte: attribType = VertexAttribPointerType.UnsignedByte; break;
 				}
+
+				int fieldLocation = nativeProgram.FieldLocations[fieldIndex];
+				GL.EnableVertexAttribArray(fieldLocation);
+				GL.VertexAttribPointer(
+					fieldLocation, 
+					elements[elementIndex].Count, 
+					attribType, 
+					true, 
+					vertexDeclaration.Size, 
+					elements[elementIndex].Offset);
 			}
 		}
 		private void SetupMaterial(BatchInfo material, BatchInfo lastMaterial)
@@ -735,33 +690,11 @@ namespace Duality.Backend.DefaultOpenTK
 			VertexElement[] elements = vertexDeclaration.Elements;
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
 			{
-				switch (elements[elementIndex].Role)
-				{
-					case VertexElementRole.Position:
-					{
-						GL.DisableClientState(ArrayCap.VertexArray);
-						break;
-					}
-					case VertexElementRole.TexCoord:
-					{
-						GL.DisableClientState(ArrayCap.TextureCoordArray);
-						break;
-					}
-					case VertexElementRole.Color:
-					{
-						GL.DisableClientState(ArrayCap.ColorArray);
-						break;
-					}
-					default:
-					{
-						int fieldIndex = nativeProgram.SelectField(ref elements[elementIndex]);
-						if (fieldIndex == -1) break;
+				int fieldIndex = nativeProgram.SelectField(ref elements[elementIndex]);
+				if (fieldIndex == -1) break;
 							
-						int fieldLocation = nativeProgram.FieldLocations[fieldIndex];
-						GL.DisableVertexAttribArray(fieldLocation);
-						break;
-					}
-				}
+				int fieldLocation = nativeProgram.FieldLocations[fieldIndex];
+				GL.DisableVertexAttribArray(fieldLocation);
 			}
 		}
 		private void FinishMaterial(BatchInfo material)

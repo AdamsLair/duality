@@ -15,7 +15,6 @@ namespace Duality.Drawing
 		private IntPtr offset;
 		private VertexElementType type;
 		private int count;
-		private VertexElementRole role;
 
 		/// <summary>
 		/// [GET] The vertex elements preferred shader field name to map to.
@@ -45,26 +44,18 @@ namespace Duality.Drawing
 		{
 			get { return this.count; }
 		}
-		/// <summary>
-		/// [GET] The rendering role that this vertex element is assigned to.
-		/// </summary>
-		public VertexElementRole Role
-		{
-			get { return this.role; }
-		}
 
-		internal VertexElement(string fieldName, IntPtr offset, VertexElementType type, int count, VertexElementRole role)
+		internal VertexElement(string fieldName, IntPtr offset, VertexElementType type, int count)
 		{
 			this.fieldName = fieldName;
 			this.offset = offset;
 			this.type = type;
 			this.count = count;
-			this.role = role;
 		}
 
 		public override string ToString()
 		{
-			return string.Format("{0}: {1} x {2} at {3}", this.role, this.type, this.count, this.offset);
+			return string.Format("{0}: {1} x {2} at {3}", this.fieldName, this.type, this.count, this.offset);
 		}
 	}
 }

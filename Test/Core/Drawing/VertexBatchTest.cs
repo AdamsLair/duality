@@ -64,7 +64,7 @@ namespace Duality.Tests.Drawing
 			// Assert that we can retrieve all data via unmanaged pointer access
 			VertexDeclaration layout = typedBatch.Declaration;
 			int vertexSize = layout.Size;
-			int colorElementIndex = layout.Elements.IndexOfFirst(item => item.Role == VertexElementRole.Color);
+			int colorElementIndex = layout.Elements.IndexOfFirst(item => item.FieldName == VertexDeclaration.ShaderFieldPrefix + "Color");
 			int colorOffset = (int)layout.Elements[colorElementIndex].Offset;
 			using (PinnedArrayHandle locked = typedBatch.Lock())
 			{

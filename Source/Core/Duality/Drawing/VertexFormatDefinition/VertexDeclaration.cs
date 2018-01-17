@@ -20,6 +20,12 @@ namespace Duality.Drawing
 		private static int vertexTypeCounter = 0;
 		private static MethodInfo genericGetDeclarationMethod = null;
 
+		/// <summary>
+		/// A prefix that is added to a vertex element name in order to derive its
+		/// corresponding shader field name.
+		/// </summary>
+		public static readonly string ShaderFieldPrefix = "vertex";
+
 
 		/// <summary>
 		/// Retrieves the <see cref="VertexDeclaration"/> for the vertex type specified
@@ -114,14 +120,14 @@ namespace Duality.Drawing
 
 			for (int i = 0; i < fields.Length; i++)
 			{
-				VertexElementRole role = VertexElementRole.Unknown;
+				string name = null;
 				VertexElementType type = VertexElementType.Unknown;
 				int count = 0;
 
 				VertexElementAttribute attrib = fields[i].GetAttributesCached<VertexElementAttribute>().FirstOrDefault();
 				if (attrib != null)
 				{
-					role = attrib.Role;
+					name = attrib.Name;
 					type = attrib.Type;
 					count = attrib.Count;
 				}
@@ -138,12 +144,17 @@ namespace Duality.Drawing
 						fields[i].Name));
 				}
 
+				// When not specified, use the structs field name as a vertex element name
+				if (name == null)
+				{
+					name = fields[i].Name;
+				}
+
 				this.elements[i] = new VertexElement(
-					"vertex" + fields[i].Name,
+					ShaderFieldPrefix + name,
 					Marshal.OffsetOf(dataType, fields[i].Name), 
 					type, 
-					count, 
-					role);
+					count);
 			}
 		}
 

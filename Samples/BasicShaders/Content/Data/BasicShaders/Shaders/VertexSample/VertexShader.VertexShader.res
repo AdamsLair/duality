@@ -10,12 +10,18 @@
 uniform float floatStrength;
 uniform float _gameTime;
 
+attribute vec3 vertexPos;
+attribute vec4 vertexColor;
+attribute vec2 vertexTexCoord;
 attribute float vertexDepthOffset;
+
+varying vec4 programColor;
+varying vec2 programTexCoord;
 
 void main()
 {
 	// Duality submits vertices in world space coordinates
-	vec3 worldPos = gl_Vertex.xyz;
+	vec3 worldPos = vertexPos;
 	
 	// Let the vertex float a bit over time, depending on its 
 	// original world space position
@@ -25,8 +31,8 @@ void main()
 		sin(0.50 * 3.14 + _gameTime + worldPos.y * 0.01));
 	
 	gl_Position = TransformVertexDefault(worldPos, vertexDepthOffset);
-	gl_TexCoord[0] = gl_MultiTexCoord0;
-	gl_FrontColor = gl_Color * mainColor;
+	programTexCoord = vertexTexCoord;
+	programColor = vertexColor * mainColor;
 }</source>
 </root>
 <!-- XmlFormatterBase Document Separator -->

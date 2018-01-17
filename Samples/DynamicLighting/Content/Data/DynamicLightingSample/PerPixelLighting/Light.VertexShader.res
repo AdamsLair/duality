@@ -6,19 +6,24 @@
       <item dataType="String">{Name}.vert</item>
     </sourceFileHint>
   </assetInfo>
-  <source dataType="String">varying vec3 worldSpacePos;
-varying mat2 objTransform;
-
+  <source dataType="String">attribute vec3 vertexPos;
+attribute vec4 vertexColor;
+attribute vec2 vertexTexCoord;
 attribute float vertexDepthOffset;
 attribute vec4 vertexLightingParam;
 
+varying vec4 programColor;
+varying vec2 programTexCoord;
+varying vec3 worldSpacePos;
+varying mat2 objTransform;
+
 void main()
 {
-	worldSpacePos = gl_Vertex.xyz;
+	worldSpacePos = vertexPos;
 	
 	gl_Position = TransformVertexDefault(worldSpacePos, vertexDepthOffset);
-	gl_TexCoord[0] = gl_MultiTexCoord0;
-	gl_FrontColor = gl_Color;
+	programTexCoord = vertexTexCoord;
+	programColor = vertexColor;
 	
 	objTransform = mat2(
 		vertexLightingParam.x, 

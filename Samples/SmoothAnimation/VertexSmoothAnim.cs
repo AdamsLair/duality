@@ -15,12 +15,9 @@ namespace SmoothAnimation
 	{
 		public static readonly VertexDeclaration Declaration = VertexDeclaration.Get<VertexSmoothAnim>();
 
-		[VertexElement(VertexElementRole.Color)]
 		public ColorRgba Color;
-		[VertexElement(VertexElementRole.Position)]
 		public Vector3 Pos;
 		public float DepthOffset;
-		[VertexElement(VertexElementRole.TexCoord)]
 		public Vector4 TexCoord;
 		public float AnimBlend;
 

@@ -15,12 +15,9 @@ namespace DynamicLighting
 	{
 		public static readonly VertexDeclaration Declaration = VertexDeclaration.Get<VertexDynamicLighting>();
 
-		[VertexElement(VertexElementRole.Color)]
 		public ColorRgba Color;
-		[VertexElement(VertexElementRole.Position)]
 		public Vector3 Pos;
 		public float DepthOffset;
-		[VertexElement(VertexElementRole.TexCoord)]
 		public Vector2 TexCoord;
 		public Vector4 LightingParam;
 		// Add Vector3 for lighting world position, see note in Light.cs

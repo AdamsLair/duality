@@ -6,15 +6,21 @@
       <item dataType="String">{Name}.vert</item>
     </sourceFileHint>
   </assetInfo>
-  <source dataType="String">attribute float vertexDepthOffset;
+  <source dataType="String">attribute vec3 vertexPos;
+attribute vec4 vertexColor;
+attribute vec4 vertexTexCoord;
+attribute float vertexDepthOffset;
 attribute float vertexAnimBlend;
+
+varying vec4 programColor;
+varying vec4 programTexCoord;
 varying float animBlendVar;
 
 void main()
 {
-	gl_Position = TransformVertexDefault(gl_Vertex.xyz, vertexDepthOffset);
-	gl_TexCoord[0] = gl_MultiTexCoord0;
-	gl_FrontColor = gl_Color;
+	gl_Position = TransformVertexDefault(vertexPos, vertexDepthOffset);
+	programTexCoord = vertexTexCoord;
+	programColor = vertexColor;
 	animBlendVar = vertexAnimBlend;
 }</source>
 </root>

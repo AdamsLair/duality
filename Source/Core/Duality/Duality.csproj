@@ -179,7 +179,6 @@
     <Compile Include="Drawing\VertexFormatDefinition\VertexDeclaration.cs" />
     <Compile Include="Drawing\VertexFormatDefinition\VertexElement.cs" />
     <Compile Include="Drawing\VertexFormatDefinition\VertexElementType.cs" />
-    <Compile Include="Drawing\VertexFormatDefinition\VertexElementRole.cs" />
     <Compile Include="Drawing\VertexFormatDefinition\VertexElementAttribute.cs" />
     <Compile Include="Drawing\Enums\TexturePixelFormat.cs" />
     <Compile Include="Components\Other\IRendererVisibilityStrategy.cs" />

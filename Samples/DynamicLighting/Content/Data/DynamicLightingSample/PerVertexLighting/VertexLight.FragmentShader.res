@@ -2,11 +2,13 @@
   <assetInfo />
   <source dataType="String">uniform sampler2D mainTex;
 
+varying vec4 programColor;
+varying vec2 programTexCoord;
 varying vec3 lightIntensity;
 
 void main()
 {
-	vec4 color = gl_Color * texture2D(mainTex, gl_TexCoord[0].st);
+	vec4 color = programColor * texture2D(mainTex, programTexCoord);
 	color.rgb *= lightIntensity;
 	AlphaTest(color.a);
 	gl_FragColor = color;
