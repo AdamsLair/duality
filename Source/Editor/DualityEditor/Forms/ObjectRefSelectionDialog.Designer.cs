@@ -124,7 +124,7 @@ namespace Duality.Editor.Forms
 			this.columnName.MaxColumnWidth = 300;
 			this.columnName.MinColumnWidth = 80;
 			this.columnName.Sortable = true;
-			this.columnName.SortOrder = System.Windows.Forms.SortOrder.None;
+			this.columnName.SortOrder = System.Windows.Forms.SortOrder.Ascending;
 			this.columnName.TooltipText = null;
 			this.columnName.Width = 150;
 			// 
@@ -198,6 +198,7 @@ namespace Duality.Editor.Forms
 			this.Text = "Select a Reference...";
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
 		}
 
 		#endregion
