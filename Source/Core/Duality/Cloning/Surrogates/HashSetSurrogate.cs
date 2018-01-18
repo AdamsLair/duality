@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Duality.Cloning.Surrogates
@@ -16,7 +17,7 @@ namespace Duality.Cloning.Surrogates
 		}
 
 		public ReflectedHashsetData GetReflectedHashsetData(Type hashSetType)
-		{			
+		{
 			ReflectedHashsetData reflectedHashsetData;
 			if (!this.ReflectedData.TryGetValue(hashSetType, out reflectedHashsetData))
 			{
@@ -47,44 +48,48 @@ namespace Duality.Cloning.Surrogates
 		public override void CopyDataTo(IEnumerable source, IEnumerable target, ICloneOperation operation)
 		{
 			ReflectedHashsetData reflectedHashsetData = GetReflectedHashsetData(source.GetType());
+			reflectedHashsetData.CloneMethod.Invoke(null, new object[] { source, target, operation });
+		}
 
-			// Copy all values.
-			reflectedHashsetData.ClearMethod.Invoke(target, new object[] { });
-
-			var parameterBuffer = new object[1];
-			// Determine unwrapping behavior to provide faster / more optimized loops.
-			if (!reflectedHashsetData.IsPlainOldData)
+		public static void CopyDataTo_PlainOldData<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation)
+		{
+			target.Clear();
+			foreach (var value in source)
 			{
-				foreach (object value in source)
-				{
-					object handledObject = null;
-					if (!operation.HandleObject(value, ref handledObject)) continue;
-					parameterBuffer[0] = handledObject;
-					reflectedHashsetData.AddMethod.Invoke(target, parameterBuffer);
-				}
+				target.Add(value);
 			}
-			else
+		}
+
+		public static void CopyDataTo_NotPlainOldData<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation)
+			where TItem : class
+		{
+			target.Clear();
+			foreach (var value in source)
 			{
-				foreach (object value in source)
-				{
-					parameterBuffer[0] = value;
-					reflectedHashsetData.AddMethod.Invoke(target, parameterBuffer);
-				}
+				TItem handledObject = null;
+				if (!operation.HandleObject(value, ref handledObject)) continue;
+				target.Add(handledObject);
 			}
 		}
 
 		public class ReflectedHashsetData
 		{
-			public MethodInfo ClearMethod { get; private set; }
-			public MethodInfo AddMethod { get; private set; }
 			public bool IsPlainOldData { get; private set; }
+			public MethodInfo CloneMethod { get; private set; }
+
+			public Delegate CloneDelegate { get; private set; }
 
 			public ReflectedHashsetData(Type hashSetType)
 			{
-				Type[] genArgs = hashSetType.GenericTypeArguments;
-				this.ClearMethod = hashSetType.GetRuntimeMethod("Clear", new Type[] { });
-				this.AddMethod = hashSetType.GetRuntimeMethod("Add", genArgs);
-				this.IsPlainOldData = genArgs[0].GetTypeInfo().IsPlainOldData();
+				this.IsPlainOldData = hashSetType.GenericTypeArguments[0].GetTypeInfo().IsPlainOldData();
+				string methodName = this.IsPlainOldData ? "CopyDataTo_PlainOldData" : "CopyDataTo_NotPlainOldData";
+
+				MethodInfo method = (from m in typeof(HashSetSurrogate).GetRuntimeMethods()
+									 where m.Name == methodName
+									 select m).First();
+
+				this.CloneMethod = method.MakeGenericMethod(hashSetType.GenericTypeArguments);
+				//this.CloneDelegate = this.CloneMethod.CreateDelegate(typeof(Action<object, object, object>));
 			}
 		}
 	}
