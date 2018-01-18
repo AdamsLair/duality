@@ -8,6 +8,20 @@ namespace Duality.Cloning.Surrogates
 {
 	public class HashSetSurrogate : CloneSurrogate<IEnumerable>
 	{
+		public class ReflectedHashsetData
+		{
+			public bool IsPlainOldData { get; private set; }
+			public MethodInfo CopyDataToMethod { get; private set; }
+
+			public ReflectedHashsetData(Type hashSetType)
+			{
+				this.IsPlainOldData = hashSetType.GenericTypeArguments[0].GetTypeInfo().IsPlainOldData();
+				string methodName = this.IsPlainOldData ? "CopyDataTo_PlainOldData" : "CopyDataTo_NotPlainOldData";
+				MethodInfo method = typeof(HashSetSurrogate).GetRuntimeMethods().FirstOrDefault(m => m.Name == methodName);
+				this.CopyDataToMethod = method.MakeGenericMethod(hashSetType.GenericTypeArguments);
+			}
+		}
+
 		public Dictionary<Type, ReflectedHashsetData> ReflectedData = new Dictionary<Type, ReflectedHashsetData>();
 		public override bool MatchesType(TypeInfo t)
 		{
@@ -48,13 +62,13 @@ namespace Duality.Cloning.Surrogates
 		public override void CopyDataTo(IEnumerable source, IEnumerable target, ICloneOperation operation)
 		{
 			ReflectedHashsetData reflectedHashsetData = GetReflectedHashsetData(source.GetType());
-			reflectedHashsetData.CloneMethod.Invoke(null, new object[] { source, target, operation });
+			reflectedHashsetData.CopyDataToMethod.Invoke(null, new object[] { source, target, operation });
 		}
 
 		public static void CopyDataTo_PlainOldData<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation)
 		{
 			target.Clear();
-			foreach (var value in source)
+			foreach (TItem value in source)
 			{
 				target.Add(value);
 			}
@@ -64,29 +78,11 @@ namespace Duality.Cloning.Surrogates
 			where TItem : class
 		{
 			target.Clear();
-			foreach (var value in source)
+			foreach (TItem value in source)
 			{
 				TItem handledObject = null;
 				if (!operation.HandleObject(value, ref handledObject)) continue;
-				target.Add(value);
-			}
-		}
-
-		public class ReflectedHashsetData
-		{
-			public bool IsPlainOldData { get; private set; }
-			public MethodInfo CloneMethod { get; private set; }
-
-			public ReflectedHashsetData(Type hashSetType)
-			{
-				this.IsPlainOldData = hashSetType.GenericTypeArguments[0].GetTypeInfo().IsPlainOldData();
-				string methodName = this.IsPlainOldData ? "CopyDataTo_PlainOldData" : "CopyDataTo_NotPlainOldData";
-
-				MethodInfo method = (from m in typeof(HashSetSurrogate).GetRuntimeMethods()
-									 where m.Name == methodName
-									 select m).First();
-
-				this.CloneMethod = method.MakeGenericMethod(hashSetType.GenericTypeArguments);
+				target.Add(handledObject);
 			}
 		}
 	}
