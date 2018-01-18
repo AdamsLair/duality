@@ -8,7 +8,7 @@ namespace Duality.Cloning.Surrogates
 {
 	public class HashSetSurrogate : CloneSurrogate<IEnumerable>
 	{
-		public class ReflectedHashsetData
+		private class ReflectedHashsetData
 		{
 			public bool IsPlainOldData { get; private set; }
 			public MethodInfo CopyDataToMethod { get; private set; }
@@ -22,24 +22,12 @@ namespace Duality.Cloning.Surrogates
 			}
 		}
 
-		public Dictionary<Type, ReflectedHashsetData> ReflectedData = new Dictionary<Type, ReflectedHashsetData>();
+		private readonly Dictionary<Type, ReflectedHashsetData> _reflectedData = new Dictionary<Type, ReflectedHashsetData>();
 		public override bool MatchesType(TypeInfo t)
 		{
 			return
 				t.IsGenericType &&
 				t.GetGenericTypeDefinition() == typeof(HashSet<>);
-		}
-
-		public ReflectedHashsetData GetReflectedHashsetData(Type hashSetType)
-		{
-			ReflectedHashsetData reflectedHashsetData;
-			if (!this.ReflectedData.TryGetValue(hashSetType, out reflectedHashsetData))
-			{
-				reflectedHashsetData = new ReflectedHashsetData(hashSetType);
-				this.ReflectedData.Add(hashSetType, reflectedHashsetData);
-			}
-
-			return reflectedHashsetData;
 		}
 
 		public override void SetupCloneTargets(IEnumerable source, IEnumerable target, ICloneTargetSetup setup)
@@ -65,7 +53,19 @@ namespace Duality.Cloning.Surrogates
 			reflectedHashsetData.CopyDataToMethod.Invoke(null, new object[] { source, target, operation });
 		}
 
-		public static void CopyDataTo_PlainOldData<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation)
+		private ReflectedHashsetData GetReflectedHashsetData(Type hashSetType)
+		{
+			ReflectedHashsetData reflectedHashsetData;
+			if (!this._reflectedData.TryGetValue(hashSetType, out reflectedHashsetData))
+			{
+				reflectedHashsetData = new ReflectedHashsetData(hashSetType);
+				this._reflectedData.Add(hashSetType, reflectedHashsetData);
+			}
+
+			return reflectedHashsetData;
+		}
+
+		private static void CopyDataTo_PlainOldData<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation)
 		{
 			target.Clear();
 			foreach (TItem value in source)
@@ -74,7 +74,7 @@ namespace Duality.Cloning.Surrogates
 			}
 		}
 
-		public static void CopyDataTo_NotPlainOldData<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation)
+		private static void CopyDataTo_NotPlainOldData<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation)
 			where TItem : class
 		{
 			target.Clear();
