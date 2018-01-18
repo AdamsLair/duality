@@ -135,6 +135,9 @@ namespace Duality.Resources
 		/// </summary>
 		public void Compile()
 		{
+			Logs.Core.Write("Compiling ShaderProgram '{0}'...", this.FullName);
+			Logs.Core.PushIndent();
+
 			if (this.native == null)
 				this.native = DualityApp.GraphicsBackend.CreateShaderProgram();
 
@@ -156,15 +159,20 @@ namespace Duality.Resources
 			{
 				this.native.LoadProgram(nativeParts);
 				this.fields = this.native.GetFields();
+
+				// Validate that we have at least one attribute in the shader. Warn otherwise.
+				if (!this.fields.Any(f => f.Scope == ShaderFieldScope.Attribute))
+					Logs.Core.WriteWarning("The shader doesn't seem to define any vertex attributes. Is this intended?");
 			}
 			catch (Exception e)
 			{
 				this.fields = new ShaderFieldInfo[0];
-				Logs.Core.WriteError("Error loading ShaderProgram {0}:{2}{1}", this.FullName, LogFormat.Exception(e), Environment.NewLine);
+				Logs.Core.WriteError("Failed to compile ShaderProgram:{1}{0}", LogFormat.Exception(e), Environment.NewLine);
 			}
 
 			// Even if we failed, we tried to compile it. Don't do it again and again.
 			this.compiled = true;
+			Logs.Core.PopIndent();
 		}
 
 		private void CompileIfRequired(AbstractShader part)
