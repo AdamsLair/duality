@@ -68,7 +68,7 @@ namespace Duality.Cloning.Surrogates
 			{
 				TItem handledObject = null;
 				if (!operation.HandleObject(value, ref handledObject)) continue;
-				target.Add(handledObject);
+				target.Add(value);
 			}
 		}
 
@@ -76,8 +76,6 @@ namespace Duality.Cloning.Surrogates
 		{
 			public bool IsPlainOldData { get; private set; }
 			public MethodInfo CloneMethod { get; private set; }
-
-			public Delegate CloneDelegate { get; private set; }
 
 			public ReflectedHashsetData(Type hashSetType)
 			{
@@ -89,7 +87,6 @@ namespace Duality.Cloning.Surrogates
 									 select m).First();
 
 				this.CloneMethod = method.MakeGenericMethod(hashSetType.GenericTypeArguments);
-				//this.CloneDelegate = this.CloneMethod.CreateDelegate(typeof(Action<object, object, object>));
 			}
 		}
 	}
