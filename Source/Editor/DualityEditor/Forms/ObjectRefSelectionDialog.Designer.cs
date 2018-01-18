@@ -36,8 +36,10 @@ namespace Duality.Editor.Forms
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.labelInfo = new System.Windows.Forms.Label();
 			this.objectReferenceListing = new Aga.Controls.Tree.TreeViewAdv();
+			this.columnImage = new Aga.Controls.Tree.TreeColumn();
 			this.columnName = new Aga.Controls.Tree.TreeColumn();
 			this.columnPath = new Aga.Controls.Tree.TreeColumn();
+			this.nodeImage = new Aga.Controls.Tree.NodeControls.NodeStateIcon();
 			this.nodeName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.nodePath = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.txtFilterInput = new Duality.Editor.Controls.CueTextBox();
@@ -82,6 +84,7 @@ namespace Duality.Editor.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.objectReferenceListing.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.objectReferenceListing.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.objectReferenceListing.Columns.Add(this.columnImage);
 			this.objectReferenceListing.Columns.Add(this.columnName);
 			this.objectReferenceListing.Columns.Add(this.columnPath);
 			this.objectReferenceListing.DefaultToolTipProvider = null;
@@ -95,6 +98,7 @@ namespace Duality.Editor.Forms
 			this.objectReferenceListing.Location = new System.Drawing.Point(11, 57);
 			this.objectReferenceListing.Model = null;
 			this.objectReferenceListing.Name = "objectReferenceListing";
+			this.objectReferenceListing.NodeControls.Add(this.nodeImage);
 			this.objectReferenceListing.NodeControls.Add(this.nodeName);
 			this.objectReferenceListing.NodeControls.Add(this.nodePath);
 			this.objectReferenceListing.NodeFilter = null;
@@ -104,6 +108,15 @@ namespace Duality.Editor.Forms
 			this.objectReferenceListing.Size = new System.Drawing.Size(517, 298);
 			this.objectReferenceListing.TabIndex = 1;
 			this.objectReferenceListing.UseColumns = true;
+			// 
+			// columnImage
+			// 
+			this.columnImage.Header = "Icon";
+			this.columnImage.MaxColumnWidth = 45;
+			this.columnImage.MinColumnWidth = 20;
+			this.columnImage.SortOrder = System.Windows.Forms.SortOrder.None;
+			this.columnImage.TooltipText = null;
+			this.columnImage.Width = 32;
 			// 
 			// columnName
 			// 
@@ -124,6 +137,14 @@ namespace Duality.Editor.Forms
 			this.columnPath.SortOrder = System.Windows.Forms.SortOrder.None;
 			this.columnPath.TooltipText = null;
 			this.columnPath.Width = 300;
+			// 
+			// nodeImage
+			// 
+			this.nodeImage.DataPropertyName = "Image";
+			this.nodeImage.IncrementalSearchEnabled = true;
+			this.nodeImage.LeftMargin = 3;
+			this.nodeImage.ParentColumn = this.columnImage;
+			this.nodeImage.ScaleMode = Aga.Controls.Tree.ImageScaleMode.Clip;
 			// 
 			// nodeName
 			// 
@@ -186,8 +207,10 @@ namespace Duality.Editor.Forms
 		private System.Windows.Forms.Button buttonOk;
 		private System.Windows.Forms.Label labelInfo;
 		private TreeViewAdv objectReferenceListing;
+		private Aga.Controls.Tree.NodeControls.NodeStateIcon nodeImage;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeName;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodePath;
+		private TreeColumn columnImage;
 		private TreeColumn columnName;
 		private TreeColumn columnPath;
 		private CueTextBox txtFilterInput;
