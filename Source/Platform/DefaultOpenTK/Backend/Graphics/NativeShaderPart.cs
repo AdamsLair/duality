@@ -16,6 +16,10 @@ namespace Duality.Backend.DefaultOpenTK
 	[DontSerialize]
 	public class NativeShaderPart : INativeShaderPart
 	{
+		private static readonly Regex RegexUniformLine = new Regex(@"^(?:layout\s*\(.+\)|)\s*(uniform)\s.+", RegexOptions.Compiled);
+		private static readonly Regex RegexAttributeLine = new Regex(@"^(?:layout\s*\(.+\)|)\s*(attribute|in)\s.+", RegexOptions.Compiled);
+
+
 		private int handle;
 		private ShaderType type;
 		private ShaderFieldInfo[] fields;
@@ -100,11 +104,9 @@ namespace Duality.Backend.DefaultOpenTK
 				string curLine = t.TrimStart();
 
 				ShaderFieldScope scope;
-				int arrayLength;
-
-				if (curLine.StartsWith("uniform"))
+				if (RegexUniformLine.IsMatch(curLine))
 					scope = ShaderFieldScope.Uniform;
-				else if (curLine.StartsWith("attribute"))
+				else if (RegexAttributeLine.IsMatch(curLine))
 					scope = ShaderFieldScope.Attribute;
 				else continue;
 
@@ -124,6 +126,7 @@ namespace Duality.Backend.DefaultOpenTK
 					case "SAMPLER2D": varType = ShaderFieldType.Sampler2D; break;
 				}
 
+				int arrayLength;
 				curLineSplit = curLineSplit[2].Split(new char[] {'[', ']'}, StringSplitOptions.RemoveEmptyEntries);
 				arrayLength = (curLineSplit.Length > 1) ? int.Parse(curLineSplit[1]) : 1;
 
