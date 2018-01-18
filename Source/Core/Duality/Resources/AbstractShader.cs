@@ -100,14 +100,20 @@ namespace Duality.Resources
 		/// </summary>
 		public void Compile()
 		{
-			if (string.IsNullOrEmpty(this.source)) throw new InvalidOperationException("Can't compile a shader without any source code specified.");
+			Logs.Core.Write("Compiling {0} shader '{1}'...", this.Type, this.FullName);
+			Logs.Core.PushIndent();
+
+			if (string.IsNullOrEmpty(this.source))
+			{
+				Logs.Core.PopIndent();
+				throw new InvalidOperationException("Can't compile a shader without any source code specified.");
+			}
 
 			if (this.native == null)
 				this.native = DualityApp.GraphicsBackend.CreateShaderPart();
 
 			// Preprocess the source code to include builtin shader functions
 			ShaderSourceBuilder builder = new ShaderSourceBuilder();
-
 			string typeConditional = string.Format("SHADERTYPE_{0}", this.Type).ToUpperInvariant();
 			builder.SetConditional(typeConditional, true);
 			builder.SetMainChunk(this.source);
@@ -116,6 +122,7 @@ namespace Duality.Resources
 				builder.AddSharedChunk(sharedChunk);
 			}
 			
+			// Load the shader on the backend side
 			try
 			{
 				string processedSource = builder.Build();
@@ -123,10 +130,11 @@ namespace Duality.Resources
 			}
 			catch (Exception e)
 			{
-				Logs.Core.WriteError("Error loading Shader {0}:{2}{1}", this.FullName, LogFormat.Exception(e), Environment.NewLine);
+				Logs.Core.WriteError("Failed to compile shader:{1}{0}", LogFormat.Exception(e), Environment.NewLine);
 			}
 
 			this.compiled = true;
+			Logs.Core.PopIndent();
 		}
 
 		protected override void OnLoaded()
