@@ -55,7 +55,7 @@ namespace Duality.Drawing
 
 		public override string ToString()
 		{
-			return string.Format("{0}: {1} x {2} at {3}", this.fieldName, this.type, this.count, this.offset);
+			return string.Format("{0}: {1}[{2}] at {3}", this.fieldName, this.type, this.count, this.offset);
 		}
 	}
 }

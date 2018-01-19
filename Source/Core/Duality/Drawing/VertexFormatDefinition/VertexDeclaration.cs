@@ -158,6 +158,11 @@ namespace Duality.Drawing
 			}
 		}
 
+		public override string ToString()
+		{
+			return string.Format("{0}", this.dataType.GetTypeCSCodeName(true));
+		}
+
 		private static bool DetermineElement(Type dataType, out VertexElementType type, out int count)
 		{
 			if (dataType == typeof(float))
