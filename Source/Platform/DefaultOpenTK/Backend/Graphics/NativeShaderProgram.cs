@@ -193,40 +193,6 @@ namespace Duality.Backend.DefaultOpenTK
 				if (this.fields[i].Name == element.FieldName)
 					return i;
 			}
-
-			// As a fallback, select elements purely by type match. This is error prone 
-			// and fails when multiple vertex elements have the same type and length.
-			// Legacy support. Remove later. (Written 2017-12-16)
-			for (int i = 0; i < this.fields.Length; i++)
-			{
-				// Skip invalid and non-attribute fields
-				if (this.fieldLocations[i] == -1) continue;
-				if (this.fields[i].Scope != ShaderFieldScope.Attribute) continue;
-				
-				// Skip fields that do not match the specified element type
-				Type elementPrimitive = this.fields[i].Type.GetElementPrimitive();
-				Type requiredPrimitive = null;
-				switch (element.Type)
-				{
-					case VertexElementType.Byte:
-						requiredPrimitive = typeof(byte);
-						break;
-					case VertexElementType.Float:
-						requiredPrimitive = typeof(float);
-						break;
-				}
-				if (elementPrimitive != requiredPrimitive)
-					continue;
-
-				// Skip fields that do not match the required array length / primitive element count
-				int elementCount = this.fields[i].Type.GetElementCount();
-				if (element.Count != elementCount * this.fields[i].ArrayLength)
-					continue;
-
-				// Select the first matching field;
-				return i;
-			}
-
 			return -1;
 		}
 

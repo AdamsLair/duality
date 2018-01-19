@@ -539,7 +539,7 @@ namespace Duality.Backend.DefaultOpenTK
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
 			{
 				int fieldIndex = nativeProgram.SelectField(ref elements[elementIndex]);
-				if (fieldIndex == -1) break;
+				if (fieldIndex == -1) continue;
 
 				VertexAttribPointerType attribType;
 				switch (elements[elementIndex].Type)
