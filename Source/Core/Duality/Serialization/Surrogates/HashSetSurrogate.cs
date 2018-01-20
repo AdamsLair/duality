@@ -93,11 +93,11 @@ namespace Duality.Serialization.Surrogates
 
 		private static bool CheckValueType(TypeInfo valueTypeInfo, object value)
 		{
-			if (!valueTypeInfo.IsInstanceOfType(value))
+			if (!valueTypeInfo.IsInstanceOfType(value) && value != null)
 			{
 				Log.Core.WriteWarning(
 					"Actual Type '{0}' of value in hashset field '{1}' does not match reflected hashset field type '{2}'. Skipping value.",
-					value != null ? Log.Type(value.GetType()) : "unknown",
+					Log.Type(value.GetType()),
 					value,
 					Log.Type(valueTypeInfo));
 				return false;

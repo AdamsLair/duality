@@ -281,12 +281,40 @@ namespace Duality.Tests.Serialization
 			this.TestWriteRead(new CultureInfo("en-US"), this.PrimaryFormat);
 			this.TestWriteRead(new CultureInfo("en"), this.PrimaryFormat);
 		}
-		[Test] public void SerializeHashSet()
+
+		[Test]
+		public void SerializeHashSet_ValueType()
 		{
 			Random rnd = new Random();
 			HashSet<int> source = new HashSet<int>(this.CreateArray<int>(50, () => rnd.Next()));
 			HashSet<int> target = this.WriteRead(source, this.PrimaryFormat);
-			CollectionAssert.AreEquivalent(source, target);
+
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEqual(source, target);
+		}
+
+		[Test]
+		public void SerializeHashSet_ReferenceType()
+		{
+			var rnd = new Random();
+			var values = Enumerable.Range(0, 50).Select(i => new TestObject(rnd, 0));
+			HashSet<TestObject> source = new HashSet<TestObject>(values);
+			HashSet<TestObject> target = this.WriteRead(source, this.PrimaryFormat);
+
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEqual(source, target);
+		}
+
+		[Test]
+		public void SerializeHashSet_ReferenceAndNulls()
+		{
+			var rnd = new Random();
+			var values = Enumerable.Range(0, 50).Select(i => i % 2 == 0 ? null : new TestObject(rnd, 0));
+			HashSet<TestObject> source = new HashSet<TestObject>(values);
+			HashSet<TestObject> target = this.WriteRead(source, this.PrimaryFormat);
+
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEqual(source, target);
 		}
 
 		[Test] public void SequentialAccess()
@@ -401,7 +429,7 @@ namespace Duality.Tests.Serialization
 				// Write
 				for (int i = 0; i < results.Length; i++)
 				{
-					using (Serializer formatterWrite = Serializer.Create(stream, format))
+					using (Serializer formatterWrite = Serializer.Create(stream, this.format))
 					{
 						formatterWrite.WriteObject(data);
 					}

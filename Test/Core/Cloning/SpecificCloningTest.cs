@@ -61,58 +61,31 @@ namespace Duality.Tests.Cloning
 			HashSet<int> target = source.DeepClone();
 
 			Assert.AreNotSame(source, target);
-			CollectionAssert.AreEquivalent(source, target);
+			CollectionAssert.AreEqual(source, target);
 		}
 
 		[Test]
 		public void CloneHashSet_ReferenceType()
 		{
-			var values = Enumerable.Range(0, 50).Select(i => new ReferenceType(i));
-			HashSet<ReferenceType> source = new HashSet<ReferenceType>(values);
-			HashSet<ReferenceType> target = source.DeepClone();
+			var rnd = new Random();
+			var values = Enumerable.Range(0, 50).Select(i => new TestObject(rnd, 0));
+			HashSet<TestObject> source = new HashSet<TestObject>(values);
+			HashSet<TestObject> target = source.DeepClone();
 
-			Assert.AreNotSame(source, target); //Check if the hashset are separate instances
-			CollectionAssert.AreNotEquivalent(source, target); //Check if the reference types contained in the hashset are separate instances
-			CollectionAssert.AreEqual(source, target, new ValueComparer()); //Check if the value of the reference type is equal
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEqual(source, target);
 		}
 
 		[Test]
 		public void CloneHashSet_ReferenceAndNulls()
 		{
-			var values = Enumerable.Range(0, 50).Select(i => i % 2 == 0 ? null : new ReferenceType(i));
-			HashSet<ReferenceType> source = new HashSet<ReferenceType>(values);
-			HashSet<ReferenceType> target = source.DeepClone();
+			var rnd = new Random();
+			var values = Enumerable.Range(0, 50).Select(i => i % 2 == 0 ? null : new TestObject(rnd, 0));
+			HashSet<TestObject> source = new HashSet<TestObject>(values);
+			HashSet<TestObject> target = source.DeepClone();
 
-			Assert.AreNotSame(source, target); //Check if the hashset are separate instances
-			CollectionAssert.AreNotEquivalent(source, target); //Check if the reference types contained in the hashset are separate instances
-			CollectionAssert.AreEqual(source, target, new ValueComparer()); //Check if the value of the reference type is equal
-		}
-
-		public class ReferenceType
-		{
-			public int Value { get; set; }
-
-			public ReferenceType(int value)
-			{
-				this.Value = value;
-			}
-		}
-
-		public class ValueComparer : IComparer<ReferenceType>, IComparer
-		{
-			public int Compare(object x, object y)
-			{
-				return Compare(x as ReferenceType, y as ReferenceType);				
-			}
-
-			public int Compare(ReferenceType x, ReferenceType y)
-			{
-				if (x != null && y != null)
-				{
-					return x.Value - y.Value;
-				}				
-				return -1;
-			}
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEqual(source, target);
 		}
 
 		[Test]
