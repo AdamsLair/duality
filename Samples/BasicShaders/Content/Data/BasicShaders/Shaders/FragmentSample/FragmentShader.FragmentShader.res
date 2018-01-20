@@ -11,8 +11,10 @@
 uniform sampler2D mainTex;
 uniform float colorShiftSpeed;
 
-varying vec4 programColor;
-varying vec2 programTexCoord;
+in vec4 programColor;
+in vec2 programTexCoord;
+
+out vec4 fragColor;
 
 void main()
 {
@@ -21,7 +23,7 @@ void main()
 		sin(_gameTime + programTexCoord.x),
 		cos(_gameTime + programTexCoord.y));
 	
-	vec4 color = texture2D(mainTex, texCoord);
+	vec4 color = texture(mainTex, texCoord);
 	color.rgb = vec3(
 		color.r * sin(colorShiftSpeed * _gameTime), 
 		color.g * sin(colorShiftSpeed * _gameTime * 0.5), 
@@ -29,7 +31,7 @@ void main()
 	color *= programColor;
 	
 	AlphaTest(color.a);
-	gl_FragColor = color;
+	fragColor = color;
 }</source>
 </root>
 <!-- XmlFormatterBase Document Separator -->

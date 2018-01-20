@@ -1,15 +1,17 @@
 ﻿uniform sampler2D mainTex;
 uniform float smoothness;
 
-varying vec4 programColor;
-varying vec2 programTexCoord;
+in vec4 programColor;
+in vec2 programTexCoord;
+
+out vec4 fragColor;
 
 const float Gamma = 2.2;
 
 void main()
 {
 	// Retrieve base color
-	vec4 texClr = texture2D(mainTex, programTexCoord);
+	vec4 texClr = texture(mainTex, programTexCoord);
 	
 	// Do some anti-aliazing
 	float w = clamp(smoothness * (abs(dFdx(programTexCoord.x)) + abs(dFdy(programTexCoord.y))), 0.0, 0.5);
@@ -21,5 +23,5 @@ void main()
 	// Compose result color
 	vec4 result = programColor * texClr;
 	AlphaTest(result.a);
-	gl_FragColor = result;
+	fragColor = result;
 }

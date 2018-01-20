@@ -6,15 +6,15 @@
       <item dataType="String">{Name}.vert</item>
     </sourceFileHint>
   </assetInfo>
-  <source dataType="String">attribute vec3 vertexPos;
-attribute vec4 vertexColor;
-attribute vec4 vertexTexCoord;
-attribute float vertexDepthOffset;
-attribute float vertexAnimBlend;
+  <source dataType="String">in vec3 vertexPos;
+in vec4 vertexColor;
+in vec4 vertexTexCoord;
+in float vertexDepthOffset;
+in float vertexAnimBlend;
 
-varying vec4 programColor;
-varying vec4 programTexCoord;
-varying float animBlendVar;
+out vec4 programColor;
+out vec4 programTexCoord;
+out float animBlendVar;
 
 void main()
 {

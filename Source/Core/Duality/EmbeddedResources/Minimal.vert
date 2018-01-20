@@ -1,12 +1,12 @@
 ﻿uniform vec4 mainColor;
 
-attribute vec3 vertexPos;
-attribute vec4 vertexColor;
-attribute vec2 vertexTexCoord;
-attribute float vertexDepthOffset;
+in vec3 vertexPos;
+in vec4 vertexColor;
+in vec2 vertexTexCoord;
+in float vertexDepthOffset;
 
-varying vec4 programColor;
-varying vec2 programTexCoord;
+out vec4 programColor;
+out vec2 programTexCoord;
 
 void main()
 {

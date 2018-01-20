@@ -1,14 +1,14 @@
 ﻿<root dataType="Struct" type="Duality.Resources.VertexShader" id="129723834">
   <assetInfo />
-  <source dataType="String">attribute vec3 vertexPos;
-attribute vec4 vertexColor;
-attribute vec2 vertexTexCoord;
-attribute float vertexDepthOffset;
-attribute vec4 vertexLightingParam;
+  <source dataType="String">in vec3 vertexPos;
+in vec4 vertexColor;
+in vec2 vertexTexCoord;
+in float vertexDepthOffset;
+in vec4 vertexLightingParam;
 
-varying vec4 programColor;
-varying vec2 programTexCoord;
-varying vec3 lightIntensity;
+out vec4 programColor;
+out vec2 programTexCoord;
+out vec3 lightIntensity;
 
 void main()
 {

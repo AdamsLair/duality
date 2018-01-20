@@ -1,14 +1,16 @@
 ﻿uniform sampler2D mainTex;
 
-varying vec4 programColor;
-varying vec2 programTexCoord;
+in vec4 programColor;
+in vec2 programTexCoord;
+
+out vec4 fragColor;
 
 void main()
 {
-	vec4 texClr = texture2D(mainTex, programTexCoord);
+	vec4 texClr = texture(mainTex, programTexCoord);
 	vec4 result = programColor * texClr;
-
+	
 	AlphaTest(result.a);
-
-	gl_FragColor = result;
+	
+	fragColor = result;
 }

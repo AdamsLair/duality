@@ -2,11 +2,11 @@
   <assetInfo dataType="Struct" type="Duality.Editor.AssetManagement.AssetInfo" id="427169525">
     <customData />
     <importerId dataType="String">BasicShaderAssetImporter</importerId>
-    <sourceFileHint />
+    <sourceFileHint dataType="Array" type="System.String[]" id="1100841590">
+      <item dataType="String">{Name}.frag</item>
+    </sourceFileHint>
   </assetInfo>
-  <source dataType="String">#version 120
-
-uniform sampler2D mainTex;
+  <source dataType="String">uniform sampler2D mainTex;
 uniform sampler2D normalTex;
 uniform sampler2D specularTex;
 
@@ -17,18 +17,20 @@ uniform vec4 _lightPos[8];
 uniform vec4 _lightDir[8];
 uniform vec3 _lightColor[8];
 
-varying vec4 programColor;
-varying vec2 programTexCoord;
-varying vec3 worldSpacePos;
-varying mat2 objTransform;
+in vec4 programColor;
+in vec2 programTexCoord;
+in vec3 worldSpacePos;
+in mat2 objTransform;
+
+out vec4 fragColor;
 
 void main()
 {
 	vec3 eyeDir = normalize(_cameraPosition - worldSpacePos);
   
-	vec4 clrDiffuse = programColor * texture2D(mainTex, programTexCoord);
-	vec4 clrNormal = texture2D(normalTex, programTexCoord);
-	vec4 clrSpecular = texture2D(specularTex, programTexCoord);
+	vec4 clrDiffuse = programColor * texture(mainTex, programTexCoord);
+	vec4 clrNormal = texture(normalTex, programTexCoord);
+	vec4 clrSpecular = texture(specularTex, programTexCoord);
 	vec4 finalColor = vec4(0.0, 0.0, 0.0, clrDiffuse.a);
 	
 	vec3 normal = normalize(clrNormal.xyz - vec3(0.5, 0.5, 0.5));
@@ -71,7 +73,7 @@ void main()
 	finalColor.rgb = max(finalColor.rgb, mix(clrDiffuse.xyz, finalColor.rgb, clrNormal.a));
 	
 	AlphaTest(finalColor.a);
-	gl_FragColor = finalColor;
+	fragColor = finalColor;
 }</source>
 </root>
 <!-- XmlFormatterBase Document Separator -->
