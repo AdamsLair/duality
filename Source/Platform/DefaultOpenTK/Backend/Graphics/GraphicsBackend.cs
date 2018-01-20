@@ -285,15 +285,7 @@ namespace Duality.Backend.DefaultOpenTK
 				}
 
 				// Draw the current batch
-				VertexDrawRange[] rangeData = batch.VertexRanges.Data;
-				int rangeCount = batch.VertexRanges.Count;
-				for (int r = 0; r < rangeCount; r++)
-				{
-					GL.DrawArrays(
-						GetOpenTKVertexMode(batch.VertexMode), 
-						rangeData[r].Index, 
-						rangeData[r].Count);
-				}
+				this.DrawVertexBatch(batch.VertexRanges, batch.VertexMode);
 
 				drawCalls++;
 				lastRendered = batch;
@@ -671,6 +663,20 @@ namespace Duality.Backend.DefaultOpenTK
 			this.internalShaderState.Set(
 				BuiltinShaderFields.AlphaTestThreshold, 
 				useAlphaTesting  ? 0.5f : -1.0f);
+		}
+
+		private void DrawVertexBatch(RawList<VertexDrawRange> ranges, VertexMode mode)
+		{
+			VertexDrawRange[] rangeData = ranges.Data;
+			int rangeCount = ranges.Count;
+			PrimitiveType openTkMode = GetOpenTKVertexMode(mode);
+			for (int r = 0; r < rangeCount; r++)
+			{
+				GL.DrawArrays(
+					openTkMode,
+					rangeData[r].Index,
+					rangeData[r].Count);
+			}
 		}
 
 		private void FinishSharedParameters()
