@@ -57,7 +57,7 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 			this.antialiasingQuality = antialiasingQuality;
 
 			GraphicsMode defaultGraphicsMode = this.GetGraphicsMode(this.antialiasingQuality);
-			this.mainContextControl = new GLControl(defaultGraphicsMode);
+			this.mainContextControl = new GLControl(defaultGraphicsMode, 3, 0, GraphicsContextFlags.ForwardCompatible);
 			this.mainContextControl.VSync = false;
 			this.mainContextControl.MakeCurrent();
 		}
