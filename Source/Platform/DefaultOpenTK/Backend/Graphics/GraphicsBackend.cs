@@ -30,6 +30,8 @@ namespace Duality.Backend.DefaultOpenTK
 		private HashSet<GraphicsMode>        availGraphicsModes      = null;
 		private GraphicsMode                 defaultGraphicsMode     = null;
 		private RawList<uint>                perVertexTypeVBO        = new RawList<uint>();
+		private int                          sharedBatchIBO          = 0;
+		private RawList<ushort>              sharedBatchIndices      = new RawList<ushort>();
 		private NativeWindow                 activeWindow            = null;
 		private Point2                       externalBackbufferSize  = Point2.Zero;
 		private bool                         useAlphaToCoverageBlend = false;
@@ -115,6 +117,12 @@ namespace Duality.Backend.DefaultOpenTK
 					}
 				}
 				this.perVertexTypeVBO.Clear();
+
+				if (this.sharedBatchIBO != 0)
+				{
+					GL.DeleteBuffers(1, ref this.sharedBatchIBO);
+					this.sharedBatchIBO = 0;
+				}
 			}
 
 			// Since the window outlives the graphics backend in the usual launcher setup, 
@@ -163,6 +171,15 @@ namespace Duality.Backend.DefaultOpenTK
 				}
 			}
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+
+			// Prepare a shared index buffer object, in case we don't have one yet
+			if (this.sharedBatchIBO == 0)
+			{
+				GL.GenBuffers(1, out this.sharedBatchIBO);
+				GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.sharedBatchIBO);
+				GL.BufferData(BufferTarget.ElementArrayBuffer, 0, IntPtr.Zero, BufferUsageHint.StreamDraw);
+				GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+			}
 
 			// Prepare the target surface for rendering
 			NativeRenderTarget.Bind(options.Target as NativeRenderTarget);
@@ -309,6 +326,7 @@ namespace Duality.Backend.DefaultOpenTK
 		void IGraphicsBackend.EndRendering()
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
 			this.currentDevice = null;
 			this.renderOptions = null;
@@ -669,13 +687,80 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			VertexDrawRange[] rangeData = ranges.Data;
 			int rangeCount = ranges.Count;
-			PrimitiveType openTkMode = GetOpenTKVertexMode(mode);
+
+			// Since the QUADS primitive is deprecated in OpenGL 3.0 and not available in OpenGL ES,
+			// we'll emulate this with an ad-hoc index buffer object that we generate here.
+			if (mode == VertexMode.Quads)
+			{
+				this.GenerateQuadIndices(ranges, this.sharedBatchIndices);
+
+				GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.sharedBatchIBO);
+
+				GL.BufferData(BufferTarget.ElementArrayBuffer, 0, IntPtr.Zero, BufferUsageHint.StreamDraw);
+				GL.BufferData(BufferTarget.ElementArrayBuffer, 
+					this.sharedBatchIndices.Count * sizeof(ushort), 
+					this.sharedBatchIndices.Data, 
+					BufferUsageHint.StreamDraw);
+
+				GL.DrawElements(
+					PrimitiveType.Triangles, 
+					this.sharedBatchIndices.Count, 
+					DrawElementsType.UnsignedShort, 
+					IntPtr.Zero);
+
+				this.sharedBatchIndices.Clear();
+			}
+			// In all other cases, we can just forward to a regular DrawArrays call.
+			else
+			{
+				GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+
+				PrimitiveType openTkMode = GetOpenTKVertexMode(mode);
+				for (int r = 0; r < rangeCount; r++)
+				{
+					GL.DrawArrays(
+						openTkMode,
+						rangeData[r].Index,
+						rangeData[r].Count);
+				}
+			}
+		}
+		/// <summary>
+		/// Given a list of vertex drawing ranges using <see cref="VertexMode.Quads"/>, this method
+		/// generates a single list of indices for <see cref="VertexMode.Triangles"/> that draws the same.
+		/// </summary>
+		/// <param name="ranges"></param>
+		/// <param name="indices"></param>
+		private void GenerateQuadIndices(RawList<VertexDrawRange> ranges, RawList<ushort> indices)
+		{
+			VertexDrawRange[] rangeData = ranges.Data;
+			int rangeCount = ranges.Count;
+
+			int elementIndex = indices.Count;
 			for (int r = 0; r < rangeCount; r++)
 			{
-				GL.DrawArrays(
-					openTkMode,
-					rangeData[r].Index,
-					rangeData[r].Count);
+				int quadCount = rangeData[r].Count / 4;
+				int elementCount = quadCount * 6;
+
+				indices.Count += elementCount;
+				ushort[] indexData = indices.Data;
+
+				int vertexIndex = rangeData[r].Index;
+				for (int quadIndex = 0; quadIndex < quadCount; quadIndex++)
+				{
+					// First triangle
+					indexData[elementIndex + 0] = (ushort)(vertexIndex + 0);
+					indexData[elementIndex + 1] = (ushort)(vertexIndex + 1);
+					indexData[elementIndex + 2] = (ushort)(vertexIndex + 2);
+
+					// Second triangle
+					indexData[elementIndex + 3] = (ushort)(vertexIndex + 2);
+					indexData[elementIndex + 4] = (ushort)(vertexIndex + 3);
+					indexData[elementIndex + 5] = (ushort)(vertexIndex + 0);
+
+					elementIndex += 6;
+					vertexIndex += 4;
+				}
 			}
 		}
 
@@ -723,7 +808,6 @@ namespace Duality.Backend.DefaultOpenTK
 				case VertexMode.Triangles:		return PrimitiveType.Triangles;
 				case VertexMode.TriangleStrip:	return PrimitiveType.TriangleStrip;
 				case VertexMode.TriangleFan:	return PrimitiveType.TriangleFan;
-				case VertexMode.Quads:			return PrimitiveType.Quads;
 			}
 		}
 		private static void GetOpenTKMatrix(ref Matrix4 source, out OpenTK.Matrix4 target)
