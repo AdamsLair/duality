@@ -31,7 +31,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private GraphicsMode                 defaultGraphicsMode     = null;
 		private RawList<uint>                perVertexTypeVBO        = new RawList<uint>();
 		private int                          sharedBatchIBO          = 0;
-		private RawList<ushort>              sharedBatchIndices      = new RawList<ushort>();
+		private RawList<uint>                sharedBatchIndices      = new RawList<uint>();
 		private NativeWindow                 activeWindow            = null;
 		private Point2                       externalBackbufferSize  = Point2.Zero;
 		private bool                         useAlphaToCoverageBlend = false;
@@ -698,14 +698,14 @@ namespace Duality.Backend.DefaultOpenTK
 
 				GL.BufferData(BufferTarget.ElementArrayBuffer, 0, IntPtr.Zero, BufferUsageHint.StreamDraw);
 				GL.BufferData(BufferTarget.ElementArrayBuffer, 
-					this.sharedBatchIndices.Count * sizeof(ushort), 
+					this.sharedBatchIndices.Count * sizeof(uint), 
 					this.sharedBatchIndices.Data, 
 					BufferUsageHint.StreamDraw);
 
 				GL.DrawElements(
 					PrimitiveType.Triangles, 
 					this.sharedBatchIndices.Count, 
-					DrawElementsType.UnsignedShort, 
+					DrawElementsType.UnsignedInt, 
 					IntPtr.Zero);
 
 				this.sharedBatchIndices.Clear();
@@ -731,7 +731,7 @@ namespace Duality.Backend.DefaultOpenTK
 		/// </summary>
 		/// <param name="ranges"></param>
 		/// <param name="indices"></param>
-		private void GenerateQuadIndices(RawList<VertexDrawRange> ranges, RawList<ushort> indices)
+		private void GenerateQuadIndices(RawList<VertexDrawRange> ranges, RawList<uint> indices)
 		{
 			VertexDrawRange[] rangeData = ranges.Data;
 			int rangeCount = ranges.Count;
@@ -743,20 +743,20 @@ namespace Duality.Backend.DefaultOpenTK
 				int elementCount = quadCount * 6;
 
 				indices.Count += elementCount;
-				ushort[] indexData = indices.Data;
+				uint[] indexData = indices.Data;
 
 				int vertexIndex = rangeData[r].Index;
 				for (int quadIndex = 0; quadIndex < quadCount; quadIndex++)
 				{
 					// First triangle
-					indexData[elementIndex + 0] = (ushort)(vertexIndex + 0);
-					indexData[elementIndex + 1] = (ushort)(vertexIndex + 1);
-					indexData[elementIndex + 2] = (ushort)(vertexIndex + 2);
+					indexData[elementIndex + 0] = (uint)(vertexIndex + 0);
+					indexData[elementIndex + 1] = (uint)(vertexIndex + 1);
+					indexData[elementIndex + 2] = (uint)(vertexIndex + 2);
 
 					// Second triangle
-					indexData[elementIndex + 3] = (ushort)(vertexIndex + 2);
-					indexData[elementIndex + 4] = (ushort)(vertexIndex + 3);
-					indexData[elementIndex + 5] = (ushort)(vertexIndex + 0);
+					indexData[elementIndex + 3] = (uint)(vertexIndex + 2);
+					indexData[elementIndex + 4] = (uint)(vertexIndex + 3);
+					indexData[elementIndex + 5] = (uint)(vertexIndex + 0);
 
 					elementIndex += 6;
 					vertexIndex += 4;
