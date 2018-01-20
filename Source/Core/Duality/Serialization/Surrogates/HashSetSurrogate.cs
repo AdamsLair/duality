@@ -15,10 +15,10 @@ namespace Duality.Serialization.Surrogates
 
 			public ReflectedHashsetData(Type hashSetType)
 			{
-				MethodInfo writeData = typeof(HashSetSurrogate).GetRuntimeMethods().FirstOrDefault(m => m.IsGenericMethod && m.Name == "WriteData");
+				MethodInfo writeData = typeof(HashSetSurrogate).GetRuntimeMethods().First(m => m.IsGenericMethod && m.Name == "WriteData"); // Replace hardcoded strings with nameof in C#6
 				this.WriteDataMethod = writeData.MakeGenericMethod(hashSetType.GenericTypeArguments);
 
-				MethodInfo readData = typeof(HashSetSurrogate).GetRuntimeMethods().FirstOrDefault(m => m.IsGenericMethod && m.Name == "ReadData");
+				MethodInfo readData = typeof(HashSetSurrogate).GetRuntimeMethods().First(m => m.IsGenericMethod && m.Name == "ReadData"); // Replace hardcoded strings with nameof in C#6
 				this.ReadDataMethod = readData.MakeGenericMethod(hashSetType.GenericTypeArguments);
 			}
 		}

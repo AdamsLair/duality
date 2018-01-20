@@ -16,8 +16,8 @@ namespace Duality.Cloning.Surrogates
 			public ReflectedHashsetData(Type hashSetType)
 			{
 				this.IsPlainOldData = hashSetType.GenericTypeArguments[0].GetTypeInfo().IsPlainOldData();
-				string methodName = this.IsPlainOldData ? "CopyDataTo_PlainOldData" : "CopyDataTo_NotPlainOldData";
-				MethodInfo method = typeof(HashSetSurrogate).GetRuntimeMethods().FirstOrDefault(m => m.Name == methodName);
+				string methodName = this.IsPlainOldData ? "CopyDataTo_PlainOldData" : "CopyDataTo_NotPlainOldData"; // Replace hardcoded strings with nameof in C#6
+				MethodInfo method = typeof(HashSetSurrogate).GetRuntimeMethods().First(m => m.Name == methodName);
 				this.CopyDataToMethod = method.MakeGenericMethod(hashSetType.GenericTypeArguments);
 			}
 		}
