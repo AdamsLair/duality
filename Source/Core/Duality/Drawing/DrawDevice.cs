@@ -17,10 +17,25 @@ namespace Duality.Drawing
 		/// </summary>
 		private struct VertexDrawItem
 		{
-			public VertexDeclaration Type;
+			/// <summary>
+			/// The offset in the shared vertex buffer where this drawing items vertex data begins.
+			/// </summary>
 			public int Offset;
+			/// <summary>
+			/// The number of vertices that are rendered by this drawing item.
+			/// </summary>
 			public int Count;
+			/// <summary>
+			/// The <see cref="VertexDeclaration"/> type index that describes the vertices used by this drawing item.
+			/// </summary>
+			public byte TypeIndex;
+			/// <summary>
+			/// The <see cref="VertexMode"/> that describes how the vertices are assembled into geometry.
+			/// </summary>
 			public VertexMode Mode;
+			/// <summary>
+			/// The material / <see cref="BatchInfo"/> that describes how the vertices will be rendered.
+			/// </summary>
 			public BatchInfo Material;
 
 			/// <summary>
@@ -33,7 +48,7 @@ namespace Duality.Drawing
 			{
 				return
 					this.Mode == other.Mode &&
-					this.Type == other.Type &&
+					this.TypeIndex == other.TypeIndex &&
 					this.Material.Equals(other.Material);
 			}
 			/// <summary>
@@ -46,15 +61,16 @@ namespace Duality.Drawing
 				return
 					this.Offset + this.Count == other.Offset &&
 					this.Mode == other.Mode &&
-					this.Type == other.Type &&
+					this.TypeIndex == other.TypeIndex &&
 					this.Material.Equals(other.Material);
 			}
 
 			public override string ToString()
 			{
+				VertexDeclaration declaration = VertexDeclaration.Get(this.TypeIndex);
 				return string.Format(
 					"{0}[{1}@{2}] as {3}, '{4}'",
-					this.Type.DataType.Name,
+					declaration.DataType.Name,
 					this.Count,
 					this.Offset,
 					this.Mode,
@@ -510,7 +526,7 @@ namespace Duality.Drawing
 			// Aggregate all info we have about our incoming vertices
 			VertexDrawItem drawItem = new VertexDrawItem
 			{
-				Type = VertexDeclaration.Get<T>(),
+				TypeIndex = (byte)VertexDeclaration.Get<T>().TypeIndex,
 				Offset = slice.Offset,
 				Count = slice.Length,
 				Mode = vertexMode,
@@ -852,7 +868,7 @@ namespace Duality.Drawing
 				if (i >= count) break;
 				
 				int drawIndex = sortData[i].DrawItemIndex;
-				int vertexTypeIndex = drawData[drawIndex].Type.TypeIndex;
+				int vertexTypeIndex = drawData[drawIndex].TypeIndex;
 				VertexMode vertexMode = drawData[drawIndex].Mode;
 				BatchInfo material = drawData[drawIndex].Material;
 
@@ -896,7 +912,7 @@ namespace Duality.Drawing
 
 				// Create a batch for all previous items
 				DrawBatch batch = new DrawBatch(
-					activeItem.Type, 
+					VertexDeclaration.Get(activeItem.TypeIndex), 
 					this.batchIndexPool.Rent(sortIndex - beginBatchIndex), 
 					activeItem.Mode,
 					activeItem.Material);

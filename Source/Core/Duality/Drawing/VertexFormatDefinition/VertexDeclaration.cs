@@ -18,6 +18,7 @@ namespace Duality.Drawing
 		}
 
 		private static int vertexTypeCounter = 0;
+		private static List<VertexDeclaration> delcarationByIndex = new List<VertexDeclaration>();
 		private static MethodInfo genericGetDeclarationMethod = null;
 
 		/// <summary>
@@ -36,6 +37,19 @@ namespace Duality.Drawing
 		public static VertexDeclaration Get<T>() where T : struct, IVertexData
 		{
 			return Cache<T>.Instance;
+		}
+		/// <summary>
+		/// Retrieves the <see cref="VertexDeclaration"/> for the specified type index.
+		/// Returns null if the type index is not valid.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public static VertexDeclaration Get(int typeIndex)
+		{
+			if (typeIndex < 0 || typeIndex >= delcarationByIndex.Count)
+				return null;
+			else
+				return delcarationByIndex[typeIndex];
 		}
 		/// <summary>
 		/// Retrieves the <see cref="VertexDeclaration"/> for the vertex type specified
@@ -156,6 +170,11 @@ namespace Duality.Drawing
 					type, 
 					count);
 			}
+
+			// Add this declaration to the static by-TypeIndex lookup
+			while (delcarationByIndex.Count <= this.typeIndex)
+				delcarationByIndex.Add(null);
+			delcarationByIndex[this.typeIndex] = this;
 		}
 
 		public override string ToString()
