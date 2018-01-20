@@ -865,15 +865,12 @@ namespace Duality.Drawing
 					matHash = (13 * matHash + 17 * (matHash >> 9)) % (1 << 23);
 				}
 
-				// Bit significancy is used to achieve sorting by multiple traits at once.
-				// The higher a traits bit significancy, the higher its priority when sorting.
+				// Bit significance is used to achieve sorting by multiple traits at once.
+				// The higher a traits bit significance, the higher its priority when sorting.
 				sortData[i].SortIndex = 
 					(((int)vertexMode & 15) << 0) | //                           XXXX  4 Bit   Vertex Mode  Offset 4
 					((matHash & 8388607) << 4) |    //    XXXXXXXXXXXXXXXXXXXXXXXaaaa  23 Bit  Material     Offset 27
 					((vertexTypeIndex & 15) << 27); // XXXbbbbbbbbbbbbbbbbbbbbbbbaaaa  4 Bit   Vertex Type  Offset 31
-
-				// Keep an eye on this. If for example two material hash codes randomly have the same 23 lower bits, they
-				// will be sorted as if equal, resulting in blocking batch aggregation.
 			}
 		}
 		private void AggregateBatches(RawList<SortItem> sortItems, RawList<VertexDrawItem> drawItems, RawList<DrawBatch> batches)
