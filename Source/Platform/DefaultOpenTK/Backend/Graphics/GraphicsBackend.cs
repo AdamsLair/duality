@@ -173,17 +173,6 @@ namespace Duality.Backend.DefaultOpenTK
 						}
 						GL.BindBuffer(BufferTarget.ArrayBuffer, this.vertexStorageVBO[typeIndex][batchIndex]);
 
-						// Log a warning if it's more vertices than we can index
-						if (vertexBatch.Count > ushort.MaxValue)
-						{
-							Logs.Core.WriteWarning(
-								"Vertex batch '{0}' has {1} vertices, but only {2} can be indexed. This can lead to rendering bugs and is not " +
-								"supported across platforms. Consider splitting up your vertex buffers into multiple smaller chunks.",
-								vertexBatch,
-								vertexBatch.Count,
-								ushort.MaxValue);
-						}
-
 						// Upload all data of this vertex type as a single block
 						int vertexDataLength = vertexBatch.Declaration.Size * vertexBatch.Count;
 						using (PinnedArrayHandle pinned = vertexBatch.Lock())

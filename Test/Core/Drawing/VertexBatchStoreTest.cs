@@ -170,6 +170,9 @@ namespace Duality.Tests.Drawing
 			Assert.AreEqual(4, batchB.Count);
 			Assert.AreEqual(3, verticesA.Count);
 			Assert.AreEqual(4, verticesB.Count);
+
+			// Assert that we're getting an exception when attempting to rent a slice that is too large
+			Assert.Throws<ArgumentException>(() => memory.Rent<VertexC1P3>(5));
 		}
 	}
 }

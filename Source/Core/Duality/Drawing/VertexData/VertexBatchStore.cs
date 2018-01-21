@@ -103,7 +103,10 @@ namespace Duality.Drawing
 			RawList<T> vertexList = this.GetVertexList<T>();
 
 			if (vertexList.Count + length > this.maxBatchSize)
+			{
+				if (length > this.maxBatchSize) this.ThrowMaxSizeExceeded(length);
 				vertexList = this.AdvanceToNextBatch<T>();
+			}
 
 			vertexList.Count += length;
 			return new VertexSlice<T>(
@@ -182,6 +185,15 @@ namespace Duality.Drawing
 			this.vertexDataSlots[typeIndex].Vertices = batch.Vertices;
 			this.vertexDataSlots[typeIndex].ActiveBatchCount++;
 			return batch.Vertices;
+		}
+
+		private void ThrowMaxSizeExceeded(int requestedLength)
+		{
+			throw new ArgumentException(string.Format(
+				"This vertex batch storage limits batch size to a maximum of {0} vertices. " +
+				"Cannot provide a vertex slice that is {1} vertices long.",
+				this.maxBatchSize,
+				requestedLength));
 		}
 	}
 }
