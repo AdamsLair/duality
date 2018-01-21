@@ -8,7 +8,7 @@ namespace Duality.Backend.Dummy
 {
 	public class DummyNativeAudioBuffer : INativeAudioBuffer
 	{
-		void INativeAudioBuffer.LoadData<T>(int sampleRate, T[] data, int dataLength, AudioDataLayout dataLayout, AudioDataElementType dataElementType) { }
+		void INativeAudioBuffer.LoadData(int sampleRate, IntPtr data, IntPtr size, AudioDataLayout dataLayout, AudioDataElementType dataElementType) { }
 		void IDisposable.Dispose() { }
 	}
 }
