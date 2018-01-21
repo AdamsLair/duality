@@ -348,6 +348,10 @@ namespace Duality.Backend.DefaultOpenTK
 			DebugCheckOpenGLErrors();
 		}
 		
+		INativeGraphicsBuffer IGraphicsBackend.CreateBuffer(GraphicsBufferType type)
+		{
+			return new NativeGraphicsBuffer(type);
+		}
 		INativeTexture IGraphicsBackend.CreateTexture()
 		{
 			return new NativeTexture();

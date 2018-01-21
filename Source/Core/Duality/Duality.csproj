@@ -57,6 +57,7 @@
     <Compile Include="Backend\Audio\INativeAudioSource.cs" />
     <Compile Include="Backend\Audio\INativeAudioBuffer.cs" />
     <Compile Include="Backend\Dummy\DummyFileSystem.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeGraphicsBuffer.cs" />
     <Compile Include="Backend\Dummy\DummySystemBackend.cs" />
     <Compile Include="Backend\Dummy\DummyNativeAudioSource.cs" />
     <Compile Include="Backend\Dummy\DummyNativeAudioBuffer.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Backend\Dummy\DummyNativeWindow.cs" />
     <Compile Include="Backend\Dummy\DummyNativeTexture.cs" />
     <Compile Include="Backend\Dummy\DummyGraphicsBackend.cs" />
+    <Compile Include="Backend\Graphics\INativeGraphicsBuffer.cs" />
     <Compile Include="Backend\Graphics\INativeRenderTarget.cs" />
     <Compile Include="Backend\Graphics\INativeShaderProgram.cs" />
     <Compile Include="Backend\Graphics\INativeShaderPart.cs" />
@@ -95,6 +97,8 @@
     <Compile Include="Components\Physics\Shapes\ChainShapeInfo.cs" />
     <Compile Include="Components\Physics\Shapes\VertexShapeTrait.cs" />
     <Compile Include="Components\Physics\Shapes\VertexBasedShapeInfo.cs" />
+    <Compile Include="Drawing\Enums\IndexDataElementType.cs" />
+    <Compile Include="Drawing\Enums\GraphicsBufferType.cs" />
     <Compile Include="Drawing\ShaderParameterCollection.cs" />
     <Compile Include="Drawing\CullingInfo.cs" />
     <Compile Include="Drawing\VertexData\IVertexData.cs" />

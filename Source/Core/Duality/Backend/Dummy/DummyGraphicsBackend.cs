@@ -45,6 +45,10 @@ namespace Duality.Backend.Dummy
 		void IGraphicsBackend.Render(IReadOnlyList<DrawBatch> batches) { }
 		void IGraphicsBackend.EndRendering() { }
 
+		INativeGraphicsBuffer IGraphicsBackend.CreateBuffer(GraphicsBufferType type)
+		{
+			return new DummyNativeGraphicsBuffer(type);
+		}
 		INativeTexture IGraphicsBackend.CreateTexture()
 		{
 			return new DummyNativeTexture();

@@ -15,6 +15,7 @@ namespace Duality.Backend
 		void Render(IReadOnlyList<DrawBatch> batches);
 		void EndRendering();
 
+		INativeGraphicsBuffer CreateBuffer(GraphicsBufferType type);
 		INativeTexture CreateTexture();
 		INativeRenderTarget CreateRenderTarget();
 		INativeShaderPart CreateShaderPart();
