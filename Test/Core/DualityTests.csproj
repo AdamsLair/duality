@@ -84,7 +84,6 @@
     <Compile Include="Components\ExecutionOrderTest\TestComponent.cs" />
     <Compile Include="Components\TransformTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
-    <Compile Include="Serialization\TestObjects\ReferenceType.cs" />
     <Compile Include="Testing\ExtMethodsIList.cs" />
     <Compile Include="Resources\RenderTargetTest.cs" />
     <Compile Include="Testing\ExtMethodsPixelData.cs" />
