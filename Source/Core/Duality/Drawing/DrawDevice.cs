@@ -20,11 +20,15 @@ namespace Duality.Drawing
 			/// <summary>
 			/// The offset in the shared vertex buffer where this drawing items vertex data begins.
 			/// </summary>
-			public int Offset;
+			public ushort Offset;
 			/// <summary>
 			/// The number of vertices that are rendered by this drawing item.
 			/// </summary>
-			public int Count;
+			public ushort Count;
+			/// <summary>
+			/// The index of the vertex buffer that is used by this drawing item.
+			/// </summary>
+			public byte BufferIndex;
 			/// <summary>
 			/// The <see cref="VertexDeclaration"/> type index that describes the vertices used by this drawing item.
 			/// </summary>
@@ -49,6 +53,7 @@ namespace Duality.Drawing
 				return
 					this.Mode == other.Mode &&
 					this.TypeIndex == other.TypeIndex &&
+					this.BufferIndex == other.BufferIndex &&
 					this.Material.Equals(other.Material);
 			}
 			/// <summary>
@@ -62,6 +67,7 @@ namespace Duality.Drawing
 					this.Offset + this.Count == other.Offset &&
 					this.Mode == other.Mode &&
 					this.TypeIndex == other.TypeIndex &&
+					this.BufferIndex == other.BufferIndex &&
 					this.Material.Equals(other.Material);
 			}
 
@@ -166,7 +172,7 @@ namespace Duality.Drawing
 		private RenderStats                  renderStats        = new RenderStats();
 		private List<BatchInfo>              tempMaterialPool   = new List<BatchInfo>();
 		private int                          tempMaterialIndex  = 0;
-		private VertexBatchStore             drawVertices       = new VertexBatchStore();
+		private VertexBatchStore             drawVertices       = new VertexBatchStore(ushort.MaxValue);
 		private RawList<VertexDrawItem>      drawBuffer         = new RawList<VertexDrawItem>();
 		private RawList<SortItem>            sortBufferSolid    = new RawList<SortItem>();
 		private RawList<SortItem>            sortBufferBlended  = new RawList<SortItem>();
@@ -526,9 +532,10 @@ namespace Duality.Drawing
 			// Aggregate all info we have about our incoming vertices
 			VertexDrawItem drawItem = new VertexDrawItem
 			{
+				Offset = (ushort)slice.Offset,
+				Count = (ushort)slice.Length,
+				BufferIndex = (byte)(this.drawVertices.GetBatchCount<T>() - 1),
 				TypeIndex = (byte)VertexDeclaration.Get<T>().TypeIndex,
-				Offset = slice.Offset,
-				Count = slice.Length,
 				Mode = vertexMode,
 				Material = material
 			};
@@ -915,6 +922,7 @@ namespace Duality.Drawing
 					VertexDeclaration.Get(activeItem.TypeIndex), 
 					this.batchIndexPool.Rent(sortIndex - beginBatchIndex), 
 					activeItem.Mode,
+					activeItem.BufferIndex,
 					activeItem.Material);
 
 				for (int i = beginBatchIndex; i < sortIndex; i++)

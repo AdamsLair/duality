@@ -29,9 +29,9 @@ namespace Duality.Backend.DefaultOpenTK
 		private RenderStats                  renderStats             = null;
 		private HashSet<GraphicsMode>        availGraphicsModes      = null;
 		private GraphicsMode                 defaultGraphicsMode     = null;
-		private RawList<uint>                perVertexTypeVBO        = new RawList<uint>();
-		private int                          sharedBatchIBO          = 0;
-		private RawList<uint>                sharedBatchIndices      = new RawList<uint>();
+		private RawList<RawList<uint>>       vertexStorageVBO        = new RawList<RawList<uint>>();
+		private uint                         sharedBatchIBO          = 0;
+		private RawList<ushort>              sharedBatchIndices      = new RawList<ushort>();
 		private NativeWindow                 activeWindow            = null;
 		private Point2                       externalBackbufferSize  = Point2.Zero;
 		private bool                         useAlphaToCoverageBlend = false;
@@ -108,15 +108,19 @@ namespace Duality.Backend.DefaultOpenTK
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
 			{
 				DefaultOpenTKBackendPlugin.GuardSingleThreadState();
-				for (int i = 0; i < this.perVertexTypeVBO.Count; i++)
+				for (int i = 0; i < this.vertexStorageVBO.Count; i++)
 				{
-					uint handle = this.perVertexTypeVBO[i];
-					if (handle != 0)
+					for (int j = 0; j < this.vertexStorageVBO[i].Count; j++)
 					{
-						GL.DeleteBuffers(1, ref handle);
+						uint handle = this.vertexStorageVBO[i][j];
+						if (handle != 0)
+						{
+							GL.DeleteBuffers(1, ref handle);
+						}
 					}
+					this.vertexStorageVBO[i].Clear();
 				}
-				this.perVertexTypeVBO.Clear();
+				this.vertexStorageVBO.Clear();
 
 				if (this.sharedBatchIBO != 0)
 				{
@@ -146,27 +150,47 @@ namespace Duality.Backend.DefaultOpenTK
 			// Upload all vertex data that we'll need during rendering
 			if (vertexData != null)
 			{
-				this.perVertexTypeVBO.Count = Math.Max(this.perVertexTypeVBO.Count, vertexData.TypeIndexCount);
+				this.vertexStorageVBO.Count = Math.Max(this.vertexStorageVBO.Count, vertexData.TypeIndexCount);
 				for (int typeIndex = 0; typeIndex < vertexData.TypeIndexCount; typeIndex++)
 				{
 					// Filter out unused vertex types
-					IVertexBatch vertexBatch = vertexData.GetBatches(typeIndex).FirstOrDefault();
-					if (vertexBatch == null) continue;
-					if (vertexBatch.Count == 0) continue;
+					IReadOnlyList<IVertexBatch> batches = vertexData.GetBatches(typeIndex);
+					if (batches == null) continue;
+					if (batches.Count == 0) continue;
 
-					// Generate a VBO for this vertex type if it didn't exist yet
-					if (this.perVertexTypeVBO[typeIndex] == 0)
+					// Upload all batches we have for this vertex type
+					if (this.vertexStorageVBO[typeIndex] == null)
+						this.vertexStorageVBO[typeIndex] = new RawList<uint>();
+					this.vertexStorageVBO[typeIndex].Count = Math.Max(this.vertexStorageVBO[typeIndex].Count, batches.Count);
+					for (int batchIndex = 0; batchIndex < batches.Count; batchIndex++)
 					{
-						GL.GenBuffers(1, out this.perVertexTypeVBO.Data[typeIndex]);
-					}
-					GL.BindBuffer(BufferTarget.ArrayBuffer, this.perVertexTypeVBO[typeIndex]);
-				
-					// Upload all data of this vertex type as a single block
-					int vertexDataLength = vertexBatch.Declaration.Size * vertexBatch.Count;
-					using (PinnedArrayHandle pinned = vertexBatch.Lock())
-					{
-						GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)vertexDataLength, IntPtr.Zero, BufferUsageHint.StreamDraw);
-						GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)vertexDataLength, pinned.Address, BufferUsageHint.StreamDraw);
+						IVertexBatch vertexBatch = batches[batchIndex];
+
+						// Generate a VBO for this vertex type and batch index, if it didn't exist yet
+						if (this.vertexStorageVBO[typeIndex][batchIndex] == 0)
+						{
+							GL.GenBuffers(1, out this.vertexStorageVBO[typeIndex].Data[batchIndex]);
+						}
+						GL.BindBuffer(BufferTarget.ArrayBuffer, this.vertexStorageVBO[typeIndex][batchIndex]);
+
+						// Log a warning if it's more vertices than we can index
+						if (vertexBatch.Count > ushort.MaxValue)
+						{
+							Logs.Core.WriteWarning(
+								"Vertex batch '{0}' has {1} vertices, but only {2} can be indexed. This can lead to rendering bugs and is not " +
+								"supported across platforms. Consider splitting up your vertex buffers into multiple smaller chunks.",
+								vertexBatch,
+								vertexBatch.Count,
+								ushort.MaxValue);
+						}
+
+						// Upload all data of this vertex type as a single block
+						int vertexDataLength = vertexBatch.Declaration.Size * vertexBatch.Count;
+						using (PinnedArrayHandle pinned = vertexBatch.Lock())
+						{
+							GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)vertexDataLength, IntPtr.Zero, BufferUsageHint.StreamDraw);
+							GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)vertexDataLength, pinned.Address, BufferUsageHint.StreamDraw);
+						}
 					}
 				}
 			}
@@ -278,7 +302,7 @@ namespace Duality.Backend.DefaultOpenTK
 				DrawBatch batch = batches[i];
 				VertexDeclaration vertexType = batch.VertexType;
 
-				GL.BindBuffer(BufferTarget.ArrayBuffer, this.perVertexTypeVBO[vertexType.TypeIndex]);
+				GL.BindBuffer(BufferTarget.ArrayBuffer, this.vertexStorageVBO[vertexType.TypeIndex][batch.VertexBufferIndex]);
 				
 				bool first = (i == 0);
 				bool sameMaterial = 
@@ -698,14 +722,14 @@ namespace Duality.Backend.DefaultOpenTK
 
 				GL.BufferData(BufferTarget.ElementArrayBuffer, 0, IntPtr.Zero, BufferUsageHint.StreamDraw);
 				GL.BufferData(BufferTarget.ElementArrayBuffer, 
-					this.sharedBatchIndices.Count * sizeof(uint), 
+					this.sharedBatchIndices.Count * sizeof(ushort), 
 					this.sharedBatchIndices.Data, 
 					BufferUsageHint.StreamDraw);
 
 				GL.DrawElements(
 					PrimitiveType.Triangles, 
 					this.sharedBatchIndices.Count, 
-					DrawElementsType.UnsignedInt, 
+					DrawElementsType.UnsignedShort, 
 					IntPtr.Zero);
 
 				this.sharedBatchIndices.Clear();
@@ -731,7 +755,7 @@ namespace Duality.Backend.DefaultOpenTK
 		/// </summary>
 		/// <param name="ranges"></param>
 		/// <param name="indices"></param>
-		private void GenerateQuadIndices(RawList<VertexDrawRange> ranges, RawList<uint> indices)
+		private void GenerateQuadIndices(RawList<VertexDrawRange> ranges, RawList<ushort> indices)
 		{
 			VertexDrawRange[] rangeData = ranges.Data;
 			int rangeCount = ranges.Count;
@@ -743,20 +767,20 @@ namespace Duality.Backend.DefaultOpenTK
 				int elementCount = quadCount * 6;
 
 				indices.Count += elementCount;
-				uint[] indexData = indices.Data;
+				ushort[] indexData = indices.Data;
 
 				int vertexIndex = rangeData[r].Index;
 				for (int quadIndex = 0; quadIndex < quadCount; quadIndex++)
 				{
 					// First triangle
-					indexData[elementIndex + 0] = (uint)(vertexIndex + 0);
-					indexData[elementIndex + 1] = (uint)(vertexIndex + 1);
-					indexData[elementIndex + 2] = (uint)(vertexIndex + 2);
+					indexData[elementIndex + 0] = (ushort)(vertexIndex + 0);
+					indexData[elementIndex + 1] = (ushort)(vertexIndex + 1);
+					indexData[elementIndex + 2] = (ushort)(vertexIndex + 2);
 
 					// Second triangle
-					indexData[elementIndex + 3] = (uint)(vertexIndex + 2);
-					indexData[elementIndex + 4] = (uint)(vertexIndex + 3);
-					indexData[elementIndex + 5] = (uint)(vertexIndex + 0);
+					indexData[elementIndex + 3] = (ushort)(vertexIndex + 2);
+					indexData[elementIndex + 4] = (ushort)(vertexIndex + 3);
+					indexData[elementIndex + 5] = (ushort)(vertexIndex + 0);
 
 					elementIndex += 6;
 					vertexIndex += 4;

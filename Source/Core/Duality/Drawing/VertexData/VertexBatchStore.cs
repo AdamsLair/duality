@@ -58,7 +58,7 @@ namespace Duality.Drawing
 		public int GetBatchCount<T>() where T : struct, IVertexData
 		{
 			int typeIndex = VertexDeclaration.Get<T>().TypeIndex;
-			if (typeIndex >= this.usedSlotCount) return 0;
+			if (typeIndex >= this.vertexDataSlots.Length) return 0;
 			return this.vertexDataSlots[typeIndex].ActiveBatchCount;
 		}
 		/// <summary>
@@ -70,7 +70,7 @@ namespace Duality.Drawing
 		public VertexBatch<T> GetBatch<T>(int batchIndex) where T : struct, IVertexData
 		{
 			int typeIndex = VertexDeclaration.Get<T>().TypeIndex;
-			if (typeIndex >= this.usedSlotCount) return null;
+			if (typeIndex >= this.vertexDataSlots.Length) return null;
 			return (VertexBatch<T>)this.vertexDataSlots[typeIndex].Batches[batchIndex];
 		}
 		/// <summary>
@@ -83,7 +83,7 @@ namespace Duality.Drawing
 		public IReadOnlyList<IVertexBatch> GetBatches(int typeIndex)
 		{
 			if (typeIndex < 0) return null;
-			if (typeIndex >= this.usedSlotCount) return null;
+			if (typeIndex >= this.vertexDataSlots.Length) return null;
 			return this.vertexDataSlots[typeIndex].Batches;
 		}
 
