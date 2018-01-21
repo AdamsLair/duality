@@ -80,6 +80,15 @@ namespace Duality.Drawing
 
 			this.nativeVertex.LoadData(vertexData, vertexCount);
 		}
+		public void LoadVertexData(VertexDeclaration vertexType, IntPtr vertexData, int vertexCount)
+		{
+			this.EnsureNativeVertex();
+
+			this.vertexCount = vertexCount;
+			this.vertexType = vertexType;
+
+			this.nativeVertex.LoadData(vertexData, (IntPtr)(vertexCount * vertexType.Size));
+		}
 
 		public void ClearIndexData()
 		{
@@ -108,6 +117,18 @@ namespace Duality.Drawing
 			this.indexType = indexType;
 
 			this.nativeIndex.LoadData(indexData, indexCount);
+		}
+		public void LoadIndexData(IndexDataElementType indexType, IntPtr indexData, int indexCount)
+		{
+			this.EnsureNativeIndex();
+
+			this.indexCount = indexCount;
+			this.indexType = indexType;
+
+			int indexSize = 0;
+			if      (indexType == IndexDataElementType.UnsignedByte)  indexSize = sizeof(byte);
+			else if (indexType == IndexDataElementType.UnsignedShort) indexSize = sizeof(ushort);
+			this.nativeIndex.LoadData(indexData, (IntPtr)(indexCount * indexSize));
 		}
 
 		private void EnsureNativeVertex()

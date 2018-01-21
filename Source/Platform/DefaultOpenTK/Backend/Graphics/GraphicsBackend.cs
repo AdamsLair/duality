@@ -29,8 +29,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private RenderStats                  renderStats             = null;
 		private HashSet<GraphicsMode>        availGraphicsModes      = null;
 		private GraphicsMode                 defaultGraphicsMode     = null;
-		private RawList<RawList<uint>>       vertexStorageVBO        = new RawList<RawList<uint>>();
-		private uint                         sharedBatchIBO          = 0;
+		private NativeGraphicsBuffer         sharedBatchIBO          = null;
 		private RawList<ushort>              sharedBatchIndices      = new RawList<ushort>();
 		private NativeWindow                 activeWindow            = null;
 		private Point2                       externalBackbufferSize  = Point2.Zero;
@@ -108,24 +107,10 @@ namespace Duality.Backend.DefaultOpenTK
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
 			{
 				DefaultOpenTKBackendPlugin.GuardSingleThreadState();
-				for (int i = 0; i < this.vertexStorageVBO.Count; i++)
+				if (this.sharedBatchIBO != null)
 				{
-					for (int j = 0; j < this.vertexStorageVBO[i].Count; j++)
-					{
-						uint handle = this.vertexStorageVBO[i][j];
-						if (handle != 0)
-						{
-							GL.DeleteBuffers(1, ref handle);
-						}
-					}
-					this.vertexStorageVBO[i].Clear();
-				}
-				this.vertexStorageVBO.Clear();
-
-				if (this.sharedBatchIBO != 0)
-				{
-					GL.DeleteBuffers(1, ref this.sharedBatchIBO);
-					this.sharedBatchIBO = 0;
+					this.sharedBatchIBO.Dispose();
+					this.sharedBatchIBO = null;
 				}
 			}
 
@@ -138,7 +123,7 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 		}
 
-		void IGraphicsBackend.BeginRendering(IDrawDevice device, VertexBatchStore vertexData, RenderOptions options, RenderStats stats)
+		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats)
 		{
 			DebugCheckOpenGLErrors();
 			this.CheckContextCaps();
@@ -147,52 +132,9 @@ namespace Duality.Backend.DefaultOpenTK
 			this.renderOptions = options;
 			this.renderStats = stats;
 
-			// Upload all vertex data that we'll need during rendering
-			if (vertexData != null)
-			{
-				this.vertexStorageVBO.Count = Math.Max(this.vertexStorageVBO.Count, vertexData.TypeIndexCount);
-				for (int typeIndex = 0; typeIndex < vertexData.TypeIndexCount; typeIndex++)
-				{
-					// Filter out unused vertex types
-					IReadOnlyList<IVertexBatch> batches = vertexData.GetBatches(typeIndex);
-					if (batches == null) continue;
-					if (batches.Count == 0) continue;
-
-					// Upload all batches we have for this vertex type
-					if (this.vertexStorageVBO[typeIndex] == null)
-						this.vertexStorageVBO[typeIndex] = new RawList<uint>();
-					this.vertexStorageVBO[typeIndex].Count = Math.Max(this.vertexStorageVBO[typeIndex].Count, batches.Count);
-					for (int batchIndex = 0; batchIndex < batches.Count; batchIndex++)
-					{
-						IVertexBatch vertexBatch = batches[batchIndex];
-
-						// Generate a VBO for this vertex type and batch index, if it didn't exist yet
-						if (this.vertexStorageVBO[typeIndex][batchIndex] == 0)
-						{
-							GL.GenBuffers(1, out this.vertexStorageVBO[typeIndex].Data[batchIndex]);
-						}
-						GL.BindBuffer(BufferTarget.ArrayBuffer, this.vertexStorageVBO[typeIndex][batchIndex]);
-
-						// Upload all data of this vertex type as a single block
-						int vertexDataLength = vertexBatch.Declaration.Size * vertexBatch.Count;
-						using (PinnedArrayHandle pinned = vertexBatch.Lock())
-						{
-							GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)vertexDataLength, IntPtr.Zero, BufferUsageHint.StreamDraw);
-							GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)vertexDataLength, pinned.Address, BufferUsageHint.StreamDraw);
-						}
-					}
-				}
-			}
-			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
 			// Prepare a shared index buffer object, in case we don't have one yet
-			if (this.sharedBatchIBO == 0)
-			{
-				GL.GenBuffers(1, out this.sharedBatchIBO);
-				GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.sharedBatchIBO);
-				GL.BufferData(BufferTarget.ElementArrayBuffer, 0, IntPtr.Zero, BufferUsageHint.StreamDraw);
-				GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
-			}
+			if (this.sharedBatchIBO == null)
+				this.sharedBatchIBO = new NativeGraphicsBuffer(GraphicsBufferType.Index);
 
 			// Prepare the target surface for rendering
 			NativeRenderTarget.Bind(options.Target as NativeRenderTarget);
@@ -289,10 +231,13 @@ namespace Duality.Backend.DefaultOpenTK
 			for (int i = 0; i < batches.Count; i++)
 			{
 				DrawBatch batch = batches[i];
-				VertexDeclaration vertexType = batch.VertexType;
+				VertexDeclaration vertexType = batch.VertexBuffer.VertexType;
 
-				GL.BindBuffer(BufferTarget.ArrayBuffer, this.vertexStorageVBO[vertexType.TypeIndex][batch.VertexBufferIndex]);
-				
+				// Bind the vertex buffer we'll use. Note that this needs to be done
+				// before setting up any vertex format state.
+				NativeGraphicsBuffer vertexBuffer = batch.VertexBuffer.NativeVertex as NativeGraphicsBuffer;
+				NativeGraphicsBuffer.Bind(GraphicsBufferType.Vertex, vertexBuffer);
+
 				bool first = (i == 0);
 				bool sameMaterial = 
 					lastRendered != null && 
@@ -302,7 +247,7 @@ namespace Duality.Backend.DefaultOpenTK
 				// materials shader, so material changes can be vertex binding changes.
 				if (lastRendered != null)
 				{
-					this.FinishVertexFormat(lastRendered.Material, lastRendered.VertexType);
+					this.FinishVertexFormat(lastRendered.Material, lastRendered.VertexBuffer.VertexType);
 				}
 				this.SetupVertexFormat(batch.Material, vertexType);
 
@@ -315,18 +260,22 @@ namespace Duality.Backend.DefaultOpenTK
 				}
 
 				// Draw the current batch
-				this.DrawVertexBatch(batch.VertexRanges, batch.VertexMode);
+				this.DrawVertexBatch(
+					batch.VertexBuffer, 
+					batch.VertexRanges, 
+					batch.VertexMode);
 
 				drawCalls++;
 				lastRendered = batch;
 			}
-			
+
 			// Cleanup after rendering
-			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+			NativeGraphicsBuffer.Bind(GraphicsBufferType.Vertex, null);
+			NativeGraphicsBuffer.Bind(GraphicsBufferType.Index, null);
 			if (lastRendered != null)
 			{
 				this.FinishMaterial(lastRendered.Material);
-				this.FinishVertexFormat(lastRendered.Material, lastRendered.VertexType);
+				this.FinishVertexFormat(lastRendered.Material, lastRendered.VertexBuffer.VertexType);
 			}
 
 			if (this.renderStats != null)
@@ -338,9 +287,6 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void IGraphicsBackend.EndRendering()
 		{
-			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
-
 			this.currentDevice = null;
 			this.renderOptions = null;
 			this.renderStats = null;
@@ -700,8 +646,18 @@ namespace Duality.Backend.DefaultOpenTK
 				useAlphaTesting  ? 0.5f : -1.0f);
 		}
 
-		private void DrawVertexBatch(RawList<VertexDrawRange> ranges, VertexMode mode)
+		/// <summary>
+		/// Draws the vertices of a single <see cref="DrawBatch"/>, after all other rendering state
+		/// has been set up accordingly outside this method.
+		/// </summary>
+		/// <param name="buffer"></param>
+		/// <param name="ranges"></param>
+		/// <param name="mode"></param>
+		private void DrawVertexBatch(VertexBuffer buffer, RawList<VertexDrawRange> ranges, VertexMode mode)
 		{
+			NativeGraphicsBuffer indexBuffer = (buffer.IndexCount > 0 ? buffer.NativeIndex : null) as NativeGraphicsBuffer;
+			IndexDataElementType indexType = buffer.IndexType;
+
 			VertexDrawRange[] rangeData = ranges.Data;
 			int rangeCount = ranges.Count;
 
@@ -709,16 +665,23 @@ namespace Duality.Backend.DefaultOpenTK
 			// we'll emulate this with an ad-hoc index buffer object that we generate here.
 			if (mode == VertexMode.Quads)
 			{
+				if (indexBuffer != null)
+				{
+					Logs.Core.WriteWarning(
+						"Rendering {0} instances that use index buffers is not supported for quads geometry. " +
+						"To use index buffers, use any other geometry type listed in {1}. Skipping batch.",
+						typeof(DrawBatch).Name,
+						typeof(VertexMode).Name);
+					return;
+				}
+
+				NativeGraphicsBuffer.Bind(GraphicsBufferType.Index, this.sharedBatchIBO);
+
 				this.GenerateQuadIndices(ranges, this.sharedBatchIndices);
-
-				GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.sharedBatchIBO);
-
-				GL.BufferData(BufferTarget.ElementArrayBuffer, 0, IntPtr.Zero, BufferUsageHint.StreamDraw);
-				GL.BufferData(BufferTarget.ElementArrayBuffer, 
-					this.sharedBatchIndices.Count * sizeof(ushort), 
+				this.sharedBatchIBO.LoadData(
 					this.sharedBatchIndices.Data, 
-					BufferUsageHint.StreamDraw);
-
+					this.sharedBatchIndices.Count);
+				
 				GL.DrawElements(
 					PrimitiveType.Triangles, 
 					this.sharedBatchIndices.Count, 
@@ -727,18 +690,44 @@ namespace Duality.Backend.DefaultOpenTK
 
 				this.sharedBatchIndices.Clear();
 			}
-			// In all other cases, we can just forward to a regular DrawArrays call.
+			// Otherwise, run the regular rendering path
 			else
 			{
-				GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
-
-				PrimitiveType openTkMode = GetOpenTKVertexMode(mode);
-				for (int r = 0; r < rangeCount; r++)
+				// Rendering using index buffer
+				if (indexBuffer != null)
 				{
-					GL.DrawArrays(
+					if (ranges != null && ranges.Count > 0)
+					{
+						Logs.Core.WriteWarning(
+							"Rendering {0} instances that use index buffers do not support specifying vertex ranges, " +
+							"since the two features are mutually exclusive.",
+							typeof(DrawBatch).Name,
+							typeof(VertexMode).Name);
+					}
+
+					NativeGraphicsBuffer.Bind(GraphicsBufferType.Index, indexBuffer);
+
+					PrimitiveType openTkMode = GetOpenTKVertexMode(mode);
+					DrawElementsType openTkIndexType = GetOpenTKIndexType(indexType);
+					GL.DrawElements(
 						openTkMode,
-						rangeData[r].Index,
-						rangeData[r].Count);
+						buffer.IndexCount,
+						openTkIndexType,
+						IntPtr.Zero);
+				}
+				// Rendering using an array of vertex ranges
+				else
+				{
+					NativeGraphicsBuffer.Bind(GraphicsBufferType.Index, null);
+
+					PrimitiveType openTkMode = GetOpenTKVertexMode(mode);
+					for (int r = 0; r < rangeCount; r++)
+					{
+						GL.DrawArrays(
+							openTkMode,
+							rangeData[r].Index,
+							rangeData[r].Count);
+					}
 				}
 			}
 		}
@@ -825,6 +814,15 @@ namespace Duality.Backend.DefaultOpenTK
 				case VertexMode.Triangles:		return PrimitiveType.Triangles;
 				case VertexMode.TriangleStrip:	return PrimitiveType.TriangleStrip;
 				case VertexMode.TriangleFan:	return PrimitiveType.TriangleFan;
+			}
+		}
+		private static DrawElementsType GetOpenTKIndexType(IndexDataElementType indexType)
+		{
+			switch (indexType)
+			{
+				default:
+				case IndexDataElementType.UnsignedByte: return DrawElementsType.UnsignedByte;
+				case IndexDataElementType.UnsignedShort: return DrawElementsType.UnsignedShort;
 			}
 		}
 		private static void GetOpenTKMatrix(ref Matrix4 source, out OpenTK.Matrix4 target)

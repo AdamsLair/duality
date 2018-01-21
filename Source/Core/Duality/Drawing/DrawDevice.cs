@@ -168,19 +168,20 @@ namespace Duality.Drawing
 		private int                       pickingIndex     = 0;
 		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
 
-		private RenderOptions                renderOptions      = new RenderOptions();
-		private RenderStats                  renderStats        = new RenderStats();
-		private List<BatchInfo>              tempMaterialPool   = new List<BatchInfo>();
-		private int                          tempMaterialIndex  = 0;
-		private VertexBatchStore             drawVertices       = new VertexBatchStore(ushort.MaxValue);
-		private RawList<VertexDrawItem>      drawBuffer         = new RawList<VertexDrawItem>();
-		private RawList<SortItem>            sortBufferSolid    = new RawList<SortItem>();
-		private RawList<SortItem>            sortBufferBlended  = new RawList<SortItem>();
-		private RawList<SortItem>            sortBufferTemp     = new RawList<SortItem>();
-		private RawList<DrawBatch>           batchBufferSolid   = new RawList<DrawBatch>();
-		private RawList<DrawBatch>           batchBufferBlended = new RawList<DrawBatch>();
-		private RawListPool<VertexDrawRange> batchIndexPool     = new RawListPool<VertexDrawRange>();
-		private int                          numRawBatches      = 0;
+		private RenderOptions                  renderOptions      = new RenderOptions();
+		private RenderStats                    renderStats        = new RenderStats();
+		private List<BatchInfo>                tempMaterialPool   = new List<BatchInfo>();
+		private int                            tempMaterialIndex  = 0;
+		private VertexBatchStore               drawVertices       = new VertexBatchStore(ushort.MaxValue);
+		private RawList<VertexDrawItem>        drawBuffer         = new RawList<VertexDrawItem>();
+		private RawList<SortItem>              sortBufferSolid    = new RawList<SortItem>();
+		private RawList<SortItem>              sortBufferBlended  = new RawList<SortItem>();
+		private RawList<SortItem>              sortBufferTemp     = new RawList<SortItem>();
+		private RawList<DrawBatch>             batchBufferSolid   = new RawList<DrawBatch>();
+		private RawList<DrawBatch>             batchBufferBlended = new RawList<DrawBatch>();
+		private RawListPool<VertexDrawRange>   batchIndexPool     = new RawListPool<VertexDrawRange>();
+		private RawList<RawList<VertexBuffer>> vertexBuffers      = new RawList<RawList<VertexBuffer>>();
+		private int                            numRawBatches      = 0;
 
 
 		public bool Disposed
@@ -644,6 +645,7 @@ namespace Duality.Drawing
 			if (DualityApp.GraphicsBackend == null) return;
 
 			// Prepare forwarding the collected data and parameters to the graphics backend
+			this.UploadVertexData();
 			this.AggregateBatches();
 			this.UpdateBuiltinShaderParameters();
 
@@ -660,7 +662,7 @@ namespace Duality.Drawing
 			this.renderStats.Reset();
 
 			// Invoke graphics backend functionality to do the rendering
-			DualityApp.GraphicsBackend.BeginRendering(this, this.drawVertices, this.renderOptions, this.renderStats);
+			DualityApp.GraphicsBackend.BeginRendering(this, this.renderOptions, this.renderStats);
 			{
 				Profile.TimeProcessDrawcalls.BeginMeasure();
 
@@ -810,6 +812,45 @@ namespace Duality.Drawing
 			this.shaderParameters.Set(BuiltinShaderFields.CameraIsPerspective, this.projection == ProjectionMode.Perspective);
 			this.shaderParameters.Set(BuiltinShaderFields.CameraFocusDist, this.focusDist);
 		}
+		/// <summary>
+		/// Uploads all dynamically gathered vertex data to the GPU using the internal <see cref="vertexBuffers"/> pool.
+		/// </summary>
+		private void UploadVertexData()
+		{
+			// Note that there is a 1:1 mapping between gathered vertex batches and vertex buffers.
+			// We'll keep all buffers around until the drawdevice is disposed, in case we might need
+			// them again later.
+			this.vertexBuffers.Count = Math.Max(this.vertexBuffers.Count, this.drawVertices.TypeIndexCount);
+			for (int typeIndex = 0; typeIndex < this.drawVertices.TypeIndexCount; typeIndex++)
+			{
+				// Filter out unused vertex types
+				IReadOnlyList<IVertexBatch> batches = this.drawVertices.GetBatches(typeIndex);
+				if (batches == null) continue;
+				if (batches.Count == 0) continue;
+
+				// Upload all vertex batches for this vertex type
+				if (this.vertexBuffers[typeIndex] == null)
+					this.vertexBuffers[typeIndex] = new RawList<VertexBuffer>();
+				this.vertexBuffers[typeIndex].Count = Math.Max(this.vertexBuffers[typeIndex].Count, batches.Count);
+				for (int batchIndex = 0; batchIndex < batches.Count; batchIndex++)
+				{
+					IVertexBatch vertexBatch = batches[batchIndex];
+
+					// Generate a VertexBuffer for this vertex type and batch index, if it didn't exist yet
+					if (this.vertexBuffers[typeIndex][batchIndex] == null)
+						this.vertexBuffers[typeIndex][batchIndex] = new VertexBuffer();
+
+					// Upload the vertex batch to 
+					using (PinnedArrayHandle pinned = vertexBatch.Lock())
+					{
+						this.vertexBuffers[typeIndex][batchIndex].LoadVertexData(
+							vertexBatch.Declaration, 
+							pinned.Address, 
+							vertexBatch.Count);
+					}
+				}
+			}
+		}
 
 		private static int MaterialSortComparison(SortItem first, SortItem second)
 		{
@@ -825,6 +866,7 @@ namespace Duality.Drawing
 			else
 				return 1;
 		}
+
 		private void AggregateBatches()
 		{
 			int batchCountBefore = this.sortBufferSolid.Count + this.sortBufferBlended.Count;
@@ -918,11 +960,11 @@ namespace Duality.Drawing
 				}
 
 				// Create a batch for all previous items
+				VertexBuffer vertexBuffer = this.vertexBuffers[activeItem.TypeIndex][activeItem.BufferIndex];
 				DrawBatch batch = new DrawBatch(
-					VertexDeclaration.Get(activeItem.TypeIndex), 
+					vertexBuffer, 
 					this.batchIndexPool.Rent(sortIndex - beginBatchIndex), 
 					activeItem.Mode,
-					activeItem.BufferIndex,
 					activeItem.Material);
 
 				for (int i = beginBatchIndex; i < sortIndex; i++)
@@ -962,7 +1004,7 @@ namespace Duality.Drawing
 				Viewport = viewportRect,
 				RenderMode = RenderMode.Screen
 			};
-			DualityApp.GraphicsBackend.BeginRendering(null, null, options);
+			DualityApp.GraphicsBackend.BeginRendering(null, options);
 			DualityApp.GraphicsBackend.EndRendering();
 		}
 	}

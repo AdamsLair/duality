@@ -14,21 +14,13 @@ namespace Duality.Backend.DefaultOpenTK
 		private static NativeGraphicsBuffer boundVertex = null;
 		private static NativeGraphicsBuffer boundIndex = null;
 		
-		public static void Bind(NativeGraphicsBuffer buffer)
+		public static void Bind(GraphicsBufferType type, NativeGraphicsBuffer buffer)
 		{
-			if (GetBound(buffer.BufferType) == buffer) return;
-			SetBound(buffer.BufferType, buffer);
-
-			BufferTarget target = ToOpenTKBufferType(buffer.BufferType);
-			GL.BindBuffer(target, buffer.Handle);
-		}
-		public static void ResetBinding(GraphicsBufferType type)
-		{
-			if (GetBound(type) == null) return;
-			SetBound(type, null);
+			if (GetBound(type) == buffer) return;
+			SetBound(type, buffer);
 
 			BufferTarget target = ToOpenTKBufferType(type);
-			GL.BindBuffer(target, 0);
+			GL.BindBuffer(target, buffer != null ? buffer.Handle : 0);
 		}
 		private static void SetBound(GraphicsBufferType type, NativeGraphicsBuffer buffer)
 		{
@@ -62,19 +54,18 @@ namespace Duality.Backend.DefaultOpenTK
 			this.type = type;
 		}
 
-		void INativeGraphicsBuffer.LoadData(IntPtr data, IntPtr size)
+		public void LoadData(IntPtr data, IntPtr size)
 		{
-			BufferTarget target = ToOpenTKBufferType(this.type);
-
 			NativeGraphicsBuffer prevBound = GetBound(this.type);
-			Bind(this);
+			Bind(this.type, this);
 
+			BufferTarget target = ToOpenTKBufferType(this.type);
 			GL.BufferData(target, size, IntPtr.Zero, BufferUsageHint.StreamDraw);
 			GL.BufferData(target, size, data, BufferUsageHint.StreamDraw);
 
-			Bind(prevBound);
+			Bind(this.type, prevBound);
 		}
-		void IDisposable.Dispose()
+		public void Dispose()
 		{
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
 				this.handle != 0)
