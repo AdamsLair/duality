@@ -17,12 +17,22 @@ namespace Duality.Drawing
 			public int ActiveBatchCount;
 		}
 
+		private int maxBatchSize = int.MaxValue;
 		private int usedSlotCount = 0;
 		private StoredVertexData[] vertexDataSlots = new StoredVertexData[4];
 
 
 		/// <summary>
-		/// Returns the number of used type index slots in current storage.
+		/// [GET] The maximum number of vertices that will be stored inside a single
+		/// vertex batch. A new batch will be started when adding more vertices would
+		/// otherwise exceed this number.
+		/// </summary>
+		public int MaxBatchSize
+		{
+			get { return this.maxBatchSize; }
+		}
+		/// <summary>
+		/// [GET] Returns the number of used type index slots in current storage.
 		/// Counting from zero to <see cref="TypeIndexCount"/> - 1 will cover all
 		/// vertex type indices that may be present in this <see cref="VertexBatchStore"/>.
 		/// </summary>
@@ -32,35 +42,36 @@ namespace Duality.Drawing
 		}
 
 
+		public VertexBatchStore() { }
+		public VertexBatchStore(int maxBatchSize) : this()
+		{
+			this.maxBatchSize = maxBatchSize;
+		}
+
+		
 		/// <summary>
-		/// Retrieves all stored batches of a vertex type and adds them
-		/// to the specified list.
+		/// Returns the number of active vertex batches in storage for the specified
+		/// vertex type.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="batches"></param>
-		public void GetBatches<T>(List<VertexBatch<T>> batches) where T : struct, IVertexData
+		/// <returns></returns>
+		public int GetBatchCount<T>() where T : struct, IVertexData
 		{
 			int typeIndex = VertexDeclaration.Get<T>().TypeIndex;
-			if (typeIndex >= this.usedSlotCount) return;
-			if (this.vertexDataSlots[typeIndex].Batches == null) return;
-
-			foreach (IVertexBatch batch in this.vertexDataSlots[typeIndex].Batches)
-			{
-				batches.Add((VertexBatch<T>)batch);
-			}
+			if (typeIndex >= this.usedSlotCount) return 0;
+			return this.vertexDataSlots[typeIndex].ActiveBatchCount;
 		}
 		/// <summary>
-		/// Returns a read-only list reference containing all stored vertex batches
-		/// that match the specified vertex type. Returns null, if that type is
-		/// not represented in this <see cref="VertexBatchStore"/>.
+		/// Returns the stored vertex batch for the specified batch index and vertex type.
 		/// </summary>
-		/// <param name="typeIndex"></param>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="batchIndex"></param>
 		/// <returns></returns>
-		public IReadOnlyList<IVertexBatch> GetBatches<T>() where T : struct, IVertexData
+		public VertexBatch<T> GetBatch<T>(int batchIndex) where T : struct, IVertexData
 		{
 			int typeIndex = VertexDeclaration.Get<T>().TypeIndex;
 			if (typeIndex >= this.usedSlotCount) return null;
-			return this.vertexDataSlots[typeIndex].Batches;
+			return (VertexBatch<T>)this.vertexDataSlots[typeIndex].Batches[batchIndex];
 		}
 		/// <summary>
 		/// Returns a read-only list reference containing all stored vertex batches
@@ -90,6 +101,10 @@ namespace Duality.Drawing
 		public VertexSlice<T> Rent<T>(int length) where T : struct, IVertexData
 		{
 			RawList<T> vertexList = this.GetVertexList<T>();
+
+			if (vertexList.Count + length > this.maxBatchSize)
+				vertexList = this.AdvanceToNextBatch<T>();
+
 			vertexList.Count += length;
 			return new VertexSlice<T>(
 				vertexList.Data, 
@@ -151,6 +166,22 @@ namespace Duality.Drawing
 				this.vertexDataSlots[typeIndex].ActiveBatchCount = 1;
 				return batch.Vertices;
 			}
+		}
+		private RawList<T> AdvanceToNextBatch<T>() where T: struct, IVertexData
+		{
+			int typeIndex = VertexDeclaration.Get<T>().TypeIndex;
+			int batchIndex = this.vertexDataSlots[typeIndex].ActiveBatchCount;
+			List<IVertexBatch> batchList = this.vertexDataSlots[typeIndex].Batches;
+
+			// Create a new batch, if we didn't already have one ready
+			if (batchList.Count <= batchIndex)
+				batchList.Add(new VertexBatch<T>());
+
+			// Assign current vertex batch for fast access
+			VertexBatch<T> batch = (VertexBatch<T>)batchList[batchIndex];
+			this.vertexDataSlots[typeIndex].Vertices = batch.Vertices;
+			this.vertexDataSlots[typeIndex].ActiveBatchCount++;
+			return batch.Vertices;
 		}
 	}
 }
