@@ -118,7 +118,7 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(source, target);
 			Assert.AreNotSame(source.TestReferenceList, target.TestReferenceList);
 		}
-		[Test]public void CloneComponent()
+		[Test] public void CloneComponent()
 		{
 			Random rnd = new Random();
 			TestComponent source = new TestComponent(rnd);
