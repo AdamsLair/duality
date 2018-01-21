@@ -290,7 +290,7 @@ namespace Duality.Tests.Serialization
 			HashSet<int> target = this.WriteRead(source, this.PrimaryFormat);
 
 			Assert.AreNotSame(source, target);
-			CollectionAssert.AreEqual(source, target);
+			CollectionAssert.AreEquivalent(source, target);
 		}
 
 		[Test]
@@ -302,19 +302,20 @@ namespace Duality.Tests.Serialization
 			HashSet<TestObject> target = this.WriteRead(source, this.PrimaryFormat);
 
 			Assert.AreNotSame(source, target);
-			CollectionAssert.AreEqual(source, target);
+			CollectionAssert.AreEquivalent(source, target);
 		}
 
 		[Test]
 		public void SerializeHashSet_ReferenceAndNulls()
 		{
 			var rnd = new Random();
-			var values = Enumerable.Range(0, 50).Select(i => i % 2 == 0 ? null : new TestObject(rnd, 0));
+			var values = Enumerable.Range(0, 50).Select(i => new TestObject(rnd, 0));
+			values = values.Concat(new TestObject[] { null });
 			HashSet<TestObject> source = new HashSet<TestObject>(values);
 			HashSet<TestObject> target = this.WriteRead(source, this.PrimaryFormat);
 
 			Assert.AreNotSame(source, target);
-			CollectionAssert.AreEqual(source, target);
+			CollectionAssert.AreEquivalent(source, target);
 		}
 
 		[Test] public void SequentialAccess()
