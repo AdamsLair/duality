@@ -6,7 +6,7 @@ namespace Steering
 {
 	/// <summary>
 	/// Samples velocities based on the velocity the agent chose. The sampling
-	/// density is higher velocities close to the last best velocity.
+	/// density is higher for velocities close to the last best velocity.
 	/// This reduces samples needed massively compared to <see cref="BruteForceVelocitySampler"/>
 	/// but can potentially lead to undesired behavior.
 	/// </summary>

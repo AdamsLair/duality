@@ -594,13 +594,13 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 		protected string GetInsertActionTargetBasePath(NodeBase baseNode)
 		{
-			string baseTargetPath = (baseNode != null) ? baseNode.NodePath : DualityApp.DataDirectory;
-			if (!ContentProvider.IsDefaultContentPath(baseTargetPath))
-			{
-				if (File.Exists(baseTargetPath)) baseTargetPath = Path.GetDirectoryName(baseTargetPath);
-				baseTargetPath = Path.GetFullPath(baseTargetPath);
-			}
+			if (baseNode == null || ContentProvider.IsDefaultContentPath(baseNode.NodePath))
+				return DualityApp.DataDirectory;
 
+			string baseTargetPath = baseNode.NodePath;
+			if (File.Exists(baseTargetPath))
+				baseTargetPath = Path.GetDirectoryName(baseTargetPath);
+			baseTargetPath = Path.GetFullPath(baseTargetPath);
 			return baseTargetPath;
 		}
 		

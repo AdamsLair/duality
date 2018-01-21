@@ -201,23 +201,29 @@ namespace Duality
 
 		private void OnObjectsAdded(List<GameObject> objList)
 		{
+			if (objList.Count == 0) return;
+
 			foreach (GameObject obj in objList)
 			{
 				this.RegisterEvents(obj);
 				if (this.GameObjectAdded != null)
 					this.GameObjectAdded(this, new GameObjectEventArgs(obj));
 			}
+
 			if (this.GameObjectsAdded != null)
 				this.GameObjectsAdded(this, new GameObjectGroupEventArgs(objList));
 		}
 		private void OnObjectsRemoved(List<GameObject> objList)
 		{
+			if (objList.Count == 0) return;
+
 			foreach (GameObject obj in objList)
 			{
 				this.UnregisterEvents(obj);
 				if (this.GameObjectRemoved != null)
 					this.GameObjectRemoved(this, new GameObjectEventArgs(obj));
 			}
+
 			if (this.GameObjectsRemoved != null)
 				this.GameObjectsRemoved(this, new GameObjectGroupEventArgs(objList));
 		}
