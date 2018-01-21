@@ -26,8 +26,7 @@ namespace Duality.Drawing
 		/// corresponding shader field name.
 		/// </summary>
 		public static readonly string ShaderFieldPrefix = "vertex";
-
-
+		
 		/// <summary>
 		/// Retrieves the <see cref="VertexDeclaration"/> for the vertex type specified
 		/// via generic parameter. This is a very efficient compile-time lookup.
@@ -42,7 +41,6 @@ namespace Duality.Drawing
 		/// Retrieves the <see cref="VertexDeclaration"/> for the specified type index.
 		/// Returns null if the type index is not valid.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
 		public static VertexDeclaration Get(int typeIndex)
 		{
@@ -83,6 +81,7 @@ namespace Duality.Drawing
 			VertexDeclaration declaration = specializedGet.Invoke(null, null) as VertexDeclaration;
 			return declaration;
 		}
+
 
 		private Type dataType;
 		private int typeIndex;

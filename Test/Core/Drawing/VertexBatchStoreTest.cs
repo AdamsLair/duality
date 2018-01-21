@@ -39,9 +39,16 @@ namespace Duality.Tests.Drawing
 				slice[0] = new VertexC1P3 { Color = new ColorRgba(9) };
 			}
 
+			// Assert correct storage property values
+			Assert.AreEqual(
+				1 + Math.Max(
+					VertexDeclaration.Get<VertexC1P3>().TypeIndex, 
+					VertexDeclaration.Get<VertexC1P3T2>().TypeIndex), 
+				memory.TypeIndexCount);
+
 			// Retrieve specific internal vertex arrays
-			VertexBatch<VertexC1P3> batchA = memory.GetBatch<VertexC1P3>();
-			VertexBatch<VertexC1P3T2> batchB = memory.GetBatch<VertexC1P3T2>();
+			VertexBatch<VertexC1P3> batchA = memory.GetBatches<VertexC1P3>().First() as VertexBatch<VertexC1P3>;
+			VertexBatch<VertexC1P3T2> batchB = memory.GetBatches<VertexC1P3T2>().First() as VertexBatch<VertexC1P3T2>;
 			RawList<VertexC1P3> verticesA = batchA.Vertices;
 			RawList<VertexC1P3T2> verticesB = batchB.Vertices;
 
@@ -66,6 +73,9 @@ namespace Duality.Tests.Drawing
 
 			// Clear all vertices
 			memory.Clear();
+
+			// Assert correct storage property values
+			Assert.AreEqual(0, memory.TypeIndexCount);
 
 			// Assert that the vertices are gone, but capacity isn't
 			Assert.AreEqual(0, batchA.Count);

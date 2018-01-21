@@ -146,11 +146,11 @@ namespace Duality.Backend.DefaultOpenTK
 			// Upload all vertex data that we'll need during rendering
 			if (vertexData != null)
 			{
-				this.perVertexTypeVBO.Count = Math.Max(this.perVertexTypeVBO.Count, vertexData.Batches.Count);
-				for (int typeIndex = 0; typeIndex < vertexData.Batches.Count; typeIndex++)
+				this.perVertexTypeVBO.Count = Math.Max(this.perVertexTypeVBO.Count, vertexData.TypeIndexCount);
+				for (int typeIndex = 0; typeIndex < vertexData.TypeIndexCount; typeIndex++)
 				{
 					// Filter out unused vertex types
-					IVertexBatch vertexBatch = vertexData.Batches[typeIndex];
+					IVertexBatch vertexBatch = vertexData.GetBatches(typeIndex).FirstOrDefault();
 					if (vertexBatch == null) continue;
 					if (vertexBatch.Count == 0) continue;
 

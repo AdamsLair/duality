@@ -10,31 +10,72 @@ namespace Duality.Drawing
 	[DontSerialize]
 	public class VertexBatchStore
 	{
-		private IVertexBatch[] batches = new IVertexBatch[4];
-		private object[] vertices = new object[4];
-
-		/// <summary>
-		/// [GET] An list of stored vertex batches where each one is located at
-		/// the type index of its matching <see cref="VertexDeclaration"/>. May contain
-		/// null at indices where no vertex data of that type has been stored.
-		/// </summary>
-		public IReadOnlyList<IVertexBatch> Batches
+		private struct StoredVertexData
 		{
-			get { return this.batches; }
+			public object Vertices;
+			public List<IVertexBatch> Batches;
+			public int ActiveBatchCount;
 		}
 
+		private int usedSlotCount = 0;
+		private StoredVertexData[] vertexDataSlots = new StoredVertexData[4];
+
+
 		/// <summary>
-		/// Retrieves the stored vertex batch that matches the vertex type as specified
-		/// by the generic type parameter.
+		/// Returns the number of used type index slots in current storage.
+		/// Counting from zero to <see cref="TypeIndexCount"/> - 1 will cover all
+		/// vertex type indices that may be present in this <see cref="VertexBatchStore"/>.
+		/// </summary>
+		public int TypeIndexCount
+		{
+			get { return this.usedSlotCount; }
+		}
+
+
+		/// <summary>
+		/// Retrieves all stored batches of a vertex type and adds them
+		/// to the specified list.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		public VertexBatch<T> GetBatch<T>() where T : struct, IVertexData
+		/// <param name="batches"></param>
+		public void GetBatches<T>(List<VertexBatch<T>> batches) where T : struct, IVertexData
 		{
 			int typeIndex = VertexDeclaration.Get<T>().TypeIndex;
-			if (typeIndex >= this.batches.Length) return null;
-			return this.batches[typeIndex] as VertexBatch<T>;
+			if (typeIndex >= this.usedSlotCount) return;
+			if (this.vertexDataSlots[typeIndex].Batches == null) return;
+
+			foreach (IVertexBatch batch in this.vertexDataSlots[typeIndex].Batches)
+			{
+				batches.Add((VertexBatch<T>)batch);
+			}
 		}
+		/// <summary>
+		/// Returns a read-only list reference containing all stored vertex batches
+		/// that match the specified vertex type. Returns null, if that type is
+		/// not represented in this <see cref="VertexBatchStore"/>.
+		/// </summary>
+		/// <param name="typeIndex"></param>
+		/// <returns></returns>
+		public IReadOnlyList<IVertexBatch> GetBatches<T>() where T : struct, IVertexData
+		{
+			int typeIndex = VertexDeclaration.Get<T>().TypeIndex;
+			if (typeIndex >= this.usedSlotCount) return null;
+			return this.vertexDataSlots[typeIndex].Batches;
+		}
+		/// <summary>
+		/// Returns a read-only list reference containing all stored vertex batches
+		/// that match the specified type index. Returns null, if that type index is
+		/// not represented in this <see cref="VertexBatchStore"/>.
+		/// </summary>
+		/// <param name="typeIndex"></param>
+		/// <returns></returns>
+		public IReadOnlyList<IVertexBatch> GetBatches(int typeIndex)
+		{
+			if (typeIndex < 0) return null;
+			if (typeIndex >= this.usedSlotCount) return null;
+			return this.vertexDataSlots[typeIndex].Batches;
+		}
+
 		/// <summary>
 		/// Rents a slice of the specified length in an appropriately typed vertex array,
 		/// allowing to write vertex data into it.
@@ -55,17 +96,27 @@ namespace Duality.Drawing
 				vertexList.Count - length, 
 				length);
 		}
+
 		/// <summary>
 		/// Clears all previously rented slices and resets all data that was written to
 		/// any of them before.
 		/// </summary>
 		public void Clear()
 		{
-			for (int i = 0; i < this.batches.Length; i++)
+			// Clear all vertex memory and reset counters, but keep it all around to avoid allocations
+			for (int i = 0; i < this.vertexDataSlots.Length; i++)
 			{
-				if (this.batches[i] == null) continue;
-				this.batches[i].Clear();
+				if (this.vertexDataSlots[i].Batches != null)
+				{
+					foreach (IVertexBatch batch in this.vertexDataSlots[i].Batches)
+					{
+						batch.Clear();
+					}
+				}
+				this.vertexDataSlots[i].ActiveBatchCount = 0;
+				this.vertexDataSlots[i].Vertices = null;
 			}
+			this.usedSlotCount = 0;
 		}
 
 		private RawList<T> GetVertexList<T>() where T : struct, IVertexData
@@ -73,21 +124,31 @@ namespace Duality.Drawing
 			// Fast path: Retrieve and return
 			int typeIndex = VertexDeclaration.Get<T>().TypeIndex;
 			RawList<T> vertexList = null;
-			if (typeIndex < this.vertices.Length && (vertexList = this.vertices[typeIndex] as RawList<T>) != null)
+			if (typeIndex < this.vertexDataSlots.Length && (vertexList = this.vertexDataSlots[typeIndex].Vertices as RawList<T>) != null)
 			{
 				return vertexList;
 			}
 			// Slow / init path
 			else
 			{
-				if (typeIndex >= this.vertices.Length)
+				// Allocate slot for vertex type
+				if (typeIndex >= this.vertexDataSlots.Length)
 				{
-					Array.Resize(ref this.batches, typeIndex + 1);
-					Array.Resize(ref this.vertices, typeIndex + 1);
+					Array.Resize(ref this.vertexDataSlots, typeIndex + 1);
 				}
-				VertexBatch<T> batch = new VertexBatch<T>();
-				this.batches[typeIndex] = batch;
-				this.vertices[typeIndex] = batch.Vertices;
+				this.usedSlotCount = Math.Max(this.usedSlotCount, typeIndex + 1);
+
+				// Init batch storage for vertex type
+				if (this.vertexDataSlots[typeIndex].Batches == null)
+				{
+					this.vertexDataSlots[typeIndex].Batches = new List<IVertexBatch>();
+					this.vertexDataSlots[typeIndex].Batches.Add(new VertexBatch<T>());
+				}
+
+				// Assign current vertex batch for fast access
+				VertexBatch<T> batch = (VertexBatch<T>)this.vertexDataSlots[typeIndex].Batches[0];
+				this.vertexDataSlots[typeIndex].Vertices = batch.Vertices;
+				this.vertexDataSlots[typeIndex].ActiveBatchCount = 1;
 				return batch.Vertices;
 			}
 		}
