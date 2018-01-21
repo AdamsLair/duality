@@ -17,11 +17,11 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Index of the first vertex to be rendered.
 		/// </summary>
-		public int Index;
+		public ushort Index;
 		/// <summary>
 		/// The number of vertices to be rendered, starting from <see cref="Index"/>.
 		/// </summary>
-		public int Count;
+		public ushort Count;
 
 		public override string ToString()
 		{
