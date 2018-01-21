@@ -232,7 +232,7 @@ namespace Duality.Tests.Cloning
 			// Don't fire the event when the Component was already there
 			Assert.IsFalse(componentAddedEventReceived);
 		}
-		[Test]public void CopyToGameObjectParentScene()
+		[Test] public void CopyToGameObjectParentScene()
 		{
 			Random rnd = new Random();
 			GameObject source = new GameObject("ObjectA");
@@ -257,7 +257,7 @@ namespace Duality.Tests.Cloning
 
 			Assert.AreSame(targetParent, target.Parent);
 		}
-		[Test]public void CopyToGameObjectAddGameObjectEvent()
+		[Test] public void CopyToGameObjectAddGameObjectEvent()
 		{
 			Random rnd = new Random();
 			bool gameObjectAddedEventReceived = false;
