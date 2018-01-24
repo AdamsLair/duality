@@ -38,7 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AdamsLair.WinForms, Version=1.1.13.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\AdamsLair.WinForms.1.1.13\lib\net45\AdamsLair.WinForms.dll</HintPath>
+      <HintPath>..\..\..\..\packages\AdamsLair.WinForms.1.1.14\lib\net45\AdamsLair.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Aga.Controls, Version=1.7.6.0, Culture=neutral, processorArchitecture=MSIL">
