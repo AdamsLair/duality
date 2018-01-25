@@ -50,33 +50,38 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(source, target);
 			Assert.AreEqual(source, target);
 		}
-		[Test] public void CloneHashSet_ValueType()
+
+		[Test] public void CloneHashSetValueType()
 		{
 			Random rnd = new Random();
-			var values = Enumerable.Range(0, 50).Select(i => rnd.Next());
+			IEnumerable<int> values = Enumerable.Range(0, 50).Select(i => rnd.Next());
 			HashSet<int> source = new HashSet<int>(values);
 			HashSet<int> target = source.DeepClone();
 
 			Assert.AreNotSame(source, target);
 			CollectionAssert.AreEquivalent(source, target);
 		}
-
-		[Test] public void CloneHashSet_ReferenceType()
+		[Test] public void CloneHashSetReferenceType()
 		{
-			var rnd = new Random();
-			var values = Enumerable.Range(0, 50).Select(i => new TestObject(rnd, 0));
+			Random rnd = new Random();
+			IEnumerable<TestObject> values = Enumerable
+				.Range(0, 50)
+				.Select(i => new TestObject(rnd, 0));
+
 			HashSet<TestObject> source = new HashSet<TestObject>(values);
 			HashSet<TestObject> target = source.DeepClone();
 
 			Assert.AreNotSame(source, target);
 			CollectionAssert.AreEquivalent(source, target);
 		}
-
-		[Test] public void CloneHashSet_ReferenceAndNulls()
+		[Test] public void CloneHashSetReferenceAndNulls()
 		{
-			var rnd = new Random();
-			var values = Enumerable.Range(0, 50).Select(i => new TestObject(rnd, 0));
-			values = values.Concat(new TestObject[] { null });
+			Random rnd = new Random();
+			IEnumerable<TestObject> values = Enumerable
+				.Range(0, 50)
+				.Select(i => new TestObject(rnd, 0))
+				.Concat(new TestObject[] { null });
+
 			HashSet<TestObject> source = new HashSet<TestObject>(values);
 			HashSet<TestObject> target = source.DeepClone();
 
@@ -403,7 +408,7 @@ namespace Duality.Tests.Cloning
 
 			GC.Collect();
 
-			var watch = new System.Diagnostics.Stopwatch();
+			Stopwatch watch = new System.Diagnostics.Stopwatch();
 			watch.Start();
 			for (int i = 0; i < results.Length; i++)
 			{
@@ -414,7 +419,7 @@ namespace Duality.Tests.Cloning
 
 			GC.Collect();
 
-			var watch2 = new System.Diagnostics.Stopwatch();
+			Stopwatch watch2 = new System.Diagnostics.Stopwatch();
 			watch2.Start();
 			for (int j = 0; j < results.Length; j++)
 			{

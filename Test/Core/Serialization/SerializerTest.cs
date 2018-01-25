@@ -282,8 +282,7 @@ namespace Duality.Tests.Serialization
 			this.TestWriteRead(new CultureInfo("en"), this.PrimaryFormat);
 		}
 
-		[Test]
-		public void SerializeHashSet_ValueType()
+		[Test] public void SerializeHashSetValueType()
 		{
 			Random rnd = new Random();
 			HashSet<int> source = new HashSet<int>(this.CreateArray<int>(50, () => rnd.Next()));
@@ -292,25 +291,27 @@ namespace Duality.Tests.Serialization
 			Assert.AreNotSame(source, target);
 			CollectionAssert.AreEquivalent(source, target);
 		}
-
-		[Test]
-		public void SerializeHashSet_ReferenceType()
+		[Test] public void SerializeHashSetReferenceType()
 		{
-			var rnd = new Random();
-			var values = Enumerable.Range(0, 50).Select(i => new TestObject(rnd, 0));
+			Random rnd = new Random();
+			IEnumerable<TestObject> values = Enumerable
+				.Range(0, 50)
+				.Select(i => new TestObject(rnd, 0));
+
 			HashSet<TestObject> source = new HashSet<TestObject>(values);
 			HashSet<TestObject> target = this.WriteRead(source, this.PrimaryFormat);
 
 			Assert.AreNotSame(source, target);
 			CollectionAssert.AreEquivalent(source, target);
 		}
-
-		[Test]
-		public void SerializeHashSet_ReferenceAndNulls()
+		[Test] public void SerializeHashSetReferenceAndNulls()
 		{
-			var rnd = new Random();
-			var values = Enumerable.Range(0, 50).Select(i => new TestObject(rnd, 0));
-			values = values.Concat(new TestObject[] { null });
+			Random rnd = new Random();
+			IEnumerable<TestObject> values = Enumerable
+				.Range(0, 50)
+				.Select(i => new TestObject(rnd, 0))
+				.Concat(new TestObject[] { null });
+
 			HashSet<TestObject> source = new HashSet<TestObject>(values);
 			HashSet<TestObject> target = this.WriteRead(source, this.PrimaryFormat);
 
@@ -417,7 +418,7 @@ namespace Duality.Tests.Serialization
 		}
 		[Test] public void PerformanceTest()
 		{
-			var watch = new System.Diagnostics.Stopwatch();
+			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
 			
 			Random rnd = new Random(0);
 			TestObject data = new TestObject(rnd, 5);
