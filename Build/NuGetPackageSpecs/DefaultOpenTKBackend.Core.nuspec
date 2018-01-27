@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DefaultOpenTK</id>
-    <version>2.0.20</version>
+    <version>2.0.21</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>OpenTK Backend</title>
@@ -13,10 +13,11 @@
     <summary>The default audiovisual backend layer for Duality.</summary>
     <description>The default audiovisual backend layer for Duality. It uses OpenGL and OpenAL, as provided by OpenTK.</description>
     <tags>Duality Core Plugin Backend</tags>
-    <releaseNotes>Updated OpenTK Dependency to 1.1.9
-#CHANGE: Updated OpenTK to 1.1.9, improving window management and mouse input handling.</releaseNotes>
+    <releaseNotes>Updated AdamsLair.OpenTK Dependency
+#CHANGE: Updated from AdamsLair.OpenTK 1.1.9 to 1.1.10.
+#FIX: This fixes a bug that would cause programmatic window resize operations to apply a wrong window size.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.14.3" />
+      <dependency id="AdamsLair.Duality" version="2.14.6" />
       <dependency id="AdamsLair.OpenTK" version="1.1.10" />
     </dependencies>
   </metadata>
