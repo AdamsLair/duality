@@ -19,12 +19,17 @@ namespace Duality.Samples.Benchmarks
 		private int spriteCount = 1000;
 
 		[DontSerialize] private Material sharedMaterial = new Material(DrawTechnique.Mask, Texture.DualityIcon);
-		[DontSerialize] private RawList<Vector2> spritePositions = new RawList<Vector2>();
+		[DontSerialize] private RawList<Vector3> spritePositions = new RawList<Vector3>();
 		[DontSerialize] private RawList<float> spriteAngles = new RawList<float>();
 		[DontSerialize] private RawList<VertexC1P3T2> vertices = new RawList<VertexC1P3T2>();
 		[DontSerialize] private Random random = new Random(1);
 
 
+		public Random Random
+		{
+			get { return this.random; }
+			set { this.random = value; }
+		}
 		public int SpriteCount
 		{
 			get { return this.spriteCount; }
@@ -41,17 +46,19 @@ namespace Duality.Samples.Benchmarks
 			this.spritePositions.Count = this.spriteCount;
 			this.spriteAngles.Count = this.spriteCount;
 
-			Vector2[] pos = this.spritePositions.Data;
+			Vector3[] pos = this.spritePositions.Data;
 			float[] angle = this.spriteAngles.Data;
 
-			Vector2 spriteBoxSize = new Vector2(1024, 1024);
+			Vector3 spriteBoxSize = new Vector3(1024, 1024, 5000);
 			for (int i = 0; i < this.spriteCount; i++)
 			{
-				pos[i] = this.random.NextVector2(
-					-spriteBoxSize.X * 0.5f, 
-					-spriteBoxSize.Y * 0.5f, 
-					spriteBoxSize.X, 
-					spriteBoxSize.Y);
+				pos[i] = this.random.NextVector3(
+						-spriteBoxSize.X * 0.5f,
+						-spriteBoxSize.Y * 0.5f,
+						0.0f,
+						spriteBoxSize.X,
+						spriteBoxSize.Y,
+						spriteBoxSize.Z);
 				angle[i] = this.random.NextFloat(MathF.RadAngle360);
 			}
 		}
@@ -72,7 +79,7 @@ namespace Duality.Samples.Benchmarks
 			float bottom = uvRect.BottomY;
 
 			VertexC1P3T2[] vert = this.vertices.Data;
-			Vector2[] pos = this.spritePositions.Data;
+			Vector3[] pos = this.spritePositions.Data;
 			float[] angle = this.spriteAngles.Data;
 			for (int i = 0; i < count; i++)
 			{
@@ -91,28 +98,28 @@ namespace Duality.Samples.Benchmarks
 
 				vert[i * 4 + 0].Pos.X = posTemp.X + (pos[i].X + edge1.X);
 				vert[i * 4 + 0].Pos.Y = posTemp.Y + (pos[i].Y + edge1.Y);
-				vert[i * 4 + 0].Pos.Z = posTemp.Z;
+				vert[i * 4 + 0].Pos.Z = posTemp.Z + pos[i].Z;
 				vert[i * 4 + 0].TexCoord.X = left;
 				vert[i * 4 + 0].TexCoord.Y = top;
 				vert[i * 4 + 0].Color = mainClr;
 
 				vert[i * 4 + 1].Pos.X = posTemp.X + (pos[i].X + edge2.X);
 				vert[i * 4 + 1].Pos.Y = posTemp.Y + (pos[i].Y + edge2.Y);
-				vert[i * 4 + 1].Pos.Z = posTemp.Z;
+				vert[i * 4 + 1].Pos.Z = posTemp.Z + pos[i].Z;
 				vert[i * 4 + 1].TexCoord.X = left;
 				vert[i * 4 + 1].TexCoord.Y = bottom;
 				vert[i * 4 + 1].Color = mainClr;
 
 				vert[i * 4 + 2].Pos.X = posTemp.X + (pos[i].X + edge3.X);
 				vert[i * 4 + 2].Pos.Y = posTemp.Y + (pos[i].Y + edge3.Y);
-				vert[i * 4 + 2].Pos.Z = posTemp.Z;
+				vert[i * 4 + 2].Pos.Z = posTemp.Z + pos[i].Z;
 				vert[i * 4 + 2].TexCoord.X = right;
 				vert[i * 4 + 2].TexCoord.Y = bottom;
 				vert[i * 4 + 2].Color = mainClr;
 
 				vert[i * 4 + 3].Pos.X = posTemp.X + (pos[i].X + edge4.X);
 				vert[i * 4 + 3].Pos.Y = posTemp.Y + (pos[i].Y + edge4.Y);
-				vert[i * 4 + 3].Pos.Z = posTemp.Z;
+				vert[i * 4 + 3].Pos.Z = posTemp.Z + pos[i].Z;
 				vert[i * 4 + 3].TexCoord.X = right;
 				vert[i * 4 + 3].TexCoord.Y = top;
 				vert[i * 4 + 3].Color = mainClr;

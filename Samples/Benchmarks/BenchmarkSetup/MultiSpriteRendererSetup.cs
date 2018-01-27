@@ -26,13 +26,14 @@ namespace Duality.Samples.Benchmarks
 		}
 
 
-		private GameObject CreateMultiSprite(Vector3 pos, int spriteCount)
+		private GameObject CreateMultiSprite(Vector3 pos, int spriteCount, int randomSeed)
 		{
 			GameObject obj = new GameObject("LotsOfSprites");
 			Transform transform = obj.AddComponent<Transform>();
 			BenchmarkMultiSpriteRenderer multiSprite = obj.AddComponent<BenchmarkMultiSpriteRenderer>();
 			transform.Pos = pos;
 			multiSprite.SpriteCount = spriteCount;
+			multiSprite.Random = new Random(randomSeed);
 			return obj;
 		}
 		private void SetupScene()
@@ -49,14 +50,14 @@ namespace Duality.Samples.Benchmarks
 				bool isVisible = (i % 2) == 0;
 				if (isVisible)
 				{
-					pos = new Vector3(0.0f, 0.0f, MathF.Pow(i, 2.0f) * 100.0f);
+					pos = new Vector3(0.0f, 0.0f, MathF.Pow(i * 0.5f, 2.0f) * 50.0f);
 				}
 				else
 				{
 					pos = new Vector3(10000, 10000, 0);
 				}
 
-				GameObject obj = this.CreateMultiSprite(pos, spritesPerObj);
+				GameObject obj = this.CreateMultiSprite(pos, spritesPerObj, i);
 				multiSprites.Add(obj);
 			}
 
