@@ -12,7 +12,7 @@ namespace Duality.Backend
 		void LoadData(
 			int sampleRate,
 			IntPtr data,
-			IntPtr size,
+			int size,
 			AudioDataLayout dataLayout,
 			AudioDataElementType dataElementType);
 	}
@@ -33,7 +33,7 @@ namespace Duality.Backend
 				buffer.LoadData(
 					sampleRate,
 					pinned.Address,
-					(IntPtr)(itemSize * dataLength),
+					itemSize * dataLength,
 					dataLayout,
 					dataElementType);
 			}

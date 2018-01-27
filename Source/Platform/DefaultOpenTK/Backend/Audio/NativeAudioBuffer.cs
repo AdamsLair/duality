@@ -22,7 +22,7 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			this.handle = AL.GenBuffer();
 		}
-		void INativeAudioBuffer.LoadData(int sampleRate, IntPtr data, IntPtr size, AudioDataLayout dataLayout, AudioDataElementType dataElementType)
+		void INativeAudioBuffer.LoadData(int sampleRate, IntPtr data, int size, AudioDataLayout dataLayout, AudioDataElementType dataElementType)
 		{
 			ALFormat format = ALFormat.Mono16;
 			if (dataLayout == AudioDataLayout.Mono)

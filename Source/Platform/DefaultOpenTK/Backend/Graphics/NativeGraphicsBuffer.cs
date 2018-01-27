@@ -54,7 +54,7 @@ namespace Duality.Backend.DefaultOpenTK
 			this.type = type;
 		}
 
-		public void LoadData(IntPtr data, IntPtr size)
+		public void LoadData(IntPtr data, int size)
 		{
 			NativeGraphicsBuffer prevBound = GetBound(this.type);
 			Bind(this.type, this);

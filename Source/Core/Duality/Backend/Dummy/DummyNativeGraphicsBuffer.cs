@@ -20,7 +20,7 @@ namespace Duality.Backend.Dummy
 			this.type = type;
 		}
 
-		void INativeGraphicsBuffer.LoadData(IntPtr data, IntPtr size) { }
+		void INativeGraphicsBuffer.LoadData(IntPtr data, int size) { }
 		void IDisposable.Dispose() { }
 	}
 }
