@@ -281,11 +281,41 @@ namespace Duality.Tests.Serialization
 			this.TestWriteRead(new CultureInfo("en-US"), this.PrimaryFormat);
 			this.TestWriteRead(new CultureInfo("en"), this.PrimaryFormat);
 		}
-		[Test] public void SerializeHashSet()
+
+		[Test] public void SerializeHashSetValueType()
 		{
 			Random rnd = new Random();
 			HashSet<int> source = new HashSet<int>(this.CreateArray<int>(50, () => rnd.Next()));
 			HashSet<int> target = this.WriteRead(source, this.PrimaryFormat);
+
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEquivalent(source, target);
+		}
+		[Test] public void SerializeHashSetReferenceType()
+		{
+			Random rnd = new Random();
+			IEnumerable<TestObject> values = Enumerable
+				.Range(0, 50)
+				.Select(i => new TestObject(rnd, 0));
+
+			HashSet<TestObject> source = new HashSet<TestObject>(values);
+			HashSet<TestObject> target = this.WriteRead(source, this.PrimaryFormat);
+
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEquivalent(source, target);
+		}
+		[Test] public void SerializeHashSetReferenceAndNulls()
+		{
+			Random rnd = new Random();
+			IEnumerable<TestObject> values = Enumerable
+				.Range(0, 50)
+				.Select(i => new TestObject(rnd, 0))
+				.Concat(new TestObject[] { null });
+
+			HashSet<TestObject> source = new HashSet<TestObject>(values);
+			HashSet<TestObject> target = this.WriteRead(source, this.PrimaryFormat);
+
+			Assert.AreNotSame(source, target);
 			CollectionAssert.AreEquivalent(source, target);
 		}
 
@@ -388,7 +418,7 @@ namespace Duality.Tests.Serialization
 		}
 		[Test] public void PerformanceTest()
 		{
-			var watch = new System.Diagnostics.Stopwatch();
+			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
 			
 			Random rnd = new Random(0);
 			TestObject data = new TestObject(rnd, 5);
@@ -401,7 +431,7 @@ namespace Duality.Tests.Serialization
 				// Write
 				for (int i = 0; i < results.Length; i++)
 				{
-					using (Serializer formatterWrite = Serializer.Create(stream, format))
+					using (Serializer formatterWrite = Serializer.Create(stream, this.format))
 					{
 						formatterWrite.WriteObject(data);
 					}

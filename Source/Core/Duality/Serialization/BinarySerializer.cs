@@ -672,7 +672,28 @@ namespace Duality.Serialization
 
 			// Retrieve surrogate if requested
 			ISerializeSurrogate objSurrogate = null;
-			if (surrogate && header.SerializeType != null) objSurrogate = header.SerializeType.Surrogate;
+			if (surrogate && header.SerializeType != null)
+			{
+				custom = true;
+				objSurrogate = header.SerializeType.Surrogate;
+				if (objSurrogate == null)
+				{
+					this.LocalLog.WriteError(
+						"Object type '{0}' was serialized using a surrogate, but no such surrogate was found for deserialization.",
+						LogFormat.Type(header.SerializeType.Type));
+				}
+			}
+
+			// If the object was serialized as a surrogate, deserialize its header first
+			CustomSerialIO surrogateHeader = null;
+			if (surrogate)
+			{
+				// Set fake object reference for surrogate constructor: No self-references allowed here.
+				this.idManager.Inject(null, header.ObjectId);
+
+				surrogateHeader = new CustomSerialIO();
+				surrogateHeader.Deserialize(this);
+			}
 
 			// Construct object
 			object obj = null;
@@ -680,14 +701,7 @@ namespace Duality.Serialization
 			{
 				if (objSurrogate != null)
 				{
-					custom = true;
-
-					// Set fake object reference for surrogate constructor: No self-references allowed here.
-					this.idManager.Inject(null, header.ObjectId);
-
-					CustomSerialIO customIO = new CustomSerialIO();
-					customIO.Deserialize(this);
-					try { obj = objSurrogate.ConstructObject(customIO, header.ObjectType); }
+					try { obj = objSurrogate.ConstructObject(surrogateHeader, header.ObjectType); }
 					catch (Exception e) { this.LogCustomDeserializationError(header.ObjectId, header.ObjectType, e); }
 				}
 				if (obj == null) obj = header.ObjectType.CreateInstanceOf();
@@ -709,7 +723,9 @@ namespace Duality.Serialization
 					objAsCustom = objSurrogate.SurrogateObject;
 				}
 				else
+				{
 					objAsCustom = obj as ISerializeExplicit;
+				}
 
 				if (objAsCustom != null)
 				{
@@ -849,10 +865,10 @@ namespace Duality.Serialization
 			long initialPos = this.reader.BaseStream.Position;
 			try
 			{
-				byte length = reader.ReadByte();
+				byte length = this.reader.ReadByte();
 				if (length != HeaderId.Length) throw new Exception("Header ID does not match.");
 
-				string headerId = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(HeaderId.Length), 0, HeaderId.Length);
+				string headerId = System.Text.Encoding.UTF8.GetString(this.reader.ReadBytes(HeaderId.Length), 0, HeaderId.Length);
 				if (headerId != HeaderId) throw new Exception("Header ID does not match.");
 
 				this.dataVersion = this.reader.ReadUInt16();

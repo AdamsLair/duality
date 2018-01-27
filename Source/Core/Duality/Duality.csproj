@@ -83,6 +83,7 @@
     <Compile Include="Backend\PluginLoader\AssemblyLoadedEventArgs.cs" />
     <Compile Include="Backend\PluginLoader\AssemblyResolveEventArgs.cs" />
     <Compile Include="Cloning\Surrogates\CultureInfoSurrogate.cs" />
+    <Compile Include="Cloning\Surrogates\HashSetSurrogate.cs" />
     <Compile Include="Cloning\Surrogates\RegexSurrogate.cs" />
     <Compile Include="Components\Diagnostics\VisualLogLayerRenderer.cs" />
     <Compile Include="Components\Other\ComponentExecutionOrder.cs" />
@@ -198,6 +199,7 @@
     <Compile Include="Resources\Shaders\ShaderFieldType.cs" />
     <Compile Include="Backend\Dummy\DummyAssemblyLoader.cs" />
     <Compile Include="Serialization\Surrogates\CultureInfoSurrogate.cs" />
+    <Compile Include="Serialization\Surrogates\HashSetSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\RegexSurrogate.cs" />
     <Compile Include="Serialization\UniqueIdentifyableHelper.cs" />
     <Compile Include="Utility\EventArgs\GameObjectGroupEventArgs.cs" />
