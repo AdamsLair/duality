@@ -23,6 +23,7 @@ namespace Duality.Cloning.Surrogates
 		}
 
 		private readonly Dictionary<Type, ReflectedHashsetData> _reflectedData = new Dictionary<Type, ReflectedHashsetData>();
+
 		public override bool MatchesType(TypeInfo t)
 		{
 			return
@@ -42,6 +43,9 @@ namespace Duality.Cloning.Surrogates
 				}
 				else
 				{
+					// In a hashset, there is no defined item identity, so we cannot find an equivalent 
+					// between a source item and a target item. Map the source to null, so a new target will
+					// be created during the clone operation.
 					foreach (object value in source)
 						setup.HandleObject(value, null);
 				}
@@ -73,9 +77,7 @@ namespace Duality.Cloning.Surrogates
 				target.Add(value);
 			}
 		}
-
-		private static void CopyDataTo_NotPlainOldData<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation)
-			where TItem : class
+		private static void CopyDataTo_NotPlainOldData<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation) where TItem : class
 		{
 			target.Clear();
 			foreach (TItem value in source)
