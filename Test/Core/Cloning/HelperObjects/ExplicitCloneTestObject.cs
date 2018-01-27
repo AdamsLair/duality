@@ -28,6 +28,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 			setup.HandleObject(this.ListField, targetCast.ListField);
 			setup.HandleObject(this.ListField2, targetCast.ListField2);
 			setup.HandleObject(this.DictField, targetCast.DictField);
+			setup.HandleObject(this.HashsetField, targetCast.HashsetField);
 		}
 		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
 		{
@@ -37,6 +38,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 			operation.HandleObject(this.ListField, ref target.ListField);
 			operation.HandleObject(this.ListField2, ref target.ListField2);
 			operation.HandleObject(this.DictField, ref target.DictField);
+			operation.HandleObject(this.HashsetField, ref target.HashsetField);
 		}
 	}
 	internal class ExplicitCloneTestObjectB : TestObject, ICloneExplicit

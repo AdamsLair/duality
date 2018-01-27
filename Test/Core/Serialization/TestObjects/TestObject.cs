@@ -17,6 +17,7 @@ namespace Duality.Tests.Serialization
 		public List<int> ListField;
 		public List<string> ListField2;
 		public Dictionary<string,TestObject> DictField;
+		public HashSet<TestObject> HashsetField;
 		
 		private TestObject() {}
 		public TestObject(Random rnd, int childCount = 5)
@@ -28,10 +29,15 @@ namespace Duality.Tests.Serialization
 			this.ListField		= Enumerable.Range(rnd.Next(-1000, 1000), 50).ToList();
 			this.ListField2		= Enumerable.Range(rnd.Next(-1000, 1000), 50).Select(i => i.ToString()).ToList();
 			this.DictField		= new Dictionary<string,TestObject>();
+			this.HashsetField	= new HashSet<TestObject>();
 
-			for (int i = childCount; i > 0; i--)
+			for (int i = (childCount + 1) / 2; i > 0; i--)
 			{
 				this.DictField.Add(rnd.Next().ToString(), new TestObject(rnd, childCount / 2));
+			}
+			for (int i = childCount / 2; i > 0; i--)
+			{
+				this.HashsetField.Add(new TestObject(rnd, childCount / 2));
 			}
 		}
 		public static TestObject CreateBackwardsCompatible(Random rnd, int maxChildren = 5)
@@ -45,6 +51,7 @@ namespace Duality.Tests.Serialization
 			obj.ListField		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).ToList();
 			obj.ListField2		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).Select(i => i.ToString()).ToList();
 			obj.DictField		= new Dictionary<string,TestObject>();
+			obj.HashsetField	= null;
 
 			for (int i = rnd.Next(0, maxChildren); i > 0; i--)
 			{
@@ -85,7 +92,8 @@ namespace Duality.Tests.Serialization
 				other.DataField == this.DataField &&
 				ListsEqual(other.ListField, this.ListField) &&
 				ListsEqual(other.ListField2, this.ListField2) &&
-				DictionariesEqual(other.DictField, this.DictField);
+				DictionariesEqual(other.DictField, this.DictField) &&
+				HashsetsEqual(other.HashsetField, this.HashsetField);
 		}
 
 		private static bool ListsEqual<T>(IList<T> first, IList<T> second)
@@ -96,6 +104,13 @@ namespace Duality.Tests.Serialization
 			return first.SequenceEqual(second);
 		}
 		private static bool DictionariesEqual<T,U>(IDictionary<T,U> first, IDictionary<T,U> second)
+		{
+			if (object.ReferenceEquals(first, second)) return true;
+			if (object.ReferenceEquals(first, null)) return false;
+			if (object.ReferenceEquals(second, null)) return false;
+			return first.SetEqual(second);
+		}
+		private static bool HashsetsEqual<T>(HashSet<T> first, HashSet<T> second)
 		{
 			if (object.ReferenceEquals(first, second)) return true;
 			if (object.ReferenceEquals(first, null)) return false;
