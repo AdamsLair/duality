@@ -17,7 +17,7 @@
 #CHANGE: Updated OpenTK to 1.1.9, improving window management and mouse input handling.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.14.3" />
-      <dependency id="AdamsLair.OpenTK" version="1.1.9" />
+      <dependency id="AdamsLair.OpenTK" version="1.1.10" />
     </dependencies>
   </metadata>
   <files>
