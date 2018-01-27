@@ -667,9 +667,6 @@ namespace Duality.Backend.DefaultOpenTK
 			NativeGraphicsBuffer indexBuffer = (buffer.IndexCount > 0 ? buffer.NativeIndex : null) as NativeGraphicsBuffer;
 			IndexDataElementType indexType = buffer.IndexType;
 
-			VertexDrawRange[] rangeData = ranges.Data;
-			int rangeCount = ranges.Count;
-
 			// Since the QUADS primitive is deprecated in OpenGL 3.0 and not available in OpenGL ES,
 			// we'll emulate this with an ad-hoc index buffer object that we generate here.
 			if (mode == VertexMode.Quads)
@@ -730,6 +727,8 @@ namespace Duality.Backend.DefaultOpenTK
 					NativeGraphicsBuffer.Bind(GraphicsBufferType.Index, null);
 
 					PrimitiveType openTkMode = GetOpenTKVertexMode(mode);
+					VertexDrawRange[] rangeData = ranges.Data;
+					int rangeCount = ranges.Count;
 					for (int r = 0; r < rangeCount; r++)
 					{
 						GL.DrawArrays(

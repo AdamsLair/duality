@@ -112,6 +112,11 @@ namespace Duality.Drawing
 		/// </param>
 		/// <param name="vertexCount">The number of vertices to add, from the beginning of the buffer.</param>
 		void AddVertices<T>(BatchInfo material, VertexMode vertexMode, T[] vertexBuffer, int vertexCount) where T : struct, IVertexData;
+		/// <summary>
+		/// Adds an already prepared batch to the drawing devices rendering schedule.
+		/// </summary>
+		/// <param name="batch"></param>
+		void AddBatch(DrawBatch batch);
 	}
 
 	/// <summary>

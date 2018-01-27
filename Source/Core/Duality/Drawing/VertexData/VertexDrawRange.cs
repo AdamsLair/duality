@@ -23,6 +23,12 @@ namespace Duality.Drawing
 		/// </summary>
 		public int Count;
 
+		public VertexDrawRange(int index, int count)
+		{
+			this.Index = index;
+			this.Count = count;
+		}
+
 		public override string ToString()
 		{
 			return string.Format(

@@ -49,6 +49,7 @@ namespace Duality.Drawing
 			get { return this.material; }
 		}
 
+		public DrawBatch(VertexBuffer buffer, RawList<VertexDrawRange> ranges, VertexMode mode, Material material) : this(buffer, ranges, mode, material.Info) { }
 		public DrawBatch(VertexBuffer buffer, RawList<VertexDrawRange> ranges, VertexMode mode, BatchInfo material)
 		{
 			this.vertexBuffer = buffer;

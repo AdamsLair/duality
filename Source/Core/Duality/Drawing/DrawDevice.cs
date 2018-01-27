@@ -589,6 +589,17 @@ namespace Duality.Drawing
 			++this.numRawBatches;
 		}
 		/// <summary>
+		/// Adds an already prepared batch to the drawing devices rendering schedule.
+		/// </summary>
+		/// <param name="batch"></param>
+		public void AddBatch(DrawBatch batch)
+		{
+			bool sortByDepth = !this.DepthWrite || batch.Material.Technique.Res.NeedsZSort;
+			RawList<DrawBatch> batchBuffer = sortByDepth ? this.batchBufferBlended : this.batchBufferSolid;
+			batchBuffer.Add(batch);
+			++this.numRawBatches;
+		}
+		/// <summary>
 		/// Generates a single drawcall that renders a fullscreen quad using the specified material.
 		/// Assumes that the <see cref="DrawDevice"/> is set up to render in screen space.
 		/// </summary>
