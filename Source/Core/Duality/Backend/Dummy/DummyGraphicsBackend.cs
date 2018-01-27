@@ -70,6 +70,6 @@ namespace Duality.Backend.Dummy
 			return new DummyNativeWindow();
 		}
 
-		void IGraphicsBackend.GetOutputPixelData<T>(T[] buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int x, int y, int width, int height) { }
+		void IGraphicsBackend.GetOutputPixelData(IntPtr target, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int x, int y, int width, int height) { }
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 using OpenTK;
 using OpenTK.Graphics;
@@ -328,41 +329,49 @@ namespace Duality.Backend.DefaultOpenTK
 			return this.activeWindow;
 		}
 
-		void IGraphicsBackend.GetOutputPixelData<T>(T[] buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int x, int y, int width, int height)
+		void IGraphicsBackend.GetOutputPixelData(IntPtr buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int x, int y, int width, int height)
 		{
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
 			NativeRenderTarget lastRt = NativeRenderTarget.BoundRT;
 			NativeRenderTarget.Bind(null);
 			{
-				GL.ReadPixels(x, y, width, height, dataLayout.ToOpenTK(), dataElementType.ToOpenTK(), buffer);
-
-				// The image will be upside-down because of OpenGL's coordinate system. Flip it.
-				int structSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
-				T[] switchLine = new T[width * 4 / structSize];
+				// Use a temporary local buffer, since the image will be upside-down because
+				// of OpenGL's coordinate system and we'll need to flip it before returning.
+				byte[] byteData = new byte[width * height * 4];
+				
+				// Retrieve pixel data
+				GL.ReadPixels(x, y, width, height, dataLayout.ToOpenTK(), dataElementType.ToOpenTK(), byteData);
+				
+				// Flip the retrieved image vertically
+				int bytesPerLine = width * 4;
+				byte[] switchLine = new byte[width * 4];
 				for (int flipY = 0; flipY < height / 2; flipY++)
 				{
-					int lineIndex = flipY * width * 4 / structSize;
-					int lineIndex2 = (height - 1 - flipY) * width * 4 / structSize;
-
+					int lineIndex = flipY * width * 4;
+					int lineIndex2 = (height - 1 - flipY) * width * 4;
+					
 					// Copy the current line to the switch buffer
-					for (int lineX = 0; lineX < width; lineX++)
+					for (int lineX = 0; lineX < bytesPerLine; lineX++)
 					{
-						switchLine[lineX] = buffer[lineIndex + lineX];
+						switchLine[lineX] = byteData[lineIndex + lineX];
 					}
 
 					// Copy the opposite line to the current line
-					for (int lineX = 0; lineX < width; lineX++)
+					for (int lineX = 0; lineX < bytesPerLine; lineX++)
 					{
-						buffer[lineIndex + lineX] = buffer[lineIndex2 + lineX];
+						byteData[lineIndex + lineX] = byteData[lineIndex2 + lineX];
 					}
 
 					// Copy the switch buffer to the opposite line
-					for (int lineX = 0; lineX < width; lineX++)
+					for (int lineX = 0; lineX < bytesPerLine; lineX++)
 					{
-						buffer[lineIndex2 + lineX] = switchLine[lineX];
+						byteData[lineIndex2 + lineX] = switchLine[lineX];
 					}
 				}
+				
+				// Copy the flipped data to the output buffer
+				Marshal.Copy(byteData, 0, buffer, width * height * 4);
 			}
 			NativeRenderTarget.Bind(lastRt);
 		}

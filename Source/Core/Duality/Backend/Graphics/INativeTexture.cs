@@ -49,7 +49,9 @@ namespace Duality.Backend
 
 		/// <summary>
 		/// Retrieves the textures pixel data from video memory in the Rgba8 format.
-		/// As a storage array type, either byte or <see cref="ColorRgba"/> is recommended.
+		/// 
+		/// Note that generic, array-based variants of this method are available via extension method
+		/// when using the Duality.Backend namespace.
 		/// </summary>
 		/// <param name="target">The buffer to store pixel values into.</param>
 		/// <param name="dataLayout">The desired color layout of the specified buffer.</param>

@@ -9,13 +9,7 @@ namespace Duality.Backend.Dummy
 	internal class DummyNativeRenderTarget : INativeRenderTarget
 	{
 		void INativeRenderTarget.Setup(IReadOnlyList<INativeTexture> targets, AAQuality multisample, bool depthBuffer) { }
-		void INativeRenderTarget.GetData<T>(T[] buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int targetIndex, int x, int y, int width, int height)
-		{
-			for (int i = 0; i < buffer.Length; i++)
-			{
-				buffer[i] = default(T);
-			}
-		}
+		void INativeRenderTarget.GetData(IntPtr buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int targetIndex, int x, int y, int width, int height) { }
 		void IDisposable.Dispose() { }
 	}
 }

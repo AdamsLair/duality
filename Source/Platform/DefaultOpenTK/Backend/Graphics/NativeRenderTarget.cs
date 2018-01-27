@@ -190,7 +190,7 @@ namespace Duality.Backend.DefaultOpenTK
 			else
 				this.SetupNonMultisampled();
 		}
-		void INativeRenderTarget.GetData<T>(T[] buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int targetIndex, int x, int y, int width, int height)
+		void INativeRenderTarget.GetData(IntPtr buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int targetIndex, int x, int y, int width, int height)
 		{
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 			
