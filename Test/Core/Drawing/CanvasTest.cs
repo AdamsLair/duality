@@ -64,9 +64,11 @@ namespace Duality.Tests.Drawing
 			this.TestImagesEqual(TestRes.CanvasTestAllShapes, c => 
 			{
 				// Background
+				c.PushState();
 				c.State.ColorTint = new ColorRgba(128, 192, 255);
+				c.State.DepthOffset += 100.0f;
 				c.FillRect(0, 0, c.Width, c.Height);
-				c.State.ColorTint = ColorRgba.White;
+				c.PopState();
 
 				// White shapes
 				this.DrawTestImageRow(c, 100, 100);
@@ -81,9 +83,12 @@ namespace Duality.Tests.Drawing
 			this.TestImagesEqual(TestRes.CanvasTestAllShapesTransformed, c => 
 			{
 				// Background
+				c.PushState();
 				c.State.ColorTint = new ColorRgba(128, 192, 255);
+				c.State.DepthOffset += 100.0f;
 				c.FillRect(0, 0, c.Width, c.Height);
-				c.State.ColorTint = ColorRgba.White;
+				c.PopState();
+
 				c.State.TransformHandle = new Vector2(5, 5);
 				c.State.TransformScale = new Vector2(0.75f, 0.75f);
 				c.State.TransformAngle = MathF.RadAngle30;
