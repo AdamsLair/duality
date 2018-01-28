@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
@@ -72,6 +73,7 @@ namespace Duality.Editor.Controls
 			{
 				IListPropertyEditor listEditor = editor as IListPropertyEditor;
 				listEditor.ListIndexSetter = this.EditorListIndexSetter;
+				listEditor.ListResizer = (lists, size, elementType) => this.EditorListResizer(editor, lists, size, elementType);
 			}
 			if (editor is IDictionaryPropertyEditor)
 			{
@@ -189,6 +191,12 @@ namespace Duality.Editor.Controls
 		private void EditorDictionaryKeySetter(PropertyInfo indexer, IEnumerable<object> targetObjects, IEnumerable<object> values, object key)
 		{
 			UndoRedoManager.Do(new EditPropertyAction(this, indexer, targetObjects, values, new object[] {key}));
+		}
+		private bool EditorListResizer(PropertyEditor editor, IList<IList> targetLists, int size, Type elementType)
+		{
+			UndoRedoManager.Do(new ResizeListAction(editor, targetLists, size, elementType));
+			return false;
+			//return targetLists.Any(list => list is Array); // TODO: move this logic into action
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
