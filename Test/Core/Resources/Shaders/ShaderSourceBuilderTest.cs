@@ -245,5 +245,90 @@ namespace Duality.Tests.Resources
 			string resultShader = builder.Build();
 			Assert.AreEqual(expectedResultShader, resultShader);
 		}
+		[Test] public void VariableMetadata()
+		{
+			ShaderSourceBuilder builder = new ShaderSourceBuilder();
+			string mainShader = new StringBuilder()
+				.AppendLine("#pragma duality type ColorRgba")
+				.AppendLine("#pragma duality description \"Test mainUniform Desc\"")
+				.AppendLine("uniform vec4 mainUniform;")
+				.AppendLine()
+				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality description \"Test sharedUniform Desc\"")
+				.AppendLine("// Some comment")
+				.AppendLine("uniform float sharedUniform;")
+				.AppendLine()
+				.AppendLine("#pragma duality type ColorRgba")
+				.AppendLine()
+				.AppendLine("#pragma duality description \"Test mainAttribute Desc\"")
+				.AppendLine()
+				.AppendLine("in vec4 mainAttribute;")
+				.AppendLine()
+				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality description \"Test sharedAttribute Desc\"")
+				.AppendLine()
+				.AppendLine("in vec4 sharedAttribute;")
+				.AppendLine()
+				.AppendLine("void main()")
+				.AppendLine("{")
+				.AppendLine("  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);")
+				.AppendLine("}")
+				.ToString();
+			string sharedShader = new StringBuilder()
+				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality description \"Test sharedUniform Desc\"")
+				.AppendLine("uniform float sharedUniform;")
+				.AppendLine()
+				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality description \"Test sharedAttribute Desc\"")
+				.AppendLine("in vec4 sharedAttribute;")
+				.AppendLine()
+				.AppendLine("vec4 sharedFuncA(vec4 pos) { return pos; }")
+				.ToString();
+			string expectedResultShader = new StringBuilder()
+				.AppendLine("#line 10000")
+				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality description \"Test sharedUniform Desc\"")
+				.AppendLine("uniform float sharedUniform;")
+				.AppendLine()
+				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality description \"Test sharedAttribute Desc\"")
+				.AppendLine("in vec4 sharedAttribute;")
+				.AppendLine()
+				.AppendLine("vec4 sharedFuncA(vec4 pos) { return pos; }")
+				.AppendLine()
+				.AppendLine("#line 1")
+				.AppendLine("#pragma duality type ColorRgba")
+				.AppendLine("#pragma duality description \"Test mainUniform Desc\"")
+				.AppendLine("uniform vec4 mainUniform;")
+				.AppendLine()
+				.AppendLine("// #pragma duality type Single")
+				.AppendLine("// #pragma duality description \"Test sharedUniform Desc\"")
+				.AppendLine("// Some comment")
+				.AppendLine("// uniform float sharedUniform;")
+				.AppendLine()
+				.AppendLine("#pragma duality type ColorRgba")
+				.AppendLine()
+				.AppendLine("#pragma duality description \"Test mainAttribute Desc\"")
+				.AppendLine()
+				.AppendLine("in vec4 mainAttribute;")
+				.AppendLine()
+				.AppendLine("// #pragma duality type Single")
+				.AppendLine("// #pragma duality description \"Test sharedAttribute Desc\"")
+				.AppendLine()
+				.AppendLine("// in vec4 sharedAttribute;")
+				.AppendLine()
+				.AppendLine("void main()")
+				.AppendLine("{")
+				.AppendLine("  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);")
+				.AppendLine("}")
+				.ToString();
+
+			builder.SetMainChunk(mainShader);
+			builder.AddSharedChunk(sharedShader);
+
+			string resultShader = builder.Build();
+			Assert.AreEqual(expectedResultShader, resultShader);
+		}
 	}
 }
