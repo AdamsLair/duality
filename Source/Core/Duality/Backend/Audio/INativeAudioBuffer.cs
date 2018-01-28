@@ -27,6 +27,9 @@ namespace Duality.Backend
 			AudioDataLayout dataLayout,
 			AudioDataElementType dataElementType) where T : struct
 		{
+			if (dataLength < 0) throw new ArgumentOutOfRangeException("dataLength", "Data length cannot be negative");
+			if (dataLength > data.Length) throw new ArgumentOutOfRangeException("dataLength", "Data length cannot exceed the specified arrays length.");
+
 			int itemSize = Marshal.SizeOf(typeof(T));
 			using (PinnedArrayHandle pinned = new PinnedArrayHandle(data))
 			{

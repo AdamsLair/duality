@@ -84,46 +84,52 @@ namespace Duality.Drawing
 		}
 
 		/// <summary>
-		/// Clears this buffer from all vertex data.
+		/// Clears this buffer from all previous vertex data and re-initializes it
+		/// with the specified number of vertices.
 		/// </summary>
-		public void ClearVertexData()
-		{
-			this.vertexCount = 0;
-		}
-		/// <summary>
-		/// Uploads the specified vertices to the GPU.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="vertexData"></param>
-		/// <param name="vertexCount"></param>
-		public void LoadVertexData<T>(T[] vertexData, int vertexCount) where T : struct, IVertexData
-		{
-			this.LoadVertexData(
-				VertexDeclaration.Get<T>(),
-				vertexData,
-				vertexCount);
-		}
-		/// <summary>
-		/// Uploads the specified vertices to the GPU using a specific <see cref="VertexDeclaration"/>
-		/// to describe the data layout that is used. Note that this overload allows to use any kind
-		/// of struct array.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="vertexType"></param>
-		/// <param name="vertexData"></param>
-		/// <param name="vertexCount"></param>
-		public void LoadVertexData<T>(VertexDeclaration vertexType, T[] vertexData, int vertexCount) where T : struct
+		public void SetupVertexData<T>(int count) where T : struct, IVertexData
 		{
 			this.EnsureNativeVertex();
 
-			this.vertexCount = vertexCount;
-			this.vertexType = vertexType;
+			this.vertexCount = count;
+			this.vertexType = VertexDeclaration.Get<T>();
 
-			this.nativeVertex.LoadData(vertexData, vertexCount);
+			this.nativeVertex.SetupEmpty<T>(count);
 		}
 		/// <summary>
-		/// Uploads the specified vertices to the GPU using a specific <see cref="VertexDeclaration"/>
-		/// to describe the data layout that is used.
+		/// Clears this buffer from all previous vertex data and re-initializes it
+		/// with the specified number of vertices.
+		/// </summary>
+		public void SetupVertexData(VertexDeclaration vertexType, int count)
+		{
+			this.EnsureNativeVertex();
+
+			this.vertexCount = count;
+			this.vertexType = vertexType;
+
+			this.nativeVertex.SetupEmpty(count * vertexType.Size);
+		}
+
+		/// <summary>
+		/// Uploads the specified vertices to this buffer, replacing all previous contents.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="data"></param>
+		/// <param name="index"></param>
+		/// <param name="count"></param>
+		public void LoadVertexData<T>(T[] data, int index, int count) where T : struct, IVertexData
+		{
+			this.EnsureNativeVertex();
+
+			this.vertexCount = count;
+			this.vertexType = VertexDeclaration.Get<T>();
+
+			this.nativeVertex.LoadData(data, index, count);
+		}
+		/// <summary>
+		/// Uploads the specified vertices to this buffer, replacing all previous contents and 
+		/// using a specific <see cref="VertexDeclaration"/> to describe the data layout that is used.
+		/// This method is unsafe. Where possible, prefer the overload that accepts a managed array.
 		/// </summary>
 		/// <param name="vertexType"></param>
 		/// <param name="vertexData"></param>
@@ -139,59 +145,94 @@ namespace Duality.Drawing
 		}
 
 		/// <summary>
-		/// Clears this buffer from all index data.
+		/// Uploads the specified vertices into a subsection of this buffer, keeping all other content.
+		/// This method changes neither size nor vertex type associated with this buffer.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="bufferIndex">Offset in this buffer to which the new data will be copied, as number of elements.</param>
+		/// <param name="data"></param>
+		/// <param name="index"></param>
+		/// <param name="count"></param>
+		public void LoadVertexSubData<T>(int bufferIndex, T[] data, int index, int count) where T : struct, IVertexData
+		{
+			this.EnsureNativeVertex();
+			this.nativeVertex.LoadSubData(bufferIndex, data, index, count);
+		}
+		/// <summary>
+		/// Uploads the specified vertices into a subsection of this buffer, keeping all other content.
+		/// This method changes neither size nor vertex type associated with this buffer.
+		/// This method is unsafe. Where possible, prefer the overload that accepts a managed array.
+		/// </summary>
+		/// <param name="bufferIndex">Offset in this buffer to which the new data will be copied, as number of elements.</param>
+		/// <param name="vertexData"></param>
+		/// <param name="vertexCount"></param>
+		public void LoadVertexSubData(VertexDeclaration vertexType, int bufferIndex, IntPtr vertexData, int vertexCount)
+		{
+			this.EnsureNativeVertex();
+			this.nativeVertex.LoadSubData(
+				IntPtr.Add(IntPtr.Zero, bufferIndex * vertexType.Size), 
+				vertexData, 
+				vertexCount);
+		}
+
+		/// <summary>
+		/// Clears this buffer from all previous index data and re-initializes it
+		/// with the specified number of index elements.
 		/// 
 		/// Index data is optional - if not specified, vertices will be rendered in order of definition.
 		/// </summary>
-		public void ClearIndexData()
+		public void SetupIndexData<T>(int count) where T : struct
 		{
-			this.indexCount = 0;
+			IndexDataElementType elementType = GetIndexElementType<T>();
+
+			this.EnsureNativeVertex();
+
+			this.indexCount = count;
+			this.indexType = elementType;
+
+			this.nativeVertex.SetupEmpty<T>(count);
 		}
+		/// <summary>
+		/// Clears this buffer from all previous index data and re-initializes it
+		/// with the specified number of index elements.
+		/// 
+		/// Index data is optional - if not specified, vertices will be rendered in order of definition.
+		/// </summary>
+		public void SetupIndexData(IndexDataElementType indexType, int count)
+		{
+			this.EnsureNativeVertex();
+
+			this.indexCount = count;
+			this.indexType = indexType;
+
+			int indexSize = GetIndexElementSize(indexType);
+			this.nativeVertex.SetupEmpty(count * indexSize);
+		}
+
 		/// <summary>
 		/// Uploads the specified indices to the GPU.
 		/// 
 		/// Index data is optional - if not specified, vertices will be rendered in order of definition.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="indexData"></param>
-		/// <param name="indexCount"></param>
-		public void LoadIndexData<T>(T[] indexData, int indexCount) where T : struct
+		/// <param name="data"></param>
+		/// <param name="index"></param>
+		/// <param name="count"></param>
+		public void LoadIndexData<T>(T[] data, int index, int count) where T : struct
 		{
-			IndexDataElementType elementType;
-			if      (typeof(T) == typeof(byte))   elementType = IndexDataElementType.UnsignedByte;
-			else if (typeof(T) == typeof(ushort)) elementType = IndexDataElementType.UnsignedShort;
-			else
-			{
-				throw new ArgumentException(string.Format(
-					"Index type {0} is not supported. Either specify the type explicitly, or use any of the types listed in {1}",
-					typeof(T).Name,
-					typeof(IndexDataElementType).Name));
-			}
+			IndexDataElementType elementType = GetIndexElementType<T>();
 
-			this.LoadIndexData<T>(elementType, indexData, indexCount);
-		}
-		/// <summary>
-		/// Uploads the specified indices to the GPU using a specific <see cref="IndexDataElementType"/>
-		/// to describe the data type that is used.
-		/// 
-		/// Index data is optional - if not specified, vertices will be rendered in order of definition.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="indexType"></param>
-		/// <param name="indexData"></param>
-		/// <param name="indexCount"></param>
-		public void LoadIndexData<T>(IndexDataElementType indexType, T[] indexData, int indexCount) where T : struct
-		{
 			this.EnsureNativeIndex();
 
-			this.indexCount = indexCount;
-			this.indexType = indexType;
+			this.indexCount = count;
+			this.indexType = elementType;
 
-			this.nativeIndex.LoadData(indexData, indexCount);
+			this.nativeIndex.LoadData(data, index, count);
 		}
 		/// <summary>
 		/// Uploads the specified indices to the GPU using a specific <see cref="IndexDataElementType"/>
 		/// to describe the data type that is used.
+		/// This method is unsafe. Where possible, prefer the overload that accepts a managed array.
 		/// 
 		/// Index data is optional - if not specified, vertices will be rendered in order of definition.
 		/// </summary>
@@ -205,10 +246,46 @@ namespace Duality.Drawing
 			this.indexCount = indexCount;
 			this.indexType = indexType;
 
-			int indexSize = 0;
-			if      (indexType == IndexDataElementType.UnsignedByte)  indexSize = sizeof(byte);
-			else if (indexType == IndexDataElementType.UnsignedShort) indexSize = sizeof(ushort);
+			int indexSize = GetIndexElementSize(indexType);
 			this.nativeIndex.LoadData(indexData, indexCount * indexSize);
+		}
+
+		/// <summary>
+		/// Uploads the specified indices into a subsection of this buffer, keeping all other content.
+		/// This method changes neither size nor index element type associated with this buffer.
+		/// 
+		/// Index data is optional - if not specified, vertices will be rendered in order of definition.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="bufferIndex">Offset in this buffer to which the new data will be copied, as number of elements.</param>
+		/// <param name="data"></param>
+		/// <param name="index"></param>
+		/// <param name="count"></param>
+		public void LoadIndexSubData<T>(int bufferIndex, T[] data, int index, int count) where T : struct
+		{
+			this.EnsureNativeIndex();
+			this.nativeIndex.LoadSubData(bufferIndex, data, index, count);
+		}
+		/// <summary>
+		/// Uploads the specified indices into a subsection of this buffer, keeping all other content.
+		/// This method changes neither size nor index element type associated with this buffer.
+		/// This method is unsafe. Where possible, prefer the overload that accepts a managed array.
+		/// 
+		/// Index data is optional - if not specified, vertices will be rendered in order of definition.
+		/// </summary>
+		/// <param name="bufferIndex">Offset in this buffer to which the new data will be copied, as number of elements.</param>
+		/// <param name="indexType"></param>
+		/// <param name="indexData"></param>
+		/// <param name="indexCount"></param>
+		public void LoadIndexSubData(IndexDataElementType indexType, int bufferIndex, IntPtr indexData, int indexCount)
+		{
+			this.EnsureNativeIndex();
+
+			int indexSize = GetIndexElementSize(indexType);
+			this.nativeIndex.LoadSubData(
+				IntPtr.Add(IntPtr.Zero, bufferIndex * indexSize),
+				indexData,
+				indexCount);
 		}
 
 		private void EnsureNativeVertex()
@@ -220,6 +297,28 @@ namespace Duality.Drawing
 		{
 			if (this.nativeIndex == null)
 				this.nativeIndex = DualityApp.GraphicsBackend.CreateBuffer(GraphicsBufferType.Index);
+		}
+
+		private static IndexDataElementType GetIndexElementType<T>() where T : struct
+		{
+			IndexDataElementType elementType;
+			if      (typeof(T) == typeof(byte))   elementType = IndexDataElementType.UnsignedByte;
+			else if (typeof(T) == typeof(ushort)) elementType = IndexDataElementType.UnsignedShort;
+			else
+			{
+				throw new ArgumentException(string.Format(
+					"Index type {0} is not supported. Either specify the type explicitly, or use any of the types listed in {1}",
+					typeof(T).Name,
+					typeof(IndexDataElementType).Name));
+			}
+			return elementType;
+		}
+		private static int GetIndexElementSize(IndexDataElementType indexType)
+		{
+			int indexSize = 0;
+			if      (indexType == IndexDataElementType.UnsignedByte)  indexSize = sizeof(byte);
+			else if (indexType == IndexDataElementType.UnsignedShort) indexSize = sizeof(ushort);
+			return indexSize;
 		}
 	}
 }

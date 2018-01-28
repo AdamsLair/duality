@@ -129,7 +129,7 @@ namespace Duality.Samples.Benchmarks
 			// Upload vertices to the GPU
 			if (this.geometry == null)
 				this.geometry = new VertexBuffer();
-			this.geometry.LoadVertexData(vert, count * 4);
+			this.geometry.LoadVertexData(vert, 0, count * 4);
 
 			// Prepare a static drawing batch we can re-use
 			this.batch = new DrawBatch(

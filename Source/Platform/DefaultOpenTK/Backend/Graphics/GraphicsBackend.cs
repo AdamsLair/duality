@@ -685,7 +685,8 @@ namespace Duality.Backend.DefaultOpenTK
 
 				this.GenerateQuadIndices(ranges, this.sharedBatchIndices);
 				this.sharedBatchIBO.LoadData(
-					this.sharedBatchIndices.Data, 
+					this.sharedBatchIndices.Data,
+					0,
 					this.sharedBatchIndices.Count);
 				
 				GL.DrawElements(

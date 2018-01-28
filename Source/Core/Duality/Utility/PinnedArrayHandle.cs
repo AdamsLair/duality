@@ -31,6 +31,7 @@ namespace Duality
 		/// <param name="managedArray"></param>
 		public PinnedArrayHandle(Array managedArray)
 		{
+			if (managedArray == null) throw new ArgumentNullException("managedArray");
 			this.handle = GCHandle.Alloc(managedArray, GCHandleType.Pinned);
 			this.dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(managedArray, 0);
 		}

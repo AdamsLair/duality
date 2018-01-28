@@ -38,6 +38,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 		private int handle = 0;
 		private GraphicsBufferType type = GraphicsBufferType.Vertex;
+		private int bufferSize = 0;
 
 		public int Handle
 		{
@@ -47,6 +48,10 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			get { return this.type; }
 		}
+		public int Length
+		{
+			get { return this.bufferSize; }
+		}
 
 		public NativeGraphicsBuffer(GraphicsBufferType type)
 		{
@@ -54,14 +59,54 @@ namespace Duality.Backend.DefaultOpenTK
 			this.type = type;
 		}
 
+		public void SetupEmpty(int size)
+		{
+			if (size < 0) throw new ArgumentException("Size cannot be less than zero.");
+
+			NativeGraphicsBuffer prevBound = GetBound(this.type);
+			Bind(this.type, this);
+
+			BufferTarget target = ToOpenTKBufferType(this.type);
+			GL.BufferData(target, size, IntPtr.Zero, BufferUsageHint.StreamDraw);
+
+			this.bufferSize = size;
+
+			Bind(this.type, prevBound);
+		}
 		public void LoadData(IntPtr data, int size)
 		{
+			if (size < 0) throw new ArgumentException("Size cannot be less than zero.");
+
 			NativeGraphicsBuffer prevBound = GetBound(this.type);
 			Bind(this.type, this);
 
 			BufferTarget target = ToOpenTKBufferType(this.type);
 			GL.BufferData(target, size, IntPtr.Zero, BufferUsageHint.StreamDraw);
 			GL.BufferData(target, size, data, BufferUsageHint.StreamDraw);
+
+			this.bufferSize = size;
+
+			Bind(this.type, prevBound);
+		}
+		public void LoadSubData(IntPtr offset, IntPtr data, int size)
+		{
+			if (size < 0) throw new ArgumentException("Size cannot be less than zero.");
+			if (this.bufferSize == 0) throw new InvalidOperationException(string.Format(
+				"Cannot update {0}, because its storage was not initialized yet.",
+				typeof(NativeGraphicsBuffer).Name));
+			if ((uint)offset + size > this.bufferSize) throw new ArgumentException(string.Format(
+				"Cannot update {0} with offset {1} and size {2}, as this exceeds the internal " +
+				"storage size {3}.",
+				typeof(NativeGraphicsBuffer).Name,
+				offset,
+				size,
+				this.bufferSize));
+
+			NativeGraphicsBuffer prevBound = GetBound(this.type);
+			Bind(this.type, this);
+
+			BufferTarget target = ToOpenTKBufferType(this.type);
+			GL.BufferSubData(target, offset, size, data);
 
 			Bind(this.type, prevBound);
 		}
@@ -72,8 +117,9 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 				GL.DeleteBuffer(this.handle);
-				this.handle = 0;
 			}
+			this.handle = 0;
+			this.bufferSize = 0;
 		}
 
 		private static BufferTarget ToOpenTKBufferType(GraphicsBufferType value)
