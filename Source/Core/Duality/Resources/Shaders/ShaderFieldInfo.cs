@@ -16,6 +16,8 @@ namespace Duality.Resources
 		private ShaderFieldType type;
 		private int arrayLength;
 		private string name;
+		private string description;
+		private string editorTypeTag;
 		private bool isPrivate;
 
 		/// <summary>
@@ -55,13 +57,33 @@ namespace Duality.Resources
 		{
 			get { return this.isPrivate; }
 		}
+		/// <summary>
+		/// [GET] An optional tag that can be used to select an appropriate editor beyond
+		/// the basic field <see cref="Type"/> definition. For example, colors are usually
+		/// defined as <see cref="ShaderFieldType.Vec4"/> shader fields, but should actually
+		/// be edited as colors.
+		/// </summary>
+		public string EditorTypeTag
+		{
+			get { return this.editorTypeTag; }
+		}
+		/// <summary>
+		/// [GET] An optional description that can be displayed as an editor tooltip for this
+		/// shader field.
+		/// </summary>
+		public string Description
+		{
+			get { return this.description; }
+		}
 
-		public ShaderFieldInfo(string name, ShaderFieldType type, ShaderFieldScope scope, int arrayLength = 1)
+		public ShaderFieldInfo(string name, ShaderFieldType type, ShaderFieldScope scope, int arrayLength = 1, string editorTypeTag = null, string description = null)
 		{
 			this.name = name;
 			this.type = type;
 			this.scope = scope;
 			this.arrayLength = arrayLength;
+			this.editorTypeTag = editorTypeTag;
+			this.description = description;
 			this.isPrivate = string.IsNullOrEmpty(name) || name[0] == '_';
 		}
 
