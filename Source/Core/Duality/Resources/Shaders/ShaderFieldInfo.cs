@@ -8,9 +8,9 @@ using Duality.Drawing;
 namespace Duality.Resources
 {
 	/// <summary>
-	/// Provides information about a <see cref="AbstractShader">shader</see> variable.
+	/// Provides information about a shader variable.
 	/// </summary>
-	public struct ShaderFieldInfo
+	public class ShaderFieldInfo
 	{
 		private ShaderFieldScope scope;
 		private ShaderFieldType type;

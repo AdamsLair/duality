@@ -478,34 +478,31 @@ namespace Duality.Backend.DefaultOpenTK
 				ShaderFieldInfo[] varInfo = shader.Fields;
 				int[] locations = shader.FieldLocations;
 
-				// Setup shared sampler bindings
+				// Setup shared sampler bindings and uniform data
 				for (int i = 0; i < varInfo.Length; i++)
 				{
-					if (locations[i] == -1) continue;
-					if (varInfo[i].Type != ShaderFieldType.Sampler2D) continue;
+					ShaderFieldInfo field = varInfo[i];
+					int location = locations[i];
 
-					ContentRef<Texture> texRef;
-					if (!sharedParams.TryGetInternal(varInfo[i].Name, out texRef)) continue;
+					if (field.Type == ShaderFieldType.Sampler2D)
+					{
+						ContentRef<Texture> texRef;
+						if (!sharedParams.TryGetInternal(field.Name, out texRef)) continue;
 
-					NativeTexture.Bind(texRef, this.sharedSamplerBindings);
-					GL.Uniform1(locations[i], this.sharedSamplerBindings);
+						NativeTexture.Bind(texRef, this.sharedSamplerBindings);
+						GL.Uniform1(location, this.sharedSamplerBindings);
 
-					this.sharedSamplerBindings++;
-					this.sharedShaderParameters.Add(varInfo[i].Name);
-				}
+						this.sharedSamplerBindings++;
+					}
+					else
+					{
+						float[] data;
+						if (!sharedParams.TryGetInternal(field.Name, out data)) continue;
 
-				// Setup shared uniform data
-				for (int i = 0; i < varInfo.Length; i++)
-				{
-					if (locations[i] == -1) continue;
-					if (varInfo[i].Type == ShaderFieldType.Sampler2D) continue;
+						NativeShaderProgram.SetUniform(field, location, data);
+					}
 
-					float[] data;
-					if (!sharedParams.TryGetInternal(varInfo[i].Name, out data)) continue;
-		
-					NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);
-
-					this.sharedShaderParameters.Add(varInfo[i].Name);
+					this.sharedShaderParameters.Add(field.Name);
 				}
 			}
 
@@ -560,37 +557,35 @@ namespace Duality.Backend.DefaultOpenTK
 			ShaderFieldInfo[] varInfo = nativeShader.Fields;
 			int[] locations = nativeShader.FieldLocations;
 
-			// Setup sampler bindings
+			// Setup sampler bindings and uniform data
 			int curSamplerIndex = this.sharedSamplerBindings;
 			for (int i = 0; i < varInfo.Length; i++)
 			{
-				if (locations[i] == -1) continue;
-				if (varInfo[i].Type != ShaderFieldType.Sampler2D) continue;
-				if (this.sharedShaderParameters.Contains(varInfo[i].Name)) continue;
+				ShaderFieldInfo field = varInfo[i];
+				int location = locations[i];
 
-				ContentRef<Texture> texRef = material.GetInternalTexture(varInfo[i].Name);
-				if (texRef == null) this.internalShaderState.TryGetInternal(varInfo[i].Name, out texRef);
+				if (this.sharedShaderParameters.Contains(field.Name)) continue;
 
-				NativeTexture.Bind(texRef, curSamplerIndex);
-				GL.Uniform1(locations[i], curSamplerIndex);
+				if (field.Type == ShaderFieldType.Sampler2D)
+				{
+					ContentRef<Texture> texRef = material.GetInternalTexture(field.Name);
+					if (texRef == null) this.internalShaderState.TryGetInternal(field.Name, out texRef);
 
-				curSamplerIndex++;
+					NativeTexture.Bind(texRef, curSamplerIndex);
+					GL.Uniform1(location, curSamplerIndex);
+
+					curSamplerIndex++;
+				}
+				else
+				{
+					float[] data = material.GetInternalData(field.Name);
+					if (data == null && !this.internalShaderState.TryGetInternal(field.Name, out data))
+						continue;
+
+					NativeShaderProgram.SetUniform(field, location, data);
+				}
 			}
 			NativeTexture.ResetBinding(curSamplerIndex);
-
-			// Setup uniform data
-			for (int i = 0; i < varInfo.Length; i++)
-			{
-				if (locations[i] == -1) continue;
-				if (varInfo[i].Type == ShaderFieldType.Sampler2D) continue;
-				if (this.sharedShaderParameters.Contains(varInfo[i].Name)) continue;
-
-				float[] data = material.GetInternalData(varInfo[i].Name);
-				if (data == null && !this.internalShaderState.TryGetInternal(varInfo[i].Name, out data))
-					continue;
-
-				NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);
-			}
 		}
 		private void SetupBlendState(BlendMode mode, bool depthWrite)
 		{

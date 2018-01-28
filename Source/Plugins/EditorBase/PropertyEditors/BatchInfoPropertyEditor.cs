@@ -18,6 +18,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	[PropertyEditorAssignment(typeof(BatchInfo), PropertyEditorAssignmentAttribute.PrioritySpecialized)]
 	public class BatchInfoPropertyEditor : MemberwisePropertyEditor
 	{
+		private static readonly ShaderFieldInfo[] DefaultShaderFields = new ShaderFieldInfo[]
+		{
+			new ShaderFieldInfo(
+				BuiltinShaderFields.MainTex,
+				ShaderFieldType.Sampler2D,
+				ShaderFieldScope.Uniform)
+		};
+
 		private struct FieldEditorItem
 		{
 			public PropertyEditor Editor;
@@ -57,18 +65,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				// Retrieve a list of shader variables to edit
 				ShaderFieldInfo[] shaderFields = null;
 				if (refTech != null && refTech.Shader.IsAvailable)
-				{
-					if (!refTech.Shader.Res.Compiled)
-						refTech.Shader.Res.Compile();
 					shaderFields = refTech.Shader.Res.Fields;
-				}
 				else
-				{
-					shaderFields = new ShaderFieldInfo[] { new ShaderFieldInfo(
-						BuiltinShaderFields.MainTex,
-						ShaderFieldType.Sampler2D,
-						ShaderFieldScope.Uniform) };
-				}
+					shaderFields = DefaultShaderFields;
 
 				// Remove editors that are no longer needed or no longer match their shader field
 				List<string> removeEditors = null;

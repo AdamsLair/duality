@@ -28,7 +28,7 @@ namespace Duality.Backend.DefaultOpenTK
 				curBound = prog;
 			}
 		}
-		public static void SetUniform(ref ShaderFieldInfo field, int location, float[] data)
+		public static void SetUniform(ShaderFieldInfo field, int location, float[] data)
 		{
 			if (field.Scope != ShaderFieldScope.Uniform) return;
 			if (location == -1) return;
@@ -128,13 +128,13 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 
 			// Collect variable infos from sub programs
-			HashSet<ShaderFieldInfo> fieldSet = new HashSet<ShaderFieldInfo>();
+			Dictionary<string, ShaderFieldInfo> fieldMap = new Dictionary<string, ShaderFieldInfo>();
 			foreach (INativeShaderPart item in shaderParts)
 			{
 				NativeShaderPart shaderPart = item as NativeShaderPart;
-				for (int i = 0; i < shaderPart.Fields.Length; i++)
+				foreach (ShaderFieldInfo field in shaderPart.Fields)
 				{
-					fieldSet.Add(shaderPart.Fields[i]);
+					fieldMap[field.Name] = field;
 				}
 			}
 
@@ -142,7 +142,7 @@ namespace Duality.Backend.DefaultOpenTK
 			// haven't been optimized of #ifdef'd away.
 			List<int> validLocations = new List<int>();
 			List<ShaderFieldInfo> validFields = new List<ShaderFieldInfo>();
-			foreach (ShaderFieldInfo field in fieldSet)
+			foreach (ShaderFieldInfo field in fieldMap.Values)
 			{
 				int location;
 				if (field.Scope == ShaderFieldScope.Uniform)
@@ -162,7 +162,7 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		ShaderFieldInfo[] INativeShaderProgram.GetFields()
 		{
-			return this.fields.Clone() as ShaderFieldInfo[];
+			return this.fields;
 		}
 		void IDisposable.Dispose()
 		{
