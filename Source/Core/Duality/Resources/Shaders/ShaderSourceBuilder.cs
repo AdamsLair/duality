@@ -142,13 +142,13 @@ namespace Duality.Resources
 			{
 				this.textBuilder.AppendFormat("#line {0}", (i + 1) * 10000);
 				this.textBuilder.AppendLine();
-				this.textBuilder.Append(this.sharedChunk[i]);
+				this.AppendNormalizedLines(this.textBuilder, this.sharedChunk[i]);
 				this.textBuilder.AppendLine();
 			}
 
 			// Append main chunk below
 			this.textBuilder.AppendLine("#line 1");
-			this.textBuilder.Append(this.mainChunk);
+			this.AppendNormalizedLines(this.textBuilder, this.mainChunk);
 
 			// Generate a first, raw version of the merged source code
 			string rawMerge = this.textBuilder.ToString();
@@ -353,6 +353,23 @@ namespace Duality.Resources
 			return lastVersion;
 		}
 
+		/// <summary>
+		/// Appends the specified text line-by-line to the specified <see cref="StringBuilder"/> in
+		/// order to normalize line endings to <see cref="Environment.NewLine"/>.
+		/// </summary>
+		/// <param name="builder"></param>
+		/// <param name="text"></param>
+		private void AppendNormalizedLines(StringBuilder builder, string text)
+		{
+			using (StringReader reader = new StringReader(text))
+			{
+				string line;
+				while ((line = reader.ReadLine()) != null)
+				{
+					builder.AppendLine(line);
+				}
+			}
+		}
 		/// <summary>
 		/// Given an index, length, and text they're referring to, this method will expand
 		/// the specified range to include all overlapped full lines from start to end.
