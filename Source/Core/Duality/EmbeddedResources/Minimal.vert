@@ -1,4 +1,6 @@
-﻿uniform vec4 mainColor;
+﻿#pragma duality editorType ColorRgba
+#pragma duality description "The main color of the material, which is multiplied with vertex color and texture."
+uniform vec4 mainColor;
 
 in vec3 vertexPos;
 in vec4 vertexColor;
