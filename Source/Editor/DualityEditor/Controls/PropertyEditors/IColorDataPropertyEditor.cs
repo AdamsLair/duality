@@ -320,6 +320,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 			this.value = this.pickingOperation.PickedColor.ToDualityRgba();
 			this.PerformSetValue();
 			this.PerformGetValue();
+			this.Invalidate();
 		}
 		private void pickingOperation_OperationEnded(object sender, EventArgs e)
 		{
