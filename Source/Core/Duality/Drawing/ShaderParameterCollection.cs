@@ -246,6 +246,30 @@ namespace Duality.Drawing
 					rawData[i * 16 + 15] = typedValue[i].Row3.W;
 				}
 			}
+			else if (typeof(T) == typeof(ColorRgba))
+			{
+				ColorRgba[] typedValue = (ColorRgba[])(object)value;
+				this.EnsureUniformData(name, value.Length * 4, out rawData);
+				for (int i = 0; i < value.Length; i++)
+				{
+					rawData[i * 4 + 0] = (float)typedValue[i].R / 255.0f;
+					rawData[i * 4 + 1] = (float)typedValue[i].G / 255.0f;
+					rawData[i * 4 + 2] = (float)typedValue[i].B / 255.0f;
+					rawData[i * 4 + 3] = (float)typedValue[i].A / 255.0f;
+				}
+			}
+			else if (typeof(T) == typeof(ColorHsva))
+			{
+				ColorHsva[] typedValue = (ColorHsva[])(object)value;
+				this.EnsureUniformData(name, value.Length * 4, out rawData);
+				for (int i = 0; i < value.Length; i++)
+				{
+					rawData[i * 4 + 0] = typedValue[i].H;
+					rawData[i * 4 + 1] = typedValue[i].S;
+					rawData[i * 4 + 2] = typedValue[i].V;
+					rawData[i * 4 + 3] = typedValue[i].A;
+				}
+			}
 			else if (typeof(T) == typeof(int))
 			{
 				int[] typedValue = (int[])(object)value;
@@ -361,6 +385,24 @@ namespace Duality.Drawing
 				rawData[13] = typedValue.Row3.Y;
 				rawData[14] = typedValue.Row3.Z;
 				rawData[15] = typedValue.Row3.W;
+			}
+			else if (typeof(T) == typeof(ColorRgba))
+			{
+				ColorRgba typedValue = (ColorRgba)(object)value;
+				this.EnsureUniformData(name, 4, out rawData);
+				rawData[0] = (float)typedValue.R / 255.0f;
+				rawData[1] = (float)typedValue.G / 255.0f;
+				rawData[2] = (float)typedValue.B / 255.0f;
+				rawData[3] = (float)typedValue.A / 255.0f;
+			}
+			else if (typeof(T) == typeof(ColorHsva))
+			{
+				ColorHsva typedValue = (ColorHsva)(object)value;
+				this.EnsureUniformData(name, 4, out rawData);
+				rawData[0] = typedValue.H;
+				rawData[1] = typedValue.S;
+				rawData[2] = typedValue.V;
+				rawData[3] = typedValue.A;
 			}
 			else if (typeof(T) == typeof(int))
 			{
@@ -532,6 +574,36 @@ namespace Duality.Drawing
 				value = (T[])(object)result;
 				return true;
 			}
+			else if (typeof(T) == typeof(ColorRgba))
+			{
+				if (rawData.Length < 4) return false;
+				ColorRgba[] result = new ColorRgba[rawData.Length / 4];
+				for (int i = 0; i < result.Length; i++)
+				{
+					result[i] = new ColorRgba(
+						rawData[i * 4 + 0],
+						rawData[i * 4 + 1],
+						rawData[i * 4 + 2],
+						rawData[i * 4 + 3]);
+				}
+				value = (T[])(object)result;
+				return true;
+			}
+			else if (typeof(T) == typeof(ColorHsva))
+			{
+				if (rawData.Length < 4) return false;
+				ColorHsva[] result = new ColorHsva[rawData.Length / 4];
+				for (int i = 0; i < result.Length; i++)
+				{
+					result[i] = new ColorHsva(
+						rawData[i * 4 + 0],
+						rawData[i * 4 + 1],
+						rawData[i * 4 + 2],
+						rawData[i * 4 + 3]);
+				}
+				value = (T[])(object)result;
+				return true;
+			}
 			else if (typeof(T) == typeof(int))
 			{
 				if (rawData.Length < 1) return false;
@@ -632,6 +704,18 @@ namespace Duality.Drawing
 					rawData[4], rawData[5], rawData[6], rawData[7], 
 					rawData[8], rawData[9], rawData[10], rawData[11], 
 					rawData[12], rawData[13], rawData[14], rawData[15]);
+				return true;
+			}
+			else if (typeof(T) == typeof(ColorRgba))
+			{
+				if (rawData.Length < 4) return false;
+				value = (T)(object)new ColorRgba(rawData[0], rawData[1], rawData[2], rawData[3]);
+				return true;
+			}
+			else if (typeof(T) == typeof(ColorHsva))
+			{
+				if (rawData.Length < 4) return false;
+				value = (T)(object)new ColorHsva(rawData[0], rawData[1], rawData[2], rawData[3]);
 				return true;
 			}
 			else if (typeof(T) == typeof(int))
