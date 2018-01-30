@@ -43,7 +43,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 		protected override bool IsAutoCreateMember(MemberInfo info)
 		{
-			if (info.IsEquivalent(ReflectionInfo.Property_BatchInfo_MainColor)) return true;
 			if (info.IsEquivalent(ReflectionInfo.Property_BatchInfo_Technique)) return true;
 			return false;
 		}
@@ -98,7 +97,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					// Skip fields that shouldn't be displayed
 					if (field.IsPrivate) continue;
 					if (field.Scope != ShaderFieldScope.Uniform) continue;
-					if (field.Name == BuiltinShaderFields.MainColor) continue;
 
 					displayedFieldIndex++;
 
@@ -154,7 +152,19 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			if (field.ArrayLength == 1)
 			{
-				if (field.Type == ShaderFieldType.Float || field.Type == ShaderFieldType.Int)
+				if (field.EditorTypeTag == "ColorRgba")
+				{
+					editor = this.ParentGrid.CreateEditor(typeof(ColorRgba), this);
+					editor.Getter = this.CreateUniformValueGetter<ColorRgba>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<ColorRgba>(field.Name) : null;
+				}
+				else if (field.EditorTypeTag == "ColorHsva")
+				{
+					editor = this.ParentGrid.CreateEditor(typeof(ColorHsva), this);
+					editor.Getter = this.CreateUniformValueGetter<ColorHsva>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<ColorHsva>(field.Name) : null;
+				}
+				else if (field.Type == ShaderFieldType.Float || field.Type == ShaderFieldType.Int)
 				{
 					Type editType = typeof(float);
 					if (field.Type == ShaderFieldType.Int) editType = typeof(int);
@@ -206,7 +216,29 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			}
 			else
 			{
-				if (field.Type == ShaderFieldType.Float || field.Type == ShaderFieldType.Int)
+				if (field.EditorTypeTag == "ColorRgba")
+				{
+					editor = this.ParentGrid.CreateEditor(typeof(ColorRgba[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<ColorRgba>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<ColorRgba>(field.Name) : null;
+					editor.ForceWriteBack = true;
+					if (editor is GroupedPropertyEditor)
+					{
+						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
+					}
+				}
+				else if (field.EditorTypeTag == "ColorHsva")
+				{
+					editor = this.ParentGrid.CreateEditor(typeof(ColorHsva[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<ColorHsva>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<ColorHsva>(field.Name) : null;
+					editor.ForceWriteBack = true;
+					if (editor is GroupedPropertyEditor)
+					{
+						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
+					}
+				}
+				else if (field.Type == ShaderFieldType.Float || field.Type == ShaderFieldType.Int)
 				{
 					Type editType = typeof(float);
 					if (field.Type == ShaderFieldType.Int) editType = typeof(int);
