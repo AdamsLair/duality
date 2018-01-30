@@ -701,9 +701,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		private void ForceDragDropRenderUpdate()
 		{
-			// Force immediate buffer swap and continuous repaint, because there is no event loop while dragging.
+			// There is no event loop while performing a dragdrop operation, so we'll have to do
+			// some minimal updates here in order to ensure smooth rendering.
+
+			// Force immediate buffer swap and continuous repaint
 			this.renderFrameLast = 0;
 			DualityEditorApp.PerformBufferSwap();
+
+			// Update the scenes visibility strategy / culling to make new objects show up
+			if (Scene.Current.VisibilityStrategy != null)
+				Scene.Current.VisibilityStrategy.Update();
 		}
 		
 		private bool RendererFilter(ICmpRenderer r)

@@ -55,6 +55,12 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				else if (mainTex != null)
 				{
 					spriteSize = mainTex.ContentSize;
+
+					// If we're dealing with default content, clamp sprite size to
+					// something easily visible in order to avoid 1x1 sprites for
+					// default White / Black or similar fallback textures.
+					if (mainTex.IsDefaultContent)
+						spriteSize = Vector2.Max(spriteSize, new Vector2(32.0f, 32.0f));
 				}
 				else
 				{
