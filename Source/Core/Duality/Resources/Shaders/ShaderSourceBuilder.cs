@@ -173,7 +173,7 @@ namespace Duality.Resources
 				rawMerge, 
 				ignoreRegions);
 
-			// Identify (shared) variable declarations
+			// Parse and remove redundant variable declarations, would cause errors otherwise
 			List<IndexRange> removeLines = new List<IndexRange>();
 			this.RemoveDoubleVariableDeclarations(
 				rawMerge, 
@@ -181,7 +181,7 @@ namespace Duality.Resources
 				removeLines, 
 				metadataBlocks);
 
-			// Identify version directives
+			// Parse and remove version directives, we'll add the aggregated one last
 			int lastVersion = this.RemoveVersionDirectives(
 				rawMerge, 
 				ignoreRegions, 

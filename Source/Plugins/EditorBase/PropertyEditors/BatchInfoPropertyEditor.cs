@@ -58,7 +58,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 				// Retrieve a list of shader variables to edit
 				ShaderFieldInfo[] shaderFields = null;
-				if (refTech != null && refTech.Shader.IsAvailable)
+				if (refTech != null)
 					shaderFields = refTech.Shader.Res.Fields;
 				else
 					shaderFields = EmptyShaderFields;
@@ -70,9 +70,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					int matchingIndex = Array.FindIndex(shaderFields, f => f.Name == pair.Key);
 					bool isMatchingEditor = 
 						matchingIndex != -1 &&
-						shaderFields[matchingIndex].Scope == pair.Value.Field.Scope &&
-						shaderFields[matchingIndex].Type == pair.Value.Field.Type &&
-						shaderFields[matchingIndex].ArrayLength == pair.Value.Field.ArrayLength;
+						shaderFields[matchingIndex] == pair.Value.Field;
 					if (!isMatchingEditor)
 					{
 						if (removeEditors == null)
@@ -110,17 +108,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					// Create a new editor for this field
 					PropertyEditor editor;
 					if (field.Type == ShaderFieldType.Sampler2D)
-					{
-						editor = this.ParentGrid.CreateEditor(typeof(ContentRef<Texture>), this);
-						editor.Getter = this.CreateTextureValueGetter(field.Name);
-						editor.Setter = !this.ReadOnly ? this.CreateTextureValueSetter(field.Name) : null;
-						editor.PropertyName = field.Name;
-						this.ParentGrid.ConfigureEditor(editor);
-					}
+						editor = this.CreateTextureEditor(field);
 					else
-					{
 						editor = this.CreateUniformEditor(field);
-					}
 
 					// Add and register this editor
 					this.fieldEditors[field.Name] = new FieldEditorItem
@@ -142,6 +132,20 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			this.SetValues(targets);
 			// Run a GetValue-pass to make sure automatic changes are applied if necessary.
 			this.PerformGetValue();
+		}
+
+		protected PropertyEditor CreateTextureEditor(ShaderFieldInfo field)
+		{
+			PropertyEditor editor = null;
+
+			editor = this.ParentGrid.CreateEditor(typeof(ContentRef<Texture>), this);
+			editor.Getter = this.CreateTextureValueGetter(field.Name);
+			editor.Setter = !this.ReadOnly ? this.CreateTextureValueSetter(field.Name) : null;
+
+			editor.PropertyName = field.Name;
+			editor.PropertyDesc = field.Description;
+			this.ParentGrid.ConfigureEditor(editor);
+			return editor;
 		}
 		protected PropertyEditor CreateUniformEditor(ShaderFieldInfo field)
 		{
@@ -262,6 +266,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			}
 
 			editor.PropertyName = field.Name;
+			editor.PropertyDesc = field.Description;
 			this.ParentGrid.ConfigureEditor(editor, configData);
 			return editor;
 		}
