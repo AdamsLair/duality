@@ -78,7 +78,7 @@ namespace Duality.Resources
 		
 
 		private BlendMode                 blendType         = BlendMode.Solid;
-		private ContentRef<ShaderProgram> shader            = null;
+		private ContentRef<ShaderProgram> shader            = ShaderProgram.Minimal;
 		private Type                      prefType          = null;
 		[DontSerialize]
 		private VertexDeclaration         prefFormat        = null;
