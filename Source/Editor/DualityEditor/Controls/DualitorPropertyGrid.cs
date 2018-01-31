@@ -73,7 +73,7 @@ namespace Duality.Editor.Controls
 			{
 				IListPropertyEditor listEditor = editor as IListPropertyEditor;
 				listEditor.ListIndexSetter = this.EditorListIndexSetter;
-				listEditor.ListResizer = (lists, size, elementType) => this.EditorListResizer(editor, lists, size, elementType);
+				listEditor.ListResizer = this.EditorListResizer;
 			}
 			if (editor is IDictionaryPropertyEditor)
 			{
@@ -192,11 +192,10 @@ namespace Duality.Editor.Controls
 		{
 			UndoRedoManager.Do(new EditPropertyAction(this, indexer, targetObjects, values, new object[] {key}));
 		}
-		private bool EditorListResizer(PropertyEditor editor, IList<IList> targetLists, int size, Type elementType)
+		private bool EditorListResizer(IList<IList> targetLists, int size, Type elementType)
 		{
-			UndoRedoManager.Do(new ResizeListAction(editor, targetLists, size, elementType));
-			return false;
-			//return targetLists.Any(list => list is Array); // TODO: move this logic into action
+			UndoRedoManager.Do(new ResizeListAction(targetLists, size, elementType));
+			return targetLists.Any(list => list.IsFixedSize);
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)

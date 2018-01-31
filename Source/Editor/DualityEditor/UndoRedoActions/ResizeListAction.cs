@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using AdamsLair.WinForms.PropertyEditing;
 
 namespace Duality.Editor.UndoRedoActions
 {
 	public class ResizeListAction : UndoRedoAction
 	{
-		private PropertyEditor editor;
 		private IList<IList> targetLists;
 		private IList<IList> originalLists;
 		private int targetSize;
@@ -21,9 +18,8 @@ namespace Duality.Editor.UndoRedoActions
 			get { return "Resize"; }
 		}
 
-		public ResizeListAction(PropertyEditor editor, IList<IList> targetLists, int size, Type elementType)
+		public ResizeListAction(IList<IList> targetLists, int size, Type elementType)
 		{
-			this.editor = editor;
 			this.targetLists = targetLists;
 			this.targetSize = size;
 			this.elementType = elementType;
@@ -62,7 +58,8 @@ namespace Duality.Editor.UndoRedoActions
 
 			if (writeback)
 			{
-				PropertyInfo property = this.editor.EditedMember as PropertyInfo;
+				// anything to do here?
+				/*PropertyInfo property = this.editor.EditedMember as PropertyInfo;
 				if (property != null)
 				{
 					//foreach (object obj in (IEnumerable<object>)this.editor.DisplayedValue)
@@ -71,7 +68,7 @@ namespace Duality.Editor.UndoRedoActions
 					// DisplayedValue is only a single object and this fails to update all selected objects
 					object targetObject = this.editor.ParentEditor.DisplayedValue;
 					property.SetValue(targetObject, this.targetLists[0]);
-				}
+				}*/
 			}
 			//return writeback;
 		}
