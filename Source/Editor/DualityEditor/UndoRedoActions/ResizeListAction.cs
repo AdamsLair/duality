@@ -8,7 +8,7 @@ namespace Duality.Editor.UndoRedoActions
 	public class ResizeListAction : UndoRedoAction
 	{
 		private IList<IList> targetLists;
-		private IList<IList> originalLists;
+		private int[] originalListSizes;
 		private int targetSize;
 		private Type elementType;
 
@@ -23,60 +23,89 @@ namespace Duality.Editor.UndoRedoActions
 			this.targetLists = targetLists;
 			this.targetSize = size;
 			this.elementType = elementType;
+
+			this.originalListSizes = new int[this.targetLists.Count];
+			for (int i = 0; i < this.targetLists.Count; i++)
+			{
+				IList target = this.targetLists[i];
+				if (target == null) continue;
+				this.originalListSizes[i] = target.Count;
+			}
 		}
 
 		public override void Do()
 		{
 			bool writeback = false;
-			
+
 			for (int i = 0; i < this.targetLists.Count; i++)
 			{
 				IList target = this.targetLists[i];
 				if (target == null) continue;
-				if (!target.IsFixedSize && !target.IsReadOnly)
+				bool needsWriteback = EnsureIListSize(ref target, this.targetSize, this.elementType);
+				if (needsWriteback)
 				{
-					while (target.Count < this.targetSize)
-					{
-						object added = this.elementType.IsValueType ? this.elementType.GetTypeInfo().CreateInstanceOf() : null;
-						target.Add(added);
-					}
-					while (target.Count > this.targetSize)
-						target.RemoveAt(target.Count - 1);
-				}
-				else if (target is Array)
-				{
-					Array newTarget = Array.CreateInstance(this.elementType, this.targetSize);
-					for (int j = 0; j < Math.Min(this.targetSize, target.Count); j++) newTarget.SetValue(target[j], j);
-					this.targetLists[i] = newTarget;
+					this.targetLists[i] = target;
 					writeback = true;
-				}
-				else
-				{
-					// a read only container we can't do anything about
 				}
 			}
 
 			if (writeback)
 			{
 				// anything to do here?
-				/*PropertyInfo property = this.editor.EditedMember as PropertyInfo;
-				if (property != null)
-				{
-					//foreach (object obj in (IEnumerable<object>)this.editor.DisplayedValue)
-						//Log.Editor.Write(obj.ToString());
-					// Successful when editing a single object, but when multiple objects are selected,
-					// DisplayedValue is only a single object and this fails to update all selected objects
-					object targetObject = this.editor.ParentEditor.DisplayedValue;
-					property.SetValue(targetObject, this.targetLists[0]);
-				}*/
 			}
-			//return writeback;
 		}
 
 		public override void Undo()
 		{
-			Log.Editor.Write("Test");
-			throw new NotImplementedException();
+			bool writeback = false;
+
+			for (int i = 0; i < this.targetLists.Count; i++)
+			{
+				IList target = this.targetLists[i];
+				if (target == null) continue;
+				bool needsWriteback = EnsureIListSize(ref target, this.originalListSizes[i], this.elementType);
+				if (needsWriteback)
+				{
+					this.targetLists[i] = target;
+					writeback = true;
+				}
+			}
+
+			if (writeback)
+			{
+				// anything to do here?
+			}
+		}
+
+		private static bool EnsureIListSize(ref IList list, int size, Type elementType)
+		{
+			bool writeback = false;
+
+			if (!list.IsFixedSize && !list.IsReadOnly)
+			{
+				while (list.Count < size)
+				{
+					object added = elementType.IsValueType ? elementType.GetTypeInfo().CreateInstanceOf() : null;
+					list.Add(added);
+				}
+				while (list.Count > size)
+				{
+					list.RemoveAt(list.Count - 1);
+				}
+			}
+			else if (list is Array)
+			{
+				Array newTarget = Array.CreateInstance(elementType, size);
+				for (int j = 0; j < Math.Min(size, list.Count); j++) newTarget.SetValue(list[j], j);
+				list = newTarget;
+				writeback = true;
+			}
+			else
+			{
+				// a read only container we can't do anything about
+			}
+
+			return writeback;
 		}
 	}
 }
