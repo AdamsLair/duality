@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duality", "Source\Core\Duality\Duality.csproj", "{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}"
 EndProject
@@ -98,6 +98,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UndoHistoryView.Editor", "Source\Plugins\EditorModules\UndoHistoryView\UndoHistoryView.Editor.csproj", "{807C7153-466B-488D-8E2A-FB8FF4126227}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -241,6 +243,10 @@ Global
 		{45B4CC01-CCDC-4835-8EDF-F0B706EA3DDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45B4CC01-CCDC-4835-8EDF-F0B706EA3DDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45B4CC01-CCDC-4835-8EDF-F0B706EA3DDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{807C7153-466B-488D-8E2A-FB8FF4126227}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{807C7153-466B-488D-8E2A-FB8FF4126227}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{807C7153-466B-488D-8E2A-FB8FF4126227}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{807C7153-466B-488D-8E2A-FB8FF4126227}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -283,5 +289,6 @@ Global
 		{D014227E-3E69-4C8B-984A-1519AA35C1AD} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{0130132B-C38D-463E-90AC-5D389E934FAE} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{45B4CC01-CCDC-4835-8EDF-F0B706EA3DDF} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
+		{807C7153-466B-488D-8E2A-FB8FF4126227} = {1F9CE5E4-5E97-4813-9299-33064673D393}
 	EndGlobalSection
 EndGlobal
