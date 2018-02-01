@@ -88,8 +88,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 				// Create editors for fields that do not yet have a matching editor, or which
 				// were removed because they did no longer match.
-				int autoCreateEditorCount = 2;
-				int displayedFieldIndex = 0;
+				int autoCreateEditorCount = 1;
+				int displayedFieldIndex = -1;
 				for (int i = 0; i < shaderFields.Length; i++)
 				{
 					ShaderFieldInfo field = shaderFields[i];
