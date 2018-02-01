@@ -18,6 +18,8 @@ namespace Duality.Resources
 		private string name;
 		private string description;
 		private string editorTypeTag;
+		private float minValue;
+		private float maxValue;
 		private bool isPrivate;
 
 		/// <summary>
@@ -75,8 +77,26 @@ namespace Duality.Resources
 		{
 			get { return this.description; }
 		}
+		/// <summary>
+		/// [GET] The minimum value of this field, should it represent a numeric type.
+		/// For other fields, this value is ignored. Note that this value is only enforced
+		/// in the editor. You can still set arbitrary values via code.
+		/// </summary>
+		public float MinValue
+		{
+			get { return this.minValue; }
+		}
+		/// <summary>
+		/// [GET] The maximum value of this field, should it represent a numeric type.
+		/// For other fields, this value is ignored. Note that this value is only enforced
+		/// in the editor. You can still set arbitrary values via code.
+		/// </summary>
+		public float MaxValue
+		{
+			get { return this.maxValue; }
+		}
 
-		public ShaderFieldInfo(string name, ShaderFieldType type, ShaderFieldScope scope, int arrayLength = 1, string editorTypeTag = null, string description = null)
+		public ShaderFieldInfo(string name, ShaderFieldType type, ShaderFieldScope scope, int arrayLength, string editorTypeTag, string description, float minValue, float maxValue)
 		{
 			this.name = name;
 			this.type = type;
@@ -84,6 +104,8 @@ namespace Duality.Resources
 			this.arrayLength = arrayLength;
 			this.editorTypeTag = editorTypeTag;
 			this.description = description;
+			this.minValue = minValue;
+			this.maxValue = maxValue;
 			this.isPrivate = string.IsNullOrEmpty(name) || name[0] == '_';
 		}
 

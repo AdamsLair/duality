@@ -147,8 +147,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 		protected PropertyEditor CreateUniformEditor(ShaderFieldInfo field)
 		{
-			List<EditorHintAttribute> configData = new List<EditorHintAttribute>();
 			PropertyEditor editor = null;
+			bool mainEditorIsArray = false;
 
 			if (field.ArrayLength == 1)
 			{
@@ -179,7 +179,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					{
 						editor.Getter = this.CreateUniformValueGetter<float>(field.Name);
 						editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<float>(field.Name) : null;
-						configData.Add(new EditorHintIncrementAttribute(0.1f));
 					}
 				}
 				else if (field.Type == ShaderFieldType.Vec2)
@@ -187,45 +186,36 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					editor = this.ParentGrid.CreateEditor(typeof(Vector2), this);
 					editor.Getter = this.CreateUniformValueGetter<Vector2>(field.Name);
 					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector2>(field.Name) : null;
-					configData.Add(new EditorHintIncrementAttribute(0.1f));
 				}
 				else if (field.Type == ShaderFieldType.Vec3)
 				{
 					editor = this.ParentGrid.CreateEditor(typeof(Vector3), this);
 					editor.Getter = this.CreateUniformValueGetter<Vector3>(field.Name);
 					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector3>(field.Name) : null;
-					configData.Add(new EditorHintIncrementAttribute(0.1f));
 				}
 				else if (field.Type == ShaderFieldType.Vec4)
 				{
 					editor = this.ParentGrid.CreateEditor(typeof(Vector4), this);
 					editor.Getter = this.CreateUniformValueGetter<Vector4>(field.Name);
 					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector4>(field.Name) : null;
-					configData.Add(new EditorHintIncrementAttribute(0.1f));
 				}
 				else
 				{
 					editor = this.ParentGrid.CreateEditor(typeof(float[]), this);
 					editor.Getter = this.CreateUniformArrayValueGetter<float>(field.Name);
 					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(field.Name) : null;
-					if (editor is GroupedPropertyEditor)
-					{
-						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-					}
+					mainEditorIsArray = true;
 				}
 			}
 			else
 			{
+				mainEditorIsArray = true;
 				if (field.EditorTypeTag == "ColorRgba")
 				{
 					editor = this.ParentGrid.CreateEditor(typeof(ColorRgba[]), this);
 					editor.Getter = this.CreateUniformArrayValueGetter<ColorRgba>(field.Name);
 					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<ColorRgba>(field.Name) : null;
 					editor.ForceWriteBack = true;
-					if (editor is GroupedPropertyEditor)
-					{
-						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-					}
 				}
 				else if (field.EditorTypeTag == "ColorHsva")
 				{
@@ -233,10 +223,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					editor.Getter = this.CreateUniformArrayValueGetter<ColorHsva>(field.Name);
 					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<ColorHsva>(field.Name) : null;
 					editor.ForceWriteBack = true;
-					if (editor is GroupedPropertyEditor)
-					{
-						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-					}
 				}
 				else if (field.Type == ShaderFieldType.Float || field.Type == ShaderFieldType.Int)
 				{
@@ -247,10 +233,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					editor.Getter = this.CreateUniformArrayValueGetter<float>(field.Name);
 					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(field.Name) : null;
 					editor.ForceWriteBack = true;
-					if (editor is GroupedPropertyEditor)
-					{
-						if (field.Type == ShaderFieldType.Float) (editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-					}
 				}
 				else if (field.Type == ShaderFieldType.Vec2)
 				{
@@ -258,10 +240,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					editor.Getter = this.CreateUniformArrayValueGetter<Vector2>(field.Name);
 					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector2>(field.Name) : null;
 					editor.ForceWriteBack = true;
-					if (editor is GroupedPropertyEditor)
-					{
-						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-					}
 				}
 				else if (field.Type == ShaderFieldType.Vec3)
 				{
@@ -269,10 +247,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					editor.Getter = this.CreateUniformArrayValueGetter<Vector3>(field.Name);
 					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector3>(field.Name) : null;
 					editor.ForceWriteBack = true;
-					if (editor is GroupedPropertyEditor)
-					{
-						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-					}
 				}
 				else if (field.Type == ShaderFieldType.Vec4)
 				{
@@ -280,21 +254,26 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					editor.Getter = this.CreateUniformArrayValueGetter<Vector4>(field.Name);
 					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector4>(field.Name) : null;
 					editor.ForceWriteBack = true;
-					if (editor is GroupedPropertyEditor)
-					{
-						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-					}
 				}
 				else
 				{
 					editor = this.ParentGrid.CreateEditor(typeof(float[]), this);
 					editor.Getter = this.CreateUniformArrayValueGetter<float>(field.Name);
 					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(field.Name) : null;
-					if (editor is GroupedPropertyEditor)
-					{
-						(editor as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-					}
 				}
+			}
+
+			List<EditorHintAttribute> configData = new List<EditorHintAttribute>();
+
+			if (mainEditorIsArray)
+			{
+				GroupedPropertyEditor groupedMainEditor = editor as GroupedPropertyEditor;
+				if (groupedMainEditor != null)
+					groupedMainEditor.EditorAdded += this.UniformList_EditorAdded;
+			}
+			else
+			{
+				this.PrepareEditorConfigData(field, configData);
 			}
 
 			editor.PropertyName = field.Name;
@@ -368,6 +347,35 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			};
 		}
 
+		private void PrepareEditorConfigData(ShaderFieldInfo field, List<EditorHintAttribute> configData)
+		{
+			if (field.Type != ShaderFieldType.Int)
+			{
+				configData.Add(new EditorHintIncrementAttribute(0.1f));
+			}
+			if (field.MinValue != float.MinValue || field.MaxValue != float.MaxValue)
+			{
+				configData.Add(new EditorHintRangeAttribute(
+					field.MinValue,
+					field.MaxValue));
+			}
+		}
+
+		private void UniformList_EditorAdded(object sender, PropertyEditorEventArgs e)
+		{
+			foreach (FieldEditorItem item in this.fieldEditors.Values)
+			{
+				if (item.Editor == e.Editor)
+				{
+					List<EditorHintAttribute> configData = new List<EditorHintAttribute>();
+					this.PrepareEditorConfigData(item.Field, configData);
+					this.ParentGrid.ConfigureEditor(e.Editor, configData);
+					break;
+				}
+			}
+			e.Editor.ForceWriteBack = true;
+		}
+
 		protected override void OnDragOver(DragEventArgs e)
 		{
 			base.OnDragOver(e);
@@ -407,12 +415,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			// Move on to children if failed otherwise
 			base.OnDragDrop(e);
-		}
-
-		private void UniformList_EditorAdded(object sender, PropertyEditorEventArgs e)
-		{
-			this.ParentGrid.ConfigureEditor(e.Editor, new[] { new EditorHintIncrementAttribute(0.1f) });
-			e.Editor.ForceWriteBack = true;
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)

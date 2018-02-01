@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 using Duality.Drawing;
@@ -185,6 +186,9 @@ namespace Duality.Backend.DefaultOpenTK
 			// Parse field metadata for known properties
 			string description = null;
 			string editorTypeTag = null;
+			float minValue = float.MinValue;
+			float maxValue = float.MaxValue;
+			const string unableToParseError = "Unable to parse shader field metadata property '{0}'. Ignoring value '{1}'";
 			foreach (string metadata in fieldMetadata)
 			{
 				int propertyEnd = metadata.IndexOf(' ');
@@ -197,12 +201,36 @@ namespace Duality.Backend.DefaultOpenTK
 				{
 					int descStart = value.IndexOf('"');
 					int descEnd = value.LastIndexOf('"');
-					if (descStart == -1 || descEnd == -1) continue;
+					if (descStart == -1 || descEnd == -1)
+					{
+						Logs.Core.WriteWarning(unableToParseError, property, value);
+						continue;
+					}
 					description = value.Substring(descStart + 1, descEnd - descStart - 1);
 				}
 				else if (property == "editorType")
 				{
 					editorTypeTag = value.Trim();
+				}
+				else if (property == "minValue")
+				{
+					float parsedValue;
+					if (!float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out parsedValue))
+					{
+						Logs.Core.WriteWarning(unableToParseError, property, value);
+						continue;
+					}
+					minValue = parsedValue;
+				}
+				else if (property == "maxValue")
+				{
+					float parsedValue;
+					if (!float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out parsedValue))
+					{
+						Logs.Core.WriteWarning(unableToParseError, property, value);
+						continue;
+					}
+					maxValue = parsedValue;
 				}
 				else
 				{
@@ -219,7 +247,9 @@ namespace Duality.Backend.DefaultOpenTK
 				scope,
 				arrayLength,
 				editorTypeTag,
-				description);
+				description,
+				minValue,
+				maxValue);
 		}
 		private string GetSourceWithoutComments(string sourceCode)
 		{
