@@ -1480,6 +1480,15 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resize ILists to {0} elements.
+        /// </summary>
+        public static string UndoRedo_ResizeILists {
+            get {
+                return ResourceManager.GetString("UndoRedo_ResizeILists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Re-Parent {0}.
         /// </summary>
         public static string UndoRedo_SetComponentParent {

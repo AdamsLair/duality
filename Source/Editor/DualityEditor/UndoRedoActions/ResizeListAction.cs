@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Duality.Editor.Properties;
 using Duality.Resources;
 
 namespace Duality.Editor.UndoRedoActions
@@ -13,10 +14,9 @@ namespace Duality.Editor.UndoRedoActions
 		private readonly int targetSize;
 		private readonly Type elementType;
 
-		// TODO: Look this up in resources. See other UndoRedoActions for example
 		public override string Name
 		{
-			get { return "Resize"; }
+			get { return string.Format(GeneralRes.UndoRedo_ResizeILists, this.targetSize); }
 		}
 
 		public ResizeListAction(IList<IList> targetLists, int size, Type elementType)

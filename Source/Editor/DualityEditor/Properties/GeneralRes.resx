@@ -588,4 +588,7 @@
 
 Unfortunately though, a connection doesn't seem to be possible right now. Please check your firewall and network status!</value>
   </data>
+  <data name="UndoRedo_ResizeILists" xml:space="preserve">
+    <value>Resize ILists to {0} elements</value>
+  </data>
 </root>
