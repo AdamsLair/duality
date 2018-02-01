@@ -2,15 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Duality.Resources;
 
 namespace Duality.Editor.UndoRedoActions
 {
 	public class ResizeListAction : UndoRedoAction
 	{
-		private IList<IList> targetLists;
-		private int[] originalListSizes;
-		private int targetSize;
-		private Type elementType;
+		private readonly IList<IList> targetLists;
+		private readonly int[] originalListSizes;
+		private readonly int targetSize;
+		private readonly Type elementType;
 
 		// TODO: Look this up in resources. See other UndoRedoActions for example
 		public override string Name
@@ -49,9 +50,11 @@ namespace Duality.Editor.UndoRedoActions
 				}
 			}
 
+			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
+
 			if (writeback)
 			{
-				// anything to do here?
+				// If writeback is supported in the future, implement here
 			}
 		}
 
@@ -71,9 +74,11 @@ namespace Duality.Editor.UndoRedoActions
 				}
 			}
 
+			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
+
 			if (writeback)
 			{
-				// anything to do here?
+				// If writeback is supported in the future, implement here
 			}
 		}
 
