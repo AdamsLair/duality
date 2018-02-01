@@ -195,7 +195,7 @@ namespace Duality.Editor.Controls
 		private bool EditorListResizer(IList<IList> targetLists, int size, Type elementType)
 		{
 			UndoRedoManager.Do(new ResizeListAction(targetLists, size, elementType));
-			return targetLists.Any(list => list.IsFixedSize);
+			return targetLists.Any(list => list == null || list.IsFixedSize);
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
