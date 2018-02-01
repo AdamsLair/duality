@@ -6,10 +6,15 @@
       <item dataType="String">{Name}.frag</item>
     </sourceFileHint>
   </assetInfo>
-  <source dataType="String">uniform float _gameTime;
-
+  <source dataType="String">#pragma duality description "The main texture of the material."
 uniform sampler2D mainTex;
+
+#pragma duality description "Defines how fast the color of this sample shader is shifted over time."
+#pragma duality minValue 0.0
+#pragma duality maxValue 10.0
 uniform float colorShiftSpeed;
+
+uniform float _gameTime;
 
 in vec4 programColor;
 in vec2 programTexCoord;

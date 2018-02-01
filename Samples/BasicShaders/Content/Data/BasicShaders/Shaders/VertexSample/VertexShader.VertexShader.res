@@ -6,8 +6,15 @@
       <item dataType="String">{Name}.vert</item>
     </sourceFileHint>
   </assetInfo>
-  <source dataType="String">uniform vec4 mainColor;
+  <source dataType="String">#pragma duality editorType ColorRgba
+#pragma duality description "The main color of the material, which is multiplied with vertex color and texture."
+uniform vec4 mainColor;
+
+#pragma duality description "Defines how much the vertices rendered with this sample material are moved around over time."
+#pragma duality minValue 0.0
+#pragma duality maxValue 50.0
 uniform float floatStrength;
+
 uniform float _gameTime;
 
 in vec3 vertexPos;
