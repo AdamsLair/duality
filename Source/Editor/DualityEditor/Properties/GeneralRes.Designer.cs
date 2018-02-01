@@ -1300,6 +1300,15 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add {0} to IDictionaries.
+        /// </summary>
+        public static string UndoRedo_AddToDictionary {
+            get {
+                return ResourceManager.GetString("UndoRedo_AddToDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apply {0}.
         /// </summary>
         public static string UndoRedo_ApplyToPrefab {
@@ -1440,6 +1449,15 @@ namespace Duality.Editor.Properties {
         public static string UndoRedo_Macro {
             get {
                 return ResourceManager.GetString("UndoRedo_Macro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove {0} from IDictionaries.
+        /// </summary>
+        public static string UndoRedo_RemoveFromDictionary {
+            get {
+                return ResourceManager.GetString("UndoRedo_RemoveFromDictionary", resourceCulture);
             }
         }
         

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Duality.Editor.Properties;
 using Duality.Resources;
 
 namespace Duality.Editor.UndoRedoActions
@@ -13,10 +14,9 @@ namespace Duality.Editor.UndoRedoActions
 		private readonly object key;
 		private readonly Type valueType;
 
-		// TODO: fetch from resources
 		public override string Name
 		{
-			get { return "Add key"; }
+			get { return string.Format(GeneralRes.UndoRedo_AddToDictionary, this.key); }
 		}
 
 		public AddDictionaryKeyAction(IEnumerable<IDictionary> targetDictionaries, object key, Type valueType)

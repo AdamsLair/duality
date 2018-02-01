@@ -591,4 +591,10 @@ Unfortunately though, a connection doesn't seem to be possible right now. Please
   <data name="UndoRedo_ResizeILists" xml:space="preserve">
     <value>Resize ILists to {0} elements</value>
   </data>
+  <data name="UndoRedo_AddToDictionary" xml:space="preserve">
+    <value>Add {0} to IDictionaries</value>
+  </data>
+  <data name="UndoRedo_RemoveFromDictionary" xml:space="preserve">
+    <value>Remove {0} from IDictionaries</value>
+  </data>
 </root>

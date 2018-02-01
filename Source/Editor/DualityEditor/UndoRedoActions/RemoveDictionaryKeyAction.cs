@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Duality.Editor.Properties;
 using Duality.Resources;
 
 namespace Duality.Editor.UndoRedoActions
@@ -11,10 +12,9 @@ namespace Duality.Editor.UndoRedoActions
 		private readonly object[] removedValues;
 		private readonly object key;
 
-		// TODO: fetch from resources
 		public override string Name
 		{
-			get { return "Remove key"; }
+			get { return string.Format(GeneralRes.UndoRedo_RemoveFromDictionary, this.key); }
 		}
 
 		public RemoveDictionaryKeyAction(IEnumerable<IDictionary> targetDictionaries, object key)
