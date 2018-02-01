@@ -79,6 +79,8 @@ namespace Duality.Editor.Controls
 			{
 				IDictionaryPropertyEditor dictEditor = editor as IDictionaryPropertyEditor;
 				dictEditor.DictionaryKeySetter = this.EditorDictionaryKeySetter;
+				dictEditor.DictionKeyAdder = this.EditorDictionaryKeyAdder;
+				dictEditor.DictionKeyRemover = this.EditorDictionKeyRemover;
 			}
 
 			var flagsAttrib = EditorHintAttribute.Get<EditorHintFlagsAttribute>(editor.EditedMember, hintOverride);
@@ -106,6 +108,7 @@ namespace Duality.Editor.Controls
 				if (placesAttrib != null) numEditor.DecimalPlaces = placesAttrib.Places;
 			}
 		}
+
 		protected override void PrepareSetValue()
 		{
 			base.PrepareSetValue();
@@ -196,6 +199,14 @@ namespace Duality.Editor.Controls
 		{
 			UndoRedoManager.Do(new ResizeListAction(targetLists, size, elementType));
 			return targetLists.Any(list => list == null || list.IsFixedSize);
+		}
+		private void EditorDictionaryKeyAdder(IEnumerable<IDictionary> targetDictionaries, object key, Type valueType)
+		{
+			UndoRedoManager.Do(new AddDictionaryKeyAction(targetDictionaries, key, valueType));
+		}
+		private void EditorDictionKeyRemover(IEnumerable<IDictionary> targetDictionaries, object key)
+		{
+			UndoRedoManager.Do(new RemoveDictionaryKeyAction(targetDictionaries, key));
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
