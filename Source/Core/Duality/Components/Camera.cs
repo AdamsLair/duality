@@ -361,11 +361,9 @@ namespace Duality.Components
 		{
 			if (this.transformDevice != null && !this.transformDevice.Disposed) return;
 			
-			// The transform device always assumes world rendering, because that's
-			// what the Cameras transform methods need to use. It is never used for
-			// rendering.
+			// The transform device used only for calculating transform results in
+			// the camera methods. It is never used for rendering.
 			this.transformDevice = new DrawDevice();
-			this.transformDevice.RenderMode = RenderMode.World;
 			this.transformDevice.TargetSize = DualityApp.TargetViewSize;
 		}
 		private void ReleaseTransformDevice()

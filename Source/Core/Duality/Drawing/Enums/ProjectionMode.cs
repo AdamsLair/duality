@@ -10,12 +10,19 @@ namespace Duality.Drawing
 	public enum ProjectionMode
 	{
 		/// <summary>
-		/// No perspective effect is applied. Z points into the screen and is only used for object sorting.
+		/// Vertices are rendered in world coordinates, but objects appear at the same size
+		/// regardless of their distance.
 		/// </summary>
 		Orthographic,
 		/// <summary>
-		/// Objects that are far away appear smaller. Z points into the screen and is used for scaling and sorting.
+		/// Vertices are rendered in world coordinates and appear bigger or smaller depending
+		/// on how far away they are.
 		/// </summary>
-		Perspective
+		Perspective,
+		/// <summary>
+		/// Vertices are rendered in screen / pixel coordinates where (0, 0) is in the screens upper left. 
+		/// Z values are used for sorting drawcalls, but no per-pixel depth testing is done.
+		/// </summary>
+		Screen
 	}
 }

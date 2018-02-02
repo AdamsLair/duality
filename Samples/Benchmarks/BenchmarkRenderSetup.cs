@@ -199,8 +199,7 @@ namespace Duality.Samples.Benchmarks
 			if (this.drawDevice == null)
 			{
 				this.drawDevice = new DrawDevice();
-				this.drawDevice.Projection = ProjectionMode.Orthographic;
-				this.drawDevice.RenderMode = RenderMode.Screen;
+				this.drawDevice.Projection = ProjectionMode.Screen;
 			}
 
 			// Configure the drawing device to match parameters and settings

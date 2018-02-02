@@ -174,7 +174,6 @@
     <Compile Include="Resources\Font\FontCharSet.cs" />
     <Compile Include="Resources\Shaders\BuiltinShaderFields.cs" />
     <Compile Include="Resources\Shaders\ShaderType.cs" />
-    <Compile Include="Drawing\Enums\RenderMode.cs" />
     <Compile Include="Drawing\Enums\ProjectionMode.cs" />
     <Compile Include="Drawing\Enums\VertexMode.cs" />
     <Compile Include="Drawing\BatchInfo.cs" />

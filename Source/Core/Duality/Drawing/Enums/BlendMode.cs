@@ -14,12 +14,6 @@ namespace Duality.Drawing
 	public enum BlendMode
 	{
 		/// <summary>
-		/// When passing this to a method, this value can be used to indicate "Restore to default settings".
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		Reset = -1,
-
-		/// <summary>
 		/// Incoming color overwrites background color completely. Doesn't need Z-Sorting.
 		/// </summary>
 		Solid,

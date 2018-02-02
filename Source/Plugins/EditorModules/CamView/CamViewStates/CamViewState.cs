@@ -174,7 +174,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.camPassBg = new RenderStep
 				{
 					Id = "EditorGizmoBackground",
-					RenderMode = RenderMode.Screen,
+					Projection = ProjectionMode.Screen,
 					ClearFlags = ClearFlag.None,
 					VisibilityMask = VisibilityFlag.ScreenOverlay
 				};
@@ -184,6 +184,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.camPassEdWorld = new RenderStep
 				{
 					Id = "EditorGizmoWorld",
+					DefaultProjection = true,
 					ClearFlags = ClearFlag.None,
 					VisibilityMask = VisibilityFlag.None
 				};
@@ -195,6 +196,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.camPassEdWorldNoDepth = new RenderStep
 				{
 					Id = "EditorGizmoWorldOverlay",
+					DefaultProjection = true,
 					ClearFlags = ClearFlag.Depth,
 					VisibilityMask = VisibilityFlag.None
 				};
@@ -205,7 +207,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.camPassEdScreen = new RenderStep
 				{
 					Id = "EditorGizmoScreenOverlay",
-					RenderMode = RenderMode.Screen,
+					Projection = ProjectionMode.Screen,
 					ClearFlags = ClearFlag.None,
 					VisibilityMask = VisibilityFlag.ScreenOverlay
 				};

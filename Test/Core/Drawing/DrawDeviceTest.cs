@@ -19,15 +19,14 @@ namespace Duality.Tests.Drawing
 			{
 				device.TargetSize = viewportSize;
 				device.ViewportRect = new Rect(viewportSize);
-				device.RenderMode = RenderMode.Screen;
+				device.Projection = ProjectionMode.Screen;
 
-				// Screen space mode is supposed to ignore projection settings
+				// Screen space mode is supposed to ignore view dependent settings
 				device.ViewerAngle = MathF.DegToRad(90.0f);
 				device.ViewerPos = new Vector3(7000, 8000, -500);
 				device.FocusDist = 500;
 				device.NearZ = 100;
 				device.FarZ = 10000;
-				device.Projection = ProjectionMode.Perspective;
 
 				// Viewport center
 				Assert.IsTrue(device.IsSphereInView(new Vector3(viewportSize.X * 0.5f, viewportSize.Y * 0.5f, 0), 150));
@@ -61,7 +60,6 @@ namespace Duality.Tests.Drawing
 				device.NearZ = 100;
 				device.FarZ = 10000;
 				device.Projection = ProjectionMode.Orthographic;
-				device.RenderMode = RenderMode.World;
 
 				// Viewport center
 				Assert.IsTrue(device.IsSphereInView(new Vector3(0, 0, device.FocusDist), 150));
@@ -95,7 +93,6 @@ namespace Duality.Tests.Drawing
 				device.NearZ = 100;
 				device.FarZ = 10000;
 				device.Projection = ProjectionMode.Perspective;
-				device.RenderMode = RenderMode.World;
 
 				// Viewport center
 				Assert.IsTrue(device.IsSphereInView(new Vector3(0, 0, device.FocusDist), 150));
@@ -134,8 +131,7 @@ namespace Duality.Tests.Drawing
 				device.ViewerPos = new Vector3(0, 0, -device.FocusDist);
 
 				// Screen space rendering
-				device.RenderMode = RenderMode.Screen;
-				device.Projection = ProjectionMode.Perspective;
+				device.Projection = ProjectionMode.Screen;
 
 				Assert.AreEqual(1.0f, device.GetScaleAtZ(0.0f));
 				Assert.AreEqual(1.0f, device.GetScaleAtZ(1000.0f));
@@ -144,7 +140,6 @@ namespace Duality.Tests.Drawing
 				Assert.AreEqual(1.0f, device.GetScaleAtZ(-10000.0f));
 
 				// World space rendering with orthographic projection
-				device.RenderMode = RenderMode.World;
 				device.Projection = ProjectionMode.Orthographic;
 
 				Assert.AreEqual(2.0f, device.GetScaleAtZ(0.0f));
@@ -154,7 +149,6 @@ namespace Duality.Tests.Drawing
 				Assert.AreEqual(2.0f, device.GetScaleAtZ(-10000.0f));
 
 				// World space rendering with perspective projection
-				device.RenderMode = RenderMode.World;
 				device.Projection = ProjectionMode.Perspective;
 
 				Assert.AreEqual(1.0f, device.GetScaleAtZ(0.0f));
@@ -184,8 +178,7 @@ namespace Duality.Tests.Drawing
 				device.ViewerPos = new Vector3(0, 0, -device.FocusDist);
 
 				// Screen space rendering
-				device.RenderMode = RenderMode.Screen;
-				device.Projection = ProjectionMode.Perspective;
+				device.Projection = ProjectionMode.Screen;
 
 				// 1:1 screen coordinate output in all cases
 				Assert.AreEqual(new Vector2(0.0f, 0.0f), device.GetScreenPos(new Vector3(0.0f, 0.0f, 0.0f)));
@@ -198,7 +191,6 @@ namespace Duality.Tests.Drawing
 				Assert.AreEqual(new Vector2(0.0f, 600.0f), device.GetScreenPos(new Vector3(0.0f, 600.0f, 1000.0f)));
 
 				// World space rendering with orthographic projection
-				device.RenderMode = RenderMode.World;
 				device.Projection = ProjectionMode.Orthographic;
 
 				// Scaled up 2:1 due to focus distance scaling factor
@@ -214,7 +206,6 @@ namespace Duality.Tests.Drawing
 				Assert.AreEqual(viewportCenter + new Vector2(0.0f, 300.0f), device.GetScreenPos(new Vector3(0.0f, 150.0f, 1000.0f)));
 
 				// World space rendering with perspective projection
-				device.RenderMode = RenderMode.World;
 				device.Projection = ProjectionMode.Perspective;
 				
 				// 1:1 scaling at focus distance
@@ -247,8 +238,7 @@ namespace Duality.Tests.Drawing
 				device.ViewerPos = new Vector3(0, 0, -device.FocusDist);
 
 				// Screen space rendering
-				device.RenderMode = RenderMode.Screen;
-				device.Projection = ProjectionMode.Perspective;
+				device.Projection = ProjectionMode.Screen;
 
 				// 1:1 world coordinate output in all cases
 				AssertRoughlyEqual(new Vector3(0.0f, 0.0f, 0.0f), device.GetWorldPos(new Vector3(0.0f, 0.0f, 0.0f)));
@@ -261,7 +251,6 @@ namespace Duality.Tests.Drawing
 				AssertRoughlyEqual(new Vector3(0.0f, 600.0f, 1000.0f), device.GetWorldPos(new Vector3(0.0f, 600.0f, 1000.0f)));
 
 				// World space rendering with orthographic projection
-				device.RenderMode = RenderMode.World;
 				device.Projection = ProjectionMode.Orthographic;
 
 				// Scaled up 2:1 due to focus distance scaling factor
@@ -277,7 +266,6 @@ namespace Duality.Tests.Drawing
 				AssertRoughlyEqual(new Vector3(0.0f, 150.0f, 1000.0f), device.GetWorldPos(new Vector3(viewportCenter + new Vector2(0.0f, 300.0f), 1000.0f)));
 
 				// World space rendering with perspective projection
-				device.RenderMode = RenderMode.World;
 				device.Projection = ProjectionMode.Perspective;
 				
 				// 1:1 scaling at focus distance

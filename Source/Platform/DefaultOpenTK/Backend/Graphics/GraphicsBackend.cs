@@ -181,18 +181,12 @@ namespace Duality.Backend.DefaultOpenTK
 			GL.Clear(glClearMask);
 
 			// Configure Rendering params
-			if (options.RenderMode == RenderMode.Screen)
-			{
-				GL.Enable(EnableCap.ScissorTest);
-				GL.Enable(EnableCap.DepthTest);
-				GL.DepthFunc(DepthFunction.Always);
-			}
-			else
-			{
-				GL.Enable(EnableCap.ScissorTest);
-				GL.Enable(EnableCap.DepthTest);
+			GL.Enable(EnableCap.ScissorTest);
+			GL.Enable(EnableCap.DepthTest);
+			if (options.DepthTest)
 				GL.DepthFunc(DepthFunction.Lequal);
-			}
+			else
+				GL.DepthFunc(DepthFunction.Always);
 
 			// Prepare shared matrix stack for rendering
 			Matrix4 viewMatrix = options.ViewMatrix;
@@ -201,13 +195,7 @@ namespace Duality.Backend.DefaultOpenTK
 			if (NativeRenderTarget.BoundRT != null)
 			{
 				Matrix4 flipOutput = Matrix4.CreateScale(1.0f, -1.0f, 1.0f);
-				projectionMatrix = flipOutput * projectionMatrix;
-
-				if (options.RenderMode == RenderMode.Screen)
-				{
-					Matrix4 offsetOutput = Matrix4.CreateTranslation(0.0f, -device.TargetSize.Y, 0.0f);
-					projectionMatrix = offsetOutput * projectionMatrix;
-				}
+				projectionMatrix = projectionMatrix * flipOutput;
 			}
 
 			this.renderOptions.ShaderParameters.Set(
@@ -544,7 +532,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 			// Setup BlendType
 			if (lastTech == null || tech.Blending != lastTech.Blending)
-				this.SetupBlendState(tech.Blending, this.currentDevice.DepthWrite);
+				this.SetupBlendState(tech.Blending);
 
 			// Bind Shader
 			NativeShaderProgram nativeShader = tech.NativeShader as NativeShaderProgram;
@@ -584,13 +572,13 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			NativeTexture.ResetBinding(curSamplerIndex);
 		}
-		private void SetupBlendState(BlendMode mode, bool depthWrite)
+		private void SetupBlendState(BlendMode mode)
 		{
+			bool depthWrite = this.renderOptions.DepthWrite;
 			bool useAlphaTesting = false;
 			switch (mode)
 			{
 				default:
-				case BlendMode.Reset:
 				case BlendMode.Solid:
 					GL.DepthMask(depthWrite);
 					GL.Disable(EnableCap.Blend);
@@ -797,9 +785,15 @@ namespace Duality.Backend.DefaultOpenTK
 		private void FinishMaterial(BatchInfo material)
 		{
 			DrawTechnique tech = material.Technique.Res;
-			this.SetupBlendState(BlendMode.Reset, true);
+			this.FinishBlendState();
 			NativeShaderProgram.Bind(null);
 			NativeTexture.ResetBinding(this.sharedSamplerBindings);
+		}
+		private void FinishBlendState()
+		{
+			GL.DepthMask(true);
+			GL.Disable(EnableCap.Blend);
+			GL.Disable(EnableCap.SampleAlphaToCoverage);
 		}
 		
 		private static PrimitiveType GetOpenTKVertexMode(VertexMode mode)

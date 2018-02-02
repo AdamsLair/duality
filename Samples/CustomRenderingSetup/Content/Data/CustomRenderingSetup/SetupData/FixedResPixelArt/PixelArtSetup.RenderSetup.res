@@ -11,13 +11,13 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="All" value="3" />
         <defaultClearColor dataType="Bool">true</defaultClearColor>
+        <defaultProjection dataType="Bool">true</defaultProjection>
         <id dataType="String">World</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FixedResPixelArt\MainTarget.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="World" value="0" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -31,13 +31,14 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id dataType="String">ScreenOverlay</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\FixedResPixelArt\MainTarget.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -51,6 +52,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="All" value="3" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1307056800">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2583301340" custom="true">
@@ -66,7 +68,7 @@
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Fit" value="2" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>

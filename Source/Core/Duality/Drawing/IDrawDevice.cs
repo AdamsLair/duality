@@ -43,10 +43,6 @@ namespace Duality.Drawing
 		/// </summary>
 		float FarZ { get; }
 		/// <summary>
-		/// [GET] Returns whether the drawing device allows writing to the depth buffer
-		/// </summary>
-		bool DepthWrite { get; }
-		/// <summary>
 		/// [GET] Returns whether the drawing device is currently performing a visual picking opreation.
 		/// </summary>
 		bool IsPicking { get; }

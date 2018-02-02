@@ -18,10 +18,10 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="All" value="3" />
         <defaultClearColor dataType="Bool">true</defaultClearColor>
+        <defaultProjection dataType="Bool">true</defaultProjection>
         <id dataType="String">World</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="World" value="0" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
@@ -36,10 +36,11 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id dataType="String">ScreenOverlay</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
-        <matrixMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>

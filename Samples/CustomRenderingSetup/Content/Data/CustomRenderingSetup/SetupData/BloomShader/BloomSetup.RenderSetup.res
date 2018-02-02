@@ -102,13 +102,13 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="All" value="3" />
         <defaultClearColor dataType="Bool">true</defaultClearColor>
+        <defaultProjection dataType="Bool">true</defaultProjection>
         <id dataType="String">World</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTarget.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="World" value="0" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -122,13 +122,14 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id dataType="String">ScreenOverlay</id>
         <input />
         <inputResize dataType="Enum" type="Duality.TargetResize" name="None" value="0" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\MainTarget.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -142,6 +143,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1307056800">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2583301340" custom="true">
@@ -161,7 +163,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeC.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -175,6 +177,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="2557564508">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3403320516" custom="true">
@@ -192,7 +195,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSize.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -206,6 +209,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="487150448">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3577988412" custom="true">
@@ -223,7 +227,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSize.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -237,6 +241,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="2520991116">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="439787428" custom="true">
@@ -254,7 +259,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\EighthSize.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -268,6 +273,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1808190912">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3732335388" custom="true">
@@ -286,7 +292,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeB.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -300,6 +306,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1165639164">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="1959635780" custom="true">
@@ -318,7 +325,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\FullSizeC.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -332,6 +339,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="3479145744">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2987236156" custom="true">
@@ -350,7 +358,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSizeB.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -364,6 +372,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="561019180">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2745605860" custom="true">
@@ -382,7 +391,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\HalfSize.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -396,6 +405,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="11082592">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2981548252" custom="true">
@@ -414,7 +424,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSizeB.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -428,6 +438,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="418870428">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="3392803780" custom="true">
@@ -446,7 +457,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\QuarterSize.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -460,6 +471,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="2665640496">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2010963644" custom="true">
@@ -478,7 +490,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\EighthSizeB.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -492,6 +504,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1979974348">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="965404836" custom="true">
@@ -510,7 +523,7 @@
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]">
           <contentPath dataType="String">Data\CustomRenderingSetup\SetupData\BloomShader\BlurTargets\EighthSize.RenderTarget.res</contentPath>
         </output>
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>
@@ -524,6 +537,7 @@
         <clearDepth dataType="Float">1</clearDepth>
         <clearFlags dataType="Enum" type="Duality.Drawing.ClearFlag" name="None" value="0" />
         <defaultClearColor dataType="Bool">false</defaultClearColor>
+        <defaultProjection dataType="Bool">false</defaultProjection>
         <id />
         <input dataType="Struct" type="Duality.Drawing.BatchInfo" id="1091815552">
           <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2143216028" custom="true">
@@ -551,7 +565,7 @@
         </input>
         <inputResize dataType="Enum" type="Duality.TargetResize" name="Stretch" value="1" />
         <output dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderTarget]]" />
-        <renderMode dataType="Enum" type="Duality.Drawing.RenderMode" name="Screen" value="1" />
+        <projection dataType="Enum" type="Duality.Drawing.ProjectionMode" name="Screen" value="2" />
         <targetRect dataType="Struct" type="Duality.Rect">
           <H dataType="Float">1</H>
           <W dataType="Float">1</W>

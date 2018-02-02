@@ -150,6 +150,7 @@ namespace Duality.Resources
 			this.ResizeRenderTarget(this.pickingRT, (Point2)viewportRect.Size);
 
 			ContentRef<RenderTarget> oldDeviceTarget = drawDevice.Target;
+			ProjectionMode oldDeviceProjection = drawDevice.Projection;
 			VisibilityFlag oldDeviceMask = drawDevice.VisibilityMask;
 
 			drawDevice.PickingIndex = 1;
@@ -165,7 +166,7 @@ namespace Duality.Resources
 			// Render the world
 			{
 				drawDevice.VisibilityMask = oldDeviceMask & VisibilityFlag.AllGroups;
-				drawDevice.RenderMode = RenderMode.World;
+				drawDevice.Projection = oldDeviceProjection;
 				drawDevice.ClearFlags = ClearFlag.All;
 
 				drawDevice.PrepareForDrawcalls();
@@ -177,7 +178,7 @@ namespace Duality.Resources
 			if (this.renderOverlay)
 			{
 				drawDevice.VisibilityMask = oldDeviceMask;
-				drawDevice.RenderMode = RenderMode.Screen;
+				drawDevice.Projection = ProjectionMode.Screen;
 				drawDevice.ClearFlags = ClearFlag.None;
 
 				drawDevice.PrepareForDrawcalls();
@@ -187,6 +188,7 @@ namespace Duality.Resources
 
 			drawDevice.PickingIndex = 0;
 			drawDevice.VisibilityMask = oldDeviceMask;
+			drawDevice.Projection = oldDeviceProjection;
 			drawDevice.Target = oldDeviceTarget;
 
 			// Move data to local buffer

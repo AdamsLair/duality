@@ -14,7 +14,8 @@ namespace Duality.Backend
 		private ColorRgba                 clearColor       = ColorRgba.TransparentBlack;
 		private float                     clearDepth       = 1.0f;
 		private Rect                      viewport         = new Rect(0, 0, 256, 256);
-		private RenderMode              renderMode       = RenderMode.Screen;
+		private bool                      depthTest        = true;
+		private bool                      depthWrite       = true;
 		private Matrix4                   viewMatrix       = Matrix4.Identity;
 		private Matrix4                   projectionMatrix = Matrix4.Identity;
 		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
@@ -44,10 +45,15 @@ namespace Duality.Backend
 			get { return this.viewport; }
 			set { this.viewport = value; }
 		}
-		public RenderMode RenderMode
+		public bool DepthTest
 		{
-			get { return this.renderMode; }
-			set { this.renderMode = value; }
+			get { return this.depthTest; }
+			set { this.depthTest = value; }
+		}
+		public bool DepthWrite
+		{
+			get { return this.depthWrite; }
+			set { this.depthWrite = value; }
 		}
 		public Matrix4 ViewMatrix
 		{

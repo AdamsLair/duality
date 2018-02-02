@@ -16,10 +16,11 @@ namespace Duality.Resources
 	{
 		private string                   id                = null;
 		private bool                     defaultClearColor = false;
+		private bool                     defaultProjection = false;
 		private ColorRgba                clearColor        = ColorRgba.TransparentBlack;
 		private float                    clearDepth        = 1.0f;
 		private ClearFlag                clearFlags        = ClearFlag.All;
-		private RenderMode               renderMode        = RenderMode.World;
+		private ProjectionMode           projection        = ProjectionMode.Perspective;
 		private VisibilityFlag           visibilityMask    = VisibilityFlag.AllGroups;
 		private Rect                     targetRect        = new Rect(1.0f, 1.0f);
 		private BatchInfo                input             = null;
@@ -81,13 +82,21 @@ namespace Duality.Resources
 		}
 		/// <summary>
 		/// [GET / SET] When true, the <see cref="ClearColor"/> that is specified by this <see cref="RenderStep"/>
-		/// will be replaced with the rendering environment's default color, e.g. the <see cref="Duality.Components.Camera"/> background
-		/// color.
+		/// will be replaced with the rendering environment's default color, e.g. the one from the active <see cref="Duality.Components.Camera"/>.
 		/// </summary>
 		public bool DefaultClearColor
 		{
 			get { return this.defaultClearColor; }
 			set { this.defaultClearColor = value; }
+		}
+		/// <summary>
+		/// [GET / SET] When true, the <see cref="Projection"/> that is specified by this <see cref="RenderStep"/>
+		/// will be replaced with the rendering environment's default projection, e.g. the one from the active <see cref="Duality.Components.Camera"/>.
+		/// </summary>
+		public bool DefaultProjection
+		{
+			get { return this.defaultProjection; }
+			set { this.defaultProjection = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The clear color to apply when clearing the color buffer.
@@ -114,12 +123,12 @@ namespace Duality.Resources
 			set { this.clearFlags = value; }
 		}
 		/// <summary>
-		/// [GET / SET] Whether this step renders the world from the view of an observer, or a flat screen (overlay).
+		/// [GET / SET] The projection mode that will be used to transform rendered vertices.
 		/// </summary>
-		public RenderMode RenderMode
+		public ProjectionMode Projection
 		{
-			get { return this.renderMode; }
-			set { this.renderMode = value; }
+			get { return this.projection; }
+			set { this.projection = value; }
 		}
 		/// <summary>
 		/// [GET / SET] A step-local bitmask flagging all visibility groups that are considered visible to the active drawing device.

@@ -27,12 +27,13 @@ namespace Duality.Resources
 			defaultSetup.Steps.Add(new RenderStep
 			{
 				Id = "World",
-				DefaultClearColor = true
+				DefaultClearColor = true,
+				DefaultProjection = true
 			});
 			defaultSetup.Steps.Add(new RenderStep
 			{
 				Id = "ScreenOverlay",
-				RenderMode = RenderMode.Screen,
+				Projection = ProjectionMode.Screen,
 				ClearFlags = ClearFlag.None,
 				VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay
 			});
@@ -187,7 +188,7 @@ namespace Duality.Resources
 		public void RenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize)
 		{
 			// Memorize projection matrix settings, so the drawing device can be properly reset later
-			RenderMode oldDeviceRenderMode = drawDevice.RenderMode;
+			ProjectionMode oldDeviceProjection = drawDevice.Projection;
 			Vector2 oldDeviceTargetSize = drawDevice.TargetSize;
 
 			try
@@ -200,7 +201,7 @@ namespace Duality.Resources
 			}
 
 			// Reset matrices for projection calculations to their previous state
-			drawDevice.RenderMode = oldDeviceRenderMode;
+			drawDevice.Projection = oldDeviceProjection;
 			drawDevice.TargetSize = oldDeviceTargetSize;
 		}
 
@@ -281,6 +282,7 @@ namespace Duality.Resources
 			// Memorize old draw device settings to reset them later
 			VisibilityFlag oldDeviceMask = drawDevice.VisibilityMask;
 			ColorRgba oldDeviceClearColor = drawDevice.ClearColor;
+			ProjectionMode oldDeviceProjection = drawDevice.Projection;
 			ContentRef<RenderTarget> oldDeviceTarget = drawDevice.Target;
 			
 			Rect localViewport;
@@ -309,7 +311,7 @@ namespace Duality.Resources
 			localTargetSize *= step.TargetRect.Size;
 
 			// Set up the draw device with rendering step settings
-			drawDevice.RenderMode = step.RenderMode;
+			drawDevice.Projection = step.DefaultProjection ? oldDeviceProjection : step.Projection;
 			drawDevice.Target = renderTarget;
 			drawDevice.TargetSize = localTargetSize;
 			drawDevice.ViewportRect = localViewport;
@@ -335,6 +337,7 @@ namespace Duality.Resources
 			// Restore old draw device state
 			drawDevice.VisibilityMask = oldDeviceMask;
 			drawDevice.ClearColor = oldDeviceClearColor;
+			drawDevice.Projection = oldDeviceProjection;
 			drawDevice.Target = oldDeviceTarget;
 		}
 		/// <summary>

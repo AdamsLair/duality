@@ -158,7 +158,6 @@ namespace Duality.Drawing
 		private Vector3                   viewerPos        = Vector3.Zero;
 		private float                     viewerAngle      = 0.0f;
 		private ContentRef<RenderTarget>  renderTarget     = null;
-		private RenderMode                renderMode       = RenderMode.Screen;
 		private ProjectionMode            projection       = ProjectionMode.Perspective;
 		private Matrix4                   matView          = Matrix4.Identity;
 		private Matrix4                   matProjection    = Matrix4.Identity;
@@ -294,16 +293,6 @@ namespace Duality.Drawing
 		{
 			get { return this.pickingIndex != 0; }
 		}
-		public RenderMode RenderMode
-		{
-			get { return this.renderMode; }
-			set
-			{
-				if (this.renderMode == value) return;
-				this.renderMode = value;
-				this.UpdateMatrices();
-			}
-		}
 		public Rect ViewportRect
 		{
 			get { return this.viewportRect; }
@@ -319,10 +308,6 @@ namespace Duality.Drawing
 				this.UpdateMatrices();
 			}
 		}
-		public bool DepthWrite
-		{
-			get { return this.renderMode != RenderMode.Screen; }
-		}
 		/// <summary>
 		/// [GET] Provides access to the drawing devices shared <see cref="ShaderParameterCollection"/>,
 		/// which allows to specify a parameter value globally across all materials rendered by this
@@ -333,39 +318,26 @@ namespace Duality.Drawing
 			get { return this.shaderParameters; }
 		}
 
-
-		public DrawDevice() { }
-		~DrawDevice()
-		{
-			this.Dispose(false);
-		}
+		
 		public void Dispose()
 		{
-			this.Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-		private void Dispose(bool manually)
-		{
-			if (!this.disposed)
-			{
-				// Release Resources
-				this.disposed = true;
+			if (this.disposed) return;
+			this.disposed = true;
 
-				// Set big object references to null to make
-				// sure they're garbage collected even when keeping
-				// a reference to the disposed DrawDevice around.
-				this.renderOptions = null;
-				this.renderStats = null;
-				this.tempMaterialPool = null;
-				this.drawVertices = null;
-				this.drawBuffer = null;
-				this.sortBufferSolid = null;
-				this.sortBufferBlended = null;
-				this.sortBufferTemp = null;
-				this.batchBufferSolid = null;
-				this.batchBufferBlended = null;
-				this.batchIndexPool = null;
-			}
+			// Set big object references to null to make
+			// sure they're garbage collected even when keeping
+			// a reference to the disposed DrawDevice around.
+			this.renderOptions = null;
+			this.renderStats = null;
+			this.tempMaterialPool = null;
+			this.drawVertices = null;
+			this.drawBuffer = null;
+			this.sortBufferSolid = null;
+			this.sortBufferBlended = null;
+			this.sortBufferTemp = null;
+			this.batchBufferSolid = null;
+			this.batchBufferBlended = null;
+			this.batchIndexPool = null;
 		}
 
 		
@@ -376,7 +348,7 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public float GetScaleAtZ(float z)
 		{
-			if (this.renderMode == RenderMode.Screen)
+			if (this.projection == ProjectionMode.Screen)
 				return 1.0f;
 			else if (this.projection == ProjectionMode.Perspective)
 				return this.focusDist / Math.Max(z - this.viewerPos.Z, this.nearZ);
@@ -542,7 +514,7 @@ namespace Duality.Drawing
 			};
 			
 			// Determine whether we need depth sorting and calculate a reference depth
-			bool sortByDepth = !this.DepthWrite || material.Technique.Res.NeedsZSort;
+			bool sortByDepth = (this.projection == ProjectionMode.Screen) || material.Technique.Res.NeedsZSort;
 			RawList<SortItem> sortBuffer = sortByDepth ? this.sortBufferBlended : this.sortBufferSolid;
 			SortItem sortItem = new SortItem();
 			if (sortByDepth)
@@ -594,7 +566,7 @@ namespace Duality.Drawing
 		/// <param name="batch"></param>
 		public void AddBatch(DrawBatch batch)
 		{
-			bool sortByDepth = !this.DepthWrite || batch.Material.Technique.Res.NeedsZSort;
+			bool sortByDepth = (this.projection == ProjectionMode.Screen) || batch.Material.Technique.Res.NeedsZSort;
 			RawList<DrawBatch> batchBuffer = sortByDepth ? this.batchBufferBlended : this.batchBufferSolid;
 			batchBuffer.Add(batch);
 			++this.numRawBatches;
@@ -660,13 +632,15 @@ namespace Duality.Drawing
 			this.AggregateBatches();
 			this.UpdateBuiltinShaderParameters();
 
+			bool overlayMode = (this.projection == ProjectionMode.Screen);
 			this.renderOptions.ClearFlags = this.clearFlags;
 			this.renderOptions.ClearColor = this.clearColor;
 			this.renderOptions.ClearDepth = this.clearDepth;
 			this.renderOptions.Viewport = this.viewportRect;
-			this.renderOptions.RenderMode = this.renderMode;
 			this.renderOptions.ViewMatrix = this.matView;
 			this.renderOptions.ProjectionMatrix = this.matProjection;
+			this.renderOptions.DepthTest = !overlayMode;
+			this.renderOptions.DepthWrite = !overlayMode;
 			this.renderOptions.Target = this.renderTarget.IsAvailable ? this.renderTarget.Res.Native : null;
 			this.renderOptions.ShaderParameters = this.shaderParameters;
 
@@ -728,7 +702,7 @@ namespace Duality.Drawing
 		private void UpdateViewMatrix()
 		{
 			this.matView = Matrix4.Identity;
-			if (this.renderMode == RenderMode.World)
+			if (this.projection != ProjectionMode.Screen)
 			{
 				// Translate opposite to camera position
 				this.matView *= Matrix4.CreateTranslation(-this.viewerPos);
@@ -744,7 +718,7 @@ namespace Duality.Drawing
 			Matrix4 flipZDir;
 			Matrix4.CreateScale(1.0f, 1.0f, -1.0f, out flipZDir);
 
-			if (this.renderMode == RenderMode.Screen)
+			if (this.projection == ProjectionMode.Screen)
 			{
 				// When rendering in screen space, all reasonable positive depth should be valid,
 				// so we'll ignore any of the projection specific near and far plane settings.
@@ -760,51 +734,48 @@ namespace Duality.Drawing
 
 				this.matProjection = flipZDir * this.matProjection;
 			}
+			else if (this.projection == ProjectionMode.Orthographic)
+			{
+				Matrix4.CreateOrthographicOffCenter(
+					targetRect.X - targetRect.W * 0.5f,
+					targetRect.X + targetRect.W * 0.5f, 
+					targetRect.Y + targetRect.H * 0.5f, 
+					targetRect.Y - targetRect.H * 0.5f,
+					this.nearZ, 
+					this.farZ,
+					out this.matProjection);
+					
+				// In non-perspective projection, we'll use FocusDist for scaling
+				Matrix4 scaleByFocusDist;
+				Matrix4.CreateScale(
+					this.focusDist / DefaultFocusDist, 
+					this.focusDist / DefaultFocusDist,
+ 					1.0f,
+					out scaleByFocusDist);
+
+				this.matProjection = scaleByFocusDist * flipZDir * this.matProjection;
+			}
 			else
 			{
-				if (this.projection == ProjectionMode.Orthographic)
-				{
-					Matrix4.CreateOrthographicOffCenter(
-						targetRect.X - targetRect.W * 0.5f,
-						targetRect.X + targetRect.W * 0.5f, 
-						targetRect.Y + targetRect.H * 0.5f, 
-						targetRect.Y - targetRect.H * 0.5f,
-						this.nearZ, 
-						this.farZ,
-						out this.matProjection);
-					
-					// In non-perspective projection, we'll use FocusDist for scaling
-					Matrix4 scaleByFocusDist;
-					Matrix4.CreateScale(
-						this.focusDist / DefaultFocusDist, 
-						this.focusDist / DefaultFocusDist,
- 						1.0f,
-						out scaleByFocusDist);
+				// Clamp near plane to above-zero, so we avoid division by zero problems
+				float clampedNear = MathF.Max(this.nearZ, 1.0f);
 
-					this.matProjection = scaleByFocusDist * flipZDir * this.matProjection;
-				}
-				else
-				{
-					// Clamp near plane to above-zero, so we avoid division by zero problems
-					float clampedNear = MathF.Max(this.nearZ, 1.0f);
+				Matrix4.CreatePerspectiveOffCenter(
+					targetRect.X - targetRect.W * 0.5f, 
+					targetRect.X + targetRect.W * 0.5f, 
+					targetRect.Y + targetRect.H * 0.5f, 
+					targetRect.Y - targetRect.H * 0.5f, 
+					clampedNear, 
+					this.farZ,
+					out this.matProjection);
 
-					Matrix4.CreatePerspectiveOffCenter(
-						targetRect.X - targetRect.W * 0.5f, 
-						targetRect.X + targetRect.W * 0.5f, 
-						targetRect.Y + targetRect.H * 0.5f, 
-						targetRect.Y - targetRect.H * 0.5f, 
-						clampedNear, 
-						this.farZ,
-						out this.matProjection);
+				this.matProjection = flipZDir * this.matProjection;
 
-					this.matProjection = flipZDir * this.matProjection;
-
-					// Apply custom "focus distance", where objects appear at 1:1 scale.
-					// Otherwise, that distance would be the near plane. 
-					this.matProjection.M33 *= clampedNear / this.focusDist; // Output Z scale
-					this.matProjection.M43 *= clampedNear / this.focusDist; // Output Z offset
-					this.matProjection.M34 *= clampedNear / this.focusDist; // Perspective divide scale
-				}
+				// Apply custom "focus distance", where objects appear at 1:1 scale.
+				// Otherwise, that distance would be the near plane. 
+				this.matProjection.M33 *= clampedNear / this.focusDist; // Output Z scale
+				this.matProjection.M43 *= clampedNear / this.focusDist; // Output Z offset
+				this.matProjection.M34 *= clampedNear / this.focusDist; // Perspective divide scale
 			}
 		}
 
@@ -1012,8 +983,7 @@ namespace Duality.Drawing
 				ClearFlags = ClearFlag.All,
 				ClearColor = color,
 				ClearDepth = 1.0f,
-				Viewport = viewportRect,
-				RenderMode = RenderMode.Screen
+				Viewport = viewportRect
 			};
 			DualityApp.GraphicsBackend.BeginRendering(null, options);
 			DualityApp.GraphicsBackend.EndRendering();
