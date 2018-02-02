@@ -133,7 +133,7 @@ namespace Duality.Editor.Plugins.Base
 				}
 			}
 			// If its some kind of shader, update all associated techniques
-			else if (resRef.Is<AbstractShader>())
+			else if (resRef.Is<Shader>())
 			{
 				ContentRef<FragmentShader> fragRef = resRef.As<FragmentShader>();
 				ContentRef<VertexShader> vertRef = resRef.As<VertexShader>();

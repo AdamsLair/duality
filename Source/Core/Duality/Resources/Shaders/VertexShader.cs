@@ -12,7 +12,7 @@ namespace Duality.Resources
 	/// </summary>
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(CoreResNames.ImageVertexShader)]
-	public class VertexShader : AbstractShader
+	public class VertexShader : Shader
 	{
 		/// <summary>
 		/// [GET] A minimal vertex shader. It performs OpenGLs default transformation

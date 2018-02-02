@@ -12,7 +12,7 @@ namespace Duality.Resources
 	/// </summary>
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(CoreResNames.ImageFragmentShader)]
-	public class FragmentShader : AbstractShader
+	public class FragmentShader : Shader
 	{
 		/// <summary>
 		/// [GET] A minimal FragmentShader. It performs a texture lookup

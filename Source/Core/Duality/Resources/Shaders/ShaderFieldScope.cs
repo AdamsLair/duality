@@ -6,7 +6,7 @@ using System.Linq;
 namespace Duality.Resources
 {
 	/// <summary>
-	/// The scope of a <see cref="AbstractShader">shader</see> variable
+	/// The scope of a <see cref="Shader">shader</see> variable
 	/// </summary>
 	public enum ShaderFieldScope
 	{

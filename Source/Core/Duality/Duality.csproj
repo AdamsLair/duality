@@ -352,10 +352,10 @@
     <Compile Include="Utility\Log\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.cs" />
-    <Compile Include="Resources\AbstractShader.cs" />
+    <Compile Include="Resources\Shaders\Shader.cs" />
     <Compile Include="Resources\AudioData.cs" />
     <Compile Include="Resources\DrawTechnique.cs" />
-    <Compile Include="Resources\FragmentShader.cs" />
+    <Compile Include="Resources\Shaders\FragmentShader.cs" />
     <Compile Include="Resources\Font\Font.cs" />
     <Compile Include="Resources\Material.cs" />
     <Compile Include="Resources\RenderTarget.cs" />
@@ -363,7 +363,7 @@
     <Compile Include="Resources\Texture.cs" />
     <Compile Include="Resources\Pixmap.cs" />
     <Compile Include="Resources\Prefab.cs" />
-    <Compile Include="Resources\VertexShader.cs" />
+    <Compile Include="Resources\Shaders\VertexShader.cs" />
     <Compile Include="Resources\Scene.cs" />
     <Compile Include="Audio\SoundDevice.cs" />
     <Compile Include="Audio\SoundInstance.cs" />

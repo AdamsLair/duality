@@ -16,7 +16,7 @@ namespace Duality.Resources
 	/// Represents an OpenGL Shader in an abstract form.
 	/// </summary>
 	[ExplicitResourceReference()]
-	public abstract class AbstractShader : Resource
+	public abstract class Shader : Resource
 	{
 		private static List<string> commonChunks = null;
 
@@ -62,7 +62,7 @@ namespace Duality.Resources
 			get { return this.native; }
 		}
 		/// <summary>
-		/// The type of OpenGL shader that is represented.
+		/// The shader stage at which this shader will be used.
 		/// </summary>
 		protected abstract ShaderType Type { get; }
 		/// <summary>
@@ -87,8 +87,8 @@ namespace Duality.Resources
 		}
 
 
-		protected AbstractShader() {}
-		protected AbstractShader(string sourceCode)
+		protected Shader() {}
+		protected Shader(string sourceCode)
 		{
 			this.Source = sourceCode;
 		}
@@ -154,7 +154,7 @@ namespace Duality.Resources
 		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
 			base.OnCopyDataTo(target, operation);
-			AbstractShader targetShader = target as AbstractShader;
+			Shader targetShader = target as Shader;
 			if (this.compiled) targetShader.Compile();
 		}
 	}

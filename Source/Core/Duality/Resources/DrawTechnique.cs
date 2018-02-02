@@ -248,13 +248,13 @@ namespace Duality.Resources
 				this.nativeShader = DualityApp.GraphicsBackend.CreateShaderProgram();
 
 			// Create a list of all shader parts that we'll be linking
-			List<AbstractShader> parts = new List<AbstractShader>();
+			List<Shader> parts = new List<Shader>();
 			parts.Add(this.vertexShader.Res ?? VertexShader.Minimal.Res);
 			parts.Add(this.fragmentShader.Res ?? FragmentShader.Minimal.Res);
 
 			// Ensure all shader parts are compiled
 			List<INativeShaderPart> nativeParts = new List<INativeShaderPart>();
-			foreach (AbstractShader part in parts)
+			foreach (Shader part in parts)
 			{
 				if (!part.Compiled) part.Compile();
 				nativeParts.Add(part.Native);

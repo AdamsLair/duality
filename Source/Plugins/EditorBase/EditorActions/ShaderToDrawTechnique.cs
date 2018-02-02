@@ -13,7 +13,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 	/// <summary>
 	/// Creates a new DrawTechnique Resource based on Vertex- and Fragmentshaders.
 	/// </summary>
-	public class ShaderToDrawTechnique : EditorAction<AbstractShader>
+	public class ShaderToDrawTechnique : EditorAction<Shader>
 	{
 		public override string Name
 		{
@@ -24,7 +24,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 			get { return typeof(DrawTechnique).GetEditorImage(); }
 		}
 
-		public override void Perform(IEnumerable<AbstractShader> shaderEnum)
+		public override void Perform(IEnumerable<Shader> shaderEnum)
 		{
 			List<VertexShader> vertexShaders = shaderEnum.OfType<VertexShader>().ToList();
 			List<FragmentShader> fragmentShaders = shaderEnum.OfType<FragmentShader>().ToList();
@@ -49,7 +49,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 		}
 		private void CreateProgram(FragmentShader frag, VertexShader vert)
 		{
-			AbstractShader refShader = (vert != null) ? (AbstractShader)vert : (AbstractShader)frag;
+			Shader refShader = (vert != null) ? (Shader)vert : (Shader)frag;
 
 			string nameTemp = refShader.Name;
 			string dirTemp = Path.GetDirectoryName(refShader.Path);

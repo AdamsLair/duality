@@ -6,7 +6,7 @@ using System.Linq;
 namespace Duality.Resources
 {
 	/// <summary>
-	/// The type of a <see cref="AbstractShader">shader</see> variable.
+	/// The type of a <see cref="Shader">shader</see> variable.
 	/// </summary>
 	public enum ShaderFieldType
 	{
