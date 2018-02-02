@@ -4,18 +4,16 @@ using System.Linq;
 using System.IO;
 using System.Drawing;
 
-using Duality.IO;
 using Duality.Resources;
-using Duality.Properties;
+using Duality.Drawing;
 using Duality.Editor.Plugins.Base.Properties;
-using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {
 	/// <summary>
-	/// Creates a new ShaderProgram Resource based on Vertex- and Fragmentshaders.
+	/// Creates a new DrawTechnique Resource based on Vertex- and Fragmentshaders.
 	/// </summary>
-	public class ShaderToProgram : EditorAction<AbstractShader>
+	public class ShaderToDrawTechnique : EditorAction<AbstractShader>
 	{
 		public override string Name
 		{
@@ -23,7 +21,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 		}
 		public override Image Icon
 		{
-			get { return typeof(ShaderProgram).GetEditorImage(); }
+			get { return typeof(DrawTechnique).GetEditorImage(); }
 		}
 
 		public override void Perform(IEnumerable<AbstractShader> shaderEnum)
@@ -62,9 +60,9 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 			else
 				nameTemp += "Program";
 
-			string programPath = PathHelper.GetFreePath(Path.Combine(dirTemp, nameTemp), Resource.GetFileExtByType<ShaderProgram>());
-			ShaderProgram program = new ShaderProgram(vert, frag);
-			program.Save(programPath);
+			string programPath = PathHelper.GetFreePath(Path.Combine(dirTemp, nameTemp), Resource.GetFileExtByType<DrawTechnique>());
+			DrawTechnique tech = new DrawTechnique(BlendMode.Mask, vert, frag);
+			tech.Save(programPath);
 		}
 	}
 }

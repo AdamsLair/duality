@@ -76,7 +76,7 @@
     <Compile Include="EditorActions\InstantiatePrefab.cs" />
     <Compile Include="EditorActions\OpenResource.cs" />
     <Compile Include="EditorActions\SetupTextureForEditing.cs" />
-    <Compile Include="EditorActions\ShaderToProgram.cs" />
+    <Compile Include="EditorActions\ShaderToDrawTechnique.cs" />
     <Compile Include="EditorActions\TextureToMaterial.cs" />
     <Compile Include="EditorActions\PixmapToTexture.cs" />
     <Compile Include="EditorActions\FocusComponent.cs" />

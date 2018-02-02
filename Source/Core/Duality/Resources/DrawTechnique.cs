@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Duality.Backend;
 using Duality.Drawing;
 using Duality.Editor;
+using Duality.Cloning;
 using Duality.Properties;
 
 namespace Duality.Resources
@@ -13,7 +15,8 @@ namespace Duality.Resources
 	/// vertex data is applied to screen. 
 	/// </summary>
 	/// <seealso cref="Duality.Resources.Material"/>
-	/// <seealso cref="Duality.Resources.ShaderProgram"/>
+	/// <seealso cref="Duality.Resources.FragmentShader"/>
+	/// <seealso cref="Duality.Resources.VertexShader"/>
 	/// <seealso cref="Duality.Drawing.BlendMode"/>
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(CoreResNames.ImageDrawTechnique)]
@@ -71,20 +74,57 @@ namespace Duality.Resources
 				{ "Light", new DrawTechnique(BlendMode.Light) },
 				{ "Invert", new DrawTechnique(BlendMode.Invert) },
 
-				{ "Picking", new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking) },
-				{ "SharpAlpha", new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpAlpha) }
+				{ "Picking", new DrawTechnique(BlendMode.Mask, VertexShader.Minimal, FragmentShader.Picking) },
+				{ "SharpAlpha", new DrawTechnique(BlendMode.Alpha, VertexShader.Minimal, FragmentShader.SharpAlpha) }
 			});
 		}
 		
 
-		private BlendMode                 blendType         = BlendMode.Solid;
-		private ContentRef<ShaderProgram> shader            = ShaderProgram.Minimal;
-		private Type                      prefType          = null;
-		[DontSerialize]
-		private VertexDeclaration         prefFormat        = null;
-		[DontSerialize]
-		private ShaderParameterCollection defaultParameters = null;
+		private BlendMode                  blendType         = BlendMode.Solid;
+		private ContentRef<VertexShader>   vertexShader      = VertexShader.Minimal;
+		private ContentRef<FragmentShader> fragmentShader    = FragmentShader.Minimal;
+		private Type                       prefType          = null;
 
+		[DontSerialize] private VertexDeclaration         prefFormat        = null;
+		[DontSerialize] private ShaderParameterCollection defaultParameters = null;
+		[DontSerialize] private INativeShaderProgram      nativeShader      = null;
+		[DontSerialize] private bool                      compiled          = false;
+		[DontSerialize] private ShaderFieldInfo[]         shaderFields      = null;
+
+
+		/// <summary>
+		/// [GET] The shaders native backend. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public INativeShaderProgram NativeShader
+		{
+			get
+			{
+				if (!this.compiled)
+					this.Compile();
+				return this.nativeShader;
+			}
+		}
+		/// <summary>
+		/// [GET] Returns whether the internal shader program of this <see cref="DrawTechnique"/> has been compiled.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public bool Compiled
+		{
+			get { return this.compiled; }
+		}
+		/// <summary>
+		/// [GET] Returns an array containing information about the variables that have been declared in shader source code.
+		/// </summary>
+		public ShaderFieldInfo[] ShaderFields
+		{
+			get
+			{
+				if (!this.compiled)
+					this.Compile();
+				return this.shaderFields;
+			}
+		}
 		/// <summary>
 		/// [GET / SET] Specifies how incoming color values interact with the existing background color.
 		/// </summary>
@@ -95,12 +135,28 @@ namespace Duality.Resources
 			set { this.blendType = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The <see cref="Duality.Resources.ShaderProgram"/> that is used for rendering.
+		/// [GET / SET] The <see cref="Resources.VertexShader"/> that is used for rendering.
 		/// </summary>
-		public ContentRef<ShaderProgram> Shader
+		public ContentRef<VertexShader> Vertex
 		{
-			get { return this.shader; }
-			set { this.shader = value; }
+			get { return this.vertexShader; }
+			set
+			{
+				this.vertexShader = value;
+				this.compiled = false;
+			}
+		}
+		/// <summary>
+		/// [GET / SET] The <see cref="Resources.FragmentShader"/> that is used for rendering.
+		/// </summary>
+		public ContentRef<FragmentShader> Fragment
+		{
+			get { return this.fragmentShader; }
+			set
+			{
+				this.fragmentShader = value;
+				this.compiled = false;
+			}
 		}
 		/// <summary>
 		/// [GET] The set of default parameters that acts as a fallback in cases
@@ -166,23 +222,85 @@ namespace Duality.Resources
 			this.blendType = blendType;
 		}
 		/// <summary>
-		/// Creates a new DrawTechnique using the specified <see cref="BlendMode"/> and <see cref="Duality.Resources.ShaderProgram"/>.
+		/// Creates a new DrawTechnique using the specified <see cref="BlendMode"/> and shaders.
 		/// </summary>
 		/// <param name="blendType"></param>
 		/// <param name="shader"></param>
 		/// <param name="formatPref"></param>
-		public DrawTechnique(BlendMode blendType, ContentRef<ShaderProgram> shader, VertexDeclaration formatPref = null) 
+		public DrawTechnique(BlendMode blendType, ContentRef<VertexShader> vertexShader, ContentRef<FragmentShader> fragmentShader) 
 		{
 			this.blendType = blendType;
-			this.shader = shader;
-			this.prefFormat = formatPref;
-			this.prefType = formatPref != null ? formatPref.DataType : null;
+			this.vertexShader = vertexShader;
+			this.fragmentShader = fragmentShader;
+		}
+
+		/// <summary>
+		/// Compiles the internal shader program of this <see cref="DrawTechnique"/>. This is 
+		/// done automatically on load and only needs to be invoked manually when the technique
+		/// or one of its shader dependencies changed.
+		/// </summary>
+		public void Compile()
+		{
+			Logs.Core.Write("Compiling DrawTechnique '{0}'...", this.FullName);
+			Logs.Core.PushIndent();
+
+			if (this.nativeShader == null)
+				this.nativeShader = DualityApp.GraphicsBackend.CreateShaderProgram();
+
+			// Create a list of all shader parts that we'll be linking
+			List<AbstractShader> parts = new List<AbstractShader>();
+			parts.Add(this.vertexShader.Res ?? VertexShader.Minimal.Res);
+			parts.Add(this.fragmentShader.Res ?? FragmentShader.Minimal.Res);
+
+			// Ensure all shader parts are compiled
+			List<INativeShaderPart> nativeParts = new List<INativeShaderPart>();
+			foreach (AbstractShader part in parts)
+			{
+				if (!part.Compiled) part.Compile();
+				nativeParts.Add(part.Native);
+			}
+
+			// Load the program with all shader parts attached
+			try
+			{
+				this.nativeShader.LoadProgram(nativeParts);
+				this.shaderFields = this.nativeShader.GetFields();
+
+				// Validate that we have at least one attribute in the shader. Warn otherwise.
+				if (!this.shaderFields.Any(f => f.Scope == ShaderFieldScope.Attribute))
+					Logs.Core.WriteWarning("The shader doesn't seem to define any vertex attributes. Is this intended?");
+			}
+			catch (Exception e)
+			{
+				this.shaderFields = new ShaderFieldInfo[0];
+				Logs.Core.WriteError("Failed to compile DrawTechnique:{1}{0}", LogFormat.Exception(e), Environment.NewLine);
+			}
+
+			// Even if we failed, we tried to compile it. Don't do it again and again.
+			this.compiled = true;
+			Logs.Core.PopIndent();
 		}
 
 		protected override void OnLoaded()
 		{
+			this.Compile();
 			base.OnLoaded();
 			this.prefFormat = VertexDeclaration.Get(this.prefType);
+		}
+		protected override void OnDisposing(bool manually)
+		{
+			base.OnDisposing(manually);
+			if (this.nativeShader != null)
+			{
+				this.nativeShader.Dispose();
+				this.nativeShader = null;
+			}
+		}
+		protected override void OnCopyDataTo(object target, ICloneOperation operation)
+		{
+			base.OnCopyDataTo(target, operation);
+			DrawTechnique targetTechnique = target as DrawTechnique;
+			if (this.compiled) targetTechnique.Compile();
 		}
 	}
 }

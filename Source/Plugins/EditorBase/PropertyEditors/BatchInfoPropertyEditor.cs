@@ -58,7 +58,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				// Retrieve a list of shader variables to edit
 				ShaderFieldInfo[] shaderFields = null;
 				if (refTech != null)
-					shaderFields = refTech.Shader.Res.Fields;
+					shaderFields = refTech.ShaderFields;
 				else
 					shaderFields = EmptyShaderFields;
 

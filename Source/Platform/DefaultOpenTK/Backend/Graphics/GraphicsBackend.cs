@@ -456,8 +456,7 @@ namespace Duality.Backend.DefaultOpenTK
 				DrawBatch batch = batches[i];
 				BatchInfo material = batch.Material;
 				DrawTechnique tech = material.Technique.Res ?? DrawTechnique.Solid.Res;
-				ShaderProgram shader = tech.Shader.Res ?? ShaderProgram.Minimal.Res;
-				this.activeShaders.Add(shader.Native as NativeShaderProgram);
+				this.activeShaders.Add(tech.NativeShader as NativeShaderProgram);
 			}
 		}
 		/// <summary>
@@ -511,8 +510,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private void SetupVertexFormat(BatchInfo material, VertexDeclaration vertexDeclaration)
 		{
 			DrawTechnique technique = material.Technique.Res ?? DrawTechnique.Solid.Res;
-			ShaderProgram program = technique.Shader.Res ?? ShaderProgram.Minimal.Res;
-			NativeShaderProgram nativeProgram = (program.Native ?? ShaderProgram.Minimal.Res.Native) as NativeShaderProgram;
+			NativeShaderProgram nativeProgram = (technique.NativeShader ?? DrawTechnique.Solid.Res.NativeShader) as NativeShaderProgram;
 
 			VertexElement[] elements = vertexDeclaration.Elements;
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
@@ -549,8 +547,7 @@ namespace Duality.Backend.DefaultOpenTK
 				this.SetupBlendState(tech.Blending, this.currentDevice.DepthWrite);
 
 			// Bind Shader
-			ShaderProgram shader = tech.Shader.Res ?? ShaderProgram.Minimal.Res;
-			NativeShaderProgram nativeShader = shader.Native as NativeShaderProgram;
+			NativeShaderProgram nativeShader = tech.NativeShader as NativeShaderProgram;
 			NativeShaderProgram.Bind(nativeShader);
 
 			// Setup shader data
@@ -785,8 +782,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private void FinishVertexFormat(BatchInfo material, VertexDeclaration vertexDeclaration)
 		{
 			DrawTechnique technique = material.Technique.Res ?? DrawTechnique.Solid.Res;
-			ShaderProgram program = technique.Shader.Res ?? ShaderProgram.Minimal.Res;
-			NativeShaderProgram nativeProgram = (program.Native ?? ShaderProgram.Minimal.Res.Native) as NativeShaderProgram;
+			NativeShaderProgram nativeProgram = (technique.NativeShader ?? DrawTechnique.Solid.Res.NativeShader) as NativeShaderProgram;
 
 			VertexElement[] elements = vertexDeclaration.Elements;
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)

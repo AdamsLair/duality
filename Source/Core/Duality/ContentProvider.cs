@@ -74,7 +74,6 @@ namespace Duality
 
 			VertexShader.InitDefaultContent();
 			FragmentShader.InitDefaultContent();
-			ShaderProgram.InitDefaultContent();
 			DrawTechnique.InitDefaultContent();
 			Pixmap.InitDefaultContent();
 			Texture.InitDefaultContent();
@@ -219,8 +218,8 @@ namespace Duality
 		/// <param name="content">The Resource to register.</param>
 		public static void AddContent(string path, Resource content)
 		{
-			if (String.IsNullOrEmpty(path)) return;
-			if (String.IsNullOrEmpty(content.Path)) content.Path = path;
+			if (string.IsNullOrEmpty(path)) return;
+			if (string.IsNullOrEmpty(content.Path)) content.Path = path;
 			resLibrary[path] = content;
 		}
 		/// <summary>
@@ -230,7 +229,7 @@ namespace Duality
 		/// <returns>True, if there is content available for that path key, false if not.</returns>
 		public static bool HasContent(string path)
 		{
-			if (String.IsNullOrEmpty(path)) return false;
+			if (string.IsNullOrEmpty(path)) return false;
 			Resource res;
 			return resLibrary.TryGetValue(path, out res) && !res.Disposed;
 		}
@@ -263,7 +262,7 @@ namespace Duality
 		/// <returns>True, if the content has been found and successfully removed. False, if no</returns>
 		public static bool RemoveContent(string path, bool dispose = true)
 		{
-			if (String.IsNullOrEmpty(path)) return false;
+			if (string.IsNullOrEmpty(path)) return false;
 			if (IsDefaultContentPath(path)) return false;
 
 			Resource res;
@@ -284,7 +283,7 @@ namespace Duality
 		/// <param name="dispose">If true, unregistered content is also disposed.</param>
 		public static void RemoveContentTree(string dir, bool dispose = true)
 		{
-			if (String.IsNullOrEmpty(dir)) return;
+			if (string.IsNullOrEmpty(dir)) return;
 
 			List<string> unregisterList = new List<string>(
 				from p in resLibrary.Keys
@@ -333,7 +332,7 @@ namespace Duality
 		/// <returns>True, if the renaming operation was successful. False, if not.</returns>
 		public static bool RenameContent(string path, string newPath)
 		{
-			if (String.IsNullOrEmpty(path)) return false;
+			if (string.IsNullOrEmpty(path)) return false;
 
 			Resource res;
 			if (resLibrary.TryGetValue(path, out res))
@@ -354,7 +353,7 @@ namespace Duality
 		/// <param name="newDir">The Resources new directory</param>
 		public static void RenameContentTree(string dir, string newDir)
 		{
-			if (String.IsNullOrEmpty(dir)) return;
+			if (string.IsNullOrEmpty(dir)) return;
 
 			// Assure we're ending with directory separator chars.
 			if (dir[dir.Length - 1] == PathOp.AltDirectorySeparatorChar) dir = dir.Remove(dir.Length - 1, 1);
@@ -386,7 +385,7 @@ namespace Duality
 		/// <returns>A <see cref="ContentRef{T}"/> to the requested Resource.</returns>
 		public static ContentRef<T> RequestContent<T>(string path) where T : Resource
 		{
-			if (String.IsNullOrEmpty(path)) return null;
+			if (string.IsNullOrEmpty(path)) return null;
 
 			// Return cached content
 			Resource res;

@@ -357,7 +357,6 @@
     <Compile Include="Resources\DrawTechnique.cs" />
     <Compile Include="Resources\FragmentShader.cs" />
     <Compile Include="Resources\Font\Font.cs" />
-    <Compile Include="Resources\ShaderProgram.cs" />
     <Compile Include="Resources\Material.cs" />
     <Compile Include="Resources\RenderTarget.cs" />
     <Compile Include="Resources\Sound.cs" />

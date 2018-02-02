@@ -96,7 +96,7 @@ namespace Duality.Resources
 
 		/// <summary>
 		/// Compiles the shader. This is done automatically when loading the shader
-		/// or attaching it to a <see cref="Duality.Resources.ShaderProgram"/>.
+		/// or attaching it to a <see cref="DrawTechnique"/>.
 		/// </summary>
 		public void Compile()
 		{
