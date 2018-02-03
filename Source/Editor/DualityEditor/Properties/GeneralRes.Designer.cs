@@ -1300,6 +1300,15 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add {0} to IDictionaries.
+        /// </summary>
+        public static string UndoRedo_AddToDictionary {
+            get {
+                return ResourceManager.GetString("UndoRedo_AddToDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apply {0}.
         /// </summary>
         public static string UndoRedo_ApplyToPrefab {
@@ -1444,6 +1453,15 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove {0} from IDictionaries.
+        /// </summary>
+        public static string UndoRedo_RemoveFromDictionary {
+            get {
+                return ResourceManager.GetString("UndoRedo_RemoveFromDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reset {0}.
         /// </summary>
         public static string UndoRedo_ResetComponent {
@@ -1476,6 +1494,15 @@ namespace Duality.Editor.Properties {
         public static string UndoRedo_ResetGameObjectMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_ResetGameObjectMulti", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resize ILists to {0} elements.
+        /// </summary>
+        public static string UndoRedo_ResizeILists {
+            get {
+                return ResourceManager.GetString("UndoRedo_ResizeILists", resourceCulture);
             }
         }
         
