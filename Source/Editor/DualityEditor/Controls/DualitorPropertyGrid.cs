@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
@@ -72,11 +73,14 @@ namespace Duality.Editor.Controls
 			{
 				IListPropertyEditor listEditor = editor as IListPropertyEditor;
 				listEditor.ListIndexSetter = this.EditorListIndexSetter;
+				listEditor.ListResizer = this.EditorListResizer;
 			}
 			if (editor is IDictionaryPropertyEditor)
 			{
 				IDictionaryPropertyEditor dictEditor = editor as IDictionaryPropertyEditor;
 				dictEditor.DictionaryKeySetter = this.EditorDictionaryKeySetter;
+				dictEditor.DictionKeyAdder = this.EditorDictionaryKeyAdder;
+				dictEditor.DictionKeyRemover = this.EditorDictionKeyRemover;
 			}
 
 			var flagsAttrib = EditorHintAttribute.Get<EditorHintFlagsAttribute>(editor.EditedMember, hintOverride);
@@ -104,6 +108,7 @@ namespace Duality.Editor.Controls
 				if (placesAttrib != null) numEditor.DecimalPlaces = placesAttrib.Places;
 			}
 		}
+
 		protected override void PrepareSetValue()
 		{
 			base.PrepareSetValue();
@@ -189,6 +194,19 @@ namespace Duality.Editor.Controls
 		private void EditorDictionaryKeySetter(PropertyInfo indexer, IEnumerable<object> targetObjects, IEnumerable<object> values, object key)
 		{
 			UndoRedoManager.Do(new EditPropertyAction(this, indexer, targetObjects, values, new object[] {key}));
+		}
+		private bool EditorListResizer(IList<IList> targetLists, int size, Type elementType)
+		{
+			UndoRedoManager.Do(new ResizeListAction(targetLists, size, elementType));
+			return targetLists.Any(list => list == null || list.IsFixedSize);
+		}
+		private void EditorDictionaryKeyAdder(IEnumerable<IDictionary> targetDictionaries, object key, Type valueType)
+		{
+			UndoRedoManager.Do(new AddDictionaryKeyAction(targetDictionaries, key, valueType));
+		}
+		private void EditorDictionKeyRemover(IEnumerable<IDictionary> targetDictionaries, object key)
+		{
+			UndoRedoManager.Do(new RemoveDictionaryKeyAction(targetDictionaries, key));
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
