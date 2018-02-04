@@ -14,13 +14,13 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	[PropertyEditorAssignment(typeof(TransformPropertyEditor), "MatchToProperty")]
 	public class TransformPropertyEditor : ComponentPropertyEditor, IHelpProvider
 	{
-		private bool           showLocal          = false;
-		private PropertyEditor editorPos          = null;
-		private PropertyEditor editorVel          = null;
-		private PropertyEditor editorScale        = null;
-		private PropertyEditor editorAngle        = null;
-		private PropertyEditor editorAngleVel     = null;
-		private PropertyEditor editorShowRelative = null;
+		private bool           showWorldSpace       = false;
+		private PropertyEditor editorPos            = null;
+		private PropertyEditor editorVel            = null;
+		private PropertyEditor editorScale          = null;
+		private PropertyEditor editorAngle          = null;
+		private PropertyEditor editorAngleVel       = null;
+		private PropertyEditor editorShowWorldSpace = null;
 		
 		public override MemberInfo MapEditorToMember(PropertyEditor editor)
 		{
@@ -102,42 +102,38 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			this.AddEditorForMember(ReflectionInfo.Property_Transform_IgnoreParent);
 
-			this.editorShowRelative = this.ParentGrid.CreateEditor(typeof(bool), this);
-			if (this.editorShowRelative != null)
+			this.editorShowWorldSpace = this.ParentGrid.CreateEditor(typeof(bool), this);
+			if (this.editorShowWorldSpace != null)
 			{
-				this.editorShowRelative.BeginUpdate();
-				this.editorShowRelative.Getter = this.ShowRelativeGetter;
-				this.editorShowRelative.Setter = this.ShowRelativeSetter;
-				this.editorShowRelative.PropertyName = "[ Local Space ]";
-				this.ParentGrid.ConfigureEditor(this.editorShowRelative);
-				this.AddPropertyEditor(this.editorShowRelative);
-				this.editorShowRelative.EndUpdate();
+				this.editorShowWorldSpace.BeginUpdate();
+				this.editorShowWorldSpace.Getter = this.ShowWorldSpaceGetter;
+				this.editorShowWorldSpace.Setter = this.ShowWorldSpaceSetter;
+				this.editorShowWorldSpace.PropertyName = "[ World Space ]";
+				this.ParentGrid.ConfigureEditor(this.editorShowWorldSpace);
+				this.AddPropertyEditor(this.editorShowWorldSpace);
+				this.editorShowWorldSpace.EndUpdate();
 			}
 		}
 
-		protected IEnumerable<object> ShowRelativeGetter()
+		protected IEnumerable<object> ShowWorldSpaceGetter()
 		{
-			return new object[] { this.showLocal };
+			return new object[] { this.showWorldSpace };
 		}
-		protected void ShowRelativeSetter(IEnumerable<object> values)
+		protected void ShowWorldSpaceSetter(IEnumerable<object> values)
 		{
-			this.showLocal = values.Cast<bool>().FirstOrDefault();
+			this.showWorldSpace = values.Cast<bool>().FirstOrDefault();
 			this.PerformGetValue();
 		}
 		protected IEnumerable<object> PosGetter()
 		{
-			if (this.showLocal)
-				return this.GetValue().OfType<Transform>().Select(o => (object)o.LocalPos);
-			else
+			if (this.showWorldSpace)
 				return this.GetValue().OfType<Transform>().Select(o => (object)o.Pos);
+			else
+				return this.GetValue().OfType<Transform>().Select(o => (object)o.LocalPos);
 		}
 		protected void PosSetter(IEnumerable<object> values)
 		{
-			if (this.showLocal)
-			{
-				this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalPos, this.GetValue(), values);
-			}
-			else
+			if (this.showWorldSpace)
 			{
 				List<Vector3> valuesList = values.Cast<Vector3>().ToList();
 				List<object> valuesListLocal = new List<object>(valuesList.Count);
@@ -152,15 +148,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					for (int i = targetList.Count - 1; i >= 0; i--)
 					{
 						Transform t = targetList[i];
-						Transform parent = 
-							t != null && 
-							t.GameObj != null && 
+						Transform parent =
+							t != null &&
+							t.GameObj != null &&
 							t.GameObj.Parent != null ? t.GameObj.Parent.Transform : null;
 
 						if (parent == null || !targetList.Contains(parent))
 						{
 							Vector3 curValue = valuesList[Math.Min(i, valuesList.Count - 1)];
-							
+
 							targetListLocal.Add(t);
 							valuesListLocal.Add(parent != null ? parent.GetLocalPoint(curValue) : curValue);
 							removeIndices.Add(i);
@@ -176,13 +172,21 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalPos, targetListLocal, valuesListLocal);
 				}
 			}
+			else
+			{
+				this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalPos, this.GetValue(), values);
+			}
 
 			this.OnPropertySet(ReflectionInfo.Property_Transform_LocalPos, values);
 			this.PerformGetValue();
 		}
 		protected IEnumerable<object> VelGetter()
 		{
-			if (this.showLocal)
+			if (this.showWorldSpace)
+			{
+				return this.GetValue().OfType<Transform>().Select(o => (object)o.Vel);
+			}
+			else
 			{
 				return this.GetValue().OfType<Transform>().Select(o =>
 				{
@@ -194,25 +198,17 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					return (object)localVel;
 				});
 			}
-			else
-			{
-				return this.GetValue().OfType<Transform>().Select(o => (object)o.Vel);
-			}
 		}
 		protected IEnumerable<object> ScaleGetter()
 		{
-			if (this.showLocal)
-				return this.GetValue().OfType<Transform>().Select(o => (object)o.LocalScale);
-			else
+			if (this.showWorldSpace)
 				return this.GetValue().OfType<Transform>().Select(o => (object)o.Scale);
+			else
+				return this.GetValue().OfType<Transform>().Select(o => (object)o.LocalScale);
 		}
 		protected void ScaleSetter(IEnumerable<object> values)
 		{
-			if (this.showLocal)
-			{
-				this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalScale, this.GetValue(), values);
-			}
-			else
+			if (this.showWorldSpace)
 			{
 				List<float> valuesList = values.Cast<float>().ToList();
 				List<object> valuesListLocal = new List<object>(valuesList.Count);
@@ -227,15 +223,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					for (int i = targetList.Count - 1; i >= 0; i--)
 					{
 						Transform t = targetList[i];
-						Transform parent = 
-							t != null && 
-							t.GameObj != null && 
+						Transform parent =
+							t != null &&
+							t.GameObj != null &&
 							t.GameObj.Parent != null ? t.GameObj.Parent.Transform : null;
 
 						if (parent == null || !targetList.Contains(parent))
 						{
 							float curValue = valuesList[Math.Min(i, valuesList.Count - 1)];
-							
+
 							targetListLocal.Add(t);
 							valuesListLocal.Add(parent != null ? curValue / parent.Scale : curValue);
 							removeIndices.Add(i);
@@ -251,25 +247,25 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalScale, targetListLocal, valuesListLocal);
 				}
 			}
+			else
+			{
+				this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalScale, this.GetValue(), values);
+			}
 
 			this.OnPropertySet(ReflectionInfo.Property_Transform_LocalScale, values);
 			this.PerformGetValue();
 		}
 		protected IEnumerable<object> AngleGetter()
 		{
-			if (this.showLocal)
-				return this.GetValue().OfType<Transform>().Select(o => (object)MathF.RadToDeg(o.LocalAngle));
-			else
+			if (this.showWorldSpace)
 				return this.GetValue().OfType<Transform>().Select(o => (object)MathF.RadToDeg(o.Angle));
+			else
+				return this.GetValue().OfType<Transform>().Select(o => (object)MathF.RadToDeg(o.LocalAngle));
 		}
 		protected void AngleSetter(IEnumerable<object> values)
 		{
 			values = values.Select(v => (object)MathF.DegToRad((float)v));
-			if (this.showLocal)
-			{
-				this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalAngle, this.GetValue(), values);
-			}
-			else
+			if (this.showWorldSpace)
 			{
 				List<float> valuesList = values.Cast<float>().ToList();
 				List<object> valuesListLocal = new List<object>(valuesList.Count);
@@ -284,15 +280,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					for (int i = targetList.Count - 1; i >= 0; i--)
 					{
 						Transform t = targetList[i];
-						Transform parent = 
-							t != null && 
-							t.GameObj != null && 
+						Transform parent =
+							t != null &&
+							t.GameObj != null &&
 							t.GameObj.Parent != null ? t.GameObj.Parent.Transform : null;
 
 						if (parent == null || !targetList.Contains(parent))
 						{
 							float curValue = valuesList[Math.Min(i, valuesList.Count - 1)];
-							
+
 							targetListLocal.Add(t);
 							valuesListLocal.Add(parent != null ? curValue - parent.Angle : curValue);
 							removeIndices.Add(i);
@@ -308,13 +304,21 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalAngle, targetListLocal, valuesListLocal);
 				}
 			}
+			else
+			{
+				this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalAngle, this.GetValue(), values);
+			}
 
 			this.OnPropertySet(ReflectionInfo.Property_Transform_LocalAngle, values);
 			this.PerformGetValue();
 		}
 		protected IEnumerable<object> AngleVelGetter()
 		{
-			if (this.showLocal)
+			if (this.showWorldSpace)
+			{
+				return this.GetValue().OfType<Transform>().Select(o => (object)MathF.RadToDeg(o.AngleVel));
+			}
+			else
 			{
 				return this.GetValue().OfType<Transform>().Select(o =>
 				{
@@ -326,16 +330,12 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					return (object)MathF.RadToDeg(localAngleVel);
 				});
 			}
-			else
-			{
-				return this.GetValue().OfType<Transform>().Select(o => (object)MathF.RadToDeg(o.AngleVel));
-			}
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(System.Drawing.Point localPos, ref bool captured)
 		{
 			PropertyEditor pickedEditor = this.PickEditorAt(this.Location.X + localPos.X, this.Location.Y + localPos.Y, true);
-			if (this.showLocal)
+			if (this.showWorldSpace)
 			{
 				if (pickedEditor == this.editorPos)
 					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_LocalPos);
@@ -358,12 +358,21 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_AngleVel);
 			}
 			
-			if (pickedEditor == this.editorShowRelative)
-				return HelpInfo.FromText("Show Local Values", "If true, all values will be displayed and edited in local space of the parent object. This is an editor property that does not affect object behaviour in any way.");
+			if (pickedEditor == this.editorShowWorldSpace)
+			{
+				return HelpInfo.FromText("World Space Mode",
+					"If true, Transform values will be displayed and edited in world space, " +
+					"instead of the parent objects local space. This is an editor property " +
+					"that does not affect object behaviour in any way.");
+			}
 			else if (pickedEditor.EditedMember != null)
+			{
 				return HelpInfo.FromMember(pickedEditor.EditedMember);
+			}
 			else if (pickedEditor.EditedType != null)
+			{
 				return HelpInfo.FromMember(pickedEditor.EditedType);
+			}
 
 			return null;
 		}
