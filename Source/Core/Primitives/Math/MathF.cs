@@ -673,14 +673,10 @@ namespace Duality
 		/// </example>
 		public static float NormalizeAngle(float var)
 		{
-			if (var >= 0.0f && var < RadAngle360) return var;
-
-			if (var < 0.0f)
-				var = RadAngle360 + (var % RadAngle360);
-			else
-				var = var % RadAngle360;
-
-			return var;
+			float normalized = var % RadAngle360;
+			if (normalized < 0.0f)
+				normalized += RadAngle360;
+			return normalized;
 		}
 
 		/// <summary>
@@ -876,11 +872,11 @@ namespace Duality
 		/// <returns>The angular distance in radians between both angles.</returns>
 		public static float CircularDist(float v1, float v2)
 		{
-			float vTemp = System.Math.Abs(NormalizeAngle(v1) - NormalizeAngle(v2));
-			if (vTemp * 2.0f <= RadAngle360)
-				return vTemp;
+			float diff = Math.Abs(v1 - v2) % 360.0f;
+			if (diff > RadAngle180)
+				return RadAngle360 - diff;
 			else
-				return RadAngle360 - vTemp;
+				return diff;
 		}
 
 		/// <summary>
