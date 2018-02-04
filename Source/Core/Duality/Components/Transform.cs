@@ -26,14 +26,12 @@ namespace Duality.Components
 		private Vector3   posAbs          = Vector3.Zero;
 		private float     angleAbs        = 0.0f;
 		private float     scaleAbs        = 1.0f;
-		// Auto-calculated values
-		private Vector3   velAbs          = Vector3.Zero;
-		private float     angleVelAbs     = 0.0f;
-		// Cached values, non-serialized values
-		[DontSerialize] private Vector2 rotationDirAbs  = new Vector2(0.0f, -1.0f);
-		// Temporary per-frame values
-		[DontSerialize] private Vector3 lastPosAbs   = Vector3.Zero;
-		[DontSerialize] private float   lastAngleAbs = 0.0f;
+
+		[DontSerialize] private Vector2 rotationDirAbs = new Vector2(0.0f, -1.0f);
+		[DontSerialize] private Vector3 velAbs         = Vector3.Zero;
+		[DontSerialize] private float   angleVelAbs    = 0.0f;
+		[DontSerialize] private Vector3 lastPosAbs     = Vector3.Zero;
+		[DontSerialize] private float   lastAngleAbs   = 0.0f;
 
 
 		/// <summary>
@@ -544,13 +542,7 @@ namespace Duality.Components
 
 			// Calculate velocity values from last frames movement
 			if (MathF.Abs(Time.TimeMult) > float.Epsilon)
-			{
-				this.velAbs = this.posAbs - this.lastPosAbs;
-				this.angleVelAbs = MathF.TurnDir(this.lastAngleAbs, this.angleAbs) * MathF.CircularDist(this.lastAngleAbs, this.angleAbs);
-				this.lastPosAbs = this.posAbs;
-				this.lastAngleAbs = this.angleAbs;
-				this.CheckValidTransform();
-			}
+				this.UpdateVelocity();
 
 			this.CheckValidTransform();
 		}
@@ -586,10 +578,12 @@ namespace Duality.Components
 				this.UpdateRel();
 			}
 
-			// Since we're not serializing rotation dir values, recalculate them on load
+			// Recalculate values we didn't serialize
 			if (context == InitContext.Loaded)
 			{
 				this.UpdateRotationDirAbs();
+				this.lastPosAbs = this.posAbs;
+				this.lastAngleAbs = this.angleAbs;
 			}
 		}
 		void ICmpInitializable.OnShutdown(ShutdownContext context)
@@ -660,6 +654,15 @@ namespace Duality.Components
 			}
 		}
 
+		private void UpdateVelocity()
+		{
+			this.velAbs = this.posAbs - this.lastPosAbs;
+			this.angleVelAbs = MathF.TurnDir(this.lastAngleAbs, this.angleAbs) * MathF.CircularDist(this.lastAngleAbs, this.angleAbs);
+			this.lastPosAbs = this.posAbs;
+			this.lastAngleAbs = this.angleAbs;
+
+			this.CheckValidTransform();
+		}
 		private void UpdateRotationDirAbs()
 		{
 			this.rotationDirAbs = new Vector2(
