@@ -34,7 +34,6 @@ namespace Duality.Components
 		private Vector3   pos             = Vector3.Zero;
 		private float     angle           = 0.0f;
 		private float     scale           = 1.0f;
-		private bool      deriveAngle     = true;
 		private bool      ignoreParent    = false;
 
 		// Cached values, recalc on change
@@ -135,20 +134,6 @@ namespace Duality.Components
 				}
 			}
 		}
-		/// <summary>
-		/// [GET / SET] If false, this objects rotation values aren't relative to its parent.
-		/// However, its position, velocity, etc. still depend on parent rotation.
-		/// </summary>
-		public bool DeriveAngle
-		{
-			get { return this.deriveAngle; }
-			set
-			{
-				this.deriveAngle = value;
-				this.changes |= DirtyFlags.Angle;
-				this.UpdateRel();
-			}
-		}
 
 		/// <summary>
 		/// [GET] The objects forward vector, relative to its parent object.
@@ -222,10 +207,8 @@ namespace Duality.Components
 				// Update angle
 				this.angleAbs = MathF.NormalizeAngle(value);
 
-				if (this.parentTransform != null && this.deriveAngle)
+				if (this.parentTransform != null)
 					this.angle = MathF.NormalizeAngle(this.angleAbs - this.parentTransform.angleAbs);
-				else
-					this.angle = this.angleAbs;
 
 				this.changes |= DirtyFlags.Angle;
 				this.UpdateRotationDirAbs();
@@ -793,16 +776,8 @@ namespace Duality.Components
 			}
 			else
 			{
-				if (this.deriveAngle)
-				{
-					this.angleAbs = MathF.NormalizeAngle(this.angle + this.parentTransform.angleAbs);
-					if (updateTempVel) this.tempAngleVelAbs = this.tempAngleVel + this.parentTransform.tempAngleVelAbs;
-				}
-				else
-				{
-					this.angleAbs = this.angle;
-					if (updateTempVel) this.tempAngleVelAbs = this.tempAngleVel;
-				}
+				this.angleAbs = MathF.NormalizeAngle(this.angle + this.parentTransform.angleAbs);
+				if (updateTempVel) this.tempAngleVelAbs = this.tempAngleVel + this.parentTransform.tempAngleVelAbs;
 				
 				this.scaleAbs = this.scale * this.parentTransform.scaleAbs;
 				this.posAbs = this.parentTransform.GetWorldPoint(this.pos);
@@ -878,16 +853,8 @@ namespace Duality.Components
 			}
 			else
 			{
-				if (this.deriveAngle)
-				{
-					this.angle = MathF.NormalizeAngle(this.angleAbs - this.parentTransform.angleAbs);
-					if (updateTempVel) this.tempAngleVel = this.tempAngleVelAbs - this.parentTransform.tempAngleVelAbs;
-				}
-				else
-				{
-					this.angle = this.angleAbs;
-					if (updateTempVel) this.tempAngleVel = this.tempAngleVelAbs;
-				}
+				this.angle = MathF.NormalizeAngle(this.angleAbs - this.parentTransform.angleAbs);
+				if (updateTempVel) this.tempAngleVel = this.tempAngleVelAbs - this.parentTransform.tempAngleVelAbs;
 
 				this.scale = this.scaleAbs / this.parentTransform.scaleAbs;
 				
@@ -929,7 +896,6 @@ namespace Duality.Components
 			base.OnCopyDataTo(targetObj, operation);
 			Transform target = targetObj as Transform;
 
-			target.deriveAngle		= this.deriveAngle;
 			target.ignoreParent		= this.ignoreParent;
 
 			target.pos				= this.pos;
