@@ -106,7 +106,7 @@ namespace FlapOrDie.Controllers
             IEnumerable<GameObject> obstacles = this.GameObj.ParentScene.FindGameObjects<Tags.Obstacle>();
             foreach(GameObject obstacle in obstacles)
             {
-                obstacle.Transform.MoveBy(-this.deltaPos);
+                obstacle.Transform.MoveByLocal(-this.deltaPos);
                 if (obstacle.Transform.Pos.X < -FlapOrDieCorePlugin.HalfWidth - 50)
                 {
                     obstacle.DisposeLater();

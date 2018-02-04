@@ -14,22 +14,22 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	[PropertyEditorAssignment(typeof(TransformPropertyEditor), "MatchToProperty")]
 	public class TransformPropertyEditor : ComponentPropertyEditor, IHelpProvider
 	{
-		private bool			showRelative	= false;
-		private PropertyEditor	editorPos		= null;
-		private PropertyEditor	editorVel		= null;
-		private PropertyEditor	editorScale		= null;
-		private PropertyEditor	editorAngle		= null;
-		private PropertyEditor	editorAngleVel	= null;
-		private PropertyEditor	editorShowRelative	= null;
+		private bool           showLocal          = false;
+		private PropertyEditor editorPos          = null;
+		private PropertyEditor editorVel          = null;
+		private PropertyEditor editorScale        = null;
+		private PropertyEditor editorAngle        = null;
+		private PropertyEditor editorAngleVel     = null;
+		private PropertyEditor editorShowRelative = null;
 		
 		public override MemberInfo MapEditorToMember(PropertyEditor editor)
 		{
 			if (editor == this.editorPos)
-				return ReflectionInfo.Property_Transform_RelativePos;
+				return ReflectionInfo.Property_Transform_LocalPos;
 			else if (editor == this.editorScale)
-				return ReflectionInfo.Property_Transform_RelativeScale;
+				return ReflectionInfo.Property_Transform_LocalScale;
 			else if (editor == this.editorAngle)
-				return ReflectionInfo.Property_Transform_RelativeAngle;
+				return ReflectionInfo.Property_Transform_LocalAngle;
 			else
 				return base.MapEditorToMember(editor);
 		}
@@ -108,7 +108,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.editorShowRelative.BeginUpdate();
 				this.editorShowRelative.Getter = this.ShowRelativeGetter;
 				this.editorShowRelative.Setter = this.ShowRelativeSetter;
-				this.editorShowRelative.PropertyName = "[ Relative values ]";
+				this.editorShowRelative.PropertyName = "[ Local Space ]";
 				this.ParentGrid.ConfigureEditor(this.editorShowRelative);
 				this.AddPropertyEditor(this.editorShowRelative);
 				this.editorShowRelative.EndUpdate();
@@ -117,25 +117,25 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 		protected IEnumerable<object> ShowRelativeGetter()
 		{
-			return new object[] { this.showRelative };
+			return new object[] { this.showLocal };
 		}
 		protected void ShowRelativeSetter(IEnumerable<object> values)
 		{
-			this.showRelative = values.Cast<bool>().FirstOrDefault();
+			this.showLocal = values.Cast<bool>().FirstOrDefault();
 			this.PerformGetValue();
 		}
 		protected IEnumerable<object> PosGetter()
 		{
-			if (this.showRelative)
-				return this.GetValue().OfType<Transform>().Select(o => (object)o.RelativePos);
+			if (this.showLocal)
+				return this.GetValue().OfType<Transform>().Select(o => (object)o.LocalPos);
 			else
 				return this.GetValue().OfType<Transform>().Select(o => (object)o.Pos);
 		}
 		protected void PosSetter(IEnumerable<object> values)
 		{
-			if (this.showRelative)
+			if (this.showLocal)
 			{
-				this.MemberPropertySetter(ReflectionInfo.Property_Transform_RelativePos, this.GetValue(), values);
+				this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalPos, this.GetValue(), values);
 			}
 			else
 			{
@@ -173,16 +173,16 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						if (removeIndex < valuesList.Count)
 							valuesList.RemoveAt(removeIndex);
 					}
-					this.MemberPropertySetter(ReflectionInfo.Property_Transform_RelativePos, targetListLocal, valuesListLocal);
+					this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalPos, targetListLocal, valuesListLocal);
 				}
 			}
 
-			this.OnPropertySet(ReflectionInfo.Property_Transform_RelativePos, values);
+			this.OnPropertySet(ReflectionInfo.Property_Transform_LocalPos, values);
 			this.PerformGetValue();
 		}
 		protected IEnumerable<object> VelGetter()
 		{
-			if (this.showRelative)
+			if (this.showLocal)
 			{
 				return this.GetValue().OfType<Transform>().Select(o =>
 				{
@@ -201,16 +201,16 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 		protected IEnumerable<object> ScaleGetter()
 		{
-			if (this.showRelative)
-				return this.GetValue().OfType<Transform>().Select(o => (object)o.RelativeScale);
+			if (this.showLocal)
+				return this.GetValue().OfType<Transform>().Select(o => (object)o.LocalScale);
 			else
 				return this.GetValue().OfType<Transform>().Select(o => (object)o.Scale);
 		}
 		protected void ScaleSetter(IEnumerable<object> values)
 		{
-			if (this.showRelative)
+			if (this.showLocal)
 			{
-				this.MemberPropertySetter(ReflectionInfo.Property_Transform_RelativeScale, this.GetValue(), values);
+				this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalScale, this.GetValue(), values);
 			}
 			else
 			{
@@ -248,26 +248,26 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						if (removeIndex < valuesList.Count)
 							valuesList.RemoveAt(removeIndex);
 					}
-					this.MemberPropertySetter(ReflectionInfo.Property_Transform_RelativeScale, targetListLocal, valuesListLocal);
+					this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalScale, targetListLocal, valuesListLocal);
 				}
 			}
 
-			this.OnPropertySet(ReflectionInfo.Property_Transform_RelativeScale, values);
+			this.OnPropertySet(ReflectionInfo.Property_Transform_LocalScale, values);
 			this.PerformGetValue();
 		}
 		protected IEnumerable<object> AngleGetter()
 		{
-			if (this.showRelative)
-				return this.GetValue().OfType<Transform>().Select(o => (object)MathF.RadToDeg(o.RelativeAngle));
+			if (this.showLocal)
+				return this.GetValue().OfType<Transform>().Select(o => (object)MathF.RadToDeg(o.LocalAngle));
 			else
 				return this.GetValue().OfType<Transform>().Select(o => (object)MathF.RadToDeg(o.Angle));
 		}
 		protected void AngleSetter(IEnumerable<object> values)
 		{
 			values = values.Select(v => (object)MathF.DegToRad((float)v));
-			if (this.showRelative)
+			if (this.showLocal)
 			{
-				this.MemberPropertySetter(ReflectionInfo.Property_Transform_RelativeAngle, this.GetValue(), values);
+				this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalAngle, this.GetValue(), values);
 			}
 			else
 			{
@@ -305,16 +305,16 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						if (removeIndex < valuesList.Count)
 							valuesList.RemoveAt(removeIndex);
 					}
-					this.MemberPropertySetter(ReflectionInfo.Property_Transform_RelativeAngle, targetListLocal, valuesListLocal);
+					this.MemberPropertySetter(ReflectionInfo.Property_Transform_LocalAngle, targetListLocal, valuesListLocal);
 				}
 			}
 
-			this.OnPropertySet(ReflectionInfo.Property_Transform_RelativeAngle, values);
+			this.OnPropertySet(ReflectionInfo.Property_Transform_LocalAngle, values);
 			this.PerformGetValue();
 		}
 		protected IEnumerable<object> AngleVelGetter()
 		{
-			if (this.showRelative)
+			if (this.showLocal)
 			{
 				return this.GetValue().OfType<Transform>().Select(o =>
 				{
@@ -335,14 +335,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		HelpInfo IHelpProvider.ProvideHoverHelp(System.Drawing.Point localPos, ref bool captured)
 		{
 			PropertyEditor pickedEditor = this.PickEditorAt(this.Location.X + localPos.X, this.Location.Y + localPos.Y, true);
-			if (this.showRelative)
+			if (this.showLocal)
 			{
 				if (pickedEditor == this.editorPos)
-					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_RelativePos);
+					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_LocalPos);
 				else if (pickedEditor == this.editorScale)
-					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_RelativeScale);
+					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_LocalScale);
 				else if (pickedEditor == this.editorAngle)
-					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_RelativeAngle);
+					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_LocalAngle);
 			}
 			else
 			{
@@ -359,7 +359,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			}
 			
 			if (pickedEditor == this.editorShowRelative)
-				return HelpInfo.FromText("Show relative values?", "If true, the relative Transform values are displayed for editing. This is an editor property that does not affect object behaviour in any way.");
+				return HelpInfo.FromText("Show Local Values", "If true, all values will be displayed and edited in local space of the parent object. This is an editor property that does not affect object behaviour in any way.");
 			else if (pickedEditor.EditedMember != null)
 				return HelpInfo.FromMember(pickedEditor.EditedMember);
 			else if (pickedEditor.EditedType != null)

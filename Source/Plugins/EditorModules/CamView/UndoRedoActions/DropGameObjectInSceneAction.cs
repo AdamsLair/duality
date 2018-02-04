@@ -62,15 +62,15 @@ namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 				DualityEditorApp.NotifyObjPropChanged(
 					this,
 					new ObjectSelection(this.targetObj.Transform()),
-					ReflectionInfo.Property_Transform_RelativePos,
-					ReflectionInfo.Property_Transform_RelativeAngle);
+					ReflectionInfo.Property_Transform_LocalPos,
+					ReflectionInfo.Property_Transform_LocalAngle);
 			}
 			else
 			{
 				DualityEditorApp.NotifyObjPropChanged(
 					this,
 					new ObjectSelection(this.targetObj.Transform()),
-					ReflectionInfo.Property_Transform_RelativePos);
+					ReflectionInfo.Property_Transform_LocalPos);
 			}
 		}
 		public override void Undo()
@@ -89,15 +89,15 @@ namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 				DualityEditorApp.NotifyObjPropChanged(
 					this,
 					new ObjectSelection(this.targetObj.Transform()),
-					ReflectionInfo.Property_Transform_RelativePos,
-					ReflectionInfo.Property_Transform_RelativeAngle);
+					ReflectionInfo.Property_Transform_LocalPos,
+					ReflectionInfo.Property_Transform_LocalAngle);
 			}
 			else
 			{
 				DualityEditorApp.NotifyObjPropChanged(
 					this,
 					new ObjectSelection(this.targetObj.Transform()),
-					ReflectionInfo.Property_Transform_RelativePos);
+					ReflectionInfo.Property_Transform_LocalPos);
 			}
 		}
 	}

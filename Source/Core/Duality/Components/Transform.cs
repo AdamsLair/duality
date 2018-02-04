@@ -34,9 +34,9 @@ namespace Duality.Components
 
 
 		/// <summary>
-		/// [GET / SET] The objects position relative to its parent object.
+		/// [GET / SET] The objects position in local space of its parent object.
 		/// </summary>
-		public Vector3 RelativePos
+		public Vector3 LocalPos
 		{
 			get { return this.pos; }
 			set
@@ -48,9 +48,9 @@ namespace Duality.Components
 			}
 		}
 		/// <summary>
-		/// [GET / SET] The objects angle / rotation relative to its parent object, in radians.
+		/// [GET / SET] The objects angle / rotation in local space of its parent object, in radians.
 		/// </summary>
-		public float RelativeAngle
+		public float LocalAngle
 		{
 			get { return this.angle; }
 			set 
@@ -62,9 +62,9 @@ namespace Duality.Components
 			}
 		}
 		/// <summary>
-		/// [GET / SET] The objects scale relative to its parent object.
+		/// [GET / SET] The objects scale in local space of its parent object.
 		/// </summary>
-		public float RelativeScale
+		public float LocalScale
 		{
 			get { return this.scale; }
 			set
@@ -74,7 +74,9 @@ namespace Duality.Components
 			}
 		}
 		/// <summary>
-		/// [GET / SET] Specifies whether the Transform component should ignore its parent transform.
+		/// [GET / SET] Specifies whether the <see cref="Transform"/> component should behave as if 
+		/// it was part of a root object. When true, it behaves the same as if it didn't have a 
+		/// parent <see cref="Transform"/>.
 		/// </summary>
 		public bool IgnoreParent
 		{
@@ -90,34 +92,34 @@ namespace Duality.Components
 		}
 
 		/// <summary>
-		/// [GET] The objects forward vector, relative to its parent object.
+		/// [GET] The objects directional forward vector in local space of its parent object.
 		/// </summary>
-		public Vector3 RelativeForward
+		public Vector3 LocalForward
 		{
 			get 
 			{ 
 				return new Vector3(
-					MathF.Sin(this.RelativeAngle),
-					-MathF.Cos(this.RelativeAngle),
+					MathF.Sin(this.LocalAngle),
+					-MathF.Cos(this.LocalAngle),
 					0.0f);
 			}
 		}
 		/// <summary>
-		/// [GET] The objects right (directional) vector, relative to its parent object.
+		/// [GET] The objects directional right vector in local space of its parent object.
 		/// </summary>
-		public Vector3 RelativeRight
+		public Vector3 LocalRight
 		{
 			get 
 			{
 				return new Vector3(
-					-MathF.Cos(this.RelativeAngle),
-					-MathF.Sin(this.RelativeAngle),
+					-MathF.Cos(this.LocalAngle),
+					-MathF.Sin(this.LocalAngle),
 					0.0f);
 			}
 		}
 		
 		/// <summary>
-		/// [GET / SET] The objects position.
+		/// [GET / SET] The objects position in world space.
 		/// </summary>
 		public Vector3 Pos
 		{
@@ -145,14 +147,14 @@ namespace Duality.Components
 			}
 		}
 		/// <summary>
-		/// [GET] The objects velocity.
+		/// [GET] The objects velocity in world space.
 		/// </summary>
 		public Vector3 Vel
 		{
 			get { return this.velAbs; }
 		}
 		/// <summary>
-		/// [GET / SET] The objects angle / rotation, in radians.
+		/// [GET / SET] The objects angle / rotation in world space, in radians.
 		/// </summary>
 		public float Angle
 		{
@@ -174,14 +176,14 @@ namespace Duality.Components
 			}
 		}
 		/// <summary>
-		/// [GET] The objects angle / rotation velocity, in radians.
+		/// [GET] The objects angle / rotation velocity in world space, in radians.
 		/// </summary>
 		public float AngleVel
 		{
 			get { return this.angleVelAbs; }
 		}
 		/// <summary>
-		/// [GET / SET] The objects scale.
+		/// [GET / SET] The objects scale in world space.
 		/// </summary>
 		public float Scale
 		{
@@ -199,9 +201,9 @@ namespace Duality.Components
 				this.UpdateAbsChild();
 			}
 		}
-		
+
 		/// <summary>
-		/// [GET] The objects forward vector.
+		/// [GET] The objects directional forward (zero degree angle) vector in world space.
 		/// </summary>
 		public Vector3 Forward
 		{
@@ -214,7 +216,7 @@ namespace Duality.Components
 			}
 		}
 		/// <summary>
-		/// [GET] The objects right (directional) vector.
+		/// [GET] The objects directional right (90 degree angle) vector in world space.
 		/// </summary>
 		public Vector3 Right
 		{
@@ -240,9 +242,9 @@ namespace Duality.Components
 			}
 		}
 
-		
+
 		/// <summary>
-		/// Calculates a world coordinate from a Transform-local coordinate.
+		/// Transforms a position from local space of this object to world space.
 		/// </summary>
 		/// <param name="local"></param>
 		/// <returns></returns>
@@ -254,7 +256,7 @@ namespace Duality.Components
 				local.Z * this.scaleAbs + this.posAbs.Z);
 		}
 		/// <summary>
-		/// Calculates a world coordinate from a Transform-local coordinate.
+		/// Transforms a position from local space of this object to world space.
 		/// </summary>
 		/// <param name="local"></param>
 		/// <returns></returns>
@@ -265,7 +267,7 @@ namespace Duality.Components
 				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y + this.posAbs.Y);
 		}
 		/// <summary>
-		/// Calculates a Transform-local coordinate from a world coordinate.
+		/// Transforms a position from world space to local space of this object.
 		/// </summary>
 		/// <param name="world"></param>
 		/// <returns></returns>
@@ -278,7 +280,7 @@ namespace Duality.Components
 				(world.Z - this.posAbs.Z) * inverseScale);
 		}
 		/// <summary>
-		/// Calculates a Transform-local coordinate from a world coordinate.
+		/// Transforms a position from world space to local space of this object.
 		/// </summary>
 		/// <param name="world"></param>
 		/// <returns></returns>
@@ -291,7 +293,7 @@ namespace Duality.Components
 		}
 
 		/// <summary>
-		/// Calculates a world vector from a Transform-local vector.
+		/// Transforms a vector from local space of this object to world space.
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="local"></param>
@@ -304,7 +306,7 @@ namespace Duality.Components
 				local.Z * this.scaleAbs);
 		}
 		/// <summary>
-		/// Calculates a world vector from a Transform-local vector.
+		/// Transforms a vector from local space of this object to world space.
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="local"></param>
@@ -316,7 +318,7 @@ namespace Duality.Components
 				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y);
 		}
 		/// <summary>
-		/// Calculates a Transform-local vector from a world vector.
+		/// Transforms a vector from world space to local space of this object.
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="world"></param>
@@ -330,7 +332,7 @@ namespace Duality.Components
 				world.Z * inverseScale);
 		}
 		/// <summary>
-		/// Calculates a Transform-local vector from a world vector.
+		/// Transforms a vector from world space to local space of this object.
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="world"></param>
@@ -383,27 +385,27 @@ namespace Duality.Components
 		}
 
 		/// <summary>
-		/// Moves the object by the given vector. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object by the given local offset. This will affect the Transforms <see cref="Vel">velocity</see> value.
 		/// </summary>
 		/// <param name="value"></param>
-		public void MoveBy(Vector3 value)
+		public void MoveByLocal(Vector3 value)
 		{
 			this.pos += value; 
 			this.UpdateAbs();
 		}
 		/// <summary>
-		/// Moves the object by the given vector. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object by the given local offset. This will affect the Transforms <see cref="Vel">velocity</see> value.
 		/// </summary>
 		/// <param name="value"></param>
-		public void MoveBy(Vector2 value)
+		public void MoveByLocal(Vector2 value)
 		{
-			this.MoveBy(new Vector3(value));
+			this.MoveByLocal(new Vector3(value));
 		}
 		/// <summary>
-		/// Moves the object by given absolute vector. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object by given world offset. This will affect the Transforms <see cref="Vel">velocity</see> value.
 		/// </summary>
 		/// <param name="value"></param>
-		public void MoveByAbs(Vector3 value)
+		public void MoveBy(Vector3 value)
 		{
 			this.posAbs += value;
 
@@ -423,46 +425,46 @@ namespace Duality.Components
 			this.UpdateAbsChild();
 		}
 		/// <summary>
-		/// Moves the object by given absolute vector. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object by given world offset. This will affect the Transforms <see cref="Vel">velocity</see> value.
 		/// </summary>
 		/// <param name="value"></param>
-		public void MoveByAbs(Vector2 value)
+		public void MoveBy(Vector2 value)
 		{
-			this.MoveByAbs(new Vector3(value));
+			this.MoveBy(new Vector3(value));
 		}
 		/// <summary>
-		/// Moves the object to the given relative position. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object to the given position in local space of its parent object. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// </summary>
+		/// <param name="value"></param>
+		public void MoveToLocal(Vector3 value)
+		{
+			this.MoveByLocal(value - this.pos);
+		}
+		/// <summary>
+		/// Moves the object to the given position in local space of its parent object, leaving the Z coordinate unchanged.
+		/// This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// </summary>
+		/// <param name="value"></param>
+		public void MoveToLocal(Vector2 value)
+		{
+			this.MoveToLocal(new Vector3(value, this.pos.Z));
+		}
+		/// <summary>
+		/// Moves the object to the given world position. This will affect the Transforms <see cref="Vel">velocity</see> value.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveTo(Vector3 value)
 		{
-			this.MoveBy(value - this.pos);
+			this.MoveBy(value - this.posAbs);
 		}
 		/// <summary>
-		/// Moves the object to the given relative position, leaving the Z coordinate unchanged.
+		/// Moves the object to the given world position, leaving the Z coordinate unchanged.
 		/// This will affect the Transforms <see cref="Vel">velocity</see> value.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveTo(Vector2 value)
 		{
-			this.MoveTo(new Vector3(value, this.pos.Z));
-		}
-		/// <summary>
-		/// Moves the object to the given absolute position. This will affect the Transforms <see cref="Vel">velocity</see> value.
-		/// </summary>
-		/// <param name="value"></param>
-		public void MoveToAbs(Vector3 value)
-		{
-			this.MoveByAbs(value - this.posAbs);
-		}
-		/// <summary>
-		/// Moves the object to the given absolute position, leaving the Z coordinate unchanged.
-		/// This will affect the Transforms <see cref="Vel">velocity</see> value.
-		/// </summary>
-		/// <param name="value"></param>
-		public void MoveToAbs(Vector2 value)
-		{
-			this.MoveToAbs(new Vector3(value, this.posAbs.Z));
+			this.MoveTo(new Vector3(value, this.posAbs.Z));
 		}
 		/// <summary>
 		/// Turns the object by the given radian angle. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
@@ -474,24 +476,24 @@ namespace Duality.Components
 			this.UpdateAbs();
 		}
 		/// <summary>
-		/// Turns the object to the given relative radian angle. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
+		/// Turns the object to the given radian angle in local space of its parent object. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
 		/// </summary>
 		/// <param name="value"></param>
-		public void TurnTo(float value)
+		public void TurnToLocal(float value)
 		{
 			this.TurnBy(MathF.TurnDir(this.angle, value) * MathF.CircularDist(value, this.angle));
 		}
 		/// <summary>
-		/// Turns the object to the given absolute radian angle. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
+		/// Turns the object to the given world space radian angle. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
 		/// </summary>
 		/// <param name="value"></param>
-		public void TurnToAbs(float value)
+		public void TurnTo(float value)
 		{
 			this.TurnBy(MathF.TurnDir(this.angleAbs, value) * MathF.CircularDist(value, this.angleAbs));
 		}
 
 		/// <summary>
-		/// Updates the Transforms data all at once.
+		/// Updates the Transforms world space data all at once.
 		/// </summary>
 		/// <param name="pos"></param>
 		/// <param name="vel"></param>
@@ -511,7 +513,7 @@ namespace Duality.Components
 			this.UpdateAbsChild();
 		}
 		/// <summary>
-		/// Updates the Transforms data all at once.
+		/// Updates the Transforms world space data all at once.
 		/// </summary>
 		/// <param name="other"></param>
 		public void SetTransform(Transform other)
@@ -520,14 +522,14 @@ namespace Duality.Components
 			this.SetTransform(other.Pos, other.Scale, other.Angle);
 		}
 		/// <summary>
-		/// Updates the Transforms data all at once.
+		/// Updates the Transforms local space data all at once.
 		/// </summary>
 		/// <param name="pos"></param>
 		/// <param name="vel"></param>
 		/// <param name="scale"></param>
 		/// <param name="angle"></param>
 		/// <param name="angleVel"></param>
-		public void SetRelativeTransform(Vector3 pos, float scale, float angle)
+		public void SetLocalTransform(Vector3 pos, float scale, float angle)
 		{
 			this.pos = pos;
 			this.angle = angle;
@@ -539,13 +541,13 @@ namespace Duality.Components
 			this.lastAngleAbs = this.angleAbs;
 		}
 		/// <summary>
-		/// Updates the Transforms data all at once.
+		/// Updates the Transforms local space data all at once.
 		/// </summary>
 		/// <param name="other"></param>
-		public void SetRelativeTransform(Transform other)
+		public void SetLocalTransform(Transform other)
 		{
 			if (other == this) return;
-			this.SetRelativeTransform(other.RelativePos, other.RelativeScale, other.RelativeAngle);
+			this.SetLocalTransform(other.LocalPos, other.LocalScale, other.LocalAngle);
 		}
 		
 		void ICmpUpdatable.OnUpdate()

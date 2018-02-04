@@ -948,11 +948,11 @@ namespace Duality.Components.Physics
 			if (!this.allowParent)
 				transform.IgnoreParent = true;
 
-			transform.MoveToAbs(new Vector3(
+			transform.MoveTo(new Vector3(
 				PhysicsUnit.LengthToDuality * bodyPos.X,
 				PhysicsUnit.LengthToDuality * bodyPos.Y,
 				transform.Pos.Z));
-			transform.TurnToAbs(PhysicsUnit.AngleToDuality * bodyAngle);
+			transform.TurnTo(PhysicsUnit.AngleToDuality * bodyAngle);
 
 			this.lastPos = PhysicsUnit.LengthToDuality * bodyPos;
 			this.lastAngle = PhysicsUnit.AngleToDuality * bodyAngle;

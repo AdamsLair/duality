@@ -83,17 +83,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (action == ObjectEditorAction.Move)
 			{
 				return
-					string.Format("X:{0,7:0}/n", this.gameObj.Transform.RelativePos.X) +
-					string.Format("Y:{0,7:0}/n", this.gameObj.Transform.RelativePos.Y) +
-					string.Format("Z:{0,7:0}", this.gameObj.Transform.RelativePos.Z);
+					string.Format("X:{0,7:0}/n", this.gameObj.Transform.LocalPos.X) +
+					string.Format("Y:{0,7:0}/n", this.gameObj.Transform.LocalPos.Y) +
+					string.Format("Z:{0,7:0}", this.gameObj.Transform.LocalPos.Z);
 			}
 			else if (action == ObjectEditorAction.Scale)
 			{
-				return string.Format("Scale:{0,5:0.00}", this.gameObj.Transform.RelativeScale);
+				return string.Format("Scale:{0,5:0.00}", this.gameObj.Transform.LocalScale);
 			}
 			else if (action == ObjectEditorAction.Rotate)
 			{
-				return string.Format("Angle:{0,5:0}°", MathF.RadToDeg(this.gameObj.Transform.RelativeAngle));
+				return string.Format("Angle:{0,5:0}°", MathF.RadToDeg(this.gameObj.Transform.LocalAngle));
 			}
 
 			return base.UpdateActionText(action, performing);

@@ -96,24 +96,24 @@ namespace Duality.Tests.Components
 			// whether we edit local or world values.
 			transform.Pos = new Vector3(1, 2, 3);
 			AssertEqual(new Vector3(1, 2, 3), transform.Pos, "World Position");
-			AssertEqual(new Vector3(1, 2, 3), transform.RelativePos, "Local Position");
-			transform.RelativePos = new Vector3(2, 3, 4);
+			AssertEqual(new Vector3(1, 2, 3), transform.LocalPos, "Local Position");
+			transform.LocalPos = new Vector3(2, 3, 4);
 			AssertEqual(new Vector3(2, 3, 4), transform.Pos, "World Position");
-			AssertEqual(new Vector3(2, 3, 4), transform.RelativePos, "Local Position");
+			AssertEqual(new Vector3(2, 3, 4), transform.LocalPos, "Local Position");
 
 			transform.Angle = MathF.RadAngle30;
 			AssertEqual(MathF.RadAngle30, transform.Angle, "World Angle");
-			AssertEqual(MathF.RadAngle30, transform.RelativeAngle, "Local Angle");
-			transform.RelativeAngle = MathF.RadAngle45;
+			AssertEqual(MathF.RadAngle30, transform.LocalAngle, "Local Angle");
+			transform.LocalAngle = MathF.RadAngle45;
 			AssertEqual(MathF.RadAngle45, transform.Angle, "World Angle");
-			AssertEqual(MathF.RadAngle45, transform.RelativeAngle, "Local Angle");
+			AssertEqual(MathF.RadAngle45, transform.LocalAngle, "Local Angle");
 
 			transform.Scale = 2.0f;
 			AssertEqual(2.0f, transform.Scale, "World Scale");
-			AssertEqual(2.0f, transform.RelativeScale, "Local Scale");
-			transform.RelativeScale = 3.0f;
+			AssertEqual(2.0f, transform.LocalScale, "Local Scale");
+			transform.LocalScale = 3.0f;
 			AssertEqual(3.0f, transform.Scale, "World Scale");
-			AssertEqual(3.0f, transform.RelativeScale, "Local Scale");
+			AssertEqual(3.0f, transform.LocalScale, "Local Scale");
 		}
 		[Test] public void TransformHierarchy()
 		{
@@ -125,21 +125,21 @@ namespace Duality.Tests.Components
 			Transform transform = obj.AddComponent<Transform>();
 
 			// Start with a parent transform that does nothing
-			transform.RelativePos = new Vector3(1.0f, 2.0f, 3.0f);
-			transform.RelativeAngle = MathF.DegToRad(90.0f);
-			transform.RelativeScale = 2.0f;
+			transform.LocalPos = new Vector3(1.0f, 2.0f, 3.0f);
+			transform.LocalAngle = MathF.DegToRad(90.0f);
+			transform.LocalScale = 2.0f;
 			AssertEqual(new Vector3(1.0f, 4.0f, 3.0f), transform.GetWorldPoint(new Vector3(1.0f, 0.0f, 0.0f)), "Child transform with identity parent");
 
 			// Now we'll adjust the parent transform and see if the child gets it
-			parentTransform.RelativePos = new Vector3(4.0f, 5.0f, 6.0f);
-			parentTransform.RelativeAngle = MathF.DegToRad(90.0f);
-			parentTransform.RelativeScale = 2.0f;
+			parentTransform.LocalPos = new Vector3(4.0f, 5.0f, 6.0f);
+			parentTransform.LocalAngle = MathF.DegToRad(90.0f);
+			parentTransform.LocalScale = 2.0f;
 			AssertEqual(new Vector3(-4.0f, 7.0f, 12.0f), transform.GetWorldPoint(new Vector3(1.0f, 0.0f, 0.0f)), "Child transform with parent");
 
 			// Adjust the child transform to identity and make sure we still have the parent transformation
-			transform.RelativePos = Vector3.Zero;
-			transform.RelativeAngle = 0.0f;
-			transform.RelativeScale = 1.0f;
+			transform.LocalPos = Vector3.Zero;
+			transform.LocalAngle = 0.0f;
+			transform.LocalScale = 1.0f;
 			AssertEqual(new Vector3(4.0f, 7.0f, 6.0f), transform.GetWorldPoint(new Vector3(1.0f, 0.0f, 0.0f)), "Identity child transform with parent");
 		}
 		[Test] public void TransformHierarchyVelocity()
@@ -168,7 +168,7 @@ namespace Duality.Tests.Components
 				transform.Angle = 0.0f;
 				transform.Scale = 1.0f;
 
-				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
 				transform.TurnBy(MathF.DegToRad(90.0f));
 				DualityApp.Update(true);
 
@@ -183,7 +183,7 @@ namespace Duality.Tests.Components
 				transform.Angle = 0.0f;
 				transform.Scale = 1.0f;
 
-				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
 				transform.TurnBy(MathF.DegToRad(90.0f));
 				DualityApp.Update(true);
 
@@ -198,7 +198,7 @@ namespace Duality.Tests.Components
 				transform.Angle = 0.0f;
 				transform.Scale = 1.0f;
 				
-				parentTransform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				parentTransform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
 				DualityApp.Update(true);
 				
 				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.Vel, "Absolute child velocity");
@@ -211,9 +211,9 @@ namespace Duality.Tests.Components
 				transform.Angle = 0.0f;
 				transform.Scale = 1.0f;
 				
-				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
 				transform.TurnBy(MathF.DegToRad(90.0f));
-				parentTransform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
+				parentTransform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
 				DualityApp.Update(true);
 				
 				AssertEqual(new Vector3(2.0f, 0.0f, 0.0f), transform.Vel, "Absolute child velocity");
@@ -250,7 +250,7 @@ namespace Duality.Tests.Components
 				AssertEqual(0.0f, transform.AngleVel, "Angle velocity after teleport");
 
 				// The object is moved
-				transform.MoveByAbs(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
 				transform.TurnBy(MathF.RadAngle90);
 				DualityApp.Update(true);
 				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.Vel, "Velocity after move");
@@ -262,7 +262,7 @@ namespace Duality.Tests.Components
 				AssertEqual(0.0f, transform.AngleVel, "Angle velocity after one frame rest");
 
 				// The object is moved, then teleported
-				transform.MoveByAbs(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
 				transform.TurnBy(MathF.RadAngle90);
 				transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
 				transform.Angle = MathF.RadAngle90;
@@ -271,11 +271,11 @@ namespace Duality.Tests.Components
 				AssertEqual(0.0f, transform.AngleVel, "Angle velocity after move, then teleport");
 
 				// The object is moved, then teleported, then moved again
-				transform.MoveByAbs(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
 				transform.TurnBy(MathF.RadAngle90);
 				transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
 				transform.Angle = MathF.RadAngle90;
-				transform.MoveByAbs(new Vector3(2.0f, 0.0f, 0.0f));
+				transform.MoveBy(new Vector3(2.0f, 0.0f, 0.0f));
 				transform.TurnBy(MathF.RadAngle45);
 				DualityApp.Update(true);
 				AssertEqual(new Vector3(2.0f, 0.0f, 0.0f), transform.Vel, "Velocity after move, then teleport, then move");

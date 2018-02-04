@@ -34,7 +34,7 @@ namespace FlapOrDie.Components
         {
             delta.X = this.speed * Time.MillisecondsPerFrame * Time.TimeMult / 1000;
 
-            this.GameObj.Transform.MoveBy(-delta);
+            this.GameObj.Transform.MoveByLocal(-delta);
             if(this.GameObj.Transform.Pos.X + this.Text.TextMetrics.Size.X < -FlapOrDieCorePlugin.HalfWidth)
             {
                 ShowNextString();
@@ -44,7 +44,7 @@ namespace FlapOrDie.Components
         private void ShowNextString()
         {
             this.Text.SourceText = this.strings[index];
-            this.GameObj.Transform.RelativePos = new Vector3(FlapOrDieCorePlugin.HalfWidth + this.Text.TextMetrics.Size.X, 0, 0);
+            this.GameObj.Transform.LocalPos = new Vector3(FlapOrDieCorePlugin.HalfWidth + this.Text.TextMetrics.Size.X, 0, 0);
 
             index = (index + 1) % this.strings.Count;
         }

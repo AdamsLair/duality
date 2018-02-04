@@ -323,14 +323,14 @@ namespace Duality.Tests.Cloning
 				Vector3 parentPosAbs = rnd.NextVector3();
 				Vector3 childPosRel = rnd.NextVector3();
 				parent.Pos = parentPosAbs;
-				child.RelativePos = childPosRel;
+				child.LocalPos = childPosRel;
 
 				Assert.AreEqual(parentPosAbs.X + childPosRel.X, child.Pos.X, 0.000001f);
 				Assert.AreEqual(parentPosAbs.Y + childPosRel.Y, child.Pos.Y, 0.000001f);
 				Assert.AreEqual(parentPosAbs.Z + childPosRel.Z, child.Pos.Z, 0.000001f);
 
 				childPosRel = rnd.NextVector3();
-				child.RelativePos = childPosRel;
+				child.LocalPos = childPosRel;
 
 				Assert.AreEqual(parentPosAbs.X + childPosRel.X, child.Pos.X, 0.000001f);
 				Assert.AreEqual(parentPosAbs.Y + childPosRel.Y, child.Pos.Y, 0.000001f);
@@ -350,14 +350,14 @@ namespace Duality.Tests.Cloning
 				Vector3 parentPosAbs = rnd.NextVector3();
 				Vector3 childPosRel = rnd.NextVector3();
 				parent.Pos = parentPosAbs;
-				child.RelativePos = childPosRel;
+				child.LocalPos = childPosRel;
 
 				Assert.AreEqual(parentPosAbs.X + childPosRel.X, child.Pos.X, 0.000001f);
 				Assert.AreEqual(parentPosAbs.Y + childPosRel.Y, child.Pos.Y, 0.000001f);
 				Assert.AreEqual(parentPosAbs.Z + childPosRel.Z, child.Pos.Z, 0.000001f);
 
 				childPosRel = rnd.NextVector3();
-				child.RelativePos = childPosRel;
+				child.LocalPos = childPosRel;
 
 				Assert.AreEqual(parentPosAbs.X + childPosRel.X, child.Pos.X, 0.000001f);
 				Assert.AreEqual(parentPosAbs.Y + childPosRel.Y, child.Pos.Y, 0.000001f);
