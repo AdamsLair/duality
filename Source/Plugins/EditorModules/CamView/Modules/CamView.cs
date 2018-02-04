@@ -999,8 +999,6 @@ namespace Duality.Editor.Plugins.CamView
 			//if (this.camInternal) return;
 			DualityEditorApp.NotifyObjPropChanged(
 				this, new ObjectSelection(this.camObj.Transform),
-				ReflectionInfo.Property_Transform_RelativeVel,
-				ReflectionInfo.Property_Transform_RelativeAngleVel,
 				ReflectionInfo.Property_Transform_RelativeAngle,
 				ReflectionInfo.Property_Transform_RelativePos);
 		}

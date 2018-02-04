@@ -26,8 +26,6 @@ namespace Duality
 		public static readonly PropertyInfo	Property_Transform_RelativePos;
 		public static readonly PropertyInfo	Property_Transform_RelativeAngle;
 		public static readonly PropertyInfo	Property_Transform_RelativeScale;
-		public static readonly PropertyInfo	Property_Transform_RelativeVel;
-		public static readonly PropertyInfo	Property_Transform_RelativeAngleVel;
 		public static readonly PropertyInfo	Property_Transform_Pos;
 		public static readonly PropertyInfo	Property_Transform_Angle;
 		public static readonly PropertyInfo	Property_Transform_Scale;
@@ -75,8 +73,6 @@ namespace Duality
 			Property_Transform_RelativePos		= GetProperty(transform, "RelativePos");
 			Property_Transform_RelativeAngle	= GetProperty(transform, "RelativeAngle");
 			Property_Transform_RelativeScale	= GetProperty(transform, "RelativeScale");
-			Property_Transform_RelativeVel		= GetProperty(transform, "RelativeVel");
-			Property_Transform_RelativeAngleVel	= GetProperty(transform, "RelativeAngleVel");
 			Property_Transform_Pos				= GetProperty(transform, "Pos");
 			Property_Transform_Angle			= GetProperty(transform, "Angle");
 			Property_Transform_Scale			= GetProperty(transform, "Scale");

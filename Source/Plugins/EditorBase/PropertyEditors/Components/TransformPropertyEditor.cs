@@ -26,14 +26,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			if (editor == this.editorPos)
 				return ReflectionInfo.Property_Transform_RelativePos;
-			else if (editor == this.editorVel)
-				return ReflectionInfo.Property_Transform_RelativeVel;
 			else if (editor == this.editorScale)
 				return ReflectionInfo.Property_Transform_RelativeScale;
 			else if (editor == this.editorAngle)
 				return ReflectionInfo.Property_Transform_RelativeAngle;
-			else if (editor == this.editorAngleVel)
-				return ReflectionInfo.Property_Transform_RelativeAngleVel;
 			else
 				return base.MapEditorToMember(editor);
 		}
@@ -187,9 +183,21 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected IEnumerable<object> VelGetter()
 		{
 			if (this.showRelative)
-				return this.GetValue().OfType<Transform>().Select(o => (object)o.RelativeVel);
+			{
+				return this.GetValue().OfType<Transform>().Select(o =>
+				{
+					Vector3 localVel;
+					if (o.IgnoreParent || o.GameObj.Parent == null || o.GameObj.Parent.Transform == null)
+						localVel = o.Vel;
+					else
+						localVel = o.GetLocalVector(o.Vel - o.GameObj.Parent.Transform.Vel);
+					return (object)localVel;
+				});
+			}
 			else
+			{
 				return this.GetValue().OfType<Transform>().Select(o => (object)o.Vel);
+			}
 		}
 		protected IEnumerable<object> ScaleGetter()
 		{
@@ -307,9 +315,21 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected IEnumerable<object> AngleVelGetter()
 		{
 			if (this.showRelative)
-				return this.GetValue().OfType<Transform>().Select(o => (object)MathF.RadToDeg(o.RelativeAngleVel));
+			{
+				return this.GetValue().OfType<Transform>().Select(o =>
+				{
+					float localAngleVel;
+					if (o.IgnoreParent || o.GameObj.Parent == null || o.GameObj.Parent.Transform == null)
+						localAngleVel = o.AngleVel;
+					else
+						localAngleVel = o.AngleVel - o.GameObj.Parent.Transform.AngleVel;
+					return (object)MathF.RadToDeg(localAngleVel);
+				});
+			}
 			else
+			{
 				return this.GetValue().OfType<Transform>().Select(o => (object)MathF.RadToDeg(o.AngleVel));
+			}
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(System.Drawing.Point localPos, ref bool captured)
@@ -319,14 +339,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			{
 				if (pickedEditor == this.editorPos)
 					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_RelativePos);
-				else if (pickedEditor == this.editorVel)
-					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_RelativeVel);
 				else if (pickedEditor == this.editorScale)
 					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_RelativeScale);
 				else if (pickedEditor == this.editorAngle)
 					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_RelativeAngle);
-				else if (pickedEditor == this.editorAngleVel)
-					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_RelativeAngleVel);
 			}
 			else
 			{
