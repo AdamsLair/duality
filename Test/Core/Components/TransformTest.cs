@@ -142,83 +142,56 @@ namespace Duality.Tests.Components
 			transform.LocalScale = 1.0f;
 			AssertEqual(new Vector3(4.0f, 7.0f, 6.0f), transform.GetWorldPoint(new Vector3(1.0f, 0.0f, 0.0f)), "Identity child transform with parent");
 		}
-		[Test] public void TransformHierarchyVelocity()
+		[Test] public void SwitchParent()
 		{
-			// In this test case, we'll set up a parent and a child transform
-			// to see if changes to the parent affect the child transforms velocity value
-			GameObject parentObj = new GameObject("Parent");
-			GameObject obj = new GameObject("Child", parentObj);
-			Transform parentTransform = parentObj.AddComponent<Transform>();
+			GameObject parentA = new GameObject("ParentA");
+			GameObject parentB = new GameObject("ParentB");
+			GameObject obj = new GameObject("Child");
+			Transform transformParentA = parentA.AddComponent<Transform>();
+			Transform transformParentB = parentB.AddComponent<Transform>();
 			Transform transform = obj.AddComponent<Transform>();
 
-			// Since velocity values are only updated after the frame ends, we need
-			// a full scene setup to simulate an update cycle
-			using (Scene testScene = new Scene())
-			{
-				// Setup and enter the scene
-				testScene.AddObject(parentObj);
-				Scene.SwitchTo(testScene, true);
-				DualityApp.Update(true);
+			transformParentA.Pos = new Vector3(1, 2, 3);
+			transformParentA.Angle = MathF.RadAngle90;
+			transformParentA.Scale = 2.0f;
 
-				// Identity parent and a moving child
-				parentTransform.Pos = Vector3.Zero;
-				parentTransform.Angle = 0.0f;
-				parentTransform.Scale = 1.0f;
-				transform.Pos = Vector3.Zero;
-				transform.Angle = 0.0f;
-				transform.Scale = 1.0f;
+			transformParentB.Pos = new Vector3(2, 3, 4);
+			transformParentB.Angle = MathF.RadAngle180;
+			transformParentB.Scale = 4.0f;
 
-				transform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
-				transform.TurnBy(MathF.DegToRad(90.0f));
-				DualityApp.Update(true);
+			// Set up the test object without parent.
+			// Expect its world space to match local space.
+			transform.Pos = new Vector3(3, 4, 5);
+			transform.Angle = MathF.RadAngle270;
+			transform.Scale = 1.0f;
 
-				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.Vel, "Absolute child velocity");
-				AssertEqual(MathF.DegToRad(90.0f), transform.AngleVel, "Absolute child angle velocity");
+			AssertEqual(transform.LocalPos, transform.Pos, "Position");
+			AssertEqual(transform.LocalAngle, transform.Angle, "Angle");
+			AssertEqual(transform.LocalScale, transform.Scale, "Scale");
 
-				// Transformed parent and a moving child
-				parentTransform.Pos = new Vector3(1.0f, 2.0f, 3.0f);
-				parentTransform.Angle = MathF.DegToRad(90.0f);
-				parentTransform.Scale = 2.0f;
-				transform.Pos = Vector3.Zero;
-				transform.Angle = 0.0f;
-				transform.Scale = 1.0f;
+			// Re-parent the test object to parent A.
+			// Expect its world space values to remain, its local space to be recalculated.
+			obj.Parent = parentA;
 
-				transform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
-				transform.TurnBy(MathF.DegToRad(90.0f));
-				DualityApp.Update(true);
+			AssertEqual(new Vector3(3, 4, 5), transform.Pos, "Position");
+			AssertEqual(MathF.RadAngle270, transform.Angle, "Angle");
+			AssertEqual(1.0f, transform.Scale, "Scale");
 
-				AssertEqual(new Vector3(0.0f, 2.0f, 0.0f), transform.Vel, "Absolute child velocity");
-				AssertEqual(MathF.DegToRad(90.0f), transform.AngleVel, "Absolute child angle velocity");
+			AssertEqual(new Vector3(1, -1, 1), transform.LocalPos, "Position");
+			AssertEqual(MathF.RadAngle180, transform.LocalAngle, "Angle");
+			AssertEqual(0.5f, transform.LocalScale, "Scale");
 
-				// Moving parent and a transformed child
-				parentTransform.Pos = Vector3.Zero;
-				parentTransform.Angle = 0.0f;
-				parentTransform.Scale = 1.0f;
-				transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
-				transform.Angle = 0.0f;
-				transform.Scale = 1.0f;
-				
-				parentTransform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
-				DualityApp.Update(true);
-				
-				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.Vel, "Absolute child velocity");
+			// Re-parent the test object to parent B.
+			// Expect its world space values to remain, its local space to be recalculated.
+			obj.Parent = parentB;
 
-				// Moving parent and a transformed, moving child
-				parentTransform.Pos = Vector3.Zero;
-				parentTransform.Angle = 0.0f;
-				parentTransform.Scale = 1.0f;
-				transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
-				transform.Angle = 0.0f;
-				transform.Scale = 1.0f;
-				
-				transform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
-				transform.TurnBy(MathF.DegToRad(90.0f));
-				parentTransform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
-				DualityApp.Update(true);
-				
-				AssertEqual(new Vector3(2.0f, 0.0f, 0.0f), transform.Vel, "Absolute child velocity");
-				AssertEqual(MathF.DegToRad(90.0f), transform.AngleVel, "Absolute child angle velocity");
-			}
+			AssertEqual(new Vector3(3, 4, 5), transform.Pos, "Position");
+			AssertEqual(MathF.RadAngle270, transform.Angle, "Angle");
+			AssertEqual(1.0f, transform.Scale, "Scale");
+
+			AssertEqual(new Vector3(-0.25f, -0.25f, 0.25f), transform.LocalPos, "Position");
+			AssertEqual(MathF.RadAngle90, transform.LocalAngle, "Angle");
+			AssertEqual(0.25f, transform.LocalScale, "Scale");
 		}
 
 		[Test] public void VelocityTeleportAndMove()
@@ -280,6 +253,84 @@ namespace Duality.Tests.Components
 				DualityApp.Update(true);
 				AssertEqual(new Vector3(2.0f, 0.0f, 0.0f), transform.Vel, "Velocity after move, then teleport, then move");
 				AssertEqual(MathF.RadAngle45, transform.AngleVel, "Angle velocity after move, then teleport, then move");
+			}
+		}
+		[Test] public void VelocityInHierarchy()
+		{
+			// In this test case, we'll set up a parent and a child transform
+			// to see if changes to the parent affect the child transforms velocity value
+			GameObject parentObj = new GameObject("Parent");
+			GameObject obj = new GameObject("Child", parentObj);
+			Transform parentTransform = parentObj.AddComponent<Transform>();
+			Transform transform = obj.AddComponent<Transform>();
+
+			// Since velocity values are only updated after the frame ends, we need
+			// a full scene setup to simulate an update cycle
+			using (Scene testScene = new Scene())
+			{
+				// Setup and enter the scene
+				testScene.AddObject(parentObj);
+				Scene.SwitchTo(testScene, true);
+				DualityApp.Update(true);
+
+				// Identity parent and a moving child
+				parentTransform.Pos = Vector3.Zero;
+				parentTransform.Angle = 0.0f;
+				parentTransform.Scale = 1.0f;
+				transform.Pos = Vector3.Zero;
+				transform.Angle = 0.0f;
+				transform.Scale = 1.0f;
+
+				transform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.TurnBy(MathF.DegToRad(90.0f));
+				DualityApp.Update(true);
+
+				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.Vel, "Absolute child velocity");
+				AssertEqual(MathF.DegToRad(90.0f), transform.AngleVel, "Absolute child angle velocity");
+
+				// Transformed parent and a moving child
+				parentTransform.Pos = new Vector3(1.0f, 2.0f, 3.0f);
+				parentTransform.Angle = MathF.DegToRad(90.0f);
+				parentTransform.Scale = 2.0f;
+				transform.Pos = Vector3.Zero;
+				transform.Angle = 0.0f;
+				transform.Scale = 1.0f;
+
+				transform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.TurnBy(MathF.DegToRad(90.0f));
+				DualityApp.Update(true);
+
+				AssertEqual(new Vector3(0.0f, 2.0f, 0.0f), transform.Vel, "Absolute child velocity");
+				AssertEqual(MathF.DegToRad(90.0f), transform.AngleVel, "Absolute child angle velocity");
+
+				// Moving parent and a transformed child
+				parentTransform.Pos = Vector3.Zero;
+				parentTransform.Angle = 0.0f;
+				parentTransform.Scale = 1.0f;
+				transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
+				transform.Angle = 0.0f;
+				transform.Scale = 1.0f;
+
+				parentTransform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
+				DualityApp.Update(true);
+
+				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), transform.Vel, "Absolute child velocity");
+
+				// Moving parent and a transformed, moving child
+				parentTransform.Pos = Vector3.Zero;
+				parentTransform.Angle = 0.0f;
+				parentTransform.Scale = 1.0f;
+				transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
+				transform.Angle = 0.0f;
+				transform.Scale = 1.0f;
+
+				transform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
+				transform.TurnBy(MathF.DegToRad(90.0f));
+				parentTransform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
+				DualityApp.Update(true);
+
+				AssertEqual(new Vector3(2.0f, 0.0f, 0.0f), transform.Vel, "Absolute child velocity");
+				AssertEqual(MathF.DegToRad(90.0f), transform.AngleVel, "Absolute child angle velocity");
 			}
 		}
 
