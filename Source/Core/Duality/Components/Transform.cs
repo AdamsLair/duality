@@ -18,7 +18,7 @@ namespace Duality.Components
 		/// Flags that are used to specify, whether certain Properties have been changed.
 		/// </summary>
 		[Flags]
-		public enum DirtyFlags
+		public enum ChangeFlags
 		{
 			None  = 0x00,
 
@@ -49,11 +49,11 @@ namespace Duality.Components
 		// Cached values, non-serialized values
 		[DontSerialize] private Vector2    rotationDirAbs  = new Vector2(0.0f, -1.0f);
 		// Temporary per-frame values
-		[DontSerialize] private DirtyFlags changes         = DirtyFlags.None;
-		[DontSerialize] private Vector3    tempVel         = Vector3.Zero;
-		[DontSerialize] private Vector3    tempVelAbs      = Vector3.Zero;
-		[DontSerialize] private float      tempAngleVel    = 0.0f;
-		[DontSerialize] private float      tempAngleVelAbs = 0.0f;
+		[DontSerialize] private ChangeFlags changes         = ChangeFlags.None;
+		[DontSerialize] private Vector3     tempVel         = Vector3.Zero;
+		[DontSerialize] private Vector3     tempVelAbs      = Vector3.Zero;
+		[DontSerialize] private float       tempAngleVel    = 0.0f;
+		[DontSerialize] private float       tempAngleVelAbs = 0.0f;
 
 		[DontSerialize] 
 		private EventHandler<TransformChangedEventArgs> eventTransformChanged = null;
@@ -74,7 +74,7 @@ namespace Duality.Components
 			{ 
 				// Update position
 				this.pos = value; 
-				this.changes |= DirtyFlags.Pos; 
+				this.changes |= ChangeFlags.Pos; 
 				this.UpdateAbs();
 			}
 		}
@@ -95,7 +95,7 @@ namespace Duality.Components
 			{ 
 				// Update angle
 				this.angle = MathF.NormalizeAngle(value);
-				this.changes |= DirtyFlags.Angle; 
+				this.changes |= ChangeFlags.Angle; 
 				this.UpdateAbs();
 			}
 		}
@@ -115,7 +115,7 @@ namespace Duality.Components
 			set
 			{
 				this.scale = MathF.Max(value, MinScale);
-				this.changes |= DirtyFlags.Scale; 
+				this.changes |= ChangeFlags.Scale; 
 				this.UpdateAbs();
 			}
 		}
@@ -185,7 +185,7 @@ namespace Duality.Components
 					this.pos = this.posAbs;
 				}
 
-				this.changes |= DirtyFlags.Pos;
+				this.changes |= ChangeFlags.Pos;
 				this.UpdateAbsChild();
 			}
 		}
@@ -210,7 +210,7 @@ namespace Duality.Components
 				if (this.parentTransform != null)
 					this.angle = MathF.NormalizeAngle(this.angleAbs - this.parentTransform.angleAbs);
 
-				this.changes |= DirtyFlags.Angle;
+				this.changes |= ChangeFlags.Angle;
 				this.UpdateRotationDirAbs();
 				this.UpdateAbsChild();
 			}
@@ -241,7 +241,7 @@ namespace Duality.Components
 					this.scale = value;
 				}
 
-				this.changes |= DirtyFlags.Scale;
+				this.changes |= ChangeFlags.Scale;
 				this.UpdateAbsChild();
 			}
 		}
@@ -428,7 +428,7 @@ namespace Duality.Components
 			}
 
 			this.pos += value; 
-			this.changes |= DirtyFlags.Pos; 
+			this.changes |= ChangeFlags.Pos; 
 			this.UpdateAbs(true);
 		}
 		/// <summary>
@@ -471,7 +471,7 @@ namespace Duality.Components
 				this.tempVel = this.tempVelAbs;
 			}
 
-			this.changes |= DirtyFlags.Pos;
+			this.changes |= ChangeFlags.Pos;
 			this.UpdateAbsChild(true);
 		}
 		/// <summary>
@@ -530,7 +530,7 @@ namespace Duality.Components
 			}
 
 			this.angle = MathF.NormalizeAngle(this.angle + value);
-			this.changes |= DirtyFlags.Angle; 
+			this.changes |= ChangeFlags.Angle; 
 			this.UpdateAbs(true);
 		}
 		/// <summary>
@@ -564,7 +564,7 @@ namespace Duality.Components
 			this.angleAbs = angle;
 			this.scaleAbs = scale;
 
-			this.changes |= DirtyFlags.All;
+			this.changes |= ChangeFlags.All;
 			this.UpdateRel();
 			this.UpdateAbsChild();
 		}
@@ -591,7 +591,7 @@ namespace Duality.Components
 			this.angle = angle;
 			this.scale = scale;
 
-			this.changes |= DirtyFlags.All;
+			this.changes |= ChangeFlags.All;
 			this.UpdateAbs();
 		}
 		/// <summary>
@@ -610,14 +610,14 @@ namespace Duality.Components
 		/// <param name="sender"></param>
 		public void CommitChanges(Component sender = null)
 		{
-			if (this.changes == DirtyFlags.None) return;
+			if (this.changes == ChangeFlags.None) return;
 			if (this.eventTransformChanged != null)
 			{
 				this.eventTransformChanged(
 					sender ?? this, 
 					new TransformChangedEventArgs(this, this.changes));
 			}
-			this.changes = DirtyFlags.None;
+			this.changes = ChangeFlags.None;
 		}
 
 		void ICmpUpdatable.OnUpdate()
@@ -822,8 +822,8 @@ namespace Duality.Components
 					if (!t.ignoreParent)
 					{
 						t.changes |= this.changes;
-						if ((this.changes & DirtyFlags.Scale) != DirtyFlags.None || (this.changes & DirtyFlags.Angle) != DirtyFlags.None)
-							t.changes |= DirtyFlags.Pos;
+						if ((this.changes & ChangeFlags.Scale) != ChangeFlags.None || (this.changes & ChangeFlags.Angle) != ChangeFlags.None)
+							t.changes |= ChangeFlags.Pos;
 
 						t.UpdateAbs(updateTempVel);
 					}

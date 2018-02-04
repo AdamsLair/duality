@@ -1164,15 +1164,15 @@ namespace Duality.Components.Physics
 
 			// Apply transform changes to the physics body
 			Transform t = e.Component as Transform;
-			if ((e.Changes & Transform.DirtyFlags.Pos) != Transform.DirtyFlags.None)
+			if ((e.Changes & Transform.ChangeFlags.Pos) != Transform.ChangeFlags.None)
 			{
 				this.body.Position = PhysicsUnit.LengthToPhysical * t.Pos.Xy;
 			}
-			if ((e.Changes & Transform.DirtyFlags.Angle) != Transform.DirtyFlags.None)
+			if ((e.Changes & Transform.ChangeFlags.Angle) != Transform.ChangeFlags.None)
 			{
 				this.body.Rotation = t.Angle;
 			}
-			if ((e.Changes & Transform.DirtyFlags.Scale) != Transform.DirtyFlags.None)
+			if ((e.Changes & Transform.ChangeFlags.Scale) != Transform.ChangeFlags.None)
 			{
 				bool updateShape = false;
 				float scale = t.Scale;
@@ -1205,7 +1205,7 @@ namespace Duality.Components.Physics
 			}
 
 			// Make sure we're simulating this body, if something has changed
-			if (e.Changes != Transform.DirtyFlags.None)
+			if (e.Changes != Transform.ChangeFlags.None)
 			{
 				this.body.Awake = true;
 			}

@@ -31,8 +31,8 @@ namespace Duality.Tests.Components
 			Transform leafTransform = leafObj.AddComponent<Transform>();
 
 			// Subscribe to change events in root and leaf
-			Transform.DirtyFlags rootChanges = Transform.DirtyFlags.None;
-			Transform.DirtyFlags leafChanges = Transform.DirtyFlags.None;
+			Transform.ChangeFlags rootChanges = Transform.ChangeFlags.None;
+			Transform.ChangeFlags leafChanges = Transform.ChangeFlags.None;
 			rootTransform.EventTransformChanged += (s, e) => { rootChanges |= e.Changes; };
 			leafTransform.EventTransformChanged += (s, e) => { leafChanges |= e.Changes; };
 
@@ -42,10 +42,10 @@ namespace Duality.Tests.Components
 			rootTransform.CommitChanges();
 
 			// Expect a change event only on the leaf object
-			Assert.AreEqual(Transform.DirtyFlags.None, rootChanges, "Root changes after leaf movement");
-			Assert.AreEqual(Transform.DirtyFlags.Pos, leafChanges, "Leaf changes after leaf movement");
-			rootChanges = Transform.DirtyFlags.None;
-			leafChanges = Transform.DirtyFlags.None;
+			Assert.AreEqual(Transform.ChangeFlags.None, rootChanges, "Root changes after leaf movement");
+			Assert.AreEqual(Transform.ChangeFlags.Pos, leafChanges, "Leaf changes after leaf movement");
+			rootChanges = Transform.ChangeFlags.None;
+			leafChanges = Transform.ChangeFlags.None;
 
 			// Change the root and make sure all changes are committed
 			rootTransform.MoveBy(new Vector2(1.0f, 0.0f));
@@ -53,10 +53,10 @@ namespace Duality.Tests.Components
 			rootTransform.CommitChanges();
 
 			// Expect a change event on both root and leaf objects
-			Assert.AreEqual(Transform.DirtyFlags.Pos, rootChanges, "Root changes after root movement");
-			Assert.AreEqual(Transform.DirtyFlags.Pos, leafChanges, "Leaf changes after root movement");
-			rootChanges = Transform.DirtyFlags.None;
-			leafChanges = Transform.DirtyFlags.None;
+			Assert.AreEqual(Transform.ChangeFlags.Pos, rootChanges, "Root changes after root movement");
+			Assert.AreEqual(Transform.ChangeFlags.Pos, leafChanges, "Leaf changes after root movement");
+			rootChanges = Transform.ChangeFlags.None;
+			leafChanges = Transform.ChangeFlags.None;
 		}
 
 		[Test] public void GetLocalPoint()

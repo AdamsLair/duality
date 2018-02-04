@@ -6,17 +6,17 @@ namespace Duality
 {
 	public class TransformChangedEventArgs : ComponentEventArgs
 	{
-		private	Transform.DirtyFlags dirtyFlags;
+		private	Transform.ChangeFlags changes;
 		/// <summary>
 		/// [GET] The changes that have been made since the last update.
 		/// </summary>
-		public Transform.DirtyFlags Changes
+		public Transform.ChangeFlags Changes
 		{
-			get { return this.dirtyFlags; }
+			get { return this.changes; }
 		}
-		public TransformChangedEventArgs(Component transform, Transform.DirtyFlags dirtyFlags) : base(transform)
+		public TransformChangedEventArgs(Component transform, Transform.ChangeFlags dirtyFlags) : base(transform)
 		{
-			this.dirtyFlags = dirtyFlags;
+			this.changes = dirtyFlags;
 		}
 	}
 }
