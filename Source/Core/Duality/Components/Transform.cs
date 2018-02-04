@@ -181,6 +181,8 @@ namespace Duality.Components
 
 				if (this.parentTransform != null)
 					this.angle = MathF.NormalizeAngle(this.angleAbs - this.parentTransform.angleAbs);
+				else
+					this.angle = this.angleAbs;
 
 				this.UpdateRotationDirAbs();
 				this.UpdateAbsChild();
