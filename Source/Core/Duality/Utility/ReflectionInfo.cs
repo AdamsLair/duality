@@ -33,7 +33,6 @@ namespace Duality
 		public static readonly PropertyInfo	Property_Transform_Scale;
 		public static readonly PropertyInfo	Property_Transform_Vel;
 		public static readonly PropertyInfo	Property_Transform_AngleVel;
-		public static readonly PropertyInfo	Property_Transform_DeriveAngle;
 		public static readonly PropertyInfo	Property_Transform_IgnoreParent;
 
 		public static readonly PropertyInfo	Property_Camera_ClearColor;
@@ -83,7 +82,6 @@ namespace Duality
 			Property_Transform_Scale			= GetProperty(transform, "Scale");
 			Property_Transform_Vel				= GetProperty(transform, "Vel");
 			Property_Transform_AngleVel			= GetProperty(transform, "AngleVel");
-			Property_Transform_DeriveAngle		= GetProperty(transform, "DeriveAngle");
 			Property_Transform_IgnoreParent		= GetProperty(transform, "IgnoreParent");
 			
 			Type camera = typeof(Camera);
