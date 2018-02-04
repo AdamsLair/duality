@@ -22,7 +22,6 @@ namespace Duality.Components
 		private bool      ignoreParent    = false;
 
 		// Cached values, recalc on change
-		private Transform parentTransform = null;
 		private Vector3   posAbs          = Vector3.Zero;
 		private float     angleAbs        = 0.0f;
 		private float     scaleAbs        = 1.0f;
@@ -129,12 +128,13 @@ namespace Duality.Components
 				this.posAbs = value;
 				this.lastPosAbs = value;
 
-				if (this.parentTransform != null)
+				Transform parent = this.ParentTransform;
+				if (parent != null)
 				{
 					this.pos = this.posAbs;
-					Vector3.Subtract(ref this.pos, ref this.parentTransform.posAbs, out this.pos);
-					Vector3.Divide(ref this.pos, this.parentTransform.scaleAbs, out this.pos);
-					MathF.TransformCoord(ref this.pos.X, ref this.pos.Y, -this.parentTransform.angleAbs);
+					Vector3.Subtract(ref this.pos, ref parent.posAbs, out this.pos);
+					Vector3.Divide(ref this.pos, parent.scaleAbs, out this.pos);
+					MathF.TransformCoord(ref this.pos.X, ref this.pos.Y, -parent.angleAbs);
 				}
 				else
 				{
@@ -163,8 +163,9 @@ namespace Duality.Components
 				this.angleAbs = MathF.NormalizeAngle(value);
 				this.lastAngleAbs = this.angleAbs;
 
-				if (this.parentTransform != null)
-					this.angle = MathF.NormalizeAngle(this.angleAbs - this.parentTransform.angleAbs);
+				Transform parent = this.ParentTransform;
+				if (parent != null)
+					this.angle = MathF.NormalizeAngle(this.angleAbs - parent.angleAbs);
 				else
 					this.angle = this.angleAbs;
 
@@ -189,14 +190,11 @@ namespace Duality.Components
 			{ 
 				this.scaleAbs = MathF.Max(value, MinScale);
 
-				if (this.parentTransform != null)
-				{
-					this.scale = this.scaleAbs / this.parentTransform.scaleAbs;
-				}
+				Transform parent = this.ParentTransform;
+				if (parent != null)
+					this.scale = this.scaleAbs / parent.scaleAbs;
 				else
-				{
 					this.scale = value;
-				}
 
 				this.UpdateAbsChild();
 			}
@@ -226,6 +224,19 @@ namespace Duality.Components
 					-this.rotationDirAbs.Y,
 					this.rotationDirAbs.X,
 					0.0f);
+			}
+		}
+
+		private Transform ParentTransform
+		{
+			get
+			{
+				if (this.gameobj == null) return null;
+
+				GameObject parent = this.gameobj.Parent;
+				if (parent == null) return null;
+
+				return parent.Transform;
 			}
 		}
 
@@ -396,12 +407,13 @@ namespace Duality.Components
 		{
 			this.posAbs += value;
 
-			if (this.parentTransform != null)
+			Transform parent = this.ParentTransform;
+			if (parent != null)
 			{
 				this.pos = this.posAbs;
-				Vector3.Subtract(ref this.pos, ref this.parentTransform.posAbs, out this.pos);
-				Vector3.Divide(ref this.pos, this.parentTransform.scaleAbs, out this.pos);
-				MathF.TransformCoord(ref this.pos.X, ref this.pos.Y, -this.parentTransform.angleAbs);
+				Vector3.Subtract(ref this.pos, ref parent.posAbs, out this.pos);
+				Vector3.Divide(ref this.pos, parent.scaleAbs, out this.pos);
+				MathF.TransformCoord(ref this.pos.X, ref this.pos.Y, -parent.angleAbs);
 			}
 			else
 			{
@@ -562,14 +574,13 @@ namespace Duality.Components
 			if (context == InitContext.AddToGameObject ||
 				context == InitContext.Loaded)
 			{
-				this.parentTransform = null;
 				if (this.gameobj != null)
 				{
 					this.gameobj.EventParentChanged += this.gameobj_EventParentChanged;
 					if (this.gameobj.Parent != null)
 					{
-						this.parentTransform = this.gameobj.Parent.Transform;
-						if (this.parentTransform == null)
+						Transform parentTransform = this.gameobj.Parent.Transform;
+						if (parentTransform == null)
 							this.gameobj.Parent.EventComponentAdded += this.Parent_EventComponentAdded;
 						else
 							this.gameobj.Parent.EventComponentRemoving += this.Parent_EventComponentRemoving;
@@ -595,37 +606,15 @@ namespace Duality.Components
 					this.gameobj.EventParentChanged -= this.gameobj_EventParentChanged;
 					if (this.gameobj.Parent != null)
 					{
-						if (this.parentTransform == null)
-							this.gameobj.Parent.EventComponentAdded -= this.Parent_EventComponentAdded;
-						else
-							this.gameobj.Parent.EventComponentRemoving -= this.Parent_EventComponentRemoving;
+						this.gameobj.Parent.EventComponentAdded -= this.Parent_EventComponentAdded;
+						this.gameobj.Parent.EventComponentRemoving -= this.Parent_EventComponentRemoving;
 					}
 				}
-				this.parentTransform = null;
 				this.UpdateRel();
 			}
 		}
 		private void gameobj_EventParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{
-			if (e.OldParent != null)
-			{
-				if (this.parentTransform == null)
-					e.OldParent.EventComponentAdded -= this.Parent_EventComponentAdded;
-				else
-					e.OldParent.EventComponentRemoving -= this.Parent_EventComponentRemoving;
-			}
-
-			if (e.NewParent != null)
-			{
-				this.parentTransform = e.NewParent.Transform;
-				if (this.parentTransform == null)
-					e.NewParent.EventComponentAdded += this.Parent_EventComponentAdded;
-				else
-					e.NewParent.EventComponentRemoving += this.Parent_EventComponentRemoving;
-			}
-			else
-				this.parentTransform = null;
-
 			this.UpdateRel();
 		}
 		private void Parent_EventComponentAdded(object sender, ComponentEventArgs e)
@@ -635,22 +624,17 @@ namespace Duality.Components
 			{
 				cmpTransform.GameObj.EventComponentAdded -= this.Parent_EventComponentAdded;
 				cmpTransform.GameObj.EventComponentRemoving += this.Parent_EventComponentRemoving;
-				this.parentTransform = cmpTransform;
 				this.UpdateRel();
 			}
 		}
 		private void Parent_EventComponentRemoving(object sender, ComponentEventArgs e)
 		{
-			if (this.parentTransform != null)
+			Transform cmpTransform = e.Component as Transform;
+			if (cmpTransform != null)
 			{
-				Transform cmpTransform = e.Component as Transform;
-				if (cmpTransform == this.parentTransform)
-				{
-					cmpTransform.GameObj.EventComponentAdded += this.Parent_EventComponentAdded;
-					cmpTransform.GameObj.EventComponentRemoving -= this.Parent_EventComponentRemoving;
-					this.parentTransform = null;
-					this.UpdateRel();
-				}
+				cmpTransform.GameObj.EventComponentAdded += this.Parent_EventComponentAdded;
+				cmpTransform.GameObj.EventComponentRemoving -= this.Parent_EventComponentRemoving;
+				this.UpdateRel();
 			}
 		}
 
@@ -674,7 +658,8 @@ namespace Duality.Components
 		{
 			this.CheckValidTransform();
 
-			if (this.parentTransform == null)
+			Transform parent = this.ParentTransform;
+			if (parent == null)
 			{
 				this.angleAbs = this.angle;
 				this.posAbs = this.pos;
@@ -682,9 +667,9 @@ namespace Duality.Components
 			}
 			else
 			{
-				this.angleAbs = MathF.NormalizeAngle(this.angle + this.parentTransform.angleAbs);
-				this.scaleAbs = this.scale * this.parentTransform.scaleAbs;
-				this.posAbs = this.parentTransform.GetWorldPoint(this.pos);
+				this.angleAbs = MathF.NormalizeAngle(this.angle + parent.angleAbs);
+				this.scaleAbs = this.scale * parent.scaleAbs;
+				this.posAbs = parent.GetWorldPoint(this.pos);
 			}
 
 			// Update cached values
@@ -718,7 +703,8 @@ namespace Duality.Components
 		{
 			this.CheckValidTransform();
 
-			if (this.parentTransform == null)
+			Transform parent = this.ParentTransform;
+			if (parent == null)
 			{
 				this.angle = this.angleAbs;
 				this.pos = this.posAbs;
@@ -726,28 +712,21 @@ namespace Duality.Components
 			}
 			else
 			{
-				this.angle = MathF.NormalizeAngle(this.angleAbs - this.parentTransform.angleAbs);
-				this.scale = this.scaleAbs / this.parentTransform.scaleAbs;
+				this.angle = MathF.NormalizeAngle(this.angleAbs - parent.angleAbs);
+				this.scale = this.scaleAbs / parent.scaleAbs;
 				
 				Vector2 parentAngleAbsDotX;
 				Vector2 parentAngleAbsDotY;
-				MathF.GetTransformDotVec(-this.parentTransform.angleAbs, out parentAngleAbsDotX, out parentAngleAbsDotY);
+				MathF.GetTransformDotVec(-parent.angleAbs, out parentAngleAbsDotX, out parentAngleAbsDotY);
 
-				Vector3.Subtract(ref this.posAbs, ref this.parentTransform.posAbs, out this.pos);
+				Vector3.Subtract(ref this.posAbs, ref parent.posAbs, out this.pos);
 				MathF.TransformDotVec(ref this.pos, ref parentAngleAbsDotX, ref parentAngleAbsDotY);
-				Vector3.Divide(ref this.pos, this.parentTransform.scaleAbs, out this.pos);
+				Vector3.Divide(ref this.pos, parent.scaleAbs, out this.pos);
 			}
 
 			this.CheckValidTransform();
 		}
-
-		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
-		{
-			base.OnSetupCloneTargets(targetObj, setup);
-			Transform target = targetObj as Transform;
-
-			setup.HandleObject(this.parentTransform, target.parentTransform, CloneBehavior.WeakReference);
-		}
+		
 		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
 		{
 			base.OnCopyDataTo(targetObj, operation);
@@ -769,14 +748,7 @@ namespace Duality.Components
 
 			target.velAbs			= this.velAbs;
 			target.angleVelAbs		= this.angleVelAbs;
-
-			// Initialize parentTransform, because it's required for UpdateAbs but is null until OnLoaded, which will be called after applying prefabs.
-			if (target.gameobj != null && target.gameobj.Parent != null)
-				target.parentTransform = target.gameobj.Parent.Transform;
-
-			// Handle parentTransform manually to prevent null-overwrites
-			operation.HandleObject(this.parentTransform, ref target.parentTransform, true);
-
+			
 			// Update absolute transformation data, because the target is relative to a different parent.
 			target.UpdateAbs();
 		}
