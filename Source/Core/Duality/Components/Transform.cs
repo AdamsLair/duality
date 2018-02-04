@@ -14,21 +14,6 @@ namespace Duality.Components
 	[EditorHintImage(CoreResNames.ImageTransform)]
 	public sealed class Transform : Component, ICmpUpdatable, ICmpEditorUpdatable, ICmpInitializable
 	{
-		/// <summary>
-		/// Flags that are used to specify, whether certain Properties have been changed.
-		/// </summary>
-		[Flags]
-		public enum ChangeFlags
-		{
-			None  = 0x00,
-
-			Pos   = 0x01,
-			Angle = 0x04,
-			Scale = 0x10,
-
-			All   = Pos | Angle | Scale
-		}
-
 		private const float MinScale = 0.0000001f;
 
 		private Vector3   pos             = Vector3.Zero;
@@ -47,21 +32,12 @@ namespace Duality.Components
 		private float     angleVel        = 0.0f;
 		private float     angleVelAbs     = 0.0f;
 		// Cached values, non-serialized values
-		[DontSerialize] private Vector2    rotationDirAbs  = new Vector2(0.0f, -1.0f);
+		[DontSerialize] private Vector2 rotationDirAbs  = new Vector2(0.0f, -1.0f);
 		// Temporary per-frame values
-		[DontSerialize] private ChangeFlags changes         = ChangeFlags.None;
-		[DontSerialize] private Vector3     tempVel         = Vector3.Zero;
-		[DontSerialize] private Vector3     tempVelAbs      = Vector3.Zero;
-		[DontSerialize] private float       tempAngleVel    = 0.0f;
-		[DontSerialize] private float       tempAngleVelAbs = 0.0f;
-
-		[DontSerialize] 
-		private EventHandler<TransformChangedEventArgs> eventTransformChanged = null;
-		public event EventHandler<TransformChangedEventArgs> EventTransformChanged
-		{
-			add { this.eventTransformChanged += value; }
-			remove { this.eventTransformChanged -= value; }
-		}
+		[DontSerialize] private Vector3 tempVel         = Vector3.Zero;
+		[DontSerialize] private Vector3 tempVelAbs      = Vector3.Zero;
+		[DontSerialize] private float   tempAngleVel    = 0.0f;
+		[DontSerialize] private float   tempAngleVelAbs = 0.0f;
 
 
 		/// <summary>
@@ -74,7 +50,6 @@ namespace Duality.Components
 			{ 
 				// Update position
 				this.pos = value; 
-				this.changes |= ChangeFlags.Pos; 
 				this.UpdateAbs();
 			}
 		}
@@ -95,7 +70,6 @@ namespace Duality.Components
 			{ 
 				// Update angle
 				this.angle = MathF.NormalizeAngle(value);
-				this.changes |= ChangeFlags.Angle; 
 				this.UpdateAbs();
 			}
 		}
@@ -115,7 +89,6 @@ namespace Duality.Components
 			set
 			{
 				this.scale = MathF.Max(value, MinScale);
-				this.changes |= ChangeFlags.Scale; 
 				this.UpdateAbs();
 			}
 		}
@@ -185,7 +158,6 @@ namespace Duality.Components
 					this.pos = this.posAbs;
 				}
 
-				this.changes |= ChangeFlags.Pos;
 				this.UpdateAbsChild();
 			}
 		}
@@ -210,7 +182,6 @@ namespace Duality.Components
 				if (this.parentTransform != null)
 					this.angle = MathF.NormalizeAngle(this.angleAbs - this.parentTransform.angleAbs);
 
-				this.changes |= ChangeFlags.Angle;
 				this.UpdateRotationDirAbs();
 				this.UpdateAbsChild();
 			}
@@ -241,7 +212,6 @@ namespace Duality.Components
 					this.scale = value;
 				}
 
-				this.changes |= ChangeFlags.Scale;
 				this.UpdateAbsChild();
 			}
 		}
@@ -428,7 +398,6 @@ namespace Duality.Components
 			}
 
 			this.pos += value; 
-			this.changes |= ChangeFlags.Pos; 
 			this.UpdateAbs(true);
 		}
 		/// <summary>
@@ -471,7 +440,6 @@ namespace Duality.Components
 				this.tempVel = this.tempVelAbs;
 			}
 
-			this.changes |= ChangeFlags.Pos;
 			this.UpdateAbsChild(true);
 		}
 		/// <summary>
@@ -530,7 +498,6 @@ namespace Duality.Components
 			}
 
 			this.angle = MathF.NormalizeAngle(this.angle + value);
-			this.changes |= ChangeFlags.Angle; 
 			this.UpdateAbs(true);
 		}
 		/// <summary>
@@ -564,7 +531,6 @@ namespace Duality.Components
 			this.angleAbs = angle;
 			this.scaleAbs = scale;
 
-			this.changes |= ChangeFlags.All;
 			this.UpdateRel();
 			this.UpdateAbsChild();
 		}
@@ -591,7 +557,6 @@ namespace Duality.Components
 			this.angle = angle;
 			this.scale = scale;
 
-			this.changes |= ChangeFlags.All;
 			this.UpdateAbs();
 		}
 		/// <summary>
@@ -604,22 +569,6 @@ namespace Duality.Components
 			this.SetRelativeTransform(other.RelativePos, other.RelativeScale, other.RelativeAngle);
 		}
 		
-		/// <summary>
-		/// Checks whether transform values have been changed, clears the changelist and fires the appropriate events
-		/// </summary>
-		/// <param name="sender"></param>
-		public void CommitChanges(Component sender = null)
-		{
-			if (this.changes == ChangeFlags.None) return;
-			if (this.eventTransformChanged != null)
-			{
-				this.eventTransformChanged(
-					sender ?? this, 
-					new TransformChangedEventArgs(this, this.changes));
-			}
-			this.changes = ChangeFlags.None;
-		}
-
 		void ICmpUpdatable.OnUpdate()
 		{
 			this.CheckValidTransform();
@@ -638,9 +587,6 @@ namespace Duality.Components
 				this.CheckValidTransform();
 			}
 
-			// Clear change flags
-			this.CommitChanges();
-
 			this.CheckValidTransform();
 		}
 		void ICmpEditorUpdatable.OnUpdate()
@@ -651,9 +597,6 @@ namespace Duality.Components
 				this.UpdateRel();
 			else
 				this.UpdateAbs();
-
-			// Clear change flags
-			this.CommitChanges();
 
 			this.CheckValidTransform();
 		}
@@ -820,17 +763,9 @@ namespace Duality.Components
 					Transform t = obj.Transform;
 					if (t == null) continue;
 					if (!t.ignoreParent)
-					{
-						t.changes |= this.changes;
-						if ((this.changes & ChangeFlags.Scale) != ChangeFlags.None || (this.changes & ChangeFlags.Angle) != ChangeFlags.None)
-							t.changes |= ChangeFlags.Pos;
-
 						t.UpdateAbs(updateTempVel);
-					}
 					else
-					{
 						t.UpdateRel(updateTempVel);
-					}
 				}
 			}
 

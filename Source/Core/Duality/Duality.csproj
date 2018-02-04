@@ -224,7 +224,6 @@
     <Compile Include="Utility\EventArgs\DualityPluginEventArgs.cs" />
     <Compile Include="Utility\EventArgs\ComponentEventArgs.cs" />
     <Compile Include="Utility\EventArgs\CollisionEventArgs.cs" />
-    <Compile Include="Utility\EventArgs\TransformChangedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\ResourceResolveEventArgs.cs" />
     <Compile Include="Utility\EventArgs\ResourceSaveEventArgs.cs" />
     <Compile Include="Utility\EventArgs\ResourceEventArgs.cs" />
