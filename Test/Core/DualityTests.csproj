@@ -81,6 +81,7 @@
     <Compile Include="Components\ExecutionOrderTest\EventOrderLog.cs" />
     <Compile Include="Components\ExecutionOrderTest\EventType.cs" />
     <Compile Include="Components\ExecutionOrderTest\TestComponent.cs" />
+    <Compile Include="Components\VelocityTrackerTest.cs" />
     <Compile Include="Components\TransformTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
     <Compile Include="Drawing\VertexBatchStoreTest.cs" />

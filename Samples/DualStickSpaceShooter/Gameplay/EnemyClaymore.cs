@@ -300,7 +300,7 @@ namespace DualStickSpaceShooter
 					GameObject nearestObj = this.GetNearestPlayerObj(out nearestDist);
 					if (nearestObj != null && this.HasLineOfSight(nearestObj, false))
 					{
-						if (behavior.HasFlag(BehaviorFlags.Chase))
+						if (this.behavior.HasFlag(BehaviorFlags.Chase))
 						{
 							Transform nearestObjTransform = nearestObj.Transform;
 							Vector2 targetDiff = nearestObjTransform.Pos.Xy - transform.Pos.Xy;
@@ -446,7 +446,7 @@ namespace DualStickSpaceShooter
 				// Start the loop when requested
 				if (targetVolume > 0.0f && this.moveSoundLoop == null)
 				{
-					this.moveSoundLoop = DualityApp.Sound.PlaySound3D(blueprint.MoveSound, this.GameObj);
+					this.moveSoundLoop = DualityApp.Sound.PlaySound3D(blueprint.MoveSound, this.GameObj, true);
 					this.moveSoundLoop.Looped = true;
 				}
 
@@ -475,7 +475,7 @@ namespace DualStickSpaceShooter
 				// Start the loop when requested
 				if (targetVolume > 0.0f && this.dangerSoundLoop == null)
 				{
-					this.dangerSoundLoop = DualityApp.Sound.PlaySound3D(blueprint.AttackSound, this.GameObj);
+					this.dangerSoundLoop = DualityApp.Sound.PlaySound3D(blueprint.AttackSound, this.GameObj, true);
 					this.dangerSoundLoop.Looped = true;
 				}
 

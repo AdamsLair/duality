@@ -82,7 +82,7 @@ namespace Steering
 		{
 			float score = 0.0f;
 
-			float deltaVelocityPenality = (sampleVelocity - agent.GameObj.Transform.Vel.Xy).Length / (2.0f * this.MaxSpeed);
+			float deltaVelocityPenality = (sampleVelocity - agent.CurrentVel).Length / (2.0f * this.MaxSpeed);
 			score += this.velocityPreservationFactor * deltaVelocityPenality;
 
 			if (agent.Target != null)

@@ -5,6 +5,7 @@ using System.Threading;
 
 using Duality.Resources;
 using Duality.Backend;
+using Duality.Components;
 
 namespace Duality.Audio
 {
@@ -227,8 +228,11 @@ namespace Duality.Audio
 		}
 
 		
-		internal SoundInstance(ContentRef<Sound> sound, GameObject attachObj)
+		internal SoundInstance(ContentRef<Sound> sound, GameObject attachObj, bool trackVelocity)
 		{
+			if (attachObj != null && trackVelocity)
+				attachObj.AddComponent<VelocityTracker>();
+
 			this.attachedTo = attachObj;
 			this.is3D = true;
 			this.sound = sound;
@@ -432,7 +436,6 @@ namespace Duality.Audio
 
 			// Set up local variables for state calculation
 			Vector3 listenerPos = DualityApp.Sound.ListenerPos;
-			bool attachedToListener = this.attachedTo != null && ((this.attachedTo == DualityApp.Sound.Listener) || this.attachedTo.IsChildOf(DualityApp.Sound.Listener));
 			float optVolFactor = this.GetTypeVolFactor();
 			float priorityTemp = 1000.0f;
 			AudioSourceState nativeState = AudioSourceState.Default;
@@ -448,15 +451,18 @@ namespace Duality.Audio
 			nativeState.Velocity = this.vel;
 			if (this.is3D)
 			{
-				Components.Transform attachTransform = this.attachedTo != null ? this.attachedTo.Transform : null;
+				Transform attachTransform = this.attachedTo != null ? this.attachedTo.Transform : null;
 
 				// Attach to object
-				if (this.attachedTo != null)
+				if (attachTransform != null)
 				{
 					MathF.TransformCoord(ref nativeState.Position.X, ref nativeState.Position.Y, attachTransform.Angle);
 					MathF.TransformCoord(ref nativeState.Velocity.X, ref nativeState.Velocity.Y, attachTransform.Angle);
 					nativeState.Position += attachTransform.Pos;
-					nativeState.Velocity += attachTransform.Vel;
+
+					VelocityTracker attachVelocityTracker = attachTransform.GameObj.GetComponent<VelocityTracker>();
+					if (attachVelocityTracker != null)
+						nativeState.Velocity += attachVelocityTracker.Vel;
 				}
 
 				// Distance check
@@ -528,6 +534,15 @@ namespace Duality.Audio
 			{
 				if (this.is3D)
 				{
+					bool attachedToListener = false;
+					if (this.attachedTo != null)
+					{
+						GameObject listenerObj = DualityApp.Sound.Listener.GameObj;
+						attachedToListener = 
+							(this.attachedTo == listenerObj) ||
+							this.attachedTo.IsChildOf(listenerObj);
+					}
+
 					nativeState.RelativeToListener = attachedToListener;
 					if (attachedToListener)
 						nativeState.Position -= listenerPos;

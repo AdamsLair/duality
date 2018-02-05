@@ -16,10 +16,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	{
 		private bool           showWorldSpace       = false;
 		private PropertyEditor editorPos            = null;
-		private PropertyEditor editorVel            = null;
 		private PropertyEditor editorScale          = null;
 		private PropertyEditor editorAngle          = null;
-		private PropertyEditor editorAngleVel       = null;
 		private PropertyEditor editorShowWorldSpace = null;
 		
 		public override MemberInfo MapEditorToMember(PropertyEditor editor)
@@ -54,16 +52,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.AddPropertyEditor(this.editorPos);
 				this.editorPos.EndUpdate();
 			}
-			this.editorVel = this.ParentGrid.CreateEditor(typeof(Vector3), this);
-			if (this.editorVel != null)
-			{
-				this.editorVel.BeginUpdate();
-				this.editorVel.Getter = this.VelGetter;
-				this.editorVel.PropertyName = "Vel";
-				this.ParentGrid.ConfigureEditor(this.editorVel);
-				this.AddPropertyEditor(this.editorVel);
-				this.editorVel.EndUpdate();
-			}
 			this.editorScale = this.ParentGrid.CreateEditor(typeof(float), this);
 			if (this.editorScale != null)
 			{
@@ -88,16 +76,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					new EditorHintRangeAttribute(float.MinValue, float.MaxValue, 0.0f, 359.999f) });
 				this.AddPropertyEditor(this.editorAngle);
 				this.editorAngle.EndUpdate();
-			}
-			this.editorAngleVel = this.ParentGrid.CreateEditor(typeof(float), this);
-			if (this.editorAngleVel != null)
-			{
-				this.editorAngleVel.BeginUpdate();
-				this.editorAngleVel.Getter = this.AngleVelGetter;
-				this.editorAngleVel.PropertyName = "AngleVel";
-				this.ParentGrid.ConfigureEditor(this.editorAngleVel, new[] { new EditorHintIncrementAttribute(0.1f) });
-				this.AddPropertyEditor(this.editorAngleVel);
-				this.editorAngleVel.EndUpdate();
 			}
 
 			this.AddEditorForMember(ReflectionInfo.Property_Transform_IgnoreParent);
@@ -179,25 +157,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			this.OnPropertySet(ReflectionInfo.Property_Transform_LocalPos, values);
 			this.PerformGetValue();
-		}
-		protected IEnumerable<object> VelGetter()
-		{
-			if (this.showWorldSpace)
-			{
-				return this.GetValue().OfType<Transform>().Select(o => (object)o.Vel);
-			}
-			else
-			{
-				return this.GetValue().OfType<Transform>().Select(o =>
-				{
-					Vector3 localVel;
-					if (o.IgnoreParent || o.GameObj.Parent == null || o.GameObj.Parent.Transform == null)
-						localVel = o.Vel;
-					else
-						localVel = o.GetLocalVector(o.Vel - o.GameObj.Parent.Transform.Vel);
-					return (object)localVel;
-				});
-			}
 		}
 		protected IEnumerable<object> ScaleGetter()
 		{
@@ -312,25 +271,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			this.OnPropertySet(ReflectionInfo.Property_Transform_LocalAngle, values);
 			this.PerformGetValue();
 		}
-		protected IEnumerable<object> AngleVelGetter()
-		{
-			if (this.showWorldSpace)
-			{
-				return this.GetValue().OfType<Transform>().Select(o => (object)MathF.RadToDeg(o.AngleVel));
-			}
-			else
-			{
-				return this.GetValue().OfType<Transform>().Select(o =>
-				{
-					float localAngleVel;
-					if (o.IgnoreParent || o.GameObj.Parent == null || o.GameObj.Parent.Transform == null)
-						localAngleVel = o.AngleVel;
-					else
-						localAngleVel = o.AngleVel - o.GameObj.Parent.Transform.AngleVel;
-					return (object)MathF.RadToDeg(localAngleVel);
-				});
-			}
-		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(System.Drawing.Point localPos, ref bool captured)
 		{
@@ -348,14 +288,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			{
 				if (pickedEditor == this.editorPos)
 					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_Pos);
-				else if (pickedEditor == this.editorVel)
-					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_Vel);
 				else if (pickedEditor == this.editorScale)
 					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_Scale);
 				else if (pickedEditor == this.editorAngle)
 					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_Angle);
-				else if (pickedEditor == this.editorAngleVel)
-					return HelpInfo.FromMember(ReflectionInfo.Property_Transform_AngleVel);
 			}
 			
 			if (pickedEditor == this.editorShowWorldSpace)

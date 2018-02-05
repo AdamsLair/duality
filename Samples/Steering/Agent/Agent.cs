@@ -19,16 +19,19 @@ namespace Steering
 	/// need a high-level pathfinding layer on top of the local avoidance.
 	/// </summary>
 	[RequiredComponent(typeof(Transform))]
+	[RequiredComponent(typeof(VelocityTracker))]
 	[EditorHintCategory(CoreResNames.CategoryAI)]
 	[EditorHintImage(SteeringResNames.ImageAgent)]
 	public class Agent : Component
 	{
-		private IVelocitySampler		sampler			= null;
-		private IAgentCharacteristics	characteristics	= null;
-		private ISteeringTarget			target			= null;
-		private float					radius			= 64.0f;
-		private float					toiHorizon		= 240.0f;
-		[DontSerialize] private Vector2 suggestedVel	= Vector2.Zero;
+		private IVelocitySampler      sampler         = null;
+		private IAgentCharacteristics characteristics = null;
+		private ISteeringTarget       target          = null;
+		private float                 radius          = 64.0f;
+		private float                 toiHorizon      = 240.0f;
+
+		[DontSerialize] private Vector2 suggestedVel  = Vector2.Zero;
+		[DontSerialize] private Vector2 currentVel = Vector2.Zero;
 
 
 		public IVelocitySampler Sampler
@@ -136,6 +139,13 @@ namespace Steering
 		{
 			get { return this.suggestedVel; }
 		}
+		/// <summary>
+		/// [GET] The current <see cref="Agent"/> velocity. Used for calculating steering behavior.
+		/// </summary>
+		public Vector2 CurrentVel
+		{
+			get { return this.currentVel; }
+		}
 
 
 		public Agent()
@@ -146,6 +156,9 @@ namespace Steering
 		internal void Update()
 		{
 			this.AcquireConfigObjects();
+
+			// Update the agents current velocity once a frame
+			this.currentVel = this.GameObj.GetComponent<VelocityTracker>().Vel.Xy;
 
 			Transform transform = this.GameObj.Transform;
 			float scaledRad = this.radius * transform.Scale;
@@ -173,7 +186,7 @@ namespace Steering
 					// calculate helper variables for RVO
 					Vector2 relPos = otherTransform.Pos.Xy - transform.Pos.Xy;
 					// -> calculate side (only sign is of interest) for HRVO
-					Vector2 averageVel = 0.5f * (transform.Vel.Xy + otherTransform.Vel.Xy);
+					Vector2 averageVel = 0.5f * (this.CurrentVel + otherAgent.CurrentVel);
 					float side = Vector2.Dot(relPos.PerpendicularRight, sample - averageVel);
 
 					float selfFactor = 0f;
@@ -182,11 +195,11 @@ namespace Steering
 					{
 						// this is different from original RVO - we use the ratio of the observed velocities to determine
 						// how much responsibility one agent has
-						float selfSpeed = transform.Vel.Xy.Length;
-						float otherSpeed = otherTransform.Vel.Xy.Length;
+						float selfSpeed = this.CurrentVel.Length;
+						float otherSpeed = otherAgent.CurrentVel.Length;
 
 						selfFactor = 0.5f;
-						var selfPlusOtherSpeed = selfSpeed + otherSpeed;
+						float selfPlusOtherSpeed = selfSpeed + otherSpeed;
 						if (selfPlusOtherSpeed > float.Epsilon)
 							selfFactor = otherSpeed / selfPlusOtherSpeed;
 						otherFactor = 1f - selfFactor;
@@ -195,7 +208,7 @@ namespace Steering
 					// check time of impact
 					float curMinToi;
 					float curMaxToi;
-					Vector2 expectedRelVel = sample - (selfFactor * transform.Vel.Xy + otherFactor * otherTransform.Vel.Xy);
+					Vector2 expectedRelVel = sample - (selfFactor * this.CurrentVel + otherFactor * otherAgent.CurrentVel);
 					float otherScaledRad = otherAgent.radius * otherTransform.Scale;
 					if (ToiCircleCircle(relPos, scaledRad + otherScaledRad, expectedRelVel, out curMinToi, out curMaxToi) && 0f < curMaxToi)
 					{
@@ -224,10 +237,10 @@ namespace Steering
 				}
 
 				// ask the characteristics implementation how good this sample is
-				float score = characteristics.CalculateVelocityCost(this, sample, toiPenality);
+				float score = this.characteristics.CalculateVelocityCost(this, sample, toiPenality);
 
 				// update sampler and check if we should stop
-				keepSampling = sampler.SetCurrentCost(score);
+				keepSampling = this.sampler.SetCurrentCost(score);
 
 				// check if this velocity is better then everything else we've seen so far
 				if (score < bestScore)
@@ -238,13 +251,13 @@ namespace Steering
 
 				#region visual logging of all sampled velocities
 #if DEBUG
-				if (DebugVisualizationMode != VisualLoggingMode.None 
-					&& DebugVisualizationMode != VisualLoggingMode.VelocityOnly
-					&& DebugVisualizationMode != VisualLoggingMode.AllVelocities)
+				if (this.DebugVisualizationMode != VisualLoggingMode.None 
+					&& this.DebugVisualizationMode != VisualLoggingMode.VelocityOnly
+					&& this.DebugVisualizationMode != VisualLoggingMode.AllVelocities)
 				{
 					Vector2 debugPos = sample / this.characteristics.MaxSpeed * DebugVelocityRadius;
 					float debugColorFactor = 0.0f;
-					switch (DebugVisualizationMode) 
+					switch (this.DebugVisualizationMode) 
 					{
 						case VisualLoggingMode.Cost:
 							debugColorFactor = score;
@@ -262,44 +275,40 @@ namespace Steering
 
 			this.suggestedVel = bestVelocity;
 
-			#region visual logging of the velocities
-#if DEBUG
-			if (DebugVisualizationMode == VisualLoggingMode.AllVelocities)
+			if (this.DebugVisualizationMode == VisualLoggingMode.AllVelocities)
 			{
-				Vector2 selfDebugVelocity = transform.Vel.Xy / Characteristics.MaxSpeed * DebugVelocityRadius;
-				VisualDebugLog.DrawVector(0f, 0f, selfDebugVelocity.X, selfDebugVelocity.Y).AnchorAt(GameObj).WithColor(ColorRgba.DarkGrey);
+				Vector2 selfDebugVelocity = this.CurrentVel / this.Characteristics.MaxSpeed * DebugVelocityRadius;
+				VisualDebugLog.DrawVector(0f, 0f, selfDebugVelocity.X, selfDebugVelocity.Y).AnchorAt(this.GameObj).WithColor(ColorRgba.DarkGrey);
 
-				foreach (var otherAgent in otherAgents)
+				foreach (Agent otherAgent in otherAgents)
 				{
 					Transform otherTransform = otherAgent.GameObj.Transform;
-					Vector2 debugVelocity = otherTransform.Vel.Xy / otherAgent.Characteristics.MaxSpeed * DebugVelocityRadius;
+					Vector2 debugVelocity = otherAgent.CurrentVel / otherAgent.Characteristics.MaxSpeed * DebugVelocityRadius;
 					VisualDebugLog.DrawVector(0f, 0f, debugVelocity.X, debugVelocity.Y).AnchorAt(otherAgent.GameObj).WithColor(ColorRgba.DarkGrey);
 				}
 			}
-			if (DebugVisualizationMode != VisualLoggingMode.None)
+			if (this.DebugVisualizationMode != VisualLoggingMode.None)
 			{
-				Vector2 curVelocity = transform.Vel.Xy / Characteristics.MaxSpeed * DebugVelocityRadius;
-				VisualDebugLog.DrawVector(0f, 0f, curVelocity.X, curVelocity.Y).AnchorAt(GameObj).WithColor(ColorRgba.DarkGrey);
+				Vector2 curVelocity = this.CurrentVel / this.Characteristics.MaxSpeed * DebugVelocityRadius;
+				VisualDebugLog.DrawVector(0f, 0f, curVelocity.X, curVelocity.Y).AnchorAt(this.GameObj).WithColor(ColorRgba.DarkGrey);
 
-				var debugVelocity = this.suggestedVel / characteristics.MaxSpeed * DebugVelocityRadius;
+				Vector2 debugVelocity = this.suggestedVel / this.characteristics.MaxSpeed * DebugVelocityRadius;
 				VisualDebugLog.DrawVector(0f, 0f, debugVelocity.X, debugVelocity.Y).AnchorAt(this.GameObj);
 			}
-#endif
-			#endregion
 		}
 		private void AcquireConfigObjects()
 		{
-			if (this.sampler == null)			this.sampler = new AdaptiveVelocitySampler();
-			if (this.target == null)			this.target = new DirectionTarget();
-			if (this.characteristics == null)	this.characteristics = new DefaultAgentCharacteristics();
+			if (this.sampler == null)         this.sampler = new AdaptiveVelocitySampler();
+			if (this.target == null)          this.target = new DirectionTarget();
+			if (this.characteristics == null) this.characteristics = new DefaultAgentCharacteristics();
 		}
 		
 		// TODO: move me to a more general place
 		private static float RayRayIntersect(Vector2 start1, Vector2 dir1, Vector2 start2, Vector2 dir2)
 		{
-			var relStart = start2 - start1;
-			var num = dir2.Y * relStart.X - dir2.X * relStart.Y;
-			var den = dir1.X * dir2.Y - dir2.X * dir1.Y;
+			Vector2 relStart = start2 - start1;
+			float num = dir2.Y * relStart.X - dir2.X * relStart.Y;
+			float den = dir1.X * dir2.Y - dir2.X * dir1.Y;
 
 			if (den <= float.Epsilon)
 				return float.NaN;
@@ -336,20 +345,20 @@ namespace Steering
 			* (cx*vx + cy*vy + (- cx^2*vy^2 + 2*cx*cy*vx*vy - cy^2*vx^2 + r^2*vx^2 + r^2*vy^2)^(1/2))/(vx^2 + vy^2)
 			* (cx*vx + cy*vy - (- cx^2*vy^2 + 2*cx*cy*vx*vy - cy^2*vx^2 + r^2*vx^2 + r^2*vy^2)^(1/2))/(vx^2 + vy^2)
 			*/
-			var cx = relPos.X;
-			var cy = relPos.Y;
-			var vx = relVel.X;
-			var vy = relVel.Y;
-			var r = obstacleRadius;
+			float cx = relPos.X;
+			float cy = relPos.Y;
+			float vx = relVel.X;
+			float vy = relVel.Y;
+			float r = obstacleRadius;
 
-			var sqrtTerm = -(cx * cx) * (vy * vy) + 2 * cx * cy * vx * vy - (cy * cy) * (vx * vx) + (r * r) * (vx * vx) + (r * r) * (vy * vy);
+			float sqrtTerm = -(cx * cx) * (vy * vy) + 2 * cx * cy * vx * vy - (cy * cy) * (vx * vx) + (r * r) * (vx * vx) + (r * r) * (vy * vy);
 			if (sqrtTerm < 0f)
 			{
 				minT = maxT = float.NaN;
 				return false;
 			}
 
-			var denom = ((vx * vx) + (vy * vy));
+			float denom = ((vx * vx) + (vy * vy));
 			if (Math.Abs(denom) < float.Epsilon) {
 				if(denom < 0f)
 					minT = maxT = float.NegativeInfinity;
@@ -382,8 +391,8 @@ namespace Steering
 		private VisualLoggingMode debugVisualizationMode;
 		public VisualLoggingMode DebugVisualizationMode
 		{
-			get { return debugVisualizationMode; }
-			set { debugVisualizationMode = value; }
+			get { return this.debugVisualizationMode; }
+			set { this.debugVisualizationMode = value; }
 		}
 
 		private static readonly VisualLog VisualDebugLog = VisualLogs.Get<AgentLog>();

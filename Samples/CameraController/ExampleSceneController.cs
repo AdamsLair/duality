@@ -75,12 +75,6 @@ namespace CameraController
 			}
 		}
 		
-		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
-		{
-			info.Position = Vector3.Zero;
-			info.Radius = float.MaxValue;
-			info.Visibility = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
-		}
 		void ICmpUpdatable.OnUpdate()
 		{
 			// Prepare a list of camera controllers, if we don't already have one
@@ -145,6 +139,12 @@ namespace CameraController
 				}
 			}
 		}
+		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
+		{
+			info.Position = Vector3.Zero;
+			info.Radius = float.MaxValue;
+			info.Visibility = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
+		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
 			Canvas canvas = new Canvas();
@@ -152,6 +152,7 @@ namespace CameraController
 			
 			Vector2 screenSize = device.TargetSize;
 			ICameraController activeController = this.mainCameraObj.GetComponent<ICameraController>();
+			VelocityTracker camTracker = this.mainCameraObj.GetComponent<VelocityTracker>();
 			Transform camTransform = this.mainCameraObj.Transform;
 			Transform targetTransform = this.targetObj.Transform;
 
@@ -172,8 +173,8 @@ namespace CameraController
 			canvas.DrawLine(
 				screenSize.X * 0.5f, 
 				screenSize.Y * 0.5f, 
-				screenSize.X * 0.5f + camTransform.Vel.X / Time.SecondsPerFrame,
-				screenSize.Y * 0.5f + camTransform.Vel.Y / Time.SecondsPerFrame);
+				screenSize.X * 0.5f + camTracker.Vel.X / Time.SecondsPerFrame,
+				screenSize.Y * 0.5f + camTracker.Vel.Y / Time.SecondsPerFrame);
 
 			// Draw some info text
 			if (this.infoText == null)
@@ -198,8 +199,8 @@ namespace CameraController
 				"Camera Distance: {0:F}/n" +
 				"Camera Velocity: {1:F}, {2:F}",
 				camDist,
-				camTransform.Vel.X,
-				camTransform.Vel.Y);
+				camTracker.Vel.X,
+				camTracker.Vel.Y);
 
 			canvas.State.ColorTint = ColorRgba.White;
 			canvas.DrawText(this.stateText, 10, screenSize.Y - 10, 0.0f, null, Alignment.BottomLeft, true);

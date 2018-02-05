@@ -14,6 +14,7 @@ namespace Duality.Components
 	/// Provides functionality to emit sound.
 	/// </summary>
 	[RequiredComponent(typeof(Transform))]
+	[RequiredComponent(typeof(VelocityTracker))]
 	[EditorHintCategory(CoreResNames.CategorySound)]
 	[EditorHintImage(CoreResNames.ImageSoundEmitter)]
 	public sealed class SoundEmitter : Component, ICmpUpdatable, ICmpInitializable
@@ -162,7 +163,7 @@ namespace Duality.Components
 					if (!this.looped && this.hasBeenPlayed) return false;
 
 					// Play the sound
-					this.instance = DualityApp.Sound.PlaySound3D(this.sound, emitter.GameObj);
+					this.instance = DualityApp.Sound.PlaySound3D(this.sound, emitter.GameObj, true);
 					this.instance.Pos = this.offset;
 					this.instance.Looped = this.looped;
 					this.instance.Volume = this.volume;

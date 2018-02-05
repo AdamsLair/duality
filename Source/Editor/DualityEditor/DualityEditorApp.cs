@@ -291,6 +291,7 @@ namespace Duality.Editor
 				{
 					GameObject mainCam = new GameObject("MainCamera");
 					mainCam.AddComponent<Transform>().Pos = new Vector3(0, 0, -DrawDevice.DefaultFocusDist);
+					mainCam.AddComponent<VelocityTracker>();
 					mainCam.AddComponent<Camera>();
 					mainCam.AddComponent<SoundListener>();
 					Scene.Current.AddObject(mainCam);

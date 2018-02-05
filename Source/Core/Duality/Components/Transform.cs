@@ -12,7 +12,7 @@ namespace Duality.Components
 	[ManuallyCloned]
 	[EditorHintCategory(CoreResNames.CategoryNone)]
 	[EditorHintImage(CoreResNames.ImageTransform)]
-	public sealed class Transform : Component, ICmpUpdatable, ICmpEditorUpdatable, ICmpInitializable
+	public sealed class Transform : Component, ICmpInitializable
 	{
 		private const float MinScale = 0.0000001f;
 
@@ -27,10 +27,6 @@ namespace Duality.Components
 		private float     scaleAbs        = 1.0f;
 
 		[DontSerialize] private Vector2 rotationDirAbs = new Vector2(0.0f, -1.0f);
-		[DontSerialize] private Vector3 velAbs         = Vector3.Zero;
-		[DontSerialize] private float   angleVelAbs    = 0.0f;
-		[DontSerialize] private Vector3 lastPosAbs     = Vector3.Zero;
-		[DontSerialize] private float   lastAngleAbs   = 0.0f;
 
 
 		/// <summary>
@@ -44,7 +40,7 @@ namespace Duality.Components
 				// Update position
 				this.pos = value;
 				this.UpdateAbs();
-				this.lastPosAbs = this.posAbs;
+				this.ResetVelocity();
 			}
 		}
 		/// <summary>
@@ -58,7 +54,7 @@ namespace Duality.Components
 				// Update angle
 				this.angle = MathF.NormalizeAngle(value);
 				this.UpdateAbs();
-				this.lastAngleAbs = this.angleAbs;
+				this.ResetAngleVelocity();
 			}
 		}
 		/// <summary>
@@ -128,7 +124,6 @@ namespace Duality.Components
 			{ 
 				// Update position
 				this.posAbs = value;
-				this.lastPosAbs = value;
 
 				Transform parent = this.ParentTransform;
 				if (parent != null)
@@ -144,14 +139,8 @@ namespace Duality.Components
 				}
 
 				this.UpdateAbsChild();
+				this.ResetVelocity();
 			}
-		}
-		/// <summary>
-		/// [GET] The objects velocity in world space.
-		/// </summary>
-		public Vector3 Vel
-		{
-			get { return this.velAbs; }
 		}
 		/// <summary>
 		/// [GET / SET] The objects angle / rotation in world space, in radians.
@@ -163,7 +152,6 @@ namespace Duality.Components
 			{ 
 				// Update angle
 				this.angleAbs = MathF.NormalizeAngle(value);
-				this.lastAngleAbs = this.angleAbs;
 
 				Transform parent = this.ParentTransform;
 				if (parent != null)
@@ -173,14 +161,8 @@ namespace Duality.Components
 
 				this.UpdateRotationDirAbs();
 				this.UpdateAbsChild();
+				this.ResetAngleVelocity();
 			}
-		}
-		/// <summary>
-		/// [GET] The objects angle / rotation velocity in world space, in radians.
-		/// </summary>
-		public float AngleVel
-		{
-			get { return this.angleVelAbs; }
 		}
 		/// <summary>
 		/// [GET / SET] The objects scale in world space.
@@ -346,46 +328,7 @@ namespace Duality.Components
 		}
 
 		/// <summary>
-		/// Calculates the Transforms world velocity at a given world coordinate;
-		/// </summary>
-		/// <param name="world"></param>
-		/// <returns></returns>
-		public Vector3 GetWorldVelocityAt(Vector3 world)
-		{
-			return GetWorldVector(GetLocalVelocityAt(GetLocalPoint(world)));
-		}
-		/// <summary>
-		/// Calculates the Transforms world velocity at a given world coordinate;
-		/// </summary>
-		/// <param name="world"></param>
-		/// <returns></returns>
-		public Vector2 GetWorldVelocityAt(Vector2 world)
-		{
-			return this.GetWorldVelocityAt(new Vector3(world)).Xy;
-		}
-		/// <summary>
-		/// Calculates the Transforms local velocity at a given local coordinate;
-		/// </summary>
-		/// <param name="local"></param>
-		/// <returns></returns>
-		public Vector3 GetLocalVelocityAt(Vector3 local)
-		{
-			Vector3 vel = this.velAbs;
-			Vector2 angleVel = local.Xy.PerpendicularRight * this.angleVelAbs;
-			return vel + new Vector3(angleVel);
-		}
-		/// <summary>
-		/// Calculates the Transforms local velocity at a given local coordinate;
-		/// </summary>
-		/// <param name="local"></param>
-		/// <returns></returns>
-		public Vector2 GetLocalVelocityAt(Vector2 world)
-		{
-			return this.GetLocalVelocityAt(new Vector3(world)).Xy;
-		}
-
-		/// <summary>
-		/// Moves the object by the given local offset. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object by the given local offset. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveByLocal(Vector3 value)
@@ -394,7 +337,7 @@ namespace Duality.Components
 			this.UpdateAbs();
 		}
 		/// <summary>
-		/// Moves the object by the given local offset. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object by the given local offset. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveByLocal(Vector2 value)
@@ -402,7 +345,7 @@ namespace Duality.Components
 			this.MoveByLocal(new Vector3(value));
 		}
 		/// <summary>
-		/// Moves the object by given world offset. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object by given world offset. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveBy(Vector3 value)
@@ -425,7 +368,7 @@ namespace Duality.Components
 			this.UpdateAbsChild();
 		}
 		/// <summary>
-		/// Moves the object by given world offset. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object by given world offset. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveBy(Vector2 value)
@@ -433,7 +376,7 @@ namespace Duality.Components
 			this.MoveBy(new Vector3(value));
 		}
 		/// <summary>
-		/// Moves the object to the given position in local space of its parent object. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object to the given position in local space of its parent object. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveToLocal(Vector3 value)
@@ -442,7 +385,7 @@ namespace Duality.Components
 		}
 		/// <summary>
 		/// Moves the object to the given position in local space of its parent object, leaving the Z coordinate unchanged.
-		/// This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveToLocal(Vector2 value)
@@ -450,7 +393,7 @@ namespace Duality.Components
 			this.MoveToLocal(new Vector3(value, this.pos.Z));
 		}
 		/// <summary>
-		/// Moves the object to the given world position. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object to the given world position. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveTo(Vector3 value)
@@ -459,7 +402,7 @@ namespace Duality.Components
 		}
 		/// <summary>
 		/// Moves the object to the given world position, leaving the Z coordinate unchanged.
-		/// This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveTo(Vector2 value)
@@ -467,7 +410,7 @@ namespace Duality.Components
 			this.MoveTo(new Vector3(value, this.posAbs.Z));
 		}
 		/// <summary>
-		/// Turns the object by the given radian angle. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
+		/// Turns the object by the given radian angle. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void TurnBy(float value)
@@ -476,7 +419,7 @@ namespace Duality.Components
 			this.UpdateAbs();
 		}
 		/// <summary>
-		/// Turns the object to the given radian angle in local space of its parent object. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
+		/// Turns the object to the given radian angle in local space of its parent object. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void TurnToLocal(float value)
@@ -484,7 +427,7 @@ namespace Duality.Components
 			this.TurnBy(MathF.TurnDir(this.angle, value) * MathF.CircularDist(value, this.angle));
 		}
 		/// <summary>
-		/// Turns the object to the given world space radian angle. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
+		/// Turns the object to the given world space radian angle. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void TurnTo(float value)
@@ -506,11 +449,11 @@ namespace Duality.Components
 			this.angleAbs = angle;
 			this.scaleAbs = scale;
 
-			this.lastPosAbs = this.posAbs;
-			this.lastAngleAbs = this.angleAbs;
-
 			this.UpdateRel();
 			this.UpdateAbsChild();
+
+			this.ResetVelocity();
+			this.ResetAngleVelocity();
 		}
 		/// <summary>
 		/// Updates the Transforms world space data all at once.
@@ -537,8 +480,8 @@ namespace Duality.Components
 
 			this.UpdateAbs();
 
-			this.lastPosAbs = this.posAbs;
-			this.lastAngleAbs = this.angleAbs;
+			this.ResetVelocity();
+			this.ResetAngleVelocity();
 		}
 		/// <summary>
 		/// Updates the Transforms local space data all at once.
@@ -550,27 +493,6 @@ namespace Duality.Components
 			this.SetLocalTransform(other.LocalPos, other.LocalScale, other.LocalAngle);
 		}
 		
-		void ICmpUpdatable.OnUpdate()
-		{
-			this.CheckValidTransform();
-
-			// Calculate velocity values from last frames movement
-			if (MathF.Abs(Time.TimeMult) > float.Epsilon)
-				this.UpdateVelocity();
-
-			this.CheckValidTransform();
-		}
-		void ICmpEditorUpdatable.OnUpdate()
-		{
-			this.CheckValidTransform();
-
-			if (this.ignoreParent)
-				this.UpdateRel();
-			else
-				this.UpdateAbs();
-
-			this.CheckValidTransform();
-		}
 		void ICmpInitializable.OnInit(InitContext context)
 		{
 			if (context == InitContext.AddToGameObject ||
@@ -595,8 +517,6 @@ namespace Duality.Components
 			if (context == InitContext.Loaded)
 			{
 				this.UpdateRotationDirAbs();
-				this.lastPosAbs = this.posAbs;
-				this.lastAngleAbs = this.angleAbs;
 			}
 		}
 		void ICmpInitializable.OnShutdown(ShutdownContext context)
@@ -639,21 +559,24 @@ namespace Duality.Components
 				this.UpdateRel();
 			}
 		}
-
-		private void UpdateVelocity()
-		{
-			this.velAbs = this.posAbs - this.lastPosAbs;
-			this.angleVelAbs = MathF.TurnDir(this.lastAngleAbs, this.angleAbs) * MathF.CircularDist(this.lastAngleAbs, this.angleAbs);
-			this.lastPosAbs = this.posAbs;
-			this.lastAngleAbs = this.angleAbs;
-
-			this.CheckValidTransform();
-		}
+		
 		private void UpdateRotationDirAbs()
 		{
 			this.rotationDirAbs = new Vector2(
 				MathF.Sin(this.angleAbs), 
 				-MathF.Cos(this.angleAbs));
+		}
+		private void ResetVelocity()
+		{
+			VelocityTracker tracker = this.gameobj.GetComponent<VelocityTracker>();
+			if (tracker != null)
+				tracker.ResetVelocity(this.posAbs);
+		}
+		private void ResetAngleVelocity()
+		{
+			VelocityTracker tracker = this.gameobj.GetComponent<VelocityTracker>();
+			if (tracker != null)
+				tracker.ResetAngleVelocity(this.angleAbs);
 		}
 
 		private void UpdateAbs()
@@ -744,12 +667,6 @@ namespace Duality.Components
 			target.angleAbs			= this.angleAbs;
 			target.scaleAbs			= this.scaleAbs;
 			target.rotationDirAbs	= this.rotationDirAbs;
-
-			target.lastPosAbs		= this.lastPosAbs;
-			target.lastAngleAbs		= this.lastAngleAbs;
-
-			target.velAbs			= this.velAbs;
-			target.angleVelAbs		= this.angleVelAbs;
 			
 			// Update absolute transformation data, because the target is relative to a different parent.
 			target.UpdateAbs();
@@ -763,12 +680,8 @@ namespace Duality.Components
 			MathF.CheckValidValue(this.angle);
 
 			MathF.CheckValidValue(this.posAbs);
-			MathF.CheckValidValue(this.velAbs);
 			MathF.CheckValidValue(this.scaleAbs);
 			MathF.CheckValidValue(this.angleAbs);
-			MathF.CheckValidValue(this.angleVelAbs);
-			MathF.CheckValidValue(this.lastPosAbs);
-			MathF.CheckValidValue(this.lastAngleAbs);
 		}
 	}
 }
