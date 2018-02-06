@@ -6,7 +6,7 @@ using Duality.Editor;
 namespace Duality.Components
 {
 	/// <summary>
-	/// Makes this <see cref="GameObject"/> the 3d sound listener.
+	/// When attached to a <see cref="GameObject"/>, it will become the reference point for all 3D audio.
 	/// </summary>
 	[RequiredComponent(typeof(Transform))]
 	[RequiredComponent(typeof(VelocityTracker))]
