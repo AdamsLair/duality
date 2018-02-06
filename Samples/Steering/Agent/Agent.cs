@@ -275,6 +275,7 @@ namespace Steering
 
 			this.suggestedVel = bestVelocity;
 
+#if DEBUG
 			if (this.DebugVisualizationMode == VisualLoggingMode.AllVelocities)
 			{
 				Vector2 selfDebugVelocity = this.CurrentVel / this.Characteristics.MaxSpeed * DebugVelocityRadius;
@@ -295,6 +296,7 @@ namespace Steering
 				Vector2 debugVelocity = this.suggestedVel / this.characteristics.MaxSpeed * DebugVelocityRadius;
 				VisualDebugLog.DrawVector(0f, 0f, debugVelocity.X, debugVelocity.Y).AnchorAt(this.GameObj);
 			}
+#endif
 		}
 		private void AcquireConfigObjects()
 		{
@@ -371,7 +373,7 @@ namespace Steering
 			return true;
 		}
 
-		#region visual logging stuff
+#region visual logging stuff
 		public enum VisualLoggingMode
 		{
 			None,
@@ -398,6 +400,6 @@ namespace Steering
 		private static readonly VisualLog VisualDebugLog = VisualLogs.Get<AgentLog>();
 		private const float DebugVelocityRadius = 100f;
 #endif
-		#endregion
+#endregion
 	}
 }
