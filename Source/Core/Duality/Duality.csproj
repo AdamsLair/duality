@@ -453,6 +453,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="EmbeddedResources\CousineLicense.txt" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpVelocityTracker.png" />
     <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResRenderSetup.png" />
     <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpSpriteAnimator.png" />
     <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconBinarySerializer.png" />

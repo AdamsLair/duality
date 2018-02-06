@@ -6,9 +6,13 @@ using Duality.Cloning;
 
 namespace Duality.Components
 {
+	/// <summary>
+	/// Keeps track of this objects linear and angular velocity by accumulating all
+	/// movement (but not teleportation) of its <see cref="Transform"/> component.
+	/// </summary>
 	[ManuallyCloned]
 	[EditorHintCategory(CoreResNames.CategoryNone)]
-	[EditorHintImage(CoreResNames.ImageTransform)]
+	[EditorHintImage(CoreResNames.ImageVelocityTracker)]
 	[RequiredComponent(typeof(Transform))]
 	public sealed class VelocityTracker : Component, ICmpUpdatable, ICmpInitializable
 	{

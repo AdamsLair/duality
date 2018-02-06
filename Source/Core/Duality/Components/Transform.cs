@@ -7,7 +7,7 @@ using Duality.Cloning;
 namespace Duality.Components
 {
 	/// <summary>
-	/// Represents a <see cref="GameObject">GameObjects</see> physical location in the world, relative to its <see cref="GameObject.Parent"/>.
+	/// Represents the location, rotation and scale of a <see cref="GameObject"/>, relative to its <see cref="GameObject.Parent"/>.
 	/// </summary>
 	[ManuallyCloned]
 	[EditorHintCategory(CoreResNames.CategoryNone)]
