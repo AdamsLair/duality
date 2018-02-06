@@ -568,12 +568,14 @@ namespace Duality.Components
 		}
 		private void ResetVelocity()
 		{
+			if (this.gameobj == null) return;
 			VelocityTracker tracker = this.gameobj.GetComponent<VelocityTracker>();
 			if (tracker != null)
 				tracker.ResetVelocity(this.posAbs);
 		}
 		private void ResetAngleVelocity()
 		{
+			if (this.gameobj == null) return;
 			VelocityTracker tracker = this.gameobj.GetComponent<VelocityTracker>();
 			if (tracker != null)
 				tracker.ResetAngleVelocity(this.angleAbs);
