@@ -71,7 +71,7 @@
                 <_size dataType="Int">0</_size>
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
-              <prop dataType="MemberInfo" id="771728094" value="P:Duality.Components.Transform:RelativePos" />
+              <prop dataType="MemberInfo" id="771728094" value="P:Duality.Components.Transform:LocalPos" />
               <val dataType="Struct" type="Duality.Vector3">
                 <X dataType="Float">200</X>
                 <Y dataType="Float">180</Y>
@@ -593,7 +593,7 @@
                 <_size dataType="Int">0</_size>
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
-              <prop dataType="MemberInfo" id="2095813132" value="P:Duality.Components.Transform:RelativeScale" />
+              <prop dataType="MemberInfo" id="2095813132" value="P:Duality.Components.Transform:LocalScale" />
               <val dataType="Float">1</val>
             </item>
             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
