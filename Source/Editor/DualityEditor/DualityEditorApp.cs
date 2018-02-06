@@ -277,7 +277,7 @@ namespace Duality.Editor
 			}
 			editorActions.StableSort((a, b) => b.Priority.CompareTo(a.Priority));
 			
-			if (startWithLastScene && lastOpenScene != null)
+			if (startWithLastScene && lastOpenScene.IsAvailable)
 			{				
 				Scene.SwitchTo(lastOpenScene, true);
 			}
