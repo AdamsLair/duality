@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="TileDrawSources\PatternTileDrawSource.cs" />
     <Compile Include="TilesetEditorModes\AutoTileTilesetEditorMode.cs" />
+    <Compile Include="TilesetEditorModes\DataTagTilesetEditorMode.cs" />
     <Compile Include="UndoRedoActions\AddTilesetConfigLayerAction.cs" />
     <Compile Include="UndoRedoActions\EditTilesetAutoTileItemAction.cs" />
     <Compile Include="UndoRedoActions\ResizeTilemapAction.cs" />
@@ -206,6 +207,7 @@
     <EmbeddedResource Include="Properties\TilemapsRes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TilemapsRes.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -22,9 +22,10 @@ namespace Duality.Plugins.Tilemaps
 		public  static readonly Point2             DefaultTileSize     = new Point2(32, 32);
 		private static readonly BatchInfo          DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
 
-		private List<TilesetRenderInput>   renderConfig   = new List<TilesetRenderInput>();
+		private List<TilesetRenderInput>   renderConfig	  = new List<TilesetRenderInput>();
 		private List<TilesetAutoTileInput> autoTileConfig = new List<TilesetAutoTileInput>();
-		private BatchInfo                  baseMaterial   = new BatchInfo(DefaultBaseMaterial);
+		private List<TilesetDataTagInput>  dataTagConfig  = new List<TilesetDataTagInput>();
+		private BatchInfo                  baseMaterial	  = new BatchInfo(DefaultBaseMaterial);
 		private Vector2                    tileSize       = DefaultTileSize;
 		private RawList<TileInput>         tileInput      = new RawList<TileInput>();
 
@@ -55,6 +56,13 @@ namespace Duality.Plugins.Tilemaps
 				}
 			}
 		}
+
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public IList<TilesetDataTagInput> DataTagConfig
+		{
+			get { return this.dataTagConfig; }
+		}
+
 		/// <summary>
 		/// [GET] The different layers of <see cref="TilesetRenderInput"/>, which compose the look of all the tiles
 		/// that are defined in this <see cref="Tileset"/>.
@@ -311,6 +319,16 @@ namespace Duality.Plugins.Tilemaps
 				MathF.CombineHashCode(ref hash, autoTile.BaseTileIndex);
 				MathF.CombineHashCode(ref hash, 
 					GetTileArrayCompileHash(autoTile.TileInput.Data, autoTile.TileInput.Count));
+			}
+
+			foreach (TilesetDataTagInput dataLayer in this.dataTagConfig)
+			{
+				MathF.CombineHashCode(ref hash, dataLayer.Key.GetHashCode());
+				foreach (DataTagTileItem data in dataLayer.TileData.Data)
+				{
+					int value = data.Value != null ? data.Value.GetHashCode() : 0;
+					MathF.CombineHashCode(ref hash, value);
+				}			
 			}
 
 			{

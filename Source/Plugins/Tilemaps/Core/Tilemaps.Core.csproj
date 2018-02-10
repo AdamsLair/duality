@@ -71,6 +71,7 @@
     <Compile Include="Tilesets\TilesetCompiler.cs" />
     <Compile Include="Tilesets\TilesetAutoTileInfo.cs" />
     <Compile Include="Tilesets\TilesetAutoTileInput.cs" />
+    <Compile Include="Tilesets\TilesetDataTagInput.cs" />
     <Compile Include="Tilesets\TilesetRenderInput.cs" />
     <Compile Include="Tilesets\Tileset.cs" />
   </ItemGroup>
