@@ -127,24 +127,33 @@ namespace Duality
 
 		// SuperStewies workspace
 
-		// Add summary comment
+		/// <summary>
+		/// [GET] The center of the top line of the Rect
+		/// </summary>
 		public Vector2 Top
 		{
 			get { return new Vector2(this.CenterX, this.CenterY + (this.W * 0.5f)); }
 		}
 
-		// Add summary comment.
+		/// <summary>
+		/// [GET] The center of the bottom line of the Rect
+		/// </summary>
 		public Vector2 Bottom
 		{
 			get { return new Vector2(this.CenterX, this.CenterY - (this.W * 0.5f)); }
 		}
 
+		/// <summary>
+		/// [GET] The center of the left side line of the Rect
+		/// </summary>
 		public Vector2 Left
 		{
 			get { return new Vector2(this.CenterX - (this.W * 0.5f), this.CenterY); }
 		}
 
-		// Add summary comment
+		/// <summary>
+		/// [GET] The center of the right side line of the Rect
+		/// </summary>
 		public Vector2 Right
 		{
 			get { return new Vector2(this.CenterX + (this.W * 0.5f), this.CenterY); }
