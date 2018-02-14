@@ -130,28 +130,25 @@ namespace Duality
 		// Add summary comment
 		public Vector2 Top
 		{
-			get
-			{
-				// Getting the TopLeft vector first means that we only have to call this.TopLeft once.
-				Vector2 centerVec = this.TopLeft;
-				return new Vector2(centerVec.X + (this.W / 2) , centerVec.Y);
-			}
+			get { return new Vector2(this.CenterX, this.CenterY + (this.W * 0.5f)); }
 		}
 
 		// Add summary comment.
 		public Vector2 Bottom
 		{
-			get
-			{
-				// Same as top but with bottomLeft
-				Vector2 centerVec = this.BottomLeft;
-				return new Vector2(centerVec.X + (this.W / 2), centerVec.Y);
-			}
+			get { return new Vector2(this.CenterX, this.CenterY - (this.W * 0.5f)); }
 		}
 
-		public Vector2 Left;
+		public Vector2 Left
+		{
+			get { return new Vector2(this.CenterX - (this.W * 0.5f), this.CenterY); }
+		}
 
-		public Vector2 Right;
+		// Add summary comment
+		public Vector2 Right
+		{
+			get { return new Vector2(this.CenterX + (this.W * 0.5f), this.CenterY); }
+		}
 		// SuperStewie workspace
 
 		/// <summary>
