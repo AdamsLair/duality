@@ -126,6 +126,8 @@ namespace Duality
 		}
 
 		// SuperStewies workspace
+
+		// Add summary comment
 		public Vector2 Top
 		{
 			get
@@ -136,7 +138,16 @@ namespace Duality
 			}
 		}
 
-		public Vector2 Bottom;
+		// Add summary comment.
+		public Vector2 Bottom
+		{
+			get
+			{
+				// Same as top but with bottomLeft
+				Vector2 centerVec = this.BottomLeft;
+				return new Vector2(centerVec.X + (this.W / 2), centerVec.Y);
+			}
+		}
 
 		public Vector2 Left;
 
