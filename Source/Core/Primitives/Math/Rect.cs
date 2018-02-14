@@ -125,6 +125,24 @@ namespace Duality
 			get { return new Vector2(this.CenterX, this.CenterY); }
 		}
 
+		// SuperStewies workspace
+		public Vector2 Top
+		{
+			get
+			{
+				// Getting the TopLeft vector first means that we only have to call this.TopLeft once.
+				Vector2 centerVec = this.TopLeft;
+				return new Vector2(centerVec.X + (this.W / 2) , centerVec.Y);
+			}
+		}
+
+		public Vector2 Bottom;
+
+		public Vector2 Left;
+
+		public Vector2 Right;
+		// SuperStewie workspace
+
 		/// <summary>
 		/// [GET] If this Rect was to fit inside a bounding circle originating from [0,0],
 		/// this would be its radius.
