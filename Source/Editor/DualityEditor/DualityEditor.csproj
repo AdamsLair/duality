@@ -13,7 +13,7 @@
     <RootNamespace>Duality.Editor</RootNamespace>
     <AssemblyName>DualityEditor</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -78,9 +78,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Core\Duality\Backend\DefaultPluginLoader.cs">
-      <Link>DefaultPluginLoader.cs</Link>
-    </Compile>
+    <Compile Include="Backend\DefaultPluginLoader.cs" />
     <Compile Include="AssetManagement\AssetExportFinishedEventArgs.cs" />
     <Compile Include="AssetManagement\AssetInternalHelper.cs" />
     <Compile Include="AssetManagement\Export\ExtMethodsIAssetExportEnvironment.cs" />

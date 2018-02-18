@@ -1,26 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard1.1</TargetFramework>
     <PackageTargetFallback>$(PackageTargetFallback);portable-win+net45+wp8+win81+wpa8</PackageTargetFallback>
   </PropertyGroup>
-
 	<PropertyGroup>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
-	
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.Portable.Compatibility" Version="1.0.1" />
+    <PackageReference Include="System.Threading.Tasks.Parallel" Version="4.3.0" />
   </ItemGroup>
-	
-	<ItemGroup>
-		<Reference Include="FarseerDuality" />
-		<Reference Include="NVorbis">
-			<Private>True</Private>
-		</Reference>
-	</ItemGroup>
-
 	<ItemGroup>
 		<EmbeddedResource Include="EmbeddedResources\Checkerboard.png" />
 		<EmbeddedResource Include="EmbeddedResources\DualityLogoBig.png" />
@@ -32,11 +22,9 @@
 		<EmbeddedResource Include="EmbeddedResources\Cousine10.Font.res" />
 		<EmbeddedResource Include="EmbeddedResources\Cousine8.Font.res" />
 	</ItemGroup>
-	
 	<ItemGroup>
 		<EmbeddedResource Include="EmbeddedResources\Beep.ogg" />
 	</ItemGroup>
-	
 	<ItemGroup>
 		<EmbeddedResource Include="EmbeddedResources\SmoothAnim.vert" />
 		<EmbeddedResource Include="EmbeddedResources\SmoothAnim.frag" />
@@ -44,7 +32,6 @@
 		<EmbeddedResource Include="EmbeddedResources\Minimal.frag" />
 		<EmbeddedResource Include="EmbeddedResources\Minimal.vert" />
 	</ItemGroup>
-	
 	<ItemGroup>
 		<EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResVertexShader.png" />
 		<EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpCamera.png" />
@@ -85,19 +72,23 @@
 		<EmbeddedResource Include="EmbeddedResources\EditorSupport\Property.png" />
 		<EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpProfileRenderer.png" />
 	</ItemGroup>
-	
 	<ItemGroup>
 		<EmbeddedResource Include="EmbeddedResources\White.png" />
 	</ItemGroup>
-	
 	<ItemGroup>
 		<Content Include="EmbeddedResources\CousineLicense.txt" />
 		<EmbeddedResource Include="EmbeddedResources\EditorSupport\iconBinarySerializer.png" />
 		<EmbeddedResource Include="EmbeddedResources\EditorSupport\iconXmlSerializer.png" />
 	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\Primitives\DualityPrimitives.csproj" />
 	</ItemGroup>
-	
+	<ItemGroup>
+	  <Reference Include="FarseerDuality">
+	    <HintPath>..\..\..\..\farseerduality\bin\Debug\netstandard1.1\FarseerDuality.dll</HintPath>
+	  </Reference>
+	  <Reference Include="NVorbis">
+	    <HintPath>..\..\..\..\nvorbis\NVorbis\bin\Debug\netstandard1.1\NVorbis.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
 </Project>
