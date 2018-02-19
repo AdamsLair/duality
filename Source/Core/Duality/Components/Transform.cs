@@ -70,24 +70,6 @@ namespace Duality.Components
 			}
 		}
 		/// <summary>
-		/// [GET / SET] Specifies whether the <see cref="Transform"/> component should behave as if 
-		/// it was part of a root object. When true, it behaves the same as if it didn't have a 
-		/// parent <see cref="Transform"/>.
-		/// </summary>
-		public bool IgnoreParent
-		{
-			get { return this.ignoreParent; }
-			set
-			{
-				if (this.ignoreParent != value)
-				{
-					this.ignoreParent = value;
-					this.UpdateRel();
-				}
-			}
-		}
-
-		/// <summary>
 		/// [GET] The objects directional forward vector in local space of its parent object.
 		/// </summary>
 		public Vector3 LocalForward
@@ -183,7 +165,6 @@ namespace Duality.Components
 				this.UpdateAbsChild();
 			}
 		}
-
 		/// <summary>
 		/// [GET] The objects directional forward (zero degree angle) vector in world space.
 		/// </summary>
@@ -211,6 +192,23 @@ namespace Duality.Components
 			}
 		}
 
+		/// <summary>
+		/// [GET / SET] Specifies whether the <see cref="Transform"/> component should behave as if 
+		/// it was part of a root object. When true, it behaves the same as if it didn't have a 
+		/// parent <see cref="Transform"/>.
+		/// </summary>
+		public bool IgnoreParent
+		{
+			get { return this.ignoreParent; }
+			set
+			{
+				if (this.ignoreParent != value)
+				{
+					this.ignoreParent = value;
+					this.UpdateRel();
+				}
+			}
+		}
 		private Transform ParentTransform
 		{
 			get
