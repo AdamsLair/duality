@@ -61,6 +61,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private FormattedText actionText             = new FormattedText();
 		private List<Type>    lastActiveLayers       = new List<Type>();
 		private List<string>  lastObjVisibility      = new List<string>();
+		private TimeSpan      renderedGameTime       = TimeSpan.MinValue;
 		private int           renderFrameLast        = -1;
 		private bool          renderFrameScheduled   = false;
 
@@ -522,9 +523,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.View.OnCamTransformChanged();
 				this.Invalidate();
 			}
-			
-			// If we're currently executing the game, invalidate every frame
-			if (Sandbox.State == SandboxState.Playing)
+
+			// If the game simulation has advanced since we last rendered, schedule 
+			// the next frame to be rendered. This will be true every frame in sandbox
+			// play mode, and once every sandbox single-step.
+			if (Time.GameTimer != this.renderedGameTime)
 				this.Invalidate();
 
 			// If we previously skipped a repaint event because we already rendered
@@ -688,9 +691,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			this.renderFrameScheduled = false;
 			this.renderFrameLast = Time.FrameCount;
+			this.renderedGameTime = Time.GameTimer;
 
 			// Retrieve OpenGL context
- 			try { this.RenderableSite.MakeCurrent(); } catch (Exception) { return; }
+			try { this.RenderableSite.MakeCurrent(); } catch (Exception) { return; }
 
 			// Perform rendering
 			try
