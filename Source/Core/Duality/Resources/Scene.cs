@@ -602,7 +602,6 @@ namespace Duality.Resources
 			DualityApp.EditorGuard(() =>
 			{
 				this.UpdateComponents<ICmpEditorUpdatable>(cmp => cmp.OnUpdate());
-				this.visibilityStrategy.Update();
 			});
 			Profile.TimeUpdateScene.EndMeasure();
 
