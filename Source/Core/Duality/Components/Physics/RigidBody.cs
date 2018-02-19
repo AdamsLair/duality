@@ -954,8 +954,8 @@ namespace Duality.Components.Physics
 				transform.Pos.Z));
 			transform.TurnTo(PhysicsUnit.AngleToDuality * bodyAngle);
 
-			this.lastPos = PhysicsUnit.LengthToDuality * bodyPos;
-			this.lastAngle = PhysicsUnit.AngleToDuality * bodyAngle;
+			this.lastPos = transform.Pos.Xy;
+			this.lastAngle = transform.Angle;
 		}
 
 		private void CleanupBody()
