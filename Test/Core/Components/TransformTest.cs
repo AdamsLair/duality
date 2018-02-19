@@ -194,6 +194,53 @@ namespace Duality.Tests.Components
 			AssertEqual(0.25f, transform.LocalScale, "Scale");
 		}
 
+		[Test] public void IgnoreParent()
+		{
+			GameObject parentObj = new GameObject("Parent");
+			GameObject obj = new GameObject("Child", parentObj);
+			Transform parentTransform = parentObj.AddComponent<Transform>();
+			Transform transform = obj.AddComponent<Transform>();
+
+			// Configure the tested transform to completely ignore its parent
+			transform.IgnoreParent = true;
+
+			// Start with a parent transform that does nothing anyway
+			AssertEqual(Vector3.Zero, transform.Pos, "Pos with ignored identity parent");
+			AssertEqual(0.0f, transform.Angle, "Angle with ignored identity parent");
+			AssertEqual(1.0f, transform.Scale, "Scale with ignored identity parent");
+			AssertEqual(Vector3.Zero, transform.LocalPos, "LocalPos with ignored identity parent");
+			AssertEqual(0.0f, transform.LocalAngle, "LocalAngle with ignored identity parent");
+			AssertEqual(1.0f, transform.LocalScale, "LocalScale with ignored identity parent");
+			AssertEqual(Vector3.Zero, transform.GetWorldPoint(Vector3.Zero), "GetWorldPoint with ignored identity parent");
+			AssertEqual(Vector3.Zero, transform.GetLocalPoint(Vector3.Zero), "GetLocalPoint with ignored identity parent");
+
+			// Adjust the parent transform, make sure the child transform remains unaffected
+			parentTransform.LocalPos = new Vector3(1.0f, 2.0f, 3.0f);
+			parentTransform.LocalAngle = MathF.DegToRad(90.0f);
+			parentTransform.LocalScale = 2.0f;
+
+			AssertEqual(Vector3.Zero, transform.Pos, "Pos with ignored parent");
+			AssertEqual(0.0f, transform.Angle, "Angle with ignored parent");
+			AssertEqual(1.0f, transform.Scale, "Scale with ignored parent");
+			AssertEqual(Vector3.Zero, transform.LocalPos, "LocalPos with ignored parent");
+			AssertEqual(0.0f, transform.LocalAngle, "LocalAngle with ignored parent");
+			AssertEqual(1.0f, transform.LocalScale, "LocalScale with ignored parent");
+			AssertEqual(Vector3.Zero, transform.GetWorldPoint(Vector3.Zero), "GetWorldPoint with ignored parent");
+			AssertEqual(Vector3.Zero, transform.GetLocalPoint(Vector3.Zero), "GetLocalPoint with ignored parent");
+
+			// No longer ignore the parent, make sure the local values are updated while world values remain
+			transform.IgnoreParent = false;
+
+			AssertEqual(Vector3.Zero, transform.Pos, "Pos with applied parent");
+			AssertEqual(0.0f, transform.Angle, "Angle with applied parent");
+			AssertEqual(1.0f, transform.Scale, "Scale with applied parent");
+			AssertEqual(new Vector3(-1.0f, 0.5f, -1.5f), transform.LocalPos, "LocalPos with applied parent");
+			AssertEqual(MathF.NormalizeAngle(MathF.DegToRad(-90.0f)), transform.LocalAngle, "LocalAngle with applied parent");
+			AssertEqual(0.5f, transform.LocalScale, "LocalScale with applied parent");
+			AssertEqual(Vector3.Zero, transform.GetWorldPoint(Vector3.Zero), "GetWorldPoint with applied parent");
+			AssertEqual(Vector3.Zero, transform.GetLocalPoint(Vector3.Zero), "GetLocalPoint with applied parent");
+		}
+
 		private static void AssertEqual(float expected, float actual, string message)
 		{
 			float threshold = 0.00001f;

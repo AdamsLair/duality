@@ -82,7 +82,7 @@ namespace Duality.Components
 				if (this.ignoreParent != value)
 				{
 					this.ignoreParent = value;
-					this.UpdateAbs();
+					this.UpdateRel();
 				}
 			}
 		}
@@ -215,6 +215,7 @@ namespace Duality.Components
 		{
 			get
 			{
+				if (this.ignoreParent) return null;
 				if (this.gameobj == null) return null;
 
 				GameObject parent = this.gameobj.Parent;
@@ -615,12 +616,11 @@ namespace Duality.Components
 			{
 				foreach (GameObject obj in this.gameobj.Children)
 				{
-					Transform t = obj.Transform;
-					if (t == null) continue;
-					if (!t.ignoreParent)
-						t.UpdateAbs();
-					else
-						t.UpdateRel();
+					Transform transform = obj.Transform;
+					if (transform == null) continue;
+					if (transform.ignoreParent) continue;
+
+					transform.UpdateAbs();
 				}
 			}
 
