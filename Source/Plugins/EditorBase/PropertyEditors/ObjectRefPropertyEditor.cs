@@ -284,6 +284,11 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 				e.Handled = true;
 			}
+			else if (e.KeyCode == Keys.Delete)
+			{
+				this.ResetReference();
+				e.Handled = true;
+			}
 			base.OnKeyDown(e);
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
