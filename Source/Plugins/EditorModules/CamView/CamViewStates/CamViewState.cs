@@ -482,6 +482,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			renderSetup.AddRenderStep(this.camPassEdWorld.Id, RenderStepPosition.After, this.camPassEdWorldNoDepth);
 			renderSetup.AddRenderStep(this.camPassEdWorldNoDepth.Id, RenderStepPosition.After, this.camPassEdScreen);
 
+			// Update culling info right before rendering
+			if (Scene.Current.VisibilityStrategy != null)
+				Scene.Current.VisibilityStrategy.Update();
+
 			// Render CamView
 			Point2 clientSize = new Point2(this.ClientSize.Width, this.ClientSize.Height);
 			this.CameraComponent.Render(new Rect(clientSize), clientSize);
@@ -709,10 +713,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Force immediate buffer swap and continuous repaint
 			this.renderFrameLast = 0;
 			DualityEditorApp.PerformBufferSwap();
-
-			// Update the scenes visibility strategy / culling to make new objects show up
-			if (Scene.Current.VisibilityStrategy != null)
-				Scene.Current.VisibilityStrategy.Update();
 		}
 		
 		private bool RendererFilter(ICmpRenderer r)
