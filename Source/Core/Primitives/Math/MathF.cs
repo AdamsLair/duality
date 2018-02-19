@@ -872,7 +872,7 @@ namespace Duality
 		/// <returns>The angular distance in radians between both angles.</returns>
 		public static float CircularDist(float v1, float v2)
 		{
-			float diff = Math.Abs(v1 - v2) % 360.0f;
+			float diff = Math.Abs(v1 - v2) % RadAngle360;
 			if (diff > RadAngle180)
 				return RadAngle360 - diff;
 			else
