@@ -659,16 +659,16 @@ namespace Duality.Components
 			base.OnCopyDataTo(targetObj, operation);
 			Transform target = targetObj as Transform;
 
-			target.ignoreParent		= this.ignoreParent;
+			target.ignoreParent   = this.ignoreParent;
 
-			target.pos				= this.pos;
-			target.angle			= this.angle;
-			target.scale			= this.scale;
+			target.pos            = this.pos;
+			target.angle          = this.angle;
+			target.scale          = this.scale;
 
-			target.posAbs			= this.posAbs;
-			target.angleAbs			= this.angleAbs;
-			target.scaleAbs			= this.scaleAbs;
-			target.rotationDirAbs	= this.rotationDirAbs;
+			target.posAbs         = this.posAbs;
+			target.angleAbs       = this.angleAbs;
+			target.scaleAbs       = this.scaleAbs;
+			target.rotationDirAbs = this.rotationDirAbs;
 			
 			// Update absolute transformation data, because the target is relative to a different parent.
 			target.UpdateAbs();
