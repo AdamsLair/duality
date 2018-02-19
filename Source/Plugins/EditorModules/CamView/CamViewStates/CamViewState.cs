@@ -482,11 +482,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			renderSetup.AddRenderStep(this.camPassBg.Id, RenderStepPosition.After, this.camPassEdWorld);
 			renderSetup.AddRenderStep(this.camPassEdWorld.Id, RenderStepPosition.After, this.camPassEdWorldNoDepth);
 			renderSetup.AddRenderStep(this.camPassEdWorldNoDepth.Id, RenderStepPosition.After, this.camPassEdScreen);
-
-			// Update culling info right before rendering
-			if (Scene.Current.VisibilityStrategy != null)
-				Scene.Current.VisibilityStrategy.Update();
-
+			
 			// Render CamView
 			Point2 clientSize = new Point2(this.ClientSize.Width, this.ClientSize.Height);
 			this.CameraComponent.Render(new Rect(clientSize), clientSize);
@@ -757,6 +753,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Perform rendering
 			try
 			{
+				// Update culling info. Since we do not have a real game loop in edit
+				// mode, we'll do this right before rendering rather than once per frame.
+				if (Scene.Current.VisibilityStrategy != null)
+					Scene.Current.VisibilityStrategy.Update();
+
 				this.OnRenderState();
 			}
 			catch (Exception exception)
