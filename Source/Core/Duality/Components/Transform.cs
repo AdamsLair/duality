@@ -437,14 +437,15 @@ namespace Duality.Components
 		}
 
 		/// <summary>
-		/// Updates the Transforms world space data all at once.
+		/// Updates the Transforms world space data all at once. This change is
+		/// not regarded as a continuous movement, but as a hard teleport.
 		/// </summary>
 		/// <param name="pos"></param>
 		/// <param name="vel"></param>
-		/// <param name="scale"></param>
 		/// <param name="angle"></param>
+		/// <param name="scale"></param>
 		/// <param name="angleVel"></param>
-		public void SetTransform(Vector3 pos, float scale, float angle)
+		public void SetTransform(Vector3 pos, float angle, float scale)
 		{
 			this.posAbs = pos;
 			this.angleAbs = angle;
@@ -457,23 +458,25 @@ namespace Duality.Components
 			this.ResetAngleVelocity();
 		}
 		/// <summary>
-		/// Updates the Transforms world space data all at once.
+		/// Updates the Transforms world space data all at once. This change is
+		/// not regarded as a continuous movement, but as a hard teleport.
 		/// </summary>
 		/// <param name="other"></param>
 		public void SetTransform(Transform other)
 		{
 			if (other == this) return;
-			this.SetTransform(other.Pos, other.Scale, other.Angle);
+			this.SetTransform(other.Pos, other.Angle, other.Scale);
 		}
 		/// <summary>
-		/// Updates the Transforms local space data all at once.
+		/// Updates the Transforms local space data all at once. This change is
+		/// not regarded as a continuous movement, but as a hard teleport.
 		/// </summary>
 		/// <param name="pos"></param>
 		/// <param name="vel"></param>
-		/// <param name="scale"></param>
 		/// <param name="angle"></param>
+		/// <param name="scale"></param>
 		/// <param name="angleVel"></param>
-		public void SetLocalTransform(Vector3 pos, float scale, float angle)
+		public void SetLocalTransform(Vector3 pos, float angle, float scale)
 		{
 			this.pos = pos;
 			this.angle = angle;
@@ -485,13 +488,14 @@ namespace Duality.Components
 			this.ResetAngleVelocity();
 		}
 		/// <summary>
-		/// Updates the Transforms local space data all at once.
+		/// Updates the Transforms local space data all at once. This change is
+		/// not regarded as a continuous movement, but as a hard teleport.
 		/// </summary>
 		/// <param name="other"></param>
 		public void SetLocalTransform(Transform other)
 		{
 			if (other == this) return;
-			this.SetLocalTransform(other.LocalPos, other.LocalScale, other.LocalAngle);
+			this.SetLocalTransform(other.LocalPos, other.LocalAngle, other.LocalScale);
 		}
 		
 		void ICmpInitializable.OnInit(InitContext context)
