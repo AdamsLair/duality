@@ -18,14 +18,15 @@ namespace Duality.Editor.Plugins.ObjectInspector
 {
 	public partial class ObjectInspector : DockContent
 	{
-		private int                      runtimeId        = 0;
-		private double                   lastAutoRefresh  = 0.0d;
-		private ObjectSelection.Category selSchedMouseCat = ObjectSelection.Category.None;
-		private ObjectSelection          selSchedMouse    = null;
-		private ObjectSelection          displaySel       = null;
-		private ObjectSelection.Category displayCat       = ObjectSelection.Category.None;
+		private int                      runtimeId           = 0;
+		private TimeSpan                 lastRefreshTime     = TimeSpan.MinValue;
+		private TimeSpan                 lastRefreshGameTime = TimeSpan.MinValue;
+		private ObjectSelection.Category selSchedMouseCat    = ObjectSelection.Category.None;
+		private ObjectSelection          selSchedMouse       = null;
+		private ObjectSelection          displaySel          = null;
+		private ObjectSelection.Category displayCat          = ObjectSelection.Category.None;
 
-		private ExpandState              gridExpandState  = new ExpandState();
+		private ExpandState              gridExpandState     = new ExpandState();
 
 
 		public bool LockedSelection
@@ -182,12 +183,29 @@ namespace Duality.Editor.Plugins.ObjectInspector
 
 		private void DualityEditorApp_AfterUpdateDualityApp(object sender, EventArgs e)
 		{
-			if (Sandbox.State == SandboxState.Playing && 
-				this.buttonAutoRefresh.Checked && 
-				Time.MainTimer.TotalMilliseconds - this.lastAutoRefresh > 100.0f)
+			// Perform auto-refresh as the game state changes
+			if (this.buttonAutoRefresh.Checked)
 			{
-				this.lastAutoRefresh = Time.MainTimer.TotalMilliseconds;
-				this.propertyGrid.UpdateFromObjects();
+				// Continuous updates during play mode
+				if (Sandbox.State == SandboxState.Playing)
+				{
+					if ((Time.MainTimer - this.lastRefreshTime).TotalMilliseconds > 100.0d)
+					{
+						this.lastRefreshTime = Time.MainTimer;
+						this.lastRefreshGameTime = Time.GameTimer;
+						this.propertyGrid.UpdateFromObjects();
+					}
+				}
+				// Distinct updates on simulation time changes / single-step
+				else if (Sandbox.State == SandboxState.Paused)
+				{
+					if (this.lastRefreshGameTime != Time.GameTimer)
+					{
+						this.lastRefreshTime = Time.MainTimer;
+						this.lastRefreshGameTime = Time.GameTimer;
+						this.propertyGrid.UpdateFromObjects();
+					}
+				}
 			}
 		}
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
@@ -321,7 +339,8 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		{
 			if (this.buttonAutoRefresh.Checked)
 			{
-				this.lastAutoRefresh = Time.MainTimer.TotalMilliseconds;
+				this.lastRefreshTime = Time.MainTimer;
+				this.lastRefreshGameTime = Time.GameTimer;
 				this.propertyGrid.UpdateFromObjects(100);
 			}
 		}
