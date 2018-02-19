@@ -6,6 +6,8 @@
     <StartWorkingDirectory>$(SolutionDir)Build\Output\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
@@ -78,9 +80,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Core\Duality\Backend\DefaultAssemblyLoader.cs">
-      <Link>DefaultAssemblyLoader.cs</Link>
-    </Compile>
+    <Compile Include="Backend\DefaultAssemblyLoader.cs" />
     <Compile Include="AssetManagement\AssetExportFinishedEventArgs.cs" />
     <Compile Include="AssetManagement\AssetInternalHelper.cs" />
     <Compile Include="AssetManagement\Export\ExtMethodsIAssetExportEnvironment.cs" />

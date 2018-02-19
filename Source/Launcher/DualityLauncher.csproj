@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <StartAction>Project</StartAction>
     <StartProgram>$(SolutionDir)Build\Output\DualityLauncher.exe</StartProgram>
     <StartWorkingDirectory>$(SolutionDir)Build\Output\</StartWorkingDirectory>
@@ -47,7 +49,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Core\Duality\Backend\DefaultAssemblyLoader.cs">
+    <Compile Include="..\Editor\DualityEditor\Backend\DefaultAssemblyLoader.cs">
       <Link>DefaultAssemblyLoader.cs</Link>
     </Compile>
     <Compile Include="ConsoleLogOutput.cs" />

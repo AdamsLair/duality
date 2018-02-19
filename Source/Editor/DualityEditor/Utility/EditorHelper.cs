@@ -239,6 +239,7 @@ namespace Duality.Editor
 				if (Directory.Exists(DualityApp.DataDirectory))
 				{
 					// Add error handler source file to project
+					/*
 					XDocument coreProject = XDocument.Load(SourceCodeProjectCorePluginFile);
 					string relErrorHandlerPath = PathHelper.MakeFilePathRelative(
 						SourceCodeErrorHandlerFile, 
@@ -252,6 +253,7 @@ namespace Duality.Editor
 						compileElement.AddAfterSelf(newCompileElement);
 					}
 					coreProject.Save(SourceCodeProjectCorePluginFile);
+					*/
 
 					// Generate and save error handler source code
 					File.WriteAllText(

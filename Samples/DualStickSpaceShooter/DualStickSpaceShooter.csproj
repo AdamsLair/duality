@@ -1,93 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard1.1</TargetFramework>
+	</PropertyGroup>
+
   <PropertyGroup>
-    <DualityPackageExcludeParentElement />
-    <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)Build\Output\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>..\</StartWorkingDirectory>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{54376712-DBFA-4EF3-A8BA-B1D44A2DA97E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DualStickSpaceShooter</RootNamespace>
-    <AssemblyName>DualStickSpaceShooter.core</AssemblyName>
-    <FileAlignment>512</FileAlignment>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\..\..\..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>Content\Plugins\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>DualStickSpaceShooter.core.xml</DocumentationFile>
-    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>4</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>Content\Plugins\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>DualStickSpaceShooter.core.xml</DocumentationFile>
-    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>4</LangVersion>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Compile Include="Blueprints\EnemyBlueprint.cs" />
-    <Compile Include="Blueprints\ShipBlueprint.cs" />
-    <Compile Include="Gameplay\EnemyClaymore.cs" />
-    <Compile Include="Gameplay\HeadUpDisplay.cs" />
-    <Compile Include="Gameplay\GameOverScreen.cs" />
-    <Compile Include="Gameplay\DoorControl.cs" />
-    <Compile Include="Gameplay\HitSoundController.cs" />
-    <Compile Include="Gameplay\SpawnPoint.cs" />
-    <Compile Include="Gameplay\LevelGoal.cs" />
-    <Compile Include="Gameplay\Trigger.cs" />
-    <Compile Include="Visuals\Particle.cs" />
-    <Compile Include="Visuals\ParticleEmitter.cs" />
-    <Compile Include="Gameplay\PlayerId.cs" />
-    <Compile Include="General\ICmpMessageListener.cs" />
-    <Compile Include="Visuals\ParticleEffect.cs" />
-    <Compile Include="Visuals\SpriteDepthColor.cs" />
-    <Compile Include="CorePlugin.cs" />
-    <Compile Include="Gameplay\CameraController.cs" />
-    <Compile Include="Gameplay\Bullet.cs" />
-    <Compile Include="Blueprints\BulletBlueprint.cs" />
-    <Compile Include="Gameplay\Ship.cs" />
-    <Compile Include="Gameplay\Player.cs" />
-    <Compile Include="General\InputMapping.cs" />
-    <Compile Include="General\InputMethod.cs" />
-    <Compile Include="General\GameplayHelper.cs" />
-    <Compile Include="General\GameMessages.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Source\Core\Primitives\DualityPrimitives.csproj">
-      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
-      <Name>DualityPrimitives</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Source\Core\Duality\Duality.csproj">
-      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
-      <Name>Duality</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+	  <PackageReference Include="Microsoft.NETCore.Portable.Compatibility" Version="1.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Source\Core\Primitives\DualityPrimitives.csproj">
+			<Private>False</Private>
+		</ProjectReference>
+		<ProjectReference Include="..\..\Source\Core\Duality\Duality.csproj">
+			<Private>False</Private>
+		</ProjectReference>
+	</ItemGroup>
+	
 </Project>
