@@ -85,11 +85,11 @@
 		<ProjectReference Include="..\Primitives\DualityPrimitives.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Reference Include="FarseerDuality">
-			<HintPath>..\..\..\..\farseerduality\bin\Debug\netstandard1.1\FarseerDuality.dll</HintPath>
-		</Reference>
-		<Reference Include="NVorbis">
-			<HintPath>..\..\..\..\nvorbis\NVorbis\bin\Debug\netstandard1.1\NVorbis.dll</HintPath>
-		</Reference>
+	  <Reference Include="FarseerDuality">
+	    <HintPath>..\..\..\.net standard 1.1 dlls\FarseerDuality.dll</HintPath>
+	  </Reference>
+	  <Reference Include="NVorbis">
+	    <HintPath>..\..\..\.net standard 1.1 dlls\NVorbis.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 </Project>
