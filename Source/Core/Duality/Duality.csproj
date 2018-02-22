@@ -82,12 +82,10 @@
 		<EmbeddedResource Include="EmbeddedResources\EditorSupport\iconXmlSerializer.png" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\Physics\DualityPhysics.csproj" />
 		<ProjectReference Include="..\Primitives\DualityPrimitives.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Reference Include="FarseerDuality">
-	    <HintPath>..\..\..\.net standard 1.1 dlls\FarseerDuality.dll</HintPath>
-	  </Reference>
 	  <Reference Include="NVorbis">
 	    <HintPath>..\..\..\.net standard 1.1 dlls\NVorbis.dll</HintPath>
 	  </Reference>
