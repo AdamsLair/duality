@@ -1293,10 +1293,9 @@ namespace Duality.Editor.Plugins.ProjectView
 				// Clone if target equals source
 				if (srcPath == dstPath)
 				{
-					string dstPathBase = Path.GetFileNameWithoutExtension(p);
-					dstPathBase = Path.GetFileNameWithoutExtension(dstPathBase);
+					string dstPathBase = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(p));
+					string dstPathExt = Path.GetFileName(p).Remove(0, dstPathBase.Length);
 					dstPathBase = Path.Combine(this.tempDropBasePath, dstPathBase);
-					string dstPathExt = p.Remove(0, dstPathBase.Length);
 					dstPath = PathHelper.GetFreePath(dstPathBase, dstPathExt);
 				}
 				// Skip if target is located inside source
