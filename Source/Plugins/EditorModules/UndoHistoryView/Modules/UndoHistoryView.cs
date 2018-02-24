@@ -26,12 +26,13 @@ namespace Duality.Editor.Plugins.UndoHistoryView
             //Setup data binding and display 
             this.undoRedoListBox.DataSource = undoStackSource;
             this.undoRedoListBox.DisplayMember = "Name";
+            this.undoRedoListBox.DrawMode = DrawMode.OwnerDrawFixed;
 
             //handle clicks to undo/redo
             this.undoRedoListBox.Click += UndoRedoListBox_Click;
 
             //Make sure the UI stays in sync with any undo/redo changes
-            UndoRedoManager.StackChanged += UndoRedoManager_StackChanged;     
+            UndoRedoManager.StackChanged += undoRedoManager_StackChanged;     
         }
 
         private void UndoRedoListBox_Click(object sender, EventArgs e)
@@ -53,8 +54,9 @@ namespace Duality.Editor.Plugins.UndoHistoryView
             }
         }
 
-        private void UndoRedoManager_StackChanged(object sender, EventArgs e)
+        private void undoRedoManager_StackChanged(object sender, EventArgs e)
         {
+            //Gray out the undo/redo buttons based on their ability to act
             if (UndoRedoManager.CanUndo)
             {
                 this.undoButton.Enabled = true;
@@ -77,7 +79,7 @@ namespace Duality.Editor.Plugins.UndoHistoryView
             this.undoStackSource.ResetBindings(false);
 
             //update the selection
-            this.undoRedoListBox.SelectedIndex = UndoRedoManager.ActionIndex;
+            this.undoRedoListBox.SelectedIndex = UndoRedoManager.ActionIndex;     
         }
 
         private void undoButton_Click(object sender, EventArgs e)
@@ -90,6 +92,38 @@ namespace Duality.Editor.Plugins.UndoHistoryView
         {
             if (UndoRedoManager.CanRedo)
                 UndoRedoManager.Redo();
+        }
+
+        private void undoRedoListBox_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            ListBox lb = (ListBox)sender;
+
+            //Style the items based on if they are undo, selected or redo items
+            if (e.Index < lb.SelectedIndex)
+            {
+                e.DrawBackground();
+                Font undoFont = new Font(e.Font, FontStyle.Regular);
+                Brush myBrush = Brushes.Black;
+                e.Graphics.DrawString(((ListBox)sender).Items[e.Index].ToString(),
+                      undoFont, myBrush, e.Bounds, StringFormat.GenericDefault);
+            }
+            else if (e.Index == lb.SelectedIndex)
+            {
+                e.DrawBackground();
+                Font selectedFont  = new Font(e.Font, FontStyle.Bold);
+                Brush myBrush = Brushes.Black; 
+                e.Graphics.DrawString(((ListBox)sender).Items[e.Index].ToString(),
+                      selectedFont, myBrush, e.Bounds, StringFormat.GenericDefault);
+                e.DrawFocusRectangle();
+            }
+            else
+            {
+                e.DrawBackground();
+                Font redoFont = new Font(e.Font, FontStyle.Regular);
+                Brush myBrush = Brushes.DarkGray;
+                e.Graphics.DrawString(((ListBox)sender).Items[e.Index].ToString(),
+                      redoFont, myBrush, e.Bounds, StringFormat.GenericDefault);
+            }
         }
     }
 }

@@ -81,6 +81,7 @@
             this.undoRedoListBox.Name = "undoRedoListBox";
             this.undoRedoListBox.Size = new System.Drawing.Size(284, 236);
             this.undoRedoListBox.TabIndex = 1;
+            this.undoRedoListBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.undoRedoListBox_DrawItem);
             // 
             // UndoHistoryView
             // 
