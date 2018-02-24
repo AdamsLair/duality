@@ -104,7 +104,7 @@ namespace Duality.Editor.Plugins.UndoHistoryView
                 e.DrawBackground();
                 Font undoFont = new Font(e.Font, FontStyle.Regular);
                 Brush myBrush = Brushes.Black;
-                e.Graphics.DrawString(((ListBox)sender).Items[e.Index].ToString(),
+                e.Graphics.DrawString(lb.Items[e.Index].ToString(),
                       undoFont, myBrush, e.Bounds, StringFormat.GenericDefault);
             }
             else if (e.Index == lb.SelectedIndex)
@@ -112,7 +112,7 @@ namespace Duality.Editor.Plugins.UndoHistoryView
                 e.DrawBackground();
                 Font selectedFont  = new Font(e.Font, FontStyle.Bold);
                 Brush myBrush = Brushes.Black; 
-                e.Graphics.DrawString(((ListBox)sender).Items[e.Index].ToString(),
+                e.Graphics.DrawString(lb.Items[e.Index].ToString(),
                       selectedFont, myBrush, e.Bounds, StringFormat.GenericDefault);
                 e.DrawFocusRectangle();
             }
@@ -121,7 +121,7 @@ namespace Duality.Editor.Plugins.UndoHistoryView
                 e.DrawBackground();
                 Font redoFont = new Font(e.Font, FontStyle.Regular);
                 Brush myBrush = Brushes.DarkGray;
-                e.Graphics.DrawString(((ListBox)sender).Items[e.Index].ToString(),
+                e.Graphics.DrawString(lb.Items[e.Index].ToString(),
                       redoFont, myBrush, e.Bounds, StringFormat.GenericDefault);
             }
         }
