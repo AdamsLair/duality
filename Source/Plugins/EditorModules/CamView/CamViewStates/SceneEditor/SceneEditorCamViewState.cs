@@ -131,23 +131,23 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				DualityEditorApp.NotifyObjPropChanged(
 					this,
 					new ObjectSelection(selObjEnum.Select(s => (s.ActualObject as GameObject).Transform)),
-					ReflectionInfo.Property_Transform_RelativePos);
+					ReflectionInfo.Property_Transform_LocalPos);
 			}
 			else if (action == ObjectEditorAction.Rotate)
 			{
 				DualityEditorApp.NotifyObjPropChanged(
 					this,
 					new ObjectSelection(selObjEnum.Select(s => (s.ActualObject as GameObject).Transform)),
-					ReflectionInfo.Property_Transform_RelativePos,
-					ReflectionInfo.Property_Transform_RelativeAngle);
+					ReflectionInfo.Property_Transform_LocalPos,
+					ReflectionInfo.Property_Transform_LocalAngle);
 			}
 			else if (action == ObjectEditorAction.Scale)
 			{
 				DualityEditorApp.NotifyObjPropChanged(
 					this,
 					new ObjectSelection(selObjEnum.Select(s => (s.ActualObject as GameObject).Transform)),
-					ReflectionInfo.Property_Transform_RelativePos,
-					ReflectionInfo.Property_Transform_RelativeScale);
+					ReflectionInfo.Property_Transform_LocalPos,
+					ReflectionInfo.Property_Transform_LocalScale);
 			}
 		}
 

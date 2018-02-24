@@ -688,6 +688,7 @@ namespace Duality.Editor.Plugins.CamView
 			this.nativeCamObj = new GameObject();
 			this.nativeCamObj.Name = "CamView Camera " + this.runtimeId;
 			this.nativeCamObj.AddComponent<Transform>();
+			this.nativeCamObj.AddComponent<VelocityTracker>();
 			this.nativeCamObj.AddComponent<SoundListener>().MakeCurrent();
 
 			Camera c = this.nativeCamObj.AddComponent<Camera>();
@@ -999,10 +1000,8 @@ namespace Duality.Editor.Plugins.CamView
 			//if (this.camInternal) return;
 			DualityEditorApp.NotifyObjPropChanged(
 				this, new ObjectSelection(this.camObj.Transform),
-				ReflectionInfo.Property_Transform_RelativeVel,
-				ReflectionInfo.Property_Transform_RelativeAngleVel,
-				ReflectionInfo.Property_Transform_RelativeAngle,
-				ReflectionInfo.Property_Transform_RelativePos);
+				ReflectionInfo.Property_Transform_LocalAngle,
+				ReflectionInfo.Property_Transform_LocalPos);
 		}
 		public void SetEditingToolsAvailable(bool value)
 		{

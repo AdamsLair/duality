@@ -1660,8 +1660,14 @@ namespace Duality.Editor.Plugins.SceneView
 			// Update the displayed names of objects
 			if (e.HasProperty(ReflectionInfo.Property_GameObject_Name))
 			{
-				foreach (GameObjectNode node in e.Objects.GameObjects.Select(g => this.FindNode(g)))
-					if (node != null) node.Text = node.Obj.Name;
+				foreach (GameObject obj in e.Objects.GameObjects)
+				{
+					GameObjectNode node = this.FindNode(obj);
+					if (node == null) continue;
+
+					node.Text = node.Obj.Name;
+					node.UpdateIcon();
+				}
 			}
 		}
 		private void DualityEditorApp_ResourceRenamed(object sender, ResourceRenamedEventArgs e)

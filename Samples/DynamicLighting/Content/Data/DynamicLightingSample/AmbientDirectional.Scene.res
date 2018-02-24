@@ -9,17 +9,13 @@
       <active dataType="Bool">true</active>
       <children />
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2247383903">
-        <_items dataType="Array" type="Duality.Component[]" id="4174514286" length="4">
+        <_items dataType="Array" type="Duality.Component[]" id="4174514286">
           <item dataType="Struct" type="Duality.Components.Transform" id="3902498575">
             <active dataType="Bool">true</active>
             <angle dataType="Float">0</angle>
             <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
             <gameobj dataType="ObjectRef">3845221357</gameobj>
             <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
             <pos dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
@@ -32,8 +28,10 @@
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3" />
-            <velAbs dataType="Struct" type="Duality.Vector3" />
+          </item>
+          <item dataType="Struct" type="Duality.Components.VelocityTracker" id="1621388528">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">3845221357</gameobj>
           </item>
           <item dataType="Struct" type="Duality.Components.Camera" id="1096640538">
             <active dataType="Bool">true</active>
@@ -62,7 +60,7 @@
             <gameobj dataType="ObjectRef">3845221357</gameobj>
           </item>
         </_items>
-        <_size dataType="Int">3</_size>
+        <_size dataType="Int">4</_size>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1573601056" surrogate="true">
         <header />
@@ -71,11 +69,13 @@
             <item dataType="Type" id="2403034358" value="Duality.Components.Transform" />
             <item dataType="Type" id="2846887450" value="Duality.Components.Camera" />
             <item dataType="Type" id="3143041558" value="Duality.Components.SoundListener" />
+            <item dataType="Type" id="614320378" value="Duality.Components.VelocityTracker" />
           </keys>
           <values dataType="Array" type="System.Object[]" id="4094956872">
             <item dataType="ObjectRef">3902498575</item>
             <item dataType="ObjectRef">1096640538</item>
             <item dataType="ObjectRef">1582906588</item>
+            <item dataType="ObjectRef">1621388528</item>
           </values>
         </body>
       </compMap>
@@ -104,18 +104,12 @@
                   <active dataType="Bool">true</active>
                   <angle dataType="Float">0</angle>
                   <angleAbs dataType="Float">0</angleAbs>
-                  <angleVel dataType="Float">0</angleVel>
-                  <angleVelAbs dataType="Float">0</angleVelAbs>
-                  <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">2138178799</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <parentTransform />
                   <pos dataType="Struct" type="Duality.Vector3" />
                   <posAbs dataType="Struct" type="Duality.Vector3" />
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3" />
-                  <velAbs dataType="Struct" type="Duality.Vector3" />
                 </item>
                 <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="3085146302">
                   <active dataType="Bool">true</active>
@@ -181,12 +175,8 @@
                   <active dataType="Bool">true</active>
                   <angle dataType="Float">0.0296492577</angle>
                   <angleAbs dataType="Float">0.0296492577</angleAbs>
-                  <angleVel dataType="Float">0</angleVel>
-                  <angleVelAbs dataType="Float">0</angleVelAbs>
-                  <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">2937734662</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <parentTransform />
                   <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">382.066223</X>
                     <Y dataType="Float">-86.70662</Y>
@@ -199,8 +189,6 @@
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3" />
-                  <velAbs dataType="Struct" type="Duality.Vector3" />
                 </item>
                 <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="3884702165">
                   <active dataType="Bool">true</active>
@@ -266,12 +254,8 @@
                   <active dataType="Bool">true</active>
                   <angle dataType="Float">0.399004817</angle>
                   <angleAbs dataType="Float">0.399004817</angleAbs>
-                  <angleVel dataType="Float">0</angleVel>
-                  <angleVelAbs dataType="Float">0</angleVelAbs>
-                  <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">1184955908</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <parentTransform />
                   <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">121.429626</X>
                     <Y dataType="Float">278.038269</Y>
@@ -284,8 +268,6 @@
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3" />
-                  <velAbs dataType="Struct" type="Duality.Vector3" />
                 </item>
                 <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="2131923411">
                   <active dataType="Bool">true</active>
@@ -351,12 +333,8 @@
                   <active dataType="Bool">true</active>
                   <angle dataType="Float">0.04730867</angle>
                   <angleAbs dataType="Float">0.04730867</angleAbs>
-                  <angleVel dataType="Float">0</angleVel>
-                  <angleVelAbs dataType="Float">0</angleVelAbs>
-                  <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">1121595201</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <parentTransform />
                   <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">-237.4337</X>
                     <Y dataType="Float">533.737854</Y>
@@ -369,8 +347,6 @@
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3" />
-                  <velAbs dataType="Struct" type="Duality.Vector3" />
                 </item>
                 <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="2068562704">
                   <active dataType="Bool">true</active>
@@ -436,12 +412,8 @@
                   <active dataType="Bool">true</active>
                   <angle dataType="Float">0.637401</angle>
                   <angleAbs dataType="Float">0.637401</angleAbs>
-                  <angleVel dataType="Float">0</angleVel>
-                  <angleVelAbs dataType="Float">0</angleVelAbs>
-                  <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">1246395357</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <parentTransform />
                   <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">101.21965</X>
                     <Y dataType="Float">652.844543</Y>
@@ -454,8 +426,6 @@
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3" />
-                  <velAbs dataType="Struct" type="Duality.Vector3" />
                 </item>
                 <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="2193362860">
                   <active dataType="Bool">true</active>
@@ -521,12 +491,8 @@
                   <active dataType="Bool">true</active>
                   <angle dataType="Float">0</angle>
                   <angleAbs dataType="Float">0</angleAbs>
-                  <angleVel dataType="Float">0</angleVel>
-                  <angleVelAbs dataType="Float">0</angleVelAbs>
-                  <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">2480809397</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <parentTransform />
                   <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">508.088074</X>
                     <Y dataType="Float">452.933716</Y>
@@ -539,8 +505,6 @@
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3" />
-                  <velAbs dataType="Struct" type="Duality.Vector3" />
                 </item>
                 <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="3427776900">
                   <active dataType="Bool">true</active>
@@ -722,12 +686,8 @@
                   <active dataType="Bool">true</active>
                   <angle dataType="Float">1.32828844</angle>
                   <angleAbs dataType="Float">1.32828844</angleAbs>
-                  <angleVel dataType="Float">0</angleVel>
-                  <angleVelAbs dataType="Float">0</angleVelAbs>
-                  <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">217309286</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <parentTransform />
                   <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">-13.6297</X>
                     <Y dataType="Float">542.386536</Y>
@@ -740,8 +700,6 @@
                   </posAbs>
                   <scale dataType="Float">1.94464064</scale>
                   <scaleAbs dataType="Float">1.94464064</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3" />
-                  <velAbs dataType="Struct" type="Duality.Vector3" />
                 </item>
                 <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="1164276789">
                   <active dataType="Bool">true</active>
@@ -807,12 +765,8 @@
                   <active dataType="Bool">true</active>
                   <angle dataType="Float">5.718203</angle>
                   <angleAbs dataType="Float">5.718203</angleAbs>
-                  <angleVel dataType="Float">0</angleVel>
-                  <angleVelAbs dataType="Float">0</angleVelAbs>
-                  <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">966080730</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <parentTransform />
                   <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">190.9804</X>
                     <Y dataType="Float">458.597534</Y>
@@ -825,8 +779,6 @@
                   </posAbs>
                   <scale dataType="Float">1.94464064</scale>
                   <scaleAbs dataType="Float">1.94464064</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3" />
-                  <velAbs dataType="Struct" type="Duality.Vector3" />
                 </item>
                 <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="1913048233">
                   <active dataType="Bool">true</active>
@@ -892,12 +844,8 @@
                   <active dataType="Bool">true</active>
                   <angle dataType="Float">6.21469831</angle>
                   <angleAbs dataType="Float">6.21469831</angleAbs>
-                  <angleVel dataType="Float">0</angleVel>
-                  <angleVelAbs dataType="Float">0</angleVelAbs>
-                  <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">3229634318</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <parentTransform />
                   <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">-37.8626862</X>
                     <Y dataType="Float">319.671631</Y>
@@ -910,8 +858,6 @@
                   </posAbs>
                   <scale dataType="Float">1.94464064</scale>
                   <scaleAbs dataType="Float">1.94464064</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3" />
-                  <velAbs dataType="Struct" type="Duality.Vector3" />
                 </item>
                 <item dataType="Struct" type="DynamicLighting.LightingSpriteRenderer" id="4176601821">
                   <active dataType="Bool">true</active>

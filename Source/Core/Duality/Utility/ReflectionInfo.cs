@@ -23,17 +23,12 @@ namespace Duality
 		public static readonly PropertyInfo Property_Component_GameObj;
 		public static readonly PropertyInfo Property_Component_ActiveSingle;
 
-		public static readonly PropertyInfo	Property_Transform_RelativePos;
-		public static readonly PropertyInfo	Property_Transform_RelativeAngle;
-		public static readonly PropertyInfo	Property_Transform_RelativeScale;
-		public static readonly PropertyInfo	Property_Transform_RelativeVel;
-		public static readonly PropertyInfo	Property_Transform_RelativeAngleVel;
+		public static readonly PropertyInfo	Property_Transform_LocalPos;
+		public static readonly PropertyInfo	Property_Transform_LocalAngle;
+		public static readonly PropertyInfo	Property_Transform_LocalScale;
 		public static readonly PropertyInfo	Property_Transform_Pos;
 		public static readonly PropertyInfo	Property_Transform_Angle;
 		public static readonly PropertyInfo	Property_Transform_Scale;
-		public static readonly PropertyInfo	Property_Transform_Vel;
-		public static readonly PropertyInfo	Property_Transform_AngleVel;
-		public static readonly PropertyInfo	Property_Transform_DeriveAngle;
 		public static readonly PropertyInfo	Property_Transform_IgnoreParent;
 
 		public static readonly PropertyInfo	Property_Camera_ClearColor;
@@ -73,17 +68,12 @@ namespace Duality
 			Property_Component_ActiveSingle	= GetProperty(component, "ActiveSingle");
 
 			Type transform = typeof(Transform);
-			Property_Transform_RelativePos		= GetProperty(transform, "RelativePos");
-			Property_Transform_RelativeAngle	= GetProperty(transform, "RelativeAngle");
-			Property_Transform_RelativeScale	= GetProperty(transform, "RelativeScale");
-			Property_Transform_RelativeVel		= GetProperty(transform, "RelativeVel");
-			Property_Transform_RelativeAngleVel	= GetProperty(transform, "RelativeAngleVel");
+			Property_Transform_LocalPos		= GetProperty(transform, "LocalPos");
+			Property_Transform_LocalAngle	= GetProperty(transform, "LocalAngle");
+			Property_Transform_LocalScale	= GetProperty(transform, "LocalScale");
 			Property_Transform_Pos				= GetProperty(transform, "Pos");
 			Property_Transform_Angle			= GetProperty(transform, "Angle");
 			Property_Transform_Scale			= GetProperty(transform, "Scale");
-			Property_Transform_Vel				= GetProperty(transform, "Vel");
-			Property_Transform_AngleVel			= GetProperty(transform, "AngleVel");
-			Property_Transform_DeriveAngle		= GetProperty(transform, "DeriveAngle");
 			Property_Transform_IgnoreParent		= GetProperty(transform, "IgnoreParent");
 			
 			Type camera = typeof(Camera);

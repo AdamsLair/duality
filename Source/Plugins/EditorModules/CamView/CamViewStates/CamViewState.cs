@@ -558,7 +558,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			if (this.camTransformChanged)
 			{
-				camObj.Transform.MoveBy(this.camVel * unscaledTimeMult);
+				camObj.Transform.MoveByLocal(this.camVel * unscaledTimeMult);
 				this.View.OnCamTransformChanged();
 				this.Invalidate();
 			}
@@ -804,13 +804,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				if (e.Button == MouseButtons.Left)
 				{
 					this.camAction = CameraAction.DragScene;
-					this.camActionBeginLocSpace = this.CameraObj.Transform.RelativePos;
+					this.camActionBeginLocSpace = this.CameraObj.Transform.LocalPos;
 					this.Cursor = CursorHelper.HandGrabbing;
 				}
 				else if (e.Button == MouseButtons.Middle)
 				{
 					this.camAction = CameraAction.Move;
-					this.camActionBeginLocSpace = this.CameraObj.Transform.RelativePos;
+					this.camActionBeginLocSpace = this.CameraObj.Transform.LocalPos;
 				}
 			}
 			else
@@ -821,7 +821,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					if (e.Button == MouseButtons.Middle)
 					{
 						this.camAction = CameraAction.Move;
-						this.camActionBeginLocSpace = this.CameraObj.Transform.RelativePos;
+						this.camActionBeginLocSpace = this.CameraObj.Transform.LocalPos;
 					}
 				}
 
@@ -843,7 +843,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					Vector2 curTemp = new Vector2(
 						(e.X * 2.0f / this.ClientSize.Width) - 1.0f,
 						(e.Y * 2.0f / this.ClientSize.Height) - 1.0f);
-					MathF.TransformCoord(ref curTemp.X, ref curTemp.Y, camObj.Transform.RelativeAngle);
+					MathF.TransformCoord(ref curTemp.X, ref curTemp.Y, camObj.Transform.LocalAngle);
 
 					if (MathF.Sign(e.Delta) != MathF.Sign(curVel))
 						curVel = 0.0f;
@@ -1011,8 +1011,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (e.HasAnyProperty(
-					ReflectionInfo.Property_Transform_RelativePos, 
-					ReflectionInfo.Property_Transform_RelativeAngle) &&
+					ReflectionInfo.Property_Transform_LocalPos, 
+					ReflectionInfo.Property_Transform_LocalAngle) &&
 				e.Objects.Components.Any(c => c.GameObj == this.CameraObj))
 			{
 				if (!this.camBeginDragScene) this.OnMouseMove();

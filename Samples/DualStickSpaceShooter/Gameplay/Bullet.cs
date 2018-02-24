@@ -38,7 +38,7 @@ namespace DualStickSpaceShooter
 
 			body.LinearVelocity = direction * blueprint.LaunchSpeed + sourceDragVel;
 			transform.Pos = new Vector3(position, 0.0f);
-			transform.MoveByAbs(body.LinearVelocity * Time.TimeMult);
+			transform.MoveBy(body.LinearVelocity * Time.TimeMult);
 			transform.Angle = angle;
 			sprite.DepthOffset = 0.1f;
 

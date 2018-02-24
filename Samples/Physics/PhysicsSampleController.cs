@@ -140,7 +140,7 @@ namespace Duality.Samples.Physics
 			if (DualityApp.Mouse[MouseButton.Right])
 			{
 				Vector3 cameraMovement = new Vector3(this.cameraDragScreenAnchor - screenMousePos);
-				mainCamera.GameObj.Transform.MoveToAbs(this.cameraDragWorldAnchor + cameraMovement);
+				mainCamera.GameObj.Transform.MoveTo(this.cameraDragWorldAnchor + cameraMovement);
 			}
 
 			// Pressing the left mouse button: Picking up an object

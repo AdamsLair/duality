@@ -66,6 +66,8 @@ namespace Duality.Components.Physics
 		private List<ShapeInfo>   shapes    = null;
 		private List<JointInfo>   joints    = null;
 
+		[DontSerialize] private Vector2   lastPos               = Vector2.Zero;
+		[DontSerialize] private float     lastAngle             = 0.0f;
 		[DontSerialize] private float     lastScale             = 1.0f;
 		[DontSerialize] private InitState bodyInitState         = InitState.Disposed;
 		[DontSerialize] private bool      schedUpdateBody       = false;
@@ -878,6 +880,84 @@ namespace Duality.Components.Physics
 			if (this.explicitInertia > 0.0f) this.body.Inertia = PhysicsUnit.InertiaToPhysical * this.explicitInertia;
 		}
 
+		private void UpdateBodyFromTransform()
+		{
+			Transform transform = this.GameObj.Transform;
+
+			Vector2 pos = transform.Pos.Xy;
+			if (this.lastPos != pos)
+			{
+				this.lastPos = pos;
+				this.body.Position = PhysicsUnit.LengthToPhysical * pos;
+				this.body.Awake = true;
+			}
+
+			float angle = transform.Angle;
+			if (this.lastAngle != angle)
+			{
+				this.lastAngle = angle;
+				this.body.Rotation = PhysicsUnit.AngleToPhysical * angle;
+				this.body.Awake = true;
+			}
+
+			float scale = transform.Scale;
+			if (this.lastScale != scale)
+			{
+				bool updateScale = false;
+				if (scale == 0.0f || this.lastScale == 0.0f)
+				{
+					updateScale = true;
+				}
+				else
+				{
+					const float pixelLimit = 2;
+					float boundRadius = this.BoundRadius;
+					float upper = (boundRadius + pixelLimit) / boundRadius;
+					float lower = (boundRadius - pixelLimit) / boundRadius;
+					if (scale / this.lastScale >= upper || scale / this.lastScale <= lower)
+					{
+						updateScale = true;
+					}
+				}
+				if (updateScale)
+				{
+					this.lastScale = scale;
+
+					// Flag the body for a shape update and destroy all active shapes to
+					// force a full re-creation of shapes with the new scale value.
+					this.FlagBodyShape();
+					if (this.shapes != null)
+					{
+						foreach (ShapeInfo info in this.shapes)
+							info.DestroyInternalShape();
+					}
+				}
+			}
+		}
+		private void UpdateTransformFromBody()
+		{
+			Transform transform = this.gameobj.Transform;
+
+			// The current PhysicsAlpha interpolation probably isn't the best one. Maybe replace later.
+			Vector2 bodyVel = this.body.LinearVelocity;
+			Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.PhysicsAlpha) * Time.SecondsPerFrame;
+			float bodyAngleVel = this.body.AngularVelocity;
+			float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsAlpha) * Time.SecondsPerFrame;
+
+			// Unless allowed explicitly, ignore the transform hierarchy, so nested RigidBodies don't clash
+			if (!this.allowParent)
+				transform.IgnoreParent = true;
+
+			transform.MoveTo(new Vector3(
+				PhysicsUnit.LengthToDuality * bodyPos.X,
+				PhysicsUnit.LengthToDuality * bodyPos.Y,
+				transform.Pos.Z));
+			transform.TurnTo(PhysicsUnit.AngleToDuality * bodyAngle);
+
+			this.lastPos = transform.Pos.Xy;
+			this.lastAngle = transform.Angle;
+		}
+
 		private void CleanupBody()
 		{
 			if (this.body == null) return;
@@ -915,7 +995,7 @@ namespace Duality.Components.Physics
 		private void InitBody()
 		{
 			if (this.body != null) this.CleanupBody();
-			Transform t = this.GameObj != null ? this.GameObj.Transform : null;
+			Transform transform = this.GameObj != null ? this.GameObj.Transform : null;
 
 			// Create body and determine its enabled state
 			this.body = new Body(Scene.PhysicsWorld, this);
@@ -946,11 +1026,14 @@ namespace Duality.Components.Physics
 
 			this.UpdateBodyShape();
 
-			if (t != null)
+			if (transform != null)
 			{
-				this.body.SetTransform(PhysicsUnit.LengthToPhysical * t.Pos.Xy, PhysicsUnit.AngleToPhysical * t.Angle);
+				this.body.SetTransform(PhysicsUnit.LengthToPhysical * transform.Pos.Xy, PhysicsUnit.AngleToPhysical * transform.Angle);
 				this.body.LinearVelocity = PhysicsUnit.VelocityToPhysical * this.linearVel;
 				this.body.AngularVelocity = PhysicsUnit.AngularVelocityToPhysical * this.angularVel;
+				this.lastPos = transform.Pos.Xy;
+				this.lastAngle = transform.Angle;
+				this.lastScale = transform.Scale;
 			}
 
 			this.body.Collision += this.body_OnCollision;
@@ -984,10 +1067,6 @@ namespace Duality.Components.Physics
 			if (this.bodyInitState != InitState.Disposed) return;
 			this.bodyInitState = InitState.Initializing;
 
-			// Register for tranformation changes to keep the RigidBody in sync. Make sure to register only once.
-			this.GameObj.Transform.EventTransformChanged -= this.OnTransformChanged;
-			this.GameObj.Transform.EventTransformChanged += this.OnTransformChanged;
-
 			// Initialize body and joints
 			this.InitBody();
 			if (this.joints != null)
@@ -1005,9 +1084,6 @@ namespace Duality.Components.Physics
 			// Clean up body and joints
 			this.CleanupJoints();
 			this.CleanupBody();
-
-			// Unregister for transformation change events.
-			this.GameObj.Transform.EventTransformChanged -= this.OnTransformChanged;
 
 			// Finally process all collision events we didn't get around to yet.
 			this.ProcessCollisionEvents();
@@ -1107,7 +1183,13 @@ namespace Duality.Components.Physics
 			this.RemoveDisposedJoints();
 			this.SynchronizeBodyShape();
 
-			// Update velocity and transform values
+			// Update the physics body from Transform changes
+			if (this.body != null)
+			{
+				this.UpdateBodyFromTransform();
+			}
+
+			// Update velocity and Transform values from physics simulation
 			if (this.body != null)
 			{
 				this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
@@ -1116,27 +1198,7 @@ namespace Duality.Components.Physics
 
 				if (this.bodyType != BodyType.Static && this.body.Awake)
 				{
-					Transform transform = this.gameobj.Transform;
-
-					// Make sure we're not overwriting any previously occuring changes
-					transform.CommitChanges();
-
-					// The current PhysicsAlpha interpolation probably isn't the best one. Maybe replace later.
-					Vector2 bodyVel = this.body.LinearVelocity;
-					Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.PhysicsAlpha) * Time.SecondsPerFrame;
-					float bodyAngleVel = this.body.AngularVelocity;
-					float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsAlpha) * Time.SecondsPerFrame;
-
-					// Unless allowed explicitly, ignore the transform hierarchy, so nested RigidBodies don't clash
-					if (!this.allowParent)
-						transform.IgnoreParent = true;
-
-					transform.MoveToAbs(new Vector3(
-						PhysicsUnit.LengthToDuality * bodyPos.X, 
-						PhysicsUnit.LengthToDuality * bodyPos.Y, 
-						transform.Pos.Z));
-					transform.TurnToAbs(bodyAngle);
-					transform.CommitChanges(this);
+					this.UpdateTransformFromBody();
 				}
 			}
 
@@ -1153,63 +1215,15 @@ namespace Duality.Components.Physics
 			this.RemoveDisposedJoints();
 			this.SynchronizeBodyShape();
 
+			// Update the body from Transform changes
+			if (this.body != null)
+			{
+				this.UpdateBodyFromTransform();
+			}
+
 			this.CheckValidTransform();
 		}
-
-		private void OnTransformChanged(object sender, TransformChangedEventArgs e)
-		{
-			// Don't react to events triggered by this Component, or while no physics body is available
-			if (sender == this) return;
-			if (this.body == null) return;
-
-			// Apply transform changes to the physics body
-			Transform t = e.Component as Transform;
-			if ((e.Changes & Transform.DirtyFlags.Pos) != Transform.DirtyFlags.None)
-			{
-				this.body.Position = PhysicsUnit.LengthToPhysical * t.Pos.Xy;
-			}
-			if ((e.Changes & Transform.DirtyFlags.Angle) != Transform.DirtyFlags.None)
-			{
-				this.body.Rotation = t.Angle;
-			}
-			if ((e.Changes & Transform.DirtyFlags.Scale) != Transform.DirtyFlags.None)
-			{
-				bool updateShape = false;
-				float scale = t.Scale;
-				if (scale == 0.0f || this.lastScale == 0.0f)
-				{
-					updateShape = true;
-				}
-				else
-				{
-					const float pixelLimit = 2;
-					float boundRadius = this.BoundRadius;
-					float upper = (boundRadius + pixelLimit) / boundRadius;
-					float lower = (boundRadius - pixelLimit) / boundRadius;
-					if (scale / this.lastScale >= upper || scale / this.lastScale <= lower)
-					{
-						updateShape = true;
-					}
-				}
-				if (updateShape)
-				{
-					// Flag the body for a shape update and destroy all active shapes to
-					// force a full re-creation of shapes with the new scale value.
-					this.FlagBodyShape();
-					if (this.shapes != null)
-					{
-						foreach (ShapeInfo info in this.shapes)
-							info.DestroyInternalShape();
-					}
-				}
-			}
-
-			// Make sure we're simulating this body, if something has changed
-			if (e.Changes != Transform.DirtyFlags.None)
-			{
-				this.body.Awake = true;
-			}
-		}
+		
 		void ICmpInitializable.OnInit(InitContext context)
 		{
 			if (context == InitContext.Activate)

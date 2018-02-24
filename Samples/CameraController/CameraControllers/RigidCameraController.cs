@@ -26,7 +26,7 @@ namespace CameraController
 			{
 				Camera camera = this.GameObj.GetComponent<Camera>();
 				this.GameObj.Parent = this.targetObj;
-				this.GameObj.Transform.RelativePos = new Vector3(0.0f, 0.0f, -camera.FocusDist);
+				this.GameObj.Transform.LocalPos = new Vector3(0.0f, 0.0f, -camera.FocusDist);
 			}
 		}
 		void ICmpInitializable.OnShutdown(ShutdownContext context)

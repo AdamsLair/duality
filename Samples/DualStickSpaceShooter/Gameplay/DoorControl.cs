@@ -126,7 +126,7 @@ namespace DualStickSpaceShooter
 				{
 					if (this.moveSoundInst == null)
 					{
-						this.moveSoundInst = DualityApp.Sound.PlaySound3D(this.moveSound, this.doorPanel.GameObj);
+						this.moveSoundInst = DualityApp.Sound.PlaySound3D(this.moveSound, this.doorPanel.GameObj, false);
 						this.moveSoundInst.FadeIn(0.5f);
 						this.moveSoundInst.Looped = true;
 					}

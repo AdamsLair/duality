@@ -17,12 +17,8 @@
             <active dataType="Bool">true</active>
             <angle dataType="Float">0</angle>
             <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
             <gameobj dataType="ObjectRef">4087432448</gameobj>
             <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
             <pos dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
@@ -35,8 +31,6 @@
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3" />
-            <velAbs dataType="Struct" type="Duality.Vector3" />
           </item>
           <item dataType="Struct" type="Duality.Components.Camera" id="1338851629">
             <active dataType="Bool">true</active>
@@ -60,8 +54,12 @@
             </targetRect>
             <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="All" value="4294967295" />
           </item>
+          <item dataType="Struct" type="Duality.Components.VelocityTracker" id="1863599619">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">4087432448</gameobj>
+          </item>
         </_items>
-        <_size dataType="Int">2</_size>
+        <_size dataType="Int">3</_size>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3693782598" surrogate="true">
         <header />
@@ -69,10 +67,12 @@
           <keys dataType="Array" type="System.Object[]" id="1926762496">
             <item dataType="Type" id="1531263132" value="Duality.Components.Transform" />
             <item dataType="Type" id="3071924758" value="Duality.Components.Camera" />
+            <item dataType="Type" id="2799888136" value="Duality.Components.VelocityTracker" />
           </keys>
           <values dataType="Array" type="System.Object[]" id="1991891918">
             <item dataType="ObjectRef">4144709666</item>
             <item dataType="ObjectRef">1338851629</item>
+            <item dataType="ObjectRef">1863599619</item>
           </values>
         </body>
       </compMap>
@@ -97,12 +97,8 @@
             <active dataType="Bool">true</active>
             <angle dataType="Float">0</angle>
             <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
             <gameobj dataType="ObjectRef">4196981922</gameobj>
             <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
             <pos dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
@@ -115,8 +111,6 @@
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3" />
-            <velAbs dataType="Struct" type="Duality.Vector3" />
           </item>
           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1370633906">
             <active dataType="Bool">true</active>
@@ -189,60 +183,8 @@
                         <active dataType="Bool">true</active>
                         <angle dataType="Float">0</angle>
                         <angleAbs dataType="Float">0</angleAbs>
-                        <angleVel dataType="Float">0</angleVel>
-                        <angleVelAbs dataType="Float">0</angleVelAbs>
-                        <deriveAngle dataType="Bool">true</deriveAngle>
                         <gameobj dataType="ObjectRef">1329885163</gameobj>
                         <ignoreParent dataType="Bool">false</ignoreParent>
-                        <parentTransform dataType="Struct" type="Duality.Components.Transform" id="1421920087">
-                          <active dataType="Bool">true</active>
-                          <angle dataType="Float">0</angle>
-                          <angleAbs dataType="Float">0</angleAbs>
-                          <angleVel dataType="Float">0</angleVel>
-                          <angleVelAbs dataType="Float">0</angleVelAbs>
-                          <deriveAngle dataType="Bool">true</deriveAngle>
-                          <gameobj dataType="ObjectRef">1364642869</gameobj>
-                          <ignoreParent dataType="Bool">false</ignoreParent>
-                          <parentTransform dataType="Struct" type="Duality.Components.Transform" id="1933027943">
-                            <active dataType="Bool">true</active>
-                            <angle dataType="Float">0</angle>
-                            <angleAbs dataType="Float">0</angleAbs>
-                            <angleVel dataType="Float">0</angleVel>
-                            <angleVelAbs dataType="Float">0</angleVelAbs>
-                            <deriveAngle dataType="Bool">true</deriveAngle>
-                            <gameobj dataType="ObjectRef">1875750725</gameobj>
-                            <ignoreParent dataType="Bool">false</ignoreParent>
-                            <parentTransform />
-                            <pos dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">-200</Y>
-                              <Z dataType="Float">0</Z>
-                            </pos>
-                            <posAbs dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">-200</Y>
-                              <Z dataType="Float">0</Z>
-                            </posAbs>
-                            <scale dataType="Float">1</scale>
-                            <scaleAbs dataType="Float">1</scaleAbs>
-                            <vel dataType="Struct" type="Duality.Vector3" />
-                            <velAbs dataType="Struct" type="Duality.Vector3" />
-                          </parentTransform>
-                          <pos dataType="Struct" type="Duality.Vector3">
-                            <X dataType="Float">-200</X>
-                            <Y dataType="Float">0</Y>
-                            <Z dataType="Float">0</Z>
-                          </pos>
-                          <posAbs dataType="Struct" type="Duality.Vector3">
-                            <X dataType="Float">-200</X>
-                            <Y dataType="Float">-200</Y>
-                            <Z dataType="Float">0</Z>
-                          </posAbs>
-                          <scale dataType="Float">1</scale>
-                          <scaleAbs dataType="Float">1</scaleAbs>
-                          <vel dataType="Struct" type="Duality.Vector3" />
-                          <velAbs dataType="Struct" type="Duality.Vector3" />
-                        </parentTransform>
                         <pos dataType="Struct" type="Duality.Vector3" />
                         <posAbs dataType="Struct" type="Duality.Vector3">
                           <X dataType="Float">-200</X>
@@ -251,8 +193,6 @@
                         </posAbs>
                         <scale dataType="Float">1</scale>
                         <scaleAbs dataType="Float">1</scaleAbs>
-                        <vel dataType="Struct" type="Duality.Vector3" />
-                        <velAbs dataType="Struct" type="Duality.Vector3" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2798504443">
                         <active dataType="Bool">true</active>
@@ -322,7 +262,25 @@
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="785590472">
               <_items dataType="Array" type="Duality.Component[]" id="3328711519" length="4">
-                <item dataType="ObjectRef">1421920087</item>
+                <item dataType="Struct" type="Duality.Components.Transform" id="1421920087">
+                  <active dataType="Bool">true</active>
+                  <angle dataType="Float">0</angle>
+                  <angleAbs dataType="Float">0</angleAbs>
+                  <gameobj dataType="ObjectRef">1364642869</gameobj>
+                  <ignoreParent dataType="Bool">false</ignoreParent>
+                  <pos dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">-200</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </pos>
+                  <posAbs dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">-200</X>
+                    <Y dataType="Float">-200</Y>
+                    <Z dataType="Float">0</Z>
+                  </posAbs>
+                  <scale dataType="Float">1</scale>
+                  <scaleAbs dataType="Float">1</scaleAbs>
+                </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="2247580523">
                   <active dataType="Bool">true</active>
                   <blockAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
@@ -385,7 +343,25 @@
       </children>
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1564330560">
         <_items dataType="Array" type="Duality.Component[]" id="3819254397" length="4">
-          <item dataType="ObjectRef">1933027943</item>
+          <item dataType="Struct" type="Duality.Components.Transform" id="1933027943">
+            <active dataType="Bool">true</active>
+            <angle dataType="Float">0</angle>
+            <angleAbs dataType="Float">0</angleAbs>
+            <gameobj dataType="ObjectRef">1875750725</gameobj>
+            <ignoreParent dataType="Bool">false</ignoreParent>
+            <pos dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">-200</Y>
+              <Z dataType="Float">0</Z>
+            </pos>
+            <posAbs dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">-200</Y>
+              <Z dataType="Float">0</Z>
+            </posAbs>
+            <scale dataType="Float">1</scale>
+            <scaleAbs dataType="Float">1</scaleAbs>
+          </item>
           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3344370005">
             <active dataType="Bool">true</active>
             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
@@ -457,52 +433,8 @@
                         <active dataType="Bool">true</active>
                         <angle dataType="Float">0</angle>
                         <angleAbs dataType="Float">0</angleAbs>
-                        <angleVel dataType="Float">0</angleVel>
-                        <angleVelAbs dataType="Float">0</angleVelAbs>
-                        <deriveAngle dataType="Bool">true</deriveAngle>
                         <gameobj dataType="ObjectRef">789210960</gameobj>
                         <ignoreParent dataType="Bool">false</ignoreParent>
-                        <parentTransform dataType="Struct" type="Duality.Components.Transform" id="2700718667">
-                          <active dataType="Bool">true</active>
-                          <angle dataType="Float">0</angle>
-                          <angleAbs dataType="Float">0</angleAbs>
-                          <angleVel dataType="Float">0</angleVel>
-                          <angleVelAbs dataType="Float">0</angleVelAbs>
-                          <deriveAngle dataType="Bool">true</deriveAngle>
-                          <gameobj dataType="ObjectRef">2643441449</gameobj>
-                          <ignoreParent dataType="Bool">false</ignoreParent>
-                          <parentTransform dataType="Struct" type="Duality.Components.Transform" id="3896987725">
-                            <active dataType="Bool">true</active>
-                            <angle dataType="Float">0</angle>
-                            <angleAbs dataType="Float">0</angleAbs>
-                            <angleVel dataType="Float">0</angleVel>
-                            <angleVelAbs dataType="Float">0</angleVelAbs>
-                            <deriveAngle dataType="Bool">true</deriveAngle>
-                            <gameobj dataType="ObjectRef">3839710507</gameobj>
-                            <ignoreParent dataType="Bool">false</ignoreParent>
-                            <parentTransform />
-                            <pos dataType="Struct" type="Duality.Vector3" />
-                            <posAbs dataType="Struct" type="Duality.Vector3" />
-                            <scale dataType="Float">1</scale>
-                            <scaleAbs dataType="Float">1</scaleAbs>
-                            <vel dataType="Struct" type="Duality.Vector3" />
-                            <velAbs dataType="Struct" type="Duality.Vector3" />
-                          </parentTransform>
-                          <pos dataType="Struct" type="Duality.Vector3">
-                            <X dataType="Float">-200</X>
-                            <Y dataType="Float">0</Y>
-                            <Z dataType="Float">0</Z>
-                          </pos>
-                          <posAbs dataType="Struct" type="Duality.Vector3">
-                            <X dataType="Float">-200</X>
-                            <Y dataType="Float">0</Y>
-                            <Z dataType="Float">0</Z>
-                          </posAbs>
-                          <scale dataType="Float">1</scale>
-                          <scaleAbs dataType="Float">1</scaleAbs>
-                          <vel dataType="Struct" type="Duality.Vector3" />
-                          <velAbs dataType="Struct" type="Duality.Vector3" />
-                        </parentTransform>
                         <pos dataType="Struct" type="Duality.Vector3" />
                         <posAbs dataType="Struct" type="Duality.Vector3">
                           <X dataType="Float">-200</X>
@@ -511,8 +443,6 @@
                         </posAbs>
                         <scale dataType="Float">1</scale>
                         <scaleAbs dataType="Float">1</scaleAbs>
-                        <vel dataType="Struct" type="Duality.Vector3" />
-                        <velAbs dataType="Struct" type="Duality.Vector3" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2257830240">
                         <active dataType="Bool">true</active>
@@ -582,7 +512,25 @@
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="4260067840">
               <_items dataType="Array" type="Duality.Component[]" id="3234522355" length="4">
-                <item dataType="ObjectRef">2700718667</item>
+                <item dataType="Struct" type="Duality.Components.Transform" id="2700718667">
+                  <active dataType="Bool">true</active>
+                  <angle dataType="Float">0</angle>
+                  <angleAbs dataType="Float">0</angleAbs>
+                  <gameobj dataType="ObjectRef">2643441449</gameobj>
+                  <ignoreParent dataType="Bool">false</ignoreParent>
+                  <pos dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">-200</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </pos>
+                  <posAbs dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">-200</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </posAbs>
+                  <scale dataType="Float">1</scale>
+                  <scaleAbs dataType="Float">1</scaleAbs>
+                </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="3526379103">
                   <active dataType="Bool">true</active>
                   <blockAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
@@ -645,7 +593,17 @@
       </children>
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3168943104">
         <_items dataType="Array" type="Duality.Component[]" id="2285793395" length="4">
-          <item dataType="ObjectRef">3896987725</item>
+          <item dataType="Struct" type="Duality.Components.Transform" id="3896987725">
+            <active dataType="Bool">true</active>
+            <angle dataType="Float">0</angle>
+            <angleAbs dataType="Float">0</angleAbs>
+            <gameobj dataType="ObjectRef">3839710507</gameobj>
+            <ignoreParent dataType="Bool">false</ignoreParent>
+            <pos dataType="Struct" type="Duality.Vector3" />
+            <posAbs dataType="Struct" type="Duality.Vector3" />
+            <scale dataType="Float">1</scale>
+            <scaleAbs dataType="Float">1</scaleAbs>
+          </item>
           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1013362491">
             <active dataType="Bool">true</active>
             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
@@ -717,60 +675,8 @@
                         <active dataType="Bool">true</active>
                         <angle dataType="Float">0</angle>
                         <angleAbs dataType="Float">0</angleAbs>
-                        <angleVel dataType="Float">0</angleVel>
-                        <angleVelAbs dataType="Float">0</angleVelAbs>
-                        <deriveAngle dataType="Bool">true</deriveAngle>
                         <gameobj dataType="ObjectRef">4129255107</gameobj>
                         <ignoreParent dataType="Bool">false</ignoreParent>
-                        <parentTransform dataType="Struct" type="Duality.Components.Transform" id="3075791359">
-                          <active dataType="Bool">true</active>
-                          <angle dataType="Float">0</angle>
-                          <angleAbs dataType="Float">0</angleAbs>
-                          <angleVel dataType="Float">0</angleVel>
-                          <angleVelAbs dataType="Float">0</angleVelAbs>
-                          <deriveAngle dataType="Bool">true</deriveAngle>
-                          <gameobj dataType="ObjectRef">3018514141</gameobj>
-                          <ignoreParent dataType="Bool">false</ignoreParent>
-                          <parentTransform dataType="Struct" type="Duality.Components.Transform" id="262797001">
-                            <active dataType="Bool">true</active>
-                            <angle dataType="Float">0</angle>
-                            <angleAbs dataType="Float">0</angleAbs>
-                            <angleVel dataType="Float">0</angleVel>
-                            <angleVelAbs dataType="Float">0</angleVelAbs>
-                            <deriveAngle dataType="Bool">true</deriveAngle>
-                            <gameobj dataType="ObjectRef">205519783</gameobj>
-                            <ignoreParent dataType="Bool">false</ignoreParent>
-                            <parentTransform />
-                            <pos dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">200</Y>
-                              <Z dataType="Float">0</Z>
-                            </pos>
-                            <posAbs dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">200</Y>
-                              <Z dataType="Float">0</Z>
-                            </posAbs>
-                            <scale dataType="Float">1</scale>
-                            <scaleAbs dataType="Float">1</scaleAbs>
-                            <vel dataType="Struct" type="Duality.Vector3" />
-                            <velAbs dataType="Struct" type="Duality.Vector3" />
-                          </parentTransform>
-                          <pos dataType="Struct" type="Duality.Vector3">
-                            <X dataType="Float">-200</X>
-                            <Y dataType="Float">0</Y>
-                            <Z dataType="Float">0</Z>
-                          </pos>
-                          <posAbs dataType="Struct" type="Duality.Vector3">
-                            <X dataType="Float">-200</X>
-                            <Y dataType="Float">200</Y>
-                            <Z dataType="Float">0</Z>
-                          </posAbs>
-                          <scale dataType="Float">1</scale>
-                          <scaleAbs dataType="Float">1</scaleAbs>
-                          <vel dataType="Struct" type="Duality.Vector3" />
-                          <velAbs dataType="Struct" type="Duality.Vector3" />
-                        </parentTransform>
                         <pos dataType="Struct" type="Duality.Vector3" />
                         <posAbs dataType="Struct" type="Duality.Vector3">
                           <X dataType="Float">-200</X>
@@ -779,8 +685,6 @@
                         </posAbs>
                         <scale dataType="Float">1</scale>
                         <scaleAbs dataType="Float">1</scaleAbs>
-                        <vel dataType="Struct" type="Duality.Vector3" />
-                        <velAbs dataType="Struct" type="Duality.Vector3" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1302907091">
                         <active dataType="Bool">true</active>
@@ -850,7 +754,25 @@
             </children>
             <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="795277176">
               <_items dataType="Array" type="Duality.Component[]" id="736863175" length="4">
-                <item dataType="ObjectRef">3075791359</item>
+                <item dataType="Struct" type="Duality.Components.Transform" id="3075791359">
+                  <active dataType="Bool">true</active>
+                  <angle dataType="Float">0</angle>
+                  <angleAbs dataType="Float">0</angleAbs>
+                  <gameobj dataType="ObjectRef">3018514141</gameobj>
+                  <ignoreParent dataType="Bool">false</ignoreParent>
+                  <pos dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">-200</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </pos>
+                  <posAbs dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">-200</X>
+                    <Y dataType="Float">200</Y>
+                    <Z dataType="Float">0</Z>
+                  </posAbs>
+                  <scale dataType="Float">1</scale>
+                  <scaleAbs dataType="Float">1</scaleAbs>
+                </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="3901451795">
                   <active dataType="Bool">true</active>
                   <blockAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
@@ -913,7 +835,25 @@
       </children>
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2032929704">
         <_items dataType="Array" type="Duality.Component[]" id="2334405871" length="4">
-          <item dataType="ObjectRef">262797001</item>
+          <item dataType="Struct" type="Duality.Components.Transform" id="262797001">
+            <active dataType="Bool">true</active>
+            <angle dataType="Float">0</angle>
+            <angleAbs dataType="Float">0</angleAbs>
+            <gameobj dataType="ObjectRef">205519783</gameobj>
+            <ignoreParent dataType="Bool">false</ignoreParent>
+            <pos dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">200</Y>
+              <Z dataType="Float">0</Z>
+            </pos>
+            <posAbs dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">200</Y>
+              <Z dataType="Float">0</Z>
+            </posAbs>
+            <scale dataType="Float">1</scale>
+            <scaleAbs dataType="Float">1</scaleAbs>
+          </item>
           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1674139063">
             <active dataType="Bool">true</active>
             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">

@@ -85,7 +85,7 @@
                 <_size dataType="Int">0</_size>
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
-              <prop dataType="MemberInfo" id="111936128" value="P:Duality.Components.Transform:RelativePos" />
+              <prop dataType="MemberInfo" id="111936128" value="P:Duality.Components.Transform:LocalPos" />
               <val dataType="Struct" type="Duality.Vector3">
                 <X dataType="Float">-200</X>
                 <Y dataType="Float">0</Y>

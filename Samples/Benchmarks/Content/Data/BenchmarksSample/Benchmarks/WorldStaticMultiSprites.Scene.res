@@ -9,17 +9,13 @@
       <active dataType="Bool">true</active>
       <children />
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3874747407">
-        <_items dataType="Array" type="Duality.Component[]" id="4254807982" length="4">
+        <_items dataType="Array" type="Duality.Component[]" id="4254807982">
           <item dataType="Struct" type="Duality.Components.Transform" id="1157114975">
             <active dataType="Bool">true</active>
             <angle dataType="Float">0</angle>
             <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
             <gameobj dataType="ObjectRef">1099837757</gameobj>
             <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
             <pos dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
@@ -32,8 +28,6 @@
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3" />
-            <velAbs dataType="Struct" type="Duality.Vector3" />
           </item>
           <item dataType="Struct" type="Duality.Components.Camera" id="2646224234">
             <active dataType="Bool">true</active>
@@ -62,12 +56,16 @@
             </targetRect>
             <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="All" value="4294967295" />
           </item>
+          <item dataType="Struct" type="Duality.Components.VelocityTracker" id="3170972224">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">1099837757</gameobj>
+          </item>
           <item dataType="Struct" type="Duality.Components.SoundListener" id="3132490284">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1099837757</gameobj>
           </item>
         </_items>
-        <_size dataType="Int">3</_size>
+        <_size dataType="Int">4</_size>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3161949152" surrogate="true">
         <header />
@@ -76,11 +74,13 @@
             <item dataType="Type" id="2135040406" value="Duality.Components.Transform" />
             <item dataType="Type" id="1182745306" value="Duality.Components.Camera" />
             <item dataType="Type" id="3933355574" value="Duality.Components.SoundListener" />
+            <item dataType="Type" id="2524704250" value="Duality.Components.VelocityTracker" />
           </keys>
           <values dataType="Array" type="System.Object[]" id="619004008">
             <item dataType="ObjectRef">1157114975</item>
             <item dataType="ObjectRef">2646224234</item>
             <item dataType="ObjectRef">3132490284</item>
+            <item dataType="ObjectRef">3170972224</item>
           </values>
         </body>
       </compMap>

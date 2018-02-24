@@ -125,7 +125,7 @@ namespace DualStickSpaceShooter
 
 				// Move the camera so it can most likely see all of the required objects
 				Vector3 targetPos = focusPos + this.GetTargetOffset(maxDistFromCenter);
-				transform.MoveByAbs((targetPos - transform.Pos) * MathF.Pow(10.0f, -this.softness) * Time.TimeMult);
+				transform.MoveBy((targetPos - transform.Pos) * MathF.Pow(10.0f, -this.softness) * Time.TimeMult);
 			}
 
 			// Apply new screen shake offset
@@ -145,7 +145,7 @@ namespace DualStickSpaceShooter
 
 				// Move near initial spawn point
 				Transform transform = this.GameObj.Transform;
-				transform.MoveToAbs(SpawnPoint.SpawnPos + this.GetTargetOffset(0.0f));
+				transform.MoveTo(SpawnPoint.SpawnPos + this.GetTargetOffset(0.0f));
 			}
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
