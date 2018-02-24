@@ -112,24 +112,27 @@ namespace Duality.Editor.Plugins.UndoHistoryView
             }
             else if (e.Index == lb.SelectedIndex)
             {
-                
-                Font selectedFont  = new Font(e.Font, FontStyle.Bold);
-                Brush selectedBrush = Brushes.Black;                 
+                //Prevent flicker of blur on previously selected item
+                if ((e.State & DrawItemState.Selected) == DrawItemState.Selected) 
+                {
+                    Font selectedFont = new Font(e.Font, FontStyle.Bold);
+                    Brush selectedBrush = Brushes.Black;
 
-                e = new DrawItemEventArgs(e.Graphics,
-                                  selectedFont,
-                                  e.Bounds,
-                                  e.Index,
-                                  e.State ^ DrawItemState.Selected,
-                                  e.ForeColor,
-                                  Color.LightGray);
+                    e = new DrawItemEventArgs(e.Graphics,
+                                      selectedFont,
+                                      e.Bounds,
+                                      e.Index,
+                                      e.State ^ DrawItemState.Selected,
+                                      e.ForeColor,
+                                      Color.LightGray);
 
-                e.DrawBackground();
+                    e.DrawBackground();
 
-                e.Graphics.DrawString(lb.Items[e.Index].ToString(),
-                      selectedFont, selectedBrush, e.Bounds, StringFormat.GenericDefault);
+                    e.Graphics.DrawString(lb.Items[e.Index].ToString(),
+                          selectedFont, selectedBrush, e.Bounds, StringFormat.GenericDefault);
 
-                e.DrawFocusRectangle();
+                    e.DrawFocusRectangle();
+                }
             }
             else
             {
