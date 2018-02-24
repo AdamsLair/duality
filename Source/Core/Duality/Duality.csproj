@@ -90,4 +90,14 @@
 	    <HintPath>..\..\..\.net standard 1.1 dlls\NVorbis.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
+  <PropertyGroup>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)NVorbis.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+  </Target>
 </Project>

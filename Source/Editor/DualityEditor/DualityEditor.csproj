@@ -6,7 +6,6 @@
     <StartWorkingDirectory>$(SolutionDir)Build\Output\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
