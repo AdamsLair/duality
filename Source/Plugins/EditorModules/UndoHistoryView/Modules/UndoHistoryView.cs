@@ -96,6 +96,9 @@ namespace Duality.Editor.Plugins.UndoHistoryView
 
         private void undoRedoListBox_DrawItem(object sender, DrawItemEventArgs e)
         {
+            if (e.Index < 0)
+                return;
+
             ListBox lb = (ListBox)sender;
 
             //Style the items based on if they are undo, selected or redo items
@@ -103,26 +106,38 @@ namespace Duality.Editor.Plugins.UndoHistoryView
             {
                 e.DrawBackground();
                 Font undoFont = new Font(e.Font, FontStyle.Regular);
-                Brush myBrush = Brushes.Black;
+                Brush undoBrush = Brushes.Black;
                 e.Graphics.DrawString(lb.Items[e.Index].ToString(),
-                      undoFont, myBrush, e.Bounds, StringFormat.GenericDefault);
+                      undoFont, undoBrush, e.Bounds, StringFormat.GenericDefault);
             }
             else if (e.Index == lb.SelectedIndex)
             {
-                e.DrawBackground();
+                
                 Font selectedFont  = new Font(e.Font, FontStyle.Bold);
-                Brush myBrush = Brushes.Black; 
+                Brush selectedBrush = Brushes.Black;                 
+
+                e = new DrawItemEventArgs(e.Graphics,
+                                  selectedFont,
+                                  e.Bounds,
+                                  e.Index,
+                                  e.State ^ DrawItemState.Selected,
+                                  e.ForeColor,
+                                  Color.LightGray);
+
+                e.DrawBackground();
+
                 e.Graphics.DrawString(lb.Items[e.Index].ToString(),
-                      selectedFont, myBrush, e.Bounds, StringFormat.GenericDefault);
+                      selectedFont, selectedBrush, e.Bounds, StringFormat.GenericDefault);
+
                 e.DrawFocusRectangle();
             }
             else
             {
                 e.DrawBackground();
                 Font redoFont = new Font(e.Font, FontStyle.Regular);
-                Brush myBrush = Brushes.DarkGray;
+                Brush redoBrush = Brushes.DarkGray;
                 e.Graphics.DrawString(lb.Items[e.Index].ToString(),
-                      redoFont, myBrush, e.Bounds, StringFormat.GenericDefault);
+                      redoFont, redoBrush, e.Bounds, StringFormat.GenericDefault);
             }
         }
     }
