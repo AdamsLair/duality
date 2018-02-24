@@ -10,7 +10,7 @@ namespace Duality.Editor.Plugins.UndoHistoryView
 {
     public class UndoHistoryViewPlugin : EditorPlugin
     {        
-        UndoHistoryView _undoHistoryView;
+        private UndoHistoryView undoHistoryView;
         private bool isLoading = false;
 
         public override string Id
@@ -51,23 +51,23 @@ namespace Duality.Editor.Plugins.UndoHistoryView
 
         public UndoHistoryView RequestUndoHistoryView()
         {
-            if (this._undoHistoryView == null || this._undoHistoryView.IsDisposed)
+            if (this.undoHistoryView == null || this.undoHistoryView.IsDisposed)
             {
-                this._undoHistoryView = new UndoHistoryView();
-                this._undoHistoryView.FormClosed += delegate (object sender, FormClosedEventArgs e) { this._undoHistoryView = null; };
+                this.undoHistoryView = new UndoHistoryView();
+                this.undoHistoryView.FormClosed += delegate (object sender, FormClosedEventArgs e) { this.undoHistoryView = null; };
             }
 
             if (!this.isLoading)
             {
-                this._undoHistoryView.Show(DualityEditorApp.MainForm.MainDockPanel);
-                if (this._undoHistoryView.Pane != null)
+                this.undoHistoryView.Show(DualityEditorApp.MainForm.MainDockPanel);
+                if (this.undoHistoryView.Pane != null)
                 {
-                    this._undoHistoryView.Pane.Activate();
-                    this._undoHistoryView.Focus();
+                    this.undoHistoryView.Pane.Activate();
+                    this.undoHistoryView.Focus();
                 }
             }
 
-            return this._undoHistoryView;
+            return this.undoHistoryView;
         }
     }
 }
