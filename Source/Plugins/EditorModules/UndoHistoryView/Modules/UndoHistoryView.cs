@@ -55,6 +55,24 @@ namespace Duality.Editor.Plugins.UndoHistoryView
 
         private void UndoRedoManager_StackChanged(object sender, EventArgs e)
         {
+            if (UndoRedoManager.CanUndo)
+            {
+                undoButton.Enabled = true;
+            }
+            else
+            {
+                undoButton.Enabled = false;
+            }
+
+            if (UndoRedoManager.CanRedo)
+            {
+                redoButton.Enabled = true;
+            }
+            else
+            {
+                redoButton.Enabled = false;
+            }
+
             //update the list
             _undoStackSource.ResetBindings(false);
 
