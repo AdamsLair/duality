@@ -147,6 +147,16 @@ namespace Duality.Resources
 			this.info = new BatchInfo(technique, mainTex);
 		}
 		/// <summary>
+		/// Creates a new tinted, single-texture Material.
+		/// </summary>
+		/// <param name="technique">The <see cref="Duality.Resources.DrawTechnique"/> to use.</param>
+		/// <param name="mainColor">The <see cref="MainColor"/> to use.</param>
+		/// <param name="mainTex">The main <see cref="Duality.Resources.Texture"/> to use.</param>
+		public Material(ContentRef<DrawTechnique> technique, ColorRgba mainColor, ContentRef<Texture> mainTex)
+		{
+			this.info = new BatchInfo(technique, mainColor, mainTex);
+		}
+		/// <summary>
 		/// Creates a new Material based on the specified BatchInfo
 		/// </summary>
 		/// <param name="info"></param>

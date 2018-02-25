@@ -102,7 +102,18 @@ namespace Duality.Drawing
 		{
 			this.MainTexture = mainTex;
 		}
-		
+		/// <summary>
+		/// Creates a new tinted, single-texture BatchInfo.
+		/// </summary>
+		/// <param name="technique">The <see cref="Duality.Resources.DrawTechnique"/> to use.</param>
+		/// <param name="mainColor">The <see cref="MainColor"/> to use.</param>
+		/// <param name="mainTex">The main <see cref="Duality.Resources.Texture"/> to use.</param>
+		public BatchInfo(ContentRef<DrawTechnique> technique, ColorRgba mainColor, ContentRef<Texture> mainTex) : this(technique)
+		{
+			this.MainColor = mainColor;
+			this.MainTexture = mainTex;
+		}
+
 
 		/// <summary>
 		/// Initializes this <see cref="BatchInfo"/> instance to match the specified
