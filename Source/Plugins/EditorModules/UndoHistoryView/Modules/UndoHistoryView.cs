@@ -18,7 +18,7 @@ namespace Duality.Editor.Plugins.UndoHistoryView
         public UndoHistoryView()
         {
             InitializeComponent();
-
+            
             //Can't bind directly to a IReadOnlyList, so we create a binding source
             this.undoStackSource = new BindingSource();
             this.undoStackSource.DataSource = UndoRedoManager.ActionStack;
@@ -26,8 +26,8 @@ namespace Duality.Editor.Plugins.UndoHistoryView
             //Setup data binding and display 
             this.undoRedoListBox.DataSource = undoStackSource;
             this.undoRedoListBox.DisplayMember = "Name";
-            this.undoRedoListBox.DrawMode = DrawMode.OwnerDrawFixed;
-
+            this.undoRedoListBox.DrawMode = DrawMode.OwnerDrawVariable;
+                       
             //handle clicks to undo/redo
             this.undoRedoListBox.Click += UndoRedoListBox_Click;
 
@@ -94,6 +94,7 @@ namespace Duality.Editor.Plugins.UndoHistoryView
                 UndoRedoManager.Redo();
         }
 
+        //TODO: fix issue where text is being indented
         private void undoRedoListBox_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index < 0)
@@ -101,14 +102,19 @@ namespace Duality.Editor.Plugins.UndoHistoryView
 
             ListBox lb = (ListBox)sender;
 
+            string displayValue = lb.GetItemText(lb.Items[e.Index]);
+            
             //Style the items based on if they are undo, selected or redo items
             if (e.Index < lb.SelectedIndex)
             {
                 e.DrawBackground();
                 Font undoFont = new Font(e.Font, FontStyle.Regular);
                 Brush undoBrush = Brushes.Black;
-                e.Graphics.DrawString(lb.Items[e.Index].ToString(),
-                      undoFont, undoBrush, e.Bounds, StringFormat.GenericDefault);
+                e.Graphics.DrawString(displayValue,
+                      undoFont, 
+                      undoBrush, 
+                      new Rectangle(0, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height), 
+                      StringFormat.GenericDefault);
             }
             else if (e.Index == lb.SelectedIndex)
             {
@@ -128,8 +134,11 @@ namespace Duality.Editor.Plugins.UndoHistoryView
 
                     e.DrawBackground();
 
-                    e.Graphics.DrawString(lb.Items[e.Index].ToString(),
-                          selectedFont, selectedBrush, e.Bounds, StringFormat.GenericDefault);
+                    e.Graphics.DrawString(displayValue,
+                          selectedFont, 
+                          selectedBrush,
+                          new Rectangle(0, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height),
+                          StringFormat.GenericDefault);
 
                     e.DrawFocusRectangle();
                 }
@@ -139,8 +148,11 @@ namespace Duality.Editor.Plugins.UndoHistoryView
                 e.DrawBackground();
                 Font redoFont = new Font(e.Font, FontStyle.Regular);
                 Brush redoBrush = Brushes.DarkGray;
-                e.Graphics.DrawString(lb.Items[e.Index].ToString(),
-                      redoFont, redoBrush, e.Bounds, StringFormat.GenericDefault);
+                e.Graphics.DrawString(displayValue,
+                      redoFont, 
+                      redoBrush,
+                      new Rectangle(0, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height),
+                      StringFormat.GenericDefault);
             }
         }
     }
