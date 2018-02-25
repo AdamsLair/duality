@@ -103,7 +103,12 @@ namespace Duality.Editor.Plugins.UndoHistoryView
             ListBox lb = (ListBox)sender;
 
             string displayValue = lb.GetItemText(lb.Items[e.Index]);
-            
+            StringFormat strFormat = new StringFormat()
+            {
+                Alignment = StringAlignment.Near,
+                LineAlignment = StringAlignment.Center
+            };
+
             //Style the items based on if they are undo, selected or redo items
             if (e.Index < lb.SelectedIndex)
             {
@@ -113,8 +118,8 @@ namespace Duality.Editor.Plugins.UndoHistoryView
                 e.Graphics.DrawString(displayValue,
                       undoFont, 
                       undoBrush, 
-                      new Rectangle(0, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height), 
-                      StringFormat.GenericDefault);
+                      new Rectangle(0, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height),
+                      strFormat);
             }
             else if (e.Index == lb.SelectedIndex)
             {
@@ -138,7 +143,7 @@ namespace Duality.Editor.Plugins.UndoHistoryView
                           selectedFont, 
                           selectedBrush,
                           new Rectangle(0, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height),
-                          StringFormat.GenericDefault);
+                          strFormat);
 
                     e.DrawFocusRectangle();
                 }
@@ -152,7 +157,7 @@ namespace Duality.Editor.Plugins.UndoHistoryView
                       redoFont, 
                       redoBrush,
                       new Rectangle(0, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height),
-                      StringFormat.GenericDefault);
+                      strFormat);
             }
         }
     }
