@@ -43,6 +43,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			get { return 4; }
 		}
 
+		private readonly TilemapFloodFill floodFill = new TilemapFloodFill();
+
 		public override void UpdatePreview()
 		{
 			ITilemapToolEnvironment env = this.Environment;
@@ -73,7 +75,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			// Run the flood fill algorithm
 			Point2 activeOrigin = env.ActiveOrigin;
-			bool previewValid = TilemapFloodFill.GetFloodFillArea(env.ActiveTilemap, env.HoveredTile, true, env.ActiveArea, ref activeOrigin);
+			bool previewValid = this.floodFill.GetFloodFillArea(env.ActiveTilemap, env.HoveredTile, true, env.ActiveArea, ref activeOrigin);
 			env.ActiveOrigin = activeOrigin;
 			if (!previewValid)
 			{
@@ -90,7 +92,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			ITilemapToolEnvironment env = this.Environment;
 
 			Point2 activeOrigin = env.ActiveOrigin;
-			TilemapFloodFill.GetFloodFillArea(env.ActiveTilemap, activeOrigin, false, env.ActiveArea, ref activeOrigin);
+			this.floodFill.GetFloodFillArea(env.ActiveTilemap, activeOrigin, false, env.ActiveArea, ref activeOrigin);
 			env.ActiveOrigin = activeOrigin;
 			env.ActiveAreaOutlines.Clear();
 			env.SubmitActiveAreaChanges(true);

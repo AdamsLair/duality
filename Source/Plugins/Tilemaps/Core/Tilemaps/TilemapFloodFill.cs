@@ -5,9 +5,9 @@ namespace Duality.Plugins.Tilemaps
 	/// <summary>
 	/// A helper class that provides a flood fill algorithm.
 	/// </summary>
-	public static class TilemapFloodFill
+	public class TilemapFloodFill
 	{
-		private static Grid<bool> activeFillBuffer = new Grid<bool>();
+		private Grid<bool> activeFillBuffer = new Grid<bool>();
 
 		/// <summary>
 		/// Runs the flood fill algorithm on the specified position and writes the result into the specified variables.
@@ -18,12 +18,12 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="floodFillArea"></param>
 		/// <param name="floodFillOrigin"></param>
 		/// <returns>True, if the algorithm completed. False, if it was canceled.</returns>
-		public static bool GetFloodFillArea(Tilemap tilemap, Point2 pos, bool preview, Grid<bool> floodFillArea, ref Point2 floodFillOrigin)
+		public bool GetFloodFillArea(Tilemap tilemap, Point2 pos, bool preview, Grid<bool> floodFillArea, ref Point2 floodFillOrigin)
 		{
 			Grid<Tile> tiles = tilemap.BeginUpdateTiles();
 			Point2 fillTopLeft;
 			Point2 fillSize;
-			bool success = FloodFillTiles(ref activeFillBuffer, tiles, pos, preview ? (128 * 128) : 0, out fillTopLeft, out fillSize);
+			bool success = FloodFillTiles(ref this.activeFillBuffer, tiles, pos, preview ? (128 * 128) : 0, out fillTopLeft, out fillSize);
 			tilemap.EndUpdateTiles(0, 0, 0, 0);
 
 			// Find the filled areas boundaries and copy it to the active area
@@ -31,7 +31,7 @@ namespace Duality.Plugins.Tilemaps
 			{
 				floodFillOrigin = fillTopLeft;
 				floodFillArea.ResizeClear(fillSize.X, fillSize.Y);
-				activeFillBuffer.CopyTo(floodFillArea, 0, 0, -1, -1, floodFillOrigin.X, floodFillOrigin.Y);
+				this.activeFillBuffer.CopyTo(floodFillArea, 0, 0, -1, -1, floodFillOrigin.X, floodFillOrigin.Y);
 			}
 
 			return success;
@@ -48,7 +48,7 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="fillAreaSize"></param>
 		/// <param name="fillAreaTopLeft"></param>
 		/// <returns>True when successful. False when aborted.</returns>
-		public static bool FloodFillTiles(ref Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, int maxTileCount, out Point2 fillAreaTopLeft, out Point2 fillAreaSize)
+		public bool FloodFillTiles(ref Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, int maxTileCount, out Point2 fillAreaTopLeft, out Point2 fillAreaSize)
 		{
 			// ## Note: ##
 			// This flood fill algorithm is a modified version of "A More Efficient Flood Fill" by Adam Milazzo.
@@ -79,7 +79,7 @@ namespace Duality.Plugins.Tilemaps
 			return success;
 		}
 
-		private static bool _FloodFillTiles(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile, ref int maxTileCount, ref Point2 fillAreaTopLeft, ref Point2 fillAreaSize)
+		private bool _FloodFillTiles(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile, ref int maxTileCount, ref Point2 fillAreaTopLeft, ref Point2 fillAreaSize)
 		{
 			// Adjust the fill area to the position we'll be starting to fill
 			fillAreaSize.X += Math.Max(fillAreaTopLeft.X - pos.X, 0);
@@ -187,7 +187,7 @@ namespace Duality.Plugins.Tilemaps
 			return true;
 		}
 
-		private static Point2 _FloodFillTiles_FindTopLeft(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
+		private Point2 _FloodFillTiles_FindTopLeft(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
 		{
 			// Find the topleft-most connected matching tile
 			while (true)
@@ -200,12 +200,12 @@ namespace Duality.Plugins.Tilemaps
 			return pos;
 		}
 
-		private static bool _FloodFill_TilesEqual(Tile baseTile, Tile otherTile)
+		private bool _FloodFill_TilesEqual(Tile baseTile, Tile otherTile)
 		{
 			return baseTile.BaseIndex == otherTile.BaseIndex;
 		}
 
-		private static bool _FloodFill_IsCandidate(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
+		private bool _FloodFill_IsCandidate(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
 		{
 			return !fillBuffer[pos.X, pos.Y] && _FloodFill_TilesEqual(baseTile, tiles[pos.X, pos.Y]);
 		}
