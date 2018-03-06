@@ -17,28 +17,21 @@ namespace Duality.Backend.DefaultOpenTK
 	{
 		private static bool openTKInitialized;
 		private static Thread mainThread;
-		private double lastInputDeviceUpdate;
+		private static double lastInputDeviceUpdate;
 
 		protected override void InitPlugin()
 		{
 			base.InitPlugin();
-
 			mainThread = Thread.CurrentThread;
-
-			// Initialize OpenTK, if not done yet
-			InitOpenTK();
-
-			// Initially check for available input devices
-			this.DetectInputDevices();
 		}
 		protected override void OnAfterUpdate()
 		{
 			base.OnAfterUpdate();
 
 			// Periodically check for global / non-windowbound input devices
-			if (Time.MainTimer.TotalSeconds - this.lastInputDeviceUpdate > 1.0f)
+			if (Time.MainTimer.TotalSeconds - lastInputDeviceUpdate > 1.0f)
 			{
-				this.DetectInputDevices();
+				DetectInputDevices();
 			}
 		}
 		protected override void OnDisposePlugin()
@@ -57,9 +50,9 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 		}
 
-		private void DetectInputDevices()
+		internal static void DetectInputDevices()
 		{
-			this.lastInputDeviceUpdate = Time.MainTimer.TotalSeconds;
+			lastInputDeviceUpdate = Time.MainTimer.TotalSeconds;
 			GlobalGamepadInputSource.UpdateAvailableDecives(DualityApp.Gamepads);
 			GlobalJoystickInputSource.UpdateAvailableDecives(DualityApp.Joysticks);
 		}
