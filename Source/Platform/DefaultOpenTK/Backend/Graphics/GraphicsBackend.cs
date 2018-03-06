@@ -92,7 +92,8 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			// Initialize OpenTK, if not done yet
 			DefaultOpenTKBackendPlugin.InitOpenTK();
-			
+			DefaultOpenTKBackendPlugin.DetectInputDevices();
+
 			// Log information about the available display devices
 			GraphicsBackend.LogDisplayDevices();
 
