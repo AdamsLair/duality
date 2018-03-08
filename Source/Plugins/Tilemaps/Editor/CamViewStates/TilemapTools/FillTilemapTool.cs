@@ -10,7 +10,6 @@ using Duality.Plugins.Tilemaps;
 using Duality.Editor.Plugins.Tilemaps.Properties;
 using Duality.Editor.Plugins.Tilemaps.UndoRedoActions;
 
-
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
 	/// <summary>
@@ -22,22 +21,27 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			get { return TilemapsRes.ItemName_TileFill; }
 		}
+
 		public override Image Icon
 		{
 			get { return TilemapsResCache.IconTileFill; }
 		}
+
 		public override Cursor ActionCursor
 		{
 			get { return TilemapsResCache.CursorTileFill; }
 		}
+
 		public override Keys ShortcutKey
 		{
 			get { return Keys.T; }
 		}
+
 		public override bool FadeInPreviews
 		{
 			get { return true; }
 		}
+
 		public override int SortOrder
 		{
 			get { return 4; }
@@ -75,7 +79,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			// Run the flood fill algorithm
 			Point2 activeOrigin = env.ActiveOrigin;
-			bool previewValid = this.floodFill.GetFloodFillArea(env.ActiveTilemap, env.HoveredTile, true, env.ActiveArea, ref activeOrigin);
+			bool previewValid = this.floodFill.GetFillArea(env.ActiveTilemap, env.HoveredTile, true, env.ActiveArea, ref activeOrigin);
 			env.ActiveOrigin = activeOrigin;
 			if (!previewValid)
 			{
@@ -86,13 +90,14 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			env.ActiveAreaOutlines.Clear();
 			env.SubmitActiveAreaChanges(previewValid);
 		}
+
 		public override void UpdateActiveArea()
 		{
 			base.UpdateActiveArea();
 			ITilemapToolEnvironment env = this.Environment;
 
 			Point2 activeOrigin = env.ActiveOrigin;
-			this.floodFill.GetFloodFillArea(env.ActiveTilemap, activeOrigin, false, env.ActiveArea, ref activeOrigin);
+			this.floodFill.GetFillArea(env.ActiveTilemap, activeOrigin, false, env.ActiveArea, ref activeOrigin);
 			env.ActiveOrigin = activeOrigin;
 			env.ActiveAreaOutlines.Clear();
 			env.SubmitActiveAreaChanges(true);
@@ -117,6 +122,5 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.Environment.ActiveAreaOutlines.Clear();
 			this.Environment.SubmitActiveAreaChanges(true);
 		}
-
 	}
 }
