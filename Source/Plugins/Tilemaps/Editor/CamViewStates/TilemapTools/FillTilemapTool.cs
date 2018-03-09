@@ -17,37 +17,34 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 	/// </summary>
 	public class FillTilemapTool : TilemapTool
 	{
+		private readonly TilemapFloodFill floodFill = new TilemapFloodFill();
+
+
 		public override string Name
 		{
 			get { return TilemapsRes.ItemName_TileFill; }
 		}
-
 		public override Image Icon
 		{
 			get { return TilemapsResCache.IconTileFill; }
 		}
-
 		public override Cursor ActionCursor
 		{
 			get { return TilemapsResCache.CursorTileFill; }
 		}
-
 		public override Keys ShortcutKey
 		{
 			get { return Keys.T; }
 		}
-
 		public override bool FadeInPreviews
 		{
 			get { return true; }
 		}
-
 		public override int SortOrder
 		{
 			get { return 4; }
 		}
 
-		private readonly TilemapFloodFill floodFill = new TilemapFloodFill();
 
 		public override void UpdatePreview()
 		{
