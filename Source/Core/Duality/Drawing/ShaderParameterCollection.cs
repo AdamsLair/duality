@@ -60,13 +60,25 @@ namespace Duality.Drawing
 		{
 			get
 			{
-				for (int i = 0; i < this.values.Count; i++)
+				for (int i = 0; i < this.Count; i++)
 				{
 					yield return this.values.Data[i].Name;
 				}
 			}
 		}
+		/// <summary>
+		/// [GET] Returns the number of variables in this collection.
+		/// </summary>
+		public int Count
+		{
+			get
+			{
+				if (this.values != null)
+					return this.values.Count;
 
+				return 0;
+			}
+		}
 
 		public ShaderParameterCollection()
 		{

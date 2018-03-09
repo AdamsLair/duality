@@ -176,7 +176,16 @@ namespace Duality.Drawing
 		{
 			this.parameters.Set(name, value);
 		}
-		
+		/// <summary>
+		/// Assigns all shader variables in batch.
+		/// </summary>
+		/// <param name="variables"></param>
+		/// <seealso cref="ShaderParameterCollection.CopyTo"/>
+		public void SetVariables(ShaderParameterCollection variables)
+		{
+			variables.CopyTo(this.parameters);
+		}
+
 		/// <summary>
 		/// Retrieves a copy of the values that are assigned the specified variable. If the internally 
 		/// stored type does not match the specified type, it will be converted before returning.
