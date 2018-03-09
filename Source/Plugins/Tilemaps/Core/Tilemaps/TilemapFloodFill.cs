@@ -23,7 +23,7 @@ namespace Duality.Plugins.Tilemaps
 			Grid<Tile> tiles = tilemap.BeginUpdateTiles();
 			Point2 fillTopLeft;
 			Point2 fillSize;
-			bool success = FillArea(ref this.activeFillBuffer, tiles, pos, preview ? (128 * 128) : 0, out fillTopLeft, out fillSize);
+			bool success = this.FillArea(ref this.activeFillBuffer, tiles, pos, preview ? (128 * 128) : 0, out fillTopLeft, out fillSize);
 			tilemap.EndUpdateTiles(0, 0, 0, 0);
 
 			// Find the filled areas boundaries and copy it to the active area
@@ -36,10 +36,9 @@ namespace Duality.Plugins.Tilemaps
 
 			return success;
 		}
-
 		/// <summary>
 		/// Performs a flood fill operation originating from the specified position.
-		/// <see cref="Tile"/> equality is checked in the <see cref="FillAreaTilesEqual"/> method.
+		/// <see cref="Tile"/> equality is checked in the <see cref="AreTilesEqual"/> method.
 		/// </summary>
 		/// <param name="fillBuffer">A buffer that will be filled with the result of the flood fill operation.</param>
 		/// <param name="tiles"></param>
@@ -68,7 +67,7 @@ namespace Duality.Plugins.Tilemaps
 			Tile baseTile = tiles[pos.X, pos.Y];
 
 			// Find the topleft-most tile to start with
-			fillAreaTopLeft = FillAreaFindTopLeft(fillBuffer, tiles, pos, baseTile);
+			fillAreaTopLeft = FindTopLeft(fillBuffer, tiles, pos, baseTile);
 			fillAreaSize = new Point2(1 + pos.X - fillAreaTopLeft.X, 1 + pos.Y - fillAreaTopLeft.Y);
 			pos = fillAreaTopLeft;
 
@@ -96,14 +95,14 @@ namespace Duality.Plugins.Tilemaps
 				bool firstRow = (lastRowLength == 0);
 
 				// Narrow scan line width on the left when necessary
-				if (!firstRow && !FillAreaIsCandidate(fillBuffer, tiles, pos, baseTile))
+				if (!firstRow && !IsFillCandidate(fillBuffer, tiles, pos, baseTile))
 				{
 					while (lastRowLength > 1)
 					{
 						pos.X++;
 						lastRowLength--;
 
-						if (FillAreaIsCandidate(fillBuffer, tiles, pos, baseTile))
+						if (IsFillCandidate(fillBuffer, tiles, pos, baseTile))
 							break;
 					}
 
@@ -112,7 +111,7 @@ namespace Duality.Plugins.Tilemaps
 				// Expand scan line width to the left when necessary
 				else
 				{
-					for (; pos.X != 0 && FillAreaIsCandidate(fillBuffer, tiles, new Point2(pos.X - 1, pos.Y), baseTile); rowLength++, lastRowLength++)
+					for (; pos.X != 0 && IsFillCandidate(fillBuffer, tiles, new Point2(pos.X - 1, pos.Y), baseTile); rowLength++, lastRowLength++)
 					{
 						pos.X--;
 						fillBuffer[pos.X, pos.Y] = true;
@@ -122,11 +121,11 @@ namespace Duality.Plugins.Tilemaps
 						fillAreaTopLeft.X = Math.Min(fillAreaTopLeft.X, pos.X);
 
 						// If something above the current scan line is free, handle it recursively
-						if (pos.Y != 0 && FillAreaIsCandidate(fillBuffer, tiles, new Point2(pos.X, pos.Y - 1), baseTile))
+						if (pos.Y != 0 && IsFillCandidate(fillBuffer, tiles, new Point2(pos.X, pos.Y - 1), baseTile))
 						{
 							// Find the topleft-most tile to start with
 							Point2 targetPos = new Point2(pos.X, pos.Y - 1);
-							targetPos = FillAreaFindTopLeft(fillBuffer, tiles, targetPos, baseTile);
+							targetPos = FindTopLeft(fillBuffer, tiles, targetPos, baseTile);
 							if (!InternalFillArea(fillBuffer, tiles, targetPos, baseTile, ref maxTileCount, ref fillAreaTopLeft, ref fillAreaSize))
 								return false;
 						}
@@ -134,7 +133,7 @@ namespace Duality.Plugins.Tilemaps
 				}
 
 				// Fill the current row
-				for (; rowPos.X < tiles.Width && FillAreaIsCandidate(fillBuffer, tiles, rowPos, baseTile); rowLength++, rowPos.X++)
+				for (; rowPos.X < tiles.Width && IsFillCandidate(fillBuffer, tiles, rowPos, baseTile); rowLength++, rowPos.X++)
 				{
 					fillBuffer[rowPos.X, rowPos.Y] = true;
 				}
@@ -151,7 +150,7 @@ namespace Duality.Plugins.Tilemaps
 					for (int end = pos.X + lastRowLength; ++rowPos.X < end;)
 					{
 						// Recursively handle the disconnected below-bottom pixels of the last row
-						if (FillAreaIsCandidate(fillBuffer, tiles, rowPos, baseTile))
+						if (IsFillCandidate(fillBuffer, tiles, rowPos, baseTile))
 						{
 							if (!InternalFillArea(fillBuffer, tiles, rowPos, baseTile, ref maxTileCount, ref fillAreaTopLeft, ref fillAreaSize))
 								return false;
@@ -165,11 +164,11 @@ namespace Duality.Plugins.Tilemaps
 					for (int prevRowX = pos.X + lastRowLength; ++prevRowX < rowPos.X;)
 					{
 						// Recursively handle the disconnected pixels of the last row
-						if (FillAreaIsCandidate(fillBuffer, tiles, new Point2(prevRowX, pos.Y - 1), baseTile))
+						if (IsFillCandidate(fillBuffer, tiles, new Point2(prevRowX, pos.Y - 1), baseTile))
 						{
 							// Find the topleft-most tile to start with
 							Point2 targetPos = new Point2(prevRowX, pos.Y - 1);
-							targetPos = FillAreaFindTopLeft(fillBuffer, tiles, targetPos, baseTile);
+							targetPos = FindTopLeft(fillBuffer, tiles, targetPos, baseTile);
 							if (!InternalFillArea(fillBuffer, tiles, targetPos, baseTile, ref maxTileCount, ref fillAreaTopLeft, ref fillAreaSize))
 								return false;
 						}
@@ -187,27 +186,25 @@ namespace Duality.Plugins.Tilemaps
 			return true;
 		}
 
-		private Point2 FillAreaFindTopLeft(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
+		private static Point2 FindTopLeft(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
 		{
 			// Find the topleft-most connected matching tile
 			while (true)
 			{
 				Point2 origin = pos;
-				while (pos.Y != 0 && FillAreaIsCandidate(fillBuffer, tiles, new Point2(pos.X, pos.Y - 1), baseTile)) pos.Y--;
-				while (pos.X != 0 && FillAreaIsCandidate(fillBuffer, tiles, new Point2(pos.X - 1, pos.Y), baseTile)) pos.X--;
+				while (pos.Y != 0 && IsFillCandidate(fillBuffer, tiles, new Point2(pos.X, pos.Y - 1), baseTile)) pos.Y--;
+				while (pos.X != 0 && IsFillCandidate(fillBuffer, tiles, new Point2(pos.X - 1, pos.Y), baseTile)) pos.X--;
 				if (pos == origin) break;
 			}
 			return pos;
 		}
-
-		private bool FillAreaTilesEqual(Tile baseTile, Tile otherTile)
+		private static bool AreTilesEqual(Tile baseTile, Tile otherTile)
 		{
 			return baseTile.BaseIndex == otherTile.BaseIndex;
 		}
-
-		private bool FillAreaIsCandidate(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
+		private static bool IsFillCandidate(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
 		{
-			return !fillBuffer[pos.X, pos.Y] && FillAreaTilesEqual(baseTile, tiles[pos.X, pos.Y]);
+			return !fillBuffer[pos.X, pos.Y] && AreTilesEqual(baseTile, tiles[pos.X, pos.Y]);
 		}
 	}
 }
