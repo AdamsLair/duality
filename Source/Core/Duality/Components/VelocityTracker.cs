@@ -66,8 +66,8 @@ namespace Duality.Components
 				Vector3 pos = transform.Pos;
 				float angle = transform.Angle;
 
-				this.velocity = pos - this.lastPosition;
-				this.angleVelocity = MathF.TurnDir(this.lastAngle, angle) * MathF.CircularDist(this.lastAngle, angle);
+				this.velocity = (pos - this.lastPosition) / Time.TimeMult;
+				this.angleVelocity = (MathF.TurnDir(this.lastAngle, angle) * MathF.CircularDist(this.lastAngle, angle)) / Time.TimeMult;
 				this.lastPosition = pos;
 				this.lastAngle = angle;
 			}
@@ -88,7 +88,7 @@ namespace Duality.Components
 			base.OnCopyDataTo(targetObj, operation);
 			VelocityTracker target = targetObj as VelocityTracker;
 			target.lastPosition   = this.lastPosition;
-			target.lastAngle = this.lastAngle;
+			target.lastAngle      = this.lastAngle;
 			target.velocity       = this.velocity;
 			target.angleVelocity  = this.angleVelocity;
 		}
