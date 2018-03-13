@@ -21,16 +21,19 @@ namespace Duality.Components
 		[DontSerialize] private Vector3 lastPosition  = Vector3.Zero;
 		[DontSerialize] private float   lastAngle     = 0.0f;
 
-		
+
 		/// <summary>
-		/// [GET] The objects velocity in world space.
+		/// [GET] The objects measured velocity in world space. The value is internally smoothed
+		/// over several frames to filter out fluctuations due to framerate variations.
 		/// </summary>
 		public Vector3 Vel
 		{
 			get { return this.velocity; }
 		}
 		/// <summary>
-		/// [GET] The objects angle / rotation velocity in world space, in radians.
+		/// [GET] The objects measured angle / rotation velocity in world space, in radians.
+		/// The value is internally smoothed over several frames to filter out fluctuations due
+		/// to framerate variations.
 		/// </summary>
 		public float AngleVel
 		{
@@ -66,8 +69,11 @@ namespace Duality.Components
 				Vector3 pos = transform.Pos;
 				float angle = transform.Angle;
 
-				this.velocity = (pos - this.lastPosition) / Time.TimeMult;
-				this.angleVelocity = (MathF.TurnDir(this.lastAngle, angle) * MathF.CircularDist(this.lastAngle, angle)) / Time.TimeMult;
+				Vector3 lastVelocity = (pos - this.lastPosition) / Time.TimeMult;
+				float lastAngleVelocity = (MathF.TurnDir(this.lastAngle, angle) * MathF.CircularDist(this.lastAngle, angle)) / Time.TimeMult;
+
+				this.velocity += (lastVelocity - this.velocity) * 0.25f * Time.TimeMult;
+				this.angleVelocity += (lastAngleVelocity - this.angleVelocity) * 0.25f * Time.TimeMult;
 				this.lastPosition = pos;
 				this.lastAngle = angle;
 			}
