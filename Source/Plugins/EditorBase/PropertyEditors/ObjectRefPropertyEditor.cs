@@ -250,7 +250,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				iconReset);
 
 			ButtonState buttonStateSelect = ButtonState.Disabled;
-			if (this.Enabled)
+			if (!this.ReadOnly && this.Enabled)
 			{
 				if (this.buttonSelectPressed) buttonStateSelect = ButtonState.Pressed;
 				else if (this.buttonSelectHovered || this.Focused) buttonStateSelect = ButtonState.Hot;
@@ -284,6 +284,11 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 				e.Handled = true;
 			}
+			else if (e.KeyCode == Keys.Delete)
+			{
+				this.ResetReference();
+				e.Handled = true;
+			}
 			base.OnKeyDown(e);
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
@@ -295,7 +300,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			bool lastPanelHovered = this.panelHovered;
 
 			this.buttonResetHovered = !this.ReadOnly && this.rectButtonReset.Contains(e.Location);
-			this.buttonSelectHovered = this.rectButtonSelect.Contains(e.Location);
+			this.buttonSelectHovered = !this.ReadOnly && this.rectButtonSelect.Contains(e.Location);
 			this.panelHovered = this.rectPanel.Contains(e.Location);
 
 			if (lastButtonResetHovered != this.buttonResetHovered ||

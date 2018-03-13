@@ -25,6 +25,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 		public List<int> ListField;
 		public List<string> ListField2;
 		public Dictionary<string,TestObject> DictField;
+		public HashSet<TestObject> HashsetField;
 			
 		public TestObject() {}
 		public TestObject(Random rnd, int childCount)
@@ -34,10 +35,15 @@ namespace Duality.Tests.Cloning.HelperObjects
 			this.ListField		= Enumerable.Range(rnd.Next(-1000, 1000), 50).ToList();
 			this.ListField2		= Enumerable.Range(rnd.Next(-1000, 1000), 50).Select(i => i.ToString()).ToList();
 			this.DictField		= new Dictionary<string,TestObject>();
+			this.HashsetField	= new HashSet<TestObject>();
 
-			for (int i = childCount; i > 0; i--)
+			for (int i = (childCount + 1) / 2; i > 0; i--)
 			{
 				this.DictField.Add(rnd.Next().ToString(), new TestObject(rnd, childCount / 2));
+			}
+			for (int i = childCount / 2; i > 0; i--)
+			{
+				this.HashsetField.Add(new TestObject(rnd, childCount / 2));
 			}
 		}
 
@@ -55,7 +61,8 @@ namespace Duality.Tests.Cloning.HelperObjects
 				object.Equals(other.DataField, this.DataField) &&
 				other.ListField.SequenceEqual(this.ListField) &&
 				other.ListField2.SequenceEqual(this.ListField2) &&
-				other.DictField.SetEqual(this.DictField);
+				other.DictField.SetEqual(this.DictField) &&
+				other.HashsetField.SetEqual(this.HashsetField);
 		}
 		public bool AnyReferenceEquals(TestObject other)
 		{
@@ -65,11 +72,21 @@ namespace Duality.Tests.Cloning.HelperObjects
 			if (object.ReferenceEquals(this.DictField, other.DictField) && !object.ReferenceEquals(this.DictField, null)) return true;
 			if (!object.ReferenceEquals(this.DictField, null) && !object.ReferenceEquals(other.DictField, null))
 			{
-				foreach (var key in this.DictField.Keys)
+				foreach (string key in this.DictField.Keys)
 				{
 					TestObject a = this.DictField[key];
 					TestObject b;
 					if (other.DictField.TryGetValue(key, out b))
+					{
+						if (object.ReferenceEquals(a, b) && !object.ReferenceEquals(a, null)) return true;
+					}
+				}
+			}
+			if (!object.ReferenceEquals(this.HashsetField, null) && !object.ReferenceEquals(other.HashsetField, null))
+			{
+				foreach (TestObject a in this.HashsetField)
+				{
+					foreach (TestObject b in other.HashsetField)
 					{
 						if (object.ReferenceEquals(a, b) && !object.ReferenceEquals(a, null)) return true;
 					}

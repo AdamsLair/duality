@@ -579,7 +579,32 @@ namespace Duality.Serialization
 
 			// Retrieve surrogate if requested
 			ISerializeSurrogate objSurrogate = null;
-			if (surrogate && header.SerializeType != null) objSurrogate = header.SerializeType.Surrogate;
+			if (surrogate && header.SerializeType != null)
+			{
+				custom = true;
+				objSurrogate = header.SerializeType.Surrogate;
+				if (objSurrogate == null)
+				{
+					this.LocalLog.WriteError(
+						"Object type '{0}' was serialized using a surrogate, but no such surrogate was found for deserialization.", 
+						Log.Type(header.SerializeType.Type));
+				}
+			}
+
+			// If the object was serialized as a surrogate, deserialize its header first
+			CustomSerialIO surrogateHeader = null;
+			if (surrogate)
+			{
+				// Set fake object reference for surrogate constructor: No self-references allowed here.
+				this.idManager.Inject(null, header.ObjectId);
+
+				XElement headerElement = element.Element(CustomSerialIO.HeaderElement) ?? element.Elements().FirstOrDefault();
+				surrogateHeader = new CustomSerialIO();
+				if (headerElement != null)
+				{
+					surrogateHeader.Deserialize(this, headerElement);
+				}
+			}
 
 			// Construct object
 			object obj = null;
@@ -587,18 +612,7 @@ namespace Duality.Serialization
 			{
 				if (objSurrogate != null)
 				{
-					custom = true;
-
-					// Set fake object reference for surrogate constructor: No self-references allowed here.
-					this.idManager.Inject(null, header.ObjectId);
-
-					CustomSerialIO customIO = new CustomSerialIO();
-					XElement customHeaderElement = element.Element(CustomSerialIO.HeaderElement) ?? element.Elements().FirstOrDefault();
-					if (customHeaderElement != null)
-					{
-						customIO.Deserialize(this, customHeaderElement);
-					}
-					try { obj = objSurrogate.ConstructObject(customIO, header.ObjectType); }
+					try { obj = objSurrogate.ConstructObject(surrogateHeader, header.ObjectType); }
 					catch (Exception e) { this.LogCustomDeserializationError(header.ObjectId, header.ObjectType, e); }
 				}
 				if (obj == null) obj = header.ObjectType.CreateInstanceOf();
@@ -624,7 +638,9 @@ namespace Duality.Serialization
 					objAsCustom = objSurrogate.SurrogateObject;
 				}
 				else
+				{
 					objAsCustom = obj as ISerializeExplicit;
+				}
 
 				if (objAsCustom != null)
 				{

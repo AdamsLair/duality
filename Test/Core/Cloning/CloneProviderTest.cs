@@ -85,7 +85,7 @@ namespace Duality.Tests.Cloning
 			// Create two identical test objects, then change one field
 			TestObject source = new TestObject(new Random(0), 5);
 			TestObject target = new TestObject(new Random(0), 5);
-			TestObject targetFirstChild = target.DictField.First().Value;
+			TestObject targetFirstDictChild = target.DictField.First().Value;
 			source.StringField = "NewValue";
 
 			// Copy data from source to target
@@ -94,7 +94,12 @@ namespace Duality.Tests.Cloning
 			// Make sure the data is equal and old object instances have been preserved
 			Assert.IsTrue(source.Equals(target));
 			Assert.IsFalse(source.AnyReferenceEquals(target));
-			Assert.AreSame(targetFirstChild, target.DictField.First().Value);
+			Assert.AreSame(targetFirstDictChild, target.DictField.First().Value);
+
+			// Note that we can't expect hashset child objects to be preserved, as
+			// there is no defined item identity in a hashset. It cannot be indexed
+			// by any value, so there is no definition of an "equivalent" item in
+			// source and target.
 		}
 		[Test] public void IdentityPreservation()
 		{
@@ -411,20 +416,32 @@ namespace Duality.Tests.Cloning
 		[Test] public void PartialCloning()
 		{
 			Random rnd = new Random();
-			TestObject sourceStatic = new TestObject { DictField = new Dictionary<string,TestObject>
-			{
-				{ "A", new TestObject() },
-				{ "B", new TestObject() },
-				{ "C", new TestObject() },
-			}};
-			TestObject sourceDynamic = new TestObject { DictField = new Dictionary<string,TestObject>
-			{
-				{ "A", sourceStatic.DictField["A"] },
-				{ "B", sourceStatic.DictField["B"] },
-				{ "C", sourceStatic.DictField["C"] },
-				{ "Root", sourceStatic },
-				{ "Local", new TestObject() },
-			}};
+			TestObject sourceStatic = new TestObject {
+				DictField = new Dictionary<string,TestObject>
+				{
+					{ "A", new TestObject() },
+					{ "B", new TestObject() },
+					{ "C", new TestObject() },
+				},
+				HashsetField = new HashSet<TestObject>
+				{
+					new TestObject()
+				}
+			};
+			TestObject sourceDynamic = new TestObject {
+				DictField = new Dictionary<string,TestObject>
+				{
+					{ "A", sourceStatic.DictField["A"] },
+					{ "B", sourceStatic.DictField["B"] },
+					{ "C", sourceStatic.DictField["C"] },
+					{ "Root", sourceStatic },
+					{ "Local", new TestObject() },
+				},
+				HashsetField = new HashSet<TestObject>
+				{
+					sourceStatic.HashsetField.First()
+				}
+			};
 
 			// Copy only the static source objects
 			CloneProvider provider = new CloneProvider();
@@ -440,6 +457,7 @@ namespace Duality.Tests.Cloning
 			Assert.AreSame(targetStatic.DictField["A"], targetDynamic.DictField["A"]);
 			Assert.AreSame(targetStatic.DictField["B"], targetDynamic.DictField["B"]);
 			Assert.AreSame(targetStatic.DictField["C"], targetDynamic.DictField["C"]);
+			Assert.AreSame(targetStatic.HashsetField.First(), targetDynamic.HashsetField.First());
 
 			// Now clear the cache and expect new objects from clone operations
 			provider.ClearCachedMapping();
