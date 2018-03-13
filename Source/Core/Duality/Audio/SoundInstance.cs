@@ -535,7 +535,7 @@ namespace Duality.Audio
 				if (this.is3D)
 				{
 					bool attachedToListener = false;
-					if (this.attachedTo != null)
+					if (this.attachedTo != null && DualityApp.Sound.Listener != null)
 					{
 						GameObject listenerObj = DualityApp.Sound.Listener.GameObj;
 						attachedToListener = 
