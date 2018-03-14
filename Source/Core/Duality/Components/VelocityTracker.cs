@@ -18,6 +18,8 @@ namespace Duality.Components
 	{
 		[DontSerialize] private Vector3 velocity      = Vector3.Zero;
 		[DontSerialize] private float   angleVelocity = 0.0f;
+		[DontSerialize] private Vector3 posDiff       = Vector3.Zero;
+		[DontSerialize] private float   angleDiff     = 0.0f;
 		[DontSerialize] private Vector3 lastPosition  = Vector3.Zero;
 		[DontSerialize] private float   lastAngle     = 0.0f;
 
@@ -38,6 +40,22 @@ namespace Duality.Components
 		public float AngleVel
 		{
 			get { return this.angleVelocity; }
+		}
+		/// <summary>
+		/// [GET] The objects measured continuous position change in world space between the last two frames.
+		/// Note that this value can fluctuate depending on framerate variations during simulation.
+		/// </summary>
+		public Vector3 LastMovement
+		{
+			get { return this.posDiff; }
+		}
+		/// <summary>
+		/// [GET] The objects measuredcontinuous angle / rotation change in world space between the last two frames.
+		/// Note that this value can fluctuate depending on framerate variations during simulation.
+		/// </summary>
+		public float LastAngleMovement
+		{
+			get { return this.angleDiff; }
 		}
 
 
@@ -69,8 +87,11 @@ namespace Duality.Components
 				Vector3 pos = transform.Pos;
 				float angle = transform.Angle;
 
-				Vector3 lastVelocity = (pos - this.lastPosition) / Time.TimeMult;
-				float lastAngleVelocity = (MathF.TurnDir(this.lastAngle, angle) * MathF.CircularDist(this.lastAngle, angle)) / Time.TimeMult;
+				this.posDiff = pos - this.lastPosition;
+				this.angleDiff = MathF.TurnDir(this.lastAngle, angle) * MathF.CircularDist(this.lastAngle, angle);
+
+				Vector3 lastVelocity = this.posDiff / Time.TimeMult;
+				float lastAngleVelocity = this.angleDiff / Time.TimeMult;
 
 				this.velocity += (lastVelocity - this.velocity) * 0.25f * Time.TimeMult;
 				this.angleVelocity += (lastAngleVelocity - this.angleVelocity) * 0.25f * Time.TimeMult;
@@ -95,6 +116,8 @@ namespace Duality.Components
 			VelocityTracker target = targetObj as VelocityTracker;
 			target.lastPosition   = this.lastPosition;
 			target.lastAngle      = this.lastAngle;
+			target.posDiff        = this.posDiff;
+			target.angleDiff      = this.angleDiff;
 			target.velocity       = this.velocity;
 			target.angleVelocity  = this.angleVelocity;
 		}

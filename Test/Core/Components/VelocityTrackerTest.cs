@@ -37,27 +37,27 @@ namespace Duality.Tests.Components
 				transform.Pos = Vector3.Zero;
 				transform.Angle = 0.0f;
 				DualityApp.Update(true);
-				AssertEqual(Vector3.Zero, tracker.Vel, "Velocity at rest");
-				AssertEqual(0.0f, tracker.AngleVel, "Angle velocity at rest");
+				AssertEqual(Vector3.Zero, tracker.LastMovement, "Velocity at rest");
+				AssertEqual(0.0f, tracker.LastAngleMovement, "Angle velocity at rest");
 
 				// The object is teleported
 				transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
 				transform.Angle = MathF.RadAngle90;
 				DualityApp.Update(true);
-				AssertEqual(Vector3.Zero, tracker.Vel, "Velocity after teleport");
-				AssertEqual(0.0f, tracker.AngleVel, "Angle velocity after teleport");
+				AssertEqual(Vector3.Zero, tracker.LastMovement, "Velocity after teleport");
+				AssertEqual(0.0f, tracker.LastAngleMovement, "Angle velocity after teleport");
 
 				// The object is moved
 				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
 				transform.TurnBy(MathF.RadAngle90);
 				DualityApp.Update(true);
-				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), tracker.Vel, "Velocity after move");
-				AssertEqual(MathF.RadAngle90, tracker.AngleVel, "Angle velocity after teleport");
+				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), tracker.LastMovement, "Velocity after move");
+				AssertEqual(MathF.RadAngle90, tracker.LastAngleMovement, "Angle velocity after teleport");
 
 				// The object rests for a frame
 				DualityApp.Update(true);
-				AssertEqual(Vector3.Zero, tracker.Vel, "Velocity after one frame rest");
-				AssertEqual(0.0f, tracker.AngleVel, "Angle velocity after one frame rest");
+				AssertEqual(Vector3.Zero, tracker.LastMovement, "Velocity after one frame rest");
+				AssertEqual(0.0f, tracker.LastAngleMovement, "Angle velocity after one frame rest");
 
 				// The object is moved, then teleported
 				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
@@ -65,8 +65,8 @@ namespace Duality.Tests.Components
 				transform.Pos = new Vector3(1.0f, 0.0f, 0.0f);
 				transform.Angle = MathF.RadAngle90;
 				DualityApp.Update(true);
-				AssertEqual(Vector3.Zero, tracker.Vel, "Velocity after move, then teleport");
-				AssertEqual(0.0f, tracker.AngleVel, "Angle velocity after move, then teleport");
+				AssertEqual(Vector3.Zero, tracker.LastMovement, "Velocity after move, then teleport");
+				AssertEqual(0.0f, tracker.LastAngleMovement, "Angle velocity after move, then teleport");
 
 				// The object is moved, then teleported, then moved again
 				transform.MoveBy(new Vector3(1.0f, 0.0f, 0.0f));
@@ -76,8 +76,8 @@ namespace Duality.Tests.Components
 				transform.MoveBy(new Vector3(2.0f, 0.0f, 0.0f));
 				transform.TurnBy(MathF.RadAngle45);
 				DualityApp.Update(true);
-				AssertEqual(new Vector3(2.0f, 0.0f, 0.0f), tracker.Vel, "Velocity after move, then teleport, then move");
-				AssertEqual(MathF.RadAngle45, tracker.AngleVel, "Angle velocity after move, then teleport, then move");
+				AssertEqual(new Vector3(2.0f, 0.0f, 0.0f), tracker.LastMovement, "Velocity after move, then teleport, then move");
+				AssertEqual(MathF.RadAngle45, tracker.LastAngleMovement, "Angle velocity after move, then teleport, then move");
 			}
 		}
 		[Test] public void VelocityInHierarchy()
@@ -111,8 +111,8 @@ namespace Duality.Tests.Components
 				transform.TurnBy(MathF.DegToRad(90.0f));
 				DualityApp.Update(true);
 
-				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), tracker.Vel, "Absolute child velocity");
-				AssertEqual(MathF.DegToRad(90.0f), tracker.AngleVel, "Absolute child angle velocity");
+				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), tracker.LastMovement, "Absolute child velocity");
+				AssertEqual(MathF.DegToRad(90.0f), tracker.LastAngleMovement, "Absolute child angle velocity");
 
 				// Transformed parent and a moving child
 				parentTransform.Pos = new Vector3(1.0f, 2.0f, 3.0f);
@@ -126,8 +126,8 @@ namespace Duality.Tests.Components
 				transform.TurnBy(MathF.DegToRad(90.0f));
 				DualityApp.Update(true);
 
-				AssertEqual(new Vector3(0.0f, 2.0f, 0.0f), tracker.Vel, "Absolute child velocity");
-				AssertEqual(MathF.DegToRad(90.0f), tracker.AngleVel, "Absolute child angle velocity");
+				AssertEqual(new Vector3(0.0f, 2.0f, 0.0f), tracker.LastMovement, "Absolute child velocity");
+				AssertEqual(MathF.DegToRad(90.0f), tracker.LastAngleMovement, "Absolute child angle velocity");
 
 				// Moving parent and a transformed child
 				parentTransform.Pos = Vector3.Zero;
@@ -140,7 +140,7 @@ namespace Duality.Tests.Components
 				parentTransform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
 				DualityApp.Update(true);
 
-				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), tracker.Vel, "Absolute child velocity");
+				AssertEqual(new Vector3(1.0f, 0.0f, 0.0f), tracker.LastMovement, "Absolute child velocity");
 
 				// Moving parent and a transformed, moving child
 				parentTransform.Pos = Vector3.Zero;
@@ -155,8 +155,8 @@ namespace Duality.Tests.Components
 				parentTransform.MoveByLocal(new Vector3(1.0f, 0.0f, 0.0f));
 				DualityApp.Update(true);
 
-				AssertEqual(new Vector3(2.0f, 0.0f, 0.0f), tracker.Vel, "Absolute child velocity");
-				AssertEqual(MathF.DegToRad(90.0f), tracker.AngleVel, "Absolute child angle velocity");
+				AssertEqual(new Vector3(2.0f, 0.0f, 0.0f), tracker.LastMovement, "Absolute child velocity");
+				AssertEqual(MathF.DegToRad(90.0f), tracker.LastAngleMovement, "Absolute child angle velocity");
 			}
 		}
 
