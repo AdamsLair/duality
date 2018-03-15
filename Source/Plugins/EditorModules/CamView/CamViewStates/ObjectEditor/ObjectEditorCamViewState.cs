@@ -319,6 +319,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.actionLastLocSpace = this.actionBeginLocSpace;
 
+			// Update snap-to-grid settings for this action
+			if (this.actionObjSel.Count > 1)
+			{
+				// When moving multiple objects, snap only relative to the original selection center, so individual grid alignment is retained
+				this.EditingUserGuide.SnapPosOrigin = this.selectionCenter;
+				this.EditingUserGuide.SnapScaleOrigin = Vector3.One;
+			}
+			else
+			{
+				this.EditingUserGuide.SnapPosOrigin = Vector3.Zero;
+				this.EditingUserGuide.SnapScaleOrigin = Vector3.One;
+			}
+
 			if (Sandbox.State == SandboxState.Playing)
 				Sandbox.Freeze();
 
@@ -520,10 +533,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				Vector3 snappedCenter = this.selectionCenter;
 				Vector3 targetPosSpace = snappedCenter + targetMovement;
-
-				// When moving multiple objects, snap only relative to the original selection center, so individual grid alignment is retained
-				if (this.actionObjSel.Count > 1)
-					snappedCenter = this.EditingUserGuide.SnapPosition(this.selectionCenter);
 
 				targetPosSpace = this.EditingUserGuide.SnapPosition(targetPosSpace);
 				targetMovement = targetPosSpace - snappedCenter;
