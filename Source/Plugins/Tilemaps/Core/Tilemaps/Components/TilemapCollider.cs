@@ -17,7 +17,7 @@ namespace Duality.Plugins.Tilemaps
 	[RequiredComponent(typeof(RigidBody))]
 	[EditorHintCategory(TilemapsResNames.CategoryTilemaps)]
 	[EditorHintImage(TilemapsResNames.ImageTilemapCollider)]
-	public class TilemapCollider : Component, ICmpInitializable
+	public class TilemapCollider : Component, ICmpInitializable, ICmpSerializeListener
 	{
 		private struct Sector
 		{
@@ -372,62 +372,57 @@ namespace Duality.Plugins.Tilemaps
 			}
 		}
 		
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				this.RetrieveSourceTilemaps();
-				this.UpdateRigidBody(true);
-				this.SubscribeSourceEvents();
-			}
-			else if (context == InitContext.Saved)
-			{
-				// Since we're removing all generated bodies in the saving process,
-				// we'll have to add them back now. Note that we don't actually 
-				// re-generate them.
-				RigidBody body = this.GameObj.GetComponent<RigidBody>();
-				for (int y = 0; y < this.sectorCount.Y; y++)
-				{
-					for (int x = 0; x < this.sectorCount.X; x++)
-					{
-						Sector sector = this.sectors[x, y];
-						if (sector.Shapes != null)
-						{
-							foreach (ShapeInfo shape in sector.Shapes)
-								body.AddShape(shape);
-						}
-						this.sectors[x, y] = sector;
-					}
-				}
-			}
+			this.RetrieveSourceTilemaps();
+			this.UpdateRigidBody(true);
+			this.SubscribeSourceEvents();
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
+			this.UnsubscribeSourceEvents();
+			this.ClearRigidBody();
+			this.sourceTilemaps = null;
+		}
+		void ICmpSerializeListener.OnLoaded() { }
+		void ICmpSerializeListener.OnSaving()
+		{
+			// To avoid saving the generated collider redundantly, remove
+			// all of the generated shapes before saving. We'll add them again later.
+			// Also accumulate a shape's default properties for re-init.
+			RigidBody body = this.GameObj.GetComponent<RigidBody>();
+			for (int y = 0; y < this.sectorCount.Y; y++)
 			{
-				this.UnsubscribeSourceEvents();
-				this.ClearRigidBody();
-				this.sourceTilemaps = null;
-			}
-			else if (context == ShutdownContext.Saving)
-			{
-				// To avoid saving the generated collider redundantly, remove
-				// all of the generated shapes before saving. We'll add them again later.
-				// Also accumulate a shape's default properties for re-init.
-				RigidBody body = this.GameObj.GetComponent<RigidBody>();
-				for (int y = 0; y < this.sectorCount.Y; y++)
+				for (int x = 0; x < this.sectorCount.X; x++)
 				{
-					for (int x = 0; x < this.sectorCount.X; x++)
+					Sector sector = this.sectors[x, y];
+					if (sector.Shapes != null)
 					{
-						Sector sector = this.sectors[x, y];
-						if (sector.Shapes != null)
-						{
-							foreach (ShapeInfo shape in sector.Shapes)
-								body.RemoveShape(shape);
-						}
+						foreach (ShapeInfo shape in sector.Shapes)
+							body.RemoveShape(shape);
 					}
 				}
-				this.GetShapeProperties();
+			}
+			this.GetShapeProperties();
+		}
+		void ICmpSerializeListener.OnSaved()
+		{
+			// Since we're removing all generated bodies in the saving process,
+			// we'll have to add them back now. Note that we don't actually 
+			// re-generate them.
+			RigidBody body = this.GameObj.GetComponent<RigidBody>();
+			for (int y = 0; y < this.sectorCount.Y; y++)
+			{
+				for (int x = 0; x < this.sectorCount.X; x++)
+				{
+					Sector sector = this.sectors[x, y];
+					if (sector.Shapes != null)
+					{
+						foreach (ShapeInfo shape in sector.Shapes)
+							body.AddShape(shape);
+					}
+					this.sectors[x, y] = sector;
+				}
 			}
 		}
 

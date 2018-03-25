@@ -1023,7 +1023,7 @@ namespace Duality.Editor
 			var asmRefQuery = from AssemblyName a in plugin.PluginAssembly.GetReferencedAssemblies()
 							  select a.GetShortAssemblyName();
 			string thisAsmName = typeof(DualityEditorApp).Assembly.GetShortAssemblyName();
-			foreach (var asmName in asmRefQuery)
+			foreach (string asmName in asmRefQuery)
 			{
 				bool illegalRef = false;
 
@@ -1431,7 +1431,7 @@ namespace Duality.Editor
 
 			// Invoke the init event on all gathered components in the right order
 			foreach (ICmpInitializable component in initList)
-				component.OnInit(Component.InitContext.Activate);
+				component.OnActivate();
 		}
 		private static void editorObjects_GameObjectsRemoved(object sender, GameObjectGroupEventArgs e)
 		{
@@ -1454,14 +1454,14 @@ namespace Duality.Editor
 
 			// Invoke the init event on all gathered components in the right order
 			foreach (ICmpInitializable component in initList)
-				component.OnShutdown(Component.ShutdownContext.Deactivate);
+				component.OnDeactivate();
 		}
 		private static void editorObjects_ComponentAdded(object sender, ComponentEventArgs e)
 		{
 			if (e.Component.Active)
 			{
 				ICmpInitializable cInit = e.Component as ICmpInitializable;
-				if (cInit != null) cInit.OnInit(Component.InitContext.Activate);
+				if (cInit != null) cInit.OnActivate();
 			}
 		}
 		private static void editorObjects_ComponentRemoved(object sender, ComponentEventArgs e)
@@ -1469,7 +1469,7 @@ namespace Duality.Editor
 			if (e.Component.Active)
 			{
 				ICmpInitializable cInit = e.Component as ICmpInitializable;
-				if (cInit != null) cInit.OnShutdown(Component.ShutdownContext.Deactivate);
+				if (cInit != null) cInit.OnDeactivate();
 			}
 		}
 

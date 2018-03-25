@@ -501,48 +501,42 @@ namespace DualStickSpaceShooter
 			}
 		}
 
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
+			// Retrieve eye object references and initialize it
+			GameObject eyeObject = this.GameObj.GetChildByName("Eye");
+			this.eye = eyeObject != null ? eyeObject.GetComponent<SpriteAnimator>() : null;
+			if (this.eye != null)
 			{
-				// Retrieve eye object references and initialize it
-				GameObject eyeObject = this.GameObj.GetChildByName("Eye");
-				this.eye = eyeObject != null ? eyeObject.GetComponent<SpriteAnimator>() : null;
-				if (this.eye != null)
-				{
-					this.eye.AnimLoopMode = SpriteAnimator.LoopMode.FixedSingle;
-					this.eye.AnimDuration = 1.0f;
-					this.eye.AnimTime = this.eyeOpenValue;
-				}
+				this.eye.AnimLoopMode = SpriteAnimator.LoopMode.FixedSingle;
+				this.eye.AnimDuration = 1.0f;
+				this.eye.AnimTime = this.eyeOpenValue;
+			}
 
-				// Retrieve spike references
-				GameObject[] spikeObj = new GameObject[4];
-				spikeObj[0] = this.GameObj.GetChildByName("SpikeTopRight");
-				spikeObj[1] = this.GameObj.GetChildByName("SpikeBottomRight");
-				spikeObj[2] = this.GameObj.GetChildByName("SpikeBottomLeft");
-				spikeObj[3] = this.GameObj.GetChildByName("SpikeTopLeft");
-				this.spikes = new SpriteRenderer[spikeObj.Length];
-				for (int i = 0; i < spikeObj.Length; i++)
-				{
-					this.spikes[i] = spikeObj[i] != null ? spikeObj[i].GetComponent<SpriteRenderer>() : null;
-				}
+			// Retrieve spike references
+			GameObject[] spikeObj = new GameObject[4];
+			spikeObj[0] = this.GameObj.GetChildByName("SpikeTopRight");
+			spikeObj[1] = this.GameObj.GetChildByName("SpikeBottomRight");
+			spikeObj[2] = this.GameObj.GetChildByName("SpikeBottomLeft");
+			spikeObj[3] = this.GameObj.GetChildByName("SpikeTopLeft");
+			this.spikes = new SpriteRenderer[spikeObj.Length];
+			for (int i = 0; i < spikeObj.Length; i++)
+			{
+				this.spikes[i] = spikeObj[i] != null ? spikeObj[i].GetComponent<SpriteRenderer>() : null;
 			}
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
+			// Fade out playing loop sounds, if there are any. Clean up!
+			if (this.moveSoundLoop != null)
 			{
-				// Fade out playing loop sounds, if there are any. Clean up!
-				if (this.moveSoundLoop != null)
-				{
-					this.moveSoundLoop.FadeOut(0.5f);
-					this.moveSoundLoop = null;
-				}
-				if (this.dangerSoundLoop != null)
-				{
-					this.dangerSoundLoop.FadeOut(0.5f);
-					this.dangerSoundLoop = null;
-				}
+				this.moveSoundLoop.FadeOut(0.5f);
+				this.moveSoundLoop = null;
+			}
+			if (this.dangerSoundLoop != null)
+			{
+				this.dangerSoundLoop.FadeOut(0.5f);
+				this.dangerSoundLoop = null;
 			}
 		}
 

@@ -114,8 +114,8 @@ namespace ParticleSystem
 		}
 		private Texture RetrieveTexture()
 		{
-			if (material.IsAvailable && material.Res.MainTexture.IsAvailable)
-				return material.Res.MainTexture.Res;
+			if (this.material.IsAvailable && this.material.Res.MainTexture.IsAvailable)
+				return this.material.Res.MainTexture.Res;
 			else
 				return null;
 		}
@@ -246,14 +246,11 @@ namespace ParticleSystem
 			// Update particle emission
 			this.UpdateEmitters();
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				// When activating, directly update particle emitters once, so there is already something to see.
-				this.UpdateEmitters();
-			}
+			// When activating, directly update particle emitters once, so there is already something to see.
+			this.UpdateEmitters();
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
+		void ICmpInitializable.OnDeactivate() {}
 	}
 }

@@ -385,21 +385,15 @@ namespace Duality.Components
 			this.transformDevice.Projection = this.projection;
 		}
 
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				this.SetupTransformDevice();
-				this.SetupDrawDevice();
-			}
+			this.SetupTransformDevice();
+			this.SetupDrawDevice();
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
-			{
-				this.ReleaseTransformDevice();
-				this.ReleaseDrawDevice();
-			}
+			this.ReleaseTransformDevice();
+			this.ReleaseDrawDevice();
 		}
 	}
 }

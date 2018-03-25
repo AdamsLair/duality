@@ -12,7 +12,7 @@ namespace Duality.Components
 	[ManuallyCloned]
 	[EditorHintCategory(CoreResNames.CategoryNone)]
 	[EditorHintImage(CoreResNames.ImageTransform)]
-	public sealed class Transform : Component, ICmpInitializable
+	public sealed class Transform : Component, ICmpAttachmentListener, ICmpSerializeListener
 	{
 		private const float MinScale = 0.0000001f;
 
@@ -496,48 +496,53 @@ namespace Duality.Components
 			this.SetLocalTransform(other.LocalPos, other.LocalAngle, other.LocalScale);
 		}
 		
-		void ICmpInitializable.OnInit(InitContext context)
+		private void SubscribeParentEvents()
 		{
-			if (context == InitContext.AddToGameObject ||
-				context == InitContext.Loaded)
+			if (this.gameobj == null) return;
+
+			this.gameobj.EventParentChanged += this.gameobj_EventParentChanged;
+			if (this.gameobj.Parent != null)
 			{
-				if (this.gameobj != null)
-				{
-					this.gameobj.EventParentChanged += this.gameobj_EventParentChanged;
-					if (this.gameobj.Parent != null)
-					{
-						Transform parentTransform = this.gameobj.Parent.Transform;
-						if (parentTransform == null)
-							this.gameobj.Parent.EventComponentAdded += this.Parent_EventComponentAdded;
-						else
-							this.gameobj.Parent.EventComponentRemoving += this.Parent_EventComponentRemoving;
-					}
-				}
-				this.UpdateRel();
+				Transform parentTransform = this.gameobj.Parent.Transform;
+				if (parentTransform == null)
+					this.gameobj.Parent.EventComponentAdded += this.Parent_EventComponentAdded;
+				else
+					this.gameobj.Parent.EventComponentRemoving += this.Parent_EventComponentRemoving;
 			}
+		}
+		private void UnsubscribeParentEvents()
+		{
+			if (this.gameobj == null) return;
+
+			this.gameobj.EventParentChanged -= this.gameobj_EventParentChanged;
+			if (this.gameobj.Parent != null)
+			{
+				this.gameobj.Parent.EventComponentAdded -= this.Parent_EventComponentAdded;
+				this.gameobj.Parent.EventComponentRemoving -= this.Parent_EventComponentRemoving;
+			}
+		}
+
+		void ICmpAttachmentListener.OnAddToGameObject()
+		{
+			this.SubscribeParentEvents();
+			this.UpdateRel();
+		}
+		void ICmpAttachmentListener.OnRemoveFromGameObject()
+		{
+			this.UnsubscribeParentEvents();
+			this.UpdateRel();
+		}
+		void ICmpSerializeListener.OnLoaded()
+		{
+			this.SubscribeParentEvents();
+			this.UpdateRel();
 
 			// Recalculate values we didn't serialize
-			if (context == InitContext.Loaded)
-			{
-				this.UpdateRotationDirAbs();
-			}
+			this.UpdateRotationDirAbs();
 		}
-		void ICmpInitializable.OnShutdown(ShutdownContext context)
-		{
-			if (context == ShutdownContext.RemovingFromGameObject)
-			{
-				if (this.gameobj != null)
-				{
-					this.gameobj.EventParentChanged -= this.gameobj_EventParentChanged;
-					if (this.gameobj.Parent != null)
-					{
-						this.gameobj.Parent.EventComponentAdded -= this.Parent_EventComponentAdded;
-						this.gameobj.Parent.EventComponentRemoving -= this.Parent_EventComponentRemoving;
-					}
-				}
-				this.UpdateRel();
-			}
-		}
+		void ICmpSerializeListener.OnSaved() { }
+		void ICmpSerializeListener.OnSaving() { }
+
 		private void gameobj_EventParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{
 			this.UpdateRel();

@@ -134,8 +134,9 @@ namespace Duality
 						{
 							if (hasChildren)
 								Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), false);
+
 							foreach (ICmpInitializable component in initList)
-								component.OnInit(Component.InitContext.Activate);
+								component.OnActivate();
 						}
 						else
 						{
@@ -143,8 +144,9 @@ namespace Duality
 								Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
 							else
 								initList.Reverse();
+
 							foreach (ICmpInitializable component in initList)
-								component.OnShutdown(Component.ShutdownContext.Deactivate);
+								component.OnDeactivate();
 						}
 					}
 
@@ -247,7 +249,7 @@ namespace Duality
 		/// <summary>
 		/// Fired when this GameObjects parent has changed
 		/// </summary>
-		public event EventHandler<GameObjectParentChangedEventArgs>	EventParentChanged
+		public event EventHandler<GameObjectParentChangedEventArgs> EventParentChanged
 		{
 			add { this.eventParentChanged += value; }
 			remove { this.eventParentChanged -= value; }
@@ -255,7 +257,7 @@ namespace Duality
 		/// <summary>
 		/// Fired when a Component has been added to the GameObject
 		/// </summary>
-		public event EventHandler<ComponentEventArgs>				EventComponentAdded
+		public event EventHandler<ComponentEventArgs> EventComponentAdded
 		{
 			add { this.eventComponentAdded += value; }
 			remove { this.eventComponentAdded -= value; }
@@ -263,7 +265,7 @@ namespace Duality
 		/// <summary>
 		/// Fired when a Component is about to be removed from the GameObject
 		/// </summary>
-		public event EventHandler<ComponentEventArgs>				EventComponentRemoving
+		public event EventHandler<ComponentEventArgs> EventComponentRemoving
 		{
 			add { this.eventComponentRemoving += value; }
 			remove { this.eventComponentRemoving -= value; }
@@ -1071,8 +1073,8 @@ namespace Duality
 		private void OnComponentAdded(Component cmp)
 		{
 			// Notify Components
-			ICmpInitializable cmpInit = cmp as ICmpInitializable;
-			if (cmpInit != null) cmpInit.OnInit(Component.InitContext.AddToGameObject);
+			ICmpAttachmentListener cmpInit = cmp as ICmpAttachmentListener;
+			if (cmpInit != null) cmpInit.OnAddToGameObject();
 
 			// Public event
 			if (this.eventComponentAdded != null)
@@ -1081,8 +1083,8 @@ namespace Duality
 		private void OnComponentRemoving(Component cmp)
 		{
 			// Notify Components
-			ICmpInitializable cmpInit = cmp as ICmpInitializable;
-			if (cmpInit != null) cmpInit.OnShutdown(Component.ShutdownContext.RemovingFromGameObject);
+			ICmpAttachmentListener cmpInit = cmp as ICmpAttachmentListener;
+			if (cmpInit != null) cmpInit.OnRemoveFromGameObject();
 
 			// Public event
 			if (this.eventComponentRemoving != null)

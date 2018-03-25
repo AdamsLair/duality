@@ -71,12 +71,12 @@ namespace Duality.Resources
 			{
 				// Compose a list of all initializable Components in the new 
 				// content, and sort them by type
-				ICmpInitializable[] initSchedule = obj.GetComponentsDeep<ICmpInitializable>().ToArray();
+				ICmpSerializeListener[] initSchedule = obj.GetComponentsDeep<ICmpSerializeListener>().ToArray();
 				Component.ExecOrder.SortTypedItems(initSchedule, item => item.GetType(), false);
 
 				// Prepare components for saving
 				for (int i = initSchedule.Length - 1; i >= 0; i--)
-					initSchedule[i].OnShutdown(Component.ShutdownContext.Saving);
+					initSchedule[i].OnSaving();
 
 				// Copy the new content into the Prefabs internal object
 				if (this.objTree != null)
@@ -86,7 +86,7 @@ namespace Duality.Resources
 
 				// Execute re-init code after saving
 				for (int i = 0; i < initSchedule.Length; i++)
-					initSchedule[i].OnInit(Component.InitContext.Saved);
+					initSchedule[i].OnSaved();
 
 				// Cleanup any leftover prefab links that might have been copied
 				this.objTree.BreakPrefabLink();
@@ -196,10 +196,10 @@ namespace Duality.Resources
 
 				// Compose a list of all initializable Components, sort them
 				// by type and then execute their init code in order.
-				ICmpInitializable[] initSchedule = this.objTree.GetComponentsDeep<ICmpInitializable>().ToArray();
+				ICmpSerializeListener[] initSchedule = this.objTree.GetComponentsDeep<ICmpSerializeListener>().ToArray();
 				Component.ExecOrder.SortTypedItems(initSchedule, item => item.GetType(), false);
 				for (int i = 0; i < initSchedule.Length; i++)
-					initSchedule[i].OnInit(Component.InitContext.Loaded);
+					initSchedule[i].OnLoaded();
 			}
 		}
 	}

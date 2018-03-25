@@ -110,13 +110,10 @@ namespace Duality.Samples.Physics
 
 			canvas.End();
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				this.UpdateText();
-			}
+			this.UpdateText();
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
+		void ICmpInitializable.OnDeactivate() { }
 	}
 }

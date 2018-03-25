@@ -213,14 +213,13 @@ namespace Duality.Samples.Physics
 			}
 		}
 
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-			{
-				// Retrieve a list of all available scenes to cycle through.
-				this.sampleScenes = ContentProvider.GetAvailableContent<Scene>();
-			}
+			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Game) return;
+
+			// Retrieve a list of all available scenes to cycle through.
+			this.sampleScenes = ContentProvider.GetAvailableContent<Scene>();
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
+		void ICmpInitializable.OnDeactivate() { }
 	}
 }

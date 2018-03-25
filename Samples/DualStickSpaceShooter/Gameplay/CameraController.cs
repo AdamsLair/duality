@@ -137,17 +137,14 @@ namespace DualStickSpaceShooter
 				this.microphone.Pos = new Vector3(this.microphone.Pos.Xy, 0.0f);
 			}
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				this.AdjustToScreenSize();
+			this.AdjustToScreenSize();
 
-				// Move near initial spawn point
-				Transform transform = this.GameObj.Transform;
-				transform.MoveTo(SpawnPoint.SpawnPos + this.GetTargetOffset(0.0f));
-			}
+			// Move near initial spawn point
+			Transform transform = this.GameObj.Transform;
+			transform.MoveTo(SpawnPoint.SpawnPos + this.GetTargetOffset(0.0f));
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
+		void ICmpInitializable.OnDeactivate() {}
 	}
 }

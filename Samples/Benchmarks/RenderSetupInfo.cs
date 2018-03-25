@@ -60,9 +60,9 @@ namespace Duality.Samples.Benchmarks
 				Alignment.TopRight,
 				true);
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 			{
 				this.renderSetup = DualityApp.AppData.RenderingSetup.As<BenchmarkRenderSetup>();
 				this.text = new FormattedText();
@@ -70,6 +70,6 @@ namespace Duality.Samples.Benchmarks
 				this.text.MaxWidth = 200;
 			}
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
+		void ICmpInitializable.OnDeactivate() { }
 	}
 }

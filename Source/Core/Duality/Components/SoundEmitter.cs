@@ -212,16 +212,13 @@ namespace Duality.Components
 					this.sources.RemoveAt(i);
 			}
 		}
-		void ICmpInitializable.OnInit(InitContext context) {}
-		void ICmpInitializable.OnShutdown(ShutdownContext context)
+		void ICmpInitializable.OnActivate() {}
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
+			for (int i = this.sources.Count - 1; i >= 0; i--)
 			{
-				for (int i = this.sources.Count - 1; i >= 0; i--)
-				{
-					if (this.sources[i].Instance != null)
-						this.sources[i].Instance.Stop();
-				}
+				if (this.sources[i].Instance != null)
+					this.sources[i].Instance.Stop();
 			}
 		}
 	}

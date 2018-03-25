@@ -94,13 +94,10 @@ namespace Duality.Samples.Benchmarks
 				10 + this.margin.X, 
 				10 + this.margin.Y);
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				this.UpdateText();
-			}
+			this.UpdateText();
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
+		void ICmpInitializable.OnDeactivate() { }
 	}
 }

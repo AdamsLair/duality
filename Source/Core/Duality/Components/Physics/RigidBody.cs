@@ -1224,22 +1224,16 @@ namespace Duality.Components.Physics
 			this.CheckValidTransform();
 		}
 		
-		void ICmpInitializable.OnInit(InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				// Do some cleanup before updating again
-				this.RemoveDisposedJoints();
-				// Initialize the backing Farseer objects upon activation
-				this.Initialize();
-			}
+			// Do some cleanup before updating again
+			this.RemoveDisposedJoints();
+			// Initialize the backing Farseer objects upon activation
+			this.Initialize();
 		}
-		void ICmpInitializable.OnShutdown(ShutdownContext context)
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
-				this.Shutdown();
-			else if (context == ShutdownContext.Saving)
-				this.RemoveDisposedJoints();
+			this.Shutdown();
 		}
 
 		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)

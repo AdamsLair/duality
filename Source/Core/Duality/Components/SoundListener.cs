@@ -33,13 +33,11 @@ namespace Duality.Components
 			DualityApp.Sound.Listener = this;
 		}
 
-		void ICmpInitializable.OnInit(InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Editor && context == InitContext.Activate)
+			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Editor)
 				this.MakeCurrent();
 		}
-		void ICmpInitializable.OnShutdown(ShutdownContext context)
-		{
-		}
+		void ICmpInitializable.OnDeactivate() { }
 	}
 }

@@ -316,16 +316,13 @@ namespace DualStickSpaceShooter
 				this.damageEffect = null;
 			}
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context) {}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		void ICmpInitializable.OnActivate() {}
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
+			if (this.flightLoop != null)
 			{
-				if (this.flightLoop != null)
-				{
-					this.flightLoop.Dispose();
-					this.flightLoop = null;
-				}
+				this.flightLoop.Dispose();
+				this.flightLoop = null;
 			}
 		}
 	}

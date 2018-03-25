@@ -127,21 +127,16 @@ namespace Duality.Samples.Benchmarks
 
 			device.AddVertices(this.sharedMaterial, VertexMode.Quads, vert, this.vertices.Count);
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-			{
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 				this.SetupSprites();
-			}
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
-			{
-				this.vertices.Count = 0;
-				this.spritePositions.Count = 0;
-				this.spriteAngles.Count = 0;
-			}
+			this.vertices.Count = 0;
+			this.spritePositions.Count = 0;
+			this.spriteAngles.Count = 0;
 		}
 	}
 }

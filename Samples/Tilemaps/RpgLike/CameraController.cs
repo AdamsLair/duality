@@ -85,33 +85,30 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			// Move the camera
 			transform.MoveBy(targetVelocity * Time.TimeMult);
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
+			// Find the constrained rectangle we're allowed to move in,
+			// based on the rects of all the active tilemaps
+			bool first = true;
+			IEnumerable<ICmpTilemapRenderer> allTilemapRenderers = 
+				this.GameObj.ParentScene.FindComponents<ICmpTilemapRenderer>();
+			foreach (ICmpTilemapRenderer tilemapRenderer in allTilemapRenderers)
 			{
-				// Find the constrained rectangle we're allowed to move in,
-				// based on the rects of all the active tilemaps
-				bool first = true;
-				IEnumerable<ICmpTilemapRenderer> allTilemapRenderers = 
-					this.GameObj.ParentScene.FindComponents<ICmpTilemapRenderer>();
-				foreach (ICmpTilemapRenderer tilemapRenderer in allTilemapRenderers)
+				Transform transform = (tilemapRenderer as Component).GameObj.Transform;
+				Vector3 pos = transform.Pos;
+				Rect localRect = tilemapRenderer.LocalTilemapRect;
+				Rect worldRect = localRect.WithOffset(pos.X, pos.Y);
+				if (first)
 				{
-					Transform transform = (tilemapRenderer as Component).GameObj.Transform;
-					Vector3 pos = transform.Pos;
-					Rect localRect = tilemapRenderer.LocalTilemapRect;
-					Rect worldRect = localRect.WithOffset(pos.X, pos.Y);
-					if (first)
-					{
-						this.mapRect = worldRect;
-						first = false;
-					}
-					else
-					{
-						this.mapRect = this.mapRect.Intersection(worldRect);
-					}
+					this.mapRect = worldRect;
+					first = false;
+				}
+				else
+				{
+					this.mapRect = this.mapRect.Intersection(worldRect);
 				}
 			}
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
+		void ICmpInitializable.OnDeactivate() { }
 	}
 }

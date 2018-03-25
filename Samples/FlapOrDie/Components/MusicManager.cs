@@ -20,21 +20,18 @@ namespace FlapOrDie.Components
 			set { this.bgm = value; }
 		}
 
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if(context == InitContext.Activate && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 			{
-				SoundInstance music = DualityApp.Sound.PlaySound(bgm);
+				SoundInstance music = DualityApp.Sound.PlaySound(this.bgm);
 				music.Looped = true;
 			}
 		}
 
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		void ICmpInitializable.OnDeactivate()
 		{
-			if(context == ShutdownContext.Deactivate)
-			{
-				DualityApp.Sound.StopAll();
-			}
+			DualityApp.Sound.StopAll();
 		}
 	}
 }

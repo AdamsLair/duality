@@ -10,7 +10,7 @@ using NUnit.Framework;
 
 namespace Duality.Tests.Components
 {
-	public class InitializableEventReceiver : Component, ICmpInitializable
+	public class InitializableEventReceiver : Component, ICmpInitializable, ICmpSerializeListener, ICmpAttachmentListener
 	{
 		[Flags]
 		public enum EventFlag
@@ -41,24 +41,33 @@ namespace Duality.Tests.Components
 			return this.receivedEvents.HasFlag(eventFlag);
 		}
 
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			switch (context)
-			{
-				case InitContext.Activate:			this.receivedEvents |= EventFlag.Activate;			break;
-				case InitContext.AddToGameObject:	this.receivedEvents |= EventFlag.AddToGameObject;	break;
-				case InitContext.Loaded:			this.receivedEvents |= EventFlag.Loaded;			break;
-				case InitContext.Saved:				this.receivedEvents |= EventFlag.Saved;				break;
-			}
+			this.receivedEvents |= EventFlag.Activate;
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		void ICmpInitializable.OnDeactivate()
 		{
-			switch (context)
-			{
-				case ShutdownContext.Deactivate:				this.receivedEvents |= EventFlag.Deactivate;				break;
-				case ShutdownContext.RemovingFromGameObject:	this.receivedEvents |= EventFlag.RemovingFromGameObject;	break;
-				case ShutdownContext.Saving:					this.receivedEvents |= EventFlag.Saving;					break;
-			}
+			this.receivedEvents |= EventFlag.Deactivate;
+		}
+		void ICmpSerializeListener.OnLoaded()
+		{
+			this.receivedEvents |= EventFlag.Loaded;
+		}
+		void ICmpSerializeListener.OnSaved()
+		{
+			this.receivedEvents |= EventFlag.Saved;
+		}
+		void ICmpSerializeListener.OnSaving()
+		{
+			this.receivedEvents |= EventFlag.Saving;
+		}
+		void ICmpAttachmentListener.OnAddToGameObject()
+		{
+			this.receivedEvents |= EventFlag.AddToGameObject;
+		}
+		void ICmpAttachmentListener.OnRemoveFromGameObject()
+		{
+			this.receivedEvents |= EventFlag.RemovingFromGameObject;
 		}
 	}
 }

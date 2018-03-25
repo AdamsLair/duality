@@ -14,7 +14,7 @@ namespace Duality.Components
 	[EditorHintCategory(CoreResNames.CategoryNone)]
 	[EditorHintImage(CoreResNames.ImageVelocityTracker)]
 	[RequiredComponent(typeof(Transform))]
-	public sealed class VelocityTracker : Component, ICmpUpdatable, ICmpInitializable
+	public sealed class VelocityTracker : Component, ICmpUpdatable, ICmpSerializeListener
 	{
 		[DontSerialize] private Vector3 velocity      = Vector3.Zero;
 		[DontSerialize] private float   angleVelocity = 0.0f;
@@ -99,17 +99,15 @@ namespace Duality.Components
 				this.lastAngle = angle;
 			}
 		}
-		void ICmpInitializable.OnInit(InitContext context)
+		void ICmpSerializeListener.OnLoaded()
 		{
-			if (context == InitContext.Loaded)
-			{
-				Transform transform = this.GameObj.Transform;
-				this.lastPosition = transform.Pos;
-				this.lastAngle = transform.Angle;
-			}
+			Transform transform = this.GameObj.Transform;
+			this.lastPosition = transform.Pos;
+			this.lastAngle = transform.Angle;
 		}
-		void ICmpInitializable.OnShutdown(ShutdownContext context) { }
-		
+		void ICmpSerializeListener.OnSaved() { }
+		void ICmpSerializeListener.OnSaving() { }
+
 		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
 		{
 			base.OnCopyDataTo(targetObj, operation);

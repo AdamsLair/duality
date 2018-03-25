@@ -21,52 +21,6 @@ namespace Duality
 	[EditorHintImage(CoreResNames.ImageComponent)]
 	public abstract class Component : IManageableObject, IUniqueIdentifyable, ICloneExplicit
 	{
-		/// <summary>
-		/// Describes the kind of initialization that can be performed on a Component
-		/// </summary>
-		public enum InitContext
-		{
-			/// <summary>
-			/// A saving process has just finished.
-			/// </summary>
-			Saved,
-			/// <summary>
-			/// The Component has been fully loaded.
-			/// </summary>
-			Loaded,
-			/// <summary>
-			/// The Component is being activated. This can be the result of activating it,
-			/// activating its GameObject, adding itsself or its GameObject to the current 
-			/// Scene or entering a <see cref="Scene"/> in which this Component is registered.
-			/// </summary>
-			Activate,
-			/// <summary>
-			/// The Component has just been added to a GameObject
-			/// </summary>
-			AddToGameObject
-		}
-		/// <summary>
-		/// Describes the kind of shutdown that can be performed on a Component
-		/// </summary>
-		public enum ShutdownContext
-		{
-			/// <summary>
-			/// A saving process is about to start
-			/// </summary>
-			Saving,
-			/// <summary>
-			/// The Component has been deactivated. This can be the result of deactivating it,
-			/// deactivating its GameObject, removing itsself or its GameObject from the 
-			/// current Scene or leaving a <see cref="Scene"/> in which this Component is registered.
-			/// </summary>
-			Deactivate,
-			/// <summary>
-			/// The Component is being removed from its GameObject.
-			/// </summary>
-			RemovingFromGameObject
-		}
-
-
 		internal GameObject gameobj = null;
 		private  bool       active  = true;
 
@@ -99,12 +53,12 @@ namespace Duality
 						if (value)
 						{
 							ICmpInitializable cInit = this as ICmpInitializable;
-							if (cInit != null) cInit.OnInit(InitContext.Activate);
+							if (cInit != null) cInit.OnActivate();
 						}
 						else
 						{
 							ICmpInitializable cInit = this as ICmpInitializable;
-							if (cInit != null) cInit.OnShutdown(ShutdownContext.Deactivate);
+							if (cInit != null) cInit.OnDeactivate();
 						}
 					}
 

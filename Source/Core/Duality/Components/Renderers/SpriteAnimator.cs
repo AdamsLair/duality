@@ -373,16 +373,13 @@ namespace Duality.Components.Renderers
 
 			this.UpdateVisibleFrames();
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				if (this.animLoopMode == LoopMode.RandomSingle)
-					this.animTime = MathF.Rnd.NextFloat(this.animDuration);
-				this.UpdateVisibleFrames();
-			}
+			if (this.animLoopMode == LoopMode.RandomSingle)
+				this.animTime = MathF.Rnd.NextFloat(this.animDuration);
+			this.UpdateVisibleFrames();
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
+		void ICmpInitializable.OnDeactivate() {}
 		
 		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
 		{

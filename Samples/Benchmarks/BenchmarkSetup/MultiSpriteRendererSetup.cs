@@ -64,13 +64,11 @@ namespace Duality.Samples.Benchmarks
 			this.GameObj.ParentScene.AddObjects(multiSprites);
 		}
 
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-			{
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 				this.SetupScene();
-			}
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
+		void ICmpInitializable.OnDeactivate() { }
 	}
 }

@@ -146,27 +146,22 @@ namespace Duality.Samples.Benchmarks
 
 			device.AddBatch(this.batch);
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-			{
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 				this.SetupSprites();
-			}
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
+			this.vertices.Count = 0;
+			this.spritePositions.Count = 0;
+			this.spriteAngles.Count = 0;
+			if (this.geometry != null)
 			{
-				this.vertices.Count = 0;
-				this.spritePositions.Count = 0;
-				this.spriteAngles.Count = 0;
-				if (this.geometry != null)
-				{
-					this.geometry.Dispose();
-					this.geometry = null;
-				}
-				this.batch = null;
+				this.geometry.Dispose();
+				this.geometry = null;
 			}
+			this.batch = null;
 		}
 	}
 }

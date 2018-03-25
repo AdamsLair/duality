@@ -15,7 +15,7 @@ namespace Duality.Components.Renderers
 	[ManuallyCloned]
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(CoreResNames.ImageFont)]
-	public class TextRenderer : Renderer, ICmpInitializable
+	public class TextRenderer : Renderer, ICmpSerializeListener
 	{
 		protected Alignment            blockAlign = Alignment.Center;
 		protected FormattedText        text       = new FormattedText("Hello World");
@@ -178,13 +178,13 @@ namespace Duality.Components.Renderers
 			}
 		}
 
-		void ICmpInitializable.OnInit(InitContext context)
+		void ICmpSerializeListener.OnLoaded()
 		{
-			if (context == InitContext.Loaded)
-				this.text.ApplySource();
+			this.text.ApplySource();
 		}
-		void ICmpInitializable.OnShutdown(ShutdownContext context) {}
-		
+		void ICmpSerializeListener.OnSaved() { }
+		void ICmpSerializeListener.OnSaving() { }
+
 		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
 		{
 			base.OnSetupCloneTargets(targetObj, setup);

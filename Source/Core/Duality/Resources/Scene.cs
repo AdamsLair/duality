@@ -237,7 +237,7 @@ namespace Duality.Resources
 					// here, and not the real thing.
 					for (int i = shutdownList.Count - 1; i >= 0; i--)
 					{
-						shutdownList[i].OnShutdown(Component.ShutdownContext.Deactivate);
+						shutdownList[i].OnDeactivate();
 					}
 				});
 
@@ -279,7 +279,7 @@ namespace Duality.Resources
 					// here, and not the real thing.
 					for (int i = 0; i < initList.Count; i++)
 					{
-						initList[i].OnInit(Component.InitContext.Activate);
+						initList[i].OnActivate();
 					}
 				});
 
@@ -316,7 +316,7 @@ namespace Duality.Resources
 
 			// Invoke the init event on all gathered components in the right order
 			foreach (ICmpInitializable component in initList)
-				component.OnInit(Component.InitContext.Activate);
+				component.OnActivate();
 
 			// Fire a global event to indicate that the new objects are ready
 			if (GameObjectsAdded != null)
@@ -347,14 +347,14 @@ namespace Duality.Resources
 
 			// Invoke the init event on all gathered components in the right order
 			foreach (ICmpInitializable component in initList)
-				component.OnShutdown(Component.ShutdownContext.Deactivate);
+				component.OnDeactivate();
 		}
 		private static void OnComponentAdded(ComponentEventArgs args)
 		{
 			if (args.Component.Active)
 			{
 				ICmpInitializable cInit = args.Component as ICmpInitializable;
-				if (cInit != null) cInit.OnInit(Component.InitContext.Activate);
+				if (cInit != null) cInit.OnActivate();
 			}
 			if (ComponentAdded != null) ComponentAdded(current, args);
 		}
@@ -363,7 +363,7 @@ namespace Duality.Resources
 			if (args.Component.Active)
 			{
 				ICmpInitializable cInit = args.Component as ICmpInitializable;
-				if (cInit != null) cInit.OnShutdown(Component.ShutdownContext.Deactivate);
+				if (cInit != null) cInit.OnDeactivate();
 			}
 			if (ComponentRemoving != null) ComponentRemoving(current, args);
 		}
@@ -700,7 +700,7 @@ namespace Duality.Resources
 		{
 			this.objectManager.Flush();
 			this.visibilityStrategy.CleanupRenderers();
-			foreach (var cmpList in this.componentsByType.Values)
+			foreach (List<Component> cmpList in this.componentsByType.Values)
 				cmpList.RemoveAll(i => i == null || i.Disposed);
 		}
 
@@ -1067,9 +1067,9 @@ namespace Duality.Resources
 			base.OnSaving(saveAsPath);
 
 			// Prepare all components for saving in reverse order, sorted by type
-			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			List<ICmpSerializeListener> initList = this.FindComponents<ICmpSerializeListener>().ToList();
 			for (int i = initList.Count - 1; i >= 0; i--)
-				initList[i].OnShutdown(Component.ShutdownContext.Saving);
+				initList[i].OnSaving();
 
 			this.serializeObj = this.objectManager.AllObjects.ToArray();
 			this.serializeObj.StableSort(SerializeGameObjectComparison);
@@ -1082,9 +1082,9 @@ namespace Duality.Resources
 			base.OnSaved(saveAsPath);
 			
 			// Re-initialize all components after saving, sorted by type
-			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			List<ICmpSerializeListener> initList = this.FindComponents<ICmpSerializeListener>().ToList();
 			for (int i = 0; i < initList.Count; i++)
-				initList[i].OnInit(Component.InitContext.Saved);
+				initList[i].OnSaved();
 
 			// If this Scene is the current one, but it wasn't saved before, update the current Scenes internal ContentRef
 			if (this.IsCurrent && current.IsRuntimeResource)
@@ -1118,9 +1118,9 @@ namespace Duality.Resources
 			this.ApplyPrefabLinks();
 			
 			// Initialize all loaded components, sorted by type
-			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			List<ICmpSerializeListener> initList = this.FindComponents<ICmpSerializeListener>().ToList();
 			for (int i = 0; i < initList.Count; i++)
-				initList[i].OnInit(Component.InitContext.Loaded);
+				initList[i].OnLoaded();
 		}
 		protected override void OnDisposing(bool manually)
 		{
