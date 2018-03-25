@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Tilemaps</id>
-    <version>1.1.14</version>
+    <version>1.1.15</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Core)</title>
@@ -13,10 +13,10 @@
     <summary>Defines core Resources and Components for using tilemaps with Duality.</summary>
     <description>Defines core Resources and Components for using tilemaps with Duality.</description>
     <tags>Duality Core Plugin Tilemaps</tags>
-    <releaseNotes>TilesetRenderInput Bugfix
-#FIX: Fixed issue #563 where specifying a SourceTileSize of zero on any axis would result in an exception.</releaseNotes>
+    <releaseNotes>Extract flood fill algorithm from FillTilemapTool (#627)
+#CHANGE: Extracted flood fill algorithm from FillTilemapTool and moved it into its own TilemapFloodFill algorithm class.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.13.3" />
+      <dependency id="AdamsLair.Duality" version="2.14.8" />
     </dependencies>
   </metadata>
   <files>

@@ -40,9 +40,9 @@ namespace Duality.Editor.Plugins.CamView
 			Vector3 localPos = (pos - this.snapPosOrigin) / this.snapScaleOrigin;
 			Vector3 snapLocalPos = localPos;
 
-			if (this.gridSize.X > 0.001f) snapLocalPos.X = this.gridSize.X * MathF.RoundToInt(pos.X / this.gridSize.X);
-			if (this.gridSize.Y > 0.001f) snapLocalPos.Y = this.gridSize.Y * MathF.RoundToInt(pos.Y / this.gridSize.Y);
-			if (this.gridSize.Z > 0.001f) snapLocalPos.Z = this.gridSize.Z * MathF.RoundToInt(pos.Z / this.gridSize.Z);
+			if (this.gridSize.X > 0.001f) snapLocalPos.X = this.gridSize.X * MathF.RoundToInt(snapLocalPos.X / this.gridSize.X);
+			if (this.gridSize.Y > 0.001f) snapLocalPos.Y = this.gridSize.Y * MathF.RoundToInt(snapLocalPos.Y / this.gridSize.Y);
+			if (this.gridSize.Z > 0.001f) snapLocalPos.Z = this.gridSize.Z * MathF.RoundToInt(snapLocalPos.Z / this.gridSize.Z);
 
 			Vector3 snapPos = this.snapPosOrigin + this.snapScaleOrigin * snapLocalPos;
 			return snapPos;
