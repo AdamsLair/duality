@@ -76,6 +76,7 @@ namespace Duality.Editor.Forms
 				try
 				{
 					Uri rawTextUrl = this.GetRawLicenseTextUrl(this.licenseUrl);
+					ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 					HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(rawTextUrl);
 					httpWebRequest.Timeout = 3000;
 					using (HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse())

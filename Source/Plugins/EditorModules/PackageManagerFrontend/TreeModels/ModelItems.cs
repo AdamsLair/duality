@@ -183,6 +183,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				{
 					try
 					{
+						ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 						HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(info.IconUrl);
 						httpWebRequest.Timeout = 3000;
 						using (HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse())
