@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.Drawing;
@@ -51,14 +49,17 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			get { return this.internalWindow.ClientSize.Width; }
 		}
+
 		public int Height
 		{
 			get { return this.internalWindow.ClientSize.Height; }
 		}
+
 		public Point2 Size
 		{
 			get { return new Point2(this.Width, this.Height); }
 		}
+
 		public bool IsMultisampled
 		{
 			get { return this.internalWindow.Context.GraphicsMode.Samples > 0; }
@@ -71,45 +72,44 @@ namespace Duality.Backend.DefaultOpenTK
 				if (DisplayDevice.Default != null)
 				{
 					options.Size = new Point2(
-						DisplayDevice.Default.Width, 
+						DisplayDevice.Default.Width,
 						DisplayDevice.Default.Height);
 				}
 			}
 
 			GameWindowFlags windowFlags = GameWindowFlags.Default;
 			if (options.ScreenMode == ScreenMode.FixedWindow)
-				windowFlags = GameWindowFlags.FixedWindow;
-			else if (options.ScreenMode == ScreenMode.Fullscreen)
-				windowFlags = GameWindowFlags.Fullscreen;
-
-			VSyncMode vsyncMode;
-			switch (options.RefreshMode)
 			{
-				default:
-				case RefreshMode.NoSync:
-				case RefreshMode.ManualSync:
-					vsyncMode = VSyncMode.Off;
-					break;
-				case RefreshMode.VSync:
-					vsyncMode = VSyncMode.On;
-					break;
-				case RefreshMode.AdaptiveVSync:
-					vsyncMode = VSyncMode.Adaptive;
-					break;
+				windowFlags = GameWindowFlags.FixedWindow;
+			}
+			else if (options.ScreenMode == ScreenMode.Fullscreen)
+			{
+				windowFlags = GameWindowFlags.Fullscreen;
 			}
 
+			VSyncMode vsyncMode;
+			vsyncMode = GetVsyncModeFromOptions(options);
+
 			this.refreshMode = options.RefreshMode;
+
 			this.internalWindow = new InternalWindow(
 				this,
 				options.Size.X,
 				options.Size.Y,
 				mode,
 				options.Title,
-				windowFlags);
+				windowFlags
+			);
+
 			this.internalWindow.MakeCurrent();
+
 			this.internalWindow.CursorVisible = true;
+
 			if (!options.SystemCursorVisible)
+			{
 				this.internalWindow.Cursor = MouseCursor.Empty;
+			}
+
 			this.internalWindow.VSync = vsyncMode;
 
 			Logs.Core.Write(
@@ -129,7 +129,8 @@ namespace Duality.Backend.DefaultOpenTK
 				this.internalWindow.Context.GraphicsMode.Depth,
 				this.internalWindow.Context.GraphicsMode.Stencil,
 				this.internalWindow.VSync,
-				this.internalWindow.Context.SwapInterval);
+				this.internalWindow.Context.SwapInterval
+			);
 
 			// Retrieve icon from executable file and set it as window icon
 			string executablePath = null;
@@ -155,13 +156,16 @@ namespace Duality.Backend.DefaultOpenTK
 					"window icon from the game's main executable '{0}'. This is " +
 					"uncritical, but still an error: {1}",
 					executablePath,
-					LogFormat.Exception(e));
+					LogFormat.Exception(e)
+				);
 			}
 
 			if (options.ScreenMode == ScreenMode.FullWindow)
+			{
 				this.internalWindow.WindowState = WindowState.Fullscreen;
+			}
 
-			DualityApp.WindowSize = new Point2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
+			UpdateWindowSizeInfo();
 
 			// Register events and input
 			this.HookIntoDuality();
@@ -169,10 +173,33 @@ namespace Duality.Backend.DefaultOpenTK
 			// Determine OpenGL capabilities and log them
 			GraphicsBackend.LogOpenGLSpecs();
 		}
+
+		private static VSyncMode GetVsyncModeFromOptions(WindowOptions options)
+		{
+			VSyncMode vsyncMode;
+			switch (options.RefreshMode)
+			{
+				default:
+				case RefreshMode.NoSync:
+				case RefreshMode.ManualSync:
+					vsyncMode = VSyncMode.Off;
+					break;
+				case RefreshMode.VSync:
+					vsyncMode = VSyncMode.On;
+					break;
+				case RefreshMode.AdaptiveVSync:
+					vsyncMode = VSyncMode.Adaptive;
+					break;
+			}
+
+			return vsyncMode;
+		}
+
 		void INativeWindow.Run()
 		{
 			this.internalWindow.Run();
 		}
+
 		void IDisposable.Dispose()
 		{
 			this.UnhookFromDuality();
@@ -189,12 +216,17 @@ namespace Duality.Backend.DefaultOpenTK
 			DualityApp.Keyboard.Source = new GameWindowKeyboardInputSource(this.internalWindow);
 			DualityApp.UserDataChanged += this.OnUserDataChanged;
 		}
+
 		internal void UnhookFromDuality()
 		{
 			if (DualityApp.Mouse.Source is GameWindowMouseInputSource)
+			{
 				DualityApp.Mouse.Source = null;
+			}
 			if (DualityApp.Keyboard.Source is GameWindowKeyboardInputSource)
+			{
 				DualityApp.Keyboard.Source = null;
+			}
 			DualityApp.UserDataChanged -= this.OnUserDataChanged;
 		}
 
@@ -235,21 +267,39 @@ namespace Duality.Backend.DefaultOpenTK
 
 			// Apply the target state to the game window wherever values changed
 			if (this.internalWindow.WindowState != targetWindowState)
+			{
 				this.internalWindow.WindowState = targetWindowState;
+			}
 			if (this.internalWindow.WindowBorder != targetWindowBorder)
+			{
 				this.internalWindow.WindowBorder = targetWindowBorder;
+			}
 			if (this.internalWindow.ClientSize != targetSize)
+			{
 				this.internalWindow.ClientSize = targetSize;
+			}
 			if (this.internalWindow.Cursor != targetCursor)
+			{
 				this.internalWindow.Cursor = targetCursor;
+			}
 
-			DualityApp.WindowSize = new Point2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
+			UpdateWindowSizeInfo();
 		}
+
+		private void UpdateWindowSizeInfo()
+		{
+			DualityApp.WindowSize = new Point2(
+				this.internalWindow.ClientSize.Width,
+				this.internalWindow.ClientSize.Height
+			);
+		}
+
 		private void OnResize(EventArgs e)
 		{
 			DualityApp.WindowSize = this.Size;
 			DrawDevice.RenderVoid(new Rect(this.Size));
 		}
+
 		private void OnUpdateFrame(FrameEventArgs e)
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated)
