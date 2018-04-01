@@ -249,22 +249,22 @@ namespace Duality.Tests.Resources
 		{
 			ShaderSourceBuilder builder = new ShaderSourceBuilder();
 			string mainShader = new StringBuilder()
-				.AppendLine("#pragma duality type ColorRgba")
+				.AppendLine("#pragma duality editorType ColorRgba")
 				.AppendLine("#pragma duality description \"Test mainUniform Desc\"")
 				.AppendLine("uniform vec4 mainUniform;")
 				.AppendLine()
-				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality editorType Single")
 				.AppendLine("#pragma duality description \"Test sharedUniform Desc\"")
 				.AppendLine("// Some comment")
 				.AppendLine("uniform float sharedUniform;")
 				.AppendLine()
-				.AppendLine("#pragma duality type ColorRgba")
+				.AppendLine("#pragma duality editorType ColorRgba")
 				.AppendLine()
 				.AppendLine("#pragma duality description \"Test mainAttribute Desc\"")
 				.AppendLine()
 				.AppendLine("in vec4 mainAttribute;")
 				.AppendLine()
-				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality editorType Single")
 				.AppendLine("#pragma duality description \"Test sharedAttribute Desc\"")
 				.AppendLine()
 				.AppendLine("in vec4 sharedAttribute;")
@@ -275,11 +275,11 @@ namespace Duality.Tests.Resources
 				.AppendLine("}")
 				.ToString();
 			string sharedShader = new StringBuilder()
-				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality editorType Single")
 				.AppendLine("#pragma duality description \"Test sharedUniform Desc\"")
 				.AppendLine("uniform float sharedUniform;")
 				.AppendLine()
-				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality editorType Single")
 				.AppendLine("#pragma duality description \"Test sharedAttribute Desc\"")
 				.AppendLine("in vec4 sharedAttribute;")
 				.AppendLine()
@@ -287,33 +287,33 @@ namespace Duality.Tests.Resources
 				.ToString();
 			string expectedResultShader = new StringBuilder()
 				.AppendLine("#line 10000")
-				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality editorType Single")
 				.AppendLine("#pragma duality description \"Test sharedUniform Desc\"")
 				.AppendLine("uniform float sharedUniform;")
 				.AppendLine()
-				.AppendLine("#pragma duality type Single")
+				.AppendLine("#pragma duality editorType Single")
 				.AppendLine("#pragma duality description \"Test sharedAttribute Desc\"")
 				.AppendLine("in vec4 sharedAttribute;")
 				.AppendLine()
 				.AppendLine("vec4 sharedFuncA(vec4 pos) { return pos; }")
 				.AppendLine()
 				.AppendLine("#line 1")
-				.AppendLine("#pragma duality type ColorRgba")
+				.AppendLine("#pragma duality editorType ColorRgba")
 				.AppendLine("#pragma duality description \"Test mainUniform Desc\"")
 				.AppendLine("uniform vec4 mainUniform;")
 				.AppendLine()
-				.AppendLine("// #pragma duality type Single")
+				.AppendLine("// #pragma duality editorType Single")
 				.AppendLine("// #pragma duality description \"Test sharedUniform Desc\"")
 				.AppendLine("// Some comment")
 				.AppendLine("// uniform float sharedUniform;")
 				.AppendLine()
-				.AppendLine("#pragma duality type ColorRgba")
+				.AppendLine("#pragma duality editorType ColorRgba")
 				.AppendLine()
 				.AppendLine("#pragma duality description \"Test mainAttribute Desc\"")
 				.AppendLine()
 				.AppendLine("in vec4 mainAttribute;")
 				.AppendLine()
-				.AppendLine("// #pragma duality type Single")
+				.AppendLine("// #pragma duality editorType Single")
 				.AppendLine("// #pragma duality description \"Test sharedAttribute Desc\"")
 				.AppendLine()
 				.AppendLine("// in vec4 sharedAttribute;")
@@ -329,6 +329,78 @@ namespace Duality.Tests.Resources
 
 			string resultShader = builder.Build();
 			Assert.AreEqual(expectedResultShader, resultShader);
+		}
+		[Test] public void BasicFieldParsing()
+		{
+			ShaderSourceBuilder builder = new ShaderSourceBuilder();
+			string mainShader = new StringBuilder()
+				.AppendLine("#pragma duality editorType ColorRgba")
+				.AppendLine("#pragma duality description \"Test firstUniform Desc\"")
+				.AppendLine("uniform vec4 firstUniform;")
+				.AppendLine()
+				.AppendLine("#pragma duality editorType Single")
+				.AppendLine("#pragma duality description \"Test secondUniform Desc\"")
+				.AppendLine("// Some comment")
+				.AppendLine("uniform float secondUniform;")
+				.AppendLine()
+				.AppendLine("#pragma duality editorType ColorRgba")
+				.AppendLine()
+				.AppendLine("#pragma duality description \"Test firstAttribute Desc\"")
+				.AppendLine()
+				.AppendLine("in vec4 firstAttribute;")
+				.AppendLine()
+				.AppendLine("#pragma duality editorType Single")
+				.AppendLine("#pragma duality description \"Test secondAttribute Desc\"")
+				.AppendLine()
+				.AppendLine("in vec4 secondAttribute;")
+				.AppendLine()
+				.AppendLine("void main()")
+				.AppendLine("{")
+				.AppendLine("  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);")
+				.AppendLine("}")
+				.ToString();
+
+			builder.SetMainChunk(mainShader);
+
+			string resultShader = builder.Build();
+			Assert.AreEqual(4, builder.Fields.Count);
+
+			ShaderFieldInfo firstUniform = builder.Fields[0];
+			ShaderFieldInfo secondUniform = builder.Fields[1];
+			ShaderFieldInfo firstAttribute = builder.Fields[2];
+			ShaderFieldInfo secondAttribute = builder.Fields[3];
+
+			Assert.AreEqual("firstUniform", firstUniform.Name);
+			Assert.AreEqual(ShaderFieldScope.Uniform, firstUniform.Scope);
+			Assert.AreEqual(ShaderFieldType.Vec4, firstUniform.Type);
+			Assert.AreEqual("ColorRgba", firstUniform.EditorTypeTag);
+			Assert.AreEqual("Test firstUniform Desc", firstUniform.Description);
+			Assert.AreEqual(1, firstUniform.ArrayLength);
+			Assert.AreEqual(false, firstUniform.IsPrivate);
+
+			Assert.AreEqual("secondUniform", secondUniform.Name);
+			Assert.AreEqual(ShaderFieldScope.Uniform, secondUniform.Scope);
+			Assert.AreEqual(ShaderFieldType.Float, secondUniform.Type);
+			Assert.AreEqual("Single", secondUniform.EditorTypeTag);
+			Assert.AreEqual("Test secondUniform Desc", secondUniform.Description);
+			Assert.AreEqual(1, secondUniform.ArrayLength);
+			Assert.AreEqual(false, secondUniform.IsPrivate);
+
+			Assert.AreEqual("firstAttribute", firstAttribute.Name);
+			Assert.AreEqual(ShaderFieldScope.Attribute, firstAttribute.Scope);
+			Assert.AreEqual(ShaderFieldType.Vec4, firstAttribute.Type);
+			Assert.AreEqual("ColorRgba", firstAttribute.EditorTypeTag);
+			Assert.AreEqual("Test firstAttribute Desc", firstAttribute.Description);
+			Assert.AreEqual(1, firstAttribute.ArrayLength);
+			Assert.AreEqual(false, firstAttribute.IsPrivate);
+
+			Assert.AreEqual("secondAttribute", secondAttribute.Name);
+			Assert.AreEqual(ShaderFieldScope.Attribute, secondAttribute.Scope);
+			Assert.AreEqual(ShaderFieldType.Vec4, secondAttribute.Type);
+			Assert.AreEqual("Single", secondAttribute.EditorTypeTag);
+			Assert.AreEqual("Test secondAttribute Desc", secondAttribute.Description);
+			Assert.AreEqual(1, secondAttribute.ArrayLength);
+			Assert.AreEqual(false, secondAttribute.IsPrivate);
 		}
 	}
 }

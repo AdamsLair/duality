@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -66,12 +67,25 @@ namespace Duality.Resources
 		private static readonly Regex RegexVariableDeclaration = new Regex(@"(uniform|varying|attribute|in|out)\s+(\w+)\s+(\w+)\s*;", RegexOptions.Singleline);
 		private static readonly Regex RegexVersionDirective = new Regex(@"#version\s+(\d+)\s+");
 		private static readonly Regex RegexMetadataDirective = new Regex(@"#pragma\s+duality\s+(.+)");
+		private static readonly Regex RegexUniformLine = new Regex(@"^(?:layout\s*\(.+\)|)\s*(uniform)\s.+");
+		private static readonly Regex RegexAttributeLine = new Regex(@"^(?:layout\s*\(.+\)|)\s*(attribute|in)\s.+");
 
 
 		private string mainChunk = string.Empty;
 		private List<string> sharedChunk = new List<string>();
 		private List<string> conditionalSymbols = new List<string>();
+		private List<ShaderFieldInfo> fields = new List<ShaderFieldInfo>();
 		private StringBuilder textBuilder = new StringBuilder();
+
+
+		/// <summary>
+		/// The list of fields that are declared in the built shader source.
+		/// Empty until <see cref="Build"/> is called.
+		/// </summary>
+		public IReadOnlyList<ShaderFieldInfo> Fields
+		{
+			get { return this.fields; }
+		}
 
 
 		/// <summary>
@@ -81,6 +95,7 @@ namespace Duality.Resources
 		{
 			this.mainChunk = string.Empty;
 			this.sharedChunk.Clear();
+			this.fields.Clear();
 		}
 		/// <summary>
 		/// Specifies the main chunk of source code to use. The main chunk is the one
@@ -122,6 +137,7 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public string Build()
 		{
+			this.fields.Clear();
 			this.textBuilder.Clear();
 
 			// Append preprocessor defines at the top
@@ -185,6 +201,12 @@ namespace Duality.Resources
 			int lastVersion = this.RemoveVersionDirectives(
 				rawMerge, 
 				ignoreRegions, 
+				removeLines);
+
+			// Parse field declarations, so we can provide reflection info on the shader
+			this.ParseFields(
+				rawMerge, 
+				ignoreRegions,
 				removeLines);
 
 			// Comment out lines that we scheduled for removal
@@ -301,6 +323,7 @@ namespace Duality.Resources
 			{
 				IndexRange range = new IndexRange(match.Index, match.Length);
 				if (this.AnyRangeOverlap(range, ignoreRegions)) continue;
+				if (this.AnyRangeOverlap(range, removeSchedule)) continue;
 
 				// Normalize declaration, so we can compare it to others and match regardless of spacing,
 				// declaring keyword or optional qualifiers.
@@ -341,6 +364,7 @@ namespace Duality.Resources
 			{
 				IndexRange range = new IndexRange(match.Index, match.Length);
 				if (this.AnyRangeOverlap(range, ignoreRegions)) continue;
+				if (this.AnyRangeOverlap(range, removeSchedule)) continue;
 
 				int version;
 				if (int.TryParse(match.Groups[1].Value, out version))
@@ -351,6 +375,199 @@ namespace Duality.Resources
 					removeSchedule.Add(lineRange);
 			}
 			return lastVersion;
+		}
+
+		/// <summary>
+		/// Parses all shader field declarations, aggregated with their metadata directives.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="ignoreRegions"></param>
+		/// <param name="removeSchedule"></param>
+		/// <returns></returns>
+		private void ParseFields(string source, List<IndexRange> ignoreRegions, List<IndexRange> removeSchedule)
+		{
+			// Read the source line by line and parse it along the way
+			List<string> fieldMetadata = new List<string>();
+			using (StringReader reader = new StringReader(source))
+			{
+				int lineIndex = 0;
+				while (true)
+				{
+					string line = reader.ReadLine();
+					if (line == null) break;
+
+					// Trim the current line, so ignored ranges are removed
+					IndexRange lineRange = new IndexRange(lineIndex, line.Length);
+					IndexRange trimmedLineRange = lineRange;
+					foreach (IndexRange ignoreRange in ignoreRegions)
+					{
+						trimmedLineRange.Trim(ignoreRange);
+						if (trimmedLineRange.Length == 0) break;
+					}
+					foreach (IndexRange ignoreRange in removeSchedule)
+					{
+						trimmedLineRange.Trim(ignoreRange);
+						if (trimmedLineRange.Length == 0) break;
+					}
+					string trimmedLine =
+						(trimmedLineRange.Length == 0) ?
+						string.Empty :
+						source.Substring(trimmedLineRange.Index, trimmedLineRange.Length);
+
+					// Keep track of where we are in the source, and skip over lines that
+					// fall within source regions that are flagged to be ignored.
+					lineIndex += line.Length;
+					lineIndex += Environment.NewLine.Length;
+
+					// Cleanup remaining line to make it easier to parse
+					trimmedLine = trimmedLine.Trim().TrimEnd(';');
+					if (string.IsNullOrEmpty(trimmedLine)) continue;
+
+					// Scan for metadata directives and store them until we hit the next variable declaration
+					Match metadataMatch = RegexMetadataDirective.Match(trimmedLine);
+					if (metadataMatch != null && metadataMatch.Length > 0)
+					{
+						string metadataDirective = metadataMatch.Groups[1].Value;
+						fieldMetadata.Add(metadataDirective);
+						continue;
+					}
+
+					// Scan for field declarations and aggregate them with previously collected metadata directives
+					ShaderFieldInfo field = this.ParseFieldDeclaration(trimmedLine, fieldMetadata);
+					if (field != null)
+					{
+						this.fields.Add(field);
+						fieldMetadata.Clear();
+						continue;
+					}
+
+					// Clear metadata directives when reading non-empty lines that don't match any of the above
+					fieldMetadata.Clear();
+				}
+			}
+		}
+		/// <summary>
+		/// Parses a single shader field declaration and aggregates it with the specified list of metadata
+		/// directives into a single <see cref="ShaderFieldInfo"/>. Returns null, if the specified line is
+		/// not a field declaration.
+		/// </summary>
+		/// <param name="line"></param>
+		/// <param name="fieldMetadata"></param>
+		/// <returns></returns>
+		private ShaderFieldInfo ParseFieldDeclaration(string line, IReadOnlyList<string> fieldMetadata)
+		{
+			// Parse the field scope and detect whether the line is a field declaration at all
+			ShaderFieldScope scope;
+			if (RegexUniformLine.IsMatch(line))
+				scope = ShaderFieldScope.Uniform;
+			else if (RegexAttributeLine.IsMatch(line))
+				scope = ShaderFieldScope.Attribute;
+			else
+				return null;
+
+			string[] lineToken = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			string typeToken = lineToken[1];
+			string nameToken = lineToken[2];
+
+			// Parse the field type
+			ShaderFieldType varType = ShaderFieldType.Unknown;
+			switch (typeToken.ToUpper())
+			{
+				case "FLOAT": varType = ShaderFieldType.Float; break;
+				case "VEC2": varType = ShaderFieldType.Vec2; break;
+				case "VEC3": varType = ShaderFieldType.Vec3; break;
+				case "VEC4": varType = ShaderFieldType.Vec4; break;
+				case "MAT2": varType = ShaderFieldType.Mat2; break;
+				case "MAT3": varType = ShaderFieldType.Mat3; break;
+				case "MAT4": varType = ShaderFieldType.Mat4; break;
+				case "INT": varType = ShaderFieldType.Int; break;
+				case "BOOL": varType = ShaderFieldType.Bool; break;
+				case "SAMPLER2D": varType = ShaderFieldType.Sampler2D; break;
+			}
+
+			// Parse the array token, if one exists
+			int arrayLength = 1;
+			int arrayStart = nameToken.IndexOf('[');
+			int arrayEnd = nameToken.IndexOf(']');
+			if (arrayStart != -1 && arrayEnd != -1)
+			{
+				string arrayLengthToken = nameToken.Substring(arrayStart + 1, arrayEnd - arrayStart - 1).Trim();
+				arrayLength = int.Parse(arrayLengthToken);
+			}
+
+			// Parse the name token
+			string name =
+				(arrayStart == -1) ?
+				nameToken :
+				nameToken.Substring(0, arrayStart);
+
+			// Parse field metadata for known properties
+			string description = null;
+			string editorTypeTag = null;
+			float minValue = float.MinValue;
+			float maxValue = float.MaxValue;
+			const string unableToParseError = "Unable to parse shader field metadata property '{0}'. Ignoring value '{1}'";
+			foreach (string metadata in fieldMetadata)
+			{
+				int propertyEnd = metadata.IndexOf(' ');
+				if (propertyEnd == -1) continue;
+				if (propertyEnd == metadata.Length - 1) continue;
+
+				string property = metadata.Substring(0, propertyEnd);
+				string value = metadata.Substring(propertyEnd + 1, metadata.Length - propertyEnd - 1);
+				if (property == "description")
+				{
+					int descStart = value.IndexOf('"');
+					int descEnd = value.LastIndexOf('"');
+					if (descStart == -1 || descEnd == -1)
+					{
+						Logs.Core.WriteWarning(unableToParseError, property, value);
+						continue;
+					}
+					description = value.Substring(descStart + 1, descEnd - descStart - 1);
+				}
+				else if (property == "editorType")
+				{
+					editorTypeTag = value.Trim();
+				}
+				else if (property == "minValue")
+				{
+					float parsedValue;
+					if (!float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out parsedValue))
+					{
+						Logs.Core.WriteWarning(unableToParseError, property, value);
+						continue;
+					}
+					minValue = parsedValue;
+				}
+				else if (property == "maxValue")
+				{
+					float parsedValue;
+					if (!float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out parsedValue))
+					{
+						Logs.Core.WriteWarning(unableToParseError, property, value);
+						continue;
+					}
+					maxValue = parsedValue;
+				}
+				else
+				{
+					Logs.Core.WriteWarning(
+						"Unknown shader field metadata property '{0}'. Ignoring value '{1}'",
+						property,
+						value);
+				}
+			}
+
+			return new ShaderFieldInfo(
+				name,
+				varType,
+				scope,
+				arrayLength,
+				editorTypeTag,
+				description,
+				minValue,
+				maxValue);
 		}
 
 		/// <summary>
