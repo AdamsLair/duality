@@ -4,10 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-using FarseerPhysics.Dynamics;
-
 using Duality.Editor;
 using Duality.Components;
+using Duality.Components.Physics;
 using Duality.Serialization;
 using Duality.Cloning;
 using Duality.Properties;
@@ -25,12 +24,7 @@ namespace Duality.Resources
 	[EditorHintImage(CoreResNames.ImageScene)]
 	public sealed class Scene : Resource
 	{
-		private const float PhysicsAccStart = Time.MillisecondsPerFrame;
-
-
-		private static World               physicsWorld      = new World(Vector2.Zero);
-		private static float               physicsAcc        = 0.0f;
-		private static bool                physicsLowFps     = false;
+		private static PhysicsWorld        physicsWorld      = new PhysicsWorld();
 		private static ContentRef<Scene>   current           = new Scene();
 		private static bool                curAutoGen        = false;
 		private static bool                isSwitching       = false;
@@ -38,26 +32,11 @@ namespace Duality.Resources
 		private static bool                switchToScheduled = false;
 		private static ContentRef<Scene>   switchToTarget    = null;
 
-
-		/// <summary>
-		/// [GET] When using fixed-timestep physics, the alpha value [0.0 - 1.0] indicates how
-		/// complete the next step is. This is used for linear interpolation inbetween fixed physics steps.
-		/// </summary>
-		public static float PhysicsAlpha
-		{
-			get { return physicsAcc / Time.MillisecondsPerFrame; }
-		}
-		/// <summary>
-		/// [GET] Is fixed-timestep physics calculation currently active?
-		/// </summary>
-		public static bool PhysicsFixedTime
-		{
-			get { return DualityApp.AppData.PhysicsFixedTime && !physicsLowFps; }
-		}
+		
 		/// <summary>
 		/// [GET] Returns the current physics world.
 		/// </summary>
-		public static World PhysicsWorld
+		public static PhysicsWorld PhysicsWorld
 		{
 			get { return physicsWorld; }
 		}
@@ -243,7 +222,7 @@ namespace Duality.Resources
 
 				// Clear the physics world of all contents
 				physicsWorld.Clear();
-				ResetPhysics();
+				physicsWorld.ResetSimulation();
 			}
 			switchLock--;
 		}
@@ -253,7 +232,7 @@ namespace Duality.Resources
 			if (current.ResWeak != null)
 			{
 				// Apply physical properties
-				ResetPhysics();
+				physicsWorld.ResetSimulation();
 				physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * current.ResWeak.GlobalGravity;
 
 				// When in the editor, apply prefab links
@@ -415,11 +394,6 @@ namespace Duality.Resources
 				if (this.IsCurrent)
 				{
 					physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * value;
-					foreach (Body b in physicsWorld.BodyList)
-					{
-						if (b.IgnoreGravity || b.BodyType != BodyType.Dynamic) continue;
-						b.Awake = true;
-					}
 				}
 			}
 		}
@@ -514,64 +488,7 @@ namespace Duality.Resources
 			switchLock++;
 
 			// Update physics
-			bool physUpdate = false;
-			double physBegin = Time.MainTimer.TotalSeconds;
-			if (Scene.PhysicsFixedTime)
-			{
-				physicsAcc += Time.MillisecondsPerFrame * Time.TimeMult;
-				int iterations = 0;
-				if (physicsAcc >= Time.MillisecondsPerFrame)
-				{
-					Profile.TimeUpdatePhysics.BeginMeasure();
-					DualityApp.EditorGuard(() =>
-					{
-						double timeUpdateBegin = Time.MainTimer.TotalMilliseconds;
-						while (physicsAcc >= Time.MillisecondsPerFrame)
-						{
-							// Catch up on updating progress
-							FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * DualityApp.AppData.PhysicsVelocityThreshold;
-							physicsWorld.Step(Time.SecondsPerFrame);
-							physicsAcc -= Time.MillisecondsPerFrame;
-							iterations++;
-							
-							double timeSpent = Time.MainTimer.TotalMilliseconds - timeUpdateBegin;
-							if (timeSpent >= Time.MillisecondsPerFrame * 10.0f) break; // Emergency exit
-						}
-					});
-					physUpdate = true;
-					Profile.TimeUpdatePhysics.EndMeasure();
-				}
-			}
-			else
-			{
-				Profile.TimeUpdatePhysics.BeginMeasure();
-				DualityApp.EditorGuard(() =>
-				{
-					FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * Time.TimeMult * DualityApp.AppData.PhysicsVelocityThreshold;
-					physicsWorld.Step(Time.TimeMult * Time.SecondsPerFrame);
-					if (Time.TimeMult == 0.0f) physicsWorld.ClearForces(); // Complete freeze? Clear forces, so they don't accumulate.
-					physicsAcc = PhysicsAccStart;
-				});
-				physUpdate = true;
-				Profile.TimeUpdatePhysics.EndMeasure();
-			}
-			double physTime = Time.MainTimer.TotalSeconds - physBegin;
-
-			// Apply Farseers internal measurements to Duality
-			if (physUpdate)
-			{
-				Profile.TimeUpdatePhysicsAddRemove.Set(1000.0f * physicsWorld.AddRemoveTime / System.Diagnostics.Stopwatch.Frequency);
-				Profile.TimeUpdatePhysicsContacts.Set(1000.0f * physicsWorld.ContactsUpdateTime / System.Diagnostics.Stopwatch.Frequency);
-				Profile.TimeUpdatePhysicsContinous.Set(1000.0f * physicsWorld.ContinuousPhysicsTime / System.Diagnostics.Stopwatch.Frequency);
-				Profile.TimeUpdatePhysicsController.Set(1000.0f * physicsWorld.ControllersUpdateTime / System.Diagnostics.Stopwatch.Frequency);
-				Profile.TimeUpdatePhysicsSolve.Set(1000.0f * physicsWorld.SolveUpdateTime / System.Diagnostics.Stopwatch.Frequency);
-			}
-
-			// Update low fps physics state
-			if (!physicsLowFps)
-				physicsLowFps = Time.UnscaledDeltaTime > Time.SecondsPerFrame && physTime > Time.UnscaledDeltaTime * 0.85f;
-			else
-				physicsLowFps = !(Time.UnscaledDeltaTime < Time.SecondsPerFrame * 0.9f || physTime < Time.UnscaledDeltaTime * 0.6f);
+			physicsWorld.Simulate(Time.DeltaTime);
 
 			// Update all GameObjects
 			Profile.TimeUpdateScene.BeginMeasure();
@@ -1014,21 +931,7 @@ namespace Duality.Resources
 			this.objectManager.ComponentAdded     -= this.objectManager_ComponentAdded;
 			this.objectManager.ComponentRemoving  -= this.objectManager_ComponentRemoving;
 		}
-
-		private static void ResetPhysics()
-		{
-			physicsLowFps = false;
-			physicsAcc = PhysicsAccStart;
-		}
-		/// <summary>
-		/// Awakes all currently existing physical objects.
-		/// </summary>
-		public static void AwakePhysics()
-		{
-			foreach (Body b in physicsWorld.BodyList)
-				b.Awake = true;
-		}
-
+		
 		private void objectManager_GameObjectsAdded(object sender, GameObjectGroupEventArgs e)
 		{
 			foreach (GameObject obj in e.Objects)

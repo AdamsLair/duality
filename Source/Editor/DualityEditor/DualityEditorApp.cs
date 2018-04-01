@@ -571,6 +571,8 @@ namespace Duality.Editor
 			if (graphicsBack == null)
 				DualityApp.InitBackend(out graphicsBack, GetAvailDualityEditorTypes);
 
+			Logs.Editor.Write("Creating editor graphics context...");
+			Logs.Editor.PushIndent();
 			try
 			{
 				// Currently bound to game-specific settings. Should be decoupled
@@ -585,6 +587,7 @@ namespace Duality.Editor
 				mainGraphicsContext = null;
 				Logs.Editor.WriteError("Can't create editor graphics context, because an error occurred: {0}", LogFormat.Exception(e));
 			}
+			Logs.Editor.PopIndent();
 		}
 		public static void PerformBufferSwap()
 		{

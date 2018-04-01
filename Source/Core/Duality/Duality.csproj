@@ -107,6 +107,7 @@
     <Compile Include="Drawing\CullingInfo.cs" />
     <Compile Include="Drawing\VertexData\IVertexData.cs" />
     <Compile Include="Drawing\VertexData\VertexBuffer.cs" />
+    <Compile Include="Components\Physics\PhysicsWorld.cs" />
     <Compile Include="Resources\Shaders\ShaderSourceBuilder.cs" />
     <Compile Include="Utility\RawListPool.cs" />
     <Compile Include="Drawing\VertexData\VertexDrawRange.cs" />

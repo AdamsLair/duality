@@ -617,7 +617,7 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(angularForce);
 			if (this.body == null) return;
 
-			if (Scene.PhysicsFixedTime) angularForce *= Time.TimeMult;
+			if (Scene.PhysicsWorld.IsFixedTimestep) angularForce *= Time.TimeMult;
 			this.body.ApplyTorque(PhysicsUnit.TorqueToPhysical * angularForce);
 		}
 		/// <summary>
@@ -630,7 +630,7 @@ namespace Duality.Components.Physics
 			if (this.body == null) return;
 
 			force = this.gameobj.Transform.GetWorldVector(force);
-			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
+			if (Scene.PhysicsWorld.IsFixedTimestep) force *= Time.TimeMult;
 			this.body.ApplyForce(PhysicsUnit.ForceToPhysical * force);
 		}
 		/// <summary>
@@ -646,7 +646,7 @@ namespace Duality.Components.Physics
 
 			force = this.gameobj.Transform.GetWorldVector(force);
 			applyAt = this.gameobj.Transform.GetWorldPoint(applyAt);
-			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
+			if (Scene.PhysicsWorld.IsFixedTimestep) force *= Time.TimeMult;
 			this.body.ApplyForce(
 				PhysicsUnit.ForceToPhysical * force, 
 				PhysicsUnit.LengthToPhysical * applyAt);
@@ -660,7 +660,7 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(force);
 			if (this.body == null) return;
 
-			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
+			if (Scene.PhysicsWorld.IsFixedTimestep) force *= Time.TimeMult;
 			this.body.ApplyForce(PhysicsUnit.ForceToPhysical * force);
 		}
 		/// <summary>
@@ -674,7 +674,7 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(applyAt);
 			if (this.body == null) return;
 
-			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
+			if (Scene.PhysicsWorld.IsFixedTimestep) force *= Time.TimeMult;
 			this.body.ApplyForce(
 				PhysicsUnit.ForceToPhysical * force, 
 				PhysicsUnit.LengthToPhysical * applyAt);
@@ -940,9 +940,9 @@ namespace Duality.Components.Physics
 
 			// The current PhysicsAlpha interpolation probably isn't the best one. Maybe replace later.
 			Vector2 bodyVel = this.body.LinearVelocity;
-			Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.PhysicsAlpha) * Time.SecondsPerFrame;
+			Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.PhysicsWorld.InterpolateAlpha) * Time.SecondsPerFrame;
 			float bodyAngleVel = this.body.AngularVelocity;
-			float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsAlpha) * Time.SecondsPerFrame;
+			float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsWorld.InterpolateAlpha) * Time.SecondsPerFrame;
 
 			// Unless allowed explicitly, ignore the transform hierarchy, so nested RigidBodies don't clash
 			if (!this.allowParent)
@@ -998,7 +998,7 @@ namespace Duality.Components.Physics
 			Transform transform = this.GameObj != null ? this.GameObj.Transform : null;
 
 			// Create body and determine its enabled state
-			this.body = new Body(Scene.PhysicsWorld, this);
+			this.body = new Body(Scene.PhysicsWorld.Native, this);
 
 			// The following line is an optimization: Farseer is really slow when it comes 
 			// to dynamically adding or removing fixtures to an existing world, but that's
@@ -1374,7 +1374,7 @@ namespace Duality.Components.Physics
 			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * start;
 			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
 
-			Scene.PhysicsWorld.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
+			Scene.PhysicsWorld.Native.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
 			{
 				return callback(new RayCastData(
 					fixture.UserData as ShapeInfo, 
@@ -1405,7 +1405,7 @@ namespace Duality.Components.Physics
 			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
 
 			int oldResultCount = hits.Count;
-			Scene.PhysicsWorld.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
+			Scene.PhysicsWorld.Native.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
 			{
 				int index = hits.Count++;
 				RayCastData[] data = hits.Data;
@@ -1450,7 +1450,7 @@ namespace Duality.Components.Physics
 			float firstHitFraction = float.MaxValue;
 			RayCastData firstHitLocal = default(RayCastData);
 
-			Scene.PhysicsWorld.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
+			Scene.PhysicsWorld.Native.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
 			{
 				RayCastData data = new RayCastData(
 					fixture.UserData as ShapeInfo, 
@@ -1485,7 +1485,7 @@ namespace Duality.Components.Physics
 		public static ShapeInfo PickShapeGlobal(Vector2 worldCoord)
 		{
 			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
-			Fixture f = Scene.PhysicsWorld.TestPoint(fsWorldCoord);
+			Fixture f = Scene.PhysicsWorld.Native.TestPoint(fsWorldCoord);
 
 			return f != null && f.UserData is ShapeInfo ? (f.UserData as ShapeInfo) : null;
 		}
@@ -1502,7 +1502,7 @@ namespace Duality.Components.Physics
 		public static bool PickShapesGlobal(Vector2 worldCoord, List<ShapeInfo> pickedShapes)
 		{
 			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
-			List<Fixture> fixtureList = Scene.PhysicsWorld.TestPointAll(fsWorldCoord);
+			List<Fixture> fixtureList = Scene.PhysicsWorld.Native.TestPointAll(fsWorldCoord);
 
 			int oldResultCount = pickedShapes.Count;
 			foreach (Fixture fixture in fixtureList)
@@ -1570,7 +1570,7 @@ namespace Duality.Components.Physics
 			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsUnit.LengthToPhysical * (worldCoord + size));
 
 			int oldResultCount = queriedBodies.Count;
-			Scene.PhysicsWorld.QueryAABB(fixture =>
+			Scene.PhysicsWorld.Native.QueryAABB(fixture =>
 				{
 					ShapeInfo shape = fixture.UserData as ShapeInfo;
 					if (shape != null && shape.Parent != null && shape.Parent.Active)
@@ -1589,7 +1589,7 @@ namespace Duality.Components.Physics
 		/// </summary>
 		public static void AwakeAll()
 		{
-			Scene.AwakePhysics();
+			Scene.PhysicsWorld.Awake();
 		}
 
 		private static FarseerPhysics.Dynamics.BodyType ToFarseerBodyType(BodyType bodyType)
