@@ -851,6 +851,25 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			Logs.Core.PopIndent();
 		}
+		public static void LogOpenGLContextSpecs(IGraphicsContext context)
+		{
+			Logs.Core.Write(
+				"Context specs: " + Environment.NewLine +
+				"  Buffers: {0}" + Environment.NewLine +
+				"  Samples: {1}" + Environment.NewLine +
+				"  ColorFormat: {2}" + Environment.NewLine +
+				"  AccumFormat: {3}" + Environment.NewLine +
+				"  Depth: {4}" + Environment.NewLine +
+				"  Stencil: {5}" + Environment.NewLine +
+				"  SwapInterval: {6}",
+				context.GraphicsMode.Buffers,
+				context.GraphicsMode.Samples,
+				context.GraphicsMode.ColorFormat,
+				context.GraphicsMode.AccumulatorFormat,
+				context.GraphicsMode.Depth,
+				context.GraphicsMode.Stencil,
+				context.SwapInterval);
+		}
 		public static void LogOpenGLSpecs()
 		{
 			// Accessing OpenGL functionality requires context. Don't get confused by AccessViolationExceptions, fail better instead.

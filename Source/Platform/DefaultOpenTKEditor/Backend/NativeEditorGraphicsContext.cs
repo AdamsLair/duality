@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using Duality.Drawing;
 using Duality.Backend;
+using Duality.Backend.DefaultOpenTK;
 
 using OpenTK;
 using OpenTK.Graphics;
@@ -60,6 +61,12 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 			this.mainContextControl = new GLControl(defaultGraphicsMode, 3, 0, GraphicsContextFlags.ForwardCompatible);
 			this.mainContextControl.VSync = false;
 			this.mainContextControl.MakeCurrent();
+
+			// Log some general info on the graphics context we've set up
+			GraphicsBackend.LogOpenGLContextSpecs(this.mainContextControl.Context);
+
+			// Determine OpenGL capabilities and log them
+			GraphicsBackend.LogOpenGLSpecs();
 		}
 
 		public void ScheduleSwap(GLControl control)

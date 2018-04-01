@@ -112,24 +112,8 @@ namespace Duality.Backend.DefaultOpenTK
 				this.internalWindow.Cursor = MouseCursor.Empty;
 			this.internalWindow.VSync = vsyncMode;
 
-			Logs.Core.Write(
-				"Window Specification: " + Environment.NewLine +
-				"  Buffers: {0}" + Environment.NewLine +
-				"  Samples: {1}" + Environment.NewLine +
-				"  ColorFormat: {2}" + Environment.NewLine +
-				"  AccumFormat: {3}" + Environment.NewLine +
-				"  Depth: {4}" + Environment.NewLine +
-				"  Stencil: {5}" + Environment.NewLine +
-				"  VSync: {6}" + Environment.NewLine +
-				"  SwapInterval: {7}",
-				this.internalWindow.Context.GraphicsMode.Buffers,
-				this.internalWindow.Context.GraphicsMode.Samples,
-				this.internalWindow.Context.GraphicsMode.ColorFormat,
-				this.internalWindow.Context.GraphicsMode.AccumulatorFormat,
-				this.internalWindow.Context.GraphicsMode.Depth,
-				this.internalWindow.Context.GraphicsMode.Stencil,
-				this.internalWindow.VSync,
-				this.internalWindow.Context.SwapInterval);
+			// Log some general info on the graphics context we've set up
+			GraphicsBackend.LogOpenGLContextSpecs(this.internalWindow.Context);
 
 			// Retrieve icon from executable file and set it as window icon
 			string executablePath = null;
