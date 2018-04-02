@@ -115,8 +115,9 @@ namespace Duality.Resources
 		}
 		/// <summary>
 		/// [GET] Returns an array containing information about the variables that have been declared in shader source code.
+		/// May trigger compiling the technique, if it wasn't compiled already.
 		/// </summary>
-		public ShaderFieldInfo[] ShaderFields
+		public IReadOnlyList<ShaderFieldInfo> ShaderFields
 		{
 			get
 			{
@@ -260,11 +261,21 @@ namespace Duality.Resources
 				nativeParts.Add(part.Native);
 			}
 
+			// Gather shader field declarations from all shader parts
+			Dictionary<string, ShaderFieldInfo> fieldMap = new Dictionary<string, ShaderFieldInfo>();
+			foreach (Shader part in parts)
+			{
+				foreach (ShaderFieldInfo field in part.Fields)
+				{
+					fieldMap[field.Name] = field;
+				}
+			}
+
 			// Load the program with all shader parts attached
 			try
 			{
-				this.nativeShader.LoadProgram(nativeParts);
-				this.shaderFields = this.nativeShader.GetFields();
+				this.shaderFields = fieldMap.Values.ToArray();
+				this.nativeShader.LoadProgram(nativeParts, this.shaderFields);
 
 				// Validate that we have at least one attribute in the shader. Warn otherwise.
 				if (!this.shaderFields.Any(f => f.Scope == ShaderFieldScope.Attribute))

@@ -56,7 +56,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				DrawTechnique refTech = batchInfos.NotNull().First().Technique.Res;
 
 				// Retrieve a list of shader variables to edit
-				ShaderFieldInfo[] shaderFields = null;
+				IReadOnlyList<ShaderFieldInfo> shaderFields = null;
 				if (refTech != null)
 					shaderFields = refTech.ShaderFields;
 				else
@@ -66,10 +66,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				List<string> removeEditors = null;
 				foreach (var pair in this.fieldEditors)
 				{
-					int matchingIndex = Array.FindIndex(shaderFields, f => f.Name == pair.Key);
 					bool isMatchingEditor = 
-						matchingIndex != -1 &&
-						shaderFields[matchingIndex] == pair.Value.Field;
+						shaderFields.Contains(pair.Value.Field) && 
+						pair.Value.Field.Name == pair.Key;
 					if (!isMatchingEditor)
 					{
 						if (removeEditors == null)
@@ -90,7 +89,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				// were removed because they did no longer match.
 				int autoCreateEditorCount = 1;
 				int displayedFieldIndex = -1;
-				for (int i = 0; i < shaderFields.Length; i++)
+				for (int i = 0; i < shaderFields.Count; i++)
 				{
 					ShaderFieldInfo field = shaderFields[i];
 
