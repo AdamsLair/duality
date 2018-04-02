@@ -15,7 +15,7 @@ namespace Duality.Tests.Resources
 	[TestFixture]
 	public class ShaderSourceBuilderTest
 	{
-		[Test] public void Basics()
+		[Test] public void Composition()
 		{
 			ShaderSourceBuilder builder = new ShaderSourceBuilder();
 			string mainShader = new StringBuilder()
@@ -330,7 +330,7 @@ namespace Duality.Tests.Resources
 			string resultShader = builder.Build();
 			Assert.AreEqual(expectedResultShader, resultShader);
 		}
-		[Test] public void BasicFieldParsing()
+		[Test] public void FieldParsingBasics()
 		{
 			ShaderSourceBuilder builder = new ShaderSourceBuilder();
 			string mainShader = new StringBuilder()
@@ -401,6 +401,90 @@ namespace Duality.Tests.Resources
 			Assert.AreEqual("Test secondAttribute Desc", secondAttribute.Description);
 			Assert.AreEqual(1, secondAttribute.ArrayLength);
 			Assert.AreEqual(false, secondAttribute.IsPrivate);
+		}
+		[Test] public void FieldParsingTypes()
+		{
+			ShaderSourceBuilder builder = new ShaderSourceBuilder();
+			string mainShader = new StringBuilder()
+				.AppendLine("uniform bool fieldBool;")
+				.AppendLine("uniform int fieldInt;")
+				.AppendLine("uniform float fieldFloat;")
+				.AppendLine("uniform vec2 fieldVec2;")
+				.AppendLine("uniform vec3 fieldVec3;")
+				.AppendLine("uniform vec4 fieldVec4;")
+				.AppendLine("uniform mat2 fieldMat2;")
+				.AppendLine("uniform mat3 fieldMat3;")
+				.AppendLine("uniform mat4 fieldMat4;")
+				.AppendLine()
+				.AppendLine("in bool attribBool;")
+				.AppendLine("in int attribInt;")
+				.AppendLine("in float attribFloat;")
+				.AppendLine("in vec2 attribVec2;")
+				.AppendLine("in vec3 attribVec3;")
+				.AppendLine("in vec4 attribVec4;")
+				.AppendLine("in mat2 attribMat2;")
+				.AppendLine("in mat3 attribMat3;")
+				.AppendLine("in mat4 attribMat4;")
+				.AppendLine()
+				.AppendLine("void main()")
+				.AppendLine("{")
+				.AppendLine("  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);")
+				.AppendLine("}")
+				.ToString();
+
+			builder.SetMainChunk(mainShader);
+
+			string resultShader = builder.Build();
+
+			int typeCount = 9;
+			Assert.AreEqual(typeCount * 2, builder.Fields.Count);
+			for (int i = 0; i < 2; i++)
+			{
+				Assert.AreEqual(ShaderFieldType.Bool, builder.Fields[i * typeCount + 0].Type);
+				Assert.AreEqual(ShaderFieldType.Int, builder.Fields[i * typeCount + 1].Type);
+				Assert.AreEqual(ShaderFieldType.Float, builder.Fields[i * typeCount + 2].Type);
+				Assert.AreEqual(ShaderFieldType.Vec2, builder.Fields[i * typeCount + 3].Type);
+				Assert.AreEqual(ShaderFieldType.Vec3, builder.Fields[i * typeCount + 4].Type);
+				Assert.AreEqual(ShaderFieldType.Vec4, builder.Fields[i * typeCount + 5].Type);
+				Assert.AreEqual(ShaderFieldType.Mat2, builder.Fields[i * typeCount + 6].Type);
+				Assert.AreEqual(ShaderFieldType.Mat3, builder.Fields[i * typeCount + 7].Type);
+				Assert.AreEqual(ShaderFieldType.Mat4, builder.Fields[i * typeCount + 8].Type);
+			}
+		}
+		[Test] public void FieldParsingArrays()
+		{
+			ShaderSourceBuilder builder = new ShaderSourceBuilder();
+			string mainShader = new StringBuilder()
+				.AppendLine("uniform int fieldInt[1];")
+				.AppendLine("uniform float fieldFloat[2];")
+				.AppendLine("uniform vec2 fieldVec2[3];")
+				.AppendLine()
+				.AppendLine("in int attribInt[1];")
+				.AppendLine("in float attribFloat[2];")
+				.AppendLine("in vec2 attribVec2[3];")
+				.AppendLine()
+				.AppendLine("void main()")
+				.AppendLine("{")
+				.AppendLine("  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);")
+				.AppendLine("}")
+				.ToString();
+
+			builder.SetMainChunk(mainShader);
+
+			string resultShader = builder.Build();
+
+			int arrayCount = 3;
+			Assert.AreEqual(arrayCount * 2, builder.Fields.Count);
+			for (int i = 0; i < 2; i++)
+			{
+				Assert.AreEqual(1, builder.Fields[i * arrayCount + 0].ArrayLength);
+				Assert.AreEqual(2, builder.Fields[i * arrayCount + 1].ArrayLength);
+				Assert.AreEqual(3, builder.Fields[i * arrayCount + 2].ArrayLength);
+
+				Assert.AreEqual(ShaderFieldType.Int, builder.Fields[i * arrayCount + 0].Type);
+				Assert.AreEqual(ShaderFieldType.Float, builder.Fields[i * arrayCount + 1].Type);
+				Assert.AreEqual(ShaderFieldType.Vec2, builder.Fields[i * arrayCount + 2].Type);
+			}
 		}
 	}
 }
