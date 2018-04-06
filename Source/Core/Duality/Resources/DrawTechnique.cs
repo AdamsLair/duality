@@ -117,7 +117,7 @@ namespace Duality.Resources
 		/// [GET] Returns an array containing information about the variables that have been declared in shader source code.
 		/// May trigger compiling the technique, if it wasn't compiled already.
 		/// </summary>
-		public IReadOnlyList<ShaderFieldInfo> ShaderFields
+		public IReadOnlyList<ShaderFieldInfo> DeclaredFields
 		{
 			get
 			{
@@ -265,7 +265,7 @@ namespace Duality.Resources
 			Dictionary<string, ShaderFieldInfo> fieldMap = new Dictionary<string, ShaderFieldInfo>();
 			foreach (Shader part in parts)
 			{
-				foreach (ShaderFieldInfo field in part.Fields)
+				foreach (ShaderFieldInfo field in part.DeclaredFields)
 				{
 					fieldMap[field.Name] = field;
 				}
