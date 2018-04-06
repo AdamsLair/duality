@@ -597,7 +597,7 @@ namespace Duality.Resources
 		private IndexRange ExpandToLine(string text, IndexRange range)
 		{
 			int lineBeginIndex = text.LastIndexOfAny(new char[] { '\n', '\r' }, range.Index) + 1;
-			int lineEndIndex = text.IndexOfAny(new char[] { '\n', '\r' }, range.Index + range.Length);
+			int lineEndIndex = text.IndexOfAny(new char[] { '\n', '\r' }, range.Index + range.Length - 1) + 1;
 			return new IndexRange(lineBeginIndex, lineEndIndex - lineBeginIndex);
 		}
 		/// <summary>

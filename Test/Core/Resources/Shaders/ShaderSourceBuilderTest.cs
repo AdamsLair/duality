@@ -486,5 +486,45 @@ namespace Duality.Tests.Resources
 				Assert.AreEqual(ShaderFieldType.Vec2, builder.Fields[i * arrayCount + 2].Type);
 			}
 		}
+		[Test] public void FieldParsingComposition()
+		{
+			ShaderSourceBuilder builder = new ShaderSourceBuilder();
+			string mainShader = new StringBuilder()
+				.AppendLine("#pragma duality editorType ColorRgba")
+				.AppendLine("uniform vec4 mainColor;")
+				.AppendLine()
+				.AppendLine("in vec3 vertexPos;")
+				.AppendLine()
+				.AppendLine("out vec4 programColor;")
+				.AppendLine()
+				.AppendLine("void main()")
+				.AppendLine("{")
+				.AppendLine("  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);")
+				.AppendLine("  programColor = vec4(1.0, 0.0, 0.0, 0.0);")
+				.AppendLine("}")
+				.ToString();
+			string sharedShader = new StringBuilder()
+				.AppendLine("// Some comment")
+				.AppendLine("// Another comment")
+				.AppendLine("# version 130")
+				.AppendLine()
+				.AppendLine("uniform mat4 _viewMatrix;")
+				.AppendLine("uniform mat4 _projectionMatrix")
+				.AppendLine("uniform mat4 _viewProjectionMatrix")
+				.ToString();
+
+			builder.SetMainChunk(mainShader);
+			builder.AddSharedChunk(sharedShader);
+
+			string resultShader = builder.Build();
+
+			// Make sure all fields are there as expected
+			Assert.AreEqual("_viewMatrix", builder.Fields[0].Name);
+			Assert.AreEqual("_projectionMatrix", builder.Fields[0].Name);
+			Assert.AreEqual("_viewProjectionMatrix", builder.Fields[0].Name);
+			Assert.AreEqual("mainColor", builder.Fields[0].Name);
+			Assert.AreEqual("vertexPos", builder.Fields[0].Name);
+			Assert.AreEqual("programColor", builder.Fields[0].Name);
+		}
 	}
 }
