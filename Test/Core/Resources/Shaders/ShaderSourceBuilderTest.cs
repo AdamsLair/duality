@@ -520,11 +520,10 @@ namespace Duality.Tests.Resources
 
 			// Make sure all fields are there as expected
 			Assert.AreEqual("_viewMatrix", builder.Fields[0].Name);
-			Assert.AreEqual("_projectionMatrix", builder.Fields[0].Name);
-			Assert.AreEqual("_viewProjectionMatrix", builder.Fields[0].Name);
-			Assert.AreEqual("mainColor", builder.Fields[0].Name);
-			Assert.AreEqual("vertexPos", builder.Fields[0].Name);
-			Assert.AreEqual("programColor", builder.Fields[0].Name);
+			Assert.AreEqual("_projectionMatrix", builder.Fields[1].Name);
+			Assert.AreEqual("_viewProjectionMatrix", builder.Fields[2].Name);
+			Assert.AreEqual("mainColor", builder.Fields[3].Name);
+			Assert.AreEqual("vertexPos", builder.Fields[4].Name);
 		}
 	}
 }
