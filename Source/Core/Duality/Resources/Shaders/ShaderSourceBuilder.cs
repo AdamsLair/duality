@@ -209,6 +209,12 @@ namespace Duality.Resources
 				ignoreRegions,
 				removeLines);
 
+			// Remove all duality-specific pragma directives to avoid running into driver bugs on Intel
+			this.RemoveDualityPragmas(
+				rawMerge,
+				ignoreRegions,
+				removeLines);
+
 			// Comment out lines that we scheduled for removal
 			this.CommentOutLines(this.textBuilder, removeLines);
 
@@ -375,6 +381,25 @@ namespace Duality.Resources
 					removeSchedule.Add(lineRange);
 			}
 			return lastVersion;
+		}
+		/// <summary>
+		/// Detects all Duality-specific #pragma directives and schedules them for removal
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="ignoreRegions"></param>
+		/// <param name="removeSchedule"></param>
+		private void RemoveDualityPragmas(string source, List<IndexRange> ignoreRegions, List<IndexRange> removeSchedule)
+		{
+			foreach (Match match in RegexMetadataDirective.Matches(source))
+			{
+				IndexRange range = new IndexRange(match.Index, match.Length);
+				if (this.AnyRangeOverlap(range, ignoreRegions)) continue;
+				if (this.AnyRangeOverlap(range, removeSchedule)) continue;
+
+				IndexRange lineRange = this.ExpandToLine(source, range);
+				if (lineRange.Length > 0)
+					removeSchedule.Add(lineRange);
+			}
 		}
 
 		/// <summary>
