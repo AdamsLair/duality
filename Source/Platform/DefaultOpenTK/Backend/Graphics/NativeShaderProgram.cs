@@ -81,7 +81,7 @@ namespace Duality.Backend.DefaultOpenTK
 			get { return this.fieldLocations; }
 		}
 
-		void INativeShaderProgram.LoadProgram(IEnumerable<INativeShaderPart> shaderParts)
+		void INativeShaderProgram.LoadProgram(IEnumerable<INativeShaderPart> shaderParts, IEnumerable<ShaderFieldInfo> shaderFields)
 		{
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
@@ -127,22 +127,11 @@ namespace Duality.Backend.DefaultOpenTK
 				throw new BackendException(string.Format("Linker error:{1}{0}", errorLog, Environment.NewLine));
 			}
 
-			// Collect variable infos from sub programs
-			Dictionary<string, ShaderFieldInfo> fieldMap = new Dictionary<string, ShaderFieldInfo>();
-			foreach (INativeShaderPart item in shaderParts)
-			{
-				NativeShaderPart shaderPart = item as NativeShaderPart;
-				foreach (ShaderFieldInfo field in shaderPart.Fields)
-				{
-					fieldMap[field.Name] = field;
-				}
-			}
-
 			// Collect variables that are available through shader reflection, e.g.
 			// haven't been optimized of #ifdef'd away.
 			List<int> validLocations = new List<int>();
 			List<ShaderFieldInfo> validFields = new List<ShaderFieldInfo>();
-			foreach (ShaderFieldInfo field in fieldMap.Values)
+			foreach (ShaderFieldInfo field in shaderFields)
 			{
 				int location;
 				if (field.Scope == ShaderFieldScope.Uniform)
@@ -159,10 +148,6 @@ namespace Duality.Backend.DefaultOpenTK
 
 			this.fields = validFields.ToArray();
 			this.fieldLocations = validLocations.ToArray();
-		}
-		ShaderFieldInfo[] INativeShaderProgram.GetFields()
-		{
-			return this.fields;
 		}
 		void IDisposable.Dispose()
 		{

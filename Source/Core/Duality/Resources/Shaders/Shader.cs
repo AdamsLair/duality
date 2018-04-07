@@ -18,6 +18,8 @@ namespace Duality.Resources
 	[ExplicitResourceReference()]
 	public abstract class Shader : Resource
 	{
+		private static readonly ShaderFieldInfo[] EmptyFields = new ShaderFieldInfo[0];
+
 		private static List<string> commonChunks = null;
 
 		/// <summary>
@@ -51,6 +53,7 @@ namespace Duality.Resources
 
 		[DontSerialize] private INativeShaderPart native   = null;
 		[DontSerialize] private bool              compiled = false;
+		[DontSerialize] private ShaderFieldInfo[] fields   = null;
 
 
 		/// <summary>
@@ -71,6 +74,19 @@ namespace Duality.Resources
 		public bool Compiled
 		{
 			get { return this.compiled; }
+		}
+		/// <summary>
+		/// [GET] A list of fields that are declared in this shader. May trigger compiling the
+		/// shader if it wasn't compiled yet.
+		/// </summary>
+		public IReadOnlyList<ShaderFieldInfo> DeclaredFields
+		{
+			get
+			{
+				if (!this.compiled)
+					this.Compile();
+				return this.fields ?? EmptyFields;
+			}
 		}
 		/// <summary>
 		/// [GET] The shaders source code.
@@ -113,26 +129,40 @@ namespace Duality.Resources
 				this.native = DualityApp.GraphicsBackend.CreateShaderPart();
 
 			// Preprocess the source code to include builtin shader functions
-			ShaderSourceBuilder builder = new ShaderSourceBuilder();
-			string typeConditional = string.Format("SHADERTYPE_{0}", this.Type).ToUpperInvariant();
-			builder.SetConditional(typeConditional, true);
-			builder.SetMainChunk(this.source);
-			foreach (string sharedChunk in CommonSourceChunks)
-			{
-				builder.AddSharedChunk(sharedChunk);
-			}
-			
-			// Load the shader on the backend side
+			string processedSource = null;
+			ShaderFieldInfo[] fields = null;
 			try
 			{
-				string processedSource = builder.Build();
-				this.native.LoadSource(processedSource, this.Type);
+				ShaderSourceBuilder builder = new ShaderSourceBuilder();
+				string typeConditional = string.Format("SHADERTYPE_{0}", this.Type).ToUpperInvariant();
+				builder.SetConditional(typeConditional, true);
+				builder.SetMainChunk(this.source);
+				foreach (string sharedChunk in CommonSourceChunks)
+				{
+					builder.AddSharedChunk(sharedChunk);
+				}
+				processedSource = builder.Build();
+				fields = builder.Fields.ToArray();
 			}
 			catch (Exception e)
 			{
-				Logs.Core.WriteError("Failed to compile shader:{1}{0}", LogFormat.Exception(e), Environment.NewLine);
+				Logs.Core.WriteError("Failed to preprocess shader:{1}{0}", LogFormat.Exception(e), Environment.NewLine);
 			}
 
+			// Load the shader on the backend side
+			if (processedSource != null)
+			{
+				try
+				{
+					this.native.LoadSource(processedSource, this.Type);
+				}
+				catch (Exception e)
+				{
+					Logs.Core.WriteError("Failed to compile shader:{1}{0}", LogFormat.Exception(e), Environment.NewLine);
+				}
+			}
+
+			this.fields = fields;
 			this.compiled = true;
 			Logs.Core.PopIndent();
 		}
