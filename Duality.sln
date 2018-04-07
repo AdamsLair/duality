@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duality", "Source\Core\Duality\Duality.csproj", "{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}"
 EndProject
@@ -84,11 +84,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tilemaps.Editor", "Source\Plugins\Tilemaps\Editor\Tilemaps.Editor.csproj", "{22D59FE7-3A2C-4415-9610-6F9C7B68594A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tilemaps.Sample", "Samples\Tilemaps\Tilemaps.Sample.csproj", "{D014227E-3E69-4C8B-984A-1519AA35C1AD}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F4341334-0544-48A1-8280-0B8C1E745498}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering", "Samples\Steering\Steering.csproj", "{0130132B-C38D-463E-90AC-5D389E934FAE}"
 EndProject
@@ -283,5 +278,8 @@ Global
 		{D014227E-3E69-4C8B-984A-1519AA35C1AD} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{0130132B-C38D-463E-90AC-5D389E934FAE} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{45B4CC01-CCDC-4835-8EDF-F0B706EA3DDF} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {74E2A280-F2F3-400D-9CC2-7A91D6D3D15C}
 	EndGlobalSection
 EndGlobal

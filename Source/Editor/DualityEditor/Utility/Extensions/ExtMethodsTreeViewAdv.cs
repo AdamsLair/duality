@@ -33,5 +33,23 @@ namespace Duality.Editor
 		{
 			return view.Root.Children.LastOrDefault(node => !node.IsHidden);
 		}
+		public static TreeNodeAdv NextVisibleNode(this TreeNodeAdv node)
+		{
+			node = node.NextNode;
+			while (node != null && node.IsHidden)
+			{
+				node = node.NextNode;
+			}
+			return node;
+		}
+		public static TreeNodeAdv PreviousVisibleNode(this TreeNodeAdv node)
+		{
+			node = node.PreviousNode;
+			while (node != null && node.IsHidden)
+			{
+				node = node.PreviousNode;
+			}
+			return node;
+		}
 	}
 }
