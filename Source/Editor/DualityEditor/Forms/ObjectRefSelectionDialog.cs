@@ -152,38 +152,28 @@ namespace Duality.Editor.Forms
 		
 		private void TxtFilterInputOnKeyDown(object sender, KeyEventArgs keyEventArgs)
 		{
-			TreeNodeAdv tmp = null;
+			TreeNodeAdv targetNode = null;
 
 			if (keyEventArgs.KeyCode == Keys.Down)
 			{
 				if (this.objectReferenceListing.SelectedNode == null)
-				{
-					this.objectReferenceListing.SelectedNode = this.objectReferenceListing.FirstVisibleNode();
-					tmp = this.objectReferenceListing.SelectedNode;
-				}
+					targetNode = this.objectReferenceListing.FirstVisibleNode();
 				else
-				{
-					tmp = this.objectReferenceListing.SelectedNode.NextNode;
-				}
+					targetNode = this.objectReferenceListing.SelectedNode.NextVisibleNode();
 				keyEventArgs.Handled = true;
 			}
 			else if (keyEventArgs.KeyCode == Keys.Up)
 			{
 				if (this.objectReferenceListing.SelectedNode == null)
-				{
-					this.objectReferenceListing.SelectedNode = this.objectReferenceListing.LastVisibleNode();
-					tmp = this.objectReferenceListing.SelectedNode;
-				}
+					targetNode = this.objectReferenceListing.LastVisibleNode();
 				else
-				{
-					tmp = this.objectReferenceListing.SelectedNode.PreviousNode;
-				}
+					targetNode = this.objectReferenceListing.SelectedNode.PreviousVisibleNode();
 				keyEventArgs.Handled = true;
 			}
 
-			if (tmp != null)
+			if (targetNode != null)
 			{
-				this.objectReferenceListing.SelectedNode = tmp;
+				this.objectReferenceListing.SelectedNode = targetNode;
 			}
 		}
 		private void ResourceListingOnDoubleClick(object sender, EventArgs eventArgs)
