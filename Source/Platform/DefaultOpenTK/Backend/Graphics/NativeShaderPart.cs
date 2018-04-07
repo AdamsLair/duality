@@ -33,12 +33,6 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
-			// Note: The CompileShader call below might crash on Intel HD graphics cards
-			// due to an Intel driver bug where an unknown pragma directive leads to an
-			// access violation. No workaround for now, but keep in mind should this be
-			// an issue at some point.
-			// More info: https://software.intel.com/en-us/forums/graphics-driver-bug-reporting/topic/623485
-
 			this.type = type;
 			if (this.handle == 0)
 				this.handle = GL.CreateShader(GetOpenTKShaderType(type));
