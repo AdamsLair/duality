@@ -142,7 +142,7 @@
     <Compile Include="Components\ICmpInterfaces\ICmpUpdatable.cs" />
     <Compile Include="Components\Physics\CollisionFilterData.cs" />
     <Compile Include="Components\Physics\CollisionFilter.cs" />
-    <Compile Include="Components\Physics\RaycastCallback.cs" />
+    <Compile Include="Components\Physics\RayCastCallback.cs" />
     <Compile Include="Components\Physics\CollisionCategory.cs" />
     <Compile Include="Components\Physics\BodyType.cs" />
     <Compile Include="Components\Physics\RayCastData.cs" />
