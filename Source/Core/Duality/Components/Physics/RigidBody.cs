@@ -764,7 +764,7 @@ namespace Duality.Components.Physics
 			
 			return this.PickShapes(boxShape, boxTransform, pickedShapes);
 		}
-		private bool PickShapes(PolygonShape boxShape, FarseerPhysics.Common.Transform boxTransform, List<ShapeInfo> pickedShapes)
+		internal bool PickShapes(PolygonShape boxShape, FarseerPhysics.Common.Transform boxTransform, List<ShapeInfo> pickedShapes)
 		{			
 			Manifold manifold = new Manifold();
 
@@ -1369,19 +1369,7 @@ namespace Duality.Components.Physics
 		/// </param>
 		public static void RayCast(Vector2 start, Vector2 end, RayCastCallback callback)
 		{
-			if (callback == null) callback = Raycast_DefaultCallback;
-
-			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * start;
-			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
-
-			Scene.PhysicsWorld.Native.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
-			{
-				return callback(new RayCastData(
-					fixture.UserData as ShapeInfo, 
-					PhysicsUnit.LengthToDuality * pos, 
-					normal, 
-					fraction));
-			}, fsWorldCoordA, fsWorldCoordB);
+			Scene.PhysicsWorld.RayCast(start, end, callback);
 		}
 		/// <summary>
 		/// Performs a 2d physical raycast in world coordinates.
@@ -1399,35 +1387,7 @@ namespace Duality.Components.Physics
 		/// <returns>Returns whether any new hit was registered.</returns>
 		public static bool RayCast(Vector2 start, Vector2 end, RayCastCallback callback, RawList<RayCastData> hits)
 		{
-			if (callback == null) callback = Raycast_DefaultCallback;
-
-			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * start;
-			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
-
-			int oldResultCount = hits.Count;
-			Scene.PhysicsWorld.Native.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
-			{
-				int index = hits.Count++;
-				RayCastData[] data = hits.Data;
-
-				data[index] = new RayCastData(
-					fixture.UserData as ShapeInfo, 
-					PhysicsUnit.LengthToDuality * pos, 
-					normal, 
-					fraction);
-
-				float result = callback(data[index]);
-				if (result < 0.0f)
-					hits.Count--;
-
-				return result;
-			}, fsWorldCoordA, fsWorldCoordB);
-
-			hits.Data.StableSort(
-				0, 
-				hits.Count, 
-				(d1, d2) => (int)(1000000.0f * (d1.Fraction - d2.Fraction)));
-			return hits.Count > oldResultCount;
+			return Scene.PhysicsWorld.RayCast(start, end, callback, hits);
 		}
 		/// <summary>
 		/// Performs a 2d physical raycast in world coordinates.
@@ -1442,38 +1402,7 @@ namespace Duality.Components.Physics
 		/// <returns>Returns whether anything has been hit.</returns>
 		public static bool RayCast(Vector2 start, Vector2 end, RayCastCallback callback, out RayCastData firstHit)
 		{
-			if (callback == null) callback = Raycast_DefaultCallback;
-
-			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * start;
-			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
-
-			float firstHitFraction = float.MaxValue;
-			RayCastData firstHitLocal = default(RayCastData);
-
-			Scene.PhysicsWorld.Native.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
-			{
-				RayCastData data = new RayCastData(
-					fixture.UserData as ShapeInfo, 
-					PhysicsUnit.LengthToDuality * pos, 
-					normal, 
-					fraction);
-
-				float result = callback(data);
-				if (result >= 0.0f && data.Fraction < firstHitFraction)
-				{
-					firstHitLocal = data;
-					firstHitFraction = data.Fraction;
-				}
-
-				return result;
-			}, fsWorldCoordA, fsWorldCoordB);
-
-			firstHit = firstHitLocal;
-			return firstHitFraction != float.MaxValue;
-		}
-		private static float Raycast_DefaultCallback(RayCastData data)
-		{
-			return 1.0f;
+			return Scene.PhysicsWorld.RayCast(start, end, callback, out firstHit);
 		}
 
 		/// <summary>
@@ -1484,10 +1413,7 @@ namespace Duality.Components.Physics
 		/// <returns></returns>
 		public static ShapeInfo PickShapeGlobal(Vector2 worldCoord)
 		{
-			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
-			Fixture f = Scene.PhysicsWorld.Native.TestPoint(fsWorldCoord);
-
-			return f != null && f.UserData is ShapeInfo ? (f.UserData as ShapeInfo) : null;
+			return Scene.PhysicsWorld.PickShape(worldCoord);
 		}
 		/// <summary>
 		/// Performs a global physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
@@ -1501,21 +1427,7 @@ namespace Duality.Components.Physics
 		/// <returns>Returns whether any new shape was found.</returns>
 		public static bool PickShapesGlobal(Vector2 worldCoord, List<ShapeInfo> pickedShapes)
 		{
-			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
-			List<Fixture> fixtureList = Scene.PhysicsWorld.Native.TestPointAll(fsWorldCoord);
-
-			int oldResultCount = pickedShapes.Count;
-			foreach (Fixture fixture in fixtureList)
-			{
-				if (fixture == null) continue;
-
-				ShapeInfo shape = fixture.UserData as ShapeInfo;
-				if (shape == null) continue;
-
-				pickedShapes.Add(shape);
-		}
-
-			return pickedShapes.Count > oldResultCount;
+			return Scene.PhysicsWorld.PickShapes(worldCoord, pickedShapes);
 		}
 		/// <summary>
 		/// Performs a global physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
@@ -1530,28 +1442,7 @@ namespace Duality.Components.Physics
 		/// <returns>Returns whether any new shape was found.</returns>
 		public static bool PickShapesGlobal(Vector2 worldCoord, Vector2 size, List<ShapeInfo> pickedShapes)
 		{
-			List<RigidBody> potentialBodies = new List<RigidBody>();
-			QueryRectGlobal(worldCoord, size, potentialBodies);
-			if (potentialBodies.Count == 0) return false;
-
-			PolygonShape boxShape = new PolygonShape(new Vertices(new List<Vector2>
-			{
-				PhysicsUnit.LengthToPhysical * worldCoord,
-				PhysicsUnit.LengthToPhysical * new Vector2(worldCoord.X + size.X, worldCoord.Y),
-				PhysicsUnit.LengthToPhysical * (worldCoord + size),
-				PhysicsUnit.LengthToPhysical * new Vector2(worldCoord.X, worldCoord.Y + size.Y)
-			}), 1);
-
-			FarseerPhysics.Common.Transform boxTransform = new FarseerPhysics.Common.Transform();
-			boxTransform.SetIdentity();
-
-			int oldResultCount = pickedShapes.Count;
-			foreach (RigidBody body in potentialBodies)
-			{
-				body.PickShapes(boxShape, boxTransform, pickedShapes);
-			}
-
-			return pickedShapes.Count > oldResultCount;
+			return Scene.PhysicsWorld.PickShapes(worldCoord, size, pickedShapes);
 		}
 		/// <summary>
 		/// Performs a global physical AABB query and returns the <see cref="RigidBody">bodies</see> that
@@ -1566,30 +1457,7 @@ namespace Duality.Components.Physics
 		/// <returns>Returns whether any new body was found.</returns>
 		public static bool QueryRectGlobal(Vector2 worldCoord, Vector2 size, List<RigidBody> queriedBodies)
 		{
-			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
-			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsUnit.LengthToPhysical * (worldCoord + size));
-
-			int oldResultCount = queriedBodies.Count;
-			Scene.PhysicsWorld.Native.QueryAABB(fixture =>
-				{
-					ShapeInfo shape = fixture.UserData as ShapeInfo;
-					if (shape != null && shape.Parent != null && shape.Parent.Active)
-					{
-						if (!queriedBodies.Contains(shape.Parent))
-							queriedBodies.Add(shape.Parent);
-					}
-					return true;
-				},
-				ref fsWorldAABB);
-
-			return queriedBodies.Count > oldResultCount;
-		}
-		/// <summary>
-		/// Awakes all currently existing RigidBodies.
-		/// </summary>
-		public static void AwakeAll()
-		{
-			Scene.PhysicsWorld.Awake();
+			return Scene.PhysicsWorld.QueryRect(worldCoord, size, queriedBodies);
 		}
 
 		private static FarseerPhysics.Dynamics.BodyType ToFarseerBodyType(BodyType bodyType)

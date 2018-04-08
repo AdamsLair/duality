@@ -108,7 +108,7 @@ namespace Duality
 		}
 		/// <summary>
 		/// [GET / SET] Does the physics simulation use fixed time steps? However, this setting may be overwritten dynamically due
-		/// to frame timing restrictions. To check whether fixed-timestep physics is currently active, use <see cref="Duality.Resources.Scene.PhysicsFixedTime"/>
+		/// to frame timing restrictions. To check whether fixed-timestep physics is currently active, use <see cref="Duality.Components.Physics.PhysicsWorld.IsFixedTimestep"/>.
 		/// </summary>
 		public bool PhysicsFixedTime
 		{
