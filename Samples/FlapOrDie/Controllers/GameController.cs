@@ -87,7 +87,7 @@ namespace FlapOrDie.Controllers
             this.lastFramePoints = 0;
             this.player.Reset();
 
-            foreach (GameObject obstacle in this.GameObj.ParentScene.FindGameObjects<Tags.Obstacle>())
+            foreach (GameObject obstacle in this.Scene.FindGameObjects<Tags.Obstacle>())
             {
                 obstacle.DisposeLater();
             }
@@ -103,7 +103,7 @@ namespace FlapOrDie.Controllers
 
 			this.bgScroller.Update(deltaPos.X);
 
-            IEnumerable<GameObject> obstacles = this.GameObj.ParentScene.FindGameObjects<Tags.Obstacle>();
+            IEnumerable<GameObject> obstacles = this.Scene.FindGameObjects<Tags.Obstacle>();
             foreach(GameObject obstacle in obstacles)
             {
                 obstacle.Transform.MoveByLocal(-this.deltaPos);
@@ -141,7 +141,7 @@ namespace FlapOrDie.Controllers
             GameObject newObstacle = this.obstaclePrefab.Res.Instantiate();
             newObstacle.Transform.Pos = startPosition;
 
-            this.GameObj.ParentScene.AddObject(newObstacle);
+            this.Scene.AddObject(newObstacle);
         }
     }
 }

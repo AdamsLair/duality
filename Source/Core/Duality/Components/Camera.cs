@@ -197,7 +197,7 @@ namespace Duality.Components
 			RenderSetup setup = this.ActiveRenderSetup;
 			setup.RenderPointOfView(
 				// Parent scene might be null for editor-only cameras
-				this.GameObj.ParentScene ?? Scene.Current, 
+				this.Scene ?? Scene.Current, 
 				this.drawDevice, 
 				localViewport, 
 				localImageSize);
@@ -226,7 +226,7 @@ namespace Duality.Components
 			this.pickingSetup.RenderOverlay = renderOverlay;
 			this.pickingSetup.RenderPointOfView(
 				// Parent scene might be null for editor-only cameras
-				this.GameObj.ParentScene ?? Scene.Current, 
+				this.Scene ?? Scene.Current, 
 				this.drawDevice, 
 				new Rect(viewportSize), 
 				imageSize);

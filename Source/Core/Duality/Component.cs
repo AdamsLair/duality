@@ -48,7 +48,7 @@ namespace Duality
 			{
 				if (this.active != value)
 				{
-					if (this.gameobj != null && this.gameobj.ParentScene != null && this.gameobj.ParentScene.IsCurrent)
+					if (this.gameobj != null && this.Scene != null && this.Scene.IsCurrent)
 					{
 						if (value)
 						{
@@ -85,6 +85,17 @@ namespace Duality
 				if (this.gameobj != null) this.gameobj.RemoveComponent(this);
 				if (value != null) value.AddComponent(this);
 			}
+		}
+		/// <summary>
+		/// [GET] The parent <see cref="Resources.Scene"/> to which this <see cref="Component"/> belongs.
+		/// 
+		/// Note that this property is derived from the components <see cref="GameObj"/>, as a
+		/// <see cref="Component"/> itself cannot be part of a <see cref="Resources.Scene"/> without a 
+		/// <see cref="GameObject"/>.
+		/// </summary>
+		public Scene Scene
+		{
+			get { return this.gameobj != null ? this.Scene : null; }
 		}
 		
 		uint IUniqueIdentifyable.PreferredId

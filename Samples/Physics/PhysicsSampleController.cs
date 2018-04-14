@@ -54,14 +54,14 @@ namespace Duality.Samples.Physics
 		private void SwitchToSample(int index)
 		{
 			// Force reload of current sample later on by disposing it.
-			this.GameObj.ParentScene.DisposeLater();
+			this.Scene.DisposeLater();
 			// Switch to new sample
 			Scene.SwitchTo(this.sampleScenes[index]);
 		}
 		private void AdvanceSampleBy(int indexOffset)
 		{
 			// Determine the current samples' index and advance it
-			int currentIndex = this.sampleScenes.IndexOf(this.GameObj.ParentScene);
+			int currentIndex = this.sampleScenes.IndexOf(this.Scene);
 			int newIndex = (currentIndex + indexOffset + this.sampleScenes.Count) % this.sampleScenes.Count;
 			this.SwitchToSample(newIndex);
 		}
@@ -86,7 +86,7 @@ namespace Duality.Samples.Physics
 			// Draw drag anchor markers when dragging an object
 			if (this.dragObj != null)
 			{
-				Camera mainCam = this.GameObj.ParentScene.FindComponent<Camera>();
+				Camera mainCam = this.Scene.FindComponent<Camera>();
 				Transform dragTransform = this.dragObj.GameObj.Transform;
 				Vector2 worldAnchor = dragTransform.GetWorldPoint(this.dragAnchor);
 				Vector2 screenAnchor = mainCam.GetScreenPos(worldAnchor);
@@ -125,7 +125,7 @@ namespace Duality.Samples.Physics
 		void ICmpUpdatable.OnUpdate()
 		{
 			// Determine the world position of the cursor
-			Camera mainCamera = this.GameObj.ParentScene.FindComponent<Camera>();
+			Camera mainCamera = this.Scene.FindComponent<Camera>();
 			Vector2 screenMousePos = DualityApp.Mouse.Pos;
 			Vector3 worldMousePos = mainCamera.GetWorldPos(screenMousePos);
 
@@ -148,7 +148,7 @@ namespace Duality.Samples.Physics
 			{
 				// Determine which shape is located at the cursor position
 				List<ShapeInfo> shapesAtCursor = new List<ShapeInfo>();
-				Scene.Physics.PickShapes(worldMousePos.Xy, shapesAtCursor);
+				this.Scene.Physics.PickShapes(worldMousePos.Xy, shapesAtCursor);
 				foreach (ShapeInfo shape in shapesAtCursor)
 				{
 					if (shape.IsSensor) continue;

@@ -34,7 +34,7 @@ namespace BasicMenu
 
 			// check all MenuComponents under the mouse and sort them by Z,
 			// to find the one nearest to the Camera
-			MenuComponent hoveredComponent = this.GameObj.ParentScene.FindComponents<MenuComponent>()
+			MenuComponent hoveredComponent = this.Scene.FindComponents<MenuComponent>()
 				.Where(mc => mc.GameObj.Active && mc.GetAreaOnScreen().Contains(mousePosition))
 				.OrderBy(mc => mc.GameObj.Transform.Pos.Z)
 				.FirstOrDefault();

@@ -191,7 +191,7 @@ namespace DualStickSpaceShooter
 			Transform transform = this.GameObj.Transform;
 
 			RayCastData firstHit;
-			bool hitAnything = Scene.Physics.RayCast(transform.Pos.Xy, otherTransform.Pos.Xy, data => 
+			bool hitAnything = this.Scene.Physics.RayCast(transform.Pos.Xy, otherTransform.Pos.Xy, data => 
 			{
 				if (data.GameObj == this.GameObj) return -1;
 				if (data.Shape.IsSensor) return -1;
@@ -390,7 +390,7 @@ namespace DualStickSpaceShooter
 					Vector2 spikeBeginWorld = transform.GetWorldPoint(spikeDir * 4);
 					Vector2 spikeEndWorld = transform.GetWorldPoint(spikeDir * 11);
 					bool hitAnything = false;
-					Scene.Physics.RayCast(spikeBeginWorld, spikeEndWorld, data => 
+					this.Scene.Physics.RayCast(spikeBeginWorld, spikeEndWorld, data => 
 					{
 						if (data.Shape.IsSensor) return -1;
 						if (data.Body == body) return -1;

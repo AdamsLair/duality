@@ -533,7 +533,7 @@ namespace Duality
 				List<ICmpUpdatable> updatables = new List<ICmpUpdatable>();
 				foreach (GameObject obj in updateObjects)
 				{
-					if (obj.ParentScene == Scene.Current)
+					if (obj.Scene == Scene.Current)
 						continue;
 					
 					updatables.Clear();

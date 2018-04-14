@@ -39,7 +39,7 @@ namespace DualStickSpaceShooter
 		{
 			// Iterate over all RigidBodies in the area
 			List<RigidBody> nearBodies = new List<RigidBody>();
-			Scene.Physics.QueryRect(
+			Scene.Current.Physics.QueryRect(
 				at - new Vector2(radius, radius), 
 				new Vector2(radius, radius) * 2, 
 				nearBodies);
@@ -55,7 +55,7 @@ namespace DualStickSpaceShooter
 
 				// Perform a raycast to find out whether the current body has a direct line of sight to the center
 				RayCastData firstHit;
-				bool hitAnything = Scene.Physics.RayCast(at, maxRadiusPos, d =>
+				bool hitAnything = Scene.Current.Physics.RayCast(at, maxRadiusPos, d =>
 				{
 					// Clip the cast ray
 					if (d.Body == body)

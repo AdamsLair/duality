@@ -23,7 +23,7 @@ namespace Duality.Samples.Physics
 
 			// Query all objects that might be in a 200x200 rect around this object
 			Vector2 queryRectSize = new Vector2(200, 200);
-			Scene.Physics.QueryRect(
+			this.Scene.Physics.QueryRect(
 				transform.Pos.Xy - queryRectSize * 0.5f, 
 				queryRectSize, 
 				this.queriedBodies);

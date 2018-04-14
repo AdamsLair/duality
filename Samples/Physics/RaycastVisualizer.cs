@@ -23,7 +23,7 @@ namespace Duality.Samples.Physics
 			Vector2 startPos = transform.Pos.Xy;
 			Vector2 endPos = startPos + transform.Forward.Xy * 250.0f;
 			RayCastData nearestHit;
-			bool hitAnything = Scene.Physics.RayCast(startPos, endPos, hitData => 
+			bool hitAnything = this.Scene.Physics.RayCast(startPos, endPos, hitData => 
 			{
 				// Ignore this object, as we're the ones sending the raycast
 				if (hitData.Body.GameObj == this.GameObj) return -1.0f;

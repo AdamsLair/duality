@@ -24,7 +24,6 @@ namespace Duality.Resources
 	[EditorHintImage(CoreResNames.ImageScene)]
 	public sealed class Scene : Resource
 	{
-		private static PhysicsWorld        physicsWorld      = new PhysicsWorld();
 		private static ContentRef<Scene>   current           = new Scene();
 		private static bool                curAutoGen        = false;
 		private static bool                isSwitching       = false;
@@ -33,13 +32,6 @@ namespace Duality.Resources
 		private static ContentRef<Scene>   switchToTarget    = null;
 
 		
-		/// <summary>
-		/// [GET] Returns the current physics world.
-		/// </summary>
-		public static PhysicsWorld Physics
-		{
-			get { return physicsWorld; }
-		}
 		/// <summary>
 		/// [GET / SET] The Scene that is currently active i.e. updated and rendered. This is never null.
 		/// You may assign null in order to leave the current Scene and enter en empty dummy Scene.
@@ -220,9 +212,9 @@ namespace Duality.Resources
 					}
 				});
 
-				// Clear the physics world of all contents
-				physicsWorld.Clear();
-				physicsWorld.ResetSimulation();
+				// Clear physics world as we're ending simulation
+				current.ResWeak.Physics.Clear();
+				current.ResWeak.Physics.ResetSimulation();
 			}
 			switchLock--;
 		}
@@ -232,8 +224,8 @@ namespace Duality.Resources
 			if (current.ResWeak != null)
 			{
 				// Apply physical properties
-				physicsWorld.ResetSimulation();
-				physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * current.ResWeak.GlobalGravity;
+				current.ResWeak.Physics.ResetSimulation();
+				current.ResWeak.Physics.Gravity = PhysicsUnit.ForceToPhysical * current.ResWeak.GlobalGravity;
 
 				// When in the editor, apply prefab links
 				if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
@@ -360,6 +352,9 @@ namespace Duality.Resources
 		private GameObject[]                serializeObj       = null;
 
 		[DontSerialize]
+		private PhysicsWorld physicsWorld = new PhysicsWorld();
+
+		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
 		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
 		private	GameObjectManager objectManager = new GameObjectManager();
@@ -391,11 +386,16 @@ namespace Duality.Resources
 			set
 			{
 				this.globalGravity = value;
-				if (this.IsCurrent)
-				{
-					physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * value;
-				}
+				this.physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * value;
 			}
+		}
+		/// <summary>
+		/// [GET] Returns the current physics world.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public PhysicsWorld Physics
+		{
+			get { return this.physicsWorld; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all registered objects.
@@ -488,7 +488,7 @@ namespace Duality.Resources
 			switchLock++;
 
 			// Update physics
-			physicsWorld.Simulate(Time.DeltaTime);
+			this.physicsWorld.Simulate(Time.DeltaTime);
 
 			// Update all GameObjects
 			Profile.TimeUpdateScene.BeginMeasure();
@@ -675,7 +675,7 @@ namespace Duality.Resources
 		/// <param name="obj"></param>
 		public void AddObject(GameObject obj)
 		{
-			if (obj.ParentScene != null && obj.ParentScene != this) obj.ParentScene.RemoveObject(obj);
+			if (obj.Scene != null && obj.Scene != this) obj.Scene.RemoveObject(obj);
 			this.objectManager.AddObject(obj);
 		}
 		/// <summary>
@@ -686,8 +686,8 @@ namespace Duality.Resources
 		{
 			foreach (GameObject obj in objEnum)
 			{
-				if (obj.ParentScene == null || obj.ParentScene == this) continue;
-				obj.ParentScene.RemoveObject(obj);
+				if (obj.Scene == null || obj.Scene == this) continue;
+				obj.Scene.RemoveObject(obj);
 			}
 			this.objectManager.AddObjects(objEnum);
 		}
@@ -697,8 +697,8 @@ namespace Duality.Resources
 		/// <param name="obj"></param>
 		public void RemoveObject(GameObject obj)
 		{
-			if (obj.ParentScene != this) return;
-			if (obj.Parent != null && obj.Parent.ParentScene == this)
+			if (obj.Scene != this) return;
+			if (obj.Parent != null && obj.Parent.Scene == this)
 			{
 				obj.Parent = null;
 			}
@@ -710,11 +710,11 @@ namespace Duality.Resources
 		/// <param name="objEnum"></param>
 		public void RemoveObjects(IEnumerable<GameObject> objEnum)
 		{
-			objEnum = objEnum.Where(o => o.ParentScene == this);
+			objEnum = objEnum.Where(o => o.Scene == this);
 			foreach (GameObject obj in objEnum)
 			{
 				if (obj.Parent == null) continue;
-				if (obj.Parent.ParentScene != this) continue;
+				if (obj.Parent.Scene != this) continue;
 				obj.Parent = null;
 			}
 			this.objectManager.RemoveObjects(objEnum);
@@ -937,7 +937,7 @@ namespace Duality.Resources
 			foreach (GameObject obj in e.Objects)
 			{
 				this.AddToManagers(obj);
-				obj.ParentScene = this;
+				obj.Scene = this;
 			}
 			if (this.IsCurrent) OnGameObjectsAdded(e);
 		}
@@ -946,7 +946,7 @@ namespace Duality.Resources
 			foreach (GameObject obj in e.Objects)
 			{
 				this.RemoveFromManagers(obj);
-				obj.ParentScene = null;
+				obj.Scene = null;
 			}
 			if (this.IsCurrent) OnGameObjectsRemoved(e);
 		}
@@ -1008,7 +1008,7 @@ namespace Duality.Resources
 				}
 				foreach (GameObject obj in this.serializeObj)
 				{
-					obj.ParentScene = this;
+					obj.Scene = this;
 					this.objectManager.AddObject(obj);
 					this.AddToManagers(obj);
 				}

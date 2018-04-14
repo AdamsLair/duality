@@ -97,7 +97,7 @@ namespace Duality
 		/// exactly one Scene, or no Scene at all. To add or remove GameObjects to / from a Scene, use the <see cref="Duality.Resources.Scene.AddObject(Duality.GameObject)"/> and
 		/// <see cref="Duality.Resources.Scene.RemoveObject(Duality.GameObject)"/> methods.
 		/// </summary>
-		public Scene ParentScene
+		public Scene Scene
 		{
 			get { return this.scene; }
 			internal set { this.scene = value; }

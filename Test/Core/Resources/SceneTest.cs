@@ -188,24 +188,24 @@ namespace Duality.Tests.Resources
 			scene.AddObject(obj);
 
 			// Basic setup check (Added properly?)
-			Assert.AreEqual(scene, obj.ParentScene);
+			Assert.AreEqual(scene, obj.Scene);
 			CollectionAssert.AreEquivalent(new[] { obj, objChildA, objChildB }, scene.AllObjects);
 
 			// Removing root object
 			scene.RemoveObject(obj);
-			Assert.AreEqual(null, obj.ParentScene);
+			Assert.AreEqual(null, obj.Scene);
 			CollectionAssert.IsEmpty(scene.AllObjects);
 
 			// Adding removed root object again
 			scene.AddObject(obj);
-			Assert.AreEqual(scene, obj.ParentScene);
+			Assert.AreEqual(scene, obj.Scene);
 			CollectionAssert.AreEquivalent(new[] { obj, objChildA, objChildB }, scene.AllObjects);
 
 			// Remove non-root object
 			scene.RemoveObject(objChildA);
 			CollectionAssert.AreEquivalent(new[] { obj, objChildB }, scene.AllObjects);
 			CollectionAssert.DoesNotContain(obj.Children, objChildA);
-			Assert.IsNull(objChildA.ParentScene);
+			Assert.IsNull(objChildA.Scene);
 			Assert.IsNull(objChildA.Parent);
 
 			// Clear Scene
@@ -231,21 +231,21 @@ namespace Duality.Tests.Resources
 			scene.RemoveObject(objChildA);
 			CollectionAssert.AreEquivalent(new[] { obj, objChildB }, scene.AllObjects);
 			CollectionAssert.DoesNotContain(obj.Children, objChildA);
-			Assert.IsNull(objChildA.ParentScene);
+			Assert.IsNull(objChildA.Scene);
 			Assert.IsNull(objChildA.Parent);
 
 			// Add object implicitly by parent-child relationship
 			objChildA.Parent = obj;
 			CollectionAssert.AreEquivalent(new[] { obj, objChildA, objChildB }, scene.AllObjects);
 			CollectionAssert.Contains(obj.Children, objChildA);
-			Assert.AreEqual(scene, objChildA.ParentScene);
+			Assert.AreEqual(scene, objChildA.Scene);
 			Assert.AreEqual(obj, objChildA.Parent);
 
 			// Change object parent
 			objChildA.Parent = objChildB;
 			CollectionAssert.AreEquivalent(new[] { obj, objChildA, objChildB }, scene.AllObjects);
 			CollectionAssert.Contains(objChildB.Children, objChildA);
-			Assert.AreEqual(scene, objChildA.ParentScene);
+			Assert.AreEqual(scene, objChildA.Scene);
 			Assert.AreEqual(objChildB, objChildA.Parent);
 
 			// Clean up
@@ -266,7 +266,7 @@ namespace Duality.Tests.Resources
 
 			// Let object switch Scenes implicitly by parent-child relationship
 			objChildA.Parent = obj2;
-			Assert.AreEqual(scene2, objChildA.ParentScene);
+			Assert.AreEqual(scene2, objChildA.Scene);
 			CollectionAssert.AreEquivalent(new[] { obj, objChildB }, scene.AllObjects);
 			CollectionAssert.AreEquivalent(new[] { obj2, objChildA }, scene2.AllObjects);
 			CollectionAssert.Contains(obj2.Children, objChildA);

@@ -617,7 +617,9 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(angularForce);
 			if (this.body == null) return;
 
-			if (Scene.Physics.IsFixedTimestep) angularForce *= Time.TimeMult;
+			if (this.Scene.Physics.IsFixedTimestep)
+				angularForce *= Time.TimeMult;
+
 			this.body.ApplyTorque(PhysicsUnit.TorqueToPhysical * angularForce);
 		}
 		/// <summary>
@@ -630,7 +632,10 @@ namespace Duality.Components.Physics
 			if (this.body == null) return;
 
 			force = this.gameobj.Transform.GetWorldVector(force);
-			if (Scene.Physics.IsFixedTimestep) force *= Time.TimeMult;
+
+			if (this.Scene.Physics.IsFixedTimestep)
+				force *= Time.TimeMult;
+
 			this.body.ApplyForce(PhysicsUnit.ForceToPhysical * force);
 		}
 		/// <summary>
@@ -646,7 +651,10 @@ namespace Duality.Components.Physics
 
 			force = this.gameobj.Transform.GetWorldVector(force);
 			applyAt = this.gameobj.Transform.GetWorldPoint(applyAt);
-			if (Scene.Physics.IsFixedTimestep) force *= Time.TimeMult;
+
+			if (this.Scene.Physics.IsFixedTimestep)
+				force *= Time.TimeMult;
+
 			this.body.ApplyForce(
 				PhysicsUnit.ForceToPhysical * force, 
 				PhysicsUnit.LengthToPhysical * applyAt);
@@ -660,7 +668,9 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(force);
 			if (this.body == null) return;
 
-			if (Scene.Physics.IsFixedTimestep) force *= Time.TimeMult;
+			if (this.Scene.Physics.IsFixedTimestep)
+				force *= Time.TimeMult;
+
 			this.body.ApplyForce(PhysicsUnit.ForceToPhysical * force);
 		}
 		/// <summary>
@@ -674,7 +684,9 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(applyAt);
 			if (this.body == null) return;
 
-			if (Scene.Physics.IsFixedTimestep) force *= Time.TimeMult;
+			if (this.Scene.Physics.IsFixedTimestep)
+				force *= Time.TimeMult;
+
 			this.body.ApplyForce(
 				PhysicsUnit.ForceToPhysical * force, 
 				PhysicsUnit.LengthToPhysical * applyAt);
@@ -939,10 +951,11 @@ namespace Duality.Components.Physics
 			Transform transform = this.gameobj.Transform;
 
 			// The current PhysicsAlpha interpolation probably isn't the best one. Maybe replace later.
+			PhysicsWorld world = this.Scene.Physics;
 			Vector2 bodyVel = this.body.LinearVelocity;
-			Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.Physics.InterpolateAlpha) * Time.SecondsPerFrame;
+			Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - world.InterpolateAlpha) * Time.SecondsPerFrame;
 			float bodyAngleVel = this.body.AngularVelocity;
-			float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.Physics.InterpolateAlpha) * Time.SecondsPerFrame;
+			float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - world.InterpolateAlpha) * Time.SecondsPerFrame;
 
 			// Unless allowed explicitly, ignore the transform hierarchy, so nested RigidBodies don't clash
 			if (!this.allowParent)
@@ -998,7 +1011,7 @@ namespace Duality.Components.Physics
 			Transform transform = this.GameObj != null ? this.GameObj.Transform : null;
 
 			// Create body and determine its enabled state
-			this.body = new Body(Scene.Physics.Native, this);
+			this.body = new Body(this.Scene.Physics.Native, this);
 
 			// The following line is an optimization: Farseer is really slow when it comes 
 			// to dynamically adding or removing fixtures to an existing world, but that's

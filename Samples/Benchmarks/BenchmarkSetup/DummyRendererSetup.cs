@@ -69,7 +69,7 @@ namespace Duality.Samples.Benchmarks
 				sprites.Add(obj);
 			}
 
-			this.GameObj.ParentScene.AddObjects(sprites);
+			this.Scene.AddObjects(sprites);
 		}
 
 		void ICmpInitializable.OnActivate()

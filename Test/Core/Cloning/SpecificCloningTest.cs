@@ -249,7 +249,7 @@ namespace Duality.Tests.Cloning
 
 			source.DeepCopyTo(target);
 
-			Assert.AreSame(scene, target.ParentScene);
+			Assert.AreSame(scene, target.Scene);
 		}
 		[Test] public void CopyToGameObjectParentObject()
 		{

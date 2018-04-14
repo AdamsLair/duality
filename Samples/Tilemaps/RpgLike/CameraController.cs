@@ -91,7 +91,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			// based on the rects of all the active tilemaps
 			bool first = true;
 			IEnumerable<ICmpTilemapRenderer> allTilemapRenderers = 
-				this.GameObj.ParentScene.FindComponents<ICmpTilemapRenderer>();
+				this.Scene.FindComponents<ICmpTilemapRenderer>();
 			foreach (ICmpTilemapRenderer tilemapRenderer in allTilemapRenderers)
 			{
 				Transform transform = (tilemapRenderer as Component).GameObj.Transform;

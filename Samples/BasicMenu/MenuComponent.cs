@@ -62,7 +62,7 @@ namespace BasicMenu
 				this.sprite = this.GameObj.GetComponent<SpriteRenderer>();
 
 			// Determine position and scale of this menu button on the screen
-			Camera mainCamera = this.GameObj.ParentScene.FindComponent<Camera>();
+			Camera mainCamera = this.Scene.FindComponent<Camera>();
 			Vector2 screenBasePos = mainCamera.GetScreenPos(this.GameObj.Transform.Pos);
 			float screenScale = mainCamera.GetScaleAtZ(this.GameObj.Transform.Pos.Z);
 

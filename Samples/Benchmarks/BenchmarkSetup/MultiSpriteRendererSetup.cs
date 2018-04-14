@@ -61,7 +61,7 @@ namespace Duality.Samples.Benchmarks
 				multiSprites.Add(obj);
 			}
 
-			this.GameObj.ParentScene.AddObjects(multiSprites);
+			this.Scene.AddObjects(multiSprites);
 		}
 
 		void ICmpInitializable.OnActivate()

@@ -74,7 +74,7 @@ namespace DualStickSpaceShooter
 
 			// Okay, let's determine where *exactly* our bullet hit
 			RayCastData firstHit;
-			bool hitAnything = Scene.Physics.RayCast(
+			bool hitAnything = this.Scene.Physics.RayCast(
 				transform.Pos.Xy - body.LinearVelocity * 2, 
 				transform.Pos.Xy + body.LinearVelocity * 2, 
 				data =>

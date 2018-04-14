@@ -38,7 +38,7 @@ namespace Duality.Editor.Plugins.Tilemaps.EditorActions
 			{
 				Tilemap baseTilemap = tilemaps[0];
 				GameObject baseObject = baseTilemap.GameObj;
-				Scene baseScene = (baseObject != null) ? baseObject.ParentScene : null;
+				Scene baseScene = (baseObject != null) ? baseObject.Scene : null;
 				
 				// Prerequisite: We are operating on a tilemap with a proper parent and
 				// parent scene available. Otherwise, there is nothing we could do.
