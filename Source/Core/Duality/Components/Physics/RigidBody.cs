@@ -495,7 +495,8 @@ namespace Duality.Components.Physics
 			if (joint.OtherBody != null)
 				joint.OtherBody.AwakeBody();
 
-			joint.UpdateJoint();
+			if (this.body != null)
+				joint.UpdateJoint();
 		}
 		/// <summary>
 		/// Removes all existing joints from the body.
