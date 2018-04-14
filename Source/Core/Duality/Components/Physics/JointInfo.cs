@@ -89,7 +89,7 @@ namespace Duality.Components.Physics
 		internal void DestroyJoint()
 		{
 			if (this.joint == null) return;
-			Scene.PhysicsWorld.Native.RemoveJoint(this.joint);
+			Scene.Physics.Native.RemoveJoint(this.joint);
 			this.joint.Broke -= this.joint_Broke;
 			this.joint = null;
 		}
@@ -101,7 +101,7 @@ namespace Duality.Components.Physics
 				{
 					this.parentBody.PrepareForJoint();
 					this.otherBody.PrepareForJoint();
-					this.joint = this.CreateJoint(Scene.PhysicsWorld.Native, this.parentBody.PhysicsBody, this.otherBody.PhysicsBody);
+					this.joint = this.CreateJoint(Scene.Physics.Native, this.parentBody.PhysicsBody, this.otherBody.PhysicsBody);
 				}
 				if (this.joint == null) return;
 
