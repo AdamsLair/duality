@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Duality;
-using Duality.Drawing;
+using Duality.Resources;
 using Duality.Components.Physics;
 
 namespace DualStickSpaceShooter
@@ -39,7 +39,7 @@ namespace DualStickSpaceShooter
 		{
 			// Iterate over all RigidBodies in the area
 			List<RigidBody> nearBodies = new List<RigidBody>();
-			RigidBody.QueryRectGlobal(
+			Scene.Physics.QueryRect(
 				at - new Vector2(radius, radius), 
 				new Vector2(radius, radius) * 2, 
 				nearBodies);
@@ -55,7 +55,7 @@ namespace DualStickSpaceShooter
 
 				// Perform a raycast to find out whether the current body has a direct line of sight to the center
 				RayCastData firstHit;
-				bool hitAnything = RigidBody.RayCast(at, maxRadiusPos, d =>
+				bool hitAnything = Scene.Physics.RayCast(at, maxRadiusPos, d =>
 				{
 					// Clip the cast ray
 					if (d.Body == body)

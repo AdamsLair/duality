@@ -74,11 +74,14 @@ namespace DualStickSpaceShooter
 
 			// Okay, let's determine where *exactly* our bullet hit
 			RayCastData firstHit;
-			bool hitAnything = RigidBody.RayCast(transform.Pos.Xy - body.LinearVelocity * 2, transform.Pos.Xy + body.LinearVelocity * 2, data =>
-			{
-				if (data.Shape.IsSensor) return -1.0f;
-				return data.Fraction;
-			}, out firstHit);
+			bool hitAnything = Scene.Physics.RayCast(
+				transform.Pos.Xy - body.LinearVelocity * 2, 
+				transform.Pos.Xy + body.LinearVelocity * 2, 
+				data =>
+				{
+					if (data.Shape.IsSensor) return -1.0f;
+					return data.Fraction;
+				}, out firstHit);
 
 			Vector3 hitPos;
 			float hitAngle;

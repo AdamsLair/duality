@@ -6,7 +6,7 @@ using System.Text;
 using Duality;
 using Duality.Editor;
 using Duality.Drawing;
-using Duality.Input;
+using Duality.Resources;
 using Duality.Components;
 using Duality.Components.Physics;
 
@@ -23,7 +23,7 @@ namespace Duality.Samples.Physics
 			Vector2 startPos = transform.Pos.Xy;
 			Vector2 endPos = startPos + transform.Forward.Xy * 250.0f;
 			RayCastData nearestHit;
-			bool hitAnything = RigidBody.RayCast(startPos, endPos, hitData => 
+			bool hitAnything = Scene.Physics.RayCast(startPos, endPos, hitData => 
 			{
 				// Ignore this object, as we're the ones sending the raycast
 				if (hitData.Body.GameObj == this.GameObj) return -1.0f;

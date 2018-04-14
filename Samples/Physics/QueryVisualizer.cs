@@ -6,7 +6,7 @@ using System.Text;
 using Duality;
 using Duality.Editor;
 using Duality.Drawing;
-using Duality.Input;
+using Duality.Resources;
 using Duality.Components;
 using Duality.Components.Physics;
 
@@ -23,13 +23,13 @@ namespace Duality.Samples.Physics
 
 			// Query all objects that might be in a 200x200 rect around this object
 			Vector2 queryRectSize = new Vector2(200, 200);
-			RigidBody.QueryRectGlobal(
+			Scene.Physics.QueryRect(
 				transform.Pos.Xy - queryRectSize * 0.5f, 
 				queryRectSize, 
 				this.queriedBodies);
 
 			// Display all objects that were returned from the query
-			foreach (RigidBody body in queriedBodies)
+			foreach (RigidBody body in this.queriedBodies)
 			{
 				if (body.GameObj == this.GameObj) continue;
 
@@ -53,7 +53,7 @@ namespace Duality.Samples.Physics
 			VisualLogs.Default
 				.DrawText(
 					transform.Pos - new Vector3(queryRectSize * 0.5f) + new Vector3(10.0f, 10.0f, 0.0f),
-					string.Format("{0} bodies", queriedBodies.Count - 1))
+					string.Format("{0} bodies", this.queriedBodies.Count - 1))
 				.WithOffset(-1.0f);
 
 			// Clear the list of queried bodies, to be re-used next frame

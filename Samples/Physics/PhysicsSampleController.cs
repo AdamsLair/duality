@@ -148,7 +148,7 @@ namespace Duality.Samples.Physics
 			{
 				// Determine which shape is located at the cursor position
 				List<ShapeInfo> shapesAtCursor = new List<ShapeInfo>();
-				RigidBody.PickShapesGlobal(worldMousePos.Xy, shapesAtCursor);
+				Scene.Physics.PickShapes(worldMousePos.Xy, shapesAtCursor);
 				foreach (ShapeInfo shape in shapesAtCursor)
 				{
 					if (shape.IsSensor) continue;
