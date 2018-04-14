@@ -225,7 +225,7 @@ namespace Duality.Resources
 			{
 				// Apply physical properties
 				current.ResWeak.Physics.ResetSimulation();
-				current.ResWeak.Physics.Gravity = PhysicsUnit.ForceToPhysical * current.ResWeak.GlobalGravity;
+				current.ResWeak.Physics.Gravity = current.ResWeak.GlobalGravity;
 
 				// When in the editor, apply prefab links
 				if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
@@ -386,7 +386,7 @@ namespace Duality.Resources
 			set
 			{
 				this.globalGravity = value;
-				this.physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * value;
+				this.physicsWorld.Gravity = value;
 			}
 		}
 		/// <summary>
