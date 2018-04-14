@@ -95,7 +95,7 @@ namespace Duality
 		/// </summary>
 		public Scene Scene
 		{
-			get { return this.gameobj != null ? this.Scene : null; }
+			get { return this.gameobj != null ? this.gameobj.Scene : null; }
 		}
 		
 		uint IUniqueIdentifyable.PreferredId
