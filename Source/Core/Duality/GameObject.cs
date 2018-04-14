@@ -125,7 +125,7 @@ namespace Duality
 			{ 
 				if (this.active != value)
 				{
-					if (this.scene != null && this.scene.IsCurrent)
+					if (this.scene != null && this.scene.IsActive)
 					{
 						List<ICmpInitializable> initList = new List<ICmpInitializable>();
 						bool hasChildren = this.children != null && this.children.Count > 0;
