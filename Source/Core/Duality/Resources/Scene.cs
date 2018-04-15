@@ -433,7 +433,7 @@ namespace Duality.Resources
 		/// [GET] Returns whether this Scene is <see cref="Scene.Current"/>.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public bool IsActive
+		public bool IsCurrent
 		{
 			get { return current.ResWeak == this; }
 		}
@@ -466,7 +466,7 @@ namespace Duality.Resources
 		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
 		internal void Render(ContentRef<RenderTarget> target, Rect viewportRect, Vector2 imageSize)
 		{
-			if (!this.IsActive) throw new InvalidOperationException("Can't render non-current Scene!");
+			if (!this.IsCurrent) throw new InvalidOperationException("Can't render non-current Scene!");
 			switchLock++;
 			
 			// Retrieve the rendering setup that will be used for rendering the scene
@@ -484,7 +484,7 @@ namespace Duality.Resources
 		/// </summary>
 		internal void Update()
 		{
-			if (!this.IsActive) throw new InvalidOperationException("Can't update non-current Scene!");
+			if (!this.IsCurrent) throw new InvalidOperationException("Can't update non-current Scene!");
 			switchLock++;
 
 			// Update physics
@@ -512,7 +512,7 @@ namespace Duality.Resources
 		/// </summary>
 		internal void EditorUpdate()
 		{
-			if (!this.IsActive) throw new InvalidOperationException("Can't update non-current Scene!");
+			if (!this.IsCurrent) throw new InvalidOperationException("Can't update non-current Scene!");
 			switchLock++;
 
 			Profile.TimeUpdateScene.BeginMeasure();
@@ -939,7 +939,7 @@ namespace Duality.Resources
 				this.AddToManagers(obj);
 				obj.Scene = this;
 			}
-			if (this.IsActive) OnGameObjectsAdded(e);
+			if (this.IsCurrent) OnGameObjectsAdded(e);
 		}
 		private void objectManager_GameObjectsRemoved(object sender, GameObjectGroupEventArgs e)
 		{
@@ -948,21 +948,21 @@ namespace Duality.Resources
 				this.RemoveFromManagers(obj);
 				obj.Scene = null;
 			}
-			if (this.IsActive) OnGameObjectsRemoved(e);
+			if (this.IsCurrent) OnGameObjectsRemoved(e);
 		}
 		private void objectManager_ParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{
-			if (this.IsActive) OnGameObjectParentChanged(e);
+			if (this.IsCurrent) OnGameObjectParentChanged(e);
 		}
 		private void objectManager_ComponentAdded(object sender, ComponentEventArgs e)
 		{
 			this.AddToManagers(e.Component);
-			if (this.IsActive) OnComponentAdded(e);
+			if (this.IsCurrent) OnComponentAdded(e);
 		}
 		private void objectManager_ComponentRemoving(object sender, ComponentEventArgs e)
 		{
 			this.RemoveFromManagers(e.Component);
-			if (this.IsActive) OnComponentRemoving(e);
+			if (this.IsCurrent) OnComponentRemoving(e);
 		}
 
 		protected override void OnSaving(string saveAsPath)
@@ -990,7 +990,7 @@ namespace Duality.Resources
 				initList[i].OnSaved();
 
 			// If this Scene is the current one, but it wasn't saved before, update the current Scenes internal ContentRef
-			if (this.IsActive && current.IsRuntimeResource)
+			if (this.IsCurrent && current.IsRuntimeResource)
 				current = new ContentRef<Scene>(this, saveAsPath);
 		}
 		protected override void OnLoaded()

@@ -1216,7 +1216,7 @@ namespace Duality.Editor
 				{
 					foreach (Resource res in args.Objects.Resources)
 					{
-						if (Sandbox.IsActive && res is Scene && (res as Scene).IsActive) continue;
+						if (Sandbox.IsActive && res is Scene && (res as Scene).IsCurrent) continue;
 						FlagResourceUnsaved(res);
 					}
 				}
