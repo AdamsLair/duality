@@ -78,13 +78,6 @@ namespace Duality.Components.Physics
 				b.Awake = true;
 		}
 		/// <summary>
-		/// Destroys all physics objects in this world.
-		/// </summary>
-		public void Clear()
-		{
-			this.native.Clear();
-		}
-		/// <summary>
 		/// Advances this physics world simulation by <paramref name="timestep"/> seconds.
 		/// 
 		/// If <see cref="IsFixedTimestep"/> is true, this may actually simulate multiple smaller

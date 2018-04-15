@@ -213,7 +213,7 @@ namespace Duality.Resources
 				});
 
 				// Clear physics world as we're ending simulation
-				current.ResWeak.Physics.Clear();
+				current.ResWeak.Physics.Native.Clear();
 				current.ResWeak.Physics.ResetSimulation();
 			}
 			switchLock--;
