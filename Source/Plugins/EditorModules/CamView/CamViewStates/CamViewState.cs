@@ -812,7 +812,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				}
 				else
 				{
-					this.View.FocusDist = this.View.FocusDist + this.View.FocusDistIncrement * e.Delta / 40;
+					this.View.FocusDist += ((float)e.Delta / 1000f) * this.View.FocusDist;
 				}
 			}
 
