@@ -493,6 +493,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				const float BaseSpeed = 3.0f;
 				moveVec.X = BaseSpeed * MathF.Sign(moveVec.X) * MathF.Pow(MathF.Abs(moveVec.X) / BaseSpeedCursorLen, 1.5f);
 				moveVec.Y = BaseSpeed * MathF.Sign(moveVec.Y) * MathF.Pow(MathF.Abs(moveVec.Y) / BaseSpeedCursorLen, 1.5f);
+				moveVec.Z *= MathF.Pow(0.9f, unscaledTimeMult);
 
 				MathF.TransformCoord(ref moveVec.X, ref moveVec.Y, camObj.Transform.Angle);
 
