@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.CamView</id>
-    <version>2.6.5</version>
+    <version>2.6.6</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Camera View</title>
@@ -13,12 +13,11 @@
     <summary>A basic Camera View editor module.</summary>
     <description>A basic Camera View editor module.</description>
     <tags>Duality Editor Plugin CamView</tags>
-    <releaseNotes>Snap-to-Grid Bugfixes
-#FIX: Fixed a bug where snap-to-grid would offset all RigidBody shapes for objects not located in the world origin.
-#FIX: Fixed a bug where snap-to-grid in Scene Editor multi selection would occasionally jitter between two snapped positions.</releaseNotes>
+    <releaseNotes>Made flat perspective scroll more uniform (#643)
+Zooming in flat mode is buggy and inconsistent due to FocusDistIncrement, multiplying Delta by current FocusDist is much smoother and provides a more natural zoom experience.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.14.8" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.10.10" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.10.12" />
     </dependencies>
   </metadata>
   <files>
