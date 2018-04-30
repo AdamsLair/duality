@@ -124,7 +124,7 @@ namespace Duality.Editor.Forms
 			{
 				this.Text = "Select a Type";
 
-				foreach (TypeInfo type in DualityApp.GetAvailDualityTypes(this.FilteredType))
+				foreach (TypeInfo type in DualityApp.GetAvailDualityTypes(this.FilteredType).Where(t => !t.IsAbstract && !t.IsInterface))
 				{
 					this.Model.Nodes.Add(new ReferenceNode(type));
 				}
