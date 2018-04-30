@@ -26,6 +26,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public AddComponentPropertyEditor()
 		{
 			this.PropertyName = "Actions";
+			this.Height += 4;
 		}
 
 		protected override void UpdateGeometry()
