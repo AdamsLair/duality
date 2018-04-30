@@ -1,0 +1,112 @@
+﻿using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+using AdamsLair.WinForms.PropertyEditing;
+using Duality.Editor.Forms;
+using Duality.Editor.UndoRedoActions;
+using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
+
+namespace Duality.Editor.Plugins.Base.PropertyEditors
+{
+	/// <summary>
+	/// A <see cref="PropertyEditor"/> that provides a button
+	/// for adding a component to a <see cref="GameObject"/>
+	/// </summary>
+	public class AddComponentPropertyEditor : PropertyEditor
+	{
+		private Rectangle	rectButton = Rectangle.Empty;
+		private bool		buttonHovered;
+		private bool		buttonPressed;
+
+		public override object DisplayedValue
+		{
+			get { return this.GetValue(); }
+		}
+
+		public AddComponentPropertyEditor()
+		{
+			this.PropertyName = "Actions";
+		}
+
+		protected override void UpdateGeometry()
+		{
+			base.UpdateGeometry();
+
+			this.rectButton = new Rectangle(
+				this.ClientRectangle.X + 2, this.ClientRectangle.Y + 2,
+				this.ClientRectangle.Width - 4, this.ClientRectangle.Height - 4);
+		}
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			base.OnPaint(e);
+
+			ButtonState buttonState = this.buttonPressed
+				? ButtonState.Pressed
+				: this.buttonHovered
+					? ButtonState.Hot
+					: ButtonState.Normal;
+
+			this.ControlRenderer.DrawButton(
+				e.Graphics, this.rectButton,
+				buttonState, "Add Component");
+		}
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			bool buttonContainsMouse = this.rectButton.Contains(e.Location);
+			if (buttonContainsMouse != this.buttonHovered)
+			{
+				this.buttonHovered = buttonContainsMouse;
+				this.Invalidate();
+			}
+		}
+		protected override void OnMouseLeave(System.EventArgs e)
+		{
+			base.OnMouseLeave(e);
+			this.buttonHovered = false;
+			this.Invalidate();
+		}
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			base.OnMouseDown(e);
+			if (this.buttonHovered)
+			{
+				this.buttonPressed = true;
+				this.Invalidate();
+			}
+		}
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			base.OnMouseUp(e);
+			if (this.buttonPressed)
+			{
+				this.OnAddComponentClicked();
+				this.buttonPressed = false;
+				this.Invalidate();
+			}
+		}
+		private void OnAddComponentClicked()
+		{
+			ObjectRefSelectionDialog compTypeSelector = new ObjectRefSelectionDialog
+			{
+				FilteredType = typeof(Component),
+				SelectType = true
+			};
+			DialogResult result = compTypeSelector.ShowDialog();
+
+			if (result == DialogResult.OK)
+			{
+				UndoRedoManager.BeginMacro("Add Component");
+				foreach (GameObject obj in this.GetValue().Cast<GameObject>())
+				{
+					UndoRedoManager.Do(new CreateComponentAction(obj, compTypeSelector.TypeReference));
+				}
+				UndoRedoManager.EndMacro("Add Component");
+
+				this.PerformGetValue();
+				this.ParentGrid.Invalidate();
+			}
+		}
+	}
+}

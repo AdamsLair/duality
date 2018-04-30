@@ -12,7 +12,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	{
 		private	GameObjectPropertyEditor		gameObjEditor		= null;
 		private	Dictionary<Type,PropertyEditor>	componentEditors	= new Dictionary<Type,PropertyEditor>();
-		
+		private AddComponentPropertyEditor		addComponentEditor	= null;
+
 		public override object DisplayedValue
 		{
 			get { return this.GetValue(); }
@@ -63,6 +64,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				if (this.ContentInitialized)
 				{
 					this.UpdateComponentEditors(values);
+					this.UpdateAddComponentEditor(values);
 					foreach (PropertyEditor e in this.ChildEditors)
 						e.PerformGetValue();
 				}
@@ -115,6 +117,26 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					this.AddPropertyEditor(e);
 					this.componentEditors[t] = e;
 				}
+			}
+
+			this.EndUpdate();
+		}
+
+		protected void UpdateAddComponentEditor(GameObject[] values)
+		{
+			this.BeginUpdate();
+
+			if (this.addComponentEditor == null)
+			{
+				this.addComponentEditor = new AddComponentPropertyEditor();
+				this.addComponentEditor.Getter = this.GetValue;
+				this.addComponentEditor.Setter = this.SetValue;
+				this.AddPropertyEditor(this.addComponentEditor, this.ChildEditors.Count);
+			}
+			else
+			{
+				this.RemovePropertyEditor(this.addComponentEditor);
+				this.AddPropertyEditor(this.addComponentEditor, this.ChildEditors.Count);
 			}
 
 			this.EndUpdate();
