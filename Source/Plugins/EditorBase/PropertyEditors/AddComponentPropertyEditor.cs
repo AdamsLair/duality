@@ -14,9 +14,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	/// </summary>
 	public class AddComponentPropertyEditor : PropertyEditor
 	{
-		private Rectangle	rectButton = Rectangle.Empty;
-		private bool		buttonHovered;
-		private bool		buttonPressed;
+		private Rectangle	rectButton		= Rectangle.Empty;
+		private bool		buttonHovered	= false;
+		private bool		buttonPressed	= false;
 
 		public override object DisplayedValue
 		{
