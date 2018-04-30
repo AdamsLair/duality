@@ -30,6 +30,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		private	Rectangle	rectButtonPrefabRevert	= Rectangle.Empty;
 		private	Rectangle	rectButtonPrefabApply	= Rectangle.Empty;
 		private	Rectangle	rectButtonPrefabBreak	= Rectangle.Empty;
+		private Rectangle	rectButtonAddComponent	= Rectangle.Empty;
 		private	string		displayedName		= "GameObject";
 		private	string		displayedNameExt	= "";
 		private	bool?		active				= false;
@@ -119,6 +120,12 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.rectHeader.Y,
 				this.rectHeader.Width - this.rectCheckActive.Right - 4,
 				this.rectHeader.Height);
+
+			this.rectButtonAddComponent = new Rectangle(
+				this.rectHeader.X + this.rectHeader.Width - ControlRenderer.CheckBoxSize.Width - 2,
+				this.rectHeader.Y + this.rectHeader.Height / 2 - ControlRenderer.CheckBoxSize.Height / 2 - 1,
+				ControlRenderer.CheckBoxSize.Width,
+				ControlRenderer.CheckBoxSize.Height);
 
 			// PrefabLink
 			this.rectLabelPrefab = new Rectangle(
@@ -211,6 +218,13 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				ControlRenderer.DrawStringLine(e.Graphics, this.displayedNameExt, headerNameExtFont, extLabelRect, SystemColors.ControlText);
 			}
 
+			// TODO: evaluate look and feel of this button
+			// TODO: evaluate if this button state handling can be merged with the handling for the prefab buttons below
+			ButtonState buttonStateAdd = ButtonState.Normal;
+			ButtonState buttonStateDefaultAdd = ButtonState.Normal;
+			if (this.curButtonHovered) buttonStateAdd = ButtonState.Hot;
+			ControlRenderer.DrawButton(e.Graphics, this.rectButtonAddComponent, this.curButton == 4 ? buttonStateAdd : buttonStateDefaultAdd, "+");
+
 			ControlRenderer.DrawStringLine(e.Graphics, "PrefabLink", headerPrefabFont, this.rectLabelPrefab, !this.prefabLinked ? SystemColors.GrayText : (this.prefabLinkAvailable ? Color.Blue : Color.DarkRed));
 			
 			ButtonState buttonState = ButtonState.Disabled;
@@ -250,7 +264,17 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			bool lastButtonHovered = this.curButtonHovered;
 			int lastButton = this.curButton;
-			if (this.ReadOnly || !this.prefabLinked)
+			if (this.ReadOnly)
+			{
+				this.curButton = -1;
+				this.curButtonHovered = false;
+			}
+			else if ((!this.curButtonPressed || this.curButton == 4) && this.rectButtonAddComponent.Contains(e.Location))
+			{
+				this.curButton = 4;
+				this.curButtonHovered = true;
+			}
+			else if (!this.prefabLinked)
 			{
 				this.curButton = -1;
 				this.curButtonHovered = false;
@@ -293,6 +317,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				else if (this.curButton == 1)	this.OnPrefabLinkRevertPressed();
 				else if (this.curButton == 2)	this.OnPrefabLinkApplyPressed();
 				else if (this.curButton == 3)	this.OnPrefabLinkBreakPressed();
+				else if (this.curButton == 4)	this.OnAddComponentPressed();
 			}
 			if (this.activeCheckHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
 			{
@@ -365,6 +390,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			this.PerformGetValue();
 			this.ParentGrid.Invalidate();
+		}
+		private void OnAddComponentPressed()
+		{
+
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
