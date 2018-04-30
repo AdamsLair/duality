@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
@@ -17,6 +18,7 @@ namespace Duality.Editor.Forms
 			public IContentRef ResourceReference { get; private set; }
 			public GameObject GameObjectReference { get; private set; }
 			public Component ComponentReference { get; private set; }
+			public Type TypeReference { get; private set; }
 
 			public ReferenceNode(IContentRef resource)
 			{
@@ -47,18 +49,31 @@ namespace Duality.Editor.Forms
 				this.ComponentReference = component;
 				this.Image = component.GetType().GetEditorImage();
 			}
+			public ReferenceNode(Type type)
+			{
+				this.Name = string.Format("{0} ({1})",
+					type.Name,
+					type.FullName);
+				this.Path = type.AssemblyQualifiedName;
+				this.Text = this.Name;
+
+				this.TypeReference = type;
+				this.Image = type.GetEditorImage();
+			}
 		}
 
 		private Size oldObjectReferenceListingSize = Size.Empty;
 
 		public Color PathColor { get; set; }
 		public Type FilteredType { get; set; }
+		public bool SelectType { get; set; }
 
 		public string ResourcePath { get; set; }
 
 		public IContentRef ResourceReference { get; set; }
 		public GameObject GameObjectReference { get; set; }
 		public Component ComponentReference { get; set; }
+		public Type TypeReference { get; set; }
 
 		private TreeModel Model { get; set; }
 
@@ -103,6 +118,15 @@ namespace Duality.Editor.Forms
 				foreach (GameObject currentObject in Scene.Current.AllObjects)
 				{
 					this.Model.Nodes.Add(new ReferenceNode(currentObject));
+				}
+			}
+			else if (this.SelectType)
+			{
+				this.Text = "Select a Type";
+
+				foreach (TypeInfo type in DualityApp.GetAvailDualityTypes(this.FilteredType))
+				{
+					this.Model.Nodes.Add(new ReferenceNode(type));
 				}
 			}
 			else if (typeof(Component).IsAssignableFrom(this.FilteredType))
@@ -183,6 +207,7 @@ namespace Duality.Editor.Forms
 				this.ResourceReference = null;
 				this.GameObjectReference = null;
 				this.ComponentReference = null;
+				this.TypeReference = null;
 
 				return;
 			}
@@ -197,6 +222,7 @@ namespace Duality.Editor.Forms
 				this.ResourceReference = null;
 				this.GameObjectReference = null;
 				this.ComponentReference = null;
+				this.TypeReference = null;
 
 				return;
 			}
@@ -211,6 +237,7 @@ namespace Duality.Editor.Forms
 			this.ResourceReference = node.ResourceReference;
 			this.GameObjectReference = node.GameObjectReference;
 			this.ComponentReference = node.ComponentReference;
+			this.TypeReference = node.TypeReference;
 		}
 		
 		private void NodePath_OnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
