@@ -111,22 +111,22 @@ namespace Duality.Editor.Forms
 			this.objectReferenceListing.BeginUpdate();
 			this.Model.Nodes.Clear();
 
-			if (typeof(GameObject).IsAssignableFrom(this.FilteredType))
-			{
-				this.Text = "Select a GameObject";
-
-				foreach (GameObject currentObject in Scene.Current.AllObjects)
-				{
-					this.Model.Nodes.Add(new ReferenceNode(currentObject));
-				}
-			}
-			else if (this.SelectType)
+			if (this.SelectType)
 			{
 				this.Text = "Select a Type";
 
 				foreach (TypeInfo type in DualityApp.GetAvailDualityTypes(this.FilteredType).Where(t => !t.IsAbstract && !t.IsInterface))
 				{
 					this.Model.Nodes.Add(new ReferenceNode(type));
+				}
+			}
+			else if (typeof(GameObject).IsAssignableFrom(this.FilteredType))
+			{
+				this.Text = "Select a GameObject";
+
+				foreach (GameObject currentObject in Scene.Current.AllObjects)
+				{
+					this.Model.Nodes.Add(new ReferenceNode(currentObject));
 				}
 			}
 			else if (typeof(Component).IsAssignableFrom(this.FilteredType))
