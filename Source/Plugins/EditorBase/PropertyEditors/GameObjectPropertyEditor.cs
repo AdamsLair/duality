@@ -10,6 +10,7 @@ using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
 
 using Duality;
 using Duality.Editor;
+using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
@@ -393,7 +394,25 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 		private void OnAddComponentPressed()
 		{
+			ObjectRefSelectionDialog compTypeSelector = new ObjectRefSelectionDialog
+			{
+				FilteredType = typeof(Component),
+				SelectType = true
+			};
+			DialogResult result = compTypeSelector.ShowDialog();
 
+			if (result == DialogResult.OK)
+			{
+				UndoRedoManager.BeginMacro("Add Component");
+				foreach (GameObject obj in this.GetValue().Cast<GameObject>())
+				{
+					UndoRedoManager.Do(new CreateComponentAction(obj, compTypeSelector.TypeReference));
+				}
+				UndoRedoManager.EndMacro("Add Component");
+
+				this.PerformGetValue();
+				this.ParentGrid.Invalidate();
+			}
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
