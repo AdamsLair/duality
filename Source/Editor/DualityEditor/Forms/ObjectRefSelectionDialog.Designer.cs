@@ -37,10 +37,10 @@ namespace Duality.Editor.Forms
 			this.labelInfo = new System.Windows.Forms.Label();
 			this.objectReferenceListing = new Aga.Controls.Tree.TreeViewAdv();
 			this.columnName = new Aga.Controls.Tree.TreeColumn();
-			this.columnPath = new Aga.Controls.Tree.TreeColumn();
+			this.columnOrigin = new Aga.Controls.Tree.TreeColumn();
 			this.nodeImage = new Aga.Controls.Tree.NodeControls.NodeStateIcon();
 			this.nodeName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
-			this.nodePath = new Aga.Controls.Tree.NodeControls.NodeTextBox();
+			this.nodeOrigin = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.txtFilterInput = new Duality.Editor.Controls.CueTextBox();
 			this.SuspendLayout();
 			// 
@@ -84,7 +84,7 @@ namespace Duality.Editor.Forms
 			this.objectReferenceListing.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.objectReferenceListing.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.objectReferenceListing.Columns.Add(this.columnName);
-			this.objectReferenceListing.Columns.Add(this.columnPath);
+			this.objectReferenceListing.Columns.Add(this.columnOrigin);
 			this.objectReferenceListing.DefaultToolTipProvider = null;
 			this.objectReferenceListing.DragDropMarkColor = System.Drawing.Color.Black;
 			this.objectReferenceListing.FullRowSelect = true;
@@ -98,7 +98,7 @@ namespace Duality.Editor.Forms
 			this.objectReferenceListing.Name = "objectReferenceListing";
 			this.objectReferenceListing.NodeControls.Add(this.nodeImage);
 			this.objectReferenceListing.NodeControls.Add(this.nodeName);
-			this.objectReferenceListing.NodeControls.Add(this.nodePath);
+			this.objectReferenceListing.NodeControls.Add(this.nodeOrigin);
 			this.objectReferenceListing.NodeFilter = null;
 			this.objectReferenceListing.SelectedNode = null;
 			this.objectReferenceListing.ShowLines = false;
@@ -116,14 +116,14 @@ namespace Duality.Editor.Forms
 			this.columnName.TooltipText = null;
 			this.columnName.Width = 150;
 			// 
-			// columnPath
+			// columnOrigin
 			// 
-			this.columnPath.Header = "Path";
-			this.columnPath.MinColumnWidth = 200;
-			this.columnPath.Sortable = true;
-			this.columnPath.SortOrder = System.Windows.Forms.SortOrder.None;
-			this.columnPath.TooltipText = null;
-			this.columnPath.Width = 350;
+			this.columnOrigin.Header = "Origin";
+			this.columnOrigin.MinColumnWidth = 200;
+			this.columnOrigin.Sortable = true;
+			this.columnOrigin.SortOrder = System.Windows.Forms.SortOrder.None;
+			this.columnOrigin.TooltipText = null;
+			this.columnOrigin.Width = 350;
 			// 
 			// nodeImage
 			// 
@@ -140,12 +140,12 @@ namespace Duality.Editor.Forms
 			this.nodeName.LeftMargin = 3;
 			this.nodeName.ParentColumn = this.columnName;
 			// 
-			// nodePath
+			// nodeOrigin
 			// 
-			this.nodePath.DataPropertyName = "Path";
-			this.nodePath.IncrementalSearchEnabled = true;
-			this.nodePath.LeftMargin = 3;
-			this.nodePath.ParentColumn = this.columnPath;
+			this.nodeOrigin.DataPropertyName = "Origin";
+			this.nodeOrigin.IncrementalSearchEnabled = true;
+			this.nodeOrigin.LeftMargin = 3;
+			this.nodeOrigin.ParentColumn = this.columnOrigin;
 			// 
 			// txtFilterInput
 			// 
@@ -196,9 +196,9 @@ namespace Duality.Editor.Forms
 		private TreeViewAdv objectReferenceListing;
 		private Aga.Controls.Tree.NodeControls.NodeStateIcon nodeImage;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeName;
-		private Aga.Controls.Tree.NodeControls.NodeTextBox nodePath;
+		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeOrigin;
 		private TreeColumn columnName;
-		private TreeColumn columnPath;
+		private TreeColumn columnOrigin;
 		private CueTextBox txtFilterInput;
 	}
 }

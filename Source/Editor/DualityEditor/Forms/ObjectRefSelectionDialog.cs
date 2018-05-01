@@ -14,7 +14,7 @@ namespace Duality.Editor.Forms
 		public class ReferenceNode : Node
 		{
 			public string Name { get; set; }
-			public string Path { get; set; }
+			public string Origin { get; set; }
 			public IContentRef ResourceReference { get; private set; }
 			public GameObject GameObjectReference { get; private set; }
 			public Component ComponentReference { get; private set; }
@@ -23,7 +23,7 @@ namespace Duality.Editor.Forms
 			public ReferenceNode(IContentRef resource)
 			{
 				this.Name = resource.Name;
-				this.Path = resource.FullName;
+				this.Origin = resource.FullName;
 				this.Text = this.Name;
 
 				this.ResourceReference = resource;
@@ -32,7 +32,7 @@ namespace Duality.Editor.Forms
 			public ReferenceNode(GameObject gameObject)
 			{
 				this.Name = gameObject.Name;
-				this.Path = gameObject.FullName;
+				this.Origin = gameObject.FullName;
 				this.Text = this.Name;
 
 				this.GameObjectReference = gameObject;
@@ -43,7 +43,7 @@ namespace Duality.Editor.Forms
 				this.Name = string.Format("{0} ({1})", 
 					component.GameObj.Name, 
 					component.GetType().GetTypeCSCodeName(true));
-				this.Path = component.GameObj.FullName;
+				this.Origin = component.GameObj.FullName;
 				this.Text = this.Name;
 
 				this.ComponentReference = component;
@@ -54,7 +54,7 @@ namespace Duality.Editor.Forms
 				this.Name = string.Format("{0} ({1})",
 					type.Name,
 					type.FullName);
-				this.Path = type.GetTypeCSCodeName();
+				this.Origin = type.GetTypeCSCodeName();
 				this.Text = this.Name;
 
 				this.TypeReference = type;
@@ -95,10 +95,10 @@ namespace Duality.Editor.Forms
 			this.txtFilterInput.KeyDown += this.TxtFilterInputOnKeyDown;
 
 			this.nodeName.DrawText += this.NodeName_OnDrawText;
-			this.nodePath.DrawText += this.NodePath_OnDrawText;
+			this.nodeOrigin.DrawText += this.NodeOrigin_OnDrawText;
 
 			this.columnName.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
-			this.columnPath.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
+			this.columnOrigin.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -164,7 +164,7 @@ namespace Duality.Editor.Forms
 
 				treeNodeAdv.IsExpanded = true;
 
-				if (node != null && node.Path == this.ResourcePath)
+				if (node != null && node.Origin == this.ResourcePath)
 				{
 					this.objectReferenceListing.SelectedNode = treeNodeAdv;
 				}
@@ -240,7 +240,7 @@ namespace Duality.Editor.Forms
 			this.TypeReference = node.TypeReference;
 		}
 		
-		private void NodePath_OnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
+		private void NodeOrigin_OnDrawText(object sender, DrawTextEventArgs drawTextEventArgs)
 		{
 			ReferenceNode node = drawTextEventArgs.Node.Tag as ReferenceNode;
 
@@ -282,7 +282,7 @@ namespace Duality.Editor.Forms
 				this.objectReferenceListing.Width - this.oldObjectReferenceListingSize.Width,
 				this.objectReferenceListing.Height - this.oldObjectReferenceListingSize.Height);
 
-			this.columnPath.Width += sizeChange.Width;
+			this.columnOrigin.Width += sizeChange.Width;
 
 			this.oldObjectReferenceListingSize = this.objectReferenceListing.Size;
 		}
@@ -294,7 +294,7 @@ namespace Duality.Editor.Forms
 			return node != null &&
 				(
 					node.Name.ToLowerInvariant().Contains(filterValue) ||
-					node.Path.ToLowerInvariant().Contains(filterValue)
+					node.Origin.ToLowerInvariant().Contains(filterValue)
 				);
 		}
 	}
