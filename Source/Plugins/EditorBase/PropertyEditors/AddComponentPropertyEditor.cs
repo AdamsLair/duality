@@ -25,7 +25,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 		public AddComponentPropertyEditor()
 		{
-			this.PropertyName = "Actions";
+			this.Hints = HintFlags.None;
 			this.Height += 4;
 		}
 
