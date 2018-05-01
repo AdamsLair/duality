@@ -51,9 +51,7 @@ namespace Duality.Editor.Forms
 			}
 			public ReferenceNode(Type type)
 			{
-				this.Name = string.Format("{0} ({1})",
-					type.Name,
-					type.FullName);
+				this.Name = type.Name;
 				this.Origin = type.GetTypeCSCodeName();
 				this.Text = this.Name;
 
