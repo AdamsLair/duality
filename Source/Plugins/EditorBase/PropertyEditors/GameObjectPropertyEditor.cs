@@ -219,11 +219,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				ControlRenderer.DrawStringLine(e.Graphics, this.displayedNameExt, headerNameExtFont, extLabelRect, SystemColors.ControlText);
 			}
 
-			// TODO: evaluate look and feel of this button
-			// TODO: evaluate if this button state handling can be merged with the handling for the prefab buttons below
 			ButtonState buttonStateAdd = ButtonState.Normal;
 			ButtonState buttonStateDefaultAdd = ButtonState.Normal;
-			if (this.curButtonHovered) buttonStateAdd = ButtonState.Hot;
+			if (this.curButtonPressed) buttonStateAdd = ButtonState.Pressed;
+			else if (this.curButtonHovered) buttonStateAdd = ButtonState.Hot;
 			ControlRenderer.DrawButton(e.Graphics, this.rectButtonAddComponent, this.curButton == 4 ? buttonStateAdd : buttonStateDefaultAdd, "+");
 
 			ControlRenderer.DrawStringLine(e.Graphics, "PrefabLink", headerPrefabFont, this.rectLabelPrefab, !this.prefabLinked ? SystemColors.GrayText : (this.prefabLinkAvailable ? Color.Blue : Color.DarkRed));
@@ -413,6 +412,12 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.PerformGetValue();
 				this.ParentGrid.Invalidate();
 			}
+
+			// Keeps add component button from being locked to the pressed 
+			// state caused by the SelectionDialog being modal
+			this.curButton = -1;
+			this.curButtonHovered = false;
+			this.curButtonPressed = false;
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
