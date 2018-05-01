@@ -54,7 +54,7 @@ namespace Duality.Editor.Forms
 				this.Name = string.Format("{0} ({1})",
 					type.Name,
 					type.FullName);
-				this.Path = type.AssemblyQualifiedName;
+				this.Path = type.GetTypeCSCodeName();
 				this.Text = this.Name;
 
 				this.TypeReference = type;
