@@ -1479,11 +1479,20 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			// Create new objects
 			List<GameObjectNode> newObjects = new List<GameObjectNode>();
-			foreach (TreeNodeAdv node in this.objectView.SelectedNodes)
+			if (this.objectView.SelectedNodes.Count <= 1)
 			{
-				GameObject obj = this.CreateGameObject(node);
+				GameObject obj = this.CreateGameObject(this.objectView.SelectedNode);
 				GameObjectNode objNode = this.FindNode(obj);
 				newObjects.Add(objNode);
+			}
+			else
+			{
+				foreach (TreeNodeAdv node in this.objectView.SelectedNodes)
+				{
+					GameObject obj = this.CreateGameObject(node);
+					GameObjectNode objNode = this.FindNode(obj);
+					newObjects.Add(objNode);
+				}
 			}
 
 			this.objectView.ClearSelection();
