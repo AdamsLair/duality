@@ -679,7 +679,7 @@ namespace Duality.Editor.Plugins.SceneView
 						},
 						new MenuModelItem
 						{
-							Name            = typeof(Component).Name,
+							Name            = typeof(Component).Name + "...",
 							Icon            = typeof(Component).GetEditorImage(),
 							SortValue       = MenuModelItem.SortValue_Top + 1,
 							ActionHandler   = this.componentToolStripMenuItem_Click
