@@ -47,6 +47,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					? ButtonState.Hot
 					: ButtonState.Normal;
 
+			if (this.ReadOnly)
+				buttonState = ButtonState.Disabled;
+
 			this.ControlRenderer.DrawButton(
 				e.Graphics, this.rectButton,
 				buttonState, "Add Component");
@@ -54,6 +57,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+
+			if (this.ReadOnly)
+				return;
 
 			bool buttonContainsMouse = this.rectButton.Contains(e.Location);
 			if (buttonContainsMouse != this.buttonHovered)
@@ -65,12 +71,20 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void OnMouseLeave(System.EventArgs e)
 		{
 			base.OnMouseLeave(e);
+
+			if (this.ReadOnly)
+				return;
+
 			this.buttonHovered = false;
 			this.Invalidate();
 		}
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
+
+			if (this.ReadOnly)
+				return;
+
 			if (this.buttonHovered)
 			{
 				this.buttonPressed = true;
@@ -80,6 +94,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
+
+			if (this.ReadOnly)
+				return;
+
 			if (this.buttonPressed)
 			{
 				this.OnAddComponentClicked();
@@ -89,6 +107,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 		protected override void OnKeyUp(KeyEventArgs e)
 		{
+			if (this.ReadOnly)
+				return;
+
 			if (e.KeyCode == Keys.Enter)
 			{
 				this.OnAddComponentClicked();
