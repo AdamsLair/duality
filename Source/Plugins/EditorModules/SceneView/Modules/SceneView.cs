@@ -41,7 +41,7 @@ namespace Duality.Editor.Plugins.SceneView
 				if (objNode == null) return null;
 				if (objNode.Obj.PrefabLink == null) return null;
 
-				return String.Format(Properties.SceneViewRes.SceneView_PrefabLink, objNode.Obj.PrefabLink.Prefab.Path);
+				return string.Format(Properties.SceneViewRes.SceneView_PrefabLink, objNode.Obj.PrefabLink.Prefab.Path);
 			}
 		}
 		private class CreateContextEntryTag
@@ -126,9 +126,9 @@ namespace Duality.Editor.Plugins.SceneView
 
 			this.nodeTextBoxName.ToolTipProvider = this.nodeStateIcon.ToolTipProvider = new ToolTipProvider();
 			this.nodeTextBoxName.DrawText += this.nodeTextBoxName_DrawText;
-			this.nodeTextBoxName.EditorShowing += new CancelEventHandler(nodeTextBoxName_EditorShowing);
-			this.nodeTextBoxName.EditorHided += new EventHandler(nodeTextBoxName_EditorHided);
-			this.nodeTextBoxName.ChangesApplied += new EventHandler(nodeTextBoxName_ChangesApplied);
+			this.nodeTextBoxName.EditorShowing += new CancelEventHandler(this.nodeTextBoxName_EditorShowing);
+			this.nodeTextBoxName.EditorHided += new EventHandler(this.nodeTextBoxName_EditorHided);
+			this.nodeTextBoxName.ChangesApplied += new EventHandler(this.nodeTextBoxName_ChangesApplied);
 
 			this.nodeStateIcon.DrawIcon += this.nodeStateIcon_DrawIcon;
 
@@ -239,7 +239,7 @@ namespace Duality.Editor.Plugins.SceneView
 
 		protected void ApplyNodeFilter()
 		{
-			this.tempUpperFilter = String.IsNullOrEmpty(this.textBoxFilter.Text) ? null : this.textBoxFilter.Text.ToUpper();
+			this.tempUpperFilter = string.IsNullOrEmpty(this.textBoxFilter.Text) ? null : this.textBoxFilter.Text.ToUpper();
 			this.tempNodeVisibilityCache.Clear();
 			this.objectView.NodeFilter = this.tempUpperFilter != null ? this.objectModel_IsNodeVisible : (Predicate<object>)null;
 		}
@@ -312,7 +312,7 @@ namespace Duality.Editor.Plugins.SceneView
 		protected void InsertNodeSorted(Node newNode, Node parentNode)
 		{
 			Node insertBeforeNode = parentNode.Nodes.FirstOrDefault(node => 
-				(NodeBase.Compare(newNode as NodeBase, node as NodeBase) == 0 && String.Compare(newNode.Text, node.Text) < 0) ||
+				(NodeBase.Compare(newNode as NodeBase, node as NodeBase) == 0 && string.Compare(newNode.Text, node.Text) < 0) ||
 				NodeBase.Compare(newNode as NodeBase, node as NodeBase) < 0);
 			if (insertBeforeNode == null) parentNode.Nodes.Add(newNode);
 			else parentNode.Nodes.Insert(parentNode.Nodes.IndexOf(insertBeforeNode), newNode);
@@ -775,7 +775,7 @@ namespace Duality.Editor.Plugins.SceneView
 			if (selObjData.Any())
 			{
 			    mainResType = selObjData.First().GetType();
-			    foreach (var obj in selObjData)
+			    foreach (object obj in selObjData)
 			    {
 			        Type resType = obj.GetType();
 			        while (mainResType != null && !mainResType.IsAssignableFrom(resType))
@@ -1627,13 +1627,13 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			// Save expand data
 			HashSet<object> expandedMap = new HashSet<object>();
-			this.objectView.SaveNodesExpanded(this.objectView.Root, expandedMap, NodeIdFuncCoreObject);
+			this.objectView.SaveNodesExpanded(this.objectView.Root, expandedMap, this.NodeIdFuncCoreObject);
 
 			this.ClearObjects();
 			this.InitObjects();
 
 			// Restore expand data
-			this.objectView.RestoreNodesExpanded(this.objectView.Root, expandedMap, NodeIdFuncCoreObject);
+			this.objectView.RestoreNodesExpanded(this.objectView.Root, expandedMap, this.NodeIdFuncCoreObject);
 		}
 		private object NodeIdFuncCoreObject(TreeNodeAdv node)
 		{
