@@ -1537,7 +1537,7 @@ namespace Duality.Editor.Plugins.SceneView
 		}
 		private void componentToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SelectionDialog compTypeSelector = new SelectionDialog
+			ListSelectionDialog compTypeSelector = new ListSelectionDialog
 			{
 				FilteredType = typeof(Component),
 				SelectType = true

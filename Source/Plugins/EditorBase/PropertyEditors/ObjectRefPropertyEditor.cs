@@ -393,7 +393,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 		protected void ShowContentSelectionDialog()
 		{
-			SelectionDialog resourceSelectionForm = new SelectionDialog
+			ListSelectionDialog resourceSelectionForm = new ListSelectionDialog
 			{
 				FilteredType = this.FilteredType,
 				ResourcePath = this.ReferenceName

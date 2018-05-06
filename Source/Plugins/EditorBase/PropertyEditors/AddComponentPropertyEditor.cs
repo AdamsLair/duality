@@ -118,7 +118,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 		private void OnAddComponentClicked()
 		{
-			SelectionDialog compTypeSelector = new SelectionDialog
+			ListSelectionDialog compTypeSelector = new ListSelectionDialog
 			{
 				FilteredType = typeof(Component),
 				SelectType = true

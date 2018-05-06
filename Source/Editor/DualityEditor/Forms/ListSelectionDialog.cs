@@ -9,7 +9,7 @@ using Duality.Resources;
 
 namespace Duality.Editor.Forms
 {
-	public partial class SelectionDialog : Form
+	public partial class ListSelectionDialog : Form
 	{
 		public class ReferenceNode : Node
 		{
@@ -76,7 +76,7 @@ namespace Duality.Editor.Forms
 		private TreeModel Model { get; set; }
 
 
-		public SelectionDialog()
+		public ListSelectionDialog()
 		{
 			InitializeComponent();
 

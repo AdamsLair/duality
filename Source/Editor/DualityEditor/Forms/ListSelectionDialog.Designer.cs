@@ -4,7 +4,7 @@ using Duality.Editor.Controls;
 namespace Duality.Editor.Forms
 {
 
-	partial class SelectionDialog
+	partial class ListSelectionDialog
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -179,7 +179,7 @@ namespace Duality.Editor.Forms
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(380, 399);
-			this.Name = "SelectionDialog";
+			this.Name = "ListSelectionDialog";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Select a Reference...";
