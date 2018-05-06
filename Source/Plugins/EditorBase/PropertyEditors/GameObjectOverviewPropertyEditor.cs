@@ -135,6 +135,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			}
 			else
 			{
+				// Remove and add the AddComponentPropertyEditor
+				// to make sure it is always at the end of the list
 				this.RemovePropertyEditor(this.addComponentEditor);
 				this.AddPropertyEditor(this.addComponentEditor, this.ChildEditors.Count);
 			}
