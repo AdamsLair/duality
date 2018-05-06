@@ -1477,24 +1477,36 @@ namespace Duality.Editor.Plugins.SceneView
 
 		private void gameObjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			// Create the GameObject
-			GameObject obj = this.CreateGameObject(this.objectView.SelectedNode);
-			GameObjectNode objNode = this.FindNode(obj);
+			// Create new objects
+			List<GameObjectNode> newObjects = new List<GameObjectNode>();
+			foreach (TreeNodeAdv node in this.objectView.SelectedNodes)
+			{
+				GameObject obj = this.CreateGameObject(node);
+				GameObjectNode objNode = this.FindNode(obj);
+				newObjects.Add(objNode);
+			}
 
-			// Deselect previous
 			this.objectView.ClearSelection();
 
-			// Select new node
-			if (objNode != null)
+			// Select newly created objects
+			foreach (GameObjectNode objNode in newObjects)
 			{
+				if (objNode == null) continue;
+
 				TreeNodeAdv dragObjViewNode;
 				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(objNode));
 				if (dragObjViewNode != null)
 				{
 					dragObjViewNode.IsSelected = true;
-					this.objectView.EnsureVisible(dragObjViewNode);
-					this.nodeTextBoxName.BeginEdit();
 				}
+			}
+
+			// Edit the first new objects name
+			TreeNodeAdv nodeToEdit = this.objectView.FindNode(this.objectModel.GetPath(newObjects[0]));
+			if (nodeToEdit != null)
+			{
+				this.objectView.EnsureVisible(nodeToEdit);
+				this.nodeTextBoxName.BeginEdit();
 			}
 		}
 		private void newToolStripMenuItem_ItemClicked(object sender, EventArgs e)
