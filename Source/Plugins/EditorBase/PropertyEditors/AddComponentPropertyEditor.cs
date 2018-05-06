@@ -87,6 +87,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.Invalidate();
 			}
 		}
+		protected override void OnKeyUp(KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				this.OnAddComponentClicked();
+				this.Invalidate();
+			}
+		}
 		private void OnAddComponentClicked()
 		{
 			SelectionDialog compTypeSelector = new SelectionDialog
