@@ -1477,11 +1477,22 @@ namespace Duality.Editor.Plugins.SceneView
 
 		private void gameObjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			// Create new objects
 			List<GameObjectNode> newObjects = new List<GameObjectNode>();
-			foreach (TreeNodeAdv node in this.objectView.SelectedNodes)
+
+			// Create one new object as a child of each selected node
+			if (this.objectView.SelectedNodes.Count > 0)
 			{
-				GameObject obj = this.CreateGameObject(node);
+				foreach (TreeNodeAdv node in this.objectView.SelectedNodes)
+				{
+					GameObject obj = this.CreateGameObject(node);
+					GameObjectNode objNode = this.FindNode(obj);
+					newObjects.Add(objNode);
+				}
+			}
+			// If no object is selected, just create one new root object
+			else
+			{
+				GameObject obj = this.CreateGameObject(null);
 				GameObjectNode objNode = this.FindNode(obj);
 				newObjects.Add(objNode);
 			}
@@ -1489,20 +1500,27 @@ namespace Duality.Editor.Plugins.SceneView
 			this.objectView.ClearSelection();
 
 			// Select newly created objects
+			TreeNodeAdv nodeToEdit = null;
 			foreach (GameObjectNode objNode in newObjects)
 			{
 				if (objNode == null) continue;
 
-				TreeNodeAdv dragObjViewNode;
-				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(objNode));
-				if (dragObjViewNode != null)
+				TreeNodeAdv dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(objNode));
+				if (dragObjViewNode == null) continue;
+
+				// Expand parent node and select new object node
+				if (dragObjViewNode.Parent != null)
+					dragObjViewNode.Parent.Expand();
+				dragObjViewNode.IsSelected = true;
+
+				// Schedule the first created view node for editing
+				if (nodeToEdit == null)
 				{
-					dragObjViewNode.IsSelected = true;
+					nodeToEdit = dragObjViewNode;
 				}
 			}
 
-			// Edit the first new objects name
-			TreeNodeAdv nodeToEdit = this.objectView.FindNode(this.objectModel.GetPath(newObjects[0]));
+			// Scroll to and edit the new objects name
 			if (nodeToEdit != null)
 			{
 				this.objectView.EnsureVisible(nodeToEdit);
