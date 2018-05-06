@@ -26,7 +26,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public AddComponentPropertyEditor()
 		{
 			this.Hints = HintFlags.None;
-			this.Height += 4;
+			this.Height += 8;
 		}
 
 		protected override void UpdateGeometry()
@@ -34,8 +34,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			base.UpdateGeometry();
 
 			this.rectButton = new Rectangle(
-				this.ClientRectangle.X + 2, this.ClientRectangle.Y + 2,
-				this.ClientRectangle.Width - 4, this.ClientRectangle.Height - 4);
+				this.ClientRectangle.X + 5, this.ClientRectangle.Y + 5,
+				this.ClientRectangle.Width - 10, this.ClientRectangle.Height - 10);
 		}
 		protected override void OnPaint(PaintEventArgs e)
 		{
