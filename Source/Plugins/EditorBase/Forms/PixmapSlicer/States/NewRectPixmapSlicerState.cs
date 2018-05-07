@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
+using Duality.Editor.Plugins.Base.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
@@ -14,6 +14,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		private bool	mouseDown			= false;
 		private PointF	rectAddStart		= Point.Empty;
+		private Rect?	newAtlasRect		= null;
 
 		public NewRectPixmapSlicerState()
 		{
@@ -35,6 +36,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			if (this.mouseDown)
 			{
 				this.mouseDown = false;
+				this.CommitRect();
 				this.CancelState();
 			}
 		}
@@ -48,14 +50,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.TransformMouseCoordinates(e.Location, out x, out y);
 
 			// Check if rect creation hasn't started yet
-			if (this.SelectedRectIndex == -1)
+			if (!this.newAtlasRect.HasValue)
 			{
-				if (this.TargetPixmap.Atlas == null)
-					this.TargetPixmap.Atlas = new List<Rect>();
 				this.rectAddStart = new PointF(x, y);
-				Rect newDisplayRect = new Rect(x, y, 0, 0);
-				this.TargetPixmap.Atlas.Add(this.GetAtlasRect(newDisplayRect));
-				this.SelectedRectIndex = this.TargetPixmap.Atlas.Count - 1;
+				this.newAtlasRect = this.GetAtlasRect(new Rect(x, y, 0, 0));
 			}
 
 			float rx = MathF.Min(x, this.rectAddStart.X);
@@ -68,7 +66,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			Rect atlastRect = this.GetAtlasRect(displayRect);
 			atlastRect = atlastRect.Intersection(new Rect(0, 0, this.TargetPixmap.Width, this.TargetPixmap.Height));
 
-			this.SetPixmapAtlasRect(atlastRect, this.SelectedRectIndex);
+			this.newAtlasRect = atlastRect;
+
+			// TODO: invliadate event / call instead of this hack
+			this.UpdatePixmap();
 		}
 
 		public override void OnKeyUp(KeyEventArgs e)
@@ -77,10 +78,32 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				this.CancelState();
 		}
 
-		private void SetPixmapAtlasRect(Rect rect, int index)
+		public override void OnPaint(PaintEventArgs e)
 		{
-			this.TargetPixmap.Atlas[index] = rect;
-			this.UpdatePixmap();
+			if (!this.newAtlasRect.HasValue)
+				return;
+
+			Rect rect = this.GetDisplayRect(this.newAtlasRect.Value);
+
+			rect.X = MathF.RoundToInt(rect.X);
+			rect.Y = MathF.RoundToInt(rect.Y);
+			rect.W = MathF.RoundToInt(rect.W);
+			rect.H = MathF.RoundToInt(rect.H);
+
+			using (Pen rectPen = new Pen(Color.Blue, 1))
+			{
+				e.Graphics.DrawRectangle(rectPen,
+					rect.X, rect.Y, rect.W, rect.H);
+			}
+		}
+
+		private void CommitRect()
+		{
+			int index = this.TargetPixmap.Atlas != null 
+				? this.TargetPixmap.Atlas.Count 
+				: 0;
+
+			UndoRedoManager.Do(new SetAtlasRectAction(this.newAtlasRect.Value, index, new []{ this.TargetPixmap }));
 		}
 	}
 }
