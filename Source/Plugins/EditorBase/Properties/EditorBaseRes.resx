@@ -292,4 +292,10 @@
   <data name="ActionName_ShowResourceSources" xml:space="preserve">
     <value>Show Source Files</value>
   </data>
+  <data name="ActionDesc_SlicePixmap" xml:space="preserve">
+    <value>Opens a window for slicing a pixmap into atlas regions</value>
+  </data>
+  <data name="ActionName_SlicePixmap" xml:space="preserve">
+    <value>Slice Pixmap</value>
+  </data>
 </root>

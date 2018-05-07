@@ -46,10 +46,14 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\AdamsLair.DockPanelSuite.2.8.1.0\lib\net20\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataConverters\ComponentFromSound.cs" />
@@ -70,6 +74,7 @@
     <Compile Include="EditorActions\FirstSession\ViewGettingStartedTutorial.cs" />
     <Compile Include="EditorActions\FirstSession\DownloadVisualStudio.cs" />
     <Compile Include="EditorActions\FocusGameObject.cs" />
+    <Compile Include="EditorActions\SlicePixmap.cs" />
     <Compile Include="EditorActions\SetupRigidBodyForEditing.cs" />
     <Compile Include="EditorActions\OpenScene.cs" />
     <Compile Include="EditorActions\InstantiatePrefab.cs" />
@@ -80,6 +85,12 @@
     <Compile Include="EditorActions\PixmapToTexture.cs" />
     <Compile Include="EditorActions\FocusComponent.cs" />
     <Compile Include="EditorBasePlugin.cs" />
+    <Compile Include="Forms\PixmapSlicerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PixmapSlicerForm.Designer.cs">
+      <DependentUpon>PixmapSlicerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Importers\AudioDataAssetImporter.cs" />
     <Compile Include="Importers\FontAssetImporter.cs">
       <SubType>Code</SubType>
@@ -134,6 +145,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="States\AtlasOrderingPixmapSlicerState.cs" />
+    <Compile Include="States\DefaultPixmapSlicerState.cs" />
+    <Compile Include="States\IPixmapSlicerState.cs" />
+    <Compile Include="States\NewRectPixmapSlicerState.cs" />
+    <Compile Include="States\Side.cs" />
+    <Compile Include="States\Utilities.cs" />
     <Compile Include="UndoRedoActions\DeleteRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\CreateRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\CreateSoundEmitterSourceAction.cs" />

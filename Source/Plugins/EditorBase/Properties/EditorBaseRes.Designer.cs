@@ -169,6 +169,15 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Opens a window for slicing a pixmap into atlas regions.
+        /// </summary>
+        public static string ActionDesc_SlicePixmap {
+            get {
+                return ResourceManager.GetString("ActionDesc_SlicePixmap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This tutorial will guide you through your first steps with Duality..
         /// </summary>
         public static string ActionDesc_ViewGettingStartedTutorial {
@@ -255,6 +264,15 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static string ActionName_ShowResourceSources {
             get {
                 return ResourceManager.GetString("ActionName_ShowResourceSources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slice Pixmap.
+        /// </summary>
+        public static string ActionName_SlicePixmap {
+            get {
+                return ResourceManager.GetString("ActionName_SlicePixmap", resourceCulture);
             }
         }
         
