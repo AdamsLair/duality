@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States;
 using Duality.Resources;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.Utilities

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using Duality.Resources;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
@@ -10,37 +8,16 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// A <see cref="IPixmapSlicerState"/> that allows the user
 	/// to define new atlas rectangles for the <see cref="TargetPixmap"/>
 	/// </summary>
-	public class NewRectPixmapSlicerState : IPixmapSlicerState
+	public class NewRectPixmapSlicerState : PixmapSlicerState
 	{
 		private ToolStripButton cancelButton = null;
 
 		private bool	mouseDown			= false;
-		private int		selectedRectIndex	= -1;
 		private PointF	rectAddStart		= Point.Empty;
-
-		public int SelectedRectIndex
-		{
-			get { return this.selectedRectIndex; }
-		}
-		public List<ToolStripItem> StateControls	{ get; private set; }
-		public Cursor Cursor						{ get; private set; }
-		public Rectangle DisplayBounds				{ get; set; }
-		public Pixmap TargetPixmap					{ get; set; }
-
-		public MouseTransformDelegate	TransformMouseCoordinates	{ get; set; }
-		public Func<Rect, Rect>			GetAtlasRect				{ get; set; }
-		public Func<Rect, Rect>			GetDisplayRect				{ get; set; }
-
-		public event EventHandler PixmapUpdated;
-		public event EventHandler CursorChanged;
-		public event EventHandler StateCancelled;
-		public event EventHandler SelectionChanged;
-		public event EventHandler<PixmapSlicerForm.PixmapSlicerStateEventArgs> StateChangeRequested;
 
 		public NewRectPixmapSlicerState()
 		{
 			this.Cursor = Cursors.Default;
-			this.StateControls = new List<ToolStripItem>();
 
 			this.cancelButton = new ToolStripButton("Cancel", null,
 				(s, e) => this.CancelState());
@@ -48,19 +25,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.StateControls.Add(this.cancelButton);
 		}
 
-		public void ClearSelection()
-		{
-			this.selectedRectIndex = -1;
-			if (this.SelectionChanged != null)
-				this.SelectionChanged.Invoke(this, EventArgs.Empty);
-		}
-
-		public void OnMouseDown(MouseEventArgs e)
+		public override void OnMouseDown(MouseEventArgs e)
 		{
 			this.mouseDown = true;
 		}
 
-		public void OnMouseUp(MouseEventArgs e)
+		public override void OnMouseUp(MouseEventArgs e)
 		{
 			if (this.mouseDown)
 			{
@@ -69,7 +39,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			}
 		}
 
-		public void OnMouseMove(MouseEventArgs e)
+		public override void OnMouseMove(MouseEventArgs e)
 		{
 			if (this.TargetPixmap == null || !this.mouseDown)
 				return;
@@ -78,16 +48,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.TransformMouseCoordinates(e.Location, out x, out y);
 
 			// Check if rect creation hasn't started yet
-			if (this.selectedRectIndex == -1)
+			if (this.SelectedRectIndex == -1)
 			{
 				if (this.TargetPixmap.Atlas == null)
 					this.TargetPixmap.Atlas = new List<Rect>();
 				this.rectAddStart = new PointF(x, y);
 				Rect newDisplayRect = new Rect(x, y, 0, 0);
 				this.TargetPixmap.Atlas.Add(this.GetAtlasRect(newDisplayRect));
-				this.selectedRectIndex = this.TargetPixmap.Atlas.Count - 1;
-				if (this.SelectionChanged != null)
-					this.SelectionChanged.Invoke(this, EventArgs.Empty);
+				this.SelectedRectIndex = this.TargetPixmap.Atlas.Count - 1;
 			}
 
 			float rx = MathF.Min(x, this.rectAddStart.X);
@@ -100,30 +68,19 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			Rect atlastRect = this.GetAtlasRect(displayRect);
 			atlastRect = atlastRect.Intersection(new Rect(0, 0, this.TargetPixmap.Width, this.TargetPixmap.Height));
 
-			this.SetPixmapAtlasRect(atlastRect, this.selectedRectIndex);
+			this.SetPixmapAtlasRect(atlastRect, this.SelectedRectIndex);
 		}
 
-		public void OnKeyUp(KeyEventArgs e)
+		public override void OnKeyUp(KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Escape)
 				this.CancelState();
 		}
 
-		public void OnPaint(PaintEventArgs e)
-		{
-		}
-
-		private void CancelState()
-		{
-			if (this.StateCancelled != null)
-				this.StateCancelled.Invoke(this, EventArgs.Empty);
-		}
-
 		private void SetPixmapAtlasRect(Rect rect, int index)
 		{
 			this.TargetPixmap.Atlas[index] = rect;
-			if (this.PixmapUpdated != null)
-				this.PixmapUpdated.Invoke(this, EventArgs.Empty);
+			this.UpdatePixmap();
 		}
 	}
 }

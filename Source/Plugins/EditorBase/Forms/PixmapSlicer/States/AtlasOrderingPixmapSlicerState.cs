@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using Duality.Resources;
 using Font = System.Drawing.Font;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
@@ -11,31 +10,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// A <see cref="IPixmapSlicerState"/> that allows the user to specify the ordering
 	/// of atlas rectangles by clicking on each rectangle in the desired order
 	/// </summary>
-	public class AtlasOrderingPixmapSlicerState : IPixmapSlicerState
+	public class AtlasOrderingPixmapSlicerState : PixmapSlicerState
 	{
 		private ToolStripButton doneButton		= null;
 		private ToolStripButton cancelButton	= null;
 		private List<int> orderedIndices		= new List<int>();
 
-		public Rectangle			DisplayBounds		{ get; set; }
-		public Pixmap				TargetPixmap		{ get; set; }
-		public Cursor				Cursor				{ get; private set; }
-		public int					SelectedRectIndex	{ get; private set; }
-		public List<ToolStripItem>	StateControls		{ get; private set; }
-
-		public MouseTransformDelegate	TransformMouseCoordinates	{ get; set; }
-		public Func<Rect, Rect>			GetAtlasRect				{ get; set; }
-		public Func<Rect, Rect>			GetDisplayRect				{ get; set; }
-
-		public event EventHandler PixmapUpdated;
-		public event EventHandler CursorChanged;
-		public event EventHandler StateCancelled;
-		public event EventHandler SelectionChanged;
-		public event EventHandler<PixmapSlicerForm.PixmapSlicerStateEventArgs> StateChangeRequested;
-
 		public AtlasOrderingPixmapSlicerState()
 		{
-			this.StateControls = new List<ToolStripItem>();
 			this.SelectedRectIndex = -1;
 
 			this.doneButton = new ToolStripButton("Done", null,
@@ -47,15 +29,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.StateControls.Add(this.cancelButton);
 		}
 
-		public void ClearSelection()
-		{
-		}
-
-		public void OnMouseDown(MouseEventArgs e)
-		{
-		}
-
-		public void OnMouseUp(MouseEventArgs e)
+		public override void OnMouseUp(MouseEventArgs e)
 		{
 			if (this.TargetPixmap == null || this.TargetPixmap.Atlas == null)
 				return;
@@ -69,23 +43,19 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				return;
 
 			this.orderedIndices.Add(indexClicked);
+
 			// The PixmapUpdated event will cause the display to invalidate
 			// TODO: remove this for a generic invalidate event
-			if (this.PixmapUpdated != null)
-				this.PixmapUpdated.Invoke(this, EventArgs.Empty);
+			this.UpdatePixmap();
 		}
 
-		public void OnMouseMove(MouseEventArgs e)
-		{
-		}
-
-		public void OnKeyUp(KeyEventArgs e)
+		public override void OnKeyUp(KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Escape)
 				this.CancelState();
 		}
 
-		public void OnPaint(PaintEventArgs e)
+		public override void OnPaint(PaintEventArgs e)
 		{
 			// Render the index of any clicked rects
 			for (int index = 0; index < this.orderedIndices.Count; index++)
@@ -128,15 +98,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			}
 
 			this.TargetPixmap.Atlas = newAtlas;
-			if (this.PixmapUpdated != null)
-				this.PixmapUpdated.Invoke(this, EventArgs.Empty);
+			this.UpdatePixmap();
 			this.CancelState();
-		}
-
-		private void CancelState()
-		{
-			if (this.StateCancelled != null)
-				this.StateCancelled.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.Utilities;
-using Duality.Resources;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
@@ -14,7 +12,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// resize selected atlas rectangles and provides controls for accessing
 	/// many other <see cref="IPixmapSlicerState"/>
 	/// </summary>
-	public class DefaultPixmapSlicerState : IPixmapSlicerState
+	public class DefaultPixmapSlicerState : PixmapSlicerState
 	{
 		private const float DRAG_OFFSET = 3f;
 
@@ -26,48 +24,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		private bool	mouseDown			= false;
 		private bool	dragInProgress		= false;
-		private int		selectedRectIndex	= -1;
 		private Side	hoveredRectSide		= Side.None;
-		private Cursor	cursor				= Cursors.Default;
-
-		public List<ToolStripItem>	StateControls	{ get; private set; }
-		public Rectangle			DisplayBounds	{ get; set; }
-		public Pixmap				TargetPixmap	{ get; set; }
-		public int SelectedRectIndex
-		{
-			get { return this.selectedRectIndex; }
-		}
-
-		public Cursor Cursor
-		{
-			get { return this.cursor; }
-			set
-			{
-				if (this.cursor != value)
-				{
-					this.cursor = value;
-					if (this.CursorChanged != null)
-						this.CursorChanged.Invoke(this, EventArgs.Empty);
-				}
-			}
-		}
-
-		public MouseTransformDelegate TransformMouseCoordinates { get; set; }
-		public Func<Rect, Rect> GetAtlasRect { get; set; }
-		public Func<Rect, Rect> GetDisplayRect { get; set; }
-
-		public event EventHandler PixmapUpdated;
-		public event EventHandler CursorChanged;
-		public event EventHandler StateCancelled;
-		public event EventHandler SelectionChanged;
-		public event EventHandler<PixmapSlicerForm.PixmapSlicerStateEventArgs> StateChangeRequested;
 
 		public DefaultPixmapSlicerState()
 		{
-			this.StateControls = new List<ToolStripItem>();
-
 			this.addRectButton = new ToolStripButton("Add Rect", null,
-				(s, e) => this.SwitchToAddRectState());
+				(s, e) => this.ChangeState(typeof(NewRectPixmapSlicerState)));
 
 			this.clearButton = new ToolStripButton("Clear", null,
 				(s, e) => this.ClearRects());
@@ -93,20 +55,18 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.StateControls.Add(this.alphaCutoffEntry);
 		}
 
-		public void ClearSelection()
+		public override void ClearSelection()
 		{
 			this.deleteSelectedButton.Enabled = false;
-			this.selectedRectIndex = -1;
-			if (this.SelectionChanged != null)
-				this.SelectionChanged.Invoke(this, EventArgs.Empty);
+			this.SelectedRectIndex = -1;
 		}
 
-		public void OnMouseDown(MouseEventArgs e)
+		public override void OnMouseDown(MouseEventArgs e)
 		{
 			this.mouseDown = true;
 		}
 
-		public void OnMouseUp(MouseEventArgs e)
+		public override void OnMouseUp(MouseEventArgs e)
 		{
 			this.mouseDown = false;
 
@@ -124,18 +84,13 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			float x, y;
 			this.TransformMouseCoordinates(e.Location, out x, out y);
 
-			int originalSelectedRect = this.selectedRectIndex;
-
-			this.selectedRectIndex = this.TargetPixmap.Atlas
+			this.SelectedRectIndex = this.TargetPixmap.Atlas
 				.IndexOfFirst(r => this.GetDisplayRect(r).Contains(x, y));
 
-			if (this.selectedRectIndex != originalSelectedRect && this.SelectionChanged != null)
-				this.SelectionChanged.Invoke(this, EventArgs.Empty);
-
-			this.deleteSelectedButton.Enabled = this.selectedRectIndex != -1;
+			this.deleteSelectedButton.Enabled = this.SelectedRectIndex != -1;
 		}
 
-		public void OnMouseMove(MouseEventArgs e)
+		public override void OnMouseMove(MouseEventArgs e)
 		{
 			if (this.TargetPixmap == null || this.TargetPixmap.Atlas == null)
 				return;
@@ -144,9 +99,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.TransformMouseCoordinates(e.Location, out x, out y);
 
 			// Check for the start of drag operation
-			if (this.selectedRectIndex >= 0)
+			if (this.SelectedRectIndex >= 0)
 			{
-				Rect selectedRect = this.GetDisplayRect(this.TargetPixmap.Atlas[this.selectedRectIndex]);
+				Rect selectedRect = this.GetDisplayRect(this.TargetPixmap.Atlas[this.SelectedRectIndex]);
 
 				if (!this.dragInProgress)
 				{
@@ -180,7 +135,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			// TODO: Address what happens when height/width becomes negative
 			if (this.dragInProgress)
 			{
-				Rect displayRect = this.GetDisplayRect(this.TargetPixmap.Atlas[this.selectedRectIndex]);
+				Rect displayRect = this.GetDisplayRect(this.TargetPixmap.Atlas[this.SelectedRectIndex]);
 				switch (this.hoveredRectSide)
 				{
 					case Side.Left:
@@ -205,36 +160,25 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				Rect atlasRect = this.GetAtlasRect(displayRect);
 
 				// Adjust the width/height of the rect when the left/top change
-				if (atlasRect.X != this.TargetPixmap.Atlas[this.selectedRectIndex].X)
+				if (atlasRect.X != this.TargetPixmap.Atlas[this.SelectedRectIndex].X)
 				{
-					atlasRect.W -= (atlasRect.X - this.TargetPixmap.Atlas[this.selectedRectIndex].X);
+					atlasRect.W -= (atlasRect.X - this.TargetPixmap.Atlas[this.SelectedRectIndex].X);
 				}
-				if (atlasRect.Y != this.TargetPixmap.Atlas[this.selectedRectIndex].Y)
+				if (atlasRect.Y != this.TargetPixmap.Atlas[this.SelectedRectIndex].Y)
 				{
-					atlasRect.H -= (atlasRect.Y - this.TargetPixmap.Atlas[this.selectedRectIndex].Y);
+					atlasRect.H -= (atlasRect.Y - this.TargetPixmap.Atlas[this.SelectedRectIndex].Y);
 				}
 
-				this.SetPixmapAtlasRect(atlasRect, this.selectedRectIndex);
+				this.SetPixmapAtlasRect(atlasRect, this.SelectedRectIndex);
 			}
 		}
 
-		public void OnKeyUp(KeyEventArgs e)
+		public override void OnKeyUp(KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Delete && this.selectedRectIndex != -1)
+			if (e.KeyCode == Keys.Delete && this.SelectedRectIndex != -1)
 			{
 				this.DeleteSelectedRect();
 			}
-		}
-
-		public void OnPaint(PaintEventArgs e)
-		{
-		}
-
-		private void SwitchToAddRectState()
-		{
-			if (this.StateChangeRequested != null)
-				this.StateChangeRequested.Invoke(this,
-					new PixmapSlicerForm.PixmapSlicerStateEventArgs(typeof(NewRectPixmapSlicerState)));
 		}
 
 		private void ClearRects()
@@ -246,23 +190,19 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				this.TargetPixmap.AnimCols = 0;
 				this.TargetPixmap.AnimRows = 0;
 				this.TargetPixmap.AnimFrameBorder = 0;
-				if (this.PixmapUpdated != null)
-					this.PixmapUpdated.Invoke(this, EventArgs.Empty);
+				this.UpdatePixmap();
 			}
 		}
 
 		private void DeleteSelectedRect()
 		{
-			if (this.selectedRectIndex == -1)
+			if (this.SelectedRectIndex == -1)
 				return;
 
-			this.TargetPixmap.Atlas.RemoveAt(this.selectedRectIndex);
+			this.TargetPixmap.Atlas.RemoveAt(this.SelectedRectIndex);
 			this.deleteSelectedButton.Enabled = false;
-			this.selectedRectIndex = -1;
-			if (this.SelectionChanged != null)
-				this.SelectionChanged.Invoke(this, EventArgs.Empty);
-			if (this.PixmapUpdated != null)
-				this.PixmapUpdated.Invoke(this, EventArgs.Empty);
+			this.SelectedRectIndex = -1;
+			this.UpdatePixmap();
 		}
 
 		private void AutoSlicePixmap()
@@ -279,16 +219,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.ClearSelection();
 			this.TargetPixmap.Atlas = rects.ToList();
 
-			if (this.PixmapUpdated != null)
-				this.PixmapUpdated.Invoke(this, EventArgs.Empty);
+			this.UpdatePixmap();
 		}
 
 		private void SetPixmapAtlasRect(Rect rect, int index)
 		{
 			this.TargetPixmap.Atlas[index] = rect;
 
-			if (this.PixmapUpdated != null)
-				this.PixmapUpdated.Invoke(this, EventArgs.Empty);
+			this.UpdatePixmap();
 		}
 	}
 }
