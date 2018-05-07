@@ -96,8 +96,12 @@ namespace Duality.Editor.Plugins.Base.States
 			float rw = MathF.Abs(x - this.rectAddStart.X);
 			float rh = MathF.Abs(y - this.rectAddStart.Y);
 
+			// Clip the rect to the image
 			Rect displayRect = new Rect(rx, ry, rw, rh);
-			this.SetPixmapAtlasRect(this.GetAtlasRect(displayRect), this.selectedRectIndex);
+			Rect atlastRect = this.GetAtlasRect(displayRect);
+			atlastRect = atlastRect.Intersection(new Rect(0, 0, this.TargetPixmap.Width, this.TargetPixmap.Height));
+
+			this.SetPixmapAtlasRect(atlastRect, this.selectedRectIndex);
 		}
 
 		public void OnKeyUp(KeyEventArgs e)
