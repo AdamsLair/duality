@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.Utilities;
@@ -189,15 +188,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		private void ClearRects()
 		{
+			if (this.TargetPixmap == null)
+				return;
+
+
+			UndoRedoManager.Do(new ClearAtlasAction(new[] { this.TargetPixmap }));
 			this.ClearSelection();
-			if (this.TargetPixmap != null)
-			{
-				this.TargetPixmap.Atlas = null;
-				this.TargetPixmap.AnimCols = 0;
-				this.TargetPixmap.AnimRows = 0;
-				this.TargetPixmap.AnimFrameBorder = 0;
-				this.UpdatePixmap();
-			}
 		}
 
 		private void DeleteSelectedRect()
@@ -217,13 +213,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			byte alpha = (byte)this.alphaCutoffEntry.Value;
 
 			IEnumerable<Rect> rects = Utilities.Utilities.FindRects(this.TargetPixmap, alpha);
-			if (this.TargetPixmap.Atlas == null)
-				this.TargetPixmap.Atlas = new List<Rect>();
+
+			UndoRedoManager.Do(new SetAtlasAction(rects, new []{ this.TargetPixmap }));
 
 			this.ClearSelection();
-			this.TargetPixmap.Atlas = rects.ToList();
-
-			this.UpdatePixmap();
 		}
 
 		private void SetPixmapAtlasRect(Rect rect, int index)
