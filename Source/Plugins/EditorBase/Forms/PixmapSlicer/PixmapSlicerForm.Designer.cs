@@ -1,4 +1,4 @@
-﻿namespace Duality.Editor.Plugins.Base.Forms
+﻿namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 {
 	partial class PixmapSlicerForm
 	{

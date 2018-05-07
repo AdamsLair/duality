@@ -2,14 +2,15 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using Duality.Editor.Plugins.Base.States;
+using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States;
 using Duality.Resources;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Duality.Editor.Plugins.Base.Forms
+namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 {
 	// TODO: tooltips
 	// TODO: IHelpProvider implementation
+	// TODO: undo/redo actions
 	public partial class PixmapSlicerForm : DockContent
 	{
 		/// <summary>

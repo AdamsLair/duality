@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using Duality.Editor.Plugins.Base.Forms;
 using Duality.Resources;
 
-namespace Duality.Editor.Plugins.Base.States
+namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
 	/// <summary>
 	/// A <see cref="IPixmapSlicerState"/> that allows the user

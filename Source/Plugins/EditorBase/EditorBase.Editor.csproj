@@ -85,10 +85,10 @@
     <Compile Include="EditorActions\PixmapToTexture.cs" />
     <Compile Include="EditorActions\FocusComponent.cs" />
     <Compile Include="EditorBasePlugin.cs" />
-    <Compile Include="Forms\PixmapSlicerForm.cs">
+    <Compile Include="Forms\PixmapSlicer\PixmapSlicerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\PixmapSlicerForm.Designer.cs">
+    <Compile Include="Forms\PixmapSlicer\PixmapSlicerForm.Designer.cs">
       <DependentUpon>PixmapSlicerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Importers\AudioDataAssetImporter.cs" />
@@ -145,12 +145,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="States\AtlasOrderingPixmapSlicerState.cs" />
-    <Compile Include="States\DefaultPixmapSlicerState.cs" />
-    <Compile Include="States\IPixmapSlicerState.cs" />
-    <Compile Include="States\NewRectPixmapSlicerState.cs" />
-    <Compile Include="States\Side.cs" />
-    <Compile Include="States\Utilities.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\AtlasOrderingPixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\DefaultPixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\IPixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\NewRectPixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\Utilities\Side.cs" />
+    <Compile Include="Forms\PixmapSlicer\Utilities\Utilities.cs" />
     <Compile Include="UndoRedoActions\DeleteRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\CreateRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\CreateSoundEmitterSourceAction.cs" />

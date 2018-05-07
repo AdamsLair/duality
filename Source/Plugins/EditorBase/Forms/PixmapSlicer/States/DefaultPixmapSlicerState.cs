@@ -4,10 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Duality.Editor.Controls.ToolStrip;
-using Duality.Editor.Plugins.Base.Forms;
+using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.Utilities;
 using Duality.Resources;
 
-namespace Duality.Editor.Plugins.Base.States
+namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
 	/// <summary>
 	/// A <see cref="IPixmapSlicerState"/> that provides the ability to
@@ -47,7 +47,7 @@ namespace Duality.Editor.Plugins.Base.States
 				{
 					this.cursor = value;
 					if (this.CursorChanged != null)
-						this.CursorChanged.Invoke(this, System.EventArgs.Empty);
+						this.CursorChanged.Invoke(this, EventArgs.Empty);
 				}
 			}
 		}
@@ -272,7 +272,7 @@ namespace Duality.Editor.Plugins.Base.States
 
 			byte alpha = (byte)this.alphaCutoffEntry.Value;
 
-			IEnumerable<Rect> rects = Utilities.FindRects(this.TargetPixmap, alpha);
+			IEnumerable<Rect> rects = Utilities.Utilities.FindRects(this.TargetPixmap, alpha);
 			if (this.TargetPixmap.Atlas == null)
 				this.TargetPixmap.Atlas = new List<Rect>();
 
