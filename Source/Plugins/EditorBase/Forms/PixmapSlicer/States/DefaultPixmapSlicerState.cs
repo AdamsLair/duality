@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.Utilities;
+using Duality.Editor.Plugins.Base.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
@@ -204,10 +205,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			if (this.SelectedRectIndex == -1)
 				return;
 
-			this.TargetPixmap.Atlas.RemoveAt(this.SelectedRectIndex);
-			this.deleteSelectedButton.Enabled = false;
-			this.SelectedRectIndex = -1;
-			this.UpdatePixmap();
+			UndoRedoManager.Do(new DeleteAtlasRectAction(this.SelectedRectIndex, new []{ this.TargetPixmap }));
+			this.ClearSelection();
 		}
 
 		private void AutoSlicePixmap()
