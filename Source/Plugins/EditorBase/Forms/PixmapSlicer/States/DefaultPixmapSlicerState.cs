@@ -20,6 +20,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		private readonly ToolStripButton		clearButton				= null;
 		private readonly ToolStripButton		deleteSelectedButton	= null;
 		private readonly ToolStripButton		autoSliceButton			= null;
+		private readonly ToolStripButton		orderRectsButton		= null;
 		private readonly ToolStripNumericUpDown	alphaCutoffEntry		= null;
 
 		private bool	mouseDown			= false;
@@ -38,6 +39,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				(s, e) => this.DeleteSelectedRect());
 			this.deleteSelectedButton.Enabled = false;
 
+			this.orderRectsButton = new ToolStripButton("Order Rects", null,
+				(s, e) => this.ChangeState(typeof(AtlasOrderingPixmapSlicerState)));
+
 			this.autoSliceButton = new ToolStripButton("Auto-Slice", null,
 				(s, e) => this.AutoSlicePixmap());
 
@@ -51,6 +55,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.StateControls.Add(this.addRectButton);
 			this.StateControls.Add(this.clearButton);
 			this.StateControls.Add(this.deleteSelectedButton);
+			this.StateControls.Add(this.orderRectsButton);
 			this.StateControls.Add(this.autoSliceButton);
 			this.StateControls.Add(this.alphaCutoffEntry);
 		}
