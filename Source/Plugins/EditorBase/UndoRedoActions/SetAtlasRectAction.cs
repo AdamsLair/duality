@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Duality.Editor.Plugins.Base.Properties;
 using Duality.Resources;
 
 namespace Duality.Editor.Plugins.Base.UndoRedoActions
@@ -11,11 +12,9 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 		private Pixmap[]	pixmaps			= null;
 		private Rect?[]		originalRects	= null;
 
-		// TODO: move string to resources
-		// TODO: add pixmap name to string
 		public override string Name
 		{
-			get { return "Set Atlas Rect in Pixmap"; }
+			get { return EditorBaseRes.UndoRedo_SetAtlasRect; }
 		}
 
 		public SetAtlasRectAction(Rect atlasRect, int index, IEnumerable<Pixmap> pixmapsEnum)

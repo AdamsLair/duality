@@ -19,7 +19,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class EditorBaseRes {
@@ -511,6 +511,15 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear Atlas.
+        /// </summary>
+        public static string UndoRedo_ClearAtlas {
+            get {
+                return ResourceManager.GetString("UndoRedo_ClearAtlas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create {0}.
         /// </summary>
         public static string UndoRedo_CreateRigidBodyJoint {
@@ -543,6 +552,15 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static string UndoRedo_CreateSoundEmitterSourceMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_CreateSoundEmitterSourceMulti", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Atlas Rect.
+        /// </summary>
+        public static string UndoRedo_DeleteAtlasRect {
+            get {
+                return ResourceManager.GetString("UndoRedo_DeleteAtlasRect", resourceCulture);
             }
         }
         
@@ -606,6 +624,24 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static string UndoRedo_ReparentRigidBodyJointMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_ReparentRigidBodyJointMulti", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Atlas.
+        /// </summary>
+        public static string UndoRedo_SetAtlas {
+            get {
+                return ResourceManager.GetString("UndoRedo_SetAtlas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Atlas Rect.
+        /// </summary>
+        public static string UndoRedo_SetAtlasRect {
+            get {
+                return ResourceManager.GetString("UndoRedo_SetAtlasRect", resourceCulture);
             }
         }
     }

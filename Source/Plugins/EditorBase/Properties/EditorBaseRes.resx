@@ -298,4 +298,16 @@
   <data name="ActionName_SlicePixmap" xml:space="preserve">
     <value>Slice Pixmap</value>
   </data>
+  <data name="UndoRedo_ClearAtlas" xml:space="preserve">
+    <value>Clear Atlas</value>
+  </data>
+  <data name="UndoRedo_DeleteAtlasRect" xml:space="preserve">
+    <value>Delete Atlas Rect</value>
+  </data>
+  <data name="UndoRedo_SetAtlas" xml:space="preserve">
+    <value>Set Atlas</value>
+  </data>
+  <data name="UndoRedo_SetAtlasRect" xml:space="preserve">
+    <value>Set Atlas Rect</value>
+  </data>
 </root>

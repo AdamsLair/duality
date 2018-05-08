@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Duality.Editor.Plugins.Base.Properties;
 using Duality.Resources;
 
 namespace Duality.Editor.Plugins.Base.UndoRedoActions
@@ -9,10 +10,9 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 		private Pixmap[]		pixmaps			= null;
 		private List<Rect[]>	originalRects	= null;
 
-		// TODO: move string to resources
 		public override string Name
 		{
-			get { return "Clear Atlas"; }
+			get { return EditorBaseRes.UndoRedo_ClearAtlas; }
 		}
 
 		public ClearAtlasAction(IEnumerable<Pixmap> pixmapsEnum)
