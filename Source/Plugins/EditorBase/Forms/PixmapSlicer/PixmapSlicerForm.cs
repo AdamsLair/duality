@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using Duality.Drawing;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States;
 using Duality.Resources;
 using WeifenLuo.WinFormsUI.Docking;
@@ -271,7 +272,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.stateControlToolStrip.Items.Clear();
 			if (action.StateControls != null && action.StateControls.Count > 0)
 			{
-				foreach (var item in action.StateControls)
+				foreach (ToolStripItem item in action.StateControls)
 				{
 					this.stateControlToolStrip.Items.Add(item);
 				}
@@ -342,7 +343,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			Bitmap baseImage = this.GenerateDisplayImage();
 			if (baseImage != null)
 			{
-				var avgColor = baseImage.GetAverageColor();
+				ColorRgba avgColor = baseImage.GetAverageColor();
 				this.prevImageLum = avgColor.GetLuminance();
 			}
 		}

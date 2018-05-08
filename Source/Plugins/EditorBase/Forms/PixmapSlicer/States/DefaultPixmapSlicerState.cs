@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.Utilities;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
+using Duality.Editor.Plugins.Base.Utilities;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
@@ -231,7 +232,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			byte alpha = (byte)this.alphaCutoffEntry.Value;
 
-			IEnumerable<Rect> rects = Utilities.Utilities.FindRects(this.TargetPixmap, alpha);
+			IEnumerable<Rect> rects = PixmapSlicing.FindRects(this.TargetPixmap, alpha);
 
 			UndoRedoManager.Do(new SetAtlasAction(rects, new []{ this.TargetPixmap }));
 

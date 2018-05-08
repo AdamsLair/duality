@@ -163,6 +163,7 @@
     <Compile Include="UndoRedoActions\SoundEmitterSourceAction.cs" />
     <Compile Include="UndoRedoActions\ReparentRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\RigidBodyJointAction.cs" />
+    <Compile Include="Utilities\PixmapSlicing.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Editor\DualityEditor\DualityEditor.csproj">
