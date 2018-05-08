@@ -9,9 +9,7 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 {
 	// TODO: tooltips
-	// TODO: IHelpProvider implementation
-	// TODO: undo/redo actions
-	public partial class PixmapSlicerForm : DockContent
+	public partial class PixmapSlicerForm : DockContent, IHelpProvider
 	{
 		/// <summary>
 		/// <see cref="EventArgs"/> for general pixmap slicer
@@ -360,6 +358,17 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				this.imageRect.Width,
 				this.imageRect.Height,
 				PreviewSizeMode.FixedHeight);
+		}
+
+		public HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)
+		{
+			if (this.paintingRect.Contains(localPos))
+			{
+				return this.state.ProvideHoverHelp(localPos, ref captured);
+			}
+
+			return HelpInfo.FromText("Pixmap Slicer",
+				"The Pixmap Slicer provides tools for automatically or manually specifying atlas rectangles.");
 		}
 	}
 }

@@ -107,5 +107,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					new PixmapSlicerForm.PixmapSlicerStateEventArgs(newStateType));
 			}
 		}
+
+		public abstract HelpInfo ProvideHoverHelp(Point localPos, ref bool captured);
 	}
 }

@@ -136,5 +136,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				return originalFont;
 			}
 		}
+
+		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)
+		{
+			return HelpInfo.FromText("Rect Ordering",
+				"Click on the atlas rects in the desired order. Remaining rects will be be placed last in the rect order.");
+		}
 	}
 }

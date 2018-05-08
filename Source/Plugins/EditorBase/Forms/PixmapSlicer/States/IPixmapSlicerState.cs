@@ -11,7 +11,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// <summary>
 	/// An operation state for the <see cref="PixmapSlicerForm"/>
 	/// </summary>
-	public interface IPixmapSlicerState
+	public interface IPixmapSlicerState : IHelpProvider
 	{
 		/// <summary>
 		/// The bounds of the <see cref="PixmapSlicerForm"/> rendering area

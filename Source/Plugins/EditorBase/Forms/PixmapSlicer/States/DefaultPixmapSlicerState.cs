@@ -244,5 +244,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			this.UpdateDisplay();
 		}
+
+		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)
+		{
+			return HelpInfo.FromText("Pixmap Slicer",
+				"Click on rects to select them. Selected rects can be resized with the mouse.");
+		}
 	}
 }

@@ -104,5 +104,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			UndoRedoManager.Do(new SetAtlasRectAction(this.newAtlasRect.Value, index, new []{ this.TargetPixmap }));
 		}
+
+		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)
+		{
+			return HelpInfo.FromText("New Rect",
+				"Click and drag to define a new atlas rect. New rects are added to the end of the atlas.");
+		}
 	}
 }
