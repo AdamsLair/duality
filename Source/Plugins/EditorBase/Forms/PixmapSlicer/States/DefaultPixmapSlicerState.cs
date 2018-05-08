@@ -87,6 +87,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			// If finishing a drag operation, commit the change
 			if (this.dragInProgress)
 			{
+				// Set the atlas' rect back to the original rect so the undoing
+				// the UndoRedoAction will revert to the original rect
 				Rect newRect = this.TargetPixmap.Atlas[this.SelectedRectIndex];
 				this.TargetPixmap.Atlas[this.SelectedRectIndex] = this.originalDragRect;
 				UndoRedoManager.Do(new SetAtlasRectAction(newRect, this.SelectedRectIndex, new []{ this.TargetPixmap }));
@@ -151,7 +153,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				this.Cursor = Cursors.Default;
 			}
 
-			// TODO: Address what happens when height/width becomes negative
 			if (this.dragInProgress)
 			{
 				Rect displayRect = this.GetDisplayRect(this.TargetPixmap.Atlas[this.SelectedRectIndex]);
@@ -162,7 +163,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 						break;
 					case Side.Right:
 						displayRect.W += x - displayRect.RightX;
-						Log.Editor.Write(displayRect.X + " " + displayRect.W);
 						break;
 					case Side.Top:
 						displayRect.Y = y;

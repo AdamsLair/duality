@@ -65,12 +65,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				RectangleF displayRectangle = new RectangleF(displayRect.X, displayRect.Y, displayRect.W, displayRect.H);
 				string renderedString = index.ToString();
 
+				using (StringFormat format = new StringFormat{ Alignment = StringAlignment.Center })
 				using (Font startingFont = new Font(FontFamily.GenericSerif, 20))
 				using (Font font = GetAdjustedFont(e.Graphics, renderedString,
 					startingFont, (int)displayRect.W, (int)displayRect.H, 20, 2, false))
 				{
-					StringFormat format = new StringFormat();
-					format.Alignment = StringAlignment.Center;
 					e.Graphics.DrawString(renderedString, font, Brushes.White, displayRectangle, format);
 				}
 			}
@@ -110,7 +109,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			bool smallestOnFail)
 		{
 			Font testFont = null;
-			// We utilize MeasureString which we get via a control instance           
 			for (int adjustedSize = maxFontSize; adjustedSize >= minFontSize; adjustedSize--)
 			{
 				testFont = new Font(originalFont.Name, adjustedSize, originalFont.Style);

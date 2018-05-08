@@ -7,7 +7,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
 	/// <summary>
 	/// A <see cref="IPixmapSlicerState"/> that allows the user
-	/// to define new atlas rectangles for the <see cref="TargetPixmap"/>
+	/// to define new atlas rectangles for the <see cref="IPixmapSlicerState.TargetPixmap"/>
 	/// </summary>
 	public class NewRectPixmapSlicerState : PixmapSlicerState
 	{

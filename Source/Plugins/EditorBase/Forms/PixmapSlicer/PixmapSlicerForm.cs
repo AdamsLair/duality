@@ -10,7 +10,6 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 {
-	// TODO: tooltips
 	public partial class PixmapSlicerForm : DockContent, IHelpProvider
 	{
 		/// <summary>
@@ -238,11 +237,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				this.verticalScroll = se.NewValue;
 				this.Invalidate();
 			}
-		}
-
-		private void OnPixmapModified()
-		{
-			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.targetPixmap));
 		}
 
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
