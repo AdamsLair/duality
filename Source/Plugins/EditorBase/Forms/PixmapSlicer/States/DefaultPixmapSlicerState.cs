@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.Utilities;
+using Duality.Editor.Plugins.Base.Properties;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
 using Duality.Editor.Plugins.Base.Utilities;
 
@@ -53,6 +54,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.alphaCutoffEntry.Maximum = 254;
 			this.alphaCutoffEntry.NumBackColor = SystemColors.Window;
 			this.alphaCutoffEntry.Text = "Alpha Cutoff:";
+
+			this.addRectButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerAddRect;
+			this.clearButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerClear;
+			this.deleteSelectedButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerDelete;
+			this.orderRectsButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerOrderRects;
+			this.autoSliceButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerAutoSlice;
 
 			this.StateControls.Add(this.addRectButton);
 			this.StateControls.Add(this.clearButton);
@@ -248,8 +255,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)
 		{
-			return HelpInfo.FromText("Pixmap Slicer",
-				"Click on rects to select them. Selected rects can be resized with the mouse.");
+			return HelpInfo.FromText(EditorBaseRes.Help_PixmapSlicerDefaultState_Topic,
+				EditorBaseRes.Help_PixmapSlicerDefaultState_Desc);
 		}
 	}
 }

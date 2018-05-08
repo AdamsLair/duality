@@ -305,6 +305,78 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Pixmap Slicer provides tools for automatically or manually specifying atlas rectangles..
+        /// </summary>
+        public static string Help_PixmapSlicer_Desc {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicer_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pixmap Slicer.
+        /// </summary>
+        public static string Help_PixmapSlicer_Topic {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicer_Topic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click on rects to select them. Selected rects can be resized with the mouse..
+        /// </summary>
+        public static string Help_PixmapSlicerDefaultState_Desc {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerDefaultState_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pixmap Slicer.
+        /// </summary>
+        public static string Help_PixmapSlicerDefaultState_Topic {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerDefaultState_Topic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click and drag to define a new atlas rect. New rects are added to the end of the atlas..
+        /// </summary>
+        public static string Help_PixmapSlicerNewRect_Desc {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerNewRect_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Rect.
+        /// </summary>
+        public static string Help_PixmapSlicerNewRect_Topic {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerNewRect_Topic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click on the atlas rects in the desired order. Remaining rects will be be placed last in the rect order..
+        /// </summary>
+        public static string Help_PixmapSlicerRectOrdering_Desc {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerRectOrdering_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rect Ordering.
+        /// </summary>
+        public static string Help_PixmapSlicerRectOrdering_Topic {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerRectOrdering_Topic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap IconAbortCross {
@@ -507,6 +579,51 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static string RigidBodyCamViewState_SelShapeName {
             get {
                 return ResourceManager.GetString("RigidBodyCamViewState_SelShapeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a new atlas rect to the pixmap.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerAddRect {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerAddRect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically calculate atlas rects for the pixmap.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerAutoSlice {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerAutoSlice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear all atlas rects from the pixmap.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerClear {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerClear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the selected atlas rect from the pixmap (Delete).
+        /// </summary>
+        public static string ToolTip_PixmapSlicerDelete {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify the order of atlas rects in the pixmap.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerOrderRects {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerOrderRects", resourceCulture);
             }
         }
         

@@ -4,6 +4,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Duality.Drawing;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States;
+using Duality.Editor.Plugins.Base.Properties;
 using Duality.Resources;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -368,8 +369,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				return this.state.ProvideHoverHelp(localPos, ref captured);
 			}
 
-			return HelpInfo.FromText("Pixmap Slicer",
-				"The Pixmap Slicer provides tools for automatically or manually specifying atlas rectangles.");
+			return HelpInfo.FromText(EditorBaseRes.Help_PixmapSlicer_Topic,
+				EditorBaseRes.Help_PixmapSlicer_Desc);
 		}
 	}
 }

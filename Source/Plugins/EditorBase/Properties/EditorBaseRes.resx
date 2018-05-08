@@ -298,6 +298,45 @@
   <data name="ActionName_SlicePixmap" xml:space="preserve">
     <value>Slice Pixmap</value>
   </data>
+  <data name="Help_PixmapSlicerDefaultState_Desc" xml:space="preserve">
+    <value>Click on rects to select them. Selected rects can be resized with the mouse.</value>
+  </data>
+  <data name="Help_PixmapSlicerDefaultState_Topic" xml:space="preserve">
+    <value>Pixmap Slicer</value>
+  </data>
+  <data name="Help_PixmapSlicerNewRect_Desc" xml:space="preserve">
+    <value>Click and drag to define a new atlas rect. New rects are added to the end of the atlas.</value>
+  </data>
+  <data name="Help_PixmapSlicerNewRect_Topic" xml:space="preserve">
+    <value>New Rect</value>
+  </data>
+  <data name="Help_PixmapSlicerRectOrdering_Desc" xml:space="preserve">
+    <value>Click on the atlas rects in the desired order. Remaining rects will be be placed last in the rect order.</value>
+  </data>
+  <data name="Help_PixmapSlicerRectOrdering_Topic" xml:space="preserve">
+    <value>Rect Ordering</value>
+  </data>
+  <data name="Help_PixmapSlicer_Desc" xml:space="preserve">
+    <value>The Pixmap Slicer provides tools for automatically or manually specifying atlas rectangles.</value>
+  </data>
+  <data name="Help_PixmapSlicer_Topic" xml:space="preserve">
+    <value>Pixmap Slicer</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerAddRect" xml:space="preserve">
+    <value>Add a new atlas rect to the pixmap</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerAutoSlice" xml:space="preserve">
+    <value>Automatically calculate atlas rects for the pixmap</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerClear" xml:space="preserve">
+    <value>Clear all atlas rects from the pixmap</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerDelete" xml:space="preserve">
+    <value>Delete the selected atlas rect from the pixmap (Delete)</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerOrderRects" xml:space="preserve">
+    <value>Specify the order of atlas rects in the pixmap</value>
+  </data>
   <data name="UndoRedo_ClearAtlas" xml:space="preserve">
     <value>Clear Atlas</value>
   </data>

@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using Duality.Editor.Plugins.Base.Properties;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
@@ -107,8 +108,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)
 		{
-			return HelpInfo.FromText("New Rect",
-				"Click and drag to define a new atlas rect. New rects are added to the end of the atlas.");
+			return HelpInfo.FromText(EditorBaseRes.Help_PixmapSlicerNewRect_Topic,
+				EditorBaseRes.Help_PixmapSlicerNewRect_Desc);
 		}
 	}
 }
