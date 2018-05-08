@@ -419,6 +419,16 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap IconPixmapSlicer {
+            get {
+                object obj = ResourceManager.GetObject("IconPixmapSlicer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap IconSpeakerBlack {
             get {
                 object obj = ResourceManager.GetObject("IconSpeakerBlack", resourceCulture);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer;
 using Duality.Editor.Plugins.Base.Properties;
@@ -15,6 +16,10 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 		public override string Description
 		{
 			get { return EditorBaseRes.ActionDesc_SlicePixmap; }
+		}
+		public override Image Icon
+		{
+			get { return EditorBaseRes.IconPixmapSlicer; }
 		}
 		public override int Priority
 		{

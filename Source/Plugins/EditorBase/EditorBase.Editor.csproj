@@ -196,6 +196,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="EmbeddedResources\IconPixmapSlicer.png" />
     <None Include="EmbeddedResources\IconTutorial.png" />
     <None Include="EmbeddedResources\IconCommunity.png" />
     <None Include="EmbeddedResources\DropdownSettingsBlack.png" />

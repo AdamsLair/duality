@@ -57,6 +57,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		{
 			InitializeComponent();
 
+			Bitmap bmp = EditorBaseRes.IconPixmapSlicer;
+			this.Icon = Icon.FromHandle(bmp.GetHicon());
+
 			this.SetState(new DefaultPixmapSlicerState());
 
 			// TODO: only have this visible when scaleFactor > 1f
