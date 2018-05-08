@@ -23,6 +23,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		private readonly ToolStripButton		orderRectsButton		= null;
 		private readonly ToolStripNumericUpDown	alphaCutoffEntry		= null;
 
+		private Rect	originalDragRect	= Rect.Empty;
 		private bool	mouseDown			= false;
 		private bool	dragInProgress		= false;
 		private Side	hoveredRectSide		= Side.None;
@@ -75,10 +76,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		{
 			this.mouseDown = false;
 
-			// Return immediately if finishing a drag so 
-			// that we don't select a rect the drag ended on
+			// If finishing a drag operation, commit the change
 			if (this.dragInProgress)
 			{
+				Rect newRect = this.TargetPixmap.Atlas[this.SelectedRectIndex];
+				this.TargetPixmap.Atlas[this.SelectedRectIndex] = this.originalDragRect;
+				UndoRedoManager.Do(new SetAtlasRectAction(newRect, this.SelectedRectIndex, new []{ this.TargetPixmap }));
 				this.dragInProgress = false;
 				return;
 			}
@@ -115,7 +118,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					if (distanceToBorder < DRAG_OFFSET)
 					{
 						if (this.mouseDown)
+						{
 							this.dragInProgress = true;
+							this.originalDragRect = this.TargetPixmap.Atlas[this.SelectedRectIndex];
+						}
 
 						this.hoveredRectSide = side;
 						this.Cursor = (side == Side.Left || side == Side.Right)
