@@ -51,28 +51,32 @@
 			// 
 			// stateControlToolStrip
 			// 
+			this.stateControlToolStrip.GripMargin = new System.Windows.Forms.Padding(0);
+			this.stateControlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.stateControlToolStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.stateControlToolStrip.Location = new System.Drawing.Point(0, 0);
 			this.stateControlToolStrip.Name = "stateControlToolStrip";
-			this.stateControlToolStrip.Size = new System.Drawing.Size(696, 25);
+			this.stateControlToolStrip.Size = new System.Drawing.Size(696, 28);
 			this.stateControlToolStrip.TabIndex = 3;
 			this.stateControlToolStrip.Text = "toolStrip2";
 			this.stateControlToolStrip.Visible = false;
 			// 
 			// PixmapSlicerForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.ClientSize = new System.Drawing.Size(713, 391);
 			this.Controls.Add(this.stateControlToolStrip);
 			this.Controls.Add(this.verticalScrollBar);
 			this.Controls.Add(this.horizontalScrollBar);
+			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Margin = new System.Windows.Forms.Padding(2);
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
 			this.Name = "PixmapSlicerForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "PixmapSlicerForm";
+			this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
+			this.Text = "PixmapSlicer";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
