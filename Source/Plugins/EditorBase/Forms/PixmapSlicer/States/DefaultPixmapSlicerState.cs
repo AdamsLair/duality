@@ -154,6 +154,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 						break;
 					case Side.Right:
 						displayRect.W += x - displayRect.RightX;
+						Log.Editor.Write(displayRect.X + " " + displayRect.W);
 						break;
 					case Side.Top:
 						displayRect.Y = y;
@@ -161,6 +162,18 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					case Side.Bottom:
 						displayRect.H += y - displayRect.BottomY;
 						break;
+				}
+
+				// If width/height has gone negative, switch hover side
+				if (displayRect.W < 0)
+				{
+					displayRect = displayRect.Normalized();
+					this.hoveredRectSide = this.hoveredRectSide.Opposite();
+				}
+				if (displayRect.H < 0)
+				{
+					displayRect = displayRect.Normalized();
+					this.hoveredRectSide = this.hoveredRectSide.Opposite();
 				}
 
 				// Keep the displayRect within bounds of the image
