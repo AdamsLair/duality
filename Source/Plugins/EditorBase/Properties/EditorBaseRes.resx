@@ -352,4 +352,25 @@
   <data name="IconPixmapSlicer" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\IconPixmapSlicer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Button_AddRect" xml:space="preserve">
+    <value>Add Rect</value>
+  </data>
+  <data name="Button_AutoSlice" xml:space="preserve">
+    <value>Auto-Slice</value>
+  </data>
+  <data name="Button_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Button_Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Button_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Button_Done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="Button_OrderRects" xml:space="preserve">
+    <value>Order Rects</value>
+  </data>
 </root>

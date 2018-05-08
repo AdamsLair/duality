@@ -21,7 +21,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		{
 			this.Cursor = Cursors.Default;
 
-			this.cancelButton = new ToolStripButton("Cancel", null,
+			this.cancelButton = new ToolStripButton(EditorBaseRes.Button_Cancel, null,
 				(s, e) => this.CancelState());
 
 			this.StateControls.Add(this.cancelButton);
