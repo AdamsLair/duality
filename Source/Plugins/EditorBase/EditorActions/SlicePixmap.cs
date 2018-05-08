@@ -28,10 +28,9 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 
 		public override void Perform(IEnumerable<Pixmap> pixmaps)
 		{
-			// TODO: re-use existing forms
-			PixmapSlicerForm slicingForm = new PixmapSlicerForm();
+			PixmapSlicerForm slicingForm = DualityEditorApp.GetPlugin<EditorBasePlugin>().RequestPixmapSlicerForm();
 			slicingForm.TargetPixmap = pixmaps.First();
-			slicingForm.Show(DualityEditorApp.MainForm.MainDockPanel);
+			slicingForm.Show();
 		}
 
 		public override bool CanPerformOn(IEnumerable<Pixmap> pixmaps)

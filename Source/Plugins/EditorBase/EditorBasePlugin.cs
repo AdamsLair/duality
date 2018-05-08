@@ -17,15 +17,20 @@ using TextRenderer = Duality.Components.Renderers.TextRenderer;
 
 using Duality.Editor;
 using Duality.Editor.Forms;
+using Duality.Editor.Plugins.Base.Forms.PixmapSlicer;
 using Duality.Editor.Properties;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.Base.Properties;
+using Duality.Editor.Plugins.Base.Utilities;
+using WeifenLuo.WinFormsUI.Docking;
 
 
 namespace Duality.Editor.Plugins.Base
 {
 	public class EditorBasePlugin : EditorPlugin
 	{
+		private PixmapSlicerForm slicingForm = null;
+
 		public override string Id
 		{
 			get { return "EditorBase"; }
@@ -56,7 +61,41 @@ namespace Duality.Editor.Plugins.Base
 			FileEventManager.ResourceModified += this.FileEventManager_ResourceChanged;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 		}
-		
+		public PixmapSlicerForm RequestPixmapSlicerForm()
+		{
+			if (this.slicingForm == null)
+			{
+				this.slicingForm = new PixmapSlicerForm();
+				this.InitPixmapSlicerForm(this.slicingForm, false);
+				
+			}
+
+			return this.slicingForm;
+		}
+		protected override IDockContent DeserializeDockContent(Type dockContentType)
+		{
+			if (dockContentType == typeof(PixmapSlicerForm))
+			{
+				this.slicingForm = new PixmapSlicerForm();
+				this.InitPixmapSlicerForm(this.slicingForm, true);
+				return this.slicingForm;
+			}
+
+			return null;
+		}
+		private void InitPixmapSlicerForm(PixmapSlicerForm form, bool deserializing)
+		{
+			if (!deserializing)
+			{
+				this.slicingForm.DockPanel = DualityEditorApp.MainForm.MainDockPanel;
+			}
+
+			this.slicingForm.Closed += (s, e) =>
+			{
+				if (this.slicingForm == form)
+					this.slicingForm = null;
+			};
+		}
 		private void menuItemAppData_Click(object sender, EventArgs e)
 		{
 			DualityEditorApp.Select(this, new ObjectSelection(new [] { DualityApp.AppData }));
