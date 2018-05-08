@@ -41,7 +41,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		/// Occurs whenever a property of <see cref="TargetPixmap"/>
 		/// is changed by this state
 		/// </summary>
-		event EventHandler PixmapUpdated;
+		event EventHandler DisplayUpdated;
 		event EventHandler CursorChanged;
 		event EventHandler StateCancelled;
 		event EventHandler SelectionChanged;

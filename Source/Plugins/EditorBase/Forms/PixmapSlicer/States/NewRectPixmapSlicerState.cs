@@ -68,8 +68,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			this.newAtlasRect = atlastRect;
 
-			// TODO: invliadate event / call instead of this hack
-			this.UpdatePixmap();
+			this.UpdateDisplay();
 		}
 
 		public override void OnKeyUp(KeyEventArgs e)

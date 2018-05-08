@@ -229,7 +229,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		{
 			this.TargetPixmap.Atlas[index] = rect;
 
-			this.UpdatePixmap();
+			this.UpdateDisplay();
 		}
 	}
 }

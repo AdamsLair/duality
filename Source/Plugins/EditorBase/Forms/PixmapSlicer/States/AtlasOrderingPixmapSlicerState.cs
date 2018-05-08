@@ -45,9 +45,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			this.orderedIndices.Add(indexClicked);
 
-			// The PixmapUpdated event will cause the display to invalidate
-			// TODO: remove this for a generic invalidate event
-			this.UpdatePixmap();
+			this.UpdateDisplay();
 		}
 
 		public override void OnKeyUp(KeyEventArgs e)

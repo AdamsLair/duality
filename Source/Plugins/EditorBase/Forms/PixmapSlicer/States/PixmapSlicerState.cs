@@ -47,7 +47,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		}
 		
 
-		public event EventHandler PixmapUpdated;
+		public event EventHandler DisplayUpdated;
 		public event EventHandler CursorChanged;
 		public event EventHandler StateCancelled;
 		public event EventHandler SelectionChanged;
@@ -91,11 +91,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			}
 		}
 
-		protected void UpdatePixmap()
+		protected void UpdateDisplay()
 		{
-			if (this.PixmapUpdated != null)
+			if (this.DisplayUpdated != null)
 			{
-				this.PixmapUpdated.Invoke(this, EventArgs.Empty);
+				this.DisplayUpdated.Invoke(this, EventArgs.Empty);
 			}
 		}
 

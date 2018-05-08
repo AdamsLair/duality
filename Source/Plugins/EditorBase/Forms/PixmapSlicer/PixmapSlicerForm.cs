@@ -260,7 +260,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			action.GetDisplayRect = this.GetDisplayRect;
 			action.TransformMouseCoordinates = this.TransformMouseCoordinates;
 
-			action.PixmapUpdated += (s, e) => this.OnPixmapModified();
+			action.DisplayUpdated += (s, e) => this.Invalidate();
 			action.CursorChanged += (s, e) => this.Cursor = action.Cursor;
 			action.SelectionChanged += (s, e) => this.Invalidate(this.paintingRect);
 			action.StateCancelled += (s, e) =>
