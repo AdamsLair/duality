@@ -182,6 +182,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\PixmapSlicer\PixmapSlicerForm.resx">
+      <DependentUpon>PixmapSlicerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\EditorBaseRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>

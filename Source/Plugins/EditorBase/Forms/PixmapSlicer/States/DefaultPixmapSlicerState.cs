@@ -52,7 +52,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.alphaCutoffEntry.BackColor = Color.Transparent;
 			this.alphaCutoffEntry.DecimalPlaces = 0;
 			this.alphaCutoffEntry.Maximum = 254;
-			this.alphaCutoffEntry.NumBackColor = SystemColors.Window;
+			this.alphaCutoffEntry.NumBackColor = Color.FromArgb(196, 196, 196);
 			this.alphaCutoffEntry.Text = "Alpha Cutoff:";
 
 			this.addRectButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerAddRect;
@@ -61,10 +61,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.orderRectsButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerOrderRects;
 			this.autoSliceButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerAutoSlice;
 
+			ToolStripSeparator separator = new ToolStripSeparator();
+			separator.BackColor = Color.FromArgb(212, 212, 212);
+
 			this.StateControls.Add(this.addRectButton);
 			this.StateControls.Add(this.clearButton);
 			this.StateControls.Add(this.deleteSelectedButton);
 			this.StateControls.Add(this.orderRectsButton);
+			this.StateControls.Add(separator);
 			this.StateControls.Add(this.autoSliceButton);
 			this.StateControls.Add(this.alphaCutoffEntry);
 		}
