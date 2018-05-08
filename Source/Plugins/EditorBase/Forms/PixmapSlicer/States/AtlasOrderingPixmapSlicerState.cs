@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Duality.Editor.Plugins.Base.UndoRedoActions;
 using Font = System.Drawing.Font;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
@@ -97,8 +98,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				}
 			}
 
-			this.TargetPixmap.Atlas = newAtlas;
-			this.UpdatePixmap();
+			UndoRedoManager.Do(new SetAtlasAction(newAtlas, new []{ this.TargetPixmap }));
 			this.CancelState();
 		}
 
