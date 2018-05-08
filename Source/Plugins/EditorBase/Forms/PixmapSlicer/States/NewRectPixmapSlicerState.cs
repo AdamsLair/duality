@@ -84,12 +84,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				return;
 
 			Rect rect = this.GetDisplayRect(this.newAtlasRect.Value);
-
-			rect.X = MathF.RoundToInt(rect.X);
-			rect.Y = MathF.RoundToInt(rect.Y);
-			rect.W = MathF.RoundToInt(rect.W);
-			rect.H = MathF.RoundToInt(rect.H);
-
 			using (Pen rectPen = new Pen(Color.Blue, 1))
 			{
 				e.Graphics.DrawRectangle(rectPen,

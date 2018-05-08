@@ -173,10 +173,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 						for (int i = 0; i < this.targetPixmap.Atlas.Count; i++)
 						{
 							Rect rect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
-							rect.X = MathF.RoundToInt(rect.X);
-							rect.Y = MathF.RoundToInt(rect.Y);
-							rect.W = MathF.RoundToInt(rect.W);
-							rect.H = MathF.RoundToInt(rect.H);
 							e.Graphics.DrawRectangle(i == this.state.SelectedRectIndex
 								? selectedRectPen
 								: rectPen,
