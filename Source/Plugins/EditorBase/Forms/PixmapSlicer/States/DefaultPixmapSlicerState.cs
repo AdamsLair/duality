@@ -88,6 +88,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		{
 			this.mouseDown = false;
 
+			if (this.TargetPixmap == null || this.TargetPixmap.Atlas == null)
+				return;
+
 			// If finishing a drag operation, commit the change
 			if (this.dragInProgress)
 			{
@@ -100,9 +103,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				return;
 			}
 
-			if (this.TargetPixmap == null || this.TargetPixmap.Atlas == null)
-				return;
-
 			float x, y;
 			this.TransformMouseCoordinates(e.Location, out x, out y);
 
@@ -114,97 +114,71 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		public override void OnMouseMove(MouseEventArgs e)
 		{
-			if (this.TargetPixmap == null || this.TargetPixmap.Atlas == null)
+			if (this.TargetPixmap == null 
+				|| this.TargetPixmap.Atlas == null 
+				|| this.SelectedRectIndex < 0)
 				return;
 
 			float x, y;
 			this.TransformMouseCoordinates(e.Location, out x, out y);
 
-			// Check for the start of drag operation
-			if (this.SelectedRectIndex >= 0)
-			{
-				Rect selectedRect = this.GetDisplayRect(this.TargetPixmap.Atlas[this.SelectedRectIndex]);
+			Rect selectedDisplayRect = this.GetDisplayRect(this.TargetPixmap.Atlas[this.SelectedRectIndex]);
 
-				if (!this.dragInProgress)
+			// Check for the start of a drag operation
+			if (!this.dragInProgress)
+			{
+				Side side;
+				float distanceToBorder = selectedDisplayRect.DistanceToBorder(x, y, out side);
+				if (distanceToBorder < DRAG_OFFSET)
 				{
-					Side side;
-					float distanceToBorder = selectedRect.DistanceToBorder(x, y, out side);
-					if (distanceToBorder < DRAG_OFFSET)
+					if (this.mouseDown)
 					{
-						if (this.mouseDown)
-						{
-							this.dragInProgress = true;
-							this.originalDragRect = this.TargetPixmap.Atlas[this.SelectedRectIndex];
-						}
+						this.dragInProgress = true;
+						this.originalDragRect = this.TargetPixmap.Atlas[this.SelectedRectIndex];
+					}
 
-						this.hoveredRectSide = side;
-						this.Cursor = (side == Side.Left || side == Side.Right)
-							? Cursors.SizeWE
-							: (side == Side.Top || side == Side.Bottom)
-								? Cursors.SizeNS
-								: Cursors.Default;
-					}
-					else
-					{
-						this.hoveredRectSide = Side.None;
-						this.Cursor = Cursors.Default;
-					}
+					this.SetHoveredSide(side);
 				}
-			}
-			else
-			{
-				this.hoveredRectSide = Side.None;
-				this.Cursor = Cursors.Default;
+				else
+				{
+					this.SetHoveredSide(Side.None);
+				}
 			}
 
 			if (this.dragInProgress)
 			{
-				Rect displayRect = this.GetDisplayRect(this.TargetPixmap.Atlas[this.SelectedRectIndex]);
+				// Move hovered side to mouse
 				switch (this.hoveredRectSide)
 				{
 					case Side.Left:
-						displayRect.X = x;
+						selectedDisplayRect.W += selectedDisplayRect.X - x;
+						selectedDisplayRect.X = x;
 						break;
 					case Side.Right:
-						displayRect.W += x - displayRect.RightX;
+						selectedDisplayRect.W += x - selectedDisplayRect.RightX;
 						break;
 					case Side.Top:
-						displayRect.Y = y;
+						selectedDisplayRect.H += selectedDisplayRect.Y - y;
+						selectedDisplayRect.Y = y;
 						break;
 					case Side.Bottom:
-						displayRect.H += y - displayRect.BottomY;
+						selectedDisplayRect.H += y - selectedDisplayRect.BottomY;
 						break;
 				}
 
 				// If width/height has gone negative, switch hover side
-				if (displayRect.W < 0)
+				if (selectedDisplayRect.W < 0 || selectedDisplayRect.H < 0)
 				{
-					displayRect = displayRect.Normalized();
-					this.hoveredRectSide = this.hoveredRectSide.Opposite();
-				}
-				if (displayRect.H < 0)
-				{
-					displayRect = displayRect.Normalized();
+					selectedDisplayRect = selectedDisplayRect.Normalized();
 					this.hoveredRectSide = this.hoveredRectSide.Opposite();
 				}
 
 				// Keep the displayRect within bounds of the image
-				displayRect = displayRect.Intersection(new Rect(
+				selectedDisplayRect = selectedDisplayRect.Intersection(new Rect(
 					this.DisplayBounds.X, this.DisplayBounds.Y,
 					this.DisplayBounds.Width, this.DisplayBounds.Height));
 
-				Rect atlasRect = this.GetAtlasRect(displayRect);
-
-				// Adjust the width/height of the rect when the left/top change
-				if (atlasRect.X != this.TargetPixmap.Atlas[this.SelectedRectIndex].X)
-				{
-					atlasRect.W -= (atlasRect.X - this.TargetPixmap.Atlas[this.SelectedRectIndex].X);
-				}
-				if (atlasRect.Y != this.TargetPixmap.Atlas[this.SelectedRectIndex].Y)
-				{
-					atlasRect.H -= (atlasRect.Y - this.TargetPixmap.Atlas[this.SelectedRectIndex].Y);
-				}
-
+				Rect atlasRect = this.GetAtlasRect(selectedDisplayRect);
 				this.SetPixmapAtlasRect(atlasRect, this.SelectedRectIndex);
 			}
 		}
@@ -255,6 +229,25 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.TargetPixmap.Atlas[index] = rect;
 
 			this.UpdateDisplay();
+		}
+
+		private void SetHoveredSide(Side side)
+		{
+			this.hoveredRectSide = side;
+			switch (side)
+			{
+				case Side.Left:
+				case Side.Right:
+					this.Cursor = Cursors.SizeWE;
+					break;
+				case Side.Top:
+				case Side.Bottom:
+					this.Cursor = Cursors.SizeNS;
+					break;
+				default:
+					this.Cursor = Cursors.Default;
+					break;
+			}
 		}
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)
