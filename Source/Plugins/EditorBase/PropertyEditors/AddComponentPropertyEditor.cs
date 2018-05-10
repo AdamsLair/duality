@@ -1,10 +1,15 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+
 using AdamsLair.WinForms.PropertyEditing;
+
 using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
+
 using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
+
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
@@ -14,9 +19,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	/// </summary>
 	public class AddComponentPropertyEditor : PropertyEditor
 	{
-		private Rectangle	rectButton		= Rectangle.Empty;
-		private bool		buttonHovered	= false;
-		private bool		buttonPressed	= false;
+		private Rectangle rectButton       = Rectangle.Empty;
+		private bool      buttonHovered    = false;
+		private bool      buttonPressed    = false;
+		private DateTime  dialogClosedTime = DateTime.MinValue;
 
 		public override object DisplayedValue
 		{
@@ -107,7 +113,16 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 		protected override void OnKeyUp(KeyEventArgs e)
 		{
+			base.OnKeyUp(e);
+
 			if (this.ReadOnly)
+				return;
+
+			// When the user closed the type selection dialog with the Return key,
+			// we'll receive a Return key up immediately after as well. To avoid
+			// opening the dialog again, require a minimum time difference between
+			// closing it last time and re-opening it.
+			if ((DateTime.Now - this.dialogClosedTime).TotalSeconds < 0.1)
 				return;
 
 			if (e.KeyCode == Keys.Enter)
@@ -124,6 +139,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				SelectType = true
 			};
 			DialogResult result = compTypeSelector.ShowDialog();
+			this.dialogClosedTime = DateTime.Now;
 
 			if (result == DialogResult.OK)
 			{
