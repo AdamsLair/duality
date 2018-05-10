@@ -768,8 +768,8 @@ namespace Duality.Editor.Plugins.SceneView
 			bool gameObjSelect = selNodeData.Any(n => n is GameObjectNode);
 
 			IDataObject clipboardData = Clipboard.GetDataObject();
-			bool pasteAllowed = clipboardData != null 
-				&& clipboardData.GetFormats().Contains("GameObject List");
+			bool pasteAllowed = clipboardData != null
+				&& clipboardData.ContainsGameObjectRefs();
 
 			this.nodeContextItemNew.Visible = gameObjSelect || noSelect;
 
