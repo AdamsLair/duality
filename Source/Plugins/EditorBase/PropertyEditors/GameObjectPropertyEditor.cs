@@ -405,6 +405,11 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				UndoRedoManager.BeginMacro("Add Component");
 				foreach (GameObject obj in this.GetValue().Cast<GameObject>())
 				{
+					// Skip adding components that already exist in the target object
+					Component existingComponent = obj.GetComponent(compTypeSelector.TypeReference);
+					if (existingComponent != null && existingComponent.GetType() == compTypeSelector.TypeReference)
+						continue;
+
 					UndoRedoManager.Do(new CreateComponentAction(obj, compTypeSelector.TypeReference));
 				}
 				UndoRedoManager.EndMacro("Add Component");
