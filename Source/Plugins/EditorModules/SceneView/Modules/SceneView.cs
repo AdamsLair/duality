@@ -372,29 +372,46 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			if (!nodes.Any()) return;
 
-			var objects = nodes
+			var nodeList = nodes
 				.Select(n => this.objectModel.FindNode(this.objectView.GetPath(n)) as NodeBase)
+				.ToList();
+
+			var objects = nodeList
 				.OfType<GameObjectNode>()
 				.Select(gon => gon.Obj.DeepClone());
 
+			var comps = nodeList
+				.OfType<ComponentNode>()
+				.Select(gon => gon.Component.DeepClone());
+
 			DataObject data = new DataObject();
-			data.SetGameObjectRefs(objects);
+
+			if (objects.Any()) data.SetGameObjectRefs(objects);
+			else if (comps.Any()) data.SetComponentRefs(comps);
 
 			Clipboard.SetDataObject(data);
 		}
-		private void PasteClipboardToNodes(IEnumerable<TreeNodeAdv> nodes)
+		protected void PasteClipboardToNodes(IEnumerable<TreeNodeAdv> nodes)
+		{
+			DataObject clipboardData = Clipboard.GetDataObject() as DataObject;
+			if (clipboardData == null) return;
+
+			var targets = nodes
+				.Select(n => this.objectModel.FindNode(this.objectView.GetPath(n)) as NodeBase)
+				.OfType<GameObjectNode>()
+				.Select(gon => gon.Obj);
+
+			if (clipboardData.ContainsGameObjectRefs()) this.PasteClipboardObjects(targets);
+			else if (clipboardData.ContainsComponentRefs()) this.PasteClipboardComponents(targets);
+		}
+		private void PasteClipboardObjects(IEnumerable<GameObject> targets)
 		{
 			DataObject clipboardData = Clipboard.GetDataObject() as DataObject;
 			if (clipboardData == null) return;
 
 			GameObject[] objArray = clipboardData.GetGameObjectRefs();
 
-			var parents = nodes
-				.Select(n => this.objectModel.FindNode(this.objectView.GetPath(n)) as NodeBase)
-				.OfType<GameObjectNode>()
-				.Select(gon => gon.Obj);
-
-			PasteGameObjectAction pasteAction = new PasteGameObjectAction(objArray, parents);
+			PasteGameObjectAction pasteAction = new PasteGameObjectAction(objArray, targets);
 			UndoRedoManager.Do(pasteAction);
 
 			this.objectView.BeginUpdate();
@@ -405,6 +422,39 @@ namespace Duality.Editor.Plugins.SceneView
 			{
 				TreeNodeAdv dragObjViewNode;
 				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(this.FindNode(clonedObj)));
+				dragObjViewNode.IsSelected = true;
+				this.objectView.EnsureVisible(dragObjViewNode);
+			}
+			this.objectView.EndUpdate();
+		}
+		private void PasteClipboardComponents(IEnumerable<GameObject> targets)
+		{
+			DataObject clipboardData = Clipboard.GetDataObject() as DataObject;
+			if (clipboardData == null) return;
+
+			List<GameObject> targetList = targets.ToList();
+			Component[] compArray = clipboardData
+				.GetComponentRefs();
+
+			UndoRedoManager.BeginMacro();
+			List<CreateComponentAction> actions = new List<CreateComponentAction>();
+			foreach (GameObject target in targetList)
+			{
+				// Need to clone the components so that multi-object paste works
+				CreateComponentAction pasteAction = new CreateComponentAction(target, compArray.Select(c => c.DeepClone()));
+				UndoRedoManager.Do(pasteAction);
+				actions.Add(pasteAction);
+			}
+			UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
+
+			this.objectView.BeginUpdate();
+			this.objectView.ClearSelection();
+
+			// Select new nodes
+			foreach (Component clonedComp in actions.SelectMany(a => a.Result))
+			{
+				TreeNodeAdv dragObjViewNode;
+				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(this.FindNode(clonedComp)));
 				dragObjViewNode.IsSelected = true;
 				this.objectView.EnsureVisible(dragObjViewNode);
 			}
@@ -765,14 +815,16 @@ namespace Duality.Editor.Plugins.SceneView
 			bool singleSelect = selNodeData.Count == 1;
 			bool multiSelect = selNodeData.Count > 1;
 			bool gameObjSelect = selNodeData.Any(n => n is GameObjectNode);
+			bool compSelect = selNodeData.Any(n => n is ComponentNode);
 
 			IDataObject clipboardData = Clipboard.GetDataObject();
 			bool pasteAllowed = clipboardData != null
-				&& clipboardData.ContainsGameObjectRefs();
+				&& (clipboardData.ContainsGameObjectRefs()
+					|| (gameObjSelect && !compSelect && clipboardData.ContainsComponentRefs()));
 
 			this.nodeContextItemNew.Visible = gameObjSelect || noSelect;
 
-			this.nodeContextItemCopy.Visible = !noSelect && gameObjSelect;
+			this.nodeContextItemCopy.Visible = !noSelect && (gameObjSelect ^ compSelect);
 			this.nodeContextItemPaste.Visible = pasteAllowed;
 			this.nodeContextItemDelete.Visible = !noSelect;
 			this.nodeContextItemRename.Visible = !noSelect && gameObjSelect;
