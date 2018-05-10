@@ -12,14 +12,13 @@ namespace Duality.Editor.UndoRedoActions
 		private GameObject[] targetParentObjects	= null;
 		private GameObject[] resultObj				= null;
 
-		// TODO: NameBase && NameBaseMulti proper resources
 		protected override string NameBase
 		{
-			get { return GeneralRes.UndoRedo_CloneGameObject; }
+			get { return GeneralRes.UndoRedo_PasteGameObject; }
 		}
 		protected override string NameBaseMulti
 		{
-			get { return GeneralRes.UndoRedo_CloneGameObjectMulti; }
+			get { return GeneralRes.UndoRedo_PasteGameObjectMulti; }
 		}
 		public IEnumerable<GameObject> Result
 		{
@@ -30,19 +29,20 @@ namespace Duality.Editor.UndoRedoActions
 			IEnumerable<GameObject> parents) 
 			: base(obj)
 		{
-			if (parents == null)
-			{
-				this.targetParentObjects = new GameObject[] { null };
-			}
-			else
+			if (parents != null)
 			{
 				this.targetParentObjects = parents
 					.Where(tpo => tpo != null && !tpo.Disposed)
 					.ToArray();
 			}
 
-			if (this.targetParentObjects.Length == 0)
+			// Null parent is equivalent to no-parent but 
+			// allows us to simplify code in Do method
+			if (this.targetParentObjects == null
+				|| this.targetParentObjects.Length == 0)
+			{
 				this.targetParentObjects = new GameObject[] { null };
+			}
 		}
 
 		public override void Do()
@@ -81,7 +81,6 @@ namespace Duality.Editor.UndoRedoActions
 			}
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}
-
 		public override void Undo()
 		{
 			if (this.resultObj == null) throw new InvalidOperationException("Can't undo what hasn't been done yet");

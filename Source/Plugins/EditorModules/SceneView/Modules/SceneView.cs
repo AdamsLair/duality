@@ -17,6 +17,7 @@ using AdamsLair.WinForms.ItemModels;
 using AdamsLair.WinForms.ItemViews;
 
 using Duality;
+using Duality.Cloning;
 using Duality.Resources;
 using Duality.Drawing;
 using Duality.Editor;
@@ -72,7 +73,6 @@ namespace Duality.Editor.Plugins.SceneView
 		private	System.Drawing.Imaging.ColorMatrix	inactiveIconMatrix;
 		
 		private MenuModelItem	nodeContextItemNew		= null;
-		private MenuModelItem	nodeContextItemClone	= null;
 		private MenuModelItem	nodeContextItemDelete	= null;
 		private MenuModelItem	nodeContextItemRename	= null;
 		private MenuModelItem	nodeContextItemLockHide	= null;
@@ -368,42 +368,6 @@ namespace Duality.Editor.Plugins.SceneView
 			return thisNode;
 		}
 
-		// TODO: delete
-		protected void CloneNodes(IEnumerable<TreeNodeAdv> nodes)
-		{
-			if (!nodes.Any()) return;
-
-			var nodeQuery = 
-				from viewNode in nodes
-				select this.objectModel.FindNode(this.objectView.GetPath(viewNode)) as NodeBase;
-			var objQuery =
-				from objNode in nodeQuery
-				where objNode is GameObjectNode
-				select (objNode as GameObjectNode).Obj;
-			var objArray = objQuery.ToArray();
-			
-			this.objectView.BeginUpdate();
-			// Deselect original nodes
-			foreach (GameObject obj in objArray)
-			{ 
-				TreeNodeAdv dragObjViewNode;
-				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(this.FindNode(obj)));
-				dragObjViewNode.IsSelected = false;
-			}
-
-			CloneGameObjectAction cloneAction = new CloneGameObjectAction(objArray);
-			UndoRedoManager.Do(cloneAction);
-
-			// Select new nodes
-			foreach (GameObject clonedObj in cloneAction.Result)
-			{ 
-				TreeNodeAdv dragObjViewNode;
-				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(this.FindNode(clonedObj)));
-				dragObjViewNode.IsSelected = true;
-				this.objectView.EnsureVisible(dragObjViewNode);
-			}
-			this.objectView.EndUpdate();
-		}
 		protected void CopyNodesToClipboard(IEnumerable<TreeNodeAdv> nodes)
 		{
 			if (!nodes.Any()) return;
@@ -411,12 +375,11 @@ namespace Duality.Editor.Plugins.SceneView
 			var serializedObjects = nodes
 				.Select(n => this.objectModel.FindNode(this.objectView.GetPath(n)) as NodeBase)
 				.OfType<GameObjectNode>()
-				.Select(gon => new SerializableWrapper(gon.Obj));
+				.Select(gon => new SerializableWrapper(gon.Obj.DeepClone()));
 
 			// TODO: store DataFormat
 			DataFormats.Format myFormat = DataFormats.GetFormat("GameObject List");
 
-			// TODO: should we clone the objects now?
 			Clipboard.SetDataObject(new DataObject(myFormat.Name, serializedObjects.ToList()));
 		}
 		private void PasteClipboardToNodes(IEnumerable<TreeNodeAdv> nodes)
@@ -742,25 +705,19 @@ namespace Duality.Editor.Plugins.SceneView
 					SortValue		= MenuModelItem.SortValue_UnderTop,
 					TypeHint		= MenuItemTypeHint.Separator
 				},
-				this.nodeContextItemClone = new MenuModelItem 
+				this.nodeContextItemCopy = new MenuModelItem
 				{
-					Name			= Properties.SceneViewRes.SceneView_ContextItemName_Clone,
-					Icon			= Properties.Resources.page_copy,
-					ShortcutKeys	= Keys.Control | Keys.C,
-					ActionHandler	= this.cloneToolStripMenuItem_Click
-				},
-				this.nodeContextItemCopy = new MenuModelItem // TODO: only shows up when an object is selected
-				{
-					Name            = "Copy", // TODO: resources
+					Name            = Properties.SceneViewRes.SceneView_ContextItemName_Copy,
 					Icon            = Properties.Resources.page_copy,
-					ShortcutKeys    = Keys.Control | Keys.C | Keys.LShiftKey, // TODO: hotkey
+					ShortcutKeys    = Keys.Control | Keys.C,
 					ActionHandler   = this.copyToolStripMenuItem_Click
 				},
-				this.nodeContextItemPaste = new MenuModelItem // TODO: only shows up when an object is selected
+				this.nodeContextItemPaste = new MenuModelItem
 				{
-					Name            = "Paste", // TODO: resources
-					Icon            = Properties.Resources.page_copy, // TODO: paste icon
-					ShortcutKeys    = Keys.Control | Keys.V | Keys.LShiftKey, // TODO: hotkey
+					Name            = Properties.SceneViewRes.SceneView_ContextItemName_Paste,
+					// TODO: paste icon
+					Icon            = Properties.Resources.page_copy,
+					ShortcutKeys    = Keys.Control | Keys.V,
 					ActionHandler   = this.pasteToolStripMenuItem_Click
 				},
 				this.nodeContextItemDelete = new MenuModelItem 
@@ -815,9 +772,14 @@ namespace Duality.Editor.Plugins.SceneView
 			bool multiSelect = selNodeData.Count > 1;
 			bool gameObjSelect = selNodeData.Any(n => n is GameObjectNode);
 
+			IDataObject clipboardData = Clipboard.GetDataObject();
+			bool pasteAllowed = clipboardData != null 
+				&& clipboardData.GetFormats().Contains("GameObject List");
+
 			this.nodeContextItemNew.Visible = gameObjSelect || noSelect;
 
-			this.nodeContextItemClone.Visible = !noSelect && gameObjSelect;
+			this.nodeContextItemCopy.Visible = !noSelect && gameObjSelect;
+			this.nodeContextItemPaste.Visible = pasteAllowed;
 			this.nodeContextItemDelete.Visible = !noSelect;
 			this.nodeContextItemRename.Visible = !noSelect && gameObjSelect;
 			this.nodeContextItemRename.Enabled = singleSelect;
@@ -1495,10 +1457,6 @@ namespace Duality.Editor.Plugins.SceneView
 		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.PasteClipboardToNodes(this.objectView.SelectedNodes);
-		}
-		private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			this.CloneNodes(this.objectView.SelectedNodes);
 		}
 		private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
 		{
