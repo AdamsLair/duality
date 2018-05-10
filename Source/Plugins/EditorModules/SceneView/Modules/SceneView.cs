@@ -372,34 +372,29 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			if (!nodes.Any()) return;
 
-			var serializedObjects = nodes
+			var objects = nodes
 				.Select(n => this.objectModel.FindNode(this.objectView.GetPath(n)) as NodeBase)
 				.OfType<GameObjectNode>()
-				.Select(gon => new SerializableWrapper(gon.Obj.DeepClone()));
+				.Select(gon => gon.Obj.DeepClone());
 
-			// TODO: store DataFormat
-			DataFormats.Format myFormat = DataFormats.GetFormat("GameObject List");
+			DataObject data = new DataObject();
+			data.SetGameObjectRefs(objects);
 
-			Clipboard.SetDataObject(new DataObject(myFormat.Name, serializedObjects.ToList()));
+			Clipboard.SetDataObject(data);
 		}
 		private void PasteClipboardToNodes(IEnumerable<TreeNodeAdv> nodes)
 		{
-			IDataObject clipboardData = Clipboard.GetDataObject();
+			DataObject clipboardData = Clipboard.GetDataObject() as DataObject;
 			if (clipboardData == null) return;
 
-			// TODO: store DataFormat
-			DataFormats.Format myFormat = DataFormats.GetFormat("GameObject List");
+			GameObject[] objArray = clipboardData.GetGameObjectRefs();
 
-			object obj = clipboardData.GetData(myFormat.Name);
-			List<SerializableWrapper> serializedObjects = (List<SerializableWrapper>) obj;
-			List<GameObject> objList = serializedObjects.Select(so => (GameObject) so.Data).ToList();
-
-			var nodeQuery = nodes
+			var parents = nodes
 				.Select(n => this.objectModel.FindNode(this.objectView.GetPath(n)) as NodeBase)
-				.OfType<GameObjectNode>();
-			var parents = nodeQuery.Select(gon => gon.Obj);
+				.OfType<GameObjectNode>()
+				.Select(gon => gon.Obj);
 
-			PasteGameObjectAction pasteAction = new PasteGameObjectAction(objList, parents);
+			PasteGameObjectAction pasteAction = new PasteGameObjectAction(objArray, parents);
 			UndoRedoManager.Do(pasteAction);
 
 			this.objectView.BeginUpdate();
