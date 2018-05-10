@@ -710,8 +710,7 @@ namespace Duality.Editor.Plugins.SceneView
 				this.nodeContextItemPaste = new MenuModelItem
 				{
 					Name            = Properties.SceneViewRes.SceneView_ContextItemName_Paste,
-					// TODO: paste icon
-					Icon            = Properties.Resources.page_copy,
+					Icon            = Properties.Resources.page_paste,
 					ShortcutKeys    = Keys.Control | Keys.V,
 					ActionHandler   = this.pasteToolStripMenuItem_Click
 				},
