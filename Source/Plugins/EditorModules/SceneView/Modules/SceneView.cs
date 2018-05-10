@@ -679,8 +679,15 @@ namespace Duality.Editor.Plugins.SceneView
 						},
 						new MenuModelItem
 						{
+							Name            = typeof(Component).Name + "...",
+							Icon            = typeof(Component).GetEditorImage(),
+							SortValue       = MenuModelItem.SortValue_Top + 1,
+							ActionHandler   = this.componentToolStripMenuItem_Click
+						},
+						new MenuModelItem
+						{
 							Name			= "TopSeparator",
-							SortValue		= MenuModelItem.SortValue_Top,
+							SortValue		= MenuModelItem.SortValue_Top + 2,
 							TypeHint		= MenuItemTypeHint.Separator
 						}
 					}
@@ -724,6 +731,7 @@ namespace Duality.Editor.Plugins.SceneView
 				}
 			});
 		}
+
 		protected void UpdateContextMenu()
 		{
 			// Update main actions
@@ -1527,6 +1535,20 @@ namespace Duality.Editor.Plugins.SceneView
 				this.nodeTextBoxName.BeginEdit();
 			}
 		}
+		private void componentToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ListSelectionDialog compTypeSelector = new ListSelectionDialog
+			{
+				FilteredType = typeof(Component),
+				SelectType = true
+			};
+			DialogResult result = compTypeSelector.ShowDialog();
+
+			if (result == DialogResult.OK)
+			{
+				AddComponentOfTypeHandler(compTypeSelector.TypeReference);
+			}
+		}
 		private void newToolStripMenuItem_ItemClicked(object sender, EventArgs e)
 		{
 			MenuModelItem clickedItem = sender as MenuModelItem;
@@ -1536,8 +1558,10 @@ namespace Duality.Editor.Plugins.SceneView
 			// Determine which entry we clicked on and determine which type of Component to create.
 			CreateContextEntryTag clickedEntry = clickedItem.Tag as CreateContextEntryTag;
 			Type clickedType = ReflectionHelper.ResolveType(clickedEntry.TypeId);
-			if (clickedType == null) return;
-            
+			if (clickedType != null) AddComponentOfTypeHandler(clickedType);
+		}
+		private void AddComponentOfTypeHandler(Type componentType)
+		{
 			// Determine which (GameObject) nodes we're creating Components on.
 			List<TreeNodeAdv> targetViewNodes = new List<TreeNodeAdv>();
 			foreach (TreeNodeAdv viewNode in this.objectView.SelectedNodes)
@@ -1558,12 +1582,12 @@ namespace Duality.Editor.Plugins.SceneView
 			foreach (TreeNodeAdv targetViewNode in targetViewNodes)
 			{
 				// Create the Component
-				Component cmp = this.CreateComponent(targetViewNode, clickedType);
+				Component cmp = this.CreateComponent(targetViewNode, componentType);
 				if (cmp == null) continue;
 
 				NodeBase cmpNode = (NodeBase)this.FindNode(cmp) ?? this.FindNode(cmp.GameObj);
 				if (cmpNode == null) continue;
-					
+
 				newComponentNodes.Add(cmpNode);
 			}
 			UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
