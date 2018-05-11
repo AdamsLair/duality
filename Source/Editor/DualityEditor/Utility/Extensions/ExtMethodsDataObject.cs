@@ -6,6 +6,7 @@ using System.IO;
 
 using Duality;
 using Duality.Drawing;
+using Duality.Editor.Utility;
 using Duality.Resources;
 
 namespace Duality.Editor
@@ -19,9 +20,10 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="value"></param>
-		public static void SetWrappedData(this IDataObject data, object value)
+		public static void SetWrappedData(this IDataObject data, object value, bool reference = true)
 		{
-			data.SetData(WrapperPrefix + value.GetType().FullName, new SerializableWrapper(value));
+			data.SetData(WrapperPrefix + value.GetType().FullName, 
+				reference ? new SerializableReferenceWrapper(value) : new SerializableWrapper(value));
 		}
 		/// <summary>
 		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.

@@ -19,7 +19,7 @@ namespace Duality.Editor
 	{
 		private object data;
 
-		public object Data
+		public virtual object Data
 		{
 			get { return this.data; }
 			set { this.data = value; }
