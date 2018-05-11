@@ -106,6 +106,7 @@
     </Compile>
     <Compile Include="Properties\EditorBaseResCache.cs" />
     <Compile Include="PreviewGenerators\FontPreviewGenerator.cs" />
+    <Compile Include="PropertyEditors\AddComponentPropertyEditor.cs" />
     <Compile Include="PropertyEditors\BatchInfoPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ComponentPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Components\RigidBodyPropertyEditor.cs" />
