@@ -12,8 +12,8 @@ namespace Duality.Editor.Utility
 	[Serializable]
 	public class SerializableReferenceWrapper : SerializableWrapper
 	{
-		private static long NextID = 0;
-		private static readonly Dictionary<long, object> ReferenceMap 
+		private static long nextID = 0;
+		private static readonly Dictionary<long, object> referenceMap 
 			= new Dictionary<long, object>();
 
 		private long ID = -1;
@@ -24,14 +24,14 @@ namespace Duality.Editor.Utility
 			{
 				return this.ID < 0 
 					? null 
-					: ReferenceMap[this.ID];
+					: referenceMap[this.ID];
 			}
 			set
 			{
 				if (this.ID < 0)
-					this.ID = NextID++;
+					this.ID = nextID++;
 
-				ReferenceMap[this.ID] = value;
+				referenceMap[this.ID] = value;
 			}
 		}
 
