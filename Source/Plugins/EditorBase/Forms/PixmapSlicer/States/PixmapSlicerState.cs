@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Duality.Editor.Controls.ToolStrip;
 using Duality.Resources;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
@@ -10,13 +11,26 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	{
 		private int		selectedRectIndex	= -1;
 		private Cursor	cursor				= Cursors.Default;
+		private Pixmap	targetPixmap		= null;
 
 		public List<ToolStripItem>		StateControls				{ get; private set; }
 		public MouseTransformDelegate	TransformMouseCoordinates	{ get; set; }
 		public Func<Rect, Rect>			GetAtlasRect				{ get; set; }
 		public Func<Rect, Rect>			GetDisplayRect				{ get; set; }
 		public Rectangle				DisplayBounds				{ get; set; }
-		public Pixmap					TargetPixmap				{ get; set; }
+
+		public Pixmap TargetPixmap
+		{
+			get { return this.targetPixmap; }
+			set
+			{
+				if (this.targetPixmap != value)
+				{
+					this.targetPixmap = value;
+					this.OnPixmapChanged();
+				}
+			}
+		}
 
 		public Cursor Cursor
 		{
@@ -45,7 +59,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				}
 			}
 		}
-		
 
 		public event EventHandler DisplayUpdated;
 		public event EventHandler CursorChanged;
@@ -83,6 +96,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		{
 		}
 
+		protected virtual void OnPixmapChanged()
+		{
+
+		}
+
 		protected void CancelState()
 		{
 			if (this.StateCancelled != null)
@@ -109,5 +127,22 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		}
 
 		public abstract HelpInfo ProvideHoverHelp(Point localPos, ref bool captured);
+
+		/// <summary>
+		/// Creates a <see cref="ToolStripNumericUpDown"/> with default styling.
+		/// The range of the control is set to [0,maximum].
+		/// </summary>
+		protected static ToolStripNumericUpDown CreateNumericUpDown(string text, int maximum = 100)
+		{
+			return new ToolStripNumericUpDown
+			{
+				BackColor = Color.Transparent,
+				DecimalPlaces = 0,
+				Minimum = 0,
+				Maximum = maximum,
+				NumBackColor = Color.FromArgb(196, 196, 196),
+				Text = text
+			};
+		}
 	}
 }

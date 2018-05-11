@@ -90,6 +90,7 @@
     <Compile Include="Forms\PixmapSlicer\PixmapSlicerForm.Designer.cs">
       <DependentUpon>PixmapSlicerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\PixmapSlicer\States\GridSlicePixmapSlicerState.cs" />
     <Compile Include="Forms\PixmapSlicer\States\PixmapSlicerState.cs" />
     <Compile Include="Importers\AudioDataAssetImporter.cs" />
     <Compile Include="Importers\FontAssetImporter.cs">

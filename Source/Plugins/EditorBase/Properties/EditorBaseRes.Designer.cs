@@ -349,6 +349,15 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Grid-Slice.
+        /// </summary>
+        public static string Button_GridSlice {
+            get {
+                return ResourceManager.GetString("Button_GridSlice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Order Rects.
         /// </summary>
         public static string Button_OrderRects {
@@ -400,6 +409,24 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static string Help_PixmapSlicerDefaultState_Topic {
             get {
                 return ResourceManager.GetString("Help_PixmapSlicerDefaultState_Topic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the toolstrip control to specify the grid parameters. Additionally, +/- adjust the number of rows and CTRL + +/- adjust the number of columns..
+        /// </summary>
+        public static string Help_PixmapSlicerGridSlice_Desc {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerGridSlice_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grid Slicing.
+        /// </summary>
+        public static string Help_PixmapSlicerGridSlice_Topic {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerGridSlice_Topic", resourceCulture);
             }
         }
         
@@ -688,6 +715,15 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static string ToolTip_PixmapSlicerDelete {
             get {
                 return ResourceManager.GetString("ToolTip_PixmapSlicerDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slice the pixmap with a grid.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerGridSlice {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerGridSlice", resourceCulture);
             }
         }
         

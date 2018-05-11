@@ -24,6 +24,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		private readonly ToolStripButton		autoSliceButton			= null;
 		private readonly ToolStripButton		orderRectsButton		= null;
 		private readonly ToolStripNumericUpDown	alphaCutoffEntry		= null;
+		private readonly ToolStripButton		gridSliceButton			= null;
 
 		private Rect	originalDragRect	= Rect.Empty;
 		private bool	mouseDown			= false;
@@ -48,29 +49,27 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.autoSliceButton = new ToolStripButton(EditorBaseRes.Button_AutoSlice, null,
 				(s, e) => this.AutoSlicePixmap());
 
-			this.alphaCutoffEntry = new ToolStripNumericUpDown();
-			this.alphaCutoffEntry.BackColor = Color.Transparent;
-			this.alphaCutoffEntry.DecimalPlaces = 0;
-			this.alphaCutoffEntry.Maximum = 254;
-			this.alphaCutoffEntry.NumBackColor = Color.FromArgb(196, 196, 196);
-			this.alphaCutoffEntry.Text = "Alpha Cutoff:";
+			this.gridSliceButton = new ToolStripButton(EditorBaseRes.Button_GridSlice, null,
+				(s, e) => this.ChangeState(typeof(GridSlicePixmapSlicerState)));
+
+			this.alphaCutoffEntry = CreateNumericUpDown("Alpha Cutoff:", 254);
 
 			this.addRectButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerAddRect;
 			this.clearButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerClear;
 			this.deleteSelectedButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerDelete;
 			this.orderRectsButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerOrderRects;
 			this.autoSliceButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerAutoSlice;
-
-			ToolStripSeparator separator = new ToolStripSeparator();
-			separator.BackColor = Color.FromArgb(212, 212, 212);
+			this.gridSliceButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerGridSlice;
 
 			this.StateControls.Add(this.addRectButton);
 			this.StateControls.Add(this.clearButton);
 			this.StateControls.Add(this.deleteSelectedButton);
 			this.StateControls.Add(this.orderRectsButton);
-			this.StateControls.Add(separator);
+			this.StateControls.Add(new ToolStripSeparator { BackColor = Color.FromArgb(212, 212, 212) });
 			this.StateControls.Add(this.autoSliceButton);
 			this.StateControls.Add(this.alphaCutoffEntry);
+			this.StateControls.Add(new ToolStripSeparator { BackColor = Color.FromArgb(212, 212, 212) });
+			this.StateControls.Add(this.gridSliceButton);
 		}
 
 		public override void ClearSelection()
@@ -195,7 +194,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		{
 			if (this.TargetPixmap == null)
 				return;
-
 
 			UndoRedoManager.Do(new ClearAtlasAction(new[] { this.TargetPixmap }));
 			this.ClearSelection();

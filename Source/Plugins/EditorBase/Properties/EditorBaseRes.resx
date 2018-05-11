@@ -373,4 +373,16 @@
   <data name="Button_OrderRects" xml:space="preserve">
     <value>Order Rects</value>
   </data>
+  <data name="Button_GridSlice" xml:space="preserve">
+    <value>Grid-Slice</value>
+  </data>
+  <data name="Help_PixmapSlicerGridSlice_Desc" xml:space="preserve">
+    <value>Use the toolstrip control to specify the grid parameters. Additionally, +/- adjust the number of rows and CTRL + +/- adjust the number of columns.</value>
+  </data>
+  <data name="Help_PixmapSlicerGridSlice_Topic" xml:space="preserve">
+    <value>Grid Slicing</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerGridSlice" xml:space="preserve">
+    <value>Slice the pixmap with a grid</value>
+  </data>
 </root>
