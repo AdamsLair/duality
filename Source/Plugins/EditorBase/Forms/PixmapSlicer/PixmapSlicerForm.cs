@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Duality.Drawing;
+using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Resources;
@@ -55,6 +56,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		public PixmapSlicerForm()
 		{
 			InitializeComponent();
+
+			this.stateControlToolStrip.Renderer = new DualitorToolStripProfessionalRenderer();
 
 			Bitmap bmp = EditorBaseRes.IconPixmapSlicer;
 			this.Icon = Icon.FromHandle(bmp.GetHicon());

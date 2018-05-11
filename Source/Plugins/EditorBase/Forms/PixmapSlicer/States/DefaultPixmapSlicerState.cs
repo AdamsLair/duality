@@ -33,17 +33,17 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		public DefaultPixmapSlicerState()
 		{
-			this.addRectButton = new ToolStripButton(EditorBaseRes.Button_AddRect, null,
+			this.addRectButton = new ToolStripButton(null, EditorBaseRes.IconSquareAdd,
 				(s, e) => this.ChangeState(typeof(NewRectPixmapSlicerState)));
 
-			this.clearButton = new ToolStripButton(EditorBaseRes.Button_Clear, null,
-				(s, e) => this.ClearRects());
-
-			this.deleteSelectedButton = new ToolStripButton(EditorBaseRes.Button_Delete, null,
+			this.deleteSelectedButton = new ToolStripButton(null, EditorBaseRes.IconSquareDelete,
 				(s, e) => this.DeleteSelectedRect());
 			this.deleteSelectedButton.Enabled = false;
 
-			this.orderRectsButton = new ToolStripButton(EditorBaseRes.Button_OrderRects, null,
+			this.clearButton = new ToolStripButton(null, EditorBaseRes.IconSquareDeleteMany,
+				(s, e) => this.ClearRects());
+
+			this.orderRectsButton = new ToolStripButton(null, EditorBaseRes.IconSquareNumbers,
 				(s, e) => this.ChangeState(typeof(AtlasOrderingPixmapSlicerState)));
 
 			this.autoSliceButton = new ToolStripButton(EditorBaseRes.Button_AutoSlice, null,
@@ -55,15 +55,15 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.alphaCutoffEntry = CreateNumericUpDown("Alpha Cutoff:", 254);
 
 			this.addRectButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerAddRect;
-			this.clearButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerClear;
 			this.deleteSelectedButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerDelete;
+			this.clearButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerClear;
 			this.orderRectsButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerOrderRects;
 			this.autoSliceButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerAutoSlice;
 			this.gridSliceButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerGridSlice;
 
 			this.StateControls.Add(this.addRectButton);
-			this.StateControls.Add(this.clearButton);
 			this.StateControls.Add(this.deleteSelectedButton);
+			this.StateControls.Add(this.clearButton);
 			this.StateControls.Add(this.orderRectsButton);
 			this.StateControls.Add(new ToolStripSeparator { BackColor = Color.FromArgb(212, 212, 212) });
 			this.StateControls.Add(this.autoSliceButton);

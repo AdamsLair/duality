@@ -323,19 +323,19 @@
     <value>Pixmap Slicer</value>
   </data>
   <data name="ToolTip_PixmapSlicerAddRect" xml:space="preserve">
-    <value>Add a new atlas rect to the pixmap</value>
+    <value>Add a new atlas rect</value>
   </data>
   <data name="ToolTip_PixmapSlicerAutoSlice" xml:space="preserve">
-    <value>Automatically calculate atlas rects for the pixmap</value>
+    <value>Automatically calculate atlas rects</value>
   </data>
   <data name="ToolTip_PixmapSlicerClear" xml:space="preserve">
-    <value>Clear all atlas rects from the pixmap</value>
+    <value>Delete all atlas rects</value>
   </data>
   <data name="ToolTip_PixmapSlicerDelete" xml:space="preserve">
-    <value>Delete the selected atlas rect from the pixmap (Delete)</value>
+    <value>Delete the selected atlas rect (Delete)</value>
   </data>
   <data name="ToolTip_PixmapSlicerOrderRects" xml:space="preserve">
-    <value>Specify the order of atlas rects in the pixmap</value>
+    <value>Specify the order of atlas rects</value>
   </data>
   <data name="UndoRedo_ClearAtlas" xml:space="preserve">
     <value>Clear Atlas</value>
@@ -352,26 +352,8 @@
   <data name="IconPixmapSlicer" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\IconPixmapSlicer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Button_AddRect" xml:space="preserve">
-    <value>Add Rect</value>
-  </data>
   <data name="Button_AutoSlice" xml:space="preserve">
     <value>Auto-Slice</value>
-  </data>
-  <data name="Button_Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="Button_Clear" xml:space="preserve">
-    <value>Clear</value>
-  </data>
-  <data name="Button_Delete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="Button_Done" xml:space="preserve">
-    <value>Done</value>
-  </data>
-  <data name="Button_OrderRects" xml:space="preserve">
-    <value>Order Rects</value>
   </data>
   <data name="Button_GridSlice" xml:space="preserve">
     <value>Grid-Slice</value>
@@ -384,5 +366,29 @@
   </data>
   <data name="ToolTip_PixmapSlicerGridSlice" xml:space="preserve">
     <value>Slice the pixmap with a grid</value>
+  </data>
+  <data name="IconAcceptCheck" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\accept.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconCancel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\cancel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconSquareAdd" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\shape_square_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconSquareDelete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\shape_square_delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconSquareDeleteMany" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\shape_square_delete_many.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconSquareNumbers" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\shape_square_numbers.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerDone" xml:space="preserve">
+    <value>Accept Changes</value>
   </data>
 </root>

@@ -295,15 +295,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Rect.
-        /// </summary>
-        public static string Button_AddRect {
-            get {
-                return ResourceManager.GetString("Button_AddRect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Auto-Slice.
         /// </summary>
         public static string Button_AutoSlice {
@@ -313,56 +304,11 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel.
-        /// </summary>
-        public static string Button_Cancel {
-            get {
-                return ResourceManager.GetString("Button_Cancel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Clear.
-        /// </summary>
-        public static string Button_Clear {
-            get {
-                return ResourceManager.GetString("Button_Clear", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Delete.
-        /// </summary>
-        public static string Button_Delete {
-            get {
-                return ResourceManager.GetString("Button_Delete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Done.
-        /// </summary>
-        public static string Button_Done {
-            get {
-                return ResourceManager.GetString("Button_Done", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Grid-Slice.
         /// </summary>
         public static string Button_GridSlice {
             get {
                 return ResourceManager.GetString("Button_GridSlice", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Order Rects.
-        /// </summary>
-        public static string Button_OrderRects {
-            get {
-                return ResourceManager.GetString("Button_OrderRects", resourceCulture);
             }
         }
         
@@ -479,6 +425,26 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap IconAcceptCheck {
+            get {
+                object obj = ResourceManager.GetObject("IconAcceptCheck", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconCancel {
+            get {
+                object obj = ResourceManager.GetObject("IconCancel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap IconCommunity {
             get {
                 object obj = ResourceManager.GetObject("IconCommunity", resourceCulture);
@@ -532,6 +498,46 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static System.Drawing.Bitmap IconSpeakerWhite {
             get {
                 object obj = ResourceManager.GetObject("IconSpeakerWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconSquareAdd {
+            get {
+                object obj = ResourceManager.GetObject("IconSquareAdd", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconSquareDelete {
+            get {
+                object obj = ResourceManager.GetObject("IconSquareDelete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconSquareDeleteMany {
+            get {
+                object obj = ResourceManager.GetObject("IconSquareDeleteMany", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconSquareNumbers {
+            get {
+                object obj = ResourceManager.GetObject("IconSquareNumbers", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -683,7 +689,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add a new atlas rect to the pixmap.
+        ///   Looks up a localized string similar to Add a new atlas rect.
         /// </summary>
         public static string ToolTip_PixmapSlicerAddRect {
             get {
@@ -692,7 +698,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically calculate atlas rects for the pixmap.
+        ///   Looks up a localized string similar to Automatically calculate atlas rects.
         /// </summary>
         public static string ToolTip_PixmapSlicerAutoSlice {
             get {
@@ -701,7 +707,16 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clear all atlas rects from the pixmap.
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerCancel {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete all atlas rects.
         /// </summary>
         public static string ToolTip_PixmapSlicerClear {
             get {
@@ -710,11 +725,20 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete the selected atlas rect from the pixmap (Delete).
+        ///   Looks up a localized string similar to Delete the selected atlas rect (Delete).
         /// </summary>
         public static string ToolTip_PixmapSlicerDelete {
             get {
                 return ResourceManager.GetString("ToolTip_PixmapSlicerDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept Changes.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerDone {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerDone", resourceCulture);
             }
         }
         
@@ -728,7 +752,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify the order of atlas rects in the pixmap.
+        ///   Looks up a localized string similar to Specify the order of atlas rects.
         /// </summary>
         public static string ToolTip_PixmapSlicerOrderRects {
             get {

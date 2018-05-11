@@ -200,6 +200,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="EmbeddedResources\shape_square_delete_many.png" />
+    <None Include="EmbeddedResources\shape_square_numbers.png" />
+    <None Include="EmbeddedResources\shape_square_add.png" />
+    <None Include="EmbeddedResources\shape_square_delete.png" />
     <None Include="EmbeddedResources\IconPixmapSlicer.png" />
     <None Include="EmbeddedResources\IconTutorial.png" />
     <None Include="EmbeddedResources\IconCommunity.png" />
@@ -207,6 +211,8 @@
     <None Include="EmbeddedResources\cross.png" />
     <None Include="EmbeddedResources\IconDownloadCodeIDE.png" />
     <None Include="EmbeddedResources\application_side_expand.png" />
+    <None Include="EmbeddedResources\accept.png" />
+    <None Include="EmbeddedResources\cancel.png" />
     <Content Include="EmbeddedResources\eye.ico" />
     <None Include="EmbeddedResources\IconSpeakerBlack.png" />
     <None Include="EmbeddedResources\IconSpeakerWhite.png" />
