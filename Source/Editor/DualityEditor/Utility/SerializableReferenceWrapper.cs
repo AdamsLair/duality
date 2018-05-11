@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using Duality.Serialization;
 
 namespace Duality.Editor.Utility
 {
+	/// <summary>
+	/// A wrapper object that stores a reference to a non-<see cref="SerializableAttribute"/> object.
+	/// </summary>
 	[Serializable]
 	public class SerializableReferenceWrapper : SerializableWrapper
 	{
@@ -26,13 +32,30 @@ namespace Duality.Editor.Utility
 					this.ID = NextID++;
 
 				ReferenceMap[this.ID] = value;
-				base.Data = this.ID;
 			}
 		}
 
 		public SerializableReferenceWrapper(object data)
 		{
 			this.Data = data;
+		}
+		private SerializableReferenceWrapper(SerializationInfo info, StreamingContext context)
+		{
+			byte[] serializedData = info.GetValue("data", typeof(byte[])) as byte[];
+			using (MemoryStream stream = new MemoryStream(serializedData ?? new byte[0]))
+			{
+				this.ID = Serializer.TryReadObject<long>(stream);
+			}
+		}
+
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			using (MemoryStream stream = new MemoryStream())
+			{
+				Serializer.WriteObject(this.ID, stream, typeof(BinarySerializer));
+				byte[] serializedData = stream.ToArray();
+				info.AddValue("data", serializedData);
+			}
 		}
 	}
 }

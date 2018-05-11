@@ -20,10 +20,13 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="value"></param>
+		/// <param name="reference">Whether or not to store the value as a reference or to perform a clone of the value</param>
 		public static void SetWrappedData(this IDataObject data, object value, bool reference = true)
 		{
 			data.SetData(WrapperPrefix + value.GetType().FullName, 
-				reference ? new SerializableReferenceWrapper(value) : new SerializableWrapper(value));
+				reference 
+					? new SerializableReferenceWrapper(value) 
+					: new SerializableWrapper(value));
 		}
 		/// <summary>
 		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.

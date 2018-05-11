@@ -39,7 +39,7 @@ namespace Duality.Editor
 			}
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			using (MemoryStream stream = new MemoryStream())
 			{
