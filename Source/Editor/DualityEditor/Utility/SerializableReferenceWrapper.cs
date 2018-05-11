@@ -20,9 +20,7 @@ namespace Duality.Editor
 		{
 			get
 			{
-				return this.ID < 0 
-					? base.Data 
-					: referenceMap[this.ID];
+				return base.Data;
 			}
 			set
 			{
@@ -42,9 +40,15 @@ namespace Duality.Editor
 		{
 			object serializedObject = info.GetValue("data", typeof(long));
 			if (serializedObject is long)
+			{
 				this.ID = (long) serializedObject;
+				base.Data = referenceMap[this.ID];
+			}
 			else
+			{
 				this.ID = -1;
+				base.Data = null;
+			}
 		}
 
 		public override void GetObjectData(SerializationInfo info, StreamingContext context)
