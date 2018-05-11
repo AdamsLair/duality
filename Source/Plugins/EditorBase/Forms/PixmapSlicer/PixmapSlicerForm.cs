@@ -67,8 +67,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.SetState(new DefaultPixmapSlicerState());
 
 			// TODO: only have this visible when scaleFactor > 1f
-			this.horizontalScrollBar.Scroll += this.ScrollBarOnScroll;
-			this.verticalScrollBar.Scroll += this.ScrollBarOnScroll;
+			this.horizontalScrollBar.ValueChanged += this.ScrollBarValueChanged;
+			this.verticalScrollBar.ValueChanged += this.ScrollBarValueChanged;
+
+			this.horizontalScrollBar.Visible = false;
+			this.verticalScrollBar.Visible = false;
 
 			// Set styles that reduce flickering and optimize drawing
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
@@ -100,10 +103,16 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			int toolStripsHeight = this.stateControlToolStrip.Visible
 					? this.stateControlToolStrip.Height
 					: 0;
+			int scrollBarWidth = this.verticalScrollBar.Visible
+				? this.verticalScrollBar.Width
+				: 0;
+			int scrollBarHeight = this.horizontalScrollBar.Visible
+				? this.horizontalScrollBar.Height
+				: 0;
 
 			this.paintingRect = new Rectangle(
 				this.ClientRectangle.X, this.ClientRectangle.Y + toolStripsHeight,
-				this.ClientRectangle.Width - this.verticalScrollBar.Width, this.ClientRectangle.Height - toolStripsHeight - this.horizontalScrollBar.Height);
+				this.ClientRectangle.Width - scrollBarWidth, this.ClientRectangle.Height - toolStripsHeight - scrollBarHeight);
 
 			this.imageRect = new Rectangle(
 				this.paintingRect.X + 5, this.paintingRect.Y + 5,
@@ -119,7 +128,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			if (this.displayedImage != null)
 			{
 				Rectangle rectImage = new Rectangle(this.imageRect.X + 1, this.imageRect.Y + 1, this.imageRect.Width - 2, this.imageRect.Height - 2);
-				Size imgSize = this.displayedImage.Size;
+				Size imgSize = new Size(this.targetPixmap.Width, this.targetPixmap.Height);
 				float widthForHeight = (float)imgSize.Width / imgSize.Height;
 				if (widthForHeight * (imgSize.Height - rectImage.Height) > imgSize.Width - rectImage.Width)
 				{
@@ -145,9 +154,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		{
 			base.OnInvalidated(e);
 
-			this.displayedImage = this.GenerateDisplayImage();
-
 			this.UpdateGeometry();
+
+			this.displayedImage = this.GenerateDisplayImage();
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -225,21 +234,16 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			base.OnMouseWheel(e);
 			this.scaleFactor += e.Delta > 0 ? .1f : -.1f;
 			this.scaleFactor = MathF.Max(1f, this.scaleFactor);
+			this.horizontalScrollBar.Visible = this.scaleFactor > 1f;
+			this.verticalScrollBar.Visible = this.scaleFactor > 1f;
 			this.Invalidate();
 		}
 
-		private void ScrollBarOnScroll(object sender, ScrollEventArgs se)
+		private void ScrollBarValueChanged(object sender, EventArgs e)
 		{
-			if (se.ScrollOrientation == ScrollOrientation.HorizontalScroll)
-			{
-				this.horizontalScroll = se.NewValue;
-				this.Invalidate();
-			}
-			if (se.ScrollOrientation == ScrollOrientation.VerticalScroll)
-			{
-				this.verticalScroll = se.NewValue;
-				this.Invalidate();
-			}
+			this.horizontalScroll = this.horizontalScrollBar.Value;
+			this.verticalScroll = this.verticalScrollBar.Value;
+			this.Invalidate();
 		}
 
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
