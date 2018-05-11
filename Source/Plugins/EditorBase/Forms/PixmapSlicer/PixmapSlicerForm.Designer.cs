@@ -57,7 +57,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.stateControlToolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.stateControlToolStrip.GripMargin = new System.Windows.Forms.Padding(0);
 			this.stateControlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-			this.stateControlToolStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.stateControlToolStrip.Location = new System.Drawing.Point(0, 0);
 			this.stateControlToolStrip.Name = "stateControlToolStrip";
 			this.stateControlToolStrip.Size = new System.Drawing.Size(411, 25);
