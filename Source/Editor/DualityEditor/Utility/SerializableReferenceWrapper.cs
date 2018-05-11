@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using Duality.Serialization;
 
-namespace Duality.Editor.Utility
+namespace Duality.Editor
 {
 	/// <summary>
 	/// A wrapper object that stores a reference to a non-<see cref="SerializableAttribute"/> object.

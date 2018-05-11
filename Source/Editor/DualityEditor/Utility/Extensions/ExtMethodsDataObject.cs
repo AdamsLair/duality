@@ -6,7 +6,6 @@ using System.IO;
 
 using Duality;
 using Duality.Drawing;
-using Duality.Editor.Utility;
 using Duality.Resources;
 
 namespace Duality.Editor
