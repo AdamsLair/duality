@@ -48,6 +48,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			{
 				this.targetPixmap = value;
 				this.state.TargetPixmap = value;
+				this.stateControlToolStrip.Enabled = this.targetPixmap != null;
 				this.ResetImage();
 				this.Invalidate();
 			}
@@ -58,6 +59,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			InitializeComponent();
 
 			this.stateControlToolStrip.Renderer = new DualitorToolStripProfessionalRenderer();
+			this.stateControlToolStrip.Enabled = this.targetPixmap != null;
 
 			Bitmap bmp = EditorBaseRes.IconPixmapSlicer;
 			this.Icon = Icon.FromHandle(bmp.GetHicon());
