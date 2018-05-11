@@ -73,6 +73,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
+			Resource.ResourceDisposing += this.Resource_ResourceDisposing;
 		}
 
 		protected override void OnClosed(EventArgs e)
@@ -80,6 +81,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			base.OnClosed(e);
 
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
+			Resource.ResourceDisposing -= this.Resource_ResourceDisposing;
 		}
 
 		protected override void OnSizeChanged(EventArgs e)
@@ -238,9 +240,13 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (e.HasObject(this.targetPixmap))
-			{
 				this.Invalidate();
-			}
+		}
+
+		private void Resource_ResourceDisposing(object sender, ResourceEventArgs e)
+		{
+			if (e.ContentType == typeof(Pixmap) && e.Content.Res == this.targetPixmap)
+				this.Close();
 		}
 
 		private void SetState(IPixmapSlicerState action)
