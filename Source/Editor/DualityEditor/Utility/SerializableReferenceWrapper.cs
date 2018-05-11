@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.Serialization;
-using Duality.Serialization;
 
 namespace Duality.Editor
 {
@@ -23,39 +21,40 @@ namespace Duality.Editor
 			get
 			{
 				return this.ID < 0 
-					? null 
+					? base.Data 
 					: referenceMap[this.ID];
 			}
 			set
 			{
-				if (this.ID < 0)
-					this.ID = nextID++;
-
-				referenceMap[this.ID] = value;
+				// Invalidate the ID in use. Could
+				// occur if this SerializableReferenceWrapper
+				// is being reused
+				this.ID = -1;
+				base.Data = value;
 			}
 		}
 
 		public SerializableReferenceWrapper(object data)
+			: base(data)
 		{
-			this.Data = data;
 		}
 		private SerializableReferenceWrapper(SerializationInfo info, StreamingContext context)
 		{
-			byte[] serializedData = info.GetValue("data", typeof(byte[])) as byte[];
-			using (MemoryStream stream = new MemoryStream(serializedData ?? new byte[0]))
-			{
-				this.ID = Serializer.TryReadObject<long>(stream);
-			}
+			object serializedObject = info.GetValue("data", typeof(long));
+			if (serializedObject is long)
+				this.ID = (long) serializedObject;
+			else
+				this.ID = -1;
 		}
 
 		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			using (MemoryStream stream = new MemoryStream())
+			if (this.ID < 0)
 			{
-				Serializer.WriteObject(this.ID, stream, typeof(BinarySerializer));
-				byte[] serializedData = stream.ToArray();
-				info.AddValue("data", serializedData);
+				this.ID = nextID++;
+				referenceMap[this.ID] = base.Data;
 			}
+			info.AddValue("data", this.ID);
 		}
 	}
 }
