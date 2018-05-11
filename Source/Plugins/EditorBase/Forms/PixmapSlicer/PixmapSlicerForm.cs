@@ -66,9 +66,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 
 			this.SetState(new DefaultPixmapSlicerState());
 
-			// TODO: only have this visible when scaleFactor > 1f
-			this.horizontalScrollBar.ValueChanged += this.ScrollBarValueChanged;
-			this.verticalScrollBar.ValueChanged += this.ScrollBarValueChanged;
+			this.horizontalScrollBar.Scroll += this.ScrollBarOnScroll;
+			this.verticalScrollBar.Scroll += this.ScrollBarOnScroll;
 
 			this.horizontalScrollBar.Visible = false;
 			this.verticalScrollBar.Visible = false;
@@ -120,8 +119,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 
 			this.horizontalScrollBar.Minimum = 0;
 			this.horizontalScrollBar.Maximum = (int)((this.paintingRect.Width * this.scaleFactor) - this.imageRect.Width);
+			this.horizontalScroll = this.horizontalScrollBar.Value;
 			this.verticalScrollBar.Minimum = 0;
 			this.verticalScrollBar.Maximum = (int)((this.paintingRect.Height * this.scaleFactor) - this.imageRect.Height);
+			this.verticalScroll = this.verticalScrollBar.Value;
 
 			// Determine the geometry of the displayed image
 			// while maintaing a constant aspect ratio and using as much space as possible
@@ -239,7 +240,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.Invalidate();
 		}
 
-		private void ScrollBarValueChanged(object sender, EventArgs e)
+		private void ScrollBarOnScroll(object sender, EventArgs e)
 		{
 			this.horizontalScroll = this.horizontalScrollBar.Value;
 			this.verticalScroll = this.verticalScrollBar.Value;
