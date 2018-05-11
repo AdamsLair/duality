@@ -49,6 +49,8 @@ namespace Duality.Editor
 
 		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
+			// First time this object is being serialized. Give it an ID in the reference map
+			// so we can look it up when deserializing the object and get the same reference
 			if (this.ID < 0)
 			{
 				this.ID = nextID++;
