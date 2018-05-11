@@ -21,7 +21,7 @@ namespace Duality.Editor
 		/// <param name="data"></param>
 		/// <param name="value"></param>
 		/// <param name="reference">Whether or not to store the value as a reference or to perform a clone of the value</param>
-		public static void SetWrappedData(this IDataObject data, object value, bool reference = true)
+		public static void SetWrappedData(this IDataObject data, object value, bool reference = false)
 		{
 			data.SetData(WrapperPrefix + value.GetType().FullName, 
 				reference 
@@ -88,7 +88,7 @@ namespace Duality.Editor
 		public static void SetComponentRefs(this IDataObject data, IEnumerable<Component> cmp)
 		{
 			Component[] cmpArray = cmp.ToArray();
-			if (cmpArray.Length > 0) data.SetWrappedData(cmpArray);
+			if (cmpArray.Length > 0) data.SetWrappedData(cmpArray, true);
 		}
 		public static bool ContainsComponentRefs<T>(this IDataObject data) where T : Component
 		{
@@ -128,7 +128,7 @@ namespace Duality.Editor
 		public static void SetGameObjectRefs(this IDataObject data, IEnumerable<GameObject> obj)
 		{
 			GameObject[] objArray = obj.ToArray();
-			if (objArray.Length > 0) data.SetWrappedData(objArray);
+			if (objArray.Length > 0) data.SetWrappedData(objArray, true);
 		}
 		public static bool ContainsGameObjectRefs(this IDataObject data)
 		{
@@ -142,7 +142,7 @@ namespace Duality.Editor
 		public static void SetContentRefs(this IDataObject data, IEnumerable<IContentRef> content)
 		{
 			if (!content.Any()) return;
-			data.SetWrappedData(content.ToArray());
+			data.SetWrappedData(content.ToArray(), true);
 		}
 		public static bool ContainsContentRefs<T>(this IDataObject data) where T : Resource
 		{
