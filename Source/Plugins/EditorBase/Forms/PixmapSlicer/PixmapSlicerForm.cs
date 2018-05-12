@@ -50,7 +50,13 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				this.state.TargetPixmap = value;
 				this.stateControlToolStrip.Enabled = this.targetPixmap != null;
 				this.displayedImage = this.GenerateDisplayImage();
-				this.ResetImage();
+
+				if (this.displayedImage != null)
+				{
+					ColorRgba avgColor = this.displayedImage.GetAverageColor();
+					this.prevImageLum = avgColor.GetLuminance();
+				}
+
 				this.Invalidate();
 			}
 		}
@@ -355,16 +361,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			Rect scaledRect = displayRect.Scaled(scale, scale);
 			scaledRect.Pos *= scale;
 			return scaledRect;
-		}
-
-		private void ResetImage()
-		{
-			Bitmap baseImage = this.GenerateDisplayImage();
-			if (baseImage != null)
-			{
-				ColorRgba avgColor = baseImage.GetAverageColor();
-				this.prevImageLum = avgColor.GetLuminance();
-			}
 		}
 
 		/// <summary>
