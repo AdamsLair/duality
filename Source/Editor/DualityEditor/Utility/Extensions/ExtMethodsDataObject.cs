@@ -250,23 +250,9 @@ namespace Duality.Editor
 
 			if (data.ContainsString())
 			{
-				string valString = data.GetString();
-				string[] token = valString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-				byte[] valToken = new byte[4];
-				valToken[3] = 255;
-
-				bool success = true;
-				for (int i = 0; i < token.Length; i++)
-				{
-					token[i] = token[i].Trim();
-					if (!byte.TryParse(token[i], out valToken[i]))
-					{
-						success = false;
-						break;
-					}
-				}
-
-				if (success) return true;
+				IColorData[] clrArray;
+				if (TryParseIColorData(data.GetString(), out clrArray))
+					return true;
 			}
 
 			return false;
@@ -280,23 +266,7 @@ namespace Duality.Editor
 			}
 			else if (data.ContainsString())
 			{
-				string valString = data.GetString();
-				string[] token = valString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-				byte[] valToken = new byte[4];
-				valToken[3] = 255;
-
-				bool success = true;
-				for (int i = 0; i < token.Length; i++)
-				{
-					token[i] = token[i].Trim();
-					if (!byte.TryParse(token[i], out valToken[i]))
-					{
-						success = false;
-						break;
-					}
-				}
-
-				if (success) clrArray = new IColorData[] { new ColorRgba(valToken[0], valToken[1], valToken[2], valToken[3]) };
+				clrArray = ParseIColorData(data.GetString());
 			}
 
 			if (clrArray != null)
@@ -346,6 +316,29 @@ namespace Duality.Editor
 				}
 			}
 			if (sc.Count > 0) data.SetFileDropList(sc);
+		}
+
+		private static bool TryParseIColorData(string valString, out IColorData[] colorArray)
+		{
+			colorArray = ParseIColorData(valString);
+			return colorArray != null;
+		}
+		private static IColorData[] ParseIColorData(string valString)
+		{
+			string[] token = valString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			byte[] valToken = new byte[4];
+			valToken[3] = 255;
+
+			for (int i = 0; i < token.Length; i++)
+			{
+				token[i] = token[i].Trim();
+				if (!byte.TryParse(token[i], out valToken[i]))
+				{
+					return null;
+				}
+			}
+
+			return new IColorData[] { new ColorRgba(valToken[0], valToken[1], valToken[2], valToken[3]) };
 		}
 	}
 }
