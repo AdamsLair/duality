@@ -11,10 +11,25 @@ using Duality.Resources;
 
 namespace Duality.Editor
 {
-	// TODO: document
+	/// <summary>
+	/// Data formats than can be used when storing data
+	/// inside a <see cref="DataObject"/>
+	/// </summary>
 	public enum DataFormat
 	{
+		/// <summary>
+		/// Use this format when storing an object reference in a DataObject.
+		/// The reference will be maintained even after serialization.
+		/// Note that storing a value type (ex. Vector3) in reference format
+		/// will still lead to a copy of the data. Data stored in this format
+		/// can be automatically converted to value formatted data (uses deep cloning).
+		/// </summary>
 		Reference,
+		/// <summary>
+		/// Use this format when storing an object in a DataObject that is 
+		/// not meant to be a reference to an existing object. This format 
+		/// of data cannot be automatically converted to reference format.
+		/// </summary>
 		Value
 	}
 
