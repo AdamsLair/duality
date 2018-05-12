@@ -10,6 +10,7 @@ using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
 
 using Duality;
 using Duality.Editor;
+using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
@@ -30,6 +31,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		private	Rectangle	rectButtonPrefabRevert	= Rectangle.Empty;
 		private	Rectangle	rectButtonPrefabApply	= Rectangle.Empty;
 		private	Rectangle	rectButtonPrefabBreak	= Rectangle.Empty;
+		private Rectangle	rectButtonAddComponent	= Rectangle.Empty;
 		private	string		displayedName		= "GameObject";
 		private	string		displayedNameExt	= "";
 		private	bool?		active				= false;
@@ -119,6 +121,12 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.rectHeader.Y,
 				this.rectHeader.Width - this.rectCheckActive.Right - 4,
 				this.rectHeader.Height);
+
+			this.rectButtonAddComponent = new Rectangle(
+				this.rectHeader.X + this.rectHeader.Width - ControlRenderer.CheckBoxSize.Width - 2,
+				this.rectHeader.Y + this.rectHeader.Height / 2 - ControlRenderer.CheckBoxSize.Height / 2 - 1,
+				ControlRenderer.CheckBoxSize.Width,
+				ControlRenderer.CheckBoxSize.Height);
 
 			// PrefabLink
 			this.rectLabelPrefab = new Rectangle(
@@ -211,6 +219,12 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				ControlRenderer.DrawStringLine(e.Graphics, this.displayedNameExt, headerNameExtFont, extLabelRect, SystemColors.ControlText);
 			}
 
+			ButtonState buttonStateAdd = ButtonState.Normal;
+			ButtonState buttonStateDefaultAdd = ButtonState.Normal;
+			if (this.curButtonPressed) buttonStateAdd = ButtonState.Pressed;
+			else if (this.curButtonHovered) buttonStateAdd = ButtonState.Hot;
+			ControlRenderer.DrawButton(e.Graphics, this.rectButtonAddComponent, this.curButton == 4 ? buttonStateAdd : buttonStateDefaultAdd, "+");
+
 			ControlRenderer.DrawStringLine(e.Graphics, "PrefabLink", headerPrefabFont, this.rectLabelPrefab, !this.prefabLinked ? SystemColors.GrayText : (this.prefabLinkAvailable ? Color.Blue : Color.DarkRed));
 			
 			ButtonState buttonState = ButtonState.Disabled;
@@ -250,7 +264,17 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			bool lastButtonHovered = this.curButtonHovered;
 			int lastButton = this.curButton;
-			if (this.ReadOnly || !this.prefabLinked)
+			if (this.ReadOnly)
+			{
+				this.curButton = -1;
+				this.curButtonHovered = false;
+			}
+			else if ((!this.curButtonPressed || this.curButton == 4) && this.rectButtonAddComponent.Contains(e.Location))
+			{
+				this.curButton = 4;
+				this.curButtonHovered = true;
+			}
+			else if (!this.prefabLinked)
 			{
 				this.curButton = -1;
 				this.curButtonHovered = false;
@@ -293,6 +317,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				else if (this.curButton == 1)	this.OnPrefabLinkRevertPressed();
 				else if (this.curButton == 2)	this.OnPrefabLinkApplyPressed();
 				else if (this.curButton == 3)	this.OnPrefabLinkBreakPressed();
+				else if (this.curButton == 4)	this.OnAddComponentPressed();
 			}
 			if (this.activeCheckHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
 			{
@@ -365,6 +390,39 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			this.PerformGetValue();
 			this.ParentGrid.Invalidate();
+		}
+		private void OnAddComponentPressed()
+		{
+			ListSelectionDialog compTypeSelector = new ListSelectionDialog
+			{
+				FilteredType = typeof(Component),
+				SelectType = true
+			};
+			DialogResult result = compTypeSelector.ShowDialog();
+
+			if (result == DialogResult.OK)
+			{
+				UndoRedoManager.BeginMacro("Add Component");
+				foreach (GameObject obj in this.GetValue().Cast<GameObject>())
+				{
+					// Skip adding components that already exist in the target object
+					Component existingComponent = obj.GetComponent(compTypeSelector.TypeReference);
+					if (existingComponent != null && existingComponent.GetType() == compTypeSelector.TypeReference)
+						continue;
+
+					UndoRedoManager.Do(new CreateComponentAction(obj, compTypeSelector.TypeReference));
+				}
+				UndoRedoManager.EndMacro("Add Component");
+
+				this.PerformGetValue();
+				this.ParentGrid.Invalidate();
+			}
+
+			// Keeps add component button from being locked to the pressed 
+			// state caused by the SelectionDialog being modal
+			this.curButton = -1;
+			this.curButtonHovered = false;
+			this.curButtonPressed = false;
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)

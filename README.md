@@ -27,4 +27,4 @@ All framework build results will be located in the shared `Build/Output` folder.
 
 We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://github.com/AdamsLair/duality/wiki/How-to-Contribute).
 
-If you just want to say "Thank You", feel free to donate [via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PL2U4Z8XNQENC) or [on itch.io](http://adamslair.itch.io/duality).
+If you just want to say "Thank You", feel free to donate [on itch.io](http://adamslair.itch.io/duality).
