@@ -187,9 +187,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			if (this.displayedImage != null)
 			{
 				e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-				e.Graphics.DrawImage(this.displayedImage,
-					this.displayedImageRect.X, this.displayedImageRect.Y,
-					this.displayedImageRect.Width, this.displayedImageRect.Height);
+				e.Graphics.DrawImage(this.displayedImage, this.displayedImageRect);
 				e.Graphics.InterpolationMode = InterpolationMode.Default;
 
 				// Draw atlas rects
