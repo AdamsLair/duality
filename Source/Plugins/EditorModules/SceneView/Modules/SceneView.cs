@@ -581,11 +581,11 @@ namespace Duality.Editor.Plugins.SceneView
 			if (!guardRequiredComponents)
 			{
 				data.SetData(nodes.ToArray());
-				data.SetComponentRefs(
+				data.SetComponents(
 					from c in nodes
 					where c.Tag is ComponentNode
 					select (c.Tag as ComponentNode).Component);
-				data.SetGameObjectRefs(
+				data.SetGameObjects(
 					from c in nodes
 					where c.Tag is GameObjectNode
 					select (c.Tag as GameObjectNode).Obj);
@@ -986,7 +986,7 @@ namespace Duality.Editor.Plugins.SceneView
 			if (data != null)
 			{
 				NodeBase dropParent = this.DragDropGetTargetNode();
-				if (data.ContainsGameObjectRefs())
+				if (data.ContainsGameObjects())
 				{
 					DragDropEffects effect;
 					if ((e.KeyState & 2) != 0)			// Right mouse button
@@ -1002,7 +1002,7 @@ namespace Duality.Editor.Plugins.SceneView
 					else if (dropParent is GameObjectNode)
 					{
 						GameObject dropObj = (dropParent as GameObjectNode).Obj;
-						GameObject[] draggedObj = data.GetGameObjectRefs();
+						GameObject[] draggedObj = data.GetGameObjects();
 						bool canDropHere = true;
 
 						// Can't drop in child of dragged objects
@@ -1020,7 +1020,7 @@ namespace Duality.Editor.Plugins.SceneView
 					else
 						e.Effect = DragDropEffects.None;
 				}
-				else if (data.ContainsComponentRefs())
+				else if (data.ContainsComponents(DataFormat.Value))
 				{
 					DragDropEffects effect;
 					if ((e.KeyState & 2) != 0)			// Right mouse button
@@ -1034,7 +1034,7 @@ namespace Duality.Editor.Plugins.SceneView
 					if (dropParent is GameObjectNode)
 					{
 						GameObject dropObj = (dropParent as GameObjectNode).Obj;
-						Component[] draggedObj = data.GetComponentRefs();
+						Component[] draggedObj = data.GetComponents(DataFormat.Value);
 						bool canDropHere = true;
 
 						canDropHere = canDropHere && draggedObj.All(c => dropObj.GetComponent(c.GetType()) == null);
@@ -1071,9 +1071,9 @@ namespace Duality.Editor.Plugins.SceneView
 			{
 				ConvertOperation convertOp = new ConvertOperation(data, ConvertOperation.Operation.All);
 				this.tempDropTarget = this.DragDropGetTargetNode();
-				if (data.ContainsGameObjectRefs())
+				if (data.ContainsGameObjects())
 				{
-					this.tempDropData = data.GetGameObjectRefs();
+					this.tempDropData = data.GetGameObjects();
 
 					// Display context menu if both moving and copying are availabled
 					if (effectMove && effectCopy)
@@ -1083,9 +1083,9 @@ namespace Duality.Editor.Plugins.SceneView
 					else if (effectMove)
 						this.moveHereToolStripMenuItem_Click(this, null);
 				}
-				else if (data.ContainsComponentRefs())
+				else if (data.ContainsComponents(DataFormat.Value))
 				{
-					this.tempDropData = data.GetComponentRefs();
+					this.tempDropData = data.GetComponents(DataFormat.Value);
 
 					// Display context menu if both moving and copying are availabled
 					if (effectMove && effectCopy)

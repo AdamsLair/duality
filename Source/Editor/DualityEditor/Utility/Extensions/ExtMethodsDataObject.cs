@@ -119,39 +119,47 @@ namespace Duality.Editor
 				return ConvertOperation.Operation.All;
 		}
 
-		public static void SetComponentRefs(this IDataObject data, IEnumerable<Component> cmp)
+		public static void SetComponents(this IDataObject data, IEnumerable<Component> cmp, DataFormat format = DataFormat.Reference)
 		{
 			Component[] cmpArray = cmp.ToArray();
-			if (cmpArray.Length > 0) data.SetWrappedData(cmpArray, DataFormat.Reference);
+			if (cmpArray.Length > 0) data.SetWrappedData(cmpArray, format);
 		}
-		public static bool ContainsComponentRefs<T>(this IDataObject data) where T : Component
+		public static bool ContainsComponents<T>(this IDataObject data, DataFormat format = DataFormat.Reference) where T : Component
 		{
-			if (!data.GetWrappedDataPresent(typeof(Component[]), DataFormat.Reference)) return false;
-			Component[] refArray = data.GetWrappedData(typeof(Component[]), DataFormat.Reference) as Component[];
+			if (!data.GetWrappedDataPresent(typeof(Component[]), format)) return false;
+			Component[] refArray = data.GetWrappedData(typeof(Component[]), format) as Component[];
 			return refArray != null && refArray.Any(c => c is T);
 		}
-		public static bool ContainsComponentRefs(this IDataObject data, Type cmpType = null)
+		public static bool ContainsComponents(this IDataObject data, DataFormat format = DataFormat.Reference)
+		{
+			return data.ContainsComponents(typeof(Component), format);
+		}
+		public static bool ContainsComponents(this IDataObject data, Type cmpType, DataFormat format = DataFormat.Reference)
 		{
 			if (cmpType == null) cmpType = typeof(Component);
-			if (!data.GetWrappedDataPresent(typeof(Component[]), DataFormat.Reference)) return false;
-			Component[] refArray = data.GetWrappedData(typeof(Component[]), DataFormat.Reference) as Component[];
+			if (!data.GetWrappedDataPresent(typeof(Component[]), format)) return false;
+			Component[] refArray = data.GetWrappedData(typeof(Component[]), format) as Component[];
 			return refArray != null && refArray.Any(c => cmpType.IsInstanceOfType(c));
 		}
-		public static T[] GetComponentRefs<T>(this IDataObject data) where T : Component
+		public static T[] GetComponents<T>(this IDataObject data, DataFormat format = DataFormat.Reference) where T : Component
 		{
-			if (!data.GetWrappedDataPresent(typeof(Component[]), DataFormat.Reference)) return null;
-			Component[] refArray = data.GetWrappedData(typeof(Component[]), DataFormat.Reference) as Component[] ?? new Component[0];
+			if (!data.GetWrappedDataPresent(typeof(Component[]), format)) return null;
+			Component[] refArray = data.GetWrappedData(typeof(Component[]), format) as Component[] ?? new Component[0];
 			return (
 				from r in refArray
 				where r is T
 				select r as T
 				).ToArray();
 		}
-		public static Component[] GetComponentRefs(this IDataObject data, Type cmpType = null)
+		public static Component[] GetComponents(this IDataObject data, DataFormat format = DataFormat.Reference)
+		{
+			return data.GetComponents(typeof(Component), format);
+		}
+		public static Component[] GetComponents(this IDataObject data, Type cmpType, DataFormat format = DataFormat.Reference)
 		{
 			if (cmpType == null) cmpType = typeof(Component);
-			if (!data.GetWrappedDataPresent(typeof(Component[]), DataFormat.Reference)) return null;
-			Component[] refArray = data.GetWrappedData(typeof(Component[]), DataFormat.Reference) as Component[] ?? new Component[0];
+			if (!data.GetWrappedDataPresent(typeof(Component[]), format)) return null;
+			Component[] refArray = data.GetWrappedData(typeof(Component[]), format) as Component[] ?? new Component[0];
 			return (
 				from c in refArray
 				where cmpType.IsInstanceOfType(c)
@@ -159,18 +167,18 @@ namespace Duality.Editor
 				).ToArray();
 		}
 
-		public static void SetGameObjectRefs(this IDataObject data, IEnumerable<GameObject> obj)
+		public static void SetGameObjects(this IDataObject data, IEnumerable<GameObject> obj, DataFormat format = DataFormat.Reference)
 		{
 			GameObject[] objArray = obj.ToArray();
-			if (objArray.Length > 0) data.SetWrappedData(objArray, DataFormat.Reference);
+			if (objArray.Length > 0) data.SetWrappedData(objArray, format);
 		}
-		public static bool ContainsGameObjectRefs(this IDataObject data)
+		public static bool ContainsGameObjects(this IDataObject data, DataFormat format = DataFormat.Reference)
 		{
-			return data.GetWrappedDataPresent(typeof(GameObject[]), DataFormat.Reference);
+			return data.GetWrappedDataPresent(typeof(GameObject[]), format);
 		}
-		public static GameObject[] GetGameObjectRefs(this IDataObject data)
+		public static GameObject[] GetGameObjects(this IDataObject data, DataFormat format = DataFormat.Reference)
 		{
-			return data.GetWrappedData(typeof(GameObject[]), DataFormat.Reference) as GameObject[] ?? new GameObject[0];
+			return data.GetWrappedData(typeof(GameObject[]), format) as GameObject[] ?? new GameObject[0];
 		}
 
 		public static void SetContentRefs(this IDataObject data, IEnumerable<IContentRef> content)

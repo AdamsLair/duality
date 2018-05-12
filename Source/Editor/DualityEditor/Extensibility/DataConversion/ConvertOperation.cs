@@ -206,7 +206,7 @@ namespace Duality.Editor
 			if (!result && this.data.GetDataPresent(target)) result = true;
 			if (!result && this.data.GetDataPresent(target.MakeArrayType())) result = true;
 			if (!result && this.data.ContainsContentRefs(target)) result = true;
-			if (!result && this.data.ContainsComponentRefs(target)) result = true;
+			if (!result && this.data.ContainsComponents(target)) result = true;
 			if (!result)
 			{
 				result = GetConverters(target).Any(s => !this.usedConverters.Contains(s) && s.CanConvertFrom(this));
@@ -247,7 +247,7 @@ namespace Duality.Editor
 			if (fittingData == null)
 			{
 				// ComponentRefs
-				if (this.data.ContainsComponentRefs(target)) fittingData = this.data.GetComponentRefs(target);
+				if (this.data.ContainsComponents(target)) fittingData = this.data.GetComponents(target);
 			}
 			if (fittingData == null)
 			{

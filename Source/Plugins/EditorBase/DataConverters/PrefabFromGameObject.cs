@@ -29,15 +29,15 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 		{
 			return 
 				convert.AllowedOperations.HasFlag(ConvertOperation.Operation.CreateRes) && 
-				convert.Data.ContainsGameObjectRefs();
+				convert.Data.ContainsGameObjects();
 		}
 		public override bool Convert(ConvertOperation convert)
 		{
 			bool finishConvertOp = false;
 
-			if (convert.Data.ContainsGameObjectRefs())
+			if (convert.Data.ContainsGameObjects())
 			{
-				GameObject[] draggedObjArray = convert.Data.GetGameObjectRefs();
+				GameObject[] draggedObjArray = convert.Data.GetGameObjects();
 
 				// Filter out GameObjects that are children of others
 				draggedObjArray = draggedObjArray.Where(o => !draggedObjArray.Any(o2 => o.IsChildOf(o2))).ToArray();
