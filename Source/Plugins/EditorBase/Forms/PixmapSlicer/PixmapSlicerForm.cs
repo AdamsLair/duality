@@ -221,14 +221,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-
+			this.Activate();
 			this.state.OnMouseDown(e);
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
-
+			this.Activate();
 			this.state.OnMouseUp(e);
 		}
 
