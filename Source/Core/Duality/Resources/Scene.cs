@@ -24,7 +24,7 @@ namespace Duality.Resources
 	[EditorHintImage(CoreResNames.ImageScene)]
 	public sealed class Scene : Resource
 	{
-		private static ContentRef<Scene>   current           = new Scene();
+		private static ContentRef<Scene>   current           = null;
 		private static bool                curAutoGen        = false;
 		private static bool                isSwitching       = false;
 		private static int                 switchLock        = 0;
@@ -110,6 +110,11 @@ namespace Duality.Resources
 		public static event EventHandler<ComponentEventArgs> ComponentRemoving;
 
 
+		static Scene()
+		{
+			Current = new Scene();
+		}
+
 		/// <summary>
 		/// Switches to the specified <see cref="Scene"/>, which will become the new <see cref="Current">current one</see>.
 		/// By default, this method does not guarantee to perform the Scene switch immediately, but may defer the switch
@@ -189,80 +194,29 @@ namespace Duality.Resources
 		private static void OnLeaving()
 		{
 			switchLock++;
-			if (Leaving != null) Leaving(current, null);
-			isSwitching = true;
-			if (current.ResWeak != null)
-			{
-				// Deactivate GameObjects
-				DualityApp.EditorGuard(() =>
-				{
-					// Create a list of components to deactivate
-					List<ICmpInitializable> shutdownList = new List<ICmpInitializable>();
-					foreach (Component component in current.ResWeak.FindComponents<ICmpInitializable>())
-					{
-						if (!component.Active) continue;
-						shutdownList.Add(component as ICmpInitializable);
-					}
-					// Deactivate all the listed components. Note that they may create or destroy
-					// objects, so it's important that we're iterating a copy of the scene objects
-					// here, and not the real thing.
-					for (int i = shutdownList.Count - 1; i >= 0; i--)
-					{
-						shutdownList[i].OnDeactivate();
-					}
-				});
 
-				// Clear physics world as we're ending simulation
-				current.ResWeak.Physics.Native.Clear();
-				current.ResWeak.Physics.ResetSimulation();
-			}
+			if (Leaving != null)
+				Leaving(current, null);
+
+			isSwitching = true;
+
+			if (current.ResWeak != null && current.ResWeak.IsActive)
+				current.ResWeak.Deactivate();
+
 			switchLock--;
 		}
 		private static void OnEntered()
 		{
 			switchLock++;
+
 			if (current.ResWeak != null)
-			{
-				// Apply physical properties
-				current.ResWeak.Physics.ResetSimulation();
-				current.ResWeak.Physics.Gravity = current.ResWeak.GlobalGravity;
+				current.ResWeak.Activate();
 
-				// When in the editor, apply prefab links
-				if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
-					current.ResWeak.ApplyPrefabLinks();
-
-				// When running the game, break prefab links
-				if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-					current.ResWeak.BreakPrefabLinks();
-
-				// Activate GameObjects
-				DualityApp.EditorGuard(() =>
-				{
-					// Create a list of components to activate
-					List<ICmpInitializable> initList = new List<ICmpInitializable>();
-					foreach (Component component in current.ResWeak.FindComponents<ICmpInitializable>())
-					{
-						if (!component.Active) continue;
-						initList.Add(component as ICmpInitializable);
-					}
-					// Activate all the listed components. Note that they may create or destroy
-					// objects, so it's important that we're iterating a copy of the scene objects
-					// here, and not the real thing.
-					for (int i = 0; i < initList.Count; i++)
-					{
-						initList[i].OnActivate();
-					}
-				});
-
-				// Update object visibility / culling info, so a scheduled switch at the
-				// end of a frame will get up-to-date culling for rendering
-				DualityApp.EditorGuard(() =>
-				{
-					current.ResWeak.VisibilityStrategy.Update();
-				});
-			}
 			isSwitching = false;
-			if (Entered != null) Entered(current, null);
+
+			if (Entered != null)
+				Entered(current, null);
+
 			switchLock--;
 		}
 		private static void OnGameObjectParentChanged(GameObjectParentChangedEventArgs args)
@@ -351,8 +305,8 @@ namespace Duality.Resources
 		private IRendererVisibilityStrategy visibilityStrategy = new DefaultRendererVisibilityStrategy();
 		private GameObject[]                serializeObj       = null;
 
-		[DontSerialize]
-		private PhysicsWorld physicsWorld = new PhysicsWorld();
+		[DontSerialize] private bool active = false;
+		[DontSerialize] private PhysicsWorld physicsWorld = new PhysicsWorld();
 
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
@@ -438,6 +392,15 @@ namespace Duality.Resources
 			get { return current.ResWeak == this; }
 		}
 		/// <summary>
+		/// [GET] Returns whether this <see cref="Scene"/> is currently <see cref="Activate">active</see>,
+		/// i.e. in a state where it can update game simulation and be rendered.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public bool IsActive
+		{
+			get { return this.active; }
+		}
+		/// <summary>
 		/// [GET] Returns whether this Scene is completely empty.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
@@ -453,6 +416,90 @@ namespace Duality.Resources
 		public Scene()
 		{
 			this.RegisterManagerEvents();
+		}
+
+		/// <summary>
+		/// Transitions the <see cref="Scene"/> into an active state, where it can be 
+		/// updated and rendered. This is the state of a <see cref="Scene"/> while it 
+		/// is <see cref="Current"/>.
+		/// </summary>
+		public void Activate()
+		{
+			if (this.active) throw new InvalidOperationException("Cannot activate a scene that is already active.");
+
+			// Apply physical properties
+			this.physicsWorld.ResetSimulation();
+			this.physicsWorld.Gravity = this.globalGravity;
+
+			// When in the editor, apply prefab links
+			if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
+				this.ApplyPrefabLinks();
+
+			// When running the game, break prefab links
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+				this.BreakPrefabLinks();
+
+			// Activate GameObjects
+			DualityApp.EditorGuard(() =>
+			{
+				// Create a list of components to activate
+				List<ICmpInitializable> initList = new List<ICmpInitializable>();
+				foreach (Component component in this.FindComponents<ICmpInitializable>())
+				{
+					if (!component.Active) continue;
+					initList.Add(component as ICmpInitializable);
+				}
+				// Activate all the listed components. Note that they may create or destroy
+				// objects, so it's important that we're iterating a copy of the scene objects
+				// here, and not the real thing.
+				for (int i = 0; i < initList.Count; i++)
+				{
+					initList[i].OnActivate();
+				}
+			});
+
+			// Update object visibility / culling info, so a scheduled switch at the
+			// end of a frame will get up-to-date culling for rendering
+			DualityApp.EditorGuard(() =>
+			{
+				this.visibilityStrategy.Update();
+			});
+
+			this.active = true;
+		}
+		/// <summary>
+		/// Transitions the <see cref="Scene"/> into an inactive state, where it can no 
+		/// longer be updated or rendered. This is the state of a <see cref="Scene"/> 
+		/// after it was loaded.
+		/// </summary>
+		public void Deactivate()
+		{
+			if (!this.active) throw new InvalidOperationException("Cannot deactivate a scene that is not active.");
+
+			// Deactivate GameObjects
+			DualityApp.EditorGuard(() =>
+			{
+				// Create a list of components to deactivate
+				List<ICmpInitializable> shutdownList = new List<ICmpInitializable>();
+				foreach (Component component in this.FindComponents<ICmpInitializable>())
+				{
+					if (!component.Active) continue;
+					shutdownList.Add(component as ICmpInitializable);
+				}
+				// Deactivate all the listed components. Note that they may create or destroy
+				// objects, so it's important that we're iterating a copy of the scene objects
+				// here, and not the real thing.
+				for (int i = shutdownList.Count - 1; i >= 0; i--)
+				{
+					shutdownList[i].OnDeactivate();
+				}
+			});
+
+			// Clear physics world as we're ending simulation
+			this.physicsWorld.Native.Clear();
+			this.physicsWorld.ResetSimulation();
+
+			this.active = false;
 		}
 
 		/// <summary>
