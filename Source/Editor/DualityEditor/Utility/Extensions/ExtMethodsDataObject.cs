@@ -233,13 +233,14 @@ namespace Duality.Editor
 
 		public static void SetIColorData(this IDataObject data, IEnumerable<IColorData> color)
 		{
-			if (!color.Any()) return;
-			data.SetWrappedData(color.ToArray(), DataFormat.Value);
+			IColorData[] clrArray = color.ToArray();
+			if (clrArray.Length == 0) return;
+			data.SetWrappedData(clrArray, DataFormat.Value);
 
 			DataObject dataObj = data as DataObject;
 			if (dataObj != null)
 			{
-				var rgbaQuery = color.Select(c => c.ConvertTo<ColorRgba>());
+				var rgbaQuery = clrArray.Select(c => c.ConvertTo<ColorRgba>());
 				dataObj.SetText(rgbaQuery.ToString(c => string.Format("{0},{1},{2},{3}", c.R, c.G, c.B, c.A), ", "));
 			}
 		}
