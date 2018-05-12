@@ -244,7 +244,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		{
 			this.horizontalScroll = this.horizontalScrollBar.Value;
 			this.verticalScroll = this.verticalScrollBar.Value;
-			this.Invalidate();
+			this.Invalidate(this.paintingRect);
+
+			// Makes image panning noticably smoother by 
+			// updating the display immediately
+			this.Update();
 		}
 
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
