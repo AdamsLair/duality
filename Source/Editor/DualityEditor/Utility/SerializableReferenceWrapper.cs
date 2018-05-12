@@ -41,13 +41,13 @@ namespace Duality.Editor
 			object serializedObject = info.GetValue("data", typeof(long));
 			if (serializedObject is long)
 			{
-				this.ID = (long) serializedObject;
-				base.Data = referenceMap[this.ID];
+				long id = (long) serializedObject;
+				this.Data = referenceMap[id];
+				this.ID = id;
 			}
 			else
 			{
-				this.ID = -1;
-				base.Data = null;
+				this.Data = null;
 			}
 		}
 
@@ -58,7 +58,7 @@ namespace Duality.Editor
 			if (this.ID < 0)
 			{
 				this.ID = nextID++;
-				referenceMap[this.ID] = base.Data;
+				referenceMap[this.ID] = this.Data;
 			}
 			info.AddValue("data", this.ID);
 		}
