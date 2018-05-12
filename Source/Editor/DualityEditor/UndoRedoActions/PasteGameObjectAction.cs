@@ -49,6 +49,9 @@ namespace Duality.Editor.UndoRedoActions
 		{
 			int numDuplicates = this.targetParentObjects.Length;
 
+			// Create the clones. One set of clones for every parent.
+			// this.resultObj contains the objects going to the first parent
+			// followed by those going to the second parent and so on.
 			if (this.resultObj == null)
 			{
 				this.resultObj = new GameObject[this.targetObj.Length * numDuplicates];
@@ -63,6 +66,7 @@ namespace Duality.Editor.UndoRedoActions
 					this.targetObj[i % this.targetObj.Length].DeepCopyTo(this.resultObj[i]);
 			}
 
+			// Setup the clones
 			for (int i = 0; i < numDuplicates * this.targetObj.Length; i++)
 			{
 				GameObject original = this.targetObj[i % this.targetObj.Length];
@@ -76,9 +80,9 @@ namespace Duality.Editor.UndoRedoActions
 				// Prevent physics from getting crazy.
 				if (clone.Transform != null && clone.GetComponent<Components.Physics.RigidBody>() != null)
 					clone.Transform.Pos += Vector3.UnitX * 0.001f;
-
-				Scene.Current.AddObject(clone);
 			}
+
+			Scene.Current.AddObject(this.resultObj);
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}
 		public override void Undo()
@@ -87,8 +91,8 @@ namespace Duality.Editor.UndoRedoActions
 			foreach (GameObject clone in this.resultObj)
 			{
 				clone.Dispose();
-				Scene.Current.RemoveObject(clone);
 			}
+			Scene.Current.RemoveObject(this.resultObj);
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}
 	}
