@@ -19,7 +19,7 @@ namespace Duality.Editor
 	{
 		private object data;
 
-		public object Data
+		public virtual object Data
 		{
 			get { return this.data; }
 			set { this.data = value; }
@@ -39,7 +39,7 @@ namespace Duality.Editor
 			}
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			using (MemoryStream stream = new MemoryStream())
 			{
