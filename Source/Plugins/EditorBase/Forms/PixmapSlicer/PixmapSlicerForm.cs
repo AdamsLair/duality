@@ -49,6 +49,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				this.targetPixmap = value;
 				this.state.TargetPixmap = value;
 				this.stateControlToolStrip.Enabled = this.targetPixmap != null;
+				this.displayedImage = this.GenerateDisplayImage();
 				this.ResetImage();
 				this.Invalidate();
 			}
@@ -113,9 +114,15 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				this.ClientRectangle.X, this.ClientRectangle.Y + toolStripsHeight,
 				this.ClientRectangle.Width - scrollBarWidth, this.ClientRectangle.Height - toolStripsHeight - scrollBarHeight);
 
+			Rectangle previousImageRect = this.imageRect;
 			this.imageRect = new Rectangle(
 				this.paintingRect.X + 5, this.paintingRect.Y + 5,
 				this.paintingRect.Width - 10, this.paintingRect.Height - 10);
+
+			// The displayed image depends on these dimensions.
+			// If they have changed, generate a new image.
+			if (this.imageRect != previousImageRect)
+				this.displayedImage = this.GenerateDisplayImage();
 
 			this.horizontalScrollBar.Minimum = 0;
 			this.horizontalScrollBar.Maximum = (int)((this.paintingRect.Width * this.scaleFactor) - this.imageRect.Width);
@@ -156,8 +163,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			base.OnInvalidated(e);
 
 			this.UpdateGeometry();
-
-			this.displayedImage = this.GenerateDisplayImage();
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
