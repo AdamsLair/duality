@@ -17,7 +17,7 @@ namespace Duality.Editor
 	[Serializable]
 	public class SerializableWrapper : ISerializable
 	{
-		private object data;
+		protected object data;
 
 		public virtual object Data
 		{
@@ -32,8 +32,23 @@ namespace Duality.Editor
 		}
 		private SerializableWrapper(SerializationInfo info, StreamingContext context)
 		{
-			byte[] serializedData = info.GetValue("data", typeof(byte[])) as byte[];
-			using (MemoryStream stream = new MemoryStream(serializedData ?? new byte[0]))
+			byte[] serializedData;
+			try
+			{
+				serializedData = info.GetValue("data", typeof(byte[])) as byte[];
+			}
+			catch (Exception)
+			{
+				serializedData = null;
+			}
+
+			if (serializedData == null)
+			{
+				this.data = null;
+				return;
+			}
+
+			using (MemoryStream stream = new MemoryStream(serializedData))
 			{
 				this.data = Serializer.TryReadObject<object>(stream);
 			}
