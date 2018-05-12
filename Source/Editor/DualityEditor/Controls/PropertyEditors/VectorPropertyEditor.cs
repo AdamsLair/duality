@@ -131,7 +131,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 					string valString = this.editor.Select(ve => ve.Value).ToString(", ");
 					DataObject data = new DataObject();
 					data.SetText(valString);
-					data.SetWrappedData(this.DisplayedValue);
+					data.SetWrappedData(this.DisplayedValue, DataFormat.Value);
 					Clipboard.SetDataObject(data);
 					this.SetFocusEditorIndex(-1, true);
 					if (e.KeyCode == Keys.X)
@@ -152,9 +152,9 @@ namespace Duality.Editor.Controls.PropertyEditors
 				{
 					DataObject data = Clipboard.GetDataObject() as DataObject;
 					bool success = false;
-					if (data.GetWrappedDataPresent(this.DisplayedValue.GetType()))
+					if (data.GetWrappedDataPresent(this.DisplayedValue.GetType(), DataFormat.Value))
 					{
-						object stored = data.GetWrappedData(this.DisplayedValue.GetType());
+						object stored = data.GetWrappedData(this.DisplayedValue.GetType(), DataFormat.Value);
 						this.SetValue(stored);
 						this.PerformGetValue();
 						this.OnEditingFinished(FinishReason.LeapValue);
