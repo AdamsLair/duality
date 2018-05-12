@@ -145,11 +145,7 @@ namespace Duality.Editor
 		{
 			if (!data.GetWrappedDataPresent(typeof(Component[]), format)) return null;
 			Component[] refArray = data.GetWrappedData(typeof(Component[]), format) as Component[] ?? new Component[0];
-			return (
-				from r in refArray
-				where r is T
-				select r as T
-				).ToArray();
+			return refArray.OfType<T>().ToArray();
 		}
 		public static Component[] GetComponents(this IDataObject data, DataFormat format = DataFormat.Reference)
 		{
