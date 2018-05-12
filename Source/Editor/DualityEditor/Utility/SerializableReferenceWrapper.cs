@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -11,10 +12,10 @@ namespace Duality.Editor
 	public class SerializableReferenceWrapper : SerializableWrapper
 	{
 		private static long nextID = 0;
-		private static readonly Dictionary<long, object> referenceMap 
-			= new Dictionary<long, object>();
+		private static readonly Dictionary<long, object> referenceMap = new Dictionary<long, object>();
+		private static readonly long contextID = unchecked(DateTime.Now.Ticks * (long)Process.GetCurrentProcess().Id);
 
-		private long ID = -1;
+		private long id = -1;
 
 		public sealed override object Data
 		{
@@ -27,27 +28,35 @@ namespace Duality.Editor
 				// Invalidate the ID in use. Could
 				// occur if this SerializableReferenceWrapper
 				// is being reused
-				this.ID = -1;
+				this.id = -1;
 				base.Data = value;
 			}
 		}
 
-		public SerializableReferenceWrapper(object data)
-			: base(data)
-		{
-		}
+		public SerializableReferenceWrapper(object data) : base(data) { }
 		private SerializableReferenceWrapper(SerializationInfo info, StreamingContext context)
 		{
-			object serializedObject = info.GetValue("data", typeof(long));
-			if (serializedObject is long)
+			try
 			{
-				long id = (long) serializedObject;
-				this.Data = referenceMap[id];
-				this.ID = id;
+				long referenceID = info.GetInt64("data");
+				long referenceContext = info.GetInt64("context");
+
+				// Retrieve reference, but safeguard against IDs from a different
+				// application instance, or invalid / unavailable IDs.
+				object reference;
+				if (referenceContext != contextID || !referenceMap.TryGetValue(referenceID, out reference))
+				{
+					reference = null;
+					referenceID = -1;
+				}
+
+				this.data = reference;
+				this.id = referenceID;
 			}
-			else
+			catch (Exception)
 			{
-				this.Data = null;
+				this.data = null;
+				this.id = -1;
 			}
 		}
 
@@ -55,12 +64,14 @@ namespace Duality.Editor
 		{
 			// First time this object is being serialized. Give it an ID in the reference map
 			// so we can look it up when deserializing the object and get the same reference
-			if (this.ID < 0)
+			if (this.id < 0)
 			{
-				this.ID = nextID++;
-				referenceMap[this.ID] = this.Data;
+				this.id = nextID++;
+				referenceMap[this.id] = this.data;
 			}
-			info.AddValue("data", this.ID);
+
+			info.AddValue("data", this.id);
+			info.AddValue("context", contextID);
 		}
 	}
 }
