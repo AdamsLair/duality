@@ -13,6 +13,7 @@ namespace Duality.Editor
 	public static class ExtMethodsDataObject
 	{
 		private const string WrapperPrefix = "SerializableWrapper:";
+		private const string CloneSpecialization = "Clone:";
 
 		/// <summary>
 		/// Stores the specified non-<see cref="SerializableAttribute"/> data inside the specified data object using a serializable wrapper.
@@ -22,7 +23,12 @@ namespace Duality.Editor
 		/// <param name="byReference">Whether or not to store the value as a reference or to perform a clone of the value</param>
 		public static void SetWrappedData(this IDataObject data, object value, bool byReference = false)
 		{
-			data.SetData(WrapperPrefix + value.GetType().FullName, 
+			string format = string.Format("{0}{1}{2}",
+				WrapperPrefix, 
+				byReference ? "" : CloneSpecialization,
+				value.GetType().FullName);
+
+			data.SetData(format, 
 				byReference 
 					? new SerializableReferenceWrapper(value) 
 					: new SerializableWrapper(value));
@@ -32,10 +38,11 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="format"></param>
+		/// <param name="specialization">An optional specialization to the data format</param>
 		/// <returns></returns>
-		public static bool GetWrappedDataPresent(this IDataObject data, Type format)
+		public static bool GetWrappedDataPresent(this IDataObject data, Type format, string specialization = "")
 		{
-			return GetWrappedDataPresent(data, format.FullName);
+			return GetWrappedDataPresent(data, specialization + format.FullName);
 		}
 		/// <summary>
 		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
@@ -43,9 +50,9 @@ namespace Duality.Editor
 		/// <param name="data"></param>
 		/// <param name="format"></param>
 		/// <returns></returns>
-		public static bool GetWrappedDataPresent(this IDataObject data, string format)
+		public static bool GetWrappedDataPresent(this IDataObject data, string format, string specialization = "")
 		{
-			return data.GetDataPresent(WrapperPrefix + format);
+			return data.GetDataPresent(WrapperPrefix + specialization + format);
 		}
 		/// <summary>
 		/// Retrieves the specified non-<see cref="SerializableAttribute"/> data from the specified data object using a serializable wrapper.
@@ -53,9 +60,9 @@ namespace Duality.Editor
 		/// <param name="data"></param>
 		/// <param name="format"></param>
 		/// <returns></returns>
-		public static object GetWrappedData(this IDataObject data, Type format)
+		public static object GetWrappedData(this IDataObject data, Type format, string specialization = "")
 		{
-			return GetWrappedData(data, format.FullName);
+			return GetWrappedData(data, specialization + format.FullName);
 		}
 		/// <summary>
 		/// Retrieves the specified non-<see cref="SerializableAttribute"/> data from the specified data object using a serializable wrapper.
@@ -63,9 +70,9 @@ namespace Duality.Editor
 		/// <param name="data"></param>
 		/// <param name="format"></param>
 		/// <returns></returns>
-		public static object GetWrappedData(this IDataObject data, string format)
+		public static object GetWrappedData(this IDataObject data, string format, string specialization = "")
 		{
-			SerializableWrapper wrapper = data.GetData(WrapperPrefix + format) as SerializableWrapper;
+			SerializableWrapper wrapper = data.GetData(WrapperPrefix + specialization + format) as SerializableWrapper;
 			if (wrapper != null)
 				return wrapper.Data;
 			else
@@ -122,6 +129,20 @@ namespace Duality.Editor
 				where cmpType.IsInstanceOfType(c)
 				select c
 				).ToArray();
+		}
+
+		public static void SetGameObjects(this IDataObject data, IEnumerable<GameObject> obj)
+		{
+			GameObject[] objArray = obj.ToArray();
+			if (objArray.Length > 0) data.SetWrappedData(objArray);
+		}
+		public static bool ContainsGameObjects(this IDataObject data)
+		{
+			return data.GetWrappedDataPresent(typeof(GameObject[]), CloneSpecialization);
+		}
+		public static GameObject[] GetGameObjects(this IDataObject data)
+		{
+			return data.GetWrappedData(typeof(GameObject[]), CloneSpecialization) as GameObject[] ?? new GameObject[0];
 		}
 
 		public static void SetGameObjectRefs(this IDataObject data, IEnumerable<GameObject> obj)
