@@ -507,7 +507,12 @@ namespace Duality
 			sound.Update();
 			pluginManager.InvokeAfterUpdate();
 			VisualLogs.PrepareRenderLogEntries();
+
+			// Perform a cleanup step to catch all DisposeLater calls from this update
 			RunCleanup();
+
+			// Perform any previously scheduled Scene switch
+			Scene.PerformScheduledSwitch();
 
 			Profile.TimeUpdate.EndMeasure();
 			isUpdating = false;
@@ -566,7 +571,15 @@ namespace Duality
 
 			sound.Update();
 			VisualLogs.PrepareRenderLogEntries();
+
+			// Perform a cleanup step to catch all DisposeLater calls from this update
 			RunCleanup();
+
+			if (simulateGame)
+			{
+				// Perform any previously scheduled Scene switch
+				Scene.PerformScheduledSwitch();
+			}
 
 			Profile.TimeUpdate.EndMeasure();
 			isUpdating = false;
@@ -663,7 +676,6 @@ namespace Duality
 
 			// Perform late finalization and remove disposed object references
 			Resource.RunCleanup();
-			Scene.Current.RunCleanup();
 		}
 
 		/// <summary>

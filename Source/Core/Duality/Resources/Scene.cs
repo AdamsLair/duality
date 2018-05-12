@@ -50,17 +50,44 @@ namespace Duality.Resources
 			}
 			private set
 			{
+				// Only perform a scene switch if current and next are different
 				if (current.ResWeak != value)
 				{
-					if (!current.IsExplicitNull) 
-						OnLeaving();
+					switchLock++;
+					try
+					{
+						if (Leaving != null)
+							Leaving(current, null);
 
-					current.Res = value ?? new Scene();
+						isSwitching = true;
 
-					OnEntered();
+						if (current.ResWeak != null && current.ResWeak.IsActive)
+							current.ResWeak.Deactivate();
+
+						current.Res = value ?? new Scene();
+
+						if (current.ResWeak != null && !current.ResWeak.IsActive)
+							current.ResWeak.Activate();
+
+						isSwitching = false;
+
+						if (Entered != null)
+							Entered(current, null);
+					}
+					finally
+					{
+						switchLock--;
+						isSwitching = false;
+					}
 				}
+				// If the scene is actually the same, we still do the assignment to
+				// make sure our internal ContentRef will update its resource path,
+				// should this have changed. This can happen during a rename event in
+				// the editor.
 				else
+				{
 					current.Res = value ?? new Scene();
+				}
 			}
 		}
 		/// <summary>
@@ -128,14 +155,21 @@ namespace Duality.Resources
 			if (!scene.IsExplicitNull && !scene.IsAvailable) 
 				throw new ArgumentException("Can't switch to Scene '" + scene.Path + "' because it doesn't seem to exist.", "scene");
 
-			if (switchLock == 0 || forceImmediately)
-			{
-				Scene.Current = scene.Res;
-			}
-			else
+			// Check whether there is anything that would prevent us from doing the
+			// switch right now, instead of at the end of the current frame
+			bool switchIsBlocked =
+				switchLock != 0 ||
+				Scene.Current.IsRenderingOrUpdating ||
+				(scene.Res != null && scene.Res.IsRenderingOrUpdating);
+
+			if (switchIsBlocked && !forceImmediately)
 			{
 				switchToTarget = scene;
 				switchToScheduled = true;
+			}
+			else
+			{
+				Scene.Current = scene.Res;
 			}
 		}
 		/// <summary>
@@ -147,10 +181,16 @@ namespace Duality.Resources
 		{
 			ContentRef<Scene> target = Scene.Current;
 
-			if (switchLock == 0)
-				Scene.Current.Dispose();
-			else
+			// Check whether there is anything that would prevent us from doing the
+			// reload right now, instead of at the end of the current frame
+			bool reloadIsBlocked =
+				switchLock != 0 ||
+				Scene.Current.IsRenderingOrUpdating;
+
+			if (reloadIsBlocked)
 				Scene.Current.DisposeLater();
+			else
+				Scene.Current.Dispose();
 
 			Scene.SwitchTo(target);
 		}
@@ -160,7 +200,7 @@ namespace Duality.Resources
 		/// <see cref="Scene.SwitchTo"/>.
 		/// </summary>
 		/// <returns></returns>
-		private static bool PerformScheduledSwitch()
+		internal static bool PerformScheduledSwitch()
 		{
 			if (!switchToScheduled) return false;
 
@@ -191,34 +231,6 @@ namespace Duality.Resources
 			return true;
 		}
 
-		private static void OnLeaving()
-		{
-			switchLock++;
-
-			if (Leaving != null)
-				Leaving(current, null);
-
-			isSwitching = true;
-
-			if (current.ResWeak != null && current.ResWeak.IsActive)
-				current.ResWeak.Deactivate();
-
-			switchLock--;
-		}
-		private static void OnEntered()
-		{
-			switchLock++;
-
-			if (current.ResWeak != null)
-				current.ResWeak.Activate();
-
-			isSwitching = false;
-
-			if (Entered != null)
-				Entered(current, null);
-
-			switchLock--;
-		}
 		private static void OnGameObjectParentChanged(GameObjectParentChangedEventArgs args)
 		{
 			if (GameObjectParentChanged != null) GameObjectParentChanged(current, args);
@@ -307,6 +319,8 @@ namespace Duality.Resources
 
 		[DontSerialize] private bool active = false;
 		[DontSerialize] private PhysicsWorld physicsWorld = new PhysicsWorld();
+		[DontSerialize] private bool isUpdating = false;
+		[DontSerialize] private bool isRendering = false;
 
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
@@ -322,7 +336,7 @@ namespace Duality.Resources
 		[DontSerialize] private RawList<Component> updatableComponents = new RawList<Component>(256);
 		[DontSerialize] private RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
 
-		
+
 		/// <summary>
 		/// [GET / SET] The strategy that is used to determine which <see cref="ICmpRenderer">renderers</see> are visible.
 		/// </summary>
@@ -407,6 +421,10 @@ namespace Duality.Resources
 		public bool IsEmpty
 		{
 			get { return !this.objectManager.AllObjects.Any(); }
+		}
+		private bool IsRenderingOrUpdating
+		{
+			get { return this.isRendering || this.isUpdating; }
 		}
 
 
@@ -503,7 +521,7 @@ namespace Duality.Resources
 		}
 
 		/// <summary>
-		/// Renders the Scene
+		/// Renders the Scene.
 		/// </summary>
 		/// <param name="target">
 		/// The <see cref="RenderTarget"/> which will be used for all rendering output. 
@@ -511,65 +529,74 @@ namespace Duality.Resources
 		/// </param>
 		/// <param name="viewportRect">The viewport to which will be rendered.</param>
 		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
-		internal void Render(ContentRef<RenderTarget> target, Rect viewportRect, Vector2 imageSize)
+		public void Render(ContentRef<RenderTarget> target, Rect viewportRect, Vector2 imageSize)
 		{
-			if (!this.IsCurrent) throw new InvalidOperationException("Can't render non-current Scene!");
-			switchLock++;
-			
-			// Retrieve the rendering setup that will be used for rendering the scene
-			RenderSetup setup = 
-				DualityApp.AppData.RenderingSetup.Res ?? 
-				RenderSetup.Default.Res;
+			if (this.isRendering) throw new InvalidOperationException("Can't render a Scene while it is already being rendered.");
+			this.isRendering = true;
+			try
+			{
+				// Retrieve the rendering setup that will be used for rendering the scene
+				RenderSetup setup =
+					DualityApp.AppData.RenderingSetup.Res ??
+					RenderSetup.Default.Res;
 
-			// Render the scene
-			setup.RenderScene(this, target, viewportRect, imageSize);
-
-			switchLock--;
+				// Render the scene
+				setup.RenderScene(this, target, viewportRect, imageSize);
+			}
+			finally
+			{
+				this.isRendering = false;
+			}
 		}
 		/// <summary>
-		/// Updates the Scene
+		/// Updates the Scene.
 		/// </summary>
-		internal void Update()
+		public void Update()
 		{
-			if (!this.IsCurrent) throw new InvalidOperationException("Can't update non-current Scene!");
-			switchLock++;
-
-			// Update physics
-			this.physicsWorld.Simulate(Time.DeltaTime);
-
-			// Update all GameObjects
-			Profile.TimeUpdateScene.BeginMeasure();
-			DualityApp.EditorGuard(() =>
+			if (this.isUpdating) throw new InvalidOperationException("Can't update a Scene while it is already being updated.");
+			this.isUpdating = true;
+			try
 			{
-				this.UpdateComponents<ICmpUpdatable>(cmp => cmp.OnUpdate());
-				this.visibilityStrategy.Update();
-			});
-			Profile.TimeUpdateScene.EndMeasure();
+				// Remove disposed objects from managers
+				this.CleanupDisposedObjects();
 
-			// Perform a cleanup step to catch all DisposeLater calls from within the Scene update
-			DualityApp.RunCleanup();
-			
-			// Perform a scheduled Scene switch
-			PerformScheduledSwitch();
+				// Update physics
+				this.physicsWorld.Simulate(Time.DeltaTime);
 
-			switchLock--;
+				// Update all GameObjects
+				Profile.TimeUpdateScene.BeginMeasure();
+				DualityApp.EditorGuard(() =>
+				{
+					this.UpdateComponents<ICmpUpdatable>(cmp => cmp.OnUpdate());
+					this.visibilityStrategy.Update();
+				});
+				Profile.TimeUpdateScene.EndMeasure();
+			}
+			finally
+			{
+				this.isUpdating = false;
+			}
 		}
 		/// <summary>
 		/// Updates the Scene in the editor.
 		/// </summary>
 		internal void EditorUpdate()
 		{
-			if (!this.IsCurrent) throw new InvalidOperationException("Can't update non-current Scene!");
-			switchLock++;
-
-			Profile.TimeUpdateScene.BeginMeasure();
-			DualityApp.EditorGuard(() =>
+			if (this.isUpdating) throw new InvalidOperationException("Can't update a Scene while it is already being updated.");
+			this.isUpdating = true;
+			try
 			{
-				this.UpdateComponents<ICmpEditorUpdatable>(cmp => cmp.OnUpdate());
-			});
-			Profile.TimeUpdateScene.EndMeasure();
-
-			switchLock--;
+				Profile.TimeUpdateScene.BeginMeasure();
+				DualityApp.EditorGuard(() =>
+				{
+					this.UpdateComponents<ICmpEditorUpdatable>(cmp => cmp.OnUpdate());
+				});
+				Profile.TimeUpdateScene.EndMeasure();
+			}
+			finally
+			{
+				this.isUpdating = false;
+			}
 		}
 		private void UpdateComponents<T>(Action<T> updateAction) where T : class
 		{
@@ -660,7 +687,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// Cleanes up disposed Scene objects.
 		/// </summary>
-		new internal void RunCleanup()
+		private void CleanupDisposedObjects()
 		{
 			this.objectManager.Flush();
 			this.visibilityStrategy.CleanupRenderers();
