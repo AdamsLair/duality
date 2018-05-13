@@ -200,6 +200,36 @@ namespace Duality.Editor
 				select c
 				).ToArray();
 		}
+		public static bool TryGetComponents<T>(this IDataObject data, out T[] comps) where T : Component
+		{
+			comps = data.GetComponents<T>();
+			return comps != null;
+		}
+		public static bool TryGetComponents<T>(this IDataObject data, DataFormat format, out T[] comps) where T : Component
+		{
+			comps = data.GetComponents<T>(format);
+			return comps != null;
+		}
+		public static bool TryGetComponents(this IDataObject data, out Component[] comps)
+		{
+			comps = data.GetComponents();
+			return comps != null;
+		}
+		public static bool TryGetComponents(this IDataObject data, DataFormat format, out Component[] comps)
+		{
+			comps = data.GetComponents(format);
+			return comps != null;
+		}
+		public static bool TryGetComponents(this IDataObject data, Type cmpType, out Component[] comps)
+		{
+			comps = data.GetComponents(cmpType);
+			return comps != null;
+		}
+		public static bool TryGetComponents(this IDataObject data, Type cmpType, DataFormat format, out Component[] comps)
+		{
+			comps = data.GetComponents(cmpType, format);
+			return comps != null;
+		}
 
 		public static void SetGameObjects(this IDataObject data, IEnumerable<GameObject> obj, DataFormat format = DataFormat.Reference)
 		{
@@ -222,6 +252,16 @@ namespace Duality.Editor
 			}
 
 			return data.GetWrappedData(typeof(GameObject[]), format) as GameObject[];
+		}
+		public static bool TryGetGameObjects(this IDataObject data, out GameObject[] objects)
+		{
+			objects = data.GetGameObjects();
+			return objects != null;
+		}
+		public static bool TryGetGameObjects(this IDataObject data, DataFormat format, out GameObject[] objects)
+		{
+			objects = data.GetGameObjects(format);
+			return objects != null;
 		}
 
 		public static void SetContentRefs(this IDataObject data, IEnumerable<IContentRef> content)

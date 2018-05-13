@@ -35,9 +35,9 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 		{
 			bool finishConvertOp = false;
 
-			if (convert.Data.ContainsGameObjects())
+			GameObject[] draggedObjArray;
+			if (convert.Data.TryGetGameObjects(out draggedObjArray))
 			{
-				GameObject[] draggedObjArray = convert.Data.GetGameObjects();
 				if (draggedObjArray != null)
 				{
 					// Filter out GameObjects that are children of others
