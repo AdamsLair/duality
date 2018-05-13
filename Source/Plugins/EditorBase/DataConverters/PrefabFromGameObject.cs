@@ -38,26 +38,28 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 			if (convert.Data.ContainsGameObjects())
 			{
 				GameObject[] draggedObjArray = convert.Data.GetGameObjects();
-
-				// Filter out GameObjects that are children of others
-				draggedObjArray = draggedObjArray.Where(o => !draggedObjArray.Any(o2 => o.IsChildOf(o2))).ToArray();
-
-				// Generate Prefabs
-				foreach (GameObject draggedObj in draggedObjArray)
+				if (draggedObjArray != null)
 				{
-					if (convert.IsObjectHandled(draggedObj)) continue;
+					// Filter out GameObjects that are children of others
+					draggedObjArray = draggedObjArray.Where(o => !draggedObjArray.Any(o2 => o.IsChildOf(o2))).ToArray();
 
-					// Create Prefab
-					Prefab prefab = new Prefab(draggedObj);
+					// Generate Prefabs
+					foreach (GameObject draggedObj in draggedObjArray)
+					{
+						if (convert.IsObjectHandled(draggedObj)) continue;
 
-					// Add a name hint that may be used as indicator to select a Resource name later
-					prefab.AssetInfo = new AssetInfo();
-					prefab.AssetInfo.NameHint = draggedObj.Name;
+						// Create Prefab
+						Prefab prefab = new Prefab(draggedObj);
 
-					// Mark GameObject as handled
-					convert.MarkObjectHandled(draggedObj);						
-					convert.AddResult(prefab);
-					finishConvertOp = true;
+						// Add a name hint that may be used as indicator to select a Resource name later
+						prefab.AssetInfo = new AssetInfo();
+						prefab.AssetInfo.NameHint = draggedObj.Name;
+
+						// Mark GameObject as handled
+						convert.MarkObjectHandled(draggedObj);
+						convert.AddResult(prefab);
+						finishConvertOp = true;
+					}
 				}
 			}
 

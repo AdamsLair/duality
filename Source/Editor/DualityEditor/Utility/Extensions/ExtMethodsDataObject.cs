@@ -35,7 +35,6 @@ namespace Duality.Editor
 	}
 
 	// TODO: document parameters and such
-	// TODO: address the different in that GetGameObjects returns new GameObject[0] on fail while GetComponents returns null. Should have one convention.
 	public static class ExtMethodsDataObject
 	{
 		private const string ReferencePrefix = "SerializableReferenceWrapper:";
@@ -222,11 +221,11 @@ namespace Duality.Editor
 				&& !data.GetWrappedDataPresent(typeof(GameObject[]), DataFormat.Value, false))
 			{
 				GameObject[] refArray = data.GetWrappedData(typeof(GameObject[]), DataFormat.Reference, false) as GameObject[];
-				if (refArray == null) return new GameObject[0];
+				if (refArray == null) return null;
 				return refArray.Select(r => r.DeepClone()).ToArray();
 			}
 
-			return data.GetWrappedData(typeof(GameObject[]), format) as GameObject[] ?? new GameObject[0];
+			return data.GetWrappedData(typeof(GameObject[]), format) as GameObject[];
 		}
 
 		public static void SetContentRefs(this IDataObject data, IEnumerable<IContentRef> content)

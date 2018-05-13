@@ -1107,14 +1107,18 @@ namespace Duality.Editor.Plugins.ProjectView
 					Prefab prefab = targetResNode.ResLink.Res as Prefab;
 					if (prefab != null)
 					{
-						GameObject draggedObj = data.GetGameObjects()[0];
+						GameObject[] draggedObjects = data.GetGameObjects();
+						GameObject draggedObj = draggedObjects[0];
 
-						UndoRedoManager.BeginMacro();
-						// Prevent recursion
-						UndoRedoManager.Do(new BreakPrefabLinkAction(draggedObj.ChildrenDeep.Where(c => c.PrefabLink != null && c.PrefabLink.Prefab == prefab)));
-						// Inject GameObject to Prefab & Establish PrefabLink
-						UndoRedoManager.Do(new ApplyToPrefabAction(draggedObj, prefab));
-						UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromLast);
+						if (draggedObj != null)
+						{
+							UndoRedoManager.BeginMacro();
+							// Prevent recursion
+							UndoRedoManager.Do(new BreakPrefabLinkAction(draggedObj.ChildrenDeep.Where(c => c.PrefabLink != null && c.PrefabLink.Prefab == prefab)));
+							// Inject GameObject to Prefab & Establish PrefabLink
+							UndoRedoManager.Do(new ApplyToPrefabAction(draggedObj, prefab));
+							UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromLast);
+						}
 					}
 				}
 				// See if we can retrieve Resources from data
