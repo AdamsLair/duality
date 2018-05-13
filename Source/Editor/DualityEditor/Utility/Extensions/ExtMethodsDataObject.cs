@@ -171,9 +171,10 @@ namespace Duality.Editor
 				return refArray.OfType<T>().Select(r => r.DeepClone()).ToArray();
 			}
 
-			// TODO: can this be removed?
-			if (!data.GetWrappedDataPresent(typeof(Component[]), format)) return null;
-			Component[] compArray = data.GetWrappedData(typeof(Component[]), format) as Component[] ?? new Component[0];
+			Component[] compArray = data.GetWrappedData(typeof(Component[]), format) as Component[];
+			if (compArray == null)
+				return null;
+
 			return compArray.OfType<T>().ToArray();
 		}
 		public static Component[] GetComponents(this IDataObject data, DataFormat format = DataFormat.Reference)
@@ -194,9 +195,10 @@ namespace Duality.Editor
 				return refArray.Select(r => r.DeepClone()).ToArray();
 			}
 
-			// TODO: can this be removed?
-			if (!data.GetWrappedDataPresent(typeof(Component[]), format)) return null;
-			Component[] compArray = data.GetWrappedData(typeof(Component[]), format) as Component[] ?? new Component[0];
+			Component[] compArray = data.GetWrappedData(typeof(Component[]), format) as Component[];
+			if (compArray == null)
+				return null;
+
 			return (
 				from c in compArray
 				where cmpType.IsInstanceOfType(c)
