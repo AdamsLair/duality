@@ -18,7 +18,7 @@ namespace Duality.Editor.Tests
 		[Test] public void GetGameObjectAfterClipboard()
 		{
 			DataObject dataIn = new DataObject();
-			GameObject gameObject = new GameObject("a");
+			GameObject gameObject = new GameObject();
 
 			dataIn.SetGameObjects(new [] { gameObject });
 			Clipboard.SetDataObject(dataIn);
@@ -32,8 +32,7 @@ namespace Duality.Editor.Tests
 			Assert.AreNotSame(gameObject, dataOut.GetGameObjects(DataFormat.Value)[0]);
 		}
 
-		[Test]
-		public void GetComponentAfterClipboard()
+		[Test] public void GetComponentAfterClipboard()
 		{
 			DataObject dataIn = new DataObject();
 			TestComponent comp = new TestComponent();
@@ -50,8 +49,7 @@ namespace Duality.Editor.Tests
 			Assert.AreNotSame(comp, dataOut.GetComponents(DataFormat.Value)[0]);
 		}
 
-		[Test]
-		public void GetComponentAfterClipboardStronglyTyped()
+		[Test] public void GetComponentAfterClipboardStronglyTyped()
 		{
 			DataObject dataIn = new DataObject();
 			TestComponent comp = new TestComponent();
