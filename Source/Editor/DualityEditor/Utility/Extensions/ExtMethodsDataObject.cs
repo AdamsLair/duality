@@ -231,11 +231,21 @@ namespace Duality.Editor
 		}
 		public static bool TryGetGameObjects(this IDataObject data, out GameObject[] objects)
 		{
+			if (!data.ContainsGameObjects())
+			{
+				objects = null;
+				return false;
+			}
 			objects = data.GetGameObjects();
 			return objects != null;
 		}
 		public static bool TryGetGameObjects(this IDataObject data, DataFormat format, out GameObject[] objects)
 		{
+			if (!data.ContainsGameObjects(format))
+			{
+				objects = null;
+				return false;
+			}
 			objects = data.GetGameObjects(format);
 			return objects != null;
 		}
