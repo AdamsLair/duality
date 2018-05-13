@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -34,6 +35,7 @@ namespace Duality.Editor
 	}
 
 	// TODO: document parameters and such
+	// TODO: address the different in that GetGameObjects returns new GameObject[0] on fail while GetComponents returns null. Should have one convention.
 	public static class ExtMethodsDataObject
 	{
 		private const string ReferencePrefix = "SerializableReferenceWrapper:";
@@ -62,7 +64,7 @@ namespace Duality.Editor
 		/// <returns></returns>
 		public static bool GetWrappedDataPresent(this IDataObject data, Type type, DataFormat format, bool allowConversion = true)
 		{
-			return GetWrappedDataPresent(data, type.FullName, format);
+			return GetWrappedDataPresent(data, type.FullName, format, allowConversion);
 		}
 		/// <summary>
 		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
@@ -115,9 +117,11 @@ namespace Duality.Editor
 			// Getting in the given format failed.
 			// Try converting from other formats.
 			object converted;
-			if (formatType == DataFormat.Value 
+			if (formatType == DataFormat.Value
 				&& (converted = data.GetWrappedData(format, DataFormat.Reference, false)) != null)
+			{
 				return converted.DeepClone();
+			}
 
 			return null;
 		}
@@ -158,9 +162,20 @@ namespace Duality.Editor
 		}
 		public static T[] GetComponents<T>(this IDataObject data, DataFormat format = DataFormat.Reference) where T : Component
 		{
+			// If value format is requested but it does not exist explicitly 
+			// within the IDataObject, clone the array of references
+			if (format == DataFormat.Value
+				&& !data.GetWrappedDataPresent(typeof(Component[]), DataFormat.Value, false))
+			{
+				Component[] refArray = data.GetWrappedData(typeof(Component[]), DataFormat.Reference, false) as Component[];
+				if (refArray == null) return new T[0];
+				return refArray.OfType<T>().Select(r => r.DeepClone()).ToArray();
+			}
+
+			// TODO: can this be removed?
 			if (!data.GetWrappedDataPresent(typeof(Component[]), format)) return null;
-			Component[] refArray = data.GetWrappedData(typeof(Component[]), format) as Component[] ?? new Component[0];
-			return refArray.OfType<T>().ToArray();
+			Component[] compArray = data.GetWrappedData(typeof(Component[]), format) as Component[] ?? new Component[0];
+			return compArray.OfType<T>().ToArray();
 		}
 		public static Component[] GetComponents(this IDataObject data, DataFormat format = DataFormat.Reference)
 		{
@@ -169,10 +184,22 @@ namespace Duality.Editor
 		public static Component[] GetComponents(this IDataObject data, Type cmpType, DataFormat format = DataFormat.Reference)
 		{
 			if (cmpType == null) cmpType = typeof(Component);
+
+			// If value format is requested but it does not exist explicitly 
+			// within the IDataObject, clone the array of references
+			if (format == DataFormat.Value
+				&& !data.GetWrappedDataPresent(typeof(Component[]), DataFormat.Value, false))
+			{
+				Component[] refArray = data.GetWrappedData(typeof(Component[]), DataFormat.Reference, false) as Component[];
+				if (refArray == null) return new Component[0];
+				return refArray.Select(r => r.DeepClone()).ToArray();
+			}
+
+			// TODO: can this be removed?
 			if (!data.GetWrappedDataPresent(typeof(Component[]), format)) return null;
-			Component[] refArray = data.GetWrappedData(typeof(Component[]), format) as Component[] ?? new Component[0];
+			Component[] compArray = data.GetWrappedData(typeof(Component[]), format) as Component[] ?? new Component[0];
 			return (
-				from c in refArray
+				from c in compArray
 				where cmpType.IsInstanceOfType(c)
 				select c
 				).ToArray();
@@ -189,6 +216,16 @@ namespace Duality.Editor
 		}
 		public static GameObject[] GetGameObjects(this IDataObject data, DataFormat format = DataFormat.Reference)
 		{
+			// If value format is requested but it does not exist explicitly 
+			// within the IDataObject, clone the array of references
+			if (format == DataFormat.Value 
+				&& !data.GetWrappedDataPresent(typeof(GameObject[]), DataFormat.Value, false))
+			{
+				GameObject[] refArray = data.GetWrappedData(typeof(GameObject[]), DataFormat.Reference, false) as GameObject[];
+				if (refArray == null) return new GameObject[0];
+				return refArray.Select(r => r.DeepClone()).ToArray();
+			}
+
 			return data.GetWrappedData(typeof(GameObject[]), format) as GameObject[] ?? new GameObject[0];
 		}
 
