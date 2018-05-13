@@ -48,8 +48,8 @@ namespace Duality.Editor
 		{
 			string prefix = format == DataFormat.Reference ? ReferencePrefix : ValuePrefix;
 			SerializableWrapper wrapper = format == DataFormat.Reference
-				? new SerializableReferenceWrapper(value)
-				: new SerializableWrapper(value);
+				? new SerializableReferenceWrapper(new [] { value })
+				: new SerializableWrapper(new[] { value });
 
 			data.SetData(prefix + value.GetType().FullName, wrapper);
 		}
@@ -90,13 +90,13 @@ namespace Duality.Editor
 		/// Retrieves the specified non-<see cref="SerializableAttribute"/> data from the specified data object using a serializable wrapper.
 		/// </summary>
 		/// <param name="data"></param>
-		/// <param name="format"></param>
+		/// <param name="type"></param>
 		/// <param name="formatType"></param>
 		/// <param name="allowConversion"></param>
 		/// <returns></returns>
-		public static object GetWrappedData(this IDataObject data, Type format, DataFormat formatType, bool allowConversion = true)
+		public static object GetWrappedData(this IDataObject data, Type type, DataFormat formatType, bool allowConversion = true)
 		{
-			return GetWrappedData(data, format.FullName, formatType, allowConversion);
+			return GetWrappedData(data, type.FullName, formatType, allowConversion);
 		}
 		/// <summary>
 		/// Retrieves the specified non-<see cref="SerializableAttribute"/> data from the specified data object using a serializable wrapper.
@@ -110,7 +110,7 @@ namespace Duality.Editor
 		{
 			string prefix = formatType == DataFormat.Reference ? ReferencePrefix : ValuePrefix;
 			SerializableWrapper wrapper = data.GetData(prefix + format) as SerializableWrapper;
-			if (wrapper != null) return wrapper.Data;
+			if (wrapper != null) return wrapper.Data[0];
 			if (!allowConversion) return null;
 
 			// Getting in the given format failed.
