@@ -364,7 +364,7 @@ namespace Duality.Tests.Components
 
 			this.AssignEventLog(root, eventLog, true);
 			root.Dispose();
-			DualityApp.RunCleanup();
+			Scene.Current.CleanupDisposedObjects();
 			this.AssertEventOrder(eventLog, 5 * objectCount, Component.ExecOrder, true);
 
 			Scene.SwitchTo(null, true);

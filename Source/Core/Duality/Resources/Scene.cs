@@ -685,9 +685,12 @@ namespace Duality.Resources
 			Profile.TimeUpdateSceneComponents.EndMeasure();
 		}
 		/// <summary>
-		/// Cleanes up disposed Scene objects.
+		/// Cleanes up scene objects that have been disposed since the scene was last updated.
+		/// 
+		/// This will invoke <see cref="ICmpInitializable"/> deactivate handlers for objects
+		/// where deactivation is still pending.
 		/// </summary>
-		private void CleanupDisposedObjects()
+		public void CleanupDisposedObjects()
 		{
 			this.objectManager.Flush();
 			this.visibilityStrategy.CleanupRenderers();
