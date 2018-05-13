@@ -17,7 +17,7 @@ namespace Duality.Editor
 
 		private long[] ids = null;
 
-		public sealed override object[] Data
+		public sealed override IEnumerable<object> Data
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Duality.Editor
 			}
 		}
 
-		public SerializableReferenceWrapper(object[] data) : base(data) { }
+		public SerializableReferenceWrapper(IEnumerable<object> data) : base(data) { }
 		private SerializableReferenceWrapper(SerializationInfo info, StreamingContext context)
 		{
 			try

@@ -8,6 +8,7 @@ using Duality;
 
 namespace Duality.Editor
 {
+	// TODO: handle Value formatted data?
 	public class ConversionData : IDataObject
 	{
 		private	IDataObject data      = null;
@@ -43,7 +44,7 @@ namespace Duality.Editor
 				if (this.data.GetDataPresent(format, autoConvert))
 					obj = this.data.GetData(format, autoConvert);
 				else if (this.data.GetWrappedDataPresent(format, DataFormat.Reference))
-					obj = this.data.GetWrappedData(format, DataFormat.Reference);
+					obj = this.data.GetWrappedData(format, DataFormat.Reference); // TODO: should ConversionData care that GetWrappedData now returns an array?
 				else
 					obj = null;
 

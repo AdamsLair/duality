@@ -43,9 +43,9 @@ namespace Duality.Editor
 		/// <summary>
 		/// Stores the specified non-<see cref="SerializableAttribute"/> data inside the specified data object using a serializable wrapper.
 		/// </summary>
-		/// <param name="elementType"></param>
+		/// <param name="elementType">The type of the given IEnumerable elements</param>
 		/// <param name="format">The format to store the data in</param>
-		public static void SetWrappedData(this IDataObject data, object[] values, Type elementType, DataFormat format)
+		public static void SetWrappedData(this IDataObject data, IEnumerable<object> values, Type elementType, DataFormat format)
 		{
 			string prefix = format == DataFormat.Reference ? ReferencePrefix : ValuePrefix;
 			SerializableWrapper wrapper = format == DataFormat.Reference
@@ -53,14 +53,6 @@ namespace Duality.Editor
 				: new SerializableWrapper(values);
 
 			data.SetData(prefix + elementType.FullName, wrapper);
-		}
-		/// <summary>
-		/// Stores the specified non-<see cref="SerializableAttribute"/> data inside the specified data object using a serializable wrapper.
-		/// </summary>
-		/// <param name="format">The format to store the data in</param>
-		public static void SetWrappedData<T>(this IDataObject data, T[] values, DataFormat format)
-		{
-			data.SetWrappedData(values.OfType<object>().ToArray(), typeof(T), format);
 		}
 		/// <summary>
 		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
@@ -119,7 +111,7 @@ namespace Duality.Editor
 		{
 			string prefix = formatType == DataFormat.Reference ? ReferencePrefix : ValuePrefix;
 			SerializableWrapper wrapper = data.GetData(prefix + format) as SerializableWrapper;
-			if (wrapper != null) return wrapper.Data;
+			if (wrapper != null) return wrapper.Data.ToArray();
 			if (!allowConversion) return null;
 
 			// Getting in the given format failed.
@@ -149,7 +141,7 @@ namespace Duality.Editor
 		public static void SetComponents(this IDataObject data, IEnumerable<Component> cmp, DataFormat format = DataFormat.Reference)
 		{
 			Component[] cmpArray = cmp.ToArray();
-			if (cmpArray.Length > 0) data.SetWrappedData(cmpArray, format);
+			if (cmpArray.Length > 0) data.SetWrappedData(cmpArray, typeof(Component), format);
 		}
 		public static bool ContainsComponents<T>(this IDataObject data, DataFormat format = DataFormat.Reference) where T : Component
 		{
@@ -225,7 +217,7 @@ namespace Duality.Editor
 		public static void SetGameObjects(this IDataObject data, IEnumerable<GameObject> obj, DataFormat format = DataFormat.Reference)
 		{
 			GameObject[] objArray = obj.ToArray();
-			if (objArray.Length > 0) data.SetWrappedData(objArray, format);
+			if (objArray.Length > 0) data.SetWrappedData(objArray, typeof(GameObject), format);
 		}
 		public static bool ContainsGameObjects(this IDataObject data, DataFormat format = DataFormat.Reference)
 		{
@@ -251,7 +243,7 @@ namespace Duality.Editor
 		public static void SetContentRefs(this IDataObject data, IEnumerable<IContentRef> content)
 		{
 			if (!content.Any()) return;
-			data.SetWrappedData(content.ToArray(), DataFormat.Value);
+			data.SetWrappedData(content.ToArray(), typeof(IContentRef), DataFormat.Value);
 		}
 		public static bool ContainsContentRefs<T>(this IDataObject data) where T : Resource
 		{
@@ -291,7 +283,7 @@ namespace Duality.Editor
 		public static void SetBatchInfos(this IDataObject data, IEnumerable<BatchInfo> obj)
 		{
 			BatchInfo[] objArray = obj.ToArray();
-			if (objArray.Length > 0) data.SetWrappedData(objArray, DataFormat.Reference);
+			if (objArray.Length > 0) data.SetWrappedData(objArray, typeof(BatchInfo), DataFormat.Reference);
 		}
 		public static bool ContainsBatchInfos(this IDataObject data)
 		{
@@ -306,7 +298,7 @@ namespace Duality.Editor
 		{
 			IColorData[] clrArray = color.ToArray();
 			if (clrArray.Length == 0) return;
-			data.SetWrappedData(clrArray, DataFormat.Value);
+			data.SetWrappedData(clrArray, typeof(IColorData), DataFormat.Value);
 
 			DataObject dataObj = data as DataObject;
 			if (dataObj != null)

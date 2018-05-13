@@ -19,16 +19,16 @@ namespace Duality.Editor
 	{
 		protected object[] data;
 
-		public virtual object[] Data
+		public virtual IEnumerable<object> Data
 		{
 			get { return this.data; }
-			set { this.data = value; }
+			set { this.data = value.ToArray(); }
 		}
 
 		public SerializableWrapper() : this(null) { }
-		public SerializableWrapper(object[] data)
+		public SerializableWrapper(IEnumerable<object> data)
 		{
-			this.data = data;
+			this.data = data == null ? null : data.ToArray();
 		}
 		private SerializableWrapper(SerializationInfo info, StreamingContext context)
 		{
