@@ -167,15 +167,11 @@ namespace Duality.Editor
 				&& !data.GetWrappedDataPresent(typeof(Component[]), DataFormat.Value, false))
 			{
 				Component[] refArray = data.GetWrappedData(typeof(Component[]), DataFormat.Reference, false) as Component[];
-				if (refArray == null) return new T[0];
-				return refArray.OfType<T>().Select(r => r.DeepClone()).ToArray();
+				return refArray == null ? null : refArray.OfType<T>().Select(r => r.DeepClone()).ToArray();
 			}
 
 			Component[] compArray = data.GetWrappedData(typeof(Component[]), format) as Component[];
-			if (compArray == null)
-				return null;
-
-			return compArray.OfType<T>().ToArray();
+			return compArray == null ? null : compArray.OfType<T>().ToArray();
 		}
 		public static Component[] GetComponents(this IDataObject data, DataFormat format = DataFormat.Reference)
 		{
@@ -191,8 +187,7 @@ namespace Duality.Editor
 				&& !data.GetWrappedDataPresent(typeof(Component[]), DataFormat.Value, false))
 			{
 				Component[] refArray = data.GetWrappedData(typeof(Component[]), DataFormat.Reference, false) as Component[];
-				if (refArray == null) return new Component[0];
-				return refArray.Select(r => r.DeepClone()).ToArray();
+				return refArray == null ? null : refArray.Select(r => r.DeepClone()).ToArray();
 			}
 
 			Component[] compArray = data.GetWrappedData(typeof(Component[]), format) as Component[];
@@ -223,8 +218,7 @@ namespace Duality.Editor
 				&& !data.GetWrappedDataPresent(typeof(GameObject[]), DataFormat.Value, false))
 			{
 				GameObject[] refArray = data.GetWrappedData(typeof(GameObject[]), DataFormat.Reference, false) as GameObject[];
-				if (refArray == null) return null;
-				return refArray.Select(r => r.DeepClone()).ToArray();
+				return refArray == null ? null : refArray.Select(r => r.DeepClone()).ToArray();
 			}
 
 			return data.GetWrappedData(typeof(GameObject[]), format) as GameObject[];
