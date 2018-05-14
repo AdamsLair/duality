@@ -337,15 +337,15 @@ namespace Duality.Editor
 		public static void SetBatchInfos(this IDataObject data, IEnumerable<BatchInfo> obj)
 		{
 			BatchInfo[] objArray = obj.ToArray();
-			if (objArray.Length > 0) data.SetWrappedData(objArray, DataFormat.Reference);
+			if (objArray.Length > 0) data.SetWrappedData(objArray, DataFormat.Value);
 		}
 		public static bool ContainsBatchInfos(this IDataObject data)
 		{
-			return data.GetWrappedDataPresent(typeof(BatchInfo[]), DataFormat.Reference);
+			return data.GetWrappedDataPresent(typeof(BatchInfo[]), DataFormat.Value);
 		}
 		public static BatchInfo[] GetBatchInfos(this IDataObject data)
 		{
-			object[] batchArray = data.GetWrappedData(typeof(BatchInfo[]), DataFormat.Reference);
+			object[] batchArray = data.GetWrappedData(typeof(BatchInfo[]), DataFormat.Value);
 			return batchArray == null ? null : batchArray.OfType<BatchInfo>().Select(b => new BatchInfo(b)).ToArray();
 		}
 		public static bool TryGetBatchInfos(this IDataObject data, out BatchInfo[] batches)
