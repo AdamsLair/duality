@@ -189,7 +189,9 @@ namespace Duality.Editor
 		public static bool ContainsComponents(this IDataObject data, Type cmpType, DataFormat format = DataFormat.Reference)
 		{
 			object[] refArray;
-			if (!data.TryGetWrappedData(typeof(Component[]), format, out refArray)) return false;
+			if (!data.TryGetWrappedData(typeof(Component[]), format, out refArray))
+				return false;
+
 			if (cmpType == null) cmpType = typeof(Component);
 			return refArray.Any(c => cmpType.IsInstanceOfType(c));
 		}
@@ -204,17 +206,11 @@ namespace Duality.Editor
 		}
 		public static Component[] GetComponents(this IDataObject data, Type cmpType, DataFormat format = DataFormat.Reference)
 		{
-			if (cmpType == null) cmpType = typeof(Component[]);
-
 			object[] compArray = data.GetWrappedData(typeof(Component[]), format);
-			if (compArray == null)
-				return null;
+			if (compArray == null) return null;
 
-			return (
-				from c in compArray
-				where cmpType.IsInstanceOfType(c)
-				select c as Component
-				).ToArray();
+			if (cmpType == null) cmpType = typeof(Component[]);
+			return compArray.Where(c => cmpType.IsInstanceOfType(c)).OfType<Component>().ToArray();
 		}
 		public static bool TryGetComponents<T>(this IDataObject data, out T[] comps) where T : Component
 		{
@@ -308,6 +304,7 @@ namespace Duality.Editor
 			object[] refArray;
 			if (!data.TryGetWrappedData(typeof(IContentRef[]), DataFormat.Value, out refArray))
 				return null;
+
 			return refArray.OfType<IContentRef>()
 				.Where(r => r.Is<T>()).Select(r => r.As<T>()).ToArray();
 		}
@@ -319,7 +316,7 @@ namespace Duality.Editor
 
 			if (resType == null) resType = typeof(Resource);
 			return refArray.OfType<IContentRef>()
-				.Where(r => r.Is(resType)).ToArray().ToArray();
+				.Where(r => r.Is(resType)).ToArray();
 		}
 		public static bool TryGetContentRefs(this IDataObject data, out IContentRef[] content)
 		{
@@ -390,13 +387,9 @@ namespace Duality.Editor
 			IColorData[] clrArray = null;
 			object[] wrappedArr;
 			if (data.TryGetWrappedData(typeof(IColorData[]), DataFormat.Value, out wrappedArr))
-			{
 				clrArray = wrappedArr.OfType<IColorData>().ToArray();
-			}
 			else if (data.ContainsString())
-			{
 				clrArray = ParseIColorData(data.GetString());
-			}
 
 			if (clrArray != null)
 			{
