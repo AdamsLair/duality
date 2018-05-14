@@ -15,6 +15,10 @@ namespace Duality.Editor.Tests
 		{
 		}
 
+		private class TestResource : Resource
+		{
+		}
+
 		[Test] public void GetGameObjects()
 		{
 			DataObject dataIn = new DataObject();
@@ -85,6 +89,52 @@ namespace Duality.Editor.Tests
 
 			Assert.AreSame(comp, dataOut.GetComponents<TestComponent>(DataFormat.Reference)[0]);
 			Assert.AreNotSame(comp, dataOut.GetComponents<TestComponent>(DataFormat.Value)[0]);
+		}
+
+		[Test] public void GetContentRefs()
+		{
+			DataObject dataIn = new DataObject();
+			TestResource res = new TestResource();
+			ContentRef<TestResource> contentRef = new ContentRef<TestResource>(res);
+
+			dataIn.SetContentRefs(new IContentRef[] { contentRef });
+
+			Assert.IsTrue(dataIn.ContainsContentRefs());
+			Assert.IsTrue(dataIn.ContainsContentRefs(typeof(TestResource)));
+
+			Assert.AreEqual(contentRef, dataIn.GetContentRefs()[0]);
+			Assert.AreEqual(contentRef, dataIn.GetContentRefs(typeof(TestResource))[0]);
+
+			Clipboard.SetDataObject(dataIn);
+
+			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+
+			Assert.IsTrue(dataOut.ContainsContentRefs());
+
+			// This is false due to the fact that the reference to the locally created
+			// TestResource will not survive serialization.
+			Assert.IsFalse(dataOut.ContainsContentRefs(typeof(TestResource)));
+		}
+
+		[Test] public void GetContentRefsStronglyTyped()
+		{
+			DataObject dataIn = new DataObject();
+			TestResource res = new TestResource();
+			ContentRef<TestResource> contentRef = new ContentRef<TestResource>(res);
+
+			dataIn.SetContentRefs(new IContentRef[] { contentRef });
+
+			Assert.IsTrue(dataIn.ContainsContentRefs<TestResource>());
+
+			Assert.AreEqual(contentRef, dataIn.GetContentRefs<TestResource>()[0]);
+
+			Clipboard.SetDataObject(dataIn);
+
+			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+
+			// This is false due to the fact that the reference to the locally created
+			// TestResource will not survive serialization.
+			Assert.IsFalse(dataOut.ContainsContentRefs<TestResource>());
 		}
 	}
 }
