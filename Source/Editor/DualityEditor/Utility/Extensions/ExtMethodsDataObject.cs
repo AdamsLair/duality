@@ -33,7 +33,6 @@ namespace Duality.Editor
 		Value
 	}
 
-	// TODO: document parameters and such
 	public static class ExtMethodsDataObject
 	{
 		private const string ReferencePrefix = "SerializableReferenceWrapper:";
@@ -50,16 +49,16 @@ namespace Duality.Editor
 			SerializableWrapper wrapper = format == DataFormat.Reference
 				? new SerializableReferenceWrapper(values)
 				: new SerializableWrapper(values);
-
+			Log.Editor.Write(values.GetType().FullName);
 			data.SetData(prefix + elementType.FullName, wrapper);
 		}
 		/// <summary>
 		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
 		/// </summary>
 		/// <param name="data"></param>
-		/// <param name="format"></param>
-		/// <param name="formatType"></param>
-		/// <param name="allowConversion"></param>
+		/// <param name="format">The type of elements in the wrapped data array</param>
+		/// <param name="formatType">The format the data is stored in</param>
+		/// <param name="allowConversion">Whether or not to attempt converting data from other formats</param>
 		/// <returns></returns>
 		public static bool GetWrappedDataPresent(this IDataObject data, Type elementType, DataFormat format, bool allowConversion = true)
 		{
@@ -69,9 +68,9 @@ namespace Duality.Editor
 		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
 		/// </summary>
 		/// <param name="data"></param>
-		/// <param name="format"></param>
-		/// <param name="formatType"></param>
-		/// <param name="allowConversion"></param>
+		/// <param name="format">Describes the format of the data. Usually denotes the .Net type of the data.</param>
+		/// <param name="formatType">The format the data is stored in</param>
+		/// <param name="allowConversion">Whether or not to attempt converting data from other formats</param>
 		/// <returns></returns>
 		public static bool GetWrappedDataPresent(this IDataObject data, string format, DataFormat formatType, bool allowConversion = true)
 		{
@@ -90,9 +89,9 @@ namespace Duality.Editor
 		/// Retrieves the specified non-<see cref="SerializableAttribute"/> data from the specified data object using a serializable wrapper.
 		/// </summary>
 		/// <param name="data"></param>
-		/// <param name="elementType"></param>
-		/// <param name="formatType"></param>
-		/// <param name="allowConversion"></param>
+		/// <param name="elementType">The type of elements in the wrapped data array</param>
+		/// <param name="formatType">The format to retrieve the data in</param>
+		/// <param name="allowConversion">Whether or not to attempt converting data from other formats</param>
 		/// <returns></returns>
 		public static object[] GetWrappedData(this IDataObject data, Type elementType, DataFormat formatType, bool allowConversion = true)
 		{
@@ -102,9 +101,9 @@ namespace Duality.Editor
 		/// Retrieves the specified non-<see cref="SerializableAttribute"/> data from the specified data object using a serializable wrapper.
 		/// </summary>
 		/// <param name="data"></param>
-		/// <param name="format"></param>
-		/// <param name="formatType"></param>
-		/// <param name="allowConversion"></param>
+		/// <param name="format">Describes the format of the data. Usually denotes the .Net type of the data.</param>
+		/// <param name="formatType">The format to retrieve the data in</param>
+		/// <param name="allowConversion">Whether or not to attempt converting data from other formats</param>
 		/// <returns></returns>
 		public static object[] GetWrappedData(this IDataObject data, string format, DataFormat formatType, bool allowConversion = true)
 		{
