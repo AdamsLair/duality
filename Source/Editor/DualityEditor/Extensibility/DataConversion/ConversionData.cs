@@ -44,17 +44,9 @@ namespace Duality.Editor
 				if (this.data.GetDataPresent(format, autoConvert))
 					obj = this.data.GetData(format, autoConvert);
 				else if (this.data.GetWrappedDataPresent(format, DataFormat.Reference))
-				{
-					// TODO: should ConversionData care that GetWrappedData now returns an array?
-					object[] wrappedData = this.data.GetWrappedData(format, DataFormat.Reference);
-					obj = wrappedData == null ? null : wrappedData[0];
-				}
+					obj = this.data.GetWrappedData(format, DataFormat.Reference);
 				else if (this.data.GetWrappedDataPresent(format, DataFormat.Value))
-				{
-					// TODO: should ConversionData care that GetWrappedData now returns an array?
-					object[] wrappedData = this.data.GetWrappedData(format, DataFormat.Value);
-					obj = wrappedData == null ? null : wrappedData[0];
-				}
+					obj = this.data.GetWrappedData(format, DataFormat.Value);
 				else
 					obj = null;
 
