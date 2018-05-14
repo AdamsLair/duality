@@ -42,6 +42,14 @@ namespace Duality.Editor
 		/// Stores the specified non-<see cref="SerializableAttribute"/> data inside the specified data object using a serializable wrapper.
 		/// </summary>
 		/// <param name="format">The format to store the data in</param>
+		/// <remarks>
+		/// Note that the type of the passed in values object must match exactly the type that is then passed to 
+		/// <see cref="GetWrappedDataPresent(IDataObject,Type,DataFormat,bool)"/>
+		/// or
+		/// <see cref="GetWrappedData(IDataObject,Type,DataFormat,bool)"/>.
+		/// For example, if you pass the result of a LINQ query of type IEnumerable<Component>
+		/// and then call GetWrappedData with 'typeof(Component[])' it will fail.
+		/// </remarks>
 		public static void SetWrappedData(this IDataObject data, IEnumerable<object> values, DataFormat format)
 		{
 			string prefix = format == DataFormat.Reference ? ReferencePrefix : ValuePrefix;
