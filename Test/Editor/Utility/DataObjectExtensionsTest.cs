@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Duality.Drawing;
 using NUnit.Framework;
 
 namespace Duality.Editor.Tests
@@ -135,6 +136,25 @@ namespace Duality.Editor.Tests
 			// This is false due to the fact that the reference to the locally created
 			// TestResource will not survive serialization.
 			Assert.IsFalse(dataOut.ContainsContentRefs<TestResource>());
+		}
+
+		[Test]
+		public void GetBatchInfo()
+		{
+			DataObject dataIn = new DataObject();
+			BatchInfo batch = new BatchInfo();
+
+			dataIn.SetBatchInfos(new[] { batch });
+
+			Assert.IsTrue(dataIn.ContainsBatchInfos());
+			Assert.AreNotSame(batch, dataIn.GetBatchInfos()[0]);
+
+			Clipboard.SetDataObject(dataIn);
+
+			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+
+			Assert.IsTrue(dataOut.ContainsBatchInfos());
+			Assert.AreNotSame(batch, dataOut.GetBatchInfos()[0]);
 		}
 	}
 }
