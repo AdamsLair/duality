@@ -7,12 +7,68 @@ namespace Duality.Editor.Tests
 	[TestFixture]
 	public class DataObjectExtensionsTest
 	{
+		private class TestClass
+		{
+		}
+
 		private class TestComponent : Component
 		{
 		}
 
 		private class TestResource : Resource
 		{
+		}
+
+		[Test] public void WrappedDataReference()
+		{
+			DataObject dataIn = new DataObject();
+			TestClass dataOne = new TestClass();
+
+			dataIn.SetWrappedData(new [] { dataOne }, DataFormat.Reference);
+
+			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Reference));
+			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value));
+			Assert.IsFalse(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value, false));
+			Assert.AreSame(dataOne, dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Reference)[0]);
+			Assert.AreNotSame(dataOne, dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Value)[0]);
+			Assert.IsNull(dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Value, false));
+
+			Clipboard.SetDataObject(dataIn);
+			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+
+			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Reference));
+			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value));
+			Assert.IsFalse(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value, false));
+			Assert.AreSame(dataOne, dataOut.GetWrappedData(typeof(TestClass[]), DataFormat.Reference)[0]);
+			Assert.AreNotSame(dataOne, dataOut.GetWrappedData(typeof(TestClass[]), DataFormat.Value)[0]);
+			Assert.IsNull(dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Value, false));
+		}
+
+		[Test] public void WrappedDataValue()
+		{
+			DataObject dataIn = new DataObject();
+			TestClass dataOne = new TestClass();
+
+			dataIn.SetWrappedData(new[] { dataOne }, DataFormat.Value);
+
+			Assert.IsFalse(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Reference));
+			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value));
+			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value, false));
+			Assert.IsNull(dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Reference));
+			// Even though we are retrieving a value, serialization has not occured yet
+			Assert.AreSame(dataOne, dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Value)[0]);
+			Assert.AreSame(dataOne, dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Value, false)[0]);
+
+			Clipboard.SetDataObject(dataIn);
+			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+
+			Assert.IsFalse(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Reference));
+			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value));
+			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value, false));
+			Assert.IsNull(dataOut.GetWrappedData(typeof(TestClass[]), DataFormat.Reference));
+			// DeepClone should have been done by now
+			Assert.AreNotSame(dataOne, dataOut.GetWrappedData(typeof(TestClass[]), DataFormat.Value)[0]);
+			Assert.AreNotSame(dataOne, dataOut.GetWrappedData(typeof(TestClass[]), DataFormat.Value, false)[0]);
 		}
 
 		[Test] public void GetGameObjects()
