@@ -309,7 +309,8 @@ namespace Duality.Editor
 		}
 		public static BatchInfo[] GetBatchInfos(this IDataObject data)
 		{
-			return (data.GetWrappedData(typeof(BatchInfo), DataFormat.Reference) as BatchInfo[]).Select(b => new BatchInfo(b)).ToArray();
+			object[] batchArray = data.GetWrappedData(typeof(BatchInfo), DataFormat.Reference);
+			return batchArray == null ? null : batchArray.OfType<BatchInfo>().Select(b => new BatchInfo(b)).ToArray();
 		}
 
 		public static void SetIColorData(this IDataObject data, IEnumerable<IColorData> color)
