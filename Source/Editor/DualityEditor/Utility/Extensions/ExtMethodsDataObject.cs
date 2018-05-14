@@ -319,7 +319,6 @@ namespace Duality.Editor
 				batches = null;
 				return false;
 			}
-
 			batches = data.GetBatchInfos();
 			return batches != null;
 		}
