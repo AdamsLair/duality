@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Duality.Drawing;
 using NUnit.Framework;
 
@@ -138,8 +133,7 @@ namespace Duality.Editor.Tests
 			Assert.IsFalse(dataOut.ContainsContentRefs<TestResource>());
 		}
 
-		[Test]
-		public void GetBatchInfo()
+		[Test] public void GetBatchInfo()
 		{
 			DataObject dataIn = new DataObject();
 			BatchInfo batch = new BatchInfo();
@@ -155,6 +149,42 @@ namespace Duality.Editor.Tests
 
 			Assert.IsTrue(dataOut.ContainsBatchInfos());
 			Assert.AreNotSame(batch, dataOut.GetBatchInfos()[0]);
+		}
+
+		[Test] public void GetIColorData()
+		{
+			DataObject dataIn = new DataObject();
+			ColorRgba color = new ColorRgba(10, 10, 10, 10);
+
+			dataIn.SetIColorData(new[] { (IColorData)color });
+
+			Assert.IsTrue(dataIn.ContainsIColorData());
+			Assert.AreEqual(color, dataIn.GetIColorData<ColorRgba>()[0]);
+
+			Clipboard.SetDataObject(dataIn);
+
+			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+
+			Assert.IsTrue(dataOut.ContainsIColorData());
+			Assert.AreEqual(color, dataOut.GetIColorData<ColorRgba>()[0]);
+		}
+
+		[Test] public void GetIColorDataString()
+		{
+			DataObject dataIn = new DataObject();
+			ColorRgba color = new ColorRgba(10, 10, 10, 10);
+
+			dataIn.SetString("10,10,10,10");
+
+			Assert.IsTrue(dataIn.ContainsIColorData());
+			Assert.AreEqual(color, dataIn.GetIColorData<ColorRgba>()[0]);
+
+			Clipboard.SetDataObject(dataIn);
+
+			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+
+			Assert.IsTrue(dataOut.ContainsIColorData());
+			Assert.AreEqual(color, dataOut.GetIColorData<ColorRgba>()[0]);
 		}
 	}
 }

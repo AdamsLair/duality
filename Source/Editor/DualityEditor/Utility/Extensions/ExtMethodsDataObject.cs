@@ -330,12 +330,8 @@ namespace Duality.Editor
 			if (clrArray.Length == 0) return;
 			data.SetWrappedData(clrArray, typeof(IColorData), DataFormat.Value);
 
-			DataObject dataObj = data as DataObject;
-			if (dataObj != null)
-			{
-				var rgbaQuery = clrArray.Select(c => c.ConvertTo<ColorRgba>());
-				dataObj.SetText(rgbaQuery.ToString(c => string.Format("{0},{1},{2},{3}", c.R, c.G, c.B, c.A), ", "));
-			}
+			var rgbaQuery = clrArray.Select(c => c.ConvertTo<ColorRgba>());
+			data.SetString(rgbaQuery.ToString(c => string.Format("{0},{1},{2},{3}", c.R, c.G, c.B, c.A), ", "));
 		}
 		public static bool ContainsIColorData(this IDataObject data)
 		{
@@ -356,7 +352,11 @@ namespace Duality.Editor
 			IColorData[] clrArray = null;
 			if (data.GetWrappedDataPresent(typeof(IColorData), DataFormat.Value))
 			{
-				clrArray = data.GetWrappedData(typeof(IColorData), DataFormat.Value) as IColorData[];
+				object[] wrappedArr = data.GetWrappedData(typeof(IColorData), DataFormat.Value);
+				if (wrappedArr != null)
+				{
+					clrArray = wrappedArr.OfType<IColorData>().ToArray();
+				}
 			}
 			else if (data.ContainsString())
 			{
@@ -366,12 +366,22 @@ namespace Duality.Editor
 			if (clrArray != null)
 			{
 				// Don't care which format? Great, just return the array as is
-				if (typeof(T) == typeof(IColorData)) return (T[])(object)clrArray;
+				if (typeof(T) == typeof(IColorData)) return clrArray.OfType<T>().ToArray();
 				// Convert to specific format
-				return clrArray.Select<IColorData,T>(ic => ic is T ? (T)ic : ic.ConvertTo<T>()).ToArray();
+				return clrArray.Select(ic => ic is T ? (T)ic : ic.ConvertTo<T>()).ToArray();
 			}
 			else
 				return null;
+		}
+		public static bool TryGetIColorData<T>(this IDataObject data, out T[] colorData) where T : IColorData
+		{
+			if (!data.ContainsIColorData())
+			{
+				colorData = null;
+				return false;
+			}
+			colorData = data.GetIColorData<T>();
+			return true;
 		}
 
 		public static void SetString(this IDataObject data, string text)
