@@ -63,13 +63,13 @@ namespace Duality.Editor
 		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
 		/// </summary>
 		/// <param name="data"></param>
-		/// <param name="format">The type of wrapped data to look for</param>
+		/// <param name="type">The type of wrapped data to look for</param>
 		/// <param name="formatType">The format the data is stored in</param>
 		/// <param name="allowConversion">Whether or not to attempt converting data from other formats</param>
 		/// <returns></returns>
-		public static bool GetWrappedDataPresent(this IDataObject data, Type type, DataFormat format, bool allowConversion = true)
+		public static bool GetWrappedDataPresent(this IDataObject data, Type type, DataFormat formatType, bool allowConversion = true)
 		{
-			return GetWrappedDataPresent(data, type.FullName, format, allowConversion);
+			return GetWrappedDataPresent(data, type.FullName, formatType, allowConversion);
 		}
 		/// <summary>
 		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
