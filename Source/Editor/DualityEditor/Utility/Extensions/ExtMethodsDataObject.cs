@@ -438,6 +438,11 @@ namespace Duality.Editor
 			byte[] valToken = new byte[4];
 			valToken[3] = 255;
 
+			// Prevent incorrect lengths of comma-separated values 
+			// (which couldn't be a color) from being parsed
+			if (!(token.Length == 3 || token.Length == 4))
+				return null;
+
 			for (int i = 0; i < token.Length; i++)
 			{
 				token[i] = token[i].Trim();
