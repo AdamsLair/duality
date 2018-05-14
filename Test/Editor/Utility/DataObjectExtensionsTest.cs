@@ -1,10 +1,11 @@
-﻿using System.Windows.Forms;
+﻿using System.Threading;
+using System.Windows.Forms;
 using Duality.Drawing;
 using NUnit.Framework;
 
 namespace Duality.Editor.Tests
 {
-	[TestFixture]
+	[TestFixture, RequiresThread(ApartmentState.STA)]
 	public class DataObjectExtensionsTest
 	{
 		private class TestClass
