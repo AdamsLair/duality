@@ -246,13 +246,15 @@ namespace Duality.Editor
 			}
 			if (fittingData == null)
 			{
-				// ComponentRefs
-				if (this.data.ContainsComponents(target)) fittingData = this.data.GetComponents(target);
+				// Components
+				Component[] comps;
+				if (this.data.TryGetComponents(target, out comps)) fittingData = comps;
 			}
 			if (fittingData == null)
 			{
 				// ContentRefs
-				if (this.data.ContainsContentRefs(target)) fittingData = this.data.GetContentRefs(target).Res();
+				IContentRef[] content;
+				if (this.data.TryGetContentRefs(target, out content)) fittingData = content.Res();
 			}
 			
 			// If something fitting was found, directly add it to the operation results
