@@ -130,6 +130,34 @@ namespace Duality.Editor
 
 			return null;
 		}
+		public static bool TryGetWrappedData(this IDataObject data, Type type, DataFormat formatType, out object[] wrappedData)
+		{
+			return data.TryGetWrappedData(type, formatType, true, out wrappedData);
+		}
+		public static bool TryGetWrappedData(this IDataObject data, Type type, DataFormat formatType, bool allowConversion, out object[] wrappedData)
+		{
+			if (!data.GetWrappedDataPresent(type, formatType, allowConversion))
+			{
+				wrappedData = null;
+				return false;
+			}
+			wrappedData = data.GetWrappedData(type, formatType, allowConversion);
+			return true;
+		}
+		public static bool TryGetWrappedData(this IDataObject data, string format, DataFormat formatType, out object[] wrappedData)
+		{
+			return data.TryGetWrappedData(format, formatType, true, out wrappedData);
+		}
+		public static bool TryGetWrappedData(this IDataObject data, string format, DataFormat formatType, bool allowConversion, out object[] wrappedData)
+		{
+			if (!data.GetWrappedDataPresent(format, formatType, allowConversion))
+			{
+				wrappedData = null;
+				return false;
+			}
+			wrappedData = data.GetWrappedData(format, formatType, allowConversion);
+			return true;
+		}
 
 		public static void SetAllowedConvertOp(this IDataObject data, ConvertOperation.Operation allowedOp)
 		{
@@ -150,8 +178,8 @@ namespace Duality.Editor
 		}
 		public static bool ContainsComponents<T>(this IDataObject data, DataFormat format = DataFormat.Reference) where T : Component
 		{
-			if (!data.GetWrappedDataPresent(typeof(Component[]), format)) return false;
-			object[] refArray = data.GetWrappedData(typeof(Component[]), format);
+			object[] refArray;
+			if (!data.TryGetWrappedData(typeof(Component[]), format, out refArray)) return false;
 			return refArray != null && refArray.Any(c => c is T);
 		}
 		public static bool ContainsComponents(this IDataObject data, DataFormat format = DataFormat.Reference)
@@ -160,9 +188,9 @@ namespace Duality.Editor
 		}
 		public static bool ContainsComponents(this IDataObject data, Type cmpType, DataFormat format = DataFormat.Reference)
 		{
-			if (cmpType == null) cmpType = typeof(Component[]);
-			if (!data.GetWrappedDataPresent(typeof(Component[]), format)) return false;
-			object[] refArray = data.GetWrappedData(typeof(Component[]), format);
+			if (cmpType == null) cmpType = typeof(Component);
+			object[] refArray;
+			if (!data.TryGetWrappedData(typeof(Component[]), format, out refArray)) return false;
 			return refArray != null && refArray.Any(c => cmpType.IsInstanceOfType(c));
 		}
 		public static T[] GetComponents<T>(this IDataObject data, DataFormat format = DataFormat.Reference) where T : Component
