@@ -32,12 +32,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 		}
 		public override bool Convert(ConvertOperation convert)
 		{
-			if (convert.Data.ContainsContentRefs<Prefab>())
+			ContentRef<Prefab>[] dropData;
+			if (convert.Data.TryGetContentRefs<Prefab>(out dropData))
 			{
-				ContentRef<Prefab>[] dropdata = convert.Data.GetContentRefs<Prefab>();
-
 				// Instantiate Prefabs
-				foreach (ContentRef<Prefab> pRef in dropdata)
+				foreach (ContentRef<Prefab> pRef in dropData)
 				{
 					if (convert.IsObjectHandled(pRef.Res)) continue;
 					if (!pRef.IsAvailable) continue;

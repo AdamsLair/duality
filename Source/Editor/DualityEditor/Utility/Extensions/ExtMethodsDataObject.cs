@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
-
 using Duality;
 using Duality.Cloning;
 using Duality.Drawing;
@@ -258,38 +257,47 @@ namespace Duality.Editor
 		public static bool ContainsContentRefs<T>(this IDataObject data) where T : Resource
 		{
 			if (!data.GetWrappedDataPresent(typeof(IContentRef), DataFormat.Value)) return false;
-			IContentRef[] refArray = data.GetWrappedData(typeof(IContentRef), DataFormat.Value) as IContentRef[];
-			return refArray != null && refArray.Any(r => r.Is<T>());
+			object[] refArray = data.GetWrappedData(typeof(IContentRef), DataFormat.Value);
+			return refArray != null && refArray.OfType<IContentRef>().Any(r => r.Is<T>());
 		}
 		public static bool ContainsContentRefs(this IDataObject data, Type resType = null)
 		{
 			if (resType == null) resType = typeof(Resource);
 			if (!data.GetWrappedDataPresent(typeof(IContentRef), DataFormat.Value)) return false;
-			IContentRef[] refArray = data.GetWrappedData(typeof(IContentRef), DataFormat.Value) as IContentRef[];
-			return refArray != null && refArray.Any(r => r.Is(resType));
+			object[] refArray = data.GetWrappedData(typeof(IContentRef), DataFormat.Value);
+			return refArray != null && refArray.OfType<IContentRef>().Any(r => r.Is(resType));
 		}
 		public static ContentRef<T>[] GetContentRefs<T>(this IDataObject data) where T : Resource
 		{
 			if (!data.GetWrappedDataPresent(typeof(IContentRef), DataFormat.Value)) return null;
-			IContentRef[] refArray = data.GetWrappedData(typeof(IContentRef), DataFormat.Value) as IContentRef[] ?? new IContentRef[0];
-			return (
-				from r in refArray
-				where r.Is<T>()
-				select r.As<T>()
-				).ToArray();
+			object[] refArray = data.GetWrappedData(typeof(IContentRef), DataFormat.Value);
+			return refArray == null ? null : refArray.OfType<IContentRef>()
+				.Where(r => r.Is<T>()).Select(r => r.As<T>()).ToArray();
 		}
 		public static IContentRef[] GetContentRefs(this IDataObject data, Type resType = null)
 		{
 			if (resType == null) resType = typeof(Resource);
 			if (!data.GetWrappedDataPresent(typeof(IContentRef), DataFormat.Value)) return null;
-			IContentRef[] refArray = data.GetWrappedData(typeof(IContentRef), DataFormat.Value) as IContentRef[] ?? new IContentRef[0];
-			return (
-				from r in refArray
-				where r.Is(resType)
-				select r
-				).ToArray();
+			object[] refArray = data.GetWrappedData(typeof(IContentRef), DataFormat.Value);
+			return refArray == null ? null : refArray.OfType<IContentRef>()
+				.Where(r => r.Is(resType)).ToArray();
 		}
-		
+		public static bool TryGetContentRefs(this IDataObject data, out IContentRef[] content)
+		{
+			content = data.GetContentRefs();
+			return content != null;
+		}
+		public static bool TryGetContentRefs(this IDataObject data, Type resType, out IContentRef[] content)
+		{
+			content = data.GetContentRefs(resType);
+			return content != null;
+		}
+		public static bool TryGetContentRefs<T>(this IDataObject data, out ContentRef<T>[] content) where T : Resource
+		{
+			content = data.GetContentRefs<T>();
+			return content != null;
+		}
+
 		public static void SetBatchInfos(this IDataObject data, IEnumerable<BatchInfo> obj)
 		{
 			BatchInfo[] objArray = obj.ToArray();
