@@ -9,6 +9,14 @@ using Duality.Resources;
 
 namespace Duality.Editor
 {
+	/// <summary>
+	/// A <see cref="IPreviewGenerator"/> that provides previews
+	/// for objects of type T
+	/// </summary>
+	/// <typeparam name="T">
+	/// The type of object that this <see cref="IPreviewGenerator"/>
+	/// can generate previews for
+	/// </typeparam>
 	public abstract class PreviewGenerator<T> : IPreviewGenerator
 	{
 		public const int PriorityNone			= 0;
@@ -16,10 +24,19 @@ namespace Duality.Editor
 		public const int PrioritySpecialized	= 50;
 		public const int PriorityOverride		= 100;
 
+		/// <summary>
+		/// The priority to assign to this generator. Generators
+		/// with higher priorty will be checked first and the first
+		/// preview successfully created will be used.
+		/// Defaults to <see cref="PriorityGeneral"/>
+		/// </summary>
 		public virtual int Priority
 		{
 			get { return PriorityGeneral; }
 		}
+		/// <summary>
+		/// The type of object that this generator can provide previews for.
+		/// </summary>
 		public Type ObjectType
 		{
 			get { return typeof(T); }
