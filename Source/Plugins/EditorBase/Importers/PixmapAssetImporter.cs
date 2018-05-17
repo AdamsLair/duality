@@ -14,15 +14,15 @@ namespace Duality.Editor.Plugins.Base
 {
 	public class PixmapAssetImporter : AssetImporter<Pixmap>
 	{
-		private readonly string[] sourceFileExts = new[] { ".png", ".bmp", ".jpg", ".jpeg", ".tif", ".tiff" };
+		private static readonly string[] sourceFileExts = new[] { ".png", ".bmp", ".jpg", ".jpeg", ".tif", ".tiff" };
 
 		protected override string SourceFileExtPrimary
 		{
-			get { return this.sourceFileExts[0]; }
+			get { return sourceFileExts[0]; }
 		}
 		protected override string[] SourceFileExts
 		{
-			get { return this.sourceFileExts; }
+			get { return sourceFileExts; }
 		}
 
 		public override string Id
