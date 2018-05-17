@@ -537,6 +537,17 @@ namespace Duality
 		{
 			return (value - a) / (b - a);
 		}
+		/// <summary>
+		/// Performs a SmoothStep interpolation between 0 and 1.
+		/// </summary>
+		/// <param name="a">The input value.</param>
+		/// <returns></returns>
+		public static float smoothStep(float value)
+		{
+			value = Clamp01(value);
+			return (3 - 2 * value) * value * value;
+		}
+
 
 		/// <summary>
 		/// Returns the specified power of <see cref="E"/>.
