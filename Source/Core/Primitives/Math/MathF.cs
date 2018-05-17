@@ -468,6 +468,17 @@ namespace Duality
 		{
 			return v < min ? min : (v > max ? max : v);
 		}
+
+		/// <summary>
+		/// Clamps a value between 0 and 1 inclusive.
+		/// </summary>
+		/// <param name="v">The value to clamp.</param>
+		/// <returns>The clamped value.</returns>
+		public static float Clamp01(float v)
+		{
+			return v < 0.0f ? 0.0f : (v > 1.0f ? 1.0f : v);
+		}
+
 		/// <summary>
 		/// Clamps a value between minimum and maximum.
 		/// </summary>
