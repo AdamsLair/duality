@@ -33,6 +33,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.horizontalScrollBar = new System.Windows.Forms.HScrollBar();
 			this.verticalScrollBar = new System.Windows.Forms.VScrollBar();
 			this.stateControlToolStrip = new System.Windows.Forms.ToolStrip();
+			this.buttonBrightness = new System.Windows.Forms.ToolStripButton();
+			this.stateControlToolStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// horizontalScrollBar
@@ -57,12 +59,25 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.stateControlToolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.stateControlToolStrip.GripMargin = new System.Windows.Forms.Padding(0);
 			this.stateControlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.stateControlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.buttonBrightness});
 			this.stateControlToolStrip.Location = new System.Drawing.Point(0, 0);
 			this.stateControlToolStrip.Name = "stateControlToolStrip";
 			this.stateControlToolStrip.Size = new System.Drawing.Size(411, 25);
 			this.stateControlToolStrip.TabIndex = 3;
 			this.stateControlToolStrip.Text = "toolStrip2";
-			this.stateControlToolStrip.Visible = false;
+			// 
+			// buttonBrightness
+			// 
+			this.buttonBrightness.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonBrightness.CheckOnClick = true;
+			this.buttonBrightness.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonBrightness.Image = global::Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconViewBrightness;
+			this.buttonBrightness.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonBrightness.Name = "buttonBrightness";
+			this.buttonBrightness.Size = new System.Drawing.Size(23, 22);
+			this.buttonBrightness.ToolTipText = "Toggle Background Color";
+			this.buttonBrightness.CheckedChanged += new System.EventHandler(this.buttonBrightness_CheckedChanged);
 			// 
 			// PixmapSlicerForm
 			// 
@@ -80,6 +95,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.Name = "PixmapSlicerForm";
 			this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
 			this.Text = "PixmapSlicer";
+			this.stateControlToolStrip.ResumeLayout(false);
+			this.stateControlToolStrip.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -88,5 +105,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		private System.Windows.Forms.HScrollBar horizontalScrollBar;
 		private System.Windows.Forms.VScrollBar verticalScrollBar;
 		private System.Windows.Forms.ToolStrip stateControlToolStrip;
+		private System.Windows.Forms.ToolStripButton buttonBrightness;
 	}
 }

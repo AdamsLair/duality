@@ -553,6 +553,16 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconViewBrightness {
+            get {
+                object obj = ResourceManager.GetObject("IconViewBrightness", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t remove {0} because it is required by the &apos;{1}&apos; Component..
         /// </summary>
         public static string MenuItemDesc_CantRemoveComponent {

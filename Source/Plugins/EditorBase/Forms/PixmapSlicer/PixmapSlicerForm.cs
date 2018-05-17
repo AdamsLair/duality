@@ -33,6 +33,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		private Rectangle			imageRect			= Rectangle.Empty;
 		private Rectangle			paintingRect		= Rectangle.Empty;
 		private Rectangle			displayedImageRect	= Rectangle.Empty;
+		private bool				darkMode			= false;
 		private float				prevImageLum		= 0;
 		private float				scaleFactor			= 1f;
 		private int					horizontalScroll	= 0;
@@ -176,8 +177,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			base.OnPaint(e);
 
 			// Paint checkered background
-			Color brightChecker = this.prevImageLum > 0.5f ? Color.FromArgb(48, 48, 48) : Color.FromArgb(224, 224, 224);
-			Color darkChecker = this.prevImageLum > 0.5f ? Color.FromArgb(32, 32, 32) : Color.FromArgb(192, 192, 192);
+			float lum = this.darkMode ? 1 - this.prevImageLum : this.prevImageLum;
+			Color brightChecker = lum > 0.5f ? Color.FromArgb(72, 72, 72) : Color.FromArgb(208, 208, 208);
+			Color darkChecker = lum > 0.5f ? Color.FromArgb(56, 56, 56) : Color.FromArgb(176, 176, 176);
 			using (Brush hatchBrush = new HatchBrush(HatchStyle.LargeCheckerBoard, brightChecker, darkChecker))
 				e.Graphics.FillRectangle(hatchBrush, this.paintingRect);
 
@@ -272,6 +274,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				this.Close();
 		}
 
+		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
+		{
+			this.darkMode = this.buttonBrightness.Checked;
+			this.Invalidate();
+		}
+
 		private void SetState(IPixmapSlicerState action)
 		{
 			this.state = action;
@@ -300,7 +308,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 					this.stateControlToolStrip.Items.Add(item);
 				}
 			}
-			this.stateControlToolStrip.Visible = this.stateControlToolStrip.Items.Count > 0;
+			this.stateControlToolStrip.Items.Add(this.buttonBrightness);
 
 			this.Invalidate();
 		}

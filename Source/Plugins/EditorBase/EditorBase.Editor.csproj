@@ -200,6 +200,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="EmbeddedResources\IconViewBrightness.png" />
     <None Include="EmbeddedResources\shape_square_delete_many.png" />
     <None Include="EmbeddedResources\shape_square_numbers.png" />
     <None Include="EmbeddedResources\shape_square_add.png" />
