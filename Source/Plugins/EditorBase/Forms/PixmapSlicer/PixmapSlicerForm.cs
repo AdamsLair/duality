@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using Duality.Drawing;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States;
@@ -89,6 +90,26 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			Resource.ResourceDisposing += this.Resource_ResourceDisposing;
+		}
+
+		internal void SaveUserData(XElement node)
+		{
+			node.SetElementValue("DarkBackground", this.buttonBrightness.Checked);
+			node.SetElementValue("DisplayIndices", this.state == null
+				? PixmapNumberingStyle.None
+				: this.state.NumberingStyle);
+		}
+		internal void LoadUserData(XElement node)
+		{
+			bool tryParseBool;
+			PixmapNumberingStyle tryParseNumeringStyle;
+
+			if (node.GetElementValue("DarkBackground", out tryParseBool))
+				this.buttonBrightness.Checked = tryParseBool;
+			if (node.GetElementValue("DisplayIndices", out tryParseNumeringStyle))
+				this.state.SetNumberingStyle(tryParseNumeringStyle);
+
+			this.UpdateIndicesButton();
 		}
 
 		protected override void OnClosed(EventArgs e)

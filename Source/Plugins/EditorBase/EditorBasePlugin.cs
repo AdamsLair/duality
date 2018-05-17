@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
-
+using System.Xml.Linq;
 using AdamsLair.WinForms.ItemModels;
 
 using Duality;
@@ -29,13 +29,45 @@ namespace Duality.Editor.Plugins.Base
 {
 	public class EditorBasePlugin : EditorPlugin
 	{
-		private PixmapSlicerForm slicingForm = null;
+		private static readonly string ElementNamePixmapSlicer = "PixmapSlicer";
+
+		private PixmapSlicerForm	slicingForm				= null;
+		private XElement			pixmapSlicerSettings	= null;
+
+		private bool isLoading = false;
 
 		public override string Id
 		{
 			get { return "EditorBase"; }
 		}
 
+		public PixmapSlicerForm RequestPixmapSlicerForm()
+		{
+			// Create a new slicing form, if none are available right now
+			if (this.slicingForm == null || this.slicingForm.IsDisposed)
+			{
+				this.slicingForm = new PixmapSlicerForm();
+				this.slicingForm.FormClosed += this.slicingForm_FormClosed;
+
+				// If there are cached settings available, apply them to the new editor
+				if (this.pixmapSlicerSettings != null)
+					this.slicingForm.LoadUserData(this.pixmapSlicerSettings);
+
+				if (!this.isLoading)
+				{
+					this.slicingForm.DockPanel = DualityEditorApp.MainForm.MainDockPanel;
+				}
+			}
+
+			// If we're not creating it as part of the loading procedure,
+			// add it to the main docking layout directly
+			if (!this.isLoading)
+			{
+				this.slicingForm.Show(DualityEditorApp.MainForm.MainDockPanel);
+			}
+
+			return this.slicingForm;
+		}
 
 		protected override void InitPlugin(MainForm main)
 		{
@@ -61,40 +93,53 @@ namespace Duality.Editor.Plugins.Base
 			FileEventManager.ResourceModified += this.FileEventManager_ResourceChanged;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 		}
-		public PixmapSlicerForm RequestPixmapSlicerForm()
+		protected override void SaveUserData(XElement node)
 		{
-			if (this.slicingForm == null)
+			if (this.slicingForm != null)
 			{
-				this.slicingForm = new PixmapSlicerForm();
-				this.InitPixmapSlicerForm(this.slicingForm, false);
-				
+				this.pixmapSlicerSettings = new XElement(ElementNamePixmapSlicer);
+				this.slicingForm.SaveUserData(this.pixmapSlicerSettings);
 			}
 
-			return this.slicingForm;
+			if (this.slicingForm != null && !this.pixmapSlicerSettings.IsEmpty)
+				node.Add(this.pixmapSlicerSettings);
+		}
+		protected override void LoadUserData(XElement node)
+		{
+			this.isLoading = true;
+			foreach (XElement pixmapSlicerElem in node.Elements(ElementNamePixmapSlicer))
+			{
+				int i = pixmapSlicerElem.GetAttributeValue("id", 0);
+				if (i < 0 || i >= 1) continue;
+
+				this.pixmapSlicerSettings = new XElement(pixmapSlicerElem);
+				break;
+			}
+
+			if (this.slicingForm != null && this.pixmapSlicerSettings != null)
+				this.slicingForm.LoadUserData(this.pixmapSlicerSettings);
+
+			this.isLoading = false;
 		}
 		protected override IDockContent DeserializeDockContent(Type dockContentType)
 		{
+			this.isLoading = true;
+			IDockContent result;
 			if (dockContentType == typeof(PixmapSlicerForm))
-			{
-				this.slicingForm = new PixmapSlicerForm();
-				this.InitPixmapSlicerForm(this.slicingForm, true);
-				return this.slicingForm;
-			}
-
-			return null;
+				result = this.RequestPixmapSlicerForm();
+			else
+				result = base.DeserializeDockContent(dockContentType);
+			this.isLoading = false;
+			return result;
 		}
-		private void InitPixmapSlicerForm(PixmapSlicerForm form, bool deserializing)
+		private void slicingForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (!deserializing)
-			{
-				this.slicingForm.DockPanel = DualityEditorApp.MainForm.MainDockPanel;
-			}
+			this.pixmapSlicerSettings = new XElement(ElementNamePixmapSlicer);
+			this.slicingForm.SaveUserData(this.pixmapSlicerSettings);
 
-			this.slicingForm.Closed += (s, e) =>
-			{
-				if (this.slicingForm == form)
-					this.slicingForm = null;
-			};
+			this.slicingForm.FormClosed -= this.slicingForm_FormClosed;
+			this.slicingForm.Dispose();
+			this.slicingForm = null;
 		}
 		private void menuItemAppData_Click(object sender, EventArgs e)
 		{
