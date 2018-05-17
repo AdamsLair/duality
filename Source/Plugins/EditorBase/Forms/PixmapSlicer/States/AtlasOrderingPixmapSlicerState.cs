@@ -20,9 +20,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		{
 			this.SelectedRectIndex = -1;
 
-			this.doneButton = new ToolStripButton(null, EditorBaseRes.IconAcceptCheck,
+			this.doneButton = new ToolStripButton(null, EditorBaseResCache.IconAcceptCheck,
 				(s, e) => this.FinishOrdering());
-			this.cancelButton = new ToolStripButton(null, EditorBaseRes.IconCancel,
+			this.cancelButton = new ToolStripButton(null, EditorBaseResCache.IconCancel,
 				(s, e) => this.CancelState());
 
 			this.doneButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerDone;

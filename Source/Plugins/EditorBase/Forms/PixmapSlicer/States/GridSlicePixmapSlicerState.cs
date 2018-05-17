@@ -26,9 +26,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		public GridSlicePixmapSlicerState()
 		{
-			this.doneButton = new ToolStripButton(null, EditorBaseRes.IconAcceptCheck,
+			this.doneButton = new ToolStripButton(null, EditorBaseResCache.IconAcceptCheck,
 				(s, e) => this.FinishSlicing());
-			this.cancelButton = new ToolStripButton(null, EditorBaseRes.IconCancel,
+			this.cancelButton = new ToolStripButton(null, EditorBaseResCache.IconCancel,
 				(s, e) => this.UndoAndCancelState());
 
 			this.doneButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerDone;

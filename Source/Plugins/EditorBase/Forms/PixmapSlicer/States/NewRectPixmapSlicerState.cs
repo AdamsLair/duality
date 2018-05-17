@@ -21,7 +21,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		{
 			this.Cursor = Cursors.Default;
 
-			this.cancelButton = new ToolStripButton(null, EditorBaseRes.IconCancel,
+			this.cancelButton = new ToolStripButton(null, EditorBaseResCache.IconCancel,
 				(s, e) => this.CancelState());
 
 			this.cancelButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerCancel;

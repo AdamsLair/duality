@@ -69,7 +69,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.stateControlToolStrip.Renderer = new DualitorToolStripProfessionalRenderer();
 			this.stateControlToolStrip.Enabled = this.targetPixmap != null;
 
-			Bitmap bmp = EditorBaseRes.IconPixmapSlicer;
+			Bitmap bmp = EditorBaseResCache.IconPixmapSlicer;
 			this.Icon = Icon.FromHandle(bmp.GetHicon());
 
 			this.SetState(new DefaultPixmapSlicerState());
@@ -299,13 +299,13 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			switch (this.state.NumberingStyle)
 			{
 				case PixmapNumberingStyle.None:
-					this.buttonIndices.Image = EditorBaseRes.IconHideIndices;
+					this.buttonIndices.Image = EditorBaseResCache.IconHideIndices;
 					break;
 				case PixmapNumberingStyle.Hovered:
-					this.buttonIndices.Image = EditorBaseRes.IconRevealIndices;
+					this.buttonIndices.Image = EditorBaseResCache.IconRevealIndices;
 					break;
 				case PixmapNumberingStyle.All:
-					this.buttonIndices.Image = EditorBaseRes.IconShowIndices;
+					this.buttonIndices.Image = EditorBaseResCache.IconShowIndices;
 					break;
 			}
 		}
