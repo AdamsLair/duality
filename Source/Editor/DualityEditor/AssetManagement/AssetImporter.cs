@@ -64,7 +64,7 @@ namespace Duality.Editor.AssetManagement
 			return matchingFileExt;
 		}
 		/// <summary>
-		/// Returns the of the file that would be exported for the given resource.
+		/// Returns the name of the file that would be exported for the given resource.
 		/// Defaults to the name of the resource with the extension <see cref="SourceFileExtPrimary"/>
 		/// </summary>
 		protected virtual string OutputNameFromResource(T resource)
@@ -84,14 +84,14 @@ namespace Duality.Editor.AssetManagement
 		/// Performs the import operation for a resource.
 		/// </summary>
 		/// <param name="resourceRef">A <see cref="ContentRef{T}"/> pointing to the resource being imported.</param>
-		/// <param name="input">The input informatin for the import operation.</param>
+		/// <param name="input">The input information for the import operation.</param>
 		/// <param name="env">The input environment in which the import is taking place.</param>
 		protected abstract void ImportResource(ContentRef<T> resourceRef, AssetImportInput input, IAssetImportEnvironment env);
 		/// <summary>
 		/// Performs the export operation for a resource.
 		/// </summary>
 		/// <param name="resourceRef">A <see cref="ContentRef{T}"/> pointing to the resource being imported.</param>
-		/// <param name="input">The input informatin for the import operation.</param>
+		/// <param name="path">The export path for the resource</param>
 		/// <param name="env">The input environment in which the import is taking place.</param>
 		protected abstract void ExportResource(ContentRef<T> resourceRef, string path, IAssetExportEnvironment env);
 

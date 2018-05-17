@@ -18,9 +18,8 @@ namespace Duality.Editor.Plugins.Base
 
 		protected override string SourceFileExtPrimary
 		{
-			get { return ".png"; }
+			get { return this.sourceFileExts[0]; }
 		}
-
 		protected override string[] SourceFileExts
 		{
 			get { return this.sourceFileExts; }
