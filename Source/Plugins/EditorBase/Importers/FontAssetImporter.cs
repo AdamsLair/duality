@@ -22,147 +22,120 @@ using System.Text;
 
 namespace Duality.Editor.Plugins.Base
 {
-	public class FontAssetImporter : IAssetImporter
+	public class FontAssetImporter : AssetImporter<DualityFont>
 	{
-		public static readonly string SourceFileExtPrimary = ".ttf";
-		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary, ".otf" };
 		private static readonly UnicodeBlock[] DefaultBlocks = new[] { UnicodeBlock.BasicLatin, UnicodeBlock.Latin1Supplement };
 
 		private Dictionary<int, PrivateFontCollection> fontManagers;
-		
 
-		public string Id
+		protected override string SourceFileExtPrimary
+		{
+			get { return ".ttf"; }
+		}
+		protected override string[] SourceFileExts
+		{
+			get { return new [] { ".ttf", ".otf" }; }
+		}
+
+		public override string Id
 		{
 			get { return "BasicFontAssetImporter"; }
 		}
-		public string Name
+		public override string Name
 		{
 			get { return "TrueType Font Importer"; }
 		}
-		public int Priority
-		{
-			get { return 0; }
-		}
 
-
-		public void PrepareImport(IAssetImportEnvironment env)
+		protected override void ImportResource(ContentRef<DualityFont> resourceRef, AssetImportInput input, IAssetImportEnvironment env)
 		{
-			// Ask to handle all input that matches the conditions in AcceptsInput
-			foreach (AssetImportInput input in env.HandleAllInput(this.AcceptsInput))
+			DualityFont resource = resourceRef.Res;
+			// Retrieve import parameters
+			float size = env.GetOrInitParameter(resourceRef, "Size", 16.0f);
+			FontStyle style = env.GetOrInitParameter(resourceRef, "Style", FontStyle.Regular);
+			string customCharSet = env.GetOrInitParameter(resourceRef, "CustomCharSet", string.Empty);
+			List<UnicodeBlock> unicodeBlocks = env.GetOrInitParameter(resourceRef, "UnicodeBlocks", new List<UnicodeBlock>(DefaultBlocks));
+			bool antialiasing = env.GetOrInitParameter(resourceRef, "AntiAlias", true);
+			bool monospace = env.GetOrInitParameter(resourceRef, "Monospace", false);
+
+			HashSet<char> fullCharSet = new HashSet<char>();
+
+			if (!string.IsNullOrWhiteSpace(customCharSet))
 			{
-				// For all handled input items, specify which Resource the importer intends to create / modify
-				env.AddOutput<DualityFont>(input.AssetName, input.Path);
-			}
-		}
-		public void Import(IAssetImportEnvironment env)
-		{
-			// Handle all available input. No need to filter or ask for this anymore, as
-			// the preparation step already made a selection with AcceptsInput. We won't
-			// get any input here that didn't match.
-			foreach (AssetImportInput input in env.Input)
-			{
-				// Request a target Resource with a name matching the input
-				ContentRef<DualityFont> targetRef = env.GetOutput<DualityFont>(input.AssetName);
+				string[] blocks = customCharSet.Split(',');
+				ulong start = 0;
+				ulong end = 0;
 
-				// If we successfully acquired one, proceed with the import
-				if (targetRef.IsAvailable)
+				foreach (string block in blocks)
 				{
-					DualityFont target = targetRef.Res;
+					string[] limits = block.Split(new[] { '-' }, 3);
+					if (!ulong.TryParse(limits[0], NumberStyles.HexNumber, null, out start))
+						Log.Editor.WriteError("Cannot parse value " + limits[0] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
 
-					// Retrieve import parameters
-					float               size           = env.GetOrInitParameter(targetRef, "Size"         , 16.0f                                );
-					FontStyle           style          = env.GetOrInitParameter(targetRef, "Style"        , FontStyle.Regular                    );
-					string              customCharSet  = env.GetOrInitParameter(targetRef, "CustomCharSet", string.Empty                         );
-					List<UnicodeBlock>  unicodeBlocks  = env.GetOrInitParameter(targetRef, "UnicodeBlocks", new List<UnicodeBlock>(DefaultBlocks));
-					bool                antialiasing   = env.GetOrInitParameter(targetRef, "AntiAlias"    , true                                 );
-					bool                monospace      = env.GetOrInitParameter(targetRef, "Monospace"    , false                                );
-
-					HashSet<char> fullCharSet = new HashSet<char>();
-
-					if(!string.IsNullOrWhiteSpace(customCharSet))
+					if (limits.Length == 1)
+						end = start;
+					else
 					{
-						string[] blocks = customCharSet.Split(',');
-						ulong start = 0;
-						ulong end = 0;
+						if (limits.Length == 2 && !ulong.TryParse(limits[1], NumberStyles.HexNumber, null, out end))
+							Log.Editor.WriteError("Cannot parse value " + limits[1] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
 
-						foreach (string block in blocks)
-						{
-							string[] limits = block.Split(new[] { '-' }, 3);
-							if (!ulong.TryParse(limits[0], NumberStyles.HexNumber, null, out start))
-								Log.Editor.WriteError("Cannot parse value " + limits[0] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
+						else if (limits.Length > 2)
+							Log.Editor.WriteError("Unexpected values " + limits[2] + " in range " + block + " will be ignored. Please verify the value and repeat the import.");
 
-							if (limits.Length == 1)
-								end = start;
-							else
-							{
-								if (limits.Length == 2 && !ulong.TryParse(limits[1], NumberStyles.HexNumber, null, out end))
-									Log.Editor.WriteError("Cannot parse value " + limits[1] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
-
-								else if (limits.Length > 2)
-									Log.Editor.WriteError("Unexpected values " + limits[2] + " in range " + block + " will be ignored. Please verify the value and repeat the import.");
-
-								if (start > end)
-									Log.Editor.WriteWarning(start + " is bigger than " + end + "; block will be ignored. Please verify the value and repeat the import.");
-							}
-
-							for (char c = (char)start; c <= (char)end; c++)
-								if(!char.IsControl(c)) fullCharSet.Add(c);
-						}
+						if (start > end)
+							Log.Editor.WriteWarning(start + " is bigger than " + end + "; block will be ignored. Please verify the value and repeat the import.");
 					}
 
-					if (unicodeBlocks != null)
-					{
-						Type unicodeBlockType = typeof(UnicodeBlock);
-						Type unicodeRangeAttrType = typeof(UnicodeRangeAttribute);
-
-						foreach (UnicodeBlock block in unicodeBlocks)
-						{
-							UnicodeRangeAttribute range = unicodeBlockType.GetMember(block.ToString())
-								.First()
-								.GetCustomAttributes(unicodeRangeAttrType, false)
-								.FirstOrDefault() as UnicodeRangeAttribute;
-							
-							if (range != null)
-							{
-								for (char c = (char)range.CharStart; c <= (char)range.CharEnd; c++)
-									if (!char.IsControl(c)) fullCharSet.Add(c);
-							}
-						}
-					}
-
-					// Load the TrueType Font and render all the required glyphs
-					byte[] trueTypeData = File.ReadAllBytes(input.Path);
-					RenderedFontData fontData = this.RenderGlyphs(
-						trueTypeData, 
-						size, 
-						style, 
-						new FontCharSet(new string(fullCharSet.ToArray())), 
-						antialiasing, 
-						monospace);
-
-					// Transfer our rendered Font data to the Font Resource
-					target.SetGlyphData(
-						fontData.Bitmap, 
-						fontData.Atlas, 
-						fontData.GlyphData, 
-						fontData.Metrics);
-
-					// Add the requested output to signal that we've done something with it
-					env.AddOutput(targetRef, input.Path);
+					for (char c = (char)start; c <= (char)end; c++)
+						if (!char.IsControl(c)) fullCharSet.Add(c);
 				}
 			}
-		}
-		
-		private bool AcceptsInput(AssetImportInput input)
-		{
-			string inputFileExt = Path.GetExtension(input.Path);
-			bool matchingFileExt = SourceFileExts.Any(acceptedExt => string.Equals(inputFileExt, acceptedExt, StringComparison.InvariantCultureIgnoreCase));
-			return matchingFileExt;
+
+			if (unicodeBlocks != null)
+			{
+				Type unicodeBlockType = typeof(UnicodeBlock);
+				Type unicodeRangeAttrType = typeof(UnicodeRangeAttribute);
+
+				foreach (UnicodeBlock block in unicodeBlocks)
+				{
+					UnicodeRangeAttribute range = unicodeBlockType.GetMember(block.ToString())
+						.First()
+						.GetCustomAttributes(unicodeRangeAttrType, false)
+						.FirstOrDefault() as UnicodeRangeAttribute;
+
+					if (range != null)
+					{
+						for (char c = (char)range.CharStart; c <= (char)range.CharEnd; c++)
+							if (!char.IsControl(c)) fullCharSet.Add(c);
+					}
+				}
+			}
+
+			// Load the TrueType Font and render all the required glyphs
+			byte[] trueTypeData = File.ReadAllBytes(input.Path);
+			RenderedFontData fontData = this.RenderGlyphs(
+				trueTypeData,
+				size,
+				style,
+				new FontCharSet(new string(fullCharSet.ToArray())),
+				antialiasing,
+				monospace);
+
+			// Transfer our rendered Font data to the Font Resource
+			resource.SetGlyphData(
+				fontData.Bitmap,
+				fontData.Atlas,
+				fontData.GlyphData,
+				fontData.Metrics);
 		}
 
-		// Export is not supported
-		void IAssetImporter.PrepareExport(IAssetExportEnvironment env) { }
-		void IAssetImporter.Export(IAssetExportEnvironment env) { }
+		protected override bool CanExport(DualityFont resource)
+		{
+			return false;
+		}
+
+		protected override void ExportResource(ContentRef<DualityFont> resourceRef, string path, IAssetExportEnvironment env)
+		{
+		}
 
 		/// <summary>
 		/// Holds the internal result of rendering a TrueType font.
