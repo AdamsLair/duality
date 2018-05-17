@@ -540,7 +540,7 @@ namespace Duality
 		/// <summary>
 		/// Performs a SmoothStep interpolation between 0 and 1.
 		/// </summary>
-		/// <param name="a">The input value.</param>
+		/// <param name="value">The input value.</param>
 		/// <returns></returns>
 		public static float smoothStep(float value)
 		{
