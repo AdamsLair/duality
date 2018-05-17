@@ -548,6 +548,20 @@ namespace Duality
 			return (3 - 2 * value) * value * value;
 		}
 
+		/// <summary>
+		/// Performs a SmoothStep interpolation between two anchor values.
+		/// </summary>
+		/// <param name="a">The lower bound anchor value</param>
+		/// <param name="b">The upper bound anchor value</param>
+		/// <param name="value">The input value.</param>
+		/// <returns></returns>
+		public static float smoothStep(float value, float a, float b)
+		{
+			//value = a < b ? Clamp(value, a, b) : Clamp(value, b, a);
+			//return a + (3 - 2 * value) * value * value * (b - a);
+			value = Clamp01(InvLerp(a, b, value));
+			return value * value * (3 - 2 * value);
+		}
 
 		/// <summary>
 		/// Returns the specified power of <see cref="E"/>.
