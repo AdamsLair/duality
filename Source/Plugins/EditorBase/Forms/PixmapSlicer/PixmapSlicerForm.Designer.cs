@@ -34,6 +34,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.verticalScrollBar = new System.Windows.Forms.VScrollBar();
 			this.stateControlToolStrip = new System.Windows.Forms.ToolStrip();
 			this.buttonBrightness = new System.Windows.Forms.ToolStripButton();
+			this.buttonIndices = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonDefaultZoom = new System.Windows.Forms.ToolStripButton();
 			this.buttonZoomOut = new System.Windows.Forms.ToolStripButton();
@@ -65,6 +66,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.stateControlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.stateControlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.buttonBrightness,
+            this.buttonIndices,
             this.toolStripSeparator1,
             this.buttonDefaultZoom,
             this.buttonZoomOut,
@@ -86,6 +88,17 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.buttonBrightness.Size = new System.Drawing.Size(23, 22);
 			this.buttonBrightness.ToolTipText = "Toggle Background Color";
 			this.buttonBrightness.CheckedChanged += new System.EventHandler(this.buttonBrightness_CheckedChanged);
+			// 
+			// buttonIndices
+			// 
+			this.buttonIndices.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonIndices.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonIndices.Image = global::Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconHideIndices;
+			this.buttonIndices.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonIndices.Name = "buttonIndices";
+			this.buttonIndices.Size = new System.Drawing.Size(23, 22);
+			this.buttonIndices.ToolTipText = "Switch Indices Display Mode";
+			this.buttonIndices.Click += new System.EventHandler(this.buttonIndices_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -157,5 +170,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		private System.Windows.Forms.ToolStripButton buttonDefaultZoom;
 		private System.Windows.Forms.ToolStripButton buttonZoomOut;
 		private System.Windows.Forms.ToolStripButton buttonZoomIn;
+		private System.Windows.Forms.ToolStripButton buttonIndices;
 	}
 }

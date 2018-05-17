@@ -113,6 +113,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		public override void OnMouseMove(MouseEventArgs e)
 		{
+			base.OnMouseMove(e);
+
 			if (this.TargetPixmap == null 
 				|| this.TargetPixmap.Atlas == null 
 				|| this.SelectedRectIndex < 0)
@@ -143,6 +145,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					this.SetHoveredSide(Side.None);
 				}
 			}
+
+			// When hovering, make sure the displayed index
+			// matches what the user may end up dragging
+			if (this.hoveredRectSide != Side.None)
+				this.hoveredRectIndex = this.SelectedRectIndex;
 
 			if (this.dragInProgress)
 			{

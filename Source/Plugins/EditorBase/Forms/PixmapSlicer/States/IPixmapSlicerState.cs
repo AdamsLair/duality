@@ -8,6 +8,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
 	public delegate void MouseTransformDelegate(Point mousePos, out float x, out float y);
 
+	[Flags]
+	public enum PixmapNumberingStyle
+	{
+		None = 0x1,
+		Hovered = 0x2,
+		All = 0x4
+	}
+
 	/// <summary>
 	/// An operation state for the <see cref="PixmapSlicerForm"/>
 	/// </summary>
@@ -22,6 +30,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		Cursor Cursor { get; }
 		int SelectedRectIndex { get; }
 		List<ToolStripItem> StateControls { get; }
+
+		/// <summary>
+		/// The numbering display style in use by this state.
+		/// </summary>
+		PixmapNumberingStyle NumberingStyle { get; }
 
 		/// <summary>
 		/// A function that transforms client 
@@ -46,6 +59,17 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		event EventHandler StateCancelled;
 		event EventHandler SelectionChanged;
 		event EventHandler<PixmapSlicerForm.PixmapSlicerStateEventArgs> StateChangeRequested;
+
+		/// <summary>
+		/// Returns a bitmask of the numbering styles supported by this state
+		/// </summary>
+		PixmapNumberingStyle GetSupportedNumberingStyles();
+		/// <summary>
+		/// Sets the numbering style in use by this state.
+		/// Returns true if successful, false otherwise.
+		/// See <see cref="GetSupportedNumberingStyles"/>
+		/// </summary>
+		bool SetNumberingStyle(PixmapNumberingStyle style);
 
 		void ClearSelection();
 

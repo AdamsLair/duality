@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
-using Font = System.Drawing.Font;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
@@ -34,6 +32,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.StateControls.Add(this.cancelButton);
 		}
 
+		public override PixmapNumberingStyle GetSupportedNumberingStyles()
+		{
+			return PixmapNumberingStyle.None;
+		}
+
 		public override void OnMouseUp(MouseEventArgs e)
 		{
 			if (this.TargetPixmap == null || this.TargetPixmap.Atlas == null)
@@ -60,21 +63,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		public override void OnPaint(PaintEventArgs e)
 		{
+			base.OnPaint(e);
+
 			// Render the index of any clicked rects
 			for (int index = 0; index < this.orderedIndices.Count; index++)
 			{
 				Rect atlasRect = this.TargetPixmap.Atlas[this.orderedIndices[index]];
 				Rect displayRect = this.GetDisplayRect(atlasRect);
-				RectangleF displayRectangle = new RectangleF(displayRect.X, displayRect.Y, displayRect.W, displayRect.H);
-				string renderedString = index.ToString();
-
-				using (StringFormat format = new StringFormat{ Alignment = StringAlignment.Center })
-				using (Font startingFont = new Font(FontFamily.GenericSerif, 20))
-				using (Font font = GetAdjustedFont(e.Graphics, renderedString,
-					startingFont, (int)displayRect.W, (int)displayRect.H, 20, 2, false))
-				{
-					e.Graphics.DrawString(renderedString, font, Brushes.White, displayRectangle, format);
-				}
+				this.DisplayRectIndex(e.Graphics, displayRect, index);
 			}
 		}
 
@@ -101,42 +97,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			UndoRedoManager.Do(new SetAtlasAction(newAtlas, new []{ this.TargetPixmap }));
 			this.CancelState();
-		}
-
-		/// <summary>
-		/// Returns a font that best fits the given parameters
-		/// </summary>
-		private static Font GetAdjustedFont(Graphics graphicRef, string graphicString,
-			Font originalFont, int containerWidth, int containerHeight,
-			int maxFontSize, int minFontSize,
-			bool smallestOnFail)
-		{
-			Font testFont = null;
-			for (int adjustedSize = maxFontSize; adjustedSize >= minFontSize; adjustedSize--)
-			{
-				testFont = new Font(originalFont.Name, adjustedSize, originalFont.Style);
-
-				// Test the string with the new size
-				SizeF adjustedSizeNew = graphicRef.MeasureString(graphicString, testFont);
-
-				if (containerWidth > Convert.ToInt32(adjustedSizeNew.Width)
-					&& containerHeight > Convert.ToInt32(adjustedSizeNew.Height))
-				{
-					// Good font, return it
-					return testFont;
-				}
-			}
-
-			// If you get here there was no fontsize that worked
-			// return minimumSize or original?
-			if (smallestOnFail)
-			{
-				return testFont;
-			}
-			else
-			{
-				return originalFont;
-			}
 		}
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)

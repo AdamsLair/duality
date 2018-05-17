@@ -403,4 +403,13 @@
   <data name="IconZoomOut" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\IconZoomOut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="IconHideIndices" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconHideIndices.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconRevealIndices" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconRevealIndices.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconShowIndices" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconShowIndices.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

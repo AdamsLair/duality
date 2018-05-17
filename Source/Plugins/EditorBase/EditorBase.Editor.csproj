@@ -200,6 +200,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="EmbeddedResources\IconHideIndices.png" />
+    <None Include="EmbeddedResources\IconRevealIndices.png" />
+    <None Include="EmbeddedResources\IconShowIndices.png" />
     <None Include="EmbeddedResources\IconZoomIn.png" />
     <None Include="EmbeddedResources\IconZoomDefault.png" />
     <None Include="EmbeddedResources\IconZoomOut.png" />

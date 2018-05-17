@@ -46,6 +46,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		public override void OnMouseMove(MouseEventArgs e)
 		{
+			base.OnMouseMove(e);
+
 			if (this.TargetPixmap == null || !this.mouseDown)
 				return;
 
@@ -82,15 +84,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		public override void OnPaint(PaintEventArgs e)
 		{
+			base.OnPaint(e);
+
 			if (!this.newAtlasRect.HasValue)
 				return;
 
 			Rect rect = this.GetDisplayRect(this.newAtlasRect.Value);
-			using (Pen rectPen = new Pen(Color.Blue, 1))
-			{
-				e.Graphics.DrawRectangle(rectPen,
-					rect.X, rect.Y, rect.W, rect.H);
-			}
+			e.Graphics.DrawRectangle(this.selectedRectPen,
+				rect.X, rect.Y, rect.W, rect.H);
 		}
 
 		private void CommitRect()

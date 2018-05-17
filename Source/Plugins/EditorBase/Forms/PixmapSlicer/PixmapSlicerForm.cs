@@ -191,23 +191,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 				e.Graphics.DrawImage(this.displayedImage, this.displayedImageRect);
 				e.Graphics.InterpolationMode = InterpolationMode.Default;
-
-				// Draw atlas rects
-				if (this.targetPixmap.Atlas != null)
-				{
-					using (Pen rectPen = new Pen(Color.Black, 1))
-					using (Pen selectedRectPen = new Pen(Color.Blue, 1))
-					{
-						for (int i = 0; i < this.targetPixmap.Atlas.Count; i++)
-						{
-							Rect rect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
-							e.Graphics.DrawRectangle(i == this.state.SelectedRectIndex
-								? selectedRectPen
-								: rectPen,
-								rect.X, rect.Y, rect.W, rect.H);
-						}
-					}
-				}
 			}
 
 			this.state.OnPaint(e);
@@ -291,6 +274,42 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.SetScaleFactor(1f);
 		}
 
+		private void buttonIndices_Click(object sender, EventArgs e)
+		{
+			PixmapNumberingStyle currentStyle = this.state.NumberingStyle;
+
+			// Cycle through the available styles until we find one that works
+			// or we have cycled back to the current style
+			PixmapNumberingStyle newStyle = (PixmapNumberingStyle)((int)currentStyle << 1);
+			if ((int)newStyle > (int) PixmapNumberingStyle.All) newStyle = PixmapNumberingStyle.None;
+
+			PixmapNumberingStyle supportedStyles = this.state.GetSupportedNumberingStyles();
+			while ((supportedStyles & newStyle) == 0 && newStyle != currentStyle)
+			{
+				newStyle = (PixmapNumberingStyle)((int)newStyle << 1);
+				if ((int)newStyle > (int)PixmapNumberingStyle.All) newStyle = PixmapNumberingStyle.None;
+			}
+
+			this.state.SetNumberingStyle(newStyle);
+			this.UpdateIndicesButton();
+		}
+
+		private void UpdateIndicesButton()
+		{
+			switch (this.state.NumberingStyle)
+			{
+				case PixmapNumberingStyle.None:
+					this.buttonIndices.Image = EditorBaseRes.IconHideIndices;
+					break;
+				case PixmapNumberingStyle.Hovered:
+					this.buttonIndices.Image = EditorBaseRes.IconRevealIndices;
+					break;
+				case PixmapNumberingStyle.All:
+					this.buttonIndices.Image = EditorBaseRes.IconShowIndices;
+					break;
+			}
+		}
+
 		private void SetScaleFactor(float scale)
 		{
 			this.scaleFactor = MathF.Max(1f, scale);
@@ -337,6 +356,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				}
 			}
 
+			this.UpdateIndicesButton();
 			this.Invalidate();
 		}
 

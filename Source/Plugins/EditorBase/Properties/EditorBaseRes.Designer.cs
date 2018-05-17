@@ -475,9 +475,39 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap IconHideIndices {
+            get {
+                object obj = ResourceManager.GetObject("IconHideIndices", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap IconPixmapSlicer {
             get {
                 object obj = ResourceManager.GetObject("IconPixmapSlicer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconRevealIndices {
+            get {
+                object obj = ResourceManager.GetObject("IconRevealIndices", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconShowIndices {
+            get {
+                object obj = ResourceManager.GetObject("IconShowIndices", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
