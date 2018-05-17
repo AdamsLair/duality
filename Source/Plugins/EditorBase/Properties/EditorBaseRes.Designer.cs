@@ -563,6 +563,36 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconZoomDefault {
+            get {
+                object obj = ResourceManager.GetObject("IconZoomDefault", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconZoomIn {
+            get {
+                object obj = ResourceManager.GetObject("IconZoomIn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconZoomOut {
+            get {
+                object obj = ResourceManager.GetObject("IconZoomOut", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t remove {0} because it is required by the &apos;{1}&apos; Component..
         /// </summary>
         public static string MenuItemDesc_CantRemoveComponent {

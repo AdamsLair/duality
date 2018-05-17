@@ -34,6 +34,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.verticalScrollBar = new System.Windows.Forms.VScrollBar();
 			this.stateControlToolStrip = new System.Windows.Forms.ToolStrip();
 			this.buttonBrightness = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonDefaultZoom = new System.Windows.Forms.ToolStripButton();
+			this.buttonZoomOut = new System.Windows.Forms.ToolStripButton();
+			this.buttonZoomIn = new System.Windows.Forms.ToolStripButton();
 			this.stateControlToolStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -60,7 +64,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.stateControlToolStrip.GripMargin = new System.Windows.Forms.Padding(0);
 			this.stateControlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.stateControlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.buttonBrightness});
+            this.buttonBrightness,
+            this.toolStripSeparator1,
+            this.buttonDefaultZoom,
+            this.buttonZoomOut,
+            this.buttonZoomIn});
 			this.stateControlToolStrip.Location = new System.Drawing.Point(0, 0);
 			this.stateControlToolStrip.Name = "stateControlToolStrip";
 			this.stateControlToolStrip.Size = new System.Drawing.Size(411, 25);
@@ -78,6 +86,45 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.buttonBrightness.Size = new System.Drawing.Size(23, 22);
 			this.buttonBrightness.ToolTipText = "Toggle Background Color";
 			this.buttonBrightness.CheckedChanged += new System.EventHandler(this.buttonBrightness_CheckedChanged);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttonDefaultZoom
+			// 
+			this.buttonDefaultZoom.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonDefaultZoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonDefaultZoom.Image = global::Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconZoomDefault;
+			this.buttonDefaultZoom.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonDefaultZoom.Name = "buttonDefaultZoom";
+			this.buttonDefaultZoom.Size = new System.Drawing.Size(23, 22);
+			this.buttonDefaultZoom.ToolTipText = "Default Zoom";
+			this.buttonDefaultZoom.Click += new System.EventHandler(this.buttonDefaultZoom_Click);
+			// 
+			// buttonZoomOut
+			// 
+			this.buttonZoomOut.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonZoomOut.Image = global::Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconZoomOut;
+			this.buttonZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonZoomOut.Name = "buttonZoomOut";
+			this.buttonZoomOut.Size = new System.Drawing.Size(23, 22);
+			this.buttonZoomOut.ToolTipText = "Zoom Out";
+			this.buttonZoomOut.Click += new System.EventHandler(this.buttonZoomOut_Click);
+			// 
+			// buttonZoomIn
+			// 
+			this.buttonZoomIn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonZoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonZoomIn.Image = global::Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconZoomIn;
+			this.buttonZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonZoomIn.Name = "buttonZoomIn";
+			this.buttonZoomIn.Size = new System.Drawing.Size(23, 22);
+			this.buttonZoomIn.ToolTipText = "Zoom In";
+			this.buttonZoomIn.Click += new System.EventHandler(this.buttonZoomIn_Click);
 			// 
 			// PixmapSlicerForm
 			// 
@@ -106,5 +153,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		private System.Windows.Forms.VScrollBar verticalScrollBar;
 		private System.Windows.Forms.ToolStrip stateControlToolStrip;
 		private System.Windows.Forms.ToolStripButton buttonBrightness;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripButton buttonDefaultZoom;
+		private System.Windows.Forms.ToolStripButton buttonZoomOut;
+		private System.Windows.Forms.ToolStripButton buttonZoomIn;
 	}
 }

@@ -244,11 +244,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			this.scaleFactor += e.Delta > 0 ? .1f : -.1f;
-			this.scaleFactor = MathF.Max(1f, this.scaleFactor);
-			this.horizontalScrollBar.Visible = this.scaleFactor > 1f;
-			this.verticalScrollBar.Visible = this.scaleFactor > 1f;
-			this.Invalidate();
+			this.SetScaleFactor(this.scaleFactor + (e.Delta > 0 ? .1f : -.1f));
 		}
 
 		private void ScrollBarOnScroll(object sender, EventArgs e)
@@ -280,8 +276,41 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.Invalidate();
 		}
 
+		private void buttonZoomIn_Click(object sender, EventArgs e)
+		{
+			this.SetScaleFactor(this.scaleFactor + .2f);
+		}
+
+		private void buttonZoomOut_Click(object sender, EventArgs e)
+		{
+			this.SetScaleFactor(this.scaleFactor - .2f);
+		}
+
+		private void buttonDefaultZoom_Click(object sender, EventArgs e)
+		{
+			this.SetScaleFactor(1f);
+		}
+
+		private void SetScaleFactor(float scale)
+		{
+			this.scaleFactor = MathF.Max(1f, scale);
+			this.horizontalScrollBar.Visible = this.scaleFactor > 1f;
+			this.verticalScrollBar.Visible = this.scaleFactor > 1f;
+			this.Invalidate();
+		}
+
 		private void SetState(IPixmapSlicerState action)
 		{
+			// Tear down old state
+			if (this.state != null)
+			{
+				// Remove old states controls
+				foreach (ToolStripItem item in this.state.StateControls)
+				{
+					this.stateControlToolStrip.Items.Remove(item);
+				}
+			}
+
 			this.state = action;
 
 			action.TargetPixmap = this.targetPixmap;
@@ -300,7 +329,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			action.StateChangeRequested += this.OnStateChangeRequested;
 
 			// Add controls for the given state
-			this.stateControlToolStrip.Items.Clear();
 			if (action.StateControls != null && action.StateControls.Count > 0)
 			{
 				foreach (ToolStripItem item in action.StateControls)
@@ -308,7 +336,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 					this.stateControlToolStrip.Items.Add(item);
 				}
 			}
-			this.stateControlToolStrip.Items.Add(this.buttonBrightness);
 
 			this.Invalidate();
 		}
