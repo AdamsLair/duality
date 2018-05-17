@@ -557,8 +557,6 @@ namespace Duality
 		/// <returns></returns>
 		public static float SmoothStep(float value, float a, float b)
 		{
-			//value = a < b ? Clamp(value, a, b) : Clamp(value, b, a);
-			//return a + (3 - 2 * value) * value * value * (b - a);
 			value = Clamp01(InvLerp(a, b, value));
 			return value * value * (3 - 2 * value);
 		}
