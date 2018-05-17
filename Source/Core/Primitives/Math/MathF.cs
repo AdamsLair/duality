@@ -526,6 +526,17 @@ namespace Duality
 			return (value - min) / (max - min);
 		}
 
+		/// <summary>
+		/// Performs inverse linear interpolation between two anchor values.
+		/// </summary>
+		/// <param name="min">The lower anchor value.</param>
+		/// <param name="max">The upper anchor value.</param>
+		/// <param name="value">The value between both anchor values.</param>
+		/// <returns>Returns the ratio of the difference between min and value and max and value.</returns>
+		public static float InvLerp(float min, float max, float value)
+		{
+			return (value - min) / (max - min);
+		}
 
 		/// <summary>
 		/// Returns the specified power of <see cref="E"/>.
