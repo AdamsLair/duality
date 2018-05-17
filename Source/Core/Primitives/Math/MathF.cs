@@ -542,7 +542,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="value">The input value.</param>
 		/// <returns></returns>
-		public static float smoothStep(float value)
+		public static float SmoothStep(float value)
 		{
 			value = Clamp01(value);
 			return (3 - 2 * value) * value * value;
@@ -555,7 +555,7 @@ namespace Duality
 		/// <param name="b">The upper bound anchor value</param>
 		/// <param name="value">The input value.</param>
 		/// <returns></returns>
-		public static float smoothStep(float value, float a, float b)
+		public static float SmoothStep(float value, float a, float b)
 		{
 			//value = a < b ? Clamp(value, a, b) : Clamp(value, b, a);
 			//return a + (3 - 2 * value) * value * value * (b - a);
