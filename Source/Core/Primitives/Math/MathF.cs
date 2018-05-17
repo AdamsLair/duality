@@ -551,13 +551,13 @@ namespace Duality
 		/// <summary>
 		/// Performs a SmoothStep interpolation between two anchor values.
 		/// </summary>
-		/// <param name="a">The lower bound anchor value</param>
-		/// <param name="b">The upper bound anchor value</param>
+		/// <param name="min">The lower bound anchor value</param>
+		/// <param name="max">The upper bound anchor value</param>
 		/// <param name="value">The input value.</param>
 		/// <returns></returns>
-		public static float SmoothStep(float value, float a, float b)
+		public static float SmoothStep(float value, float min, float max)
 		{
-			value = Clamp01(InvLerp(a, b, value));
+			value = Clamp01(InvLerp(min, max, value));
 			return value * value * (3 - 2 * value);
 		}
 
