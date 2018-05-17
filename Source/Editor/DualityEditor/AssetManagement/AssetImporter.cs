@@ -89,6 +89,6 @@ namespace Duality.Editor.AssetManagement
 		}
 
 		protected abstract void ImportResource(ContentRef<T> resourceRef, AssetImportInput input, IAssetImportEnvironment env);
-		protected abstract void ExportResource(ContentRef<T> resource, string path, IAssetExportEnvironment env);
+		protected abstract void ExportResource(ContentRef<T> resourceRef, string path, IAssetExportEnvironment env);
 	}
 }
