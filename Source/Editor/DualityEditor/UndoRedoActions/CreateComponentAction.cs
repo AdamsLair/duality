@@ -61,8 +61,9 @@ namespace Duality.Editor.UndoRedoActions
 
 				// Create dependency Components where required. This will extend the current loop.
 				// (Reversed, so repeated injection at the same index will yield the original order)
-				List<Type> createRequirements = Component.RequireMap.GetRequirementsToCreate(this.targetParentObj, obj.GetType()).ToList();
-				createRequirements.Reverse();
+				List<Type> createRequirements = Component.RequireMap
+					.GetRequirementsToCreate(this.targetParentObj, obj.GetType())
+					.Reverse().ToList();
 				for (int j = 0; j < createRequirements.Count; j++)
 				{
 					Type required = createRequirements[j];
@@ -70,7 +71,14 @@ namespace Duality.Editor.UndoRedoActions
 					// If the type can't be instantiated, ask the user for a concrete type to use
 					if (required.IsInterface || required.IsAbstract)
 					{
-						required = GetConcreteType(required);
+						required = GetRequiredConcreteType(required, obj.GetType());
+						if (required == null)
+						{
+							Log.Editor.WriteWarning("Failed to add {0} because its requirements could not be resolved", obj.GetType().GetTypeCSCodeName(true));
+							this.targetObj.Clear();
+							return;
+						}
+
 						// Get additional requirements for the concrete type
 						IEnumerable<Type> additionalRequirements =
 							Component.RequireMap.GetRequirementsToCreate(this.targetParentObj, required);
@@ -120,13 +128,15 @@ namespace Duality.Editor.UndoRedoActions
 		/// <summary>
 		/// Gets a concrete type from the user that extends from the given type.
 		/// </summary>
-		private static Type GetConcreteType(Type type)
+		/// <param name="type">The abstract type to get a concrete type for</param>
+		/// <param name="typeWithRequirement">The type that needs this requirement satisfied</param>
+		private static Type GetRequiredConcreteType(Type type, Type typeWithRequirement)
 		{
 			ListSelectionDialog typeDialog = new ListSelectionDialog
 			{
 				FilteredType = type,
 				SelectType = true,
-				HeaderText = "The added component requires one of the following components. Please select one."
+				HeaderText = string.Format("{0} requires one of the following components. Please select one.", typeWithRequirement.GetTypeCSCodeName(true))
 			};
 			DialogResult result = typeDialog.ShowDialog();
 			if (result == DialogResult.OK && typeDialog.TypeReference != null)
