@@ -122,9 +122,12 @@ namespace Duality.Editor.UndoRedoActions
 		/// </summary>
 		private static Type GetConcreteType(Type type)
 		{
-			ListSelectionDialog typeDialog = new ListSelectionDialog();
-			typeDialog.FilteredType = type;
-			typeDialog.SelectType = true;
+			ListSelectionDialog typeDialog = new ListSelectionDialog
+			{
+				FilteredType = type,
+				SelectType = true,
+				HeaderText = "The added component requires one of the following components. Please select one."
+			};
 			DialogResult result = typeDialog.ShowDialog();
 			if (result == DialogResult.OK && typeDialog.TypeReference != null)
 			{
