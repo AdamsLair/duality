@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-
+using System.Windows.Forms;
 using Duality;
 using Duality.Cloning;
+using Duality.Editor.Forms;
 using Duality.Resources;
 
 using Duality.Editor.Properties;
@@ -60,9 +61,22 @@ namespace Duality.Editor.UndoRedoActions
 
 				// Create dependency Components where required. This will extend the current loop.
 				// (Reversed, so repeated injection at the same index will yield the original order)
-				IEnumerable<Type> createRequirements = Component.RequireMap.GetRequirementsToCreate(this.targetParentObj, obj.GetType());
-				foreach (Type required in createRequirements.Reverse())
+				List<Type> createRequirements = Component.RequireMap.GetRequirementsToCreate(this.targetParentObj, obj.GetType()).ToList();
+				createRequirements.Reverse();
+				for (int j = 0; j < createRequirements.Count; j++)
 				{
+					Type required = createRequirements[j];
+
+					// If the type can't be instantiated, ask the user for a concrete type to use
+					if (required.IsInterface || required.IsAbstract)
+					{
+						required = GetConcreteType(required);
+						// Get additional requirements for the concrete type
+						IEnumerable<Type> additionalRequirements =
+							Component.RequireMap.GetRequirementsToCreate(this.targetParentObj, required);
+						createRequirements.AddRange(additionalRequirements);
+					}
+
 					obj = required.GetTypeInfo().CreateInstanceOf() as Component;
 
 					// Setup newly created dependency Components for user editing
@@ -90,6 +104,7 @@ namespace Duality.Editor.UndoRedoActions
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.targetParentObj));
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}
+
 		public override void Undo()
 		{
 			if (this.backupObj == null) throw new InvalidOperationException("Can't undo what hasn't been done yet");
@@ -100,6 +115,22 @@ namespace Duality.Editor.UndoRedoActions
 			}
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.targetParentObj));
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
+		}
+
+		/// <summary>
+		/// Gets a concrete type from the user that extends from the given type.
+		/// </summary>
+		private static Type GetConcreteType(Type type)
+		{
+			ListSelectionDialog typeDialog = new ListSelectionDialog();
+			typeDialog.FilteredType = type;
+			typeDialog.SelectType = true;
+			DialogResult result = typeDialog.ShowDialog();
+			if (result == DialogResult.OK && typeDialog.TypeReference != null)
+			{
+				return typeDialog.TypeReference;
+			}
+			return null;
 		}
 
 		private static void SetupComponentForEditing(Component cmp)
