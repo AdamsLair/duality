@@ -12,24 +12,9 @@ namespace Duality.Editor.Plugins.Base
 {
 	public class AudioDataAssetImporter : AssetImporter<AudioData>
 	{
-		private static readonly string[] sourceFileExts = { ".ogg" };
-
-		protected override string SourceFileExtPrimary
+		public AudioDataAssetImporter()
+			: base("AudioData Importer", "BasicAudioDataAssetImporter", PriorityGeneral, ".ogg")
 		{
-			get { return sourceFileExts[0]; }
-		}
-		protected override string[] SourceFileExts
-		{
-			get { return sourceFileExts; }
-		}
-
-		public override string Id
-		{
-			get { return "BasicAudioDataAssetImporter"; }
-		}
-		public override string Name
-		{
-			get { return "AudioData Importer"; }
 		}
 
 		protected override void ImportResource(ContentRef<AudioData> resourceRef, AssetImportInput input, IAssetImportEnvironment env)

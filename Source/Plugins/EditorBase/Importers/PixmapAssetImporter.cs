@@ -14,24 +14,9 @@ namespace Duality.Editor.Plugins.Base
 {
 	public class PixmapAssetImporter : AssetImporter<Pixmap>
 	{
-		private static readonly string[] sourceFileExts = new[] { ".png", ".bmp", ".jpg", ".jpeg", ".tif", ".tiff" };
-
-		protected override string SourceFileExtPrimary
+		public PixmapAssetImporter()
+			: base("Pixmap Importer", "BasicPixmapAssetImporter", PriorityGeneral, ".png", ".bmp", ".jpg", ".jpeg", ".tif", ".tiff")
 		{
-			get { return sourceFileExts[0]; }
-		}
-		protected override string[] SourceFileExts
-		{
-			get { return sourceFileExts; }
-		}
-
-		public override string Id
-		{
-			get { return "BasicPixmapAssetImporter"; }
-		}
-		public override string Name
-		{
-			get { return "Pixmap Importer"; }
 		}
 
 		protected override void ImportResource(ContentRef<Pixmap> resourceRef, AssetImportInput input, IAssetImportEnvironment env)

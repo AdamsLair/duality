@@ -19,28 +19,36 @@ namespace Duality.Editor.AssetManagement
 		/// [GET] The main file extension that this importer handles.
 		/// Used when determining the file extension of exported resources.
 		/// </summary>
-		protected abstract string SourceFileExtPrimary { get; }
+		protected virtual string SourceFileExtPrimary { get; private set; }
 		/// <summary>
 		/// [GET] All file extensions that this importer handles.
 		/// Used when determining whether or not this importer
 		/// can handle a given input file.
 		/// </summary>
-		protected abstract string[] SourceFileExts { get; }
+		protected virtual string[] SourceFileExts { get; private set; }
 
 		/// <summary>
 		/// [GET] A fixed system ID that represents this importer.
 		/// </summary>
-		public abstract string Id { get; }
+		public virtual string Id { get; private set; }
 		/// <summary>
 		/// [GET] The user-friendly name of this importer.
 		/// </summary>
-		public abstract string Name { get; }
+		public virtual string Name { get; private set; }
 		/// <summary>
 		/// [GET] The relative priority of this importer over others.
 		/// </summary>
-		public virtual int Priority
+		public virtual int Priority { get; private set; }
+
+		protected AssetImporter(string name, string uniqueID, int priority, string primaryFileExt, params string[] additionalFileExts)
 		{
-			get { return PriorityGeneral; }
+			this.Name = name;
+			this.Id = uniqueID;
+			this.Priority = priority;
+			this.SourceFileExtPrimary = primaryFileExt;
+			this.SourceFileExts = new string[1 + additionalFileExts.Length];
+			this.SourceFileExts[0] = primaryFileExt;
+			additionalFileExts.CopyTo(this.SourceFileExts, 1);
 		}
 
 		/// <summary>
