@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Duality.Drawing;
 using NUnit.Framework;
@@ -24,22 +26,22 @@ namespace Duality.Editor.Tests
 		{
 			DataObject dataIn = new DataObject();
 			TestClass dataOne = new TestClass();
-			object[] outParam;
+			IEnumerable<object> outParam;
 
-			dataIn.SetWrappedData(new [] { dataOne }, DataFormat.Reference);
+			dataIn.SetWrappedData(new [] { dataOne }, typeof(TestClass), DataFormat.Reference);
 
-			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Reference));
-			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value));
-			Assert.IsFalse(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value, false));
-			Assert.AreSame(dataOne, dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Reference)[0]);
-			Assert.AreNotSame(dataOne, dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Value)[0]);
-			Assert.IsNull(dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Value, false));
+			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass), DataFormat.Reference));
+			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass), DataFormat.Value));
+			Assert.IsFalse(dataIn.GetWrappedDataPresent(typeof(TestClass), DataFormat.Value, false));
+			Assert.AreSame(dataOne, dataIn.GetWrappedData(typeof(TestClass), DataFormat.Reference).First());
+			Assert.AreNotSame(dataOne, dataIn.GetWrappedData(typeof(TestClass), DataFormat.Value).First());
+			Assert.IsNull(dataIn.GetWrappedData(typeof(TestClass), DataFormat.Value, false));
 
-			Assert.IsTrue(dataIn.TryGetWrappedData(typeof(TestClass[]), DataFormat.Reference, out outParam));
+			Assert.IsTrue(dataIn.TryGetWrappedData(typeof(TestClass), DataFormat.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetWrappedData(typeof(TestClass[]), DataFormat.Value, out outParam));
+			Assert.IsTrue(dataIn.TryGetWrappedData(typeof(TestClass), DataFormat.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsFalse(dataIn.TryGetWrappedData(typeof(TestClass[]), DataFormat.Value, false, out outParam));
+			Assert.IsFalse(dataIn.TryGetWrappedData(typeof(TestClass), DataFormat.Value, false, out outParam));
 			Assert.IsNull(outParam);
 			Assert.IsFalse(dataIn.TryGetWrappedData(typeof(object), DataFormat.Reference, out outParam));
 			Assert.IsNull(outParam);
@@ -49,18 +51,18 @@ namespace Duality.Editor.Tests
 			Clipboard.SetDataObject(dataIn);
 			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
 
-			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Reference));
-			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value));
-			Assert.IsFalse(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value, false));
-			Assert.AreSame(dataOne, dataOut.GetWrappedData(typeof(TestClass[]), DataFormat.Reference)[0]);
-			Assert.AreNotSame(dataOne, dataOut.GetWrappedData(typeof(TestClass[]), DataFormat.Value)[0]);
-			Assert.IsNull(dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Value, false));
+			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass), DataFormat.Reference));
+			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass), DataFormat.Value));
+			Assert.IsFalse(dataOut.GetWrappedDataPresent(typeof(TestClass), DataFormat.Value, false));
+			Assert.AreSame(dataOne, dataOut.GetWrappedData(typeof(TestClass), DataFormat.Reference).First());
+			Assert.AreNotSame(dataOne, dataOut.GetWrappedData(typeof(TestClass), DataFormat.Value).First());
+			Assert.IsNull(dataIn.GetWrappedData(typeof(TestClass), DataFormat.Value, false));
 
-			Assert.IsTrue(dataOut.TryGetWrappedData(typeof(TestClass[]), DataFormat.Reference, out outParam));
+			Assert.IsTrue(dataOut.TryGetWrappedData(typeof(TestClass), DataFormat.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataOut.TryGetWrappedData(typeof(TestClass[]), DataFormat.Value, out outParam));
+			Assert.IsTrue(dataOut.TryGetWrappedData(typeof(TestClass), DataFormat.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsFalse(dataOut.TryGetWrappedData(typeof(TestClass[]), DataFormat.Value, false, out outParam));
+			Assert.IsFalse(dataOut.TryGetWrappedData(typeof(TestClass), DataFormat.Value, false, out outParam));
 			Assert.IsNull(outParam);
 			Assert.IsFalse(dataOut.TryGetWrappedData(typeof(object), DataFormat.Reference, out outParam));
 			Assert.IsNull(outParam);
@@ -72,23 +74,23 @@ namespace Duality.Editor.Tests
 		{
 			DataObject dataIn = new DataObject();
 			TestClass dataOne = new TestClass();
-			object[] outParam;
+			IEnumerable<object> outParam;
 
-			dataIn.SetWrappedData(new[] { dataOne }, DataFormat.Value);
+			dataIn.SetWrappedData(new[] { dataOne }, typeof(TestClass), DataFormat.Value);
 
-			Assert.IsFalse(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Reference));
-			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value));
-			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value, false));
-			Assert.IsNull(dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Reference));
+			Assert.IsFalse(dataIn.GetWrappedDataPresent(typeof(TestClass), DataFormat.Reference));
+			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass), DataFormat.Value));
+			Assert.IsTrue(dataIn.GetWrappedDataPresent(typeof(TestClass), DataFormat.Value, false));
+			Assert.IsNull(dataIn.GetWrappedData(typeof(TestClass), DataFormat.Reference));
 			// Even though we are retrieving a value, serialization has not occured yet
-			Assert.AreSame(dataOne, dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Value)[0]);
-			Assert.AreSame(dataOne, dataIn.GetWrappedData(typeof(TestClass[]), DataFormat.Value, false)[0]);
+			Assert.AreSame(dataOne, dataIn.GetWrappedData(typeof(TestClass), DataFormat.Value).First());
+			Assert.AreSame(dataOne, dataIn.GetWrappedData(typeof(TestClass), DataFormat.Value, false).First());
 
-			Assert.IsFalse(dataIn.TryGetWrappedData(typeof(TestClass[]), DataFormat.Reference, out outParam));
+			Assert.IsFalse(dataIn.TryGetWrappedData(typeof(TestClass), DataFormat.Reference, out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsTrue(dataIn.TryGetWrappedData(typeof(TestClass[]), DataFormat.Value, out outParam));
+			Assert.IsTrue(dataIn.TryGetWrappedData(typeof(TestClass), DataFormat.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetWrappedData(typeof(TestClass[]), DataFormat.Value, false, out outParam));
+			Assert.IsTrue(dataIn.TryGetWrappedData(typeof(TestClass), DataFormat.Value, false, out outParam));
 			Assert.IsNotNull(outParam);
 			Assert.IsFalse(dataIn.TryGetWrappedData(typeof(object), DataFormat.Reference, out outParam));
 			Assert.IsNull(outParam);
@@ -98,19 +100,19 @@ namespace Duality.Editor.Tests
 			Clipboard.SetDataObject(dataIn);
 			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
 
-			Assert.IsFalse(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Reference));
-			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value));
-			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass[]), DataFormat.Value, false));
-			Assert.IsNull(dataOut.GetWrappedData(typeof(TestClass[]), DataFormat.Reference));
+			Assert.IsFalse(dataOut.GetWrappedDataPresent(typeof(TestClass), DataFormat.Reference));
+			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass), DataFormat.Value));
+			Assert.IsTrue(dataOut.GetWrappedDataPresent(typeof(TestClass), DataFormat.Value, false));
+			Assert.IsNull(dataOut.GetWrappedData(typeof(TestClass), DataFormat.Reference));
 			// DeepClone should have been done by now
-			Assert.AreNotSame(dataOne, dataOut.GetWrappedData(typeof(TestClass[]), DataFormat.Value)[0]);
-			Assert.AreNotSame(dataOne, dataOut.GetWrappedData(typeof(TestClass[]), DataFormat.Value, false)[0]);
+			Assert.AreNotSame(dataOne, dataOut.GetWrappedData(typeof(TestClass), DataFormat.Value).First());
+			Assert.AreNotSame(dataOne, dataOut.GetWrappedData(typeof(TestClass), DataFormat.Value, false).First());
 
-			Assert.IsFalse(dataOut.TryGetWrappedData(typeof(TestClass[]), DataFormat.Reference, out outParam));
+			Assert.IsFalse(dataOut.TryGetWrappedData(typeof(TestClass), DataFormat.Reference, out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsTrue(dataOut.TryGetWrappedData(typeof(TestClass[]), DataFormat.Value, out outParam));
+			Assert.IsTrue(dataOut.TryGetWrappedData(typeof(TestClass), DataFormat.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataOut.TryGetWrappedData(typeof(TestClass[]), DataFormat.Value, false, out outParam));
+			Assert.IsTrue(dataOut.TryGetWrappedData(typeof(TestClass), DataFormat.Value, false, out outParam));
 			Assert.IsNotNull(outParam);
 			Assert.IsFalse(dataOut.TryGetWrappedData(typeof(object), DataFormat.Reference, out outParam));
 			Assert.IsNull(outParam);

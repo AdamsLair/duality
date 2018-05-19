@@ -132,7 +132,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 					string valString = this.editor.Select(ve => ve.Value).ToString(", ");
 					DataObject data = new DataObject();
 					data.SetText(valString);
-					data.SetWrappedData(new [] { this.DisplayedValue }, DataFormat.Value);
+					data.SetWrappedData(new [] { this.DisplayedValue }, this.DisplayedValue.GetType(), DataFormat.Value);
 
 					Clipboard.SetDataObject(data);
 					this.SetFocusEditorIndex(-1, true);
@@ -156,7 +156,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 					bool success = false;
 					if (data.GetWrappedDataPresent(this.DisplayedValue.GetType(), DataFormat.Value))
 					{
-						object stored = data.GetWrappedData(this.DisplayedValue.GetType(), DataFormat.Value)[0];
+						object stored = data.GetWrappedData(this.DisplayedValue.GetType(), DataFormat.Value).First();
 						this.SetValue(stored);
 						this.PerformGetValue();
 						this.OnEditingFinished(FinishReason.LeapValue);
