@@ -517,26 +517,28 @@ namespace Duality
 		/// <summary>
 		/// Performs inverse linear interpolation between two anchor values.
 		/// </summary>
-		/// <param name="a">The first anchor value.</param>
-		/// <param name="b">The second anchor value.</param>
+		/// <param name="min">The first anchor value.</param>
+		/// <param name="max">The second anchor value.</param>
 		/// <param name="value">The value between both anchor values.</param>
 		/// <returns></returns>
-		public static int InvLerp(int a, int b, int value)
+		public static float InvLerp(float min, float max, float value)
 		{
-			return (value - a) / (b - a);
+			return (value - min) / (max - min);
 		}
 
 		/// <summary>
 		/// Performs inverse linear interpolation between two anchor values.
 		/// </summary>
-		/// <param name="a">The first anchor value.</param>
-		/// <param name="b">The second anchor value.</param>
+		/// <param name="min">The first anchor value.</param>
+		/// <param name="max">The second anchor value.</param>
 		/// <param name="value">The value between both anchor values.</param>
 		/// <returns></returns>
-		public static float InvLerp(float a, float b, float value)
+		public static float InvLerp(int min, int max, int value)
 		{
-			return (value - a) / (b - a);
+
+			return (float) (value - min) / (max - min);
 		}
+
 		/// <summary>
 		/// Performs a SmoothStep interpolation between 0 and 1.
 		/// </summary>
@@ -545,6 +547,8 @@ namespace Duality
 		public static float SmoothStep(float value)
 		{
 			value = Clamp01(value);
+			if (value < 0) return 0.0f;
+			if (value > 1.0f) return 1.0f;
 			return (3 - 2 * value) * value * value;
 		}
 
@@ -555,8 +559,10 @@ namespace Duality
 		/// <param name="max">The upper bound anchor value</param>
 		/// <param name="value">The input value.</param>
 		/// <returns></returns>
-		public static float SmoothStep(float value, float min, float max)
+		public static float SmoothStep(float min, float max, float value)
 		{
+			if (value < min) return 0.0f;
+			if (value > max) return 1.0f;
 			value = Clamp01(InvLerp(min, max, value));
 			return value * value * (3 - 2 * value);
 		}
