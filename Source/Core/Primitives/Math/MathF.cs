@@ -547,8 +547,6 @@ namespace Duality
 		public static float SmoothStep(float value)
 		{
 			value = Clamp01(value);
-			if (value < 0) return 0.0f;
-			if (value > 1.0f) return 1.0f;
 			return (3 - 2 * value) * value * value;
 		}
 
@@ -561,8 +559,6 @@ namespace Duality
 		/// <returns></returns>
 		public static float SmoothStep(float min, float max, float value)
 		{
-			if (value < min) return 0.0f;
-			if (value > max) return 1.0f;
 			value = Clamp01(InvLerp(min, max, value));
 			return value * value * (3 - 2 * value);
 		}
