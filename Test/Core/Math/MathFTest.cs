@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 
 using Duality;
-using Duality.Drawing;
 
 using NUnit.Framework;
 
