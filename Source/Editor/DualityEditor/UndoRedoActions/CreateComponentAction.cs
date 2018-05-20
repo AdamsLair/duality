@@ -63,6 +63,8 @@ namespace Duality.Editor.UndoRedoActions
 				// (Reversed, so repeated injection at the same index will yield the original order)
 				List<Type> createRequirements = Component.RequireMap
 					.GetRequirementsToCreate(this.targetParentObj, obj.GetType())
+					// Remove self requirements
+					.Where(req => !req.IsInstanceOfType(obj))
 					.Reverse().ToList();
 				for (int j = 0; j < createRequirements.Count; j++)
 				{
