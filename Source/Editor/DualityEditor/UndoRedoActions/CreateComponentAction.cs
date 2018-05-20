@@ -77,6 +77,7 @@ namespace Duality.Editor.UndoRedoActions
 						if (required == null)
 						{
 							Log.Editor.WriteWarning("Failed to add {0} because its requirements could not be resolved", obj.GetType().GetTypeCSCodeName(true));
+							// Clear changes so this action is considered empty. See ComponentAction.IsVoid.
 							this.targetObj.Clear();
 							return;
 						}
@@ -143,11 +144,9 @@ namespace Duality.Editor.UndoRedoActions
 				HeaderText = string.Format("{0} requires one of the following components. Please select one.", typeWithRequirement.GetTypeCSCodeName(true))
 			};
 			DialogResult result = typeDialog.ShowDialog();
-			if (result == DialogResult.OK && typeDialog.TypeReference != null)
-			{
-				return typeDialog.TypeReference;
-			}
-			return null;
+			return result == DialogResult.OK
+				? typeDialog.TypeReference
+				: null;
 		}
 
 		private static void SetupComponentForEditing(Component cmp)
