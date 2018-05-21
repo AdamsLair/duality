@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Duality.Editor
@@ -21,7 +22,7 @@ namespace Duality.Editor
 		{
 			get
 			{
-				return base.Data;
+				return this.data;
 			}
 			set
 			{
@@ -29,11 +30,14 @@ namespace Duality.Editor
 				// occur if this SerializableReferenceWrapper
 				// is being reused
 				this.ids = null;
-				base.Data = value;
+				this.data = value.ToArray();
 			}
 		}
 
-		public SerializableReferenceWrapper(IEnumerable<object> data) : base(data) { }
+		public SerializableReferenceWrapper(IEnumerable<object> data) : base(null)
+		{
+			this.data = data == null ? null : data.ToArray();
+		}
 		private SerializableReferenceWrapper(SerializationInfo info, StreamingContext context)
 		{
 			try

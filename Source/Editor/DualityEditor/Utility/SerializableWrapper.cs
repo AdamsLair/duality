@@ -22,13 +22,20 @@ namespace Duality.Editor
 		public virtual IEnumerable<object> Data
 		{
 			get { return this.data; }
-			set { this.data = value.ToArray(); }
+			set
+			{
+				// Clone the objects first to make sure they are isolated and don't
+				// drag a whole Scene (or so) into the serialization graph.
+				this.data = value.Select(o => o.DeepClone()).ToArray();
+			}
 		}
 
 		public SerializableWrapper() : this(null) { }
 		public SerializableWrapper(IEnumerable<object> data)
 		{
-			this.data = data == null ? null : data.ToArray();
+			// Clone the objects first to make sure they are isolated and don't
+			// drag a whole Scene (or so) into the serialization graph.
+			this.data = data == null ? null : data.Select(o => o.DeepClone()).ToArray();
 		}
 		private SerializableWrapper(SerializationInfo info, StreamingContext context)
 		{
@@ -58,12 +65,8 @@ namespace Duality.Editor
 		{
 			using (MemoryStream stream = new MemoryStream())
 			{
-				// Clone the object first to make sure it's isolated and doesn't 
-				// drag a whole Scene (or so) into the serialization graph.
-				object[] isolatedObjs = this.data.Select(obj => obj.DeepClone()).ToArray();
-
 				// Now serialize the isolated object
-				Serializer.WriteObject(isolatedObjs, stream, typeof(BinarySerializer));
+				Serializer.WriteObject(this.data, stream, typeof(BinarySerializer));
 				byte[] serializedData = stream.ToArray();
 				info.AddValue("data", serializedData);
 			}

@@ -66,8 +66,7 @@ namespace Duality.Editor.Tests
 			Assert.IsFalse(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
 			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
 			Assert.IsNull(dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Reference));
-			// Even though we are retrieving a value, serialization has not occured yet
-			Assert.AreSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value).First());
+			Assert.AreNotSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value).First());
 
 			Assert.IsFalse(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
@@ -84,7 +83,6 @@ namespace Duality.Editor.Tests
 			Assert.IsFalse(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
 			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
 			Assert.IsNull(dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Reference));
-			// DeepClone should have been done by now
 			Assert.AreNotSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Value).First());
 
 			Assert.IsFalse(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Reference, out outParam));
