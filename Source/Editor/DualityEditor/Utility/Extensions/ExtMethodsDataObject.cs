@@ -113,10 +113,6 @@ namespace Duality.Editor
 			if (cmpType == null) cmpType = typeof(Component);
 			return wrappedData.Any(c => cmpType.IsInstanceOfType(c));
 		}
-		public static Component[] GetComponents(this IDataObject data, DataObjectStorage storage = DataObjectStorage.Reference)
-		{
-			return data.GetComponents(typeof(Component), storage);
-		}
 		public static Component[] GetComponents(this IDataObject data, Type cmpType, DataObjectStorage storage = DataObjectStorage.Reference)
 		{
 			IEnumerable<object> wrappedData = data.GetWrappedData(ComponentFormat, storage);
@@ -124,11 +120,6 @@ namespace Duality.Editor
 
 			if (cmpType == null) cmpType = typeof(Component);
 			return wrappedData.Where(c => cmpType.IsInstanceOfType(c)).OfType<Component>().ToArray();
-		}
-		public static bool TryGetComponents(this IDataObject data, DataObjectStorage storage, out Component[] comps)
-		{
-			comps = data.GetComponents(storage);
-			return comps != null;
 		}
 		public static bool TryGetComponents(this IDataObject data, Type cmpType, DataObjectStorage storage, out Component[] comps)
 		{
@@ -166,13 +157,6 @@ namespace Duality.Editor
 			IContentRef[] contentArr = content.ToArray();
 			if (contentArr.Length > 0) data.SetWrappedData(contentArr, ContentRefFormat, DataObjectStorage.Value);
 		}
-		public static bool ContainsContentRefs<T>(this IDataObject data) where T : Resource
-		{
-			IEnumerable<object> wrappedData;
-			if (!data.TryGetWrappedData(ContentRefFormat, DataObjectStorage.Value, out wrappedData))
-				return false;
-			return wrappedData.OfType<IContentRef>().Any(r => r.Is<T>());
-		}
 		public static bool ContainsContentRefs(this IDataObject data, Type resType = null)
 		{
 			IEnumerable<object> wrappedData;
@@ -181,15 +165,6 @@ namespace Duality.Editor
 
 			if (resType == null) resType = typeof(Resource);
 			return wrappedData.OfType<IContentRef>().Any(r => r.Is(resType));
-		}
-		public static ContentRef<T>[] GetContentRefs<T>(this IDataObject data) where T : Resource
-		{
-			IEnumerable<object> wrappedData;
-			if (!data.TryGetWrappedData(ContentRefFormat, DataObjectStorage.Value, out wrappedData))
-				return null;
-
-			return wrappedData.OfType<IContentRef>()
-				.Where(r => r.Is<T>()).Select(r => r.As<T>()).ToArray();
 		}
 		public static IContentRef[] GetContentRefs(this IDataObject data, Type resType = null)
 		{
@@ -204,11 +179,6 @@ namespace Duality.Editor
 		public static bool TryGetContentRefs(this IDataObject data, Type resType, out IContentRef[] content)
 		{
 			content = data.GetContentRefs(resType);
-			return content != null;
-		}
-		public static bool TryGetContentRefs<T>(this IDataObject data, out ContentRef<T>[] content) where T : Resource
-		{
-			content = data.GetContentRefs<T>();
 			return content != null;
 		}
 

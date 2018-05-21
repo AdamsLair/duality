@@ -1021,7 +1021,7 @@ namespace Duality.Editor.Plugins.SceneView
 					else
 						e.Effect = DragDropEffects.None;
 				}
-				else if (data.TryGetComponents(DataObjectStorage.Reference, out draggedComp))
+				else if (data.TryGetComponents(typeof(Component), DataObjectStorage.Reference, out draggedComp))
 				{
 					DragDropEffects effect;
 					if ((e.KeyState & 2) != 0)			// Right mouse button
@@ -1085,7 +1085,7 @@ namespace Duality.Editor.Plugins.SceneView
 					else if (effectMove)
 						this.moveHereToolStripMenuItem_Click(this, null);
 				}
-				else if (data.TryGetComponents(DataObjectStorage.Reference, out draggedComponents))
+				else if (data.TryGetComponents(typeof(Component), DataObjectStorage.Reference, out draggedComponents))
 				{
 					this.tempDropData = draggedComponents;
 
