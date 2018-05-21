@@ -15,17 +15,21 @@ namespace Duality.Editor
 	public enum DataObjectStorage
 	{
 		/// <summary>
-		/// Use this type when storing an object reference in a DataObject.
-		/// The reference will be maintained even after serialization.
-		/// Note that storing a .Net value type (ex. Vector3) with this data type
-		/// will still lead to a copy of the data. Data stored with this type
-		/// can be automatically converted to value typed data (uses deep cloning).
+		/// Indicates that an object is stored by reference inside a <see cref="DataObject"/>,
+		/// so it will not be cloned or copied when moved to the <see cref="Clipboard"/>.
+		/// 
+		/// Note that storing a value type (ex. <see cref="Vector3"/>) by reference
+		/// will still lead to a "copy" of the data due to boxing and unboxing operations.
+		/// 
+		/// Objects stored with this storage type can still be retrieved as <see cref="Value"/>
+		/// items, although a deep clone operation will be done internally in order to make sure
+		/// the result will be an otherwise unused instance.
 		/// </summary>
 		Reference,
 		/// <summary>
-		/// Use this type when storing an object in a DataObject that is
-		/// not meant to be a reference to an existing object. This type
-		/// of data cannot be automatically converted to reference typed data.
+		/// Indicates that an object is stored by value inside a <see cref="DataObject"/>,
+		/// so any retrieved instance will essentially be a clone of the original, but
+		/// not the original itself.
 		/// </summary>
 		Value
 	}
