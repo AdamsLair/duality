@@ -988,7 +988,7 @@ namespace Duality.Editor.Plugins.SceneView
 				NodeBase dropParent = this.DragDropGetTargetNode();
 				GameObject[] draggedObj;
 				Component[] draggedComp;
-				if (data.TryGetGameObjects(out draggedObj))
+				if (data.TryGetGameObjects(DataObjectStorage.Reference, out draggedObj))
 				{
 					DragDropEffects effect;
 					if ((e.KeyState & 2) != 0)			// Right mouse button
@@ -1021,7 +1021,7 @@ namespace Duality.Editor.Plugins.SceneView
 					else
 						e.Effect = DragDropEffects.None;
 				}
-				else if (data.TryGetComponents(out draggedComp))
+				else if (data.TryGetComponents(DataObjectStorage.Reference, out draggedComp))
 				{
 					DragDropEffects effect;
 					if ((e.KeyState & 2) != 0)			// Right mouse button
@@ -1073,7 +1073,7 @@ namespace Duality.Editor.Plugins.SceneView
 				this.tempDropTarget = this.DragDropGetTargetNode();
 				GameObject[] draggedObjects;
 				Component[] draggedComponents;
-				if (data.TryGetGameObjects(out draggedObjects))
+				if (data.TryGetGameObjects(DataObjectStorage.Reference, out draggedObjects))
 				{
 					this.tempDropData = draggedObjects;
 
@@ -1085,7 +1085,7 @@ namespace Duality.Editor.Plugins.SceneView
 					else if (effectMove)
 						this.moveHereToolStripMenuItem_Click(this, null);
 				}
-				else if (data.TryGetComponents(out draggedComponents))
+				else if (data.TryGetComponents(DataObjectStorage.Reference, out draggedComponents))
 				{
 					this.tempDropData = draggedComponents;
 

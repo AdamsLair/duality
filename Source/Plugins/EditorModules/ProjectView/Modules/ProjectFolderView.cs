@@ -1033,7 +1033,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				// Dragging a single GameObject to Prefab
 				else if (
 					e.AllowedEffect.HasFlag(DragDropEffects.Link) &&
-					data.TryGetGameObjects(out draggedObjects) &&
+					data.TryGetGameObjects(DataObjectStorage.Reference, out draggedObjects) &&
 					draggedObjects.Length == 1 &&
 					targetResNode != null && 
 					targetResNode.ResLink.Is<Duality.Resources.Prefab>())
@@ -1101,7 +1101,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				// Dropping GameObject to Prefab
 				else if (
 					e.Effect.HasFlag(DragDropEffects.Link) &&
-					data.TryGetGameObjects(out draggedObjects) &&
+					data.TryGetGameObjects(DataObjectStorage.Reference, out draggedObjects) &&
 					draggedObjects.Length == 1 && 
 					targetResNode != null && 
 					targetResNode.ResLink.Is<Duality.Resources.Prefab>())

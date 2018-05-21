@@ -248,7 +248,7 @@ namespace Duality.Editor
 			{
 				// Components
 				Component[] comps;
-				if (this.data.TryGetComponents(target, out comps)) fittingData = comps;
+				if (this.data.TryGetComponents(target, DataObjectStorage.Reference, out comps)) fittingData = comps;
 			}
 			if (fittingData == null)
 			{
