@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
@@ -299,7 +300,7 @@ namespace Duality.Editor
 			if (clrArray.Length == 0) return;
 			data.SetWrappedData(clrArray, ColorDataFormat, DataObjectStorage.Value);
 
-			var rgbaQuery = clrArray.Select(c => c.ConvertTo<ColorRgba>());
+			IEnumerable<ColorRgba> rgbaQuery = clrArray.Select(c => c.ConvertTo<ColorRgba>());
 			data.SetString(rgbaQuery.ToString(c => string.Format("{0},{1},{2},{3}", c.R, c.G, c.B, c.A), ", "));
 		}
 		public static bool ContainsIColorData(this IDataObject data)
@@ -372,7 +373,7 @@ namespace Duality.Editor
 
 		public static void SetFiles(this DataObject data, IEnumerable<string> files)
 		{
-			var sc = new System.Collections.Specialized.StringCollection();
+			StringCollection sc = new StringCollection();
 			foreach (string file in files)
 			{
 				string path = Path.GetFullPath(file);
