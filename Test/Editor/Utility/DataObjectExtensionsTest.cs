@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+
 using Duality.Drawing;
+
 using NUnit.Framework;
 
 namespace Duality.Editor.Tests
@@ -10,17 +12,9 @@ namespace Duality.Editor.Tests
 	[TestFixture, RequiresThread(ApartmentState.STA)]
 	public class DataObjectExtensionsTest
 	{
-		private class TestClass
-		{
-		}
-
-		private class TestComponent : Component
-		{
-		}
-
-		private class TestResource : Resource
-		{
-		}
+		private class TestClass { }
+		private class TestComponent : Component { }
+		private class TestResource : Resource { }
 
 		[Test] public void WrappedDataReference()
 		{
@@ -32,17 +26,13 @@ namespace Duality.Editor.Tests
 
 			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
 			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
-			Assert.IsFalse(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value, false));
 			Assert.AreSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Reference).First());
 			Assert.AreNotSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value).First());
-			Assert.IsNull(dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value, false));
 
 			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
 			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsFalse(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, false, out outParam));
-			Assert.IsNull(outParam);
 			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
 			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataObjectStorage.Value, out outParam));
@@ -53,23 +43,18 @@ namespace Duality.Editor.Tests
 
 			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
 			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
-			Assert.IsFalse(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value, false));
 			Assert.AreSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Reference).First());
 			Assert.AreNotSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Value).First());
-			Assert.IsNull(dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value, false));
 
 			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
 			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsFalse(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, false, out outParam));
-			Assert.IsNull(outParam);
 			Assert.IsFalse(dataOut.TryGetWrappedData("WrongFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
 			Assert.IsFalse(dataOut.TryGetWrappedData("WrongFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNull(outParam);
 		}
-
 		[Test] public void WrappedDataValue()
 		{
 			DataObject dataIn = new DataObject();
@@ -80,17 +65,13 @@ namespace Duality.Editor.Tests
 
 			Assert.IsFalse(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
 			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
-			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value, false));
 			Assert.IsNull(dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Reference));
 			// Even though we are retrieving a value, serialization has not occured yet
 			Assert.AreSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value).First());
-			Assert.AreSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value, false).First());
 
 			Assert.IsFalse(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
 			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, out outParam));
-			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, false, out outParam));
 			Assert.IsNotNull(outParam);
 			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
@@ -102,17 +83,13 @@ namespace Duality.Editor.Tests
 
 			Assert.IsFalse(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
 			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
-			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value, false));
 			Assert.IsNull(dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Reference));
 			// DeepClone should have been done by now
 			Assert.AreNotSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Value).First());
-			Assert.AreNotSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Value, false).First());
 
 			Assert.IsFalse(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
 			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, out outParam));
-			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, false, out outParam));
 			Assert.IsNotNull(outParam);
 			Assert.IsFalse(dataOut.TryGetWrappedData("WrongFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
@@ -214,7 +191,6 @@ namespace Duality.Editor.Tests
 			Assert.IsTrue(dataOut.TryGetComponents(typeof(TestComponent), DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
 		}
-
 		[Test] public void GetComponentStronglyTyped()
 		{
 			DataObject dataIn = new DataObject();
@@ -275,7 +251,6 @@ namespace Duality.Editor.Tests
 			// TestResource will not survive serialization.
 			Assert.IsFalse(dataOut.ContainsContentRefs(typeof(TestResource)));
 		}
-
 		[Test] public void GetContentRefsStronglyTyped()
 		{
 			DataObject dataIn = new DataObject();
@@ -336,7 +311,6 @@ namespace Duality.Editor.Tests
 			Assert.AreEqual(color, dataOut.GetIColorData<ColorRgba>()[0]);
 			Assert.AreEqual(color.ConvertTo<ColorHsva>(), dataOut.GetIColorData<ColorHsva>()[0]);
 		}
-
 		[Test] public void GetIColorDataString()
 		{
 			DataObject dataIn = new DataObject();

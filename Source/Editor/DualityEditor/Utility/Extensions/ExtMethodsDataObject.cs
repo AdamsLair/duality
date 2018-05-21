@@ -40,17 +40,16 @@ namespace Duality.Editor
 		/// <param name="data"></param>
 		/// <param name="dataFormat">The format of data to look for</param>
 		/// <param name="storage">Whether to look for stored references or values</param>
-		/// <param name="allowStorageConversion">Whether or not to attempt converting data from other <see cref="DataObjectStorage"/>s</param>
 		/// <returns></returns>
-		public static bool GetWrappedDataPresent(this IDataObject data, string dataFormat, DataObjectStorage storage, bool allowStorageConversion = true)
+		public static bool GetWrappedDataPresent(this IDataObject data, string dataFormat, DataObjectStorage storage)
 		{
 			string prefix = storage == DataObjectStorage.Reference ? ReferencePrefix : ValuePrefix;
 			bool defaultFormatPresent = data.GetDataPresent(prefix + dataFormat);
-			if (defaultFormatPresent || !allowStorageConversion)
+			if (defaultFormatPresent)
 				return defaultFormatPresent;
 
 			// If retrieving by-value failed, try retrieving by-reference and cloning the result
-			if (storage == DataObjectStorage.Value && data.GetWrappedDataPresent(dataFormat, DataObjectStorage.Reference, false))
+			if (storage == DataObjectStorage.Value && data.GetWrappedDataPresent(dataFormat, DataObjectStorage.Reference))
 				return true;
 
 			return false;
@@ -63,16 +62,15 @@ namespace Duality.Editor
 		/// <param name="storage">Whether to look for stored references or values</param>
 		/// <param name="allowStorageConversion">Whether or not to attempt converting data from other <see cref="DataObjectStorage"/>s</param>
 		/// <returns></returns>
-		public static IEnumerable<object> GetWrappedData(this IDataObject data, string dataFormat, DataObjectStorage storage, bool allowStorageConversion = true)
+		public static IEnumerable<object> GetWrappedData(this IDataObject data, string dataFormat, DataObjectStorage storage)
 		{
 			string prefix = storage == DataObjectStorage.Reference ? ReferencePrefix : ValuePrefix;
 			SerializableWrapper wrapper = data.GetData(prefix + dataFormat) as SerializableWrapper;
 			if (wrapper != null) return wrapper.Data;
-			if (!allowStorageConversion) return null;
 
 			// If retrieving by-value failed, try retrieving by-reference and cloning the result
 			IEnumerable<object> converted;
-			if (storage == DataObjectStorage.Value && (converted = data.GetWrappedData(dataFormat, DataObjectStorage.Reference, false)) != null)
+			if (storage == DataObjectStorage.Value && (converted = data.GetWrappedData(dataFormat, DataObjectStorage.Reference)) != null)
 			{
 				return converted.Select(obj => obj.DeepClone());
 			}
@@ -81,16 +79,12 @@ namespace Duality.Editor
 		}
 		public static bool TryGetWrappedData(this IDataObject data, string dataFormat, DataObjectStorage storage, out IEnumerable<object> wrappedData)
 		{
-			return data.TryGetWrappedData(dataFormat, storage, true, out wrappedData);
-		}
-		public static bool TryGetWrappedData(this IDataObject data, string dataFormat, DataObjectStorage storage, bool allowStorageConversion, out IEnumerable<object> wrappedData)
-		{
-			if (!data.GetWrappedDataPresent(dataFormat, storage, allowStorageConversion))
+			if (!data.GetWrappedDataPresent(dataFormat, storage))
 			{
 				wrappedData = null;
 				return false;
 			}
-			wrappedData = data.GetWrappedData(dataFormat, storage, allowStorageConversion);
+			wrappedData = data.GetWrappedData(dataFormat, storage);
 			return wrappedData != null;
 		}
 
