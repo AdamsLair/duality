@@ -45,8 +45,7 @@ namespace Duality.Editor
 		{
 			string prefix = storage == DataObjectStorage.Reference ? ReferencePrefix : ValuePrefix;
 			bool defaultFormatPresent = data.GetDataPresent(prefix + dataFormat);
-			if (defaultFormatPresent)
-				return defaultFormatPresent;
+			if (defaultFormatPresent) return true;
 
 			// If retrieving by-value failed, try retrieving by-reference and cloning the result
 			if (storage == DataObjectStorage.Value && data.GetWrappedDataPresent(dataFormat, DataObjectStorage.Reference))

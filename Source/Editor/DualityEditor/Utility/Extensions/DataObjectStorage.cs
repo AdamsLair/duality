@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using System.IO;
-using Duality.Cloning;
-using Duality.Drawing;
+﻿using System.Windows.Forms;
 
 namespace Duality.Editor
 {
