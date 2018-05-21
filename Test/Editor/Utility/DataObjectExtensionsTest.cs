@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Duality.Editor.Tests
 {
-	[TestFixture, RequiresThread(ApartmentState.STA)]
+	[TestFixture]
 	public class DataObjectExtensionsTest
 	{
 		private class TestClass { }
