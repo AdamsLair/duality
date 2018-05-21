@@ -28,45 +28,45 @@ namespace Duality.Editor.Tests
 			TestClass dataOne = new TestClass();
 			IEnumerable<object> outParam;
 
-			dataIn.SetWrappedData(new [] { dataOne }, "CorrectFormat", DataType.Reference);
+			dataIn.SetWrappedData(new [] { dataOne }, "CorrectFormat", DataObjectStorage.Reference);
 
-			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataType.Reference));
-			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataType.Value));
-			Assert.IsFalse(dataIn.GetWrappedDataPresent("CorrectFormat", DataType.Value, false));
-			Assert.AreSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataType.Reference).First());
-			Assert.AreNotSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataType.Value).First());
-			Assert.IsNull(dataIn.GetWrappedData("CorrectFormat", DataType.Value, false));
+			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
+			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
+			Assert.IsFalse(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value, false));
+			Assert.AreSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Reference).First());
+			Assert.AreNotSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value).First());
+			Assert.IsNull(dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value, false));
 
-			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataType.Reference, out outParam));
+			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataType.Value, out outParam));
+			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsFalse(dataIn.TryGetWrappedData("CorrectFormat", DataType.Value, false, out outParam));
+			Assert.IsFalse(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, false, out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataType.Reference, out outParam));
+			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataType.Value, out outParam));
+			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNull(outParam);
 
 			Clipboard.SetDataObject(dataIn);
 			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
 
-			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataType.Reference));
-			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataType.Value));
-			Assert.IsFalse(dataOut.GetWrappedDataPresent("CorrectFormat", DataType.Value, false));
-			Assert.AreSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataType.Reference).First());
-			Assert.AreNotSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataType.Value).First());
-			Assert.IsNull(dataIn.GetWrappedData("CorrectFormat", DataType.Value, false));
+			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
+			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
+			Assert.IsFalse(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value, false));
+			Assert.AreSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Reference).First());
+			Assert.AreNotSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Value).First());
+			Assert.IsNull(dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value, false));
 
-			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataType.Reference, out outParam));
+			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataType.Value, out outParam));
+			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsFalse(dataOut.TryGetWrappedData("CorrectFormat", DataType.Value, false, out outParam));
+			Assert.IsFalse(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, false, out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsFalse(dataOut.TryGetWrappedData("WrongFormat", DataType.Reference, out outParam));
+			Assert.IsFalse(dataOut.TryGetWrappedData("WrongFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsFalse(dataOut.TryGetWrappedData("WrongFormat", DataType.Value, out outParam));
+			Assert.IsFalse(dataOut.TryGetWrappedData("WrongFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNull(outParam);
 		}
 
@@ -76,47 +76,47 @@ namespace Duality.Editor.Tests
 			TestClass dataOne = new TestClass();
 			IEnumerable<object> outParam;
 
-			dataIn.SetWrappedData(new[] { dataOne }, "CorrectFormat", DataType.Value);
+			dataIn.SetWrappedData(new[] { dataOne }, "CorrectFormat", DataObjectStorage.Value);
 
-			Assert.IsFalse(dataIn.GetWrappedDataPresent("CorrectFormat", DataType.Reference));
-			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataType.Value));
-			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataType.Value, false));
-			Assert.IsNull(dataIn.GetWrappedData("CorrectFormat", DataType.Reference));
+			Assert.IsFalse(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
+			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
+			Assert.IsTrue(dataIn.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value, false));
+			Assert.IsNull(dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Reference));
 			// Even though we are retrieving a value, serialization has not occured yet
-			Assert.AreSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataType.Value).First());
-			Assert.AreSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataType.Value, false).First());
+			Assert.AreSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value).First());
+			Assert.AreSame(dataOne, dataIn.GetWrappedData("CorrectFormat", DataObjectStorage.Value, false).First());
 
-			Assert.IsFalse(dataIn.TryGetWrappedData("CorrectFormat", DataType.Reference, out outParam));
+			Assert.IsFalse(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataType.Value, out outParam));
+			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataType.Value, false, out outParam));
+			Assert.IsTrue(dataIn.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, false, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataType.Reference, out outParam));
+			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataType.Value, out outParam));
+			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNull(outParam);
 
 			Clipboard.SetDataObject(dataIn);
 			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
 
-			Assert.IsFalse(dataOut.GetWrappedDataPresent("CorrectFormat", DataType.Reference));
-			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataType.Value));
-			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataType.Value, false));
-			Assert.IsNull(dataOut.GetWrappedData("CorrectFormat", DataType.Reference));
+			Assert.IsFalse(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
+			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
+			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value, false));
+			Assert.IsNull(dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Reference));
 			// DeepClone should have been done by now
-			Assert.AreNotSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataType.Value).First());
-			Assert.AreNotSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataType.Value, false).First());
+			Assert.AreNotSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Value).First());
+			Assert.AreNotSame(dataOne, dataOut.GetWrappedData("CorrectFormat", DataObjectStorage.Value, false).First());
 
-			Assert.IsFalse(dataOut.TryGetWrappedData("CorrectFormat", DataType.Reference, out outParam));
+			Assert.IsFalse(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataType.Value, out outParam));
+			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataType.Value, false, out outParam));
+			Assert.IsTrue(dataOut.TryGetWrappedData("CorrectFormat", DataObjectStorage.Value, false, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsFalse(dataOut.TryGetWrappedData("WrongFormat", DataType.Reference, out outParam));
+			Assert.IsFalse(dataOut.TryGetWrappedData("WrongFormat", DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsFalse(dataOut.TryGetWrappedData("WrongFormat", DataType.Value, out outParam));
+			Assert.IsFalse(dataOut.TryGetWrappedData("WrongFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNull(outParam);
 		}
 
@@ -129,40 +129,40 @@ namespace Duality.Editor.Tests
 
 			dataIn.SetGameObjects(new [] { gameObject });
 
-			Assert.IsTrue(dataIn.ContainsGameObjects(DataType.Reference));
-			Assert.IsTrue(dataIn.ContainsGameObjects(DataType.Value));
-			Assert.AreSame(gameObject, dataIn.GetGameObjects(DataType.Reference)[0]);
-			Assert.AreNotSame(gameObject, dataIn.GetGameObjects(DataType.Value)[0]);
-			Assert.IsFalse(nullData.ContainsGameObjects(DataType.Reference));
-			Assert.IsFalse(nullData.ContainsGameObjects(DataType.Value));
+			Assert.IsTrue(dataIn.ContainsGameObjects(DataObjectStorage.Reference));
+			Assert.IsTrue(dataIn.ContainsGameObjects(DataObjectStorage.Value));
+			Assert.AreSame(gameObject, dataIn.GetGameObjects(DataObjectStorage.Reference)[0]);
+			Assert.AreNotSame(gameObject, dataIn.GetGameObjects(DataObjectStorage.Value)[0]);
+			Assert.IsFalse(nullData.ContainsGameObjects(DataObjectStorage.Reference));
+			Assert.IsFalse(nullData.ContainsGameObjects(DataObjectStorage.Value));
 
 			Assert.IsTrue(dataIn.TryGetGameObjects(out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetGameObjects(DataType.Reference, out outParam));
+			Assert.IsTrue(dataIn.TryGetGameObjects(DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetGameObjects(DataType.Value, out outParam));
+			Assert.IsTrue(dataIn.TryGetGameObjects(DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
 			Assert.IsFalse(nullData.TryGetGameObjects(out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsFalse(nullData.TryGetGameObjects(DataType.Reference, out outParam));
+			Assert.IsFalse(nullData.TryGetGameObjects(DataObjectStorage.Reference, out outParam));
 			Assert.IsNull(outParam);
-			Assert.IsFalse(nullData.TryGetGameObjects(DataType.Value, out outParam));
+			Assert.IsFalse(nullData.TryGetGameObjects(DataObjectStorage.Value, out outParam));
 			Assert.IsNull(outParam);
 
 			Clipboard.SetDataObject(dataIn);
 
 			DataObject dataOut = (DataObject) Clipboard.GetDataObject();
 
-			Assert.IsTrue(dataOut.ContainsGameObjects(DataType.Reference));
-			Assert.IsTrue(dataOut.ContainsGameObjects(DataType.Value));
-			Assert.AreSame(gameObject, dataOut.GetGameObjects(DataType.Reference)[0]);
-			Assert.AreNotSame(gameObject, dataOut.GetGameObjects(DataType.Value)[0]);
+			Assert.IsTrue(dataOut.ContainsGameObjects(DataObjectStorage.Reference));
+			Assert.IsTrue(dataOut.ContainsGameObjects(DataObjectStorage.Value));
+			Assert.AreSame(gameObject, dataOut.GetGameObjects(DataObjectStorage.Reference)[0]);
+			Assert.AreNotSame(gameObject, dataOut.GetGameObjects(DataObjectStorage.Value)[0]);
 
 			Assert.IsTrue(dataOut.TryGetGameObjects(out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataOut.TryGetGameObjects(DataType.Reference, out outParam));
+			Assert.IsTrue(dataOut.TryGetGameObjects(DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataOut.TryGetGameObjects(DataType.Value, out outParam));
+			Assert.IsTrue(dataOut.TryGetGameObjects(DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
 		}
 
@@ -174,44 +174,44 @@ namespace Duality.Editor.Tests
 
 			dataIn.SetComponents(new[] { comp });
 
-			Assert.IsTrue(dataIn.ContainsComponents(DataType.Reference));
-			Assert.IsTrue(dataIn.ContainsComponents(DataType.Value));
-			Assert.AreSame(comp, dataIn.GetComponents(DataType.Reference)[0]);
-			Assert.AreNotSame(comp, dataIn.GetComponents(DataType.Value)[0]);
+			Assert.IsTrue(dataIn.ContainsComponents(DataObjectStorage.Reference));
+			Assert.IsTrue(dataIn.ContainsComponents(DataObjectStorage.Value));
+			Assert.AreSame(comp, dataIn.GetComponents(DataObjectStorage.Reference)[0]);
+			Assert.AreNotSame(comp, dataIn.GetComponents(DataObjectStorage.Value)[0]);
 
 			Assert.IsTrue(dataIn.TryGetComponents(out outParam));
 			Assert.IsNotNull(outParam);
 			Assert.IsTrue(dataIn.TryGetComponents(typeof(TestComponent), out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetComponents(DataType.Reference, out outParam));
+			Assert.IsTrue(dataIn.TryGetComponents(DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetComponents(DataType.Value, out outParam));
+			Assert.IsTrue(dataIn.TryGetComponents(DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetComponents(typeof(TestComponent), DataType.Reference, out outParam));
+			Assert.IsTrue(dataIn.TryGetComponents(typeof(TestComponent), DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetComponents(typeof(TestComponent), DataType.Value, out outParam));
+			Assert.IsTrue(dataIn.TryGetComponents(typeof(TestComponent), DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
 
 			Clipboard.SetDataObject(dataIn);
 
 			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
 
-			Assert.IsTrue(dataOut.ContainsComponents(DataType.Reference));
-			Assert.IsTrue(dataOut.ContainsComponents(DataType.Value));
-			Assert.AreSame(comp, dataOut.GetComponents(DataType.Reference)[0]);
-			Assert.AreNotSame(comp, dataOut.GetComponents(DataType.Value)[0]);
+			Assert.IsTrue(dataOut.ContainsComponents(DataObjectStorage.Reference));
+			Assert.IsTrue(dataOut.ContainsComponents(DataObjectStorage.Value));
+			Assert.AreSame(comp, dataOut.GetComponents(DataObjectStorage.Reference)[0]);
+			Assert.AreNotSame(comp, dataOut.GetComponents(DataObjectStorage.Value)[0]);
 
 			Assert.IsTrue(dataOut.TryGetComponents(out outParam));
 			Assert.IsNotNull(outParam);
 			Assert.IsTrue(dataOut.TryGetComponents(typeof(TestComponent), out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataOut.TryGetComponents(DataType.Reference, out outParam));
+			Assert.IsTrue(dataOut.TryGetComponents(DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataOut.TryGetComponents(DataType.Value, out outParam));
+			Assert.IsTrue(dataOut.TryGetComponents(DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataOut.TryGetComponents(typeof(TestComponent), DataType.Reference, out outParam));
+			Assert.IsTrue(dataOut.TryGetComponents(typeof(TestComponent), DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataOut.TryGetComponents(typeof(TestComponent), DataType.Value, out outParam));
+			Assert.IsTrue(dataOut.TryGetComponents(typeof(TestComponent), DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
 		}
 
@@ -223,32 +223,32 @@ namespace Duality.Editor.Tests
 
 			dataIn.SetComponents(new[] { comp });
 
-			Assert.IsTrue(dataIn.ContainsComponents<TestComponent>(DataType.Reference));
-			Assert.IsTrue(dataIn.ContainsComponents<TestComponent>(DataType.Value));
-			Assert.AreSame(comp, dataIn.GetComponents<TestComponent>(DataType.Reference)[0]);
-			Assert.AreNotSame(comp, dataIn.GetComponents<TestComponent>(DataType.Value)[0]);
+			Assert.IsTrue(dataIn.ContainsComponents<TestComponent>(DataObjectStorage.Reference));
+			Assert.IsTrue(dataIn.ContainsComponents<TestComponent>(DataObjectStorage.Value));
+			Assert.AreSame(comp, dataIn.GetComponents<TestComponent>(DataObjectStorage.Reference)[0]);
+			Assert.AreNotSame(comp, dataIn.GetComponents<TestComponent>(DataObjectStorage.Value)[0]);
 
 			Assert.IsTrue(dataIn.TryGetComponents<TestComponent>(out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetComponents<TestComponent>(DataType.Reference, out outParam));
+			Assert.IsTrue(dataIn.TryGetComponents<TestComponent>(DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetComponents<TestComponent>(DataType.Value, out outParam));
+			Assert.IsTrue(dataIn.TryGetComponents<TestComponent>(DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
 
 			Clipboard.SetDataObject(dataIn);
 
 			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
 
-			Assert.IsTrue(dataOut.ContainsComponents<TestComponent>(DataType.Reference));
-			Assert.IsTrue(dataOut.ContainsComponents<TestComponent>(DataType.Value));
-			Assert.AreSame(comp, dataOut.GetComponents<TestComponent>(DataType.Reference)[0]);
-			Assert.AreNotSame(comp, dataOut.GetComponents<TestComponent>(DataType.Value)[0]);
+			Assert.IsTrue(dataOut.ContainsComponents<TestComponent>(DataObjectStorage.Reference));
+			Assert.IsTrue(dataOut.ContainsComponents<TestComponent>(DataObjectStorage.Value));
+			Assert.AreSame(comp, dataOut.GetComponents<TestComponent>(DataObjectStorage.Reference)[0]);
+			Assert.AreNotSame(comp, dataOut.GetComponents<TestComponent>(DataObjectStorage.Value)[0]);
 
 			Assert.IsTrue(dataIn.TryGetComponents<TestComponent>(out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetComponents<TestComponent>(DataType.Reference, out outParam));
+			Assert.IsTrue(dataIn.TryGetComponents<TestComponent>(DataObjectStorage.Reference, out outParam));
 			Assert.IsNotNull(outParam);
-			Assert.IsTrue(dataIn.TryGetComponents<TestComponent>(DataType.Value, out outParam));
+			Assert.IsTrue(dataIn.TryGetComponents<TestComponent>(DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
 		}
 
