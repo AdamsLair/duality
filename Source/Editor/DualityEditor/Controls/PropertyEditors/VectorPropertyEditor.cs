@@ -15,6 +15,8 @@ namespace Duality.Editor.Controls.PropertyEditors
 {
 	public abstract class VectorPropertyEditor : PropertyEditor
 	{
+		private const string VectorDataFormat = "Vectors";
+
 		protected	NumericEditorTemplate[]	editor		= null;
 		protected	bool[]					multiple	= null;
 		protected	int						focusEditor	= -2;
@@ -132,7 +134,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 					string valString = this.editor.Select(ve => ve.Value).ToString(", ");
 					DataObject data = new DataObject();
 					data.SetText(valString);
-					data.SetWrappedData(new [] { this.DisplayedValue }, this.DisplayedValue.GetType(), DataFormat.Value);
+					data.SetWrappedData(new [] { this.DisplayedValue }, VectorDataFormat, DataType.Value);
 
 					Clipboard.SetDataObject(data);
 					this.SetFocusEditorIndex(-1, true);
@@ -154,9 +156,9 @@ namespace Duality.Editor.Controls.PropertyEditors
 				{
 					DataObject data = Clipboard.GetDataObject() as DataObject;
 					bool success = false;
-					if (data.GetWrappedDataPresent(this.DisplayedValue.GetType(), DataFormat.Value))
+					if (data.GetWrappedDataPresent(VectorDataFormat, DataType.Value))
 					{
-						object stored = data.GetWrappedData(this.DisplayedValue.GetType(), DataFormat.Value).First();
+						object stored = data.GetWrappedData(VectorDataFormat, DataType.Value).First();
 						this.SetValue(stored);
 						this.PerformGetValue();
 						this.OnEditingFinished(FinishReason.LeapValue);

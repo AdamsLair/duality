@@ -9,23 +9,23 @@ using Duality.Drawing;
 namespace Duality.Editor
 {
 	/// <summary>
-	/// Data formats than can be used when storing data
+	/// Data types than can be used when storing data
 	/// inside a <see cref="DataObject"/>
 	/// </summary>
-	public enum DataFormat
+	public enum DataType
 	{
 		/// <summary>
-		/// Use this format when storing an object reference in a DataObject.
+		/// Use this type when storing an object reference in a DataObject.
 		/// The reference will be maintained even after serialization.
-		/// Note that storing a value type (ex. Vector3) in reference format
-		/// will still lead to a copy of the data. Data stored in this format
-		/// can be automatically converted to value formatted data (uses deep cloning).
+		/// Note that storing a .Net value type (ex. Vector3) with this data type
+		/// will still lead to a copy of the data. Data stored with this type
+		/// can be automatically converted to value typed data (uses deep cloning).
 		/// </summary>
 		Reference,
 		/// <summary>
-		/// Use this format when storing an object in a DataObject that is 
-		/// not meant to be a reference to an existing object. This format 
-		/// of data cannot be automatically converted to reference format.
+		/// Use this type when storing an object in a DataObject that is
+		/// not meant to be a reference to an existing object. This type
+		/// of data cannot be automatically converted to reference typed data.
 		/// </summary>
 		Value
 	}
@@ -35,58 +35,43 @@ namespace Duality.Editor
 		private const string ReferencePrefix = "SerializableReferenceWrapper:";
 		private const string ValuePrefix = "SerializableWrapper:";
 
+		public const string ComponentFormat = "Component";
+		public const string GameObjectFormat = "GameObject";
+		public const string ContentRefFormat = "ContentRef";
+		public const string BatchInfoFormat = "BatchInfo";
+		public const string ColorDataFormat = "ColorData";
+
 		/// <summary>
 		/// Stores the specified non-<see cref="SerializableAttribute"/> data inside the specified data object using a serializable wrapper.
 		/// </summary>
-		/// <param name="dataType">The type of the data</param>
-		/// <param name="format">The format to store the data in</param>
-		public static void SetWrappedData(this IDataObject data, IEnumerable<object> values, Type dataType, DataFormat format)
+		/// <param name="dataFormat">The format of the data being stored</param>
+		/// <param name="dataType">The type of data being stored</param>
+		public static void SetWrappedData(this IDataObject data, IEnumerable<object> values, string dataFormat, DataType dataType)
 		{
-			data.SetWrappedData(values, dataType.FullName, format);
-		}
-		/// <summary>
-		/// Stores the specified non-<see cref="SerializableAttribute"/> data inside the specified data object using a serializable wrapper.
-		/// </summary>
-		/// <param name="dataType">The type of the data</param>
-		/// <param name="format">The format to store the data in</param>
-		public static void SetWrappedData(this IDataObject data, IEnumerable<object> values, string dataType, DataFormat format)
-		{
-			string prefix = format == DataFormat.Reference ? ReferencePrefix : ValuePrefix;
-			SerializableWrapper wrapper = format == DataFormat.Reference
+			string prefix = dataType == DataType.Reference ? ReferencePrefix : ValuePrefix;
+			SerializableWrapper wrapper = dataType == DataType.Reference
 				? new SerializableReferenceWrapper(values)
 				: new SerializableWrapper(values);
 
-			data.SetData(prefix + dataType, wrapper);
+			data.SetData(prefix + dataFormat, wrapper);
 		}
 		/// <summary>
-		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
+		/// Determines whether the specified format of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
 		/// </summary>
 		/// <param name="data"></param>
-		/// <param name="dataType">The type of wrapped data to look for</param>
-		/// <param name="formatType">The format the data is stored in</param>
-		/// <param name="allowConversion">Whether or not to attempt converting data from other formats</param>
+		/// <param name="dataFormat">The format of data to look for</param>
+		/// <param name="dataType">The type of data to look for</param>
+		/// <param name="allowConversion">Whether or not to attempt converting data from other <see cref="DataType"/>s</param>
 		/// <returns></returns>
-		public static bool GetWrappedDataPresent(this IDataObject data, Type dataType, DataFormat formatType, bool allowConversion = true)
+		public static bool GetWrappedDataPresent(this IDataObject data, string dataFormat, DataType dataType, bool allowConversion = true)
 		{
-			return GetWrappedDataPresent(data, dataType.FullName, formatType, allowConversion);
-		}
-		/// <summary>
-		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
-		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="dataType">The type of wrapped data to look for</param>
-		/// <param name="formatType">The format the data is stored in</param>
-		/// <param name="allowConversion">Whether or not to attempt converting data from other formats</param>
-		/// <returns></returns>
-		public static bool GetWrappedDataPresent(this IDataObject data, string dataType, DataFormat formatType, bool allowConversion = true)
-		{
-			string prefix = formatType == DataFormat.Reference ? ReferencePrefix : ValuePrefix;
-			bool defaultFormatPresent = data.GetDataPresent(prefix + dataType);
+			string prefix = dataType == DataType.Reference ? ReferencePrefix : ValuePrefix;
+			bool defaultFormatPresent = data.GetDataPresent(prefix + dataFormat);
 			if (defaultFormatPresent || !allowConversion)
 				return defaultFormatPresent;
 
 			// Try convertible formats
-			if (formatType == DataFormat.Value && data.GetWrappedDataPresent(dataType, DataFormat.Reference, false))
+			if (dataType == DataType.Value && data.GetWrappedDataPresent(dataFormat, DataType.Reference, false))
 				return true;
 
 			return false;
@@ -95,66 +80,40 @@ namespace Duality.Editor
 		/// Retrieves the specified non-<see cref="SerializableAttribute"/> data from the specified data object using a serializable wrapper.
 		/// </summary>
 		/// <param name="data"></param>
-		/// <param name="dataType">The type of wrapped data to retrieve</param>
-		/// <param name="formatType">The format to retrieve the data in</param>
-		/// <param name="allowConversion">Whether or not to attempt converting data from other formats</param>
+		/// <param name="dataFormat">The format of the data being retrieved</param>
+		/// <param name="dataType">The type of data being retrieved</param>
+		/// <param name="allowConversion">Whether or not to attempt converting data from other <see cref="DataType"/>s</param>
 		/// <returns></returns>
-		public static IEnumerable<object> GetWrappedData(this IDataObject data, Type dataType, DataFormat formatType, bool allowConversion = true)
+		public static IEnumerable<object> GetWrappedData(this IDataObject data, string dataFormat, DataType dataType, bool allowConversion = true)
 		{
-			return GetWrappedData(data, dataType.FullName, formatType, allowConversion);
-		}
-		/// <summary>
-		/// Retrieves the specified non-<see cref="SerializableAttribute"/> data from the specified data object using a serializable wrapper.
-		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="dataType">Describes the format of the data. Usually denotes the .Net type of the data.</param>
-		/// <param name="formatType">The format to retrieve the data in</param>
-		/// <param name="allowConversion">Whether or not to attempt converting data from other formats</param>
-		/// <returns></returns>
-		public static IEnumerable<object> GetWrappedData(this IDataObject data, string dataType, DataFormat formatType, bool allowConversion = true)
-		{
-			string prefix = formatType == DataFormat.Reference ? ReferencePrefix : ValuePrefix;
-			SerializableWrapper wrapper = data.GetData(prefix + dataType) as SerializableWrapper;
+			string prefix = dataType == DataType.Reference ? ReferencePrefix : ValuePrefix;
+			SerializableWrapper wrapper = data.GetData(prefix + dataFormat) as SerializableWrapper;
 			if (wrapper != null) return wrapper.Data;
 			if (!allowConversion) return null;
 
 			// Getting in the given format failed.
 			// Try converting from other formats.
 			IEnumerable<object> converted;
-			if (formatType == DataFormat.Value
-				&& (converted = data.GetWrappedData(dataType, DataFormat.Reference, false)) != null)
+			if (dataType == DataType.Value
+				&& (converted = data.GetWrappedData(dataFormat, DataType.Reference, false)) != null)
 			{
 				return converted.Select(obj => obj.DeepClone());
 			}
 
 			return null;
 		}
-		public static bool TryGetWrappedData(this IDataObject data, Type dataType, DataFormat formatType, out IEnumerable<object> wrappedData)
+		public static bool TryGetWrappedData(this IDataObject data, string dataFormat, DataType dataType, out IEnumerable<object> wrappedData)
 		{
-			return data.TryGetWrappedData(dataType, formatType, true, out wrappedData);
+			return data.TryGetWrappedData(dataFormat, dataType, true, out wrappedData);
 		}
-		public static bool TryGetWrappedData(this IDataObject data, Type dataType, DataFormat formatType, bool allowConversion, out IEnumerable<object> wrappedData)
+		public static bool TryGetWrappedData(this IDataObject data, string dataFormat, DataType dataType, bool allowConversion, out IEnumerable<object> wrappedData)
 		{
-			if (!data.GetWrappedDataPresent(dataType, formatType, allowConversion))
+			if (!data.GetWrappedDataPresent(dataFormat, dataType, allowConversion))
 			{
 				wrappedData = null;
 				return false;
 			}
-			wrappedData = data.GetWrappedData(dataType, formatType, allowConversion);
-			return wrappedData != null;
-		}
-		public static bool TryGetWrappedData(this IDataObject data, string dataType, DataFormat formatType, out IEnumerable<object> wrappedData)
-		{
-			return data.TryGetWrappedData(dataType, formatType, true, out wrappedData);
-		}
-		public static bool TryGetWrappedData(this IDataObject data, string dataType, DataFormat formatType, bool allowConversion, out IEnumerable<object> wrappedData)
-		{
-			if (!data.GetWrappedDataPresent(dataType, formatType, allowConversion))
-			{
-				wrappedData = null;
-				return false;
-			}
-			wrappedData = data.GetWrappedData(dataType, formatType, allowConversion);
+			wrappedData = data.GetWrappedData(dataFormat, dataType, allowConversion);
 			return wrappedData != null;
 		}
 
@@ -170,55 +129,55 @@ namespace Duality.Editor
 				return ConvertOperation.Operation.All;
 		}
 
-		public static void SetComponents(this IDataObject data, IEnumerable<Component> cmp, DataFormat format = DataFormat.Reference)
+		public static void SetComponents(this IDataObject data, IEnumerable<Component> cmp, DataType dataType = DataType.Reference)
 		{
 			Component[] cmpArray = cmp.ToArray();
-			if (cmpArray.Length > 0) data.SetWrappedData(cmpArray, typeof(Component), format);
+			if (cmpArray.Length > 0) data.SetWrappedData(cmpArray, ComponentFormat, dataType);
 		}
-		public static bool ContainsComponents<T>(this IDataObject data, DataFormat format = DataFormat.Reference) where T : Component
+		public static bool ContainsComponents<T>(this IDataObject data, DataType dataType = DataType.Reference) where T : Component
 		{
-			IEnumerable<object> refArray;
-			if (!data.TryGetWrappedData(typeof(Component), format, out refArray)) return false;
-			return refArray.Any(c => c is T);
+			IEnumerable<object> wrappedData;
+			if (!data.TryGetWrappedData(ComponentFormat, dataType, out wrappedData)) return false;
+			return wrappedData.Any(c => c is T);
 		}
-		public static bool ContainsComponents(this IDataObject data, DataFormat format = DataFormat.Reference)
+		public static bool ContainsComponents(this IDataObject data, DataType dataType = DataType.Reference)
 		{
-			return data.ContainsComponents(typeof(Component), format);
+			return data.ContainsComponents(typeof(Component), dataType);
 		}
-		public static bool ContainsComponents(this IDataObject data, Type cmpType, DataFormat format = DataFormat.Reference)
+		public static bool ContainsComponents(this IDataObject data, Type cmpType, DataType dataType = DataType.Reference)
 		{
-			IEnumerable<object> refArray;
-			if (!data.TryGetWrappedData(typeof(Component), format, out refArray))
+			IEnumerable<object> wrappedData;
+			if (!data.TryGetWrappedData(ComponentFormat, dataType, out wrappedData))
 				return false;
 
 			if (cmpType == null) cmpType = typeof(Component);
-			return refArray.Any(c => cmpType.IsInstanceOfType(c));
+			return wrappedData.Any(c => cmpType.IsInstanceOfType(c));
 		}
-		public static T[] GetComponents<T>(this IDataObject data, DataFormat format = DataFormat.Reference) where T : Component
+		public static T[] GetComponents<T>(this IDataObject data, DataType dataType = DataType.Reference) where T : Component
 		{
-			IEnumerable<object> compArray = data.GetWrappedData(typeof(Component), format);
-			return compArray == null ? null : compArray.OfType<T>().ToArray();
+			IEnumerable<object> wrappedData = data.GetWrappedData(ComponentFormat, dataType);
+			return wrappedData == null ? null : wrappedData.OfType<T>().ToArray();
 		}
-		public static Component[] GetComponents(this IDataObject data, DataFormat format = DataFormat.Reference)
+		public static Component[] GetComponents(this IDataObject data, DataType dataType = DataType.Reference)
 		{
-			return data.GetComponents(typeof(Component), format);
+			return data.GetComponents(typeof(Component), dataType);
 		}
-		public static Component[] GetComponents(this IDataObject data, Type cmpType, DataFormat format = DataFormat.Reference)
+		public static Component[] GetComponents(this IDataObject data, Type cmpType, DataType dataType = DataType.Reference)
 		{
-			IEnumerable<object> compArray = data.GetWrappedData(typeof(Component), format);
-			if (compArray == null) return null;
+			IEnumerable<object> wrappedData = data.GetWrappedData(ComponentFormat, dataType);
+			if (wrappedData == null) return null;
 
 			if (cmpType == null) cmpType = typeof(Component);
-			return compArray.Where(c => cmpType.IsInstanceOfType(c)).OfType<Component>().ToArray();
+			return wrappedData.Where(c => cmpType.IsInstanceOfType(c)).OfType<Component>().ToArray();
 		}
 		public static bool TryGetComponents<T>(this IDataObject data, out T[] comps) where T : Component
 		{
 			comps = data.GetComponents<T>();
 			return comps != null;
 		}
-		public static bool TryGetComponents<T>(this IDataObject data, DataFormat format, out T[] comps) where T : Component
+		public static bool TryGetComponents<T>(this IDataObject data, DataType dataType, out T[] comps) where T : Component
 		{
-			comps = data.GetComponents<T>(format);
+			comps = data.GetComponents<T>(dataType);
 			return comps != null;
 		}
 		public static bool TryGetComponents(this IDataObject data, out Component[] comps)
@@ -226,9 +185,9 @@ namespace Duality.Editor
 			comps = data.GetComponents();
 			return comps != null;
 		}
-		public static bool TryGetComponents(this IDataObject data, DataFormat format, out Component[] comps)
+		public static bool TryGetComponents(this IDataObject data, DataType dataType, out Component[] comps)
 		{
-			comps = data.GetComponents(format);
+			comps = data.GetComponents(dataType);
 			return comps != null;
 		}
 		public static bool TryGetComponents(this IDataObject data, Type cmpType, out Component[] comps)
@@ -236,25 +195,25 @@ namespace Duality.Editor
 			comps = data.GetComponents(cmpType);
 			return comps != null;
 		}
-		public static bool TryGetComponents(this IDataObject data, Type cmpType, DataFormat format, out Component[] comps)
+		public static bool TryGetComponents(this IDataObject data, Type cmpType, DataType dataType, out Component[] comps)
 		{
-			comps = data.GetComponents(cmpType, format);
+			comps = data.GetComponents(cmpType, dataType);
 			return comps != null;
 		}
 
-		public static void SetGameObjects(this IDataObject data, IEnumerable<GameObject> obj, DataFormat format = DataFormat.Reference)
+		public static void SetGameObjects(this IDataObject data, IEnumerable<GameObject> obj, DataType dataType = DataType.Reference)
 		{
 			GameObject[] objArray = obj.ToArray();
-			if (objArray.Length > 0) data.SetWrappedData(objArray, typeof(GameObject), format);
+			if (objArray.Length > 0) data.SetWrappedData(objArray, GameObjectFormat, dataType);
 		}
-		public static bool ContainsGameObjects(this IDataObject data, DataFormat format = DataFormat.Reference)
+		public static bool ContainsGameObjects(this IDataObject data, DataType dataType = DataType.Reference)
 		{
-			return data.GetWrappedDataPresent(typeof(GameObject), format);
+			return data.GetWrappedDataPresent(GameObjectFormat, dataType);
 		}
-		public static GameObject[] GetGameObjects(this IDataObject data, DataFormat format = DataFormat.Reference)
+		public static GameObject[] GetGameObjects(this IDataObject data, DataType dataType = DataType.Reference)
 		{
-			IEnumerable<object> objects = data.GetWrappedData(typeof(GameObject), format);
-			return objects == null ? null : objects.OfType<GameObject>().ToArray();
+			IEnumerable<object> wrappedData = data.GetWrappedData(GameObjectFormat, dataType);
+			return wrappedData == null ? null : wrappedData.OfType<GameObject>().ToArray();
 		}
 		public static bool TryGetGameObjects(this IDataObject data, out GameObject[] objects)
 		{
@@ -266,55 +225,55 @@ namespace Duality.Editor
 			objects = data.GetGameObjects();
 			return objects != null;
 		}
-		public static bool TryGetGameObjects(this IDataObject data, DataFormat format, out GameObject[] objects)
+		public static bool TryGetGameObjects(this IDataObject data, DataType dataType, out GameObject[] objects)
 		{
-			if (!data.ContainsGameObjects(format))
+			if (!data.ContainsGameObjects(dataType))
 			{
 				objects = null;
 				return false;
 			}
-			objects = data.GetGameObjects(format);
+			objects = data.GetGameObjects(dataType);
 			return objects != null;
 		}
 
 		public static void SetContentRefs(this IDataObject data, IEnumerable<IContentRef> content)
 		{
 			IContentRef[] contentArr = content.ToArray();
-			if (contentArr.Length > 0) data.SetWrappedData(contentArr, typeof(IContentRef), DataFormat.Value);
+			if (contentArr.Length > 0) data.SetWrappedData(contentArr, ContentRefFormat, DataType.Value);
 		}
 		public static bool ContainsContentRefs<T>(this IDataObject data) where T : Resource
 		{
-			IEnumerable<object> refArray;
-			if (!data.TryGetWrappedData(typeof(IContentRef), DataFormat.Value, out refArray))
+			IEnumerable<object> wrappedData;
+			if (!data.TryGetWrappedData(ContentRefFormat, DataType.Value, out wrappedData))
 				return false;
-			return refArray.OfType<IContentRef>().Any(r => r.Is<T>());
+			return wrappedData.OfType<IContentRef>().Any(r => r.Is<T>());
 		}
 		public static bool ContainsContentRefs(this IDataObject data, Type resType = null)
 		{
-			IEnumerable<object> refArray;
-			if (!data.TryGetWrappedData(typeof(IContentRef), DataFormat.Value, out refArray))
+			IEnumerable<object> wrappedData;
+			if (!data.TryGetWrappedData(ContentRefFormat, DataType.Value, out wrappedData))
 				return false;
 
 			if (resType == null) resType = typeof(Resource);
-			return refArray.OfType<IContentRef>().Any(r => r.Is(resType));
+			return wrappedData.OfType<IContentRef>().Any(r => r.Is(resType));
 		}
 		public static ContentRef<T>[] GetContentRefs<T>(this IDataObject data) where T : Resource
 		{
-			IEnumerable<object> refArray;
-			if (!data.TryGetWrappedData(typeof(IContentRef), DataFormat.Value, out refArray))
+			IEnumerable<object> wrappedData;
+			if (!data.TryGetWrappedData(ContentRefFormat, DataType.Value, out wrappedData))
 				return null;
 
-			return refArray.OfType<IContentRef>()
+			return wrappedData.OfType<IContentRef>()
 				.Where(r => r.Is<T>()).Select(r => r.As<T>()).ToArray();
 		}
 		public static IContentRef[] GetContentRefs(this IDataObject data, Type resType = null)
 		{
-			IEnumerable<object> refArray;
-			if (!data.TryGetWrappedData(typeof(IContentRef), DataFormat.Value, out refArray))
+			IEnumerable<object> wrappedData;
+			if (!data.TryGetWrappedData(ContentRefFormat, DataType.Value, out wrappedData))
 				return null;
 
 			if (resType == null) resType = typeof(Resource);
-			return refArray.OfType<IContentRef>()
+			return wrappedData.OfType<IContentRef>()
 				.Where(r => r.Is(resType)).ToArray();
 		}
 		public static bool TryGetContentRefs(this IDataObject data, out IContentRef[] content)
@@ -336,16 +295,16 @@ namespace Duality.Editor
 		public static void SetBatchInfos(this IDataObject data, IEnumerable<BatchInfo> obj)
 		{
 			BatchInfo[] objArray = obj.ToArray();
-			if (objArray.Length > 0) data.SetWrappedData(objArray, typeof(BatchInfo), DataFormat.Value);
+			if (objArray.Length > 0) data.SetWrappedData(objArray, BatchInfoFormat, DataType.Value);
 		}
 		public static bool ContainsBatchInfos(this IDataObject data)
 		{
-			return data.GetWrappedDataPresent(typeof(BatchInfo), DataFormat.Value);
+			return data.GetWrappedDataPresent(BatchInfoFormat, DataType.Value);
 		}
 		public static BatchInfo[] GetBatchInfos(this IDataObject data)
 		{
-			IEnumerable<object> batchArray = data.GetWrappedData(typeof(BatchInfo), DataFormat.Value);
-			return batchArray == null ? null : batchArray.OfType<BatchInfo>().Select(b => new BatchInfo(b)).ToArray();
+			IEnumerable<object> wrappedData = data.GetWrappedData(BatchInfoFormat, DataType.Value);
+			return wrappedData == null ? null : wrappedData.OfType<BatchInfo>().Select(b => new BatchInfo(b)).ToArray();
 		}
 		public static bool TryGetBatchInfos(this IDataObject data, out BatchInfo[] batches)
 		{
@@ -362,14 +321,14 @@ namespace Duality.Editor
 		{
 			IColorData[] clrArray = color.ToArray();
 			if (clrArray.Length == 0) return;
-			data.SetWrappedData(clrArray, typeof(IColorData), DataFormat.Value);
+			data.SetWrappedData(clrArray, ColorDataFormat, DataType.Value);
 
 			var rgbaQuery = clrArray.Select(c => c.ConvertTo<ColorRgba>());
 			data.SetString(rgbaQuery.ToString(c => string.Format("{0},{1},{2},{3}", c.R, c.G, c.B, c.A), ", "));
 		}
 		public static bool ContainsIColorData(this IDataObject data)
 		{
-			if (data.GetWrappedDataPresent(typeof(IColorData), DataFormat.Value))
+			if (data.GetWrappedDataPresent(ColorDataFormat, DataType.Value))
 				return true;
 
 			if (data.ContainsString())
@@ -384,9 +343,9 @@ namespace Duality.Editor
 		public static T[] GetIColorData<T>(this IDataObject data) where T : IColorData
 		{
 			IColorData[] clrArray = null;
-			IEnumerable<object> wrappedArr;
-			if (data.TryGetWrappedData(typeof(IColorData), DataFormat.Value, out wrappedArr))
-				clrArray = wrappedArr.OfType<IColorData>().ToArray();
+			IEnumerable<object> wrappedData;
+			if (data.TryGetWrappedData(ColorDataFormat, DataType.Value, out wrappedData))
+				clrArray = wrappedData.OfType<IColorData>().ToArray();
 			else if (data.ContainsString())
 				clrArray = ParseIColorData(data.GetString());
 

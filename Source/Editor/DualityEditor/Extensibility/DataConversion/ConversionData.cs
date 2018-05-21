@@ -35,18 +35,18 @@ namespace Duality.Editor
 		{
 			bool isCached = 
 				this.dataCache.GetDataPresent(format, autoConvert) || 
-				this.dataCache.GetWrappedDataPresent(format, DataFormat.Reference) ||
-				this.dataCache.GetWrappedDataPresent(format, DataFormat.Value);
+				this.dataCache.GetWrappedDataPresent(format, DataType.Reference) ||
+				this.dataCache.GetWrappedDataPresent(format, DataType.Value);
 
 			if (!isCached)
 			{
 				object obj;
 				if (this.data.GetDataPresent(format, autoConvert))
 					obj = this.data.GetData(format, autoConvert);
-				else if (this.data.GetWrappedDataPresent(format, DataFormat.Reference))
-					obj = this.data.GetWrappedData(format, DataFormat.Reference);
-				else if (this.data.GetWrappedDataPresent(format, DataFormat.Value))
-					obj = this.data.GetWrappedData(format, DataFormat.Value);
+				else if (this.data.GetWrappedDataPresent(format, DataType.Reference))
+					obj = this.data.GetWrappedData(format, DataType.Reference);
+				else if (this.data.GetWrappedDataPresent(format, DataType.Value))
+					obj = this.data.GetWrappedData(format, DataType.Value);
 				else
 					obj = null;
 
@@ -64,8 +64,8 @@ namespace Duality.Editor
 		{
 			return 
 				this.data.GetDataPresent(format, autoConvert) || 
-				this.data.GetWrappedDataPresent(format, DataFormat.Reference) ||
-				this.data.GetWrappedDataPresent(format, DataFormat.Value);
+				this.data.GetWrappedDataPresent(format, DataType.Reference) ||
+				this.data.GetWrappedDataPresent(format, DataType.Value);
 		}
 
 		string[] IDataObject.GetFormats()
