@@ -37,17 +37,15 @@ namespace Duality.Editor
 		/// <summary>
 		/// Determines whether the specified format of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
 		/// </summary>
-		/// <param name="data"></param>
 		/// <param name="dataFormat">The format of data to look for</param>
 		/// <param name="storage">Whether to look for stored references or values</param>
-		/// <returns></returns>
 		public static bool GetWrappedDataPresent(this IDataObject data, string dataFormat, DataObjectStorage storage)
 		{
 			string prefix = storage == DataObjectStorage.Reference ? ReferencePrefix : ValuePrefix;
 			bool defaultFormatPresent = data.GetDataPresent(prefix + dataFormat);
 			if (defaultFormatPresent) return true;
 
-			// If retrieving by-value failed, try retrieving by-reference and cloning the result
+			// If retrieving by-value failed, try retrieving a reference which can be cloned later
 			if (storage == DataObjectStorage.Value && data.GetWrappedDataPresent(dataFormat, DataObjectStorage.Reference))
 				return true;
 
@@ -56,11 +54,8 @@ namespace Duality.Editor
 		/// <summary>
 		/// Retrieves the specified non-<see cref="SerializableAttribute"/> data from the specified data object using a serializable wrapper.
 		/// </summary>
-		/// <param name="data"></param>
 		/// <param name="dataFormat">The format of the data being retrieved</param>
 		/// <param name="storage">Whether to look for stored references or values</param>
-		/// <param name="allowStorageConversion">Whether or not to attempt converting data from other <see cref="DataObjectStorage"/>s</param>
-		/// <returns></returns>
 		public static IEnumerable<object> GetWrappedData(this IDataObject data, string dataFormat, DataObjectStorage storage)
 		{
 			string prefix = storage == DataObjectStorage.Reference ? ReferencePrefix : ValuePrefix;
