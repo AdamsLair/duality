@@ -524,7 +524,6 @@ namespace Duality
 		/// <returns></returns>
 		public static float InvLerp(int min, int max, int value)
 		{
-
 			return (float) (value - min) / (max - min);
 		}
 
