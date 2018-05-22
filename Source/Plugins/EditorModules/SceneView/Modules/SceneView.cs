@@ -41,7 +41,7 @@ namespace Duality.Editor.Plugins.SceneView
 				if (objNode == null) return null;
 				if (objNode.Obj.PrefabLink == null) return null;
 
-				return String.Format(Properties.SceneViewRes.SceneView_PrefabLink, objNode.Obj.PrefabLink.Prefab.Path);
+				return string.Format(Properties.SceneViewRes.SceneView_PrefabLink, objNode.Obj.PrefabLink.Prefab.Path);
 			}
 		}
 		private class CreateContextEntryTag
@@ -126,9 +126,9 @@ namespace Duality.Editor.Plugins.SceneView
 
 			this.nodeTextBoxName.ToolTipProvider = this.nodeStateIcon.ToolTipProvider = new ToolTipProvider();
 			this.nodeTextBoxName.DrawText += this.nodeTextBoxName_DrawText;
-			this.nodeTextBoxName.EditorShowing += new CancelEventHandler(nodeTextBoxName_EditorShowing);
-			this.nodeTextBoxName.EditorHided += new EventHandler(nodeTextBoxName_EditorHided);
-			this.nodeTextBoxName.ChangesApplied += new EventHandler(nodeTextBoxName_ChangesApplied);
+			this.nodeTextBoxName.EditorShowing += new CancelEventHandler(this.nodeTextBoxName_EditorShowing);
+			this.nodeTextBoxName.EditorHided += new EventHandler(this.nodeTextBoxName_EditorHided);
+			this.nodeTextBoxName.ChangesApplied += new EventHandler(this.nodeTextBoxName_ChangesApplied);
 
 			this.nodeStateIcon.DrawIcon += this.nodeStateIcon_DrawIcon;
 
@@ -239,7 +239,7 @@ namespace Duality.Editor.Plugins.SceneView
 
 		protected void ApplyNodeFilter()
 		{
-			this.tempUpperFilter = String.IsNullOrEmpty(this.textBoxFilter.Text) ? null : this.textBoxFilter.Text.ToUpper();
+			this.tempUpperFilter = string.IsNullOrEmpty(this.textBoxFilter.Text) ? null : this.textBoxFilter.Text.ToUpper();
 			this.tempNodeVisibilityCache.Clear();
 			this.objectView.NodeFilter = this.tempUpperFilter != null ? this.objectModel_IsNodeVisible : (Predicate<object>)null;
 		}
@@ -312,7 +312,7 @@ namespace Duality.Editor.Plugins.SceneView
 		protected void InsertNodeSorted(Node newNode, Node parentNode)
 		{
 			Node insertBeforeNode = parentNode.Nodes.FirstOrDefault(node => 
-				(NodeBase.Compare(newNode as NodeBase, node as NodeBase) == 0 && String.Compare(newNode.Text, node.Text) < 0) ||
+				(NodeBase.Compare(newNode as NodeBase, node as NodeBase) == 0 && string.Compare(newNode.Text, node.Text) < 0) ||
 				NodeBase.Compare(newNode as NodeBase, node as NodeBase) < 0);
 			if (insertBeforeNode == null) parentNode.Nodes.Add(newNode);
 			else parentNode.Nodes.Insert(parentNode.Nodes.IndexOf(insertBeforeNode), newNode);
@@ -679,8 +679,15 @@ namespace Duality.Editor.Plugins.SceneView
 						},
 						new MenuModelItem
 						{
+							Name            = typeof(Component).Name + "...",
+							Icon            = typeof(Component).GetEditorImage(),
+							SortValue       = MenuModelItem.SortValue_Top + 1,
+							ActionHandler   = this.componentToolStripMenuItem_Click
+						},
+						new MenuModelItem
+						{
 							Name			= "TopSeparator",
-							SortValue		= MenuModelItem.SortValue_Top,
+							SortValue		= MenuModelItem.SortValue_Top + 2,
 							TypeHint		= MenuItemTypeHint.Separator
 						}
 					}
@@ -724,6 +731,7 @@ namespace Duality.Editor.Plugins.SceneView
 				}
 			});
 		}
+
 		protected void UpdateContextMenu()
 		{
 			// Update main actions
@@ -775,7 +783,7 @@ namespace Duality.Editor.Plugins.SceneView
 			if (selObjData.Any())
 			{
 			    mainResType = selObjData.First().GetType();
-			    foreach (var obj in selObjData)
+			    foreach (object obj in selObjData)
 			    {
 			        Type resType = obj.GetType();
 			        while (mainResType != null && !mainResType.IsAssignableFrom(resType))
@@ -1477,24 +1485,68 @@ namespace Duality.Editor.Plugins.SceneView
 
 		private void gameObjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			// Create the GameObject
-			GameObject obj = this.CreateGameObject(this.objectView.SelectedNode);
-			GameObjectNode objNode = this.FindNode(obj);
+			List<GameObjectNode> newObjects = new List<GameObjectNode>();
 
-			// Deselect previous
+			// Create one new object as a child of each selected node
+			if (this.objectView.SelectedNodes.Count > 0)
+			{
+				foreach (TreeNodeAdv node in this.objectView.SelectedNodes)
+				{
+					GameObject obj = this.CreateGameObject(node);
+					GameObjectNode objNode = this.FindNode(obj);
+					newObjects.Add(objNode);
+				}
+			}
+			// If no object is selected, just create one new root object
+			else
+			{
+				GameObject obj = this.CreateGameObject(null);
+				GameObjectNode objNode = this.FindNode(obj);
+				newObjects.Add(objNode);
+			}
+
 			this.objectView.ClearSelection();
 
-			// Select new node
-			if (objNode != null)
+			// Select newly created objects
+			TreeNodeAdv nodeToEdit = null;
+			foreach (GameObjectNode objNode in newObjects)
 			{
-				TreeNodeAdv dragObjViewNode;
-				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(objNode));
-				if (dragObjViewNode != null)
+				if (objNode == null) continue;
+
+				TreeNodeAdv dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(objNode));
+				if (dragObjViewNode == null) continue;
+
+				// Expand parent node and select new object node
+				if (dragObjViewNode.Parent != null)
+					dragObjViewNode.Parent.Expand();
+				dragObjViewNode.IsSelected = true;
+
+				// Schedule the first created view node for editing
+				if (nodeToEdit == null)
 				{
-					dragObjViewNode.IsSelected = true;
-					this.objectView.EnsureVisible(dragObjViewNode);
-					this.nodeTextBoxName.BeginEdit();
+					nodeToEdit = dragObjViewNode;
 				}
+			}
+
+			// Scroll to and edit the new objects name
+			if (nodeToEdit != null)
+			{
+				this.objectView.EnsureVisible(nodeToEdit);
+				this.nodeTextBoxName.BeginEdit();
+			}
+		}
+		private void componentToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ListSelectionDialog compTypeSelector = new ListSelectionDialog
+			{
+				FilteredType = typeof(Component),
+				SelectType = true
+			};
+			DialogResult result = compTypeSelector.ShowDialog();
+
+			if (result == DialogResult.OK)
+			{
+				AddComponentOfTypeHandler(compTypeSelector.TypeReference);
 			}
 		}
 		private void newToolStripMenuItem_ItemClicked(object sender, EventArgs e)
@@ -1506,8 +1558,10 @@ namespace Duality.Editor.Plugins.SceneView
 			// Determine which entry we clicked on and determine which type of Component to create.
 			CreateContextEntryTag clickedEntry = clickedItem.Tag as CreateContextEntryTag;
 			Type clickedType = ReflectionHelper.ResolveType(clickedEntry.TypeId);
-			if (clickedType == null) return;
-            
+			if (clickedType != null) AddComponentOfTypeHandler(clickedType);
+		}
+		private void AddComponentOfTypeHandler(Type componentType)
+		{
 			// Determine which (GameObject) nodes we're creating Components on.
 			List<TreeNodeAdv> targetViewNodes = new List<TreeNodeAdv>();
 			foreach (TreeNodeAdv viewNode in this.objectView.SelectedNodes)
@@ -1528,12 +1582,12 @@ namespace Duality.Editor.Plugins.SceneView
 			foreach (TreeNodeAdv targetViewNode in targetViewNodes)
 			{
 				// Create the Component
-				Component cmp = this.CreateComponent(targetViewNode, clickedType);
+				Component cmp = this.CreateComponent(targetViewNode, componentType);
 				if (cmp == null) continue;
 
 				NodeBase cmpNode = (NodeBase)this.FindNode(cmp) ?? this.FindNode(cmp.GameObj);
 				if (cmpNode == null) continue;
-					
+
 				newComponentNodes.Add(cmpNode);
 			}
 			UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
@@ -1597,13 +1651,13 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			// Save expand data
 			HashSet<object> expandedMap = new HashSet<object>();
-			this.objectView.SaveNodesExpanded(this.objectView.Root, expandedMap, NodeIdFuncCoreObject);
+			this.objectView.SaveNodesExpanded(this.objectView.Root, expandedMap, this.NodeIdFuncCoreObject);
 
 			this.ClearObjects();
 			this.InitObjects();
 
 			// Restore expand data
-			this.objectView.RestoreNodesExpanded(this.objectView.Root, expandedMap, NodeIdFuncCoreObject);
+			this.objectView.RestoreNodesExpanded(this.objectView.Root, expandedMap, this.NodeIdFuncCoreObject);
 		}
 		private object NodeIdFuncCoreObject(TreeNodeAdv node)
 		{
