@@ -19,9 +19,13 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="value"></param>
-		public static void SetWrappedData(this IDataObject data, object value)
+		/// <param name="byReference">Whether or not to store the value as a reference or to perform a clone of the value</param>
+		public static void SetWrappedData(this IDataObject data, object value, bool byReference = false)
 		{
-			data.SetData(WrapperPrefix + value.GetType().FullName, new SerializableWrapper(value));
+			data.SetData(WrapperPrefix + value.GetType().FullName, 
+				byReference 
+					? new SerializableReferenceWrapper(value) 
+					: new SerializableWrapper(value));
 		}
 		/// <summary>
 		/// Determines whether the specified type of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
@@ -83,25 +87,25 @@ namespace Duality.Editor
 		public static void SetComponentRefs(this IDataObject data, IEnumerable<Component> cmp)
 		{
 			Component[] cmpArray = cmp.ToArray();
-			if (cmpArray.Length > 0) data.SetWrappedData(cmpArray);
+			if (cmpArray.Length > 0) data.SetWrappedData(cmpArray, true);
 		}
 		public static bool ContainsComponentRefs<T>(this IDataObject data) where T : Component
 		{
 			if (!data.GetWrappedDataPresent(typeof(Component[]))) return false;
 			Component[] refArray = data.GetWrappedData(typeof(Component[])) as Component[];
-			return refArray.Any(c => c is T);
+			return refArray != null && refArray.Any(c => c is T);
 		}
 		public static bool ContainsComponentRefs(this IDataObject data, Type cmpType = null)
 		{
 			if (cmpType == null) cmpType = typeof(Component);
 			if (!data.GetWrappedDataPresent(typeof(Component[]))) return false;
 			Component[] refArray = data.GetWrappedData(typeof(Component[])) as Component[];
-			return refArray.Any(c => cmpType.IsInstanceOfType(c));
+			return refArray != null && refArray.Any(c => cmpType.IsInstanceOfType(c));
 		}
 		public static T[] GetComponentRefs<T>(this IDataObject data) where T : Component
 		{
 			if (!data.GetWrappedDataPresent(typeof(Component[]))) return null;
-			Component[] refArray = data.GetWrappedData(typeof(Component[])) as Component[];
+			Component[] refArray = data.GetWrappedData(typeof(Component[])) as Component[] ?? new Component[0];
 			return (
 				from r in refArray
 				where r is T
@@ -112,7 +116,7 @@ namespace Duality.Editor
 		{
 			if (cmpType == null) cmpType = typeof(Component);
 			if (!data.GetWrappedDataPresent(typeof(Component[]))) return null;
-			Component[] refArray = data.GetWrappedData(typeof(Component[])) as Component[];
+			Component[] refArray = data.GetWrappedData(typeof(Component[])) as Component[] ?? new Component[0];
 			return (
 				from c in refArray
 				where cmpType.IsInstanceOfType(c)
@@ -123,7 +127,7 @@ namespace Duality.Editor
 		public static void SetGameObjectRefs(this IDataObject data, IEnumerable<GameObject> obj)
 		{
 			GameObject[] objArray = obj.ToArray();
-			if (objArray.Length > 0) data.SetWrappedData(objArray);
+			if (objArray.Length > 0) data.SetWrappedData(objArray, true);
 		}
 		public static bool ContainsGameObjectRefs(this IDataObject data)
 		{
@@ -131,31 +135,31 @@ namespace Duality.Editor
 		}
 		public static GameObject[] GetGameObjectRefs(this IDataObject data)
 		{
-			return data.GetWrappedData(typeof(GameObject[])) as GameObject[];
+			return data.GetWrappedData(typeof(GameObject[])) as GameObject[] ?? new GameObject[0];
 		}
 
 		public static void SetContentRefs(this IDataObject data, IEnumerable<IContentRef> content)
 		{
 			if (!content.Any()) return;
-			data.SetWrappedData(content.ToArray());
+			data.SetWrappedData(content.ToArray(), false);
 		}
 		public static bool ContainsContentRefs<T>(this IDataObject data) where T : Resource
 		{
 			if (!data.GetWrappedDataPresent(typeof(IContentRef[]))) return false;
 			IContentRef[] refArray = data.GetWrappedData(typeof(IContentRef[])) as IContentRef[];
-			return refArray.Any(r => r.Is<T>());
+			return refArray != null && refArray.Any(r => r.Is<T>());
 		}
 		public static bool ContainsContentRefs(this IDataObject data, Type resType = null)
 		{
 			if (resType == null) resType = typeof(Resource);
 			if (!data.GetWrappedDataPresent(typeof(IContentRef[]))) return false;
 			IContentRef[] refArray = data.GetWrappedData(typeof(IContentRef[])) as IContentRef[];
-			return refArray.Any(r => r.Is(resType));
+			return refArray != null && refArray.Any(r => r.Is(resType));
 		}
 		public static ContentRef<T>[] GetContentRefs<T>(this IDataObject data) where T : Resource
 		{
 			if (!data.GetWrappedDataPresent(typeof(IContentRef[]))) return null;
-			IContentRef[] refArray = data.GetWrappedData(typeof(IContentRef[])) as IContentRef[];
+			IContentRef[] refArray = data.GetWrappedData(typeof(IContentRef[])) as IContentRef[] ?? new IContentRef[0];
 			return (
 				from r in refArray
 				where r.Is<T>()
@@ -166,7 +170,7 @@ namespace Duality.Editor
 		{
 			if (resType == null) resType = typeof(Resource);
 			if (!data.GetWrappedDataPresent(typeof(IContentRef[]))) return null;
-			IContentRef[] refArray = data.GetWrappedData(typeof(IContentRef[])) as IContentRef[];
+			IContentRef[] refArray = data.GetWrappedData(typeof(IContentRef[])) as IContentRef[] ?? new IContentRef[0];
 			return (
 				from r in refArray
 				where r.Is(resType)
