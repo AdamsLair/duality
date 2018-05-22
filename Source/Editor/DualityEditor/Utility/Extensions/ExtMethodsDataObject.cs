@@ -14,11 +14,11 @@ namespace Duality.Editor
 		private const string ReferencePrefix = "SerializableReferenceWrapper:";
 		private const string ValuePrefix = "SerializableWrapper:";
 
-		public const string ComponentFormat = "Component";
-		public const string GameObjectFormat = "GameObject";
-		public const string ContentRefFormat = "ContentRef";
-		public const string BatchInfoFormat = "BatchInfo";
-		public const string ColorDataFormat = "ColorData";
+		public static readonly string ComponentFormat = typeof(Component).FullName;
+		public static readonly string GameObjectFormat = typeof(GameObject).FullName;
+		public static readonly string ContentRefFormat = typeof(IContentRef).FullName;
+		public static readonly string BatchInfoFormat = typeof(BatchInfo).FullName;
+		public static readonly string ColorDataFormat = typeof(IColorData).FullName;
 
 		/// <summary>
 		/// Stores the specified non-<see cref="SerializableAttribute"/> data inside the specified data object using a serializable wrapper.
@@ -123,8 +123,14 @@ namespace Duality.Editor
 		}
 		public static bool TryGetComponents(this IDataObject data, Type cmpType, DataObjectStorage storage, out Component[] comps)
 		{
-			comps = data.GetComponents(cmpType, storage);
-			return comps != null;
+			Component[] results = data.GetComponents(cmpType, storage);
+			if (results == null || results.Length == 0)
+			{
+				comps = null;
+				return false;
+			}
+			comps = results;
+			return true;
 		}
 
 		public static void SetGameObjects(this IDataObject data, IEnumerable<GameObject> obj, DataObjectStorage storage = DataObjectStorage.Reference)
@@ -178,8 +184,14 @@ namespace Duality.Editor
 		}
 		public static bool TryGetContentRefs(this IDataObject data, Type resType, out IContentRef[] content)
 		{
-			content = data.GetContentRefs(resType);
-			return content != null;
+			IContentRef[] results = data.GetContentRefs(resType);
+			if (results == null || results.Length == 0)
+			{
+				content = null;
+				return false;
+			}
+			content = results;
+			return true;
 		}
 
 		public static void SetBatchInfos(this IDataObject data, IEnumerable<BatchInfo> obj)
