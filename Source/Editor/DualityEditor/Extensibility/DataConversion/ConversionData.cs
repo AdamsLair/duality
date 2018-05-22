@@ -44,9 +44,9 @@ namespace Duality.Editor
 				if (this.data.GetDataPresent(format, autoConvert))
 					obj = this.data.GetData(format, autoConvert);
 				else if (this.data.GetWrappedDataPresent(format, DataObjectStorage.Reference))
-					obj = this.data.GetWrappedData(format, DataObjectStorage.Reference);
+					obj = this.data.GetWrappedData(format, DataObjectStorage.Reference).First();
 				else if (this.data.GetWrappedDataPresent(format, DataObjectStorage.Value))
-					obj = this.data.GetWrappedData(format, DataObjectStorage.Value);
+					obj = this.data.GetWrappedData(format, DataObjectStorage.Value).First();
 				else
 					obj = null;
 
