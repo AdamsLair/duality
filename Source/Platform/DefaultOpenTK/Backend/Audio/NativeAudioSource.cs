@@ -260,11 +260,13 @@ namespace Duality.Backend.DefaultOpenTK
 				if (this.handle == 0) return false;
 
 				ALSourceState stateTemp = AL.GetSourceState(this.handle);
-				if (stateTemp == ALSourceState.Stopped && this.strStopReq != StopRequest.None)
+				if ((stateTemp == ALSourceState.Stopped || stateTemp == ALSourceState.Initial) && this.strStopReq != StopRequest.None)
 				{
 					// Stopped due to regular EOF. If strStopReq is NOT set,
 					// the source stopped playing because it reached the end of the buffer
 					// but in fact only because we were too slow inserting new data.
+					// When stream is empty, source is still in initial state but strStopReq
+					// is already set to EndOfStream.
 					return false;
 				}
 				else if (this.strStopReq == StopRequest.Immediately)
@@ -281,7 +283,6 @@ namespace Duality.Backend.DefaultOpenTK
 
 					// Initially play source
 					AL.SourcePlay(handle);
-					stateTemp = AL.GetSourceState(handle);
 				}
 				else
 				{
@@ -320,6 +321,7 @@ namespace Duality.Backend.DefaultOpenTK
 				}
 				else
 				{
+					this.strStopReq = StopRequest.EndOfStream;
 					break;
 				}
 			}

@@ -304,6 +304,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\PathHelper.cs" />
     <Compile Include="Utility\RecycleBin.cs" />
+    <Compile Include="Utility\SerializableReferenceWrapper.cs" />
     <Compile Include="Utility\SerializableWrapper.cs" />
     <Compile Include="Utility\XmlCodeDoc.cs" />
     <Compile Include="UndoRedoActions\DeleteGameObjectAction.cs" />
