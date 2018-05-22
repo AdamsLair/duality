@@ -1452,8 +1452,7 @@ namespace Duality.Editor
 				initList.Reverse();
 
 			// Invoke the init event on all gathered components in the right order
-			foreach (ICmpInitializable component in initList)
-				component.OnShutdown(Component.ShutdownContext.Deactivate);
+			initList.ShutdownAll(Component.ShutdownContext.Deactivate);
 		}
 		private static void editorObjects_ComponentAdded(object sender, ComponentEventArgs e)
 		{
