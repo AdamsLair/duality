@@ -295,6 +295,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 				}
 			}
 		}
+
 		private void timerSelectSched_Tick(object sender, EventArgs e)
 		{
 			if (this.selSchedMouse == null)
