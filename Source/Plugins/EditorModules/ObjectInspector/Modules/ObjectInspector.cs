@@ -183,7 +183,9 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		private void MainEditor_EditorAdded(object sender, PropertyEditorEventArgs e)
 		{
 			// Make sure new editors start in the correct expand state
-			this.gridExpandState.ApplyTo(this.propertyGrid.MainEditor);
+			GroupedPropertyEditor groupedEditor = e.Editor as GroupedPropertyEditor;
+			if (groupedEditor != null)
+				groupedEditor.Expanded = this.gridExpandState.IsEditorExpanded(groupedEditor);
 		}
 
 		private void EditorForm_AfterUpdateDualityApp(object sender, EventArgs e)
