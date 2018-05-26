@@ -423,8 +423,8 @@ namespace Duality.Editor.Plugins.SceneView
 
 			DataObject data = new DataObject();
 
-			if (objects.Any()) data.SetGameObjectRefs(objects);
-			else if (comps.Any()) data.SetComponentRefs(comps);
+			if (objects.Any()) data.SetGameObjects(objects);
+			else if (comps.Any()) data.SetComponents(comps);
 
 			Clipboard.SetDataObject(data);
 		}
@@ -438,15 +438,15 @@ namespace Duality.Editor.Plugins.SceneView
 				.OfType<GameObjectNode>()
 				.Select(gon => gon.Obj);
 
-			if (clipboardData.ContainsGameObjectRefs()) this.PasteClipboardObjects(targets);
-			else if (clipboardData.ContainsComponentRefs()) this.PasteClipboardComponents(targets);
+			if (clipboardData.ContainsGameObjects()) this.PasteClipboardObjects(targets);
+			else if (clipboardData.ContainsComponents(typeof(Component))) this.PasteClipboardComponents(targets);
 		}
 		private void PasteClipboardObjects(IEnumerable<GameObject> targets)
 		{
 			DataObject clipboardData = Clipboard.GetDataObject() as DataObject;
 			if (clipboardData == null) return;
 
-			GameObject[] objArray = clipboardData.GetGameObjectRefs();
+			GameObject[] objArray = clipboardData.GetGameObjects();
 
 			PasteGameObjectAction pasteAction = new PasteGameObjectAction(objArray, targets);
 			UndoRedoManager.Do(pasteAction);
@@ -471,7 +471,7 @@ namespace Duality.Editor.Plugins.SceneView
 
 			List<GameObject> targetList = targets.ToList();
 			Component[] compArray = clipboardData
-				.GetComponentRefs();
+				.GetComponents(typeof(Component));
 
 			UndoRedoManager.BeginMacro();
 			List<CreateComponentAction> actions = new List<CreateComponentAction>();
@@ -871,8 +871,8 @@ namespace Duality.Editor.Plugins.SceneView
 
 			IDataObject clipboardData = Clipboard.GetDataObject();
 			bool pasteAllowed = clipboardData != null
-				&& (clipboardData.ContainsGameObjectRefs()
-					|| (gameObjSelect && !compSelect && clipboardData.ContainsComponentRefs()));
+				&& (clipboardData.ContainsGameObjects()
+					|| (gameObjSelect && !compSelect && clipboardData.ContainsComponents(typeof(Component))));
 
 			this.nodeContextItemNew.Visible = gameObjSelect || noSelect;
 
