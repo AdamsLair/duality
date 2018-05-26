@@ -17,18 +17,25 @@ namespace Duality.Editor
 	[Serializable]
 	public class SerializableWrapper : ISerializable
 	{
-		protected object data;
+		protected object[] data;
 
-		public virtual object Data
+		public virtual IReadOnlyList<object> Data
 		{
 			get { return this.data; }
-			set { this.data = value; }
+			set
+			{
+				// Clone the objects first to make sure they are isolated and don't
+				// drag a whole Scene (or so) into the serialization graph.
+				this.data = value.Select(o => o.DeepClone()).ToArray();
+			}
 		}
 
 		public SerializableWrapper() : this(null) { }
-		public SerializableWrapper(object data)
+		public SerializableWrapper(IEnumerable<object> data)
 		{
-			this.data = data;
+			// Clone the objects first to make sure they are isolated and don't
+			// drag a whole Scene (or so) into the serialization graph.
+			this.data = data == null ? null : data.Select(o => o.DeepClone()).ToArray();
 		}
 		private SerializableWrapper(SerializationInfo info, StreamingContext context)
 		{
@@ -50,7 +57,7 @@ namespace Duality.Editor
 
 			using (MemoryStream stream = new MemoryStream(serializedData))
 			{
-				this.data = Serializer.TryReadObject<object>(stream);
+				this.data = Serializer.TryReadObject<object[]>(stream);
 			}
 		}
 
@@ -58,12 +65,8 @@ namespace Duality.Editor
 		{
 			using (MemoryStream stream = new MemoryStream())
 			{
-				// Clone the object first to make sure it's isolated and doesn't 
-				// drag a whole Scene (or so) into the serialization graph.
-				object isolatedObj = this.data.DeepClone();
-
 				// Now serialize the isolated object
-				Serializer.WriteObject(isolatedObj, stream, typeof(BinarySerializer));
+				Serializer.WriteObject(this.data, stream, typeof(BinarySerializer));
 				byte[] serializedData = stream.ToArray();
 				info.AddValue("data", serializedData);
 			}
