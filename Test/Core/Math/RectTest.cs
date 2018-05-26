@@ -72,6 +72,10 @@ namespace Duality.Tests.Utility
 			Assert.AreEqual(new Vector2(rect.CenterX, rect.CenterY), rect.Center);
 			Assert.AreEqual(new Vector2(rect.LeftX, rect.BottomY), rect.BottomLeft);
 			Assert.AreEqual(new Vector2(rect.RightX, rect.BottomY), rect.BottomRight);
+			Assert.AreEqual(new Vector2(rect.CenterX, rect.TopY), rect.Top);
+			Assert.AreEqual(new Vector2(rect.CenterX, rect.BottomY), rect.Bottom);
+			Assert.AreEqual(new Vector2(rect.LeftX, rect.CenterY), rect.Left);
+			Assert.AreEqual(new Vector2(rect.RightX, rect.CenterY), rect.Right);
 
 			// Test some assignment operations
 			rect.Pos = new Vector2(2, 1);
@@ -143,6 +147,10 @@ namespace Duality.Tests.Utility
 			Assert.IsTrue(rect.Contains(rect.Center));
 			Assert.IsTrue(rect.Contains(rect.BottomLeft));
 			Assert.IsTrue(rect.Contains(rect.BottomRight));
+			Assert.IsTrue(rect.Contains(rect.Top));
+			Assert.IsTrue(rect.Contains(rect.Bottom));
+			Assert.IsTrue(rect.Contains(rect.Left));
+			Assert.IsTrue(rect.Contains(rect.Right));
 
 			// Points it shouldn't contain
 			Assert.IsFalse(rect.Contains(new Vector2(rect.LeftX - 1.0f, rect.CenterY)));

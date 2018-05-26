@@ -468,6 +468,17 @@ namespace Duality
 		{
 			return v < min ? min : (v > max ? max : v);
 		}
+
+		/// <summary>
+		/// Clamps a value between 0 and 1 inclusive.
+		/// </summary>
+		/// <param name="v">The value to clamp.</param>
+		/// <returns>The clamped value.</returns>
+		public static float Clamp01(float v)
+		{
+			return v < 0.0f ? 0.0f : (v > 1.0f ? 1.0f : v);
+		}
+
 		/// <summary>
 		/// Clamps a value between minimum and maximum.
 		/// </summary>
@@ -491,16 +502,53 @@ namespace Duality
 		{
 			return a + ratio * (b - a);
 		}
+
 		/// <summary>
-		/// Performs linear interpolation between two values.
+		/// Performs inverse linear interpolation between two anchor values.
 		/// </summary>
-		/// <param name="a">The first anchor value.</param>
-		/// <param name="b">The second anchor value.</param>
-		/// <param name="ratio">Ratio between first and second anchor. Zero will result in anchor a, one will result in anchor b.</param>
+		/// <param name="min">The first anchor value.</param>
+		/// <param name="max">The second anchor value.</param>
+		/// <param name="value">The value between both anchor values.</param>
 		/// <returns></returns>
-		public static int Lerp(int a, int b, float ratio)
+		public static float InvLerp(float min, float max, float value)
 		{
-			return MathF.RoundToInt(a + ratio * (float)(b - a));
+			return (value - min) / (max - min);
+		}
+
+		/// <summary>
+		/// Performs inverse linear interpolation between two anchor values.
+		/// </summary>
+		/// <param name="min">The first anchor value.</param>
+		/// <param name="max">The second anchor value.</param>
+		/// <param name="value">The value between both anchor values.</param>
+		/// <returns></returns>
+		public static float InvLerp(int min, int max, int value)
+		{
+			return (float) (value - min) / (max - min);
+		}
+
+		/// <summary>
+		/// Performs a SmoothStep interpolation between 0 and 1.
+		/// </summary>
+		/// <param name="value">The input value.</param>
+		/// <returns></returns>
+		public static float SmoothStep(float value)
+		{
+			value = Clamp01(value);
+			return (3 - 2 * value) * value * value;
+		}
+
+		/// <summary>
+		/// Performs a SmoothStep interpolation between two anchor values.
+		/// </summary>
+		/// <param name="min">The lower bound anchor value</param>
+		/// <param name="max">The upper bound anchor value</param>
+		/// <param name="value">The input value.</param>
+		/// <returns></returns>
+		public static float SmoothStep(float min, float max, float value)
+		{
+			value = Clamp01(InvLerp(min, max, value));
+			return (3 - 2 * value) * value * value;
 		}
 
 		/// <summary>
