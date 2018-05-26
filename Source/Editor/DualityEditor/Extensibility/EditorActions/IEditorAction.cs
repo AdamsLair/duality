@@ -37,10 +37,6 @@ namespace Duality.Editor
 		int Priority { get; }
 
 		/// <summary>
-		/// Performs this action on the given object.
-		/// </summary>
-		void Perform(object obj);
-		/// <summary>
 		/// Performs this action on the given sequence of objects.
 		/// </summary>
 		void Perform(IEnumerable<object> obj);
