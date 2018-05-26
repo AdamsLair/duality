@@ -206,7 +206,7 @@ namespace Duality.Editor
 			if (!result && this.data.GetDataPresent(target)) result = true;
 			if (!result && this.data.GetDataPresent(target.MakeArrayType())) result = true;
 			if (!result && this.data.ContainsContentRefs(target)) result = true;
-			if (!result && this.data.ContainsComponentRefs(target)) result = true;
+			if (!result && this.data.ContainsComponents(target)) result = true;
 			if (!result)
 			{
 				result = GetConverters(target).Any(s => !this.usedConverters.Contains(s) && s.CanConvertFrom(this));
@@ -246,13 +246,15 @@ namespace Duality.Editor
 			}
 			if (fittingData == null)
 			{
-				// ComponentRefs
-				if (this.data.ContainsComponentRefs(target)) fittingData = this.data.GetComponentRefs(target);
+				// Components
+				Component[] comps;
+				if (this.data.TryGetComponents(target, DataObjectStorage.Reference, out comps)) fittingData = comps;
 			}
 			if (fittingData == null)
 			{
 				// ContentRefs
-				if (this.data.ContainsContentRefs(target)) fittingData = this.data.GetContentRefs(target).Res();
+				IContentRef[] content;
+				if (this.data.TryGetContentRefs(target, out content)) fittingData = content.Res();
 			}
 			
 			// If something fitting was found, directly add it to the operation results
@@ -266,9 +268,9 @@ namespace Duality.Editor
 			// No result yet? Search suitable converters
 			if (!fittingDataFound)
 			{
-				var converterQuery = GetConverters(target);
+				IEnumerable<DataConverter> converterQuery = GetConverters(target);
 				List<ConvComplexityEntry> converters = new List<ConvComplexityEntry>();
-				foreach (var c in converterQuery)
+				foreach (DataConverter c in converterQuery)
 				{
 					this.maxComplexity = 0;
 					if (this.usedConverters.Contains(c)) continue;
@@ -280,7 +282,7 @@ namespace Duality.Editor
 				try
 				{
 					converters.StableSort((c1, c2) => (c2.Converter.Priority - c1.Converter.Priority) * 10000 + (c1.Complexity - c2.Complexity));
-					foreach (var c in converters)
+					foreach (ConvComplexityEntry c in converters)
 					{
 						this.usedConverters.Add(c.Converter);
 						bool handled = c.Converter.Convert(this);
@@ -304,7 +306,7 @@ namespace Duality.Editor
 
 			// Convert back to Resource requests
 			if (typeof(IContentRef).IsAssignableFrom(originalType))
-				returnValue = result.OfType<Resource>().Select(r => r.GetContentRef());
+				returnValue = this.result.OfType<Resource>().Select(r => r.GetContentRef());
 
 			returnValue = returnValue ?? (IEnumerable<object>)Array.CreateInstance(originalType, 0);
 			returnValue = returnValue.Where(originalType.IsInstanceOfType);

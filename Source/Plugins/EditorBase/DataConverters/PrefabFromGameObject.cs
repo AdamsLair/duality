@@ -29,16 +29,15 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 		{
 			return 
 				convert.AllowedOperations.HasFlag(ConvertOperation.Operation.CreateRes) && 
-				convert.Data.ContainsGameObjectRefs();
+				convert.Data.ContainsGameObjects();
 		}
 		public override bool Convert(ConvertOperation convert)
 		{
 			bool finishConvertOp = false;
 
-			if (convert.Data.ContainsGameObjectRefs())
+			GameObject[] draggedObjArray;
+			if (convert.Data.TryGetGameObjects(DataObjectStorage.Reference, out draggedObjArray))
 			{
-				GameObject[] draggedObjArray = convert.Data.GetGameObjectRefs();
-
 				// Filter out GameObjects that are children of others
 				draggedObjArray = draggedObjArray.Where(o => !draggedObjArray.Any(o2 => o.IsChildOf(o2))).ToArray();
 
@@ -55,7 +54,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 					prefab.AssetInfo.NameHint = draggedObj.Name;
 
 					// Mark GameObject as handled
-					convert.MarkObjectHandled(draggedObj);						
+					convert.MarkObjectHandled(draggedObj);
 					convert.AddResult(prefab);
 					finishConvertOp = true;
 				}
