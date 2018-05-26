@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 using Duality.Drawing;
 
@@ -9,12 +12,13 @@ using NUnit.Framework;
 
 namespace Duality.Editor.Tests
 {
-	[TestFixture, RequiresThread(ApartmentState.STA)]
+	[TestFixture]
 	public class DataObjectExtensionsTest
 	{
 		private class TestClass { }
 		private class TestComponent : Component { }
 		private class TestResource : Resource { }
+
 
 		[Test] public void WrappedDataReference()
 		{
@@ -38,8 +42,7 @@ namespace Duality.Editor.Tests
 			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNull(outParam);
 
-			Clipboard.SetDataObject(dataIn);
-			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+			DataObject dataOut = this.SimulateClipboardSerialize(dataIn);
 
 			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
 			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
@@ -77,8 +80,7 @@ namespace Duality.Editor.Tests
 			Assert.IsFalse(dataIn.TryGetWrappedData("WrongFormat", DataObjectStorage.Value, out outParam));
 			Assert.IsNull(outParam);
 
-			Clipboard.SetDataObject(dataIn);
-			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+			DataObject dataOut = this.SimulateClipboardSerialize(dataIn);
 
 			Assert.IsFalse(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Reference));
 			Assert.IsTrue(dataOut.GetWrappedDataPresent("CorrectFormat", DataObjectStorage.Value));
@@ -120,9 +122,7 @@ namespace Duality.Editor.Tests
 			Assert.IsFalse(nullData.TryGetGameObjects(DataObjectStorage.Value, out outParam));
 			Assert.IsNull(outParam);
 
-			Clipboard.SetDataObject(dataIn);
-
-			DataObject dataOut = (DataObject) Clipboard.GetDataObject();
+			DataObject dataOut = this.SimulateClipboardSerialize(dataIn);
 
 			Assert.IsTrue(dataOut.ContainsGameObjects(DataObjectStorage.Reference));
 			Assert.IsTrue(dataOut.ContainsGameObjects(DataObjectStorage.Value));
@@ -153,9 +153,7 @@ namespace Duality.Editor.Tests
 			Assert.IsTrue(dataIn.TryGetComponents(typeof(TestComponent), DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
 
-			Clipboard.SetDataObject(dataIn);
-
-			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+			DataObject dataOut = this.SimulateClipboardSerialize(dataIn);
 
 			Assert.IsTrue(dataOut.ContainsComponents(typeof(TestComponent), DataObjectStorage.Reference));
 			Assert.IsTrue(dataOut.ContainsComponents(typeof(TestComponent), DataObjectStorage.Value));
@@ -181,9 +179,7 @@ namespace Duality.Editor.Tests
 			Assert.AreEqual(contentRef, dataIn.GetContentRefs()[0]);
 			Assert.AreEqual(contentRef, dataIn.GetContentRefs(typeof(TestResource))[0]);
 
-			Clipboard.SetDataObject(dataIn);
-
-			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+			DataObject dataOut = this.SimulateClipboardSerialize(dataIn);
 
 			Assert.IsTrue(dataOut.ContainsContentRefs());
 
@@ -202,9 +198,7 @@ namespace Duality.Editor.Tests
 			Assert.IsTrue(dataIn.ContainsBatchInfos());
 			Assert.AreNotSame(batch, dataIn.GetBatchInfos()[0]);
 
-			Clipboard.SetDataObject(dataIn);
-
-			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+			DataObject dataOut = this.SimulateClipboardSerialize(dataIn);
 
 			Assert.IsTrue(dataOut.ContainsBatchInfos());
 			Assert.AreNotSame(batch, dataOut.GetBatchInfos()[0]);
@@ -222,9 +216,7 @@ namespace Duality.Editor.Tests
 			Assert.AreEqual(color, dataIn.GetIColorData<ColorRgba>()[0]);
 			Assert.AreEqual(color.ConvertTo<ColorHsva>(), dataIn.GetIColorData<ColorHsva>()[0]);
 
-			Clipboard.SetDataObject(dataIn);
-
-			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+			DataObject dataOut = this.SimulateClipboardSerialize(dataIn);
 
 			Assert.IsTrue(dataOut.ContainsIColorData());
 			Assert.AreEqual(color, dataOut.GetIColorData<IColorData>()[0]);
@@ -241,9 +233,7 @@ namespace Duality.Editor.Tests
 			Assert.IsTrue(dataIn.ContainsIColorData());
 			Assert.AreEqual(color, dataIn.GetIColorData<ColorRgba>()[0]);
 
-			Clipboard.SetDataObject(dataIn);
-
-			DataObject dataOut = (DataObject)Clipboard.GetDataObject();
+			DataObject dataOut = this.SimulateClipboardSerialize(dataIn);
 
 			Assert.IsTrue(dataOut.ContainsIColorData());
 			Assert.AreEqual(color, dataOut.GetIColorData<ColorRgba>()[0]);
@@ -282,6 +272,32 @@ namespace Duality.Editor.Tests
 			Assert.AreEqual("test", setData.GetString());
 			Assert.AreEqual("test", setData.GetData("Text") as string);
 			Assert.AreEqual("test", setData.GetData("UnicodeText") as string);
+		}
+
+
+		private DataObject SimulateClipboardSerialize(DataObject dataIn)
+		{
+			BinaryFormatter formatter = new BinaryFormatter();
+			DataObject dataOut = new DataObject();
+			using (MemoryStream stream = new MemoryStream())
+			{
+				string[] formats = dataIn.GetFormats();
+				foreach (string format in formats)
+				{
+					object objIn = dataIn.GetData(format, false);
+					try
+					{
+						formatter.Serialize(stream, objIn);
+						stream.Position = 0;
+						object objOut = formatter.Deserialize(stream);
+						stream.Position = 0;
+						stream.SetLength(0);
+						dataOut.SetData(format, objOut);
+					}
+					catch (Exception) { }
+				}
+			}
+			return dataOut;
 		}
 	}
 }
