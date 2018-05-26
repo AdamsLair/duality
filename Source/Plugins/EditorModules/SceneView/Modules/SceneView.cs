@@ -73,8 +73,7 @@ namespace Duality.Editor.Plugins.SceneView
 		private	System.Drawing.Imaging.ColorMatrix	inactiveIconMatrix;
 		
 		private MenuModelItem	nodeContextItemNew		= null;
-		private MenuModelItem	nodeContextItemClone	= null;
-
+		private MenuModelItem	nodeContextItemDuplicate	= null;
 		private MenuModelItem	nodeContextItemDelete	= null;
 		private MenuModelItem	nodeContextItemRename	= null;
 		private MenuModelItem	nodeContextItemLockHide	= null;
@@ -808,7 +807,7 @@ namespace Duality.Editor.Plugins.SceneView
 					ShortcutKeys    = Keys.Control | Keys.V,
 					ActionHandler   = this.pasteToolStripMenuItem_Click
 				},
-				this.nodeContextItemClone = new MenuModelItem
+				this.nodeContextItemDuplicate = new MenuModelItem
 				{
 					Name            = Properties.SceneViewRes.SceneView_ContextItemName_Duplicate,
 					Icon            = Properties.Resources.page_copy,
@@ -876,10 +875,16 @@ namespace Duality.Editor.Plugins.SceneView
 
 			this.nodeContextItemNew.Visible = gameObjSelect || noSelect;
 
+			// Enabled is set to Visible for items with shortcuts,
+			// otherwise invisible items can still be invoked through their shortcuts
 			this.nodeContextItemCopy.Visible = !noSelect && (gameObjSelect ^ compSelect);
+			this.nodeContextItemCopy.Enabled = this.nodeContextItemCopy.Visible;
 			this.nodeContextItemPaste.Visible = pasteAllowed;
-			this.nodeContextItemClone.Visible = !noSelect && gameObjSelect;
+			this.nodeContextItemPaste.Enabled = this.nodeContextItemPaste.Visible;
+			this.nodeContextItemDuplicate.Visible = !noSelect && gameObjSelect;
+			this.nodeContextItemDuplicate.Enabled = this.nodeContextItemDuplicate.Visible;
 			this.nodeContextItemDelete.Visible = !noSelect;
+			this.nodeContextItemDelete.Enabled = this.nodeContextItemDelete.Visible;
 			this.nodeContextItemRename.Visible = !noSelect && gameObjSelect;
 			this.nodeContextItemRename.Enabled = singleSelect;
 			this.nodeContextItemLockHide.Visible = gameObjSelect;
@@ -1048,6 +1053,8 @@ namespace Duality.Editor.Plugins.SceneView
 					}
 					else
 						DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
+
+					this.UpdateContextMenu();
 				}
 			}
 		}
