@@ -5,6 +5,12 @@ using System.Drawing;
 
 namespace Duality.Editor
 {
+	/// <summary>
+	/// A helper class that provides reasonable default 
+	/// implementations of the <see cref="IEditorAction"/> 
+	/// interface and eases implementation of new <see cref="IEditorAction"/>s
+	/// </summary>
+	/// <typeparam name="T">The type that this action operates on</typeparam>
 	public abstract class EditorAction<T> : IEditorAction
 	{
 		public virtual string Name
