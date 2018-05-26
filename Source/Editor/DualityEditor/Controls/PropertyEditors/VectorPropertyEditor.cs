@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -156,10 +155,11 @@ namespace Duality.Editor.Controls.PropertyEditors
 				{
 					DataObject data = Clipboard.GetDataObject() as DataObject;
 					bool success = false;
-					if (data.GetWrappedDataPresent(VectorDataFormat, DataObjectStorage.Value))
+					IEnumerable<object> storedVectors;
+					if (data.TryGetWrappedData(VectorDataFormat, DataObjectStorage.Value, out storedVectors))
 					{
-						object stored = data.GetWrappedData(VectorDataFormat, DataObjectStorage.Value).First();
-						this.SetValue(stored);
+						object vectorObj = storedVectors.First();
+						this.SetValue(vectorObj);
 						this.PerformGetValue();
 						this.OnEditingFinished(FinishReason.LeapValue);
 						this.SetFocusEditorIndex(-1, true);
