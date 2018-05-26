@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Primitives</id>
-    <version>2.0.6</version>
+    <version>2.0.7</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Primitives</title>
@@ -16,8 +16,10 @@
     <references>
       <reference file="DualityPrimitives.dll" />
     </references>
-    <releaseNotes>
-</releaseNotes>
+    <releaseNotes>MathF and Rect Improvements
+#ADD: Added Clamp01, InvLerp, SmoothStep methods to MathF.
+#ADD: Added Top, Left, Right, Bottom properties to Rect.
+#ADD: Added unit tests for the new Rect and MathF API.</releaseNotes>
   </metadata>
   <files>
     <file src="..\Output\DualityPrimitives.dll" target="lib" />

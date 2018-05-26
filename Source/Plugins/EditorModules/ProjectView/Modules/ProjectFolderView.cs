@@ -1003,6 +1003,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			ConvertOperation.Operation convOp = data.GetAllowedConvertOp();
 			if (data != null)
 			{
+				GameObject[] draggedObjects;
 				// Dragging files around
 				if (data.ContainsFileDropList())
 				{
@@ -1034,10 +1035,10 @@ namespace Duality.Editor.Plugins.ProjectView
 				// Dragging a single GameObject to Prefab
 				else if (
 					e.AllowedEffect.HasFlag(DragDropEffects.Link) &&
-					data.ContainsGameObjectRefs() &&
+					data.TryGetGameObjects(DataObjectStorage.Reference, out draggedObjects) &&
+					draggedObjects.Length == 1 &&
 					targetResNode != null && 
-					targetResNode.ResLink.Is<Duality.Resources.Prefab>() && 
-					data.GetGameObjectRefs().Length == 1)
+					targetResNode.ResLink.Is<Duality.Resources.Prefab>())
 				{
 					e.Effect = DragDropEffects.Link & e.AllowedEffect;
 				}
@@ -1073,6 +1074,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			ConvertOperation.Operation convOp = data.GetAllowedConvertOp();
 			if (data != null)
 			{
+				GameObject[] draggedObjects;
 				// Dropping files
 				if (data.ContainsFileDropList())
 				{
@@ -1101,16 +1103,18 @@ namespace Duality.Editor.Plugins.ProjectView
 				// Dropping GameObject to Prefab
 				else if (
 					e.Effect.HasFlag(DragDropEffects.Link) &&
-					data.ContainsGameObjectRefs() &&
+					data.TryGetGameObjects(DataObjectStorage.Reference, out draggedObjects) &&
+					draggedObjects.Length == 1 && 
 					targetResNode != null && 
-					targetResNode.ResLink.Is<Duality.Resources.Prefab>() && 
-					data.GetGameObjectRefs().Length == 1)
+					targetResNode.ResLink.Is<Duality.Resources.Prefab>())
 				{
 					Prefab prefab = targetResNode.ResLink.Res as Prefab;
 					if (prefab != null)
 					{
-						GameObject draggedObj = data.GetGameObjectRefs()[0];
+						GameObject draggedObj = draggedObjects[0];
 
+						if (draggedObj != null)
+						{
 						UndoRedoManager.BeginMacro();
 						// Prevent recursion
 						UndoRedoManager.Do(new BreakPrefabLinkAction(draggedObj.GetChildrenDeep().Where(c => c.PrefabLink != null && c.PrefabLink.Prefab == prefab)));
@@ -1118,6 +1122,7 @@ namespace Duality.Editor.Plugins.ProjectView
 						UndoRedoManager.Do(new ApplyToPrefabAction(draggedObj, prefab));
 						UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromLast);
 					}
+				}
 				}
 				// See if we can retrieve Resources from data
 				else if (
@@ -1160,7 +1165,7 @@ namespace Duality.Editor.Plugins.ProjectView
 						// If we happened to generate a Prefab, link possible existing GameObjects to it
 						if (resList.OfType<Prefab>().Any())
 						{
-							UndoRedoManager.Do(new ApplyToPrefabAction(data.GetGameObjectRefs(), resList.OfType<Prefab>().Ref()));
+							UndoRedoManager.Do(new ApplyToPrefabAction(data.GetGameObjects(), resList.OfType<Prefab>().Ref()));
 						}
 
 					}

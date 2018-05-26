@@ -126,6 +126,38 @@ namespace Duality
 		}
 
 		/// <summary>
+		/// [GET] The middle of the top edge of the Rect.
+		/// </summary>
+		public Vector2 Top
+		{
+			get { return new Vector2(this.CenterX, this.TopY); }
+		}
+
+		/// <summary>
+		/// [GET] The middle of the bottom edge of the Rect.
+		/// </summary>
+		public Vector2 Bottom
+		{
+			get { return new Vector2(this.CenterX, this.BottomY); }
+		}
+
+		/// <summary>
+		/// [GET] The middle of the left edge of the Rect.
+		/// </summary>
+		public Vector2 Left
+		{
+			get { return new Vector2(this.LeftX, this.CenterY); }
+		}
+		
+		/// <summary>
+		/// [GET] The middle of the right edge of the Rect.
+		/// </summary>
+		public Vector2 Right
+		{
+			get { return new Vector2(this.RightX, this.CenterY); }
+		}
+
+		/// <summary>
 		/// [GET] If this Rect was to fit inside a bounding circle originating from [0,0],
 		/// this would be its radius.
 		/// </summary>

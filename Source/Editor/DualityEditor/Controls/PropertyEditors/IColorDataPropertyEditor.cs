@@ -178,9 +178,10 @@ namespace Duality.Editor.Controls.PropertyEditors
 			else if (e.KeyCode == Keys.V && e.Control)
 			{
 				DataObject data = Clipboard.GetDataObject() as DataObject;
-				if (data.ContainsIColorData())
+				IColorData[] colorData;
+				if (data.TryGetIColorData(out colorData))
 				{
-					this.value = data.GetIColorData<IColorData>().FirstOrDefault();
+					this.value = colorData.FirstOrDefault();
 					this.PerformSetValue();
 					this.PerformGetValue();
 					this.OnEditingFinished(FinishReason.LeapValue);
