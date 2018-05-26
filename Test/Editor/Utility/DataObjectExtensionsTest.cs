@@ -134,7 +134,6 @@ namespace Duality.Editor.Tests
 			Assert.IsTrue(dataOut.TryGetGameObjects(DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
 		}
-
 		[Test] public void GetComponents()
 		{
 			DataObject dataIn = new DataObject();
@@ -165,7 +164,6 @@ namespace Duality.Editor.Tests
 			Assert.IsTrue(dataOut.TryGetComponents(typeof(TestComponent), DataObjectStorage.Value, out outParam));
 			Assert.IsNotNull(outParam);
 		}
-
 		[Test] public void GetContentRefs()
 		{
 			DataObject dataIn = new DataObject();
@@ -187,7 +185,6 @@ namespace Duality.Editor.Tests
 			// TestResource will not survive serialization.
 			Assert.IsFalse(dataOut.ContainsContentRefs(typeof(TestResource)));
 		}
-
 		[Test] public void GetBatchInfo()
 		{
 			DataObject dataIn = new DataObject();
@@ -203,7 +200,6 @@ namespace Duality.Editor.Tests
 			Assert.IsTrue(dataOut.ContainsBatchInfos());
 			Assert.AreNotSame(batch, dataOut.GetBatchInfos()[0]);
 		}
-
 		[Test] public void GetIColorData()
 		{
 			DataObject dataIn = new DataObject();
@@ -248,7 +244,6 @@ namespace Duality.Editor.Tests
 			Assert.IsFalse(dataWrongForm.ContainsIColorData());
 			Assert.IsNull(dataWrongForm.GetIColorData<ColorRgba>());
 		}
-
 		[Test] public void GetString()
 		{
 			DataObject nullData = new DataObject();

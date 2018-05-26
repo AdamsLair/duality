@@ -268,9 +268,9 @@ namespace Duality.Editor
 			// No result yet? Search suitable converters
 			if (!fittingDataFound)
 			{
-				var converterQuery = GetConverters(target);
+				IEnumerable<DataConverter> converterQuery = GetConverters(target);
 				List<ConvComplexityEntry> converters = new List<ConvComplexityEntry>();
-				foreach (var c in converterQuery)
+				foreach (DataConverter c in converterQuery)
 				{
 					this.maxComplexity = 0;
 					if (this.usedConverters.Contains(c)) continue;
@@ -282,7 +282,7 @@ namespace Duality.Editor
 				try
 				{
 					converters.StableSort((c1, c2) => (c2.Converter.Priority - c1.Converter.Priority) * 10000 + (c1.Complexity - c2.Complexity));
-					foreach (var c in converters)
+					foreach (ConvComplexityEntry c in converters)
 					{
 						this.usedConverters.Add(c.Converter);
 						bool handled = c.Converter.Convert(this);
@@ -306,7 +306,7 @@ namespace Duality.Editor
 
 			// Convert back to Resource requests
 			if (typeof(IContentRef).IsAssignableFrom(originalType))
-				returnValue = result.OfType<Resource>().Select(r => r.GetContentRef());
+				returnValue = this.result.OfType<Resource>().Select(r => r.GetContentRef());
 
 			returnValue = returnValue ?? (IEnumerable<object>)Array.CreateInstance(originalType, 0);
 			returnValue = returnValue.Where(originalType.IsInstanceOfType);
