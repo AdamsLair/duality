@@ -9,6 +9,8 @@ namespace Duality.Editor
 	/// The public interface for editor actions. If a public type implements this
 	/// interface, it will be available as an action throughout the editor.
 	/// </summary>
+	/// <seealso cref="EditorAction{T}"/>
+	/// <seealso cref="EditorSingleAction{T}"/>
 	public interface IEditorAction
 	{
 		/// <summary>
@@ -29,15 +31,18 @@ namespace Duality.Editor
 		/// </summary>
 		Type SubjectType { get; }
 		/// <summary>
-		/// [GET] When multiple actions are available for the same object or set of objects,
-		/// the one with the highest priority will be used.
+		/// [GET] The priority of this action. Controls display order
+		/// when multiple relevant actions are displayed together.
 		/// </summary>
 		int Priority { get; }
-		
+
 		/// <summary>
-		/// Performs the action on the specified set of objects.
+		/// Performs this action on the given object.
 		/// </summary>
-		/// <param name="objEnum"></param>
+		void Perform(object obj);
+		/// <summary>
+		/// Performs this action on the given sequence of objects.
+		/// </summary>
 		void Perform(IEnumerable<object> obj);
 		/// <summary>
 		/// Returns whether the action can be performed on the specified set of objects.
@@ -45,10 +50,15 @@ namespace Duality.Editor
 		/// <param name="objEnum"></param>
 		bool CanPerformOn(IEnumerable<object> obj);
 		/// <summary>
-		/// Returns whether the action matches the specified context.
+		/// Returns whether or not this action matches the 
+		/// given action context. Actions returning false
+		/// from this method will not be presented to the user.
 		/// </summary>
-		/// <param name="context"></param>
-		/// <returns></returns>
+		/// <param name="context">
+		/// A custom string coming from a plugin 
+		/// or one of the constant Action strings defined 
+		/// in <see cref="DualityEditorApp"/>
+		/// </param>
 		bool MatchesContext(string context);
 	}
 }

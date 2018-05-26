@@ -6,10 +6,11 @@ using System.Drawing;
 namespace Duality.Editor
 {
 	/// <summary>
-	/// Base class for editor actions that can be performed on a set of objects.
-	/// It can be regarded as a less verbose implementation shortcut for an <see cref="IEditorAction"/>.
+	/// A helper class that provides reasonable default 
+	/// implementations of the <see cref="IEditorAction"/> 
+	/// interface and eases implementation of new <see cref="IEditorAction"/>s
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="T">The type that this action operates on</typeparam>
 	public abstract class EditorAction<T> : IEditorAction
 	{
 		private HelpInfo info;
