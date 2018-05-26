@@ -165,15 +165,6 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clone.
-        /// </summary>
-        public static string SceneView_ContextItemName_Clone {
-            get {
-                return ResourceManager.GetString("SceneView_ContextItemName_Clone", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string SceneView_ContextItemName_Copy {
@@ -188,6 +179,15 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         public static string SceneView_ContextItemName_Delete {
             get {
                 return ResourceManager.GetString("SceneView_ContextItemName_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate.
+        /// </summary>
+        public static string SceneView_ContextItemName_Duplicate {
+            get {
+                return ResourceManager.GetString("SceneView_ContextItemName_Duplicate", resourceCulture);
             }
         }
         

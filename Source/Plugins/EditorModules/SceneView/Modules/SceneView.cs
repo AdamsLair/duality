@@ -810,10 +810,10 @@ namespace Duality.Editor.Plugins.SceneView
 				},
 				this.nodeContextItemClone = new MenuModelItem
 				{
-					Name            = Properties.SceneViewRes.SceneView_ContextItemName_Clone,
+					Name            = Properties.SceneViewRes.SceneView_ContextItemName_Duplicate,
 					Icon            = Properties.Resources.page_copy,
 					ShortcutKeys    = Keys.Control | Keys.D,
-					ActionHandler   = this.cloneToolStripMenuItem_Click
+					ActionHandler   = this.duplicateToolStripMenuItem_Click
 				},
 				this.nodeContextItemDelete = new MenuModelItem 
 				{
@@ -1559,7 +1559,7 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			this.PasteClipboardToNodes(this.objectView.SelectedNodes);
 		}
-		private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
+		private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.CloneNodes(this.objectView.SelectedNodes);
 		}
