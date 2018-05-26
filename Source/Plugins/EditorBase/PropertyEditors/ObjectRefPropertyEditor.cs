@@ -411,11 +411,11 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				}
 				else if (this.ReferenceType == typeof(GameObject))
 				{
-					dataObject.SetGameObjectRefs(new[] { resourceSelectionForm.GameObjectReference });
+					dataObject.SetGameObjects(new[] { resourceSelectionForm.GameObjectReference });
 				}
 				else
 				{
-					dataObject.SetComponentRefs(new[] { resourceSelectionForm.ComponentReference });
+					dataObject.SetComponents(new[] { resourceSelectionForm.ComponentReference });
 				}
 
 				DeserializeFromData(dataObject);

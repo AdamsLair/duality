@@ -212,6 +212,7 @@
     <Compile Include="Utility\EventArgs\HighlightObjectEventArgs.cs" />
     <Compile Include="Utility\EventArgs\SelectionChangedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\HelpStackChangedEventArgs.cs" />
+    <Compile Include="Utility\Extensions\DataObjectStorage.cs" />
     <Compile Include="Utility\GlobalColorPickOperation.cs" />
     <Compile Include="Utility\SelectionChangeReason.cs" />
     <Compile Include="Utility\HighlightMode.cs" />

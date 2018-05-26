@@ -97,7 +97,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		
 		protected override void SerializeToData(DataObject data)
 		{
-			data.SetComponentRefs(new[] { this.component });
+			data.SetComponents(new[] { this.component });
 		}
 		protected override void DeserializeFromData(DataObject data)
 		{
