@@ -18,7 +18,7 @@ namespace Duality.Editor
 
 		private long[] ids = null;
 
-		public sealed override IEnumerable<object> Data
+		public sealed override IReadOnlyList<object> Data
 		{
 			get
 			{

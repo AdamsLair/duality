@@ -19,7 +19,7 @@ namespace Duality.Editor
 	{
 		protected object[] data;
 
-		public virtual IEnumerable<object> Data
+		public virtual IReadOnlyList<object> Data
 		{
 			get { return this.data; }
 			set
