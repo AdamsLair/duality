@@ -73,6 +73,8 @@ namespace Duality.Editor.Plugins.SceneView
 		private	System.Drawing.Imaging.ColorMatrix	inactiveIconMatrix;
 		
 		private MenuModelItem	nodeContextItemNew		= null;
+		private MenuModelItem	nodeContextItemClone	= null;
+
 		private MenuModelItem	nodeContextItemDelete	= null;
 		private MenuModelItem	nodeContextItemRename	= null;
 		private MenuModelItem	nodeContextItemLockHide	= null;
@@ -368,6 +370,41 @@ namespace Duality.Editor.Plugins.SceneView
 			return thisNode;
 		}
 
+		protected void CloneNodes(IEnumerable<TreeNodeAdv> nodes)
+		{
+			if (!nodes.Any()) return;
+
+			var nodeQuery =
+				from viewNode in nodes
+				select this.objectModel.FindNode(this.objectView.GetPath(viewNode)) as NodeBase;
+			var objQuery =
+				from objNode in nodeQuery
+				where objNode is GameObjectNode
+				select (objNode as GameObjectNode).Obj;
+			var objArray = objQuery.ToArray();
+
+			this.objectView.BeginUpdate();
+			// Deselect original nodes
+			foreach (GameObject obj in objArray)
+			{
+				TreeNodeAdv dragObjViewNode;
+				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(this.FindNode(obj)));
+				dragObjViewNode.IsSelected = false;
+			}
+
+			CloneGameObjectAction cloneAction = new CloneGameObjectAction(objArray);
+			UndoRedoManager.Do(cloneAction);
+
+			// Select new nodes
+			foreach (GameObject clonedObj in cloneAction.Result)
+			{
+				TreeNodeAdv dragObjViewNode;
+				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(this.FindNode(clonedObj)));
+				dragObjViewNode.IsSelected = true;
+				this.objectView.EnsureVisible(dragObjViewNode);
+			}
+			this.objectView.EndUpdate();
+		}
 		protected void CopyNodesToClipboard(IEnumerable<TreeNodeAdv> nodes)
 		{
 			if (!nodes.Any()) return;
@@ -771,6 +808,13 @@ namespace Duality.Editor.Plugins.SceneView
 					ShortcutKeys    = Keys.Control | Keys.V,
 					ActionHandler   = this.pasteToolStripMenuItem_Click
 				},
+				this.nodeContextItemClone = new MenuModelItem
+				{
+					Name            = Properties.SceneViewRes.SceneView_ContextItemName_Clone,
+					Icon            = Properties.Resources.page_copy,
+					ShortcutKeys    = Keys.Control | Keys.D,
+					ActionHandler   = this.cloneToolStripMenuItem_Click
+				},
 				this.nodeContextItemDelete = new MenuModelItem 
 				{
 					Name			= Properties.SceneViewRes.SceneView_ContextItemName_Delete,
@@ -834,6 +878,7 @@ namespace Duality.Editor.Plugins.SceneView
 
 			this.nodeContextItemCopy.Visible = !noSelect && (gameObjSelect ^ compSelect);
 			this.nodeContextItemPaste.Visible = pasteAllowed;
+			this.nodeContextItemClone.Visible = !noSelect && gameObjSelect;
 			this.nodeContextItemDelete.Visible = !noSelect;
 			this.nodeContextItemRename.Visible = !noSelect && gameObjSelect;
 			this.nodeContextItemRename.Enabled = singleSelect;
@@ -1513,6 +1558,10 @@ namespace Duality.Editor.Plugins.SceneView
 		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.PasteClipboardToNodes(this.objectView.SelectedNodes);
+		}
+		private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.CloneNodes(this.objectView.SelectedNodes);
 		}
 		private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
 		{
