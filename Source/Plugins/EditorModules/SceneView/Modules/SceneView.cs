@@ -412,18 +412,30 @@ namespace Duality.Editor.Plugins.SceneView
 				.Select(n => this.objectModel.FindNode(this.objectView.GetPath(n)) as NodeBase)
 				.ToList();
 
-			var objects = nodeList
+			GameObject[] objects = nodeList
 				.OfType<GameObjectNode>()
-				.Select(gon => gon.Obj.DeepClone());
+				.Select(gon => gon.Obj)
+				.ToArray();
 
-			var comps = nodeList
+			Component[] comps = nodeList
 				.OfType<ComponentNode>()
-				.Select(gon => gon.Component.DeepClone());
+				.Select(gon => gon.Component)
+				.ToArray();
 
 			DataObject data = new DataObject();
 
-			if (objects.Any()) data.SetGameObjects(objects);
-			else if (comps.Any()) data.SetComponents(comps);
+			// When copying, we don't know if the object will be pasted as a value or as a reference.
+			// Store explicitly as value now so that the current state of the objects is stored.
+			if (objects.Length > 0)
+			{
+				data.SetGameObjects(objects, DataObjectStorage.Reference);
+				data.SetGameObjects(objects, DataObjectStorage.Value);
+			}
+			else if (comps.Length > 0)
+			{
+				data.SetComponents(comps, DataObjectStorage.Reference);
+				data.SetComponents(comps, DataObjectStorage.Value);
+			}
 
 			Clipboard.SetDataObject(data);
 		}
@@ -437,15 +449,15 @@ namespace Duality.Editor.Plugins.SceneView
 				.OfType<GameObjectNode>()
 				.Select(gon => gon.Obj);
 
-			if (clipboardData.ContainsGameObjects()) this.PasteClipboardObjects(targets);
-			else if (clipboardData.ContainsComponents(typeof(Component))) this.PasteClipboardComponents(targets);
+			if (clipboardData.ContainsGameObjects(DataObjectStorage.Value)) this.PasteClipboardObjects(targets);
+			else if (clipboardData.ContainsComponents(typeof(Component), DataObjectStorage.Value)) this.PasteClipboardComponents(targets);
 		}
 		private void PasteClipboardObjects(IEnumerable<GameObject> targets)
 		{
 			DataObject clipboardData = Clipboard.GetDataObject() as DataObject;
 			if (clipboardData == null) return;
 
-			GameObject[] objArray = clipboardData.GetGameObjects();
+			GameObject[] objArray = clipboardData.GetGameObjects(DataObjectStorage.Value);
 
 			PasteGameObjectAction pasteAction = new PasteGameObjectAction(objArray, targets);
 			UndoRedoManager.Do(pasteAction);
@@ -470,7 +482,7 @@ namespace Duality.Editor.Plugins.SceneView
 
 			List<GameObject> targetList = targets.ToList();
 			Component[] compArray = clipboardData
-				.GetComponents(typeof(Component));
+				.GetComponents(typeof(Component), DataObjectStorage.Value);
 
 			UndoRedoManager.BeginMacro();
 			List<CreateComponentAction> actions = new List<CreateComponentAction>();
@@ -870,8 +882,8 @@ namespace Duality.Editor.Plugins.SceneView
 
 			IDataObject clipboardData = Clipboard.GetDataObject();
 			bool pasteAllowed = clipboardData != null
-				&& (clipboardData.ContainsGameObjects()
-					|| (gameObjSelect && !compSelect && clipboardData.ContainsComponents(typeof(Component))));
+				&& (clipboardData.ContainsGameObjects(DataObjectStorage.Value)
+					|| (gameObjSelect && !compSelect && clipboardData.ContainsComponents(typeof(Component), DataObjectStorage.Value)));
 
 			this.nodeContextItemNew.Visible = gameObjSelect || noSelect;
 
