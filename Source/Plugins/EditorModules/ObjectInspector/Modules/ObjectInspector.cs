@@ -114,7 +114,8 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			node.SetElementValue("TitleText", this.Text);
 			node.SetElementValue("DebugMode", this.buttonDebug.Checked);
 			node.SetElementValue("SortByName", this.buttonSortByName.Checked);
-			// Get the latest expand state
+			// gridExpandState is normally only updated when the current selection changes.
+			// Make sure we have the latest information when saving UserData.
 			this.gridExpandState.UpdateFrom(this.propertyGrid.MainEditor);
 			this.gridExpandState.SaveToXml(node);
 		}
