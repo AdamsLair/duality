@@ -91,6 +91,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
+			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing += this.Resource_ResourceDisposing;
 		}
 
@@ -119,6 +120,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 			base.OnClosed(e);
 
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
+			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing -= this.Resource_ResourceDisposing;
 		}
 
@@ -268,6 +270,12 @@ namespace Duality.Editor.Plugins.Base.Forms
 		{
 			if (e.HasObject(this.targetPixmap))
 				this.Invalidate();
+		}
+
+		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (e.Current.MainResource is Pixmap)
+				this.TargetPixmap = e.Current.MainResource as Pixmap;
 		}
 
 		private void Resource_ResourceDisposing(object sender, ResourceEventArgs e)
