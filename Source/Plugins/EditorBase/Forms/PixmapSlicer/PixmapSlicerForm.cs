@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using Duality.Drawing;
 using Duality.Editor.Controls.ToolStrip;
+using Duality.Editor.Plugins.Base.Forms.PixmapSlicer;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Resources;
@@ -28,17 +29,17 @@ namespace Duality.Editor.Plugins.Base.Forms
 			}
 		}
 
-		private IPixmapSlicerState	state				= null;
-		private Pixmap				targetPixmap		= null;
-		private Bitmap				displayedImage		= null;
-		private Rectangle			imageRect			= Rectangle.Empty;
-		private Rectangle			paintingRect		= Rectangle.Empty;
-		private Rectangle			displayedImageRect	= Rectangle.Empty;
-		private bool				darkMode			= false;
-		private float				prevImageLum		= 0;
-		private float				scaleFactor			= 1f;
-		private int					horizontalScroll	= 0;
-		private int					verticalScroll		= 0;
+		private IPixmapSlicerState		state				= null;
+		private PixmapSlicingContext	slicingContext		= null;
+		private Pixmap					targetPixmap		= null;
+		private Bitmap					displayedImage		= null;
+		private Rectangle				imageRect			= Rectangle.Empty;
+		private Rectangle				paintingRect		= Rectangle.Empty;
+		private Rectangle				displayedImageRect	= Rectangle.Empty;
+		private float					prevImageLum		= 0;
+		private float					scaleFactor			= 1f;
+		private int						horizontalScroll	= 0;
+		private int						verticalScroll		= 0;
 
 		/// <summary>
 		/// The <see cref="Pixmap"/> currently being sliced
@@ -73,6 +74,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 			Bitmap bmp = EditorBaseResCache.IconPixmapSlicer;
 			this.Icon = Icon.FromHandle(bmp.GetHicon());
 
+			this.slicingContext = new PixmapSlicingContext();
 			this.SetState(new DefaultPixmapSlicerState());
 
 			this.horizontalScrollBar.Scroll += this.ScrollBarOnScroll;
@@ -107,7 +109,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 			if (node.GetElementValue("DarkBackground", out tryParseBool))
 				this.buttonBrightness.Checked = tryParseBool;
 			if (node.GetElementValue("DisplayIndices", out tryParseNumeringStyle))
-				this.state.SetNumberingStyle(tryParseNumeringStyle);
+				this.slicingContext.NumberingStyle = tryParseNumeringStyle;
 
 			this.UpdateIndicesButton();
 		}
@@ -198,7 +200,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 			base.OnPaint(e);
 
 			// Paint checkered background
-			float lum = this.darkMode ? 1 - this.prevImageLum : this.prevImageLum;
+			float lum = this.slicingContext.DarkMode ? 1 - this.prevImageLum : this.prevImageLum;
 			Color brightChecker = lum > 0.5f ? Color.FromArgb(72, 72, 72) : Color.FromArgb(208, 208, 208);
 			Color darkChecker = lum > 0.5f ? Color.FromArgb(56, 56, 56) : Color.FromArgb(176, 176, 176);
 			using (Brush hatchBrush = new HatchBrush(HatchStyle.LargeCheckerBoard, brightChecker, darkChecker))
@@ -276,7 +278,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
-			this.darkMode = this.buttonBrightness.Checked;
+			this.slicingContext.DarkMode = this.buttonBrightness.Checked;
 			this.Invalidate();
 		}
 
@@ -299,20 +301,17 @@ namespace Duality.Editor.Plugins.Base.Forms
 		{
 			PixmapNumberingStyle currentStyle = this.state.NumberingStyle;
 
-			// Cycle through the available styles until we find one that works
-			// or we have cycled back to the current style
-			PixmapNumberingStyle newStyle = (PixmapNumberingStyle)((int)currentStyle << 1);
-			if ((int)newStyle > (int) PixmapNumberingStyle.All) newStyle = PixmapNumberingStyle.None;
+			PixmapNumberingStyle newStyle = (PixmapNumberingStyle) ((int)currentStyle << 1);
+			if ((int)newStyle > (int)PixmapNumberingStyle.All) newStyle = PixmapNumberingStyle.None;
 
-			PixmapNumberingStyle supportedStyles = this.state.GetSupportedNumberingStyles();
-			while ((supportedStyles & newStyle) == 0 && newStyle != currentStyle)
-			{
-				newStyle = (PixmapNumberingStyle)((int)newStyle << 1);
-				if ((int)newStyle > (int)PixmapNumberingStyle.All) newStyle = PixmapNumberingStyle.None;
-			}
+			this.slicingContext.NumberingStyle = newStyle;
 
-			this.state.SetNumberingStyle(newStyle);
+			// If the state is not allowing its numbering style to be changed
+			if (this.state.NumberingStyle != newStyle)
+				this.slicingContext.NumberingStyle = currentStyle;
+
 			this.UpdateIndicesButton();
+			this.Invalidate();
 		}
 
 		private void UpdateIndicesButton()
@@ -360,6 +359,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 			action.GetAtlasRect = this.GetAtlasRect;
 			action.GetDisplayRect = this.GetDisplayRect;
 			action.TransformMouseCoordinates = this.TransformMouseCoordinates;
+			action.Context = this.slicingContext;
 
 			action.DisplayUpdated += (s, e) => this.Invalidate();
 			action.CursorChanged += (s, e) => this.Cursor = action.Cursor;

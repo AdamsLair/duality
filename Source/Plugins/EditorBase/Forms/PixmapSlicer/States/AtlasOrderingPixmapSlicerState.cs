@@ -16,6 +16,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		private ToolStripButton cancelButton	= null;
 		private List<int> orderedIndices		= new List<int>();
 
+		public override PixmapNumberingStyle NumberingStyle { get { return PixmapNumberingStyle.None; } }
+
 		public AtlasOrderingPixmapSlicerState()
 		{
 			this.SelectedRectIndex = -1;
@@ -30,11 +32,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			this.StateControls.Add(this.doneButton);
 			this.StateControls.Add(this.cancelButton);
-		}
-
-		public override PixmapNumberingStyle GetSupportedNumberingStyles()
-		{
-			return PixmapNumberingStyle.None;
 		}
 
 		public override void OnMouseUp(MouseEventArgs e)

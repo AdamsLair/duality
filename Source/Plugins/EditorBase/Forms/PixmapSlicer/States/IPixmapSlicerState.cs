@@ -30,6 +30,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		Cursor Cursor { get; }
 		int SelectedRectIndex { get; }
 		List<ToolStripItem> StateControls { get; }
+		PixmapSlicingContext Context { get; set; }
 
 		/// <summary>
 		/// The numbering display style in use by this state.
@@ -59,17 +60,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		event EventHandler StateCancelled;
 		event EventHandler SelectionChanged;
 		event EventHandler<PixmapSlicerForm.PixmapSlicerStateEventArgs> StateChangeRequested;
-
-		/// <summary>
-		/// Returns a bitmask of the numbering styles supported by this state
-		/// </summary>
-		PixmapNumberingStyle GetSupportedNumberingStyles();
-		/// <summary>
-		/// Sets the numbering style in use by this state.
-		/// Returns true if successful, false otherwise.
-		/// See <see cref="GetSupportedNumberingStyles"/>
-		/// </summary>
-		bool SetNumberingStyle(PixmapNumberingStyle style);
 
 		void ClearSelection();
 

@@ -21,14 +21,13 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		protected Font					font					= new Font(FontFamily.GenericSansSerif, 8.25f);
 
 		protected int					hoveredRectIndex		= -1;
-		protected PixmapNumberingStyle	numberingStyle			= PixmapNumberingStyle.None;
 
 		public List<ToolStripItem>		StateControls				{ get; private set; }
 		public MouseTransformDelegate	TransformMouseCoordinates	{ get; set; }
 		public Func<Rect, Rect>			GetAtlasRect				{ get; set; }
 		public Func<Rect, Rect>			GetDisplayRect				{ get; set; }
 		public Rectangle				DisplayBounds				{ get; set; }
-		public PixmapNumberingStyle		NumberingStyle				{ get { return this.numberingStyle; } }
+		public virtual PixmapNumberingStyle NumberingStyle			{ get { return this.Context.NumberingStyle; } }
 
 		public Pixmap TargetPixmap
 		{
@@ -71,6 +70,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			}
 		}
 
+		public PixmapSlicingContext Context { get; set; }
+
 		public event EventHandler DisplayUpdated;
 		public event EventHandler CursorChanged;
 		public event EventHandler StateCancelled;
@@ -80,25 +81,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		protected PixmapSlicerState()
 		{
 			this.StateControls = new List<ToolStripItem>();
-		}
-
-		public virtual PixmapNumberingStyle GetSupportedNumberingStyles()
-		{
-			return PixmapNumberingStyle.All | PixmapNumberingStyle.Hovered | PixmapNumberingStyle.None;
-		}
-
-		public bool SetNumberingStyle(PixmapNumberingStyle style)
-		{
-			if ((this.GetSupportedNumberingStyles() & style) > 0)
-			{
-				if (this.numberingStyle != style)
-				{
-					this.numberingStyle = style;
-					this.UpdateDisplay();
-				}
-				return true;
-			}
-			return false;
 		}
 
 		public virtual void ClearSelection()
@@ -130,7 +112,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					int originalHoveredIndex = this.hoveredRectIndex;
 					this.hoveredRectIndex = i;
 
-					if ((this.numberingStyle & PixmapNumberingStyle.Hovered) > 0 
+					if ((this.NumberingStyle & PixmapNumberingStyle.Hovered) > 0 
 						&& this.hoveredRectIndex != originalHoveredIndex)
 						this.UpdateDisplay();
 					return;
@@ -165,8 +147,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 						: this.rectPen,
 					rect.X, rect.Y, rect.W, rect.H);
 
-				bool showingAllNumbers = (this.numberingStyle & PixmapNumberingStyle.All) > 0;
-				bool showingThisRect = (this.numberingStyle & PixmapNumberingStyle.Hovered) > 0
+				bool showingAllNumbers = (this.NumberingStyle & PixmapNumberingStyle.All) > 0;
+				bool showingThisRect = (this.NumberingStyle & PixmapNumberingStyle.Hovered) > 0
 					&& this.hoveredRectIndex == i;
 
 				if (showingAllNumbers || showingThisRect)
