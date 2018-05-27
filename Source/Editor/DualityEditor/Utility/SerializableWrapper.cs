@@ -17,38 +17,56 @@ namespace Duality.Editor
 	[Serializable]
 	public class SerializableWrapper : ISerializable
 	{
-		private object data;
+		protected object[] data;
 
-		public object Data
+		public virtual IReadOnlyList<object> Data
 		{
 			get { return this.data; }
-			set { this.data = value; }
-		}
-
-		public SerializableWrapper() : this(null) { }
-		public SerializableWrapper(object data)
-		{
-			this.data = data;
-		}
-		private SerializableWrapper(SerializationInfo info, StreamingContext context)
-		{
-			byte[] serializedData = info.GetValue("data", typeof(byte[])) as byte[];
-			using (MemoryStream stream = new MemoryStream(serializedData ?? new byte[0]))
+			set
 			{
-				this.data = Serializer.TryReadObject<object>(stream);
+				// Clone the objects first to make sure they are isolated and don't
+				// drag a whole Scene (or so) into the serialization graph.
+				this.data = value.Select(o => o.DeepClone()).ToArray();
 			}
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public SerializableWrapper() : this(null) { }
+		public SerializableWrapper(IEnumerable<object> data)
+		{
+			// Clone the objects first to make sure they are isolated and don't
+			// drag a whole Scene (or so) into the serialization graph.
+			this.data = data == null ? null : data.Select(o => o.DeepClone()).ToArray();
+		}
+		private SerializableWrapper(SerializationInfo info, StreamingContext context)
+		{
+			byte[] serializedData;
+			try
+			{
+				serializedData = info.GetValue("data", typeof(byte[])) as byte[];
+			}
+			catch (Exception)
+			{
+				serializedData = null;
+			}
+
+			if (serializedData == null)
+			{
+				this.data = null;
+				return;
+			}
+
+			using (MemoryStream stream = new MemoryStream(serializedData))
+			{
+				this.data = Serializer.TryReadObject<object[]>(stream);
+			}
+		}
+
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			using (MemoryStream stream = new MemoryStream())
 			{
-				// Clone the object first to make sure it's isolated and doesn't 
-				// drag a whole Scene (or so) into the serialization graph.
-				object isolatedObj = this.data.DeepClone();
-
 				// Now serialize the isolated object
-				Serializer.WriteObject(isolatedObj, stream, typeof(BinarySerializer));
+				Serializer.WriteObject(this.data, stream, typeof(BinarySerializer));
 				byte[] serializedData = stream.ToArray();
 				info.AddValue("data", serializedData);
 			}

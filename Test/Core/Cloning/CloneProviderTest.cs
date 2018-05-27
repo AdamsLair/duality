@@ -170,6 +170,23 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(data, dataResult);
 			Assert.AreNotSame(data.InterfaceValue, dataResult.InterfaceValue);
 		}
+		[Test] public void ReferenceBehavior()
+		{
+			ReferenceBehaviourTestObject data = new ReferenceBehaviourTestObject();
+			data.OwnedObject = new ReferencedObject();
+			data.ReferencedObject = new ReferencedObject();
+			data.WeakReferencedObject = new ReferencedObject();
+
+			// Clone the reference holding object
+			ReferenceBehaviourTestObject dataClone = data.DeepClone();
+
+			// Make sure the owned object is cloned, while the referenced object is still referenced
+			Assert.IsNotNull(dataClone.OwnedObject);
+			Assert.IsNotNull(dataClone.ReferencedObject);
+			Assert.IsNull(dataClone.WeakReferencedObject);
+			Assert.AreSame(data.ReferencedObject, dataClone.ReferencedObject);
+			Assert.AreNotSame(data.OwnedObject, dataClone.OwnedObject);
+		}
 		[Test] public void WeakReferenceBehavior()
 		{
 			WeakReferenceTestObject data = new WeakReferenceTestObject(new[]
@@ -201,6 +218,30 @@ namespace Duality.Tests.Cloning
 				Assert.IsTrue(dataResultPart.CheckChildIntegrity());
 				Assert.IsFalse(dataPart.AnyReferenceEquals(dataResultPart));
 			}
+		}
+		[Test] public void CombinedReferenceAndWeakReference()
+		{
+			// See here: https://github.com/AdamsLair/duality/issues/665
+			Assert.Inconclusive(
+				"Weak references are broken right now, see issue #665. " +
+				"Re-activate assert as soon as the issue was addressed.");
+
+			// In this test, we want to check for an edge case where an object is referenced
+			// both using a weak and a regular reference, but not part of the ownership graph.
+			ReferenceBehaviourTestObject data = new ReferenceBehaviourTestObject();
+			data.OwnedObject = new ReferencedObject();
+			data.ReferencedObject = new ReferencedObject();
+			data.WeakReferencedObject = data.ReferencedObject;
+
+			// Clone the reference holding object
+			ReferenceBehaviourTestObject dataClone = data.DeepClone();
+
+			// Expect that the weak reference is gone, but the regular reference persisted
+			Assert.IsNotNull(dataClone.OwnedObject);
+			Assert.IsNull(dataClone.WeakReferencedObject);
+			Assert.IsNotNull(dataClone.ReferencedObject);
+			Assert.AreSame(data.ReferencedObject, dataClone.ReferencedObject);
+			Assert.AreNotSame(data.OwnedObject, dataClone.OwnedObject);
 		}
 		[Test] public void SimpleDelegates()
 		{

@@ -5,6 +5,11 @@ using System.Drawing;
 
 namespace Duality.Editor
 {
+	/// <summary>
+	/// A helper class for <see cref="IEditorAction"/>s that can 
+	/// only be applied to one object at a time
+	/// </summary>
+	/// <typeparam name="T">The type that this action operates on</typeparam>
 	public abstract class EditorSingleAction<T> : EditorAction<T>
 	{
 		public abstract new void Perform(T obj);

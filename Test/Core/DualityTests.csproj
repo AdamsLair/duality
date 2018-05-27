@@ -62,6 +62,7 @@
     <Compile Include="Cloning\HelperObjects\InterfaceFieldTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\IdentityTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\ComplexDelegateTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\ReferenceBehaviourTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\SelfReferenceObject.cs" />
     <Compile Include="Cloning\HelperObjects\TestMemberInfoData.cs" />
     <Compile Include="Cloning\HelperObjects\TestStructInvestigate.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Components\ExecutionOrderTest\TestComponent.cs" />
     <Compile Include="Components\TransformTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
+    <Compile Include="Math\MathFTest.cs" />
     <Compile Include="Testing\ExtMethodsIList.cs" />
     <Compile Include="Resources\RenderTargetTest.cs" />
     <Compile Include="Testing\ExtMethodsPixelData.cs" />
