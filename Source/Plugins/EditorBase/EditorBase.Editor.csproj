@@ -152,7 +152,6 @@
     <Compile Include="Forms\PixmapSlicer\States\DefaultPixmapSlicerState.cs" />
     <Compile Include="Forms\PixmapSlicer\States\IPixmapSlicerState.cs" />
     <Compile Include="Forms\PixmapSlicer\States\NewRectPixmapSlicerState.cs" />
-    <Compile Include="Forms\PixmapSlicer\Utilities\PixmapSlicerRectSide.cs" />
     <Compile Include="UndoRedoActions\ClearAtlasAction.cs" />
     <Compile Include="UndoRedoActions\DeleteAtlasRectAction.cs" />
     <Compile Include="UndoRedoActions\SetAtlasAction.cs" />

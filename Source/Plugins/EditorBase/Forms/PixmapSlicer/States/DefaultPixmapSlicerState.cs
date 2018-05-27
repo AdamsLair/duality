@@ -28,7 +28,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		private bool	mouseDown			= false;
 		private bool	dragInProgress		= false;
 
-		private PixmapSlicerRectSide hoveredRectSide = PixmapSlicerRectSide.None;
+		private PixmapSlicingUtility.Side hoveredRectSide = PixmapSlicingUtility.Side.None;
 
 		public DefaultPixmapSlicerState()
 		{
@@ -127,7 +127,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			// Check for the start of a drag operation
 			if (!this.dragInProgress)
 			{
-				PixmapSlicerRectSide side;
+				PixmapSlicingUtility.Side side;
 				if (selectedDisplayRect.WithinRangeToBorder(x, y, DRAG_OFFSET, out side))
 				{
 					if (this.mouseDown)
@@ -140,13 +140,13 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				}
 				else
 				{
-					this.SetHoveredSide(PixmapSlicerRectSide.None);
+					this.SetHoveredSide(PixmapSlicingUtility.Side.None);
 				}
 			}
 
 			// When hovering, make sure the displayed index
 			// matches what the user may end up dragging
-			if (this.hoveredRectSide != PixmapSlicerRectSide.None
+			if (this.hoveredRectSide != PixmapSlicingUtility.Side.None
 				&& this.hoveredRectIndex != this.SelectedRectIndex)
 			{
 				this.hoveredRectIndex = this.SelectedRectIndex;
@@ -158,18 +158,18 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				// Move hovered side to mouse
 				switch (this.hoveredRectSide)
 				{
-					case PixmapSlicerRectSide.Left:
+					case PixmapSlicingUtility.Side.Left:
 						selectedDisplayRect.W += selectedDisplayRect.X - x;
 						selectedDisplayRect.X = x;
 						break;
-					case PixmapSlicerRectSide.Right:
+					case PixmapSlicingUtility.Side.Right:
 						selectedDisplayRect.W += x - selectedDisplayRect.RightX;
 						break;
-					case PixmapSlicerRectSide.Top:
+					case PixmapSlicingUtility.Side.Top:
 						selectedDisplayRect.H += selectedDisplayRect.Y - y;
 						selectedDisplayRect.Y = y;
 						break;
-					case PixmapSlicerRectSide.Bottom:
+					case PixmapSlicingUtility.Side.Bottom:
 						selectedDisplayRect.H += y - selectedDisplayRect.BottomY;
 						break;
 				}
@@ -242,17 +242,17 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.UpdateDisplay();
 		}
 
-		private void SetHoveredSide(PixmapSlicerRectSide side)
+		private void SetHoveredSide(PixmapSlicingUtility.Side side)
 		{
 			this.hoveredRectSide = side;
 			switch (side)
 			{
-				case PixmapSlicerRectSide.Left:
-				case PixmapSlicerRectSide.Right:
+				case PixmapSlicingUtility.Side.Left:
+				case PixmapSlicingUtility.Side.Right:
 					this.Cursor = Cursors.SizeWE;
 					break;
-				case PixmapSlicerRectSide.Top:
-				case PixmapSlicerRectSide.Bottom:
+				case PixmapSlicingUtility.Side.Top:
+				case PixmapSlicingUtility.Side.Bottom:
 					this.Cursor = Cursors.SizeNS;
 					break;
 				default:
