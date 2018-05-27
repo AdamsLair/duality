@@ -341,6 +341,8 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 		private void SetState(IPixmapSlicerState action)
 		{
+			this.stateControlToolStrip.SuspendLayout();
+
 			// Tear down old state
 			if (this.state != null)
 			{
@@ -376,6 +378,8 @@ namespace Duality.Editor.Plugins.Base.Forms
 					this.stateControlToolStrip.Items.Add(item);
 				}
 			}
+
+			this.stateControlToolStrip.ResumeLayout();
 
 			this.UpdateIndicesButton();
 			this.Invalidate();
