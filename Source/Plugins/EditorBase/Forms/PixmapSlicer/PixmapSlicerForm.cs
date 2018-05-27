@@ -201,15 +201,18 @@ namespace Duality.Editor.Plugins.Base.Forms
 		{
 			base.OnPaint(e);
 
+			// Fill background
+			e.Graphics.Clear(Color.FromArgb(150, 150, 150));
+
+			e.Graphics.TranslateTransform(-this.horizontalScroll * this.scaleFactor, -this.verticalScroll * this.scaleFactor);
+			e.Graphics.ScaleTransform(this.scaleFactor, this.scaleFactor);
+
 			// Paint checkered background
 			float lum = this.slicingContext.DarkMode ? 1 - this.prevImageLum : this.prevImageLum;
 			Color brightChecker = lum > 0.5f ? Color.FromArgb(72, 72, 72) : Color.FromArgb(208, 208, 208);
 			Color darkChecker = lum > 0.5f ? Color.FromArgb(56, 56, 56) : Color.FromArgb(176, 176, 176);
 			using (Brush hatchBrush = new HatchBrush(HatchStyle.LargeCheckerBoard, brightChecker, darkChecker))
-				e.Graphics.FillRectangle(hatchBrush, this.paintingRect);
-
-			e.Graphics.TranslateTransform(-this.horizontalScroll * this.scaleFactor, -this.verticalScroll * this.scaleFactor);
-			e.Graphics.ScaleTransform(this.scaleFactor, this.scaleFactor);
+				e.Graphics.FillRectangle(hatchBrush, this.displayedImageRect);
 
 			if (this.displayedImage != null)
 			{
