@@ -10,23 +10,37 @@ using Duality;
 
 namespace Duality.Editor
 {
+	/// <summary>
+	/// Descibes help information for a specific topic that can then be displayed to the user.
+	/// </summary>
 	public class HelpInfo : IHelpInfoReader
 	{
 		private	string	id;
 		private	string	topic;
 		private	string	desc;
 		private	HelpAction	helpAction	= DefaultPerformHelpAction;
-		
+
+		/// <summary>
+		/// [GET/SET] The ID to use when looking up XmlDoc comments for this <see cref="HelpInfo"/> object.
+		/// Typically describes the <see cref="MemberInfo"/> to look for the in XmlDoc comments.
+		/// </summary>
 		public string Id
 		{
 			get { return this.id; }
 			set { this.id = value; }
 		}
+		/// <summary>
+		/// [GET/SET] The topic of this <see cref="HelpInfo"/>. Typically used as the
+		/// header of the help information when displayed to the user.
+		/// </summary>
 		public string Topic
 		{
 			get { return this.topic; }
 			set { this.topic = value; }
 		}
+		/// <summary>
+		/// [GET/SET] The information meant to help the user understand the <see cref="Topic"/>
+		/// </summary>
 		public string Description
 		{
 			get { return this.desc; }
@@ -44,11 +58,17 @@ namespace Duality.Editor
 
 		private HelpInfo() {}
 
+		/// <summary>
+		/// Appends the given text to <see cref="Description"/>
+		/// </summary>
 		public void AppendText(string text)
 		{
 			this.desc += "\n\n" + text;
 		}
 
+		/// <summary>
+		/// Creates a <see cref="HelpInfo"/> object with the specified information
+		/// </summary>
 		public static HelpInfo FromText(string topic, string desc, string id = null)
 		{
 			HelpInfo info = new HelpInfo();
@@ -59,6 +79,10 @@ namespace Duality.Editor
 
 			return info;
 		}
+		/// <summary>
+		/// Creates a <see cref="HelpInfo"/> object by looking up the XmlDoc
+		/// information associated with the given <see cref="MemberInfo"/>
+		/// </summary>
 		public static HelpInfo FromMember(MemberInfo member)
 		{
 			if (member == null) return null;
@@ -104,6 +128,9 @@ namespace Duality.Editor
 			// Default to Type description.
 			return FromMember(resType);
 		}
+		/// <summary>
+		/// Creates a <see cref="HelpInfo"/> object describing the given <see cref="GameObject"/>
+		/// </summary>
 		public static HelpInfo FromGameObject(GameObject obj)
 		{
 			if (obj == null) return null;
@@ -113,6 +140,10 @@ namespace Duality.Editor
 
 			return info;
 		}
+		/// <summary>
+		/// Creates a <see cref="HelpInfo"/> object describing the given <see cref="Component"/>
+		/// by looking up the XmlDoc associated with the <see cref="Component"/>s type
+		/// </summary>
 		public static HelpInfo FromComponent(Component cmp)
 		{
 			if (cmp == null) return null;
@@ -129,6 +160,10 @@ namespace Duality.Editor
 
 			// ToDo: Probably improve later
 		}
+		/// <summary>
+		/// Creates a <see cref="HelpInfo"/> object for the given object by analyzing
+		/// its type and determining the best fit information
+		/// </summary>
 		public static HelpInfo FromObject(object obj)
 		{
 			if (obj is MemberInfo) return FromMember(obj as MemberInfo);

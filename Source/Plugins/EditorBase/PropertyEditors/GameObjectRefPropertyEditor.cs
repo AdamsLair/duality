@@ -95,7 +95,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		
 		protected override void SerializeToData(DataObject data)
 		{
-			data.SetGameObjectRefs(new[] { this.gameObj });
+			data.SetGameObjects(new[] { this.gameObj });
 		}
 		protected override void DeserializeFromData(DataObject data)
 		{

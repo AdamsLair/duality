@@ -76,7 +76,15 @@ namespace Duality.Editor
 		public	static	event	EventHandler	SaveAllTriggered	= null;
 		public	static	event	EventHandler<HighlightObjectEventArgs>			HighlightObject			= null;
 		public	static	event	EventHandler<SelectionChangedEventArgs>			SelectionChanged		= null;
-		public	static	event	EventHandler<ObjectPropertyChangedEventArgs>	ObjectPropertyChanged	= null;
+		/// <summary>
+		/// Fired whenever an objects property changes within the editor.
+		/// Generally used as a means of synchronizing with changes to an
+		/// objects data from other elements of the GUI. To fire this event
+		/// from a custom plugin
+		/// see <seealso cref="NotifyObjPropChanged"/>
+		/// and <seealso cref="NotifyObjPrefabApplied"/>.
+		/// </summary>
+		public static	event	EventHandler<ObjectPropertyChangedEventArgs>	ObjectPropertyChanged	= null;
 		
 		
 		public static EditorPluginManager PluginManager
@@ -996,12 +1004,28 @@ namespace Duality.Editor
 			UndoRedoManager.Clear();
 			OnObjectPropertyChanged(sender, new PrefabAppliedEventArgs(obj));
 		}
+		/// <summary>
+		/// Notify other elements of the editor that one or more objects have had properties changed.
+		/// If the specified objects can be saved, they will be marked as unsaved.
+		/// See <seealso cref="ObjectPropertyChanged"/>.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="obj">The selection of obejcts that have been modified</param>
+		/// <param name="info">The optional set of <see cref="PropertyInfo"/>s specifying which properties have changed on the objects</param>
 		public static void NotifyObjPropChanged(object sender, ObjectSelection obj, params PropertyInfo[] info)
 		{
 			if (obj == null) return;
 			if (obj.Empty) return;
 			OnObjectPropertyChanged(sender, new ObjectPropertyChangedEventArgs(obj, info));
 		}
+		/// <summary>
+		/// Notify other elements of the editor that one or more objects have had properties changed.
+		/// See <seealso cref="ObjectPropertyChanged"/>.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="obj">The selection of obejcts that have been modified</param>
+		/// <param name="persistenceCritical">Determines whether or not the objects should be marked as unsaved</param>
+		/// <param name="info">The optional set of <see cref="PropertyInfo"/>s specifying which properties have changed on the objects</param>
 		public static void NotifyObjPropChanged(object sender, ObjectSelection obj, bool persistenceCritical, params PropertyInfo[] info)
 		{
 			if (obj == null) return;
