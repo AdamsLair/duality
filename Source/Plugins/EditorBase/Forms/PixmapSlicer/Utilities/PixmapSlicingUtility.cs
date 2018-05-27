@@ -7,11 +7,22 @@ namespace Duality.Editor.Plugins.Base
 	public static class PixmapSlicingUtility
 	{
 		/// <summary>
-		/// Returns the distance the given (x,y) coordinates are from this <see cref="Rect"/>.
-		/// Additionally outputs the side of the rectangle that the given coordinate is closest to.
+		/// Returns whether or not the given coordinates are within <paramref name="range"/> of the rect.
+		/// Also outputs which side the coordinates are closest to when the points are within range.
 		/// </summary>
-		public static float DistanceToBorder(this Rect rect, float x, float y, out PixmapSlicerRectSide side)
+		public static bool WithinRangeToBorder(this Rect rect, float x, float y, float range, out PixmapSlicerRectSide side)
 		{
+			Rect smaller = rect.Transformed((rect.W - range) / rect.W, (rect.H - range) / rect.H);
+			Rect larger = rect.Transformed((rect.W + range) / rect.W, (rect.H + range) / rect.H);
+
+			bool borderAreaContains = !smaller.Contains(x, y) && larger.Contains(x, y);
+
+			if (!borderAreaContains)
+			{
+				side = PixmapSlicerRectSide.None;
+				return false;
+			}
+
 			float dLeft = MathF.Abs(rect.X - x);
 			float dRight = MathF.Abs(rect.RightX - x);
 			float minH = MathF.Min(dLeft, dRight);
@@ -22,16 +33,9 @@ namespace Duality.Editor.Plugins.Base
 			float minV = MathF.Min(dTop, dBottom);
 			PixmapSlicerRectSide sideV = dTop < dBottom ? PixmapSlicerRectSide.Top : PixmapSlicerRectSide.Bottom;
 
-			if (minH < minV)
-			{
-				side = sideH;
-				return minH;
-			}
-			else
-			{
-				side = sideV;
-				return minV;
-			}
+			side = minH < minV ? sideH : sideV;
+			return true;
+
 		}
 
 		/// <summary>

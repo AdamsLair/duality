@@ -128,8 +128,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			if (!this.dragInProgress)
 			{
 				PixmapSlicerRectSide side;
-				float distanceToBorder = selectedDisplayRect.DistanceToBorder(x, y, out side);
-				if (distanceToBorder < DRAG_OFFSET)
+				if (selectedDisplayRect.WithinRangeToBorder(x, y, DRAG_OFFSET, out side))
 				{
 					if (this.mouseDown)
 					{
@@ -147,8 +146,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			// When hovering, make sure the displayed index
 			// matches what the user may end up dragging
-			if (this.hoveredRectSide != PixmapSlicerRectSide.None)
+			if (this.hoveredRectSide != PixmapSlicerRectSide.None
+				&& this.hoveredRectIndex != this.SelectedRectIndex)
+			{
 				this.hoveredRectIndex = this.SelectedRectIndex;
+				this.UpdateDisplay();
+			}
 
 			if (this.dragInProgress)
 			{
