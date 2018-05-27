@@ -34,9 +34,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.doneButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerDone;
 			this.cancelButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerCancel;
 
-			this.rowsInput = CreateNumericUpDown("Rows:");
-			this.colsInput = CreateNumericUpDown("Cols:");
-			this.borderInput = CreateNumericUpDown("Border:", 200);
+			this.rowsInput = CreateNumericUpDown("Rows:", 1);
+			this.colsInput = CreateNumericUpDown("Cols:", 1);
+			this.borderInput = CreateNumericUpDown("Border:", 0, 200);
 
 			this.rowsInput.ValueChanged += this.OnRowsChanged;
 			this.colsInput.ValueChanged += this.OnColsChanged;
@@ -74,13 +74,20 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			if (this.TargetPixmap.Atlas != null)
 			{
-				this.rowsInput.Value = this.TargetPixmap.AnimRows;
-				this.colsInput.Value = this.TargetPixmap.AnimCols;
-				this.borderInput.Value = this.TargetPixmap.AnimFrameBorder;
+				this.rowsInput.Value = MathF.Clamp(this.TargetPixmap.AnimRows, (int)this.rowsInput.Minimum, (int)this.rowsInput.Maximum);
+				this.colsInput.Value = MathF.Clamp(this.TargetPixmap.AnimCols, (int)this.colsInput.Minimum, (int)this.colsInput.Maximum);
+				this.borderInput.Value = MathF.Clamp(this.TargetPixmap.AnimFrameBorder, (int)this.borderInput.Minimum, (int)this.borderInput.Maximum);
+
+				this.TargetPixmap.AnimRows = (int)this.rowsInput.Value;
+				this.TargetPixmap.AnimCols = (int)this.colsInput.Value;
+				this.TargetPixmap.AnimFrameBorder = (int)this.borderInput.Value;
 
 				this.originalAtlas = this.TargetPixmap.Atlas.ToList();
 				this.TargetPixmap.Atlas = null;
+				this.TargetPixmap.GenerateAnimAtlas(this.TargetPixmap.AnimCols, this.TargetPixmap.AnimRows, this.TargetPixmap.AnimFrameBorder);
 			}
+
+			this.UpdateDisplay();
 		}
 
 		private void FinishSlicing()
