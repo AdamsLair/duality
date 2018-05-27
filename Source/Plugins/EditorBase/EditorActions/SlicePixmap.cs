@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Duality.Editor.Plugins.Base.Forms.PixmapSlicer;
+using Duality.Editor.Plugins.Base.Forms;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Resources;
 

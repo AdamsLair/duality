@@ -2,10 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 using Duality.Editor.Controls.ToolStrip;
-using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.Utilities;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
-using Duality.Editor.Plugins.Base.Utilities;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
@@ -29,7 +27,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		private Rect	originalDragRect	= Rect.Empty;
 		private bool	mouseDown			= false;
 		private bool	dragInProgress		= false;
-		private Side	hoveredRectSide		= Side.None;
+
+		private PixmapSlicerRectSide hoveredRectSide = PixmapSlicerRectSide.None;
 
 		public DefaultPixmapSlicerState()
 		{
@@ -128,7 +127,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			// Check for the start of a drag operation
 			if (!this.dragInProgress)
 			{
-				Side side;
+				PixmapSlicerRectSide side;
 				float distanceToBorder = selectedDisplayRect.DistanceToBorder(x, y, out side);
 				if (distanceToBorder < DRAG_OFFSET)
 				{
@@ -142,13 +141,13 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				}
 				else
 				{
-					this.SetHoveredSide(Side.None);
+					this.SetHoveredSide(PixmapSlicerRectSide.None);
 				}
 			}
 
 			// When hovering, make sure the displayed index
 			// matches what the user may end up dragging
-			if (this.hoveredRectSide != Side.None)
+			if (this.hoveredRectSide != PixmapSlicerRectSide.None)
 				this.hoveredRectIndex = this.SelectedRectIndex;
 
 			if (this.dragInProgress)
@@ -156,18 +155,18 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				// Move hovered side to mouse
 				switch (this.hoveredRectSide)
 				{
-					case Side.Left:
+					case PixmapSlicerRectSide.Left:
 						selectedDisplayRect.W += selectedDisplayRect.X - x;
 						selectedDisplayRect.X = x;
 						break;
-					case Side.Right:
+					case PixmapSlicerRectSide.Right:
 						selectedDisplayRect.W += x - selectedDisplayRect.RightX;
 						break;
-					case Side.Top:
+					case PixmapSlicerRectSide.Top:
 						selectedDisplayRect.H += selectedDisplayRect.Y - y;
 						selectedDisplayRect.Y = y;
 						break;
-					case Side.Bottom:
+					case PixmapSlicerRectSide.Bottom:
 						selectedDisplayRect.H += y - selectedDisplayRect.BottomY;
 						break;
 				}
@@ -222,7 +221,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			byte alpha = (byte)this.alphaCutoffEntry.Value;
 
-			IEnumerable<Rect> rects = PixmapSlicing.FindRects(this.TargetPixmap, alpha);
+			IEnumerable<Rect> rects = PixmapSlicingUtility.FindRects(this.TargetPixmap, alpha);
 
 			UndoRedoManager.Do(new SetAtlasAction(rects, new []{ this.TargetPixmap }));
 
@@ -236,17 +235,17 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.UpdateDisplay();
 		}
 
-		private void SetHoveredSide(Side side)
+		private void SetHoveredSide(PixmapSlicerRectSide side)
 		{
 			this.hoveredRectSide = side;
 			switch (side)
 			{
-				case Side.Left:
-				case Side.Right:
+				case PixmapSlicerRectSide.Left:
+				case PixmapSlicerRectSide.Right:
 					this.Cursor = Cursors.SizeWE;
 					break;
-				case Side.Top:
-				case Side.Bottom:
+				case PixmapSlicerRectSide.Top:
+				case PixmapSlicerRectSide.Bottom:
 					this.Cursor = Cursors.SizeNS;
 					break;
 				default:

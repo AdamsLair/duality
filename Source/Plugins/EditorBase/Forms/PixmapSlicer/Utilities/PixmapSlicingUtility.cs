@@ -2,10 +2,38 @@
 using System.Linq;
 using Duality.Resources;
 
-namespace Duality.Editor.Plugins.Base.Utilities
+namespace Duality.Editor.Plugins.Base
 {
-	public static class PixmapSlicing
+	public static class PixmapSlicingUtility
 	{
+		/// <summary>
+		/// Returns the distance the given (x,y) coordinates are from this <see cref="Rect"/>.
+		/// Additionally outputs the side of the rectangle that the given coordinate is closest to.
+		/// </summary>
+		public static float DistanceToBorder(this Rect rect, float x, float y, out PixmapSlicerRectSide side)
+		{
+			float dLeft = MathF.Abs(rect.X - x);
+			float dRight = MathF.Abs(rect.RightX - x);
+			float minH = MathF.Min(dLeft, dRight);
+			PixmapSlicerRectSide sideH = dLeft < dRight ? PixmapSlicerRectSide.Left : PixmapSlicerRectSide.Right;
+
+			float dTop = MathF.Abs(rect.Y - y);
+			float dBottom = MathF.Abs(rect.BottomY - y);
+			float minV = MathF.Min(dTop, dBottom);
+			PixmapSlicerRectSide sideV = dTop < dBottom ? PixmapSlicerRectSide.Top : PixmapSlicerRectSide.Bottom;
+
+			if (minH < minV)
+			{
+				side = sideH;
+				return minH;
+			}
+			else
+			{
+				side = sideV;
+				return minV;
+			}
+		}
+
 		/// <summary>
 		/// Find all atlast rectangles in the given <see cref="Pixmap"/>
 		/// </summary>

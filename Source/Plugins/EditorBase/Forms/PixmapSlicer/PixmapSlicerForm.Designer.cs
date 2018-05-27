@@ -1,6 +1,4 @@
-﻿using Duality.Editor.Controls.ToolStrip;
-
-namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
+﻿namespace Duality.Editor.Plugins.Base.Forms
 {
 	partial class PixmapSlicerForm
 	{

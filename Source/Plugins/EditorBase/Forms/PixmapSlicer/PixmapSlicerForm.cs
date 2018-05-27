@@ -10,7 +10,7 @@ using Duality.Editor.Plugins.Base.Properties;
 using Duality.Resources;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
+namespace Duality.Editor.Plugins.Base.Forms
 {
 	public partial class PixmapSlicerForm : DockContent, IHelpProvider
 	{

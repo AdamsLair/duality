@@ -17,11 +17,10 @@ using TextRenderer = Duality.Components.Renderers.TextRenderer;
 
 using Duality.Editor;
 using Duality.Editor.Forms;
-using Duality.Editor.Plugins.Base.Forms.PixmapSlicer;
+using Duality.Editor.Plugins.Base.Forms;
 using Duality.Editor.Properties;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.Base.Properties;
-using Duality.Editor.Plugins.Base.Utilities;
 using WeifenLuo.WinFormsUI.Docking;
 
 
