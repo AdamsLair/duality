@@ -10,15 +10,20 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
 	public abstract class PixmapSlicerState : IPixmapSlicerState
 	{
+		protected static Pen	rectPenLight			= new Pen(Color.Black, 1);
+		protected static Pen	rectPenDark				= new Pen(Color.White, 1);
+		protected static Pen	selectedRectPenLight	= new Pen(Color.Blue, 1);
+		protected static Pen	selectedRectPenDark		= new Pen(Color.DeepSkyBlue, 1);
+		protected static Brush	indexTextBackBrush		= new SolidBrush(Color.FromArgb(128, Color.Black));
+		protected static Brush	indexTextForeBrush		= new SolidBrush(Color.White);
+		protected static Font	font					= new Font(FontFamily.GenericSansSerif, 8.25f);
+
+		protected Pen RectPen { get { return this.Context.DarkMode ? rectPenDark : rectPenLight; } }
+		protected Pen SelectedRectPen { get { return this.Context.DarkMode ? selectedRectPenDark : selectedRectPenLight; } }
+
 		private int		selectedRectIndex	= -1;
 		private Cursor	cursor				= Cursors.Default;
 		private Pixmap	targetPixmap		= null;
-
-		protected Pen					rectPen					= new Pen(Color.Black, 1);
-		protected Pen					selectedRectPen			= new Pen(Color.Blue, 1);
-		protected Brush					indexTextBackBrush		= new SolidBrush(Color.FromArgb(128, Color.Black));
-		protected Brush					indexTextForeBrush		= new SolidBrush(Color.White);
-		protected Font					font					= new Font(FontFamily.GenericSansSerif, 8.25f);
 
 		protected int					hoveredRectIndex		= -1;
 
@@ -143,8 +148,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			{
 				Rect rect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
 				e.Graphics.DrawRectangle(i == this.SelectedRectIndex
-						? this.selectedRectPen
-						: this.rectPen,
+						? this.SelectedRectPen
+						: this.RectPen,
 					rect.X, rect.Y, rect.W, rect.H);
 
 				bool showingAllNumbers = (this.NumberingStyle & PixmapNumberingStyle.All) > 0;
@@ -164,7 +169,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		protected void DisplayRectIndex(Graphics g, Rect displayRect, int index)
 		{
 			string indexText = index.ToString();
-			SizeF textSize = g.MeasureString(indexText, this.font);
+			SizeF textSize = g.MeasureString(indexText, font);
 			RectangleF textRect = new RectangleF(
 				displayRect.X,
 				displayRect.Y,
@@ -176,8 +181,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				textRect.X + textRect.Width * 0.5f - textSize.Width * 0.5f,
 				textRect.Y + textRect.Height * 0.5f - textSize.Height * 0.5f);
 
-			g.FillRectangle(this.indexTextBackBrush, textRect);
-			g.DrawString(indexText, this.font, this.indexTextForeBrush, textPos.X, textPos.Y);
+			g.FillRectangle(indexTextBackBrush, textRect);
+			g.DrawString(indexText, font, indexTextForeBrush, textPos.X, textPos.Y);
 		}
 
 		protected virtual void OnPixmapChanged()

@@ -90,7 +90,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				return;
 
 			Rect rect = this.GetDisplayRect(this.newAtlasRect.Value);
-			e.Graphics.DrawRectangle(this.selectedRectPen,
+			e.Graphics.DrawRectangle(this.SelectedRectPen,
 				rect.X, rect.Y, rect.W, rect.H);
 		}
 
