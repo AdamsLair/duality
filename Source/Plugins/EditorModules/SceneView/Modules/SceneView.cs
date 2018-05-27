@@ -424,18 +424,8 @@ namespace Duality.Editor.Plugins.SceneView
 
 			DataObject data = new DataObject();
 
-			// When copying, we don't know if the object will be pasted as a value or as a reference.
-			// Store explicitly as value now so that the current state of the objects is stored.
-			if (objects.Length > 0)
-			{
-				data.SetGameObjects(objects, DataObjectStorage.Reference);
-				data.SetGameObjects(objects, DataObjectStorage.Value);
-			}
-			else if (comps.Length > 0)
-			{
-				data.SetComponents(comps, DataObjectStorage.Reference);
-				data.SetComponents(comps, DataObjectStorage.Value);
-			}
+			if (objects.Length > 0) data.SetGameObjects(objects);
+			else if (comps.Length > 0) data.SetComponents(comps);
 
 			Clipboard.SetDataObject(data);
 		}
