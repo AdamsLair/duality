@@ -21,7 +21,7 @@ namespace Duality.Editor.AssetManagement
 			List<AssetImportInput> handledInput = new List<AssetImportInput>();
 			foreach (AssetImportInput input in env.Input)
 			{
-				if (predicate(input) && env.HandleInput(input.Path))
+				if ((predicate == null || predicate(input)) && env.HandleInput(input.Path))
 				{
 					handledInput.Add(input);
 				}
