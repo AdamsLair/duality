@@ -184,6 +184,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					this.DisplayBounds.Width, this.DisplayBounds.Height));
 
 				Rect atlasRect = this.GetAtlasRect(selectedDisplayRect);
+				atlasRect.X = MathF.RoundToInt(atlasRect.X);
+				atlasRect.Y = MathF.RoundToInt(atlasRect.Y);
+				atlasRect.W = MathF.RoundToInt(atlasRect.W);
+				atlasRect.H = MathF.RoundToInt(atlasRect.H);
 				this.SetPixmapAtlasRect(atlasRect, this.SelectedRectIndex);
 			}
 		}

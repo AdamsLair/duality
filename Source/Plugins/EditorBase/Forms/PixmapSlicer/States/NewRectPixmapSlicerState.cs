@@ -68,10 +68,18 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			// Clip the rect to the image
 			Rect displayRect = new Rect(rx, ry, rw, rh);
-			Rect atlastRect = this.GetAtlasRect(displayRect);
-			atlastRect = atlastRect.Intersection(new Rect(0, 0, this.TargetPixmap.Width, this.TargetPixmap.Height));
 
-			this.newAtlasRect = atlastRect;
+			// Keep the displayRect within bounds of the image
+			displayRect = displayRect.Intersection(new Rect(
+				this.DisplayBounds.X, this.DisplayBounds.Y,
+				this.DisplayBounds.Width, this.DisplayBounds.Height));
+
+			Rect atlasRect = this.GetAtlasRect(displayRect);
+			atlasRect.X = MathF.RoundToInt(atlasRect.X);
+			atlasRect.Y = MathF.RoundToInt(atlasRect.Y);
+			atlasRect.W = MathF.RoundToInt(atlasRect.W);
+			atlasRect.H = MathF.RoundToInt(atlasRect.H);
+			this.newAtlasRect = atlasRect;
 
 			this.UpdateDisplay();
 		}
