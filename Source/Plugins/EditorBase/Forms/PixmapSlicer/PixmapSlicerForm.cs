@@ -244,7 +244,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			this.SetScaleFactor(this.scaleFactor + (e.Delta > 0 ? 0.1f : -0.1f));
+			this.SetScaleFactor(this.scaleFactor + this.scaleFactor * (e.Delta > 0 ? 0.1f : -0.1f));
 		}
 
 		private void ScrollBarOnScroll(object sender, EventArgs e)
@@ -283,12 +283,12 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 		private void buttonZoomIn_Click(object sender, EventArgs e)
 		{
-			this.SetScaleFactor(this.scaleFactor + 0.2f);
+			this.SetScaleFactor(this.scaleFactor + this.scaleFactor * 0.2f);
 		}
 
 		private void buttonZoomOut_Click(object sender, EventArgs e)
 		{
-			this.SetScaleFactor(this.scaleFactor - 0.2f);
+			this.SetScaleFactor(this.scaleFactor - this.scaleFactor * 0.2f);
 		}
 
 		private void buttonDefaultZoom_Click(object sender, EventArgs e)
