@@ -99,8 +99,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				return;
 
 			Rect rect = this.GetDisplayRect(this.newAtlasRect.Value);
-			e.Graphics.DrawRectangle(this.SelectedRectPen,
-				rect.X, rect.Y, rect.W, rect.H);
+			float originalWidth = this.SelectedRectPen.Width;
+			this.SelectedRectPen.Width /= this.Context.ScaleFactor;
+			e.Graphics.DrawRectangle(this.SelectedRectPen, rect.X, rect.Y, rect.W, rect.H);
+			this.SelectedRectPen.Width = originalWidth;
 		}
 
 		private void CommitRect()

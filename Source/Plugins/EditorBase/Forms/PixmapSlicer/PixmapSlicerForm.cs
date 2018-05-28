@@ -37,7 +37,6 @@ namespace Duality.Editor.Plugins.Base.Forms
 		private Rectangle				paintingRect		= Rectangle.Empty;
 		private Rectangle				displayedImageRect	= Rectangle.Empty;
 		private float					prevImageLum		= 0f;
-		private float					scaleFactor			= 1f;
 		private float					horizontalScroll	= 0f;
 		private float					verticalScroll		= 0f;
 
@@ -194,7 +193,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 			e.Graphics.Clear(Color.FromArgb(150, 150, 150));
 
 			e.Graphics.TranslateTransform(-this.horizontalScroll, -this.verticalScroll);
-			e.Graphics.ScaleTransform(this.scaleFactor, this.scaleFactor);
+			e.Graphics.ScaleTransform(this.slicingContext.ScaleFactor, this.slicingContext.ScaleFactor);
 
 			// Paint checkered background
 			float lum = this.slicingContext.DarkMode ? 1 - this.prevImageLum : this.prevImageLum;
@@ -244,7 +243,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			this.SetScaleFactor(this.scaleFactor + this.scaleFactor * (e.Delta > 0 ? 0.1f : -0.1f));
+			this.SetScaleFactor(this.slicingContext.ScaleFactor + this.slicingContext.ScaleFactor * (e.Delta > 0 ? 0.1f : -0.1f));
 		}
 
 		private void ScrollBarOnScroll(object sender, EventArgs e)
@@ -283,12 +282,12 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 		private void buttonZoomIn_Click(object sender, EventArgs e)
 		{
-			this.SetScaleFactor(this.scaleFactor + this.scaleFactor * 0.2f);
+			this.SetScaleFactor(this.slicingContext.ScaleFactor + this.slicingContext.ScaleFactor * 0.2f);
 		}
 
 		private void buttonZoomOut_Click(object sender, EventArgs e)
 		{
-			this.SetScaleFactor(this.scaleFactor - this.scaleFactor * 0.2f);
+			this.SetScaleFactor(this.slicingContext.ScaleFactor - this.slicingContext.ScaleFactor * 0.2f);
 		}
 
 		private void buttonDefaultZoom_Click(object sender, EventArgs e)
@@ -331,15 +330,15 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 		private void UpdateScrollValues()
 		{
-			this.horizontalScroll = this.horizontalScrollBar.Value * (this.ClientRectangle.Width * this.scaleFactor - this.ClientRectangle.Width) / 100f;
-			this.verticalScroll = this.verticalScrollBar.Value * (this.ClientRectangle.Height * this.scaleFactor - this.ClientRectangle.Height) / 100f;
+			this.horizontalScroll = this.horizontalScrollBar.Value * (this.ClientRectangle.Width * this.slicingContext.ScaleFactor - this.ClientRectangle.Width) / 100f;
+			this.verticalScroll = this.verticalScrollBar.Value * (this.ClientRectangle.Height * this.slicingContext.ScaleFactor - this.ClientRectangle.Height) / 100f;
 		}
 
 		private void SetScaleFactor(float scale)
 		{
-			this.scaleFactor = MathF.Max(1f, scale);
+			this.slicingContext.ScaleFactor = MathF.Max(1f, scale);
 
-			bool makeVisible = this.scaleFactor > 1f;
+			bool makeVisible = this.slicingContext.ScaleFactor > 1f;
 			if (makeVisible != this.horizontalScrollBar.Visible
 				|| makeVisible != this.verticalScrollBar.Visible)
 			{
@@ -426,8 +425,8 @@ namespace Duality.Editor.Plugins.Base.Forms
 			x += this.horizontalScroll;
 			y += this.verticalScroll;
 
-			x /= this.scaleFactor;
-			y /= this.scaleFactor;
+			x /= this.slicingContext.ScaleFactor;
+			y /= this.slicingContext.ScaleFactor;
 		}
 
 		/// <summary>
@@ -469,8 +468,8 @@ namespace Duality.Editor.Plugins.Base.Forms
 		{
 			return PreviewProvider.GetPreviewImage(
 				this.targetPixmap,
-				MathF.RoundToInt(this.imageRect.Width * this.scaleFactor),
-				MathF.RoundToInt(this.imageRect.Height * this.scaleFactor),
+				MathF.RoundToInt(this.imageRect.Width * this.slicingContext.ScaleFactor),
+				MathF.RoundToInt(this.imageRect.Height * this.slicingContext.ScaleFactor),
 				PreviewSizeMode.FixedHeight);
 		}
 

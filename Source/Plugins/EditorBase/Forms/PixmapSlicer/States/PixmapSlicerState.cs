@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Resources;
@@ -157,14 +158,19 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		protected void DisplayAtlasRect(Graphics g, int atlastIndex)
 		{
 			Rect rect = this.GetDisplayRect(this.targetPixmap.Atlas[atlastIndex]);
-			g.DrawRectangle(atlastIndex == this.SelectedRectIndex
-					? this.SelectedRectPen
-					: this.RectPen,
-				rect.X, rect.Y, rect.W, rect.H);
+
+			Pen pen = atlastIndex == this.SelectedRectIndex
+				? this.SelectedRectPen
+				: this.RectPen;
+
+			float originalWidth = pen.Width;
+			pen.Width /= this.Context.ScaleFactor;
+			g.DrawRectangle(pen, rect.X, rect.Y, rect.W, rect.H);
+			pen.Width = originalWidth;
 
 			bool showingAllNumbers = (this.NumberingStyle & PixmapNumberingStyle.All) > 0;
 			bool showingThisRect = (this.NumberingStyle & PixmapNumberingStyle.Hovered) > 0
-								   && this.hoveredRectIndex == atlastIndex;
+									&& this.hoveredRectIndex == atlastIndex;
 
 			if (showingAllNumbers || showingThisRect)
 			{
