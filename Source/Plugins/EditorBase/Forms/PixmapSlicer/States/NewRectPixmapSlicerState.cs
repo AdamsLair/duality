@@ -79,7 +79,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			atlasRect.Y = MathF.RoundToInt(atlasRect.Y);
 			atlasRect.W = MathF.RoundToInt(atlasRect.W);
 			atlasRect.H = MathF.RoundToInt(atlasRect.H);
-			this.newAtlasRect = atlasRect;
+			if (atlasRect.W != 0 && atlasRect.H != 0)
+				this.newAtlasRect = atlasRect;
 
 			this.UpdateDisplay();
 		}
