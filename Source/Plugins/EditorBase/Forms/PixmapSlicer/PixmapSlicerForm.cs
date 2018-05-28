@@ -36,10 +36,10 @@ namespace Duality.Editor.Plugins.Base.Forms
 		private Rectangle				imageRect			= Rectangle.Empty;
 		private Rectangle				paintingRect		= Rectangle.Empty;
 		private Rectangle				displayedImageRect	= Rectangle.Empty;
-		private float					prevImageLum		= 0;
+		private float					prevImageLum		= 0f;
 		private float					scaleFactor			= 1f;
-		private int						horizontalScroll	= 0;
-		private int						verticalScroll		= 0;
+		private float					horizontalScroll	= 0f;
+		private float					verticalScroll		= 0f;
 
 		/// <summary>
 		/// The <see cref="Pixmap"/> currently being sliced
@@ -82,6 +82,9 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 			this.horizontalScrollBar.Visible = false;
 			this.verticalScrollBar.Visible = false;
+
+			this.horizontalScrollBar.Maximum = 100;
+			this.verticalScrollBar.Maximum = 100;
 
 			// Set styles that reduce flickering and optimize drawing
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
@@ -132,19 +135,13 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 		private void UpdateGeometry()
 		{
-			int toolStripsHeight = this.stateControlToolStrip.Visible
-					? this.stateControlToolStrip.Height
-					: 0;
-			int scrollBarWidth = this.verticalScrollBar.Visible
-				? this.verticalScrollBar.Width
-				: 0;
-			int scrollBarHeight = this.horizontalScrollBar.Visible
-				? this.horizontalScrollBar.Height
-				: 0;
+			int topOffset = this.stateControlToolStrip.Height;
+			int rightOffset = this.verticalScrollBar.Width;
+			int bottomOffset = this.horizontalScrollBar.Height;
 
 			this.paintingRect = new Rectangle(
-				this.ClientRectangle.X, this.ClientRectangle.Y + toolStripsHeight,
-				this.ClientRectangle.Width - scrollBarWidth, this.ClientRectangle.Height - toolStripsHeight - scrollBarHeight);
+				this.ClientRectangle.X, this.ClientRectangle.Y + topOffset,
+				this.ClientRectangle.Width - rightOffset, this.ClientRectangle.Height - topOffset - bottomOffset);
 
 			Rectangle previousImageRect = this.imageRect;
 			this.imageRect = new Rectangle(
@@ -155,13 +152,6 @@ namespace Duality.Editor.Plugins.Base.Forms
 			// If they have changed, generate a new image.
 			if (this.imageRect != previousImageRect)
 				this.displayedImage = this.GenerateDisplayImage();
-
-			this.horizontalScrollBar.Minimum = 0;
-			this.horizontalScrollBar.Maximum = (int)((this.paintingRect.Width * this.scaleFactor) - this.imageRect.Width);
-			this.horizontalScroll = this.horizontalScrollBar.Value;
-			this.verticalScrollBar.Minimum = 0;
-			this.verticalScrollBar.Maximum = (int)((this.paintingRect.Height * this.scaleFactor) - this.imageRect.Height);
-			this.verticalScroll = this.verticalScrollBar.Value;
 
 			// Determine the geometry of the displayed image
 			// while maintaing a constant aspect ratio and using as much space as possible
@@ -188,6 +178,9 @@ namespace Duality.Editor.Plugins.Base.Forms
 					imgSize.Width, imgSize.Height);
 				this.state.DisplayBounds = this.displayedImageRect;
 			}
+
+			this.horizontalScroll = this.horizontalScrollBar.Value * (this.ClientRectangle.Width * this.scaleFactor - this.ClientRectangle.Width) / 100f;
+			this.verticalScroll = this.verticalScrollBar.Value * (this.ClientRectangle.Height * this.scaleFactor - this.ClientRectangle.Height) / 100f;
 		}
 
 		protected override void OnInvalidated(InvalidateEventArgs e)
@@ -204,7 +197,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 			// Fill background
 			e.Graphics.Clear(Color.FromArgb(150, 150, 150));
 
-			e.Graphics.TranslateTransform(-this.horizontalScroll * this.scaleFactor, -this.verticalScroll * this.scaleFactor);
+			e.Graphics.TranslateTransform(-this.horizontalScroll, -this.verticalScroll);
 			e.Graphics.ScaleTransform(this.scaleFactor, this.scaleFactor);
 
 			// Paint checkered background
@@ -260,8 +253,6 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 		private void ScrollBarOnScroll(object sender, EventArgs e)
 		{
-			this.horizontalScroll = this.horizontalScrollBar.Value;
-			this.verticalScroll = this.verticalScrollBar.Value;
 			this.Invalidate(this.paintingRect);
 
 			// Makes image panning noticably smoother by 
@@ -344,8 +335,22 @@ namespace Duality.Editor.Plugins.Base.Forms
 		private void SetScaleFactor(float scale)
 		{
 			this.scaleFactor = MathF.Max(1f, scale);
-			this.horizontalScrollBar.Visible = this.scaleFactor > 1f;
-			this.verticalScrollBar.Visible = this.scaleFactor > 1f;
+
+			bool makeVisible = this.scaleFactor > 1f;
+			if (makeVisible != this.horizontalScrollBar.Visible
+				|| makeVisible != this.verticalScrollBar.Visible)
+			{
+				this.horizontalScrollBar.Visible = makeVisible;
+				this.verticalScrollBar.Visible = makeVisible;
+				// When scroll bars first become visible, set them
+				// to 50% scroll in each direction
+				if (makeVisible)
+				{
+					this.horizontalScrollBar.Value = 50;
+					this.verticalScrollBar.Value = 50;
+				}
+			}
+
 			this.Invalidate();
 		}
 
@@ -414,8 +419,8 @@ namespace Duality.Editor.Plugins.Base.Forms
 			x = point.X;
 			y = point.Y;
 
-			x += this.horizontalScroll * this.scaleFactor;
-			y += this.verticalScroll * this.scaleFactor;
+			x += this.horizontalScroll;
+			y += this.verticalScroll;
 
 			x /= this.scaleFactor;
 			y /= this.scaleFactor;
