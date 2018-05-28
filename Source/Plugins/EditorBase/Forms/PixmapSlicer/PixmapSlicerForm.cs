@@ -466,11 +466,22 @@ namespace Duality.Editor.Plugins.Base.Forms
 		/// </summary>
 		private Bitmap GenerateDisplayImage()
 		{
-			return PreviewProvider.GetPreviewImage(
-				this.targetPixmap,
-				MathF.RoundToInt(this.imageRect.Width * this.slicingContext.ScaleFactor),
-				MathF.RoundToInt(this.imageRect.Height * this.slicingContext.ScaleFactor),
-				PreviewSizeMode.FixedHeight);
+			if (this.TargetPixmap == null || this.TargetPixmap.MainLayer == null)
+				return null;
+
+			int desiredHeight = MathF.RoundToInt(this.imageRect.Height * this.slicingContext.ScaleFactor);
+
+			PixelData layer = this.TargetPixmap.MainLayer;
+
+			// Determine the target size for the preview based on desired and actual size
+			float widthRatio = layer.Width / (float)MathF.Max(layer.Height, 1);
+			Point2 targetSize = new Point2(MathF.RoundToInt(widthRatio * desiredHeight), desiredHeight);
+
+			// Create a properly resized version of the image data
+			if (layer.Width != targetSize.X || layer.Height != targetSize.Y)
+				layer = layer.CloneRescale(targetSize.X, targetSize.Y, ImageScaleFilter.Nearest);
+
+			return layer.ToBitmap();
 		}
 
 		public HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)
