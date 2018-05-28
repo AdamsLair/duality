@@ -6,5 +6,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 	{
 		public bool DarkMode { get; set; }
 		public PixmapNumberingStyle NumberingStyle { get; set; }
+
+		public PixmapSlicingContext()
+		{
+			this.DarkMode = false;
+			this.NumberingStyle = PixmapNumberingStyle.None;
+		}
 	}
 }

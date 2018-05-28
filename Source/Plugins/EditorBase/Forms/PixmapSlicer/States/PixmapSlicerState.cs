@@ -146,20 +146,29 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			for (int i = 0; i < this.targetPixmap.Atlas.Count; i++)
 			{
-				Rect rect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
-				e.Graphics.DrawRectangle(i == this.SelectedRectIndex
-						? this.SelectedRectPen
-						: this.RectPen,
-					rect.X, rect.Y, rect.W, rect.H);
+				if (i != this.SelectedRectIndex)
+					this.DisplayAtlasRect(e.Graphics, i);
+			}
 
-				bool showingAllNumbers = (this.NumberingStyle & PixmapNumberingStyle.All) > 0;
-				bool showingThisRect = (this.NumberingStyle & PixmapNumberingStyle.Hovered) > 0
-					&& this.hoveredRectIndex == i;
+			if (this.SelectedRectIndex != -1)
+				this.DisplayAtlasRect(e.Graphics, this.SelectedRectIndex);
+		}
 
-				if (showingAllNumbers || showingThisRect)
-				{
-					this.DisplayRectIndex(e.Graphics, rect, i);
-				}
+		protected void DisplayAtlasRect(Graphics g, int atlastIndex)
+		{
+			Rect rect = this.GetDisplayRect(this.targetPixmap.Atlas[atlastIndex]);
+			g.DrawRectangle(atlastIndex == this.SelectedRectIndex
+					? this.SelectedRectPen
+					: this.RectPen,
+				rect.X, rect.Y, rect.W, rect.H);
+
+			bool showingAllNumbers = (this.NumberingStyle & PixmapNumberingStyle.All) > 0;
+			bool showingThisRect = (this.NumberingStyle & PixmapNumberingStyle.Hovered) > 0
+								   && this.hoveredRectIndex == atlastIndex;
+
+			if (showingAllNumbers || showingThisRect)
+			{
+				this.DisplayRectIndex(g, rect, atlastIndex);
 			}
 		}
 
