@@ -32,8 +32,9 @@ namespace Duality.Editor.Plugins.Base
 		/// </summary>
 		public static bool WithinRangeToBorder(this Rect rect, float x, float y, float range, out Side side)
 		{
-			Rect smaller = rect.Transformed((rect.W - range) / rect.W, (rect.H - range) / rect.H);
-			Rect larger = rect.Transformed((rect.W + range) / rect.W, (rect.H + range) / rect.H);
+			float doubleRange = range * 2;
+			Rect smaller = rect.Scaled((rect.W - doubleRange) / rect.W, (rect.H - doubleRange) / rect.H).WithOffset(range, range);
+			Rect larger = rect.Scaled((rect.W + doubleRange) / rect.W, (rect.H + doubleRange) / rect.H).WithOffset(-range, -range);
 
 			bool borderAreaContains = !smaller.Contains(x, y) && larger.Contains(x, y);
 
