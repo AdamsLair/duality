@@ -71,7 +71,7 @@ namespace Duality.Editor.UndoRedoActions
 					Type required = createRequirements[j];
 
 					// If the type can't be instantiated, ask the user for a concrete type to use
-					if (required.IsInterface || required.IsAbstract)
+					if (required.IsAbstract)
 					{
 						required = GetRequiredConcreteType(required, obj.GetType());
 						if (required == null)
