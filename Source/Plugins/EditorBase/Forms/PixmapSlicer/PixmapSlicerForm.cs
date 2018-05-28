@@ -158,7 +158,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 			if (this.displayedImage != null)
 			{
 				Rectangle rectImage = new Rectangle(this.imageRect.X + 1, this.imageRect.Y + 1, this.imageRect.Width - 2, this.imageRect.Height - 2);
-				Size imgSize = new Size(this.targetPixmap.Width, this.targetPixmap.Height);
+				Size imgSize = new Size(this.displayedImage.Width, this.displayedImage.Height);
 				float widthForHeight = (float)imgSize.Width / imgSize.Height;
 				if (widthForHeight * (imgSize.Height - rectImage.Height) > imgSize.Width - rectImage.Width)
 				{
@@ -178,15 +178,11 @@ namespace Duality.Editor.Plugins.Base.Forms
 					imgSize.Width, imgSize.Height);
 				this.state.DisplayBounds = this.displayedImageRect;
 			}
-
-			this.horizontalScroll = this.horizontalScrollBar.Value * (this.ClientRectangle.Width * this.scaleFactor - this.ClientRectangle.Width) / 100f;
-			this.verticalScroll = this.verticalScrollBar.Value * (this.ClientRectangle.Height * this.scaleFactor - this.ClientRectangle.Height) / 100f;
 		}
 
 		protected override void OnInvalidated(InvalidateEventArgs e)
 		{
 			base.OnInvalidated(e);
-
 			this.UpdateGeometry();
 		}
 
@@ -209,7 +205,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 			if (this.displayedImage != null)
 			{
-				e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
 				e.Graphics.DrawImage(this.displayedImage, this.displayedImageRect);
 				e.Graphics.InterpolationMode = InterpolationMode.Default;
 			}
@@ -248,11 +244,12 @@ namespace Duality.Editor.Plugins.Base.Forms
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			this.SetScaleFactor(this.scaleFactor + (e.Delta > 0 ? .1f : -.1f));
+			this.SetScaleFactor(this.scaleFactor + (e.Delta > 0 ? 0.1f : -0.1f));
 		}
 
 		private void ScrollBarOnScroll(object sender, EventArgs e)
 		{
+			this.UpdateScrollValues();
 			this.Invalidate(this.paintingRect);
 
 			// Makes image panning noticably smoother by 
@@ -286,12 +283,12 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 		private void buttonZoomIn_Click(object sender, EventArgs e)
 		{
-			this.SetScaleFactor(this.scaleFactor + .2f);
+			this.SetScaleFactor(this.scaleFactor + 0.2f);
 		}
 
 		private void buttonZoomOut_Click(object sender, EventArgs e)
 		{
-			this.SetScaleFactor(this.scaleFactor - .2f);
+			this.SetScaleFactor(this.scaleFactor - 0.2f);
 		}
 
 		private void buttonDefaultZoom_Click(object sender, EventArgs e)
@@ -332,6 +329,12 @@ namespace Duality.Editor.Plugins.Base.Forms
 			}
 		}
 
+		private void UpdateScrollValues()
+		{
+			this.horizontalScroll = this.horizontalScrollBar.Value * (this.ClientRectangle.Width * this.scaleFactor - this.ClientRectangle.Width) / 100f;
+			this.verticalScroll = this.verticalScrollBar.Value * (this.ClientRectangle.Height * this.scaleFactor - this.ClientRectangle.Height) / 100f;
+		}
+
 		private void SetScaleFactor(float scale)
 		{
 			this.scaleFactor = MathF.Max(1f, scale);
@@ -351,6 +354,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 				}
 			}
 
+			this.UpdateScrollValues();
 			this.Invalidate();
 		}
 
@@ -465,8 +469,8 @@ namespace Duality.Editor.Plugins.Base.Forms
 		{
 			return PreviewProvider.GetPreviewImage(
 				this.targetPixmap,
-				this.imageRect.Width,
-				this.imageRect.Height,
+				MathF.RoundToInt(this.imageRect.Width * this.scaleFactor),
+				MathF.RoundToInt(this.imageRect.Height * this.scaleFactor),
 				PreviewSizeMode.FixedHeight);
 		}
 
