@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Resources;
@@ -144,36 +145,37 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			if (this.targetPixmap == null || this.targetPixmap.Atlas == null)
 				return;
 
-			for (int i = 0; i < this.targetPixmap.Atlas.Count; i++)
+			Rect[] displayRects = this.targetPixmap.Atlas.Select(rect => this.GetDisplayRect(rect)).ToArray();
+
+			// Draw all rect outlines
+			RectangleF[] rects = displayRects.Select(RectToRectangleF).ToArray();
+			float originalWidth = this.RectPen.Width;
+			this.RectPen.Width /= this.Context.ScaleFactor;
+			e.Graphics.DrawRectangles(this.RectPen, rects);
+			this.RectPen.Width = originalWidth;
+
+			// Draw selected rect outline
+			if (this.selectedRectIndex != -1)
 			{
-				if (i != this.SelectedRectIndex)
-					this.DisplayAtlasRect(e.Graphics, i);
+				Rect selectedRect = displayRects[this.selectedRectIndex];
+				originalWidth = this.SelectedRectPen.Width;
+				this.SelectedRectPen.Width /= this.Context.ScaleFactor;
+				e.Graphics.DrawRectangle(this.SelectedRectPen, selectedRect.X, selectedRect.Y, selectedRect.W, selectedRect.H);
+				this.SelectedRectPen.Width = originalWidth;
 			}
 
-			if (this.SelectedRectIndex != -1)
-				this.DisplayAtlasRect(e.Graphics, this.SelectedRectIndex);
-		}
-
-		protected void DisplayAtlasRect(Graphics g, int atlastIndex)
-		{
-			Rect rect = this.GetDisplayRect(this.targetPixmap.Atlas[atlastIndex]);
-
-			Pen pen = atlastIndex == this.SelectedRectIndex
-				? this.SelectedRectPen
-				: this.RectPen;
-
-			float originalWidth = pen.Width;
-			pen.Width /= this.Context.ScaleFactor;
-			g.DrawRectangle(pen, rect.X, rect.Y, rect.W, rect.H);
-			pen.Width = originalWidth;
-
-			bool showingAllNumbers = (this.NumberingStyle & PixmapNumberingStyle.All) > 0;
-			bool showingThisRect = (this.NumberingStyle & PixmapNumberingStyle.Hovered) > 0
-									&& this.hoveredRectIndex == atlastIndex;
-
-			if (showingAllNumbers || showingThisRect)
+			// Draw indexes
+			if ((this.NumberingStyle & PixmapNumberingStyle.All) > 0)
 			{
-				this.DisplayRectIndex(g, rect, atlastIndex);
+				for (int i = 0; i < displayRects.Length; i++)
+				{
+					this.DisplayRectIndex(e.Graphics, displayRects[i], i);
+				}
+			}
+			else if ((this.NumberingStyle & PixmapNumberingStyle.Hovered) > 0
+				&& this.hoveredRectIndex != -1)
+			{
+				this.DisplayRectIndex(e.Graphics, displayRects[this.hoveredRectIndex], this.hoveredRectIndex);
 			}
 		}
 
@@ -260,6 +262,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		private static Rectangle RectToRectangle(Rect rect)
 		{
 			return new Rectangle((int) rect.X, (int) rect.Y, (int) rect.W, (int) rect.H);
+		}
+		private static RectangleF RectToRectangleF(Rect rect)
+		{
+			return new RectangleF(rect.X, rect.Y, rect.W, rect.H);
 		}
 	}
 }
