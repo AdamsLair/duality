@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Resources;
@@ -78,7 +77,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		public PixmapSlicingContext Context { get; set; }
 
-		public event EventHandler DisplayUpdated;
+		public event EventHandler<InvalidateEventArgs> DisplayInvalidated;
 		public event EventHandler CursorChanged;
 		public event EventHandler StateCancelled;
 		public event EventHandler SelectionChanged;
@@ -215,9 +214,18 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		protected void UpdateDisplay()
 		{
-			if (this.DisplayUpdated != null)
+			if (this.DisplayInvalidated != null)
+				this.DisplayInvalidated.Invoke(this, new InvalidateEventArgs(this.DisplayBounds));
+		}
+
+		protected void UpdateDisplay(Rect rect)
+		{
+			if (this.DisplayInvalidated != null)
 			{
-				this.DisplayUpdated.Invoke(this, EventArgs.Empty);
+				Rectangle updatedArea = RectToRectangle(this.GetDisplayRect(rect));
+				// Grow the rectangle slightly to make sure enough area is invalidated
+				updatedArea.Inflate(10,10);
+				this.DisplayInvalidated.Invoke(this, new InvalidateEventArgs(updatedArea));
 			}
 		}
 
@@ -247,6 +255,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				NumBackColor = Color.FromArgb(196, 196, 196),
 				Text = text
 			};
+		}
+
+		private static Rectangle RectToRectangle(Rect rect)
+		{
+			return new Rectangle((int) rect.X, (int) rect.Y, (int) rect.W, (int) rect.H);
 		}
 	}
 }

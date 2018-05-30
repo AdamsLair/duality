@@ -80,9 +80,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			atlasRect.W = MathF.RoundToInt(atlasRect.W);
 			atlasRect.H = MathF.RoundToInt(atlasRect.H);
 			if (atlasRect.W != 0 && atlasRect.H != 0)
+			{
+				Rect updatedArea = this.newAtlasRect.Value.ExpandedToContain(atlasRect);
 				this.newAtlasRect = atlasRect;
-
-			this.UpdateDisplay();
+				this.UpdateDisplay(updatedArea);
+			}
 		}
 
 		public override void OnKeyUp(KeyEventArgs e)

@@ -380,7 +380,16 @@ namespace Duality.Editor.Plugins.Base.Forms
 			action.TransformMouseCoordinates = this.TransformMouseCoordinates;
 			action.Context = this.slicingContext;
 
-			action.DisplayUpdated += (s, e) => this.Invalidate();
+			action.DisplayInvalidated += (s, e) =>
+			{
+				Rectangle invalidatedRectangle = e.InvalidRect;
+				invalidatedRectangle.X = (int)(invalidatedRectangle.X * this.slicingContext.ScaleFactor);
+				invalidatedRectangle.Y = (int)(invalidatedRectangle.Y * this.slicingContext.ScaleFactor);
+				invalidatedRectangle.Width = (int) (invalidatedRectangle.Width * this.slicingContext.ScaleFactor);
+				invalidatedRectangle.Height = (int) (invalidatedRectangle.Height * this.slicingContext.ScaleFactor);
+				invalidatedRectangle.Offset((int)-this.horizontalScroll, (int)-this.verticalScroll);
+				this.Invalidate(invalidatedRectangle);
+			};
 			action.CursorChanged += (s, e) => this.Cursor = action.Cursor;
 			action.SelectionChanged += (s, e) => this.Invalidate(this.paintingRect);
 			action.StateCancelled += (s, e) =>

@@ -238,9 +238,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		private void SetPixmapAtlasRect(Rect rect, int index)
 		{
+			Rect oldRect = this.TargetPixmap.Atlas[index];
 			this.TargetPixmap.Atlas[index] = rect;
-
-			this.UpdateDisplay();
+			Rect updatedArea = rect.ExpandedToContain(oldRect);
+			this.UpdateDisplay(updatedArea);
 		}
 
 		private void SetHoveredSide(PixmapSlicingUtility.Side side)
