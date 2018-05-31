@@ -16,7 +16,7 @@
     <releaseNotes>Serializer Missing Surrogate Error Handling
 #FIX: Serializers can now handle cases where objects were serialized using a surrogate, but no such surrogate is known when deserializing the object.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Primitives" version="2.0.6" />
+      <dependency id="AdamsLair.Duality.Primitives" version="2.0.7" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
       <dependency id="AdamsLair.FarseerDuality" version="4.1.4" />
     </dependencies>
