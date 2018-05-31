@@ -114,10 +114,14 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			node.SetElementValue("TitleText", this.Text);
 			node.SetElementValue("DebugMode", this.buttonDebug.Checked);
 			node.SetElementValue("SortByName", this.buttonSortByName.Checked);
+
 			// gridExpandState is normally only updated when the current selection changes.
 			// Make sure we have the latest information when saving UserData.
 			this.gridExpandState.UpdateFrom(this.propertyGrid.MainEditor);
-			this.gridExpandState.SaveToXml(node);
+
+			XElement expandStateNode = new XElement("ExpandState");
+			this.gridExpandState.SaveToXml(expandStateNode);
+			node.Add(expandStateNode);
 		}
 		internal void LoadUserData(XElement node)
 		{
@@ -128,7 +132,12 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			if (node.GetElementValue("DebugMode", out tryParseBool)) this.buttonDebug.Checked = tryParseBool;
 			if (node.GetElementValue("SortByName", out tryParseBool)) this.buttonSortByName.Checked = tryParseBool;
 			this.Text = node.GetElementValue("TitleText", this.Text);
-			this.gridExpandState.LoadFromXml(node);
+
+			XElement expandStateNode = node.Element("ExpandState", true);
+			if (expandStateNode != null)
+			{
+				this.gridExpandState.LoadFromXml(expandStateNode);
+			}
 		}
 
 		private void UpdateButtons()
