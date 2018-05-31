@@ -118,17 +118,23 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					int originalHoveredIndex = this.hoveredRectIndex;
 					this.hoveredRectIndex = i;
 
-					if ((this.NumberingStyle & PixmapNumberingStyle.Hovered) > 0 
+					if ((this.NumberingStyle & PixmapNumberingStyle.Hovered) > 0
 						&& this.hoveredRectIndex != originalHoveredIndex)
-						this.UpdateDisplay();
+					{
+						Rect updatedArea = this.targetPixmap.Atlas[i];
+						if (originalHoveredIndex != -1)
+							updatedArea = updatedArea.ExpandedToContain(this.targetPixmap.Atlas[originalHoveredIndex]);
+						this.UpdateDisplay(updatedArea);
+					}
 					return;
 				}
 			}
 
+			// Moved off of a rect
 			if (this.hoveredRectIndex != -1)
 			{
+				this.UpdateDisplay(this.targetPixmap.Atlas[this.hoveredRectIndex]);
 				this.hoveredRectIndex = -1;
-				this.UpdateDisplay();
 			}
 		}
 
@@ -146,7 +152,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				return;
 
 			Rect[] displayRects = this.targetPixmap.Atlas.Select(rect => this.GetDisplayRect(rect)).ToArray();
-
 			// Draw all rect outlines
 			RectangleF[] rects = displayRects.Select(RectToRectangleF).ToArray();
 			float originalWidth = this.RectPen.Width;

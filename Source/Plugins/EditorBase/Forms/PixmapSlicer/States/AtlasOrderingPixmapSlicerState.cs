@@ -49,7 +49,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			this.orderedIndices.Add(indexClicked);
 
-			this.UpdateDisplay();
+			this.UpdateDisplay(this.TargetPixmap.Atlas[indexClicked]);
 		}
 
 		public override void OnKeyUp(KeyEventArgs e)
