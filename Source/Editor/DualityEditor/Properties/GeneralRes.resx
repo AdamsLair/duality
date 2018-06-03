@@ -597,4 +597,10 @@ Unfortunately though, a connection doesn't seem to be possible right now. Please
   <data name="UndoRedo_RemoveFromDictionary" xml:space="preserve">
     <value>Remove {0} from IDictionaries</value>
   </data>
+  <data name="UndoRedo_PasteGameObject" xml:space="preserve">
+    <value>Paste {0}</value>
+  </data>
+  <data name="UndoRedo_PasteGameObjectMulti" xml:space="preserve">
+    <value>Paste {0} GameObjects</value>
+  </data>
 </root>
