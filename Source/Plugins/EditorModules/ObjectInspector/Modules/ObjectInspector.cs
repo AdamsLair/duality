@@ -116,6 +116,14 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			node.SetElementValue("TitleText", this.Text);
 			node.SetElementValue("DebugMode", this.buttonDebug.Checked);
 			node.SetElementValue("SortByName", this.buttonSortByName.Checked);
+
+			// gridExpandState is normally only updated when the current selection changes.
+			// Make sure we have the latest information when saving UserData.
+			this.gridExpandState.UpdateFrom(this.propertyGrid.MainEditor);
+
+			XElement expandStateNode = new XElement("ExpandState");
+			this.gridExpandState.SaveToXml(expandStateNode);
+			node.Add(expandStateNode);
 		}
 		internal void LoadUserData(XElement node)
 		{
@@ -126,6 +134,12 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			if (node.GetElementValue("DebugMode", out tryParseBool)) this.buttonDebug.Checked = tryParseBool;
 			if (node.GetElementValue("SortByName", out tryParseBool)) this.buttonSortByName.Checked = tryParseBool;
 			this.Text = node.GetElementValue("TitleText", this.Text);
+
+			XElement expandStateNode = node.Element("ExpandState", true);
+			if (expandStateNode != null)
+			{
+				this.gridExpandState.LoadFromXml(expandStateNode);
+		}
 		}
 
 		private void UpdateButtons()
@@ -142,6 +156,13 @@ namespace Duality.Editor.Plugins.ObjectInspector
 
 			if (showCat == ObjectSelection.Category.None) return;
 			this.gridExpandState.UpdateFrom(this.propertyGrid.MainEditor);
+
+			// Selection update may change MainEditor, unsubscribe from events
+			if (this.propertyGrid.MainEditor is GroupedPropertyEditor)
+			{
+				GroupedPropertyEditor groupedMainEditor = this.propertyGrid.MainEditor as GroupedPropertyEditor;
+				groupedMainEditor.EditorAdded -= this.MainEditor_EditorAdded;
+			}
 
 			if ((showCat & ObjectSelection.Category.GameObjCmp) != ObjectSelection.Category.None)
 			{
@@ -162,9 +183,16 @@ namespace Duality.Editor.Plugins.ObjectInspector
 				this.propertyGrid.SelectObjects(this.displaySel, false);
 			}
 
+			if (this.propertyGrid.MainEditor is GroupedPropertyEditor)
+			{
+				GroupedPropertyEditor groupedMainEditor = this.propertyGrid.MainEditor as GroupedPropertyEditor;
+				groupedMainEditor.EditorAdded += this.MainEditor_EditorAdded;
+			}
+
 			this.gridExpandState.ApplyTo(this.propertyGrid.MainEditor);
 			this.buttonClone.Enabled = this.propertyGrid.Selection.Any();
 		}
+
 		private void UpdateDisplayedValues(bool forceFullUpdate)
 		{
 			if (forceFullUpdate)
@@ -181,6 +209,13 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			}
 		}
 
+		private void MainEditor_EditorAdded(object sender, PropertyEditorEventArgs e)
+		{
+			// Make sure new editors start in the correct expand state
+			GroupedPropertyEditor groupedEditor = e.Editor as GroupedPropertyEditor;
+			if (groupedEditor != null)
+				groupedEditor.Expanded = this.gridExpandState.IsEditorExpanded(groupedEditor);
+		}
 		private void DualityEditorApp_AfterUpdateDualityApp(object sender, EventArgs e)
 		{
 			// Perform auto-refresh as the game state changes
