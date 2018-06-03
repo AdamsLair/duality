@@ -442,8 +442,10 @@ namespace Duality.Editor.Plugins.SceneView
 				.OfType<GameObjectNode>()
 				.Select(gon => gon.Obj);
 
-			if (clipboardData.ContainsGameObjects(DataObjectStorage.Value)) this.PasteClipboardObjects(targets);
-			else if (clipboardData.ContainsComponents(typeof(Component), DataObjectStorage.Value)) this.PasteClipboardComponents(targets);
+			if (clipboardData.ContainsGameObjects(DataObjectStorage.Value))
+				this.PasteClipboardObjects(targets);
+			else if (clipboardData.ContainsComponents(typeof(Component), DataObjectStorage.Value))
+				this.PasteClipboardComponents(targets);
 		}
 		private void PasteClipboardObjects(IEnumerable<GameObject> targets)
 		{
