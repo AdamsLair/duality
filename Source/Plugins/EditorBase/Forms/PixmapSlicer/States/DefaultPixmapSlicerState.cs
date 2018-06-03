@@ -52,7 +52,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.gridSliceButton = new ToolStripButton(EditorBaseRes.Button_GridSlice, null,
 				(s, e) => this.ChangeState(typeof(GridSlicePixmapSlicerState)));
 
-			this.alphaCutoffEntry = CreateNumericUpDown("Alpha Cutoff:", 254);
+			this.alphaCutoffEntry = CreateNumericUpDown("Alpha Cutoff:", 0, 254);
 
 			this.addRectButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerAddRect;
 			this.deleteSelectedButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerDelete;

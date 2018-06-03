@@ -247,7 +247,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		/// Creates a <see cref="ToolStripNumericUpDown"/> with default styling.
 		/// The range of the control is set to [0,maximum].
 		/// </summary>
-		protected static ToolStripNumericUpDown CreateNumericUpDown(string text, int minimum = 0, int maximum = 100)
+		protected static ToolStripNumericUpDown CreateNumericUpDown(string text, int minimum, int maximum)
 		{
 			return new ToolStripNumericUpDown
 			{

@@ -40,10 +40,10 @@ namespace Duality.Editor.Plugins.Base
 		}
 
 		/// <summary>
-		/// Find all atlast rectangles in the given <see cref="Pixmap"/>
+		/// Find all atlast rectangles in the given <see cref="Pixmap"/>.
 		/// </summary>
-		/// <param name="alpha">Pixels whose alpha is below this value will be considered transparent</param>
-		/// <param name="minSize">Rectangles with width or higher smaller than this will be ignored</param>
+		/// <param name="alpha">Pixels with an alpha value less or equal to this value will be considered transparent.</param>
+		/// <param name="minSize">Rectangles with width or higher smaller than this will be ignored.</param>
 		public static IEnumerable<Rect> FindRects(Pixmap pixmap, byte alpha = 0, int minSize = 2)
 		{
 			List<Rect> rects = new List<Rect>();

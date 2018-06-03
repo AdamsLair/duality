@@ -35,9 +35,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.doneButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerDone;
 			this.cancelButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerCancel;
 
-			this.rowsInput = CreateNumericUpDown("Rows:", 1);
-			this.colsInput = CreateNumericUpDown("Cols:", 1);
-			this.borderInput = CreateNumericUpDown("Border:", 0, 200);
+			this.rowsInput = CreateNumericUpDown("Rows:", 1, 100);
+			this.colsInput = CreateNumericUpDown("Cols:", 1, 100);
+			this.borderInput = CreateNumericUpDown("Border:", 0, 50);
 
 			this.rowsInput.ValueChanged += this.OnRowsChanged;
 			this.colsInput.ValueChanged += this.OnColsChanged;
