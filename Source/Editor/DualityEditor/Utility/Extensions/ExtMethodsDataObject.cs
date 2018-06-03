@@ -33,12 +33,17 @@ namespace Duality.Editor
 		/// <param name="storage">The type of data being stored</param>
 		public static void SetWrappedData(this IDataObject data, IEnumerable<object> values, string dataFormat, DataObjectStorage storage)
 		{
+			object[] valuesArr = values.ToArray();
 			string wrappedFormat = GetWrappedDataFormat(dataFormat, storage);
 			SerializableWrapper wrapper = storage == DataObjectStorage.Reference
-				? new SerializableReferenceWrapper(values)
-				: new SerializableWrapper(values);
+				? new SerializableReferenceWrapper(valuesArr)
+				: new SerializableWrapper(valuesArr);
 
 			data.SetData(wrappedFormat, wrapper);
+
+			// Reference data is automatically stored as a value as well
+			if (storage == DataObjectStorage.Reference)
+				data.SetWrappedData(valuesArr, dataFormat, DataObjectStorage.Value);
 		}
 		/// <summary>
 		/// Determines whether the specified format of wrapped non-<see cref="SerializableAttribute"/> data is available in the data object.
