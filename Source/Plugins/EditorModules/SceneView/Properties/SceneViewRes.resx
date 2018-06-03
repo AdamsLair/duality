@@ -178,8 +178,8 @@
   <data name="UndoRedo_DeleteObjects" xml:space="preserve">
     <value>Delete {0} Objects</value>
   </data>
-  <data name="SceneView_ContextItemName_Clone" xml:space="preserve">
-    <value>Clone</value>
+  <data name="SceneView_ContextItemName_Duplicate" xml:space="preserve">
+    <value>Duplicate</value>
   </data>
   <data name="SceneView_ContextItemName_Delete" xml:space="preserve">
     <value>Delete</value>
@@ -192,5 +192,11 @@
   </data>
   <data name="SceneView_ContextItemName_Rename" xml:space="preserve">
     <value>Rename</value>
+  </data>
+  <data name="SceneView_ContextItemName_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="SceneView_ContextItemName_Paste" xml:space="preserve">
+    <value>Paste</value>
   </data>
 </root>

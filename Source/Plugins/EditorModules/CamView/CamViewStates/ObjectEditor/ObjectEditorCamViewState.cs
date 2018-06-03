@@ -826,7 +826,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.ClearSelection();
 					this.DeleteObjects(deleteList);
 				}
-				else if (e.KeyCode == Keys.C && e.Control)
+				else if ((e.KeyCode == Keys.C || e.KeyCode == Keys.D) && e.Control)
 				{
 					List<ObjectEditorSelObj> cloneList = this.CloneObjects(this.actionObjSel);
 					this.SelectObjects(cloneList);

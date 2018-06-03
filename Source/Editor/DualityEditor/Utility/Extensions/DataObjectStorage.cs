@@ -16,8 +16,9 @@ namespace Duality.Editor
 		/// will still lead to a "copy" of the data due to boxing and unboxing operations.
 		/// 
 		/// Objects stored with this storage type can still be retrieved as <see cref="Value"/>
-		/// items, although a deep clone operation will be done internally in order to make sure
-		/// the result will be an otherwise unused instance.
+		/// items, as a deep clone operation is done internally when inserting references into
+		/// a <see cref="DataObject"/>. The cloning is done so the <see cref="Value"/> result
+		/// will be an otherwise unused instance.
 		/// </summary>
 		Reference,
 		/// <summary>

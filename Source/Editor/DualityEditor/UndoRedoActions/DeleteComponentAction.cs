@@ -63,7 +63,7 @@ namespace Duality.Editor.UndoRedoActions
 		private static IEnumerable<Component> FilterComponents(IEnumerable<Component> cmp)
 		{
 			return cmp
-				.Distinct(ComponentTypeComparer.Default)
+				.Distinct()
 				.OrderByDescending(c => Component.RequireMap.GetRequirements(c.GetType()).Count());
 		}
 	}

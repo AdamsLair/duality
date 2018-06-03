@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -16,6 +17,7 @@ using AdamsLair.WinForms.ItemModels;
 using AdamsLair.WinForms.ItemViews;
 
 using Duality;
+using Duality.Cloning;
 using Duality.Resources;
 using Duality.Drawing;
 using Duality.Editor;
@@ -71,12 +73,13 @@ namespace Duality.Editor.Plugins.SceneView
 		private	System.Drawing.Imaging.ColorMatrix	inactiveIconMatrix;
 		
 		private MenuModelItem	nodeContextItemNew		= null;
-		private MenuModelItem	nodeContextItemClone	= null;
+		private MenuModelItem	nodeContextItemDuplicate	= null;
 		private MenuModelItem	nodeContextItemDelete	= null;
 		private MenuModelItem	nodeContextItemRename	= null;
 		private MenuModelItem	nodeContextItemLockHide	= null;
+		private MenuModelItem	nodeContextItemCopy		= null;
+		private MenuModelItem	nodeContextItemPaste	= null;
 
-		
 		public IEnumerable<NodeBase> SelectedNodes
 		{
 			get
@@ -365,12 +368,12 @@ namespace Duality.Editor.Plugins.SceneView
 
 			return thisNode;
 		}
-		
+
 		protected void CloneNodes(IEnumerable<TreeNodeAdv> nodes)
 		{
 			if (!nodes.Any()) return;
 
-			var nodeQuery = 
+			var nodeQuery =
 				from viewNode in nodes
 				select this.objectModel.FindNode(this.objectView.GetPath(viewNode)) as NodeBase;
 			var objQuery =
@@ -378,11 +381,11 @@ namespace Duality.Editor.Plugins.SceneView
 				where objNode is GameObjectNode
 				select (objNode as GameObjectNode).Obj;
 			var objArray = objQuery.ToArray();
-			
+
 			this.objectView.BeginUpdate();
 			// Deselect original nodes
 			foreach (GameObject obj in objArray)
-			{ 
+			{
 				TreeNodeAdv dragObjViewNode;
 				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(this.FindNode(obj)));
 				dragObjViewNode.IsSelected = false;
@@ -393,9 +396,108 @@ namespace Duality.Editor.Plugins.SceneView
 
 			// Select new nodes
 			foreach (GameObject clonedObj in cloneAction.Result)
-			{ 
+			{
 				TreeNodeAdv dragObjViewNode;
 				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(this.FindNode(clonedObj)));
+				dragObjViewNode.IsSelected = true;
+				this.objectView.EnsureVisible(dragObjViewNode);
+			}
+			this.objectView.EndUpdate();
+		}
+		protected void CopyNodesToClipboard(IEnumerable<TreeNodeAdv> nodes)
+		{
+			if (!nodes.Any()) return;
+
+			var nodeList = nodes
+				.Select(n => this.objectModel.FindNode(this.objectView.GetPath(n)) as NodeBase)
+				.ToList();
+
+			GameObject[] objects = nodeList
+				.OfType<GameObjectNode>()
+				.Select(gon => gon.Obj)
+				.ToArray();
+
+			Component[] comps = nodeList
+				.OfType<ComponentNode>()
+				.Select(gon => gon.Component)
+				.ToArray();
+
+			DataObject data = new DataObject();
+
+			if (objects.Length > 0) data.SetGameObjects(objects);
+			else if (comps.Length > 0) data.SetComponents(comps);
+
+			Clipboard.SetDataObject(data);
+
+			// Update the context menu, as pasting might now be allowed
+			this.UpdateContextMenu();
+		}
+		protected void PasteClipboardToNodes(IEnumerable<TreeNodeAdv> nodes)
+		{
+			DataObject clipboardData = Clipboard.GetDataObject() as DataObject;
+			if (clipboardData == null) return;
+
+			var targets = nodes
+				.Select(n => this.objectModel.FindNode(this.objectView.GetPath(n)) as NodeBase)
+				.OfType<GameObjectNode>()
+				.Select(gon => gon.Obj);
+
+			if (clipboardData.ContainsGameObjects(DataObjectStorage.Value))
+				this.PasteClipboardObjects(targets);
+			else if (clipboardData.ContainsComponents(typeof(Component), DataObjectStorage.Value))
+				this.PasteClipboardComponents(targets);
+		}
+		private void PasteClipboardObjects(IEnumerable<GameObject> targets)
+		{
+			DataObject clipboardData = Clipboard.GetDataObject() as DataObject;
+			if (clipboardData == null) return;
+
+			GameObject[] objArray = clipboardData.GetGameObjects(DataObjectStorage.Value);
+
+			PasteGameObjectAction pasteAction = new PasteGameObjectAction(objArray, targets);
+			UndoRedoManager.Do(pasteAction);
+
+			this.objectView.BeginUpdate();
+			this.objectView.ClearSelection();
+
+			// Select new nodes
+			foreach (GameObject clonedObj in pasteAction.Result)
+			{
+				TreeNodeAdv dragObjViewNode;
+				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(this.FindNode(clonedObj)));
+				dragObjViewNode.IsSelected = true;
+				this.objectView.EnsureVisible(dragObjViewNode);
+			}
+			this.objectView.EndUpdate();
+		}
+		private void PasteClipboardComponents(IEnumerable<GameObject> targets)
+		{
+			DataObject clipboardData = Clipboard.GetDataObject() as DataObject;
+			if (clipboardData == null) return;
+
+			List<GameObject> targetList = targets.ToList();
+			Component[] compArray = clipboardData
+				.GetComponents(typeof(Component), DataObjectStorage.Value);
+
+			UndoRedoManager.BeginMacro();
+			List<CreateComponentAction> actions = new List<CreateComponentAction>();
+			foreach (GameObject target in targetList)
+			{
+				// Need to clone the components so that multi-object paste works
+				CreateComponentAction pasteAction = new CreateComponentAction(target, compArray.Select(c => c.DeepClone()));
+				UndoRedoManager.Do(pasteAction);
+				actions.Add(pasteAction);
+			}
+			UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
+
+			this.objectView.BeginUpdate();
+			this.objectView.ClearSelection();
+
+			// Select new nodes
+			foreach (Component clonedComp in actions.SelectMany(a => a.Result))
+			{
+				TreeNodeAdv dragObjViewNode;
+				dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(this.FindNode(clonedComp)));
 				dragObjViewNode.IsSelected = true;
 				this.objectView.EnsureVisible(dragObjViewNode);
 			}
@@ -698,12 +800,26 @@ namespace Duality.Editor.Plugins.SceneView
 					SortValue		= MenuModelItem.SortValue_UnderTop,
 					TypeHint		= MenuItemTypeHint.Separator
 				},
-				this.nodeContextItemClone = new MenuModelItem 
+				this.nodeContextItemCopy = new MenuModelItem
 				{
-					Name			= Properties.SceneViewRes.SceneView_ContextItemName_Clone,
-					Icon			= Properties.Resources.page_copy,
-					ShortcutKeys	= Keys.Control | Keys.C,
-					ActionHandler	= this.cloneToolStripMenuItem_Click
+					Name            = Properties.SceneViewRes.SceneView_ContextItemName_Copy,
+					Icon            = Properties.Resources.page_copy,
+					ShortcutKeys    = Keys.Control | Keys.C,
+					ActionHandler   = this.copyToolStripMenuItem_Click
+				},
+				this.nodeContextItemPaste = new MenuModelItem
+				{
+					Name            = Properties.SceneViewRes.SceneView_ContextItemName_Paste,
+					Icon            = Properties.Resources.page_paste,
+					ShortcutKeys    = Keys.Control | Keys.V,
+					ActionHandler   = this.pasteToolStripMenuItem_Click
+				},
+				this.nodeContextItemDuplicate = new MenuModelItem
+				{
+					Name            = Properties.SceneViewRes.SceneView_ContextItemName_Duplicate,
+					Icon            = Properties.Resources.page_copy,
+					ShortcutKeys    = Keys.Control | Keys.D,
+					ActionHandler   = this.duplicateToolStripMenuItem_Click
 				},
 				this.nodeContextItemDelete = new MenuModelItem 
 				{
@@ -731,7 +847,6 @@ namespace Duality.Editor.Plugins.SceneView
 				}
 			});
 		}
-
 		protected void UpdateContextMenu()
 		{
 			// Update main actions
@@ -757,11 +872,25 @@ namespace Duality.Editor.Plugins.SceneView
 			bool singleSelect = selNodeData.Count == 1;
 			bool multiSelect = selNodeData.Count > 1;
 			bool gameObjSelect = selNodeData.Any(n => n is GameObjectNode);
+			bool compSelect = selNodeData.Any(n => n is ComponentNode);
+
+			IDataObject clipboardData = Clipboard.GetDataObject();
+			bool pasteGameObjectsAllowed = (clipboardData != null) && gameObjSelect && !compSelect && clipboardData.ContainsComponents(typeof(Component), DataObjectStorage.Value);
+			bool pasteComponentsAllowed = (clipboardData != null) && clipboardData.ContainsGameObjects(DataObjectStorage.Value);
+			bool pasteAllowed = pasteGameObjectsAllowed || pasteComponentsAllowed;
 
 			this.nodeContextItemNew.Visible = gameObjSelect || noSelect;
 
-			this.nodeContextItemClone.Visible = !noSelect && gameObjSelect;
+			// Enabled is set to Visible for items with shortcuts,
+			// otherwise invisible items can still be invoked through their shortcuts
+			this.nodeContextItemCopy.Visible = !noSelect && (gameObjSelect ^ compSelect);
+			this.nodeContextItemCopy.Enabled = this.nodeContextItemCopy.Visible;
+			this.nodeContextItemPaste.Visible = pasteAllowed;
+			this.nodeContextItemPaste.Enabled = this.nodeContextItemPaste.Visible;
+			this.nodeContextItemDuplicate.Visible = !noSelect && gameObjSelect;
+			this.nodeContextItemDuplicate.Enabled = this.nodeContextItemDuplicate.Visible;
 			this.nodeContextItemDelete.Visible = !noSelect;
+			this.nodeContextItemDelete.Enabled = this.nodeContextItemDelete.Visible;
 			this.nodeContextItemRename.Visible = !noSelect && gameObjSelect;
 			this.nodeContextItemRename.Enabled = singleSelect;
 			this.nodeContextItemLockHide.Visible = gameObjSelect;
@@ -930,6 +1059,8 @@ namespace Duality.Editor.Plugins.SceneView
 					}
 					else
 						DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
+
+					this.UpdateContextMenu();
 				}
 			}
 		}
@@ -1433,7 +1564,15 @@ namespace Duality.Editor.Plugins.SceneView
 			}
 		}
 
-		private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
+		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.CopyNodesToClipboard(this.objectView.SelectedNodes);
+		}
+		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.PasteClipboardToNodes(this.objectView.SelectedNodes);
+		}
+		private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.CloneNodes(this.objectView.SelectedNodes);
 		}
