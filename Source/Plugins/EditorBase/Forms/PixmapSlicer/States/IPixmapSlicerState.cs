@@ -8,14 +8,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
 	public delegate void MouseTransformDelegate(Point mousePos, out float x, out float y);
 
-	[Flags]
-	public enum PixmapNumberingStyle
-	{
-		None = 0x1,
-		Hovered = 0x2,
-		All = 0x4
-	}
-
 	/// <summary>
 	/// An operation state for the <see cref="PixmapSlicerForm"/>
 	/// </summary>
@@ -59,7 +51,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		event EventHandler CursorChanged;
 		event EventHandler StateCancelled;
 		event EventHandler SelectionChanged;
-		event EventHandler<PixmapSlicerForm.PixmapSlicerStateEventArgs> StateChangeRequested;
+		event EventHandler<PixmapSlicerStateEventArgs> StateChangeRequested;
 
 		void ClearSelection();
 

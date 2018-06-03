@@ -92,6 +92,8 @@
     </Compile>
     <Compile Include="Forms\PixmapSlicer\PixmapSlicingContext.cs" />
     <Compile Include="Forms\PixmapSlicer\States\GridSlicePixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\PixmapNumberingStyle.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\PixmapSlicerStateEventArgs.cs" />
     <Compile Include="Forms\PixmapSlicer\States\PixmapSlicerState.cs" />
     <Compile Include="Forms\PixmapSlicer\Utilities\PixmapSlicingRectSide.cs" />
     <Compile Include="Importers\AudioDataAssetImporter.cs" />

@@ -12,11 +12,16 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// </summary>
 	public class AtlasOrderingPixmapSlicerState : PixmapSlicerState
 	{
-		private ToolStripButton doneButton		= null;
-		private ToolStripButton cancelButton	= null;
-		private List<int> orderedIndices		= new List<int>();
+		private ToolStripButton doneButton   = null;
+		private ToolStripButton cancelButton = null;
+		private List<int> orderedIndices     = new List<int>();
 
-		public override PixmapNumberingStyle NumberingStyle { get { return PixmapNumberingStyle.None; } }
+
+		public override PixmapNumberingStyle NumberingStyle
+		{
+			get { return PixmapNumberingStyle.None; }
+		}
+
 
 		public AtlasOrderingPixmapSlicerState()
 		{
@@ -32,43 +37,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			this.StateControls.Add(this.doneButton);
 			this.StateControls.Add(this.cancelButton);
-		}
-
-		public override void OnMouseUp(MouseEventArgs e)
-		{
-			if (this.TargetPixmap == null || this.TargetPixmap.Atlas == null)
-				return;
-
-			float x, y;
-			this.TransformMouseCoordinates(e.Location, out x, out y);
-			int indexClicked = this.TargetPixmap.Atlas
-				.IndexOfFirst(r => this.GetDisplayRect(r).Contains(x, y));
-
-			if (indexClicked == -1 || this.orderedIndices.Contains(indexClicked))
-				return;
-
-			this.orderedIndices.Add(indexClicked);
-
-			this.UpdateDisplay(this.TargetPixmap.Atlas[indexClicked]);
-		}
-
-		public override void OnKeyUp(KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Escape)
-				this.CancelState();
-		}
-
-		public override void OnPaint(PaintEventArgs e)
-		{
-			base.OnPaint(e);
-
-			// Render the index of any clicked rects
-			for (int index = 0; index < this.orderedIndices.Count; index++)
-			{
-				Rect atlasRect = this.TargetPixmap.Atlas[this.orderedIndices[index]];
-				Rect displayRect = this.GetDisplayRect(atlasRect);
-				this.DisplayRectIndex(e.Graphics, displayRect, index);
-			}
 		}
 
 		private void FinishOrdering()
@@ -92,8 +60,43 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				}
 			}
 
-			UndoRedoManager.Do(new SetAtlasAction(newAtlas, new []{ this.TargetPixmap }));
+			UndoRedoManager.Do(new SetAtlasAction(newAtlas, new[] { this.TargetPixmap }));
 			this.CancelState();
+		}
+
+		public override void OnMouseUp(MouseEventArgs e)
+		{
+			if (this.TargetPixmap == null || this.TargetPixmap.Atlas == null)
+				return;
+
+			float x, y;
+			this.TransformMouseCoordinates(e.Location, out x, out y);
+			int indexClicked = this.TargetPixmap.Atlas
+				.IndexOfFirst(r => this.GetDisplayRect(r).Contains(x, y));
+
+			if (indexClicked == -1 || this.orderedIndices.Contains(indexClicked))
+				return;
+
+			this.orderedIndices.Add(indexClicked);
+
+			this.UpdateDisplay(this.TargetPixmap.Atlas[indexClicked]);
+		}
+		public override void OnKeyUp(KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+				this.CancelState();
+		}
+		public override void OnPaint(PaintEventArgs e)
+		{
+			base.OnPaint(e);
+
+			// Render the index of any clicked rects
+			for (int index = 0; index < this.orderedIndices.Count; index++)
+			{
+				Rect atlasRect = this.TargetPixmap.Atlas[this.orderedIndices[index]];
+				Rect displayRect = this.GetDisplayRect(atlasRect);
+				this.DisplayRectIndex(e.Graphics, displayRect, index);
+			}
 		}
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)

@@ -12,10 +12,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	public class NewRectPixmapSlicerState : PixmapSlicerState
 	{
 		private ToolStripButton cancelButton = null;
+		private bool            mouseDown    = false;
+		private PointF          rectAddStart = Point.Empty;
+		private Rect?           newAtlasRect = null;
 
-		private bool	mouseDown			= false;
-		private PointF	rectAddStart		= Point.Empty;
-		private Rect?	newAtlasRect		= null;
 
 		public NewRectPixmapSlicerState()
 		{
@@ -29,11 +29,19 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.StateControls.Add(this.cancelButton);
 		}
 
+		private void CommitRect()
+		{
+			int index = this.TargetPixmap.Atlas != null
+				? this.TargetPixmap.Atlas.Count
+				: 0;
+
+			UndoRedoManager.Do(new SetAtlasRectAction(this.newAtlasRect.Value, index, new[] { this.TargetPixmap }));
+		}
+
 		public override void OnMouseDown(MouseEventArgs e)
 		{
 			this.mouseDown = true;
 		}
-
 		public override void OnMouseUp(MouseEventArgs e)
 		{
 			if (this.mouseDown)
@@ -43,7 +51,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				this.CancelState();
 			}
 		}
-
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
@@ -86,7 +93,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				this.UpdateDisplay(updatedArea);
 			}
 		}
-
 		public override void OnKeyUp(KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Escape)
@@ -105,15 +111,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.SelectedRectPen.Width /= this.Context.ScaleFactor;
 			e.Graphics.DrawRectangle(this.SelectedRectPen, rect.X, rect.Y, rect.W, rect.H);
 			this.SelectedRectPen.Width = originalWidth;
-		}
-
-		private void CommitRect()
-		{
-			int index = this.TargetPixmap.Atlas != null 
-				? this.TargetPixmap.Atlas.Count 
-				: 0;
-
-			UndoRedoManager.Do(new SetAtlasRectAction(this.newAtlasRect.Value, index, new []{ this.TargetPixmap }));
 		}
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)

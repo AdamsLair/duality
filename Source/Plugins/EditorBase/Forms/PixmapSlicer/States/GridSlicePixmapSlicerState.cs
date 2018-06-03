@@ -16,13 +16,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// </summary>
 	public class GridSlicePixmapSlicerState : PixmapSlicerState
 	{
-		private ToolStripButton			doneButton		= null;
-		private ToolStripButton			cancelButton	= null;
-		private ToolStripNumericUpDown	rowsInput		= null;
-		private ToolStripNumericUpDown	colsInput		= null;
-		private ToolStripNumericUpDown	borderInput		= null;
+		private ToolStripButton        doneButton   = null;
+		private ToolStripButton        cancelButton = null;
+		private ToolStripNumericUpDown rowsInput    = null;
+		private ToolStripNumericUpDown colsInput    = null;
+		private ToolStripNumericUpDown borderInput  = null;
 
 		private List<Rect> originalAtlas = null;
+
 
 		public GridSlicePixmapSlicerState()
 		{
@@ -49,6 +50,33 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.StateControls.Add(this.borderInput);
 		}
 
+		private void FinishSlicing()
+		{
+			List<Rect> newAtlas = this.TargetPixmap.Atlas == null
+				? null
+				: this.TargetPixmap.Atlas.ToList();
+
+			// Set the atlas back to the original so that undoing the following
+			// undo redo action will revert to the original rects
+			this.TargetPixmap.Atlas = this.originalAtlas;
+
+			UndoRedoManager.Do(new SetAtlasAction(newAtlas, new[] { this.TargetPixmap }));
+			this.CancelState();
+		}
+
+		private void UpdateControls()
+		{
+			this.rowsInput.Value = this.TargetPixmap.AnimRows;
+			this.colsInput.Value = this.TargetPixmap.AnimCols;
+			this.borderInput.Value = this.TargetPixmap.AnimFrameBorder;
+		}
+		private void UndoAndCancelState()
+		{
+			this.TargetPixmap.Atlas = this.originalAtlas;
+
+			this.CancelState();
+		}
+
 		public override void OnKeyUp(KeyEventArgs e)
 		{
 			switch (e.KeyCode)
@@ -67,7 +95,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					break;
 			}
 		}
-
 		protected override void OnPixmapChanged()
 		{
 			base.OnPixmapChanged();
@@ -89,51 +116,20 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			this.UpdateDisplay();
 		}
-
-		private void FinishSlicing()
-		{
-			List<Rect> newAtlas = this.TargetPixmap.Atlas == null 
-				? null 
-				: this.TargetPixmap.Atlas.ToList();
-
-			// Set the atlas back to the original so that undoing the following
-			// undo redo action will revert to the original rects
-			this.TargetPixmap.Atlas = this.originalAtlas;
-
-			UndoRedoManager.Do(new SetAtlasAction(newAtlas, new []{ this.TargetPixmap }));
-			this.CancelState();
-		}
-
 		private void OnRowsChanged(object sender, EventArgs e)
 		{
 			this.TargetPixmap.AnimRows = (int) this.rowsInput.Value;
 			this.UpdateDisplay();
 		}
-
 		private void OnColsChanged(object sender, EventArgs e)
 		{
 			this.TargetPixmap.AnimCols = (int)this.colsInput.Value;
 			this.UpdateDisplay();
 		}
-
 		private void OnBorderChanged(object sender, EventArgs e)
 		{
 			this.TargetPixmap.AnimFrameBorder = (int)this.borderInput.Value;
 			this.UpdateDisplay();
-		}
-
-		private void UpdateControls()
-		{
-			this.rowsInput.Value = this.TargetPixmap.AnimRows;
-			this.colsInput.Value = this.TargetPixmap.AnimCols;
-			this.borderInput.Value = this.TargetPixmap.AnimFrameBorder;
-		}
-
-		private void UndoAndCancelState()
-		{
-			this.TargetPixmap.Atlas = this.originalAtlas;
-
-			this.CancelState();
 		}
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)

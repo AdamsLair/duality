@@ -11,30 +11,36 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
 	public abstract class PixmapSlicerState : IPixmapSlicerState
 	{
-		protected static Pen	rectPenLight			= new Pen(Color.Black, 1);
-		protected static Pen	rectPenDark				= new Pen(Color.White, 1);
-		protected static Pen	selectedRectPenLight	= new Pen(Color.Blue, 1);
-		protected static Pen	selectedRectPenDark		= new Pen(Color.DeepSkyBlue, 1);
-		protected static Brush	indexTextBackBrush		= new SolidBrush(Color.FromArgb(128, Color.Black));
-		protected static Brush	indexTextForeBrush		= new SolidBrush(Color.White);
-		protected static Font	font					= new Font(FontFamily.GenericSansSerif, 8.25f);
+		protected static Pen   rectPenLight         = new Pen(Color.Black, 1);
+		protected static Pen   rectPenDark          = new Pen(Color.White, 1);
+		protected static Pen   selectedRectPenLight = new Pen(Color.Blue, 1);
+		protected static Pen   selectedRectPenDark  = new Pen(Color.DeepSkyBlue, 1);
+		protected static Brush indexTextBackBrush   = new SolidBrush(Color.FromArgb(128, Color.Black));
+		protected static Brush indexTextForeBrush   = new SolidBrush(Color.White);
+		protected static Font  font                 = new Font(FontFamily.GenericSansSerif, 8.25f);
 
-		protected Pen RectPen { get { return this.Context.DarkMode ? rectPenDark : rectPenLight; } }
-		protected Pen SelectedRectPen { get { return this.Context.DarkMode ? selectedRectPenDark : selectedRectPenLight; } }
 
-		private int		selectedRectIndex	= -1;
-		private Cursor	cursor				= Cursors.Default;
-		private Pixmap	targetPixmap		= null;
+		private   int    selectedRectIndex = -1;
+		private   Cursor cursor            = Cursors.Default;
+		private   Pixmap targetPixmap      = null;
+		protected int    hoveredRectIndex  = -1;
 
-		protected int					hoveredRectIndex		= -1;
+		public event EventHandler<InvalidateEventArgs> DisplayInvalidated;
+		public event EventHandler CursorChanged;
+		public event EventHandler StateCancelled;
+		public event EventHandler SelectionChanged;
+		public event EventHandler<PixmapSlicerStateEventArgs> StateChangeRequested;
 
-		public List<ToolStripItem>		StateControls				{ get; private set; }
-		public MouseTransformDelegate	TransformMouseCoordinates	{ get; set; }
-		public Func<Rect, Rect>			GetAtlasRect				{ get; set; }
-		public Func<Rect, Rect>			GetDisplayRect				{ get; set; }
-		public Rectangle				DisplayBounds				{ get; set; }
-		public virtual PixmapNumberingStyle NumberingStyle			{ get { return this.Context.NumberingStyle; } }
 
+		public List<ToolStripItem> StateControls { get; private set; }
+		public MouseTransformDelegate TransformMouseCoordinates { get; set; }
+		public Func<Rect, Rect> GetAtlasRect { get; set; }
+		public Func<Rect, Rect> GetDisplayRect { get; set; }
+		public Rectangle DisplayBounds { get; set; }
+		public virtual PixmapNumberingStyle NumberingStyle
+		{
+			get { return this.Context.NumberingStyle; }
+		}
 		public Pixmap TargetPixmap
 		{
 			get { return this.targetPixmap; }
@@ -47,7 +53,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				}
 			}
 		}
-
 		public Cursor Cursor
 		{
 			get { return this.cursor; }
@@ -61,7 +66,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				}
 			}
 		}
-
 		public int SelectedRectIndex
 		{
 			get { return this.selectedRectIndex; }
@@ -75,14 +79,16 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				}
 			}
 		}
-
 		public PixmapSlicingContext Context { get; set; }
+		protected Pen RectPen
+		{
+			get { return this.Context.DarkMode ? rectPenDark : rectPenLight; }
+		}
+		protected Pen SelectedRectPen
+		{
+			get { return this.Context.DarkMode ? selectedRectPenDark : selectedRectPenLight; }
+		}
 
-		public event EventHandler<InvalidateEventArgs> DisplayInvalidated;
-		public event EventHandler CursorChanged;
-		public event EventHandler StateCancelled;
-		public event EventHandler SelectionChanged;
-		public event EventHandler<PixmapSlicerForm.PixmapSlicerStateEventArgs> StateChangeRequested;
 
 		protected PixmapSlicerState()
 		{
@@ -94,14 +100,63 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.SelectedRectIndex = -1;
 		}
 
+		protected void UpdateDisplay()
+		{
+			if (this.DisplayInvalidated != null)
+				this.DisplayInvalidated.Invoke(this, new InvalidateEventArgs(this.DisplayBounds));
+		}
+		protected void UpdateDisplay(Rect rect)
+		{
+			if (this.DisplayInvalidated != null)
+			{
+				Rectangle updatedArea = RectToRectangle(this.GetDisplayRect(rect));
+				// Grow the rectangle slightly to make sure enough area is invalidated
+				updatedArea.Inflate(10, 10);
+				this.DisplayInvalidated.Invoke(this, new InvalidateEventArgs(updatedArea));
+			}
+		}
+
+		protected void CancelState()
+		{
+			if (this.StateCancelled != null)
+			{
+				this.StateCancelled.Invoke(this, EventArgs.Empty);
+			}
+		}
+		protected void ChangeState(Type newStateType)
+		{
+			if (this.StateChangeRequested != null)
+				this.StateChangeRequested.Invoke(this, new PixmapSlicerStateEventArgs(newStateType));
+		}
+
+		/// <summary>
+		/// Displays an index value in the middle of the given Rect
+		/// </summary>
+		protected void DisplayRectIndex(Graphics g, Rect displayRect, int index)
+		{
+			string indexText = index.ToString();
+			SizeF textSize = g.MeasureString(indexText, font);
+			RectangleF textRect = new RectangleF(
+				displayRect.X,
+				displayRect.Y,
+				3 + textSize.Width,
+				3 + textSize.Height);
+			textRect.X += (displayRect.W - textRect.Width) / 2;
+			textRect.Y += (displayRect.H - textRect.Height) / 2;
+			PointF textPos = new PointF(
+				textRect.X + textRect.Width * 0.5f - textSize.Width * 0.5f,
+				textRect.Y + textRect.Height * 0.5f - textSize.Height * 0.5f);
+
+			g.FillRectangle(indexTextBackBrush, textRect);
+			g.DrawString(indexText, font, indexTextForeBrush, textPos.X, textPos.Y);
+		}
+
 		public virtual void OnMouseDown(MouseEventArgs e)
 		{
 		}
-
 		public virtual void OnMouseUp(MouseEventArgs e)
 		{
 		}
-
 		public virtual void OnMouseMove(MouseEventArgs e)
 		{
 			if (this.targetPixmap == null || this.targetPixmap.Atlas == null)
@@ -137,7 +192,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				this.hoveredRectIndex = -1;
 			}
 		}
-
 		public virtual void OnKeyUp(KeyEventArgs e)
 		{
 		}
@@ -184,68 +238,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			}
 		}
 
-		/// <summary>
-		/// Displays an index value in the middle of the given Rect
-		/// </summary>
-		protected void DisplayRectIndex(Graphics g, Rect displayRect, int index)
-		{
-			string indexText = index.ToString();
-			SizeF textSize = g.MeasureString(indexText, font);
-			RectangleF textRect = new RectangleF(
-				displayRect.X,
-				displayRect.Y,
-				3 + textSize.Width,
-				3 + textSize.Height);
-			textRect.X += (displayRect.W - textRect.Width) / 2;
-			textRect.Y += (displayRect.H - textRect.Height) / 2;
-			PointF textPos = new PointF(
-				textRect.X + textRect.Width * 0.5f - textSize.Width * 0.5f,
-				textRect.Y + textRect.Height * 0.5f - textSize.Height * 0.5f);
-
-			g.FillRectangle(indexTextBackBrush, textRect);
-			g.DrawString(indexText, font, indexTextForeBrush, textPos.X, textPos.Y);
-		}
-
-		protected virtual void OnPixmapChanged()
-		{
-
-		}
-
-		protected void CancelState()
-		{
-			if (this.StateCancelled != null)
-			{
-				this.StateCancelled.Invoke(this, EventArgs.Empty);
-			}
-		}
-
-		protected void UpdateDisplay()
-		{
-			if (this.DisplayInvalidated != null)
-				this.DisplayInvalidated.Invoke(this, new InvalidateEventArgs(this.DisplayBounds));
-		}
-
-		protected void UpdateDisplay(Rect rect)
-		{
-			if (this.DisplayInvalidated != null)
-			{
-				Rectangle updatedArea = RectToRectangle(this.GetDisplayRect(rect));
-				// Grow the rectangle slightly to make sure enough area is invalidated
-				updatedArea.Inflate(10,10);
-				this.DisplayInvalidated.Invoke(this, new InvalidateEventArgs(updatedArea));
-			}
-		}
-
-		protected void ChangeState(Type newStateType)
-		{
-			if (this.StateChangeRequested != null)
-			{
-				this.StateChangeRequested.Invoke(this, 
-					new PixmapSlicerForm.PixmapSlicerStateEventArgs(newStateType));
-			}
-		}
+		protected virtual void OnPixmapChanged() { }
 
 		public abstract HelpInfo ProvideHoverHelp(Point localPos, ref bool captured);
+
 
 		/// <summary>
 		/// Creates a <see cref="ToolStripNumericUpDown"/> with default styling.

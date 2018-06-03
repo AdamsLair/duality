@@ -16,19 +16,20 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	{
 		private const float DRAG_OFFSET = 3f;
 
-		private readonly ToolStripButton		addRectButton			= null;
-		private readonly ToolStripButton		clearButton				= null;
-		private readonly ToolStripButton		deleteSelectedButton	= null;
-		private readonly ToolStripButton		autoSliceButton			= null;
-		private readonly ToolStripButton		orderRectsButton		= null;
-		private readonly ToolStripNumericUpDown	alphaCutoffEntry		= null;
-		private readonly ToolStripButton		gridSliceButton			= null;
+		private readonly ToolStripButton        addRectButton        = null;
+		private readonly ToolStripButton        clearButton          = null;
+		private readonly ToolStripButton        deleteSelectedButton = null;
+		private readonly ToolStripButton        autoSliceButton      = null;
+		private readonly ToolStripButton        orderRectsButton     = null;
+		private readonly ToolStripNumericUpDown alphaCutoffEntry     = null;
+		private readonly ToolStripButton        gridSliceButton      = null;
 
-		private Rect	originalDragRect	= Rect.Empty;
-		private bool	mouseDown			= false;
-		private bool	dragInProgress		= false;
+		private Rect originalDragRect = Rect.Empty;
+		private bool mouseDown        = false;
+		private bool dragInProgress   = false;
 
 		private PixmapSlicingRectSide hoveredRectSide = PixmapSlicingRectSide.None;
+
 
 		public DefaultPixmapSlicerState()
 		{
@@ -77,11 +78,67 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.SelectedRectIndex = -1;
 		}
 
+		private void ClearRects()
+		{
+			if (this.TargetPixmap == null)
+				return;
+
+			UndoRedoManager.Do(new ClearAtlasAction(new[] { this.TargetPixmap }));
+			this.ClearSelection();
+		}
+		private void DeleteSelectedRect()
+		{
+			if (this.SelectedRectIndex == -1)
+				return;
+
+			UndoRedoManager.Do(new DeleteAtlasRectAction(this.SelectedRectIndex, new[] { this.TargetPixmap }));
+			this.ClearSelection();
+		}
+
+		private void AutoSlicePixmap()
+		{
+			if (this.TargetPixmap == null)
+				return;
+
+			byte alpha = (byte)this.alphaCutoffEntry.Value;
+
+			IEnumerable<Rect> rects = PixmapSlicingUtility.FindRects(this.TargetPixmap, alpha);
+
+			UndoRedoManager.Do(new SetAtlasAction(rects, new[] { this.TargetPixmap }));
+
+			this.ClearSelection();
+		}
+
+		private void SetPixmapAtlasRect(Rect rect, int index)
+		{
+			Rect oldRect = this.TargetPixmap.Atlas[index];
+			this.TargetPixmap.Atlas[index] = rect;
+			Rect updatedArea = rect.ExpandedToContain(oldRect);
+			this.UpdateDisplay(updatedArea);
+		}
+		private void SetHoveredSide(PixmapSlicingRectSide side)
+		{
+			this.hoveredRectSide = side;
+			switch (side)
+			{
+				case PixmapSlicingRectSide.Left:
+				case PixmapSlicingRectSide.Right:
+					this.Cursor = Cursors.SizeWE;
+					break;
+				case PixmapSlicingRectSide.Top:
+				case PixmapSlicingRectSide.Bottom:
+					this.Cursor = Cursors.SizeNS;
+					break;
+				default:
+					this.Cursor = Cursors.Default;
+					break;
+			}
+		}
+
 		public override void OnMouseDown(MouseEventArgs e)
 		{
 			this.mouseDown = true;
 		}
-
 		public override void OnMouseUp(MouseEventArgs e)
 		{
 			this.mouseDown = false;
@@ -109,7 +166,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			this.deleteSelectedButton.Enabled = this.SelectedRectIndex != -1;
 		}
-
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
@@ -195,71 +251,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					this.SetPixmapAtlasRect(atlasRect, this.SelectedRectIndex);
 			}
 		}
-
 		public override void OnKeyUp(KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Delete && this.SelectedRectIndex != -1)
 			{
 				this.DeleteSelectedRect();
-			}
-		}
-
-		private void ClearRects()
-		{
-			if (this.TargetPixmap == null)
-				return;
-
-			UndoRedoManager.Do(new ClearAtlasAction(new[] { this.TargetPixmap }));
-			this.ClearSelection();
-		}
-
-		private void DeleteSelectedRect()
-		{
-			if (this.SelectedRectIndex == -1)
-				return;
-
-			UndoRedoManager.Do(new DeleteAtlasRectAction(this.SelectedRectIndex, new []{ this.TargetPixmap }));
-			this.ClearSelection();
-		}
-
-		private void AutoSlicePixmap()
-		{
-			if (this.TargetPixmap == null)
-				return;
-
-			byte alpha = (byte)this.alphaCutoffEntry.Value;
-
-			IEnumerable<Rect> rects = PixmapSlicingUtility.FindRects(this.TargetPixmap, alpha);
-
-			UndoRedoManager.Do(new SetAtlasAction(rects, new []{ this.TargetPixmap }));
-
-			this.ClearSelection();
-		}
-
-		private void SetPixmapAtlasRect(Rect rect, int index)
-		{
-			Rect oldRect = this.TargetPixmap.Atlas[index];
-			this.TargetPixmap.Atlas[index] = rect;
-			Rect updatedArea = rect.ExpandedToContain(oldRect);
-			this.UpdateDisplay(updatedArea);
-		}
-
-		private void SetHoveredSide(PixmapSlicingRectSide side)
-		{
-			this.hoveredRectSide = side;
-			switch (side)
-			{
-				case PixmapSlicingRectSide.Left:
-				case PixmapSlicingRectSide.Right:
-					this.Cursor = Cursors.SizeWE;
-					break;
-				case PixmapSlicingRectSide.Top:
-				case PixmapSlicingRectSide.Bottom:
-					this.Cursor = Cursors.SizeNS;
-					break;
-				default:
-					this.Cursor = Cursors.Default;
-					break;
 			}
 		}
 
