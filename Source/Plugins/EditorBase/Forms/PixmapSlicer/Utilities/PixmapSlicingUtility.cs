@@ -4,33 +4,13 @@ using Duality.Resources;
 
 namespace Duality.Editor.Plugins.Base
 {
-	public static class ExtMethodsPixmapSlicerRectSide
-	{
-		public static PixmapSlicingUtility.Side Opposite(this PixmapSlicingUtility.Side side)
-		{
-			switch (side)
-			{
-				case PixmapSlicingUtility.Side.Left:	return PixmapSlicingUtility.Side.Right;
-				case PixmapSlicingUtility.Side.Right:	return PixmapSlicingUtility.Side.Left;
-				case PixmapSlicingUtility.Side.Top:		return PixmapSlicingUtility.Side.Bottom;
-				case PixmapSlicingUtility.Side.Bottom:	return PixmapSlicingUtility.Side.Top;
-				default: return PixmapSlicingUtility.Side.None;
-			}
-		}
-	}
-
 	public static class PixmapSlicingUtility
 	{
-		public enum Side
-		{
-			None, Left, Right, Top, Bottom
-		}
-
 		/// <summary>
 		/// Returns whether or not the given coordinates are within <paramref name="range"/> of the rect.
 		/// Also outputs which side the coordinates are closest to when the points are within range.
 		/// </summary>
-		public static bool WithinRangeToBorder(this Rect rect, float x, float y, float range, out Side side)
+		public static bool WithinRangeToBorder(this Rect rect, float x, float y, float range, out PixmapSlicingRectSide side)
 		{
 			float doubleRange = range * 2;
 			Rect smaller = rect.Scaled((rect.W - doubleRange) / rect.W, (rect.H - doubleRange) / rect.H).WithOffset(range, range);
@@ -40,19 +20,19 @@ namespace Duality.Editor.Plugins.Base
 
 			if (!borderAreaContains)
 			{
-				side = Side.None;
+				side = PixmapSlicingRectSide.None;
 				return false;
 			}
 
 			float dLeft = MathF.Abs(rect.X - x);
 			float dRight = MathF.Abs(rect.RightX - x);
 			float minH = MathF.Min(dLeft, dRight);
-			Side sideH = dLeft < dRight ? Side.Left : Side.Right;
+			PixmapSlicingRectSide sideH = (dLeft < dRight) ? PixmapSlicingRectSide.Left : PixmapSlicingRectSide.Right;
 
 			float dTop = MathF.Abs(rect.Y - y);
 			float dBottom = MathF.Abs(rect.BottomY - y);
 			float minV = MathF.Min(dTop, dBottom);
-			Side sideV = dTop < dBottom ? Side.Top : Side.Bottom;
+			PixmapSlicingRectSide sideV = (dTop < dBottom) ? PixmapSlicingRectSide.Top : PixmapSlicingRectSide.Bottom;
 
 			side = minH < minV ? sideH : sideV;
 			return true;

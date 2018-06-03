@@ -93,6 +93,7 @@
     <Compile Include="Forms\PixmapSlicer\PixmapSlicingContext.cs" />
     <Compile Include="Forms\PixmapSlicer\States\GridSlicePixmapSlicerState.cs" />
     <Compile Include="Forms\PixmapSlicer\States\PixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\Utilities\PixmapSlicingRectSide.cs" />
     <Compile Include="Importers\AudioDataAssetImporter.cs" />
     <Compile Include="Importers\FontAssetImporter.cs">
       <SubType>Code</SubType>
