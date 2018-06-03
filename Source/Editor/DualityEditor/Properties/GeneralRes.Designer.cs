@@ -1453,6 +1453,24 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Paste {0}.
+        /// </summary>
+        public static string UndoRedo_PasteGameObject {
+            get {
+                return ResourceManager.GetString("UndoRedo_PasteGameObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste {0} GameObjects.
+        /// </summary>
+        public static string UndoRedo_PasteGameObjectMulti {
+            get {
+                return ResourceManager.GetString("UndoRedo_PasteGameObjectMulti", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove {0} from IDictionaries.
         /// </summary>
         public static string UndoRedo_RemoveFromDictionary {

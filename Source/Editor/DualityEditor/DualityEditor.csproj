@@ -208,6 +208,7 @@
     <Compile Include="Properties\GeneralResNames.cs" />
     <Compile Include="UndoRedoActions\AddDictionaryKeyAction.cs" />
     <Compile Include="UndoRedoActions\EditResourceAssetDataAction.cs" />
+    <Compile Include="UndoRedoActions\PasteGameObjectAction.cs" />
     <Compile Include="UndoRedoActions\RemoveDictionaryKeyAction.cs" />
     <Compile Include="UndoRedoActions\ResizeListAction.cs" />
     <Compile Include="Utility\BuildHelper.cs" />
