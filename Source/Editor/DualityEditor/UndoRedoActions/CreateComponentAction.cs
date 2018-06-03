@@ -85,8 +85,8 @@ namespace Duality.Editor.UndoRedoActions
 						// Get additional requirements for the concrete type
 						IEnumerable<Type> additionalRequirements =
 							Component.RequireMap.GetRequirementsToCreate(this.targetParentObj, required)
-								// Except types that are already covered by a previously identified requirement
-								.Where(newReq => !createRequirements.Any(newReq.IsAssignableFrom));
+							// Except types that are already covered by a previously identified requirement
+							.Where(newReq => !createRequirements.Any(newReq.IsAssignableFrom));
 						createRequirements.AddRange(additionalRequirements);
 					}
 
