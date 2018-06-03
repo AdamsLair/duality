@@ -62,6 +62,12 @@ namespace Duality.Editor.Forms
 
 		private Size oldItemListingSize = Size.Empty;
 
+		public string HeaderText
+		{
+			get { return this.labelInfo.Text; }
+			set { this.labelInfo.Text = value; }
+		}
+
 		public Color PathColor { get; set; }
 		public Type FilteredType { get; set; }
 		public bool SelectType { get; set; }
