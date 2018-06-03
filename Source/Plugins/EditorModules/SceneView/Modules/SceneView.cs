@@ -428,6 +428,9 @@ namespace Duality.Editor.Plugins.SceneView
 			else if (comps.Length > 0) data.SetComponents(comps);
 
 			Clipboard.SetDataObject(data);
+
+			// Update the context menu, as pasting might now be allowed
+			this.UpdateContextMenu();
 		}
 		protected void PasteClipboardToNodes(IEnumerable<TreeNodeAdv> nodes)
 		{
@@ -842,7 +845,6 @@ namespace Duality.Editor.Plugins.SceneView
 				}
 			});
 		}
-
 		protected void UpdateContextMenu()
 		{
 			// Update main actions
@@ -871,9 +873,9 @@ namespace Duality.Editor.Plugins.SceneView
 			bool compSelect = selNodeData.Any(n => n is ComponentNode);
 
 			IDataObject clipboardData = Clipboard.GetDataObject();
-			bool pasteAllowed = clipboardData != null
-				&& (clipboardData.ContainsGameObjects(DataObjectStorage.Value)
-					|| (gameObjSelect && !compSelect && clipboardData.ContainsComponents(typeof(Component), DataObjectStorage.Value)));
+			bool pasteGameObjectsAllowed = (clipboardData != null) && gameObjSelect && !compSelect && clipboardData.ContainsComponents(typeof(Component), DataObjectStorage.Value);
+			bool pasteComponentsAllowed = (clipboardData != null) && clipboardData.ContainsGameObjects(DataObjectStorage.Value);
+			bool pasteAllowed = pasteGameObjectsAllowed || pasteComponentsAllowed;
 
 			this.nodeContextItemNew.Visible = gameObjSelect || noSelect;
 
