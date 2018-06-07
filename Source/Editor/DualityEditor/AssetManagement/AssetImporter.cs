@@ -48,10 +48,19 @@ namespace Duality.Editor.AssetManagement
 		/// would generate for the given input. Defaults to the name
 		/// of the input file, without extension.
 		/// </summary>
-		protected virtual string ResourceNameFromInput(AssetImportInput input)
+		protected virtual string GetResourceNameFromInput(AssetImportInput input)
 		{
 			return input.AssetName;
 		}
+		/// <summary>
+		/// Returns the name of the file that would be exported for the given resource.
+		/// Defaults to the name of the resource with the extension <see cref="SourceFileExtPrimary"/>
+		/// </summary>
+		protected virtual string GetOutputNameFromResource(T resource)
+		{
+			return resource.Name + this.SourceFileExtPrimary;
+		}
+
 		/// <summary>
 		/// Returns whether or not this importer accepts the given input.
 		/// By default, compares the input files extension to <see cref="SourceFileExts"/>.
@@ -62,14 +71,6 @@ namespace Duality.Editor.AssetManagement
 			bool matchingFileExt = this.SourceFileExts.Any(acceptedExt =>
 				string.Equals(inputFileExt, acceptedExt, StringComparison.InvariantCultureIgnoreCase));
 			return matchingFileExt;
-		}
-		/// <summary>
-		/// Returns the name of the file that would be exported for the given resource.
-		/// Defaults to the name of the resource with the extension <see cref="SourceFileExtPrimary"/>
-		/// </summary>
-		protected virtual string OutputNameFromResource(T resource)
-		{
-			return resource.Name + this.SourceFileExtPrimary;
 		}
 		/// <summary>
 		/// Returns whether or not the given resource can be exported.
@@ -101,7 +102,7 @@ namespace Duality.Editor.AssetManagement
 			foreach (AssetImportInput input in env.HandleAllInput(this.AcceptsInput))
 			{
 				// For all handled input items, specify which Resource the importer intends to create / modify
-				env.AddOutput<T>(this.ResourceNameFromInput(input), input.Path);
+				env.AddOutput<T>(this.GetResourceNameFromInput(input), input.Path);
 			}
 		}
 		void IAssetImporter.Import(IAssetImportEnvironment env)
@@ -112,7 +113,7 @@ namespace Duality.Editor.AssetManagement
 			foreach (AssetImportInput input in env.Input)
 			{
 				// Request a target Resource with a name matching the input
-				ContentRef<T> targetRef = env.GetOutput<T>(this.ResourceNameFromInput(input));
+				ContentRef<T> targetRef = env.GetOutput<T>(this.GetResourceNameFromInput(input));
 
 				// If we successfully acquired one, proceed with the import
 				if (targetRef.IsAvailable)
@@ -129,13 +130,13 @@ namespace Duality.Editor.AssetManagement
 			T resource = env.Input as T;
 			if (resource != null && this.CanExport(resource))
 			{
-				env.AddOutputPath(this.OutputNameFromResource(resource));
+				env.AddOutputPath(this.GetOutputNameFromResource(resource));
 			}
 		}
 		void IAssetImporter.Export(IAssetExportEnvironment env)
 		{
 			T resource = env.Input as T;
-			string outputPath = env.AddOutputPath(this.OutputNameFromResource(resource));
+			string outputPath = env.AddOutputPath(this.GetOutputNameFromResource(resource));
 			this.ExportResource(resource, outputPath, env);
 		}
 	}
