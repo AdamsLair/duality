@@ -16,6 +16,7 @@ namespace Duality.Editor.Plugins.Base
 		public static readonly string SourceFileExtFragment = ".frag";
 		private static readonly string[] SourceFileExts = new[] { SourceFileExtVertex, SourceFileExtFragment };
 		
+
 		public string Id
 		{
 			get { return "BasicShaderAssetImporter"; }
@@ -28,6 +29,7 @@ namespace Duality.Editor.Plugins.Base
 		{
 			get { return 0; }
 		}
+
 
 		public void PrepareImport(IAssetImportEnvironment env)
 		{
