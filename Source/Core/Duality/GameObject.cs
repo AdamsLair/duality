@@ -143,8 +143,7 @@ namespace Duality
 								Component.ExecOrder.SortTypedItems(initList, item => item.GetType(), true);
 							else
 								initList.Reverse();
-							foreach (ICmpInitializable component in initList)
-								component.OnShutdown(Component.ShutdownContext.Deactivate);
+							initList.ShutdownAll(Component.ShutdownContext.Deactivate);
 						}
 					}
 

@@ -245,10 +245,7 @@ namespace Duality.Resources
 					// Deactivate all the listed components. Note that they may create or destroy
 					// objects, so it's important that we're iterating a copy of the scene objects
 					// here, and not the real thing.
-					for (int i = shutdownList.Count - 1; i >= 0; i--)
-					{
-						shutdownList[i].OnShutdown(Component.ShutdownContext.Deactivate);
-					}
+					shutdownList.ShutdownAllReversed(Component.ShutdownContext.Deactivate);
 				});
 
 				// Clear the physics world of all contents
@@ -363,8 +360,7 @@ namespace Duality.Resources
 				initList.Reverse();
 
 			// Invoke the init event on all gathered components in the right order
-			foreach (ICmpInitializable component in initList)
-				component.OnShutdown(Component.ShutdownContext.Deactivate);
+			initList.ShutdownAll(Component.ShutdownContext.Deactivate);
 		}
 		private static void OnComponentAdded(ComponentEventArgs args)
 		{
@@ -1077,8 +1073,8 @@ namespace Duality.Resources
 
 			// Prepare all components for saving in reverse order, sorted by type
 			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
-			for (int i = initList.Count - 1; i >= 0; i--)
-				initList[i].OnShutdown(Component.ShutdownContext.Saving);
+
+			initList.ShutdownAllReversed(Component.ShutdownContext.Saving);
 
 			this.serializeObj = this.objectManager.AllObjects.ToArray();
 			this.serializeObj.StableSort(SerializeGameObjectComparison);

@@ -75,8 +75,7 @@ namespace Duality.Resources
 				Component.ExecOrder.SortTypedItems(initSchedule, item => item.GetType(), false);
 
 				// Prepare components for saving
-				for (int i = initSchedule.Length - 1; i >= 0; i--)
-					initSchedule[i].OnShutdown(Component.ShutdownContext.Saving);
+				initSchedule.ShutdownAllReversed(Component.ShutdownContext.Saving);
 
 				// Copy the new content into the Prefabs internal object
 				if (this.objTree != null)
