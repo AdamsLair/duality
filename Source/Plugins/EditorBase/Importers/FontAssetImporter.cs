@@ -37,12 +37,12 @@ namespace Duality.Editor.Plugins.Base
 		{
 			DualityFont resource = resourceRef.Res;
 			// Retrieve import parameters
-			float size =						env.GetOrInitParameter(resourceRef, "Size",				16.0f);
-			FontStyle style =					env.GetOrInitParameter(resourceRef, "Style",			FontStyle.Regular);
-			string customCharSet =				env.GetOrInitParameter(resourceRef, "CustomCharSet",	string.Empty);
-			List<UnicodeBlock> unicodeBlocks =	env.GetOrInitParameter(resourceRef, "UnicodeBlocks",	new List<UnicodeBlock>(DefaultBlocks));
-			bool antialiasing =					env.GetOrInitParameter(resourceRef, "AntiAlias",		true);
-			bool monospace =					env.GetOrInitParameter(resourceRef, "Monospace",		false);
+			float              size          = env.GetOrInitParameter(resourceRef, "Size",          16.0f);
+			FontStyle          style         = env.GetOrInitParameter(resourceRef, "Style",         FontStyle.Regular);
+			string             customCharSet = env.GetOrInitParameter(resourceRef, "CustomCharSet", string.Empty);
+			List<UnicodeBlock> unicodeBlocks = env.GetOrInitParameter(resourceRef, "UnicodeBlocks", new List<UnicodeBlock>(DefaultBlocks));
+			bool               antialiasing  = env.GetOrInitParameter(resourceRef, "AntiAlias",     true);
+			bool               monospace     = env.GetOrInitParameter(resourceRef, "Monospace",     false);
 
 			HashSet<char> fullCharSet = new HashSet<char>();
 
