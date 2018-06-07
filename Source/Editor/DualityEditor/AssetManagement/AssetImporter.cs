@@ -58,6 +58,26 @@ namespace Duality.Editor.AssetManagement
 		/// </summary>
 		protected virtual string GetOutputNameFromResource(T resource)
 		{
+			// If this resource has a desired source file hint, prefer this during export
+			string[] fileHints = resource.AssetInfo.SourceFileHint;
+			string[] supportedExtensions = this.SourceFileExts;
+			if (fileHints != null)
+			{
+				for (int i = 0; i < fileHints.Length; i++)
+				{
+					if (string.IsNullOrEmpty(fileHints[i])) continue;
+
+					// Skip file extensions we don't support
+					string ext = Path.GetExtension(fileHints[i]);
+					if (!supportedExtensions.Contains(ext)) continue;
+
+					// Replace name variables with the actual name of the resource
+					string outputName = fileHints[i].Replace(AssetInfo.FileHintNameVariable, resource.Name);
+					return outputName;
+				}
+			}
+
+			// Fall back to the default with our preferred file extension
 			return resource.Name + this.SourceFileExtPrimary;
 		}
 
