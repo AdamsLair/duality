@@ -43,10 +43,6 @@ namespace Duality.Editor.Plugins.Base
 		{
 			get { return PriorityGeneral; }
 		}
-		protected override string SourceFileExtPrimary
-		{
-			get { return SourceFileExtensions[0]; }
-		}
 		protected override string[] SourceFileExts
 		{
 			get { return SourceFileExtensions; }

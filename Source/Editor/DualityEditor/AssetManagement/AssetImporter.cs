@@ -19,7 +19,10 @@ namespace Duality.Editor.AssetManagement
 		/// [GET] The main file extension that this importer handles.
 		/// Used when determining the file extension of exported resources.
 		/// </summary>
-		protected abstract string SourceFileExtPrimary { get; }
+		protected string SourceFileExtPrimary
+		{
+			get { return this.SourceFileExts.Length > 0 ? this.SourceFileExts[0] : null; }
+		}
 		/// <summary>
 		/// [GET] All file extensions that this importer handles.
 		/// Used when determining whether or not this importer
