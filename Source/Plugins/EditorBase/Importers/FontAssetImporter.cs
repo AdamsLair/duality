@@ -24,14 +24,34 @@ namespace Duality.Editor.Plugins.Base
 {
 	public class FontAssetImporter : AssetImporter<DualityFont>
 	{
+		private static readonly string[] SourceFileExtensions = new[] { ".ttf", ".otf" };
 		private static readonly UnicodeBlock[] DefaultBlocks = new[] { UnicodeBlock.BasicLatin, UnicodeBlock.Latin1Supplement };
+
 
 		private Dictionary<int, PrivateFontCollection> fontManagers;
 
-		public FontAssetImporter()
-			: base("TrueType Font Importer", "BasicFontAssetImporter", PriorityGeneral, ".ttf", ".otf")
+
+		public override string Id
 		{
+			get { return "BasicFontAssetImporter"; }
 		}
+		public override string Name
+		{
+			get { return "Font Importer"; }
+		}
+		public override int Priority
+		{
+			get { return PriorityGeneral; }
+		}
+		protected override string SourceFileExtPrimary
+		{
+			get { return SourceFileExtensions[0]; }
+		}
+		protected override string[] SourceFileExts
+		{
+			get { return SourceFileExtensions; }
+		}
+
 
 		protected override void ImportResource(ContentRef<DualityFont> resourceRef, AssetImportInput input, IAssetImportEnvironment env)
 		{
