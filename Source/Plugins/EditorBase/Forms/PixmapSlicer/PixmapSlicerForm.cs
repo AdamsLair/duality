@@ -157,20 +157,12 @@ namespace Duality.Editor.Plugins.Base.Forms
 		/// </summary>
 		private Bitmap GenerateDisplayImage()
 		{
-			if (this.TargetPixmap == null || this.TargetPixmap.MainLayer == null)
+			if (this.TargetPixmap == null)
 				return null;
 
-			int desiredHeight = MathF.RoundToInt(this.imageRect.Height * this.slicingContext.ScaleFactor);
-
 			PixelData layer = this.TargetPixmap.MainLayer;
-
-			// Determine the target size for the preview based on desired and actual size
-			float widthRatio = layer.Width / (float)MathF.Max(layer.Height, 1);
-			Point2 targetSize = new Point2(MathF.RoundToInt(widthRatio * desiredHeight), desiredHeight);
-
-			// Create a properly resized version of the image data
-			if (layer.Width != targetSize.X || layer.Height != targetSize.Y)
-				layer = layer.CloneRescale(targetSize.X, targetSize.Y, ImageScaleFilter.Nearest);
+			if (layer == null)
+				return null;
 
 			return layer.ToBitmap();
 		}
@@ -288,11 +280,6 @@ namespace Duality.Editor.Plugins.Base.Forms
 				this.paintingRect.X + 5, this.paintingRect.Y + 5,
 				this.paintingRect.Width - 10, this.paintingRect.Height - 10);
 
-			// The displayed image depends on these dimensions.
-			// If they have changed, generate a new image.
-			if (this.imageRect != previousImageRect)
-				this.displayedImage = this.GenerateDisplayImage();
-
 			// Determine the geometry of the displayed image
 			// while maintaing a constant aspect ratio and using as much space as possible
 			if (this.displayedImage != null)
@@ -359,11 +346,20 @@ namespace Duality.Editor.Plugins.Base.Forms
 			Color brightChecker = lum > 0.5f ? Color.FromArgb(72, 72, 72) : Color.FromArgb(208, 208, 208);
 			Color darkChecker = lum > 0.5f ? Color.FromArgb(56, 56, 56) : Color.FromArgb(176, 176, 176);
 			using (Brush hatchBrush = new HatchBrush(HatchStyle.LargeCheckerBoard, brightChecker, darkChecker))
+			{
 				e.Graphics.FillRectangle(hatchBrush, this.displayedImageRect);
+			}
 
 			if (this.displayedImage != null)
 			{
-				e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+				float scaleFactor = this.slicingContext.ScaleFactor * ((float)this.displayedImageRect.Width / (float)this.displayedImage.Width);
+				bool isIntScaling = MathF.Abs(MathF.RoundToInt(scaleFactor) - scaleFactor) < 0.0001f;
+
+				// Choose filtering mode depending on whether we're scaling by a full Nx factor
+				e.Graphics.InterpolationMode = 
+					isIntScaling ? 
+					InterpolationMode.NearestNeighbor : 
+					InterpolationMode.Bilinear;
 				e.Graphics.DrawImage(this.displayedImage, this.displayedImageRect);
 				e.Graphics.InterpolationMode = InterpolationMode.Default;
 			}
