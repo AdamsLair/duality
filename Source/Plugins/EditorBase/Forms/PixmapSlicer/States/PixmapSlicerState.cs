@@ -119,13 +119,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			if (this.selectedRectIndex != -1)
 			{
 				Rect selectedAtlasRect = this.targetPixmap.Atlas[this.selectedRectIndex];
-				Rect selectedDisplayRect = this.View.GetDisplayRect(selectedAtlasRect);
+				Rectangle selectedDisplayRect = this.View.GetDisplayRect(selectedAtlasRect);
 				e.Graphics.DrawRectangle(
 					this.SelectedRectPen, 
-					selectedDisplayRect.X, 
-					selectedDisplayRect.Y,
-					selectedDisplayRect.W, 
-					selectedDisplayRect.H);
+					selectedDisplayRect);
 			}
 		}
 

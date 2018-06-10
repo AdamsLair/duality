@@ -21,15 +21,16 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		private static readonly Pen RectPenDark = new Pen(Color.White, 1);
 
 		private Pixmap targetPixmap = null;
-		private Bitmap displayedImage = null;
-		private Rectangle imageRect = Rectangle.Empty;
+		private Bitmap image = null;
 		private Rectangle contentRect = Rectangle.Empty;
-		private Rectangle displayedImageRect = Rectangle.Empty;
+		private Rectangle imageRect = Rectangle.Empty;
 		private float prevImageLum = 0f;
 		private bool darkMode = false;
 		private PixmapNumberingStyle rectNumbering = PixmapNumberingStyle.Hovered;
 		private float scaleFactor = 1.0f;
 		private int hoveredRectIndex = -1;
+		private Bitmap backBitmap = null;
+		private TextureBrush backBrush = null;
 
 
 		public event EventHandler<PaintEventArgs> PaintContentOverlay = null;
@@ -44,11 +45,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			set
 			{
 				this.targetPixmap = value;
-				this.displayedImage = this.GenerateDisplayImage();
+				this.image = this.GenerateDisplayImage();
 
-				if (this.displayedImage != null)
+				if (this.image != null)
 				{
-					ColorRgba avgColor = this.displayedImage.GetAverageColor();
+					ColorRgba avgColor = this.image.GetAverageColor();
 					this.prevImageLum = avgColor.GetLuminance();
 				}
 
@@ -64,6 +65,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				if (this.darkMode != value)
 				{
 					this.darkMode = value;
+					this.GenerateBackgroundPattern();
 					this.Invalidate();
 				}
 			}
@@ -95,7 +97,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		}
 		public Rectangle DisplayedImageRect
 		{
-			get { return this.displayedImageRect; }
+			get { return this.imageRect; }
 		}
 		public int HoveredAtlasIndex
 		{
@@ -116,13 +118,15 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			this.SetStyle(ControlStyles.Opaque, true);
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
+			this.GenerateBackgroundPattern();
 		}
 
 		public void ZoomToFit()
 		{
-			if (this.displayedImage != null)
+			if (this.image != null)
 			{
-				Vector2 imageSize = new Vector2(this.displayedImage.Width, this.displayedImage.Height);
+				Vector2 imageSize = new Vector2(this.image.Width, this.image.Height);
 				Vector2 targetSize = new Vector2(this.contentRect.Width, this.contentRect.Height);
 				Vector2 fitSize;
 				if (imageSize.X > targetSize.X || imageSize.Y > targetSize.Y)
@@ -145,43 +149,61 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		/// A <see cref="Rect"/> relative to 
 		/// the <see cref="Pixmap"/> being edited
 		/// </param>
-		public Rect GetDisplayRect(Rect atlasRect)
+		public Rectangle GetDisplayRect(Rect atlasRect)
 		{
-			float scale = (float)this.displayedImageRect.Width / this.targetPixmap.Width;
-
-			Rect scaledRect = atlasRect.Scaled(scale, scale);
-			Vector2 scaledPos = atlasRect.Pos * scale;
-			scaledRect.Pos = scaledPos + new Vector2(this.displayedImageRect.X, this.displayedImageRect.Y);
-			return scaledRect;
+			Point topLeft = this.GetDisplayPos(atlasRect.TopLeft);
+			Point bottomRight = this.GetDisplayPos(atlasRect.BottomRight);
+			return new Rectangle(
+				topLeft.X, 
+				topLeft.Y, 
+				bottomRight.X - topLeft.X,
+				bottomRight.Y - topLeft.Y);
 		}
 		/// <summary>
 		/// Transforms the given rectangle in display coordinates
 		/// to atlas coordinates
 		/// </summary>
-		public Rect GetAtlasRect(Rect displayRect)
+		public Rect GetAtlasRect(Rectangle displayRect)
 		{
-			float scale = (float)this.targetPixmap.Width / this.displayedImageRect.Width;
-
-			displayRect.Pos -= new Vector2(this.displayedImageRect.X, this.displayedImageRect.Y);
-			Rect scaledRect = displayRect.Scaled(scale, scale);
-			scaledRect.Pos *= scale;
-
-			return scaledRect;
+			Vector2 topLeft = this.GetAtlasPos(new Point(displayRect.Left, displayRect.Top));
+			Vector2 bottomRight = this.GetAtlasPos(new Point(displayRect.Right, displayRect.Bottom));
+			return new Rect(
+				topLeft.X,
+				topLeft.Y,
+				bottomRight.X - topLeft.X,
+				bottomRight.Y - topLeft.Y);
 		}
 		/// <summary>
 		/// Converts the given local / client coordinates into <see cref="Pixmap"/> atlas space.
 		/// </summary>
 		/// <param name="point">The point to transform</param>
-		public Vector2 GetAtlasPos(Point point)
+		public Vector2 GetAtlasPos(Point point, bool scrolled = true)
 		{
-			point.X -= this.AutoScrollPosition.X;
-			point.Y -= this.AutoScrollPosition.Y;
+			if (scrolled)
+			{
+				point.X -= this.AutoScrollPosition.X;
+				point.Y -= this.AutoScrollPosition.Y;
+			}
 
 			Vector2 pixmapPos;
-			pixmapPos.X = this.targetPixmap.Width * (point.X - this.displayedImageRect.X) / (float)this.displayedImageRect.Width;
-			pixmapPos.Y = this.targetPixmap.Height * (point.Y - this.displayedImageRect.Y) / (float)this.displayedImageRect.Height;
+			pixmapPos.X = this.targetPixmap.Width * (point.X - this.imageRect.X) / (float)this.imageRect.Width;
+			pixmapPos.Y = this.targetPixmap.Height * (point.Y - this.imageRect.Y) / (float)this.imageRect.Height;
 
 			return pixmapPos;
+		}
+		public Point GetDisplayPos(Vector2 atlasPos, bool scrolled = true)
+		{
+			Point displayPos = Point.Empty;
+			displayPos.X = (int)(this.imageRect.X + (atlasPos.X / this.targetPixmap.Width) * (float)this.imageRect.Width);
+			displayPos.Y = (int)(this.imageRect.Y + (atlasPos.Y / this.targetPixmap.Height) * (float)this.imageRect.Height);
+
+			if (scrolled)
+			{
+				displayPos.X += this.AutoScrollPosition.X;
+				displayPos.Y += this.AutoScrollPosition.Y;
+			}
+
+			return displayPos;
 		}
 
 		public void InvalidatePixmap()
@@ -204,11 +226,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				(int)(pixmapRect.W * this.scaleFactor),
 				(int)(pixmapRect.H * this.scaleFactor));
 
-			viewRect.X += this.displayedImageRect.X;
-			viewRect.Y += this.displayedImageRect.Y;
+			viewRect.X += this.imageRect.X;
+			viewRect.Y += this.imageRect.Y;
 
-			viewRect.X -= this.AutoScrollPosition.X;
-			viewRect.Y -= this.AutoScrollPosition.Y;
+			viewRect.X += this.AutoScrollPosition.X;
+			viewRect.Y += this.AutoScrollPosition.Y;
 
 			// Grow the rect slightly to make sure we'll invalidate around potential borders
 			viewRect.Inflate(10, 10);
@@ -232,11 +254,60 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			return layer.ToBitmap();
 		}
 
+		private void GenerateBackgroundPattern()
+		{
+			// Dispose old background textures
+			if (this.backBitmap != null)
+			{
+				this.backBitmap.Dispose();
+				this.backBitmap = null;
+			}
+			if (this.backBrush != null)
+			{
+				this.backBrush.Dispose();
+				this.backBrush = null;
+			}
+
+			// Generate background texture
+			{
+				Brush darkBrush = new SolidBrush(this.darkMode ? Color.FromArgb(56, 56, 56) : Color.FromArgb(176, 176, 176));
+				Brush brightBrush = new SolidBrush(this.darkMode ? Color.FromArgb(72, 72, 72) : Color.FromArgb(208, 208, 208));
+				Size cellSize = new Size(8, 8);
+
+				this.backBitmap = new Bitmap(
+					cellSize.Width * 2,
+					cellSize.Height * 2);
+				using (Graphics g = Graphics.FromImage(this.backBitmap))
+				{
+					g.Clear(Color.Transparent);
+
+					for (int i = 0; i < 4; i++)
+					{
+						int lineIndex = i / 2;
+						bool evenLine = (lineIndex % 2) == 0;
+						bool darkCell = (i % 2) == (evenLine ? 0 : 1);
+						Point cellPos = new Point(
+							(i % 2) * cellSize.Width,
+							lineIndex * cellSize.Height);
+
+						g.FillRectangle(
+							darkCell ? darkBrush : brightBrush,
+							cellPos.X,
+							cellPos.Y,
+							cellSize.Width,
+							cellSize.Height);
+					}
+				}
+			}
+
+			// Create a background brush for OnPaint to use
+			this.backBrush = new TextureBrush(this.backBitmap);
+		}
 		private void UpdateAutoScroll()
 		{
 			Size autoScrollSize = new Size(
-				MathF.RoundToInt(this.displayedImageRect.Width),
-				MathF.RoundToInt(this.displayedImageRect.Height));
+				MathF.RoundToInt(this.imageRect.Width),
+				MathF.RoundToInt(this.imageRect.Height));
 			autoScrollSize.Width += this.Padding.Horizontal;
 			autoScrollSize.Height += this.Padding.Vertical;
 
@@ -253,12 +324,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 
 			// Determine the geometry of the displayed image
 			// while maintaing a constant aspect ratio and using as much space as possible
-			if (this.displayedImage != null)
+			if (this.image != null)
 			{
-				Vector2 imageSize = new Vector2(this.displayedImage.Width, this.displayedImage.Height);
+				Vector2 imageSize = new Vector2(this.image.Width, this.image.Height);
 				Vector2 displayedSize = imageSize * this.scaleFactor;
 
-				this.displayedImageRect = new Rectangle(
+				this.imageRect = new Rectangle(
 					MathF.RoundToInt(this.contentRect.X), 
 					MathF.RoundToInt(this.contentRect.Y),
 					MathF.RoundToInt(displayedSize.X),
@@ -271,7 +342,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		/// <summary>
 		/// Draws an index value in the middle of the given Rect
 		/// </summary>
-		public void DrawRectIndex(Graphics g, Rect displayRect, int index)
+		public void DrawRectIndex(Graphics g, Rectangle displayRect, int index)
 		{
 			string indexText = index.ToString();
 			SizeF textSize = g.MeasureString(indexText, this.Font);
@@ -280,8 +351,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				displayRect.Y,
 				3 + textSize.Width,
 				3 + textSize.Height);
-			textRect.X += (displayRect.W - textRect.Width) / 2;
-			textRect.Y += (displayRect.H - textRect.Height) / 2;
+			textRect.X += (displayRect.Width - textRect.Width) / 2;
+			textRect.Y += (displayRect.Height - textRect.Height) / 2;
 			PointF textPos = new PointF(
 				textRect.X + textRect.Width * 0.5f - textSize.Width * 0.5f,
 				textRect.Y + textRect.Height * 0.5f - textSize.Height * 0.5f);
@@ -313,22 +384,25 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			base.OnPaint(e);
 
 			// Paint checkered background
-			float lum = this.darkMode ? 1 - this.prevImageLum : this.prevImageLum;
-			Color brightChecker = lum > 0.5f ? Color.FromArgb(72, 72, 72) : Color.FromArgb(208, 208, 208);
-			Color darkChecker = lum > 0.5f ? Color.FromArgb(56, 56, 56) : Color.FromArgb(176, 176, 176);
-			using (Brush hatchBrush = new HatchBrush(HatchStyle.LargeCheckerBoard, brightChecker, darkChecker))
+			if (this.backBrush != null)
 			{
-				e.Graphics.FillRectangle(hatchBrush, this.ClientRectangle);
+				Point offset = this.GetDisplayPos(Vector2.Zero);
+				this.backBrush.ResetTransform();
+				this.backBrush.TranslateTransform(offset.X, offset.Y);
+				e.Graphics.FillRectangle(this.backBrush, this.ClientRectangle);
 			}
 
 			// Draw image outline
-			if (this.displayedImage != null)
+			if (this.image != null)
 			{
-				e.Graphics.DrawRectangle(Pens.Red, this.displayedImageRect);
+				Rectangle outlineRect = this.GetDisplayRect(new Rect(this.targetPixmap.Width, this.targetPixmap.Height));
+				e.Graphics.DrawRectangle(
+					Pens.Red,
+					outlineRect);
 			}
 
 			// Draw target image
-			if (this.displayedImage != null)
+			if (this.image != null)
 			{
 				bool isIntScaling = MathF.Abs(MathF.RoundToInt(this.scaleFactor) - this.scaleFactor) < 0.0001f;
 
@@ -336,9 +410,19 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				e.Graphics.InterpolationMode =
 					isIntScaling ?
 					InterpolationMode.NearestNeighbor :
-					InterpolationMode.Bilinear;
-				e.Graphics.DrawImage(this.displayedImage, this.displayedImageRect);
+					InterpolationMode.HighQualityBicubic;
+				e.Graphics.PixelOffsetMode =
+					isIntScaling ?
+					PixelOffsetMode.Half :
+					PixelOffsetMode.None;
+
+				Rectangle scrolledImageRect = this.imageRect;
+				scrolledImageRect.X += this.AutoScrollPosition.X;
+				scrolledImageRect.Y += this.AutoScrollPosition.Y;
+				e.Graphics.DrawImage(this.image, scrolledImageRect);
+
 				e.Graphics.InterpolationMode = InterpolationMode.Default;
+				e.Graphics.PixelOffsetMode = PixelOffsetMode.Default;
 			}
 
 			// Draw rect outlines and indices
@@ -347,13 +431,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				for (int i = 0; i < this.targetPixmap.Atlas.Count; i++)
 				{
 					Rect atlasRect = this.targetPixmap.Atlas[i];
-					Rect displayRect = this.GetDisplayRect(atlasRect);
+					Rectangle displayRect = this.GetDisplayRect(atlasRect);
 					e.Graphics.DrawRectangle(
-						this.RectPen, 
-						displayRect.X,
-						displayRect.Y,
-						displayRect.W, 
-						displayRect.H);
+						this.RectPen,
+						displayRect);
 
 					if (this.rectNumbering == PixmapNumberingStyle.All || 
 						(this.rectNumbering == PixmapNumberingStyle.Hovered && this.hoveredRectIndex == i))
@@ -379,7 +460,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.hoveredRectIndex = -1;
 			for (int i = 0; i < this.targetPixmap.Atlas.Count; i++)
 			{
-				Rect displayRect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
+				Rectangle displayRect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
 				if (displayRect.Contains(e.X, e.Y))
 				{
 					this.hoveredRectIndex = i;
@@ -401,11 +482,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 					this.InvalidatePixmap(prevHoveredSliceArea);
 				}
 			}
-		}
-		protected override void OnMouseWheel(MouseEventArgs e)
-		{
-			base.OnMouseWheel(e);
-			this.ScaleFactor = this.scaleFactor + this.scaleFactor * (e.Delta > 0 ? 0.1f : -0.1f);
 		}
 	}
 }

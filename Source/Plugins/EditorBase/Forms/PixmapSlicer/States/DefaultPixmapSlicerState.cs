@@ -171,7 +171,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				return;
 
 			Vector2 atlasPos = this.View.GetAtlasPos(e.Location);
-			Rect selectedDisplayRect = this.View.GetDisplayRect(this.TargetPixmap.Atlas[this.SelectedRectIndex]);
+			Rectangle selectedDisplayRectangle = this.View.GetDisplayRect(this.TargetPixmap.Atlas[this.SelectedRectIndex]);
+			Rect selectedDisplayRect = new Rect(
+				selectedDisplayRectangle.X,
+				selectedDisplayRectangle.Y,
+				selectedDisplayRectangle.Width,
+				selectedDisplayRectangle.Height);
 
 			// Check for the start of a drag operation
 			if (!this.dragInProgress)
@@ -227,7 +232,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					displayImageRect.X, displayImageRect.Y,
 					displayImageRect.Width, displayImageRect.Height));
 
-				Rect atlasRect = this.View.GetAtlasRect(selectedDisplayRect);
+				Rect atlasRect = this.View.GetAtlasRect(new Rectangle(
+					(int)selectedDisplayRect.X,
+					(int)selectedDisplayRect.Y,
+					(int)selectedDisplayRect.W,
+					(int)selectedDisplayRect.H));
 				atlasRect.X = MathF.RoundToInt(atlasRect.X);
 				atlasRect.Y = MathF.RoundToInt(atlasRect.Y);
 				atlasRect.W = MathF.RoundToInt(atlasRect.W);

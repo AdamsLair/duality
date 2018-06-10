@@ -13,7 +13,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	{
 		private ToolStripButton cancelButton = null;
 		private bool            mouseDown    = false;
-		private PointF          rectAddStart = Point.Empty;
+		private Point           rectAddStart = Point.Empty;
 		private Rect?           newAtlasRect = null;
 
 
@@ -61,23 +61,20 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			// Check if rect creation hasn't started yet
 			if (!this.newAtlasRect.HasValue)
 			{
-				this.rectAddStart = new PointF(e.X, e.Y);
-				this.newAtlasRect = this.View.GetAtlasRect(new Rect(e.X, e.Y, 0, 0));
+				this.rectAddStart = new Point(e.X, e.Y);
+				this.newAtlasRect = this.View.GetAtlasRect(new Rectangle(e.X, e.Y, 0, 0));
 			}
 
-			float rx = MathF.Min(e.X, this.rectAddStart.X);
-			float ry = MathF.Min(e.Y, this.rectAddStart.Y);
-			float rw = MathF.Abs(e.X - this.rectAddStart.X);
-			float rh = MathF.Abs(e.Y - this.rectAddStart.Y);
+			int rx = MathF.Min(e.X, this.rectAddStart.X);
+			int ry = MathF.Min(e.Y, this.rectAddStart.Y);
+			int rw = MathF.Abs(e.X - this.rectAddStart.X);
+			int rh = MathF.Abs(e.Y - this.rectAddStart.Y);
 
 			// Clip the rect to the image
-			Rect displayRect = new Rect(rx, ry, rw, rh);
+			Rectangle displayRect = new Rectangle(rx, ry, rw, rh);
 
 			// Keep the displayRect within bounds of the image
-			Rectangle displayImageRect = this.View.DisplayedImageRect;
-			displayRect = displayRect.Intersection(new Rect(
-				displayImageRect.X, displayImageRect.Y,
-				displayImageRect.Width, displayImageRect.Height));
+			displayRect.Intersect(this.View.DisplayedImageRect);
 
 			Rect atlasRect = this.View.GetAtlasRect(displayRect);
 			atlasRect.X = MathF.RoundToInt(atlasRect.X);
@@ -104,8 +101,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			if (!this.newAtlasRect.HasValue)
 				return;
 
-			Rect rect = this.View.GetDisplayRect(this.newAtlasRect.Value);
-			e.Graphics.DrawRectangle(this.SelectedRectPen, rect.X, rect.Y, rect.W, rect.H);
+			Rectangle rect = this.View.GetDisplayRect(this.newAtlasRect.Value);
+			e.Graphics.DrawRectangle(this.SelectedRectPen, rect);
 		}
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)

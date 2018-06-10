@@ -97,7 +97,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			for (int index = 0; index < this.orderedIndices.Count; index++)
 			{
 				Rect atlasRect = this.TargetPixmap.Atlas[this.orderedIndices[index]];
-				Rect displayRect = this.View.GetDisplayRect(atlasRect);
+				Rectangle displayRect = this.View.GetDisplayRect(atlasRect);
 				this.View.DrawRectIndex(e.Graphics, displayRect, index);
 			}
 		}
