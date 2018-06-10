@@ -13,48 +13,19 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// </summary>
 	public interface IPixmapSlicerState : IHelpProvider
 	{
-		/// <summary>
-		/// The bounds of the <see cref="PixmapSlicerForm"/> rendering area
-		/// that this state can interact with
-		/// </summary>
-		Rectangle DisplayBounds { get; set; }
 		Pixmap TargetPixmap { get; set; }
-		Cursor Cursor { get; }
-		int SelectedRectIndex { get; }
 		List<ToolStripItem> StateControls { get; }
-		PixmapSlicingContext Context { get; set; }
-
-		/// <summary>
-		/// The numbering display style in use by this state.
-		/// </summary>
-		PixmapNumberingStyle NumberingStyle { get; }
-
-		/// <summary>
-		/// A function that transforms client 
-		/// mouse coordinates to display coordinates
-		/// </summary>
-		MouseTransformDelegate TransformMouseCoordinates { get; set; }
-		/// <summary>
-		/// A function that converts rectangles from display to atlas coordinates
-		/// </summary>
-		Func<Rect, Rect> GetAtlasRect { get; set; }
-		/// <summary>
-		/// A function that converts rectangles from atlas to display coordinates
-		/// </summary>
-		Func<Rect, Rect> GetDisplayRect { get; set; }
+		PixmapSlicingView View { get; set; }
 
 		/// <summary>
 		/// Occurs whenever a property of <see cref="TargetPixmap"/>
 		/// is changed by this state
 		/// </summary>
-		event EventHandler<InvalidateEventArgs> DisplayInvalidated;
-		event EventHandler CursorChanged;
 		event EventHandler StateCancelled;
-		event EventHandler SelectionChanged;
 		event EventHandler<PixmapSlicerStateEventArgs> StateChangeRequested;
 
-		void ClearSelection();
-
+		void OnStateEntered(EventArgs e);
+		void OnStateLeaving(EventArgs e);
 		void OnMouseDown(MouseEventArgs e);
 		void OnMouseUp(MouseEventArgs e);
 		void OnMouseMove(MouseEventArgs e);

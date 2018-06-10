@@ -11,36 +11,19 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
 	public abstract class PixmapSlicerState : IPixmapSlicerState
 	{
-		protected static Pen   rectPenLight         = new Pen(Color.Black, 1);
-		protected static Pen   rectPenDark          = new Pen(Color.White, 1);
-		protected static Pen   selectedRectPenLight = new Pen(Color.Blue, 1);
-		protected static Pen   selectedRectPenDark  = new Pen(Color.DeepSkyBlue, 1);
-		protected static Brush indexTextBackBrush   = new SolidBrush(Color.FromArgb(128, Color.Black));
-		protected static Brush indexTextForeBrush   = new SolidBrush(Color.White);
-		protected static Font  font                 = new Font(FontFamily.GenericSansSerif, 8.25f);
+		protected static Pen selectedRectPenLight = new Pen(Color.Blue, 1);
+		protected static Pen selectedRectPenDark  = new Pen(Color.DeepSkyBlue, 1);
 
 
 		private   int    selectedRectIndex = -1;
 		private   Cursor cursor            = Cursors.Default;
 		private   Pixmap targetPixmap      = null;
-		protected int    hoveredRectIndex  = -1;
 
-		public event EventHandler<InvalidateEventArgs> DisplayInvalidated;
-		public event EventHandler CursorChanged;
 		public event EventHandler StateCancelled;
-		public event EventHandler SelectionChanged;
 		public event EventHandler<PixmapSlicerStateEventArgs> StateChangeRequested;
 
 
 		public List<ToolStripItem> StateControls { get; private set; }
-		public MouseTransformDelegate TransformMouseCoordinates { get; set; }
-		public Func<Rect, Rect> GetAtlasRect { get; set; }
-		public Func<Rect, Rect> GetDisplayRect { get; set; }
-		public Rectangle DisplayBounds { get; set; }
-		public virtual PixmapNumberingStyle NumberingStyle
-		{
-			get { return this.Context.NumberingStyle; }
-		}
 		public Pixmap TargetPixmap
 		{
 			get { return this.targetPixmap; }
@@ -61,8 +44,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				if (this.cursor != value)
 				{
 					this.cursor = value;
-					if (this.CursorChanged != null)
-						this.CursorChanged.Invoke(this, EventArgs.Empty);
+					this.View.Cursor = this.cursor;
 				}
 			}
 		}
@@ -74,19 +56,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				if (this.selectedRectIndex != value)
 				{
 					this.selectedRectIndex = value;
-					if (this.SelectionChanged != null)
-						this.SelectionChanged.Invoke(this, EventArgs.Empty);
+					this.View.Invalidate();
 				}
 			}
 		}
-		public PixmapSlicingContext Context { get; set; }
-		protected Pen RectPen
-		{
-			get { return this.Context.DarkMode ? rectPenDark : rectPenLight; }
-		}
+		public PixmapSlicingView View { get; set; }
 		protected Pen SelectedRectPen
 		{
-			get { return this.Context.DarkMode ? selectedRectPenDark : selectedRectPenLight; }
+			get { return this.View.DarkMode ? selectedRectPenDark : selectedRectPenLight; }
 		}
 
 
@@ -102,18 +79,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		protected void UpdateDisplay()
 		{
-			if (this.DisplayInvalidated != null)
-				this.DisplayInvalidated.Invoke(this, new InvalidateEventArgs(this.DisplayBounds));
+			this.View.InvalidatePixmap();
 		}
 		protected void UpdateDisplay(Rect rect)
 		{
-			if (this.DisplayInvalidated != null)
-			{
-				Rectangle updatedArea = RectToRectangle(this.GetDisplayRect(rect));
-				// Grow the rectangle slightly to make sure enough area is invalidated
-				updatedArea.Inflate(10, 10);
-				this.DisplayInvalidated.Invoke(this, new InvalidateEventArgs(updatedArea));
-			}
+			this.View.InvalidatePixmap(rect);
 		}
 
 		protected void CancelState()
@@ -129,72 +99,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				this.StateChangeRequested.Invoke(this, new PixmapSlicerStateEventArgs(newStateType));
 		}
 
-		/// <summary>
-		/// Displays an index value in the middle of the given Rect
-		/// </summary>
-		protected void DisplayRectIndex(Graphics g, Rect displayRect, int index)
-		{
-			string indexText = index.ToString();
-			SizeF textSize = g.MeasureString(indexText, font);
-			RectangleF textRect = new RectangleF(
-				displayRect.X,
-				displayRect.Y,
-				3 + textSize.Width,
-				3 + textSize.Height);
-			textRect.X += (displayRect.W - textRect.Width) / 2;
-			textRect.Y += (displayRect.H - textRect.Height) / 2;
-			PointF textPos = new PointF(
-				textRect.X + textRect.Width * 0.5f - textSize.Width * 0.5f,
-				textRect.Y + textRect.Height * 0.5f - textSize.Height * 0.5f);
-
-			g.FillRectangle(indexTextBackBrush, textRect);
-			g.DrawString(indexText, font, indexTextForeBrush, textPos.X, textPos.Y);
-		}
-
-		public virtual void OnMouseDown(MouseEventArgs e)
-		{
-		}
-		public virtual void OnMouseUp(MouseEventArgs e)
-		{
-		}
-		public virtual void OnMouseMove(MouseEventArgs e)
-		{
-			if (this.targetPixmap == null || this.targetPixmap.Atlas == null)
-				return;
-
-			float x, y;
-			this.TransformMouseCoordinates(e.Location, out x, out y);
-
-			for (int i = 0; i < this.targetPixmap.Atlas.Count; i++)
-			{
-				Rect rect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
-				if (rect.Contains(x, y))
-				{
-					int originalHoveredIndex = this.hoveredRectIndex;
-					this.hoveredRectIndex = i;
-
-					if ((this.NumberingStyle & PixmapNumberingStyle.Hovered) > 0
-						&& this.hoveredRectIndex != originalHoveredIndex)
-					{
-						Rect updatedArea = this.targetPixmap.Atlas[i];
-						if (originalHoveredIndex != -1)
-							updatedArea = updatedArea.ExpandedToContain(this.targetPixmap.Atlas[originalHoveredIndex]);
-						this.UpdateDisplay(updatedArea);
-					}
-					return;
-				}
-			}
-
-			// Moved off of a rect
-			if (this.hoveredRectIndex != -1)
-			{
-				this.UpdateDisplay(this.targetPixmap.Atlas[this.hoveredRectIndex]);
-				this.hoveredRectIndex = -1;
-			}
-		}
-		public virtual void OnKeyUp(KeyEventArgs e)
-		{
-		}
+		public virtual void OnStateEntered(EventArgs e) { }
+		public virtual void OnStateLeaving(EventArgs e) { }
+		public virtual void OnMouseDown(MouseEventArgs e) { }
+		public virtual void OnMouseUp(MouseEventArgs e) { }
+		public virtual void OnMouseMove(MouseEventArgs e) { }
+		public virtual void OnKeyUp(KeyEventArgs e) { }
 
 		/// <summary>
 		/// Called during the paint event of the parent control.
@@ -205,36 +115,17 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			if (this.targetPixmap == null || this.targetPixmap.Atlas == null)
 				return;
 
-			Rect[] displayRects = this.targetPixmap.Atlas.Select(rect => this.GetDisplayRect(rect)).ToArray();
-			// Draw all rect outlines
-			RectangleF[] rects = displayRects.Select(RectToRectangleF).ToArray();
-			float originalWidth = this.RectPen.Width;
-			this.RectPen.Width /= this.Context.ScaleFactor;
-			e.Graphics.DrawRectangles(this.RectPen, rects);
-			this.RectPen.Width = originalWidth;
-
 			// Draw selected rect outline
 			if (this.selectedRectIndex != -1)
 			{
-				Rect selectedRect = displayRects[this.selectedRectIndex];
-				originalWidth = this.SelectedRectPen.Width;
-				this.SelectedRectPen.Width /= this.Context.ScaleFactor;
-				e.Graphics.DrawRectangle(this.SelectedRectPen, selectedRect.X, selectedRect.Y, selectedRect.W, selectedRect.H);
-				this.SelectedRectPen.Width = originalWidth;
-			}
-
-			// Draw indexes
-			if ((this.NumberingStyle & PixmapNumberingStyle.All) > 0)
-			{
-				for (int i = 0; i < displayRects.Length; i++)
-				{
-					this.DisplayRectIndex(e.Graphics, displayRects[i], i);
-				}
-			}
-			else if ((this.NumberingStyle & PixmapNumberingStyle.Hovered) > 0
-				&& this.hoveredRectIndex != -1)
-			{
-				this.DisplayRectIndex(e.Graphics, displayRects[this.hoveredRectIndex], this.hoveredRectIndex);
+				Rect selectedAtlasRect = this.targetPixmap.Atlas[this.selectedRectIndex];
+				Rect selectedDisplayRect = this.View.GetDisplayRect(selectedAtlasRect);
+				e.Graphics.DrawRectangle(
+					this.SelectedRectPen, 
+					selectedDisplayRect.X, 
+					selectedDisplayRect.Y,
+					selectedDisplayRect.W, 
+					selectedDisplayRect.H);
 			}
 		}
 
@@ -258,15 +149,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				NumBackColor = Color.FromArgb(196, 196, 196),
 				Text = text
 			};
-		}
-
-		private static Rectangle RectToRectangle(Rect rect)
-		{
-			return new Rectangle((int) rect.X, (int) rect.Y, (int) rect.W, (int) rect.H);
-		}
-		private static RectangleF RectToRectangleF(Rect rect)
-		{
-			return new RectangleF(rect.X, rect.Y, rect.W, rect.H);
 		}
 	}
 }

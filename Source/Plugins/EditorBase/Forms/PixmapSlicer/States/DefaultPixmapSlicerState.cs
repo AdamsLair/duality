@@ -158,12 +158,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				return;
 			}
 
-			float x, y;
-			this.TransformMouseCoordinates(e.Location, out x, out y);
-
-			this.SelectedRectIndex = this.TargetPixmap.Atlas
-				.IndexOfFirst(r => this.GetDisplayRect(r).Contains(x, y));
-
+			this.SelectedRectIndex = this.View.HoveredAtlasIndex;
 			this.deleteSelectedButton.Enabled = this.SelectedRectIndex != -1;
 		}
 		public override void OnMouseMove(MouseEventArgs e)
@@ -175,16 +170,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				|| this.SelectedRectIndex < 0)
 				return;
 
-			float x, y;
-			this.TransformMouseCoordinates(e.Location, out x, out y);
-
-			Rect selectedDisplayRect = this.GetDisplayRect(this.TargetPixmap.Atlas[this.SelectedRectIndex]);
+			Vector2 atlasPos = this.View.GetAtlasPos(e.Location);
+			Rect selectedDisplayRect = this.View.GetDisplayRect(this.TargetPixmap.Atlas[this.SelectedRectIndex]);
 
 			// Check for the start of a drag operation
 			if (!this.dragInProgress)
 			{
 				PixmapSlicingRectSide side;
-				if (selectedDisplayRect.WithinRangeToBorder(x, y, DRAG_OFFSET, out side))
+				if (selectedDisplayRect.WithinRangeToBorder(e.X, e.Y, DRAG_OFFSET, out side))
 				{
 					if (this.mouseDown)
 					{
@@ -200,33 +193,24 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				}
 			}
 
-			// When hovering, make sure the displayed index
-			// matches what the user may end up dragging
-			if (this.hoveredRectSide != PixmapSlicingRectSide.None
-				&& this.hoveredRectIndex != this.SelectedRectIndex)
-			{
-				this.hoveredRectIndex = this.SelectedRectIndex;
-				this.UpdateDisplay();
-			}
-
 			if (this.dragInProgress)
 			{
 				// Move hovered side to mouse
 				switch (this.hoveredRectSide)
 				{
 					case PixmapSlicingRectSide.Left:
-						selectedDisplayRect.W += selectedDisplayRect.X - x;
-						selectedDisplayRect.X = x;
+						selectedDisplayRect.W += selectedDisplayRect.X - e.X;
+						selectedDisplayRect.X = e.X;
 						break;
 					case PixmapSlicingRectSide.Right:
-						selectedDisplayRect.W += x - selectedDisplayRect.RightX;
+						selectedDisplayRect.W += e.X - selectedDisplayRect.RightX;
 						break;
 					case PixmapSlicingRectSide.Top:
-						selectedDisplayRect.H += selectedDisplayRect.Y - y;
-						selectedDisplayRect.Y = y;
+						selectedDisplayRect.H += selectedDisplayRect.Y - e.Y;
+						selectedDisplayRect.Y = e.Y;
 						break;
 					case PixmapSlicingRectSide.Bottom:
-						selectedDisplayRect.H += y - selectedDisplayRect.BottomY;
+						selectedDisplayRect.H += e.Y - selectedDisplayRect.BottomY;
 						break;
 				}
 
@@ -238,11 +222,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				}
 
 				// Keep the displayRect within bounds of the image
+				Rectangle displayImageRect = this.View.DisplayedImageRect;
 				selectedDisplayRect = selectedDisplayRect.Intersection(new Rect(
-					this.DisplayBounds.X, this.DisplayBounds.Y,
-					this.DisplayBounds.Width, this.DisplayBounds.Height));
+					displayImageRect.X, displayImageRect.Y,
+					displayImageRect.Width, displayImageRect.Height));
 
-				Rect atlasRect = this.GetAtlasRect(selectedDisplayRect);
+				Rect atlasRect = this.View.GetAtlasRect(selectedDisplayRect);
 				atlasRect.X = MathF.RoundToInt(atlasRect.X);
 				atlasRect.Y = MathF.RoundToInt(atlasRect.Y);
 				atlasRect.W = MathF.RoundToInt(atlasRect.W);

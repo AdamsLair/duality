@@ -90,8 +90,11 @@
     <Compile Include="Forms\PixmapSlicer\PixmapSlicerForm.Designer.cs">
       <DependentUpon>PixmapSlicerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\PixmapSlicer\PixmapSlicingContext.cs" />
+    <Compile Include="Forms\PixmapSlicer\PixmapSlicingView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\PixmapSlicer\States\GridSlicePixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\IPixmapSlicerState.cs" />
     <Compile Include="Forms\PixmapSlicer\States\PixmapNumberingStyle.cs" />
     <Compile Include="Forms\PixmapSlicer\States\PixmapSlicerStateEventArgs.cs" />
     <Compile Include="Forms\PixmapSlicer\States\PixmapSlicerState.cs" />
@@ -153,7 +156,6 @@
     </Compile>
     <Compile Include="Forms\PixmapSlicer\States\AtlasOrderingPixmapSlicerState.cs" />
     <Compile Include="Forms\PixmapSlicer\States\DefaultPixmapSlicerState.cs" />
-    <Compile Include="Forms\PixmapSlicer\States\IPixmapSlicerState.cs" />
     <Compile Include="Forms\PixmapSlicer\States\NewRectPixmapSlicerState.cs" />
     <Compile Include="UndoRedoActions\ClearAtlasAction.cs" />
     <Compile Include="UndoRedoActions\DeleteAtlasRectAction.cs" />

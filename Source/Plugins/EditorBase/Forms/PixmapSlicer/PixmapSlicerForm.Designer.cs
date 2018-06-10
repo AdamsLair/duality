@@ -28,8 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.horizontalScrollBar = new System.Windows.Forms.HScrollBar();
-			this.verticalScrollBar = new System.Windows.Forms.VScrollBar();
 			this.stateControlToolStrip = new System.Windows.Forms.ToolStrip();
 			this.buttonBrightness = new System.Windows.Forms.ToolStripButton();
 			this.buttonIndices = new System.Windows.Forms.ToolStripButton();
@@ -37,24 +35,9 @@
 			this.buttonDefaultZoom = new System.Windows.Forms.ToolStripButton();
 			this.buttonZoomOut = new System.Windows.Forms.ToolStripButton();
 			this.buttonZoomIn = new System.Windows.Forms.ToolStripButton();
+			this.pixmapView = new Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView();
 			this.stateControlToolStrip.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// horizontalScrollBar
-			// 
-			this.horizontalScrollBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.horizontalScrollBar.Location = new System.Drawing.Point(0, 237);
-			this.horizontalScrollBar.Name = "horizontalScrollBar";
-			this.horizontalScrollBar.Size = new System.Drawing.Size(428, 17);
-			this.horizontalScrollBar.TabIndex = 1;
-			// 
-			// verticalScrollBar
-			// 
-			this.verticalScrollBar.Dock = System.Windows.Forms.DockStyle.Right;
-			this.verticalScrollBar.Location = new System.Drawing.Point(411, 0);
-			this.verticalScrollBar.Name = "verticalScrollBar";
-			this.verticalScrollBar.Size = new System.Drawing.Size(17, 237);
-			this.verticalScrollBar.TabIndex = 2;
 			// 
 			// stateControlToolStrip
 			// 
@@ -71,7 +54,7 @@
             this.buttonZoomIn});
 			this.stateControlToolStrip.Location = new System.Drawing.Point(0, 0);
 			this.stateControlToolStrip.Name = "stateControlToolStrip";
-			this.stateControlToolStrip.Size = new System.Drawing.Size(411, 25);
+			this.stateControlToolStrip.Size = new System.Drawing.Size(428, 25);
 			this.stateControlToolStrip.TabIndex = 3;
 			this.stateControlToolStrip.Text = "toolStrip2";
 			// 
@@ -137,15 +120,32 @@
 			this.buttonZoomIn.ToolTipText = "Zoom In";
 			this.buttonZoomIn.Click += new System.EventHandler(this.buttonZoomIn_Click);
 			// 
+			// pixmapView
+			// 
+			this.pixmapView.AutoScroll = true;
+			this.pixmapView.DarkMode = false;
+			this.pixmapView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pixmapView.Location = new System.Drawing.Point(0, 25);
+			this.pixmapView.Name = "pixmapView";
+			this.pixmapView.NumberingStyle = Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.PixmapNumberingStyle.Hovered;
+			this.pixmapView.ScaleFactor = 1F;
+			this.pixmapView.Size = new System.Drawing.Size(428, 229);
+			this.pixmapView.TabIndex = 4;
+			this.pixmapView.TargetPixmap = null;
+			this.pixmapView.PaintContentOverlay += new System.EventHandler<System.Windows.Forms.PaintEventArgs>(this.pixmapView_PaintContentOverlay);
+			this.pixmapView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.pixmapView_KeyUp);
+			this.pixmapView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pixmapView_MouseDown);
+			this.pixmapView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pixmapView_MouseMove);
+			this.pixmapView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pixmapView_MouseUp);
+			// 
 			// PixmapSlicerForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.ClientSize = new System.Drawing.Size(428, 254);
+			this.Controls.Add(this.pixmapView);
 			this.Controls.Add(this.stateControlToolStrip);
-			this.Controls.Add(this.verticalScrollBar);
-			this.Controls.Add(this.horizontalScrollBar);
 			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -160,8 +160,6 @@
 		}
 
 		#endregion
-		private System.Windows.Forms.HScrollBar horizontalScrollBar;
-		private System.Windows.Forms.VScrollBar verticalScrollBar;
 		private System.Windows.Forms.ToolStrip stateControlToolStrip;
 		private System.Windows.Forms.ToolStripButton buttonBrightness;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -169,5 +167,6 @@
 		private System.Windows.Forms.ToolStripButton buttonZoomOut;
 		private System.Windows.Forms.ToolStripButton buttonZoomIn;
 		private System.Windows.Forms.ToolStripButton buttonIndices;
+		private Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView pixmapView;
 	}
 }

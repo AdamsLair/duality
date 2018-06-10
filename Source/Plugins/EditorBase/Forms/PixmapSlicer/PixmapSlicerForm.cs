@@ -15,16 +15,8 @@ namespace Duality.Editor.Plugins.Base.Forms
 {
 	public partial class PixmapSlicerForm : DockContent, IHelpProvider
 	{
-		private IPixmapSlicerState   state              = null;
-		private PixmapSlicingContext slicingContext     = null;
-		private Pixmap               targetPixmap       = null;
-		private Bitmap               displayedImage     = null;
-		private Rectangle            imageRect          = Rectangle.Empty;
-		private Rectangle            paintingRect       = Rectangle.Empty;
-		private Rectangle            displayedImageRect = Rectangle.Empty;
-		private float                prevImageLum       = 0f;
-		private float                horizontalScroll   = 0f;
-		private float                verticalScroll     = 0f;
+		private Pixmap targetPixmap = null;
+		private IPixmapSlicerState state = null;
 
 		/// <summary>
 		/// The <see cref="Pixmap"/> currently being sliced
@@ -36,16 +28,9 @@ namespace Duality.Editor.Plugins.Base.Forms
 			{
 				this.targetPixmap = value;
 				this.state.TargetPixmap = value;
-				this.stateControlToolStrip.Enabled = this.targetPixmap != null;
-				this.displayedImage = this.GenerateDisplayImage();
-
-				if (this.displayedImage != null)
-				{
-					ColorRgba avgColor = this.displayedImage.GetAverageColor();
-					this.prevImageLum = avgColor.GetLuminance();
-				}
-
-				this.Invalidate();
+				this.pixmapView.TargetPixmap = value;
+				this.pixmapView.ZoomToFit();
+				this.stateControlToolStrip.Enabled = this.state.TargetPixmap != null;
 			}
 		}
 
@@ -54,22 +39,12 @@ namespace Duality.Editor.Plugins.Base.Forms
 			InitializeComponent();
 
 			this.stateControlToolStrip.Renderer = new DualitorToolStripProfessionalRenderer();
-			this.stateControlToolStrip.Enabled = this.targetPixmap != null;
+			this.stateControlToolStrip.Enabled = false;
 
 			Bitmap bmp = EditorBaseResCache.IconPixmapSlicer;
 			this.Icon = Icon.FromHandle(bmp.GetHicon());
 
-			this.slicingContext = new PixmapSlicingContext();
 			this.SetState(new DefaultPixmapSlicerState());
-
-			this.horizontalScrollBar.Scroll += this.ScrollBarOnScroll;
-			this.verticalScrollBar.Scroll += this.ScrollBarOnScroll;
-
-			this.horizontalScrollBar.Visible = false;
-			this.verticalScrollBar.Visible = false;
-
-			this.horizontalScrollBar.Maximum = 100;
-			this.verticalScrollBar.Maximum = 100;
 
 			// Set styles that reduce flickering and optimize drawing
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
@@ -86,9 +61,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 		internal void SaveUserData(XElement node)
 		{
 			node.SetElementValue("DarkBackground", this.buttonBrightness.Checked);
-			node.SetElementValue("DisplayIndices", this.state == null
-				? PixmapNumberingStyle.None
-				: this.state.NumberingStyle);
+			node.SetElementValue("DisplayIndices", this.pixmapView.NumberingStyle);
 		}
 		internal void LoadUserData(XElement node)
 		{
@@ -98,104 +71,24 @@ namespace Duality.Editor.Plugins.Base.Forms
 			if (node.GetElementValue("DarkBackground", out tryParseBool))
 				this.buttonBrightness.Checked = tryParseBool;
 			if (node.GetElementValue("DisplayIndices", out tryParseNumeringStyle))
-				this.slicingContext.NumberingStyle = tryParseNumeringStyle;
+				this.pixmapView.NumberingStyle = tryParseNumeringStyle;
 
 			this.UpdateIndicesButton();
 		}
 
-		/// <summary>
-		/// Transforms the given atlas rect to display coordinates
-		/// </summary>
-		/// <param name="atlasRect">
-		/// A <see cref="Rect"/> relative to 
-		/// the <see cref="Pixmap"/> being edited
-		/// </param>
-		private Rect GetDisplayRect(Rect atlasRect)
-		{
-			float scale = (float)this.displayedImageRect.Width / this.targetPixmap.Width;
-
-			Rect scaledRect = atlasRect.Scaled(scale, scale);
-			Vector2 scaledPos = atlasRect.Pos * scale;
-			scaledRect.Pos = scaledPos + new Vector2(this.displayedImageRect.X, this.displayedImageRect.Y);
-			return scaledRect;
-		}
-		/// <summary>
-		/// Transforms the given rectangle in display coordinates
-		/// to atlas coordinates
-		/// </summary>
-		private Rect GetAtlasRect(Rect displayRect)
-		{
-			float scale = (float)this.targetPixmap.Width / this.displayedImageRect.Width;
-
-			displayRect.Pos -= new Vector2(this.displayedImageRect.X, this.displayedImageRect.Y);
-			Rect scaledRect = displayRect.Scaled(scale, scale);
-			scaledRect.Pos *= scale;
-			return scaledRect;
-		}
-
-		/// <summary>
-		/// Converts the given mouse coordinates to be 
-		/// relative to the pixmap rendering area
-		/// </summary>
-		/// <param name="point">The point to transform</param>
-		/// <param name="x">The transformed x coordinate</param>
-		/// <param name="y">The transformed y coordinate</param>
-		private void TransformMouseCoordinates(Point point, out float x, out float y)
-		{
-			x = point.X;
-			y = point.Y;
-
-			x += this.horizontalScroll;
-			y += this.verticalScroll;
-
-			x /= this.slicingContext.ScaleFactor;
-			y /= this.slicingContext.ScaleFactor;
-		}
-		/// <summary>
-		/// Returns a <see cref="Bitmap"/> of <see cref="TargetPixmap"/>
-		/// of the appropriate size for display
-		/// </summary>
-		private Bitmap GenerateDisplayImage()
-		{
-			if (this.TargetPixmap == null)
-				return null;
-
-			PixelData layer = this.TargetPixmap.MainLayer;
-			if (layer == null)
-				return null;
-
-			return layer.ToBitmap();
-		}
-
-		private void SetScaleFactor(float scale)
-		{
-			this.slicingContext.ScaleFactor = MathF.Max(1f, scale);
-
-			bool makeVisible = this.slicingContext.ScaleFactor > 1f;
-			if (makeVisible != this.horizontalScrollBar.Visible
-				|| makeVisible != this.verticalScrollBar.Visible)
-			{
-				this.horizontalScrollBar.Visible = makeVisible;
-				this.verticalScrollBar.Visible = makeVisible;
-				// When scroll bars first become visible, set them
-				// to 50% scroll in each direction
-				if (makeVisible)
-				{
-					this.horizontalScrollBar.Value = 50;
-					this.verticalScrollBar.Value = 50;
-				}
-			}
-
-			this.UpdateScrollValues();
-			this.Invalidate();
-		}
-		private void SetState(IPixmapSlicerState action)
+		private void SetState(IPixmapSlicerState nextState)
 		{
 			this.stateControlToolStrip.SuspendLayout();
 
 			// Tear down old state
 			if (this.state != null)
 			{
+				this.state.OnStateLeaving(EventArgs.Empty);
+
+				// Unsubscribe from event handlers
+				this.state.StateCancelled -= this.OnStateCancelled;
+				this.state.StateChangeRequested -= this.OnStateChangeRequested;
+
 				// Remove old states controls
 				foreach (ToolStripItem item in this.state.StateControls)
 				{
@@ -203,37 +96,16 @@ namespace Duality.Editor.Plugins.Base.Forms
 				}
 			}
 
-			this.state = action;
-
-			action.TargetPixmap = this.targetPixmap;
-			action.DisplayBounds = this.displayedImageRect;
-			action.GetAtlasRect = this.GetAtlasRect;
-			action.GetDisplayRect = this.GetDisplayRect;
-			action.TransformMouseCoordinates = this.TransformMouseCoordinates;
-			action.Context = this.slicingContext;
-
-			action.DisplayInvalidated += (s, e) =>
-			{
-				Rectangle invalidatedRectangle = e.InvalidRect;
-				invalidatedRectangle.X = (int)(invalidatedRectangle.X * this.slicingContext.ScaleFactor);
-				invalidatedRectangle.Y = (int)(invalidatedRectangle.Y * this.slicingContext.ScaleFactor);
-				invalidatedRectangle.Width = (int)(invalidatedRectangle.Width * this.slicingContext.ScaleFactor);
-				invalidatedRectangle.Height = (int)(invalidatedRectangle.Height * this.slicingContext.ScaleFactor);
-				invalidatedRectangle.Offset((int)-this.horizontalScroll, (int)-this.verticalScroll);
-				this.Invalidate(invalidatedRectangle);
-			};
-			action.CursorChanged += (s, e) => this.Cursor = action.Cursor;
-			action.SelectionChanged += (s, e) => this.Invalidate(this.paintingRect);
-			action.StateCancelled += (s, e) =>
-			{
-				this.SetState(new DefaultPixmapSlicerState());
-			};
-			action.StateChangeRequested += this.OnStateChangeRequested;
+			this.state = nextState;
+			this.state.View = this.pixmapView;
+			this.state.TargetPixmap = this.targetPixmap;
+			this.state.StateCancelled += this.OnStateCancelled;
+			this.state.StateChangeRequested += this.OnStateChangeRequested;
 
 			// Add controls for the given state
-			if (action.StateControls != null && action.StateControls.Count > 0)
+			if (this.state.StateControls != null && this.state.StateControls.Count > 0)
 			{
-				foreach (ToolStripItem item in action.StateControls)
+				foreach (ToolStripItem item in this.state.StateControls)
 				{
 					this.stateControlToolStrip.Items.Add(item);
 				}
@@ -242,12 +114,17 @@ namespace Duality.Editor.Plugins.Base.Forms
 			this.stateControlToolStrip.ResumeLayout();
 
 			this.UpdateIndicesButton();
-			this.Invalidate();
+			this.pixmapView.Invalidate();
+
+			if (this.state != null)
+			{
+				this.state.OnStateEntered(EventArgs.Empty);
+			}
 		}
 
 		private void UpdateIndicesButton()
 		{
-			switch (this.state.NumberingStyle)
+			switch (this.pixmapView.NumberingStyle)
 			{
 				case PixmapNumberingStyle.None:
 					this.buttonIndices.Image = EditorBaseResCache.IconHideIndices;
@@ -260,53 +137,21 @@ namespace Duality.Editor.Plugins.Base.Forms
 					break;
 			}
 		}
-		private void UpdateScrollValues()
+
+		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
 		{
-			this.horizontalScroll = this.horizontalScrollBar.Value * (this.ClientRectangle.Width * this.slicingContext.ScaleFactor - this.ClientRectangle.Width) / 100f;
-			this.verticalScroll = this.verticalScrollBar.Value * (this.ClientRectangle.Height * this.slicingContext.ScaleFactor - this.ClientRectangle.Height) / 100f;
-		}
-		private void UpdateGeometry()
-		{
-			int topOffset = this.stateControlToolStrip.Height;
-			int rightOffset = this.verticalScrollBar.Width;
-			int bottomOffset = this.horizontalScrollBar.Height;
+			if (this.pixmapView.ClientRectangle.Contains(localPos))
+				return this.state.ProvideHoverHelp(localPos, ref captured);
 
-			this.paintingRect = new Rectangle(
-				this.ClientRectangle.X, this.ClientRectangle.Y + topOffset,
-				this.ClientRectangle.Width - rightOffset, this.ClientRectangle.Height - topOffset - bottomOffset);
-
-			Rectangle previousImageRect = this.imageRect;
-			this.imageRect = new Rectangle(
-				this.paintingRect.X + 5, this.paintingRect.Y + 5,
-				this.paintingRect.Width - 10, this.paintingRect.Height - 10);
-
-			// Determine the geometry of the displayed image
-			// while maintaing a constant aspect ratio and using as much space as possible
-			if (this.displayedImage != null)
-			{
-				Rectangle rectImage = new Rectangle(this.imageRect.X + 1, this.imageRect.Y + 1, this.imageRect.Width - 2, this.imageRect.Height - 2);
-				Size imgSize = new Size(this.displayedImage.Width, this.displayedImage.Height);
-				float widthForHeight = (float)imgSize.Width / imgSize.Height;
-				if (widthForHeight * (imgSize.Height - rectImage.Height) > imgSize.Width - rectImage.Width)
-				{
-					imgSize.Height = Math.Min(rectImage.Height, imgSize.Height);
-					imgSize.Width = MathF.RoundToInt(widthForHeight * imgSize.Height);
-				}
-				else
-				{
-					imgSize.Width = Math.Min(rectImage.Width, imgSize.Width);
-					imgSize.Height = MathF.RoundToInt(imgSize.Width / widthForHeight);
-				}
-				int imageX = rectImage.X + rectImage.Width / 2 - imgSize.Width / 2;
-				int imageY = rectImage.Y + rectImage.Height / 2 - imgSize.Height / 2;
-
-				this.displayedImageRect = new Rectangle(
-					imageX, imageY,
-					imgSize.Width, imgSize.Height);
-				this.state.DisplayBounds = this.displayedImageRect;
-			}
+			return HelpInfo.FromText(
+				EditorBaseRes.Help_PixmapSlicer_Topic,
+				EditorBaseRes.Help_PixmapSlicer_Desc);
 		}
 
+		private void OnStateCancelled(object sender, EventArgs e)
+		{
+			this.SetState(new DefaultPixmapSlicerState());
+		}
 		private void OnStateChangeRequested(object sender, PixmapSlicerStateEventArgs e)
 		{
 			IPixmapSlicerState newState = (IPixmapSlicerState)Activator.CreateInstance(e.StateType);
@@ -321,97 +166,11 @@ namespace Duality.Editor.Plugins.Base.Forms
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing -= this.Resource_ResourceDisposing;
 		}
-		protected override void OnSizeChanged(EventArgs e)
-		{
-			base.OnSizeChanged(e);
-			this.Invalidate();
-		}
-		protected override void OnInvalidated(InvalidateEventArgs e)
-		{
-			base.OnInvalidated(e);
-			this.UpdateGeometry();
-		}
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			base.OnPaint(e);
-
-			// Fill background
-			e.Graphics.Clear(Color.FromArgb(150, 150, 150));
-
-			e.Graphics.TranslateTransform(-this.horizontalScroll, -this.verticalScroll);
-			e.Graphics.ScaleTransform(this.slicingContext.ScaleFactor, this.slicingContext.ScaleFactor);
-
-			// Paint checkered background
-			float lum = this.slicingContext.DarkMode ? 1 - this.prevImageLum : this.prevImageLum;
-			Color brightChecker = lum > 0.5f ? Color.FromArgb(72, 72, 72) : Color.FromArgb(208, 208, 208);
-			Color darkChecker = lum > 0.5f ? Color.FromArgb(56, 56, 56) : Color.FromArgb(176, 176, 176);
-			using (Brush hatchBrush = new HatchBrush(HatchStyle.LargeCheckerBoard, brightChecker, darkChecker))
-			{
-				e.Graphics.FillRectangle(hatchBrush, this.displayedImageRect);
-			}
-
-			if (this.displayedImage != null)
-			{
-				float scaleFactor = this.slicingContext.ScaleFactor * ((float)this.displayedImageRect.Width / (float)this.displayedImage.Width);
-				bool isIntScaling = MathF.Abs(MathF.RoundToInt(scaleFactor) - scaleFactor) < 0.0001f;
-
-				// Choose filtering mode depending on whether we're scaling by a full Nx factor
-				e.Graphics.InterpolationMode = 
-					isIntScaling ? 
-					InterpolationMode.NearestNeighbor : 
-					InterpolationMode.Bilinear;
-				e.Graphics.DrawImage(this.displayedImage, this.displayedImageRect);
-				e.Graphics.InterpolationMode = InterpolationMode.Default;
-			}
-
-			this.state.OnPaint(e);
-		}
-
-		protected override void OnKeyUp(KeyEventArgs e)
-		{
-			base.OnKeyUp(e);
-
-			this.state.OnKeyUp(e);
-		}
-		protected override void OnMouseDown(MouseEventArgs e)
-		{
-			base.OnMouseDown(e);
-			this.Activate();
-			this.state.OnMouseDown(e);
-		}
-		protected override void OnMouseUp(MouseEventArgs e)
-		{
-			base.OnMouseUp(e);
-			this.Activate();
-			this.state.OnMouseUp(e);
-		}
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			base.OnMouseMove(e);
-
-			this.state.OnMouseMove(e);
-		}
-		protected override void OnMouseWheel(MouseEventArgs e)
-		{
-			base.OnMouseWheel(e);
-			this.SetScaleFactor(this.slicingContext.ScaleFactor + this.slicingContext.ScaleFactor * (e.Delta > 0 ? 0.1f : -0.1f));
-		}
-
-		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
-		{
-			if (this.paintingRect.Contains(localPos))
-			{
-				return this.state.ProvideHoverHelp(localPos, ref captured);
-			}
-
-			return HelpInfo.FromText(EditorBaseRes.Help_PixmapSlicer_Topic,
-				EditorBaseRes.Help_PixmapSlicer_Desc);
-		}
 
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (e.HasObject(this.targetPixmap))
-				this.Invalidate();
+				this.pixmapView.Invalidate();
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -424,47 +183,53 @@ namespace Duality.Editor.Plugins.Base.Forms
 				this.Close();
 		}
 
-		private void ScrollBarOnScroll(object sender, EventArgs e)
+		private void pixmapView_PaintContentOverlay(object sender, PaintEventArgs e)
 		{
-			this.UpdateScrollValues();
-			this.Invalidate(this.paintingRect);
-
-			// Makes image panning noticably smoother by 
-			// updating the display immediately
-			this.Update();
+			this.state.OnPaint(e);
 		}
+		private void pixmapView_MouseDown(object sender, MouseEventArgs e)
+		{
+			this.state.OnMouseDown(e);
+		}
+		private void pixmapView_MouseMove(object sender, MouseEventArgs e)
+		{
+			this.state.OnMouseMove(e);
+		}
+		private void pixmapView_MouseUp(object sender, MouseEventArgs e)
+		{
+			this.state.OnMouseUp(e);
+		}
+		private void pixmapView_KeyUp(object sender, KeyEventArgs e)
+		{
+			this.state.OnKeyUp(e);
+		}
+
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
-			this.slicingContext.DarkMode = this.buttonBrightness.Checked;
-			this.Invalidate();
+			this.pixmapView.DarkMode = this.buttonBrightness.Checked;
 		}
 		private void buttonZoomIn_Click(object sender, EventArgs e)
 		{
-			this.SetScaleFactor(this.slicingContext.ScaleFactor + this.slicingContext.ScaleFactor * 0.2f);
+			this.pixmapView.ScaleFactor += this.pixmapView.ScaleFactor * 0.2f;
 		}
 		private void buttonZoomOut_Click(object sender, EventArgs e)
 		{
-			this.SetScaleFactor(this.slicingContext.ScaleFactor - this.slicingContext.ScaleFactor * 0.2f);
+			this.pixmapView.ScaleFactor -= this.pixmapView.ScaleFactor * 0.2f;
 		}
 		private void buttonDefaultZoom_Click(object sender, EventArgs e)
 		{
-			this.SetScaleFactor(1f);
+			this.pixmapView.ScaleFactor = 1.0f;
 		}
 		private void buttonIndices_Click(object sender, EventArgs e)
 		{
-			PixmapNumberingStyle currentStyle = this.state.NumberingStyle;
+			PixmapNumberingStyle currentStyle = this.pixmapView.NumberingStyle;
 
-			PixmapNumberingStyle newStyle = (PixmapNumberingStyle) ((int)currentStyle << 1);
-			if ((int)newStyle > (int)PixmapNumberingStyle.All) newStyle = PixmapNumberingStyle.None;
+			PixmapNumberingStyle newStyle = (PixmapNumberingStyle)(
+				((int)currentStyle + 1) % 
+				((int)PixmapNumberingStyle.All + 1));
 
-			this.slicingContext.NumberingStyle = newStyle;
-
-			// If the state is not allowing its numbering style to be changed
-			if (this.state.NumberingStyle != newStyle)
-				this.slicingContext.NumberingStyle = currentStyle;
-
+			this.pixmapView.NumberingStyle = newStyle;
 			this.UpdateIndicesButton();
-			this.Invalidate();
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Duality.Editor.Plugins.Base.Properties;
@@ -12,15 +13,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// </summary>
 	public class AtlasOrderingPixmapSlicerState : PixmapSlicerState
 	{
-		private ToolStripButton doneButton   = null;
-		private ToolStripButton cancelButton = null;
-		private List<int> orderedIndices     = new List<int>();
-
-
-		public override PixmapNumberingStyle NumberingStyle
-		{
-			get { return PixmapNumberingStyle.None; }
-		}
+		private ToolStripButton      doneButton         = null;
+		private ToolStripButton      cancelButton       = null;
+		private List<int>            orderedIndices     = new List<int>();
+		private PixmapNumberingStyle prevNumberingStyle = PixmapNumberingStyle.None;
 
 
 		public AtlasOrderingPixmapSlicerState()
@@ -64,16 +60,23 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.CancelState();
 		}
 
+		public override void OnStateEntered(EventArgs e)
+		{
+			base.OnStateEntered(e);
+			this.prevNumberingStyle = this.View.NumberingStyle;
+			this.View.NumberingStyle = PixmapNumberingStyle.Hovered;
+		}
+		public override void OnStateLeaving(EventArgs e)
+		{
+			base.OnStateLeaving(e);
+			this.View.NumberingStyle = this.prevNumberingStyle;
+		}
 		public override void OnMouseUp(MouseEventArgs e)
 		{
 			if (this.TargetPixmap == null || this.TargetPixmap.Atlas == null)
 				return;
 
-			float x, y;
-			this.TransformMouseCoordinates(e.Location, out x, out y);
-			int indexClicked = this.TargetPixmap.Atlas
-				.IndexOfFirst(r => this.GetDisplayRect(r).Contains(x, y));
-
+			int indexClicked = this.TargetPixmap.Atlas.IndexOfFirst(r => this.View.GetDisplayRect(r).Contains(e.X, e.Y));
 			if (indexClicked == -1 || this.orderedIndices.Contains(indexClicked))
 				return;
 
@@ -94,8 +97,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			for (int index = 0; index < this.orderedIndices.Count; index++)
 			{
 				Rect atlasRect = this.TargetPixmap.Atlas[this.orderedIndices[index]];
-				Rect displayRect = this.GetDisplayRect(atlasRect);
-				this.DisplayRectIndex(e.Graphics, displayRect, index);
+				Rect displayRect = this.View.GetDisplayRect(atlasRect);
+				this.View.DrawRectIndex(e.Graphics, displayRect, index);
 			}
 		}
 
