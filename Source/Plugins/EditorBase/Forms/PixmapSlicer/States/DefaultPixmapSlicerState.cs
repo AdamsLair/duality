@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
+
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
@@ -14,8 +17,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// </summary>
 	public class DefaultPixmapSlicerState : PixmapSlicerState
 	{
-		private const float DRAG_OFFSET = 3f;
-
 		private readonly ToolStripButton        addRectButton        = null;
 		private readonly ToolStripButton        clearButton          = null;
 		private readonly ToolStripButton        deleteSelectedButton = null;
@@ -24,17 +25,15 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		private readonly ToolStripNumericUpDown alphaCutoffEntry     = null;
 		private readonly ToolStripButton        gridSliceButton      = null;
 
-		private Rect originalDragRect = Rect.Empty;
-		private bool mouseDown        = false;
-		private bool dragInProgress   = false;
-
-		private PixmapSlicingRectSide hoveredRectSide = PixmapSlicingRectSide.None;
+		private Rect                  originalDragRect = Rect.Empty;
+		private int                   draggedRectIndex = -1;
+		private PixmapSlicingRectSide draggedRectSide  = PixmapSlicingRectSide.None;
 
 
 		public DefaultPixmapSlicerState()
 		{
 			this.addRectButton = new ToolStripButton(null, EditorBaseResCache.IconSquareAdd,
-				(s, e) => this.ChangeState(typeof(NewRectPixmapSlicerState)));
+				(s, e) => this.SwitchToState(typeof(NewRectPixmapSlicerState)));
 
 			this.deleteSelectedButton = new ToolStripButton(null, EditorBaseResCache.IconSquareDelete,
 				(s, e) => this.DeleteSelectedRect());
@@ -44,13 +43,13 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				(s, e) => this.ClearRects());
 
 			this.orderRectsButton = new ToolStripButton(null, EditorBaseResCache.IconSquareNumbers,
-				(s, e) => this.ChangeState(typeof(AtlasOrderingPixmapSlicerState)));
+				(s, e) => this.SwitchToState(typeof(AtlasOrderingPixmapSlicerState)));
 
 			this.autoSliceButton = new ToolStripButton(EditorBaseRes.Button_AutoSlice, null,
 				(s, e) => this.AutoSlicePixmap());
 
 			this.gridSliceButton = new ToolStripButton(EditorBaseRes.Button_GridSlice, null,
-				(s, e) => this.ChangeState(typeof(GridSlicePixmapSlicerState)));
+				(s, e) => this.SwitchToState(typeof(GridSlicePixmapSlicerState)));
 
 			this.alphaCutoffEntry = CreateNumericUpDown("Alpha Cutoff:", 0, 254);
 
@@ -72,185 +71,172 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.StateControls.Add(this.gridSliceButton);
 		}
 
-		public override void ClearSelection()
-		{
-			this.deleteSelectedButton.Enabled = false;
-			this.SelectedRectIndex = -1;
-		}
-
 		private void ClearRects()
 		{
 			if (this.TargetPixmap == null)
 				return;
 
 			UndoRedoManager.Do(new ClearAtlasAction(new[] { this.TargetPixmap }));
-			this.ClearSelection();
+			this.View.ClearSelection();
 		}
 		private void DeleteSelectedRect()
 		{
-			if (this.SelectedRectIndex == -1)
+			if (this.View.SelectedAtlasIndex == -1)
 				return;
 
-			UndoRedoManager.Do(new DeleteAtlasRectAction(this.SelectedRectIndex, new[] { this.TargetPixmap }));
-			this.ClearSelection();
+			UndoRedoManager.Do(new DeleteAtlasRectAction(this.View.SelectedAtlasIndex, new[] { this.TargetPixmap }));
+			this.View.ClearSelection();
 		}
 
 		private void AutoSlicePixmap()
 		{
-			if (this.TargetPixmap == null)
-				return;
+			if (this.TargetPixmap == null) return;
 
 			byte alpha = (byte)this.alphaCutoffEntry.Value;
-
 			IEnumerable<Rect> rects = PixmapSlicingUtility.FindRects(this.TargetPixmap, alpha);
-
 			UndoRedoManager.Do(new SetAtlasAction(rects, new[] { this.TargetPixmap }));
 
-			this.ClearSelection();
+			this.View.ClearSelection();
 		}
 
-		private void SetPixmapAtlasRect(Rect rect, int index)
+		private void BeginDragRect(int index, PixmapSlicingRectSide side)
 		{
-			Rect oldRect = this.TargetPixmap.Atlas[index];
-			this.TargetPixmap.Atlas[index] = rect;
-			Rect updatedArea = rect.ExpandedToContain(oldRect);
-			this.UpdateDisplay(updatedArea);
+			this.draggedRectIndex = index;
+			this.draggedRectSide = side;
 		}
-		private void SetHoveredSide(PixmapSlicingRectSide side)
+		private void EndDragRect()
 		{
-			this.hoveredRectSide = side;
-			switch (side)
+			this.draggedRectIndex = -1;
+			this.draggedRectSide = PixmapSlicingRectSide.None;
+		}
+
+		private void UpdateCursor()
+		{
+			switch (this.View.HoveredAtlasRectSide)
 			{
 				case PixmapSlicingRectSide.Left:
 				case PixmapSlicingRectSide.Right:
-					this.Cursor = Cursors.SizeWE;
+					this.View.Cursor = Cursors.SizeWE;
 					break;
 				case PixmapSlicingRectSide.Top:
 				case PixmapSlicingRectSide.Bottom:
-					this.Cursor = Cursors.SizeNS;
+					this.View.Cursor = Cursors.SizeNS;
 					break;
 				default:
-					this.Cursor = Cursors.Default;
+					this.View.Cursor = Cursors.Default;
 					break;
 			}
 		}
 
+		public override void OnStateEntered(EventArgs e)
+		{
+			base.OnStateEntered(e);
+			this.View.SelectedAtlasChanged += this.View_SelectedAtlasChanged;
+			this.View.HoveredAtlasChanged += this.View_HoveredAtlasChanged;
+			this.UpdateCursor();
+		}
+		public override void OnStateLeaving(EventArgs e)
+		{
+			base.OnStateLeaving(e);
+			this.EndDragRect();
+			this.View.SelectedAtlasChanged -= this.View_SelectedAtlasChanged;
+			this.View.HoveredAtlasChanged -= this.View_HoveredAtlasChanged;
+			this.View.Cursor = Cursors.Default;
+		}
 		public override void OnMouseDown(MouseEventArgs e)
 		{
-			this.mouseDown = true;
+			if (this.View.HoveredAtlasRectSide != PixmapSlicingRectSide.None)
+			{
+				this.BeginDragRect(
+					this.View.HoveredAtlasIndex, 
+					this.View.HoveredAtlasRectSide);
+			}
+			else
+			{
+				this.EndDragRect();
+			}
 		}
 		public override void OnMouseUp(MouseEventArgs e)
 		{
-			this.mouseDown = false;
-
-			if (this.TargetPixmap == null || this.TargetPixmap.Atlas == null)
-				return;
-
-			// If finishing a drag operation, commit the change
-			if (this.dragInProgress)
+			if (this.draggedRectIndex != -1)
 			{
-				// Set the atlas' rect back to the original rect so the undoing
-				// the UndoRedoAction will revert to the original rect
-				Rect newRect = this.TargetPixmap.Atlas[this.SelectedRectIndex];
-				this.TargetPixmap.Atlas[this.SelectedRectIndex] = this.originalDragRect;
-				UndoRedoManager.Do(new SetAtlasRectAction(newRect, this.SelectedRectIndex, new []{ this.TargetPixmap }));
-				this.dragInProgress = false;
-				return;
+				this.EndDragRect();
+				UndoRedoManager.Finish();
 			}
-
-			this.SelectedRectIndex = this.View.HoveredAtlasIndex;
-			this.deleteSelectedButton.Enabled = this.SelectedRectIndex != -1;
 		}
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
 
-			if (this.TargetPixmap == null 
-				|| this.TargetPixmap.Atlas == null 
-				|| this.SelectedRectIndex < 0)
-				return;
-
-			Vector2 atlasPos = this.View.GetAtlasPos(e.Location);
-			Rectangle selectedDisplayRectangle = this.View.GetDisplayRect(this.TargetPixmap.Atlas[this.SelectedRectIndex]);
-			Rect selectedDisplayRect = new Rect(
-				selectedDisplayRectangle.X,
-				selectedDisplayRectangle.Y,
-				selectedDisplayRectangle.Width,
-				selectedDisplayRectangle.Height);
-
-			// Check for the start of a drag operation
-			if (!this.dragInProgress)
+			if (this.draggedRectSide != PixmapSlicingRectSide.None)
 			{
-				PixmapSlicingRectSide side;
-				if (selectedDisplayRect.WithinRangeToBorder(e.X, e.Y, DRAG_OFFSET, out side))
-				{
-					if (this.mouseDown)
-					{
-						this.dragInProgress = true;
-						this.originalDragRect = this.TargetPixmap.Atlas[this.SelectedRectIndex];
-					}
+				Vector2 atlasPos = this.View.GetAtlasPos(e.Location);
+				Rect draggedAtlasRect = this.View.GetAtlasRect(this.draggedRectIndex);
 
-					this.SetHoveredSide(side);
-				}
-				else
-				{
-					this.SetHoveredSide(PixmapSlicingRectSide.None);
-				}
-			}
-
-			if (this.dragInProgress)
-			{
-				// Move hovered side to mouse
-				switch (this.hoveredRectSide)
+				// Move dragged side to mouse
+				switch (this.draggedRectSide)
 				{
 					case PixmapSlicingRectSide.Left:
-						selectedDisplayRect.W += selectedDisplayRect.X - e.X;
-						selectedDisplayRect.X = e.X;
+						draggedAtlasRect.W += draggedAtlasRect.X - atlasPos.X;
+						draggedAtlasRect.X = atlasPos.X;
 						break;
 					case PixmapSlicingRectSide.Right:
-						selectedDisplayRect.W += e.X - selectedDisplayRect.RightX;
+						draggedAtlasRect.W += atlasPos.X - draggedAtlasRect.RightX;
 						break;
 					case PixmapSlicingRectSide.Top:
-						selectedDisplayRect.H += selectedDisplayRect.Y - e.Y;
-						selectedDisplayRect.Y = e.Y;
+						draggedAtlasRect.H += draggedAtlasRect.Y - atlasPos.Y;
+						draggedAtlasRect.Y = atlasPos.Y;
 						break;
 					case PixmapSlicingRectSide.Bottom:
-						selectedDisplayRect.H += e.Y - selectedDisplayRect.BottomY;
+						draggedAtlasRect.H += atlasPos.Y - draggedAtlasRect.BottomY;
 						break;
 				}
 
-				// If width/height has gone negative, switch hover side
-				if (selectedDisplayRect.W < 0 || selectedDisplayRect.H < 0)
+				// If width / height has gone negative, switch hover side
+				if (draggedAtlasRect.W < 0 || draggedAtlasRect.H < 0)
 				{
-					selectedDisplayRect = selectedDisplayRect.Normalized();
-					this.hoveredRectSide = this.hoveredRectSide.Opposite();
+					draggedAtlasRect = draggedAtlasRect.Normalized();
+					this.draggedRectSide = this.draggedRectSide.Opposite();
 				}
 
 				// Keep the displayRect within bounds of the image
-				Rectangle displayImageRect = this.View.DisplayedImageRect;
-				selectedDisplayRect = selectedDisplayRect.Intersection(new Rect(
-					displayImageRect.X, displayImageRect.Y,
-					displayImageRect.Width, displayImageRect.Height));
+				Rect pixmapRect = new Rect(0.0f, 0.0f, this.TargetPixmap.Width, this.TargetPixmap.Height);
+				draggedAtlasRect = draggedAtlasRect.Intersection(pixmapRect);
 
-				Rect atlasRect = this.View.GetAtlasRect(new Rectangle(
-					(int)selectedDisplayRect.X,
-					(int)selectedDisplayRect.Y,
-					(int)selectedDisplayRect.W,
-					(int)selectedDisplayRect.H));
-				atlasRect.X = MathF.RoundToInt(atlasRect.X);
-				atlasRect.Y = MathF.RoundToInt(atlasRect.Y);
-				atlasRect.W = MathF.RoundToInt(atlasRect.W);
-				atlasRect.H = MathF.RoundToInt(atlasRect.H);
-				if (atlasRect.W != 0 && atlasRect.H != 0)
-					this.SetPixmapAtlasRect(atlasRect, this.SelectedRectIndex);
+				// Clamp the atlas rect to full pixel values
+				draggedAtlasRect.X = MathF.RoundToInt(draggedAtlasRect.X);
+				draggedAtlasRect.Y = MathF.RoundToInt(draggedAtlasRect.Y);
+				draggedAtlasRect.W = MathF.RoundToInt(draggedAtlasRect.W);
+				draggedAtlasRect.H = MathF.RoundToInt(draggedAtlasRect.H);
+
+				// Apply the new atlas rect
+				if (draggedAtlasRect.W != 0 && draggedAtlasRect.H != 0)
+				{
+					this.SetAtlasRect(draggedAtlasRect, this.draggedRectIndex);
+				}
 			}
 		}
 		public override void OnKeyUp(KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Delete && this.SelectedRectIndex != -1)
+			if (e.KeyCode == Keys.Delete && this.View.SelectedAtlasIndex != -1)
 			{
+				this.EndDragRect();
 				this.DeleteSelectedRect();
 			}
+		}
+		protected override void OnTargetPixmapChanged()
+		{
+			base.OnTargetPixmapChanged();
+			this.EndDragRect();
+		}
+
+		private void View_SelectedAtlasChanged(object sender, EventArgs e)
+		{
+			this.deleteSelectedButton.Enabled = this.View.SelectedAtlasIndex != -1;
+		}
+		private void View_HoveredAtlasChanged(object sender, EventArgs e)
+		{
+			this.UpdateCursor();
 		}
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)

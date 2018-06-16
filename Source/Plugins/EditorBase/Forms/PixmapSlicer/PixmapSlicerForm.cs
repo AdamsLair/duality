@@ -26,11 +26,14 @@ namespace Duality.Editor.Plugins.Base.Forms
 			get { return this.targetPixmap; }
 			set
 			{
-				this.targetPixmap = value;
-				this.state.TargetPixmap = value;
-				this.pixmapView.TargetPixmap = value;
-				this.pixmapView.ZoomToFit();
-				this.stateControlToolStrip.Enabled = this.state.TargetPixmap != null;
+				if (this.targetPixmap != value)
+				{
+					this.targetPixmap = value;
+					this.stateControlToolStrip.Enabled = this.targetPixmap != null;
+
+					this.pixmapView.TargetPixmap = value;
+					this.pixmapView.ZoomToFit();
+				}
 			}
 		}
 
@@ -86,7 +89,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 				this.state.OnStateLeaving(EventArgs.Empty);
 
 				// Unsubscribe from event handlers
-				this.state.StateCancelled -= this.OnStateCancelled;
+				this.state.StateEndRequested -= this.OnStateCancelled;
 				this.state.StateChangeRequested -= this.OnStateChangeRequested;
 
 				// Remove old states controls
@@ -98,8 +101,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 			this.state = nextState;
 			this.state.View = this.pixmapView;
-			this.state.TargetPixmap = this.targetPixmap;
-			this.state.StateCancelled += this.OnStateCancelled;
+			this.state.StateEndRequested += this.OnStateCancelled;
 			this.state.StateChangeRequested += this.OnStateChangeRequested;
 
 			// Add controls for the given state

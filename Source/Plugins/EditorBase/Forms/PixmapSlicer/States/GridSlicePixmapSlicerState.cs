@@ -61,7 +61,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.TargetPixmap.Atlas = this.originalAtlas;
 
 			UndoRedoManager.Do(new SetAtlasAction(newAtlas, new[] { this.TargetPixmap }));
-			this.CancelState();
+			this.EndState();
 		}
 
 		private void UpdateControls()
@@ -74,7 +74,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		{
 			this.TargetPixmap.Atlas = this.originalAtlas;
 
-			this.CancelState();
+			this.EndState();
 		}
 
 		public override void OnKeyUp(KeyEventArgs e)
@@ -85,19 +85,19 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					if (e.Control) this.TargetPixmap.AnimCols = Math.Max(0, this.TargetPixmap.AnimCols - 1);
 					else this.TargetPixmap.AnimRows = Math.Max(0, this.TargetPixmap.AnimRows - 1);
 					this.UpdateControls();
-					this.UpdateDisplay();
+					this.InvalidatePixmap();
 					break;
 				case Keys.Add:
 					if (e.Control) this.TargetPixmap.AnimCols++;
 					else this.TargetPixmap.AnimRows++;
 					this.UpdateControls();
-					this.UpdateDisplay();
+					this.InvalidatePixmap();
 					break;
 			}
 		}
-		protected override void OnPixmapChanged()
+		protected override void OnTargetPixmapChanged()
 		{
-			base.OnPixmapChanged();
+			base.OnTargetPixmapChanged();
 
 			if (this.TargetPixmap.Atlas != null)
 			{
@@ -114,22 +114,22 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				this.TargetPixmap.GenerateAnimAtlas(this.TargetPixmap.AnimCols, this.TargetPixmap.AnimRows, this.TargetPixmap.AnimFrameBorder);
 			}
 
-			this.UpdateDisplay();
+			this.InvalidatePixmap();
 		}
 		private void OnRowsChanged(object sender, EventArgs e)
 		{
 			this.TargetPixmap.AnimRows = (int) this.rowsInput.Value;
-			this.UpdateDisplay();
+			this.InvalidatePixmap();
 		}
 		private void OnColsChanged(object sender, EventArgs e)
 		{
 			this.TargetPixmap.AnimCols = (int)this.colsInput.Value;
-			this.UpdateDisplay();
+			this.InvalidatePixmap();
 		}
 		private void OnBorderChanged(object sender, EventArgs e)
 		{
 			this.TargetPixmap.AnimFrameBorder = (int)this.borderInput.Value;
-			this.UpdateDisplay();
+			this.InvalidatePixmap();
 		}
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)

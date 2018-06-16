@@ -19,20 +19,30 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		private static readonly Brush IndexTextForeBrush = new SolidBrush(Color.White);
 		private static readonly Pen RectPenLight = new Pen(Color.Black, 1);
 		private static readonly Pen RectPenDark = new Pen(Color.White, 1);
+		private static readonly Pen SelectedRectPenLight = new Pen(Color.Blue, 1);
+		private static readonly Pen SelectedRectPenDark = new Pen(Color.DeepSkyBlue, 1);
 
 		private Pixmap targetPixmap = null;
+		private bool darkMode = false;
+		private PixmapNumberingStyle rectNumbering = PixmapNumberingStyle.Hovered;
+		private float scaleFactor = 1.0f;
+
+		private int hoveredRectIndex = -1;
+		private int selectedRectIndex = -1;
+		private PixmapSlicingRectSide hoveredRectSide = PixmapSlicingRectSide.None;
+
 		private Bitmap image = null;
 		private Rectangle contentRect = Rectangle.Empty;
 		private Rectangle imageRect = Rectangle.Empty;
 		private float prevImageLum = 0f;
-		private bool darkMode = false;
-		private PixmapNumberingStyle rectNumbering = PixmapNumberingStyle.Hovered;
-		private float scaleFactor = 1.0f;
-		private int hoveredRectIndex = -1;
+
 		private Bitmap backBitmap = null;
 		private TextureBrush backBrush = null;
 
 
+		public event EventHandler TargetPixmapChanged = null;
+		public event EventHandler HoveredAtlasChanged = null;
+		public event EventHandler SelectedAtlasChanged = null;
 		public event EventHandler<PaintEventArgs> PaintContentOverlay = null;
 
 
@@ -44,17 +54,23 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			get { return this.targetPixmap; }
 			set
 			{
-				this.targetPixmap = value;
-				this.image = this.GenerateDisplayImage();
-
-				if (this.image != null)
+				if (this.targetPixmap != value)
 				{
-					ColorRgba avgColor = this.image.GetAverageColor();
-					this.prevImageLum = avgColor.GetLuminance();
-				}
+					this.targetPixmap = value;
+					this.image = this.GenerateDisplayImage();
 
-				this.UpdateContentLayout();
-				this.Invalidate();
+					if (this.image != null)
+					{
+						ColorRgba avgColor = this.image.GetAverageColor();
+						this.prevImageLum = avgColor.GetLuminance();
+					}
+
+					this.UpdateContentLayout();
+					this.Invalidate();
+
+					if (this.TargetPixmapChanged != null)
+						this.TargetPixmapChanged(this, EventArgs.Empty);
+				}
 			}
 		}
 		public bool DarkMode
@@ -99,13 +115,45 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		{
 			get { return this.imageRect; }
 		}
+		public int AtlasCount
+		{
+			get
+			{
+				if (this.TargetPixmap == null) return 0;
+				if (this.TargetPixmap.Atlas == null) return 0;
+				return this.TargetPixmap.Atlas.Count;
+			}
+		}
 		public int HoveredAtlasIndex
 		{
 			get { return this.hoveredRectIndex; }
 		}
+		public PixmapSlicingRectSide HoveredAtlasRectSide
+		{
+			get { return this.hoveredRectSide; }
+		}
+		public int SelectedAtlasIndex
+		{
+			get { return this.selectedRectIndex; }
+			set
+			{
+				if (this.selectedRectIndex != value)
+				{
+					this.selectedRectIndex = value;
+					this.Invalidate();
+
+					if (this.SelectedAtlasChanged != null)
+						this.SelectedAtlasChanged(this, EventArgs.Empty);
+				}
+			}
+		}
 		protected Pen RectPen
 		{
 			get { return this.darkMode ? RectPenDark : RectPenLight; }
+		}
+		protected Pen SelectedRectPen
+		{
+			get { return this.darkMode ? SelectedRectPenDark : SelectedRectPenLight; }
 		}
 
 
@@ -140,6 +188,20 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			{
 				this.ScaleFactor = 1.0f;
 			}
+		}
+		public void ClearSelection()
+		{
+			this.SelectedAtlasIndex = -1;
+		}
+
+		public Rect GetAtlasRect(int index)
+		{
+			if (this.targetPixmap == null) return Rect.Empty;
+			if (this.targetPixmap.Atlas == null) return Rect.Empty;
+			if (index < 0) return Rect.Empty;
+			if (index >= this.targetPixmap.Atlas.Count) return Rect.Empty;
+
+			return this.targetPixmap.Atlas[index];
 		}
 
 		/// <summary>
@@ -216,15 +278,16 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				this.targetPixmap.Width, 
 				this.targetPixmap.Height));
 		}
-		public void InvalidatePixmap(Rect pixmapRect)
+		public void InvalidatePixmap(Rect atlasRect)
 		{
+			if (atlasRect.W == 0.0f || atlasRect.H == 0.0f) return;
 			if (this.targetPixmap == null) return;
 
 			Rectangle viewRect = new Rectangle(
-				(int)(pixmapRect.X * this.scaleFactor),
-				(int)(pixmapRect.Y * this.scaleFactor),
-				(int)(pixmapRect.W * this.scaleFactor),
-				(int)(pixmapRect.H * this.scaleFactor));
+				(int)(atlasRect.X * this.scaleFactor),
+				(int)(atlasRect.Y * this.scaleFactor),
+				(int)(atlasRect.W * this.scaleFactor),
+				(int)(atlasRect.H * this.scaleFactor));
 
 			viewRect.X += this.imageRect.X;
 			viewRect.Y += this.imageRect.Y;
@@ -361,6 +424,27 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			g.DrawString(indexText, this.Font, IndexTextForeBrush, textPos.X, textPos.Y);
 		}
 
+		private PixmapSlicingRectSide GetHoveredRectSide(Rectangle rect, int x, int y, int maxDistanceToEdge)
+		{
+			bool withinRange =
+				x + maxDistanceToEdge >= rect.Left &&
+				x - maxDistanceToEdge <= rect.Right &&
+				y + maxDistanceToEdge >= rect.Top &&
+				y - maxDistanceToEdge <= rect.Bottom;
+			if (!withinRange) return PixmapSlicingRectSide.None;
+
+			bool onTopEdge = Math.Abs(rect.Top - y) <= maxDistanceToEdge;
+			bool onBottomEdge = Math.Abs(rect.Bottom - y) <= maxDistanceToEdge;
+			bool onLeftEdge = Math.Abs(rect.Left - x) <= maxDistanceToEdge;
+			bool onRightEdge = Math.Abs(rect.Right - x) <= maxDistanceToEdge;
+			if (onTopEdge) return PixmapSlicingRectSide.Top;
+			if (onBottomEdge) return PixmapSlicingRectSide.Bottom;
+			if (onLeftEdge) return PixmapSlicingRectSide.Left;
+			if (onRightEdge) return PixmapSlicingRectSide.Right;
+
+			return PixmapSlicingRectSide.None;
+		}
+
 		protected override void OnSizeChanged(EventArgs e)
 		{
 			base.OnSizeChanged(e);
@@ -436,11 +520,22 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 						this.RectPen,
 						displayRect);
 
+					bool isHoveredOrSelected = (this.hoveredRectIndex == i || this.selectedRectIndex == i);
 					if (this.rectNumbering == PixmapNumberingStyle.All || 
-						(this.rectNumbering == PixmapNumberingStyle.Hovered && this.hoveredRectIndex == i))
+						(this.rectNumbering == PixmapNumberingStyle.Hovered && isHoveredOrSelected))
 					{
 						this.DrawRectIndex(e.Graphics, displayRect, i);
 					}
+				}
+
+				// Draw selected outline on top of all others
+				if (this.selectedRectIndex != -1)
+				{
+					Rect atlasRect = this.GetAtlasRect(this.selectedRectIndex);
+					Rectangle displayRect = this.GetDisplayRect(atlasRect);
+					e.Graphics.DrawRectangle(
+						this.SelectedRectPen,
+						displayRect);
 				}
 			}
 
@@ -455,33 +550,51 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			if (this.targetPixmap == null || this.targetPixmap.Atlas == null)
 				return;
 
+			PixmapSlicingRectSide prevHoveredSide = this.hoveredRectSide;
+			int prevHoveredIndex = this.hoveredRectIndex;
+
 			// Update hover states for slice rects
-			int originalHoveredIndex = this.hoveredRectIndex;
 			this.hoveredRectIndex = -1;
+			this.hoveredRectSide = PixmapSlicingRectSide.None;
 			for (int i = 0; i < this.targetPixmap.Atlas.Count; i++)
 			{
 				Rectangle displayRect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
-				if (displayRect.Contains(e.X, e.Y))
+
+				// Hovering any side of the rect
+				PixmapSlicingRectSide side = this.GetHoveredRectSide(displayRect, e.X, e.Y, 3);
+				if (side != PixmapSlicingRectSide.None)
 				{
+					this.hoveredRectSide = side;
+					this.hoveredRectIndex = i;
+					break;
+				}
+				// Hovering the rects area
+				else if (displayRect.Contains(e.X, e.Y))
+				{
+					this.hoveredRectSide = PixmapSlicingRectSide.None;
 					this.hoveredRectIndex = i;
 					break;
 				}
 			}
 
 			// Invalidate regions when changing hover states
-			if (this.rectNumbering == PixmapNumberingStyle.Hovered && this.hoveredRectIndex != originalHoveredIndex)
+			if (this.rectNumbering == PixmapNumberingStyle.Hovered && this.hoveredRectIndex != prevHoveredIndex)
 			{
-				if (this.hoveredRectIndex >= 0 && this.hoveredRectIndex < this.targetPixmap.Atlas.Count)
-					{
-					Rect hoveredSliceArea = this.targetPixmap.Atlas[this.hoveredRectIndex];
-					this.InvalidatePixmap(hoveredSliceArea);
-				}
-				if (originalHoveredIndex >= 0 && originalHoveredIndex < this.targetPixmap.Atlas.Count)
-				{
-					Rect prevHoveredSliceArea = this.targetPixmap.Atlas[originalHoveredIndex];
-					this.InvalidatePixmap(prevHoveredSliceArea);
-				}
+				this.InvalidatePixmap(this.GetAtlasRect(this.hoveredRectIndex));
+				this.InvalidatePixmap(this.GetAtlasRect(prevHoveredIndex));
 			}
+
+			// Fire events for hover state changes
+			if (this.hoveredRectIndex != prevHoveredIndex || this.hoveredRectSide != prevHoveredSide)
+			{
+				if (this.HoveredAtlasChanged != null)
+					this.HoveredAtlasChanged(this, EventArgs.Empty);
+			}
+		}
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			base.OnMouseDown(e);
+			this.SelectedAtlasIndex = this.HoveredAtlasIndex;
 		}
 	}
 }

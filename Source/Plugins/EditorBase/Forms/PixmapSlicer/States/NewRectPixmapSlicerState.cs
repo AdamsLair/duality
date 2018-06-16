@@ -11,59 +11,47 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// </summary>
 	public class NewRectPixmapSlicerState : PixmapSlicerState
 	{
-		private ToolStripButton cancelButton = null;
-		private bool            mouseDown    = false;
-		private Point           rectAddStart = Point.Empty;
-		private Rect?           newAtlasRect = null;
+		private ToolStripButton cancelButton      = null;
+		private Point           rectAddStart      = Point.Empty;
+		private Rect            newAtlasRect      = Rect.Empty;
+		private int             newAtlasRectIndex = -1;
 
 
 		public NewRectPixmapSlicerState()
 		{
-			this.Cursor = Cursors.Default;
-
 			this.cancelButton = new ToolStripButton(null, EditorBaseResCache.IconCancel,
-				(s, e) => this.CancelState());
+				(s, e) => this.EndState());
 
 			this.cancelButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerCancel;
 
 			this.StateControls.Add(this.cancelButton);
 		}
 
-		private void CommitRect()
-		{
-			int index = this.TargetPixmap.Atlas != null
-				? this.TargetPixmap.Atlas.Count
-				: 0;
-
-			UndoRedoManager.Do(new SetAtlasRectAction(this.newAtlasRect.Value, index, new[] { this.TargetPixmap }));
-		}
-
 		public override void OnMouseDown(MouseEventArgs e)
 		{
-			this.mouseDown = true;
+			// Start a new rect create operation
+			if (this.newAtlasRectIndex == -1)
+			{
+				this.newAtlasRectIndex = this.View.AtlasCount;
+				this.rectAddStart = new Point(e.X, e.Y);
+				this.newAtlasRect = this.View.GetAtlasRect(new Rectangle(e.X, e.Y, 0, 0));
+			}
 		}
 		public override void OnMouseUp(MouseEventArgs e)
 		{
-			if (this.mouseDown)
+			if (this.newAtlasRectIndex != -1)
 			{
-				this.mouseDown = false;
-				this.CommitRect();
-				this.CancelState();
+				this.newAtlasRectIndex = -1;
+				UndoRedoManager.Finish();
+				this.EndState();
 			}
 		}
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
 
-			if (this.TargetPixmap == null || !this.mouseDown)
+			if (this.newAtlasRectIndex == -1)
 				return;
-
-			// Check if rect creation hasn't started yet
-			if (!this.newAtlasRect.HasValue)
-			{
-				this.rectAddStart = new Point(e.X, e.Y);
-				this.newAtlasRect = this.View.GetAtlasRect(new Rectangle(e.X, e.Y, 0, 0));
-			}
 
 			int rx = MathF.Min(e.X, this.rectAddStart.X);
 			int ry = MathF.Min(e.Y, this.rectAddStart.Y);
@@ -83,26 +71,21 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			atlasRect.H = MathF.RoundToInt(atlasRect.H);
 			if (atlasRect.W != 0 && atlasRect.H != 0)
 			{
-				Rect updatedArea = this.newAtlasRect.Value.ExpandedToContain(atlasRect);
+				Rect updatedArea = this.newAtlasRect.ExpandedToContain(atlasRect);
 				this.newAtlasRect = atlasRect;
-				this.UpdateDisplay(updatedArea);
+				this.InvalidatePixmap(updatedArea);
 			}
+
+			// Apply the new atlas rect
+			this.SetAtlasRect(this.newAtlasRect, this.newAtlasRectIndex);
+
+			// Update selection of the view to match our new rect
+			this.View.SelectedAtlasIndex = this.newAtlasRectIndex;
 		}
 		public override void OnKeyUp(KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Escape)
-				this.CancelState();
-		}
-
-		public override void OnPaint(PaintEventArgs e)
-		{
-			base.OnPaint(e);
-
-			if (!this.newAtlasRect.HasValue)
-				return;
-
-			Rectangle rect = this.View.GetDisplayRect(this.newAtlasRect.Value);
-			e.Graphics.DrawRectangle(this.SelectedRectPen, rect);
+				this.EndState();
 		}
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)

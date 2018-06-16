@@ -7,39 +7,6 @@ namespace Duality.Editor.Plugins.Base
 	public static class PixmapSlicingUtility
 	{
 		/// <summary>
-		/// Returns whether or not the given coordinates are within <paramref name="range"/> of the rect.
-		/// Also outputs which side the coordinates are closest to when the points are within range.
-		/// </summary>
-		public static bool WithinRangeToBorder(this Rect rect, float x, float y, float range, out PixmapSlicingRectSide side)
-		{
-			float doubleRange = range * 2;
-			Rect smaller = rect.Scaled((rect.W - doubleRange) / rect.W, (rect.H - doubleRange) / rect.H).WithOffset(range, range);
-			Rect larger = rect.Scaled((rect.W + doubleRange) / rect.W, (rect.H + doubleRange) / rect.H).WithOffset(-range, -range);
-
-			bool borderAreaContains = !smaller.Contains(x, y) && larger.Contains(x, y);
-
-			if (!borderAreaContains)
-			{
-				side = PixmapSlicingRectSide.None;
-				return false;
-			}
-
-			float dLeft = MathF.Abs(rect.X - x);
-			float dRight = MathF.Abs(rect.RightX - x);
-			float minH = MathF.Min(dLeft, dRight);
-			PixmapSlicingRectSide sideH = (dLeft < dRight) ? PixmapSlicingRectSide.Left : PixmapSlicingRectSide.Right;
-
-			float dTop = MathF.Abs(rect.Y - y);
-			float dBottom = MathF.Abs(rect.BottomY - y);
-			float minV = MathF.Min(dTop, dBottom);
-			PixmapSlicingRectSide sideV = (dTop < dBottom) ? PixmapSlicingRectSide.Top : PixmapSlicingRectSide.Bottom;
-
-			side = minH < minV ? sideH : sideV;
-			return true;
-
-		}
-
-		/// <summary>
 		/// Find all atlast rectangles in the given <see cref="Pixmap"/>.
 		/// </summary>
 		/// <param name="alpha">Pixels with an alpha value less or equal to this value will be considered transparent.</param>

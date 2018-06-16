@@ -13,15 +13,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// </summary>
 	public interface IPixmapSlicerState : IHelpProvider
 	{
-		Pixmap TargetPixmap { get; set; }
 		List<ToolStripItem> StateControls { get; }
 		PixmapSlicingView View { get; set; }
 
-		/// <summary>
-		/// Occurs whenever a property of <see cref="TargetPixmap"/>
-		/// is changed by this state
-		/// </summary>
-		event EventHandler StateCancelled;
+		event EventHandler StateEndRequested;
 		event EventHandler<PixmapSlicerStateEventArgs> StateChangeRequested;
 
 		void OnStateEntered(EventArgs e);
