@@ -531,6 +531,7 @@ namespace Duality.Resources
 		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
 		public void Render(ContentRef<RenderTarget> target, Rect viewportRect, Vector2 imageSize)
 		{
+			if (!this.active) throw new InvalidOperationException("Cannot render a scene that is not active. Call Activate first.");
 			if (this.isRendering) throw new InvalidOperationException("Can't render a Scene while it is already being rendered.");
 			this.isRendering = true;
 			try
@@ -553,6 +554,7 @@ namespace Duality.Resources
 		/// </summary>
 		public void Update()
 		{
+			if (!this.active) throw new InvalidOperationException("Cannot update a scene that is not active. Call Activate first.");
 			if (this.isUpdating) throw new InvalidOperationException("Can't update a Scene while it is already being updated.");
 			this.isUpdating = true;
 			try
