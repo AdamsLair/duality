@@ -26,6 +26,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		private bool darkMode = false;
 		private PixmapNumberingStyle rectNumbering = PixmapNumberingStyle.Hovered;
 		private float scaleFactor = 1.0f;
+		private bool allowUserSelection = true;
 
 		private int hoveredRectIndex = -1;
 		private int selectedRectIndex = -1;
@@ -110,6 +111,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 					this.Invalidate();
 				}
 			}
+		}
+		public bool AllowUserSelection
+		{
+			get { return this.allowUserSelection; }
+			set { this.allowUserSelection = value; }
 		}
 		public Rectangle DisplayedImageRect
 		{
@@ -594,7 +600,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			this.SelectedAtlasIndex = this.HoveredAtlasIndex;
+			if (this.allowUserSelection)
+				this.SelectedAtlasIndex = this.HoveredAtlasIndex;
 		}
 	}
 }

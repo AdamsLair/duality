@@ -65,11 +65,14 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			base.OnStateEntered(e);
 			this.prevNumberingStyle = this.View.NumberingStyle;
 			this.View.NumberingStyle = PixmapNumberingStyle.Hovered;
+			this.View.AllowUserSelection = false;
+			this.View.ClearSelection();
 		}
 		public override void OnStateLeaving(EventArgs e)
 		{
 			base.OnStateLeaving(e);
 			this.View.NumberingStyle = this.prevNumberingStyle;
+			this.View.AllowUserSelection = true;
 		}
 		public override void OnMouseUp(MouseEventArgs e)
 		{
