@@ -109,7 +109,7 @@ namespace DualStickSpaceShooter
 			if (otherShip == null && blueprint.HitWorldEffect != null)
 			{
 				GameObject effectObj = blueprint.HitWorldEffect.Res.Instantiate(hitPos, hitAngle);
-				Scene.Current.AddObject(effectObj);
+				this.Scene.AddObject(effectObj);
 			}
 
 			// Also spawn a generic hit effect in the color of the bullet
@@ -126,7 +126,7 @@ namespace DualStickSpaceShooter
 						emitter.MinColor = emitter.MinColor.WithSaturation(color.S).WithHue(color.H);
 					}
 				}
-				Scene.Current.AddObject(effectObj);
+				this.Scene.AddObject(effectObj);
 			}
 
 			// Play hit sounds

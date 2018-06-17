@@ -196,7 +196,7 @@ namespace DualStickSpaceShooter
 					if (goalAnim > 0.2f && this.goalEffect != null && this.goalEffectInstance == null)
 					{
 						this.goalEffectInstance = this.goalEffect.Res.Instantiate(this.controlObj.GameObj.Transform.Pos);
-						Scene.Current.AddObject(this.goalEffectInstance);
+						this.Scene.AddObject(this.goalEffectInstance);
 					}
 
 					// Let the ship disappear
@@ -237,7 +237,7 @@ namespace DualStickSpaceShooter
 				DualityApp.Terminate();
 
 			// If it's game over, allow to restart the game
-			GameOverScreen gameOverScreen = Scene.Current.FindComponent<GameOverScreen>();
+			GameOverScreen gameOverScreen = this.Scene.FindComponent<GameOverScreen>();
 			if (gameOverScreen != null && gameOverScreen.HasGameEnded)
 			{
 				if (this.input.ControlStart)

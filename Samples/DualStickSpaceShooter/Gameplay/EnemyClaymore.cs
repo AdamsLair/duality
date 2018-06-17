@@ -173,7 +173,7 @@ namespace DualStickSpaceShooter
 				for (int i = 0; i < blueprint.ExplosionEffects.Length; i++)
 				{
 					GameObject effectObj = blueprint.ExplosionEffects[i].Res.Instantiate(transform.Pos);
-					Scene.Current.AddObject(effectObj);
+					this.Scene.AddObject(effectObj);
 				}
 			}
 
@@ -213,7 +213,7 @@ namespace DualStickSpaceShooter
 			GameObject nearestObj = null;
 
 			Transform transform = this.GameObj.Transform;
-			foreach (Player player in Scene.Current.FindComponents<Player>())
+			foreach (Player player in this.Scene.FindComponents<Player>())
 			{
 				if (player.ControlObject == null) continue;
 				if (!player.ControlObject.Active) continue;

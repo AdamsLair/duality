@@ -40,9 +40,9 @@ namespace DualStickSpaceShooter
 
 			// Retrieve players
 			if (this.playerOne == null)
-				this.playerOne = Scene.Current.FindComponents<Player>().Where(p => p.Id == PlayerId.PlayerOne).FirstOrDefault();
+				this.playerOne = this.Scene.FindComponents<Player>().Where(p => p.Id == PlayerId.PlayerOne).FirstOrDefault();
 			if (this.playerTwo == null)
-				this.playerTwo = Scene.Current.FindComponents<Player>().Where(p => p.Id == PlayerId.PlayerTwo).FirstOrDefault();
+				this.playerTwo = this.Scene.FindComponents<Player>().Where(p => p.Id == PlayerId.PlayerTwo).FirstOrDefault();
 
 			// Is someone playing using mouse / keyboard? Display a mouse cursor then
 			if (Player.AlivePlayers.Any(p => p.InputMethod == InputMethod.MouseAndKeyboard))
@@ -75,7 +75,7 @@ namespace DualStickSpaceShooter
 					// Draw a respawn timer when dead
 					float respawnPercentage = this.playerOne.RespawnTime / Player.RespawnDelay;
 					string respawnText = string.Format("Respawn in {0:F1}", (Player.RespawnDelay - this.playerOne.RespawnTime) / 1000.0f);
-					Vector2 textSize = canvas.MeasureText(string.Format("Respawn in {0:F1}", 0.0f));
+					Vector2 textSize = this.canvas.MeasureText(string.Format("Respawn in {0:F1}", 0.0f));
 
 					this.canvas.State.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
 					this.canvas.FillRect(10 - 1, device.TargetSize.Y - 10 - textSize.Y - 2, textSize.X + 5, textSize.Y + 8);
@@ -109,7 +109,7 @@ namespace DualStickSpaceShooter
 					// Draw a respawn timer when dead
 					float respawnPercentage = this.playerTwo.RespawnTime / Player.RespawnDelay;
 					string respawnText = string.Format("{0:F1} to Respawn", (Player.RespawnDelay - this.playerTwo.RespawnTime) / 1000.0f);
-					Vector2 textSize = canvas.MeasureText(string.Format("{0:F1} to Respawn", 0.0f));
+					Vector2 textSize = this.canvas.MeasureText(string.Format("{0:F1} to Respawn", 0.0f));
 
 					this.canvas.State.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
 					this.canvas.FillRect(device.TargetSize.X - 10 - textSize.X - 3, device.TargetSize.Y - 10 - textSize.Y - 2, textSize.X + 2, textSize.Y + 10);

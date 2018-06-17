@@ -55,7 +55,7 @@ namespace DualStickSpaceShooter
 
 				// Perform a raycast to find out whether the current body has a direct line of sight to the center
 				RayCastData firstHit;
-				bool hitAnything = Scene.Current.Physics.RayCast(at, maxRadiusPos, d =>
+				bool hitAnything = body.Scene.Physics.RayCast(at, maxRadiusPos, d =>
 				{
 					// Clip the cast ray
 					if (d.Body == body)

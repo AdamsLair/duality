@@ -79,7 +79,7 @@ namespace DualStickSpaceShooter
 
 			if (this.owner != null)
 			{
-				CameraController camControl = Scene.Current.FindComponent<CameraController>();
+				CameraController camControl = this.Scene.FindComponent<CameraController>();
 				camControl.ShakeScreen(MathF.Pow(damage, 0.75f));
 			}
 		}
@@ -113,7 +113,7 @@ namespace DualStickSpaceShooter
 							emitter.BaseVel += new Vector3(body.LinearVelocity);
 						}
 					}
-					Scene.Current.AddObject(effectObj);
+					this.Scene.AddObject(effectObj);
 				}
 			}
 
@@ -174,7 +174,7 @@ namespace DualStickSpaceShooter
 			bullet.Fire(this.owner, body.LinearVelocity, worldPos, transform.Angle + localAngle, out recoilImpulse);
 			body.ApplyWorldImpulse(recoilImpulse);
 
-			Scene.Current.AddObject(bullet.GameObj);
+			this.Scene.AddObject(bullet.GameObj);
 
 			SoundInstance inst = null;
 			if (Player.AlivePlayers.Count() > 1)
@@ -242,7 +242,7 @@ namespace DualStickSpaceShooter
 			// Play the owners special flight sound, when available
 			if (this.owner != null && this.owner.FlightLoop != null)
 			{
-				SoundListener listener = Scene.Current.FindComponent<SoundListener>();
+				SoundListener listener = this.Scene.FindComponent<SoundListener>();
 				Vector3 listenerPos = listener.GameObj.Transform.Pos;
 
 				// Determine the target panning manually, because we don't want a true 3D sound here (doppler, falloff, ...)
