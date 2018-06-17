@@ -403,6 +403,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 					MathF.RoundToInt(this.contentRect.Y),
 					MathF.RoundToInt(displayedSize.X),
 					MathF.RoundToInt(displayedSize.Y));
+
+				// Center image on either axis when smaller than the available space
+				if (displayedSize.X < this.contentRect.Width)
+					this.imageRect.X = (int)(this.contentRect.X + this.contentRect.Width * 0.5f - displayedSize.X * 0.5f);
+				if (displayedSize.Y < this.contentRect.Height)
+					this.imageRect.Y = (int)(this.contentRect.Y + this.contentRect.Height * 0.5f - displayedSize.Y * 0.5f);
 			}
 
 			this.UpdateAutoScroll();
