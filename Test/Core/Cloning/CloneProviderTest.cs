@@ -145,7 +145,6 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotEqual(data.SkipField, dataResult.SkipField);
 			Assert.AreNotEqual(data.NonSerializedSkipField, dataResult.NonSerializedSkipField);
 			Assert.AreEqual(data.NonSerializedField, dataResult.NonSerializedField);
-			Assert.AreNotEqual(data.SkippedObject, dataResult.SkippedObject);
 		}
 		[Test] public void OwnershipBehavior()
 		{
@@ -221,11 +220,6 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CombinedReferenceAndWeakReference()
 		{
-			// See here: https://github.com/AdamsLair/duality/issues/665
-			Assert.Inconclusive(
-				"Weak references are broken right now, see issue #665. " +
-				"Re-activate assert as soon as the issue was addressed.");
-
 			// In this test, we want to check for an edge case where an object is referenced
 			// both using a weak and a regular reference, but not part of the ownership graph.
 			ReferenceBehaviourTestObject data = new ReferenceBehaviourTestObject();

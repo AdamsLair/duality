@@ -16,7 +16,7 @@ namespace Duality.Components.Physics
 	/// </summary>
 	public abstract class ShapeInfo
 	{
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneField(CloneFieldFlags.Skip)]
 		private RigidBody parent      = null;
 		protected float   density     = 1.0f;
 		protected float   friction    = 0.3f;

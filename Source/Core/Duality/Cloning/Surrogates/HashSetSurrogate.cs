@@ -83,7 +83,7 @@ namespace Duality.Cloning.Surrogates
 			foreach (TItem value in source)
 			{
 				TItem handledObject = null;
-				if (!operation.HandleObject(value, ref handledObject)) continue;
+				operation.HandleObject(value, ref handledObject);
 				target.Add(handledObject);
 			}
 		}

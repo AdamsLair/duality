@@ -33,7 +33,7 @@ namespace Duality.Cloning.Surrogates
 				}
 				else
 				{
-					foreach (var key in source.Keys)
+					foreach (object key in source.Keys)
 						setup.HandleObject(key, null);
 				}
 			}
@@ -70,8 +70,8 @@ namespace Duality.Cloning.Surrogates
 				{
 					object keyTarget = null;
 					object valueTarget = null;
-					if (!operation.HandleObject(pair.Key, ref keyTarget)) continue;
-					if (!operation.HandleObject(pair.Value, ref valueTarget)) continue;
+					operation.HandleObject(pair.Key, ref keyTarget);
+					operation.HandleObject(pair.Value, ref valueTarget);
 
 					target.Add(keyTarget, valueTarget);
 				}
@@ -81,7 +81,7 @@ namespace Duality.Cloning.Surrogates
 				foreach (DictionaryEntry pair in source)
 				{
 					object keyTarget = null;
-					if (!operation.HandleObject(pair.Key, ref keyTarget)) continue;
+					operation.HandleObject(pair.Key, ref keyTarget);
 
 					target.Add(keyTarget, pair.Value);
 				}
@@ -91,7 +91,7 @@ namespace Duality.Cloning.Surrogates
 				foreach (DictionaryEntry pair in source)
 				{
 					object valueTarget = null;
-					if (!operation.HandleObject(pair.Value, ref valueTarget)) continue;
+					operation.HandleObject(pair.Value, ref valueTarget);
 
 					target.Add(pair.Key, valueTarget);
 				}

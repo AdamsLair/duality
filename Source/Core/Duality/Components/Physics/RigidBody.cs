@@ -1319,13 +1319,14 @@ namespace Duality.Components.Physics
 					bool isNew = (target.shapes.Count <= i);
 					ShapeInfo sourceShape = this.shapes[i];
 					ShapeInfo targetShape = !isNew ? target.shapes[i] : null;
-					if (operation.HandleObject(sourceShape, ref targetShape))
-					{
-						if (isNew)
-							target.shapes.Add(targetShape);
-						else
-							target.shapes[i] = targetShape;
-					}
+
+					operation.HandleObject(sourceShape, ref targetShape);
+
+					targetShape.Parent = target;
+					if (isNew)
+						target.shapes.Add(targetShape);
+					else
+						target.shapes[i] = targetShape;
 				}
 			}
 			else
@@ -1354,13 +1355,16 @@ namespace Duality.Components.Physics
 					bool isNew = (target.joints.Count <= i);
 					JointInfo sourceJoint = this.joints[i];
 					JointInfo targetJoint = !isNew ? target.joints[i] : null;
-					if (operation.HandleObject(sourceJoint, ref targetJoint))
-					{
-						if (isNew)
-							target.joints.Add(targetJoint);
-						else
-							target.joints[i] = targetJoint;
-					}
+
+					operation.HandleObject(sourceJoint, ref targetJoint);
+
+					targetJoint.ParentBody = target;
+					targetJoint.OtherBody = operation.GetWeakTarget(sourceJoint.OtherBody);
+
+					if (isNew)
+						target.joints.Add(targetJoint);
+					else
+						target.joints[i] = targetJoint;
 				}
 			}
 			else

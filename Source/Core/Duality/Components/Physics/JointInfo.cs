@@ -18,9 +18,9 @@ namespace Duality.Components.Physics
 	{
 		[DontSerialize]
 		internal protected Joint joint = null;
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneField(CloneFieldFlags.Skip)]
 		private RigidBody parentBody = null;
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneField(CloneFieldFlags.Skip)]
 		private RigidBody otherBody  = null;
 		private bool      collide    = false;
 		private bool      enabled    = true;
