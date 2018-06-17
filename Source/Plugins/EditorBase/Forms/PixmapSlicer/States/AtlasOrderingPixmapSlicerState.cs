@@ -54,7 +54,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				}
 			}
 
-			UndoRedoManager.Do(new SetAtlasAction(newAtlas, new[] { this.TargetPixmap }));
+			this.SetAtlas(newAtlas);
+			UndoRedoManager.Finish();
+
 			this.EndState();
 		}
 

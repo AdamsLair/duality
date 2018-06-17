@@ -7,11 +7,55 @@ namespace Duality.Editor.Plugins.Base
 	public static class PixmapSlicingUtility
 	{
 		/// <summary>
-		/// Find all atlast rectangles in the given <see cref="Pixmap"/>.
+		/// Auto-generates an atlas for the given <see cref="Pixmap"/> by slicing it into a
+		/// uniform grid as specified by parameters.
+		/// </summary>
+		/// <param name="pixmap"></param>
+		/// <param name="columns"></param>
+		/// <param name="rows"></param>
+		/// <param name="frameBorder"></param>
+		/// <returns></returns>
+		public static List<Rect> SliceGrid(Pixmap pixmap, int columns, int rows, int frameBorder)
+		{
+			List<Rect> rects = new List<Rect>();
+
+			if (columns <= 0 || rows <= 0)
+				return rects;
+
+			Vector2 frameSize = new Vector2(
+				(float)pixmap.Width / (float)columns, 
+				(float)pixmap.Height / (float)rows);
+
+			// If the frame border is too big, we can't generate any rectangles
+			// as they would be zero or negative size
+			if (frameBorder >= (int)(MathF.Min(frameSize.X, frameSize.Y) * 0.5f) - 1)
+				return rects;
+
+			// Set up new atlas data
+			int index = 0;
+			for (int y = 0; y < rows; y++)
+			{
+				for (int x = 0; x < columns; x++)
+				{
+					Rect frameRect = new Rect(
+						x * frameSize.X + frameBorder,
+						y * frameSize.Y + frameBorder,
+						frameSize.X - frameBorder * 2.0f,
+						frameSize.Y - frameBorder * 2.0f);
+					rects.Insert(index, frameRect);
+					index++;
+				}
+			}
+
+			return rects;
+		}
+		/// <summary>
+		/// Auto-generates an atlas for the given <see cref="Pixmap"/> by fitting rectangles to
+		/// all non-transparent areas.
 		/// </summary>
 		/// <param name="alpha">Pixels with an alpha value less or equal to this value will be considered transparent.</param>
 		/// <param name="minSize">Rectangles with width or higher smaller than this will be ignored.</param>
-		public static IEnumerable<Rect> FindRects(Pixmap pixmap, byte alpha = 0, int minSize = 2)
+		public static List<Rect> SliceAutoFit(Pixmap pixmap, byte alpha = 0, int minSize = 2)
 		{
 			List<Rect> rects = new List<Rect>();
 
@@ -31,7 +75,7 @@ namespace Duality.Editor.Plugins.Base
 						continue;
 					}
 
-					rect = FindRect(pixmap, i, j, alpha);
+					rect = FindAutoFitRect(pixmap, i, j, alpha);
 
 					// Add if the rect is large enough
 					if (rect.W > minSize && rect.H > minSize)
@@ -45,7 +89,7 @@ namespace Duality.Editor.Plugins.Base
 		/// <summary>
 		/// Find an atlas rect containing the given pixel
 		/// </summary>
-		public static Rect FindRect(Pixmap pixmap, int startX, int startY, byte alpha = 0)
+		public static Rect FindAutoFitRect(Pixmap pixmap, int startX, int startY, byte alpha = 0)
 		{
 			int left = startX;
 			int top = startY;
@@ -85,7 +129,6 @@ namespace Duality.Editor.Plugins.Base
 				}
 			}
 		}
-
 		private static void ScanRight(Pixmap pixmap, ref int right, int yMin, int yMax, byte alpha)
 		{
 			int y;
@@ -99,7 +142,6 @@ namespace Duality.Editor.Plugins.Base
 				}
 			}
 		}
-
 		private static void ScanUp(Pixmap pixmap, ref int top, int xMin, int xMax, byte alpha)
 		{
 			int x;
@@ -113,7 +155,6 @@ namespace Duality.Editor.Plugins.Base
 				}
 			}
 		}
-
 		private static void ScanDown(Pixmap pixmap, ref int bottom, int xMin, int xMax, byte alpha)
 		{
 			int x;
@@ -142,7 +183,6 @@ namespace Duality.Editor.Plugins.Base
 			failingY = -1;
 			return true;
 		}
-
 		private static bool IsHorizontalLineTransparent(Pixmap image, int y, int xMin, int xMax, out int failingX, byte alpha)
 		{
 			for (int x = xMin; x <= xMax; x++)

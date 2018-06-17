@@ -77,7 +77,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			}
 
 			// Apply the new atlas rect
-			this.SetAtlasRect(this.newAtlasRect, this.newAtlasRectIndex);
+			this.SetAtlasRect(this.newAtlasRectIndex, this.newAtlasRect);
 
 			// Update selection of the view to match our new rect
 			this.View.SelectedAtlasIndex = this.newAtlasRectIndex;

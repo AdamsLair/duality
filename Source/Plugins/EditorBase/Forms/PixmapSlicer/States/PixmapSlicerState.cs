@@ -40,7 +40,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.View.InvalidatePixmap(atlasRect);
 		}
 
-		protected void SetAtlasRect(Rect atlasRect, int index)
+		protected void SetAtlasRect(int index, Rect atlasRect)
 		{
 			if (this.TargetPixmap == null) return;
 
@@ -55,6 +55,15 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				updatedArea = updatedArea.ExpandedToContain(oldRect);
 			}
 			this.InvalidatePixmap(updatedArea);
+		}
+		protected void SetAtlas(IEnumerable<Rect> atlas)
+		{
+			if (this.TargetPixmap == null) return;
+
+			UndoRedoManager.Do(new SetAtlasAction(new[] { this.TargetPixmap }, atlas));
+
+			this.View.ClearSelection();
+			this.InvalidatePixmap();
 		}
 
 		protected void EndState()

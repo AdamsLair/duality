@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+
+using Duality.Resources;
+
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
@@ -30,7 +33,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.doneButton = new ToolStripButton(null, EditorBaseResCache.IconAcceptCheck,
 				(s, e) => this.FinishSlicing());
 			this.cancelButton = new ToolStripButton(null, EditorBaseResCache.IconCancel,
-				(s, e) => this.UndoAndCancelState());
+				(s, e) => this.CancelSlicing());
 
 			this.doneButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerDone;
 			this.cancelButton.ToolTipText = EditorBaseRes.ToolTip_PixmapSlicerCancel;
@@ -50,85 +53,59 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.StateControls.Add(this.borderInput);
 		}
 
+		private void GridSlicePixmap()
+		{
+			if (this.TargetPixmap == null) return;
+
+			// We don't use the outdated AnimCols / AnimRos properties here, as they'll be 
+			// gone in v3.0 anyway and are the legacy way to define an animated Pixmap.
+			List<Rect> generatedAtlas = PixmapSlicingUtility.SliceGrid(
+				this.TargetPixmap, 
+				(int)this.colsInput.Value, 
+				(int)this.rowsInput.Value, 
+				(int)this.borderInput.Value);
+			this.SetAtlas(generatedAtlas);
+		}
+
 		private void FinishSlicing()
 		{
-			List<Rect> newAtlas = this.TargetPixmap.Atlas == null
-				? null
-				: this.TargetPixmap.Atlas.ToList();
-
-			// Set the atlas back to the original so that undoing the following
-			// undo redo action will revert to the original rects
-			this.TargetPixmap.Atlas = this.originalAtlas;
-
-			UndoRedoManager.Do(new SetAtlasAction(newAtlas, new[] { this.TargetPixmap }));
+			UndoRedoManager.Finish();
+			this.EndState();
+		}
+		private void CancelSlicing()
+		{
+			this.SetAtlas(this.originalAtlas);
 			this.EndState();
 		}
 
-		private void UpdateControls()
-		{
-			this.rowsInput.Value = this.TargetPixmap.AnimRows;
-			this.colsInput.Value = this.TargetPixmap.AnimCols;
-			this.borderInput.Value = this.TargetPixmap.AnimFrameBorder;
-		}
-		private void UndoAndCancelState()
-		{
-			this.TargetPixmap.Atlas = this.originalAtlas;
-
-			this.EndState();
-		}
-
-		public override void OnKeyUp(KeyEventArgs e)
-		{
-			switch (e.KeyCode)
-			{
-				case Keys.Subtract:
-					if (e.Control) this.TargetPixmap.AnimCols = Math.Max(0, this.TargetPixmap.AnimCols - 1);
-					else this.TargetPixmap.AnimRows = Math.Max(0, this.TargetPixmap.AnimRows - 1);
-					this.UpdateControls();
-					this.InvalidatePixmap();
-					break;
-				case Keys.Add:
-					if (e.Control) this.TargetPixmap.AnimCols++;
-					else this.TargetPixmap.AnimRows++;
-					this.UpdateControls();
-					this.InvalidatePixmap();
-					break;
-			}
-		}
 		protected override void OnTargetPixmapChanged()
 		{
 			base.OnTargetPixmapChanged();
 
 			if (this.TargetPixmap.Atlas != null)
 			{
-				this.rowsInput.Value = MathF.Clamp(this.TargetPixmap.AnimRows, (int)this.rowsInput.Minimum, (int)this.rowsInput.Maximum);
-				this.colsInput.Value = MathF.Clamp(this.TargetPixmap.AnimCols, (int)this.colsInput.Minimum, (int)this.colsInput.Maximum);
-				this.borderInput.Value = MathF.Clamp(this.TargetPixmap.AnimFrameBorder, (int)this.borderInput.Minimum, (int)this.borderInput.Maximum);
-
-				this.TargetPixmap.AnimRows = (int)this.rowsInput.Value;
-				this.TargetPixmap.AnimCols = (int)this.colsInput.Value;
-				this.TargetPixmap.AnimFrameBorder = (int)this.borderInput.Value;
-
-				this.originalAtlas = this.TargetPixmap.Atlas.ToList();
-				this.TargetPixmap.Atlas = null;
-				this.TargetPixmap.GenerateAnimAtlas(this.TargetPixmap.AnimCols, this.TargetPixmap.AnimRows, this.TargetPixmap.AnimFrameBorder);
+				this.originalAtlas = new List<Rect>(this.TargetPixmap.Atlas);
+				this.rowsInput.Value = 3;
+				this.colsInput.Value = 3;
+				this.borderInput.Value = 0;
+				this.GridSlicePixmap();
 			}
 
 			this.InvalidatePixmap();
 		}
 		private void OnRowsChanged(object sender, EventArgs e)
 		{
-			this.TargetPixmap.AnimRows = (int) this.rowsInput.Value;
+			this.GridSlicePixmap();
 			this.InvalidatePixmap();
 		}
 		private void OnColsChanged(object sender, EventArgs e)
 		{
-			this.TargetPixmap.AnimCols = (int)this.colsInput.Value;
+			this.GridSlicePixmap();
 			this.InvalidatePixmap();
 		}
 		private void OnBorderChanged(object sender, EventArgs e)
 		{
-			this.TargetPixmap.AnimFrameBorder = (int)this.borderInput.Value;
+			this.GridSlicePixmap();
 			this.InvalidatePixmap();
 		}
 

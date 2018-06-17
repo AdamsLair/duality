@@ -93,10 +93,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			if (this.TargetPixmap == null) return;
 
 			byte alpha = (byte)this.alphaCutoffEntry.Value;
-			IEnumerable<Rect> rects = PixmapSlicingUtility.FindRects(this.TargetPixmap, alpha);
-			UndoRedoManager.Do(new SetAtlasAction(rects, new[] { this.TargetPixmap }));
-
-			this.View.ClearSelection();
+			IEnumerable<Rect> rects = PixmapSlicingUtility.SliceAutoFit(this.TargetPixmap, alpha);
+			this.SetAtlas(rects);
+			UndoRedoManager.Finish();
 		}
 
 		private void BeginDragRect(int index, PixmapSlicingRectSide side)
@@ -212,7 +211,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				// Apply the new atlas rect
 				if (draggedAtlasRect.W != 0 && draggedAtlasRect.H != 0)
 				{
-					this.SetAtlasRect(draggedAtlasRect, this.draggedRectIndex);
+					this.SetAtlasRect(this.draggedRectIndex, draggedAtlasRect);
 				}
 			}
 		}
