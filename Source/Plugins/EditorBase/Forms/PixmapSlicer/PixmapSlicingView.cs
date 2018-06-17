@@ -559,10 +559,12 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			PixmapSlicingRectSide prevHoveredSide = this.hoveredRectSide;
 			int prevHoveredIndex = this.hoveredRectIndex;
 
-			// Update hover states for slice rects
+			// Update hover states for slice rects.
+			// We're using reverse order so atlas rects with higher indices get
+			// precedence on overlapping hover checks.
 			this.hoveredRectIndex = -1;
 			this.hoveredRectSide = PixmapSlicingRectSide.None;
-			for (int i = 0; i < this.targetPixmap.Atlas.Count; i++)
+			for (int i = this.targetPixmap.Atlas.Count - 1; i >= 0; i--)
 			{
 				Rectangle displayRect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
 

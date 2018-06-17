@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
+
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
 
@@ -11,10 +13,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 	/// </summary>
 	public class NewRectPixmapSlicerState : PixmapSlicerState
 	{
-		private ToolStripButton cancelButton      = null;
-		private Point           rectAddStart      = Point.Empty;
-		private Rect            newAtlasRect      = Rect.Empty;
-		private int             newAtlasRectIndex = -1;
+		private ToolStripButton      cancelButton       = null;
+		private Point                rectAddStart       = Point.Empty;
+		private Rect                 newAtlasRect       = Rect.Empty;
+		private int                  newAtlasRectIndex  = -1;
+		private PixmapNumberingStyle prevNumberingStyle = PixmapNumberingStyle.None;
 
 
 		public NewRectPixmapSlicerState()
@@ -27,6 +30,20 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			this.StateControls.Add(this.cancelButton);
 		}
 
+		public override void OnStateEntered(EventArgs e)
+		{
+			base.OnStateEntered(e);
+			this.prevNumberingStyle = this.View.NumberingStyle;
+			this.View.NumberingStyle = PixmapNumberingStyle.None;
+			this.View.AllowUserSelection = false;
+			this.View.ClearSelection();
+		}
+		public override void OnStateLeaving(EventArgs e)
+		{
+			base.OnStateLeaving(e);
+			this.View.NumberingStyle = this.prevNumberingStyle;
+			this.View.AllowUserSelection = true;
+		}
 		public override void OnMouseDown(MouseEventArgs e)
 		{
 			// Start a new rect create operation
