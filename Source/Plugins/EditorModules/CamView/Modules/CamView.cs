@@ -231,6 +231,10 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			get { return this.isHiddenDocument; }
 		}
+		public bool IsDualityTarget
+		{
+			get { return activeCamView == this; }
+		}
 		public ColorRgba BgColor
 		{
 			get { return this.camComp.ClearColor; }
@@ -1273,10 +1277,11 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void graphicsControl_Resize(object sender, EventArgs e)
 		{
-			if (activeCamView == this)
+			if (this.IsDualityTarget && this.activeState != null)
 			{
 				DualityApp.WindowSize = this.activeState.RenderedImageSize;
 			}
+
 			this.RenderableControl.Invalidate();
 		}
 

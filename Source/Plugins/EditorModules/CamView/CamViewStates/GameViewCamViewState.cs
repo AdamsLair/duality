@@ -134,6 +134,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.targetRenderSize = value;
 					this.UpdateTargetRenderSizeUI();
 					this.Invalidate();
+
+					// Explicitly update Duality target settings, to make sure the changed target
+					// rendering size is reflected in DualityApp.WindowSize and similar properties
+					if (this.View.IsDualityTarget)
+						this.MakeDualityTarget();
 				}
 			}
 		}

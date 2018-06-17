@@ -335,6 +335,7 @@ namespace Duality.Components.Renderers
 			target.offset    = this.offset;
 			target.pixelGrid = this.pixelGrid;
 			target.flipMode  = this.flipMode;
+			target.spriteIndex = this.spriteIndex;
 
 			operation.HandleValue(ref this.sharedMat, ref target.sharedMat);
 			operation.HandleObject(this.customMat, ref target.customMat);
