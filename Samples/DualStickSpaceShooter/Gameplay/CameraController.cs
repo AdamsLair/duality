@@ -45,7 +45,14 @@ namespace DualStickSpaceShooter
 		public float ZoomFactor
 		{
 			get { return this.zoomFactor; }
-			set { this.zoomFactor = value; }
+			set
+			{
+				if (this.zoomFactor != value)
+				{
+					this.zoomFactor = value;
+					this.UpdateCameraZoom();
+				}
+			}
 		}
 		public float ZoomOutScale
 		{
@@ -63,11 +70,10 @@ namespace DualStickSpaceShooter
 			this.screenShakeStrength += strength;
 		}
 
-		private void AdjustToScreenSize()
+		private void UpdateCameraZoom()
 		{
-			Vector2 screenSize = DualityApp.TargetViewSize;
 			Camera camera = this.GameObj.GetComponent<Camera>();
-			camera.FocusDist = ReferenceFocusDist * screenSize.Length * this.zoomFactor / ReferenceScreenDiameter;
+			camera.FocusDist = ReferenceFocusDist * this.zoomFactor;
 		}
 		private Vector3 GetTargetOffset(float maxDistFromCenter)
 		{
@@ -139,7 +145,7 @@ namespace DualStickSpaceShooter
 		}
 		void ICmpInitializable.OnActivate()
 		{
-			this.AdjustToScreenSize();
+			this.UpdateCameraZoom();
 
 			// Move near initial spawn point
 			Transform transform = this.GameObj.Transform;
