@@ -106,7 +106,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			{
 				if (this.scaleFactor != value)
 				{
-					this.scaleFactor = MathF.Max(1.0f, value);
+					this.scaleFactor = MathF.Max(0.01f, value);
 					this.UpdateContentLayout();
 					this.Invalidate();
 				}
@@ -176,6 +176,34 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			this.GenerateBackgroundPattern();
 		}
 
+		public void AdjustZoom(float targetScaleFactor, bool preferPixelPerfectZoom = true)
+		{
+			float preferredScale = targetScaleFactor;
+			if (preferPixelPerfectZoom)
+			{
+				// Lock to 1.0f when reducing zoom
+				if ((this.scaleFactor > 1.0f && targetScaleFactor < 1.0f) || 
+					(this.scaleFactor < 1.0f && targetScaleFactor > 1.0f))
+				{
+					preferredScale = 1.0f;
+				}
+				// Lock to N when target zooming in at higher levels
+				else if (preferredScale >= 1.9f)
+				{
+					preferredScale = MathF.Round(preferredScale);
+
+					// Adjust by at least one step
+					if (preferredScale == this.scaleFactor)
+					{
+						if (targetScaleFactor > this.scaleFactor)
+							preferredScale += 1.0f;
+						else if (targetScaleFactor < this.scaleFactor)
+							preferredScale -= 1.0f;
+					}
+				}
+			}
+			this.ScaleFactor = preferredScale;
+		}
 		public void ZoomToFit()
 		{
 			if (this.image != null)

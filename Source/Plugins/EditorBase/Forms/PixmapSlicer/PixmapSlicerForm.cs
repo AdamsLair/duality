@@ -212,11 +212,11 @@ namespace Duality.Editor.Plugins.Base.Forms
 		}
 		private void buttonZoomIn_Click(object sender, EventArgs e)
 		{
-			this.pixmapView.ScaleFactor += this.pixmapView.ScaleFactor * 0.2f;
+			this.pixmapView.AdjustZoom(this.pixmapView.ScaleFactor * 1.25f);
 		}
 		private void buttonZoomOut_Click(object sender, EventArgs e)
 		{
-			this.pixmapView.ScaleFactor -= this.pixmapView.ScaleFactor * 0.2f;
+			this.pixmapView.AdjustZoom(this.pixmapView.ScaleFactor * 0.8f);
 		}
 		private void buttonDefaultZoom_Click(object sender, EventArgs e)
 		{
