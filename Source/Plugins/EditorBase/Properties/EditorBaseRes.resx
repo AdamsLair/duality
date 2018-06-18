@@ -359,7 +359,7 @@
     <value>Grid-Slice</value>
   </data>
   <data name="Help_PixmapSlicerGridSlice_Desc" xml:space="preserve">
-    <value>Use the toolstrip control to specify the grid parameters. Additionally, +/- adjust the number of rows and CTRL + +/- adjust the number of columns.</value>
+    <value>Use the toolstrip controsl to specify the grid parameters.</value>
   </data>
   <data name="Help_PixmapSlicerGridSlice_Topic" xml:space="preserve">
     <value>Grid Slicing</value>

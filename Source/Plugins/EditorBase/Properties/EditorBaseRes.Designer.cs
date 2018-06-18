@@ -359,7 +359,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use the toolstrip control to specify the grid parameters. Additionally, +/- adjust the number of rows and CTRL + +/- adjust the number of columns..
+        ///   Looks up a localized string similar to Use the toolstrip controsl to specify the grid parameters..
         /// </summary>
         public static string Help_PixmapSlicerGridSlice_Desc {
             get {
