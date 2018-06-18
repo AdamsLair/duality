@@ -35,7 +35,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		private Bitmap image = null;
 		private Rectangle contentRect = Rectangle.Empty;
 		private Rectangle imageRect = Rectangle.Empty;
-		private float prevImageLum = 0f;
 
 		private Bitmap backBitmap = null;
 		private TextureBrush backBrush = null;
@@ -59,12 +58,6 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				{
 					this.targetPixmap = value;
 					this.image = this.GenerateDisplayImage();
-
-					if (this.image != null)
-					{
-						ColorRgba avgColor = this.image.GetAverageColor();
-						this.prevImageLum = avgColor.GetLuminance();
-					}
 
 					this.UpdateContentLayout();
 					this.Invalidate();
