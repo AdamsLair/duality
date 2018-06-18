@@ -283,8 +283,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		public Point GetDisplayPos(Vector2 atlasPos, bool scrolled = true)
 		{
 			Point displayPos = Point.Empty;
-			displayPos.X = (int)(this.imageRect.X + (atlasPos.X / this.targetPixmap.Width) * (float)this.imageRect.Width);
-			displayPos.Y = (int)(this.imageRect.Y + (atlasPos.Y / this.targetPixmap.Height) * (float)this.imageRect.Height);
+			if (this.targetPixmap != null)
+			{
+				displayPos.X = (int)(this.imageRect.X + (atlasPos.X / this.targetPixmap.Width) * (float)this.imageRect.Width);
+				displayPos.Y = (int)(this.imageRect.Y + (atlasPos.Y / this.targetPixmap.Height) * (float)this.imageRect.Height);
+			}
 
 			if (scrolled)
 			{
