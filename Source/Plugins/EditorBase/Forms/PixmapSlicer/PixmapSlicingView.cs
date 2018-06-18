@@ -515,10 +515,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				Rectangle outlineRect = this.GetDisplayRect(new Rect(this.targetPixmap.Width, this.targetPixmap.Height));
 
 				// Offset the rect, so that it won't overlap the actual image area
-				outlineRect.X--;
-				outlineRect.Y--;
-				outlineRect.Width += 2;
-				outlineRect.Height += 2;
+				outlineRect.Inflate(1,1);
 
 				e.Graphics.DrawRectangle(
 					Pens.Red,
