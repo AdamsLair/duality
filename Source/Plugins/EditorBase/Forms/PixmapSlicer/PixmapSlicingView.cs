@@ -524,8 +524,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				// Offset the rect, so that it won't overlap the actual image area
 				outlineRect.X--;
 				outlineRect.Y--;
-				outlineRect.Width++;
-				outlineRect.Height++;
+				outlineRect.Width += 2;
+				outlineRect.Height += 2;
 
 				e.Graphics.DrawRectangle(
 					Pens.Red,
