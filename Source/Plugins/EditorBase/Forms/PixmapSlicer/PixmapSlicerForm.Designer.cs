@@ -122,6 +122,7 @@
 			// 
 			// pixmapView
 			// 
+			this.pixmapView.AllowUserSelection = true;
 			this.pixmapView.AutoScroll = true;
 			this.pixmapView.DarkMode = false;
 			this.pixmapView.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -129,9 +130,11 @@
 			this.pixmapView.Name = "pixmapView";
 			this.pixmapView.NumberingStyle = Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.PixmapNumberingStyle.Hovered;
 			this.pixmapView.ScaleFactor = 1F;
+			this.pixmapView.SelectedAtlasIndex = -1;
 			this.pixmapView.Size = new System.Drawing.Size(428, 229);
 			this.pixmapView.TabIndex = 4;
 			this.pixmapView.TargetPixmap = null;
+			this.pixmapView.NumberingStyleChanged += new System.EventHandler(this.pixmapView_NumberingStyleChanged);
 			this.pixmapView.PaintContentOverlay += new System.EventHandler<System.Windows.Forms.PaintEventArgs>(this.pixmapView_PaintContentOverlay);
 			this.pixmapView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.pixmapView_KeyUp);
 			this.pixmapView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pixmapView_MouseDown);

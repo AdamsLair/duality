@@ -205,6 +205,10 @@ namespace Duality.Editor.Plugins.Base.Forms
 		{
 			this.state.OnKeyUp(e);
 		}
+		private void pixmapView_NumberingStyleChanged(object sender, EventArgs e)
+		{
+			this.UpdateIndicesButton();
+		}
 
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
