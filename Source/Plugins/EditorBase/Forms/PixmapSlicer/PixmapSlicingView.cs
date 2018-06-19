@@ -654,9 +654,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 					PixmapSlicingRectSide side;
 					if (this.IsRectHovered(displayRect, e.X, e.Y, 3, out side))
 					{
-						if (side == PixmapSlicingRectSide.None)
+						if (side == PixmapSlicingRectSide.None && hoveredRectCenterIndex == -1)
 							hoveredRectCenterIndex = i;
-						else
+						else if (side != PixmapSlicingRectSide.None)
 						{
 							this.hoveredRectSide = side;
 							hoveredRectSideIndex = i;
