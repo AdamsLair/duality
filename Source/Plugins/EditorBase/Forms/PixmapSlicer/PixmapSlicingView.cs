@@ -493,6 +493,21 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 
 			return PixmapSlicingRectSide.None;
 		}
+		/// <summary>
+		/// Returns whether or not the specified rect is hovered. Outputs
+		/// the specific side of the rect that was hovered, if any.
+		/// </summary>
+		private bool IsRectHovered(Rectangle displayRect, int x, int y, int maxDistanceToEdge, out PixmapSlicingRectSide hoveredSide)
+		{
+			PixmapSlicingRectSide side = this.GetHoveredRectSide(displayRect, x, y, maxDistanceToEdge);
+			if (side != PixmapSlicingRectSide.None || displayRect.Contains(x, y))
+			{
+				hoveredSide = side;
+				return true;
+			}
+			hoveredSide = PixmapSlicingRectSide.None;
+			return false;
+		}
 
 		protected override void OnSizeChanged(EventArgs e)
 		{
@@ -607,30 +622,52 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			int prevHoveredIndex = this.hoveredRectIndex;
 
 			// Update hover states for slice rects.
-			// We're using reverse order so atlas rects with higher indices get
-			// precedence on overlapping hover checks.
 			this.hoveredRectIndex = -1;
 			this.hoveredRectSide = PixmapSlicingRectSide.None;
-			for (int i = this.targetPixmap.Atlas.Count - 1; i >= 0; i--)
+			int hoveredRectSideIndex = -1;
+			int hoveredRectCenterIndex = -1;
+			// Check the selected rect first
+			if (this.selectedRectIndex != -1)
 			{
-				Rectangle displayRect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
-
-				// Hovering any side of the rect
-				PixmapSlicingRectSide side = this.GetHoveredRectSide(displayRect, e.X, e.Y, 3);
-				if (side != PixmapSlicingRectSide.None)
+				Rectangle displayRect = this.GetDisplayRect(this.targetPixmap.Atlas[this.selectedRectIndex]);
+				PixmapSlicingRectSide side;
+				if (this.IsRectHovered(displayRect, e.X, e.Y, 3, out side))
 				{
-					this.hoveredRectSide = side;
-					this.hoveredRectIndex = i;
-					break;
-				}
-				// Hovering the rects area
-				else if (displayRect.Contains(e.X, e.Y))
-				{
-					this.hoveredRectSide = PixmapSlicingRectSide.None;
-					this.hoveredRectIndex = i;
-					break;
+					if (side == PixmapSlicingRectSide.None)
+						hoveredRectCenterIndex = this.selectedRectIndex;
+					else
+					{
+						this.hoveredRectSide = side;
+						hoveredRectSideIndex = this.selectedRectIndex;
+					}
 				}
 			}
+			// If none of the selected rects sides were hovered
+			if (this.hoveredRectSide == PixmapSlicingRectSide.None)
+			{
+				// We're using reverse order so atlas rects with higher indices get
+				// precedence on overlapping hover checks.
+				for (int i = this.targetPixmap.Atlas.Count - 1; i >= 0; i--)
+				{
+					Rectangle displayRect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
+
+					PixmapSlicingRectSide side;
+					if (this.IsRectHovered(displayRect, e.X, e.Y, 3, out side))
+					{
+						if (side == PixmapSlicingRectSide.None)
+							hoveredRectCenterIndex = i;
+						else
+						{
+							this.hoveredRectSide = side;
+							hoveredRectSideIndex = i;
+							break;
+						}
+					}
+				}
+			}
+			this.hoveredRectIndex = hoveredRectSideIndex != -1
+				? hoveredRectSideIndex
+				: hoveredRectCenterIndex;
 
 			// Invalidate regions when changing hover states
 			if (this.rectNumbering == PixmapNumberingStyle.Hovered && this.hoveredRectIndex != prevHoveredIndex)
