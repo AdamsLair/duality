@@ -292,4 +292,124 @@
   <data name="ActionName_ShowResourceSources" xml:space="preserve">
     <value>Show Source Files</value>
   </data>
+  <data name="ActionDesc_SlicePixmap" xml:space="preserve">
+    <value>Opens a window for slicing a pixmap into atlas regions</value>
+  </data>
+  <data name="ActionName_SlicePixmap" xml:space="preserve">
+    <value>Slice Pixmap</value>
+  </data>
+  <data name="Help_PixmapSlicerDefaultState_Desc" xml:space="preserve">
+    <value>Click on rects to select them. Selected rects can be resized with the mouse.</value>
+  </data>
+  <data name="Help_PixmapSlicerDefaultState_Topic" xml:space="preserve">
+    <value>Pixmap Slicer</value>
+  </data>
+  <data name="Help_PixmapSlicerNewRect_Desc" xml:space="preserve">
+    <value>Click and drag to define a new atlas rect. New rects are added to the end of the atlas.</value>
+  </data>
+  <data name="Help_PixmapSlicerNewRect_Topic" xml:space="preserve">
+    <value>New Rect</value>
+  </data>
+  <data name="Help_PixmapSlicerRectOrdering_Desc" xml:space="preserve">
+    <value>Click on the atlas rects in the desired order. Remaining rects will be be placed last in the rect order.</value>
+  </data>
+  <data name="Help_PixmapSlicerRectOrdering_Topic" xml:space="preserve">
+    <value>Rect Ordering</value>
+  </data>
+  <data name="Help_PixmapSlicer_Desc" xml:space="preserve">
+    <value>The Pixmap Slicer provides tools for automatically or manually specifying atlas rectangles.</value>
+  </data>
+  <data name="Help_PixmapSlicer_Topic" xml:space="preserve">
+    <value>Pixmap Slicer</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerAddRect" xml:space="preserve">
+    <value>Add a new atlas rect</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerAutoSlice" xml:space="preserve">
+    <value>Automatically calculate atlas rects</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerClear" xml:space="preserve">
+    <value>Delete all atlas rects</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerDelete" xml:space="preserve">
+    <value>Delete the selected atlas rect (Delete)</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerOrderRects" xml:space="preserve">
+    <value>Specify the order of atlas rects</value>
+  </data>
+  <data name="UndoRedo_ClearAtlas" xml:space="preserve">
+    <value>Clear Atlas</value>
+  </data>
+  <data name="UndoRedo_DeleteAtlasRect" xml:space="preserve">
+    <value>Delete Atlas Rect</value>
+  </data>
+  <data name="UndoRedo_SetAtlas" xml:space="preserve">
+    <value>Set Atlas</value>
+  </data>
+  <data name="UndoRedo_SetAtlasRect" xml:space="preserve">
+    <value>Set Atlas Rect</value>
+  </data>
+  <data name="IconPixmapSlicer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconPixmapSlicer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Button_AutoSlice" xml:space="preserve">
+    <value>Auto-Slice</value>
+  </data>
+  <data name="Button_GridSlice" xml:space="preserve">
+    <value>Grid-Slice</value>
+  </data>
+  <data name="Help_PixmapSlicerGridSlice_Desc" xml:space="preserve">
+    <value>Use the toolstrip controsl to specify the grid parameters.</value>
+  </data>
+  <data name="Help_PixmapSlicerGridSlice_Topic" xml:space="preserve">
+    <value>Grid Slicing</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerGridSlice" xml:space="preserve">
+    <value>Slice the pixmap with a grid</value>
+  </data>
+  <data name="IconAcceptCheck" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\accept.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconCancel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\cancel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconSquareAdd" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\shape_square_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconSquareDelete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\shape_square_delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconSquareDeleteMany" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\shape_square_delete_many.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconSquareNumbers" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\shape_square_numbers.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ToolTip_PixmapSlicerDone" xml:space="preserve">
+    <value>Accept Changes</value>
+  </data>
+  <data name="IconViewBrightness" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconViewBrightness.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconZoomDefault" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconZoomDefault.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconZoomIn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconZoomIn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconZoomOut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconZoomOut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconHideIndices" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconHideIndices.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconRevealIndices" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconRevealIndices.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconShowIndices" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconShowIndices.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
