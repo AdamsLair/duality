@@ -50,6 +50,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\AdamsLair.DockPanelSuite.2.8.1.0\lib\net20\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataConverters\ComponentFromSound.cs" />
@@ -70,6 +73,7 @@
     <Compile Include="EditorActions\FirstSession\ViewGettingStartedTutorial.cs" />
     <Compile Include="EditorActions\FirstSession\DownloadVisualStudio.cs" />
     <Compile Include="EditorActions\FocusGameObject.cs" />
+    <Compile Include="EditorActions\SlicePixmap.cs" />
     <Compile Include="EditorActions\SetupRigidBodyForEditing.cs" />
     <Compile Include="EditorActions\OpenScene.cs" />
     <Compile Include="EditorActions\InstantiatePrefab.cs" />
@@ -80,6 +84,21 @@
     <Compile Include="EditorActions\PixmapToTexture.cs" />
     <Compile Include="EditorActions\FocusComponent.cs" />
     <Compile Include="EditorBasePlugin.cs" />
+    <Compile Include="Forms\PixmapSlicer\PixmapSlicerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PixmapSlicer\PixmapSlicerForm.Designer.cs">
+      <DependentUpon>PixmapSlicerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PixmapSlicer\PixmapSlicingView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\PixmapSlicer\States\GridSlicePixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\IPixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\PixmapNumberingStyle.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\PixmapSlicerStateEventArgs.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\PixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\Utilities\PixmapSlicingRectSide.cs" />
     <Compile Include="Importers\AudioDataAssetImporter.cs" />
     <Compile Include="Importers\FontAssetImporter.cs">
       <SubType>Code</SubType>
@@ -135,6 +154,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Forms\PixmapSlicer\States\AtlasOrderingPixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\DefaultPixmapSlicerState.cs" />
+    <Compile Include="Forms\PixmapSlicer\States\NewRectPixmapSlicerState.cs" />
+    <Compile Include="UndoRedoActions\ClearAtlasAction.cs" />
+    <Compile Include="UndoRedoActions\DeleteAtlasRectAction.cs" />
+    <Compile Include="UndoRedoActions\SetAtlasAction.cs" />
+    <Compile Include="UndoRedoActions\SetAtlasRectAction.cs" />
     <Compile Include="UndoRedoActions\DeleteRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\CreateRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\CreateSoundEmitterSourceAction.cs" />
@@ -142,6 +168,7 @@
     <Compile Include="UndoRedoActions\SoundEmitterSourceAction.cs" />
     <Compile Include="UndoRedoActions\ReparentRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\RigidBodyJointAction.cs" />
+    <Compile Include="Forms\PixmapSlicer\Utilities\PixmapSlicingUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Editor\DualityEditor\DualityEditor.csproj">
@@ -161,6 +188,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\PixmapSlicer\PixmapSlicerForm.resx">
+      <DependentUpon>PixmapSlicerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\EditorBaseRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -174,12 +204,26 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="EmbeddedResources\IconHideIndices.png" />
+    <None Include="EmbeddedResources\IconRevealIndices.png" />
+    <None Include="EmbeddedResources\IconShowIndices.png" />
+    <None Include="EmbeddedResources\IconZoomIn.png" />
+    <None Include="EmbeddedResources\IconZoomDefault.png" />
+    <None Include="EmbeddedResources\IconZoomOut.png" />
+    <None Include="EmbeddedResources\IconViewBrightness.png" />
+    <None Include="EmbeddedResources\shape_square_delete_many.png" />
+    <None Include="EmbeddedResources\shape_square_numbers.png" />
+    <None Include="EmbeddedResources\shape_square_add.png" />
+    <None Include="EmbeddedResources\shape_square_delete.png" />
+    <None Include="EmbeddedResources\IconPixmapSlicer.png" />
     <None Include="EmbeddedResources\IconTutorial.png" />
     <None Include="EmbeddedResources\IconCommunity.png" />
     <None Include="EmbeddedResources\DropdownSettingsBlack.png" />
     <None Include="EmbeddedResources\cross.png" />
     <None Include="EmbeddedResources\IconDownloadCodeIDE.png" />
     <None Include="EmbeddedResources\application_side_expand.png" />
+    <None Include="EmbeddedResources\accept.png" />
+    <None Include="EmbeddedResources\cancel.png" />
     <Content Include="EmbeddedResources\eye.ico" />
     <None Include="EmbeddedResources\IconSpeakerBlack.png" />
     <None Include="EmbeddedResources\IconSpeakerWhite.png" />
