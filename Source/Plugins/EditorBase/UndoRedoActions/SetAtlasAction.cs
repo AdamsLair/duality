@@ -7,7 +7,7 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 {
 	public class SetAtlasAction : UndoRedoAction
 	{
-		private Rect[]       rects         = null;
+		private List<Rect>   rects         = null;
 		private Pixmap[]     pixmaps       = null;
 		private List<Rect[]> originalRects = null;
 
@@ -18,7 +18,7 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 
 		public SetAtlasAction(IEnumerable<Pixmap> pixmapsEnum, IEnumerable<Rect> atlasRects)
 		{
-			this.rects = atlasRects.ToArray();
+			this.rects = (atlasRects != null) ? atlasRects.ToList() : null;
 			this.pixmaps = pixmapsEnum.Distinct().ToArray();
 		}
 
@@ -53,7 +53,7 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 					null : 
 					this.pixmaps[i].Atlas.ToArray());
 
-				this.pixmaps[i].Atlas = new List<Rect>(this.rects);
+				this.pixmaps[i].Atlas = this.rects;
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.pixmaps));
