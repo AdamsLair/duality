@@ -98,16 +98,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public override ObjectEditorSelObj PickSelObjAt(int x, int y)
 		{
 			Component picked = this.PickRendererAt(x, y) as Component;
-			if (picked != null && DesignTimeObjectData.Get(picked.GameObj).IsLocked) picked = null;
-			if (picked != null) return new SceneEditorSelGameObj(picked.GameObj);
-			return null;
+			if (picked == null) return null;
+			if (picked.Disposed) return null;
+			if (DesignTimeObjectData.Get(picked.GameObj).IsLocked) return null;
+			return new SceneEditorSelGameObj(picked.GameObj);
 		}
 		public override List<ObjectEditorSelObj> PickSelObjIn(int x, int y, int w, int h)
 		{
 			IEnumerable<ICmpRenderer> picked = this.PickRenderersIn(x, y, w, h);
 			return picked
 				.OfType<Component>()
-				.Where(r => !DesignTimeObjectData.Get(r.GameObj).IsLocked)
+				.Where(r => r != null && !r.Disposed && !DesignTimeObjectData.Get(r.GameObj).IsLocked)
 				.Select(r => new SceneEditorSelGameObj(r.GameObj) as ObjectEditorSelObj)
 				.ToList();
 		}

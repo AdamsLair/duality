@@ -160,6 +160,15 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Slice Pixmap.
+        /// </summary>
+        public static string ActionName_SlicePixmap {
+            get {
+                return ResourceManager.GetString("ActionName_SlicePixmap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Getting Started Tutorial.
         /// </summary>
         public static string ActionName_ViewGettingStartedTutorial {
@@ -178,6 +187,24 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto-Slice.
+        /// </summary>
+        public static string Button_AutoSlice {
+            get {
+                return ResourceManager.GetString("Button_AutoSlice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grid-Slice.
+        /// </summary>
+        public static string Button_GridSlice {
+            get {
+                return ResourceManager.GetString("Button_GridSlice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap DropdownSettingsBlack {
@@ -188,11 +215,121 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Pixmap Slicer provides tools for automatically or manually specifying atlas rectangles..
+        /// </summary>
+        public static string Help_PixmapSlicer_Desc {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicer_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pixmap Slicer.
+        /// </summary>
+        public static string Help_PixmapSlicer_Topic {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicer_Topic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click on rects to select them. Selected rects can be resized with the mouse..
+        /// </summary>
+        public static string Help_PixmapSlicerDefaultState_Desc {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerDefaultState_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pixmap Slicer.
+        /// </summary>
+        public static string Help_PixmapSlicerDefaultState_Topic {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerDefaultState_Topic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the toolstrip controsl to specify the grid parameters..
+        /// </summary>
+        public static string Help_PixmapSlicerGridSlice_Desc {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerGridSlice_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grid Slicing.
+        /// </summary>
+        public static string Help_PixmapSlicerGridSlice_Topic {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerGridSlice_Topic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click and drag to define a new atlas rect. New rects are added to the end of the atlas..
+        /// </summary>
+        public static string Help_PixmapSlicerNewRect_Desc {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerNewRect_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Rect.
+        /// </summary>
+        public static string Help_PixmapSlicerNewRect_Topic {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerNewRect_Topic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click on the atlas rects in the desired order. Remaining rects will be be placed last in the rect order..
+        /// </summary>
+        public static string Help_PixmapSlicerRectOrdering_Desc {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerRectOrdering_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rect Ordering.
+        /// </summary>
+        public static string Help_PixmapSlicerRectOrdering_Topic {
+            get {
+                return ResourceManager.GetString("Help_PixmapSlicerRectOrdering_Topic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap IconAbortCross {
             get {
                 object obj = ResourceManager.GetObject("IconAbortCross", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconAcceptCheck {
+            get {
+                object obj = ResourceManager.GetObject("IconAcceptCheck", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconCancel {
+            get {
+                object obj = ResourceManager.GetObject("IconCancel", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -230,6 +367,46 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap IconHideIndices {
+            get {
+                object obj = ResourceManager.GetObject("IconHideIndices", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconPixmapSlicer {
+            get {
+                object obj = ResourceManager.GetObject("IconPixmapSlicer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconRevealIndices {
+            get {
+                object obj = ResourceManager.GetObject("IconRevealIndices", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconShowIndices {
+            get {
+                object obj = ResourceManager.GetObject("IconShowIndices", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap IconSpeakerBlack {
             get {
                 object obj = ResourceManager.GetObject("IconSpeakerBlack", resourceCulture);
@@ -250,9 +427,89 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap IconSquareAdd {
+            get {
+                object obj = ResourceManager.GetObject("IconSquareAdd", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconSquareDelete {
+            get {
+                object obj = ResourceManager.GetObject("IconSquareDelete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconSquareDeleteMany {
+            get {
+                object obj = ResourceManager.GetObject("IconSquareDeleteMany", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconSquareNumbers {
+            get {
+                object obj = ResourceManager.GetObject("IconSquareNumbers", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap IconTutorial {
             get {
                 object obj = ResourceManager.GetObject("IconTutorial", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconViewBrightness {
+            get {
+                object obj = ResourceManager.GetObject("IconViewBrightness", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconZoomDefault {
+            get {
+                object obj = ResourceManager.GetObject("IconZoomDefault", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconZoomIn {
+            get {
+                object obj = ResourceManager.GetObject("IconZoomIn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconZoomOut {
+            get {
+                object obj = ResourceManager.GetObject("IconZoomOut", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -394,6 +651,87 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add a new atlas rect.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerAddRect {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerAddRect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically calculate atlas rects.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerAutoSlice {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerAutoSlice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerCancel {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete all atlas rects.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerClear {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerClear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the selected atlas rect (Delete).
+        /// </summary>
+        public static string ToolTip_PixmapSlicerDelete {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept Changes.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerDone {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slice the pixmap with a grid.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerGridSlice {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerGridSlice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify the order of atlas rects.
+        /// </summary>
+        public static string ToolTip_PixmapSlicerOrderRects {
+            get {
+                return ResourceManager.GetString("ToolTip_PixmapSlicerOrderRects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear Atlas.
+        /// </summary>
+        public static string UndoRedo_ClearAtlas {
+            get {
+                return ResourceManager.GetString("UndoRedo_ClearAtlas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create {0}.
         /// </summary>
         public static string UndoRedo_CreateRigidBodyJoint {
@@ -426,6 +764,15 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static string UndoRedo_CreateSoundEmitterSourceMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_CreateSoundEmitterSourceMulti", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Atlas Rect.
+        /// </summary>
+        public static string UndoRedo_DeleteAtlasRect {
+            get {
+                return ResourceManager.GetString("UndoRedo_DeleteAtlasRect", resourceCulture);
             }
         }
         
@@ -489,6 +836,24 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static string UndoRedo_ReparentRigidBodyJointMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_ReparentRigidBodyJointMulti", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Atlas.
+        /// </summary>
+        public static string UndoRedo_SetAtlas {
+            get {
+                return ResourceManager.GetString("UndoRedo_SetAtlas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Atlas Rect.
+        /// </summary>
+        public static string UndoRedo_SetAtlasRect {
+            get {
+                return ResourceManager.GetString("UndoRedo_SetAtlasRect", resourceCulture);
             }
         }
     }

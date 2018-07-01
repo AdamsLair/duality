@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-
+using System.Windows.Forms;
 using Duality;
 using Duality.Cloning;
+using Duality.Editor.Forms;
 using Duality.Resources;
 
 using Duality.Editor.Properties;
@@ -60,9 +61,38 @@ namespace Duality.Editor.UndoRedoActions
 
 				// Create dependency Components where required. This will extend the current loop.
 				// (Reversed, so repeated injection at the same index will yield the original order)
-				IEnumerable<Type> createRequirements = Component.RequireMap.GetRequirementsToCreate(this.targetParentObj, obj.GetType());
-				foreach (Type required in createRequirements.Reverse())
+				List<Type> createRequirements = Component.RequireMap
+					.GetRequirementsToCreate(this.targetParentObj, obj.GetType())
+					// Remove self requirements
+					.Where(req => !req.IsInstanceOfType(obj))
+					.Reverse().ToList();
+				for (int j = 0; j < createRequirements.Count; j++)
 				{
+					Type required = createRequirements[j];
+
+					// If the type can't be instantiated, ask the user for a concrete type to use
+					if (required.IsAbstract)
+					{
+						required = GetRequiredConcreteType(required, obj.GetType());
+						if (required == null)
+						{
+							Logs.Editor.WriteWarning(
+								"Failed to add {0} because its requirements could not be resolved", 
+								obj.GetType().GetTypeCSCodeName(true));
+
+							// Clear changes so this action is considered empty. See ComponentAction.IsVoid.
+							this.targetObj.Clear();
+							return;
+						}
+
+						// Get additional requirements for the concrete type
+						IEnumerable<Type> additionalRequirements =
+							Component.RequireMap.GetRequirementsToCreate(this.targetParentObj, required)
+							// Except types that are already covered by a previously identified requirement
+							.Where(newReq => !createRequirements.Any(newReq.IsAssignableFrom));
+						createRequirements.AddRange(additionalRequirements);
+					}
+
 					obj = required.GetTypeInfo().CreateInstanceOf() as Component;
 
 					// Setup newly created dependency Components for user editing
@@ -90,6 +120,7 @@ namespace Duality.Editor.UndoRedoActions
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.targetParentObj));
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}
+
 		public override void Undo()
 		{
 			if (this.backupObj == null) throw new InvalidOperationException("Can't undo what hasn't been done yet");
@@ -100,6 +131,25 @@ namespace Duality.Editor.UndoRedoActions
 			}
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.targetParentObj));
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
+		}
+
+		/// <summary>
+		/// Gets a concrete type from the user that extends from the given type.
+		/// </summary>
+		/// <param name="type">The abstract type to get a concrete type for</param>
+		/// <param name="typeWithRequirement">The type that needs this requirement satisfied</param>
+		private static Type GetRequiredConcreteType(Type type, Type typeWithRequirement)
+		{
+			ListSelectionDialog typeDialog = new ListSelectionDialog
+			{
+				FilteredType = type,
+				SelectType = true,
+				HeaderText = string.Format("{0} requires one of the following components. Please select one.", typeWithRequirement.GetTypeCSCodeName(true))
+			};
+			DialogResult result = typeDialog.ShowDialog();
+			return result == DialogResult.OK
+				? typeDialog.TypeReference
+				: null;
 		}
 
 		private static void SetupComponentForEditing(Component cmp)

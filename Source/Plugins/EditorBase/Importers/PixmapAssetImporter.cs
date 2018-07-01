@@ -13,102 +13,64 @@ using Duality.Editor.AssetManagement;
 
 namespace Duality.Editor.Plugins.Base
 {
-	public class PixmapAssetImporter : IAssetImporter
+	public class PixmapAssetImporter : AssetImporter<Pixmap>
 	{
-		public static readonly string SourceFileExtPrimary = ".png";
-		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary, ".bmp", ".jpg", ".jpeg", ".tif", ".tiff" };
-		
-		public string Id
+		private static readonly string[] SourceFileExtensions = new[] { ".png", ".bmp", ".jpg", ".jpeg", ".tif", ".tiff" };
+
+
+		public override string Id
 		{
 			get { return "BasicPixmapAssetImporter"; }
 		}
-		public string Name
+		public override string Name
 		{
 			get { return "Pixmap Importer"; }
 		}
-		public int Priority
+		public override int Priority
 		{
-			get { return 0; }
+			get { return PriorityGeneral; }
+		}
+		protected override string[] SourceFileExts
+		{
+			get { return SourceFileExtensions; }
 		}
 
-		public void PrepareImport(IAssetImportEnvironment env)
+
+		protected override void ImportResource(ContentRef<Pixmap> resourceRef, AssetImportInput input, IAssetImportEnvironment env)
 		{
-			// Ask to handle all input that matches the conditions in AcceptsInput
-			foreach (AssetImportInput input in env.HandleAllInput(this.AcceptsInput))
+			Pixmap resource = resourceRef.Res;
+
+			// Retrieve import parameters
+			int sheetCols   = env.GetOrInitParameter(resourceRef, "SpriteSheetColumns", 0);
+			int sheetRows   = env.GetOrInitParameter(resourceRef, "SpriteSheetRows"   , 0);
+			int frameBorder = env.GetOrInitParameter(resourceRef, "SpriteFrameBorder" , 0);
+
+			// Clamp import parameters
+			if (sheetCols   < 0) sheetCols   = 0;
+			if (sheetRows   < 0) sheetRows   = 0;
+			if (frameBorder < 0) frameBorder = 0;
+			env.SetParameter(resourceRef, "SpriteSheetColumns", sheetCols  );
+			env.SetParameter(resourceRef, "SpriteSheetRows"   , sheetRows  );
+			env.SetParameter(resourceRef, "SpriteFrameBorder" , frameBorder);
+
+			// Update pixel data from the input file
+			PixelData pixelData = this.LoadPixelData(input.Path);
+			resource.MainLayer = pixelData;
+
+			// Generate a sprite sheet atlas
+			if (sheetCols > 0 && sheetRows > 0)
 			{
-				// For all handled input items, specify which Resource the importer intends to create / modify
-				env.AddOutput<Pixmap>(input.AssetName, input.Path);
+				this.GenerateSpriteSheetAtlas(resource, sheetCols, sheetRows, frameBorder);
 			}
 		}
-		public void Import(IAssetImportEnvironment env)
+		protected override void ExportResource(ContentRef<Pixmap> resourceRef, string path, IAssetExportEnvironment env)
 		{
-			// Handle all available input. No need to filter or ask for this anymore, as
-			// the preparation step already made a selection with AcceptsInput. We won't
-			// get any input here that didn't match.
-			foreach (AssetImportInput input in env.Input)
-			{
-				// Request a target Resource with a name matching the input
-				ContentRef<Pixmap> targetRef = env.GetOutput<Pixmap>(input.AssetName);
-
-				// If we successfully acquired one, proceed with the import
-				if (targetRef.IsAvailable)
-				{
-					Pixmap target = targetRef.Res;
-
-					// Retrieve import parameters
-					int sheetCols   = env.GetOrInitParameter(targetRef, "SpriteSheetColumns", 0);
-					int sheetRows   = env.GetOrInitParameter(targetRef, "SpriteSheetRows"   , 0);
-					int frameBorder = env.GetOrInitParameter(targetRef, "SpriteFrameBorder" , 0);
-
-					// Clamp import parameters
-					if (sheetCols   < 0) sheetCols   = 0;
-					if (sheetRows   < 0) sheetRows   = 0;
-					if (frameBorder < 0) frameBorder = 0;
-					env.SetParameter(targetRef, "SpriteSheetColumns", sheetCols  );
-					env.SetParameter(targetRef, "SpriteSheetRows"   , sheetRows  );
-					env.SetParameter(targetRef, "SpriteFrameBorder" , frameBorder);
-
-					// Update pixel data from the input file
-					PixelData pixelData = this.LoadPixelData(input.Path);
-					target.MainLayer = pixelData;
-
-					// Generate a sprite sheet atlas
-					if (sheetCols > 0 && sheetRows > 0)
-					{
-						this.GenerateSpriteSheetAtlas(target, sheetCols, sheetRows, frameBorder);
-					}
-
-					// Add the requested output to signal that we've done something with it
-					env.AddOutput(targetRef, input.Path);
-				}
-			}
-		}
-		
-		public void PrepareExport(IAssetExportEnvironment env)
-		{
-			// We can export any Resource that is a Pixmap
-			if (env.Input is Pixmap)
-			{
-				// Add the file path of the exported output we'll produce.
-				env.AddOutputPath(env.Input.Name + SourceFileExtPrimary);
-			}
-		}
-		public void Export(IAssetExportEnvironment env)
-		{
-			// Determine input and output path
-			Pixmap input = env.Input as Pixmap;
-			string outputPath = env.AddOutputPath(input.Name + SourceFileExtPrimary);
+			Pixmap resource = resourceRef.Res;
 
 			// Take the input Resource's pixel data and save it at the specified location
-			this.SavePixelData(input.MainLayer, outputPath);
+			this.SavePixelData(resource.MainLayer, path);
 		}
-		
-		private bool AcceptsInput(AssetImportInput input)
-		{
-			string inputFileExt = Path.GetExtension(input.Path);
-			bool matchingFileExt = SourceFileExts.Any(acceptedExt => string.Equals(inputFileExt, acceptedExt, StringComparison.InvariantCultureIgnoreCase));
-			return matchingFileExt;
-		}
+
 		private PixelData LoadPixelData(string filePath)
 		{
 			PixelData pixelData = new PixelData();
