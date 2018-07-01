@@ -203,10 +203,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				draggedAtlasRect = draggedAtlasRect.Intersection(pixmapRect);
 
 				// Clamp the atlas rect to full pixel values
-				draggedAtlasRect.X = MathF.RoundToInt(draggedAtlasRect.X);
-				draggedAtlasRect.Y = MathF.RoundToInt(draggedAtlasRect.Y);
-				draggedAtlasRect.W = MathF.RoundToInt(draggedAtlasRect.W);
-				draggedAtlasRect.H = MathF.RoundToInt(draggedAtlasRect.H);
+				draggedAtlasRect = new Rect(
+					MathF.RoundToInt(draggedAtlasRect.LeftX),
+					MathF.RoundToInt(draggedAtlasRect.TopY),
+					MathF.RoundToInt(draggedAtlasRect.RightX) - MathF.RoundToInt(draggedAtlasRect.LeftX),
+					MathF.RoundToInt(draggedAtlasRect.BottomY) - MathF.RoundToInt(draggedAtlasRect.TopY));
 
 				// Apply the new atlas rect
 				if (draggedAtlasRect.W != 0 && draggedAtlasRect.H != 0)

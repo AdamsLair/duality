@@ -84,10 +84,11 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			displayRect.Intersect(this.View.DisplayedImageRect);
 
 			Rect atlasRect = this.View.GetAtlasRect(displayRect);
-			atlasRect.X = MathF.RoundToInt(atlasRect.X);
-			atlasRect.Y = MathF.RoundToInt(atlasRect.Y);
-			atlasRect.W = MathF.RoundToInt(atlasRect.W);
-			atlasRect.H = MathF.RoundToInt(atlasRect.H);
+			atlasRect = new Rect(
+				MathF.RoundToInt(atlasRect.LeftX),
+				MathF.RoundToInt(atlasRect.TopY),
+				MathF.RoundToInt(atlasRect.RightX) - MathF.RoundToInt(atlasRect.LeftX),
+				MathF.RoundToInt(atlasRect.BottomY) - MathF.RoundToInt(atlasRect.TopY));
 			if (atlasRect.W != 0 && atlasRect.H != 0)
 			{
 				Rect updatedArea = this.newAtlasRect.ExpandedToContain(atlasRect);
