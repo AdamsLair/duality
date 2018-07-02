@@ -22,7 +22,7 @@ namespace Duality.Tests.Cloning
 	{
 		[Test] public void ClonePlainOldData()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestData data = new TestData(rnd);
 			TestData dataResult = data.DeepClone();
 
@@ -31,7 +31,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneComplexObject()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestObject data = new TestObject(rnd, 5);
 			TestObject dataResult = data.DeepClone();
 
@@ -63,7 +63,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneMemberInfo()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestMemberInfoData data = new TestMemberInfoData(rnd);
 			TestMemberInfoData dataResult = data.DeepClone();
 
@@ -73,7 +73,7 @@ namespace Duality.Tests.Cloning
 
 		[Test] public void CopyToTarget()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestObject data = new TestObject(rnd, 5);
 			TestObject dataResult = new TestObject();
 			data.DeepCopyTo(dataResult);
@@ -104,7 +104,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void IdentityPreservation()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			{
 				IdentityTestObjectA data = new IdentityTestObjectA(rnd);
 				IdentityTestObjectA dataResult = data.DeepClone();
@@ -139,7 +139,7 @@ namespace Duality.Tests.Cloning
 
 		[Test] public void SkippedObjects()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			SkipFieldTestObject data = new SkipFieldTestObject(rnd);
 			SkipFieldTestObject dataResult = data.DeepClone();
 
@@ -150,7 +150,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void OwnershipBehavior()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			OwnershipTestObject data = new OwnershipTestObject(rnd);
 			OwnershipTestObject dataResult = data.DeepClone();
 
@@ -419,7 +419,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void ExplicitCloning()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			{
 				ExplicitCloneTestObjectA data = new ExplicitCloneTestObjectA(rnd, 5);
 				ExplicitCloneTestObjectA dataResult = data.DeepClone();
@@ -446,7 +446,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void StructInvestigate()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestStructInvestigate source = new TestStructInvestigate(rnd);
 			TestStructInvestigate target = source.DeepClone();
 
@@ -455,7 +455,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void PartialCloning()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestObject sourceStatic = new TestObject {
 				DictField = new Dictionary<string,TestObject>
 				{

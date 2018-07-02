@@ -53,7 +53,7 @@ namespace Duality.Tests.Cloning
 
 		[Test] public void CloneHashSetValueType()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			IEnumerable<int> values = Enumerable.Range(0, 50).Select(i => rnd.Next());
 			HashSet<int> source = new HashSet<int>(values);
 			HashSet<int> target = source.DeepClone();
@@ -63,7 +63,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneHashSetReferenceType()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			IEnumerable<TestObject> values = Enumerable
 				.Range(0, 50)
 				.Select(i => new TestObject(rnd, 0));
@@ -76,7 +76,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneHashSetReferenceAndNulls()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			IEnumerable<TestObject> values = Enumerable
 				.Range(0, 50)
 				.Select(i => new TestObject(rnd, 0))
@@ -91,7 +91,7 @@ namespace Duality.Tests.Cloning
 
 		[Test] public void CloneContentRef()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestResource source = new TestResource(rnd);
 			ContentRef<TestResource> sourceRef = new ContentRef<TestResource>(source, "SomeTestPath");
 
@@ -115,7 +115,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneResource()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestResource source = new TestResource(rnd);
 			TestResource target = source.DeepClone();
 
@@ -125,7 +125,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneComponent()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestComponent source = new TestComponent(rnd);
 			TestComponent target = source.DeepClone();
 
@@ -135,7 +135,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneGameObject()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			GameObject source = new GameObject("ObjectA");
 			source.AddComponent(new TestComponent(rnd));
 			GameObject target = source.DeepClone();
@@ -148,7 +148,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneScene()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			Scene source = new Scene();
 			{
 				// Create a basic object hierarchy
@@ -207,7 +207,7 @@ namespace Duality.Tests.Cloning
 
 		[Test] public void CopyToGameObjectPreservation()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			GameObject source = new GameObject("ObjectA");
 			source.AddComponent(new TestComponent(rnd));
 			GameObject target = new GameObject("ObjectB");
@@ -221,7 +221,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CopyToGameObjectAddComponentEvent()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			bool componentAddedEventReceived = false;
 			GameObject source = new GameObject("ObjectA");
 			source.AddComponent(new TestComponent(rnd));
@@ -244,7 +244,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CopyToGameObjectParentScene()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			GameObject source = new GameObject("ObjectA");
 			source.AddComponent(new TestComponent(rnd));
 			GameObject target = new GameObject("ObjectB");
@@ -257,7 +257,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CopyToGameObjectParentObject()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			GameObject source = new GameObject("ObjectA");
 			source.AddComponent(new TestComponent(rnd));
 			GameObject targetParent = new GameObject("Parent");
@@ -269,7 +269,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CopyToGameObjectAddGameObjectEvent()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			bool gameObjectAddedEventReceived = false;
 
 			// Prepare a test Scene
@@ -312,7 +312,7 @@ namespace Duality.Tests.Cloning
 
 		[Test] public void TransformHierarchyInitialized()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 
 			// Create a simple parent-child relation
 			GameObject sourceParentObj = new GameObject("Parent");
