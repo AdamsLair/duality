@@ -92,7 +92,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			if (this.frictionJoint != null)
 			{
 				if (this.frictionJoint.ParentBody != body ||
-					this.frictionJoint.ParentBody != this.baseObject)
+					this.frictionJoint.OtherBody != this.baseObject)
 				{
 					this.frictionJoint.ParentBody.RemoveJoint(this.frictionJoint);
 					this.frictionJoint = null;
