@@ -16,12 +16,11 @@ namespace Duality.Components.Physics
 	/// </summary>
 	public abstract class JointInfo
 	{
-		[DontSerialize]
-		internal protected Joint joint = null;
-		[CloneField(CloneFieldFlags.Skip)]
-		private RigidBody parentBody = null;
-		[CloneField(CloneFieldFlags.Skip)]
-		private RigidBody otherBody  = null;
+		[DontSerialize] internal protected Joint joint = null;
+		[DontSerialize] private PhysicsWorld world = null;
+		[CloneField(CloneFieldFlags.Skip)] private RigidBody parentBody = null;
+		[CloneField(CloneFieldFlags.Skip)] private RigidBody otherBody  = null;
+
 		private bool      collide    = false;
 		private bool      enabled    = true;
 		private float     breakPoint = -1.0f;
@@ -90,10 +89,8 @@ namespace Duality.Components.Physics
 		{
 			if (this.joint == null) return;
 
-			Scene scene = this.parentBody != null ? this.parentBody.Scene : null;
-			PhysicsWorld world = scene != null ? scene.Physics : null;
-			if (world != null)
-				world.Native.RemoveJoint(this.joint);
+			this.world.Native.RemoveJoint(this.joint);
+			this.world = null;
 
 			this.joint.Broke -= this.joint_Broke;
 			this.joint = null;
@@ -106,8 +103,9 @@ namespace Duality.Components.Physics
 				{
 					this.parentBody.PrepareForJoint();
 					this.otherBody.PrepareForJoint();
+					this.world = this.parentBody.Scene.Physics;
 					this.joint = this.CreateJoint(
-						this.parentBody.Scene.Physics.Native, 
+						this.world.Native, 
 						this.parentBody.PhysicsBody, 
 						this.otherBody.PhysicsBody);
 				}

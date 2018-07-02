@@ -470,9 +470,9 @@ namespace Duality.Components.Physics
 			if (joint.OtherBody != null)
 				joint.OtherBody.AwakeBody();
 
+			joint.DestroyJoint();
 			joint.ParentBody = null;
 			joint.OtherBody = null;
-			joint.DestroyJoint();
 		}
 		/// <summary>
 		/// Adds a new joint to the body.
