@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.Tilemaps</id>
-    <version>1.1.26</version>
+    <version>1.1.27</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps Sample</title>
@@ -13,12 +13,12 @@
     <summary>A sample project to show how to use Tilemaps.</summary>
     <description>A sample project to show how to use Tilemaps.</description>
     <tags>Duality Sample Plugin Tilemaps</tags>
-    <releaseNotes>Updated Dependencies
-#CHANGE: Updated AdamsLair.Duality.Editor.Plugins.Tilemaps dependency</releaseNotes>
+    <releaseNotes>Tilemaps Sample Bugfix
+#FIX: Fixed a bug in the Tilemaps sample that would lead to re-creating all friction joints every frame.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.1.15" />
       <dependency id="AdamsLair.Duality.Editor.Plugins.Tilemaps" version="1.1.22" />
-      <dependency id="AdamsLair.Duality" version="2.14.8" />
+      <dependency id="AdamsLair.Duality" version="2.14.9" />
     </dependencies>
   </metadata>
   <files>
