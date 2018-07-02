@@ -89,6 +89,59 @@ namespace Duality.Tests.Cloning
 			CollectionAssert.AreEquivalent(source, target);
 		}
 
+		[Test] public void CloneDictionaryValueType()
+		{
+			Random rnd = new Random(1);
+			Dictionary<int, Vector2> source = new Dictionary<int, Vector2>();
+			for (int i = 0; i < 50; i++)
+			{
+				source[i] = rnd.NextVector2();
+			}
+			Dictionary<int, Vector2> target = source.DeepClone();
+
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEquivalent(source, target);
+		}
+		[Test] public void CloneDictionaryReferenceValue()
+		{
+			Random rnd = new Random(1);
+			Dictionary<int, TestObject> source = new Dictionary<int, TestObject>();
+			for (int i = 0; i < 50; i++)
+			{
+				source[i] = rnd.NextBool() ? new TestObject(rnd, 0) : null;
+			}
+			Dictionary<int, TestObject> target = source.DeepClone();
+
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEquivalent(source, target);
+		}
+		[Test] public void CloneDictionaryReferenceKey()
+		{
+			Random rnd = new Random(1);
+			Dictionary<TestObject, int> source = new Dictionary<TestObject, int>();
+			for (int i = 0; i < 50; i++)
+			{
+				source[new TestObject(rnd, 0)] = i;
+			}
+			Dictionary<TestObject, int> target = source.DeepClone();
+
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEquivalent(source, target);
+		}
+		[Test] public void CloneDictionaryReferenceKeyValue()
+		{
+			Random rnd = new Random(1);
+			Dictionary<TestObject, TestObject> source = new Dictionary<TestObject, TestObject>();
+			for (int i = 0; i < 50; i++)
+			{
+				source[new TestObject(rnd, 0)] = rnd.NextBool() ? new TestObject(rnd, 0) : null;
+			}
+			Dictionary<TestObject, TestObject> target = source.DeepClone();
+
+			Assert.AreNotSame(source, target);
+			CollectionAssert.AreEquivalent(source, target);
+		}
+
 		[Test] public void CloneContentRef()
 		{
 			Random rnd = new Random(1);
