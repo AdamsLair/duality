@@ -70,6 +70,7 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(data, dataResult);
 			Assert.AreEqual(data, dataResult);
 		}
+
 		[Test] public void CopyToTarget()
 		{
 			Random rnd = new Random();
@@ -135,6 +136,7 @@ namespace Duality.Tests.Cloning
 				Assert.AreEqual(data.Identity, dataResultNoIdentity.Identity);
 			}
 		}
+
 		[Test] public void SkippedObjects()
 		{
 			Random rnd = new Random();
@@ -169,6 +171,7 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(data, dataResult);
 			Assert.AreNotSame(data.InterfaceValue, dataResult.InterfaceValue);
 		}
+
 		[Test] public void ReferenceBehavior()
 		{
 			ReferenceBehaviourTestObject data = new ReferenceBehaviourTestObject();
@@ -237,6 +240,7 @@ namespace Duality.Tests.Cloning
 			Assert.AreSame(data.ReferencedObject, dataClone.ReferencedObject);
 			Assert.AreNotSame(data.OwnedObject, dataClone.OwnedObject);
 		}
+
 		[Test] public void SimpleDelegates()
 		{
 			SimpleDelegateTestObject source = new SimpleDelegateTestObject();
@@ -389,6 +393,7 @@ namespace Duality.Tests.Cloning
 				Assert.IsFalse(dataResultPart.EventReceived);
 			}
 		}
+
 		[Test] public void OverwriteWithNull()
 		{
 			TestObject source = new TestObject();
