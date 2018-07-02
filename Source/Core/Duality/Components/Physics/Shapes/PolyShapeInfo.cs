@@ -65,13 +65,13 @@ namespace Duality.Components.Physics
 
 			if (this.fixtures != null)
 			{
-			foreach (Fixture fixture in this.fixtures)
-			{
-				if (fixture.Body != null)
-					fixture.Body.DestroyFixture(fixture);
+				foreach (Fixture fixture in this.fixtures)
+				{
+					if (fixture.Body != null)
+						fixture.Body.DestroyFixture(fixture);
 				}
-			this.fixtures.Clear();
-		}
+				this.fixtures.Clear();
+			}
 		}
 		protected override void SyncFixtures()
 		{

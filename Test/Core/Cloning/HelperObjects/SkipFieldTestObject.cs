@@ -26,7 +26,6 @@ namespace Duality.Tests.Cloning.HelperObjects
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
 		public int NonSerializedField;
-		public AlwaysSkippedObject SkippedObject;
 
 		private SkipFieldTestObject() { }
 		public SkipFieldTestObject(Random rnd)
@@ -35,9 +34,6 @@ namespace Duality.Tests.Cloning.HelperObjects
 			this.SkipField = rnd.Next();
 			this.NonSerializedSkipField = rnd.Next();
 			this.NonSerializedField = rnd.Next();
-			this.SkippedObject = new AlwaysSkippedObject();
 		}
 	}
-	[CloneBehavior(CloneBehavior.WeakReference)]
-	internal class AlwaysSkippedObject {}
 }

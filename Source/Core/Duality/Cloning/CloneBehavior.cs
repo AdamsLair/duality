@@ -18,12 +18,6 @@ namespace Duality.Cloning
 		/// <summary>
 		/// The object will be cloned deeply, because local ownership is assumed.
 		/// </summary>
-		ChildObject,
-		/// <summary>
-		/// If the referenced object is part of the cloned object graph, it will be assigned by-reference
-		/// similar to the <see cref="Reference"/> setting. Otherwise, it will be skipped without assigning
-		/// any value. A typical example are "parent"-backreferences from child objects.
-		/// </summary>
-		WeakReference
+		ChildObject
 	}
 }

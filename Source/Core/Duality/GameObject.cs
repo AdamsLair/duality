@@ -903,7 +903,7 @@ namespace Duality
 			}
 
 			// Handle referenced and child objects
-			setup.HandleObject(this.scene, target.scene, CloneBehavior.WeakReference);
+			setup.HandleObject(this.scene, target.scene, CloneBehavior.Reference);
 			setup.HandleObject(this.prefabLink, target.prefabLink);
 		}
 		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
@@ -932,8 +932,17 @@ namespace Duality
 				}
 			}
 
-			// Copy referenced and child objects
-			operation.HandleObject(this.scene, ref target.scene, true);
+			// Copy the objects parent scene as a weak reference, i.e.
+			// by assignment, and only when the the scene is itself part of the
+			// copied object graph. That way, cloning a GameObject but not its
+			// scene will result in a clone that doesn't reference a parent scene.
+			Scene targetScene = operation.GetWeakTarget(this.scene);
+			if (targetScene != null)
+			{
+				target.scene = targetScene;
+			}
+
+			// Copy the objects prefab link
 			operation.HandleObject(this.prefabLink, ref target.prefabLink, true);
 		}
 
