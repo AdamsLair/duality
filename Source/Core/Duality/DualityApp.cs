@@ -329,7 +329,7 @@ namespace Duality
 
 			environment = env;
 			execContext = context;
-			
+
 			// Initialize the plugin manager
 			{
 				assemblyLoader = plugins ?? new Duality.Backend.Dummy.DummyAssemblyLoader();
@@ -414,7 +414,7 @@ namespace Duality
 		/// </summary>
 		public static void InitPostWindow()
 		{
-			ContentProvider.InitDefaultContent();
+			DefaultContent.Init();
 
 			// Post-Window init is the last thing that happens before loading game
 			// content and entering simulation. When done in a game context, notify
@@ -453,6 +453,9 @@ namespace Duality
 			// Signal that the game simulation has ended.
 			if (execContext == ExecutionContext.Game)
 				pluginManager.InvokeGameEnded();
+
+			// Dispose all content that is still loaded
+			ContentProvider.ClearContent();
 
 			// Discard plugin data (Resources, current Scene) ahead of time. Otherwise, it'll get shut down in ClearPlugins, after the backend is gone.
 			pluginManager.DiscardPluginData();
@@ -888,12 +891,31 @@ namespace Duality
 			SaveUserData();
 			SaveAppData();
 
-			// Dispose any existing Resources that could reference plugin data
+			// Dispose static Resources that could reference plugin data
 			VisualLogs.ClearAll();
 			if (!Scene.Current.IsEmpty)
 				Scene.Current.Dispose();
-			foreach (Resource r in ContentProvider.EnumeratePluginContent().ToArray())
-				ContentProvider.RemoveContent(r.Path);
+
+			// Gather all other Resources that could reference plugin data
+			List<Resource> pluginContent = new List<Resource>();
+			Assembly coreAssembly = typeof(Resource).GetTypeInfo().Assembly;
+			foreach (Resource resource in ContentProvider.GetLoadedContent<Resource>())
+			{
+				if (resource.IsDefaultContent) continue;
+
+				Assembly assembly = resource.GetType().GetTypeInfo().Assembly;
+				bool canReferencePluginData =
+					resource is Prefab || 
+					resource is Scene || 
+					assembly != coreAssembly;
+
+				if (canReferencePluginData)
+					pluginContent.Add(resource);
+			}
+
+			// Dispose gathered content to avoid carrying over old instances by accident
+			foreach (Resource r in pluginContent)
+				ContentProvider.RemoveContent(r);
 		}
 		private static void pluginManager_PluginsRemoved(object sender, DualityPluginEventArgs e)
 		{

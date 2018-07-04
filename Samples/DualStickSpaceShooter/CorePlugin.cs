@@ -22,7 +22,7 @@ namespace DualStickSpaceShooter
 					List<ContentRef<Resource>> availableContent = ContentProvider.GetAvailableContent<Resource>();
 					foreach (ContentRef<Resource> resourceReference in availableContent)
 					{
-						resourceReference.MakeAvailable();
+						resourceReference.EnsureLoaded();
 					}
 				}
 				Logs.Game.PopIndent();

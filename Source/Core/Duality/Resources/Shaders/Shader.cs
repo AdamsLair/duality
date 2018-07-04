@@ -33,15 +33,15 @@ namespace Duality.Resources
 				if (commonChunks == null)
 				{
 					commonChunks = new List<string>();
-					commonChunks.Add(LoadEmbeddedShader("BuiltinShaderFunctions.glsl"));
+					commonChunks.Add(LoadEmbeddedShaderSource("BuiltinShaderFunctions.glsl"));
 				}
 				return commonChunks;
 			}
 		}
 
-		private static string LoadEmbeddedShader(string name)
+		private static string LoadEmbeddedShaderSource(string name)
 		{
-			using (Stream stream = GetEmbeddedResourceStream(name))
+			using (Stream stream = DefaultContent.GetEmbeddedResourceStream(name))
 			using (StreamReader reader = new StreamReader(stream))
 			{
 				return reader.ReadToEnd();

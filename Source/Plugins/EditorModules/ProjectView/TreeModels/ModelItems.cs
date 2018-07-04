@@ -12,7 +12,7 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 	{
 		public static string GetNodePathId(string nodePath)
 		{
-			if (ContentProvider.IsDefaultContentPath(nodePath))
+			if (Resource.IsDefaultContentPath(nodePath))
 				return nodePath.ToUpper();
 			else
 				return Path.GetFullPath(nodePath).ToUpper();
@@ -85,7 +85,7 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 		}
 		public virtual string GetNameFromPath(string path)
 		{
-			if (ContentProvider.IsDefaultContentPath(path))
+			if (Resource.IsDefaultContentPath(path))
 			{
 				string[] pathSplit = path.Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries);
 				return pathSplit[pathSplit.Length - 1];
@@ -150,7 +150,7 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 		}
 		public override string GetNameFromPath(string path)
 		{
-			if (!ContentProvider.IsDefaultContentPath(path))
+			if (!Resource.IsDefaultContentPath(path))
 				return Path.GetFileName(path);
 			else
 				return base.GetNameFromPath(path);
@@ -238,8 +238,8 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 		}
 		public override string GetNameFromPath(string path)
 		{
-			if (!ContentProvider.IsDefaultContentPath(path))
-				return ContentProvider.GetNameFromPath(path);
+			if (!Resource.IsDefaultContentPath(path))
+				return Resource.GetNameFromPath(path);
 			else
 				return base.GetNameFromPath(path);
 		}

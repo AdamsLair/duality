@@ -21,7 +21,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			{ 
 				IContentRef ctRef = (this.EditedType.GetTypeInfo().CreateInstanceOf() ?? typeof(ContentRef<Resource>).GetTypeInfo().CreateInstanceOf()) as IContentRef;
 				ctRef.Path = this.contentPath;
-				ctRef.MakeAvailable();
+				ctRef.EnsureLoaded();
 				return ctRef;
 			}
 		}

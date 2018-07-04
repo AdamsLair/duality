@@ -138,10 +138,6 @@ namespace Duality.Audio
 				// Clear all playing sounds
 				foreach (SoundInstance inst in this.sounds) inst.Dispose();
 				this.sounds.Clear();
-
-				// Clear all audio related Resources
-				ContentProvider.RemoveAllContent<AudioData>();
-				ContentProvider.RemoveAllContent<Sound>();
 			}
 		}
 

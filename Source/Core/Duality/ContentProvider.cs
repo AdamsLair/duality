@@ -13,9 +13,10 @@ namespace Duality
 {
 	/// <summary>
 	/// <para>
-	/// The ContentProvider is Duality's main instance for content management. If you need any kind of <see cref="Resource"/>,
-	/// simply request it from the ContentProvider. It keeps track of which Resources are loaded and valid and prevents
-	/// Resources from being loaded more than once at a time, thus reducing loading times and redundancy.
+	/// The <see cref="ContentProvider"/> is Duality's main place for content management. If you need any kind of <see cref="Resource"/>,
+	/// simply request it from the <see cref="ContentProvider"/> directly, or indirectly via <see cref="ContentRef{T}"/>. It keeps 
+	/// track of which Resources are loaded and valid and prevents Resources from being loaded more than once at a time, thus 
+	/// reducing loading times and redundancy.
 	/// </para>
 	/// <para>
 	/// You can also manually <see cref="AddContent">register Resources</see> that have been created at runtime 
@@ -27,103 +28,11 @@ namespace Duality
 	/// <seealso cref="IContentRef"/>
 	public static class ContentProvider
 	{
-		/// <summary>
-		/// (Virtual) base path for Duality's embedded default content.
-		/// </summary>
-		public const string	VirtualContentPath = "Default:";
+		private static List<Resource>              defaultContent = new List<Resource>();
+		private static Dictionary<string,Resource> resLibrary     = new Dictionary<string,Resource>();
 
-		private	static	bool						defaultContentInitialized	= false;
-		private	static	Dictionary<string,Resource>	resLibrary					= new Dictionary<string,Resource>();
-		private	static	List<Resource>				defaultContent				= new List<Resource>();
+		public static event EventHandler<ResourceResolveEventArgs> ResourceResolve = null;
 
-		public static event EventHandler<ResourceResolveEventArgs>	ResourceResolve = null;
-
-		/// <summary>
-		/// Determines the name of a Resource based on its path.
-		/// </summary>
-		/// <param name="resPath"></param>
-		/// <returns></returns>
-		public static string GetNameFromPath(string resPath)
-		{
-			if (string.IsNullOrEmpty(resPath)) return "null";
-			if (IsDefaultContentPath(resPath)) resPath = resPath.Replace(':', PathOp.DirectorySeparatorChar);
-			return PathOp.GetFileNameWithoutExtension(PathOp.GetFileNameWithoutExtension(resPath));
-		}
-		/// <summary>
-		/// Determines the full (hierarchical) name of a Resource based on its path.
-		/// </summary>
-		/// <param name="resPath"></param>
-		/// <returns></returns>
-		public static string GetFullNameFromPath(string resPath)
-		{
-			if (string.IsNullOrEmpty(resPath)) return "null";
-			if (IsDefaultContentPath(resPath)) resPath = resPath.Replace(':', PathOp.DirectorySeparatorChar);
-			return PathOp.Combine(PathOp.GetDirectoryName(resPath), GetNameFromPath(resPath));
-		}
-
-		/// <summary>
-		/// Initializes Dualitys embedded default content.
-		/// </summary>
-		public static void InitDefaultContent()
-		{
-			if (defaultContentInitialized) return;
-			Logs.Core.Write("Initializing default content...");
-			Logs.Core.PushIndent();
-
-			var oldResLib = resLibrary.Values.ToArray();
-
-			VertexShader.InitDefaultContent();
-			FragmentShader.InitDefaultContent();
-			DrawTechnique.InitDefaultContent();
-			Pixmap.InitDefaultContent();
-			Texture.InitDefaultContent();
-			Material.InitDefaultContent();
-			RenderSetup.InitDefaultContent();
-			Font.InitDefaultContent();
-			AudioData.InitDefaultContent();
-			Sound.InitDefaultContent();
-
-			// Make a list of all default content available
-			foreach (var pair in resLibrary)
-			{
-				if (oldResLib.Contains(pair.Value)) continue;
-				defaultContent.Add(pair.Value);
-			}
-
-			defaultContentInitialized = true;
-			Logs.Core.Write("...done!");
-			Logs.Core.PopIndent();
-		}
-		/// <summary>
-		/// Initializes Dualitys embedded default content.
-		/// </summary>
-		public static void DisposeDefaultContent()
-		{
-			if (!defaultContentInitialized) return;
-			Logs.Core.Write("Disposing default content..");
-			Logs.Core.PushIndent();
-
-			foreach (Resource r in defaultContent.ToArray())
-			{
-				resLibrary.Remove(r.Path);
-				r.Dispose();
-			}
-			defaultContent.Clear();
-
-			defaultContentInitialized = false;
-			Logs.Core.PopIndent();
-			Logs.Core.Write("..done");
-		}
-		/// <summary>
-		/// Returns whether or not the specified path points to Duality default content.
-		/// </summary>
-		/// <param name="resPath"></param>
-		/// <returns></returns>
-		public static bool IsDefaultContentPath(string resPath)
-		{
-			int index = resPath.IndexOf(':');
-			return index > 1 || index == 0; // Ignore absolute paths like "C:\", but react to anything else that contains ':' chars.
-		}
 
 		/// <summary>
 		/// Returns a list of embedded default content that matches the specified type.
@@ -200,27 +109,61 @@ namespace Duality
 				.Concat(defaultContent.Where(r => typeInfo.IsInstanceOfType(r)).Select(r => new ContentRef<Resource>(r) as IContentRef))
 				.ToList();
 		}
+
 		/// <summary>
-		/// Clears all non-default content.
+		/// Clears all content registered within this <see cref="ContentProvider"/>, and
+		/// disposes it, if requested.
 		/// </summary>
-		/// <param name="dispose">If true, unregistered content is also disposed.</param>
+		/// <param name="dispose">If true, the removed content is disposed as well.</param>
 		public static void ClearContent(bool dispose = true)
 		{
-			var nonDefaultContent = resLibrary.Where(p => !p.Value.IsDefaultContent).ToArray();
-			foreach (var pair in nonDefaultContent)
-				RemoveContent(pair.Key, dispose);
+			if (dispose)
+			{
+				List<Resource> allResources = resLibrary.Values.ToList();
+				foreach (Resource resource in allResources)
+				{
+					resource.Dispose();
+				}
+			}
+			resLibrary.Clear();
+			defaultContent.Clear();
 		}
 
 		/// <summary>
 		/// Registers a <see cref="Resource"/> and maps it to the specified path key.
+		/// 
+		/// If a different <see cref="Resource"/> was already registered with that path key,
+		/// it will be disposed and replaced with the specified one. <see cref="ContentRef{T}"/>
+		/// instances referring to the path will re-map to the newly registered <see cref="Resource"/>
+		/// on their next access.
 		/// </summary>
 		/// <param name="path">The path key to map the Resource to</param>
 		/// <param name="content">The Resource to register.</param>
 		public static void AddContent(string path, Resource content)
 		{
 			if (string.IsNullOrEmpty(path)) return;
-			if (string.IsNullOrEmpty(content.Path)) content.Path = path;
+
+			// If there's already a Resource registered for that path, dispose it
+			// in order to force a remap of all ContentRefs to the new Resource
+			Resource oldContent;
+			if (resLibrary.TryGetValue(path, out oldContent))
+				RemoveContent(path, true);
+
+			// Assign the registered path to the Resource itself, if no other
+			// path was defined before. This enables the Resource to auto-generate
+			// ContentRefs to itself after registering.
+			if (string.IsNullOrEmpty(content.Path))
+				content.Path = path;
+
+			// Register the resource by its specified path
 			resLibrary[path] = content;
+
+			// If it's a default content path, store the Resource as a default resource
+			if (content.IsDefaultContent)
+			{
+				if (!defaultContent.Contains(content))
+					defaultContent.Add(content);
+			}
 		}
 		/// <summary>
 		/// Returns whether or not there is any content currently registered under the specified path key.
@@ -237,22 +180,13 @@ namespace Duality
 		/// <summary>
 		/// Explicitly removes a specific Resource from the ContentProvider.
 		/// </summary>
-		/// <param name="res"></param>
+		/// <param name="content"></param>
 		/// <param name="dispose"></param>
 		/// <returns></returns>
-		public static bool RemoveContent(Resource res, bool dispose = true)
+		public static bool RemoveContent(Resource content, bool dispose = true)
 		{
-			if (res == null) return false;
-			if (res.IsRuntimeResource) return false;
-			if (res.IsDefaultContent) return false;
-
-			// Remove content from library
-			Resource entry;
-			bool success = resLibrary.TryGetValue(res.Path, out entry) && entry == res && resLibrary.Remove(res.Path);
-
-			// Dispose cached content
-			if (dispose) res.Dispose();
-			return success;
+			if (content == null) return false;
+			return RemoveContent(content.Path);
 		}
 		/// <summary>
 		/// Unregisters content that has been registered using the specified path key.
@@ -263,17 +197,29 @@ namespace Duality
 		public static bool RemoveContent(string path, bool dispose = true)
 		{
 			if (string.IsNullOrEmpty(path)) return false;
-			if (IsDefaultContentPath(path)) return false;
 
-			Resource res;
-			if (!resLibrary.TryGetValue(path, out res)) return false;
-			if (res == null) return false;
-			if (res.IsDefaultContent) return false;
+			Resource content;
+			if (!resLibrary.TryGetValue(path, out content)) return false;
 
-			// Dispose cached content
-			if (dispose) res.Dispose();
+			// Remove content from library
+			resLibrary.Remove(path);
+			if (content.IsDefaultContent)
+			{
+				defaultContent.Remove(content);
+			}
 
-			return resLibrary.Remove(path);
+			// Dispose removed content when requested
+			if (dispose)
+				content.Dispose();
+
+			// If we're continuing to use the resource, flag it as runtime-only again by
+			// resetting its registered path. Note that we're not doing that for disposed
+			// resources in order to allow a reload-recovery for ContentRefs that have an
+			// outdated path, or were created from the disposed Resource.
+			if (!content.Disposed && content.Path == path)
+				content.Path = null;
+
+			return true;
 		}
 		/// <summary>
 		/// Unregisters all content that has been registered using paths contained within
@@ -287,40 +233,11 @@ namespace Duality
 
 			List<string> unregisterList = new List<string>(
 				from p in resLibrary.Keys
-				where !IsDefaultContentPath(p) && PathOp.IsPathLocatedIn(p, dir)
+				where !Resource.IsDefaultContentPath(p) && PathOp.IsPathLocatedIn(p, dir)
 				select p);
 
 			foreach (string p in unregisterList)
 				RemoveContent(p, dispose);
-		}
-		/// <summary>
-		/// Unregisters all content of the specified Type or subclassed Types.
-		/// </summary>
-		/// <typeparam name="T">The content Type to look for.</typeparam>
-		/// <param name="dispose">If true, unregistered content is also disposed.</param>
-		public static void RemoveAllContent<T>(bool dispose = true) where T : Resource
-		{
-			var affectedContent = GetLoadedContent<T>().Where(c => !c.IsDefaultContent);
-			foreach (ContentRef<T> content in affectedContent)
-				RemoveContent(content.Path, dispose);
-		}
-		/// <summary>
-		/// Unregisters all content of the specified Type or subclassed Types.
-		/// </summary>
-		/// <param name="t">The content Type to look for.</param>
-		/// <param name="dispose">If true, unregistered content is also disposed.</param>
-		public static void RemoveAllContent(Type t, bool dispose = true)
-		{
-			var affectedContent = GetLoadedContent(t).Where(c => !c.IsDefaultContent).ToArray();
-			foreach (IContentRef content in affectedContent)
-				RemoveContent(content.Path, dispose);
-		}
-		internal static IEnumerable<Resource> EnumeratePluginContent()
-		{
-			return resLibrary.Values.Where(res => 
-				res is Prefab || 
-				res is Scene || 
-				res.GetType().GetTypeInfo().Assembly != typeof(ContentProvider).GetTypeInfo().Assembly);
 		}
 
 		/// <summary>
@@ -355,20 +272,23 @@ namespace Duality
 		{
 			if (string.IsNullOrEmpty(dir)) return;
 
-			// Assure we're ending with directory separator chars.
-			if (dir[dir.Length - 1] == PathOp.AltDirectorySeparatorChar) dir = dir.Remove(dir.Length - 1, 1);
+			// Normalize directory names
+			dir = dir.Replace(PathOp.AltDirectorySeparatorChar, PathOp.DirectorySeparatorChar);
+			newDir = newDir.Replace(PathOp.AltDirectorySeparatorChar, PathOp.DirectorySeparatorChar);
+
+			// Ensure we're ending with directory separator chars
 			if (dir[dir.Length - 1] != PathOp.DirectorySeparatorChar) dir += PathOp.DirectorySeparatorChar;
-			if (newDir[newDir.Length - 1] == PathOp.AltDirectorySeparatorChar) newDir = newDir.Remove(newDir.Length - 1, 1);
 			if (newDir[newDir.Length - 1] != PathOp.DirectorySeparatorChar) newDir += PathOp.DirectorySeparatorChar;
 
 			List<string> renameList = new List<string>(
 				from p in resLibrary.Keys
-				where !IsDefaultContentPath(p) && PathOp.IsPathLocatedIn(p, dir)
+				where !Resource.IsDefaultContentPath(p) && PathOp.IsPathLocatedIn(p, dir)
 				select p);
 
-			foreach (string p in renameList)
+			foreach (string path in renameList)
 			{
-				RenameContent(p, p.Replace(dir, newDir));
+				string newPath = newDir + path.Remove(0, dir.Length);
+				RenameContent(path, newPath);
 			}
 		}
 
@@ -395,7 +315,7 @@ namespace Duality
 			}
 
 			// Load new content
-			res = LoadContent(path) ?? ResolveContent(path);
+			res = ResolveContent(path) ?? LoadContent(path);
 			return new ContentRef<T>(res as T, path);
 		}
 		/// <summary>
@@ -413,6 +333,7 @@ namespace Duality
 
 		private static Resource ResolveContent(string path)
 		{
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return null;
 			if (string.IsNullOrEmpty(path) || ResourceResolve == null) return null;
 
 			ResourceResolveEventArgs args = new ResourceResolveEventArgs(path);
@@ -442,7 +363,7 @@ namespace Duality
 		private static Resource LoadContent(string path)
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return null;
-			if (string.IsNullOrEmpty(path) || IsDefaultContentPath(path) || !FileOp.Exists(path)) return null;
+			if (string.IsNullOrEmpty(path) || Resource.IsDefaultContentPath(path) || !FileOp.Exists(path)) return null;
 
 			Logs.Core.Write("Loading Resource '{0}'", path);
 			Logs.Core.PushIndent();

@@ -34,20 +34,19 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			Assembly embeddingAssembly = typeof(Font).GetTypeInfo().Assembly;
-
 			Font genericMonospace8;
-			Font genericMonospace10;
-			using (Stream stream = embeddingAssembly.GetManifestResourceStream("Duality.EmbeddedResources.Cousine8.Font.res"))
+			using (Stream stream = DefaultContent.GetEmbeddedResourceStream("Cousine8.Font.res"))
 			{
 				genericMonospace8 = Resource.Load<Font>(stream);
 			}
-			using (Stream stream = embeddingAssembly.GetManifestResourceStream("Duality.EmbeddedResources.Cousine10.Font.res"))
+
+			Font genericMonospace10;
+			using (Stream stream = DefaultContent.GetEmbeddedResourceStream("Cousine10.Font.res"))
 			{
 				genericMonospace10 = Resource.Load<Font>(stream);
 			}
 
-			InitDefaultContent<Font>(new Dictionary<string,Font>
+			DefaultContent.InitType<Font>(new Dictionary<string,Font>
 			{
 				{ "GenericMonospace8", genericMonospace8 },
 				{ "GenericMonospace10", genericMonospace10 },

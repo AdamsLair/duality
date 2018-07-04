@@ -145,7 +145,7 @@ namespace Duality.Components
 			public bool Update(SoundEmitter emitter)
 			{
 				// Revalidate Sound reference
-				this.sound.MakeAvailable();
+				this.sound.EnsureLoaded();
 
 				// If the SoundInstance has been disposed, set to null
 				if (this.instance != null && this.instance.Disposed) this.instance = null;

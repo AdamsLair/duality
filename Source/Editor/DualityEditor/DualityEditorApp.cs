@@ -741,7 +741,7 @@ namespace Duality.Editor
 
 		public static void BackupResource(string path)
 		{
-			if (ContentProvider.IsDefaultContentPath(path)) return;
+			if (Resource.IsDefaultContentPath(path)) return;
 			if (!File.Exists(path)) return;
 			if (!PathOp.IsPathLocatedIn(path, DualityApp.DataDirectory)) return;
 
@@ -749,7 +749,7 @@ namespace Duality.Editor
 			try
 			{
 				string fileName = Path.GetFileName(path);
-				string resourceName = ContentProvider.GetNameFromPath(path);
+				string resourceName = Resource.GetNameFromPath(path);
 				string pathCompleteExt = fileName.Remove(0, resourceName.Length);
 				string fileBackupDir = Path.Combine(EditorHelper.BackupDirectory, PathHelper.MakeFilePathRelative(path, DualityApp.DataDirectory));
 				string fileBackupName = DateTime.Now.ToString("yyyy-MM-dd T HH-mm", System.Globalization.CultureInfo.InvariantCulture) + pathCompleteExt;

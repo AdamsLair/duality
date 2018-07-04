@@ -282,7 +282,7 @@ namespace Duality.Editor
 							if (isCurrentScene || DualityEditorApp.IsResourceUnsaved(e.FullPath))
 							{
 								DialogResult result = MessageBox.Show(
-									String.Format(Properties.GeneralRes.Msg_ConfirmReloadResource_Text, e.FullPath), 
+									string.Format(Properties.GeneralRes.Msg_ConfirmReloadResource_Text, e.FullPath), 
 									Properties.GeneralRes.Msg_ConfirmReloadResource_Caption, 
 									MessageBoxButtons.YesNo,
 									MessageBoxIcon.Exclamation);

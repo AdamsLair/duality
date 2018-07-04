@@ -38,7 +38,7 @@ namespace Duality.Resources
 				VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay
 			});
 
-			InitDefaultContent<RenderSetup>(new Dictionary<string,RenderSetup>
+			DefaultContent.InitType<RenderSetup>(new Dictionary<string,RenderSetup>
 			{
 				{ "Default", defaultSetup },
 			});

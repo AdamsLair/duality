@@ -31,7 +31,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContent<Sound>(new Dictionary<string,Sound>
+			DefaultContent.InitType<Sound>(new Dictionary<string,Sound>
 			{
 				{ "Beep", new Sound(AudioData.Beep) }
 			});
@@ -228,7 +228,7 @@ namespace Duality.Resources
 			if (this.audioData == null) return;
 			for (int i = 0; i < this.audioData.Count; i++)
 			{
-				this.audioData[i].MakeAvailable();
+				this.audioData[i].EnsureLoaded();
 			}
 		}
 

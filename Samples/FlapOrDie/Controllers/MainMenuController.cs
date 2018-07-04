@@ -26,11 +26,11 @@ namespace FlapOrDie.Controllers
 				//preloading materials and sounds
 				foreach (ContentRef<Material> m in ContentProvider.GetAvailableContent<Material>())
 				{
-					m.MakeAvailable();
+					m.EnsureLoaded();
 				}
 				foreach (ContentRef<Sound> s in ContentProvider.GetAvailableContent<Sound>())
 				{
-					s.MakeAvailable();
+					s.EnsureLoaded();
 				}
 
 				GameScene.Res.FindComponent<GameController>().Reset();

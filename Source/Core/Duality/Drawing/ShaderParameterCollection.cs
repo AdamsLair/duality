@@ -988,7 +988,7 @@ namespace Duality.Drawing
 				if (value is ContentRef<Texture>)
 				{
 					ContentRef<Texture> tex = (ContentRef<Texture>)value;
-					tex.MakeAvailable();
+					tex.EnsureLoaded();
 					this.values.Add(new ValueItem
 					{
 						Name = key,

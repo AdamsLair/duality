@@ -283,7 +283,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 		protected DirectoryNode ScanDefaultContent()
 		{
-			DirectoryNode thisNode = new DirectoryNode(ContentProvider.VirtualContentPath, true);
+			DirectoryNode thisNode = new DirectoryNode(Resource.DefaultContentBasePath, true);
 
 			List<ContentRef<Resource>> defaultContent = ContentProvider.GetDefaultContent<Resource>();
 			foreach (ContentRef<Resource> resRef in defaultContent)
@@ -535,7 +535,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				select (c.Tag as ResourceNode).ResLink as IContentRef);
 			data.SetFiles(
 				from c in nodes
-				where c.Tag is NodeBase && !ContentProvider.IsDefaultContentPath((c.Tag as NodeBase).NodePath)
+				where c.Tag is NodeBase && !Resource.IsDefaultContentPath((c.Tag as NodeBase).NodePath)
 				select (c.Tag as NodeBase).NodePath);
 		}
 
@@ -596,7 +596,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 		protected string GetInsertActionTargetBasePath(NodeBase baseNode)
 		{
-			if (baseNode == null || ContentProvider.IsDefaultContentPath(baseNode.NodePath))
+			if (baseNode == null || Resource.IsDefaultContentPath(baseNode.NodePath))
 				return DualityApp.DataDirectory;
 
 			string baseTargetPath = baseNode.NodePath;

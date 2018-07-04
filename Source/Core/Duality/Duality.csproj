@@ -101,6 +101,7 @@
     <Compile Include="Components\Physics\Shapes\VertexShapeTrait.cs" />
     <Compile Include="Components\Physics\Shapes\VertexBasedShapeInfo.cs" />
     <Compile Include="Components\VelocityTracker.cs" />
+    <Compile Include="DefaultContent.cs" />
     <Compile Include="Drawing\Enums\IndexDataElementType.cs" />
     <Compile Include="Drawing\Enums\GraphicsBufferType.cs" />
     <Compile Include="Drawing\ShaderParameterCollection.cs" />

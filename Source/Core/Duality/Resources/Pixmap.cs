@@ -64,11 +64,11 @@ namespace Duality.Resources
 				// everything else can still work as expected. We logged the error,
 				// and there's nothing anyone can do about this at runtime, so just 
 				// fail gracefully without causing more trouble.
-				InitDefaultContent<Pixmap>(name => new Pixmap(new PixelData(1, 1, new ColorRgba(255, 0, 255))));
+				DefaultContent.InitType<Pixmap>(name => new Pixmap(new PixelData(1, 1, new ColorRgba(255, 0, 255))));
 
 				return;
 			}
-			InitDefaultContent<Pixmap>(".png", stream => new Pixmap(codec.Read(stream)));
+			DefaultContent.InitType<Pixmap>(".png", stream => new Pixmap(codec.Read(stream)));
 		}
 
 		

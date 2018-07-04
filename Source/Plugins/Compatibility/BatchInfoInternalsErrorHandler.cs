@@ -43,7 +43,7 @@ namespace Duality.Plugins.Compatibility
 							foreach (var pair in textures)
 							{
 								ContentRef<Texture> texRef = pair.Value;
-								texRef.MakeAvailable();
+								texRef.EnsureLoaded();
 								batchInfo.SetTexture(pair.Key, texRef);
 							}
 							assignFieldError.AssignSuccess = true;
