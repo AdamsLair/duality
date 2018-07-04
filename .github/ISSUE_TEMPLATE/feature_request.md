@@ -18,4 +18,4 @@ Add a more thorough description of the issue in any length in the second paragra
 
 ### Attachments
 
-- [Feature Requests] Mockup screenshots and sketches (if applicable)
+- Mockup screenshots and sketches (if applicable)
