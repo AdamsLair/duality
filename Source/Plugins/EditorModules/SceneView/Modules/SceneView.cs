@@ -1646,6 +1646,7 @@ namespace Duality.Editor.Plugins.SceneView
 				newObjects.Add(objNode);
 			}
 
+			this.objectView.BeginUpdate();
 			this.objectView.ClearSelection();
 
 			// Select newly created objects
@@ -1668,6 +1669,8 @@ namespace Duality.Editor.Plugins.SceneView
 					nodeToEdit = dragObjViewNode;
 				}
 			}
+
+			this.objectView.EndUpdate();
 
 			// Scroll to and edit the new objects name
 			if (nodeToEdit != null)
@@ -1737,6 +1740,8 @@ namespace Duality.Editor.Plugins.SceneView
 			}
 			UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
 
+			this.objectView.BeginUpdate();
+
 			// Deselect previous
 			this.objectView.ClearSelection();
 
@@ -1761,6 +1766,8 @@ namespace Duality.Editor.Plugins.SceneView
 					nodeToEdit = dragObjViewNode;
 				}
 			}
+
+			this.objectView.EndUpdate();
 
 			// Scroll to and edit the new objects name
 			if (createNewSingleObject && nodeToEdit != null)
