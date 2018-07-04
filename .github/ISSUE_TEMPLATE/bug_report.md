@@ -25,5 +25,5 @@ Add a more thorough description of the issue in any length in the second paragra
 
 ### Attachments
 
-- [Bugs] Logfiles (if available)
-- [Bugs] [Screenshots or Screencaps](https://getsharex.com/) (if applicable and useful)
+- Logfiles (if available)
+- [Screenshots or Screencaps](https://getsharex.com/) (if applicable and useful)
