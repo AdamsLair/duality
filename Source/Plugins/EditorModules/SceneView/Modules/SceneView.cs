@@ -1737,14 +1737,32 @@ namespace Duality.Editor.Plugins.SceneView
 			this.objectView.ClearSelection();
 
 			// Select all new nodes
+			TreeNodeAdv nodeToEdit = null;
 			foreach (var cmpNode in newComponentNodes)
 			{
+				if (cmpNode == null) continue;
+
 				TreeNodeAdv dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(cmpNode));
-				if (dragObjViewNode != null)
+				if (dragObjViewNode == null) continue;
+
+				// Expand parent node and select new object node
+				if (dragObjViewNode.Parent != null)
+					dragObjViewNode.Parent.Expand();
+				dragObjViewNode.IsSelected = true;
+
+				// Schedule the first created view node for editing, but 
+				// only if we're dealing with a GameObject node
+				if (nodeToEdit == null && cmpNode is GameObjectNode)
 				{
-					dragObjViewNode.IsSelected = true;
-					this.objectView.EnsureVisible(dragObjViewNode);
+					nodeToEdit = dragObjViewNode;
 				}
+			}
+
+			// Scroll to and edit the new objects name
+			if (nodeToEdit != null)
+			{
+				this.objectView.EnsureVisible(nodeToEdit);
+				this.nodeTextBoxName.BeginEdit();
 			}
 		}
 		private void customObjectActionItem_Click(object sender, EventArgs e)
