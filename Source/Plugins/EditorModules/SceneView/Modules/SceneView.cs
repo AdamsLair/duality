@@ -1714,8 +1714,12 @@ namespace Duality.Editor.Plugins.SceneView
 			}
 
 			// If none is selected, use a "null" dummy to allow quick creation at the Scene root
+			bool createNewSingleObject = false;
 			if (targetViewNodes.Count == 0)
+			{
 				targetViewNodes.Add(null);
+				createNewSingleObject = true;
+			}
 
 			// Track the nodes that we add so that we can select them later
 			UndoRedoManager.BeginMacro();
@@ -1751,7 +1755,7 @@ namespace Duality.Editor.Plugins.SceneView
 				dragObjViewNode.IsSelected = true;
 
 				// Schedule the first created view node for editing, but 
-				// only if we're dealing with a GameObject node
+				// only if we're dealing with a newly created GameObject node
 				if (nodeToEdit == null && cmpNode is GameObjectNode)
 				{
 					nodeToEdit = dragObjViewNode;
@@ -1759,7 +1763,7 @@ namespace Duality.Editor.Plugins.SceneView
 			}
 
 			// Scroll to and edit the new objects name
-			if (nodeToEdit != null)
+			if (createNewSingleObject && nodeToEdit != null)
 			{
 				this.objectView.EnsureVisible(nodeToEdit);
 				this.nodeTextBoxName.BeginEdit();
