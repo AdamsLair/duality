@@ -99,7 +99,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			Component picked = this.PickRendererAt(x, y) as Component;
 			if (picked == null) return null;
-			if (picked.Disposed) return null;
 			if (DesignTimeObjectData.Get(picked.GameObj).IsLocked) return null;
 			return new SceneEditorSelGameObj(picked.GameObj);
 		}
@@ -108,7 +107,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			IEnumerable<ICmpRenderer> picked = this.PickRenderersIn(x, y, w, h);
 			return picked
 				.OfType<Component>()
-				.Where(r => r != null && !r.Disposed && !DesignTimeObjectData.Get(r.GameObj).IsLocked)
+				.Where(r => !DesignTimeObjectData.Get(r.GameObj).IsLocked)
 				.Select(r => new SceneEditorSelGameObj(r.GameObj) as ObjectEditorSelObj)
 				.ToList();
 		}

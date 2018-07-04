@@ -102,13 +102,27 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			this.RenderableSite.MakeCurrent();
 			this.RenderPickingMap();
-			return this.CameraComponent.PickRendererAt(x / 2, y / 2);
+
+			ICmpRenderer picked = this.CameraComponent.PickRendererAt(x / 2, y / 2);
+			Component pickedComponent = picked as Component;
+
+			if (pickedComponent == null) return null;
+			if (pickedComponent.Disposed) return null;
+			if (pickedComponent.GameObj == null) return null;
+
+			return picked;
 		}
 		public IEnumerable<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
 		{
 			this.RenderableSite.MakeCurrent();
 			this.RenderPickingMap();
-			return this.CameraComponent.PickRenderersIn(x / 2, y / 2, (w + 1) / 2, (h + 1) / 2);
+
+			IEnumerable<ICmpRenderer> picked = this.CameraComponent.PickRenderersIn(x / 2, y / 2, (w + 1) / 2, (h + 1) / 2);
+
+			return picked.Where(r => 
+				r != null && 
+				!((Component)r).Disposed && 
+				((Component)r).GameObj != null);
 		}
 		public bool IsSphereInView(Vector3 worldPos, float radius = 1.0f)
 		{
@@ -144,6 +158,11 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			if (this.pickingFrameLast == Time.FrameCount) return false;
 			if (this.ClientSize.IsEmpty) return false;
+
+			// Update culling info. Since we do not have a real game loop in edit
+			// mode, we'll do this right before rendering rather than once per frame.
+			if (Scene.Current.VisibilityStrategy != null)
+				Scene.Current.VisibilityStrategy.Update();
 
 			Point2 clientSize = new Point2(this.ClientSize.Width, this.ClientSize.Height);
 			RenderSetup renderSetup = this.CameraComponent.PickingSetup;
