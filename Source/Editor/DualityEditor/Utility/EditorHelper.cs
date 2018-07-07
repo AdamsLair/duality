@@ -38,8 +38,6 @@ namespace Duality.Editor
 		public static readonly string GlobalUserDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality");
 		public static readonly string GlobalProjectTemplateDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality", "ProjectTemplates");
 
-		private static bool isJitDebuggerAvailable;
-		private static VisualStudioEdition vsEdition;
 
 		/// <summary>
 		/// The path to the *.sln solution file. Will return <see cref="DefaultSourceCodeSolutionFile"/> if the solution file has not yet been created.
@@ -60,7 +58,6 @@ namespace Duality.Editor
 				return sourceCodeSolutionFilePath ?? DefaultSourceCodeSolutionFile;
 			}
 		}
-
 		public static string CurrentProjectName
 		{
 			get
@@ -70,28 +67,7 @@ namespace Duality.Editor
 				return Path.GetFileName(dataDir);
 			}
 		}
-		public static bool IsJITDebuggerAvailable
-		{
-			get { return isJitDebuggerAvailable; }
-		}
-		public static VisualStudioEdition VisualStudioEdition
-		{
-			get { return vsEdition; }
-		}
 
-		static EditorHelper()
-		{
-			isJitDebuggerAvailable = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\.NetFramework", "DbgManagedDebugger", null) != null;
-			
-			RegistryKey localMachine = null;
-			if (Environment.Is64BitOperatingSystem)	localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-			else									localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
-
-			RegistryKey visualStudio = localMachine.OpenSubKey(@"SOFTWARE\Microsoft\VisualStudio");
-			string[] visualStudioSubKeys = visualStudio != null ? visualStudio.GetSubKeyNames() : null;
-
-			vsEdition = VisualStudioEdition.Express;
-		}
 
 		public static string GenerateClassNameFromPath(string path)
 		{
