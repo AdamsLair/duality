@@ -327,6 +327,14 @@ namespace Duality
 				if (commandLineArgs.Contains(CmdArgEditor)) runFromEditor = true;
 			}
 
+			// If the core was compiled in debug mode and a debugger is attached, log 
+			// to the Debug channel, so we can put the VS output window to good use.
+			#if DEBUG
+			bool isDebugging = System.Diagnostics.Debugger.IsAttached;
+			if (isDebugging && !Logs.GlobalOutput.OfType<DebugLogOutput>().Any())
+				Logs.AddGlobalOutput(new DebugLogOutput());
+			#endif
+
 			environment = env;
 			execContext = context;
 
