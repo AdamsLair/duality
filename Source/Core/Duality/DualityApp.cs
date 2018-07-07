@@ -331,8 +331,19 @@ namespace Duality
 			// to the Debug channel, so we can put the VS output window to good use.
 			#if DEBUG
 			bool isDebugging = System.Diagnostics.Debugger.IsAttached;
-			if (isDebugging && !Logs.GlobalOutput.OfType<DebugLogOutput>().Any())
-				Logs.AddGlobalOutput(new DebugLogOutput());
+			if (isDebugging)
+			{
+				// Only add a new Debug output if we don't already have one, and don't
+				// log to a Console channel either. VS will automatically redirect Console
+				// output to the Output window when debugging a non-Console application,
+				// and we don't want to end up with double log entries.
+				bool hasDebugOut = Logs.GlobalOutput.OfType<DebugLogOutput>().Any();
+				bool hasConsoleOut = Logs.GlobalOutput.OfType<TextWriterLogOutput>().Any(w => w.GetType().Name.Contains("Console"));
+				if (!hasDebugOut && !hasConsoleOut)
+				{
+					Logs.AddGlobalOutput(new DebugLogOutput());
+				}
+			}
 			#endif
 
 			environment = env;
