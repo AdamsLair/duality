@@ -126,14 +126,26 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 				return false;
 			}
 
-			if (equalsCaseInsensitive)
+			try
 			{
-				string tempPath = newPath + "_sSJencn83rhfSHhfn3ns456omvmvs28fndDN84ns";
-				Directory.Move(oldPath, tempPath);
-				Directory.Move(tempPath, newPath);
+				if (equalsCaseInsensitive)
+				{
+					// As Windows doesn't properly apply renames that change character casing 
+					// and nothing else, we'll do a two-step rename using a temp path.
+					string tempPath = newPath + "_sSJencn83rhfSHhfn3ns456omvmvs28fndDN84ns";
+					Directory.Move(oldPath, tempPath);
+					Directory.Move(tempPath, newPath);
+				}
+				else
+				{
+					Directory.Move(oldPath, newPath);
+				}
 			}
-			else
-				Directory.Move(oldPath, newPath);
+			catch (Exception e)
+			{
+				Logs.Editor.WriteError("Error moving directory from '{0}' to '{1}': {2}", oldPath, newPath, e);
+				return false;
+			}
 
 			// Between performing the move event and it being received by the FileEventManager there will be a
 			// short window of inconsistency where the existing Resource is still registered under its old name
@@ -218,14 +230,26 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 				return false;
 			}
 
-			if (equalsCaseInsensitive)
+			try
 			{
-				string tempPath = newPath + "_sSJencn83rhfSHhfn3ns456omvmvs28fndDN84ns";
-				File.Move(oldPath, tempPath);
-				File.Move(tempPath, newPath);
+				if (equalsCaseInsensitive)
+				{
+					// As Windows doesn't properly apply renames that change character casing 
+					// and nothing else, we'll do a two-step rename using a temp path.
+					string tempPath = newPath + "_sSJencn83rhfSHhfn3ns456omvmvs28fndDN84ns";
+					File.Move(oldPath, tempPath);
+					File.Move(tempPath, newPath);
+				}
+				else
+				{
+					File.Move(oldPath, newPath);
+				}
 			}
-			else
-				File.Move(oldPath, newPath);
+			catch (Exception e)
+			{
+				Logs.Editor.WriteError("Error moving Resource from '{0}' to '{1}': {2}", oldPath, newPath, e);
+				return false;
+			}
 
 			// Between performing the move event and it being received by the FileEventManager there will be a
 			// short window of inconsistency where the existing Resource is still registered under its old name

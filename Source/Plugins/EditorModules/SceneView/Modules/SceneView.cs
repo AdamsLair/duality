@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.IO;
-using System.Globalization;
 using System.Reflection;
 using System.Xml.Linq;
 using CancelEventHandler = System.ComponentModel.CancelEventHandler;
@@ -19,7 +16,7 @@ using AdamsLair.WinForms.ItemViews;
 using Duality;
 using Duality.Cloning;
 using Duality.Resources;
-using Duality.Drawing;
+using Duality.IO;
 using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
@@ -145,9 +142,7 @@ namespace Duality.Editor.Plugins.SceneView
 			DualityEditorApp.HighlightObject += this.DualityEditorApp_HighlightObject;
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
-			FileEventManager.ResourceCreated += this.DualityEditorApp_ResourceCreated;
-			FileEventManager.ResourceDeleted += this.DualityEditorApp_ResourceDeleted;
-			FileEventManager.ResourceRenamed += this.DualityEditorApp_ResourceRenamed;
+			FileEventManager.ResourcesChanged += this.FileEventManager_ResourcesChanged;
 
 			Scene.Entered += this.Scene_Entered;
 			Scene.Leaving += this.Scene_Leaving;
@@ -166,9 +161,7 @@ namespace Duality.Editor.Plugins.SceneView
 			DualityEditorApp.HighlightObject -= this.DualityEditorApp_HighlightObject;
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
-			FileEventManager.ResourceCreated -= this.DualityEditorApp_ResourceCreated;
-			FileEventManager.ResourceDeleted -= this.DualityEditorApp_ResourceDeleted;
-			FileEventManager.ResourceRenamed -= this.DualityEditorApp_ResourceRenamed;
+			FileEventManager.ResourcesChanged -= this.FileEventManager_ResourcesChanged;
 
 			Scene.Entered -= this.Scene_Entered;
 			Scene.Leaving -= this.Scene_Leaving;
@@ -1894,25 +1887,19 @@ namespace Duality.Editor.Plugins.SceneView
 				}
 			}
 		}
-		private void DualityEditorApp_ResourceRenamed(object sender, ResourceRenamedEventArgs e)
+		private void FileEventManager_ResourcesChanged(object sender, ResourceFilesChangedEventArgs e)
 		{
-			if (e.Path == Scene.CurrentPath) this.UpdateSceneLabel();
+			if (e.AnyFiles(FileEventType.Created) ||
+				e.Contains(FileEventType.Renamed, Scene.CurrentPath))
+			{
+				this.UpdateSceneLabel();
+			}
 
-			if (!e.IsDirectory && !typeof(Prefab).IsAssignableFrom(e.ContentType)) return;
-			this.UpdatePrefabLinkStatus(true);
-		}
-		private void DualityEditorApp_ResourceCreated(object sender, ResourceEventArgs e)
-		{
-			if (e.IsDirectory || typeof(Prefab).IsAssignableFrom(e.ContentType))
+			if (e.AnyDirectories(FileEventType.Renamed | FileEventType.Deleted) ||
+				e.Contains(FileEventType.Renamed | FileEventType.Created | FileEventType.Deleted, typeof(Prefab)))
 			{
 				this.UpdatePrefabLinkStatus(true);
 			}
-			this.UpdateSceneLabel(); // In case we save the Scene for the first time
-		}
-		private void DualityEditorApp_ResourceDeleted(object sender, ResourceEventArgs e)
-		{
-			if (!e.IsDirectory && !typeof(Prefab).IsAssignableFrom(e.ContentType)) return;
-			this.UpdatePrefabLinkStatus(true);
 		}
 
 		private void Scene_Leaving(object sender, EventArgs e)

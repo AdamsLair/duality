@@ -215,7 +215,8 @@
     <Compile Include="Utility\BuildHelper.cs" />
     <Compile Include="Utility\EditorLogEntry.cs" />
     <Compile Include="Utility\EditorLogOutput.cs" />
-    <Compile Include="Utility\EventArgs\ResourceRenamedEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\ResourceFilesChangedEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\FileSystemChangedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\PrefabAppliedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\ObjectPropertyChangedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\HighlightObjectEventArgs.cs" />

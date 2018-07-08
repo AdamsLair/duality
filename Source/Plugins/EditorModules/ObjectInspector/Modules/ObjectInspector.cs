@@ -10,6 +10,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using AdamsLair.WinForms.PropertyEditing;
 
 using Duality;
+using Duality.IO;
 using Duality.Resources;
 using Duality.Editor;
 using Duality.Editor.AssetManagement;
@@ -87,7 +88,6 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.Terminating += this.DualityEditorApp_Terminating;
 			AssetManager.ImportFinished += this.AssetManager_ImportFinished;
-			FileEventManager.ResourceModified += this.FileEventManager_ResourceModified;
 
 			// Select something initially, if not done yet
 			if (this.propertyGrid.Selection.Count() == 0)
@@ -101,7 +101,6 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.Terminating -= this.DualityEditorApp_Terminating;
 			AssetManager.ImportFinished -= this.AssetManager_ImportFinished;
-			FileEventManager.ResourceModified -= this.FileEventManager_ResourceModified;
 		}
 		protected override void OnGotFocus(EventArgs e)
 		{
@@ -253,15 +252,6 @@ namespace Duality.Editor.Plugins.ObjectInspector
 				e.Objects.Any(o => this.propertyGrid.Selection.Contains(o)) ||
 				(e.Objects.Contains(Scene.Current) && this.propertyGrid.Selection.Any(o => o is GameObject || o is Component)))
 				this.propertyGrid.UpdateFromObjects(100);
-		}
-		private void FileEventManager_ResourceModified(object sender, ResourceEventArgs e)
-		{
-			if (!e.IsResource) return;
-			if (!e.Content.IsLoaded) return;
-
-			// Force updating all potentially generated previews when we display a resource that was modified externally
-			bool forceFullUpdate = this.propertyGrid.Selection.Contains(e.Content.Res);
-			this.UpdateDisplayedValues(forceFullUpdate);
 		}
 		private void AssetManager_ImportFinished(object sender, AssetImportFinishedEventArgs e)
 		{
