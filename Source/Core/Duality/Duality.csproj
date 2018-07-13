@@ -110,6 +110,9 @@
     <Compile Include="Drawing\VertexData\VertexBuffer.cs" />
     <Compile Include="Components\Physics\PhysicsWorld.cs" />
     <Compile Include="Resources\Shaders\ShaderSourceBuilder.cs" />
+    <Compile Include="Utility\Coroutines\Coroutine.cs" />
+    <Compile Include="Utility\Coroutines\CoroutineAction.cs" />
+    <Compile Include="Utility\Coroutines\CoroutineManager.cs" />
     <Compile Include="Utility\Log\DebugLogOutput.cs" />
     <Compile Include="Utility\RawListPool.cs" />
     <Compile Include="Drawing\VertexData\VertexDrawRange.cs" />
