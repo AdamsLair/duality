@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Duality
 {
@@ -10,14 +11,14 @@ namespace Duality
 
 	internal sealed class StopAction : ICoroutineAction
 	{
-		public static IEnumerable<StopAction> Finalizer = new StopAction[] { StopAction.Value };
 		public static StopAction Value = new StopAction();
+		public static IEnumerable<StopAction> Finalizer = new StopAction[] { StopAction.Value };
 
 		private StopAction() { }
 
 		public bool IsComplete
 		{
-			get { return false; }
+			get { return true; }
 		}
 	}
 
@@ -106,7 +107,7 @@ namespace Duality
 
 		public bool IsComplete
 		{
-			get { return this.continueIfCantEmit || CoroutineManager.EmitSignal(this.signal); }
+			get { return CoroutineManager.EmitSignal(this.signal) || this.continueIfCantEmit; }
 		}
 	}
 
@@ -158,6 +159,9 @@ namespace Duality
 		}
 	}
 
+	/// <summary>
+	/// Calls a method every frame, until said action returns true, signalling its completion
+	/// </summary>
 	public sealed class ContinuousAction : ICoroutineAction
 	{
 		private Func<bool> action;
@@ -171,4 +175,31 @@ namespace Duality
 			get { return this.action(); }
 		}
 	}
+
+	/// <summary>
+	/// Launches a parallel task and waits for its completion.
+	/// Usual threading limitations (no Texture creation, etc.) apply
+	/// </summary>
+	
+	/* Commented until safely useable
+	public sealed class LongRunningTask : ICoroutineAction
+	{
+		private Task task;
+		public LongRunningTask(Task task)
+		{
+			this.task = task;
+		}
+
+		public bool IsComplete
+		{
+			get
+			{
+				if(this.task.Status == TaskStatus.Created)
+					this.task.Start();
+
+				return this.task.IsCompleted || this.task.IsCanceled || this.task.IsFaulted;
+			}
+		}
+	}
+	*/
 }

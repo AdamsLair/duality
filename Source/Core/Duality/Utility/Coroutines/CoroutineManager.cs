@@ -8,6 +8,19 @@ namespace Duality
 		private static List<Coroutine> _trashcan = new List<Coroutine>();
 		private static HashSet<string> _signals = new HashSet<string>();
 
+		static CoroutineManager()
+		{
+			Resources.Scene.Leaving += OnSceneLeaving;
+		}
+
+		private static void OnSceneLeaving(object sender, System.EventArgs e)
+		{
+			foreach(Coroutine c in _coroutines)
+			{
+				c.Abort();
+			}
+		}
+
 		internal static void Register(Coroutine coroutine)
 		{
 			_coroutines.Add(coroutine);
