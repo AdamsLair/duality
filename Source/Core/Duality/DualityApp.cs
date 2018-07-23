@@ -525,6 +525,7 @@ namespace Duality
 			VisualLogs.UpdateLogEntries();
 			pluginManager.InvokeBeforeUpdate();
 			UpdateUserInput();
+			CoroutineManager.Update();
 			Scene.Current.Update();
 			sound.Update();
 			pluginManager.InvokeAfterUpdate();
@@ -555,6 +556,7 @@ namespace Duality
 				pluginManager.InvokeBeforeUpdate();
 
 				UpdateUserInput();
+				CoroutineManager.Update();
 				Scene.Current.Update();
 
 				List<ICmpUpdatable> updatables = new List<ICmpUpdatable>();
