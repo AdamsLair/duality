@@ -336,6 +336,8 @@ namespace Duality.Resources
 		[DontSerialize] private RawList<Component> updatableComponents = new RawList<Component>(256);
 		[DontSerialize] private RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
 
+		[DontSerialize] private CoroutineManager coroutineManager = new CoroutineManager();
+
 
 		/// <summary>
 		/// [GET / SET] The strategy that is used to determine which <see cref="ICmpRenderer">renderers</see> are visible.
@@ -561,6 +563,9 @@ namespace Duality.Resources
 			{
 				// Remove disposed objects from managers
 				this.CleanupDisposedObjects();
+
+				// Update coroutines
+				this.coroutineManager.Update();
 
 				// Update physics
 				this.physicsWorld.Simulate(Time.DeltaTime);
@@ -1130,6 +1135,21 @@ namespace Duality.Resources
 				++depthB;
 			}
 			return depthA - depthB;
+		}
+
+		internal Coroutine RegisterCoroutine(IEnumerable<CoroutineAction> coroutine)
+		{
+			return this.coroutineManager.Register(coroutine);
+		}
+
+		public bool EmitCoroutineSignal(string signal)
+		{
+			return this.coroutineManager.EmitSignal(signal);
+		}
+
+		public void ClearCoroutines()
+		{
+			this.coroutineManager.Clear();
 		}
 	}
 }

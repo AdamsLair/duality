@@ -2,66 +2,73 @@
 
 namespace Duality
 {
-	internal static class CoroutineManager
+	public class CoroutineManager
 	{
-		private static List<Coroutine> _coroutines = new List<Coroutine>();
-		private static List<Coroutine> _trashcan = new List<Coroutine>();
-		private static HashSet<string> _signals = new HashSet<string>();
+		private static Queue<Coroutine> pool = new Queue<Coroutine>();
+		private List<Coroutine> coroutines = new List<Coroutine>();
+		private List<Coroutine> trashcan = new List<Coroutine>();
+		private HashSet<string> signals = new HashSet<string>();
 
-		static CoroutineManager()
+		internal Coroutine Register(IEnumerable<CoroutineAction> actions)
 		{
-			Resources.Scene.Leaving += OnSceneLeaving;
+			Coroutine coroutine = null;
+
+			if (pool.Count > 0)
+				coroutine = pool.Dequeue();
+			else
+				coroutine = new Coroutine();
+
+			coroutine.Setup(actions);
+			this.coroutines.Add(coroutine);
+			return coroutine;
 		}
 
-		private static void OnSceneLeaving(object sender, System.EventArgs e)
+		internal void Update()
 		{
-			foreach(Coroutine c in _coroutines)
-			{
-				c.Abort();
-			}
-		}
-
-		internal static void Register(Coroutine coroutine)
-		{
-			_coroutines.Add(coroutine);
-		}
-
-		internal static void Update()
-		{
-			foreach(Coroutine c in _coroutines)
+			foreach(Coroutine c in this.coroutines)
 			{
 				if (c.Current is StopAction)
-					_trashcan.Add(c);
+					this.trashcan.Add(c);
 
-				else if (c.Current == null || c.Current.IsComplete)
+				else if (c.Current == null || c.Current.IsComplete(this))
 				{
+					CoroutineAction.ReturnOne(c.Current);
+
 					if (!c.Enumerator.MoveNext())
-						_trashcan.Add(c);
+						this.trashcan.Add(c);
 				}
 			}
 
-			foreach (Coroutine c in _trashcan)
+			foreach (Coroutine c in this.trashcan)
 			{
-				_coroutines.Remove(c);
-				c.Dispose();
+				this.coroutines.Remove(c);
+				pool.Enqueue(c);
 			}
 
-			_trashcan.Clear();
+			this.trashcan.Clear();
 		}
 
-		internal static bool IsSet(string signal)
+		internal void Clear()
 		{
-			return _signals.Contains(signal);
+			foreach (Coroutine c in this.coroutines)
+				c.Abort();
+
+			this.coroutines.Clear();
 		}
 
-		internal static bool ConsumeSignal(string signal)
+		internal bool IsSet(string signal)
 		{
-			return _signals.Remove(signal);
+			return this.signals.Contains(signal);
 		}
 
-		internal static bool EmitSignal(string signal)
+		internal bool ConsumeSignal(string signal)
 		{
-			return _signals.Add(signal);
+			return this.signals.Remove(signal);
+		}
+
+		internal bool EmitSignal(string signal)
+		{
+			return this.signals.Add(signal);
 		}
 	}
 }

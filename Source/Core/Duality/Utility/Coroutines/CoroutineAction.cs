@@ -4,175 +4,271 @@ using System.Threading.Tasks;
 
 namespace Duality
 {
-	public interface ICoroutineAction
+	public abstract class CoroutineAction
 	{
-		bool IsComplete { get; }
+		private static List<CoroutineAction> _pool = new List<CoroutineAction>();
+		private static int _poolIndex = 0;
+		private static int _searchIndex = 0;
+
+		public static T GetOne<T>() where T : CoroutineAction, new()
+		{
+			T result = null;
+
+			for(int i = _poolIndex; i < _pool.Count + _poolIndex; i++)
+			{
+				_searchIndex = i % _pool.Count;
+
+				result = _pool[_searchIndex] as T;
+				
+				if(result != null)
+				{
+					_poolIndex = _searchIndex;
+					_pool.Remove(result);
+
+					break;
+				}
+			}
+
+			if (result == null)
+				result = new T();
+
+			result.OnPickup();
+			return result;
+		}
+
+		public static void ReturnOne(CoroutineAction action)
+		{
+			action.OnReturn();
+			_pool.Add(action);
+		}
+
+		public abstract bool IsComplete(CoroutineManager manager);
+
+		public virtual void OnPickup() { }
+		public virtual void OnReturn() { }
 	}
 
-	internal sealed class StopAction : ICoroutineAction
+	public abstract class CoroutineAction<TConfig> : CoroutineAction
+	{
+		public abstract CoroutineAction Setup(TConfig param);
+	}
+
+	public abstract class CoroutineAction<TConfig1, TConfig2> : CoroutineAction
+	{
+		public abstract CoroutineAction Setup(TConfig1 param1, TConfig2 param2);
+	}
+
+	public abstract class CoroutineAction<TConfig1, TConfig2, TConfig3> : CoroutineAction
+	{
+		public abstract CoroutineAction Setup(TConfig1 param1, TConfig2 param2, TConfig3 param3);
+	}
+
+	public abstract class CoroutineAction<TConfig1, TConfig2, TConfig3, TConfig4> : CoroutineAction
+	{
+		public abstract CoroutineAction Setup(TConfig1 param1, TConfig2 param2, TConfig3 param3, TConfig4 param4);
+	}
+
+	public abstract class CoroutineAction<TConfig1, TConfig2, TConfig3, TConfig4, TConfig5> : CoroutineAction
+	{
+		public abstract CoroutineAction Setup(TConfig1 param1, TConfig2 param2, TConfig3 param3, TConfig4 param4, TConfig5 param5);
+	}
+
+	internal sealed class StopAction : CoroutineAction
 	{
 		public static StopAction Value = new StopAction();
 		public static IEnumerable<StopAction> Finalizer = new StopAction[] { StopAction.Value };
 
-		private StopAction() { }
-
-		public bool IsComplete
+		public override bool IsComplete(CoroutineManager manager)
 		{
-			get { return true; }
+			return true;
 		}
 	}
 
 	/// <summary>
 	/// Waits a defined amount of time before continuing.
 	/// </summary>
-	public sealed class WaitForTime : ICoroutineAction
+	public sealed class WaitForTime : CoroutineAction<TimeSpan>
 	{
 		private float time;
 
-		public WaitForTime(TimeSpan time)
+		public override CoroutineAction Setup(TimeSpan timeToWait)
 		{
-			this.time = (float)time.TotalSeconds;
+			this.time = (float)timeToWait.TotalSeconds;
+			return this;
 		}
 
-		public bool IsComplete
+		public override bool IsComplete(CoroutineManager manager)
 		{
-			get { this.time -= Time.DeltaTime; return this.time <= float.Epsilon; }
+			this.time -= Time.DeltaTime;
+			return this.time <= float.Epsilon;
 		}
 	}
 
 	/// <summary>
 	/// Waits a defined amount of frames before continuing.
 	/// </summary>
-	public sealed class WaitForFrames : ICoroutineAction
+	public sealed class WaitForFrames : CoroutineAction<int>
 	{
 		private int frames;
-		public WaitForFrames(int frames)
+
+		public override CoroutineAction Setup(int framesToWait)
 		{
-			this.frames = frames;
+			this.frames = framesToWait;
+			return this;
 		}
 
-		public bool IsComplete
+		public override bool IsComplete(CoroutineManager manager)
 		{
-			get { this.frames--; return this.frames <= 0; }
+			this.frames--;
+			return this.frames <= 0;
 		}
 	}
 
 	/// <summary>
 	/// Waits for a signal to be set before continuing.
 	/// </summary>
-	public sealed class WaitForSignal : ICoroutineAction
+	public sealed class WaitForSignal : CoroutineAction<string>
 	{
 		private string signal;
-		public WaitForSignal(string signal)
+
+		public override CoroutineAction Setup(string signalToWait)
 		{
-			this.signal = signal;
+			this.signal = signalToWait;
+			return this;
 		}
 
-		public bool IsComplete
+		public override bool IsComplete(CoroutineManager manager)
 		{
-			get { return CoroutineManager.IsSet(this.signal); }
+			return manager.IsSet(this.signal);
 		}
 	}
 
 	/// <summary>
 	/// Consumes a signal before continuing (no priority is guaranteed in case multiple coroutines are waiting for the same signal).
 	/// </summary>
-	public sealed class ConsumeSignal : ICoroutineAction
+	public sealed class ConsumeSignal : CoroutineAction<string>
 	{
 		private string signal;
-		public ConsumeSignal(string signal)
+
+		public override CoroutineAction Setup(string signalToConsume)
 		{
-			this.signal = signal;
+			this.signal = signalToConsume;
+			return this;
 		}
 
-		public bool IsComplete
+		public override bool IsComplete(CoroutineManager manager)
 		{
-			get { return CoroutineManager.ConsumeSignal(this.signal); }
+			return manager.ConsumeSignal(this.signal);
 		}
 	}
 
 	/// <summary>
 	/// Emits a signal. Can be stopped until the signal can actually be emitted.
 	/// </summary>
-	public sealed class EmitSignal : ICoroutineAction
+	public sealed class EmitSignal : CoroutineAction<string, bool>
 	{
 		private string signal;
 		private bool continueIfCantEmit;
 
-		public EmitSignal(string signal, bool waitUntilCanEmit = false)
+		public override CoroutineAction Setup(string signalToEmit, bool waitUntilCanEmit = false)
 		{
-			this.signal = signal;
+			this.signal = signalToEmit;
 			this.continueIfCantEmit = !waitUntilCanEmit;
+			return this;
 		}
 
-		public bool IsComplete
+		public override bool IsComplete(CoroutineManager manager)
 		{
-			get { return CoroutineManager.EmitSignal(this.signal) || this.continueIfCantEmit; }
+			return manager.EmitSignal(this.signal) || this.continueIfCantEmit;
 		}
 	}
 
 	/// <summary>
 	/// Waits until at least one condition is satisfied.
 	/// </summary>
-	public sealed class WaitOne : ICoroutineAction
+	public sealed class WaitOne : CoroutineAction<CoroutineAction[]>
 	{
-		IEnumerable<ICoroutineAction> conditions;
-		public WaitOne(params ICoroutineAction[] conditions)
+		IEnumerable<CoroutineAction> conditions;
+
+		public override CoroutineAction Setup(params CoroutineAction[] conditions)
 		{
 			this.conditions = conditions;
+			return this;
 		}
 
-		public bool IsComplete
+		public CoroutineAction SetupAsParams(params CoroutineAction[] conditions)
 		{
-			get
-			{
-				bool result = false;
-				foreach (ICoroutineAction c in this.conditions)
-					result |= c.IsComplete;
+			return this.Setup(conditions);
+		}
 
-				return result;
-			}
+		public override bool IsComplete(CoroutineManager manager)
+		{
+			bool result = false;
+			foreach (CoroutineAction c in this.conditions)
+				result |= c.IsComplete(manager);
+
+			return result;
+		}
+
+		public override void OnReturn()
+		{
+			base.OnReturn();
+			foreach (CoroutineAction action in this.conditions)
+				CoroutineAction.ReturnOne(action);
 		}
 	}
 
 	/// <summary>
 	/// Waits until all conditions are satisfied.
 	/// </summary>
-	public sealed class WaitAll : ICoroutineAction
+	public sealed class WaitAll : CoroutineAction<CoroutineAction[]>
 	{
-		IEnumerable<ICoroutineAction> conditions;
-		public WaitAll(params ICoroutineAction[] conditions)
+		IEnumerable<CoroutineAction> conditions;
+
+		public override CoroutineAction Setup(CoroutineAction[] conditions)
 		{
 			this.conditions = conditions;
+			return this;
 		}
 
-		public bool IsComplete
+		public CoroutineAction SetupAsParams(params CoroutineAction[] conditions)
 		{
-			get
-			{
-				bool result = true;
-				foreach (ICoroutineAction c in this.conditions)
-					result &= c.IsComplete;
+			return this.Setup(conditions);
+		}
 
-				return result;
-			}
+		public override bool IsComplete(CoroutineManager manager)
+		{
+			bool result = true;
+			foreach (CoroutineAction c in this.conditions)
+				result &= c.IsComplete(manager);
+
+			return result;
+		}
+
+		public override void OnReturn()
+		{
+			base.OnReturn();
+			foreach (CoroutineAction action in this.conditions)
+				CoroutineAction.ReturnOne(action);
 		}
 	}
 
 	/// <summary>
 	/// Calls a method every frame, until said action returns true, signalling its completion
 	/// </summary>
-	public sealed class ContinuousAction : ICoroutineAction
+	public sealed class ContinuousAction : CoroutineAction<Func<bool>>
 	{
 		private Func<bool> action;
-		public ContinuousAction(Func<bool> action)
+
+		public override CoroutineAction Setup(Func<bool> action)
 		{
 			this.action = action;
+			return this;
 		}
 
-		public bool IsComplete
+		public override bool IsComplete(CoroutineManager manager)
 		{
-			get { return this.action(); }
+			return this.action();
 		}
 	}
 
@@ -180,25 +276,24 @@ namespace Duality
 	/// Launches a parallel task and waits for its completion.
 	/// Usual threading limitations (no Texture creation, etc.) apply
 	/// </summary>
-	
+
 	/* Commented until safely useable
-	public sealed class LongRunningTask : ICoroutineAction
+	public sealed class LongRunningTask : CoroutineAction<Task>
 	{
 		private Task task;
-		public LongRunningTask(Task task)
+
+		public override CoroutineAction Setup(Task task)
 		{
 			this.task = task;
+			return this;
 		}
 
-		public bool IsComplete
+		public override bool IsComplete(CoroutineManager manager)
 		{
-			get
-			{
-				if(this.task.Status == TaskStatus.Created)
-					this.task.Start();
+			if(this.task.Status == TaskStatus.Created)
+				this.task.Start();
 
-				return this.task.IsCompleted || this.task.IsCanceled || this.task.IsFaulted;
-			}
+			return this.task.IsCompleted || this.task.IsCanceled || this.task.IsFaulted;
 		}
 	}
 	*/

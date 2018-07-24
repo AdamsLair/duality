@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Duality.Resources;
 
 namespace Duality
 {
-	public sealed class Coroutine : ICoroutineAction, IDisposable
+	public sealed class Coroutine : IDisposable
 	{
-		public static Coroutine Start(IEnumerable<ICoroutineAction> coroutine)
+		public static Coroutine Start(Scene scene, IEnumerable<CoroutineAction> actions)
 		{
-			Coroutine c = new Coroutine(coroutine);
-			CoroutineManager.Register(c);
-			return c;
+			return scene.RegisterCoroutine(actions);
 		}
 
-		internal IEnumerator<ICoroutineAction> Enumerator { get; private set; }
+		internal IEnumerator<CoroutineAction> Enumerator { get; private set; }
 
-		internal ICoroutineAction Current
+		internal CoroutineAction Current
 		{
 			get { return this.Enumerator.Current; }
 		}
@@ -25,9 +24,13 @@ namespace Duality
 			get { return this.Current == StopAction.Value; }
 		}
 
-		private Coroutine(IEnumerable<ICoroutineAction> values)
+		internal void Setup (IEnumerable<CoroutineAction> values)
 		{
+			if (this.Enumerator != null)
+				this.Enumerator.Dispose();
+
 			this.Enumerator = values.Concat(StopAction.Finalizer).GetEnumerator();
+			this.Enumerator.MoveNext();
 		}
 
 		internal void Restart()
@@ -38,11 +41,6 @@ namespace Duality
 
 		public void Abort()
 		{
-			Coroutine current = this.Enumerator.Current as Coroutine;
-
-			if (current != null)
-				current.Abort();
-
 			this.Enumerator.Dispose();
 			this.Enumerator = StopAction.Finalizer.GetEnumerator();
 			this.Enumerator.MoveNext();

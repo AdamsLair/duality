@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Duality.Resources;
 using NUnit.Framework;
 
 namespace Duality.Tests.Utility
 {
-	
 	[TestFixture]
 	public class CoroutinesTest
 	{
@@ -16,50 +16,56 @@ namespace Duality.Tests.Utility
 		private string testSignal = "#SIGNAL#";
 		private int testValue = 0;
 
-		[Test] public void Tests()
+		[Test] public void Coroutines()
 		{
-			Coroutine c = Coroutine.Start(BasicTest());
-			CoroutineManager.Update();
+			Scene scene = new Scene();
+			scene.Activate();
+
+			Coroutine c = Coroutine.Start(scene, BasicTest());
 			Assert.AreEqual(10, this.x);
 			Assert.False(c.IsComplete); // first yield
-			CoroutineManager.Update();
+			scene.Update();
 			Assert.AreEqual(20, this.x);
 			Assert.False(c.IsComplete); // second yield
-			CoroutineManager.Update();
+			scene.Update();
 			Assert.True(c.IsComplete); // stopAction
-			CoroutineManager.Update();
+			scene.Update();
 
 			ManualResetEvent resetEvent = new ManualResetEvent(false);
 			DateTime endTime = DateTime.Now + this.testSpan;
-			Coroutine t = Coroutine.Start(TaskTest(resetEvent));
+			Coroutine t = Coroutine.Start(scene, TaskTest(resetEvent));
 
-			Coroutine.Start(SignalWaitTest());
-			Coroutine.Start(SignalEmitTest());
-			CoroutineManager.Update();
+			Coroutine.Start(scene, SignalWaitTest());
+			Coroutine.Start(scene, SignalEmitTest());
+			scene.Update();
 
-			while (!resetEvent.WaitOne((int)Time.MillisecondsPerFrame))
+			while (!resetEvent.WaitOne((int)MathF.Ceiling(Time.MillisecondsPerFrame)))
 			{
 				Time.FrameTick(true, true);
-				CoroutineManager.Update();
+				scene.Update();
 			}
 
-			CoroutineManager.Update();
+			scene.Update();
 			Assert.AreEqual(50, this.testValue);
 
 			Assert.True(t.IsComplete);
 			Assert.GreaterOrEqual(DateTime.Now, endTime);
+
+			Coroutine one = Coroutine.Start(scene, WaitMultipleTest());
+			scene.Update();
+			Assert.True(one.IsComplete);
 		}
 
 		private int x;
-		private IEnumerable<ICoroutineAction> BasicTest()
+		private IEnumerable<CoroutineAction> BasicTest()
 		{
 			this.x = 10;
-			yield return new WaitForFrames(1);
+			yield return CoroutineAction.GetOne<WaitForFrames>().Setup(1);
 			this.x = 20;
-			yield return new WaitForFrames(1);
+			yield return CoroutineAction.GetOne<WaitForFrames>().Setup(1);
 		}
 
-		private IEnumerable<ICoroutineAction> TaskTest(ManualResetEvent resetEvent)
+		private IEnumerable<CoroutineAction> TaskTest(ManualResetEvent resetEvent)
 		{
 			/*
 			yield return new LongRunningTask(new Task(() =>
@@ -69,20 +75,27 @@ namespace Duality.Tests.Utility
 			}));
 			*/
 
-			yield return new WaitForTime(this.testSpan);
+			yield return CoroutineAction.GetOne<WaitForTime>().Setup(this.testSpan);
 			resetEvent.Set();
 		}
 
-		private IEnumerable<ICoroutineAction> SignalWaitTest()
+		private IEnumerable<CoroutineAction> SignalWaitTest()
 		{
-			yield return new WaitForSignal(this.testSignal);
+			yield return CoroutineAction.GetOne<WaitForSignal>().Setup(this.testSignal);
 			this.testValue *= 10;
 		}
 
-		private IEnumerable<ICoroutineAction> SignalEmitTest()
+		private IEnumerable<CoroutineAction> SignalEmitTest()
 		{
 			this.testValue = 5;
-			yield return new EmitSignal(this.testSignal);
+			yield return CoroutineAction.GetOne<EmitSignal>().Setup(this.testSignal);
+		}
+
+		private IEnumerable<CoroutineAction> WaitMultipleTest()
+		{
+			yield return CoroutineAction.GetOne<WaitOne>().SetupAsParams(
+				CoroutineAction.GetOne<WaitForFrames>().Setup(1),
+				CoroutineAction.GetOne<WaitForTime>().Setup(TimeSpan.FromSeconds(1)));
 		}
 	}
 }
