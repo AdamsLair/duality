@@ -17,7 +17,7 @@ namespace Duality.Backend.DefaultOpenTK
 	[DontSerialize]
 	public class GraphicsBackend : IGraphicsBackend
 	{
-		private static readonly Version MinOpenGLVersion = new Version(3, 0);
+		public static readonly Version MinOpenGLVersion = new Version(3, 0);
 
 		private static GraphicsBackend activeInstance = null;
 		public static GraphicsBackend ActiveInstance

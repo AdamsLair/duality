@@ -42,7 +42,7 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 					HashSet<GraphicsMode> modeSet = new HashSet<GraphicsMode>(new GraphicsModeComparer());
 					foreach (int samplecount in aaLevels)
 					{
-						GraphicsMode mode = new GraphicsMode(32, 24, 0, samplecount, new OpenTK.Graphics.ColorFormat(0), 2, false);
+						GraphicsMode mode = new GraphicsMode(32, 24, 0, samplecount, new ColorFormat(0), 2, false);
 						if (!modeSet.Contains(mode)) modeSet.Add(mode);
 					}
 
@@ -58,7 +58,11 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 			this.antialiasingQuality = antialiasingQuality;
 
 			GraphicsMode defaultGraphicsMode = this.GetGraphicsMode(this.antialiasingQuality);
-			this.mainContextControl = new GLControl(defaultGraphicsMode, 3, 0, GraphicsContextFlags.ForwardCompatible);
+			this.mainContextControl = new GLControl(
+				defaultGraphicsMode, 
+				GraphicsBackend.MinOpenGLVersion.Major, 
+				GraphicsBackend.MinOpenGLVersion.Minor, 
+				GraphicsContextFlags.ForwardCompatible);
 			this.mainContextControl.VSync = false;
 			this.mainContextControl.MakeCurrent();
 
