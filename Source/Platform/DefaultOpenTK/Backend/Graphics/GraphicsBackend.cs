@@ -472,6 +472,7 @@ namespace Duality.Backend.DefaultOpenTK
 					ShaderFieldInfo field = varInfo[i];
 					int location = locations[i];
 
+					if (field.Scope == ShaderFieldScope.Attribute) continue;
 					if (field.Type == ShaderFieldType.Sampler2D)
 					{
 						ContentRef<Texture> texRef;
@@ -550,6 +551,7 @@ namespace Duality.Backend.DefaultOpenTK
 				ShaderFieldInfo field = varInfo[i];
 				int location = locations[i];
 
+				if (field.Scope == ShaderFieldScope.Attribute) continue;
 				if (this.sharedShaderParameters.Contains(field.Name)) continue;
 
 				if (field.Type == ShaderFieldType.Sampler2D)
