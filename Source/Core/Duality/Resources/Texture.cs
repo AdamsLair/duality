@@ -363,7 +363,8 @@ namespace Duality.Resources
 				if (basePixmapRes != null)
 				{
 					pixelData = basePixmapRes.MainLayer;
-					this.atlas = basePixmapRes.Atlas != null ? basePixmapRes.Atlas.ToArray() : null;
+					bool hasAtlas = (basePixmapRes.Atlas != null && basePixmapRes.Atlas.Count > 0);
+					this.atlas = hasAtlas ? basePixmapRes.Atlas.ToArray() : null;
 				}
 
 				if (pixelData == null)
