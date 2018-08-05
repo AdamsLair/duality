@@ -12,37 +12,53 @@ namespace Duality.Tests.Utility
 	[TestFixture]
 	public class CoroutinesTest
 	{
-		private TimeSpan testSpan = TimeSpan.FromSeconds(5);
-		private string testSignal = "#SIGNAL#";
-		private int testValue = 0;
-
-		[Test] public void Coroutines()
+		[Test] public void Basics()
 		{
 			Scene scene = new Scene();
 			scene.Activate();
 
-			Coroutine c = Coroutine.Start(scene, BasicTest());
+			Coroutine coroutine = Coroutine.Start(scene, BasicRoutine());
+
+			// All code until first yield is already executed
 			Assert.AreEqual(10, this.x);
-			Assert.False(c.IsComplete); // first yield
-			scene.Update();
-			Assert.AreEqual(20, this.x);
-			Assert.False(c.IsComplete); // second yield
-			scene.Update();
-			Assert.True(c.IsComplete); // stopAction
+			Assert.False(coroutine.IsComplete);
+
 			scene.Update();
 
-			Coroutine one = Coroutine.Start(scene, WaitMultipleTest());
+			// All code until second yield is executed
+			Assert.AreEqual(20, this.x);
+			Assert.False(coroutine.IsComplete);
+
 			scene.Update();
-			Assert.True(one.IsComplete);
+
+			// All remaining code has been executed
+			Assert.AreEqual(30, this.x);
+			Assert.True(coroutine.IsComplete);
+
+			scene.Update();
+
+			// No further changes
+			Assert.AreEqual(30, this.x);
+			Assert.True(coroutine.IsComplete);
+		}
+		[Test] public void WaitOne()
+		{
+			Scene scene = new Scene();
+			scene.Activate();
+
+			Coroutine coroutine = Coroutine.Start(scene, WaitOneRoutine());
+			scene.Update();
+			Assert.True(coroutine.IsComplete);
 		}
 
-		private int x;
-		private IEnumerable<CoroutineAction> BasicTest()
+		private int x = 0;
+		private IEnumerable<CoroutineAction> BasicRoutine()
 		{
 			this.x = 10;
 			yield return CoroutineAction.GetOne<WaitForFrames>().Setup(1);
 			this.x = 20;
 			yield return CoroutineAction.GetOne<WaitForFrames>().Setup(1);
+			this.x = 30;
 		}
 
 		private IEnumerable<CoroutineAction> TaskTest(ManualResetEvent resetEvent)
@@ -58,8 +74,7 @@ namespace Duality.Tests.Utility
 			yield return CoroutineAction.GetOne<WaitForTime>().Setup(this.testSpan);
 			resetEvent.Set();
 		}
-
-		private IEnumerable<CoroutineAction> WaitMultipleTest()
+		private IEnumerable<CoroutineAction> WaitOneRoutine()
 		{
 			yield return CoroutineAction.GetOne<WaitOne>().SetupAsParams(
 				CoroutineAction.GetOne<WaitForFrames>().Setup(1),
