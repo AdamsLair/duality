@@ -7,7 +7,6 @@ namespace Duality
 		private static Queue<Coroutine> pool = new Queue<Coroutine>();
 		private List<Coroutine> coroutines = new List<Coroutine>();
 		private List<Coroutine> trashcan = new List<Coroutine>();
-		private HashSet<string> signals = new HashSet<string>();
 
 		internal Coroutine Register(IEnumerable<CoroutineAction> actions)
 		{
@@ -54,21 +53,6 @@ namespace Duality
 				c.Abort();
 
 			this.coroutines.Clear();
-		}
-
-		internal bool IsSet(string signal)
-		{
-			return this.signals.Contains(signal);
-		}
-
-		internal bool ConsumeSignal(string signal)
-		{
-			return this.signals.Remove(signal);
-		}
-
-		internal bool EmitSignal(string signal)
-		{
-			return this.signals.Add(signal);
 		}
 	}
 }

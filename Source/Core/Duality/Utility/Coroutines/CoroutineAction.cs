@@ -125,65 +125,6 @@ namespace Duality
 	}
 
 	/// <summary>
-	/// Waits for a signal to be set before continuing.
-	/// </summary>
-	public sealed class WaitForSignal : CoroutineAction<string>
-	{
-		private string signal;
-
-		public override CoroutineAction Setup(string signalToWait)
-		{
-			this.signal = signalToWait;
-			return this;
-		}
-
-		public override bool IsComplete(CoroutineManager manager)
-		{
-			return manager.IsSet(this.signal);
-		}
-	}
-
-	/// <summary>
-	/// Consumes a signal before continuing (no priority is guaranteed in case multiple coroutines are waiting for the same signal).
-	/// </summary>
-	public sealed class ConsumeSignal : CoroutineAction<string>
-	{
-		private string signal;
-
-		public override CoroutineAction Setup(string signalToConsume)
-		{
-			this.signal = signalToConsume;
-			return this;
-		}
-
-		public override bool IsComplete(CoroutineManager manager)
-		{
-			return manager.ConsumeSignal(this.signal);
-		}
-	}
-
-	/// <summary>
-	/// Emits a signal. Can be stopped until the signal can actually be emitted.
-	/// </summary>
-	public sealed class EmitSignal : CoroutineAction<string, bool>
-	{
-		private string signal;
-		private bool continueIfCantEmit;
-
-		public override CoroutineAction Setup(string signalToEmit, bool waitUntilCanEmit = false)
-		{
-			this.signal = signalToEmit;
-			this.continueIfCantEmit = !waitUntilCanEmit;
-			return this;
-		}
-
-		public override bool IsComplete(CoroutineManager manager)
-		{
-			return manager.EmitSignal(this.signal) || this.continueIfCantEmit;
-		}
-	}
-
-	/// <summary>
 	/// Waits until at least one condition is satisfied.
 	/// </summary>
 	public sealed class WaitOne : CoroutineAction<CoroutineAction[]>

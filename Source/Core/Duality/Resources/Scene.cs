@@ -1142,11 +1142,6 @@ namespace Duality.Resources
 			return this.coroutineManager.Register(coroutine);
 		}
 
-		public bool EmitCoroutineSignal(string signal)
-		{
-			return this.coroutineManager.EmitSignal(signal);
-		}
-
 		public void ClearCoroutines()
 		{
 			this.coroutineManager.Clear();
