@@ -31,18 +31,12 @@ namespace Duality
 		}
 		public void Update()
 		{
-			foreach(Coroutine c in this.coroutines)
+			foreach (Coroutine c in this.coroutines)
 			{
-				if (c.Current is StopAction)
+				if (c.IsComplete)
 					this.trashcan.Add(c);
-
-				else if (c.Current == null || c.Current.IsComplete(this))
-				{
-					CoroutineAction.ReturnOne(c.Current);
-
-					if (!c.Enumerator.MoveNext())
-						this.trashcan.Add(c);
-				}
+				else
+					c.Update();
 			}
 
 			foreach (Coroutine c in this.trashcan)

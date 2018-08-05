@@ -28,15 +28,7 @@ namespace Duality
 		/// </summary>
 		public bool IsComplete
 		{
-			get { return this.Current == StopAction.Value; }
-		}
-		internal IEnumerator<CoroutineAction> Enumerator
-		{
-			get { return this.enumerator; }
-		}
-		internal CoroutineAction Current
-		{
-			get { return this.enumerator.Current; }
+			get { return this.enumerator.Current == StopAction.Value; }
 		}
 
 
@@ -47,6 +39,17 @@ namespace Duality
 
 			this.enumerator = values.Concat(StopAction.Finalizer).GetEnumerator();
 			this.enumerator.MoveNext();
+		}
+		internal void Update()
+		{
+			if (this.IsComplete) return;
+
+			CoroutineAction currentYield = this.enumerator.Current;
+			if (currentYield == null || currentYield.IsComplete())
+			{
+				CoroutineAction.ReturnOne(currentYield);
+				this.enumerator.MoveNext();
+			}
 		}
 		/// <summary>
 		/// Restarts the coroutine by moving the enumerator back to the first element.

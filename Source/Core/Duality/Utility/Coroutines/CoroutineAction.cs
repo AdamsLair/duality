@@ -42,7 +42,7 @@ namespace Duality
 			_pool.Add(action);
 		}
 
-		public abstract bool IsComplete(CoroutineManager manager);
+		public abstract bool IsComplete();
 
 		public virtual void OnPickup() { }
 		public virtual void OnReturn() { }
@@ -78,7 +78,7 @@ namespace Duality
 		public static StopAction Value = new StopAction();
 		public static IEnumerable<StopAction> Finalizer = new StopAction[] { StopAction.Value };
 
-		public override bool IsComplete(CoroutineManager manager)
+		public override bool IsComplete()
 		{
 			return true;
 		}
@@ -97,7 +97,7 @@ namespace Duality
 			return this;
 		}
 
-		public override bool IsComplete(CoroutineManager manager)
+		public override bool IsComplete()
 		{
 			this.time -= Time.DeltaTime;
 			return this.time <= float.Epsilon;
@@ -117,7 +117,7 @@ namespace Duality
 			return this;
 		}
 
-		public override bool IsComplete(CoroutineManager manager)
+		public override bool IsComplete()
 		{
 			this.frames--;
 			return this.frames <= 0;
@@ -142,11 +142,11 @@ namespace Duality
 			return this.Setup(conditions);
 		}
 
-		public override bool IsComplete(CoroutineManager manager)
+		public override bool IsComplete()
 		{
 			bool result = false;
 			foreach (CoroutineAction c in this.conditions)
-				result |= c.IsComplete(manager);
+				result |= c.IsComplete();
 
 			return result;
 		}
@@ -177,11 +177,11 @@ namespace Duality
 			return this.Setup(conditions);
 		}
 
-		public override bool IsComplete(CoroutineManager manager)
+		public override bool IsComplete()
 		{
 			bool result = true;
 			foreach (CoroutineAction c in this.conditions)
-				result &= c.IsComplete(manager);
+				result &= c.IsComplete();
 
 			return result;
 		}
@@ -207,7 +207,7 @@ namespace Duality
 			return this;
 		}
 
-		public override bool IsComplete(CoroutineManager manager)
+		public override bool IsComplete()
 		{
 			return this.action();
 		}
