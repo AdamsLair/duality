@@ -60,20 +60,6 @@ namespace Duality.Tests.Utility
 			yield return CoroutineAction.GetOne<WaitForFrames>().Setup(1);
 			this.x = 30;
 		}
-
-		private IEnumerable<CoroutineAction> TaskTest(ManualResetEvent resetEvent)
-		{
-			/*
-			yield return new LongRunningTask(new Task(() =>
-			{
-				Thread.Sleep(this.testSpan);
-				resetEvent.Set();
-			}));
-			*/
-
-			yield return CoroutineAction.GetOne<WaitForTime>().Setup(this.testSpan);
-			resetEvent.Set();
-		}
 		private IEnumerable<CoroutineAction> WaitOneRoutine()
 		{
 			yield return CoroutineAction.GetOne<WaitOne>().SetupAsParams(

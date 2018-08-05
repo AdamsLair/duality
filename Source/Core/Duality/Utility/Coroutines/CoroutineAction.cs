@@ -212,30 +212,4 @@ namespace Duality
 			return this.action();
 		}
 	}
-
-	/// <summary>
-	/// Launches a parallel task and waits for its completion.
-	/// Usual threading limitations (no Texture creation, etc.) apply
-	/// </summary>
-
-	/* Commented until safely useable
-	public sealed class LongRunningTask : CoroutineAction<Task>
-	{
-		private Task task;
-
-		public override CoroutineAction Setup(Task task)
-		{
-			this.task = task;
-			return this;
-		}
-
-		public override bool IsComplete(CoroutineManager manager)
-		{
-			if(this.task.Status == TaskStatus.Created)
-				this.task.Start();
-
-			return this.task.IsCompleted || this.task.IsCanceled || this.task.IsFaulted;
-		}
-	}
-	*/
 }
