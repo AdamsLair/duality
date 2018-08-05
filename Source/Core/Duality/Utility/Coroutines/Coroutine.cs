@@ -11,19 +11,16 @@ namespace Duality
 		/// Starts a coroutine and registers it in the scene's CoroutineManager
 		/// </summary>
 		/// <param name="scene"></param>
-		/// <param name="coroutine"></param>
+		/// <param name="method"></param>
 		/// <returns></returns>
-		public static Coroutine Start(Scene scene, IEnumerable<CoroutineAction> actions)
+		public static Coroutine Start(Scene scene, IEnumerable<CoroutineAction> method)
 		{
-			return scene.RegisterCoroutine(actions);
+			return scene.Coroutines.StartNew(method);
 		}
 
-		internal IEnumerator<CoroutineAction> Enumerator { get; private set; }
 
-		internal CoroutineAction Current
-		{
-			get { return this.Enumerator.Current; }
-		}
+		private IEnumerator<CoroutineAction> enumerator = null;
+
 
 		/// <summary>
 		/// Returns true if the Current element in the Coroutine's enumerator is StopAction.Value 
@@ -33,38 +30,46 @@ namespace Duality
 		{
 			get { return this.Current == StopAction.Value; }
 		}
-
-		internal void Setup (IEnumerable<CoroutineAction> values)
+		internal IEnumerator<CoroutineAction> Enumerator
 		{
-			if (this.Enumerator != null)
-				this.Enumerator.Dispose();
-
-			this.Enumerator = values.Concat(StopAction.Finalizer).GetEnumerator();
-			this.Enumerator.MoveNext();
+			get { return this.enumerator; }
+		}
+		internal CoroutineAction Current
+		{
+			get { return this.enumerator.Current; }
 		}
 
+
+		internal void Setup(IEnumerable<CoroutineAction> values)
+		{
+			if (this.enumerator != null)
+				this.enumerator.Dispose();
+
+			this.enumerator = values.Concat(StopAction.Finalizer).GetEnumerator();
+			this.enumerator.MoveNext();
+		}
 		/// <summary>
-		/// Restarts the corouting by moving the enumerator back to the first element
+		/// Restarts the coroutine by moving the enumerator back to the first element.
 		/// </summary>
 		internal void Restart()
 		{
-			this.Enumerator.Reset();
-			this.Enumerator.MoveNext();
+			this.enumerator.Reset();
+			this.enumerator.MoveNext();
 		}
 
 		/// <summary>
-		/// Aborts the coroutine
+		/// Cancels the coroutine without executing any further code.
 		/// </summary>
-		public void Abort()
+		public void Cancel()
 		{
-			this.Enumerator.Dispose();
-			this.Enumerator = StopAction.Finalizer.GetEnumerator();
-			this.Enumerator.MoveNext();
+			this.enumerator.Dispose();
+			this.enumerator = StopAction.Finalizer.GetEnumerator();
+			this.enumerator.MoveNext();
 		}
 
 		public void Dispose()
 		{
-			this.Enumerator.Dispose();
+			this.enumerator.Dispose();
 		}
 	}
 }

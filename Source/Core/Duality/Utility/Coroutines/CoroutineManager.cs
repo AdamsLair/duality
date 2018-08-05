@@ -8,7 +8,7 @@ namespace Duality
 		private List<Coroutine> coroutines = new List<Coroutine>();
 		private List<Coroutine> trashcan = new List<Coroutine>();
 
-		internal Coroutine Register(IEnumerable<CoroutineAction> actions)
+		public Coroutine StartNew(IEnumerable<CoroutineAction> method)
 		{
 			Coroutine coroutine = null;
 
@@ -17,12 +17,19 @@ namespace Duality
 			else
 				coroutine = new Coroutine();
 
-			coroutine.Setup(actions);
+			coroutine.Setup(method);
 			this.coroutines.Add(coroutine);
 			return coroutine;
 		}
 
-		internal void Update()
+		public void Clear()
+		{
+			foreach (Coroutine c in this.coroutines)
+				c.Cancel();
+
+			this.coroutines.Clear();
+		}
+		public void Update()
 		{
 			foreach(Coroutine c in this.coroutines)
 			{
@@ -45,14 +52,6 @@ namespace Duality
 			}
 
 			this.trashcan.Clear();
-		}
-
-		internal void Clear()
-		{
-			foreach (Coroutine c in this.coroutines)
-				c.Abort();
-
-			this.coroutines.Clear();
 		}
 	}
 }

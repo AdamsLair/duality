@@ -368,6 +368,13 @@ namespace Duality.Resources
 			get { return this.physicsWorld; }
 		}
 		/// <summary>
+		/// [GET] Returns the <see cref="Coroutine"/> manager for this <see cref="Scene"/>.
+		/// </summary>
+		public CoroutineManager Coroutines
+		{
+			get { return this.coroutineManager; }
+		}
+		/// <summary>
 		/// [GET] Enumerates all registered objects.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
@@ -1135,16 +1142,6 @@ namespace Duality.Resources
 				++depthB;
 			}
 			return depthA - depthB;
-		}
-
-		internal Coroutine RegisterCoroutine(IEnumerable<CoroutineAction> coroutine)
-		{
-			return this.coroutineManager.Register(coroutine);
-		}
-
-		public void ClearCoroutines()
-		{
-			this.coroutineManager.Clear();
 		}
 	}
 }
