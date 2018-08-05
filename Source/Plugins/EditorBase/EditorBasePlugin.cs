@@ -7,12 +7,8 @@ using System.Xml.Linq;
 using AdamsLair.WinForms.ItemModels;
 
 using Duality;
-using Duality.Components;
-using Duality.Components.Renderers;
-using Duality.Components.Diagnostics;
-using Duality.Components.Physics;
+using Duality.IO;
 using Duality.Resources;
-using Duality.Properties;
 using TextRenderer = Duality.Components.Renderers.TextRenderer;
 
 using Duality.Editor;
@@ -89,7 +85,6 @@ namespace Duality.Editor.Plugins.Base
 				}
 			});
 
-			FileEventManager.ResourceModified += this.FileEventManager_ResourceChanged;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 		}
 		protected override void SaveUserData(XElement node)
@@ -149,31 +144,38 @@ namespace Duality.Editor.Plugins.Base
 			DualityEditorApp.Select(this, new ObjectSelection(new [] { DualityApp.UserData }));
 		}
 
-		private void FileEventManager_ResourceChanged(object sender, ResourceEventArgs e)
-		{
-			if (e.IsResource) this.OnResourceModified(e.Content);
-		}
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (e.Objects.ResourceCount > 0)
 			{
-				foreach (var r in e.Objects.Resources)
-					this.OnResourceModified(r);
+				List<object> modifiedObjects = new List<object>();
+				foreach (Resource resource in e.Objects.Resources)
+				{
+					this.PropagateDependentResourceChanges(resource, modifiedObjects);
+				}
+
+				// Notify about propagated changes, but flag them as non-persistent
+				if (modifiedObjects.Count > 0)
+				{
+					DualityEditorApp.NotifyObjPropChanged(
+						this, 
+						new ObjectSelection(modifiedObjects), 
+						false);
+				}
 			}
 		}
-		private void OnResourceModified(ContentRef<Resource> resRef)
+		private void PropagateDependentResourceChanges(ContentRef<Resource> resRef, List<object> modifiedObjects)
 		{
-			List<object> changedObj = null;
-
 			// If a font has been modified, reload it and update all TextRenderers
 			if (resRef.Is<Font>())
 			{
 				foreach (TextRenderer r in Scene.Current.AllObjects.GetComponents<TextRenderer>())
 				{
-					r.Text.ApplySource();
-
-					if (changedObj == null) changedObj = new List<object>();
-					changedObj.Add(r);
+					if (r.Text.Fonts.Contains(resRef.As<Font>()))
+					{
+						r.Text.ApplySource();
+						modifiedObjects.Add(r);
+					}
 				}
 			}
 			// If its a Pixmap, reload all associated Textures
@@ -185,10 +187,13 @@ namespace Duality.Editor.Plugins.Base
 					if (!tex.IsAvailable) continue;
 					if (tex.Res.BasePixmap == pixRef)
 					{
+						// Note: Reloading texture data every time _any_ change happens to a Pixmap
+						// is super wasteful. Find a way to identify relevant changes, and only reload
+						// when they happen.
+						// An example of an unnecessary reload is changing the Pixmap atlas, where updating
+						// the atlas only would be sufficient.
 						tex.Res.ReloadData();
-
-						if (changedObj == null) changedObj = new List<object>();
-						changedObj.Add(tex.Res);
+						modifiedObjects.Add(tex.Res);
 					}
 				}
 			}
@@ -209,9 +214,7 @@ namespace Duality.Editor.Plugins.Base
 					if (rt.Res.Targets.Contains(texRef))
 					{
 						rt.Res.SetupTarget();
-
-						if (changedObj == null) changedObj = new List<object>();
-						changedObj.Add(rt.Res);
+						modifiedObjects.Add(rt.Res);
 					}
 				}
 			}
@@ -226,16 +229,10 @@ namespace Duality.Editor.Plugins.Base
 					if (sp.Res.Fragment == fragRef || sp.Res.Vertex == vertRef)
 					{
 						if (sp.Res.Compiled) sp.Res.Compile();
-
-						if (changedObj == null) changedObj = new List<object>();
-						changedObj.Add(sp.Res);
+						modifiedObjects.Add(sp.Res);
 					}
 				}
 			}
-
-			// Notify a change that isn't critical regarding persistence (don't flag stuff unsaved)
-			if (changedObj != null)
-				DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(changedObj as IEnumerable<object>), false);
 		}
 	}
 }

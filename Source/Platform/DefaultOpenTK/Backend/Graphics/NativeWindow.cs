@@ -21,7 +21,11 @@ namespace Duality.Backend.DefaultOpenTK
 			private NativeWindow parent;
 
 			public InternalWindow(NativeWindow parent, int w, int h, GraphicsMode mode, string title, GameWindowFlags flags)
-				: base(w, h, mode, title, flags, DisplayDevice.Default, 3, 0, GraphicsContextFlags.ForwardCompatible)
+				: base(w, h, mode, title, flags, 
+					  DisplayDevice.Default, 
+					  GraphicsBackend.MinOpenGLVersion.Major, 
+					  GraphicsBackend.MinOpenGLVersion.Minor, 
+					  GraphicsContextFlags.ForwardCompatible)
 			{
 				this.parent = parent;
 			}

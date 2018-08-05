@@ -109,6 +109,9 @@
     <Compile Include="Drawing\VertexData\IVertexData.cs" />
     <Compile Include="Drawing\VertexData\VertexBuffer.cs" />
     <Compile Include="Components\Physics\PhysicsWorld.cs" />
+    <Compile Include="IO\FileEventQueue.cs" />
+    <Compile Include="IO\FileEventType.cs" />
+    <Compile Include="IO\FileEvent.cs" />
     <Compile Include="Resources\Shaders\ShaderSourceBuilder.cs" />
     <Compile Include="Utility\Coroutines\Coroutine.cs" />
     <Compile Include="Utility\Coroutines\CoroutineAction.cs" />

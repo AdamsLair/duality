@@ -166,15 +166,15 @@ namespace Duality
 					return Resource.GetFullNameFromPath(this.contentPath);
 			}
 		}
-		
-		
+
+
 		/// <summary>
 		/// Creates a ContentRef pointing to the specified <see cref="Resource"/>, assuming the
 		/// specified path as its origin, if the Resource itsself is either null or doesn't
 		/// provide a valid <see cref="Resource.Path"/>.
 		/// </summary>
 		/// <param name="res">The Resource to reference.</param>
-		/// <param name="altPath">The referenced Resource's file path.</param>
+		/// <param name="requestPath">The referenced Resource's file path.</param>
 		public ContentRef(T res, string requestPath)
 		{
 			this.contentInstance = res;
@@ -184,6 +184,16 @@ namespace Duality
 				this.contentPath = res.Path;
 			else 
 				this.contentPath = requestPath;
+		}
+		/// <summary>
+		/// Creates a ContentRef pointing to the <see cref="Resource"/> at the specified path / using 
+		/// the specified alias.
+		/// </summary>
+		/// <param name="path"></param>
+		public ContentRef(string path)
+		{
+			this.contentInstance = null;
+			this.contentPath = path;
 		}
 		/// <summary>
 		/// Creates a ContentRef pointing to the specified <see cref="Resource"/>.

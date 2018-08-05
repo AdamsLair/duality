@@ -23,44 +23,36 @@ namespace Duality.Editor
 {
 	public static class FileEventManager
 	{
-		private class DeletedEventArgsExt : FileSystemEventArgs
+		private static DateTime          lastEventProc           = DateTime.Now;
+		private static FileSystemWatcher pluginWatcherWorking    = null;
+		private static FileSystemWatcher pluginWatcherExec       = null;
+		private static FileSystemWatcher dataDirWatcherFile      = null;
+		private static FileSystemWatcher dataDirWatcherDirectory = null;
+		private static FileSystemWatcher sourceDirWatcher        = null;
+		private static HashSet<string>   reimportSchedule        = new HashSet<string>();
+		private static HashSet<string>   editorModifiedFiles     = new HashSet<string>();
+		private static HashSet<string>   editorModifiedFilesLast = new HashSet<string>();
+		private static FileEventQueue    dataDirEventQueue       = new FileEventQueue();
+		private static FileEventQueue    sourceDirEventQueue     = new FileEventQueue();
+		private static FileEventQueue    pluginDirEventQueue     = new FileEventQueue();
+
+
+		public static event EventHandler<ResourceFilesChangedEventArgs> ResourcesChanged  = null;
+		public static event EventHandler<FileSystemChangedEventArgs>    SourcesChanged    = null;
+		public static event EventHandler<FileSystemChangedEventArgs>    PluginsChanged    = null;
+		public static event EventHandler<BeginGlobalRenameEventArgs>    BeginGlobalRename = null;
+		
+		
+		/// <summary>
+		/// Whether any asset re-imports are pending and will be processed on the 
+		/// next <see cref="ProcessPendingReImports"/> call.
+		/// </summary>
+		public static bool HasPendingReImports
 		{
-			private bool isDirectory = false;
-			public bool IsDirectory
-			{
-				get { return this.isDirectory; }
-			}
-			public bool IsFile
-			{
-				get { return !this.isDirectory; }
-			}
-			public DeletedEventArgsExt(WatcherChangeTypes changeTypes, string directory, string name, bool isDir) : base(changeTypes, directory, name)
-			{
-				this.isDirectory = isDir;
-			}
+			get { return reimportSchedule.Count > 0; }
 		}
 
-		private	static DateTime						lastEventProc			= DateTime.Now;
-		private static FileSystemWatcher			pluginWatcherWorking	= null;
-		private static FileSystemWatcher			pluginWatcherExec		= null;
-		private static FileSystemWatcher			dataDirWatcherFile		= null;
-		private static FileSystemWatcher			dataDirWatcherDirectory	= null;
-		private static FileSystemWatcher			sourceDirWatcher		= null;
-		private	static HashSet<string>				reimportSchedule		= new HashSet<string>();
-		private	static HashSet<string>				editorModifiedFiles		= new HashSet<string>();
-		private	static HashSet<string>				editorModifiedFilesLast	= new HashSet<string>();
-		private	static List<FileSystemEventArgs>	dataDirEventBuffer		= new List<FileSystemEventArgs>();
-		private	static List<FileSystemEventArgs>	sourceDirEventBuffer	= new List<FileSystemEventArgs>();
 
-
-		public	static	event	EventHandler<ResourceEventArgs>				ResourceCreated		= null;
-		public	static	event	EventHandler<ResourceEventArgs>				ResourceDeleted		= null;
-		public	static	event	EventHandler<ResourceEventArgs>				ResourceModified	= null;
-		public	static	event	EventHandler<ResourceRenamedEventArgs>		ResourceRenamed		= null;
-		public	static	event	EventHandler<FileSystemEventArgs>			PluginChanged		= null;
-		public	static	event	EventHandler<BeginGlobalRenameEventArgs>	BeginGlobalRename	= null;
-		
-		
 		internal static void Init()
 		{
 			// Set up different file system watchers
@@ -71,12 +63,13 @@ namespace Duality.Editor
 			pluginWatcherWorking.IncludeSubdirectories = true;
 			pluginWatcherWorking.NotifyFilter = NotifyFilters.LastWrite;
 			pluginWatcherWorking.Path = DualityApp.PluginDirectory;
-			pluginWatcherWorking.Changed += corePluginWatcher_Changed;
-			pluginWatcherWorking.Created += corePluginWatcher_Changed;
+			pluginWatcherWorking.Changed += fileSystemWatcher_ForwardPlugin;
+			pluginWatcherWorking.Created += fileSystemWatcher_ForwardPlugin;
 			pluginWatcherWorking.EnableRaisingEvents = true;
 
 			string execPluginDir = Path.Combine(PathHelper.ExecutingAssemblyDir, DualityApp.PluginDirectory);
-			if (Path.GetFullPath(execPluginDir).ToLower() != Path.GetFullPath(DualityApp.PluginDirectory).ToLower() && Directory.Exists(execPluginDir))
+			bool hasSeparateExecPluginDir = !PathOp.ArePathsEqual(execPluginDir, DualityApp.PluginDirectory);
+			if (hasSeparateExecPluginDir && Directory.Exists(execPluginDir))
 			{
 				pluginWatcherExec = new FileSystemWatcher();
 				pluginWatcherExec.SynchronizingObject = DualityEditorApp.MainForm;
@@ -85,8 +78,8 @@ namespace Duality.Editor
 				pluginWatcherExec.IncludeSubdirectories = true;
 				pluginWatcherExec.NotifyFilter = NotifyFilters.LastWrite;
 				pluginWatcherExec.Path = execPluginDir;
-				pluginWatcherExec.Changed += corePluginWatcher_Changed;
-				pluginWatcherExec.Created += corePluginWatcher_Changed;
+				pluginWatcherExec.Changed += fileSystemWatcher_ForwardPlugin;
+				pluginWatcherExec.Created += fileSystemWatcher_ForwardPlugin;
 				pluginWatcherExec.EnableRaisingEvents = true;
 			}
 			
@@ -126,21 +119,19 @@ namespace Duality.Editor
 			sourceDirWatcher.EnableRaisingEvents = true;
 
 			// Register events
-			DualityEditorApp.MainForm.Activated += mainForm_Activated;
 			DualityEditorApp.EditorIdling += DualityEditorApp_EditorIdling;
 			Resource.ResourceSaved += Resource_ResourceSaved;
 		}
 		internal static void Terminate()
 		{
 			// Unregister events
-			DualityEditorApp.MainForm.Activated -= mainForm_Activated;
 			DualityEditorApp.EditorIdling -= DualityEditorApp_EditorIdling;
 			Resource.ResourceSaved -= Resource_ResourceSaved;
 
 			// Destroy file system watchers
 			pluginWatcherWorking.EnableRaisingEvents = false;
-			pluginWatcherWorking.Changed -= corePluginWatcher_Changed;
-			pluginWatcherWorking.Created -= corePluginWatcher_Changed;
+			pluginWatcherWorking.Changed -= fileSystemWatcher_ForwardPlugin;
+			pluginWatcherWorking.Created -= fileSystemWatcher_ForwardPlugin;
 			pluginWatcherWorking.SynchronizingObject = null;
 			pluginWatcherWorking.Dispose();
 			pluginWatcherWorking = null;
@@ -173,212 +164,194 @@ namespace Duality.Editor
 			sourceDirWatcher = null;
 		}
 
-
-		private static FileSystemEventArgs FetchFileSystemEvent(List<FileSystemEventArgs> dirEventList, string basePath)
+		/// <summary>
+		/// Immediately processes any pending file system events and triggers their public events.
+		/// This is usually done automatically by the editor and doesn't need to be called explicitly.
+		/// </summary>
+		public static void ProcessEvents()
 		{
-			if (dirEventList.Count == 0) return null;
+			ProcessSourceDirEvents(sourceDirEventQueue);
+			ProcessDataDirEvents(dataDirEventQueue);
+			ProcessPluginDirEvents(pluginDirEventQueue);
 
-			FileSystemEventArgs	current	= dirEventList[0];
-			dirEventList.RemoveAt(0);
-
-			// Discard or pack rename-rename
-			if (current.ChangeType == WatcherChangeTypes.Renamed)
+			// Manage the list of editor-modified files to be ignored in a 
+			// two-pass process, so event order doesn't matter.
 			{
-				RenamedEventArgs rename = current as RenamedEventArgs;
+				// Remove the ones that were known last time
+				foreach (string file in editorModifiedFilesLast)
+					editorModifiedFiles.Remove(file);
 
-				while (rename != null)
+				// Mind the ones that are known right now
+				editorModifiedFilesLast.Clear();
+				foreach (string file in editorModifiedFiles)
+					editorModifiedFilesLast.Add(file);
+			}
+		}
+		/// <summary>
+		/// Processes any pending asset re-import operations that were scheduled due to source file changes.
+		/// Will do nothing when <see cref="HasPendingReImports"/> is false.
+		/// </summary>
+		public static void ProcessPendingReImports()
+		{
+			if (reimportSchedule.Count == 0) return;
+
+			// Gather valid scheduled source files
+			string[] existingReImportFiles = reimportSchedule
+				.Where(path => File.Exists(path))
+				.ToArray();
+			reimportSchedule.Clear();
+
+			// Perform scheduled source file reimports
+			AssetManager.ReImportAssets(existingReImportFiles);
+		}
+
+		/// <summary>
+		/// Flags the specified path as recently modified by an editor operation and 
+		/// thus to be ignored when detecing file system changes.
+		/// </summary>
+		/// <param name="path"></param>
+		public static void FlagPathEditorModified(string path)
+		{
+			if (string.IsNullOrEmpty(path)) return; // Ignore bad paths
+			string fullPath = Path.GetFullPath(path);
+			editorModifiedFiles.Add(fullPath);
+			editorModifiedFilesLast.Remove(fullPath);
+		}
+		/// <summary>
+		/// Returns whether the specified path is currently flagged as modified by the editor and 
+		/// thus to be ignored when detecing file system changes.
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		public static bool IsPathEditorModified(string path)
+		{
+			return editorModifiedFiles.Contains(Path.GetFullPath(path));
+		}
+
+		private static bool EditorDataEventFilter(FileEvent fileEvent)
+		{
+			// Filter out changes made by the editor itself
+			if (fileEvent.Type == FileEventType.Changed && IsPathEditorModified(fileEvent.Path))
+				return true;
+
+			// Skip everything that isn't either a Resource or a directory
+			if (!Resource.IsResourceFile(fileEvent.Path) && !fileEvent.IsDirectory)
+				return true;
+
+			return false;
+		}
+		private static bool EditorSourceEventFilter(FileEvent fileEvent)
+		{
+			// Filter out changes made by the editor itself
+			if (fileEvent.Type == FileEventType.Changed && IsPathEditorModified(fileEvent.Path))
+				return true;
+
+			return false;
+		}
+		private static bool EditorPluginEventFilter(FileEvent fileEvent)
+		{
+			// Filter out class libraries that clearly aren't plugins
+			if (!fileEvent.Path.EndsWith(".core.dll", StringComparison.InvariantCultureIgnoreCase) &&
+				!fileEvent.Path.EndsWith(".editor.dll", StringComparison.InvariantCultureIgnoreCase))
+				return true;
+
+			return false;
+		}
+
+		private static FileEvent TranslateFileEvent(FileSystemEventArgs watcherEvent, bool isDirectory)
+		{
+			FileEvent fileEvent;
+			fileEvent.Path = watcherEvent.FullPath;
+			fileEvent.IsDirectory = isDirectory;
+			fileEvent.Type = FileEventType.Changed;
+
+			switch (watcherEvent.ChangeType)
+			{
+				case WatcherChangeTypes.Created: fileEvent.Type = FileEventType.Created; break;
+				case WatcherChangeTypes.Deleted: fileEvent.Type = FileEventType.Deleted; break;
+				case WatcherChangeTypes.Changed: fileEvent.Type = FileEventType.Changed; break;
+				case WatcherChangeTypes.Renamed: fileEvent.Type = FileEventType.Renamed; break;
+			}
+
+			if (watcherEvent is RenamedEventArgs)
+				fileEvent.OldPath = ((RenamedEventArgs)watcherEvent).OldFullPath;
+			else
+				fileEvent.OldPath = fileEvent.Path;
+
+			return fileEvent;
+		}
+		private static void PushFileEvent(FileEventQueue queue, FileSystemEventArgs watcherEvent, bool isDirectory)
+		{
+			// Do not track hidden paths
+			if (!PathHelper.IsPathVisible(watcherEvent.FullPath)) return;
+
+			// Translate the file system watcher event into our own data structure
+			FileEvent fileEvent = TranslateFileEvent(
+				watcherEvent,
+				isDirectory);
+
+			queue.Add(fileEvent);
+		}
+
+		private static void ProcessDataDirEvents(FileEventQueue eventQueue)
+		{
+			// Filter out events we don't want to process in the editor
+			eventQueue.ApplyFilter(EditorDataEventFilter);
+			if (eventQueue.IsEmpty) return;
+
+			// System internal event processing / do all the low-level stuff
+			HandleDataDirEvents(eventQueue);
+
+			// Fire an editor-wide event to allow plugins and editor modules to react
+			if (ResourcesChanged != null)
+				ResourcesChanged(null, new ResourceFilesChangedEventArgs(eventQueue));
+
+			// Handled all events, start over with an empty buffer
+			eventQueue.Clear();
+		}
+		private static void HandleDataDirEvents(FileEventQueue eventQueue)
+		{
+			// Gather a list of all externally modified resources that are currently loaded.
+			// We'll use this to later tell the editor about the changes we've applied.
+			List<Resource> modifiedLoadedResources = null;
+			foreach (FileEvent fileEvent in eventQueue.Items)
+			{
+				if (fileEvent.IsDirectory) continue;
+
+				// We're only interested in the path where we would find the Resource right now,
+				// because we need the instance for the change notification
+				string contentPath = (fileEvent.Type == FileEventType.Renamed) ? fileEvent.OldPath : fileEvent.Path;
+				ContentRef<Resource> content = new ContentRef<Resource>(contentPath);
+
+				// Some editor modules rely on change notifications to re-establish links to previously
+				// removed Resources. In order to do that, we'll speculatively load newly arrived Resources
+				// so we can put out a change notification for them.
+				// Note: If ObjectSelection supported ContentRefs, we could improve and do that without the
+				// speculative load, triggering a load only when someone was actually interested.
+				if (content.IsLoaded || fileEvent.Type == FileEventType.Created)
 				{
-					RenamedEventArgs renameB = dirEventList.OfType<RenamedEventArgs>().FirstOrDefault(e => 
-						Path.GetFileName(e.OldFullPath) == Path.GetFileName(rename.FullPath));
-					if (renameB != null)
-					{
-						dirEventList.Remove(renameB);
-						rename = new RenamedEventArgs(WatcherChangeTypes.Renamed, basePath, renameB.Name, rename.OldName);
-						current = rename;
-					}
-					else break;
+					if (modifiedLoadedResources == null)
+						modifiedLoadedResources = new List<Resource>();
+					modifiedLoadedResources.Add(content.Res);
 				}
-
-				// Discard useless renames
-				if (rename.OldFullPath == rename.FullPath) return null;
 			}
 
-			// Pack del-rename to change
-			if (current.ChangeType == WatcherChangeTypes.Deleted)
-			{
-				FileSystemEventArgs del		= current;
-				RenamedEventArgs	rename	= null;
-				
-				rename = dirEventList.OfType<RenamedEventArgs>().FirstOrDefault(e => e.FullPath == del.FullPath);
-				dirEventList.Remove(rename);
-
-				if (del != null && rename != null) return new FileSystemEventArgs(WatcherChangeTypes.Changed, basePath, del.Name);
-			}
-
-			// Pack del-create to rename
-			if (current.ChangeType == WatcherChangeTypes.Deleted)
-			{
-				FileSystemEventArgs del		= current;
-				FileSystemEventArgs create	= null;
-
-				create = dirEventList.FirstOrDefault(e => 
-					e.ChangeType == WatcherChangeTypes.Created && 
-					Path.GetFileName(e.FullPath) == Path.GetFileName(del.FullPath));
-				dirEventList.Remove(create);
-
-				if (del != null && create != null) return new RenamedEventArgs(WatcherChangeTypes.Renamed, basePath, create.Name, del.Name);
-			}
-			
-			return current;
-		}
-		private static void PushDataDirEvent(FileSystemEventArgs e, bool isDirectory)
-		{
-			if (!PathHelper.IsPathVisible(e.FullPath)) return;
-
-			// In case we're dealing with a deletion, we'll need to add some meta information to know whether it was a file or directory.
-			if (e.ChangeType == WatcherChangeTypes.Deleted)
-			{
-				string baseDir = (e.Name.Length > 0) ? e.FullPath.Remove(e.FullPath.Length - e.Name.Length, e.Name.Length) : "";
-				e = new DeletedEventArgsExt(e.ChangeType, baseDir, e.Name, isDirectory);
-			}
-
-			dataDirEventBuffer.RemoveAll(f => f.FullPath == e.FullPath && f.ChangeType == e.ChangeType);
-			dataDirEventBuffer.Add(e);
-		}
-		private static void ProcessDataDirEvents()
-		{
-			List<ResourceRenamedEventArgs> renameEventBuffer = null;
+			// Handle each event according to its type
+			List<FileEvent> renameEventBuffer = null;
 			HashSet<string> sourceMediaDeleteSchedule = null;
-
-			// Process events
-			while (dataDirEventBuffer.Count > 0)
+			foreach (FileEvent fileEvent in eventQueue.Items)
 			{
-				FileSystemEventArgs e = FetchFileSystemEvent(dataDirEventBuffer, DualityApp.DataDirectory);
-				if (e == null) continue;
-
-				// Determine whether we're dealing with a directory
-				bool isDirectory = Directory.Exists(e.FullPath);
+				if (fileEvent.Type == FileEventType.Changed)
 				{
-					// If this is a deletion, nothing exists anymore, rely on metadata instead.
-					DeletedEventArgsExt de = e as DeletedEventArgsExt;
-					if (de != null && de.IsDirectory)
-						isDirectory = true;
+					HandleDataDirChangeEvent(fileEvent);
 				}
-
-				if (e.ChangeType == WatcherChangeTypes.Changed)
+				else if (fileEvent.Type == FileEventType.Deleted)
 				{
-					// Ignore stuff saved by the editor itself
-					if (IsPathEditorModified(e.FullPath))
-						continue;
-
-					if (Resource.IsResourceFile(e.FullPath) || isDirectory)
-					{
-						ContentRef<Resource> resRef = new ContentRef<Resource>(null, e.FullPath);
-
-						// Unregister outdated resources, if modified outside the editor
-						if (!isDirectory && ContentProvider.HasContent(e.FullPath))
-						{
-							bool isCurrentScene = resRef.Is<Scene>() && Scene.Current == resRef.Res;
-							if (isCurrentScene || DualityEditorApp.IsResourceUnsaved(e.FullPath))
-							{
-								DialogResult result = MessageBox.Show(
-									string.Format(Properties.GeneralRes.Msg_ConfirmReloadResource_Text, e.FullPath), 
-									Properties.GeneralRes.Msg_ConfirmReloadResource_Caption, 
-									MessageBoxButtons.YesNo,
-									MessageBoxIcon.Exclamation);
-								if (result == DialogResult.Yes)
-								{
-									string curScenePath = Scene.CurrentPath;
-									ContentProvider.RemoveContent(e.FullPath);
-									if (isCurrentScene) Scene.SwitchTo(ContentProvider.RequestContent<Scene>(curScenePath), true);
-								}
-							}
-							else
-								ContentProvider.RemoveContent(e.FullPath);
-						}
-
-						if (ResourceModified != null)
-							ResourceModified(null, new ResourceEventArgs(e.FullPath, isDirectory));
-					}
+					HandleDataDirDeleteEvent(fileEvent, ref sourceMediaDeleteSchedule);
 				}
-				else if (e.ChangeType == WatcherChangeTypes.Created)
+				else if (fileEvent.Type == FileEventType.Renamed)
 				{
-					if (File.Exists(e.FullPath))
-					{
-						// Register newly detected Resource file
-						if (Resource.IsResourceFile(e.FullPath))
-						{
-							if (ResourceCreated != null)
-								ResourceCreated(null, new ResourceEventArgs(e.FullPath, false));
-						}
-					}
-					else if (Directory.Exists(e.FullPath))
-					{
-						// Register newly detected Resource directory
-						if (ResourceCreated != null)
-							ResourceCreated(null, new ResourceEventArgs(e.FullPath, true));
-					}
-				}
-				else if (e.ChangeType == WatcherChangeTypes.Deleted)
-				{
-					// Is it a Resource file or just something else?
-					if (Resource.IsResourceFile(e.FullPath) || isDirectory)
-					{
-						ResourceEventArgs args = new ResourceEventArgs(e.FullPath, isDirectory);
-
-						// Schedule Source/Media file deletion to keep it organized / synced with Resource Data
-						if (sourceMediaDeleteSchedule == null)
-							sourceMediaDeleteSchedule = new HashSet<string>();
-						GetDeleteSourceMediaFilePaths(args, sourceMediaDeleteSchedule);
-
-						// Unregister no-more existing resources
-						if (isDirectory)	ContentProvider.RemoveContentTree(args.Path);
-						else				ContentProvider.RemoveContent(args.Path);
-
-						if (ResourceDeleted != null)
-							ResourceDeleted(null, args);
-					}
-				}
-				else if (e.ChangeType == WatcherChangeTypes.Renamed)
-				{
-					// Is it a Resource file or just something else?
-					RenamedEventArgs re = e as RenamedEventArgs;
-					ResourceRenamedEventArgs args = new ResourceRenamedEventArgs(re.FullPath, re.OldFullPath, isDirectory);
-					if (Resource.IsResourceFile(e.FullPath) || isDirectory)
-					{
-						// Determine which Source / Media files would belong to this Resource - before moving it
-						string[] oldMediaPaths = PreMoveSourceMediaFile(args);;
-
-						// Rename content registerations
-						if (isDirectory)	ContentProvider.RenameContentTree(args.OldPath, args.Path);
-						else				ContentProvider.RenameContent(args.OldPath, args.Path);
-
-						// Query skipped paths
-						bool isEmptyDir = isDirectory && !Directory.EnumerateFileSystemEntries(args.Path).Any();
-						bool isSkippedPath = isEmptyDir;
-						if (!isSkippedPath && BeginGlobalRename != null)
-						{
-							BeginGlobalRenameEventArgs beginGlobalRenameArgs = new BeginGlobalRenameEventArgs(args.Path, args.OldPath, isDirectory);
-							BeginGlobalRename(null, beginGlobalRenameArgs);
-							isSkippedPath = beginGlobalRenameArgs.Cancel;
-						}
-
-						if (!isSkippedPath)
-						{
-							// Buffer rename event to perform the global rename for all at once.
-							if (renameEventBuffer == null) renameEventBuffer = new List<ResourceRenamedEventArgs>();
-							renameEventBuffer.Add(args);
-						}
-
-						if (ResourceRenamed != null)
-							ResourceRenamed(null, args);
-
-						if (!isSkippedPath)
-						{
-							// Organize the Source/Media directory accordingly
-							MoveSourceMediaFile(args, oldMediaPaths);
-						}
-					}
+					HandleDataDirRenameEvent(fileEvent, ref renameEventBuffer);
 				}
 			}
 
@@ -406,58 +379,146 @@ namespace Duality.Editor
 			if (renameEventBuffer != null)
 			{
 				// Don't do it now - schedule it for the main form event loop so we don't block here.
-				DualityEditorApp.MainForm.BeginInvoke((Action)delegate() {
-					ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog( 
-						Properties.GeneralRes.TaskRenameContentRefs_Caption, 
-						Properties.GeneralRes.TaskRenameContentRefs_Desc, 
+				DualityEditorApp.MainForm.BeginInvoke((Action)delegate () {
+					ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog(
+						Properties.GeneralRes.TaskRenameContentRefs_Caption,
+						Properties.GeneralRes.TaskRenameContentRefs_Desc,
 						async_RenameContentRefs, renameEventBuffer);
 					taskDialog.ShowDialog(DualityEditorApp.MainForm);
 				});
 			}
-		}
-		private static void PushSourceDirEvent(FileSystemEventArgs e)
-		{
-			if (!PathHelper.IsPathVisible(e.FullPath)) return;
-			sourceDirEventBuffer.RemoveAll(f => f.FullPath == e.FullPath && f.ChangeType == e.ChangeType);
-			sourceDirEventBuffer.Add(e);
-		}
-		private static void ProcessSourceDirEvents()
-		{
-			// Process events
-			while (sourceDirEventBuffer.Count > 0)
+
+			// Notify the editor about externally modified resources
+			if (modifiedLoadedResources != null)
 			{
-				FileSystemEventArgs e = FetchFileSystemEvent(sourceDirEventBuffer, sourceDirWatcher.Path);
-				if (e == null) continue;
-
-				// Mind modified source files for re-import
-				if (e.ChangeType == WatcherChangeTypes.Changed)
+				DualityEditorApp.NotifyObjPropChanged(
+					null,
+					new ObjectSelection(modifiedLoadedResources),
+					false);
+			}
+		}
+		private static void HandleDataDirChangeEvent(FileEvent fileEvent)
+		{
+			// Unregister outdated resources when modified outside the editor
+			if (!fileEvent.IsDirectory && ContentProvider.HasContent(fileEvent.Path))
+			{
+				ContentRef<Resource> resRef = new ContentRef<Resource>(null, fileEvent.Path);
+				bool isCurrentScene = resRef.Is<Scene>() && Scene.Current == resRef.Res;
+				if (isCurrentScene || DualityEditorApp.IsResourceUnsaved(fileEvent.Path))
 				{
-					// Ignore stuff saved by the editor itself
-					if (IsPathEditorModified(e.FullPath))
-						continue;
-
-					if (File.Exists(e.FullPath) && PathOp.IsPathLocatedIn(e.FullPath, EditorHelper.SourceMediaDirectory)) 
-						reimportSchedule.Add(e.FullPath);
+					DialogResult result = MessageBox.Show(
+						string.Format(Properties.GeneralRes.Msg_ConfirmReloadResource_Text, fileEvent.Path),
+						Properties.GeneralRes.Msg_ConfirmReloadResource_Caption,
+						MessageBoxButtons.YesNo,
+						MessageBoxIcon.Exclamation);
+					if (result == DialogResult.Yes)
+					{
+						string curScenePath = Scene.CurrentPath;
+						ContentProvider.RemoveContent(fileEvent.Path);
+						if (isCurrentScene) Scene.SwitchTo(ContentProvider.RequestContent<Scene>(curScenePath), true);
+					}
+				}
+				else
+				{
+					ContentProvider.RemoveContent(fileEvent.Path);
 				}
 			}
 		}
+		private static void HandleDataDirDeleteEvent(FileEvent fileEvent, ref HashSet<string> sourceMediaDeleteSchedule)
+		{
+			// Schedule Source/Media file deletion to keep it organized / synced with Resource Data
+			if (sourceMediaDeleteSchedule == null)
+				sourceMediaDeleteSchedule = new HashSet<string>();
+			GetDeleteSourceMediaFilePaths(fileEvent, sourceMediaDeleteSchedule);
 
-		public static void FlagPathEditorModified(string path)
-		{
-			if (string.IsNullOrEmpty(path)) return; // Ignore bad paths
-			string fullPath = Path.GetFullPath(path);
-			editorModifiedFiles.Add(fullPath);
-			editorModifiedFilesLast.Remove(fullPath);
+			// Unregister no-longer existing resources
+			if (fileEvent.IsDirectory)
+				ContentProvider.RemoveContentTree(fileEvent.Path);
+			else
+				ContentProvider.RemoveContent(fileEvent.Path);
 		}
-		private static bool IsPathEditorModified(string path)
+		private static void HandleDataDirRenameEvent(FileEvent fileEvent, ref List<FileEvent> renameEventBuffer)
 		{
-			return editorModifiedFiles.Contains(Path.GetFullPath(path));
-		}
-		private static void GetDeleteSourceMediaFilePaths(ResourceEventArgs deleteEvent, ICollection<string> deletePathSchedule)
-		{
-			if (deleteEvent.IsResource)
+			// Determine which Source / Media files would belong to this Resource - before moving it
+			string[] oldMediaPaths = PreMoveSourceMediaFile(fileEvent);
+
+			// Rename registered content
+			if (fileEvent.IsDirectory)
+				ContentProvider.RenameContentTree(fileEvent.OldPath, fileEvent.Path);
+			else
+				ContentProvider.RenameContent(fileEvent.OldPath, fileEvent.Path);
+
+			// Query skipped paths
+			bool isEmptyDir = fileEvent.IsDirectory && !Directory.EnumerateFileSystemEntries(fileEvent.Path).Any();
+			bool isSkippedPath = isEmptyDir;
+			if (!isSkippedPath && BeginGlobalRename != null)
 			{
-				IList<string> mediaPaths = AssetManager.GetAssetSourceFiles(deleteEvent.Content);
+				BeginGlobalRenameEventArgs beginGlobalRenameArgs = new BeginGlobalRenameEventArgs(
+					fileEvent.Path,
+					fileEvent.OldPath,
+					fileEvent.IsDirectory);
+				BeginGlobalRename(null, beginGlobalRenameArgs);
+				isSkippedPath = beginGlobalRenameArgs.IsCancelled;
+			}
+
+			if (!isSkippedPath)
+			{
+				// Buffer rename event to perform the global rename for all at once.
+				if (renameEventBuffer == null)
+					renameEventBuffer = new List<FileEvent>();
+				renameEventBuffer.Add(fileEvent);
+			}
+
+			if (!isSkippedPath)
+			{
+				// Organize the Source/Media directory accordingly
+				MoveSourceMediaFile(fileEvent, oldMediaPaths);
+			}
+		}
+
+		private static void ProcessSourceDirEvents(FileEventQueue eventQueue)
+		{
+			// Filter out events we don't want to process in the editor
+			eventQueue.ApplyFilter(EditorSourceEventFilter);
+			if (eventQueue.IsEmpty) return;
+
+			// Process events
+			foreach (FileEvent fileEvent in eventQueue.Items)
+			{
+				// Mind modified source files for re-import
+				if (fileEvent.Type == FileEventType.Changed)
+				{
+					if (File.Exists(fileEvent.Path) && PathOp.IsPathLocatedIn(fileEvent.Path, EditorHelper.SourceMediaDirectory)) 
+						reimportSchedule.Add(fileEvent.Path);
+				}
+			}
+
+			// Fire an editor-wide event to allow reacting to source changes and re-importing resources
+			if (SourcesChanged != null)
+				SourcesChanged(null, new FileSystemChangedEventArgs(eventQueue));
+
+			// Handled all events, start over with an empty buffer
+			eventQueue.Clear();
+		}
+		private static void ProcessPluginDirEvents(FileEventQueue eventQueue)
+		{
+			// Filter out events we don't want to process in the editor
+			eventQueue.ApplyFilter(EditorPluginEventFilter);
+			if (eventQueue.IsEmpty) return;
+
+			// Fire an editor-wide event to allow scheduling a plugin reload
+			if (PluginsChanged != null)
+				PluginsChanged(null, new FileSystemChangedEventArgs(eventQueue));
+
+			// Handled all events, start over with an empty buffer
+			eventQueue.Clear();
+		}
+
+		private static void GetDeleteSourceMediaFilePaths(FileEvent deleteEvent, ICollection<string> deletePathSchedule)
+		{
+			if (!deleteEvent.IsDirectory)
+			{
+				IList<string> mediaPaths = AssetManager.GetAssetSourceFiles(new ContentRef<Resource>(deleteEvent.Path));
 				for (int i = 0; i < mediaPaths.Count; i++)
 				{
 					if (File.Exists(mediaPaths[i]))
@@ -466,7 +527,7 @@ namespace Duality.Editor
 					}
 				}
 			}
-			else if (deleteEvent.IsDirectory)
+			else
 			{
 				string mediaPath = Path.Combine(
 					EditorHelper.SourceMediaDirectory, 
@@ -477,18 +538,18 @@ namespace Duality.Editor
 				}
 			}
 		}
-		private static string[] PreMoveSourceMediaFile(ResourceRenamedEventArgs renameEvent)
+		private static string[] PreMoveSourceMediaFile(FileEvent renameEvent)
 		{
-			if (!renameEvent.IsResource)
+			if (renameEvent.IsDirectory)
 				return new string[0];
 			else
-				return AssetManager.GetAssetSourceFiles(renameEvent.OldContent);
+				return AssetManager.GetAssetSourceFiles(new ContentRef<Resource>(renameEvent.OldPath));
 		}
-		private static void MoveSourceMediaFile(ResourceRenamedEventArgs renameEvent, string[] oldMediaPaths)
+		private static void MoveSourceMediaFile(FileEvent renameEvent, string[] oldMediaPaths)
 		{
-			if (renameEvent.IsResource)
+			if (!renameEvent.IsDirectory)
 			{
-				string[] newMediaPaths = AssetManager.GetAssetSourceFiles(renameEvent.Content);
+				string[] newMediaPaths = AssetManager.GetAssetSourceFiles(new ContentRef<Resource>(renameEvent.Path));
 				for (int i = 0; i < oldMediaPaths.Length; i++)
 				{
 					string oldPath = oldMediaPaths[i];
@@ -500,13 +561,25 @@ namespace Duality.Editor
 						if (File.Exists(oldPath) && !File.Exists(newPath))
 						{
 							Directory.CreateDirectory(Path.GetDirectoryName(newPath));
-							File.Move(oldPath, newPath);
+							try
+							{
+								File.Move(oldPath, newPath);
+							}
+							catch (IOException exception)
+							{
+								Logs.Editor.WriteWarning(
+									"Unable to move source media file '{0}' to '{1}' ({2}). Copying the file instead.",
+									oldPath,
+									newPath,
+									exception.Message);
+								File.Copy(oldPath, newPath);
+							}
 							PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(oldPath), true);
 						}
 					}
 				}
 			}
-			else if (renameEvent.IsDirectory)
+			else
 			{
 				// Determine which source/media directory we're going to move
 				string oldMediaPath = Path.Combine(
@@ -524,7 +597,19 @@ namespace Duality.Editor
 					if (Directory.Exists(oldMediaPath) && !Directory.Exists(newMediaPath))
 					{
 						Directory.CreateDirectory(Path.GetDirectoryName(newMediaPath));
-						Directory.Move(oldMediaPath, newMediaPath);
+						try
+						{
+							Directory.Move(oldMediaPath, newMediaPath);
+						}
+						catch (IOException exception)
+						{
+							Logs.Editor.WriteWarning(
+								"Unable to move source media directory '{0}' to '{1}' ({2}). Copying the directory instead.",
+								oldMediaPath,
+								newMediaPath,
+								exception.Message);
+							PathHelper.CopyDirectory(oldMediaPath, newMediaPath);
+						}
 						PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(oldMediaPath), true);
 					}
 				}
@@ -536,22 +621,7 @@ namespace Duality.Editor
 			// Process file / source events regularily, if no modal dialog is open.
 			if ((DateTime.Now - lastEventProc).TotalMilliseconds > 100.0d)
 			{
-				ProcessSourceDirEvents();
-				ProcessDataDirEvents();
-
-				// Manage the list of editor-modified files to be ignored in a 
-				// two-pass process, so event order doesn't matter.
-				{
-					// Remove the ones that were known last time
-					foreach (string file in editorModifiedFilesLast)
-						editorModifiedFiles.Remove(file);
-
-					// Mind the ones that are known right now
-					editorModifiedFilesLast.Clear();
-					foreach (string file in editorModifiedFiles)
-						editorModifiedFilesLast.Add(file);
-				}
-
+				ProcessEvents();
 				lastEventProc = DateTime.Now;
 			}
 		}
@@ -560,43 +630,22 @@ namespace Duality.Editor
 			FlagPathEditorModified(e.SaveAsPath);
 		}
 		
-		private static void mainForm_Activated(object sender, EventArgs e)
+		private static void fileSystemWatcher_ForwardData(object sender, FileSystemEventArgs e)
 		{
-			// Perform scheduled source file reimports
-			if (reimportSchedule.Count > 0)
-			{
-				// Hacky: Wait a little for the files to be accessable again (Might be used by another process)
-				System.Threading.Thread.Sleep(50);
-
-				string[] existingReImportFiles = reimportSchedule
-					.Where(path => File.Exists(path))
-					.ToArray();
-				reimportSchedule.Clear();
-				AssetManager.ReImportAssets(existingReImportFiles);
-			}
+			PushFileEvent(dataDirEventQueue, e, sender == dataDirWatcherDirectory);
 		}
 		private static void fileSystemWatcher_ForwardSource(object sender, FileSystemEventArgs e)
 		{
-			PushSourceDirEvent(e);
+			PushFileEvent(sourceDirEventQueue, e, Directory.Exists(e.FullPath));
 		}
-		private static void fileSystemWatcher_ForwardData(object sender, FileSystemEventArgs e)
+		private static void fileSystemWatcher_ForwardPlugin(object sender, FileSystemEventArgs e)
 		{
-			PushDataDirEvent(e, sender == dataDirWatcherDirectory);
-		}
-		private static void corePluginWatcher_Changed(object sender, FileSystemEventArgs e)
-		{
-			// Ignore other class libraries that clearly aren't plugins
-			if (!e.FullPath.EndsWith(".core.dll", StringComparison.InvariantCultureIgnoreCase) &&
-				!e.FullPath.EndsWith(".editor.dll", StringComparison.InvariantCultureIgnoreCase))
-				return;
-
-			if (PluginChanged != null)
-				PluginChanged(sender, e);
+			PushFileEvent(pluginDirEventQueue, e, Directory.Exists(e.FullPath));
 		}
 
 		private static System.Collections.IEnumerable async_RenameContentRefs(ProcessingBigTaskDialog.WorkerInterface state)
 		{
-			var renameData = state.Data as List<ResourceRenamedEventArgs>;
+			List<FileEvent> renameData = (List<FileEvent>)state.Data;
 			int totalCounter = 0;
 			int fileCounter = 0;
 			
@@ -636,9 +685,9 @@ namespace Duality.Editor
 			}
 
 			// Rename in actual content
-			var targetResTypes = renameData.Any(e => e.IsDirectory) ? null : renameData.Select(e => e.ContentType).ToArray();
-			var loadedContent = ContentProvider.GetLoadedContent<Resource>();
-			var reloadContent = new List<IContentRef>();
+			Type[] targetResTypes = renameData.Any(e => e.IsDirectory) ? null : renameData.Select(e => new ContentRef<Resource>(e.Path).ResType).ToArray();
+			List<ContentRef<Resource>> loadedContent = ContentProvider.GetLoadedContent<Resource>();
+			List<IContentRef> reloadContent = new List<IContentRef>();
 			string[] resFiles = Resource.GetResourceFiles().ToArray();
 			List<Resource> modifiedRes = new List<Resource>();
 			foreach (string file in resFiles)
@@ -710,7 +759,7 @@ namespace Duality.Editor
 				DualityEditorApp.NotifyObjPropChanged(null, new ObjectSelection(modifiedRes));
 			}
 		}
-		private static int async_RenameContentRefs_Perform(object obj, List<ResourceRenamedEventArgs> args)
+		private static int async_RenameContentRefs_Perform(object obj, List<FileEvent> args)
 		{
 			int counter = 0;
 			ReflectionHelper.VisitObjectsDeep<IContentRef>(obj, r => 
@@ -719,9 +768,9 @@ namespace Duality.Editor
 				if (r.IsExplicitNull) return r;
 				if (string.IsNullOrEmpty(r.Path)) return r;
 
-				foreach (ResourceRenamedEventArgs e in args)
+				foreach (FileEvent e in args)
 				{
-					if (e.IsResource && r.Path == e.OldPath)
+					if (!e.IsDirectory && r.Path == e.OldPath)
 					{
 						r.Path = e.Path;
 						counter++;
@@ -729,7 +778,7 @@ namespace Duality.Editor
 					}
 					else if (e.IsDirectory && PathOp.IsPathLocatedIn(r.Path, e.OldPath))
 					{
-						r.Path = r.Path.Replace(e.OldPath, e.Path);
+						r.Path = e.Path + r.Path.Remove(0, e.OldPath.Length);
 						counter++;
 						break;
 					}

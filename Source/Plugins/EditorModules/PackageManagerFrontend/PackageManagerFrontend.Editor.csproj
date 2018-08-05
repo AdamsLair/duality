@@ -38,8 +38,8 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.WinForms, Version=1.1.15.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\AdamsLair.WinForms.1.1.15\lib\net45\AdamsLair.WinForms.dll</HintPath>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.16.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\AdamsLair.WinForms.1.1.16\lib\net45\AdamsLair.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="Aga.Controls, Version=1.7.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\packages\AdamsLair.TreeViewAdv.1.7.6.0\lib\net20\Aga.Controls.dll</HintPath>
