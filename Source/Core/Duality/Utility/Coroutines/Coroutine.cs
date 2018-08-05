@@ -7,7 +7,13 @@ namespace Duality
 {
 	public sealed class Coroutine : IDisposable
 	{
-		public static Coroutine Start(Scene scene, IEnumerable<CoroutineAction> actions)
+        /// <summary>
+        /// Starts a coroutine and registers it in the scene's CoroutineManager
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="coroutine"></param>
+        /// <returns></returns>
+        public static Coroutine Start(Scene scene, IEnumerable<CoroutineAction> actions)
 		{
 			return scene.RegisterCoroutine(actions);
 		}
@@ -19,6 +25,10 @@ namespace Duality
 			get { return this.Enumerator.Current; }
 		}
 
+		/// <summary>
+		/// Returns true if the Current element in the Coroutine's enumerator is StopAction.Value 
+		/// (automatically added at the end of the Coroutine itself)
+		/// </summary>
 		public bool IsComplete
 		{
 			get { return this.Current == StopAction.Value; }
@@ -33,12 +43,18 @@ namespace Duality
 			this.Enumerator.MoveNext();
 		}
 
+		/// <summary>
+		/// Restarts the corouting by moving the enumerator back to the first element
+		/// </summary>
 		internal void Restart()
 		{
 			this.Enumerator.Reset();
 			this.Enumerator.MoveNext();
 		}
 
+		/// <summary>
+		/// Aborts the coroutine
+		/// </summary>
 		public void Abort()
 		{
 			this.Enumerator.Dispose();
