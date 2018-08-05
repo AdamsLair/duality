@@ -7,13 +7,13 @@ namespace Duality
 {
 	public sealed class Coroutine : IDisposable
 	{
-        /// <summary>
-        /// Starts a coroutine and registers it in the scene's CoroutineManager
-        /// </summary>
-        /// <param name="scene"></param>
-        /// <param name="coroutine"></param>
-        /// <returns></returns>
-        public static Coroutine Start(Scene scene, IEnumerable<CoroutineAction> actions)
+		/// <summary>
+		/// Starts a coroutine and registers it in the scene's CoroutineManager
+		/// </summary>
+		/// <param name="scene"></param>
+		/// <param name="coroutine"></param>
+		/// <returns></returns>
+		public static Coroutine Start(Scene scene, IEnumerable<CoroutineAction> actions)
 		{
 			return scene.RegisterCoroutine(actions);
 		}
