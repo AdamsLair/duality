@@ -7,7 +7,7 @@ If you have questions or just want to say Hi, feel free to join us in the [forum
 
 ### Latest Binary Release
 
-You can find the latest binary release [here](http://dualitybin.adamslair.net/). If you already have a Duality project, you can update your Duality version or any of its plugins in the [Package Manager](https://github.com/AdamsLair/duality/wiki/Package-Management).
+You can find the latest binary release [here](http://dualitybin.adamslair.net/). If you already have a Duality project, you can update your Duality version or any of its plugins in the [Package Manager](https://adamslair.github.io/duality-docs/pages/v2/Package-Management.html).
 
 ### Build status: 
 | [Branch](https://github.com/AdamsLair/duality/wiki/Branch-Descriptions)  | Status |
