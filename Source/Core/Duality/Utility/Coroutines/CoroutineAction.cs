@@ -1,45 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Duality.Utility.Pooling;
 
 namespace Duality
 {
-	public abstract class CoroutineAction
+	public abstract class CoroutineAction : IPoolable
 	{
-		private static List<CoroutineAction> _pool = new List<CoroutineAction>();
-		private static int _poolIndex = 0;
-		private static int _searchIndex = 0;
+		private static AbstractPool<CoroutineAction> _pool;
 
 		public static T GetOne<T>() where T : CoroutineAction, new()
 		{
-			T result = null;
-
-			for(int i = _poolIndex; i < _pool.Count + _poolIndex; i++)
-			{
-				_searchIndex = i % _pool.Count;
-
-				result = _pool[_searchIndex] as T;
-				
-				if(result != null)
-				{
-					_poolIndex = _searchIndex;
-					_pool.Remove(result);
-
-					break;
-				}
-			}
-
-			if (result == null)
-				result = new T();
-
-			result.OnPickup();
-			return result;
+			return _pool.GetOne<T>();
 		}
 
 		public static void ReturnOne(CoroutineAction action)
 		{
-			action.OnReturn();
-			_pool.Add(action);
+			_pool.ReturnOne(action);
 		}
 
 		public abstract bool IsComplete();
@@ -71,17 +48,6 @@ namespace Duality
 	public abstract class CoroutineAction<TConfig1, TConfig2, TConfig3, TConfig4, TConfig5> : CoroutineAction
 	{
 		public abstract CoroutineAction Setup(TConfig1 param1, TConfig2 param2, TConfig3 param3, TConfig4 param4, TConfig5 param5);
-	}
-
-	internal sealed class StopAction : CoroutineAction
-	{
-		public static StopAction Value = new StopAction();
-		public static IEnumerable<StopAction> Finalizer = new StopAction[] { StopAction.Value };
-
-		public override bool IsComplete()
-		{
-			return true;
-		}
 	}
 
 	/// <summary>

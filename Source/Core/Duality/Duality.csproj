@@ -117,6 +117,9 @@
     <Compile Include="Utility\Coroutines\CoroutineAction.cs" />
     <Compile Include="Utility\Coroutines\CoroutineManager.cs" />
     <Compile Include="Utility\Log\DebugLogOutput.cs" />
+    <Compile Include="Utility\Pooling\IPoolable.cs" />
+    <Compile Include="Utility\Pooling\Pool.cs" />
+    <Compile Include="Utility\Pooling\AbstractPool.cs" />
     <Compile Include="Utility\RawListPool.cs" />
     <Compile Include="Drawing\VertexData\VertexDrawRange.cs" />
     <Compile Include="Drawing\DrawBatch.cs" />

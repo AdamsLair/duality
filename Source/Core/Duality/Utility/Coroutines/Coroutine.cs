@@ -18,28 +18,23 @@ namespace Duality
 			return scene.Coroutines.StartNew(method);
 		}
 
-
 		private IEnumerator<CoroutineAction> enumerator = null;
-
 
 		/// <summary>
 		/// Returns true if the Current element in the Coroutine's enumerator is StopAction.Value 
 		/// (automatically added at the end of the Coroutine itself)
 		/// </summary>
-		public bool IsComplete
-		{
-			get { return this.enumerator.Current == StopAction.Value; }
-		}
-
+		public bool IsComplete { get; private set; }
 
 		internal void Setup(IEnumerable<CoroutineAction> values)
 		{
 			if (this.enumerator != null)
 				this.enumerator.Dispose();
 
-			this.enumerator = values.Concat(StopAction.Finalizer).GetEnumerator();
+			this.enumerator = values.GetEnumerator();
 			this.enumerator.MoveNext();
 		}
+
 		internal void Update()
 		{
 			if (this.IsComplete) return;
@@ -48,7 +43,7 @@ namespace Duality
 			if (currentYield == null || currentYield.IsComplete())
 			{
 				CoroutineAction.ReturnOne(currentYield);
-				this.enumerator.MoveNext();
+				this.IsComplete = this.enumerator.MoveNext();
 			}
 		}
 		/// <summary>
@@ -65,14 +60,13 @@ namespace Duality
 		/// </summary>
 		public void Cancel()
 		{
-			this.enumerator.Dispose();
-			this.enumerator = StopAction.Finalizer.GetEnumerator();
-			this.enumerator.MoveNext();
+			this.Dispose();
 		}
 
 		public void Dispose()
 		{
 			this.enumerator.Dispose();
+			this.IsComplete = true;
 		}
 	}
 }
