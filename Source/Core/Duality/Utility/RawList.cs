@@ -74,12 +74,12 @@ namespace Duality
 		{
 			get
 			{
-				if (index >= count) ThrowIndexOutOfRangeException();
+				if (index >= this.count) ThrowIndexOutOfRangeException();
 				return this.data[index];
 			}
 			set
 			{
-				if (index >= count) ThrowIndexOutOfRangeException();
+				if (index >= this.count) ThrowIndexOutOfRangeException();
 				this.data[index] = value;
 			}
 		}
@@ -275,24 +275,28 @@ namespace Duality
 		/// <returns></returns>
 		public int RemoveAll(Predicate<T> predicate)
 		{
+			// Iterate over the internal array with two indices:
+			// A source index that skips all removed items and a
+			// target index that assigns new positions to all remaining
+			// items.
 			int source = -1;
-			int count = -1;
+			int newCount = -1;
 			for (int target = 0; target < this.count; target++)
 			{
-				// Search for the index we want to copy from
+				// Determine the next source index to copy from
 				do
 				{
 					source++;
 					if (source >= this.count)
 					{
-						count = target;
+						newCount = target;
 						break;
 					}
 				}
 				while (predicate(this.data[source]));
 
 				// If we reached the end, stop
-				if (count != -1) break;
+				if (newCount != -1) break;
 
 				// Copy objects to their new indices
 				if (target != source)
@@ -301,10 +305,10 @@ namespace Duality
 				}
 			}
 
-			// Shrink the list accordingly.
-			if (count != this.count && count != -1)
+			// Shrink the list to match the new number of elements
+			if (newCount != this.count && newCount != -1)
 			{
-				int removedCount = this.count - count;
+				int removedCount = this.count - newCount;
 				this.count -= removedCount;
 				if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
 				{
