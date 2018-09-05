@@ -121,7 +121,10 @@ namespace Duality
 				}
 
 				// Mind the result for later. Don't do this twice.
-				customMemberAttribCache[member] = result;
+				lock (customMemberAttribCache)
+				{
+					customMemberAttribCache[member] = result;
+				}
 			}
 
 			if (typeof(T) == typeof(Attribute))
@@ -367,7 +370,10 @@ namespace Duality
 			bool result;
 			if (!resRefCache.TryGetValue(new KeyValuePair<Type,Type>(sourceResType, targetResType), out result))
 			{
-				resRefCache[new KeyValuePair<Type,Type>(sourceResType, targetResType)] = false;
+				lock (resRefCache)
+				{
+					resRefCache[new KeyValuePair<Type, Type>(sourceResType, targetResType)] = false;
+				}
 				
 				TypeInfo resourceTypeInfo = typeof(Resource).GetTypeInfo();
 				TypeInfo sourceResTypeInfo = sourceResType.GetTypeInfo();
@@ -394,7 +400,10 @@ namespace Duality
 				}
 
 				result = foundIt || !foundAny;
-				resRefCache[new KeyValuePair<Type,Type>(sourceResType, targetResType)] = result;
+				lock (resRefCache)
+				{
+					resRefCache[new KeyValuePair<Type, Type>(sourceResType, targetResType)] = result;
+				}
 			}
 
 			return result;
@@ -444,7 +453,10 @@ namespace Duality
 						break;
 					}
 				}
-				isRefOrHasRefCache[typeInfo] = isRefOrHasRef;
+				lock (isRefOrHasRefCache)
+				{
+					isRefOrHasRefCache[typeInfo] = isRefOrHasRef;
+				}
 				return isRefOrHasRef;
 			}
 		}
@@ -499,7 +511,10 @@ namespace Duality
 						break;
 					}
 				}
-				deepCopyByAssignmentCache[typeInfo] = isPlainOldData;
+				lock (deepCopyByAssignmentCache)
+				{
+					deepCopyByAssignmentCache[typeInfo] = isPlainOldData;
+				}
 				return isPlainOldData;
 			}
 		}
@@ -531,7 +546,13 @@ namespace Duality
 				.ToArray();
 
 			result = FindMember(memberString, searchAsm);
-			if (result != null) memberResolveCache[memberString] = result;
+			if (result != null)
+			{
+				lock (memberResolveCache)
+				{
+					memberResolveCache[memberString] = result;
+				}
+			}
 
 			return result;
 		}
@@ -791,7 +812,12 @@ namespace Duality
 
 			// Mind the result for later, if it's successful and generally applicable
 			if (result != null && declaringMethod == null)
-				typeResolveCache[typeString] = result;
+			{
+				lock (typeResolveCache)
+				{
+					typeResolveCache[typeString] = result;
+				}
+			}
 
 			return result;
 		}
