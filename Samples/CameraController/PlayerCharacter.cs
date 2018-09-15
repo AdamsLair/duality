@@ -54,7 +54,7 @@ namespace CameraController
 			movement /= MathF.Max(movement.Length, 1.0f);
 
 			// Apply movement
-			transform.MoveByAbs(movement * this.speed * Time.TimeMult);
+			transform.MoveBy(movement * this.speed * Time.TimeMult);
 		}
 	}
 }

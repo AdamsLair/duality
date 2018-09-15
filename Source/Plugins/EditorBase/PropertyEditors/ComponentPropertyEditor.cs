@@ -154,7 +154,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			Component removeConflict = null;
 			foreach (Component cmpToRemove in values)
 			{
-				foreach (Component otherComponent in cmpToRemove.GameObj.GetComponents<Component>())
+				foreach (Component otherComponent in cmpToRemove.GameObj.Components)
 				{
 					if (otherComponent == cmpToRemove) continue;
 
@@ -194,10 +194,11 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			var customActions = DualityEditorApp.GetEditorActions(values.First().GetType(), values).ToArray();
 			foreach (var actionEntry in customActions)
 			{
+				HelpInfo helpInfo = actionEntry.HelpInfo;
 				ToolStripMenuItem actionItem = new ToolStripMenuItem(actionEntry.Name, actionEntry.Icon);
 				actionItem.Click += this.contextMenu_CustomAction;
 				actionItem.Tag = actionEntry;
-				actionItem.ToolTipText = actionEntry.Description;
+				actionItem.ToolTipText = (helpInfo != null) ? helpInfo.Description : null;
 				contextMenu.Items.Add(actionItem);
 			}
 			if (customActions.Length == 0) itemDefaultSep.Visible = false;

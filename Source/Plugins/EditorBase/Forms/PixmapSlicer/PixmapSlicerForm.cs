@@ -58,7 +58,6 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
-			Resource.ResourceDisposing += this.Resource_ResourceDisposing;
 		}
 
 		internal void SaveUserData(XElement node)
@@ -166,23 +165,21 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
-			Resource.ResourceDisposing -= this.Resource_ResourceDisposing;
 		}
 
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
-			if (e.HasObject(this.targetPixmap))
+			if (this.targetPixmap == null) return;
+
+			if (this.targetPixmap.Disposed)
+				this.TargetPixmap = null;
+			else if (e.HasObject(this.targetPixmap))
 				this.pixmapView.Invalidate();
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (e.Current.MainResource is Pixmap)
 				this.TargetPixmap = e.Current.MainResource as Pixmap;
-		}
-		private void Resource_ResourceDisposing(object sender, ResourceEventArgs e)
-		{
-			if (e.ContentType == typeof(Pixmap) && e.Content.Res == this.targetPixmap)
-				this.Close();
 		}
 
 		private void pixmapView_PaintContentOverlay(object sender, PaintEventArgs e)

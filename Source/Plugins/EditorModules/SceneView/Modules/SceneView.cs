@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.IO;
-using System.Globalization;
 using System.Reflection;
 using System.Xml.Linq;
 using CancelEventHandler = System.ComponentModel.CancelEventHandler;
@@ -19,7 +16,7 @@ using AdamsLair.WinForms.ItemViews;
 using Duality;
 using Duality.Cloning;
 using Duality.Resources;
-using Duality.Drawing;
+using Duality.IO;
 using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
@@ -145,9 +142,7 @@ namespace Duality.Editor.Plugins.SceneView
 			DualityEditorApp.HighlightObject += this.DualityEditorApp_HighlightObject;
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
-			FileEventManager.ResourceCreated += this.DualityEditorApp_ResourceCreated;
-			FileEventManager.ResourceDeleted += this.DualityEditorApp_ResourceDeleted;
-			FileEventManager.ResourceRenamed += this.DualityEditorApp_ResourceRenamed;
+			FileEventManager.ResourcesChanged += this.FileEventManager_ResourcesChanged;
 
 			Scene.Entered += this.Scene_Entered;
 			Scene.Leaving += this.Scene_Leaving;
@@ -166,9 +161,7 @@ namespace Duality.Editor.Plugins.SceneView
 			DualityEditorApp.HighlightObject -= this.DualityEditorApp_HighlightObject;
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
-			FileEventManager.ResourceCreated -= this.DualityEditorApp_ResourceCreated;
-			FileEventManager.ResourceDeleted -= this.DualityEditorApp_ResourceDeleted;
-			FileEventManager.ResourceRenamed -= this.DualityEditorApp_ResourceRenamed;
+			FileEventManager.ResourcesChanged -= this.FileEventManager_ResourcesChanged;
 
 			Scene.Entered -= this.Scene_Entered;
 			Scene.Leaving -= this.Scene_Leaving;
@@ -341,7 +334,7 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			if (obj == null) return null;
 			GameObjectNode thisNode = new GameObjectNode(obj, !this.buttonShowComponents.Checked);
-			foreach (Component c in obj.GetComponents<Component>())
+			foreach (Component c in obj.Components)
 			{
 				ComponentNode compNode = this.ScanComponent(c);
 				if (compNode != null) this.InsertNodeSorted(compNode, thisNode);
@@ -555,7 +548,7 @@ namespace Duality.Editor.Plugins.SceneView
 				if (ignoreGameObjList != null && ignoreGameObjList.Contains(cmpToRemove.GameObj)) continue;
 
 				Component reqComp = null;
-				foreach (Component otherComponent in cmpToRemove.GameObj.GetComponents<Component>())
+				foreach (Component otherComponent in cmpToRemove.GameObj.Components)
 				{
 					if (cmpList.Contains(otherComponent)) continue;
 
@@ -637,7 +630,7 @@ namespace Duality.Editor.Plugins.SceneView
 
 			if (action != null)
 			{
-				action.Perform(subject);
+				action.Perform(new[] { subject });
 				return true;
 			}
 			else return false;
@@ -1646,6 +1639,7 @@ namespace Duality.Editor.Plugins.SceneView
 				newObjects.Add(objNode);
 			}
 
+			this.objectView.BeginUpdate();
 			this.objectView.ClearSelection();
 
 			// Select newly created objects
@@ -1668,6 +1662,8 @@ namespace Duality.Editor.Plugins.SceneView
 					nodeToEdit = dragObjViewNode;
 				}
 			}
+
+			this.objectView.EndUpdate();
 
 			// Scroll to and edit the new objects name
 			if (nodeToEdit != null)
@@ -1714,8 +1710,12 @@ namespace Duality.Editor.Plugins.SceneView
 			}
 
 			// If none is selected, use a "null" dummy to allow quick creation at the Scene root
+			bool createNewSingleObject = false;
 			if (targetViewNodes.Count == 0)
+			{
 				targetViewNodes.Add(null);
+				createNewSingleObject = true;
+			}
 
 			// Track the nodes that we add so that we can select them later
 			UndoRedoManager.BeginMacro();
@@ -1733,18 +1733,40 @@ namespace Duality.Editor.Plugins.SceneView
 			}
 			UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
 
+			this.objectView.BeginUpdate();
+
 			// Deselect previous
 			this.objectView.ClearSelection();
 
 			// Select all new nodes
+			TreeNodeAdv nodeToEdit = null;
 			foreach (var cmpNode in newComponentNodes)
 			{
+				if (cmpNode == null) continue;
+
 				TreeNodeAdv dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(cmpNode));
-				if (dragObjViewNode != null)
+				if (dragObjViewNode == null) continue;
+
+				// Expand parent node and select new object node
+				if (dragObjViewNode.Parent != null)
+					dragObjViewNode.Parent.Expand();
+				dragObjViewNode.IsSelected = true;
+
+				// Schedule the first created view node for editing, but 
+				// only if we're dealing with a newly created GameObject node
+				if (nodeToEdit == null && cmpNode is GameObjectNode)
 				{
-					dragObjViewNode.IsSelected = true;
-					this.objectView.EnsureVisible(dragObjViewNode);
+					nodeToEdit = dragObjViewNode;
 				}
+			}
+
+			this.objectView.EndUpdate();
+
+			// Scroll to and edit the new objects name
+			if (createNewSingleObject && nodeToEdit != null)
+			{
+				this.objectView.EnsureVisible(nodeToEdit);
+				this.nodeTextBoxName.BeginEdit();
 			}
 		}
 		private void customObjectActionItem_Click(object sender, EventArgs e)
@@ -1855,29 +1877,29 @@ namespace Duality.Editor.Plugins.SceneView
 			// Update the displayed names of objects
 			if (e.HasProperty(ReflectionInfo.Property_GameObject_Name))
 			{
-				foreach (GameObjectNode node in e.Objects.GameObjects.Select(g => this.FindNode(g)))
-					if (node != null) node.Text = node.Obj.Name;
+				foreach (GameObject obj in e.Objects.GameObjects)
+				{
+					GameObjectNode node = this.FindNode(obj);
+					if (node == null) continue;
+
+					node.Text = node.Obj.Name;
+					node.UpdateIcon();
+				}
 			}
 		}
-		private void DualityEditorApp_ResourceRenamed(object sender, ResourceRenamedEventArgs e)
+		private void FileEventManager_ResourcesChanged(object sender, ResourceFilesChangedEventArgs e)
 		{
-			if (e.Path == Scene.CurrentPath) this.UpdateSceneLabel();
+			if (e.AnyFiles(FileEventType.Created) ||
+				e.Contains(FileEventType.Renamed, Scene.CurrentPath))
+			{
+				this.UpdateSceneLabel();
+			}
 
-			if (!e.IsDirectory && !typeof(Prefab).IsAssignableFrom(e.ContentType)) return;
-			this.UpdatePrefabLinkStatus(true);
-		}
-		private void DualityEditorApp_ResourceCreated(object sender, ResourceEventArgs e)
-		{
-			if (e.IsDirectory || typeof(Prefab).IsAssignableFrom(e.ContentType))
+			if (e.AnyDirectories(FileEventType.Renamed | FileEventType.Deleted) ||
+				e.Contains(FileEventType.Renamed | FileEventType.Created | FileEventType.Deleted, typeof(Prefab)))
 			{
 				this.UpdatePrefabLinkStatus(true);
 			}
-			this.UpdateSceneLabel(); // In case we save the Scene for the first time
-		}
-		private void DualityEditorApp_ResourceDeleted(object sender, ResourceEventArgs e)
-		{
-			if (!e.IsDirectory && !typeof(Prefab).IsAssignableFrom(e.ContentType)) return;
-			this.UpdatePrefabLinkStatus(true);
 		}
 
 		private void Scene_Leaving(object sender, EventArgs e)
@@ -2038,8 +2060,8 @@ namespace Duality.Editor.Plugins.SceneView
 					if (item.Tag is CreateContextEntryTag)
 						result = HelpInfo.FromMember(ReflectionHelper.ResolveType((item.Tag as CreateContextEntryTag).TypeId));
 					// Editor Actions
-					else if (item.Tag is IEditorAction && !string.IsNullOrEmpty((item.Tag as IEditorAction).Description))
-						result = HelpInfo.FromText(item.Text, (item.Tag as IEditorAction).Description);
+					else if (item.Tag is IEditorAction && (item.Tag as IEditorAction).HelpInfo != null)
+						result = (item.Tag as IEditorAction).HelpInfo;
 					// A HelpInfo attached to the item
 					else if (item.Tag is HelpInfo)
 						result = item.Tag as HelpInfo;
@@ -2071,10 +2093,16 @@ namespace Duality.Editor.Plugins.SceneView
 		string IToolTipProvider.GetToolTip(TreeNodeAdv viewNode, Aga.Controls.Tree.NodeControls.NodeControl nodeControl)
 		{
 			IEditorAction action = this.GetResourceOpenAction(viewNode);
-			if (action != null) return string.Format(
-				Duality.Editor.Plugins.SceneView.Properties.SceneViewRes.SceneView_Help_Doubleclick,
-				action.Description);
-			else return null;
+			if (action != null && action.HelpInfo != null)
+			{
+				return string.Format(
+					Duality.Editor.Plugins.SceneView.Properties.SceneViewRes.SceneView_Help_Doubleclick,
+					action.HelpInfo.Description);
+			}
+			else
+			{
+				return null;
+			}
 		}
 		
 		private int ContextMenuItemComparison(IMenuModelItem itemA, IMenuModelItem itemB)

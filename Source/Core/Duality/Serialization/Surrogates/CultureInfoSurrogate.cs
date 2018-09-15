@@ -25,7 +25,7 @@ namespace Duality.Serialization.Surrogates
 			}
 			catch (Exception)
 			{
-				Log.Core.WriteError("Unable to resolve CultureInfo '{0}'. Falling back to invariant culture instead.", name);
+				Logs.Core.WriteError("Unable to resolve CultureInfo '{0}'. Falling back to invariant culture instead.", name);
 				return CultureInfo.InvariantCulture;
 			}
 		}

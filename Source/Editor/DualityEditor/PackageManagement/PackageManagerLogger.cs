@@ -22,24 +22,24 @@ namespace Duality.Editor.PackageManagement
 			{
 				case NuGet.MessageLevel.Debug:
 					#if DEBUG
-						Log.Editor.Write(message, args);
+						Logs.Editor.Write(message, args);
 					#endif
 					break;
 				default:
 				case NuGet.MessageLevel.Info:
-					Log.Editor.Write(message, args);
+					Logs.Editor.Write(message, args);
 					break;
 				case NuGet.MessageLevel.Warning:
-					Log.Editor.WriteWarning(message, args);
+					Logs.Editor.WriteWarning(message, args);
 					break;
 				case NuGet.MessageLevel.Error:
-					Log.Editor.WriteError(message, args);
+					Logs.Editor.WriteError(message, args);
 					break;
 			}
 		}
 		NuGet.FileConflictResolution NuGet.IFileConflictResolver.ResolveFileConflict(string message)
 		{
-			Log.Editor.Write("Package File Conflict: {0}", message);
+			Logs.Editor.Write("Package File Conflict: {0}", message);
 			return NuGet.FileConflictResolution.Overwrite;
 		}
 	}

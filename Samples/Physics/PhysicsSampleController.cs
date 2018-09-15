@@ -49,48 +49,47 @@ namespace Duality.Samples.Physics
 			get { return this.interactionColor; }
 			set { this.interactionColor = value; }
 		}
-		float ICmpRenderer.BoundRadius
-		{
-			get { return float.MaxValue; }
-		}
 
 
 		private void SwitchToSample(int index)
 		{
 			// Force reload of current sample later on by disposing it.
-			this.GameObj.ParentScene.DisposeLater();
+			this.Scene.DisposeLater();
 			// Switch to new sample
 			Scene.SwitchTo(this.sampleScenes[index]);
 		}
 		private void AdvanceSampleBy(int indexOffset)
 		{
 			// Determine the current samples' index and advance it
-			int currentIndex = this.sampleScenes.IndexOf(this.GameObj.ParentScene);
+			int currentIndex = this.sampleScenes.IndexOf(this.Scene);
 			int newIndex = (currentIndex + indexOffset + this.sampleScenes.Count) % this.sampleScenes.Count;
 			this.SwitchToSample(newIndex);
 		}
 
 
-		bool ICmpRenderer.IsVisible(IDrawDevice device)
+		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
 		{
-			return 
-				(device.VisibilityMask & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None &&
-				(device.VisibilityMask & VisibilityFlag.AllGroups) != VisibilityFlag.None;
+			info.Position = Vector3.Zero;
+			info.Radius = float.MaxValue;
+			info.Visibility = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			Canvas canvas = new Canvas(device);
 			Vector2 mousePos = DualityApp.Mouse.Pos;
 
+			Canvas canvas = new Canvas();
+			canvas.Begin(device);
+
 			// Make sure we'll draw below the sample info text
-			canvas.State.ZOffset = 1.0f;
+			canvas.State.DepthOffset = 1.0f;
 
 			// Draw drag anchor markers when dragging an object
 			if (this.dragObj != null)
 			{
+				Camera mainCam = this.Scene.FindComponent<Camera>();
 				Transform dragTransform = this.dragObj.GameObj.Transform;
 				Vector2 worldAnchor = dragTransform.GetWorldPoint(this.dragAnchor);
-				Vector2 screenAnchor = device.GetScreenCoord(worldAnchor).Xy;
+				Vector2 screenAnchor = mainCam.GetScreenPos(worldAnchor);
 				canvas.State.ColorTint = this.interactionColor;
 				if ((screenAnchor - mousePos).Length < 10.0f)
 					canvas.DrawLine(mousePos.X, mousePos.Y, screenAnchor.X, screenAnchor.Y);
@@ -119,14 +118,16 @@ namespace Duality.Samples.Physics
 					2.0f);
 				canvas.State.ColorTint = this.defaultColor;
 			}
+
+			canvas.End();
 		}
 
 		void ICmpUpdatable.OnUpdate()
 		{
 			// Determine the world position of the cursor
-			Camera mainCamera = this.GameObj.ParentScene.FindComponent<Camera>();
+			Camera mainCamera = this.Scene.FindComponent<Camera>();
 			Vector2 screenMousePos = DualityApp.Mouse.Pos;
-			Vector3 worldMousePos = mainCamera.GetSpaceCoord(screenMousePos);
+			Vector3 worldMousePos = mainCamera.GetWorldPos(screenMousePos);
 
 			// Pressing the right mouse button: Starting a camera drag
 			if (DualityApp.Mouse.ButtonHit(MouseButton.Right))
@@ -139,7 +140,7 @@ namespace Duality.Samples.Physics
 			if (DualityApp.Mouse[MouseButton.Right])
 			{
 				Vector3 cameraMovement = new Vector3(this.cameraDragScreenAnchor - screenMousePos);
-				mainCamera.GameObj.Transform.MoveToAbs(this.cameraDragWorldAnchor + cameraMovement);
+				mainCamera.GameObj.Transform.MoveTo(this.cameraDragWorldAnchor + cameraMovement);
 			}
 
 			// Pressing the left mouse button: Picking up an object
@@ -147,7 +148,7 @@ namespace Duality.Samples.Physics
 			{
 				// Determine which shape is located at the cursor position
 				List<ShapeInfo> shapesAtCursor = new List<ShapeInfo>();
-				RigidBody.PickShapesGlobal(worldMousePos.Xy, shapesAtCursor);
+				this.Scene.Physics.PickShapes(worldMousePos.Xy, shapesAtCursor);
 				foreach (ShapeInfo shape in shapesAtCursor)
 				{
 					if (shape.IsSensor) continue;
@@ -212,14 +213,13 @@ namespace Duality.Samples.Physics
 			}
 		}
 
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-			{
-				// Retrieve a list of all available scenes to cycle through.
-				this.sampleScenes = ContentProvider.GetAvailableContent<Scene>();
-			}
+			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Game) return;
+
+			// Retrieve a list of all available scenes to cycle through.
+			this.sampleScenes = ContentProvider.GetAvailableContent<Scene>();
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
+		void ICmpInitializable.OnDeactivate() { }
 	}
 }

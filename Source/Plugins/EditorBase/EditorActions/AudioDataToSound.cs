@@ -12,15 +12,14 @@ using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {
+	/// <summary>
+	/// Creates a new Sound Resource based on the AudioData.
+	/// </summary>
 	public class AudioDataToSound : EditorAction<AudioData>
 	{
 		public override string Name
 		{
 			get { return EditorBaseRes.ActionName_CreateSound; }
-		}
-		public override string Description
-		{
-			get { return EditorBaseRes.ActionDesc_CreateSound; }
 		}
 		public override Image Icon
 		{

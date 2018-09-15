@@ -34,7 +34,7 @@ namespace Duality.Samples.Physics
 				applyWorldPos);
 
 			// Display a log to note that we did so
-			VisualLog.Default
+			VisualLogs.Default
 				.DrawVector(new Vector3(applyWorldPos), impulseDirection * 15.0f)
 				.KeepAlive(1000.0f);
 		}

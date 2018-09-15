@@ -22,7 +22,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 	[RequiredComponent(typeof(Transform))]
 	[EditorHintCategory(SampleResNames.CategoryRpgLike)]
 	[EditorHintImage(TilemapsResNames.ImageActorRenderer)]
-	public class ActorRenderer : Renderer
+	public class ActorRenderer : Renderer, ICmpSpriteRenderer
 	{
 		private Rect                 rect           = Rect.Align(Alignment.Center, 0, 0, 256, 256);
 		private ContentRef<Material> sharedMat      = Material.DualityIcon;
@@ -135,7 +135,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 		public int SpriteIndex
 		{
 			get { return this.spriteIndex; }
-			set { this.spriteIndex = value; }
+			set { this.ApplySpriteAnimation(value, value, 0.0f); }
 		}
 		
 
@@ -161,21 +161,11 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			else
 				return null;
 		}
-		private ColorRgba RetrieveMainColor()
-		{
-			if (this.customMat != null)
-				return this.customMat.MainColor * this.colorTint;
-			else if (this.sharedMat.IsAvailable)
-				return this.sharedMat.Res.MainColor * this.colorTint;
-			else
-				return this.colorTint;
-		}
 		private void PrepareVertices(ref VertexC1P3T2[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect)
 		{
 			Transform transform = this.GameObj.Transform;
 			Vector3 posTemp = transform.Pos;
 			float scaleTemp = transform.Scale;
-			device.PreprocessCoords(ref posTemp, ref scaleTemp);
 
 			Vector2 xDot, yDot;
 			MathF.GetTransformDotVec(transform.Angle, scaleTemp, out xDot, out yDot);
@@ -231,26 +221,29 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			{
 				// Vertical actors share the same depth offset on all four vertices
 				float baseDepthOffset = this.offset + transform.Pos.Y * depthPerUnit;
-				vertices[0].Pos.Z += baseDepthOffset;
-				vertices[1].Pos.Z += baseDepthOffset;
-				vertices[2].Pos.Z += baseDepthOffset;
-				vertices[3].Pos.Z += baseDepthOffset;
+				vertices[0].DepthOffset = baseDepthOffset;
+				vertices[1].DepthOffset = baseDepthOffset;
+				vertices[2].DepthOffset = baseDepthOffset;
+				vertices[3].DepthOffset = baseDepthOffset;
 			}
 			else
 			{
 				// Flat actors need to apply depth individually per vertex
 				float worldBaseY = transform.Pos.Y;
-				vertices[0].Pos.Z += this.offset + (worldBaseY + edge1.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
-				vertices[1].Pos.Z += this.offset + (worldBaseY + edge2.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
-				vertices[2].Pos.Z += this.offset + (worldBaseY + edge3.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
-				vertices[3].Pos.Z += this.offset + (worldBaseY + edge4.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
+				vertices[0].DepthOffset = this.offset + (worldBaseY + edge1.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
+				vertices[1].DepthOffset = this.offset + (worldBaseY + edge2.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
+				vertices[2].DepthOffset = this.offset + (worldBaseY + edge3.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
+				vertices[3].DepthOffset = this.offset + (worldBaseY + edge4.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
 			}
 		}
-
+		
+		public void ApplySpriteAnimation(int currentSpriteIndex, int nextSpriteIndex, float progressToNext)
+		{
+			this.spriteIndex = currentSpriteIndex;
+		}
 		public override void Draw(IDrawDevice device)
 		{
 			Texture mainTex = this.RetrieveMainTex();
-			ColorRgba mainClr = this.RetrieveMainColor();
 
 			Rect uvRect;
 			if (mainTex != null)
@@ -265,7 +258,7 @@ namespace Duality.Samples.Tilemaps.RpgLike
 				uvRect = new Rect(1.0f, 1.0f);
 			}
 
-			this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
+			this.PrepareVertices(ref this.vertices, device, this.colorTint, uvRect);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);
 			else

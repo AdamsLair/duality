@@ -62,13 +62,13 @@ namespace BasicMenu
 				this.sprite = this.GameObj.GetComponent<SpriteRenderer>();
 
 			// Determine position and scale of this menu button on the screen
-			Camera mainCamera = this.GameObj.ParentScene.FindComponent<Camera>();
-			Vector3 screenBasePos = mainCamera.GetScreenCoord(this.GameObj.Transform.Pos);
+			Camera mainCamera = this.Scene.FindComponent<Camera>();
+			Vector2 screenBasePos = mainCamera.GetScreenPos(this.GameObj.Transform.Pos);
 			float screenScale = mainCamera.GetScaleAtZ(this.GameObj.Transform.Pos.Z);
 
 			Rect result = this.sprite.Rect
 				.Scaled(screenScale, screenScale)
-				.WithOffset(screenBasePos.Xy);
+				.WithOffset(screenBasePos);
 
 			return result;
 		}
@@ -76,7 +76,7 @@ namespace BasicMenu
 		void ICmpUpdatable.OnUpdate()
 		{
 			// get the milliseconds elapsed since the last frame
-			float lastDelta = Time.TimeMult * Time.MsPFMult / 1000;
+			float lastDelta = Time.TimeMult * Time.MillisecondsPerFrame / 1000;
 
 			if (this.fadingTime < this.timeToFade)
 			{

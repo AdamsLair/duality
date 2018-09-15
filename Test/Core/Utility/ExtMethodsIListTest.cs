@@ -35,7 +35,7 @@ namespace Duality.Tests.Utility
 				Enumerable.Range(0, itemCount)
 				.Select(i => i / 3)
 				.ToArray();
-			values = values.Shuffle(rnd).ToArray();
+			rnd.Shuffle(values);
 			
 			// Test sorting algorithm on various list container types
 			TestStableSort(values.ToArray(), sortIndex, sortCount);
@@ -52,14 +52,14 @@ namespace Duality.Tests.Utility
 				.Select(i => i / 3)
 				.Select(i => new SortingIntContainer(i))
 				.ToArray();
-			values = values.Shuffle(rnd).ToArray();
-			
+			rnd.Shuffle(values);
+
 			// Test sorting algorithm on various list container types
 			TestStableSort(values.ToArray(), sortIndex, sortCount);
 			TestStableSort(values.ToList(), sortIndex, sortCount);
 			TestStableSort(new RawList<SortingIntContainer>(values.ToArray()), sortIndex, sortCount);
 		}
-		
+
 		private void TestStableSort<T>(IList<T> values, int sortIndex, int sortCount)
 		{
 			Comparer<T> comparer = Comparer<T>.Default;
@@ -73,7 +73,7 @@ namespace Duality.Tests.Utility
 			Assert.IsTrue(workingList.IsStableOrder(sortIndex, sortCount, originalList, comparer), "Equivalent items in sequential order before sort.");
 
 			// Sort the shuffled numbers again
-			workingList.StableSort(sortIndex, sortCount, comparer);
+			workingList.StableSort(sortIndex, sortCount, comparer.Compare);
 
 			// Assert that we didn't lose any items, and that they're now stable-sorted
 			CollectionAssert.AreEquivalent(originalList, workingList, "Same items before and after sort.");

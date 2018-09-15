@@ -38,9 +38,9 @@ namespace DualStickSpaceShooter
 
 			body.LinearVelocity = direction * blueprint.LaunchSpeed + sourceDragVel;
 			transform.Pos = new Vector3(position, 0.0f);
-			transform.MoveByAbs(body.LinearVelocity * Time.TimeMult);
+			transform.MoveBy(body.LinearVelocity * Time.TimeMult);
 			transform.Angle = angle;
-			sprite.Offset = 1;
+			sprite.DepthOffset = 0.1f;
 
 			if (owner != null)
 			{
@@ -53,7 +53,7 @@ namespace DualStickSpaceShooter
 		
 		void ICmpUpdatable.OnUpdate()
 		{
-			this.lifetime -= Time.MsPFMult * Time.TimeMult;
+			this.lifetime -= Time.MillisecondsPerFrame * Time.TimeMult;
 			if (this.lifetime <= 0.0f) this.GameObj.DisposeLater();
 		}
 		void ICmpCollisionListener.OnCollisionBegin(Component sender, CollisionEventArgs args)
@@ -74,11 +74,14 @@ namespace DualStickSpaceShooter
 
 			// Okay, let's determine where *exactly* our bullet hit
 			RayCastData firstHit;
-			bool hitAnything = RigidBody.RayCast(transform.Pos.Xy - body.LinearVelocity * 2, transform.Pos.Xy + body.LinearVelocity * 2, data =>
-			{
-				if (data.Shape.IsSensor) return -1.0f;
-				return data.Fraction;
-			}, out firstHit);
+			bool hitAnything = this.Scene.Physics.RayCast(
+				transform.Pos.Xy - body.LinearVelocity * 2, 
+				transform.Pos.Xy + body.LinearVelocity * 2, 
+				data =>
+				{
+					if (data.Shape.IsSensor) return -1.0f;
+					return data.Fraction;
+				}, out firstHit);
 
 			Vector3 hitPos;
 			float hitAngle;
@@ -106,7 +109,7 @@ namespace DualStickSpaceShooter
 			if (otherShip == null && blueprint.HitWorldEffect != null)
 			{
 				GameObject effectObj = blueprint.HitWorldEffect.Res.Instantiate(hitPos, hitAngle);
-				Scene.Current.AddObject(effectObj);
+				this.Scene.AddObject(effectObj);
 			}
 
 			// Also spawn a generic hit effect in the color of the bullet
@@ -123,7 +126,7 @@ namespace DualStickSpaceShooter
 						emitter.MinColor = emitter.MinColor.WithSaturation(color.S).WithHue(color.H);
 					}
 				}
-				Scene.Current.AddObject(effectObj);
+				this.Scene.AddObject(effectObj);
 			}
 
 			// Play hit sounds

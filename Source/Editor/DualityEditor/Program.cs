@@ -95,8 +95,8 @@ namespace Duality.Editor
 			// Perform the initial package update - even before initializing the editor
 			if (packageManager.IsPackageSyncRequired)
 			{
-				Log.Editor.Write("Synchronizing Local Package Setup...");
-				Log.Editor.PushIndent();
+				Logs.Editor.Write("Synchronizing Local Package Setup...");
+				Logs.Editor.PushIndent();
 				ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
 					GeneralRes.TaskInstallPackages_Caption, 
 					GeneralRes.TaskInstallPackages_Desc, 
@@ -105,7 +105,7 @@ namespace Duality.Editor
 				setupDialog.ShowInTaskbar = true;
 				setupDialog.MainThreadRequired = false;
 				setupDialog.ShowDialog();
-				Log.Editor.PopIndent();
+				Logs.Editor.PopIndent();
 			}
 
 			// Restart to apply the update. This will also trigger when there is a pending
@@ -143,15 +143,15 @@ namespace Duality.Editor
 			yield return null;
 
 			// Uninstall all "shadow" Duality packages that are installed, but not registered
-			Log.Editor.Write("Removing unregistered packages...");
-			Log.Editor.PushIndent();
+			Logs.Editor.Write("Removing unregistered packages...");
+			Logs.Editor.PushIndent();
 			manager.UninstallNonRegisteredPackages();
-			Log.Editor.PopIndent();
+			Logs.Editor.PopIndent();
 			yield return null;
 
 			// Iterate over previously reigstered local packages and verify / install them.
-			Log.Editor.Write("Verifying registered packages...");
-			Log.Editor.PushIndent();
+			Logs.Editor.Write("Verifying registered packages...");
+			Logs.Editor.PushIndent();
 			foreach (LocalPackage package in packagesToVerify)
 			{
 				// Update the task dialog's UI
@@ -169,15 +169,15 @@ namespace Duality.Editor
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteError("An error occurred verifying Package '{0}', Version {1}: {2}", 
+					Logs.Editor.WriteError("An error occurred verifying Package '{0}', Version {1}: {2}", 
 						package.Id, 
 						package.Version, 
-						Log.Exception(e));
+						LogFormat.Exception(e));
 				}
 				workerInterface.Progress += 0.5f / packagesToVerify.Length;
 				yield return null;
 			}
-			Log.Editor.PopIndent();
+			Logs.Editor.PopIndent();
 
 			yield break;
 		}
@@ -202,7 +202,7 @@ namespace Duality.Editor
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteWarning("Unable to archive old logfile: {0}", Log.Exception(e));
+				Logs.Core.WriteWarning("Unable to archive old logfile: {0}", LogFormat.Exception(e));
 			}
 		}
 		private static void CreateLogfile()
@@ -215,18 +215,18 @@ namespace Duality.Editor
 				logfileWriter = new StreamWriter(DualityEditorApp.EditorLogfilePath);
 				logfileWriter.AutoFlush = true;
 				logfileOutput = new TextWriterLogOutput(logfileWriter);
-				Log.AddGlobalOutput(logfileOutput);
+				Logs.AddGlobalOutput(logfileOutput);
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteWarning("Unable to create logfile: {0}", Log.Exception(e));
+				Logs.Core.WriteWarning("Unable to create logfile: {0}", LogFormat.Exception(e));
 			}
 		}
 		private static void CloseLogfile()
 		{
 			if (logfileOutput != null)
 			{
-				Log.RemoveGlobalOutput(logfileOutput);
+				Logs.RemoveGlobalOutput(logfileOutput);
 				logfileOutput = null;
 			}
 			if (logfileWriter != null)
@@ -241,7 +241,7 @@ namespace Duality.Editor
 		{
 			try
 			{
-				Log.Editor.WriteError(Log.Exception(e.ExceptionObject as Exception));
+				Logs.Editor.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
 			}
 			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
 		}
@@ -249,7 +249,7 @@ namespace Duality.Editor
 		{
 			try
 			{
-				Log.Editor.WriteError(Log.Exception(e.Exception));
+				Logs.Editor.WriteError(LogFormat.Exception(e.Exception));
 			}
 			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
 		}

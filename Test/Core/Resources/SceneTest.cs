@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Duality;
+using Duality.Drawing;
 using Duality.Resources;
 using Duality.Components;
+using Duality.Components.Physics;
 using Duality.Components.Renderers;
-using Duality.Tests.Components;
 
 using NUnit.Framework;
 
@@ -188,24 +189,24 @@ namespace Duality.Tests.Resources
 			scene.AddObject(obj);
 
 			// Basic setup check (Added properly?)
-			Assert.AreEqual(scene, obj.ParentScene);
+			Assert.AreEqual(scene, obj.Scene);
 			CollectionAssert.AreEquivalent(new[] { obj, objChildA, objChildB }, scene.AllObjects);
 
 			// Removing root object
 			scene.RemoveObject(obj);
-			Assert.AreEqual(null, obj.ParentScene);
+			Assert.AreEqual(null, obj.Scene);
 			CollectionAssert.IsEmpty(scene.AllObjects);
 
 			// Adding removed root object again
 			scene.AddObject(obj);
-			Assert.AreEqual(scene, obj.ParentScene);
+			Assert.AreEqual(scene, obj.Scene);
 			CollectionAssert.AreEquivalent(new[] { obj, objChildA, objChildB }, scene.AllObjects);
 
 			// Remove non-root object
 			scene.RemoveObject(objChildA);
 			CollectionAssert.AreEquivalent(new[] { obj, objChildB }, scene.AllObjects);
 			CollectionAssert.DoesNotContain(obj.Children, objChildA);
-			Assert.IsNull(objChildA.ParentScene);
+			Assert.IsNull(objChildA.Scene);
 			Assert.IsNull(objChildA.Parent);
 
 			// Clear Scene
@@ -231,21 +232,21 @@ namespace Duality.Tests.Resources
 			scene.RemoveObject(objChildA);
 			CollectionAssert.AreEquivalent(new[] { obj, objChildB }, scene.AllObjects);
 			CollectionAssert.DoesNotContain(obj.Children, objChildA);
-			Assert.IsNull(objChildA.ParentScene);
+			Assert.IsNull(objChildA.Scene);
 			Assert.IsNull(objChildA.Parent);
 
 			// Add object implicitly by parent-child relationship
 			objChildA.Parent = obj;
 			CollectionAssert.AreEquivalent(new[] { obj, objChildA, objChildB }, scene.AllObjects);
 			CollectionAssert.Contains(obj.Children, objChildA);
-			Assert.AreEqual(scene, objChildA.ParentScene);
+			Assert.AreEqual(scene, objChildA.Scene);
 			Assert.AreEqual(obj, objChildA.Parent);
 
 			// Change object parent
 			objChildA.Parent = objChildB;
 			CollectionAssert.AreEquivalent(new[] { obj, objChildA, objChildB }, scene.AllObjects);
 			CollectionAssert.Contains(objChildB.Children, objChildA);
-			Assert.AreEqual(scene, objChildA.ParentScene);
+			Assert.AreEqual(scene, objChildA.Scene);
 			Assert.AreEqual(objChildB, objChildA.Parent);
 
 			// Clean up
@@ -266,7 +267,7 @@ namespace Duality.Tests.Resources
 
 			// Let object switch Scenes implicitly by parent-child relationship
 			objChildA.Parent = obj2;
-			Assert.AreEqual(scene2, objChildA.ParentScene);
+			Assert.AreEqual(scene2, objChildA.Scene);
 			CollectionAssert.AreEquivalent(new[] { obj, objChildB }, scene.AllObjects);
 			CollectionAssert.AreEquivalent(new[] { obj2, objChildA }, scene2.AllObjects);
 			CollectionAssert.Contains(obj2.Children, objChildA);
@@ -338,6 +339,100 @@ namespace Duality.Tests.Resources
 			// Clean up
 			scene.Dispose();
 		}
+		/// <summary>
+		/// This test will determine whether a <see cref="Scene"/> can be activated, updated and deactivated
+		/// in isolation from the global <see cref="Scene.Current"/> setting.
+		/// </summary>
+		[Test] public void IsolatedSimulation()
+		{
+			// Create an isolated new test scene with a ball and a platform
+			Scene scene = new Scene();
+
+			GameObject ball = new GameObject("Ball");
+			Transform ballTransform = ball.AddComponent<Transform>();
+			RigidBody ballBody = ball.AddComponent<RigidBody>();
+			ballBody.AddShape(new CircleShapeInfo(32.0f, new Vector2(0.0f, 0.0f), 1.0f));
+			ball.AddComponent<RigidBodyRenderer>();
+			scene.AddObject(ball);
+
+			GameObject platform = new GameObject("Platform");
+			Transform platformTransform = platform.AddComponent<Transform>();
+			platformTransform.Pos = new Vector3(0.0f, 128.0f, 0.0f);
+			RigidBody platformBody = platform.AddComponent<RigidBody>();
+			platformBody.AddShape(new ChainShapeInfo(new[] { new Vector2(-128.0f, 0.0f), new Vector2(128.0f, 0.0f) }));
+			platformBody.BodyType = BodyType.Static;
+			platform.AddComponent<RigidBodyRenderer>();
+			scene.AddObject(platform);
+
+			// Do a single, fixed-step Duality update in order to set up
+			// Time.DeltaTime in a predictable way.
+			DualityApp.Update(true);
+
+			// Assert that the isolated scene remains unaffected
+			Assert.AreEqual(new Vector3(0.0f, 0.0f, 0.0f), ballTransform.Pos);
+			Assert.AreEqual(new Vector3(0.0f, 128.0f, 0.0f), platformTransform.Pos);
+
+			// Activate the scene to prepare for simulation
+			scene.Activate();
+
+			// Run the simulation for a few fixed-step frames
+			for (int i = 0; i < 100; i++)
+			{
+				scene.Update();
+			}
+
+			// Deactivate the scene again
+			scene.Deactivate();
+
+			// Assert that the balls position is within expected values
+			Assert.IsTrue(ballTransform.Pos.Y > 96.0f);
+			Assert.IsTrue(ballTransform.Pos.Y < 128.0f);
+			Assert.IsTrue(Math.Abs(ballTransform.Pos.X) < 1.00f);
+			Assert.IsTrue(Math.Abs(ballTransform.Pos.Z) < 1.00f);
+		}
+		/// <summary>
+		/// This test will determine whether a <see cref="Scene"/> can be rendered
+		/// in isolation from the global <see cref="Scene.Current"/> setting.
+		/// </summary>
+		[Test, Category("Rendering")]
+		public void IsolatedRendering()
+		{
+			// Create an isolated new test scene with a ball and a platform
+			Scene scene = new Scene();
+
+			GameObject ball = new GameObject("Ball");
+			Transform ballTransform = ball.AddComponent<Transform>();
+			SpriteRenderer ballRenderer = ball.AddComponent<SpriteRenderer>();
+			scene.AddObject(ball);
+
+			GameObject cameraObj = new GameObject("Camera");
+			Transform cameraTransform = cameraObj.AddComponent<Transform>();
+			cameraTransform.Pos = new Vector3(0.0f, 0.0f, -500.0f);
+			Camera camera = cameraObj.AddComponent<Camera>();
+			camera.ClearColor = new ColorRgba(128, 192, 255);
+			scene.AddObject(cameraObj);
+
+			// Activate the scene to prepare for simulation
+			scene.Activate();
+
+			// Render the scene to an image target
+			PixelData renderedImage = null;
+			using (Texture texture = new Texture(800, 600, TextureSizeMode.NonPowerOfTwo, TextureMagFilter.Nearest, TextureMinFilter.Nearest))
+			using (RenderTarget renderTarget = new RenderTarget(AAQuality.Off, true, texture))
+			{
+				scene.Render(renderTarget, new Rect(renderTarget.Size), renderTarget.Size);
+				renderedImage = texture.GetPixelData();
+			}
+
+			// Deactivate the scene again
+			scene.Deactivate();
+
+			// Assert that the image target has the correct background color
+			// and deviates from it at the balls position
+			Vector2 ballPosInOutputImage = camera.GetScreenPos(ballTransform.Pos);
+			Assert.AreEqual(camera.ClearColor, renderedImage[0, 0]);
+			Assert.AreNotEqual(camera.ClearColor, renderedImage[(int)ballPosInOutputImage.X, (int)ballPosInOutputImage.Y]);
+		}
 
 		private class UpdateSwitchToSceneComponent : Component, ICmpUpdatable
 		{
@@ -346,8 +441,8 @@ namespace Duality.Tests.Resources
 			void ICmpUpdatable.OnUpdate()
 			{
 				Scene last = Scene.Current;
-				Scene.SwitchTo(Target);
-				this.Switched = (last != Scene.Current && Scene.Current == Target);
+				Scene.SwitchTo(this.Target);
+				this.Switched = (last != Scene.Current && Scene.Current == this.Target);
 			}
 		}
 		private class UpdateReloadSceneComponent : Component, ICmpUpdatable
@@ -361,30 +456,24 @@ namespace Duality.Tests.Resources
 		{
 			public ContentRef<Scene> Target { get; set; }
 			public bool Switched { get; private set; }
-			void ICmpInitializable.OnInit(InitContext context)
+			void ICmpInitializable.OnActivate()
 			{
-				if (context == InitContext.Activate)
-				{
-					Scene last = Scene.Current;
-					Scene.SwitchTo(Target);
-					this.Switched = (last != Scene.Current && Scene.Current == Target);
-				}
+				Scene last = Scene.Current;
+				Scene.SwitchTo(this.Target);
+				this.Switched = (last != Scene.Current && Scene.Current == this.Target);
 			}
-			void ICmpInitializable.OnShutdown(ShutdownContext context) {}
+			void ICmpInitializable.OnDeactivate() {}
 		}
 		private class ShutdownSwitchToSceneComponent : Component, ICmpInitializable
 		{
 			public ContentRef<Scene> Target { get; set; }
 			public bool Switched { get; private set; }
-			void ICmpInitializable.OnInit(InitContext context) {}
-			void ICmpInitializable.OnShutdown(ShutdownContext context)
+			void ICmpInitializable.OnActivate() {}
+			void ICmpInitializable.OnDeactivate()
 			{
-				if (context == ShutdownContext.Deactivate)
-				{
-					Scene last = Scene.Current;
-					Scene.SwitchTo(Target);
-					this.Switched = (last != Scene.Current && Scene.Current == Target);
-				}
+				Scene last = Scene.Current;
+				Scene.SwitchTo(this.Target);
+				this.Switched = (last != Scene.Current && Scene.Current == this.Target);
 			}
 		}
 	}

@@ -10,28 +10,28 @@ namespace Duality.Drawing
 	public class VertexElementAttribute : Attribute
 	{
 		private VertexElementType type;
-		private VertexElementRole role;
+		private string name;
 		private int count;
 
 		public VertexElementType Type
 		{
 			get { return this.type; }
 		}
-		public VertexElementRole Role
+		public string Name
 		{
-			get { return this.role; }
+			get { return this.name; }
 		}
 		public int Count
 		{
 			get { return this.count; }
 		}
 
-		public VertexElementAttribute(VertexElementRole role) : this(VertexElementType.Unknown, 0, role) { }
-		public VertexElementAttribute(VertexElementType type, int count, VertexElementRole role = VertexElementRole.Unknown)
+		public VertexElementAttribute(string name) : this(VertexElementType.Unknown, 0, name) { }
+		public VertexElementAttribute(VertexElementType type, int count, string name = null)
 		{
 			this.type = type;
 			this.count = count;
-			this.role = role;
+			this.name = name;
 		}
 	}
 }

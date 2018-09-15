@@ -16,9 +16,9 @@ using NUnit.Framework;
 
 namespace Duality.Tests.Cloning.HelperObjects
 {
-	internal class WeakReferenceTestObject
+	internal class WeakReferenceTestObject : ICloneExplicit
 	{
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneField(CloneFieldFlags.Skip)]
 		public WeakReferenceTestObject Parent;
 		[CloneBehavior(typeof(WeakReferenceTestObject), CloneBehavior.ChildObject)]
 		public List<WeakReferenceTestObject> Children;
@@ -49,6 +49,20 @@ namespace Duality.Tests.Cloning.HelperObjects
 			if (object.ReferenceEquals(this.Children, other.Children) && !object.ReferenceEquals(this.Children, null)) return true;
 			if (this.Children.Zip(other.Children, (a, b) => a.AnyReferenceEquals(b)).Contains(true)) return true;
 			return false;
+		}
+
+		void ICloneExplicit.SetupCloneTargets(object target, ICloneTargetSetup setup)
+		{
+			setup.HandleObject(this, target);
+		}
+		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
+		{
+			operation.HandleObject(this, target);
+
+			// If the source objects parent was cloned as well, assign its
+			// cloned instance to our target object. 
+			WeakReferenceTestObject testTarget = target as WeakReferenceTestObject;
+			testTarget.Parent = operation.GetWeakTarget(this.Parent);
 		}
 	}
 }

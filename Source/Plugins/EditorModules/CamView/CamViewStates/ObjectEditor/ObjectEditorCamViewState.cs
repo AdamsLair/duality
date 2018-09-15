@@ -126,7 +126,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public void MoveSelectionToCursor()
 		{
 			Point mousePos = this.PointToClient(Cursor.Position);
-			Vector3 mouseSpaceCoord = this.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, this.selectionCenter.Z));
+			Vector3 mouseSpaceCoord = this.GetWorldPos(new Vector3(mousePos.X, mousePos.Y, this.selectionCenter.Z));
 
 			// Apply user guide snapping
 			if ((this.SnapToUserGuides & UserGuideType.Position) != UserGuideType.None)
@@ -175,34 +175,32 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			MathF.TransformDotVec(ref down, ref catDotX, ref catDotY);
 
 			canvas.PushState();
-			canvas.State.ZOffset = -1.0f;
+			canvas.State.DepthOffset = -1.0f;
 			foreach (ObjectEditorSelObj selObj in obj)
 			{
 				if (!selObj.HasTransform) continue;
 				Vector3 posTemp = selObj.Pos;
-				float scaleTemp = 1.0f;
 				float radTemp = selObj.BoundRadius;
 
-				if (!canvas.DrawDevice.IsCoordInView(posTemp, radTemp)) continue;
+				if (!canvas.DrawDevice.IsSphereInView(posTemp, radTemp)) continue;
 
 				// Draw selection marker
 				if (selObj.ShowPos)
 				{
-					canvas.DrawDevice.PreprocessCoords(ref posTemp, ref scaleTemp);
-					posTemp.Z = 0.0f;
-					{
-						ColorRgba color = canvas.State.ColorTint * canvas.State.Material.MainColor;
-						VertexC1P3[] vertices = new VertexC1P3[4];
-						vertices[0].Pos = posTemp - right * 5.0f;
-						vertices[1].Pos = posTemp + right * 5.0f;
-						vertices[2].Pos = posTemp - down * 5.0f;
-						vertices[3].Pos = posTemp + down * 5.0f;
-						vertices[0].Color = color;
-						vertices[1].Color = color;
-						vertices[2].Color = color;
-						vertices[3].Color = color;
-						canvas.DrawDevice.AddVertices(canvas.State.Material, VertexMode.Lines, vertices);
-					}
+					canvas.DrawLine(
+						(posTemp - right * 5.0f).X,
+						(posTemp - right * 5.0f).Y,
+						posTemp.Z,
+						(posTemp + right * 5.0f).X,
+						(posTemp + right * 5.0f).Y,
+						posTemp.Z);
+					canvas.DrawLine(
+						(posTemp - down * 5.0f).X,
+						(posTemp - down * 5.0f).Y,
+						posTemp.Z,
+						(posTemp + down * 5.0f).X,
+						(posTemp + down * 5.0f).Y,
+						posTemp.Z);
 				}
 
 				// Draw angle marker
@@ -222,23 +220,26 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		protected void DrawLockedAxes(Canvas canvas, float x, float y, float z, float r)
 		{
-			Vector3 refPos = canvas.DrawDevice.RefCoord;
+			Vector3 refPos = canvas.DrawDevice.ViewerPos;
 			float nearZ = canvas.DrawDevice.NearZ;
 
 			canvas.PushState();
 			if (this.actionLockedAxis == ObjectEditorAxisLock.X)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Red, 0.5f)));
+				canvas.State.SetMaterial(DrawTechnique.Solid);
+				canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, ColorRgba.Red, 0.5f);
 				canvas.DrawLine(x - r, y, z, x + r, y, z);
 			}
 			if (this.actionLockedAxis == ObjectEditorAxisLock.Y)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Green, 0.5f)));
+				canvas.State.SetMaterial(DrawTechnique.Solid);
+				canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, ColorRgba.Green, 0.5f);
 				canvas.DrawLine(x, y - r, z, x, y + r, z);
 			}
 			if (this.actionLockedAxis == ObjectEditorAxisLock.Z)
 			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Blue, 0.5f)));
+				canvas.State.SetMaterial(DrawTechnique.Solid);
+				canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, ColorRgba.Blue, 0.5f);
 				canvas.DrawLine(x, y, MathF.Max(z - r, refPos.Z + nearZ + 10), x, y, z);
 				canvas.DrawLine(x, y, z, x, y, z + r);
 			}
@@ -309,7 +310,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.action = action;
 			this.actionBeginLoc = mouseLoc;
-			this.actionBeginLocSpace = this.GetSpaceCoord(new Vector3(
+			this.actionBeginLocSpace = this.GetWorldPos(new Vector3(
 				mouseLoc.X, 
 				mouseLoc.Y, 
 				(this.action == ObjectEditorAction.RectSelect) ? 0.0f : this.selectionCenter.Z));
@@ -416,7 +417,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.mouseoverObject = this.PickSelObjAt(mouseLoc.X, mouseLoc.Y);
 
 				// Determine action variables
-				Vector3 mouseSpaceCoord = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
+				Vector3 mouseSpaceCoord = this.GetWorldPos(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
 				float scale = this.GetScaleAtZ(this.selectionCenter.Z);
 				const float boundaryThickness = 10.0f;
 				bool tooSmall = this.selectionRadius * scale <= boundaryThickness * 2.0f;
@@ -524,7 +525,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			// Determine where to move the object
 			float zMovement = this.CameraObj.Transform.Pos.Z - this.actionLastLocSpace.Z;
-			Vector3 mousePosSpace = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z + zMovement)); mousePosSpace.Z = 0;
+			Vector3 mousePosSpace = this.GetWorldPos(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z + zMovement)); mousePosSpace.Z = 0;
 			Vector3 resetMovement = this.actionBeginLocSpace - this.actionLastLocSpace;
 			Vector3 targetMovement = mousePosSpace - this.actionLastLocSpace; targetMovement.Z = zMovement;
 
@@ -550,7 +551,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			this.ValidateSelectionStats();
 
-			Vector3 spaceCoord = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
+			Vector3 spaceCoord = this.GetWorldPos(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
 			float lastAngle = MathF.Angle(this.selectionCenter.X, this.selectionCenter.Y, this.actionLastLocSpace.X, this.actionLastLocSpace.Y);
 			float curAngle = MathF.Angle(this.selectionCenter.X, this.selectionCenter.Y, spaceCoord.X, spaceCoord.Y);
 			float rotation = curAngle - lastAngle;
@@ -564,7 +565,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.ValidateSelectionStats();
 			if (this.selectionRadius == 0.0f) return;
 
-			Vector3 spaceCoord = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
+			Vector3 spaceCoord = this.GetWorldPos(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
 			float lastRadius = this.selectionRadius;
 			float curRadius = (this.selectionCenter - spaceCoord).Length;
 
@@ -602,16 +603,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			List<ObjectEditorSelObj> transformObjSel = this.allObjSel.Where(s => s.HasTransform).ToList();
 			Point cursorPos = this.PointToClient(Cursor.Position);
 			canvas.PushState();
-			canvas.State.ZOffset = -1.0f;
+			canvas.State.DepthOffset = -1.0f;
+			canvas.State.SetMaterial(DrawTechnique.Solid);
 			
 			// Draw indirectly selected object overlay
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f)));
+			canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f);
 			this.DrawSelectionMarkers(canvas, this.indirectObjSel);
 			if (this.mouseoverObject != null && (this.mouseoverAction == ObjectEditorAction.RectSelect || this.mouseoverSelect) && !transformObjSel.Contains(this.mouseoverObject)) 
 				this.DrawSelectionMarkers(canvas, new [] { this.mouseoverObject });
 
 			// Draw selected object overlay
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
+			canvas.State.ColorTint = this.FgColor;
 			this.DrawSelectionMarkers(canvas, transformObjSel);
 
 			// Draw overall selection boundary
@@ -621,7 +623,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				float maxZDiff = transformObjSel.Max(t => MathF.Abs(t.Pos.Z - midZ));
 				if (maxZDiff > 0.001f)
 				{
-					canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f)));
+					canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f);
 					canvas.DrawSphere(
 						this.selectionCenter.X, 
 						this.selectionCenter.Y, 
@@ -630,7 +632,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				}
 				else
 				{
-					canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f)));
+					canvas.State.ColorTint = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f);
 					canvas.DrawCircle(
 						this.selectionCenter.X, 
 						this.selectionCenter.Y, 
@@ -645,29 +647,29 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (canScale)
 			{
 				float dotR = 3.0f / this.GetScaleAtZ(this.selectionCenter.Z);
-				canvas.State.ZOffset -= 0.1f;
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
+				canvas.State.DepthOffset -= 0.1f;
+				canvas.State.ColorTint = this.FgColor;
 				canvas.FillCircle(
-					this.selectionCenter.X + this.selectionRadius, 
-					this.selectionCenter.Y, 
+					this.selectionCenter.X + this.selectionRadius + 0.5f - 1.0f, 
+					this.selectionCenter.Y + 0.5f - 1.0f, 
 					this.selectionCenter.Z,
 					dotR);
 				canvas.FillCircle(
-					this.selectionCenter.X - this.selectionRadius, 
-					this.selectionCenter.Y, 
+					this.selectionCenter.X - this.selectionRadius + 0.5f, 
+					this.selectionCenter.Y + 0.5f, 
 					this.selectionCenter.Z,
 					dotR);
 				canvas.FillCircle(
-					this.selectionCenter.X, 
-					this.selectionCenter.Y + this.selectionRadius, 
+					this.selectionCenter.X + 0.5f - 1.0f, 
+					this.selectionCenter.Y + this.selectionRadius + 0.5f - 1.0f, 
 					this.selectionCenter.Z,
 					dotR);
 				canvas.FillCircle(
-					this.selectionCenter.X, 
-					this.selectionCenter.Y - this.selectionRadius, 
+					this.selectionCenter.X + 0.5f, 
+					this.selectionCenter.Y - this.selectionRadius + 0.5f, 
 					this.selectionCenter.Z,
 					dotR);
-				canvas.State.ZOffset += 0.1f;
+				canvas.State.DepthOffset += 0.1f;
 			}
 
 			if (this.action != ObjectEditorAction.None)
@@ -706,7 +708,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				else
 				{
 					obj = this.actionObjSel[0];
-					actionTextPos = this.GetScreenCoord(this.actionObjSel[0].Pos).Xy;
+					actionTextPos = this.GetScreenPos(this.actionObjSel[0].Pos);
 				}
 
 				// If the SelObj is valid, let it determine the current action text

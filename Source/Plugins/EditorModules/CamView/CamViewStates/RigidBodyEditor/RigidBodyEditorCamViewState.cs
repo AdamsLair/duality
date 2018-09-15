@@ -221,7 +221,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			foreach (RigidBody c in visibleColliders)
 			{
-				Vector3 worldCoord = this.GetSpaceCoord(new Vector3(x, y, c.GameObj.Transform.Pos.Z));
+				Vector3 worldCoord = this.GetWorldPos(new Vector3(x, y, c.GameObj.Transform.Pos.Z));
 
 				// Do a physical picking operation
 				pickedShape = this.PickShape(c, worldCoord.Xy);
@@ -257,7 +257,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Pick a collider
 			foreach (RigidBody c in visibleColliders)
 			{
-				Vector3 worldCoord = this.GetSpaceCoord(new Vector3(x, y, c.GameObj.Transform.Pos.Z));
+				Vector3 worldCoord = this.GetWorldPos(new Vector3(x, y, c.GameObj.Transform.Pos.Z));
 				float scale = this.GetScaleAtZ(c.GameObj.Transform.Pos.Z);
 				pickedShape = this.PickShapes(c, worldCoord.Xy, new Vector2(w / scale, h / scale)).FirstOrDefault();
 				if (pickedShape != null)
@@ -272,7 +272,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Pick shapes
 			if (pickedCollider != null)
 			{
-				Vector3 worldCoord = this.GetSpaceCoord(new Vector3(x, y, pickedCollider.GameObj.Transform.Pos.Z));
+				Vector3 worldCoord = this.GetWorldPos(new Vector3(x, y, pickedCollider.GameObj.Transform.Pos.Z));
 				float scale = this.GetScaleAtZ(pickedCollider.GameObj.Transform.Pos.Z);
 				List<ShapeInfo> picked = this.PickShapes(pickedCollider, worldCoord.Xy, new Vector2(w / scale, h / scale));
 				if (picked.Count > 0) result.AddRange(picked.Select(s => RigidBodyEditorSelShape.Create(s) as ObjectEditorSelObj));
@@ -283,17 +283,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		private ShapeInfo PickShape(RigidBody body, Vector2 worldCoord)
 		{
-			// Special case for Loop- and ChainShapes, because they are by definition unpickable
+			// Special case for non-solid / "outline only" shapes, because they are by definition unpickable
 			Rect worldRect = Rect.Align(Alignment.Center, worldCoord.X, worldCoord.Y, 10.0f, 10.0f);
 			foreach (ShapeInfo shape in body.Shapes)
 			{
-				LoopShapeInfo loop = shape as LoopShapeInfo;
-				ChainShapeInfo chain = shape as ChainShapeInfo;
+				VertexBasedShapeInfo vertexShape = shape as VertexBasedShapeInfo;
+				if (vertexShape == null) continue;
+				if ((vertexShape.ShapeTraits & VertexShapeTrait.IsSolid) != VertexShapeTrait.None) continue;
 				
-				Vector2[] vertices = null;
-				if (loop != null) vertices = loop.Vertices;
-				if (chain != null) vertices = chain.Vertices;
-
+				Vector2[] vertices = vertexShape.Vertices;
 				if (vertices != null && IsOutlineBoxIntersection(body.GameObj.Transform, vertices, worldRect))
 					return shape;
 			}
@@ -309,16 +307,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			List<ShapeInfo> result = new List<ShapeInfo>();
 			body.PickShapes(worldCoord, worldSize, result);
 
-			// Special case for Loop- and ChainShapes, because they are by definition unpickable
+			// Special case for non-solid / "outline only" shapes, because they are by definition unpickable
 			foreach (ShapeInfo shape in body.Shapes)
 			{
-				LoopShapeInfo loop = shape as LoopShapeInfo;
-				ChainShapeInfo chain = shape as ChainShapeInfo;
+				VertexBasedShapeInfo vertexShape = shape as VertexBasedShapeInfo;
+				if (vertexShape == null) continue;
+				if ((vertexShape.ShapeTraits & VertexShapeTrait.IsSolid) != VertexShapeTrait.None) continue;
 				
-				Vector2[] vertices = null;
-				if (loop != null) vertices = loop.Vertices;
-				if (chain != null) vertices = chain.Vertices;
-
+				Vector2[] vertices = vertexShape.Vertices;
 				if (vertices != null && IsOutlineBoxIntersection(body.GameObj.Transform, vertices, worldRect))
 				{
 					result.Add(shape);
@@ -525,7 +521,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Point mousePos = this.PointToClient(Cursor.Position);
 			if (selTransform != null)
 			{
-				this.hoveredWorldPos = this.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, selTransform.Pos.Z));
+				this.hoveredWorldPos = this.GetWorldPos(new Vector3(mousePos.X, mousePos.Y, selTransform.Pos.Z));
 				this.activeWorldPos = this.hoveredWorldPos;
 			}
 			else
@@ -580,7 +576,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			return allColliders.Where(r => 
 				r.Active && 
 				!DesignTimeObjectData.Get(r.GameObj).IsHidden && 
-				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
+				this.IsSphereInView(r.GameObj.Transform.Pos, r.BoundRadius));
 		}
 		protected RigidBody QuerySelectedCollider()
 		{

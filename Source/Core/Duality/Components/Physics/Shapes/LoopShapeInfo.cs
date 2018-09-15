@@ -13,61 +13,34 @@ namespace Duality.Components.Physics
 	/// <summary>
 	/// Describes a double-sided edge loop (outline) in a <see cref="RigidBody"/> shape.
 	/// </summary>
-	public sealed class LoopShapeInfo : ShapeInfo
+	public sealed class LoopShapeInfo : VertexBasedShapeInfo
 	{
 		[DontSerialize]
 		private Fixture fixture;
-		private Vector2[] vertices;
 
 
-		/// <summary>
-		/// [GET / SET] The edge loops vertices. While assinging the array will cause an automatic update, simply modifying it will require you to call <see cref="ShapeInfo.UpdateShape"/> manually.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.ForceWriteback)]
-		[EditorHintIncrement(1)]
-		[EditorHintDecimalPlaces(1)]
-		public Vector2[] Vertices
+		/// <inheritdoc />
+		public override VertexShapeTrait ShapeTraits
 		{
-			get { return this.vertices ?? EmptyVertices; }
-			set
-			{
-				this.vertices = value ?? new Vector2[] { Vector2.Zero, Vector2.UnitX, Vector2.UnitY };
-				this.UpdateInternalShape(true);
-			}
-		}
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public override Rect AABB
-		{
-			get 
-			{
-				if (this.vertices == null || this.vertices.Length == 0)
-					return Rect.Empty;
-
-				float minX = float.MaxValue;
-				float minY = float.MaxValue;
-				float maxX = float.MinValue;
-				float maxY = float.MinValue;
-				for (int i = 0; i < this.vertices.Length; i++)
-				{
-					minX = MathF.Min(minX, this.vertices[i].X);
-					minY = MathF.Min(minY, this.vertices[i].Y);
-					maxX = MathF.Max(maxX, this.vertices[i].X);
-					maxY = MathF.Max(maxY, this.vertices[i].Y);
-				}
-				return new Rect(minX, minY, maxX - minX, maxY - minY);
-			}
+			get { return VertexShapeTrait.IsLoop; }
 		}
 		protected override bool IsInternalShapeCreated
 		{
 			get { return this.fixture != null; }
 		}
 
-			
+		
+		/// <summary>
+		/// Creates a new, empty loop shape.
+		/// </summary>
 		public LoopShapeInfo() {}
-		public LoopShapeInfo(IEnumerable<Vector2> vertices)
-		{
-			this.vertices = vertices.ToArray();
-		}
+		/// <summary>
+		/// Creates a new loop shape. Note that it will assume ownership of
+		/// the specified vertex array, so no copy will be made.
+		/// </summary>
+		/// <param name="vertices"></param>
+		public LoopShapeInfo(Vector2[] vertices) : base(vertices) { }
+
 
 		protected override void DestroyFixtures()
 		{
@@ -92,7 +65,7 @@ namespace Duality.Components.Physics
 			this.fixture.Friction = this.friction;
 			
 			ChainShape shape = this.fixture.Shape as ChainShape;
-			shape.Density = this.density;
+			shape.Density = this.density * PhysicsUnit.DensityToPhysical / (10.0f * 10.0f);
 		}
 
 		private bool EnsureFixtures()

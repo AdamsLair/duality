@@ -34,18 +34,25 @@ namespace Duality.Drawing
 
 
 		/// <summary>
-		/// [GET] The layers width in pixels
+		/// [GET] The image data's width in pixels
 		/// </summary>
 		public int Width
 		{
 			get { return this.width; }
 		}
 		/// <summary>
-		/// [GET] The layers height in pixels
+		/// [GET] The image data's height in pixels
 		/// </summary>
 		public int Height
 		{
 			get { return this.height; }
+		}
+		/// <summary>
+		/// [GET] The image data's size in pixels
+		/// </summary>
+		public Point2 Size
+		{
+			get { return new Point2(this.width, this.height); }
 		}
 		/// <summary>
 		/// [GET] The layers pixel data

@@ -44,7 +44,7 @@ namespace Duality.Backend.Dummy
 		}
 		void IDualityBackend.Init()
 		{
-			Log.Core.WriteWarning("DummyAudioBackend initialized. This is unusual and may cause problems when someone tries to play audio.");
+			Logs.Core.WriteWarning("DummyAudioBackend initialized. This is unusual and may cause problems when someone tries to play audio.");
 			activeInstance = this;
 		}
 		void IDualityBackend.Shutdown()

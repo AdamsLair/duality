@@ -26,8 +26,8 @@ namespace Duality
 	public struct ContentRef<T> : IEquatable<ContentRef<T>>, IContentRef where T : Resource
 	{
 		[DontSerialize, CloneBehavior(CloneBehavior.Reference), CloneField(CloneFieldFlags.DontSkip)]
-		private	T		contentInstance;
-		private	string	contentPath;
+		private T      contentInstance;
+		private string contentPath;
 		
 		/// <summary>
 		/// [GET / SET] The actual <see cref="Resource"/>. If currently unavailable, it is loaded and then returned.
@@ -100,7 +100,7 @@ namespace Duality
 		{
 			get
 			{
-				return this.contentInstance == null && String.IsNullOrEmpty(this.contentPath);
+				return this.contentInstance == null && string.IsNullOrEmpty(this.contentPath);
 			}
 		}
 		/// <summary>
@@ -131,7 +131,7 @@ namespace Duality
 		/// </summary>
 		public bool IsDefaultContent
 		{
-			get { return this.contentPath != null && ContentProvider.IsDefaultContentPath(this.contentPath); }
+			get { return Resource.IsDefaultContentPath(this.contentPath); }
 		}
 		/// <summary>
 		/// [GET] Returns whether the Resource has been generated at runtime and cannot be retrieved via content path.
@@ -150,7 +150,7 @@ namespace Duality
 				if (this.IsRuntimeResource)
 					return this.contentInstance.GetHashCode().ToString(CultureInfo.InvariantCulture);
 				else
-					return ContentProvider.GetNameFromPath(this.contentPath);
+					return Resource.GetNameFromPath(this.contentPath);
 			}
 		}
 		/// <summary>
@@ -163,18 +163,18 @@ namespace Duality
 				if (this.IsRuntimeResource)
 					return this.contentInstance.GetHashCode().ToString(CultureInfo.InvariantCulture);
 				else
-					return ContentProvider.GetFullNameFromPath(this.contentPath);
+					return Resource.GetFullNameFromPath(this.contentPath);
 			}
 		}
-		
-		
+
+
 		/// <summary>
 		/// Creates a ContentRef pointing to the specified <see cref="Resource"/>, assuming the
 		/// specified path as its origin, if the Resource itsself is either null or doesn't
 		/// provide a valid <see cref="Resource.Path"/>.
 		/// </summary>
 		/// <param name="res">The Resource to reference.</param>
-		/// <param name="altPath">The referenced Resource's file path.</param>
+		/// <param name="requestPath">The referenced Resource's file path.</param>
 		public ContentRef(T res, string requestPath)
 		{
 			this.contentInstance = res;
@@ -184,6 +184,16 @@ namespace Duality
 				this.contentPath = res.Path;
 			else 
 				this.contentPath = requestPath;
+		}
+		/// <summary>
+		/// Creates a ContentRef pointing to the <see cref="Resource"/> at the specified path / using 
+		/// the specified alias.
+		/// </summary>
+		/// <param name="path"></param>
+		public ContentRef(string path)
+		{
+			this.contentInstance = null;
+			this.contentPath = path;
 		}
 		/// <summary>
 		/// Creates a ContentRef pointing to the specified <see cref="Resource"/>.
@@ -239,11 +249,13 @@ namespace Duality
 
 		/// <summary>
 		/// Loads the associated content as if it was accessed now.
-		/// You don't usually need to call this method. It is invoked implicitly by trying to access the ContentRef
+		/// You don't usually need to call this method. It is invoked implicitly by trying to 
+		/// access the <see cref="ContentRef{T}"/>.
 		/// </summary>
-		public void MakeAvailable()
+		public void EnsureLoaded()
 		{
-			if (this.contentInstance == null || this.contentInstance.Disposed) this.RetrieveInstance();
+			if (this.contentInstance == null || this.contentInstance.Disposed)
+				this.RetrieveInstance();
 		}
 		/// <summary>
 		/// Discards the resolved content reference cache to allow garbage-collecting the Resource
@@ -255,9 +267,9 @@ namespace Duality
 		}
 		private void RetrieveInstance()
 		{
-			if (!String.IsNullOrEmpty(this.contentPath))
+			if (!string.IsNullOrEmpty(this.contentPath))
 				this.contentInstance = ContentProvider.RequestContent<T>(this.contentPath).contentInstance;
-			else if (this.contentInstance != null && !String.IsNullOrEmpty(this.contentInstance.Path))
+			else if (this.contentInstance != null && !string.IsNullOrEmpty(this.contentInstance.Path))
 				this = ContentProvider.RequestContent<T>(this.contentInstance.Path);
 			else
 				this.contentInstance = null;

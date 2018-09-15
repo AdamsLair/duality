@@ -12,7 +12,7 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 	{
 		public static string GetNodePathId(string nodePath)
 		{
-			if (ContentProvider.IsDefaultContentPath(nodePath))
+			if (Resource.IsDefaultContentPath(nodePath))
 				return nodePath.ToUpper();
 			else
 				return Path.GetFullPath(nodePath).ToUpper();
@@ -85,7 +85,7 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 		}
 		public virtual string GetNameFromPath(string path)
 		{
-			if (ContentProvider.IsDefaultContentPath(path))
+			if (Resource.IsDefaultContentPath(path))
 			{
 				string[] pathSplit = path.Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries);
 				return pathSplit[pathSplit.Length - 1];
@@ -126,14 +126,26 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 				return false;
 			}
 
-			if (equalsCaseInsensitive)
+			try
 			{
-				string tempPath = newPath + "_sSJencn83rhfSHhfn3ns456omvmvs28fndDN84ns";
-				Directory.Move(oldPath, tempPath);
-				Directory.Move(tempPath, newPath);
+				if (equalsCaseInsensitive)
+				{
+					// As Windows doesn't properly apply renames that change character casing 
+					// and nothing else, we'll do a two-step rename using a temp path.
+					string tempPath = newPath + "_sSJencn83rhfSHhfn3ns456omvmvs28fndDN84ns";
+					Directory.Move(oldPath, tempPath);
+					Directory.Move(tempPath, newPath);
+				}
+				else
+				{
+					Directory.Move(oldPath, newPath);
+				}
 			}
-			else
-				Directory.Move(oldPath, newPath);
+			catch (Exception e)
+			{
+				Logs.Editor.WriteError("Error moving directory from '{0}' to '{1}': {2}", oldPath, newPath, e);
+				return false;
+			}
 
 			// Between performing the move event and it being received by the FileEventManager there will be a
 			// short window of inconsistency where the existing Resource is still registered under its old name
@@ -150,7 +162,7 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 		}
 		public override string GetNameFromPath(string path)
 		{
-			if (!ContentProvider.IsDefaultContentPath(path))
+			if (!Resource.IsDefaultContentPath(path))
 				return Path.GetFileName(path);
 			else
 				return base.GetNameFromPath(path);
@@ -218,14 +230,26 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 				return false;
 			}
 
-			if (equalsCaseInsensitive)
+			try
 			{
-				string tempPath = newPath + "_sSJencn83rhfSHhfn3ns456omvmvs28fndDN84ns";
-				File.Move(oldPath, tempPath);
-				File.Move(tempPath, newPath);
+				if (equalsCaseInsensitive)
+				{
+					// As Windows doesn't properly apply renames that change character casing 
+					// and nothing else, we'll do a two-step rename using a temp path.
+					string tempPath = newPath + "_sSJencn83rhfSHhfn3ns456omvmvs28fndDN84ns";
+					File.Move(oldPath, tempPath);
+					File.Move(tempPath, newPath);
+				}
+				else
+				{
+					File.Move(oldPath, newPath);
+				}
 			}
-			else
-				File.Move(oldPath, newPath);
+			catch (Exception e)
+			{
+				Logs.Editor.WriteError("Error moving Resource from '{0}' to '{1}': {2}", oldPath, newPath, e);
+				return false;
+			}
 
 			// Between performing the move event and it being received by the FileEventManager there will be a
 			// short window of inconsistency where the existing Resource is still registered under its old name
@@ -238,8 +262,8 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 		}
 		public override string GetNameFromPath(string path)
 		{
-			if (!ContentProvider.IsDefaultContentPath(path))
-				return ContentProvider.GetNameFromPath(path);
+			if (!Resource.IsDefaultContentPath(path))
+				return Resource.GetNameFromPath(path);
 			else
 				return base.GetNameFromPath(path);
 		}

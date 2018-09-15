@@ -61,51 +61,6 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a new Tileset Resource based on the Pixmap..
-        /// </summary>
-        internal static string ActionDesc_CreateTileset {
-            get {
-                return ResourceManager.GetString("ActionDesc_CreateTileset", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Opens a Camera View in Tilemap Editor mode and selects the Tilemap for editing..
-        /// </summary>
-        internal static string ActionDesc_OpenTilemapEditor {
-            get {
-                return ResourceManager.GetString("ActionDesc_OpenTilemapEditor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Opens the Tileset for editing..
-        /// </summary>
-        internal static string ActionDesc_OpenTileset {
-            get {
-                return ResourceManager.GetString("ActionDesc_OpenTileset", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Opens a user dialog that allows to resize the selected Tilemaps. If no tilemaps are selected, it will resize all currently active, non-hidden tilemaps in the current scene..
-        /// </summary>
-        internal static string ActionDesc_ResizeTilemap {
-            get {
-                return ResourceManager.GetString("ActionDesc_ResizeTilemap", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Opens a user dialog that helps you quickly create a set of layered Tilemaps..
-        /// </summary>
-        internal static string ActionDesc_SetupTilemap {
-            get {
-                return ResourceManager.GetString("ActionDesc_SetupTilemap", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Create Tileset.
         /// </summary>
         internal static string ActionName_CreateTileset {

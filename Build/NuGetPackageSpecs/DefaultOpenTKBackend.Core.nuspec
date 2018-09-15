@@ -17,7 +17,7 @@
 #FIX: Fixed native audio source handling on streaming sources that do not contain any data.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.14.8" />
-      <dependency id="AdamsLair.OpenTK" version="1.1.10" />
+      <dependency id="AdamsLair.OpenTK" version="1.1.11" />
     </dependencies>
   </metadata>
   <files>

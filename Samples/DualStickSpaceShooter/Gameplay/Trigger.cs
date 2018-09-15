@@ -46,7 +46,7 @@ namespace DualStickSpaceShooter
 			{
 				if (this.triggerSound != null)
 				{
-					DualityApp.Sound.PlaySound3D(this.triggerSound, this.GameObj);
+					DualityApp.Sound.PlaySound3D(this.triggerSound, this.GameObj, false);
 				}
 				if (this.targets != null)
 				{

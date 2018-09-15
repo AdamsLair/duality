@@ -1,6 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)Build\Output\DualityEditor.exe</StartProgram>
+    <StartWorkingDirectory>$(SolutionDir)Build\Output\</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
@@ -15,15 +20,14 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <ApplicationIcon>DualityLogoIcon.ico</ApplicationIcon>
     <SignAssembly>false</SignAssembly>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
-    <DocumentationFile>DualityEditor.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>full</DebugType>
@@ -32,8 +36,6 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
-    <DocumentationFile>DualityEditor.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
@@ -44,8 +46,8 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.WinForms, Version=1.1.15.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AdamsLair.WinForms.1.1.15\lib\net45\AdamsLair.WinForms.dll</HintPath>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.16.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\AdamsLair.WinForms.1.1.16\lib\net45\AdamsLair.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="Aga.Controls, Version=1.7.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\AdamsLair.TreeViewAdv.1.7.6.0\lib\net20\Aga.Controls.dll</HintPath>
@@ -76,8 +78,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Core\Duality\Backend\DefaultPluginLoader.cs">
-      <Link>DefaultPluginLoader.cs</Link>
+    <Compile Include="..\..\Core\Duality\Backend\DefaultAssemblyLoader.cs">
+      <Link>DefaultAssemblyLoader.cs</Link>
     </Compile>
     <Compile Include="AssetManagement\AssetExportFinishedEventArgs.cs" />
     <Compile Include="AssetManagement\AssetImporter.cs" />
@@ -94,6 +96,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\PropertyEditors\Point2PropertyEditor.cs" />
+    <Compile Include="Controls\PropertyEditors\SpriteIndexBlendPropertyEditor.cs" />
+    <Compile Include="Controls\ToolStrip\ToolStripTextBoxAdv.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
     <Compile Include="AssetManagement\Export\AssetExportEnvironment.cs" />
@@ -172,7 +178,7 @@
     </Compile>
     <Compile Include="HelpSystem\HelpAction.cs" />
     <Compile Include="HelpSystem\HelpStack.cs" />
-    <Compile Include="HelpSystem\IHelpInfoReader.cs" />
+    <Compile Include="HelpSystem\IReadOnlyHelpInfo.cs" />
     <Compile Include="HelpSystem\IHelpProvider.cs" />
     <Compile Include="PackageManagement\PackageDependencyWalker.cs" />
     <Compile Include="PackageManagement\PackageCache.cs" />
@@ -207,7 +213,10 @@
     <Compile Include="UndoRedoActions\RemoveDictionaryKeyAction.cs" />
     <Compile Include="UndoRedoActions\ResizeListAction.cs" />
     <Compile Include="Utility\BuildHelper.cs" />
-    <Compile Include="Utility\EventArgs\ResourceRenamedEventArgs.cs" />
+    <Compile Include="Utility\EditorLogEntry.cs" />
+    <Compile Include="Utility\EditorLogOutput.cs" />
+    <Compile Include="Utility\EventArgs\ResourceFilesChangedEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\FileSystemChangedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\PrefabAppliedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\ObjectPropertyChangedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\HighlightObjectEventArgs.cs" />
@@ -297,7 +306,6 @@
     <Compile Include="Utility\Extensions\ExtMethodsToolStrip.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsMouseButtons.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsKeys.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsCamera.cs" />
     <Compile Include="Utility\NativeMethods.cs" />
     <Compile Include="Utility\ObjectSelection.cs" />
     <Compile Include="HelpSystem.cs" />
@@ -456,4 +464,23 @@
     <None Include="EmbeddedResources\cog.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
+  
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe.config" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+	
+    <Copy SourceFiles="$(OutputPath)AdamsLair.WinForms.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)AdamsLair.WinForms.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)Aga.Controls.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)NuGet.Core.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)PopupControl.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)WeifenLuo.WinFormsUI.Docking.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)VistaBridgeLibrary.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)VistaBridgeLibrary.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)Windows7.DesktopIntegration.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)Windows7.DesktopIntegration.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+	
+  </Target>
 </Project>

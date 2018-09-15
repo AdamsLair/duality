@@ -35,7 +35,6 @@ namespace Duality
 		public static readonly TimeCounter TimeCollectDrawcalls;
 		public static readonly TimeCounter TimeOptimizeDrawcalls;
 		public static readonly TimeCounter TimeProcessDrawcalls;
-		public static readonly TimeCounter TimePostProcessing;
 		public static readonly TimeCounter TimeLog;
 		public static readonly TimeCounter TimeVisualPicking;
 		public static readonly TimeCounter TimeUnaccounted;
@@ -70,7 +69,6 @@ namespace Duality
 			TimeCollectDrawcalls        = RequestCounter<TimeCounter>(@"Duality\Frame\Render\CollectDrawcalls");
 			TimeOptimizeDrawcalls       = RequestCounter<TimeCounter>(@"Duality\Frame\Render\OptimizeDrawcalls");
 			TimeProcessDrawcalls        = RequestCounter<TimeCounter>(@"Duality\Frame\Render\ProcessDrawcalls");
-			TimePostProcessing          = RequestCounter<TimeCounter>(@"Duality\Frame\Render\PostProcessing");
 			TimeLog                     = RequestCounter<TimeCounter>(@"Duality\Frame\Log");
 			TimeVisualPicking           = RequestCounter<TimeCounter>(@"Duality\Frame\VisualPicking");
 			TimeUnaccounted             = RequestCounter<TimeCounter>(@"Duality\Frame\Unaccounted");
@@ -117,7 +115,7 @@ namespace Duality
 			if (!counterMap.TryGetValue(name, out c)) return null;
 
 			T cc = c as T;
-			if (cc == null) throw new InvalidOperationException(string.Format("The specified performance counter '{0}' is not a {1}.", name, Log.Type(typeof(T))));
+			if (cc == null) throw new InvalidOperationException(string.Format("The specified performance counter '{0}' is not a {1}.", name, LogFormat.Type(typeof(T))));
 			return cc;
 		}
 		/// <summary>

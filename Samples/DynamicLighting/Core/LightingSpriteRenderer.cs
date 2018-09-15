@@ -18,7 +18,7 @@ namespace DynamicLighting
 	public class LightingSpriteRenderer : SpriteRenderer
 	{
 		private float vertexTranslucency = 0.0f;
-		[DontSerialize] private VertexC1P3T2A4[] verticesLight = null;
+		[DontSerialize] private VertexDynamicLighting[] verticesLight = null;
 
 		/// <summary>
 		/// [GET / SET] Specifies the objects translucency for Light when using vertex lighting.
@@ -33,14 +33,11 @@ namespace DynamicLighting
 			set { this.vertexTranslucency = value; }
 		}
 
-		protected void PrepareVerticesLight(ref VertexC1P3T2A4[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect, DrawTechnique tech)
+		protected void PrepareVerticesLight(ref VertexDynamicLighting[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect, DrawTechnique tech)
 		{
 			bool perPixel = tech is LightingTechnique;
 
 			Vector3 pos = this.GameObj.Transform.Pos;
-			Vector3 posTemp = pos;
-			float scaleTemp = 1.0f;
-			device.PreprocessCoords(ref posTemp, ref scaleTemp);
 
 			Vector2 xDot, yDot;
 			float rotation = this.GameObj.Transform.Angle;
@@ -68,11 +65,6 @@ namespace DynamicLighting
 				Light.GetLightAtWorldPos(pos + new Vector3(edge4), out vertexLight[3], this.vertexTranslucency);
 			}
 
-			Vector2.Multiply(ref edge1, scaleTemp, out edge1);
-			Vector2.Multiply(ref edge2, scaleTemp, out edge2);
-			Vector2.Multiply(ref edge3, scaleTemp, out edge3);
-			Vector2.Multiply(ref edge4, scaleTemp, out edge4);
-
 			// Using Per-Pixel Lighting? Pass objRotation Matrix via vertex attribute.
 			Vector4 objRotMat = Vector4.Zero;
 			if (perPixel)
@@ -89,40 +81,44 @@ namespace DynamicLighting
 			if ((this.flipMode & FlipMode.Vertical) != FlipMode.None)
 				MathF.Swap(ref top, ref bottom);
 
-			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2A4[4];
+			if (vertices == null || vertices.Length != 4) vertices = new VertexDynamicLighting[4];
 
 			// Directly pass World Position with each vertex, see note in Light.cs
-			vertices[0].Pos.X = posTemp.X + edge1.X;
-			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
-			vertices[0].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[0].Pos.X = pos.X + edge1.X;
+			vertices[0].Pos.Y = pos.Y + edge1.Y;
+			vertices[0].Pos.Z = pos.Z;
+			vertices[0].DepthOffset = this.offset;
 			vertices[0].TexCoord.X = left;
 			vertices[0].TexCoord.Y = top;
 			vertices[0].Color = mainClr;
-			vertices[0].Attrib = perPixel ? objRotMat : vertexLight[0];
+			vertices[0].LightingParam = perPixel ? objRotMat : vertexLight[0];
 
-			vertices[1].Pos.X = posTemp.X + edge2.X;
-			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
-			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[1].Pos.X = pos.X + edge2.X;
+			vertices[1].Pos.Y = pos.Y + edge2.Y;
+			vertices[1].Pos.Z = pos.Z;
+			vertices[1].DepthOffset = this.offset;
 			vertices[1].TexCoord.X = left;
 			vertices[1].TexCoord.Y = bottom;
 			vertices[1].Color = mainClr;
-			vertices[1].Attrib = perPixel ? objRotMat : vertexLight[1];
+			vertices[1].LightingParam = perPixel ? objRotMat : vertexLight[1];
 
-			vertices[2].Pos.X = posTemp.X + edge3.X;
-			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
-			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[2].Pos.X = pos.X + edge3.X;
+			vertices[2].Pos.Y = pos.Y + edge3.Y;
+			vertices[2].Pos.Z = pos.Z;
+			vertices[2].DepthOffset = this.offset;
 			vertices[2].TexCoord.X = right;
 			vertices[2].TexCoord.Y = bottom;
 			vertices[2].Color = mainClr;
-			vertices[2].Attrib = perPixel ? objRotMat : vertexLight[2];
+			vertices[2].LightingParam = perPixel ? objRotMat : vertexLight[2];
 				
-			vertices[3].Pos.X = posTemp.X + edge4.X;
-			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
-			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[3].Pos.X = pos.X + edge4.X;
+			vertices[3].Pos.Y = pos.Y + edge4.Y;
+			vertices[3].Pos.Z = pos.Z;
+			vertices[3].DepthOffset = this.offset;
 			vertices[3].TexCoord.X = right;
 			vertices[3].TexCoord.Y = top;
 			vertices[3].Color = mainClr;
-			vertices[3].Attrib = perPixel ? objRotMat : vertexLight[3];
+			vertices[3].LightingParam = perPixel ? objRotMat : vertexLight[3];
 			
 			if (this.pixelGrid)
 			{
@@ -156,29 +152,21 @@ namespace DynamicLighting
 
 		public override void Draw(IDrawDevice device)
 		{
+			// When rendering a sprite that uses dynamic lighting, make sure to update
+			// the devices shared / global lighting variables this frame
+			Light.UpdateLighting(device);
+
 			Texture mainTex = this.RetrieveMainTex();
-			ColorRgba mainClr = this.RetrieveMainColor();
 			DrawTechnique tech = this.RetrieveDrawTechnique();
-			
+
 			Rect uvRect;
-			if (mainTex != null)
-			{
-				if (this.rectMode == UVMode.WrapBoth)
-					uvRect = new Rect(mainTex.UVRatio.X * this.rect.W / mainTex.PixelWidth, mainTex.UVRatio.Y * this.rect.H / mainTex.PixelHeight);
-				else if (this.rectMode == UVMode.WrapHorizontal)
-					uvRect = new Rect(mainTex.UVRatio.X * this.rect.W / mainTex.PixelWidth, mainTex.UVRatio.Y);
-				else if (this.rectMode == UVMode.WrapVertical)
-					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y * this.rect.H / mainTex.PixelHeight);
-				else
-					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y);
-			}
+			this.GetUVRect(mainTex, this.spriteIndex, out uvRect);
+			this.PrepareVerticesLight(ref this.verticesLight, device, this.colorTint, uvRect, tech);
+
+			if (this.customMat != null)
+				device.AddVertices(this.customMat, VertexMode.Quads, this.verticesLight);
 			else
-				uvRect = new Rect(1.0f, 1.0f);
-
-			this.PrepareVerticesLight(ref this.verticesLight, device, mainClr, uvRect, tech);
-
-			if (this.customMat != null)	device.AddVertices(this.customMat, VertexMode.Quads, this.verticesLight);
-			else						device.AddVertices(this.sharedMat, VertexMode.Quads, this.verticesLight);
+				device.AddVertices(this.sharedMat, VertexMode.Quads, this.verticesLight);
 		}
 	}
 }

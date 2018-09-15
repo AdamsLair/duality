@@ -7,7 +7,7 @@ namespace Duality.Drawing
 	/// <summary>
 	/// Specifies the way in which incoming vertex data is interpreted in order to generate geometry.
 	/// </summary>
-	public enum VertexMode
+	public enum VertexMode : byte
 	{
 		Points,
 		Lines,

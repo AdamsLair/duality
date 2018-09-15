@@ -4,10 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-using FarseerPhysics.Dynamics;
-
 using Duality.Editor;
 using Duality.Components;
+using Duality.Components.Physics;
 using Duality.Serialization;
 using Duality.Cloning;
 using Duality.Properties;
@@ -25,42 +24,14 @@ namespace Duality.Resources
 	[EditorHintImage(CoreResNames.ImageScene)]
 	public sealed class Scene : Resource
 	{
-		private const float PhysicsAccStart = Time.MsPFMult;
-
-
-		private static World               physicsWorld      = new World(Vector2.Zero);
-		private static float               physicsAcc        = 0.0f;
-		private static bool                physicsLowFps     = false;
-		private static ContentRef<Scene>   current           = new Scene();
+		private static ContentRef<Scene>   current           = null;
 		private static bool                curAutoGen        = false;
 		private static bool                isSwitching       = false;
 		private static int                 switchLock        = 0;
 		private static bool                switchToScheduled = false;
 		private static ContentRef<Scene>   switchToTarget    = null;
 
-
-		/// <summary>
-		/// [GET] When using fixed-timestep physics, the alpha value [0.0 - 1.0] indicates how
-		/// complete the next step is. This is used for linear interpolation inbetween fixed physics steps.
-		/// </summary>
-		public static float PhysicsAlpha
-		{
-			get { return physicsAcc / Time.MsPFMult; }
-		}
-		/// <summary>
-		/// [GET] Is fixed-timestep physics calculation currently active?
-		/// </summary>
-		public static bool PhysicsFixedTime
-		{
-			get { return DualityApp.AppData.PhysicsFixedTime && !physicsLowFps; }
-		}
-		/// <summary>
-		/// [GET] Returns the current physics world.
-		/// </summary>
-		public static World PhysicsWorld
-		{
-			get { return physicsWorld; }
-		}
+		
 		/// <summary>
 		/// [GET / SET] The Scene that is currently active i.e. updated and rendered. This is never null.
 		/// You may assign null in order to leave the current Scene and enter en empty dummy Scene.
@@ -79,17 +50,44 @@ namespace Duality.Resources
 			}
 			private set
 			{
+				// Only perform a scene switch if current and next are different
 				if (current.ResWeak != value)
 				{
-					if (!current.IsExplicitNull) 
-						OnLeaving();
+					switchLock++;
+					try
+					{
+						if (Leaving != null)
+							Leaving(current, null);
 
-					current.Res = value ?? new Scene();
+						isSwitching = true;
 
-					OnEntered();
+						if (current.ResWeak != null && current.ResWeak.IsActive)
+							current.ResWeak.Deactivate();
+
+						current.Res = value ?? new Scene();
+
+						if (current.ResWeak != null && !current.ResWeak.IsActive)
+							current.ResWeak.Activate();
+
+						isSwitching = false;
+
+						if (Entered != null)
+							Entered(current, null);
+					}
+					finally
+					{
+						switchLock--;
+						isSwitching = false;
+					}
 				}
+				// If the scene is actually the same, we still do the assignment to
+				// make sure our internal ContentRef will update its resource path,
+				// should this have changed. This can happen during a rename event in
+				// the editor.
 				else
+				{
 					current.Res = value ?? new Scene();
+				}
 			}
 		}
 		/// <summary>
@@ -122,16 +120,6 @@ namespace Duality.Resources
 		/// </summary>
 		public static event EventHandler<GameObjectParentChangedEventArgs> GameObjectParentChanged;
 		/// <summary>
-		/// Fired when a <see cref="GameObject"/> has been registered in the current Scene.
-		/// </summary>
-		[Obsolete("Use GameObjectsAdded (note the plural) instead.")]
-		public static event EventHandler<GameObjectEventArgs> GameObjectAdded;
-		/// <summary>
-		/// Fired when a <see cref="GameObject"/> has been unregistered from the current Scene.
-		/// </summary>
-		[Obsolete("Use GameObjectsRemoved (note the plural) instead.")]
-		public static event EventHandler<GameObjectEventArgs> GameObjectRemoved;
-		/// <summary>
 		/// Fired once every time a group of <see cref="GameObject"/> instances has been registered in the current Scene.
 		/// </summary>
 		public static event EventHandler<GameObjectGroupEventArgs> GameObjectsAdded;
@@ -149,6 +137,11 @@ namespace Duality.Resources
 		public static event EventHandler<ComponentEventArgs> ComponentRemoving;
 
 
+		static Scene()
+		{
+			Current = new Scene();
+		}
+
 		/// <summary>
 		/// Switches to the specified <see cref="Scene"/>, which will become the new <see cref="Current">current one</see>.
 		/// By default, this method does not guarantee to perform the Scene switch immediately, but may defer the switch
@@ -162,14 +155,21 @@ namespace Duality.Resources
 			if (!scene.IsExplicitNull && !scene.IsAvailable) 
 				throw new ArgumentException("Can't switch to Scene '" + scene.Path + "' because it doesn't seem to exist.", "scene");
 
-			if (switchLock == 0 || forceImmediately)
-			{
-				Scene.Current = scene.Res;
-			}
-			else
+			// Check whether there is anything that would prevent us from doing the
+			// switch right now, instead of at the end of the current frame
+			bool switchIsBlocked =
+				switchLock != 0 ||
+				Scene.Current.IsRenderingOrUpdating ||
+				(scene.Res != null && scene.Res.IsRenderingOrUpdating);
+
+			if (switchIsBlocked && !forceImmediately)
 			{
 				switchToTarget = scene;
 				switchToScheduled = true;
+			}
+			else
+			{
+				Scene.Current = scene.Res;
 			}
 		}
 		/// <summary>
@@ -181,10 +181,16 @@ namespace Duality.Resources
 		{
 			ContentRef<Scene> target = Scene.Current;
 
-			if (switchLock == 0)
-				Scene.Current.Dispose();
-			else
+			// Check whether there is anything that would prevent us from doing the
+			// reload right now, instead of at the end of the current frame
+			bool reloadIsBlocked =
+				switchLock != 0 ||
+				Scene.Current.IsRenderingOrUpdating;
+
+			if (reloadIsBlocked)
 				Scene.Current.DisposeLater();
+			else
+				Scene.Current.Dispose();
 
 			Scene.SwitchTo(target);
 		}
@@ -194,7 +200,7 @@ namespace Duality.Resources
 		/// <see cref="Scene.SwitchTo"/>.
 		/// </summary>
 		/// <returns></returns>
-		private static bool PerformScheduledSwitch()
+		internal static bool PerformScheduledSwitch()
 		{
 			if (!switchToScheduled) return false;
 
@@ -214,7 +220,7 @@ namespace Duality.Resources
 			{
 				switchToTarget = null;
 				switchToScheduled = false;
-				Log.Core.WriteWarning(
+				Logs.Core.WriteWarning(
 					"Potential Scene redirect loop detected: When performing previously " +
 					"scheduled switch to Scene '{0}', a awitch to Scene '{1}' was immediately scheduled. " +
 					"The second switch will not be performed to avoid entering a loop. Please " +
@@ -225,78 +231,6 @@ namespace Duality.Resources
 			return true;
 		}
 
-		private static void OnLeaving()
-		{
-			switchLock++;
-			if (Leaving != null) Leaving(current, null);
-			isSwitching = true;
-			if (current.ResWeak != null)
-			{
-				// Deactivate GameObjects
-				DualityApp.EditorGuard(() =>
-				{
-					// Create a list of components to deactivate
-					List<ICmpInitializable> shutdownList = new List<ICmpInitializable>();
-					foreach (Component component in current.ResWeak.FindComponents<ICmpInitializable>())
-					{
-						if (!component.Active) continue;
-						shutdownList.Add(component as ICmpInitializable);
-					}
-					// Deactivate all the listed components. Note that they may create or destroy
-					// objects, so it's important that we're iterating a copy of the scene objects
-					// here, and not the real thing.
-					for (int i = shutdownList.Count - 1; i >= 0; i--)
-					{
-						shutdownList[i].OnShutdown(Component.ShutdownContext.Deactivate);
-					}
-				});
-
-				// Clear the physics world of all contents
-				physicsWorld.Clear();
-				ResetPhysics();
-			}
-			switchLock--;
-		}
-		private static void OnEntered()
-		{
-			switchLock++;
-			if (current.ResWeak != null)
-			{
-				// Apply physical properties
-				ResetPhysics();
-				physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * current.ResWeak.GlobalGravity;
-
-				// When in the editor, apply prefab links
-				if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
-					current.ResWeak.ApplyPrefabLinks();
-
-				// When running the game, break prefab links
-				if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-					current.ResWeak.BreakPrefabLinks();
-
-				// Activate GameObjects
-				DualityApp.EditorGuard(() =>
-				{
-					// Create a list of components to activate
-					List<ICmpInitializable> initList = new List<ICmpInitializable>();
-					foreach (Component component in current.ResWeak.FindComponents<ICmpInitializable>())
-					{
-						if (!component.Active) continue;
-						initList.Add(component as ICmpInitializable);
-					}
-					// Activate all the listed components. Note that they may create or destroy
-					// objects, so it's important that we're iterating a copy of the scene objects
-					// here, and not the real thing.
-					for (int i = 0; i < initList.Count; i++)
-					{
-						initList[i].OnInit(Component.InitContext.Activate);
-					}
-				});
-			}
-			isSwitching = false;
-			if (Entered != null) Entered(current, null);
-			switchLock--;
-		}
 		private static void OnGameObjectParentChanged(GameObjectParentChangedEventArgs args)
 		{
 			if (GameObjectParentChanged != null) GameObjectParentChanged(current, args);
@@ -319,28 +253,14 @@ namespace Duality.Resources
 
 			// Invoke the init event on all gathered components in the right order
 			foreach (ICmpInitializable component in initList)
-				component.OnInit(Component.InitContext.Activate);
+				component.OnActivate();
 
 			// Fire a global event to indicate that the new objects are ready
 			if (GameObjectsAdded != null)
 				GameObjectsAdded(current, args);
-
-			// ToDo: Remove this event in v3.0
-			foreach (GameObject obj in args.Objects)
-			{
-				if (GameObjectAdded != null)
-					GameObjectAdded(current, new GameObjectEventArgs(obj));
-			}
 		}
 		private static void OnGameObjectsRemoved(GameObjectGroupEventArgs args)
 		{
-			// ToDo: Remove this event in v3.0
-			foreach (GameObject obj in args.Objects)
-			{
-				if (GameObjectRemoved != null)
-					GameObjectRemoved(current, new GameObjectEventArgs(obj));
-			}
-
 			// Fire a global event to indicate that the objects are going to be shut down
 			if (GameObjectsRemoved != null)
 				GameObjectsRemoved(current, args);
@@ -364,14 +284,14 @@ namespace Duality.Resources
 
 			// Invoke the init event on all gathered components in the right order
 			foreach (ICmpInitializable component in initList)
-				component.OnShutdown(Component.ShutdownContext.Deactivate);
+				component.OnDeactivate();
 		}
 		private static void OnComponentAdded(ComponentEventArgs args)
 		{
 			if (args.Component.Active)
 			{
 				ICmpInitializable cInit = args.Component as ICmpInitializable;
-				if (cInit != null) cInit.OnInit(Component.InitContext.Activate);
+				if (cInit != null) cInit.OnActivate();
 			}
 			if (ComponentAdded != null) ComponentAdded(current, args);
 		}
@@ -380,7 +300,7 @@ namespace Duality.Resources
 			if (args.Component.Active)
 			{
 				ICmpInitializable cInit = args.Component as ICmpInitializable;
-				if (cInit != null) cInit.OnShutdown(Component.ShutdownContext.Deactivate);
+				if (cInit != null) cInit.OnDeactivate();
 			}
 			if (ComponentRemoving != null) ComponentRemoving(current, args);
 		}
@@ -397,6 +317,11 @@ namespace Duality.Resources
 		private IRendererVisibilityStrategy visibilityStrategy = new DefaultRendererVisibilityStrategy();
 		private GameObject[]                serializeObj       = null;
 
+		[DontSerialize] private bool active = false;
+		[DontSerialize] private PhysicsWorld physicsWorld = new PhysicsWorld();
+		[DontSerialize] private bool isUpdating = false;
+		[DontSerialize] private bool isRendering = false;
+
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
 		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
@@ -406,7 +331,12 @@ namespace Duality.Resources
 		[CloneField(CloneFieldFlags.DontSkip)]
 		private Dictionary<TypeInfo,List<Component>> componentsByType = new Dictionary<TypeInfo,List<Component>>();
 
-		
+		// Temporary buffers used during scene updates, stored and re-used for efficiency
+		[DontSerialize] private List<Type> updateTypeOrder = new List<Type>();
+		[DontSerialize] private RawList<Component> updatableComponents = new RawList<Component>(256);
+		[DontSerialize] private RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
+
+
 		/// <summary>
 		/// [GET / SET] The strategy that is used to determine which <see cref="ICmpRenderer">renderers</see> are visible.
 		/// </summary>
@@ -424,16 +354,16 @@ namespace Duality.Resources
 			set
 			{
 				this.globalGravity = value;
-				if (this.IsCurrent)
-				{
-					physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * value;
-					foreach (Body b in physicsWorld.BodyList)
-					{
-						if (b.IgnoreGravity || b.BodyType != BodyType.Dynamic) continue;
-						b.Awake = true;
-					}
-				}
+				this.physicsWorld.Gravity = value;
 			}
+		}
+		/// <summary>
+		/// [GET] Returns the current physics world.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public PhysicsWorld Physics
+		{
+			get { return this.physicsWorld; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all registered objects.
@@ -476,12 +406,25 @@ namespace Duality.Resources
 			get { return current.ResWeak == this; }
 		}
 		/// <summary>
+		/// [GET] Returns whether this <see cref="Scene"/> is currently <see cref="Activate">active</see>,
+		/// i.e. in a state where it can update game simulation and be rendered.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public bool IsActive
+		{
+			get { return this.active; }
+		}
+		/// <summary>
 		/// [GET] Returns whether this Scene is completely empty.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public bool IsEmpty
 		{
 			get { return !this.objectManager.AllObjects.Any(); }
+		}
+		private bool IsRenderingOrUpdating
+		{
+			get { return this.isRendering || this.isUpdating; }
 		}
 
 
@@ -494,168 +437,209 @@ namespace Duality.Resources
 		}
 
 		/// <summary>
-		/// Renders the Scene
+		/// Transitions the <see cref="Scene"/> into an active state, where it can be 
+		/// updated and rendered. This is the state of a <see cref="Scene"/> while it 
+		/// is <see cref="Current"/>.
 		/// </summary>
-		/// <param name="viewportRect">The viewport to which will be rendered.</param>
-		/// <param name="camPredicate">Optional predicate to select which Cameras may be rendered and which not.</param>
-		internal void Render(Rect viewportRect, Predicate<Camera> camPredicate = null)
+		public void Activate()
 		{
-			if (!this.IsCurrent) throw new InvalidOperationException("Can't render non-current Scene!");
-			switchLock++;
+			if (this.active) throw new InvalidOperationException("Cannot activate a scene that is already active.");
 
-			Camera[] activeCams = this.FindComponents<Camera>()
-				.Where(c => c.Active && (camPredicate == null || camPredicate(c)))
-				.OrderByDescending(c => c.Priority)
-				.ToArray();
+			// Apply physical properties
+			this.physicsWorld.ResetSimulation();
+			this.physicsWorld.Gravity = this.globalGravity;
 
-			foreach (Camera c in activeCams)
-				c.Render(viewportRect);
+			// When in the editor, apply prefab links
+			if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
+				this.ApplyPrefabLinks();
 
-			switchLock--;
-		}
-		/// <summary>
-		/// Updates the Scene
-		/// </summary>
-		internal void Update()
-		{
-			if (!this.IsCurrent) throw new InvalidOperationException("Can't update non-current Scene!");
-			switchLock++;
+			// When running the game, break prefab links
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+				this.BreakPrefabLinks();
 
-			// Update physics
-			bool physUpdate = false;
-			double physBegin = Time.MainTimer.TotalMilliseconds;
-			if (Scene.PhysicsFixedTime)
-			{
-				physicsAcc += Time.MsPFMult * Time.TimeMult;
-				int iterations = 0;
-				if (physicsAcc >= Time.MsPFMult)
-				{
-					Profile.TimeUpdatePhysics.BeginMeasure();
-					DualityApp.EditorGuard(() =>
-					{
-						double timeUpdateBegin = Time.MainTimer.TotalMilliseconds;
-						while (physicsAcc >= Time.MsPFMult)
-						{
-							// Catch up on updating progress
-							FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * DualityApp.AppData.PhysicsVelocityThreshold;
-							physicsWorld.Step(Time.SPFMult);
-							physicsAcc -= Time.MsPFMult;
-							iterations++;
-							
-							double timeSpent = Time.MainTimer.TotalMilliseconds - timeUpdateBegin;
-							if (timeSpent >= Time.MsPFMult * 10.0f) break; // Emergency exit
-						}
-					});
-					physUpdate = true;
-					Profile.TimeUpdatePhysics.EndMeasure();
-				}
-			}
-			else
-			{
-				Profile.TimeUpdatePhysics.BeginMeasure();
-				DualityApp.EditorGuard(() =>
-				{
-					FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * Time.TimeMult * DualityApp.AppData.PhysicsVelocityThreshold;
-					physicsWorld.Step(Time.TimeMult * Time.SPFMult);
-					if (Time.TimeMult == 0.0f) physicsWorld.ClearForces(); // Complete freeze? Clear forces, so they don't accumulate.
-					physicsAcc = PhysicsAccStart;
-				});
-				physUpdate = true;
-				Profile.TimeUpdatePhysics.EndMeasure();
-			}
-			double physTime = Time.MainTimer.TotalMilliseconds - physBegin;
-
-			// Apply Farseers internal measurements to Duality
-			if (physUpdate)
-			{
-				Profile.TimeUpdatePhysicsAddRemove.Set(1000.0f * physicsWorld.AddRemoveTime / System.Diagnostics.Stopwatch.Frequency);
-				Profile.TimeUpdatePhysicsContacts.Set(1000.0f * physicsWorld.ContactsUpdateTime / System.Diagnostics.Stopwatch.Frequency);
-				Profile.TimeUpdatePhysicsContinous.Set(1000.0f * physicsWorld.ContinuousPhysicsTime / System.Diagnostics.Stopwatch.Frequency);
-				Profile.TimeUpdatePhysicsController.Set(1000.0f * physicsWorld.ControllersUpdateTime / System.Diagnostics.Stopwatch.Frequency);
-				Profile.TimeUpdatePhysicsSolve.Set(1000.0f * physicsWorld.SolveUpdateTime / System.Diagnostics.Stopwatch.Frequency);
-			}
-
-			// Update low fps physics state
-			if (!physicsLowFps)
-				physicsLowFps = Time.LastDelta > Time.MsPFMult && physTime > Time.LastDelta * 0.85f;
-			else
-				physicsLowFps = !(Time.LastDelta < Time.MsPFMult * 0.9f || physTime < Time.LastDelta * 0.6f);
-
-			// Update all GameObjects
-			Profile.TimeUpdateScene.BeginMeasure();
+			// Activate GameObjects
 			DualityApp.EditorGuard(() =>
 			{
-				this.UpdateComponents<ICmpUpdatable>(cmp => cmp.OnUpdate());
+				// Create a list of components to activate
+				List<ICmpInitializable> initList = new List<ICmpInitializable>();
+				foreach (Component component in this.FindComponents<ICmpInitializable>())
+				{
+					if (!component.Active) continue;
+					initList.Add(component as ICmpInitializable);
+				}
+				// Activate all the listed components. Note that they may create or destroy
+				// objects, so it's important that we're iterating a copy of the scene objects
+				// here, and not the real thing.
+				for (int i = 0; i < initList.Count; i++)
+				{
+					initList[i].OnActivate();
+				}
+			});
+
+			// Update object visibility / culling info, so a scheduled switch at the
+			// end of a frame will get up-to-date culling for rendering
+			DualityApp.EditorGuard(() =>
+			{
 				this.visibilityStrategy.Update();
 			});
-			Profile.TimeUpdateScene.EndMeasure();
 
-			// Perform a cleanup step to catch all DisposeLater calls from within the Scene update
-			DualityApp.RunCleanup();
-			
-			// Perform a scheduled Scene switch
-			PerformScheduledSwitch();
+			this.active = true;
+		}
+		/// <summary>
+		/// Transitions the <see cref="Scene"/> into an inactive state, where it can no 
+		/// longer be updated or rendered. This is the state of a <see cref="Scene"/> 
+		/// after it was loaded.
+		/// </summary>
+		public void Deactivate()
+		{
+			if (!this.active) throw new InvalidOperationException("Cannot deactivate a scene that is not active.");
 
-			switchLock--;
+			// Deactivate GameObjects
+			DualityApp.EditorGuard(() =>
+			{
+				// Create a list of components to deactivate
+				List<ICmpInitializable> shutdownList = new List<ICmpInitializable>();
+				foreach (Component component in this.FindComponents<ICmpInitializable>())
+				{
+					if (!component.Active) continue;
+					shutdownList.Add(component as ICmpInitializable);
+				}
+				// Deactivate all the listed components. Note that they may create or destroy
+				// objects, so it's important that we're iterating a copy of the scene objects
+				// here, and not the real thing.
+				for (int i = shutdownList.Count - 1; i >= 0; i--)
+				{
+					shutdownList[i].OnDeactivate();
+				}
+			});
+
+			// Clear physics world as we're ending simulation
+			this.physicsWorld.Native.Clear();
+			this.physicsWorld.ResetSimulation();
+
+			this.active = false;
+		}
+
+		/// <summary>
+		/// Renders the Scene.
+		/// </summary>
+		/// <param name="target">
+		/// The <see cref="RenderTarget"/> which will be used for all rendering output. 
+		/// "null" means rendering directly to the output buffer of the game window / screen.
+		/// </param>
+		/// <param name="viewportRect">The viewport to which will be rendered.</param>
+		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
+		public void Render(ContentRef<RenderTarget> target, Rect viewportRect, Vector2 imageSize)
+		{
+			if (!this.active) throw new InvalidOperationException("Cannot render a scene that is not active. Call Activate first.");
+			if (this.isRendering) throw new InvalidOperationException("Can't render a Scene while it is already being rendered.");
+			this.isRendering = true;
+			try
+			{
+				// Retrieve the rendering setup that will be used for rendering the scene
+				RenderSetup setup =
+					DualityApp.AppData.RenderingSetup.Res ??
+					RenderSetup.Default.Res;
+
+				// Render the scene
+				setup.RenderScene(this, target, viewportRect, imageSize);
+			}
+			finally
+			{
+				this.isRendering = false;
+			}
+		}
+		/// <summary>
+		/// Updates the Scene.
+		/// </summary>
+		public void Update()
+		{
+			if (!this.active) throw new InvalidOperationException("Cannot update a scene that is not active. Call Activate first.");
+			if (this.isUpdating) throw new InvalidOperationException("Can't update a Scene while it is already being updated.");
+			this.isUpdating = true;
+			try
+			{
+				// Remove disposed objects from managers
+				this.CleanupDisposedObjects();
+
+				// Update physics
+				this.physicsWorld.Simulate(Time.DeltaTime);
+
+				// Update all GameObjects
+				Profile.TimeUpdateScene.BeginMeasure();
+				DualityApp.EditorGuard(() =>
+				{
+					this.UpdateComponents<ICmpUpdatable>(cmp => cmp.OnUpdate());
+					this.visibilityStrategy.Update();
+				});
+				Profile.TimeUpdateScene.EndMeasure();
+			}
+			finally
+			{
+				this.isUpdating = false;
+			}
 		}
 		/// <summary>
 		/// Updates the Scene in the editor.
 		/// </summary>
 		internal void EditorUpdate()
 		{
-			if (!this.IsCurrent) throw new InvalidOperationException("Can't update non-current Scene!");
-			switchLock++;
-
-			Profile.TimeUpdateScene.BeginMeasure();
-			DualityApp.EditorGuard(() =>
+			if (this.isUpdating) throw new InvalidOperationException("Can't update a Scene while it is already being updated.");
+			this.isUpdating = true;
+			try
 			{
-				this.UpdateComponents<ICmpEditorUpdatable>(cmp => cmp.OnUpdate());
-				this.visibilityStrategy.Update();
-			});
-			Profile.TimeUpdateScene.EndMeasure();
-
-			switchLock--;
+				Profile.TimeUpdateScene.BeginMeasure();
+				DualityApp.EditorGuard(() =>
+				{
+					this.UpdateComponents<ICmpEditorUpdatable>(cmp => cmp.OnUpdate());
+				});
+				Profile.TimeUpdateScene.EndMeasure();
+			}
+			finally
+			{
+				this.isUpdating = false;
+			}
 		}
 		private void UpdateComponents<T>(Action<T> updateAction) where T : class
 		{
 			Profile.TimeUpdateSceneComponents.BeginMeasure();
 
 			// Create a sorted list of updatable component types
-			List<Type> updateTypeOrder = new List<Type>();
+			this.updateTypeOrder.Clear();
 			foreach (var pair in this.componentsByType)
 			{
 				// Skip Component types that aren't updatable anyway
-				Component sampleComponent = pair.Value.FirstOrDefault();
+				Component sampleComponent = pair.Value.Count > 0 ? pair.Value[0] : null;
 				if (!(sampleComponent is T))
 					continue;
 
-				updateTypeOrder.Add(pair.Key.AsType());
+				this.updateTypeOrder.Add(pair.Key.AsType());
 			}
-			Component.ExecOrder.SortTypes(updateTypeOrder, false);
+			Component.ExecOrder.SortTypes(this.updateTypeOrder, false);
 
 			// Gather a list of updatable Components
-			RawList<Component> updatableComponents = new RawList<Component>(256);
-			RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
-			foreach (Type type in updateTypeOrder)
+			this.updatableComponents.Clear();
+			this.updateMap.Clear();
+			foreach (Type type in this.updateTypeOrder)
 			{
 				TypeInfo typeInfo = type.GetTypeInfo();
 				List<Component> components = this.componentsByType[typeInfo];
-				int oldCount = updatableComponents.Count;
+				int oldCount = this.updatableComponents.Count;
 
 				// Collect Components
-				updatableComponents.Reserve(updatableComponents.Count + components.Count);
+				this.updatableComponents.Reserve(this.updatableComponents.Count + components.Count);
 				for (int i = 0; i < components.Count; i++)
 				{
-					updatableComponents.Add(components[i]);
+					this.updatableComponents.Add(components[i]);
 				}
 
 				// Keep in mind how many Components of each type we have in what order
-				if (updatableComponents.Count - oldCount > 0)
+				if (this.updatableComponents.Count - oldCount > 0)
 				{
-					updateMap.Add(new UpdateEntry
+					this.updateMap.Add(new UpdateEntry
 					{
 						Type = typeInfo,
-						Count = updatableComponents.Count - oldCount,
+						Count = this.updatableComponents.Count - oldCount,
 						Profiler = Profile.RequestCounter<TimeCounter>(Profile.TimeUpdateScene.FullName + @"\" + typeInfo.Name)
 					});
 				}
@@ -666,12 +650,12 @@ namespace Duality.Resources
 				int updateMapIndex = -1;
 				int updateMapBegin = -1;
 				TimeCounter activeProfiler = null;
-				Component[] data = updatableComponents.Data;
-				UpdateEntry[] updateData = updateMap.Data;
+				Component[] data = this.updatableComponents.Data;
+				UpdateEntry[] updateData = this.updateMap.Data;
 
 				for (int i = 0; i < data.Length; i++)
 				{
-					if (i >= updatableComponents.Count) break;
+					if (i >= this.updatableComponents.Count) break;
 
 					// Manage profilers per Component type
 					if (i == 0 || i - updateMapBegin >= updateData[updateMapIndex].Count)
@@ -703,13 +687,16 @@ namespace Duality.Resources
 			Profile.TimeUpdateSceneComponents.EndMeasure();
 		}
 		/// <summary>
-		/// Cleanes up disposed Scene objects.
+		/// Cleanes up scene objects that have been disposed since the scene was last updated.
+		/// 
+		/// This will invoke <see cref="ICmpInitializable"/> deactivate handlers for objects
+		/// where deactivation is still pending.
 		/// </summary>
-		new internal void RunCleanup()
+		public void CleanupDisposedObjects()
 		{
 			this.objectManager.Flush();
 			this.visibilityStrategy.CleanupRenderers();
-			foreach (var cmpList in this.componentsByType.Values)
+			foreach (List<Component> cmpList in this.componentsByType.Values)
 				cmpList.RemoveAll(i => i == null || i.Disposed);
 		}
 
@@ -745,7 +732,7 @@ namespace Duality.Resources
 		public void Append(ContentRef<Scene> scene)
 		{
 			if (!scene.IsAvailable) return;
-			this.objectManager.AddObject(scene.Res.RootObjects.Select(o => o.Clone()));
+			this.objectManager.AddObjects(scene.Res.RootObjects.Select(o => o.Clone()));
 		}
 		/// <summary>
 		/// Appends the specified Scene's contents to this Scene and consumes the specified Scene.
@@ -757,7 +744,7 @@ namespace Duality.Resources
 			Scene otherScene = scene.Res;
 			var otherObj = otherScene.RootObjects.ToArray();
 			otherScene.Clear();
-			this.objectManager.AddObject(otherObj);
+			this.objectManager.AddObjects(otherObj);
 			otherScene.Dispose();
 		}
 
@@ -767,21 +754,21 @@ namespace Duality.Resources
 		/// <param name="obj"></param>
 		public void AddObject(GameObject obj)
 		{
-			if (obj.ParentScene != null && obj.ParentScene != this) obj.ParentScene.RemoveObject(obj);
+			if (obj.Scene != null && obj.Scene != this) obj.Scene.RemoveObject(obj);
 			this.objectManager.AddObject(obj);
 		}
 		/// <summary>
 		/// Registers a set of GameObjects and all of their children.
 		/// </summary>
 		/// <param name="objEnum"></param>
-		public void AddObject(IEnumerable<GameObject> objEnum)
+		public void AddObjects(IEnumerable<GameObject> objEnum)
 		{
 			foreach (GameObject obj in objEnum)
 			{
-				if (obj.ParentScene == null || obj.ParentScene == this) continue;
-				obj.ParentScene.RemoveObject(obj);
+				if (obj.Scene == null || obj.Scene == this) continue;
+				obj.Scene.RemoveObject(obj);
 			}
-			this.objectManager.AddObject(objEnum);
+			this.objectManager.AddObjects(objEnum);
 		}
 		/// <summary>
 		/// Unregisters a GameObject and all of its children
@@ -789,8 +776,8 @@ namespace Duality.Resources
 		/// <param name="obj"></param>
 		public void RemoveObject(GameObject obj)
 		{
-			if (obj.ParentScene != this) return;
-			if (obj.Parent != null && obj.Parent.ParentScene == this)
+			if (obj.Scene != this) return;
+			if (obj.Parent != null && obj.Parent.Scene == this)
 			{
 				obj.Parent = null;
 			}
@@ -800,16 +787,16 @@ namespace Duality.Resources
 		/// Unregisters a set of GameObjects and all of their children.
 		/// </summary>
 		/// <param name="objEnum"></param>
-		public void RemoveObject(IEnumerable<GameObject> objEnum)
+		public void RemoveObjects(IEnumerable<GameObject> objEnum)
 		{
-			objEnum = objEnum.Where(o => o.ParentScene == this);
+			objEnum = objEnum.Where(o => o.Scene == this);
 			foreach (GameObject obj in objEnum)
 			{
 				if (obj.Parent == null) continue;
-				if (obj.Parent.ParentScene != this) continue;
+				if (obj.Parent.Scene != this) continue;
 				obj.Parent = null;
 			}
-			this.objectManager.RemoveObject(objEnum);
+			this.objectManager.RemoveObjects(objEnum);
 		}
 
 		/// <summary>
@@ -971,7 +958,7 @@ namespace Duality.Resources
 
 		private void AddToManagers(GameObject obj)
 		{
-			foreach (Component cmp in obj.GetComponents<Component>())
+			foreach (Component cmp in obj.Components)
 				this.AddToManagers(cmp);
 		}
 		private void AddToManagers(Component cmp)
@@ -992,7 +979,7 @@ namespace Duality.Resources
 		}
 		private void RemoveFromManagers(GameObject obj)
 		{
-			foreach (Component cmp in obj.GetComponents<Component>())
+			foreach (Component cmp in obj.Components)
 				this.RemoveFromManagers(cmp);
 		}
 		private void RemoveFromManagers(Component cmp)
@@ -1023,27 +1010,13 @@ namespace Duality.Resources
 			this.objectManager.ComponentAdded     -= this.objectManager_ComponentAdded;
 			this.objectManager.ComponentRemoving  -= this.objectManager_ComponentRemoving;
 		}
-
-		private static void ResetPhysics()
-		{
-			physicsLowFps = false;
-			physicsAcc = PhysicsAccStart;
-		}
-		/// <summary>
-		/// Awakes all currently existing physical objects.
-		/// </summary>
-		public static void AwakePhysics()
-		{
-			foreach (Body b in physicsWorld.BodyList)
-				b.Awake = true;
-		}
-
+		
 		private void objectManager_GameObjectsAdded(object sender, GameObjectGroupEventArgs e)
 		{
 			foreach (GameObject obj in e.Objects)
 			{
 				this.AddToManagers(obj);
-				obj.ParentScene = this;
+				obj.Scene = this;
 			}
 			if (this.IsCurrent) OnGameObjectsAdded(e);
 		}
@@ -1052,7 +1025,7 @@ namespace Duality.Resources
 			foreach (GameObject obj in e.Objects)
 			{
 				this.RemoveFromManagers(obj);
-				obj.ParentScene = null;
+				obj.Scene = null;
 			}
 			if (this.IsCurrent) OnGameObjectsRemoved(e);
 		}
@@ -1076,9 +1049,9 @@ namespace Duality.Resources
 			base.OnSaving(saveAsPath);
 
 			// Prepare all components for saving in reverse order, sorted by type
-			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			List<ICmpSerializeListener> initList = this.FindComponents<ICmpSerializeListener>().ToList();
 			for (int i = initList.Count - 1; i >= 0; i--)
-				initList[i].OnShutdown(Component.ShutdownContext.Saving);
+				initList[i].OnSaving();
 
 			this.serializeObj = this.objectManager.AllObjects.ToArray();
 			this.serializeObj.StableSort(SerializeGameObjectComparison);
@@ -1091,9 +1064,9 @@ namespace Duality.Resources
 			base.OnSaved(saveAsPath);
 			
 			// Re-initialize all components after saving, sorted by type
-			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			List<ICmpSerializeListener> initList = this.FindComponents<ICmpSerializeListener>().ToList();
 			for (int i = 0; i < initList.Count; i++)
-				initList[i].OnInit(Component.InitContext.Saved);
+				initList[i].OnSaved();
 
 			// If this Scene is the current one, but it wasn't saved before, update the current Scenes internal ContentRef
 			if (this.IsCurrent && current.IsRuntimeResource)
@@ -1114,7 +1087,7 @@ namespace Duality.Resources
 				}
 				foreach (GameObject obj in this.serializeObj)
 				{
-					obj.ParentScene = this;
+					obj.Scene = this;
 					this.objectManager.AddObject(obj);
 					this.AddToManagers(obj);
 				}
@@ -1127,11 +1100,9 @@ namespace Duality.Resources
 			this.ApplyPrefabLinks();
 			
 			// Initialize all loaded components, sorted by type
-			List<ICmpInitializable> initList = this.FindComponents<ICmpInitializable>().ToList();
+			List<ICmpSerializeListener> initList = this.FindComponents<ICmpSerializeListener>().ToList();
 			for (int i = 0; i < initList.Count; i++)
-				initList[i].OnInit(Component.InitContext.Loaded);
-
-			this.visibilityStrategy.Update();
+				initList[i].OnLoaded();
 		}
 		protected override void OnDisposing(bool manually)
 		{

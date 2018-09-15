@@ -13,7 +13,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// <summary>
 	/// Creates a new polygon shape in the selected <see cref="RigidBody"/>.
 	/// </summary>
-	public class PolygonRigidBodyEditorTool : PolyLikeRigidBodyEditorTool
+	public class PolygonRigidBodyEditorTool : VertexShapeRigidBodyEditorTool
 	{
 		public override string Name
 		{
@@ -36,17 +36,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get { return 2; }
 		}
 		
-		protected override ShapeInfo CreateShapeInfo(Vector2[] vertices)
+		protected override VertexBasedShapeInfo CreateShapeInfo(Vector2[] vertices)
 		{
 			return new PolyShapeInfo(vertices, 1.0f);
-		}
-		protected override Vector2[] GetVertices(ShapeInfo shape)
-		{
-			return (shape as PolyShapeInfo).Vertices;
-		}
-		protected override void SetVertices(ShapeInfo shape, Vector2[] vertices)
-		{
-			(shape as PolyShapeInfo).Vertices = vertices;
 		}
 	}
 }

@@ -7,10 +7,7 @@
   <filterMag dataType="Enum" type="Duality.Drawing.TextureMagFilter" name="Nearest" value="0" />
   <filterMin dataType="Enum" type="Duality.Drawing.TextureMinFilter" name="Nearest" value="0" />
   <pixelformat dataType="Enum" type="Duality.Drawing.TexturePixelFormat" name="Rgba" value="3" />
-  <size dataType="Struct" type="Duality.Vector2">
-    <X dataType="Float">128</X>
-    <Y dataType="Float">128</Y>
-  </size>
+  <size dataType="Struct" type="Duality.Point2" />
   <texSizeMode dataType="Enum" type="Duality.Drawing.TextureSizeMode" name="Enlarge" value="0" />
   <wrapX dataType="Enum" type="Duality.Drawing.TextureWrapMode" name="Repeat" value="1" />
   <wrapY dataType="Enum" type="Duality.Drawing.TextureWrapMode" name="Repeat" value="1" />

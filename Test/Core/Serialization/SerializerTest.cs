@@ -48,7 +48,7 @@ namespace Duality.Tests.Serialization
 			// designed to be as robust as possible and trying to not throw
 			// errors. It may log errors and warnings though.
 			this.logWatcher.Reset();
-			Log.AddGlobalOutput(this.logWatcher);
+			Logs.AddGlobalOutput(this.logWatcher);
 		}
 		[TearDown] public void Cleanup()
 		{
@@ -56,7 +56,7 @@ namespace Duality.Tests.Serialization
 			// it will assert for them, which will clear the log watcher state.
 			// If it does not assert for them, we will assume that this is an unexpected
 			// error or warning, and fail the assert here.
-			Log.RemoveGlobalOutput(this.logWatcher);
+			Logs.RemoveGlobalOutput(this.logWatcher);
 			this.logWatcher.AssertNoErrorsOrWarnings();
 		}
 
@@ -513,7 +513,7 @@ namespace Duality.Tests.Serialization
 			Assert.IsNotNull(readObj);
 			Assert.AreEqual(readObj.Name, "TestObject");
 			Assert.IsNotNull(readObj.GetComponent<Transform>());
-			Assert.AreEqual(1, readObj.GetComponents<Component>().Count());
+			Assert.AreEqual(1, readObj.Components.Count);
 		}
 		[Test] public void DeserializeMismatchedComponentType()
 		{
@@ -553,7 +553,7 @@ namespace Duality.Tests.Serialization
 			Assert.IsNotNull(readObj);
 			Assert.AreEqual(readObj.Name, "TestObject");
 			Assert.IsNotNull(readObj.GetComponent<Transform>());
-			Assert.AreEqual(1, readObj.GetComponents<Component>().Count());
+			Assert.AreEqual(1, readObj.Components.Count);
 		}
 		[Test] public void SaveMultipleResourcesToStream()
 		{

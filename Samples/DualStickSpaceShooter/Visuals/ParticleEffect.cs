@@ -139,8 +139,8 @@ namespace DualStickSpaceShooter
 		}
 		private Texture RetrieveTexture()
 		{
-			if (material.IsAvailable && material.Res.MainTexture.IsAvailable)
-				return material.Res.MainTexture.Res;
+			if (this.material.IsAvailable && this.material.Res.MainTexture.IsAvailable)
+				return this.material.Res.MainTexture.Res;
 			else
 				return null;
 		}
@@ -205,8 +205,6 @@ namespace DualStickSpaceShooter
 				float particleAngle = objAngle + particleData[i].Angle;
 				float particleScale = objScale;
 
-				device.PreprocessCoords(ref particlePos, ref particleScale);
-
 				Vector2 xDot, yDot;
 				MathF.GetTransformDotVec(particleAngle, particleScale, out xDot, out yDot);
 
@@ -259,7 +257,7 @@ namespace DualStickSpaceShooter
 			if (this.particles != null)
 			{
 				float timeMult = Time.TimeMult;
-				float timePassed = Time.MsPFMult * timeMult;
+				float timePassed = Time.MillisecondsPerFrame * timeMult;
 				
 				Vector3 boundRadiusOrigin = this.worldSpace ? this.GameObj.Transform.Pos : Vector3.Zero;
 
@@ -294,14 +292,11 @@ namespace DualStickSpaceShooter
 				this.GameObj.DisposeLater();
 			}
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				// When activating, directly update particle emitters once, so there is already something to see.
-				this.UpdateEmitters();
-			}
+			// When activating, directly update particle emitters once, so there is already something to see.
+			this.UpdateEmitters();
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
+		void ICmpInitializable.OnDeactivate() {}
 	}
 }

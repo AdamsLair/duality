@@ -9,6 +9,9 @@ using Duality.Editor.Plugins.Base.Properties;
 
 namespace Duality.Editor.Plugins.Base.EditorActions.FirstSession
 {
+	/// <summary>
+	/// This tutorial will guide you through your first steps with Duality.
+	/// </summary>
 	public class ViewGettingStartedTutorial : EditorAction<object>
 	{
 		public override Image Icon
@@ -18,10 +21,6 @@ namespace Duality.Editor.Plugins.Base.EditorActions.FirstSession
 		public override string Name
 		{
 			get { return EditorBaseRes.ActionName_ViewGettingStartedTutorial; }
-		}
-		public override string Description
-		{
-			get { return EditorBaseRes.ActionDesc_ViewGettingStartedTutorial; }
 		}
 
 		public override void Perform(IEnumerable<object> objEnum)

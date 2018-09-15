@@ -10,6 +10,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using AdamsLair.WinForms.ItemModels;
 
 using Duality;
+using Duality.IO;
 using Duality.Resources;
 using Duality.Plugins.Tilemaps;
 
@@ -107,10 +108,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 			});
 
 			// Register events
-			FileEventManager.ResourceModified += this.FileEventManager_ResourceModified;
-			FileEventManager.ResourceDeleted += this.FileEventManager_ResourceDeleted;
-			FileEventManager.ResourceRenamed += this.FileEventManager_ResourceRenamed;
-			FileEventManager.ResourceCreated += this.FileEventManager_ResourceCreated;
 			FileEventManager.BeginGlobalRename += this.FileEventManager_BeginGlobalRename;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 		}
@@ -309,35 +306,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 		}
 		
-		private void FileEventManager_ResourceModified(object sender, ResourceEventArgs e)
-		{
-			if (e.IsResource) this.OnResourceModified(e.Content);
-		}
-		private void FileEventManager_ResourceDeleted(object sender, ResourceEventArgs e)
-		{
-			if (e.IsResource) this.OnResourceModified(e.Content);
-		}
-		private void FileEventManager_ResourceRenamed(object sender, ResourceRenamedEventArgs e)
-		{
-			if (e.IsResource)
-			{
-				// Only invoke our modified handler for the new content path, not the previous
-				// one, i.e. renaming an unknown Pixmap so that it now matches a Tileset's
-				// source path. The other case, where it matched the source path already, is
-				// dealt with in our BeginGlobalRename handler, since we need to act only
-				// AFTER the global rename has fixed all references.
-				this.OnResourceModified(e.Content);
-			}
-		}
-		private void FileEventManager_ResourceCreated(object sender, ResourceEventArgs e)
-		{
-			if (e.IsResource) this.OnResourceModified(e.Content);
-		}
 		private void FileEventManager_BeginGlobalRename(object sender, BeginGlobalRenameEventArgs e)
 		{
 			// If we're doing a global rename on a Pixmap, schedule affected Tilemaps
 			// for an automatic recompile as soon as we're done with the rename.
-			if (e.IsResource && e.Content.Is<Pixmap>())
+			// This will deal with cases where renaming an unrelated Pixmap into one
+			// that is referenced by a Tileset, but missing, so the Tileset updates.
+			if (!e.IsDirectory && e.Content.Is<Pixmap>())
 			{
 				List<Tileset> affectedTilesets = new List<Tileset>();
 				affectedTilesets.AddRange(this.GetRecompileTilesets(e.OldContent.As<Pixmap>()));
@@ -352,14 +327,24 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			if (e.Objects.ResourceCount > 0)
 			{
+				List<object> modifiedObjects = new List<object>();
 				foreach (Resource resource in e.Objects.Resources)
-					this.OnResourceModified(resource);
+				{
+					this.PropagateDependentResourceChanges(resource, modifiedObjects);
+				}
+
+				// Notify about propagated changes, but flag them as non-persistent
+				if (modifiedObjects.Count > 0)
+				{
+					DualityEditorApp.NotifyObjPropChanged(
+						this,
+						new ObjectSelection(modifiedObjects),
+						false);
+				}
 			}
 		}
-		private void OnResourceModified(ContentRef<Resource> resRef)
+		private void PropagateDependentResourceChanges(ContentRef<Resource> resRef, List<object> modifiedObjects)
 		{
-			List<object> changedObj = null;
-
 			// If a pixmap has been modified, rebuild the tilesets that are based on it.
 			if (resRef.Is<Pixmap>())
 			{
@@ -369,9 +354,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 				{
 					// Recompile the tileset
 					tileset.Compile();
-
-					if (changedObj == null) changedObj = new List<object>();
-					changedObj.Add(tileset);
+					modifiedObjects.Add(tileset);
 				}
 			}
 			// If a Tileset has been modified, we'll need to give local Components a chance to update.
@@ -408,10 +391,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 					}
 				}
 			}
-
-			// Notify a change that isn't critical regarding persistence (don't flag stuff unsaved)
-			if (changedObj != null)
-				DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(changedObj as IEnumerable<object>), false);
 		}
 	}
 }

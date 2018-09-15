@@ -30,15 +30,16 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CamView));
 			this.stateSelector = new System.Windows.Forms.ToolStripComboBox();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.viewToEditSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.focusDist = new Duality.Editor.Controls.ToolStrip.ToolStripNumericUpDown();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.renderToPerspectiveSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.camSelector = new System.Windows.Forms.ToolStripComboBox();
 			this.toolbarCamera = new System.Windows.Forms.ToolStrip();
 			this.layerSelector = new System.Windows.Forms.ToolStripDropDownButton();
 			this.objectVisibilitySelector = new System.Windows.Forms.ToolStripDropDownButton();
 			this.buttonResetZoom = new System.Windows.Forms.ToolStripButton();
 			this.perspectiveDropDown = new System.Windows.Forms.ToolStripDropDownButton();
+			this.renderSetupSelector = new System.Windows.Forms.ToolStripDropDownButton();
 			this.showBgColorDialog = new System.Windows.Forms.ToolStripButton();
 			this.snapToGridSelector = new System.Windows.Forms.ToolStripDropDownButton();
 			this.snapToGridInactiveItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,10 +62,10 @@
 			this.stateSelector.DropDownClosed += new System.EventHandler(this.stateSelector_DropDownClosed);
 			this.stateSelector.SelectedIndexChanged += new System.EventHandler(this.stateSelector_SelectedIndexChanged);
 			// 
-			// toolStripSeparator1
+			// viewToEditSeparator
 			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+			this.viewToEditSeparator.Name = "viewToEditSeparator";
+			this.viewToEditSeparator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// focusDist
 			// 
@@ -89,12 +90,12 @@
             0});
 			this.focusDist.ValueChanged += new System.EventHandler(this.focusDist_ValueChanged);
 			// 
-			// toolStripSeparator2
+			// renderToPerspectiveSeparator
 			// 
-			this.toolStripSeparator2.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.toolStripSeparator2.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+			this.renderToPerspectiveSeparator.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.renderToPerspectiveSeparator.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.renderToPerspectiveSeparator.Name = "renderToPerspectiveSeparator";
+			this.renderToPerspectiveSeparator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// camSelector
 			// 
@@ -103,7 +104,7 @@
 			this.camSelector.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
 			this.camSelector.Name = "camSelector";
 			this.camSelector.Size = new System.Drawing.Size(121, 25);
-			this.camSelector.ToolTipText = "Select the Camera object to display in this View";
+			this.camSelector.ToolTipText = "Select the Camera output to display in this view";
 			this.camSelector.DropDown += new System.EventHandler(this.camSelector_DropDown);
 			this.camSelector.DropDownClosed += new System.EventHandler(this.camSelector_DropDownClosed);
 			this.camSelector.SelectedIndexChanged += new System.EventHandler(this.camSelector_SelectedIndexChanged);
@@ -118,11 +119,12 @@
             this.stateSelector,
             this.layerSelector,
             this.objectVisibilitySelector,
-            this.toolStripSeparator1,
+            this.viewToEditSeparator,
             this.buttonResetZoom,
             this.perspectiveDropDown,
             this.focusDist,
-            this.toolStripSeparator2,
+            this.renderToPerspectiveSeparator,
+            this.renderSetupSelector,
             this.showBgColorDialog,
             this.camSelector,
             this.snapToGridSelector});
@@ -139,7 +141,7 @@
 			this.layerSelector.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.layerSelector.Name = "layerSelector";
 			this.layerSelector.Size = new System.Drawing.Size(29, 22);
-			this.layerSelector.Text = "Select visible Layers";
+			this.layerSelector.Text = "Select visible layers";
 			this.layerSelector.DropDownOpening += new System.EventHandler(this.layerSelector_DropDownOpening);
 			this.layerSelector.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.layerSelector_DropDownItemClicked);
 			// 
@@ -150,7 +152,7 @@
 			this.objectVisibilitySelector.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.objectVisibilitySelector.Name = "objectVisibilitySelector";
 			this.objectVisibilitySelector.Size = new System.Drawing.Size(29, 22);
-			this.objectVisibilitySelector.Text = "Select visible Objects";
+			this.objectVisibilitySelector.Text = "Select visible objects";
 			this.objectVisibilitySelector.DropDownOpening += new System.EventHandler(this.objectVisibilitySelector_DropDownOpening);
 			// 
 			// buttonResetZoom
@@ -175,6 +177,17 @@
 			this.perspectiveDropDown.Text = "Select Perspective Mode";
 			this.perspectiveDropDown.DropDownOpening += new System.EventHandler(this.perspectiveDropDown_DropDownOpening);
 			this.perspectiveDropDown.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.perspectiveDropDown_DropDownItemClicked);
+			// 
+			// renderSetupSelector
+			// 
+			this.renderSetupSelector.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.renderSetupSelector.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.renderSetupSelector.Image = global::Duality.Editor.Plugins.CamView.Properties.Resources.RenderSetup;
+			this.renderSetupSelector.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.renderSetupSelector.Name = "renderSetupSelector";
+			this.renderSetupSelector.Size = new System.Drawing.Size(29, 22);
+			this.renderSetupSelector.Text = "Select the RenderSetup to use";
+			this.renderSetupSelector.DropDownOpening += new System.EventHandler(this.renderSetupSelector_DropDownOpening);
 			// 
 			// showBgColorDialog
 			// 
@@ -265,9 +278,9 @@
 		#endregion
 
 		private System.Windows.Forms.ToolStripComboBox stateSelector;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripSeparator viewToEditSeparator;
 		private Duality.Editor.Controls.ToolStrip.ToolStripNumericUpDown focusDist;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripSeparator renderToPerspectiveSeparator;
 		private System.Windows.Forms.ToolStripButton showBgColorDialog;
 		private System.Windows.Forms.ToolStripComboBox camSelector;
 		private System.Windows.Forms.ToolStrip toolbarCamera;
@@ -282,6 +295,7 @@
 		private System.Windows.Forms.ToolStripMenuItem snapToGrid64Item;
 		private System.Windows.Forms.ToolStripMenuItem snapToGridCustomItem;
 		private System.Windows.Forms.ToolStripDropDownButton objectVisibilitySelector;
+		private System.Windows.Forms.ToolStripDropDownButton renderSetupSelector;
 
 	}
 }

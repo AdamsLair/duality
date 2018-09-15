@@ -18,8 +18,16 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	[PropertyEditorAssignment(typeof(BatchInfo), PropertyEditorAssignmentAttribute.PrioritySpecialized)]
 	public class BatchInfoPropertyEditor : MemberwisePropertyEditor
 	{
-		private	Point	dragBeginPos	= Point.Empty;
-		private	Dictionary<string,PropertyEditor>	shaderVarEditors = new Dictionary<string,PropertyEditor>();
+		private static readonly ShaderFieldInfo[] EmptyShaderFields = new ShaderFieldInfo[0];
+
+		private struct FieldEditorItem
+		{
+			public PropertyEditor Editor;
+			public ShaderFieldInfo Field;
+		}
+
+		private Point dragBeginPos = Point.Empty;
+		private Dictionary<string,FieldEditorItem> fieldEditors = new Dictionary<string,FieldEditorItem>();
 
 		public BatchInfoPropertyEditor()
 		{
@@ -27,15 +35,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			//this.HeaderHeight = 35;
 		}
 
-		public override void  ClearContent()
+		public override void ClearContent()
 		{
  			base.ClearContent();
-			this.shaderVarEditors.Clear();
+			this.fieldEditors.Clear();
 		}
 
 		protected override bool IsAutoCreateMember(MemberInfo info)
 		{
-			if (info.IsEquivalent(ReflectionInfo.Property_BatchInfo_MainColor)) return true;
 			if (info.IsEquivalent(ReflectionInfo.Property_BatchInfo_Technique)) return true;
 			return false;
 		}
@@ -45,176 +52,73 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			if (values.Any(o => o != null))
 			{
-				bool invokeSetter = false;
-				IEnumerable<BatchInfo> batchInfos = null;
-				DrawTechnique refTech = null;
-				batchInfos = values.Cast<BatchInfo>();
-				refTech = batchInfos.NotNull().First().Technique.Res;
+				IEnumerable<BatchInfo> batchInfos = values.Cast<BatchInfo>();
+				DrawTechnique refTech = batchInfos.NotNull().First().Technique.Res;
 
-				// Retrieve data about shader variables
-				ShaderFieldInfo[] varInfoArray = null;
-				if (refTech != null && refTech.Shader.IsAvailable)
-				{
-					if (!refTech.Shader.Res.Compiled)
-						refTech.Shader.Res.Compile();
-					varInfoArray = refTech.Shader.Res.Fields;
-				}
+				// Retrieve a list of shader variables to edit
+				IReadOnlyList<ShaderFieldInfo> shaderFields = null;
+				if (refTech != null)
+					shaderFields = refTech.DeclaredFields;
 				else
-				{
-					varInfoArray = new ShaderFieldInfo[] { new ShaderFieldInfo(
-						ShaderFieldInfo.DefaultNameMainTex,
-						ShaderFieldType.Sampler2D,
-						ShaderFieldScope.Uniform) };
-				}
+					shaderFields = EmptyShaderFields;
 
-				// Get rid of unused variables (This changes actual Resource data!)
-				if (!this.ReadOnly)
+				// Remove editors that are no longer needed or no longer match their shader field
+				List<string> removeEditors = null;
+				foreach (var pair in this.fieldEditors)
 				{
-					foreach (BatchInfo info in batchInfos.NotNull())
+					bool isMatchingEditor = 
+						shaderFields.Contains(pair.Value.Field) && 
+						pair.Value.Field.Name == pair.Key;
+					if (!isMatchingEditor)
 					{
-						List<string> texRemoveSched = null;
-						List<string> uniRemoveSched = null;
-						if (info.Textures != null)
-						{
-							foreach (var pair in info.Textures)
-							{
-								if (!varInfoArray.Any(v => v.Scope == ShaderFieldScope.Uniform && v.Type == ShaderFieldType.Sampler2D && v.Name == pair.Key))
-								{
-									if (texRemoveSched == null) texRemoveSched = new List<string>();
-									texRemoveSched.Add(pair.Key);
-								}
-							}
-						}
-						if (info.Uniforms != null)
-						{
-							foreach (var pair in info.Uniforms)
-							{
-								if (!varInfoArray.Any(v => v.Scope == ShaderFieldScope.Uniform && v.Type != ShaderFieldType.Sampler2D && v.Name == pair.Key))
-								{
-									if (uniRemoveSched == null) uniRemoveSched = new List<string>();
-									uniRemoveSched.Add(pair.Key);
-								}
-							}
-						}
-						if (texRemoveSched != null)
-						{
-							foreach (string name in texRemoveSched) info.SetTexture(name, null);
-							invokeSetter = true;
-						}
-						if (uniRemoveSched != null)
-						{
-							foreach (string name in uniRemoveSched) info.SetUniform(name, null);
-							invokeSetter = true;
-						}
+						if (removeEditors == null)
+							removeEditors = new List<string>();
+						removeEditors.Add(pair.Key);
+					}
+				}
+				if (removeEditors != null)
+				{
+					foreach (string fieldName in removeEditors)
+					{
+						this.RemovePropertyEditor(this.fieldEditors[fieldName].Editor);
+						this.fieldEditors.Remove(fieldName);
 					}
 				}
 
-				// Create BatchInfo variables according to Shader uniforms, if not existing yet
-				if (!this.ReadOnly)
+				// Create editors for fields that do not yet have a matching editor, or which
+				// were removed because they did no longer match.
+				int autoCreateEditorCount = 1;
+				int displayedFieldIndex = -1;
+				for (int i = 0; i < shaderFields.Count; i++)
 				{
-					foreach (ShaderFieldInfo varInfo in varInfoArray)
+					ShaderFieldInfo field = shaderFields[i];
+
+					// Skip fields that shouldn't be displayed
+					if (field.IsPrivate) continue;
+					if (field.Scope != ShaderFieldScope.Uniform) continue;
+
+					displayedFieldIndex++;
+
+					// Skip fields that already have a matching editor
+					if (this.fieldEditors.ContainsKey(field.Name)) continue;
+
+					// Create a new editor for this field
+					PropertyEditor editor;
+					if (field.Type == ShaderFieldType.Sampler2D)
+						editor = this.CreateTextureEditor(field);
+					else
+						editor = this.CreateUniformEditor(field);
+
+					// Add and register this editor
+					this.fieldEditors[field.Name] = new FieldEditorItem
 					{
-						if (varInfo.Scope != ShaderFieldScope.Uniform) continue;
-
-						// Set Texture variables
-						if (varInfo.Type == ShaderFieldType.Sampler2D)
-						{
-							foreach (BatchInfo info in batchInfos.NotNull())
-							{
-								if (info.GetTexture(varInfo.Name).IsExplicitNull)
-								{
-									info.SetTexture(varInfo.Name, Texture.White);
-									invokeSetter = true;
-								}
-							}
-						}
-						// Set other uniform variables
-						else
-						{
-							float[] uniformVal = new float[varInfo.ArrayLength * varInfo.Type.GetElementCount()];
-							if (uniformVal != null)
-							{
-								foreach (BatchInfo info in batchInfos.NotNull())
-								{
-									float[] oldVal = info.GetUniform(varInfo.Name);
-									if (oldVal == null) 
-									{
-										info.SetUniform(varInfo.Name, uniformVal);
-										invokeSetter = true;
-									}
-									else if (oldVal.Length != uniformVal.Length)
-									{
-										for (int i = 0; i < Math.Min(oldVal.Length, uniformVal.Length); i++) uniformVal[i] = oldVal[i];
-										info.SetUniform(varInfo.Name, uniformVal);
-										invokeSetter = true;
-									}
-								}
-							}
-						}
-					}
-				}
-
-				// Create editors according to existing variables
-				var texDict = batchInfos.NotNull().First().Textures;
-				var uniformDict = batchInfos.NotNull().First().Uniforms;
-				Dictionary<string,PropertyEditor> oldEditors = new Dictionary<string,PropertyEditor>(this.shaderVarEditors);
-				if (texDict != null)
-				{
-					foreach (var tex in texDict)
-					{
-						ShaderFieldInfo varInfo = varInfoArray.FirstOrDefault(v => v.Scope == ShaderFieldScope.Uniform && v.Name == tex.Key);
-						if (varInfo.IsPrivate) continue;
-
-						string texName = varInfo.Name;
-						if (oldEditors.ContainsKey(texName))
-							oldEditors.Remove(texName);
-						else
-						{
-							PropertyEditor e = this.ParentGrid.CreateEditor(typeof(ContentRef<Texture>), this);
-							e.Getter = this.CreateTextureValueGetter(texName);
-							e.Setter = !this.ReadOnly ? this.CreateTextureValueSetter(texName) : null;
-							e.PropertyName = texName;
-							this.shaderVarEditors[texName] = e;
-							this.ParentGrid.ConfigureEditor(e);
-							this.AddPropertyEditor(e);
-						}
-					}
-				}
-				if (uniformDict != null)
-				{
-					foreach (var uniform in uniformDict)
-					{
-						ShaderFieldInfo varInfo = varInfoArray.FirstOrDefault(v => v.Scope == ShaderFieldScope.Uniform && v.Name == uniform.Key);
-						if (varInfo.IsPrivate) continue;
-
-						PropertyEditor e = this.CreateUniformEditor(varInfo);
-						if (e != null)
-						{
-							if (oldEditors.ContainsValue(e))
-								oldEditors.Remove(varInfo.Name);
-							else
-							{
-								e.PropertyName = uniform.Key;
-								this.shaderVarEditors[uniform.Key] = e;
-								this.AddPropertyEditor(e);
-							}
-						}
-					}
-				}
-
-				// Remove old editors that aren't needed anymore
-				foreach (var pair in oldEditors)
-				{
-					if (this.shaderVarEditors[pair.Key] == pair.Value) this.shaderVarEditors.Remove(pair.Key);
-					this.RemovePropertyEditor(pair.Value);
-				}
-
-				// If we actually changed (updated) data here, invoke the setter
-				if (invokeSetter)
-				{
-					this.SetValues(batchInfos);
-					if (!this.IsUpdating)
-						this.PerformGetValue();
+						Editor = editor,
+						Field = field
+					};
+					if (autoCreateEditorCount + displayedFieldIndex <= this.ChildEditors.Count)
+						this.AddPropertyEditor(editor, autoCreateEditorCount + displayedFieldIndex);
+					else
+						this.AddPropertyEditor(editor);
 				}
 			}
 		}
@@ -226,266 +130,168 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			// Run a GetValue-pass to make sure automatic changes are applied if necessary.
 			this.PerformGetValue();
 		}
-		protected PropertyEditor CreateUniformEditor(ShaderFieldInfo varInfo)
-		{
-			PropertyEditor oldEditor;
-			this.shaderVarEditors.TryGetValue(varInfo.Name, out oldEditor);
-			List<EditorHintAttribute> configData = new List<EditorHintAttribute>();
 
-			if (varInfo.ArrayLength == 1)
+		protected PropertyEditor CreateTextureEditor(ShaderFieldInfo field)
+		{
+			PropertyEditor editor = null;
+
+			editor = this.ParentGrid.CreateEditor(typeof(ContentRef<Texture>), this);
+			editor.Getter = this.CreateTextureValueGetter(field.Name);
+			editor.Setter = !this.ReadOnly ? this.CreateTextureValueSetter(field.Name) : null;
+
+			editor.PropertyName = field.Name;
+			editor.PropertyDesc = field.Description;
+			this.ParentGrid.ConfigureEditor(editor);
+			return editor;
+		}
+		protected PropertyEditor CreateUniformEditor(ShaderFieldInfo field)
+		{
+			PropertyEditor editor = null;
+			bool mainEditorIsArray = false;
+
+			if (field.ArrayLength == 1)
 			{
-				if (varInfo.Type == ShaderFieldType.Float || varInfo.Type == ShaderFieldType.Int)
+				if (field.EditorTypeTag == "ColorRgba")
+				{
+					editor = this.ParentGrid.CreateEditor(typeof(ColorRgba), this);
+					editor.Getter = this.CreateUniformValueGetter<ColorRgba>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<ColorRgba>(field.Name) : null;
+				}
+				else if (field.EditorTypeTag == "ColorHsva")
+				{
+					editor = this.ParentGrid.CreateEditor(typeof(ColorHsva), this);
+					editor.Getter = this.CreateUniformValueGetter<ColorHsva>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<ColorHsva>(field.Name) : null;
+				}
+				else if (field.Type == ShaderFieldType.Float || field.Type == ShaderFieldType.Int)
 				{
 					Type editType = typeof(float);
-					if (varInfo.Type == ShaderFieldType.Int) editType = typeof(int);
+					if (field.Type == ShaderFieldType.Int) editType = typeof(int);
 
-					if (oldEditor != null && oldEditor.EditedType == editType)
-						return oldEditor;
+					editor = this.ParentGrid.CreateEditor(editType, this);
+					if (field.Type == ShaderFieldType.Int)
+					{
+						editor.Getter = this.CreateUniformValueGetter<int>(field.Name);
+						editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<int>(field.Name) : null;
+					}
 					else
 					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(editType, this);
-						if (varInfo.Type == ShaderFieldType.Int)
-						{
-							e.Getter = this.CreateUniformIntValueGetter(varInfo.Name);
-							e.Setter = !this.ReadOnly ? this.CreateUniformIntValueSetter(varInfo.Name) : null;
-						}
-						else
-						{
-							e.Getter = this.CreateUniformFloatValueGetter(varInfo.Name);
-							e.Setter = !this.ReadOnly ? this.CreateUniformFloatValueSetter(varInfo.Name) : null;
-							configData.Add(new EditorHintIncrementAttribute(0.1f));
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						return e;
+						editor.Getter = this.CreateUniformValueGetter<float>(field.Name);
+						editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<float>(field.Name) : null;
 					}
 				}
-				else if (varInfo.Type == ShaderFieldType.Vec2)
+				else if (field.Type == ShaderFieldType.Vec2)
 				{
-					if (oldEditor != null && oldEditor.EditedType == typeof(Vector2))
-						return oldEditor;
-					else
-					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(Vector2), this);
-						e.Getter = this.CreateUniformVec2ValueGetter(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformVec2ValueSetter(varInfo.Name) : null;
-						configData.Add(new EditorHintIncrementAttribute(0.1f));
-						this.ParentGrid.ConfigureEditor(e, configData);
-						return e;
-					}
+					editor = this.ParentGrid.CreateEditor(typeof(Vector2), this);
+					editor.Getter = this.CreateUniformValueGetter<Vector2>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector2>(field.Name) : null;
 				}
-				else if (varInfo.Type == ShaderFieldType.Vec3)
+				else if (field.Type == ShaderFieldType.Vec3)
 				{
-					if (oldEditor != null && oldEditor.EditedType == typeof(Vector3))
-						return oldEditor;
-					else
-					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(Vector3), this);
-						e.Getter = this.CreateUniformVec3ValueGetter(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformVec3ValueSetter(varInfo.Name) : null;
-						configData.Add(new EditorHintIncrementAttribute(0.1f));
-						this.ParentGrid.ConfigureEditor(e, configData);
-						return e;
-					}
+					editor = this.ParentGrid.CreateEditor(typeof(Vector3), this);
+					editor.Getter = this.CreateUniformValueGetter<Vector3>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector3>(field.Name) : null;
+				}
+				else if (field.Type == ShaderFieldType.Vec4)
+				{
+					editor = this.ParentGrid.CreateEditor(typeof(Vector4), this);
+					editor.Getter = this.CreateUniformValueGetter<Vector4>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformValueSetter<Vector4>(field.Name) : null;
 				}
 				else
 				{
-					if (oldEditor != null && oldEditor.EditedType == typeof(float[]))
-						return oldEditor;
-					else
-					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(float[]), this);
-						e.Getter = this.CreateUniformValueGetter(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformValueSetter(varInfo.Name) : null;
-						if (e is GroupedPropertyEditor)
-						{
-							(e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						return e;
-					}
+					editor = this.ParentGrid.CreateEditor(typeof(float[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<float>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(field.Name) : null;
+					mainEditorIsArray = true;
 				}
 			}
 			else
 			{
-				Array oldValue = oldEditor != null ? (oldEditor as IListPropertyEditor).DisplayedValue as Array : null;
-				Type oldElementType = oldValue != null ? oldValue.GetType().GetElementType() : null;
-				int oldLen = oldValue != null ? oldValue.Length : -1;
-
-				if (varInfo.Type == ShaderFieldType.Float || varInfo.Type == ShaderFieldType.Int)
+				mainEditorIsArray = true;
+				if (field.EditorTypeTag == "ColorRgba")
+				{
+					editor = this.ParentGrid.CreateEditor(typeof(ColorRgba[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<ColorRgba>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<ColorRgba>(field.Name) : null;
+					editor.ForceWriteBack = true;
+				}
+				else if (field.EditorTypeTag == "ColorHsva")
+				{
+					editor = this.ParentGrid.CreateEditor(typeof(ColorHsva[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<ColorHsva>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<ColorHsva>(field.Name) : null;
+					editor.ForceWriteBack = true;
+				}
+				else if (field.Type == ShaderFieldType.Float || field.Type == ShaderFieldType.Int)
 				{
 					Type editType = typeof(float);
-					if (varInfo.Type == ShaderFieldType.Int) editType = typeof(int);
+					if (field.Type == ShaderFieldType.Int) editType = typeof(int);
 
-					if (oldLen == varInfo.ArrayLength && oldElementType == editType)
-						return oldEditor;
-					else
-					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(editType.MakeArrayType(), this);
-						e.Getter = this.CreateUniformValueGetter(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformValueSetter(varInfo.Name) : null;
-						e.ForceWriteBack = true;
-						if (e is GroupedPropertyEditor)
-						{
-							if (varInfo.Type == ShaderFieldType.Float) (e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						return e;
-					}
+					editor = this.ParentGrid.CreateEditor(editType.MakeArrayType(), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<float>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(field.Name) : null;
+					editor.ForceWriteBack = true;
 				}
-				else if (varInfo.Type == ShaderFieldType.Vec2)
+				else if (field.Type == ShaderFieldType.Vec2)
 				{
-					if (oldLen == varInfo.ArrayLength && oldElementType == typeof(Vector2))
-						return oldEditor;
-					else
-					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(Vector2[]), this);
-						e.Getter = this.CreateUniformVec2ArrayValueGetter(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformVec2ArrayValueSetter(varInfo.Name) : null;
-						e.ForceWriteBack = true;
-						if (e is GroupedPropertyEditor)
-						{
-							(e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						return e;
-					}
+					editor = this.ParentGrid.CreateEditor(typeof(Vector2[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<Vector2>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector2>(field.Name) : null;
+					editor.ForceWriteBack = true;
 				}
-				else if (varInfo.Type == ShaderFieldType.Vec3)
+				else if (field.Type == ShaderFieldType.Vec3)
 				{
-					if (oldLen == varInfo.ArrayLength && oldElementType == typeof(Vector3))
-						return oldEditor;
-					else
-					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(Vector3[]), this);
-						e.Getter = this.CreateUniformVec3ArrayValueGetter(varInfo.Name);
-						e.Setter = !this.ReadOnly ? this.CreateUniformVec3ArrayValueSetter(varInfo.Name) : null;
-						e.ForceWriteBack = true;
-						if (e is GroupedPropertyEditor)
-						{
-							(e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						return e;
-					}
+					editor = this.ParentGrid.CreateEditor(typeof(Vector3[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<Vector3>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector3>(field.Name) : null;
+					editor.ForceWriteBack = true;
+				}
+				else if (field.Type == ShaderFieldType.Vec4)
+				{
+					editor = this.ParentGrid.CreateEditor(typeof(Vector4[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<Vector4>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<Vector4>(field.Name) : null;
+					editor.ForceWriteBack = true;
 				}
 				else
 				{
-					if (oldLen == varInfo.ArrayLength)
-						return oldEditor;
-					else
-					{
-						PropertyEditor e = this.ParentGrid.CreateEditor(typeof(float[][]), this);
-						e.Getter = this.CreateUniformArrayValueGetter(varInfo.Name, varInfo.ArrayLength);
-						e.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter(varInfo.Name) : null;
-						e.ForceWriteBack = true;
-						if (e is GroupedPropertyEditor)
-						{
-							(e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
-						}
-						this.ParentGrid.ConfigureEditor(e, configData);
-						return e;
-					}
+					editor = this.ParentGrid.CreateEditor(typeof(float[]), this);
+					editor.Getter = this.CreateUniformArrayValueGetter<float>(field.Name);
+					editor.Setter = !this.ReadOnly ? this.CreateUniformArrayValueSetter<float>(field.Name) : null;
 				}
 			}
+
+			List<EditorHintAttribute> configData = new List<EditorHintAttribute>();
+
+			if (mainEditorIsArray)
+			{
+				GroupedPropertyEditor groupedMainEditor = editor as GroupedPropertyEditor;
+				if (groupedMainEditor != null)
+					groupedMainEditor.EditorAdded += this.UniformList_EditorAdded;
+			}
+			else
+			{
+				this.PrepareEditorConfigData(field, configData);
+			}
+
+			editor.PropertyName = field.Name;
+			editor.PropertyDesc = field.Description;
+			this.ParentGrid.ConfigureEditor(editor, configData);
+			return editor;
 		}
 		
 		protected Func<IEnumerable<object>> CreateTextureValueGetter(string name)
 		{
 			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.GetTexture(name) : null);
 		}
-		protected Func<IEnumerable<object>> CreateUniformValueGetter(string name)
+		protected Func<IEnumerable<object>> CreateUniformArrayValueGetter<T>(string name) where T : struct
 		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.GetUniform(name) : null);
+			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.GetArray<T>(name) : null);
 		}
-		protected Func<IEnumerable<object>> CreateUniformFloatValueGetter(string name)
+		protected Func<IEnumerable<object>> CreateUniformValueGetter<T>(string name) where T : struct
 		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => (o != null && o.GetUniform(name) != null) ? (object)o.GetUniform(name)[0] : null);
-		}
-		protected Func<IEnumerable<object>> CreateUniformIntValueGetter(string name)
-		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => (o != null && o.GetUniform(name) != null) ? (object)(int)o.GetUniform(name)[0] : null);
-		}
-		protected Func<IEnumerable<object>> CreateUniformVec2ValueGetter(string name)
-		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => (o != null && o.GetUniform(name) != null) ? (object)
-				new Vector2(o.GetUniform(name)[0], o.GetUniform(name)[1])
-				: null);
-		}
-		protected Func<IEnumerable<object>> CreateUniformVec3ValueGetter(string name)
-		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => (o != null && o.GetUniform(name) != null) ? (object)
-				new Vector3(o.GetUniform(name)[0], o.GetUniform(name)[1], o.GetUniform(name)[2])
-				: null);
-		}
-
-		protected Func<IEnumerable<object>> CreateUniformArrayValueGetter(string name, int arraySize)
-		{
-			return delegate()
-			{
-				var batchInfos = this.GetValue().Cast<BatchInfo>();
-				List<object> result = new List<object>();
-				foreach (var info in batchInfos)
-				{
-					float[] arrayBase = info.GetUniform(name) ?? new float[0];
-					int elementCount = arrayBase.Length / arraySize;
-					float[][] arrays = new float[arraySize][];
-					for (int i = 0; i < arraySize; i++)
-					{
-						arrays[i] = new float[elementCount];
-						for (int j = 0; j < elementCount; j++)
-						{
-							arrays[i][j] = arrayBase[i * elementCount + j];
-						}
-					}
-					result.Add(arrays);
-				}
-				return result;
-			};
-		}
-		protected Func<IEnumerable<object>> CreateUniformVec2ArrayValueGetter(string name)
-		{
-			return delegate()
-			{
-				var batchInfos = this.GetValue().Cast<BatchInfo>();
-				List<object> result = new List<object>();
-				foreach (var info in batchInfos)
-				{
-					float[] arrayBase = info.GetUniform(name) ?? new float[0];
-					int arraySize = arrayBase.Length / 2;
-					Vector2[] arrays = new Vector2[arraySize];
-					for (int i = 0; i < arraySize; i++)
-					{
-						arrays[i] = new Vector2(
-							arrayBase[i * 2 + 0],
-							arrayBase[i * 2 + 1]);
-					}
-					result.Add(arrays);
-				}
-				return result;
-			};
-		}
-		protected Func<IEnumerable<object>> CreateUniformVec3ArrayValueGetter(string name)
-		{
-			return delegate()
-			{
-				var batchInfos = this.GetValue().Cast<BatchInfo>();
-				List<object> result = new List<object>();
-				foreach (var info in batchInfos)
-				{
-					float[] arrayBase = info.GetUniform(name) ?? new float[0];
-					int arraySize = arrayBase.Length / 3;
-					Vector3[] arrays = new Vector3[arraySize];
-					for (int i = 0; i < arraySize; i++)
-					{
-						arrays[i] = new Vector3(
-							arrayBase[i * 3 + 0],
-							arrayBase[i * 3 + 1],
-							arrayBase[i * 3 + 2]);
-					}
-					result.Add(arrays);
-				}
-				return result;
-			};
+			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.GetValue<T>(name) : null);
 		}
 
 		protected Action<IEnumerable<object>> CreateTextureValueSetter(string name)
@@ -502,178 +308,71 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					if (info != null) info.SetTexture(name, curValue);
 					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Textures, batchInfoArray);
+				this.OnPropertySet(null, batchInfoArray);
 			};
 		}
-		protected Action<IEnumerable<object>> CreateUniformValueSetter(string name)
+		protected Action<IEnumerable<object>> CreateUniformArrayValueSetter<T>(string name) where T : struct
 		{
 			return delegate(IEnumerable<object> values)
 			{
-				IEnumerator<float[]> valuesEnum = values.Cast<float[]>().GetEnumerator();
+				IEnumerator<T[]> valuesEnum = values.Cast<T[]>().GetEnumerator();
 				BatchInfo[] batchInfoArray = this.GetValue().Cast<BatchInfo>().ToArray();
 
-				float[] curValue = null;
+				T[] curValue = null;
 				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				foreach (BatchInfo info in batchInfoArray)
 				{
-					if (info != null) info.SetUniform(name, curValue);
+					if (info != null) info.SetArray(name, curValue);
 					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Uniforms, batchInfoArray);
+				this.OnPropertySet(null, batchInfoArray);
 			};
 		}
-		protected Action<IEnumerable<object>> CreateUniformFloatValueSetter(string name)
+		protected Action<IEnumerable<object>> CreateUniformValueSetter<T>(string name) where T : struct
 		{
 			return delegate(IEnumerable<object> values)
 			{
-				IEnumerator<float> valuesEnum = values.Cast<float>().GetEnumerator();
+				IEnumerator<T> valuesEnum = values.Cast<T>().GetEnumerator();
 				BatchInfo[] batchInfoArray = this.GetValue().Cast<BatchInfo>().ToArray();
 
-				float curValue = 0.0f;
+				T curValue = default(T);
 				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				foreach (BatchInfo info in batchInfoArray)
 				{
-					if (info != null) info.SetUniform(name, 0, curValue);
+					if (info != null) info.SetValue(name, curValue);
 					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Uniforms, batchInfoArray);
-			};
-		}
-		protected Action<IEnumerable<object>> CreateUniformIntValueSetter(string name)
-		{
-			return delegate(IEnumerable<object> values)
-			{
-				IEnumerator<int> valuesEnum = values.Cast<int>().GetEnumerator();
-				BatchInfo[] batchInfoArray = this.GetValue().Cast<BatchInfo>().ToArray();
-
-				int curValue = 0;
-				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				foreach (BatchInfo info in batchInfoArray)
-				{
-					if (info != null) info.SetUniform(name, 0, curValue);
-					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Uniforms, batchInfoArray);
-			};
-		}
-		protected Action<IEnumerable<object>> CreateUniformVec2ValueSetter(string name)
-		{
-			return delegate(IEnumerable<object> values)
-			{
-				IEnumerator<Vector2> valuesEnum = values.Cast<Vector2>().GetEnumerator();
-				BatchInfo[] batchInfoArray = this.GetValue().Cast<BatchInfo>().ToArray();
-
-				Vector2 curValue = Vector2.Zero;
-				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				foreach (BatchInfo info in batchInfoArray)
-				{
-					if (info != null)
-					{
-						info.SetUniform(name, 0, curValue.X);
-						info.SetUniform(name, 1, curValue.Y);
-					}
-					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Uniforms, batchInfoArray);
-			};
-		}
-		protected Action<IEnumerable<object>> CreateUniformVec3ValueSetter(string name)
-		{
-			return delegate(IEnumerable<object> values)
-			{
-				IEnumerator<Vector3> valuesEnum = values.Cast<Vector3>().GetEnumerator();
-				BatchInfo[] batchInfoArray = this.GetValue().Cast<BatchInfo>().ToArray();
-
-				Vector3 curValue = Vector3.Zero;
-				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				foreach (BatchInfo info in batchInfoArray)
-				{
-					if (info != null)
-					{
-						info.SetUniform(name, 0, curValue.X);
-						info.SetUniform(name, 1, curValue.Y);
-						info.SetUniform(name, 2, curValue.Z);
-					}
-					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Uniforms, batchInfoArray);
+				this.OnPropertySet(null, batchInfoArray);
 			};
 		}
 
-		protected Action<IEnumerable<object>> CreateUniformArrayValueSetter(string name)
+		private void PrepareEditorConfigData(ShaderFieldInfo field, List<EditorHintAttribute> configData)
 		{
-			return delegate(IEnumerable<object> values)
+			if (field.Type != ShaderFieldType.Int)
 			{
-				IEnumerator<float[][]> valuesEnum = values.Cast<float[][]>().GetEnumerator();
-				BatchInfo[] batchInfoArray = this.GetValue().Cast<BatchInfo>().ToArray();
-
-				float[][] curValue = null;
-				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				foreach (BatchInfo info in batchInfoArray)
-				{
-					if (info != null)
-					{
-						IEnumerable<float> curValueConcat = new float[0];
-						foreach (float[] arrayChunk in curValue) curValueConcat = curValueConcat.Concat(arrayChunk);
-						info.SetUniform(name, curValueConcat.ToArray());
-					}
-					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Uniforms, batchInfoArray);
-			};
+				configData.Add(new EditorHintIncrementAttribute(0.1f));
+			}
+			if (field.MinValue != float.MinValue || field.MaxValue != float.MaxValue)
+			{
+				configData.Add(new EditorHintRangeAttribute(
+					field.MinValue,
+					field.MaxValue));
+			}
 		}
-		protected Action<IEnumerable<object>> CreateUniformVec2ArrayValueSetter(string name)
-		{
-			return delegate(IEnumerable<object> values)
-			{
-				IEnumerator<Vector2[]> valuesEnum = values.Cast<Vector2[]>().GetEnumerator();
-				BatchInfo[] batchInfoArray = this.GetValue().Cast<BatchInfo>().ToArray();
 
-				Vector2[] curValue = null;
-				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				foreach (BatchInfo info in batchInfoArray)
-				{
-					if (info != null)
-					{
-						float[] curValueConcat = new float[curValue.Length * 2];
-						for (int i = 0; i < curValue.Length; i++)
-						{
-							curValueConcat[i * 2 + 0] = curValue[i].X;
-							curValueConcat[i * 2 + 1] = curValue[i].Y;
-						}
-						info.SetUniform(name, curValueConcat);
-					}
-					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Uniforms, batchInfoArray);
-			};
-		}
-		protected Action<IEnumerable<object>> CreateUniformVec3ArrayValueSetter(string name)
+		private void UniformList_EditorAdded(object sender, PropertyEditorEventArgs e)
 		{
-			return delegate(IEnumerable<object> values)
+			foreach (FieldEditorItem item in this.fieldEditors.Values)
 			{
-				IEnumerator<Vector3[]> valuesEnum = values.Cast<Vector3[]>().GetEnumerator();
-				BatchInfo[] batchInfoArray = this.GetValue().Cast<BatchInfo>().ToArray();
-
-				Vector3[] curValue = null;
-				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				foreach (BatchInfo info in batchInfoArray)
+				if (item.Editor == e.Editor)
 				{
-					if (info != null)
-					{
-						float[] curValueConcat = new float[curValue.Length * 3];
-						for (int i = 0; i < curValue.Length; i++)
-						{
-							curValueConcat[i * 3 + 0] = curValue[i].X;
-							curValueConcat[i * 3 + 1] = curValue[i].Y;
-							curValueConcat[i * 3 + 2] = curValue[i].Z;
-						}
-						info.SetUniform(name, curValueConcat);
-					}
-					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
+					List<EditorHintAttribute> configData = new List<EditorHintAttribute>();
+					this.PrepareEditorConfigData(item.Field, configData);
+					this.ParentGrid.ConfigureEditor(e.Editor, configData);
+					break;
 				}
-				this.OnPropertySet(ReflectionInfo.Property_BatchInfo_Uniforms, batchInfoArray);
-			};
+			}
+			e.Editor.ForceWriteBack = true;
 		}
 
 		protected override void OnDragOver(DragEventArgs e)
@@ -702,17 +401,12 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					e.Effect = e.AllowedEffect;
 
 					IEnumerable<object> values = this.GetValue();
-					IEnumerable<BatchInfo> batchInfoValues = values.Cast<BatchInfo>().NotNull();
-					if (batchInfoValues.Any())
+					BatchInfo[] newValues = new BatchInfo[Math.Max(1, values.Count())];
+					for (int i = 0; i < newValues.Length; i++)
 					{
-						foreach (BatchInfo info in batchInfoValues) newBatchInfoArray[0].CopyTo(info);
-						// BatchInfos aren't usually referenced, they're nested. Make sure the change notification is passed on.
-						this.SetValues(batchInfoValues);
+						newValues[i] = new BatchInfo(newBatchInfoArray[0]);
 					}
-					else
-					{
-						this.SetValue(newBatchInfoArray[0]);
-					}
+					this.SetValues(newValues);
 					this.PerformGetValue();
 					return;
 				}
@@ -720,12 +414,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			// Move on to children if failed otherwise
 			base.OnDragDrop(e);
-		}
-
-		private void UniformList_EditorAdded(object sender, PropertyEditorEventArgs e)
-		{
-			this.ParentGrid.ConfigureEditor(e.Editor, new[] { new EditorHintIncrementAttribute(0.1f) });
-			e.Editor.ForceWriteBack = true;
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)

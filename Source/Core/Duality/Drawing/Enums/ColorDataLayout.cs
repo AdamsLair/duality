@@ -9,7 +9,6 @@ namespace Duality.Drawing
 	/// </summary>
 	public enum ColorDataLayout
 	{
-		Rgba,
-		Bgra,
+		Rgba
 	}
 }

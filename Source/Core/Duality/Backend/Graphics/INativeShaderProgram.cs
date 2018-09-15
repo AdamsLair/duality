@@ -12,14 +12,8 @@ namespace Duality.Backend
 		/// <summary>
 		/// Loads the specified shader parts and compiles them into a single shader program.
 		/// </summary>
-		/// <param name="vertex"></param>
-		/// <param name="fragment"></param>
-		void LoadProgram(INativeShaderPart vertex, INativeShaderPart fragment);
-
-		/// <summary>
-		/// Retrieves reflection data on the shaders fields.
-		/// </summary>
-		/// <returns></returns>
-		ShaderFieldInfo[] GetFields();
+		/// <param name="shaderParts"></param>
+		/// <param name="shaderFields"></param>
+		void LoadProgram(IEnumerable<INativeShaderPart> shaderParts, IEnumerable<ShaderFieldInfo> shaderFields);
 	}
 }

@@ -34,7 +34,7 @@ namespace Duality.Backend.Dummy
 		}
 		void IDualityBackend.Init()
 		{
-			Log.Core.WriteWarning("DummySystemBackend initialized. This is unusual and may cause problems when someone tries to access disk or system features.");
+			Logs.Core.WriteWarning("DummySystemBackend initialized. This is unusual and may cause problems when someone tries to access disk or system features.");
 		}
 		void IDualityBackend.Shutdown() { }
 

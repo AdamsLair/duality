@@ -14,7 +14,7 @@ namespace Duality.Backend.Dummy
 			while (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
 			{
 				DualityApp.Update();
-				DualityApp.Render(new Rect(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight));
+				DualityApp.Render(null, new Rect(DualityApp.UserData.WindowSize), DualityApp.UserData.WindowSize);
 			}
 		}
 	}

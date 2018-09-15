@@ -82,7 +82,7 @@ namespace Duality.Editor.UndoRedoActions
 					clone.Transform.Pos += Vector3.UnitX * 0.001f;
 			}
 
-			Scene.Current.AddObject(this.resultObj);
+			Scene.Current.AddObjects(this.resultObj);
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}
 		public override void Undo()
@@ -92,7 +92,7 @@ namespace Duality.Editor.UndoRedoActions
 			{
 				clone.Dispose();
 			}
-			Scene.Current.RemoveObject(this.resultObj);
+			Scene.Current.RemoveObjects(this.resultObj);
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}
 	}

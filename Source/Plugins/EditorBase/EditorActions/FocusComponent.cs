@@ -11,13 +11,11 @@ using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {
+	/// <summary>
+	/// Focus Camera on GameObject.
+	/// </summary>
 	public class FocusComponent : EditorSingleAction<Component>
 	{
-		public override string Description
-		{
-			get { return EditorBaseRes.ActionDesc_FocusGameObject; }
-		}
-
 		public override bool CanPerformOn(Component obj)
 		{
 			return base.CanPerformOn(obj) && obj.GameObj != null && obj.GameObj.Transform != null;

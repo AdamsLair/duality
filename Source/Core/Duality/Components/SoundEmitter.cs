@@ -14,6 +14,7 @@ namespace Duality.Components
 	/// Provides functionality to emit sound.
 	/// </summary>
 	[RequiredComponent(typeof(Transform))]
+	[RequiredComponent(typeof(VelocityTracker))]
 	[EditorHintCategory(CoreResNames.CategorySound)]
 	[EditorHintImage(CoreResNames.ImageSoundEmitter)]
 	public sealed class SoundEmitter : Component, ICmpUpdatable, ICmpInitializable
@@ -144,7 +145,7 @@ namespace Duality.Components
 			public bool Update(SoundEmitter emitter)
 			{
 				// Revalidate Sound reference
-				this.sound.MakeAvailable();
+				this.sound.EnsureLoaded();
 
 				// If the SoundInstance has been disposed, set to null
 				if (this.instance != null && this.instance.Disposed) this.instance = null;
@@ -162,7 +163,7 @@ namespace Duality.Components
 					if (!this.looped && this.hasBeenPlayed) return false;
 
 					// Play the sound
-					this.instance = DualityApp.Sound.PlaySound3D(this.sound, emitter.GameObj);
+					this.instance = DualityApp.Sound.PlaySound3D(this.sound, emitter.GameObj, true);
 					this.instance.Pos = this.offset;
 					this.instance.Looped = this.looped;
 					this.instance.Volume = this.volume;
@@ -211,16 +212,13 @@ namespace Duality.Components
 					this.sources.RemoveAt(i);
 			}
 		}
-		void ICmpInitializable.OnInit(InitContext context) {}
-		void ICmpInitializable.OnShutdown(ShutdownContext context)
+		void ICmpInitializable.OnActivate() {}
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
+			for (int i = this.sources.Count - 1; i >= 0; i--)
 			{
-				for (int i = this.sources.Count - 1; i >= 0; i--)
-				{
-					if (this.sources[i].Instance != null)
-						this.sources[i].Instance.Stop();
-				}
+				if (this.sources[i].Instance != null)
+					this.sources[i].Instance.Stop();
 			}
 		}
 	}

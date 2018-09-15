@@ -12,21 +12,21 @@ namespace Duality.Drawing
 	/// </summary>
 	public class CanvasState : ICloneExplicit
 	{
-		private static readonly BatchInfo DefaultMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
+		private static readonly BatchInfo DefaultMaterial = new BatchInfo(DrawTechnique.Mask);
 
-		private	BatchInfo			batchInfo;
-		private	ColorRgba			color;
-		private	ContentRef<Font>	font;
-		private	float				zOffset;
-		private	bool		invariantTextScale;
-		private	float		transformAngle;
-		private	Vector2		transformScale;
-		private	Vector2		transformHandle;
-		private	Rect		uvGenRect;
-
-		private	Vector2		curTX;
-		private	Vector2		curTY;
-		private	Vector2		texBaseSize;
+		private Canvas           canvas;
+		private BatchInfo        batchInfo;
+		private ColorRgba        color;
+		private ContentRef<Font> font;
+		private float            depthOffset;
+		private float            transformAngle;
+		private Vector2          transformScale;
+		private Vector2          transformHandle;
+		private Rect             uvGenRect;
+		
+		private Vector2          curTX;
+		private Vector2          curTY;
+		private Vector2          texBaseSize;
 
 
 		internal BatchInfo MaterialDirect
@@ -34,18 +34,18 @@ namespace Duality.Drawing
 			get { return this.batchInfo; }
 		}
 		/// <summary>
-		/// [GET] The material that is used for drawing.
+		/// [GET] Returns a copy of the material that is used for drawing.
 		/// </summary>
 		public BatchInfo Material
 		{
-			get { return new BatchInfo(this.batchInfo); }
+			get { return this.canvas.DrawDevice.RentMaterial(this.batchInfo); }
 		}
 		/// <summary>
 		/// [GET] Returns whether the currently active material is the default one.
 		/// </summary>
 		public bool IsDefaultMaterial
 		{
-			get { return this.batchInfo == DefaultMaterial; }
+			get { return this.batchInfo.Equals(DefaultMaterial); }
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="Duality.Resources.Font"/> to use for text rendering.
@@ -54,14 +54,6 @@ namespace Duality.Drawing
 		{
 			get { return this.font; }
 			set { this.font = value.IsAvailable ? value : Font.GenericMonospace10; }
-		}
-		/// <summary>
-		/// [GET / SET] If true, text does not scale due to its position in space
-		/// </summary>
-		public bool TextInvariantScale
-		{
-			get { return this.invariantTextScale; }
-			set { this.invariantTextScale = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The texture coordinate rect which is used for UV generation when drawing shapes.
@@ -87,12 +79,12 @@ namespace Duality.Drawing
 			set { this.color = value; }
 		}
 		/// <summary>
-		/// [GET / SET] A Z-Offset value that is added to each emitted vertices Z coordinate after all projection calculations have been done.
+		/// [GET / SET] A depth / Z offset value that is added to each emitted vertices Z coordinate after all projection calculations have been done.
 		/// </summary>
-		public float ZOffset
+		public float DepthOffset
 		{
-			get { return this.zOffset; }
-			set { this.zOffset = value; }
+			get { return this.depthOffset; }
+			set { this.depthOffset = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The angle by which all shapes are transformed locally.
@@ -134,12 +126,14 @@ namespace Duality.Drawing
 		}
 
 
-		public CanvasState() 
+		public CanvasState(Canvas canvas) 
 		{
+			this.canvas = canvas;
 			this.Reset();
 		}
 		public CanvasState(CanvasState other)
 		{
+			this.canvas = other.canvas;
 			other.CopyTo(this);
 		}
 			
@@ -149,16 +143,15 @@ namespace Duality.Drawing
 		/// <param name="target"></param>
 		public void CopyTo(CanvasState target)
 		{
-			target.batchInfo			= this.batchInfo;
-			target.uvGenRect			= this.uvGenRect;
-			target.texBaseSize			= this.texBaseSize;
-			target.font					= this.font;
-			target.color				= this.color;
-			target.invariantTextScale	= this.invariantTextScale;
-			target.zOffset				= this.zOffset;
-			target.transformAngle		= this.transformAngle;
-			target.transformHandle		= this.transformHandle;
-			target.transformScale		= this.transformScale;
+			target.batchInfo          = this.batchInfo;
+			target.uvGenRect          = this.uvGenRect;
+			target.texBaseSize        = this.texBaseSize;
+			target.font               = this.font;
+			target.color              = this.color;
+			target.depthOffset        = this.depthOffset;
+			target.transformAngle     = this.transformAngle;
+			target.transformHandle    = this.transformHandle;
+			target.transformScale     = this.transformScale;
 			target.UpdateTransform();
 		}
 		/// <summary>
@@ -174,21 +167,31 @@ namespace Duality.Drawing
 		/// </summary>
 		public void Reset()
 		{
-			this.batchInfo = DefaultMaterial;
-			this.uvGenRect = new Rect(1.0f, 1.0f);
-			this.texBaseSize = Vector2.Zero;
-			this.font = Font.GenericMonospace10;
-			this.color = ColorRgba.White;
-			this.invariantTextScale = false;
-			this.zOffset = 0.0f;
-			this.transformAngle = 0.0f;
-			this.transformHandle = Vector2.Zero;
-			this.transformScale = Vector2.One;
+			this.batchInfo          = DefaultMaterial;
+			this.uvGenRect          = new Rect(1.0f, 1.0f);
+			this.texBaseSize        = Vector2.Zero;
+			this.font               = Font.GenericMonospace10;
+			this.color              = ColorRgba.White;
+			this.depthOffset        = 0.0f;
+			this.transformAngle     = 0.0f;
+			this.transformHandle    = Vector2.Zero;
+			this.transformScale     = Vector2.One;
 			this.UpdateTransform();
 		}
 
 		/// <summary>
-		/// Sets the States drawing material.
+		/// Replaces the material that will be used for rendering with a a new one that
+		/// is configured to use the specified <see cref="DrawTechnique"/>.
+		/// </summary>
+		/// <param name="technique"></param>
+		public void SetMaterial(ContentRef<DrawTechnique> technique)
+		{
+			BatchInfo material = this.canvas.DrawDevice.RentMaterial();
+			material.Technique = technique;
+			this.SetMaterial(material);
+		}
+		/// <summary>
+		/// Replaces the material that will be used for rendering with the specified one.
 		/// </summary>
 		/// <param name="material"></param>
 		public void SetMaterial(BatchInfo material)
@@ -206,28 +209,20 @@ namespace Duality.Drawing
 			}
 		}
 		/// <summary>
-		/// Sets the States drawing material.
+		/// Replaces the material that will be used for rendering with the specified one.
 		/// </summary>
 		/// <param name="material"></param>
 		public void SetMaterial(ContentRef<Material> material)
 		{
+			BatchInfo info;
 			if (material.IsExplicitNull)
-				this.batchInfo = DefaultMaterial;
+				info = DefaultMaterial;
 			else if (material.IsAvailable)
-				this.batchInfo = material.Res.InfoDirect;
+				info = material.Res.Info;
 			else
-				this.batchInfo = Resources.Material.Checkerboard.Res.InfoDirect;
+				info = Resources.Material.Checkerboard.Res.Info;
 
-			if (this.batchInfo.MainTexture.IsAvailable)
-			{
-				Texture tex = this.batchInfo.MainTexture.Res;
-				this.uvGenRect = new Rect(tex.UVRatio);
-				this.texBaseSize = tex.Size;
-			}
-			else
-			{
-				this.texBaseSize = Vector2.Zero;
-			}
+			this.SetMaterial(info);
 		}
 
 		private void UpdateTransform()
@@ -237,61 +232,41 @@ namespace Duality.Drawing
 				out this.curTX, 
 				out this.curTY);
 		}
-		internal void TransformVertices<T>(T[] vertexData, Vector2 shapeHandle, float shapeHandleScale, int vertexCount) where T : struct, IVertexData
+		internal void TransformVertices<T>(T[] vertexData, Vector2 shapeHandle, int vertexCount) where T : struct, IVertexData
 		{
-			if (this.IsTransformIdentity)
+			if (this.IsTransformIdentity) return;
+
+			this.UpdateTransform();
+			Vector2 transformHandle = this.transformHandle;
+			Vector2 transformScale = this.transformScale;
+			for (int i = 0; i < vertexCount; i++)
 			{
-				for (int i = 0; i < vertexCount; i++)
-				{
-					Vector3 pos = vertexData[i].Pos;
-					pos.Z += this.zOffset;
-					vertexData[i].Pos = pos;
-				}
-			}
-			else
-			{
-				this.UpdateTransform();
-				Vector2 transformHandle = this.transformHandle;
-				Vector2 transformScale = this.transformScale;
-				for (int i = 0; i < vertexCount; i++)
-				{
-					Vector3 pos = vertexData[i].Pos;
-					pos.X -= transformHandle.X * shapeHandleScale + shapeHandle.X;
-					pos.Y -= transformHandle.Y * shapeHandleScale + shapeHandle.Y;
-					pos.X *= transformScale.X;
-					pos.Y *= transformScale.Y;
-					MathF.TransformDotVec(ref pos, ref this.curTX, ref this.curTY);
-					pos.X += shapeHandle.X;
-					pos.Y += shapeHandle.Y;
-					pos.Z += this.zOffset;
-					vertexData[i].Pos = pos;
-				}
+				Vector3 pos = vertexData[i].Pos;
+				pos.X -= transformHandle.X + shapeHandle.X;
+				pos.Y -= transformHandle.Y + shapeHandle.Y;
+				pos.X *= transformScale.X;
+				pos.Y *= transformScale.Y;
+				MathF.TransformDotVec(ref pos, ref this.curTX, ref this.curTY);
+				pos.X += shapeHandle.X;
+				pos.Y += shapeHandle.Y;
+				vertexData[i].Pos = pos;
 			}
 		}
-		internal void TransformVertices(VertexC1P3T2[] vertexData, Vector2 shapeHandle, float shapeHandleScale)
+		internal void TransformVertices(VertexC1P3T2[] vertexData, Vector2 shapeHandle)
 		{
-			if (this.IsTransformIdentity)
+			if (this.IsTransformIdentity) return;
+
+			Vector2 transformHandle = this.transformHandle;
+			Vector2 transformScale = this.transformScale;
+			for (int i = 0; i < vertexData.Length; i++)
 			{
-				for (int i = 0; i < vertexData.Length; i++)
-				{
-					vertexData[i].Pos.Z += this.zOffset;
-				}
-			}
-			else
-			{
-				Vector2 transformHandle = this.transformHandle;
-				Vector2 transformScale = this.transformScale;
-				for (int i = 0; i < vertexData.Length; i++)
-				{
-					vertexData[i].Pos.X -= transformHandle.X * shapeHandleScale + shapeHandle.X;
-					vertexData[i].Pos.Y -= transformHandle.Y * shapeHandleScale + shapeHandle.Y;
-					vertexData[i].Pos.X *= transformScale.X;
-					vertexData[i].Pos.Y *= transformScale.Y;
-					MathF.TransformDotVec(ref vertexData[i].Pos, ref this.curTX, ref this.curTY);
-					vertexData[i].Pos.X += shapeHandle.X;
-					vertexData[i].Pos.Y += shapeHandle.Y;
-					vertexData[i].Pos.Z += this.zOffset;
-				}
+				vertexData[i].Pos.X -= transformHandle.X + shapeHandle.X;
+				vertexData[i].Pos.Y -= transformHandle.Y + shapeHandle.Y;
+				vertexData[i].Pos.X *= transformScale.X;
+				vertexData[i].Pos.Y *= transformScale.Y;
+				MathF.TransformDotVec(ref vertexData[i].Pos, ref this.curTX, ref this.curTY);
+				vertexData[i].Pos.X += shapeHandle.X;
+				vertexData[i].Pos.Y += shapeHandle.Y;
 			}
 		}
 		

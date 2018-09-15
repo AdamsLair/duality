@@ -76,11 +76,11 @@ namespace Duality
 		public override void GetReportData(out ProfileReportCounterData data)
 		{
 			data = new ProfileReportCounterData();
-			data.Severity = MathF.Clamp(this.lastValue / Time.MsPFMult, 0.0f, 1.0f);
-			data.LastValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.lastValue);
+			data.Severity = MathF.Clamp(this.lastValue / Time.MillisecondsPerFrame, 0.0f, 1.0f);
+				data.LastValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.lastValue);
 			if (this.IsSingleValue)
 			{
-				data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.lastValue);
+					data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.lastValue);
 			}
 			else
 			{
@@ -90,7 +90,7 @@ namespace Duality
 					data.MinValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.accumMinValue);
 					data.MaxValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F}", this.accumMaxValue);
 				}
-				data.SampleCount = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.sampleCount);
+					data.SampleCount = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.sampleCount);
 			}
 		}
 		protected override void OnFrameTick()

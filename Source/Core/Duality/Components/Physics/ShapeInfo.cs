@@ -16,9 +16,7 @@ namespace Duality.Components.Physics
 	/// </summary>
 	public abstract class ShapeInfo
 	{
-		protected static readonly Vector2[] EmptyVertices = new Vector2[0];
-
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneField(CloneFieldFlags.Skip)]
 		private RigidBody parent      = null;
 		protected float   density     = 1.0f;
 		protected float   friction    = 0.3f;
@@ -36,7 +34,7 @@ namespace Duality.Components.Physics
 			internal set { this.parent = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The shapes density.
+		/// [GET / SET] The shapes density, expressed as mass units per solid 10x10 space units.
 		/// </summary>
 		[EditorHintIncrement(0.05f)]
 		[EditorHintRange(0.0f, 100.0f)]

@@ -17,6 +17,12 @@ namespace Duality
 	/// </summary>
 	public static class ReflectionHelper
 	{
+		private static class StaticLookup<T>
+		{
+			public static readonly bool IsDeepCopyByAssignment = typeof(T).GetTypeInfo().IsDeepCopyByAssignment();
+			public static readonly bool IsReferenceOrContainsReferences = typeof(T).GetTypeInfo().IsReferenceOrContainsReferences();
+		}
+		
 		private const char MemberTokenUndefined			= 'U';
 		private const char MemberTokenTypeInfo			= 'T';
 		private const char MemberTokenFieldInfo			= 'F';
@@ -27,7 +33,8 @@ namespace Duality
 
 		private	static	Dictionary<string,Type>				typeResolveCache			= new Dictionary<string,Type>();
 		private	static	Dictionary<string,MemberInfo>		memberResolveCache			= new Dictionary<string,MemberInfo>();
-		private	static	Dictionary<TypeInfo,bool>			plainOldDataTypeCache		= new Dictionary<TypeInfo,bool>();
+		private	static	Dictionary<TypeInfo,bool>			deepCopyByAssignmentCache	= new Dictionary<TypeInfo,bool>();
+		private	static	Dictionary<TypeInfo,bool>			isRefOrHasRefCache			= new Dictionary<TypeInfo,bool>();
 		private	static	Dictionary<MemberInfo,Attribute[]>	customMemberAttribCache		= new Dictionary<MemberInfo,Attribute[]>();
 		private	static	Dictionary<KeyValuePair<Type,Type>,bool>	resRefCache			= new Dictionary<KeyValuePair<Type,Type>,bool>();
 
@@ -50,59 +57,30 @@ namespace Duality
 		/// <returns></returns>
 		public static IEnumerable<T> GetAttributesCached<T>(this MemberInfo member) where T : Attribute
 		{
-			Attribute[] result;
-			if (!customMemberAttribCache.TryGetValue(member, out result))
+			lock (customMemberAttribCache)
 			{
-				result = member.GetCustomAttributes(true).OfType<Attribute>().ToArray();
+				Attribute[] result;
+				if (!customMemberAttribCache.TryGetValue(member, out result))
+				{
+					result = member.GetCustomAttributes(true).OfType<Attribute>().ToArray();
 
-				// If it's a Type, also check implemented interfaces for (EditorHint) attributes
-				if (member is TypeInfo)
-				{
-					TypeInfo typeInfo = member as TypeInfo;
-					IEnumerable<Attribute> query = result;
-					Type[] interfaces = typeInfo.ImplementedInterfaces.ToArray();
-					if (interfaces.Length > 0)
+					// If it's a Type, also check implemented interfaces for (EditorHint) attributes
+					if (member is TypeInfo)
 					{
-						bool addedAny = false;
-						foreach (Type interfaceType in interfaces)
-						{
-							TypeInfo interfaceTypeInfo = interfaceType.GetTypeInfo();
-							IEnumerable<Attribute> subQuery = GetAttributesCached<Editor.EditorHintAttribute>(interfaceTypeInfo);
-							if (subQuery.Any())
-							{
-								query = query.Concat(subQuery);
-								addedAny = true;
-							}
-						}
-						if (addedAny)
-						{
-							result = query.Distinct().ToArray();
-						}
-					}
-				}
-				// If it's a member, check if it is an interface implementation and add their (EditorHint) attributes as well
-				else
-				{
-					TypeInfo declaringTypeInfo = member.DeclaringType == null ? null : member.DeclaringType.GetTypeInfo();
-					if (declaringTypeInfo != null && !declaringTypeInfo.IsInterface)
-					{
+						TypeInfo typeInfo = member as TypeInfo;
 						IEnumerable<Attribute> query = result;
-						Type[] interfaces = declaringTypeInfo.ImplementedInterfaces.ToArray();
+						Type[] interfaces = typeInfo.ImplementedInterfaces.ToArray();
 						if (interfaces.Length > 0)
 						{
 							bool addedAny = false;
 							foreach (Type interfaceType in interfaces)
 							{
 								TypeInfo interfaceTypeInfo = interfaceType.GetTypeInfo();
-								foreach (MemberInfo interfaceMemberInfo in interfaceTypeInfo.DeclaredMembersDeep())
+								IEnumerable<Attribute> subQuery = GetAttributesCached<Editor.EditorHintAttribute>(interfaceTypeInfo);
+								if (subQuery.Any())
 								{
-									if (interfaceMemberInfo.Name != member.Name) continue;
-									IEnumerable<Attribute> subQuery = GetAttributesCached<Editor.EditorHintAttribute>(interfaceMemberInfo);
-									if (subQuery.Any())
-									{
-										query = query.Concat(subQuery);
-										addedAny = true;
-									}
+									query = query.Concat(subQuery);
+									addedAny = true;
 								}
 							}
 							if (addedAny)
@@ -111,16 +89,48 @@ namespace Duality
 							}
 						}
 					}
+					// If it's a member, check if it is an interface implementation and add their (EditorHint) attributes as well
+					else
+					{
+						TypeInfo declaringTypeInfo = member.DeclaringType == null ? null : member.DeclaringType.GetTypeInfo();
+						if (declaringTypeInfo != null && !declaringTypeInfo.IsInterface)
+						{
+							IEnumerable<Attribute> query = result;
+							Type[] interfaces = declaringTypeInfo.ImplementedInterfaces.ToArray();
+							if (interfaces.Length > 0)
+							{
+								bool addedAny = false;
+								foreach (Type interfaceType in interfaces)
+								{
+									TypeInfo interfaceTypeInfo = interfaceType.GetTypeInfo();
+									foreach (MemberInfo interfaceMemberInfo in interfaceTypeInfo.DeclaredMembersDeep())
+									{
+										if (interfaceMemberInfo.Name != member.Name) continue;
+										IEnumerable<Attribute> subQuery = GetAttributesCached<Editor.EditorHintAttribute>(interfaceMemberInfo);
+										if (subQuery.Any())
+										{
+											query = query.Concat(subQuery);
+											addedAny = true;
+										}
+									}
+								}
+								if (addedAny)
+								{
+									result = query.Distinct().ToArray();
+								}
+							}
+						}
+					}
+
+					// Mind the result for later. Don't do this twice.				
+					customMemberAttribCache[member] = result;
 				}
 
-				// Mind the result for later. Don't do this twice.
-				customMemberAttribCache[member] = result;
+				if (typeof(T) == typeof(Attribute))
+					return result as IEnumerable<T>;
+				else
+					return result.OfType<T>();
 			}
-
-			if (typeof(T) == typeof(Attribute))
-				return result as IEnumerable<T>;
-			else
-				return result.OfType<T>();
 		}
 		/// <summary>
 		/// Returns all custom attributes of the specified Type that are attached to the specified member.
@@ -357,49 +367,115 @@ namespace Duality
 		/// <returns></returns>
 		public static bool CanReferenceResource(Type sourceResType, Type targetResType)
 		{
-			bool result;
-			if (!resRefCache.TryGetValue(new KeyValuePair<Type,Type>(sourceResType, targetResType), out result))
+			lock (resRefCache)
 			{
-				resRefCache[new KeyValuePair<Type,Type>(sourceResType, targetResType)] = false;
-				
-				TypeInfo resourceTypeInfo = typeof(Resource).GetTypeInfo();
-				TypeInfo sourceResTypeInfo = sourceResType.GetTypeInfo();
-				TypeInfo targetResTypeInfo = targetResType.GetTypeInfo();
-
-				if (!resourceTypeInfo.IsAssignableFrom(sourceResTypeInfo)) throw new ArgumentException("Only Resource Types are valid.", "sourceResType");
-				if (!resourceTypeInfo.IsAssignableFrom(targetResTypeInfo)) throw new ArgumentException("Only Resource Types are valid.", "targetResType");
-
-				bool foundIt = false;
-				bool foundAny = false;
-				foreach (ExplicitResourceReferenceAttribute refAttrib in sourceResTypeInfo.GetAttributesCached<ExplicitResourceReferenceAttribute>())
+				bool result;
+				if (!resRefCache.TryGetValue(new KeyValuePair<Type, Type>(sourceResType, targetResType), out result))
 				{
-					foundAny = true;
-					foreach (Type refType in refAttrib.ReferencedTypes)
+					resRefCache[new KeyValuePair<Type, Type>(sourceResType, targetResType)] = false;
+
+					TypeInfo resourceTypeInfo = typeof(Resource).GetTypeInfo();
+					TypeInfo sourceResTypeInfo = sourceResType.GetTypeInfo();
+					TypeInfo targetResTypeInfo = targetResType.GetTypeInfo();
+
+					if (!resourceTypeInfo.IsAssignableFrom(sourceResTypeInfo)) throw new ArgumentException("Only Resource Types are valid.", "sourceResType");
+					if (!resourceTypeInfo.IsAssignableFrom(targetResTypeInfo)) throw new ArgumentException("Only Resource Types are valid.", "targetResType");
+
+					bool foundIt = false;
+					bool foundAny = false;
+					foreach (ExplicitResourceReferenceAttribute refAttrib in sourceResTypeInfo.GetAttributesCached<ExplicitResourceReferenceAttribute>())
 					{
-						TypeInfo refTypeInfo = refType.GetTypeInfo();
-						if (refTypeInfo.IsAssignableFrom(targetResTypeInfo) || CanReferenceResource(refType, targetResType))
+						foundAny = true;
+						foreach (Type refType in refAttrib.ReferencedTypes)
 						{
-							foundIt = true;
+							TypeInfo refTypeInfo = refType.GetTypeInfo();
+							if (refTypeInfo.IsAssignableFrom(targetResTypeInfo) || CanReferenceResource(refType, targetResType))
+							{
+								foundIt = true;
+								break;
+							}
+						}
+						if (foundIt) break;
+					}
+
+					result = foundIt || !foundAny;
+					resRefCache[new KeyValuePair<Type, Type>(sourceResType, targetResType)] = result;
+
+				}
+
+				return result;
+			}
+		}
+		
+		/// <summary>
+		/// Returns whether the specified type is a reference or could contain references.
+		/// Types where this is false are completely irrelevant to garbage collection.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public static bool IsReferenceOrContainsReferences<T>()
+		{
+			return StaticLookup<T>.IsReferenceOrContainsReferences;
+		}
+		/// <summary>
+		/// Returns whether the specified type is a reference or could contain references.
+		/// Types where this is false are completely irrelevant to garbage collection.
+		/// </summary>
+		/// <param name="typeInfo"></param>
+		/// <returns></returns>
+		public static bool IsReferenceOrContainsReferences(this TypeInfo typeInfo)
+		{
+			// Early-out for some obvious cases
+			if (typeInfo.IsArray) return true;
+			if (typeInfo.IsPrimitive) return false;
+			if (typeInfo.IsEnum) return false;
+			if (typeInfo.IsClass) return true;
+			if (typeInfo.IsInterface) return true;
+
+			lock (isRefOrHasRefCache)
+			{
+				// If we have no evidence so far, check the cache and iterate fields
+				bool isRefOrHasRef;
+				if (isRefOrHasRefCache.TryGetValue(typeInfo, out isRefOrHasRef))
+				{
+					return isRefOrHasRef;
+				}
+				else
+				{
+					isRefOrHasRef = true;
+					foreach (FieldInfo field in typeInfo.DeclaredFieldsDeep())
+					{
+						if (field.IsStatic) continue;
+						TypeInfo fieldTypeInfo = field.FieldType.GetTypeInfo();
+						if (!IsReferenceOrContainsReferences(fieldTypeInfo))
+						{
+							isRefOrHasRef = false;
 							break;
 						}
 					}
-					if (foundIt) break;
+
+					isRefOrHasRefCache[typeInfo] = isRefOrHasRef;
+					return isRefOrHasRef;
 				}
-
-				result = foundIt || !foundAny;
-				resRefCache[new KeyValuePair<Type,Type>(sourceResType, targetResType)] = result;
 			}
-
-			return result;
 		}
-
 		/// <summary>
 		/// Returns whether the specified type is a primitive, enum, string, decimal, or struct that
-		/// consists only of those types.
+		/// consists only of those types, allowing to do a deep-copy by simply assigning it.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public static bool IsDeepCopyByAssignment<T>()
+		{
+			return StaticLookup<T>.IsDeepCopyByAssignment;
+		}
+		/// <summary>
+		/// Returns whether the specified type is a primitive, enum, string, decimal, or struct that
+		/// consists only of those types, allowing to do a deep-copy by simply assigning it.
 		/// </summary>
 		/// <param name="baseObj"></param>
 		/// <returns></returns>
-		public static bool IsPlainOldData(this TypeInfo typeInfo)
+		public static bool IsDeepCopyByAssignment(this TypeInfo typeInfo)
 		{
 			// Early-out for some obvious cases
 			if (typeInfo.IsArray) return false;
@@ -415,27 +491,31 @@ namespace Duality
 			if (typeInfo.IsClass) return false;
 			if (typeInfo.IsInterface) return false;
 
-			// If we have no evidence so far, check the cache and iterate fields
-			bool isPlainOldData;
-			if (plainOldDataTypeCache.TryGetValue(typeInfo, out isPlainOldData))
+			lock (deepCopyByAssignmentCache)
 			{
-				return isPlainOldData;
-			}
-			else
-			{
-				isPlainOldData = true;
-				foreach (FieldInfo field in typeInfo.DeclaredFieldsDeep())
+				// If we have no evidence so far, check the cache and iterate fields
+				bool isPlainOldData;
+				if (deepCopyByAssignmentCache.TryGetValue(typeInfo, out isPlainOldData))
 				{
-					if (field.IsStatic) continue;
-					TypeInfo fieldTypeInfo = field.FieldType.GetTypeInfo();
-					if (!IsPlainOldData(fieldTypeInfo))
-					{
-						isPlainOldData = false;
-						break;
-					}
+					return isPlainOldData;
 				}
-				plainOldDataTypeCache[typeInfo] = isPlainOldData;
-				return isPlainOldData;
+				else
+				{
+					isPlainOldData = true;
+					foreach (FieldInfo field in typeInfo.DeclaredFieldsDeep())
+					{
+						if (field.IsStatic) continue;
+						TypeInfo fieldTypeInfo = field.FieldType.GetTypeInfo();
+						if (!IsDeepCopyByAssignment(fieldTypeInfo))
+						{
+							isPlainOldData = false;
+							break;
+						}
+					}
+
+					deepCopyByAssignmentCache[typeInfo] = isPlainOldData;
+					return isPlainOldData;
+				}
 			}
 		}
 
@@ -457,18 +537,24 @@ namespace Duality
 		/// <returns></returns>
 		public static MemberInfo ResolveMember(string memberString)
 		{
-			MemberInfo result;
-			if (memberResolveCache.TryGetValue(memberString, out result)) return result;
+			lock (memberResolveCache)
+			{
+				MemberInfo result;
+				if (memberResolveCache.TryGetValue(memberString, out result)) return result;
 
-			Assembly[] searchAsm = 
-				DualityApp.PluginLoader.LoadedAssemblies
-				.Except(DualityApp.PluginManager.DisposedPlugins)
-				.ToArray();
+				Assembly[] searchAsm =
+					DualityApp.AssemblyLoader.LoadedAssemblies
+					.Except(DualityApp.PluginManager.DisposedPlugins)
+					.ToArray();
 
-			result = FindMember(memberString, searchAsm);
-			if (result != null) memberResolveCache[memberString] = result;
+				result = FindMember(memberString, searchAsm);
+				if (result != null)
+				{
+					memberResolveCache[memberString] = result;
+				}
 
-			return result;
+				return result;
+			}
 		}
 		
 		/// <summary>
@@ -655,7 +741,7 @@ namespace Duality
 				return result;
 			}
 
-			throw new NotSupportedException(string.Format("Member Type '{0} not supported", Log.Type(member.GetType())));
+			throw new NotSupportedException(string.Format("Member Type '{0} not supported", LogFormat.Type(member.GetType())));
 		}
 
 		/// <summary>
@@ -698,7 +784,8 @@ namespace Duality
 		{
 			typeResolveCache.Clear();
 			memberResolveCache.Clear();
-			plainOldDataTypeCache.Clear();
+			deepCopyByAssignmentCache.Clear();
+			isRefOrHasRefCache.Clear();
 			resRefCache.Clear();
 			customMemberAttribCache.Clear();
 		}
@@ -707,27 +794,32 @@ namespace Duality
 		{
 			if (typeString == null) return null;
 
-			// If we already have resolved this before, just return the cached result
-			Type result;
-			if (typeResolveCache.TryGetValue(typeString, out result)) return result;
-			
-			// If not specified otherwise, we'll search across all loaded Assemblies
-			if (searchAsm == null)
+			lock (typeResolveCache)
 			{
-				searchAsm = 
-					DualityApp.PluginLoader.LoadedAssemblies
-					.Except(DualityApp.PluginManager.DisposedPlugins)
-					.ToArray();
+				// If we already have resolved this before, just return the cached result
+				Type result;
+				if (typeResolveCache.TryGetValue(typeString, out result)) return result;
+
+				// If not specified otherwise, we'll search across all loaded Assemblies
+				if (searchAsm == null)
+				{
+					searchAsm =
+						DualityApp.AssemblyLoader.LoadedAssemblies
+						.Except(DualityApp.PluginManager.DisposedPlugins)
+						.ToArray();
+				}
+
+				// Perform the search
+				result = FindType(typeString, searchAsm, declaringMethod);
+
+				// Mind the result for later, if it's successful and generally applicable
+				if (result != null && declaringMethod == null)
+				{
+					typeResolveCache[typeString] = result;
+				}
+
+				return result;
 			}
-
-			// Perform the search
-			result = FindType(typeString, searchAsm, declaringMethod);
-
-			// Mind the result for later, if it's successful and generally applicable
-			if (result != null && declaringMethod == null)
-				typeResolveCache[typeString] = result;
-
-			return result;
 		}
 		private static Type FindType(string typeName, IEnumerable<Assembly> asmSearch, MethodInfo declaringMethod = null)
 		{

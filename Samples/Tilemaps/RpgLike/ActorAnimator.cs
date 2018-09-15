@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Duality;
+using Duality.Drawing;
 using Duality.Components;
 using Duality.Editor;
 using Duality.Plugins.Tilemaps;
@@ -14,9 +15,9 @@ namespace Duality.Samples.Tilemaps.RpgLike
 	/// <summary>
 	/// Animates an <see cref="ActorRenderer"/> on the same <see cref="GameObject"/>.
 	/// </summary>
-	[RequiredComponent(typeof(ActorRenderer))]
 	[EditorHintCategory(SampleResNames.CategoryRpgLike)]
-	[EditorHintImage(TilemapsResNames.ImageActorRenderer)]
+	[EditorHintImage(TilemapsResNames.ImageActorAnimator)]
+	[RequiredComponent(typeof(ICmpSpriteRenderer), typeof(ActorRenderer))]
 	public class ActorAnimator : Component, ICmpUpdatable
 	{
 		/// <summary>
@@ -55,6 +56,10 @@ namespace Duality.Samples.Tilemaps.RpgLike
 		private float                animTime       = 0.0f;
 		private float                animDirection  = 0.0f;
 		private float                animSpeed      = 1.0f;
+
+		[DontSerialize] private ICmpSpriteRenderer sprite = null;
+		[DontSerialize] private SpriteIndexBlend spriteIndex = new SpriteIndexBlend(0);
+
 
 		/// <summary>
 		/// [GET / SET] A list of animations that is available for the animated actor.
@@ -157,6 +162,22 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			else
 				this.animTime = 0.0f;
 		}
+		
+		private void ApplySpriteIndex()
+		{
+			// Retrieve the target sprite if it's unavailable or no longer up-to-date
+			if ((this.sprite == null || (this.sprite as Component).GameObj != this.GameObj) && this.GameObj != null)
+				this.sprite = this.GameObj.GetComponent<ICmpSpriteRenderer>();
+
+			// Apply the current animation state to the target sprite
+			if (this.sprite != null)
+			{
+				this.sprite.ApplySpriteAnimation(
+					this.spriteIndex.Current, 
+					this.spriteIndex.Next, 
+					this.spriteIndex.Blend);
+			}
+		}
 
 		void ICmpUpdatable.OnUpdate()
 		{
@@ -164,9 +185,6 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			if (this.activeAnim == null) return;
 			if (this.activeAnim.FrameCount <= 0) return;
 			if (this.activeAnim.DirectionMap.Length == 0) return;
-
-			// Retrieve the actor renderer we're going to animate
-			ActorRenderer actor = this.GameObj.GetComponent<ActorRenderer>();
 
 			// Determine the active direction
 			int startFrame = 0;
@@ -182,45 +200,63 @@ namespace Duality.Samples.Tilemaps.RpgLike
 					startFrame = this.activeAnim.DirectionMap[i].SpriteSheetIndex;
 				}
 			}
+			
+			// Reset animation state
+			this.spriteIndex.Current = 0;
+			this.spriteIndex.Next = 0;
+			this.spriteIndex.Blend = 0.0f;
 
-			// Determine the currently displayed frame
+			// Determine the currently displayed frames
 			float animProgress = (this.animTime / this.activeAnim.Duration) % 1.0f;
 			int animCycleCount = (int)(this.animTime / this.activeAnim.Duration);
 			switch (this.activeLoopMode)
 			{
 				// In single-shot animations, complete the animation only once
 				case LoopMode.Once:
+				{
 					if (animCycleCount > 1)
 						animProgress = 0.0f;
 					goto case LoopMode.Loop;
-
+				}
 				// Regular looped animation
 				case LoopMode.Loop:
-					actor.SpriteIndex = startFrame + MathF.Clamp(
-						(int)(this.activeAnim.FrameCount * animProgress), 
-						0, 
-						this.activeAnim.FrameCount);
+				{
+					float frameTemp = this.activeAnim.FrameCount * animProgress;
+					this.spriteIndex.Current = startFrame + (int)frameTemp;
+					this.spriteIndex.Next = startFrame + (((int)frameTemp + 1) % this.activeAnim.FrameCount);
+					this.spriteIndex.Blend = frameTemp - (int)frameTemp;
 					break;
-
+				}
 				// Alternating regular and reverse animation
 				case LoopMode.PingPong:
+				{
 					bool reverse = (animCycleCount % 2 == 0);
-					float pingPongAnimProgress = 
-						reverse ? 
-						(1.0f - animProgress) : 
-						animProgress;
-
-					actor.SpriteIndex = startFrame + MathF.Clamp(
-						(int)(0.5f + (this.activeAnim.FrameCount - 1) * pingPongAnimProgress), 
-						0, 
-						this.activeAnim.FrameCount);
+					if (reverse)
+					{
+						float frameTemp = 0.5f + (this.activeAnim.FrameCount - 1) * (1.0f - animProgress);
+						this.spriteIndex.Current = startFrame + (int)frameTemp;
+						this.spriteIndex.Next = startFrame + (((int)frameTemp - 1 + this.activeAnim.FrameCount) % this.activeAnim.FrameCount);
+						this.spriteIndex.Blend = frameTemp - (int)frameTemp;
+					}
+					else
+					{
+						float frameTemp = 0.5f + (this.activeAnim.FrameCount - 1) * animProgress;
+						this.spriteIndex.Current = startFrame + (int)frameTemp;
+						this.spriteIndex.Next = startFrame + (((int)frameTemp + 1) % this.activeAnim.FrameCount);
+						this.spriteIndex.Blend = frameTemp - (int)frameTemp;
+					}
+					
 					break;
+				}
 			}
+
+			// Apply the updated animation state to the actor / sprite we're animating
+			this.ApplySpriteIndex();
 
 			// Advance animation time, unless we're displaying a fixed single frame
 			if (this.activeLoopMode != LoopMode.RandomSingle)
 			{
-				this.animTime += this.animSpeed * Time.TimeMult * Time.SPFMult;
+				this.animTime += this.animSpeed * Time.TimeMult * Time.SecondsPerFrame;
 			}
 		}
 	}

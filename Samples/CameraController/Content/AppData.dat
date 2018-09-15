@@ -1,18 +1,20 @@
 ﻿<root dataType="Struct" type="Duality.DualityAppData" id="129723834">
   <appName dataType="String">CameraController Sample</appName>
-  <authorName dataType="String">AdamsLair</authorName>
   <customData />
-  <localUserData dataType="Bool">false</localUserData>
+  <forcedRenderResizeMode dataType="Enum" type="Duality.TargetResize" name="Fit" value="2" />
+  <forcedRenderSize dataType="Struct" type="Duality.Point2" />
   <multisampleBackBuffer dataType="Bool">true</multisampleBackBuffer>
   <physicsFixedTime dataType="Bool">false</physicsFixedTime>
   <physicsVelThreshold dataType="Float">0.8333333</physicsVelThreshold>
+  <renderSetup dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.RenderSetup]]">
+    <contentPath dataType="String">Default:RenderSetup:Default</contentPath>
+  </renderSetup>
   <skipBackends />
   <soundDopplerFactor dataType="Float">1</soundDopplerFactor>
   <speedOfSound dataType="Float">360</speedOfSound>
   <startScene dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Scene]]">
     <contentPath dataType="String">Data\CameraController\ExampleScene.Scene.res</contentPath>
   </startScene>
-  <version dataType="UInt">13</version>
-  <websiteUrl dataType="String">http://www.adamslair.net</websiteUrl>
+  <version dataType="UInt">14</version>
 </root>
 <!-- XmlFormatterBase Document Separator -->

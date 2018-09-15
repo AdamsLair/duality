@@ -24,7 +24,7 @@ namespace Duality.Cloning.Surrogates
 			TypeInfo secondGenArgInfo = genArgs[1].GetTypeInfo();
 
 			// Handle all keys and values. Reuse existing objects wherever possible.
-			if (!firstGenArgInfo.IsPlainOldData())
+			if (!firstGenArgInfo.IsDeepCopyByAssignment())
 			{
 				if (source == target)
 				{
@@ -33,11 +33,11 @@ namespace Duality.Cloning.Surrogates
 				}
 				else
 				{
-					foreach (var key in source.Keys)
+					foreach (object key in source.Keys)
 						setup.HandleObject(key, null);
 				}
 			}
-			if (!secondGenArgInfo.IsPlainOldData())
+			if (!secondGenArgInfo.IsDeepCopyByAssignment())
 			{
 				if (source == target)
 				{
@@ -59,8 +59,8 @@ namespace Duality.Cloning.Surrogates
 			TypeInfo secondGenArgInfo = genArgs[1].GetTypeInfo();
 
 			// Determine unwrapping behavior to provide faster / more optimized loops.
-			bool isKeyPlainOld = firstGenArgInfo.IsPlainOldData();
-			bool isValuePlainOld = secondGenArgInfo.IsPlainOldData();
+			bool isKeyPlainOld = firstGenArgInfo.IsDeepCopyByAssignment();
+			bool isValuePlainOld = secondGenArgInfo.IsDeepCopyByAssignment();
 
 			// Copy all pairs. Don't check each pair, if the Type won't be unwrapped anyway.
 			target.Clear();
@@ -70,8 +70,8 @@ namespace Duality.Cloning.Surrogates
 				{
 					object keyTarget = null;
 					object valueTarget = null;
-					if (!operation.HandleObject(pair.Key, ref keyTarget)) continue;
-					if (!operation.HandleObject(pair.Value, ref valueTarget)) continue;
+					operation.HandleObject(pair.Key, ref keyTarget);
+					operation.HandleObject(pair.Value, ref valueTarget);
 
 					target.Add(keyTarget, valueTarget);
 				}
@@ -81,7 +81,7 @@ namespace Duality.Cloning.Surrogates
 				foreach (DictionaryEntry pair in source)
 				{
 					object keyTarget = null;
-					if (!operation.HandleObject(pair.Key, ref keyTarget)) continue;
+					operation.HandleObject(pair.Key, ref keyTarget);
 
 					target.Add(keyTarget, pair.Value);
 				}
@@ -91,7 +91,7 @@ namespace Duality.Cloning.Surrogates
 				foreach (DictionaryEntry pair in source)
 				{
 					object valueTarget = null;
-					if (!operation.HandleObject(pair.Value, ref valueTarget)) continue;
+					operation.HandleObject(pair.Value, ref valueTarget);
 
 					target.Add(pair.Key, valueTarget);
 				}

@@ -38,7 +38,7 @@ namespace Duality.Editor.Forms
 				{
 					if (this.error == null && value != null)
 					{
-						this.errorDesc = string.Format(GeneralRes.Msg_ErrorPerformBigTask_Desc, this.stateDesc, "\n", Log.Exception(value));
+						this.errorDesc = string.Format(GeneralRes.Msg_ErrorPerformBigTask_Desc, this.stateDesc, "\n", LogFormat.Exception(value));
 					}
 					this.error = value;
 				}
@@ -203,7 +203,7 @@ namespace Duality.Editor.Forms
 			}
 			catch (Exception e)
 			{
-				Log.Editor.WriteError("Failed to perform task: {0}", Log.Exception(e));
+				Logs.Editor.WriteError("Failed to perform task: {0}", LogFormat.Exception(e));
 				workInterface.Error = e;
 			}
 		}

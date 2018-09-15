@@ -19,7 +19,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class EditorBaseRes {
@@ -61,92 +61,11 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a new Material Resource based on the Texture..
-        /// </summary>
-        public static string ActionDesc_CreateMaterial {
-            get {
-                return ResourceManager.GetString("ActionDesc_CreateMaterial", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creates a new ShaderProgram Resource based on Vertex- and Fragmentshaders..
-        /// </summary>
-        public static string ActionDesc_CreateShaderProgram {
-            get {
-                return ResourceManager.GetString("ActionDesc_CreateShaderProgram", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creates a new Sound Resource based on the AudioData..
-        /// </summary>
-        public static string ActionDesc_CreateSound {
-            get {
-                return ResourceManager.GetString("ActionDesc_CreateSound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creates a new Texture Resource based on the Pixmap..
-        /// </summary>
-        public static string ActionDesc_CreateTexture {
-            get {
-                return ResourceManager.GetString("ActionDesc_CreateTexture", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Visual Studio 2013 (Update 3) or newer is required..
-        /// </summary>
-        public static string ActionDesc_DownloadVisualStudio {
-            get {
-                return ResourceManager.GetString("ActionDesc_DownloadVisualStudio", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Exports the Resource..
         /// </summary>
         public static string ActionDesc_ExportResource {
             get {
                 return ResourceManager.GetString("ActionDesc_ExportResource", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Focus Camera on GameObject..
-        /// </summary>
-        public static string ActionDesc_FocusGameObject {
-            get {
-                return ResourceManager.GetString("ActionDesc_FocusGameObject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create a GameObject by instantiating the Prefab..
-        /// </summary>
-        public static string ActionDesc_InstantiatePrefab {
-            get {
-                return ResourceManager.GetString("ActionDesc_InstantiatePrefab", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Resource in external editor..
-        /// </summary>
-        public static string ActionDesc_OpenResourceExternal {
-            get {
-                return ResourceManager.GetString("ActionDesc_OpenResourceExternal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open the Scene..
-        /// </summary>
-        public static string ActionDesc_OpenScene {
-            get {
-                return ResourceManager.GetString("ActionDesc_OpenScene", resourceCulture);
             }
         }
         
@@ -165,33 +84,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static string ActionDesc_ShowResourceSources {
             get {
                 return ResourceManager.GetString("ActionDesc_ShowResourceSources", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Opens a window for slicing a pixmap into atlas regions.
-        /// </summary>
-        public static string ActionDesc_SlicePixmap {
-            get {
-                return ResourceManager.GetString("ActionDesc_SlicePixmap", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This tutorial will guide you through your first steps with Duality..
-        /// </summary>
-        public static string ActionDesc_ViewGettingStartedTutorial {
-            get {
-                return ResourceManager.GetString("ActionDesc_ViewGettingStartedTutorial", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Need help? Ask a fellow forum user!.
-        /// </summary>
-        public static string ActionDesc_VisitCommunityForum {
-            get {
-                return ResourceManager.GetString("ActionDesc_VisitCommunityForum", resourceCulture);
             }
         }
         

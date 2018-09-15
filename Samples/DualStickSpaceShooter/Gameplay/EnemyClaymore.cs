@@ -58,7 +58,7 @@ namespace DualStickSpaceShooter
 		private	SpikeState[]				spikeState		= new SpikeState[4];
 		private	ContentRef<EnemyBlueprint>	blueprint		= null;
 
-		[DontSerialize] private AnimSpriteRenderer	eye				= null;
+		[DontSerialize] private SpriteAnimator		eye				= null;
 		[DontSerialize] private SpriteRenderer[]	spikes			= null;
 		[DontSerialize] private SoundInstance		moveSoundLoop	= null;
 		[DontSerialize] private SoundInstance		dangerSoundLoop	= null;
@@ -82,7 +82,7 @@ namespace DualStickSpaceShooter
 			this.state = MindState.FallingAsleep;
 			this.eyeOpenTarget = 0.0f;
 			this.eyeBlinking = false;
-			this.eyeSpeed = Time.SPFMult / MathF.Rnd.NextFloat(1.5f, 3.5f);
+			this.eyeSpeed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(1.5f, 3.5f);
 			this.DeactivateSpikes();
 		}
 		private void Awake()
@@ -93,7 +93,7 @@ namespace DualStickSpaceShooter
 			this.state = MindState.Awaking;
 			this.eyeOpenTarget = 1.0f;
 			this.eyeBlinking = false;
-			this.eyeSpeed = Time.SPFMult / MathF.Rnd.NextFloat(1.0f, 1.5f);
+			this.eyeSpeed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(1.0f, 1.5f);
 
 			this.RandomizeBlinkTimer();
 		}
@@ -106,7 +106,7 @@ namespace DualStickSpaceShooter
 		{
 			this.eyeBlinking = true;
 			this.eyeOpenTarget = MathF.Min(1.0f - blinkStrength, this.eyeOpenTarget);
-			this.eyeSpeed = Time.SPFMult / MathF.Rnd.NextFloat(0.05f, 0.25f);
+			this.eyeSpeed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(0.05f, 0.25f);
 		}
 		private void BlinkSpikes(float blinkStrength = 1.0f)
 		{
@@ -115,7 +115,7 @@ namespace DualStickSpaceShooter
 			{
 				this.spikeState[i].Blinking = true;
 				this.spikeState[i].OpenTarget = MathF.Min(1.0f - blinkStrength, this.eyeOpenTarget);
-				this.spikeState[i].Speed = Time.SPFMult / MathF.Rnd.NextFloat(0.1f, 0.2f);
+				this.spikeState[i].Speed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(0.1f, 0.2f);
 			}
 		}
 		private void DeactivateSpikes()
@@ -126,7 +126,7 @@ namespace DualStickSpaceShooter
 			{
 				this.spikeState[i].Blinking = false;
 				this.spikeState[i].OpenTarget = 0.0f;
-				this.spikeState[i].Speed = Time.SPFMult / MathF.Rnd.NextFloat(0.25f, 1.0f);
+				this.spikeState[i].Speed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(0.25f, 1.0f);
 			}
 		}
 		private void ActivateSpikes()
@@ -137,7 +137,7 @@ namespace DualStickSpaceShooter
 			{
 				this.spikeState[i].Blinking = false;
 				this.spikeState[i].OpenTarget = 1.0f;
-				this.spikeState[i].Speed = Time.SPFMult / MathF.Rnd.NextFloat(0.25f, 1.0f);
+				this.spikeState[i].Speed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(0.25f, 1.0f);
 			}
 		}
 
@@ -173,7 +173,7 @@ namespace DualStickSpaceShooter
 				for (int i = 0; i < blueprint.ExplosionEffects.Length; i++)
 				{
 					GameObject effectObj = blueprint.ExplosionEffects[i].Res.Instantiate(transform.Pos);
-					Scene.Current.AddObject(effectObj);
+					this.Scene.AddObject(effectObj);
 				}
 			}
 
@@ -191,7 +191,7 @@ namespace DualStickSpaceShooter
 			Transform transform = this.GameObj.Transform;
 
 			RayCastData firstHit;
-			bool hitAnything = RigidBody.RayCast(transform.Pos.Xy, otherTransform.Pos.Xy, data => 
+			bool hitAnything = this.Scene.Physics.RayCast(transform.Pos.Xy, otherTransform.Pos.Xy, data => 
 			{
 				if (data.GameObj == this.GameObj) return -1;
 				if (data.Shape.IsSensor) return -1;
@@ -213,7 +213,7 @@ namespace DualStickSpaceShooter
 			GameObject nearestObj = null;
 
 			Transform transform = this.GameObj.Transform;
-			foreach (Player player in Scene.Current.FindComponents<Player>())
+			foreach (Player player in this.Scene.FindComponents<Player>())
 			{
 				if (player.ControlObject == null) continue;
 				if (!player.ControlObject.Active) continue;
@@ -300,7 +300,7 @@ namespace DualStickSpaceShooter
 					GameObject nearestObj = this.GetNearestPlayerObj(out nearestDist);
 					if (nearestObj != null && this.HasLineOfSight(nearestObj, false))
 					{
-						if (behavior.HasFlag(BehaviorFlags.Chase))
+						if (this.behavior.HasFlag(BehaviorFlags.Chase))
 						{
 							Transform nearestObjTransform = nearestObj.Transform;
 							Vector2 targetDiff = nearestObjTransform.Pos.Xy - transform.Pos.Xy;
@@ -333,14 +333,14 @@ namespace DualStickSpaceShooter
 					{
 						ship.TargetThrust = -body.LinearVelocity / MathF.Max(body.LinearVelocity.Length, ship.Blueprint.Res.MaxSpeed);
 						ship.TargetAngleRatio = 0.1f;
-						this.idleTimer += Time.MsPFMult * Time.TimeMult;
+						this.idleTimer += Time.MillisecondsPerFrame * Time.TimeMult;
 						
 						if (this.spikesActive)
 							this.DeactivateSpikes();
 					}
 
 					// Blink occasionally
-					this.blinkTimer -= Time.MsPFMult * Time.TimeMult;
+					this.blinkTimer -= Time.MillisecondsPerFrame * Time.TimeMult;
 					if (this.blinkTimer <= 0.0f)
 					{
 						this.RandomizeBlinkTimer();
@@ -390,7 +390,7 @@ namespace DualStickSpaceShooter
 					Vector2 spikeBeginWorld = transform.GetWorldPoint(spikeDir * 4);
 					Vector2 spikeEndWorld = transform.GetWorldPoint(spikeDir * 11);
 					bool hitAnything = false;
-					RigidBody.RayCast(spikeBeginWorld, spikeEndWorld, data => 
+					this.Scene.Physics.RayCast(spikeBeginWorld, spikeEndWorld, data => 
 					{
 						if (data.Shape.IsSensor) return -1;
 						if (data.Body == body) return -1;
@@ -413,7 +413,7 @@ namespace DualStickSpaceShooter
 				if (this.spikeState[i].Blinking && this.spikeState[i].OpenValue <= this.spikeState[i].OpenTarget + 0.0001f)
 				{
 					this.spikeState[i].OpenTarget = 1.0f;
-					this.spikeState[i].Speed = Time.SPFMult / MathF.Rnd.NextFloat(0.25f, 1.0f);
+					this.spikeState[i].Speed = Time.SecondsPerFrame / MathF.Rnd.NextFloat(0.25f, 1.0f);
 				}
 
 				// If we're extending a spike where the sensor has already registered a contact, explode
@@ -446,7 +446,7 @@ namespace DualStickSpaceShooter
 				// Start the loop when requested
 				if (targetVolume > 0.0f && this.moveSoundLoop == null)
 				{
-					this.moveSoundLoop = DualityApp.Sound.PlaySound3D(blueprint.MoveSound, this.GameObj);
+					this.moveSoundLoop = DualityApp.Sound.PlaySound3D(blueprint.MoveSound, this.GameObj, true);
 					this.moveSoundLoop.Looped = true;
 				}
 
@@ -475,7 +475,7 @@ namespace DualStickSpaceShooter
 				// Start the loop when requested
 				if (targetVolume > 0.0f && this.dangerSoundLoop == null)
 				{
-					this.dangerSoundLoop = DualityApp.Sound.PlaySound3D(blueprint.AttackSound, this.GameObj);
+					this.dangerSoundLoop = DualityApp.Sound.PlaySound3D(blueprint.AttackSound, this.GameObj, true);
 					this.dangerSoundLoop.Looped = true;
 				}
 
@@ -501,48 +501,42 @@ namespace DualStickSpaceShooter
 			}
 		}
 
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
+			// Retrieve eye object references and initialize it
+			GameObject eyeObject = this.GameObj.GetChildByName("Eye");
+			this.eye = eyeObject != null ? eyeObject.GetComponent<SpriteAnimator>() : null;
+			if (this.eye != null)
 			{
-				// Retrieve eye object references and initialize it
-				GameObject eyeObject = this.GameObj.ChildByName("Eye");
-				this.eye = eyeObject != null ? eyeObject.GetComponent<AnimSpriteRenderer>() : null;
-				if (this.eye != null)
-				{
-					this.eye.AnimLoopMode = AnimSpriteRenderer.LoopMode.FixedSingle;
-					this.eye.AnimDuration = 1.0f;
-					this.eye.AnimTime = this.eyeOpenValue;
-				}
+				this.eye.AnimLoopMode = SpriteAnimator.LoopMode.FixedSingle;
+				this.eye.AnimDuration = 1.0f;
+				this.eye.AnimTime = this.eyeOpenValue;
+			}
 
-				// Retrieve spike references
-				GameObject[] spikeObj = new GameObject[4];
-				spikeObj[0] = this.GameObj.ChildByName("SpikeTopRight");
-				spikeObj[1] = this.GameObj.ChildByName("SpikeBottomRight");
-				spikeObj[2] = this.GameObj.ChildByName("SpikeBottomLeft");
-				spikeObj[3] = this.GameObj.ChildByName("SpikeTopLeft");
-				this.spikes = new SpriteRenderer[spikeObj.Length];
-				for (int i = 0; i < spikeObj.Length; i++)
-				{
-					this.spikes[i] = spikeObj[i] != null ? spikeObj[i].GetComponent<SpriteRenderer>() : null;
-				}
+			// Retrieve spike references
+			GameObject[] spikeObj = new GameObject[4];
+			spikeObj[0] = this.GameObj.GetChildByName("SpikeTopRight");
+			spikeObj[1] = this.GameObj.GetChildByName("SpikeBottomRight");
+			spikeObj[2] = this.GameObj.GetChildByName("SpikeBottomLeft");
+			spikeObj[3] = this.GameObj.GetChildByName("SpikeTopLeft");
+			this.spikes = new SpriteRenderer[spikeObj.Length];
+			for (int i = 0; i < spikeObj.Length; i++)
+			{
+				this.spikes[i] = spikeObj[i] != null ? spikeObj[i].GetComponent<SpriteRenderer>() : null;
 			}
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
+			// Fade out playing loop sounds, if there are any. Clean up!
+			if (this.moveSoundLoop != null)
 			{
-				// Fade out playing loop sounds, if there are any. Clean up!
-				if (this.moveSoundLoop != null)
-				{
-					this.moveSoundLoop.FadeOut(0.5f);
-					this.moveSoundLoop = null;
-				}
-				if (this.dangerSoundLoop != null)
-				{
-					this.dangerSoundLoop.FadeOut(0.5f);
-					this.dangerSoundLoop = null;
-				}
+				this.moveSoundLoop.FadeOut(0.5f);
+				this.moveSoundLoop = null;
+			}
+			if (this.dangerSoundLoop != null)
+			{
+				this.dangerSoundLoop.FadeOut(0.5f);
+				this.dangerSoundLoop = null;
 			}
 		}
 

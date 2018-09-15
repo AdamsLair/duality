@@ -68,11 +68,11 @@ namespace Duality.Samples.Physics
 				Rect shapeBounds = bodyArgs.MyShape.AABB;
 				Vector2 shapePos = shapeBounds.Center;
 				float shapeRadius = shapeBounds.WithOffset(-shapePos).BoundingRadius;
-				VisualLog.Default
+				VisualLogs.Default
 					.DrawCircle(new Vector3(shapePos), shapeRadius)
 					.AnchorAt(this.GameObj)
 					.KeepAlive(2000.0f);
-				VisualLog.Default
+				VisualLogs.Default
 					.DrawText(
 						new Vector3(shapePos) - (shapeRadius + 10.0f) * Vector3.UnitY, 
 						bodyArgs.MyShape.UserTag == 1 ? "Right" : "Left")

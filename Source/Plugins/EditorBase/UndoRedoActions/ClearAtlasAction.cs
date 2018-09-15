@@ -32,9 +32,6 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 					: this.pixmaps[i].Atlas.ToArray());
 
 				this.pixmaps[i].Atlas = null;
-				this.pixmaps[i].AnimCols = 0;
-				this.pixmaps[i].AnimRows = 0;
-				this.pixmaps[i].AnimFrameBorder = 0;
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.pixmaps.Distinct()));

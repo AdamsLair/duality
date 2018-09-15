@@ -52,6 +52,7 @@ namespace Duality.Editor.Plugins.Base
 		protected override void ImportResource(ContentRef<DualityFont> resourceRef, AssetImportInput input, IAssetImportEnvironment env)
 		{
 			DualityFont resource = resourceRef.Res;
+
 			// Retrieve import parameters
 			float              size          = env.GetOrInitParameter(resourceRef, "Size",          16.0f);
 			FontStyle          style         = env.GetOrInitParameter(resourceRef, "Style",         FontStyle.Regular);
@@ -72,24 +73,24 @@ namespace Duality.Editor.Plugins.Base
 				{
 					string[] limits = block.Split(new[] { '-' }, 3);
 					if (!ulong.TryParse(limits[0], NumberStyles.HexNumber, null, out start))
-						Log.Editor.WriteError("Cannot parse value " + limits[0] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
+						Logs.Editor.WriteError("Cannot parse value " + limits[0] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
 
 					if (limits.Length == 1)
 						end = start;
 					else
 					{
 						if (limits.Length == 2 && !ulong.TryParse(limits[1], NumberStyles.HexNumber, null, out end))
-							Log.Editor.WriteError("Cannot parse value " + limits[1] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
+							Logs.Editor.WriteError("Cannot parse value " + limits[1] + "; CustomCharSet will be ignored. Please verify the value and repeat the import.");
 
 						else if (limits.Length > 2)
-							Log.Editor.WriteError("Unexpected values " + limits[2] + " in range " + block + " will be ignored. Please verify the value and repeat the import.");
+							Logs.Editor.WriteError("Unexpected values " + limits[2] + " in range " + block + " will be ignored. Please verify the value and repeat the import.");
 
 						if (start > end)
-							Log.Editor.WriteWarning(start + " is bigger than " + end + "; block will be ignored. Please verify the value and repeat the import.");
+							Logs.Editor.WriteWarning(start + " is bigger than " + end + "; block will be ignored. Please verify the value and repeat the import.");
 					}
 
 					for (char c = (char)start; c <= (char)end; c++)
-						if (!char.IsControl(c)) fullCharSet.Add(c);
+				if (!char.IsControl(c)) fullCharSet.Add(c);
 				}
 			}
 
@@ -115,7 +116,7 @@ namespace Duality.Editor.Plugins.Base
 
 			// Load the TrueType Font and render all the required glyphs
 			byte[] trueTypeData = File.ReadAllBytes(input.Path);
-			RenderedFontData fontData = this.RenderGlyphs(
+			FontData fontData = this.RenderGlyphs(
 				trueTypeData,
 				size,
 				style,
@@ -124,50 +125,19 @@ namespace Duality.Editor.Plugins.Base
 				monospace);
 
 			// Transfer our rendered Font data to the Font Resource
-			resource.SetGlyphData(
-				fontData.Bitmap,
-				fontData.Atlas,
-				fontData.GlyphData,
-				fontData.Metrics);
+			resource.SetGlyphData(fontData);
 		}
 		protected override bool CanExport(DualityFont resource)
 		{
 			return false;
 		}
-		protected override void ExportResource(ContentRef<DualityFont> resourceRef, string path, IAssetExportEnvironment env)
-		{
-		}
-
-		/// <summary>
-		/// Holds the internal result of rendering a TrueType font.
-		/// </summary>
-		private struct RenderedFontData
-		{
-			/// <summary>
-			/// The pixel data that was produced during rendering. A single
-			/// bitmap contains all the rendered glyphs.
-			/// </summary>
-			public PixelData Bitmap;
-			/// <summary>
-			/// The bitmap / pixel atlas of the glyph pixel data.
-			/// </summary>
-			public Rect[] Atlas;
-			/// <summary>
-			/// Information about each rendered glyph, e.g. its size,
-			/// offset, as well as how far the text will advance after it.
-			/// </summary>
-			public DualityFont.GlyphData[] GlyphData;
-			/// <summary>
-			/// Overall font metrics that were generated or retrieved.
-			/// </summary>
-			public FontMetrics Metrics;
-		}
+		protected override void ExportResource(ContentRef<DualityFont> resourceRef, string path, IAssetExportEnvironment env) { }
 
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> based on its embedded TrueType representation.
 		/// <param name="extendedSet">Extended set of characters for renderning.</param>
 		/// </summary>
-		private RenderedFontData RenderGlyphs(byte[] trueTypeFontData, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiasing, bool monospace)
+		private FontData RenderGlyphs(byte[] trueTypeFontData, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiasing, bool monospace)
 		{
 			if (this.fontManagers == null)
 				this.fontManagers = new Dictionary<int, PrivateFontCollection>();
@@ -219,7 +189,7 @@ namespace Duality.Editor.Plugins.Base
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> using the specified system font family.
 		/// </summary>
-		private RenderedFontData RenderGlyphs(FontFamily fontFamily, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiasing, bool monospace)
+		private FontData RenderGlyphs(FontFamily fontFamily, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiasing, bool monospace)
 		{
 			// Determine System.Drawing font style
 			SysDrawFontStyle systemStyle = SysDrawFontStyle.Regular;
@@ -233,9 +203,9 @@ namespace Duality.Editor.Plugins.Base
 				try { internalFont = new SysDrawFont(fontFamily, emSize, systemStyle); }
 				catch (Exception e)
 				{
-					Log.Editor.WriteError(
+					Logs.Editor.WriteError(
 						"Failed to create System Font '{1} {2}, {3}' for rendering Duality Font glyphs: {0}",
-						Log.Exception(e),
+						LogFormat.Exception(e),
 						fontFamily.Name,
 						emSize,
 						style);
@@ -261,9 +231,9 @@ namespace Duality.Editor.Plugins.Base
 		/// This method assumes that the system font's size and style match the one specified in
 		/// the specified Duality font.
 		/// </summary>
-		private RenderedFontData RenderGlyphs(SysDrawFont internalFont, FontCharSet charSet, bool antialiazing, bool monospace)
+		private FontData RenderGlyphs(SysDrawFont internalFont, FontCharSet charSet, bool antialiazing, bool monospace)
 		{
-			DualityFont.GlyphData[] glyphs = new DualityFont.GlyphData[charSet.Chars.Length];
+			FontGlyphData[] glyphs = new FontGlyphData[charSet.Chars.Length];
 			for (int i = 0; i < glyphs.Length; i++)
 			{
 				glyphs[i].Glyph = charSet.Chars[i];
@@ -288,11 +258,9 @@ namespace Duality.Editor.Plugins.Base
 				MathF.RoundToInt(cols * internalFont.Size * 1.2f), 
 				MathF.RoundToInt(rows * internalFont.Height * 1.2f),
 				ColorRgba.TransparentBlack);
-			PixelData glyphTemp;
-			PixelData glyphTempTypo;
-			Bitmap bm;
 			Bitmap measureBm = new Bitmap(1, 1);
 			Rect[] atlas = new Rect[glyphs.Length];
+			PixelData[] glyphBitmaps = new PixelData[glyphs.Length];
 			using (Graphics measureGraphics = Graphics.FromImage(measureBm))
 			{
 				Brush fntBrush = new SolidBrush(Color.Black);
@@ -312,24 +280,25 @@ namespace Duality.Editor.Plugins.Base
 					SizeF charSize = measureGraphics.MeasureString(str, internalFont, pixelLayer.Width, formatDef);
 
 					// Rasterize a single glyph for rendering
-					bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), internalFont.Height + 1);
+					Bitmap bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), internalFont.Height + 1);
 					using (Graphics glyphGraphics = Graphics.FromImage(bm))
 					{
 						glyphGraphics.Clear(Color.Transparent);
 						glyphGraphics.TextRenderingHint = textRenderingHint;
 						glyphGraphics.DrawString(str, internalFont, fntBrush, new RectangleF(0, 0, bm.Width, bm.Height), formatDef);
 					}
-					glyphTemp = new PixelData();
-					glyphTemp.FromBitmap(bm);
+					glyphBitmaps[i] = new PixelData();
+					glyphBitmaps[i].FromBitmap(bm);
 					
 					// Rasterize a single glyph in typographic mode for metric analysis
+					PixelData glyphTempTypo;
 					if (!isSpace)
 					{
 						Point2 glyphTempOpaqueTopLeft;
 						Point2 glyphTempOpaqueSize;
-						glyphTemp.GetOpaqueBoundaries(out glyphTempOpaqueTopLeft, out glyphTempOpaqueSize);
+						glyphBitmaps[i].GetOpaqueBoundaries(out glyphTempOpaqueTopLeft, out glyphTempOpaqueSize);
 
-						glyphTemp.SubImage(glyphTempOpaqueTopLeft.X, 0, glyphTempOpaqueSize.X, glyphTemp.Height);
+						glyphBitmaps[i].SubImage(glyphTempOpaqueTopLeft.X, 0, glyphTempOpaqueSize.X, glyphBitmaps[i].Height);
 
 						if (charSet.CharBodyAscentRef.Contains(glyphs[i].Glyph))
 							bodyAscent += glyphTempOpaqueSize.Y;
@@ -351,35 +320,36 @@ namespace Duality.Editor.Plugins.Base
 					}
 					else
 					{
-						glyphTempTypo = glyphTemp;
+						glyphTempTypo = glyphBitmaps[i];
 					}
 
 					// Update xy values if it doesn't fit anymore
-					if (x + glyphTemp.Width + 2 > pixelLayer.Width)
+					if (x + glyphBitmaps[i].Width + 2 > pixelLayer.Width)
 					{
 						x = 1;
 						y += internalFont.Height + MathF.Clamp((int)MathF.Ceiling(internalFont.Height * 0.1875f), 3, 10);
 					}
 					
 					// Memorize atlas coordinates & glyph data
-					glyphs[i].Width = glyphTemp.Width;
-					glyphs[i].Height = glyphTemp.Height;
-					glyphs[i].OffsetX = glyphTemp.Width - glyphTempTypo.Width;
-					glyphs[i].OffsetY = 0; // ttf fonts are rendered on blocks that are the whole size of the height - so no need for offset
+					glyphs[i].Size = glyphBitmaps[i].Size;
+					glyphs[i].Offset.X = glyphBitmaps[i].Width - glyphTempTypo.Width;
+					glyphs[i].Offset.Y = 0; // TTF fonts are rendered on blocks that are the whole size of the height - so no need for offset
 					if (isSpace)
 					{
-						glyphs[i].Width /= 2;
-						glyphs[i].OffsetX /= 2;
+						glyphs[i].Size.X /= 2;
+						glyphs[i].Offset.X /= 2;
 					}
+					glyphs[i].Advance = glyphs[i].Size.X - glyphs[i].Offset.X;
+
 					atlas[i].X = x;
 					atlas[i].Y = y;
-					atlas[i].W = glyphTemp.Width;
+					atlas[i].W = glyphBitmaps[i].Width;
 					atlas[i].H = (internalFont.Height + 1);
 
 					// Draw it onto the font surface
-					glyphTemp.DrawOnto(pixelLayer, BlendMode.Solid, x, y);
+					glyphBitmaps[i].DrawOnto(pixelLayer, BlendMode.Solid, x, y);
 
-					x += glyphTemp.Width + MathF.Clamp((int)MathF.Ceiling(internalFont.Height * 0.125f), 2, 10);
+					x += glyphBitmaps[i].Width + MathF.Clamp((int)MathF.Ceiling(internalFont.Height * 0.125f), 2, 10);
 				}
 			}
 
@@ -391,17 +361,18 @@ namespace Duality.Editor.Plugins.Base
 				pixelLayer.Data[i].B = 255;
 			}
 
-			// Monospace offset adjustments
+			// Monospace offset and advance adjustments
 			if (monospace)
 			{
-				int maxGlyphWidth = 0;
+				float maxGlyphWidth = 0;
 				for (int i = 0; i < glyphs.Length; i++)
 				{
-					maxGlyphWidth = Math.Max(maxGlyphWidth, glyphs[i].Width);
+					maxGlyphWidth = Math.Max(maxGlyphWidth, glyphs[i].Size.X);
 				}
 				for (int i = 0; i < glyphs.Length; ++i)
 				{
-					glyphs[i].OffsetX -= (int)Math.Round((maxGlyphWidth - glyphs[i].Width) / 2.0f);
+					glyphs[i].Offset.X -= (int)Math.Round((maxGlyphWidth - glyphs[i].Size.X) / 2.0f);
+					glyphs[i].Advance = maxGlyphWidth;
 				}
 			}
 
@@ -427,13 +398,161 @@ namespace Duality.Editor.Plugins.Base
 				descent:    descent, 
 				baseLine:   baseLine,
 				monospace:  monospace);
-			return new RenderedFontData
+
+			// Determine kerning pairs
+			FontKerningPair[] kerningPairs = null;
+			if (monospace)
+				kerningPairs = null;
+			else
+				kerningPairs = this.GatherKerningPairs(glyphs, metrics, glyphBitmaps);
+
+			return new FontData(pixelLayer, atlas, glyphs, metrics, kerningPairs);
+		}
+
+		private FontKerningPair[] GatherKerningPairs(FontGlyphData[] glyphs, FontMetrics metrics, PixelData[] glyphBitmaps)
+		{
+			// Generate a sampling mask that decides at which heights we'll sample each glyph
+			int[] kerningMask = this.GetKerningMask(metrics);
+
+			// Gather samples from all glyphs that we have based on the image data we acquired
+			int[][] leftSamples = new int[glyphs.Length][];
+			int[][] rightSamples = new int[glyphs.Length][];
+			for (int i = 0; i < glyphs.Length; i++)
 			{
-				Bitmap = pixelLayer,
-				Atlas = atlas,
-				GlyphData = glyphs,
-				Metrics = metrics
-			};
+				this.GatherKerningSamples(
+					glyphs[i].Glyph, 
+					glyphs[i].Offset, 
+					glyphBitmaps[i], 
+					kerningMask, 
+					ref leftSamples[i], 
+					ref rightSamples[i]);
+			}
+
+			// Find all glyph combinations with a non-zero kerning offset
+			List<FontKerningPair> pairs = new List<FontKerningPair>();
+			for (int i = 0; i < glyphs.Length; i++)
+			{
+				for (int j = 0; j < glyphs.Length; j++)
+				{
+					// Calculate the smallest depth sum across all height samples
+					int minSum = int.MaxValue;
+					for (int k = 0; k < rightSamples[i].Length; k++)
+						minSum = Math.Min(minSum, rightSamples[i][k] + leftSamples[j][k]);
+
+					// The smallest one represents the amount of pixels between the two
+					// glyphs that is completely empty. Out kerning offset will be the negative
+					// of that to make the two glyphs appear closer together.
+					float kerningOffset = -minSum;
+					if (kerningOffset != 0.0f)
+					{
+						pairs.Add(new FontKerningPair(
+							glyphs[i].Glyph, 
+							glyphs[j].Glyph, 
+							kerningOffset));
+					}
+				}
+			}
+
+			return pairs.ToArray();
+		}
+		private int[] GetKerningMask(FontMetrics metrics)
+		{
+			int kerningSamples = (metrics.Ascent + metrics.Descent) / 4;
+			int[] kerningY;
+			if (kerningSamples <= 6)
+			{
+				kerningSamples = 6;
+				kerningY = new int[] {
+					metrics.BaseLine - metrics.Ascent,
+					metrics.BaseLine - metrics.BodyAscent,
+					metrics.BaseLine - metrics.BodyAscent * 2 / 3,
+					metrics.BaseLine - metrics.BodyAscent / 3,
+					metrics.BaseLine,
+					metrics.BaseLine + metrics.Descent};
+			}
+			else
+			{
+				kerningY = new int[kerningSamples];
+				int bodySamples = kerningSamples * 2 / 3;
+				int descentSamples = (kerningSamples - bodySamples) / 2;
+				int ascentSamples = kerningSamples - bodySamples - descentSamples;
+
+				for (int k = 0; k < ascentSamples; k++) 
+					kerningY[k] = metrics.BaseLine - metrics.Ascent + k * (metrics.Ascent - metrics.BodyAscent) / ascentSamples;
+				for (int k = 0; k < bodySamples; k++) 
+					kerningY[ascentSamples + k] = metrics.BaseLine - metrics.BodyAscent + k * metrics.BodyAscent / (bodySamples - 1);
+				for (int k = 0; k < descentSamples; k++) 
+					kerningY[ascentSamples + bodySamples + k] = metrics.BaseLine + (k + 1) * metrics.Descent / descentSamples;
+			}
+			return kerningY;
+		}
+		private void GatherKerningSamples(char glyph, Vector2 glyphOffset, PixelData glyphBitmap, int[] sampleMask, ref int[] samplesLeft, ref int[] samplesRight)
+		{
+			samplesLeft = new int[sampleMask.Length];
+			samplesRight= new int[sampleMask.Length];
+
+			if (glyph == ' ') return;
+			if (glyph == '\t') return;
+			if (glyphBitmap.Width <= 0) return;
+			if (glyphBitmap.Height <= 0) return;
+
+			Point2 glyphSize = glyphBitmap.Size;
+
+			// Left side samples
+			{
+				int leftMid = glyphSize.X / 2;
+				int lastSampleY = 0;
+				for (int sampleIndex = 0; sampleIndex < samplesLeft.Length; sampleIndex++)
+				{
+					samplesLeft[sampleIndex] = leftMid;
+
+					int sampleY = sampleMask[sampleIndex] + (int)glyphOffset.Y;
+					int beginY = MathF.Clamp(lastSampleY, 0, glyphSize.Y - 1);
+					int endY = MathF.Clamp(sampleY, 0, glyphSize.Y);
+					if (sampleIndex == samplesLeft.Length - 1) endY = glyphSize.Y;
+					lastSampleY = endY;
+
+					for (int y = beginY; y < endY; y++)
+					{
+						int x = 0;
+						while (glyphBitmap[x, y].A <= 64)
+						{
+							x++;
+							if (x >= leftMid) break;
+						}
+						samplesLeft[sampleIndex] = Math.Min(samplesLeft[sampleIndex], x);
+					}
+				}
+			}
+
+			// Right side samples
+			{
+				int rightMid = (glyphSize.X + 1) / 2;
+				int lastSampleY = 0;
+				for (int sampleIndex = 0; sampleIndex < samplesRight.Length; sampleIndex++)
+				{
+					samplesRight[sampleIndex] = rightMid;
+								
+					int sampleY = sampleMask[sampleIndex] + (int)glyphOffset.Y;
+					int beginY = MathF.Clamp(lastSampleY, 0, glyphSize.Y - 1);
+					int endY = MathF.Clamp(sampleY, 0, glyphSize.Y);
+					if (sampleIndex == samplesRight.Length - 1) endY = glyphSize.Y;
+					lastSampleY = endY;
+
+					for (int y = beginY; y < endY; y++)
+					{
+						int x = glyphSize.X - 1;
+						while (glyphBitmap[x, y].A <= 64)
+						{
+							x--;
+							if (x <= rightMid) break;
+						}
+						samplesRight[sampleIndex] = Math.Min(samplesRight[sampleIndex], glyphSize.X - 1 - x);
+					}
+				}
+			}
+
+			return;
 		}
 	}
 }

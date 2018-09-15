@@ -19,26 +19,25 @@ namespace Duality.Editor
 {
 	public static class EditorHelper
 	{
-		public const string DualityLauncherExecFile				= @"DualityLauncher.exe";
-		public const string BackupDirectory						= @"Backup";
-		public const string SourceDirectory						= @"Source";
-		public const string SourceMediaDirectory				= SourceDirectory + @"\Media";
-		public const string SourceCodeDirectory					= SourceDirectory + @"\Code";
-		public const string SourceCodeProjectCorePluginDir		= SourceCodeDirectory + @"\CorePlugin";
-		public const string SourceCodeProjectEditorPluginDir	= SourceCodeDirectory + @"\EditorPlugin";
-		public const string DefaultSourceCodeSolutionFile		= SourceCodeDirectory + @"\ProjectPlugins.sln";
-		public const string SourceCodeProjectCorePluginFile		= SourceCodeProjectCorePluginDir + @"\CorePlugin.csproj";
-		public const string SourceCodeProjectEditorPluginFile	= SourceCodeProjectEditorPluginDir + @"\EditorPlugin.csproj";
-		public const string SourceCodeErrorHandlerFile			= SourceCodeProjectCorePluginDir + @"\Properties\ErrorHandlers.cs";
-		public const string SourceCodeCorePluginFile			= SourceCodeProjectCorePluginDir + @"\CorePlugin.cs";
-		public const string SourceCodeComponentExampleFile		= SourceCodeProjectCorePluginDir + @"\YourCustomComponentType.cs";
-		public const string SourceCodeEditorPluginFile			= SourceCodeProjectEditorPluginDir + @"\EditorPlugin.cs";
+		public static readonly string DualityLauncherExecFile			= "DualityLauncher.exe";
+		public static readonly string BackupDirectory					= "Backup";
+		public static readonly string SourceDirectory					= "Source";
+
+		public static readonly string SourceMediaDirectory				= Path.Combine(SourceDirectory, "Media");
+		public static readonly string SourceCodeDirectory				= Path.Combine(SourceDirectory, "Code");
+		public static readonly string SourceCodeProjectCorePluginDir	= Path.Combine(SourceCodeDirectory, "CorePlugin");
+		public static readonly string SourceCodeProjectEditorPluginDir	= Path.Combine(SourceCodeDirectory, "EditorPlugin");
+		public static readonly string DefaultSourceCodeSolutionFile		= Path.Combine(SourceCodeDirectory, "ProjectPlugins.sln");
+		public static readonly string SourceCodeProjectCorePluginFile	= Path.Combine(SourceCodeProjectCorePluginDir, "CorePlugin.csproj");
+		public static readonly string SourceCodeProjectEditorPluginFile	= Path.Combine(SourceCodeProjectEditorPluginDir, "EditorPlugin.csproj");
+		public static readonly string SourceCodeErrorHandlerFile		= Path.Combine(SourceCodeProjectCorePluginDir, "Properties", "ErrorHandlers.cs");
+		public static readonly string SourceCodeCorePluginFile			= Path.Combine(SourceCodeProjectCorePluginDir, "CorePlugin.cs");
+		public static readonly string SourceCodeComponentExampleFile	= Path.Combine(SourceCodeProjectCorePluginDir, "YourCustomComponentType.cs");
+		public static readonly string SourceCodeEditorPluginFile		= Path.Combine(SourceCodeProjectEditorPluginDir, "EditorPlugin.cs");
 
 		public static readonly string GlobalUserDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality");
 		public static readonly string GlobalProjectTemplateDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality", "ProjectTemplates");
 
-		private static bool isJitDebuggerAvailable;
-		private static VisualStudioEdition vsEdition;
 
 		/// <summary>
 		/// The path to the *.sln solution file. Will return <see cref="DefaultSourceCodeSolutionFile"/> if the solution file has not yet been created.
@@ -59,7 +58,6 @@ namespace Duality.Editor
 				return sourceCodeSolutionFilePath ?? DefaultSourceCodeSolutionFile;
 			}
 		}
-
 		public static string CurrentProjectName
 		{
 			get
@@ -69,28 +67,7 @@ namespace Duality.Editor
 				return Path.GetFileName(dataDir);
 			}
 		}
-		public static bool IsJITDebuggerAvailable
-		{
-			get { return isJitDebuggerAvailable; }
-		}
-		public static VisualStudioEdition VisualStudioEdition
-		{
-			get { return vsEdition; }
-		}
 
-		static EditorHelper()
-		{
-			isJitDebuggerAvailable = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\.NetFramework", "DbgManagedDebugger", null) != null;
-			
-			RegistryKey localMachine = null;
-			if (Environment.Is64BitOperatingSystem)	localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-			else									localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
-
-			RegistryKey visualStudio = localMachine.OpenSubKey(@"SOFTWARE\Microsoft\VisualStudio");
-			string[] visualStudioSubKeys = visualStudio != null ? visualStudio.GetSubKeyNames() : null;
-
-			vsEdition = VisualStudioEdition.Express;
-		}
 
 		public static string GenerateClassNameFromPath(string path)
 		{
@@ -222,7 +199,6 @@ namespace Duality.Editor
 				DualityAppData data;
 				data = Serializer.TryReadObject<DualityAppData>(DualityApp.AppDataPath) ?? new DualityAppData();
 				data.AppName = projName;
-				data.AuthorName = Environment.UserName;
 				data.Version = 0;
 				Serializer.WriteObject(data, DualityApp.AppDataPath, typeof(XmlSerializer));
 			

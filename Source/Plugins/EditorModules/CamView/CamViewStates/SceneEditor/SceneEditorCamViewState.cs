@@ -80,7 +80,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (this.ObjAction == ObjectEditorAction.None && this.DragMustWait && !this.dragLastLoc.IsEmpty)
 			{
 				canvas.PushState();
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
+				canvas.State.SetMaterial(DrawTechnique.Alpha);
 				canvas.State.ColorTint = ColorRgba.White.WithAlpha(this.DragMustWaitProgress);
 				canvas.FillCircle(
 					this.dragLastLoc.X, 
@@ -99,7 +99,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			Component picked = this.PickRendererAt(x, y) as Component;
 			if (picked == null) return null;
-			if (picked.Disposed) return null;
 			if (DesignTimeObjectData.Get(picked.GameObj).IsLocked) return null;
 			return new SceneEditorSelGameObj(picked.GameObj);
 		}
@@ -108,7 +107,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			IEnumerable<ICmpRenderer> picked = this.PickRenderersIn(x, y, w, h);
 			return picked
 				.OfType<Component>()
-				.Where(r => r != null && !r.Disposed && !DesignTimeObjectData.Get(r.GameObj).IsLocked)
+				.Where(r => !DesignTimeObjectData.Get(r.GameObj).IsLocked)
 				.Select(r => new SceneEditorSelGameObj(r.GameObj) as ObjectEditorSelObj)
 				.ToList();
 		}
@@ -132,23 +131,23 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				DualityEditorApp.NotifyObjPropChanged(
 					this,
 					new ObjectSelection(selObjEnum.Select(s => (s.ActualObject as GameObject).Transform)),
-					ReflectionInfo.Property_Transform_RelativePos);
+					ReflectionInfo.Property_Transform_LocalPos);
 			}
 			else if (action == ObjectEditorAction.Rotate)
 			{
 				DualityEditorApp.NotifyObjPropChanged(
 					this,
 					new ObjectSelection(selObjEnum.Select(s => (s.ActualObject as GameObject).Transform)),
-					ReflectionInfo.Property_Transform_RelativePos,
-					ReflectionInfo.Property_Transform_RelativeAngle);
+					ReflectionInfo.Property_Transform_LocalPos,
+					ReflectionInfo.Property_Transform_LocalAngle);
 			}
 			else if (action == ObjectEditorAction.Scale)
 			{
 				DualityEditorApp.NotifyObjPropChanged(
 					this,
 					new ObjectSelection(selObjEnum.Select(s => (s.ActualObject as GameObject).Transform)),
-					ReflectionInfo.Property_Transform_RelativePos,
-					ReflectionInfo.Property_Transform_RelativeScale);
+					ReflectionInfo.Property_Transform_LocalPos,
+					ReflectionInfo.Property_Transform_LocalScale);
 			}
 		}
 
@@ -256,7 +255,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 				bool lockZ = this.CameraComponent.FocusDist <= 0.0f;
 				Point mouseLoc = this.PointToClient(new Point(e.X, e.Y));
-				Vector3 spaceCoord = this.GetSpaceCoord(new Vector3(
+				Vector3 spaceCoord = this.GetWorldPos(new Vector3(
 					mouseLoc.X, 
 					mouseLoc.Y, 
 					lockZ ? 0.0f : this.CameraObj.Transform.Pos.Z + MathF.Abs(this.CameraComponent.FocusDist)));

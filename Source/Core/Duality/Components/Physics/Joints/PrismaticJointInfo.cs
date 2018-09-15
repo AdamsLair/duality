@@ -128,7 +128,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float MotorForce
 		{
-			get { return this.joint == null ? 0.0f : (PhysicsUnit.ForceToDuality * (this.joint as PrismaticJoint).MotorForce * Time.SPFMult); }
+			get { return this.joint == null ? 0.0f : (PhysicsUnit.ForceToDuality * (this.joint as PrismaticJoint).MotorForce * Time.SecondsPerFrame); }
 		}
 		/// <summary>
 		/// [GET / SET] The reference angle that is used to constrain the bodies angle.
@@ -141,9 +141,9 @@ namespace Duality.Components.Physics
 		}
 
 
-		protected override Joint CreateJoint(Body bodyA, Body bodyB)
+		protected override Joint CreateJoint(World world, Body bodyA, Body bodyB)
 		{
-			return bodyA != null && bodyB != null ? JointFactory.CreatePrismaticJoint(Scene.PhysicsWorld, bodyA, bodyB, Vector2.Zero, Vector2.UnitX) : null;
+			return bodyA != null && bodyB != null ? JointFactory.CreatePrismaticJoint(world, bodyA, bodyB, Vector2.Zero, Vector2.UnitX) : null;
 		}
 		internal override void UpdateJoint()
 		{

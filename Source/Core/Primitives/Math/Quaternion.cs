@@ -246,33 +246,6 @@ namespace Duality
 		/// <param name="left">The first instance.</param>
 		/// <param name="right">The second instance.</param>
 		/// <returns>A new instance containing the result of the calculation.</returns>
-		[Obsolete("Use Multiply instead.")]
-		public static Quaternion Mult(Quaternion left, Quaternion right)
-		{
-			return new Quaternion(
-				right.W * left.Xyz + left.W * right.Xyz + Vector3.Cross(left.Xyz, right.Xyz),
-				left.W * right.W - Vector3.Dot(left.Xyz, right.Xyz));
-		}
-		/// <summary>
-		/// Multiplies two instances.
-		/// </summary>
-		/// <param name="left">The first instance.</param>
-		/// <param name="right">The second instance.</param>
-		/// <param name="result">A new instance containing the result of the calculation.</param>
-		[Obsolete("Use Multiply instead.")]
-		public static void Mult(ref Quaternion left, ref Quaternion right, out Quaternion result)
-		{
-			result = new Quaternion(
-				right.W * left.Xyz + left.W * right.Xyz + Vector3.Cross(left.Xyz, right.Xyz),
-				left.W * right.W - Vector3.Dot(left.Xyz, right.Xyz));
-		}
-
-		/// <summary>
-		/// Multiplies two instances.
-		/// </summary>
-		/// <param name="left">The first instance.</param>
-		/// <param name="right">The second instance.</param>
-		/// <returns>A new instance containing the result of the calculation.</returns>
 		public static Quaternion Multiply(Quaternion left, Quaternion right)
 		{
 			Quaternion result;

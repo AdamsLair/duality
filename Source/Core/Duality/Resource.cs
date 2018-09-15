@@ -28,6 +28,10 @@ namespace Duality
 		/// A Resource files extension.
 		/// </summary>
 		internal static readonly string FileExt = ".res";
+		/// <summary>
+		/// (Virtual) base path for Duality's embedded default content.
+		/// </summary>
+		public static readonly string DefaultContentBasePath = "Default:";
 
 		private	static	List<Resource>	finalizeSched	= new List<Resource>();
 
@@ -64,7 +68,7 @@ namespace Duality
 		}
 		/// <summary>
 		/// [GET] The path where this Resource has been originally loaded from or was first saved to.
-		/// It is also the path under which this Resource is registered at the ContentProvider.
+		/// It is also the path under which this Resource is registered at the <see cref="ContentProvider"/>.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public string Path
@@ -106,7 +110,7 @@ namespace Duality
 				if (this.IsRuntimeResource)
 					return this.GetHashCode().ToString(CultureInfo.InvariantCulture);
 				else
-					return ContentProvider.GetNameFromPath(this.path);
+					return Resource.GetNameFromPath(this.path);
 			}
 		}
 		/// <summary>
@@ -120,7 +124,7 @@ namespace Duality
 				if (this.IsRuntimeResource)
 					return this.GetHashCode().ToString(CultureInfo.InvariantCulture);
 				else
-					return ContentProvider.GetFullNameFromPath(this.path);
+					return Resource.GetFullNameFromPath(this.path);
 			}
 		}
 		/// <summary>
@@ -129,7 +133,7 @@ namespace Duality
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public bool IsDefaultContent
 		{
-			get { return this.path != null && ContentProvider.IsDefaultContentPath(this.path); }
+			get { return Resource.IsDefaultContentPath(this.path); }
 		}
 		/// <summary>
 		/// [GET] Returns whether the Resource has been generated at runtime and  cannot be retrieved via content path.
@@ -151,7 +155,7 @@ namespace Duality
 		/// <param name="makePermanent">
 		/// When true, the Resource will be made permanently available from now on. If it has been generated at runtime 
 		/// or was loaded explicitly outside the ContentProvider, this will set the Resources <see cref="Path"/> Property
-		/// and register it in the ContentProvider. If the Resource already is a permanent, this parameter will be ignored.
+		/// and register it in the <see cref="ContentProvider"/>. If the Resource already is a permanent, this parameter will be ignored.
 		/// </param>
 		public void Save(string saveAsPath = null, bool makePermanent = true)
 		{
@@ -216,7 +220,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("OnSaving() of {0} failed: {1}", this, Log.Exception(e));
+				Logs.Core.WriteError("OnSaving() of {0} failed: {1}", this, LogFormat.Exception(e));
 				return false;
 			}
 		}
@@ -231,7 +235,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("OnSaved() of {0} failed: {1}", this, Log.Exception(e));
+				Logs.Core.WriteError("OnSaved() of {0} failed: {1}", this, LogFormat.Exception(e));
 				return false;
 			}
 		}
@@ -314,10 +318,16 @@ namespace Duality
 			if (this.initState == InitState.Initialized)
 			{
 				this.initState = InitState.Disposing;
-				if (ResourceDisposing != null) ResourceDisposing(this, new ResourceEventArgs(this));
+
+				// Invoke external and internal handlers for resource disposal
+				if (ResourceDisposing != null)
+					ResourceDisposing(this, new ResourceEventArgs(this));
 				this.OnDisposing(manually);
-				ContentProvider.RemoveContent(this, false);
+
 				this.initState = InitState.Disposed;
+
+				// Remove the resource from the central registry
+				ContentProvider.RemoveContent(this, false);
 			}
 		}
 		/// <summary>
@@ -353,7 +363,7 @@ namespace Duality
 		/// <param name="loadCallback">An optional callback that is invoked right after loading the Resource, but before initializing it.</param>
 		/// <param name="initResource">
 		/// Specifies whether or not the Resource is initialized by calling <see cref="Resource.OnLoaded"/>. Never attempt to use
-		/// uninitialized Resources or register them in the ContentProvider.
+		/// uninitialized Resources or register them in the <see cref="ContentProvider"/>.
 		/// </param>
 		/// <returns>The Resource that has been loaded.</returns>
 		public static T Load<T>(string path, Action<T> loadCallback = null, bool initResource = true) where T : Resource
@@ -380,14 +390,14 @@ namespace Duality
 		/// <param name="loadCallback">An optional callback that is invoked right after loading the Resource, but before initializing it.</param>
 		/// <param name="initResource">
 		/// Specifies whether or not the Resource is initialized by calling <see cref="Resource.OnLoaded"/>. Never attempt to use
-		/// uninitialized Resources or register them in the ContentProvider.
+		/// uninitialized Resources or register them in the <see cref="ContentProvider"/>.
 		/// </param>
 		/// <returns>The Resource that has been loaded.</returns>
 		public static T Load<T>(Stream str, string resPath = null, Action<T> loadCallback = null, bool initResource = true) where T : Resource
 		{
-			using (var formatter = Serializer.Create(str))
+			using (Serializer serializer = Serializer.Create(str))
 			{
-				return Load<T>(formatter, resPath, loadCallback, initResource);
+				return Load<T>(serializer, resPath, loadCallback, initResource);
 			}
 		}
 		/// <summary>
@@ -403,7 +413,7 @@ namespace Duality
 		/// <param name="loadCallback">An optional callback that is invoked right after loading the Resource, but before initializing it.</param>
 		/// <param name="initResource">
 		/// Specifies whether or not the Resource is initialized by calling <see cref="Resource.OnLoaded"/>. Never attempt to use
-		/// uninitialized Resources or register them in the ContentProvider.
+		/// uninitialized Resources or register them in the <see cref="ContentProvider"/>.
 		/// </param>
 		/// <returns>The Resource that has been loaded.</returns>
 		public static T Load<T>(Serializer formatter, string resPath = null, Action<T> loadCallback = null, bool initResource = true) where T : Resource
@@ -413,7 +423,7 @@ namespace Duality
 			try
 			{
 				Resource res = formatter.ReadObject<Resource>();
-				if (res == null) throw new Exception("Loading Resource failed");
+				if (res == null) throw new Exception("Deserializing Resource failed.");
 
 				res.initState = InitState.Initializing;
 				res.path = resPath;
@@ -423,10 +433,10 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Can't load {0} from '{1}', because an error occurred: {3}{2}",
-					Log.Type(typeof(T)),
+				Logs.Core.WriteError("Can't load {0} from '{1}', because an error occurred: {3}{2}",
+					LogFormat.Type(typeof(T)),
 					resPath ?? formatter.ToString(),
-					Log.Exception(e),
+					LogFormat.Exception(e),
 					Environment.NewLine);
 			}
 
@@ -441,9 +451,47 @@ namespace Duality
 		public static void Init(Resource res)
 		{
 			if (res.initState != InitState.Initializing) return;
+
 			res.OnLoaded();
-			if (ResourceLoaded != null) ResourceLoaded(res, new ResourceEventArgs(res));
 			res.initState = InitState.Initialized;
+
+			if (ResourceLoaded != null)
+				ResourceLoaded(res, new ResourceEventArgs(res));
+		}
+
+		/// <summary>
+		/// Determines the name of a Resource based on its path.
+		/// </summary>
+		/// <param name="resPath"></param>
+		/// <returns></returns>
+		public static string GetNameFromPath(string resPath)
+		{
+			if (string.IsNullOrEmpty(resPath)) return "null";
+			if (IsDefaultContentPath(resPath)) resPath = resPath.Replace(':', PathOp.DirectorySeparatorChar);
+			return PathOp.GetFileNameWithoutExtension(PathOp.GetFileNameWithoutExtension(resPath));
+		}
+		/// <summary>
+		/// Determines the full (hierarchical) name of a Resource based on its path.
+		/// </summary>
+		/// <param name="resPath"></param>
+		/// <returns></returns>
+		public static string GetFullNameFromPath(string resPath)
+		{
+			if (string.IsNullOrEmpty(resPath)) return "null";
+			if (IsDefaultContentPath(resPath)) resPath = resPath.Replace(':', PathOp.DirectorySeparatorChar);
+			return PathOp.Combine(PathOp.GetDirectoryName(resPath), GetNameFromPath(resPath));
+		}
+
+		/// <summary>
+		/// Returns whether or not the specified path points to Duality default content.
+		/// </summary>
+		/// <param name="resPath"></param>
+		/// <returns></returns>
+		public static bool IsDefaultContentPath(string resPath)
+		{
+			return
+				resPath != null &&
+				resPath.StartsWith(DefaultContentBasePath, StringComparison.Ordinal);
 		}
 
 		/// <summary>
@@ -499,7 +547,7 @@ namespace Duality
 		public static Type GetTypeByFileName(string filePath)
 		{
 			// Early-out if we don't have a valid resource path
-			if (string.IsNullOrEmpty(filePath) || ContentProvider.IsDefaultContentPath(filePath))
+			if (string.IsNullOrEmpty(filePath) || Resource.IsDefaultContentPath(filePath))
 				return null;
 
 			// Determine the (double) extension of the resource path
@@ -563,57 +611,6 @@ namespace Duality
 			{
 				if (res == null) continue;
 				res.Dispose(false);
-			}
-		}
-
-		internal static void InitDefaultContent<T>(string embeddedNameExt, Func<Stream,T> resourceCreator) where T : Resource
-		{
-			string embeddedNameBase = "Duality.EmbeddedResources.";
-			Assembly embeddingAssembly = typeof(Resource).GetTypeInfo().Assembly;
-
-			InitDefaultContent<T>(name => 
-			{
-				using (Stream stream = embeddingAssembly.GetManifestResourceStream(embeddedNameBase + name + embeddedNameExt))
-				{
-					return resourceCreator(stream);
-				}
-			});
-		}
-		internal static void InitDefaultContent<T>(IDictionary<string,T> dictionary) where T : Resource
-		{
-			InitDefaultContent<T>(name => 
-			{
-				T res;
-				if (dictionary.TryGetValue(name, out res))
-					return res;
-				else
-					return null;
-			});
-		}
-		internal static void InitDefaultContent<T>(Func<string,T> resourceCreator) where T : Resource
-		{
-			string contentPathBase = ContentProvider.VirtualContentPath + typeof(T).Name + ":";
-
-			TypeInfo resourceType = typeof(T).GetTypeInfo();
-			PropertyInfo[] defaultResProps = resourceType
-				.DeclaredPropertiesDeep()
-				.Where(p => 
-					p.IsPublic() &&
-					p.IsStatic() &&
-					typeof(IContentRef).GetTypeInfo().IsAssignableFrom(p.PropertyType.GetTypeInfo()))
-				.ToArray();
-
-			for (int i = 0; i < defaultResProps.Length; i++)
-			{
-				string name = defaultResProps[i].Name;
-				string contentPath = contentPathBase + name.Replace('_', ':');
-
-				T resource = resourceCreator(name);
-				if (resource != null)
-				{
-					ContentProvider.AddContent(contentPath, resource);
-					defaultResProps[i].SetValue(null, ContentProvider.RequestContent<T>(contentPath));
-				}
 			}
 		}
 	}

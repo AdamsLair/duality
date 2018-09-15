@@ -1,11 +1,15 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Pixmap" id="129723834">
-  <animCols dataType="Int">3</animCols>
-  <animFrameBorder dataType="Int">0</animFrameBorder>
-  <animRows dataType="Int">5</animRows>
   <assetInfo dataType="Struct" type="Duality.Editor.AssetManagement.AssetInfo" id="427169525">
-    <customData />
+    <customData dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Object]]" id="1100841590" surrogate="true">
+      <header />
+      <body>
+        <SpriteSheetColumns dataType="Int">3</SpriteSheetColumns>
+        <SpriteSheetRows dataType="Int">5</SpriteSheetRows>
+        <SpriteFrameBorder dataType="Int">0</SpriteFrameBorder>
+      </body>
+    </customData>
     <importerId dataType="String">BasicPixmapAssetImporter</importerId>
-    <sourceFileHint dataType="Array" type="System.String[]" id="1100841590">
+    <sourceFileHint dataType="Array" type="System.String[]" id="649525530">
       <item dataType="String">{Name}.png</item>
     </sourceFileHint>
   </assetInfo>
@@ -103,7 +107,6 @@
       </item>
     </_items>
     <_size dataType="Int">15</_size>
-    <_version dataType="Int">19</_version>
   </atlas>
   <layers dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Drawing.PixelData]]" id="876525375">
     <_items dataType="Array" type="Duality.Drawing.PixelData[]" id="295733828" length="4">
@@ -116,7 +119,6 @@
       </item>
     </_items>
     <_size dataType="Int">1</_size>
-    <_version dataType="Int">3</_version>
   </layers>
 </root>
 <!-- XmlFormatterBase Document Separator -->

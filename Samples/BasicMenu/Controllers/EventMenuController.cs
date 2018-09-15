@@ -29,52 +29,44 @@ namespace BasicMenu
 
 		public EventMenuController()
 		{
-			mouseMove = new EventHandler<Duality.Input.MouseMoveEventArgs>(Mouse_Move);
-			buttonDown = new EventHandler<Duality.Input.MouseButtonEventArgs>(Button_Down);
+			this.mouseMove = new EventHandler<Duality.Input.MouseMoveEventArgs>(this.Mouse_Move);
+			this.buttonDown = new EventHandler<Duality.Input.MouseButtonEventArgs>(this.Button_Down);
 		}
 
-		public void OnInit(Component.InitContext context)
+		public void OnActivate()
 		{
-			// listening for mouse Move and ButtonDown events
-			if (context == InitContext.Activate)
-			{
-				// since I know I'm being activated, I can switch to the StartingMenu here
-				this.SwitchToMenu(this.StartingMenu);
+			// since I know I'm being activated, I can switch to the StartingMenu here
+			this.SwitchToMenu(this.StartingMenu);
 
-				DualityApp.Mouse.Move += mouseMove;
-				DualityApp.Mouse.ButtonDown += buttonDown;
-			}
+			DualityApp.Mouse.Move += this.mouseMove;
+			DualityApp.Mouse.ButtonDown += this.buttonDown;
 		}
 
-		public void OnShutdown(Component.ShutdownContext context)
+		public void OnDeactivate()
 		{
 			// remember to clean up the events on Deactivate - needs to be more careful
-			if (context == ShutdownContext.Deactivate)
-			{
-				DualityApp.Mouse.Move -= mouseMove;
-				DualityApp.Mouse.ButtonDown -= buttonDown;
-			}
+			DualityApp.Mouse.Move -= this.mouseMove;
+			DualityApp.Mouse.ButtonDown -= this.buttonDown;
 		}
 
 		void Mouse_Move(object sender, Duality.Input.MouseMoveEventArgs e)
 		{
-			mousePosition.X = e.X;
-			mousePosition.Y = e.Y;
+			this.mousePosition = e.Pos;
 
 			// check all MenuComponents under the mouse and sort them by Z,
 			// to find the one nearest to the Camera
-			MenuComponent hoveredComponent = this.GameObj.ParentScene.FindComponents<MenuComponent>()
-				.Where(mc => mc.GameObj.Active && mc.GetAreaOnScreen().Contains(mousePosition))
+			MenuComponent hoveredComponent = this.Scene.FindComponents<MenuComponent>()
+				.Where(mc => mc.GameObj.Active && mc.GetAreaOnScreen().Contains(this.mousePosition))
 				.OrderBy(mc => mc.GameObj.Transform.Pos.Z)
 				.FirstOrDefault();
 
 			// I found my hovered menu component.. is it different from the current one?
-			if (hoveredComponent != currentComponent)
+			if (hoveredComponent != this.currentComponent)
 			{
 				// if the old one is not null, leave it.
-				if (currentComponent != null)
+				if (this.currentComponent != null)
 				{
-					currentComponent.MouseLeave();
+					this.currentComponent.MouseLeave();
 				}
 
 				// if the new one is not null, enter it.
@@ -85,15 +77,15 @@ namespace BasicMenu
 			}
 
 			// set the current component to the hovered one.
-			currentComponent = hoveredComponent;
+			this.currentComponent = hoveredComponent;
 		}
 
 		void Button_Down(object sender, Duality.Input.MouseButtonEventArgs e)
 		{
 			// did I click the left button and am I hovering a component? do something!
-			if (e.Button == Duality.Input.MouseButton.Left && currentComponent != null)
+			if (e.Button == Duality.Input.MouseButton.Left && this.currentComponent != null)
 			{
-				currentComponent.DoAction();
+				this.currentComponent.DoAction();
 			}
 		}
 	}

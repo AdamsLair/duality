@@ -29,7 +29,7 @@ namespace Duality.Editor.Backend.Dummy
 		void IDualityBackend.Init() { }
 		void IDualityBackend.Shutdown() { }
 
-		INativeEditorGraphicsContext IEditorGraphicsBackend.CreateContext()
+		INativeEditorGraphicsContext IEditorGraphicsBackend.CreateContext(AAQuality antialiasingQuality)
 		{
 			return new DummyNativeEditorGraphicsContext();
 		}

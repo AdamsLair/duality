@@ -20,23 +20,23 @@ namespace Duality.Editor.Controls.PropertyEditors
 	[PropertyEditorAssignment(typeof(IColorData))]
 	public class IColorDataPropertyEditor : PropertyEditor
 	{
-		protected	ColorPickerDialog	dialog	= new ColorPickerDialog { BackColor = Color.FromArgb(212, 212, 212) };
-		protected	IColorData	value			= null;
-		protected	Rectangle	rectPanel		= Rectangle.Empty;
-		protected	Rectangle	rectCDiagButton	= Rectangle.Empty;
-		protected	Rectangle	rectCPickButton	= Rectangle.Empty;
-		protected	bool		buttonCDiagHovered	= false;
-		protected	bool		buttonCDiagPressed	= false;
-		protected	bool		buttonCPickHovered	= false;
-		protected	bool		buttonCPickPressed	= false;
-		protected	bool		panelHovered		= false;
-		private		Point		panelDragBegin		= Point.Empty;
-		private		IColorData	valueBeforePicking	= null;
-		private		GlobalColorPickOperation	pickingOperation	= null;
+		private ColorPickerDialog        dialog             = new ColorPickerDialog { BackColor = Color.FromArgb(212, 212, 212) };
+		private IColorData               value              = null;
+		private Rectangle                rectPanel          = Rectangle.Empty;
+		private Rectangle                rectCDiagButton    = Rectangle.Empty;
+		private Rectangle                rectCPickButton    = Rectangle.Empty;
+		private bool                     buttonCDiagHovered = false;
+		private bool                     buttonCDiagPressed = false;
+		private bool                     buttonCPickHovered = false;
+		private bool                     buttonCPickPressed = false;
+		private bool                     panelHovered       = false;
+		private Point                    panelDragBegin     = Point.Empty;
+		private IColorData               valueBeforePicking = null;
+		private GlobalColorPickOperation pickingOperation   = null;
 
 		public override object DisplayedValue
 		{
-			get { return value.ConvertTo(this.EditedType); }
+			get { return this.value.ConvertTo(this.EditedType); }
 		}
 
 
@@ -52,8 +52,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 			this.dialog.SelectedColor = this.dialog.OldColor;
 			DialogResult result = this.dialog.ShowDialog(this.ParentGrid);
 
-			this.value = (result == DialogResult.OK) ? this.dialog.SelectedColor.ToDualityRgba() : this.dialog.OldColor.ToDualityRgba();
-			this.PerformSetValue();
+			this.SetValue((result == DialogResult.OK) ? this.dialog.SelectedColor.ToDualityRgba() : this.dialog.OldColor.ToDualityRgba());
 			this.PerformGetValue();
 			this.OnEditingFinished(result == DialogResult.OK ? FinishReason.UserAccept : FinishReason.LostFocus);
 		}
@@ -140,7 +139,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 				else if (this.buttonCDiagHovered)					buttonCDiagState = ButtonState.Hot;
 				else                                                buttonCDiagState = ButtonState.Normal;
 			}
-			ControlRenderer.DrawButton(
+			this.ControlRenderer.DrawButton(
 				e.Graphics, 
 				this.rectCDiagButton,
 				buttonCDiagState, 
@@ -154,7 +153,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 				else if (this.buttonCPickHovered)					buttonCPickState = ButtonState.Hot;
 				else                                                buttonCPickState = ButtonState.Normal;
 			}
-			ControlRenderer.DrawButton(
+			this.ControlRenderer.DrawButton(
 				e.Graphics,
 				this.rectCPickButton,
 				buttonCPickState,
@@ -181,8 +180,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 				IColorData[] colorData;
 				if (data.TryGetIColorData(out colorData))
 				{
-					this.value = colorData.FirstOrDefault();
-					this.PerformSetValue();
+					this.SetValue(colorData.FirstOrDefault());
 					this.PerformGetValue();
 					this.OnEditingFinished(FinishReason.LeapValue);
 				}
@@ -281,8 +279,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 
 			if (data.ContainsIColorData())
 			{
-				this.value = data.GetIColorData<IColorData>().FirstOrDefault();
-				this.PerformSetValue();
+				this.SetValue(data.GetIColorData<IColorData>().FirstOrDefault());
 				this.PerformGetValue();
 				this.OnEditingFinished(FinishReason.LeapValue);
 				e.Effect = e.AllowedEffect;
@@ -312,22 +309,19 @@ namespace Duality.Editor.Controls.PropertyEditors
 		
 		private void dialog_ColorEdited(object sender, EventArgs e)
 		{
-			this.value = this.dialog.SelectedColor.ToDualityRgba();
-			this.PerformSetValue();
+			this.SetValue(this.dialog.SelectedColor.ToDualityRgba());
 			this.PerformGetValue();
 		}
 		private void pickingOperation_PickedColorChanged(object sender, EventArgs e)
 		{
-			this.value = this.pickingOperation.PickedColor.ToDualityRgba();
-			this.PerformSetValue();
+			this.SetValue(this.pickingOperation.PickedColor.ToDualityRgba());
 			this.PerformGetValue();
 		}
 		private void pickingOperation_OperationEnded(object sender, EventArgs e)
 		{
 			if (this.pickingOperation.IsCanceled)
 			{
-				this.value = this.valueBeforePicking;
-				this.PerformSetValue();
+				this.SetValue(this.valueBeforePicking);
 				this.PerformGetValue();
 			}
 			this.pickingOperation.PickedColorChanged -= this.pickingOperation_PickedColorChanged;

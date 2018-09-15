@@ -17,20 +17,16 @@ namespace InputHandling
 		[DontSerialize] private FormattedText joystickStatsText = null;
 		[DontSerialize] private FormattedText gamepadStatsText = null;
 
-		float ICmpRenderer.BoundRadius
+		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
 		{
-			get { return float.MaxValue; }
-		}
-
-		bool ICmpRenderer.IsVisible(IDrawDevice device)
-		{
-			return 
-				(device.VisibilityMask & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None &&
-				(device.VisibilityMask & VisibilityFlag.AllGroups) != VisibilityFlag.None;
+			info.Position = Vector3.Zero;
+			info.Radius = float.MaxValue;
+			info.Visibility = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			Canvas canvas = new Canvas(device);
+			Canvas canvas = new Canvas();
+			canvas.Begin(device);
 			
 			// Update input stats texts for drawing
 			this.WriteInputStats(ref this.mouseStatsText, DualityApp.Mouse);
@@ -58,20 +54,22 @@ namespace InputHandling
 			// Draw the mouse cursor's movement trail
 			if (DualityApp.Mouse.IsAvailable)
 			{
-				canvas.State.ColorTint = new ColorRgba(128, 192, 255, 128);
+				canvas.State.ColorTint = new ColorRgba(255, 255, 255, 128);
 				canvas.FillThickLine(
-					DualityApp.Mouse.X - DualityApp.Mouse.XSpeed, 
-					DualityApp.Mouse.Y - DualityApp.Mouse.YSpeed, 
-					DualityApp.Mouse.X, 
-					DualityApp.Mouse.Y, 
+					DualityApp.Mouse.Pos.X - DualityApp.Mouse.Vel.X, 
+					DualityApp.Mouse.Pos.Y - DualityApp.Mouse.Vel.Y, 
+					DualityApp.Mouse.Pos.X, 
+					DualityApp.Mouse.Pos.Y, 
 					2);
 				// Draw the mouse cursor at its local window coordiates
 				canvas.State.ColorTint = ColorRgba.White;
 				canvas.FillCircle(
-					DualityApp.Mouse.X, 
-					DualityApp.Mouse.Y, 
+					DualityApp.Mouse.Pos.X, 
+					DualityApp.Mouse.Pos.Y, 
 					2);
 			}
+
+			canvas.End();
 		}
 
 		private void WriteInputStats(ref FormattedText target, MouseInput input)
@@ -96,9 +94,9 @@ namespace InputHandling
 				"/f[1]Mouse Stats/f[0]/n/n" +
 				string.Format("Description: /cFF8800FF{0}/cFFFFFFFF/n", input.Description) +
 				string.Format("IsAvailable: /cFF8800FF{0}/cFFFFFFFF/n", input.IsAvailable) +
-				string.Format("X:     /c44AAFFFF{0,4}/cFFFFFFFF | XSpeed:     /c44AAFFFF{1,4}/cFFFFFFFF/n", input.X, input.XSpeed) +
-				string.Format("Y:     /c44AAFFFF{0,4}/cFFFFFFFF | YSpeed:     /c44AAFFFF{1,4}/cFFFFFFFF/n", input.Y, input.YSpeed) +
-				string.Format("Wheel: /c44AAFFFF{0,4}/cFFFFFFFF | WheelSpeed: /c44AAFFFF{1,4}/cFFFFFFFF/n", input.WheelPrecise, input.WheelSpeedPrecise) +
+				string.Format("X:     /c44AAFFFF{0,8:F}/cFFFFFFFF | XSpeed:     /c44AAFFFF{1,8:F}/cFFFFFFFF/n", input.Pos.X, input.Vel.X) +
+				string.Format("Y:     /c44AAFFFF{0,8:F}/cFFFFFFFF | YSpeed:     /c44AAFFFF{1,8:F}/cFFFFFFFF/n", input.Pos.Y, input.Vel.Y) +
+				string.Format("Wheel: /c44AAFFFF{0,8:F}/cFFFFFFFF | WheelSpeed: /c44AAFFFF{1,8:F}/cFFFFFFFF/n", input.Wheel, input.WheelSpeed) +
 				string.Format("Buttons: /c44AAFFFF{0}/cFFFFFFFF/n", activeButtons);
 		}
 		private void WriteInputStats(ref FormattedText target, KeyboardInput input)

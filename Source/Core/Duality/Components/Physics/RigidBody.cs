@@ -54,7 +54,7 @@ namespace Duality.Components.Physics
 		private bool     fixedAngle      = false;
 		private bool     ignoreGravity   = false;
 		private bool     allowParent     = false;
-		private bool     continous       = false;
+		private bool     useCCD          = false;
 		private Vector2  linearVel       = Vector2.Zero;
 		private float    angularVel      = 0.0f;
 		private float    revolutions     = 0.0f;
@@ -66,6 +66,8 @@ namespace Duality.Components.Physics
 		private List<ShapeInfo>   shapes    = null;
 		private List<JointInfo>   joints    = null;
 
+		[DontSerialize] private Vector2   lastPos               = Vector2.Zero;
+		[DontSerialize] private float     lastAngle             = 0.0f;
 		[DontSerialize] private float     lastScale             = 1.0f;
 		[DontSerialize] private InitState bodyInitState         = InitState.Disposed;
 		[DontSerialize] private bool      schedUpdateBody       = false;
@@ -74,6 +76,7 @@ namespace Duality.Components.Physics
 		[DontSerialize] private bool      isProcessingEvents    = false;
 		[DontSerialize] private Body      body                  = null;
 		[DontSerialize] private List<ColEvent> eventBuffer      = new List<ColEvent>();
+		[DontSerialize] private List<ICmpCollisionListener> cachedListeners = new List<ICmpCollisionListener>();
 
 
 		internal Body PhysicsBody
@@ -166,11 +169,11 @@ namespace Duality.Components.Physics
 		/// </summary>
 		public bool ContinousCollision
 		{
-			get { return this.continous; }
+			get { return this.useCCD; }
 			set 
 			{
 				if (this.body != null) this.body.IsBullet = value;
-				this.continous = value;
+				this.useCCD = value;
 			}
 		}
 		/// <summary>
@@ -467,9 +470,9 @@ namespace Duality.Components.Physics
 			if (joint.OtherBody != null)
 				joint.OtherBody.AwakeBody();
 
+			joint.DestroyJoint();
 			joint.ParentBody = null;
 			joint.OtherBody = null;
-			joint.DestroyJoint();
 		}
 		/// <summary>
 		/// Adds a new joint to the body.
@@ -492,7 +495,8 @@ namespace Duality.Components.Physics
 			if (joint.OtherBody != null)
 				joint.OtherBody.AwakeBody();
 
-			joint.UpdateJoint();
+			if (this.body != null)
+				joint.UpdateJoint();
 		}
 		/// <summary>
 		/// Removes all existing joints from the body.
@@ -614,7 +618,9 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(angularForce);
 			if (this.body == null) return;
 
-			if (Scene.PhysicsFixedTime) angularForce *= Time.TimeMult;
+			if (this.Scene.Physics.IsFixedTimestep)
+				angularForce *= Time.TimeMult;
+
 			this.body.ApplyTorque(PhysicsUnit.TorqueToPhysical * angularForce);
 		}
 		/// <summary>
@@ -627,7 +633,10 @@ namespace Duality.Components.Physics
 			if (this.body == null) return;
 
 			force = this.gameobj.Transform.GetWorldVector(force);
-			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
+
+			if (this.Scene.Physics.IsFixedTimestep)
+				force *= Time.TimeMult;
+
 			this.body.ApplyForce(PhysicsUnit.ForceToPhysical * force);
 		}
 		/// <summary>
@@ -643,7 +652,10 @@ namespace Duality.Components.Physics
 
 			force = this.gameobj.Transform.GetWorldVector(force);
 			applyAt = this.gameobj.Transform.GetWorldPoint(applyAt);
-			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
+
+			if (this.Scene.Physics.IsFixedTimestep)
+				force *= Time.TimeMult;
+
 			this.body.ApplyForce(
 				PhysicsUnit.ForceToPhysical * force, 
 				PhysicsUnit.LengthToPhysical * applyAt);
@@ -657,7 +669,9 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(force);
 			if (this.body == null) return;
 
-			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
+			if (this.Scene.Physics.IsFixedTimestep)
+				force *= Time.TimeMult;
+
 			this.body.ApplyForce(PhysicsUnit.ForceToPhysical * force);
 		}
 		/// <summary>
@@ -671,7 +685,9 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(applyAt);
 			if (this.body == null) return;
 
-			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
+			if (this.Scene.Physics.IsFixedTimestep)
+				force *= Time.TimeMult;
+
 			this.body.ApplyForce(
 				PhysicsUnit.ForceToPhysical * force, 
 				PhysicsUnit.LengthToPhysical * applyAt);
@@ -710,19 +726,6 @@ namespace Duality.Components.Physics
 		/// intersect the specified world coordinate.
 		/// </summary>
 		/// <param name="worldCoord"></param>
-		/// <returns></returns>
-		[Obsolete("Use the overload that accepts a pre-existing list.")]
-		public List<ShapeInfo> PickShapes(Vector2 worldCoord)
-		{
-			List<ShapeInfo> picked = new List<ShapeInfo>();
-			this.PickShapes(worldCoord, picked);
-			return picked;
-		}
-		/// <summary>
-		/// Performs a physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
-		/// intersect the specified world coordinate.
-		/// </summary>
-		/// <param name="worldCoord"></param>
 		/// <param name="pickedShapes">
 		/// A list that will be filled with all shapes that were found. 
 		/// The list will not be cleared before adding items.
@@ -752,20 +755,6 @@ namespace Duality.Components.Physics
 		/// </summary>
 		/// <param name="worldCoord"></param>
 		/// <param name="size"></param>
-		/// <returns></returns>
-		[Obsolete("Use the overload that accepts a pre-existing list.")]
-		public List<ShapeInfo> PickShapes(Vector2 worldCoord, Vector2 size)
-		{
-			List<ShapeInfo> picked = new List<ShapeInfo>();
-			this.PickShapes(worldCoord, size, picked);
-			return picked;
-		}
-		/// <summary>
-		/// Performs a physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
-		/// intersect the specified world coordinate area.
-		/// </summary>
-		/// <param name="worldCoord"></param>
-		/// <param name="size"></param>
 		/// <param name="pickedShapes">
 		/// A list that will be filled with all shapes that were found. 
 		/// The list will not be cleared before adding items.
@@ -788,7 +777,7 @@ namespace Duality.Components.Physics
 			
 			return this.PickShapes(boxShape, boxTransform, pickedShapes);
 		}
-		private bool PickShapes(PolygonShape boxShape, FarseerPhysics.Common.Transform boxTransform, List<ShapeInfo> pickedShapes)
+		internal bool PickShapes(PolygonShape boxShape, FarseerPhysics.Common.Transform boxTransform, List<ShapeInfo> pickedShapes)
 		{			
 			Manifold manifold = new Manifold();
 
@@ -904,6 +893,85 @@ namespace Duality.Components.Physics
 			if (this.explicitInertia > 0.0f) this.body.Inertia = PhysicsUnit.InertiaToPhysical * this.explicitInertia;
 		}
 
+		private void UpdateBodyFromTransform()
+		{
+			Transform transform = this.GameObj.Transform;
+
+			Vector2 pos = transform.Pos.Xy;
+			if (this.lastPos != pos)
+			{
+				this.lastPos = pos;
+				this.body.Position = PhysicsUnit.LengthToPhysical * pos;
+				this.body.Awake = true;
+			}
+
+			float angle = transform.Angle;
+			if (this.lastAngle != angle)
+			{
+				this.lastAngle = angle;
+				this.body.Rotation = PhysicsUnit.AngleToPhysical * angle;
+				this.body.Awake = true;
+			}
+
+			float scale = transform.Scale;
+			if (this.lastScale != scale)
+			{
+				bool updateScale = false;
+				if (scale == 0.0f || this.lastScale == 0.0f)
+				{
+					updateScale = true;
+				}
+				else
+				{
+					const float pixelLimit = 2;
+					float boundRadius = this.BoundRadius;
+					float upper = (boundRadius + pixelLimit) / boundRadius;
+					float lower = (boundRadius - pixelLimit) / boundRadius;
+					if (scale / this.lastScale >= upper || scale / this.lastScale <= lower)
+					{
+						updateScale = true;
+					}
+				}
+				if (updateScale)
+				{
+					this.lastScale = scale;
+
+					// Flag the body for a shape update and destroy all active shapes to
+					// force a full re-creation of shapes with the new scale value.
+					this.FlagBodyShape();
+					if (this.shapes != null)
+					{
+						foreach (ShapeInfo info in this.shapes)
+							info.DestroyInternalShape();
+					}
+				}
+			}
+		}
+		private void UpdateTransformFromBody()
+		{
+			Transform transform = this.gameobj.Transform;
+
+			// The current PhysicsAlpha interpolation probably isn't the best one. Maybe replace later.
+			PhysicsWorld world = this.Scene.Physics;
+			Vector2 bodyVel = this.body.LinearVelocity;
+			Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - world.InterpolateAlpha) * Time.SecondsPerFrame;
+			float bodyAngleVel = this.body.AngularVelocity;
+			float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - world.InterpolateAlpha) * Time.SecondsPerFrame;
+
+			// Unless allowed explicitly, ignore the transform hierarchy, so nested RigidBodies don't clash
+			if (!this.allowParent)
+				transform.IgnoreParent = true;
+
+			transform.MoveTo(new Vector3(
+				PhysicsUnit.LengthToDuality * bodyPos.X,
+				PhysicsUnit.LengthToDuality * bodyPos.Y,
+				transform.Pos.Z));
+			transform.TurnTo(PhysicsUnit.AngleToDuality * bodyAngle);
+
+			this.lastPos = transform.Pos.Xy;
+			this.lastAngle = transform.Angle;
+		}
+
 		private void CleanupBody()
 		{
 			if (this.body == null) return;
@@ -941,10 +1009,10 @@ namespace Duality.Components.Physics
 		private void InitBody()
 		{
 			if (this.body != null) this.CleanupBody();
-			Transform t = this.GameObj != null ? this.GameObj.Transform : null;
+			Transform transform = this.GameObj != null ? this.GameObj.Transform : null;
 
 			// Create body and determine its enabled state
-			this.body = new Body(Scene.PhysicsWorld, this);
+			this.body = new Body(this.Scene.Physics.Native, this);
 
 			// The following line is an optimization: Farseer is really slow when it comes 
 			// to dynamically adding or removing fixtures to an existing world, but that's
@@ -966,17 +1034,20 @@ namespace Duality.Components.Physics
 			this.body.AngularDamping = this.angularDamp;
 			this.body.FixedRotation = this.fixedAngle;
 			this.body.IgnoreGravity = this.ignoreGravity;
-			this.body.IsBullet = this.continous;
+			this.body.IsBullet = this.useCCD;
 			this.body.CollisionCategories = (Category)this.colCat;
 			this.body.CollidesWith = (Category)this.colWith;
 
 			this.UpdateBodyShape();
 
-			if (t != null)
+			if (transform != null)
 			{
-				this.body.SetTransform(PhysicsUnit.LengthToPhysical * t.Pos.Xy, PhysicsUnit.AngleToPhysical * t.Angle);
+				this.body.SetTransform(PhysicsUnit.LengthToPhysical * transform.Pos.Xy, PhysicsUnit.AngleToPhysical * transform.Angle);
 				this.body.LinearVelocity = PhysicsUnit.VelocityToPhysical * this.linearVel;
 				this.body.AngularVelocity = PhysicsUnit.AngularVelocityToPhysical * this.angularVel;
+				this.lastPos = transform.Pos.Xy;
+				this.lastAngle = transform.Angle;
+				this.lastScale = transform.Scale;
 			}
 
 			this.body.Collision += this.body_OnCollision;
@@ -1010,10 +1081,6 @@ namespace Duality.Components.Physics
 			if (this.bodyInitState != InitState.Disposed) return;
 			this.bodyInitState = InitState.Initializing;
 
-			// Register for tranformation changes to keep the RigidBody in sync. Make sure to register only once.
-			this.GameObj.Transform.EventTransformChanged -= this.OnTransformChanged;
-			this.GameObj.Transform.EventTransformChanged += this.OnTransformChanged;
-
 			// Initialize body and joints
 			this.InitBody();
 			if (this.joints != null)
@@ -1031,9 +1098,6 @@ namespace Duality.Components.Physics
 			// Clean up body and joints
 			this.CleanupJoints();
 			this.CleanupBody();
-
-			// Unregister for transformation change events.
-			this.GameObj.Transform.EventTransformChanged -= this.OnTransformChanged;
 
 			// Finally process all collision events we didn't get around to yet.
 			this.ProcessCollisionEvents();
@@ -1083,7 +1147,11 @@ namespace Duality.Components.Physics
 			if (this.isProcessingEvents) return;
 			this.isProcessingEvents = true;
 			{
-				// Don't use foreach here in case someone decides to add something at the end while iterating..
+				// Retrieve a list of event listeners to deliver to
+				this.cachedListeners.Clear();
+				this.gameobj.GetComponents(this.cachedListeners);
+
+				// Don't use foreach here in case someone decides to add something at the end while iterating.
 				for (int i = 0; i < this.eventBuffer.Count; i++)
 				{
 					this.ProcessSingleCollisionEvent(this.eventBuffer[i]);
@@ -1106,32 +1174,19 @@ namespace Duality.Components.Physics
 				colEvent.Data,
 				colEvent.FixtureA.UserData as ShapeInfo,
 				colEvent.FixtureB.UserData as ShapeInfo);
+			
+			for (int i = 0; i < this.cachedListeners.Count; i++)
+			{
+				ICmpCollisionListener listener = this.cachedListeners[i];
+				if (!(listener as Component).ActiveSingle) continue;
 
-			if (colEvent.Type == ColEvent.EventType.Collision)
-				this.NotifyCollisionBegin(args);
-			else if (colEvent.Type == ColEvent.EventType.Separation)
-				this.NotifyCollisionEnd(args);
-			else if (colEvent.Type == ColEvent.EventType.PostSolve)
-				this.NotifyCollisionSolve(args);
-		}
-		
-		private void NotifyCollisionBegin(CollisionEventArgs args)
-		{
-			this.gameobj.IterateComponents<ICmpCollisionListener>(
-				l => l.OnCollisionBegin(this, args), 
-				l => (l as Component).Active);
-		}
-		private void NotifyCollisionEnd(CollisionEventArgs args)
-		{
-			this.gameobj.IterateComponents<ICmpCollisionListener>(
-				l => l.OnCollisionEnd(this, args), 
-				l => (l as Component).Active);
-		}
-		private void NotifyCollisionSolve(CollisionEventArgs args)
-		{
-			this.gameobj.IterateComponents<ICmpCollisionListener>(
-				l => l.OnCollisionSolve(this, args), 
-				l => (l as Component).Active);
+				if (colEvent.Type == ColEvent.EventType.Collision)
+					listener.OnCollisionBegin(this, args);
+				else if (colEvent.Type == ColEvent.EventType.Separation)
+					listener.OnCollisionEnd(this, args);
+				else if (colEvent.Type == ColEvent.EventType.PostSolve)
+					listener.OnCollisionSolve(this, args);
+			}
 		}
 
 		void ICmpUpdatable.OnUpdate()
@@ -1142,7 +1197,13 @@ namespace Duality.Components.Physics
 			this.RemoveDisposedJoints();
 			this.SynchronizeBodyShape();
 
-			// Update velocity and transform values
+			// Update the physics body from Transform changes
+			if (this.body != null)
+			{
+				this.UpdateBodyFromTransform();
+			}
+
+			// Update velocity and Transform values from physics simulation
 			if (this.body != null)
 			{
 				this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
@@ -1151,27 +1212,7 @@ namespace Duality.Components.Physics
 
 				if (this.bodyType != BodyType.Static && this.body.Awake)
 				{
-					Transform transform = this.gameobj.Transform;
-
-					// Make sure we're not overwriting any previously occuring changes
-					transform.CommitChanges();
-
-					// The current PhysicsAlpha interpolation probably isn't the best one. Maybe replace later.
-					Vector2 bodyVel = this.body.LinearVelocity;
-					Vector2 bodyPos = this.body.Position - bodyVel * (1.0f - Scene.PhysicsAlpha) * Time.SPFMult;
-					float bodyAngleVel = this.body.AngularVelocity;
-					float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsAlpha) * Time.SPFMult;
-
-					// Unless allowed explicitly, ignore the transform hierarchy, so nested RigidBodies don't clash
-					if (!this.allowParent)
-						transform.IgnoreParent = true;
-
-					transform.MoveToAbs(new Vector3(
-						PhysicsUnit.LengthToDuality * bodyPos.X, 
-						PhysicsUnit.LengthToDuality * bodyPos.Y, 
-						transform.Pos.Z));
-					transform.TurnToAbs(bodyAngle);
-					transform.CommitChanges(this);
+					this.UpdateTransformFromBody();
 				}
 			}
 
@@ -1188,79 +1229,25 @@ namespace Duality.Components.Physics
 			this.RemoveDisposedJoints();
 			this.SynchronizeBodyShape();
 
+			// Update the body from Transform changes
+			if (this.body != null)
+			{
+				this.UpdateBodyFromTransform();
+			}
+
 			this.CheckValidTransform();
 		}
-
-		private void OnTransformChanged(object sender, TransformChangedEventArgs e)
+		
+		void ICmpInitializable.OnActivate()
 		{
-			// Don't react to events triggered by this Component, or while no physics body is available
-			if (sender == this) return;
-			if (this.body == null) return;
-
-			// Apply transform changes to the physics body
-			Transform t = e.Component as Transform;
-			if ((e.Changes & Transform.DirtyFlags.Pos) != Transform.DirtyFlags.None)
-			{
-				this.body.Position = PhysicsUnit.LengthToPhysical * t.Pos.Xy;
-			}
-			if ((e.Changes & Transform.DirtyFlags.Angle) != Transform.DirtyFlags.None)
-			{
-				this.body.Rotation = t.Angle;
-			}
-			if ((e.Changes & Transform.DirtyFlags.Scale) != Transform.DirtyFlags.None)
-			{
-				bool updateShape = false;
-				float scale = t.Scale;
-				if (scale == 0.0f || this.lastScale == 0.0f)
-				{
-					updateShape = true;
-				}
-				else
-				{
-					const float pixelLimit = 2;
-					float boundRadius = this.BoundRadius;
-					float upper = (boundRadius + pixelLimit) / boundRadius;
-					float lower = (boundRadius - pixelLimit) / boundRadius;
-					if (scale / this.lastScale >= upper || scale / this.lastScale <= lower)
-					{
-						updateShape = true;
-					}
-				}
-				if (updateShape)
-				{
-					// Flag the body for a shape update and destroy all active shapes to
-					// force a full re-creation of shapes with the new scale value.
-					this.FlagBodyShape();
-					if (this.shapes != null)
-					{
-						foreach (ShapeInfo info in this.shapes)
-							info.DestroyInternalShape();
-					}
-				}
-			}
-
-			// Make sure we're simulating this body, if something has changed
-			if (e.Changes != Transform.DirtyFlags.None)
-			{
-				this.body.Awake = true;
-			}
+			// Do some cleanup before updating again
+			this.RemoveDisposedJoints();
+			// Initialize the backing Farseer objects upon activation
+			this.Initialize();
 		}
-		void ICmpInitializable.OnInit(InitContext context)
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				// Do some cleanup before updating again
-				this.RemoveDisposedJoints();
-				// Initialize the backing Farseer objects upon activation
-				this.Initialize();
-			}
-		}
-		void ICmpInitializable.OnShutdown(ShutdownContext context)
-		{
-			if (context == ShutdownContext.Deactivate)
-				this.Shutdown();
-			else if (context == ShutdownContext.Saving)
-				this.RemoveDisposedJoints();
+			this.Shutdown();
 		}
 
 		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
@@ -1303,7 +1290,7 @@ namespace Duality.Components.Physics
 			target.fixedAngle    = this.fixedAngle;
 			target.ignoreGravity = this.ignoreGravity;
 			target.allowParent   = this.allowParent;
-			target.continous     = this.continous;
+			target.useCCD        = this.useCCD;
 			target.linearVel     = this.linearVel;
 			target.angularVel    = this.angularVel;
 			target.revolutions   = this.revolutions;
@@ -1332,13 +1319,14 @@ namespace Duality.Components.Physics
 					bool isNew = (target.shapes.Count <= i);
 					ShapeInfo sourceShape = this.shapes[i];
 					ShapeInfo targetShape = !isNew ? target.shapes[i] : null;
-					if (operation.HandleObject(sourceShape, ref targetShape))
-					{
-						if (isNew)
-							target.shapes.Add(targetShape);
-						else
-							target.shapes[i] = targetShape;
-					}
+
+					operation.HandleObject(sourceShape, ref targetShape);
+
+					targetShape.Parent = target;
+					if (isNew)
+						target.shapes.Add(targetShape);
+					else
+						target.shapes[i] = targetShape;
 				}
 			}
 			else
@@ -1367,13 +1355,16 @@ namespace Duality.Components.Physics
 					bool isNew = (target.joints.Count <= i);
 					JointInfo sourceJoint = this.joints[i];
 					JointInfo targetJoint = !isNew ? target.joints[i] : null;
-					if (operation.HandleObject(sourceJoint, ref targetJoint))
-					{
-						if (isNew)
-							target.joints.Add(targetJoint);
-						else
-							target.joints[i] = targetJoint;
-					}
+
+					operation.HandleObject(sourceJoint, ref targetJoint);
+
+					targetJoint.ParentBody = target;
+					targetJoint.OtherBody = operation.GetWeakTarget(sourceJoint.OtherBody);
+
+					if (isNew)
+						target.joints.Add(targetJoint);
+					else
+						target.joints[i] = targetJoint;
 				}
 			}
 			else
@@ -1383,297 +1374,6 @@ namespace Duality.Components.Physics
 
 			// Make sure to re-initialize the targets body, if it was shut down
 			if (wasInitialized) target.Initialize();
-		}
-		
-		/// <summary>
-		/// Performs a 2d physical raycast in world coordinates.
-		/// </summary>
-		/// <param name="start">The starting point in world coordinates.</param>
-		/// <param name="end">The desired end point in world coordinates.</param>
-		/// <param name="callback">
-		/// The callback that is invoked for each hit on the raycast. Note that the order in which each hit occurs isn't deterministic
-		/// and may appear random. Return -1 to ignore the curret shape, 0 to terminate the raycast, data.Fraction to clip the ray for current hit, or 1 to continue.
-		/// </param>
-		public static void RayCast(Vector2 start, Vector2 end, RayCastCallback callback)
-		{
-			if (callback == null) callback = Raycast_DefaultCallback;
-
-			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * start;
-			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
-
-			Scene.PhysicsWorld.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
-			{
-				return callback(new RayCastData(
-					fixture.UserData as ShapeInfo, 
-					PhysicsUnit.LengthToDuality * pos, 
-					normal, 
-					fraction));
-			}, fsWorldCoordA, fsWorldCoordB);
-		}
-		/// <summary>
-		/// Performs a 2d physical raycast in world coordinates.
-		/// </summary>
-		/// <param name="start">The starting point in world coordinates.</param>
-		/// <param name="end">The desired end point in world coordinates.</param>
-		/// <param name="callback">
-		/// The callback that is invoked for each hit on the raycast. Note that the order in which each hit occurs isn't deterministic
-		/// and may appear random. Return -1 to ignore the curret shape, 0 to terminate the raycast, data.Fraction to clip the ray for current hit, or 1 to continue.
-		/// </param>
-		/// <param name="hits">Returns a list of all occurred hits, ordered by their Fraction value.</param>
-		[Obsolete("Use the non-out parameter overload that accepts a pre-existing list.")]
-		public static void RayCast(Vector2 start, Vector2 end, RayCastCallback callback, out RawList<RayCastData> hits)
-		{
-			hits = new RawList<RayCastData>();
-			RayCast(start, end, callback, hits);
-		}
-		/// <summary>
-		/// Performs a 2d physical raycast in world coordinates.
-		/// </summary>
-		/// <param name="start">The starting point in world coordinates.</param>
-		/// <param name="end">The desired end point in world coordinates.</param>
-		/// <param name="callback">
-		/// The callback that is invoked for each hit on the raycast. Note that the order in which each hit occurs isn't deterministic
-		/// and may appear random. Return -1 to ignore the curret shape, 0 to terminate the raycast, data.Fraction to clip the ray for current hit, or 1 to continue.
-		/// </param>
-		/// <param name="hits">
-		/// A list that will be filled with all hits that were registered, ordered by their Fraction value. 
-		/// The list will not be cleared before adding items.
-		/// </param>
-		/// <returns>Returns whether any new hit was registered.</returns>
-		public static bool RayCast(Vector2 start, Vector2 end, RayCastCallback callback, RawList<RayCastData> hits)
-		{
-			if (callback == null) callback = Raycast_DefaultCallback;
-
-			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * start;
-			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
-
-			int oldResultCount = hits.Count;
-			Scene.PhysicsWorld.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
-			{
-				int index = hits.Count++;
-				RayCastData[] data = hits.Data;
-
-				data[index] = new RayCastData(
-					fixture.UserData as ShapeInfo, 
-					PhysicsUnit.LengthToDuality * pos, 
-					normal, 
-					fraction);
-
-				float result = callback(data[index]);
-				if (result < 0.0f)
-					hits.Count--;
-
-				return result;
-			}, fsWorldCoordA, fsWorldCoordB);
-
-			hits.Data.StableSort(
-				0, 
-				hits.Count, 
-				(d1, d2) => (int)(1000000.0f * (d1.Fraction - d2.Fraction)));
-			return hits.Count > oldResultCount;
-		}
-		/// <summary>
-		/// Performs a 2d physical raycast in world coordinates.
-		/// </summary>
-		/// <param name="start">The starting point in world coordinates.</param>
-		/// <param name="end">The desired end point in world coordinates.</param>
-		/// <param name="callback">
-		/// The callback that is invoked for each hit on the raycast. Note that the order in which each hit occurs isn't deterministic
-		/// and may appear random. Return -1 to ignore the curret shape, 0 to terminate the raycast, data.Fraction to clip the ray for current hit, or 1 to continue.
-		/// </param>
-		/// <param name="firstHit">Returns the first hit that occurs, i.e. the one with the highest proximity to the starting point.</param>
-		/// <returns>Returns whether anything has been hit.</returns>
-		public static bool RayCast(Vector2 start, Vector2 end, RayCastCallback callback, out RayCastData firstHit)
-		{
-			if (callback == null) callback = Raycast_DefaultCallback;
-
-			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * start;
-			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
-
-			float firstHitFraction = float.MaxValue;
-			RayCastData firstHitLocal = default(RayCastData);
-
-			Scene.PhysicsWorld.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
-			{
-				RayCastData data = new RayCastData(
-					fixture.UserData as ShapeInfo, 
-					PhysicsUnit.LengthToDuality * pos, 
-					normal, 
-					fraction);
-
-				float result = callback(data);
-				if (result >= 0.0f && data.Fraction < firstHitFraction)
-				{
-					firstHitLocal = data;
-					firstHitFraction = data.Fraction;
-				}
-
-				return result;
-			}, fsWorldCoordA, fsWorldCoordB);
-
-			firstHit = firstHitLocal;
-			return firstHitFraction != float.MaxValue;
-		}
-		private static float Raycast_DefaultCallback(RayCastData data)
-		{
-			return 1.0f;
-		}
-
-		/// <summary>
-		/// Performs a global physical picking operation and returns the <see cref="ShapeInfo">shape</see> in which
-		/// the specified world coordinate is located in.
-		/// </summary>
-		/// <param name="worldCoord"></param>
-		/// <returns></returns>
-		public static ShapeInfo PickShapeGlobal(Vector2 worldCoord)
-		{
-			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
-			Fixture f = Scene.PhysicsWorld.TestPoint(fsWorldCoord);
-
-			return f != null && f.UserData is ShapeInfo ? (f.UserData as ShapeInfo) : null;
-		}
-		/// <summary>
-		/// Performs a global physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
-		/// intersect the specified world coordinate.
-		/// </summary>
-		/// <param name="worldCoord"></param>
-		/// <returns></returns>
-		[Obsolete("Use the overload that accepts a pre-existing list.")]
-		public static List<ShapeInfo> PickShapesGlobal(Vector2 worldCoord)
-		{
-			List<ShapeInfo> shapes = new List<ShapeInfo>();
-			PickShapesGlobal(worldCoord, shapes);
-			return shapes;
-		}
-		/// <summary>
-		/// Performs a global physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
-		/// intersect the specified world coordinate.
-		/// </summary>
-		/// <param name="worldCoord"></param>
-		/// <param name="pickedShapes">
-		/// A list that will be filled with all shapes that were found. 
-		/// The list will not be cleared before adding items.
-		/// </param>
-		/// <returns>Returns whether any new shape was found.</returns>
-		public static bool PickShapesGlobal(Vector2 worldCoord, List<ShapeInfo> pickedShapes)
-		{
-			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
-			List<Fixture> fixtureList = Scene.PhysicsWorld.TestPointAll(fsWorldCoord);
-
-			int oldResultCount = pickedShapes.Count;
-			foreach (Fixture fixture in fixtureList)
-			{
-				if (fixture == null) continue;
-
-				ShapeInfo shape = fixture.UserData as ShapeInfo;
-				if (shape == null) continue;
-
-				pickedShapes.Add(shape);
-			}
-
-			return pickedShapes.Count > oldResultCount;
-		}
-		/// <summary>
-		/// Performs a global physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
-		/// intersect the specified world coordinate area.
-		/// </summary>
-		/// <param name="worldCoord"></param>
-		/// <param name="size"></param>
-		/// <returns></returns>
-		[Obsolete("Use the overload that accepts a pre-existing list.")]
-		public static List<ShapeInfo> PickShapesGlobal(Vector2 worldCoord, Vector2 size)
-		{
-			List<ShapeInfo> picked = new List<ShapeInfo>();
-			PickShapesGlobal(worldCoord, size, picked);
-			return picked;
-		}
-		/// <summary>
-		/// Performs a global physical picking operation and returns the <see cref="ShapeInfo">shapes</see> that
-		/// intersect the specified world coordinate area.
-		/// </summary>
-		/// <param name="worldCoord"></param>
-		/// <param name="size"></param>
-		/// <param name="pickedShapes">
-		/// A list that will be filled with all shapes that were found. 
-		/// The list will not be cleared before adding items.
-		/// </param>
-		/// <returns>Returns whether any new shape was found.</returns>
-		public static bool PickShapesGlobal(Vector2 worldCoord, Vector2 size, List<ShapeInfo> pickedShapes)
-		{
-			List<RigidBody> potentialBodies = new List<RigidBody>();
-			QueryRectGlobal(worldCoord, size, potentialBodies);
-			if (potentialBodies.Count == 0) return false;
-
-			PolygonShape boxShape = new PolygonShape(new Vertices(new List<Vector2>
-			{
-				PhysicsUnit.LengthToPhysical * worldCoord,
-				PhysicsUnit.LengthToPhysical * new Vector2(worldCoord.X + size.X, worldCoord.Y),
-				PhysicsUnit.LengthToPhysical * (worldCoord + size),
-				PhysicsUnit.LengthToPhysical * new Vector2(worldCoord.X, worldCoord.Y + size.Y)
-			}), 1);
-
-			FarseerPhysics.Common.Transform boxTransform = new FarseerPhysics.Common.Transform();
-			boxTransform.SetIdentity();
-
-			int oldResultCount = pickedShapes.Count;
-			foreach (RigidBody body in potentialBodies)
-			{
-				body.PickShapes(boxShape, boxTransform, pickedShapes);
-			}
-
-			return pickedShapes.Count > oldResultCount;
-		}
-		/// <summary>
-		/// Performs a global physical AABB query and returns the <see cref="RigidBody">bodies</see> that
-		/// might be roughly contained or intersected by the specified region.
-		/// </summary>
-		/// <param name="worldCoord"></param>
-		/// <param name="size"></param>
-		/// <returns></returns>
-		[Obsolete("Use the overload that accepts a pre-existing list.")]
-		public static List<RigidBody> QueryRectGlobal(Vector2 worldCoord, Vector2 size)
-		{
-			List<RigidBody> bodies = new List<RigidBody>();
-			QueryRectGlobal(worldCoord, size, bodies);
-			return bodies;
-		}
-		/// <summary>
-		/// Performs a global physical AABB query and returns the <see cref="RigidBody">bodies</see> that
-		/// might be roughly contained or intersected by the specified region.
-		/// </summary>
-		/// <param name="worldCoord"></param>
-		/// <param name="size"></param>
-		/// <param name="queriedBodies">
-		/// A list that will be filled with all bodies that were found. 
-		/// The list will not be cleared before adding items.
-		/// </param>
-		/// <returns>Returns whether any new body was found.</returns>
-		public static bool QueryRectGlobal(Vector2 worldCoord, Vector2 size, List<RigidBody> queriedBodies)
-		{
-			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
-			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsUnit.LengthToPhysical * (worldCoord + size));
-
-			int oldResultCount = queriedBodies.Count;
-			Scene.PhysicsWorld.QueryAABB(fixture =>
-				{
-					ShapeInfo shape = fixture.UserData as ShapeInfo;
-					if (shape != null && shape.Parent != null && shape.Parent.Active)
-					{
-						if (!queriedBodies.Contains(shape.Parent))
-							queriedBodies.Add(shape.Parent);
-					}
-					return true;
-				},
-				ref fsWorldAABB);
-
-			return queriedBodies.Count > oldResultCount;
-		}
-		/// <summary>
-		/// Awakes all currently existing RigidBodies.
-		/// </summary>
-		public static void AwakeAll()
-		{
-			Scene.AwakePhysics();
 		}
 
 		private static FarseerPhysics.Dynamics.BodyType ToFarseerBodyType(BodyType bodyType)

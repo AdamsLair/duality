@@ -20,7 +20,7 @@ namespace Duality.Plugins.Tilemaps
 	public class Tileset : Resource
 	{
 		public  static readonly Point2             DefaultTileSize     = new Point2(32, 32);
-		private static readonly BatchInfo          DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
+		private static readonly BatchInfo          DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask);
 
 		private List<TilesetRenderInput>   renderConfig   = new List<TilesetRenderInput>();
 		private List<TilesetAutoTileInput> autoTileConfig = new List<TilesetAutoTileInput>();

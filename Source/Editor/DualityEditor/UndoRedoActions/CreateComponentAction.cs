@@ -76,7 +76,10 @@ namespace Duality.Editor.UndoRedoActions
 						required = GetRequiredConcreteType(required, obj.GetType());
 						if (required == null)
 						{
-							Log.Editor.WriteWarning("Failed to add {0} because its requirements could not be resolved", obj.GetType().GetTypeCSCodeName(true));
+							Logs.Editor.WriteWarning(
+								"Failed to add {0} because its requirements could not be resolved", 
+								obj.GetType().GetTypeCSCodeName(true));
+
 							// Clear changes so this action is considered empty. See ComponentAction.IsVoid.
 							this.targetObj.Clear();
 							return;
@@ -158,9 +161,10 @@ namespace Duality.Editor.UndoRedoActions
 				DualityEditorApp.ActionContextSetupObjectForEditing);
 
 			// Invoke all of them on the specified Component
+			Component[] actionTargets = new Component[] { cmp };
 			foreach (IEditorAction setupAction in setupActions)
 			{
-				setupAction.Perform(cmp);
+				setupAction.Perform(actionTargets);
 			}
 		}
 

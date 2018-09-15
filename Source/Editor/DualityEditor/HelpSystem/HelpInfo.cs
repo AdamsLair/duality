@@ -10,10 +10,11 @@ using Duality;
 
 namespace Duality.Editor
 {
+
 	/// <summary>
 	/// Descibes help information for a specific topic that can then be displayed to the user.
 	/// </summary>
-	public class HelpInfo : IHelpInfoReader
+	public class HelpInfo : IReadOnlyHelpInfo
 	{
 		private	string	id;
 		private	string	topic;

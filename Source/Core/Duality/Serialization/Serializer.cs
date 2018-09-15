@@ -225,7 +225,7 @@ namespace Duality.Serialization
 		private	Stream	stream			= null;
 		private	bool	opInProgress	= false;
 		private	bool	disposed		= false;
-		private	Log		log				= Log.Core;
+		private	Log		log				= Logs.Core;
 
 		
 		/// <summary>
@@ -265,7 +265,7 @@ namespace Duality.Serialization
 		public Log LocalLog
 		{
 			get { return this.log; }
-			set { this.log = value ?? new Log("Serialize"); }
+			set { this.log = value ?? new Log("Serialize", "IO"); }
 		}
 		/// <summary>
 		/// [GET] Enumerates registered <see cref="System.Reflection.FieldInfo">field</see> blockers. If any registered field blocker
@@ -467,7 +467,7 @@ namespace Duality.Serialization
 				objSerializeType.Surrogate == null) 
 			{
 				this.LocalLog.WriteWarning("Ignoring object of Type '{0}' which is flagged with the {1}.", 
-					Log.Type(objSerializeType.Type),
+					LogFormat.Type(objSerializeType.Type),
 					typeof(DontSerializeAttribute).Name);
 				return null;
 			}
@@ -488,8 +488,8 @@ namespace Duality.Serialization
 			this.log.WriteError(
 				"An error occurred in custom serialization in object Id {0} of type '{1}': {2}",
 				objId,
-				Log.Type(serializeType),
-				Log.Exception(e));
+				LogFormat.Type(serializeType),
+				LogFormat.Exception(e));
 		}
 		/// <summary>
 		/// Logs an error that occurred during <see cref="Duality.Serialization.ISerializeExplicit">custom deserialization</see>.
@@ -502,8 +502,8 @@ namespace Duality.Serialization
 			this.log.WriteError(
 				"An error occurred in custom deserialization in object Id {0} of type '{1}': {2}",
 				objId,
-				Log.Type(serializeType),
-				Log.Exception(e));
+				LogFormat.Type(serializeType),
+				LogFormat.Exception(e));
 		}
 		
 		/// <summary>
@@ -546,9 +546,9 @@ namespace Duality.Serialization
 				if (!this.HandleAssignValueToField(objSerializeType, obj, fieldName, fieldValue))
 				{
 					this.LocalLog.WriteWarning("Actual Type '{0}' of object value in field '{1}' does not match reflected FieldType '{2}'. Trying to convert...'", 
-						fieldValue != null ? Log.Type(fieldValue.GetType()) : "unknown", 
+						fieldValue != null ? LogFormat.Type(fieldValue.GetType()) : "unknown", 
 						fieldName, 
-						Log.Type(field.FieldType));
+						LogFormat.Type(field.FieldType));
 					this.LocalLog.PushIndent();
 					object castVal;
 					try
@@ -591,9 +591,9 @@ namespace Duality.Serialization
 			{
 				this.LocalLog.WriteWarning(
 					"Actual Type '{0}' of array element value at index {1} does not match reflected array element type '{2}'. Skipping item.", 
-					value != null ? Log.Type(value.GetType()) : "unknown", 
+					value != null ? LogFormat.Type(value.GetType()) : "unknown", 
 					index, 
-					Log.Type(elementSerializeType.Type));
+					LogFormat.Type(elementSerializeType.Type));
 				return;
 			}
 
@@ -663,7 +663,7 @@ namespace Duality.Serialization
 				catch (Exception) {}
 			}
 			
-			this.log.WriteWarning("Can't parse enum value '{0}' of Type '{1}'. Using numerical value '{2}' instead.", enumField, Log.Type(enumType), value);
+			this.log.WriteWarning("Can't parse enum value '{0}' of Type '{1}'. Using numerical value '{2}' instead.", enumField, LogFormat.Type(enumType), value);
 			return (Enum)Enum.ToObject(enumType, value);
 		}
 
@@ -810,10 +810,10 @@ namespace Duality.Serialization
 				}
 				catch (Exception e)
 				{
-					Log.Core.WriteError(
+					Logs.Core.WriteError(
 						"An error occurred while asking {0} whether it matched the format of a certain Stream: {1}",
-						Log.Type(serializer.GetType()),
-						Log.Exception(e));
+						LogFormat.Type(serializer.GetType()),
+						LogFormat.Exception(e));
 				}
 				finally
 				{
@@ -1030,7 +1030,7 @@ namespace Duality.Serialization
 				}
 				catch (Exception e)
 				{
-					Log.Core.WriteError("An error occurred while trying to perform a serialization fallback: {0}", Log.Exception(e));
+					Logs.Core.WriteError("An error occurred while trying to perform a serialization fallback: {0}", LogFormat.Exception(e));
 				}
 			}
 			return false;
