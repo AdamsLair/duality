@@ -22,7 +22,7 @@ namespace Duality.Input
 		/// </summary>
 		public int Count
 		{
-			get { return input.Count; }
+			get { return this.input.Count; }
 		}
 		
 
@@ -36,13 +36,13 @@ namespace Duality.Input
 			get { return (index >= 0 && index < this.input.Count) ? this.input[index] : this.dummyInput; }
 		}
 		/// <summary>
-		/// [GET] Returns a specific input by its <see cref="IUserInput.Description"/>.
+		/// [GET] Returns a specific input by its <see cref="IUserInput.Id"/>.
 		/// </summary>
-		/// <param name="desc"></param>
+		/// <param name="id"></param>
 		/// <returns></returns>
-		public TInput this[string desc]
+		public TInput this[string id]
 		{
-			get { return this.input.FirstOrDefault(j => j.Description == desc) as TInput ?? this.dummyInput as TInput; }
+			get { return this.input.FirstOrDefault(j => j.Id == id) as TInput ?? this.dummyInput as TInput; }
 		}
 
 
@@ -67,9 +67,9 @@ namespace Duality.Input
 		/// <param name="source"></param>
 		public void AddSource(TSource source)
 		{
-			foreach (TInput registeredInput in input)
+			foreach (TInput registeredInput in this.input)
 			{
-				if (registeredInput.Description == source.Description &&
+				if (registeredInput.Id == source.Id &&
 					registeredInput.Source == null)
 				{
 					registeredInput.Source = source;
@@ -78,7 +78,7 @@ namespace Duality.Input
 			}
 
 			TInput newInput = this.CreateInput(source);
-			input.Add(newInput);
+			this.input.Add(newInput);
 		}
 		/// <summary>
 		/// Adds a set of new user input sources.
@@ -87,7 +87,7 @@ namespace Duality.Input
 		public void AddSource(IEnumerable<TSource> source)
 		{
 			foreach (TSource s in source)
-				AddSource(s);
+				this.AddSource(s);
 		}
 		/// <summary>
 		/// Removes a previously registered user input source. 
@@ -122,7 +122,7 @@ namespace Duality.Input
 			bool allTrue = true;
 			foreach (TSource s in source)
 			{
-				if (!RemoveSource(s))
+				if (!this.RemoveSource(s))
 					allTrue = false;
 			}
 			return allTrue;
@@ -135,7 +135,7 @@ namespace Duality.Input
 		/// <returns></returns>
 		public int IndexOf(TInput item)
 		{
-			return input.IndexOf(item);
+			return this.input.IndexOf(item);
 		}
 		/// <summary>
 		/// Returns whether a certain user input is known.
@@ -144,7 +144,7 @@ namespace Duality.Input
 		/// <returns></returns>
 		public bool Contains(TInput item)
 		{
-			return input.Contains(item);
+			return this.input.Contains(item);
 		}
 		/// <summary>
 		/// Copies all known user inputs to the specified array.
@@ -196,12 +196,12 @@ namespace Duality.Input
 		}
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)] TInput IList<TInput>.this[int index]
 		{
-			get { return input[index]; }
+			get { return this.input[index]; }
 			set { throw new NotSupportedException("Collection is read-only"); }
 		}
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)] object IList.this[int index]
 		{
-			get { return input[index]; }
+			get { return this.input[index]; }
 			set { throw new NotSupportedException("Collection is read-only"); }
 		}
 

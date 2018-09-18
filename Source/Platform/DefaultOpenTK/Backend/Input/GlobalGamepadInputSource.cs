@@ -16,7 +16,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private	GamePadState state;
 		private	GamePadCapabilities caps;
 		
-		public string Description
+		public string Id
 		{
 			get { return string.Format("Gamepad {0}", this.deviceIndex); }
 		}
@@ -132,7 +132,7 @@ namespace Duality.Backend.DefaultOpenTK
 					inputManager.AddSource(gamepad);
 					Logs.Core.Write(
 						"Detected new Gamepad Input: \"{0}\" at index {1}",
-						gamepad.Description, deviceIndex);
+						gamepad.Id, deviceIndex);
 				}
 				else if (deviceIndex >= MinDeviceCheckCount)
 					break;

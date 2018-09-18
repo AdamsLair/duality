@@ -62,9 +62,9 @@ namespace Duality.Input
 			set { this.Source = value as IKeyboardInputSource; }
 		}
 		/// <summary>
-		/// [GET] A text description of this input.
+		/// [GET] The unique id of this input.
 		/// </summary>
-		public string Description
+		public string Id
 		{
 			get { return "Keyboard"; }
 		}

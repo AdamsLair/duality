@@ -45,7 +45,7 @@ namespace Duality.Input
 		private	IGamepadInputSource	source			= null;
 		private	State				currentState	= new State();
 		private	State				lastState		= new State();
-		private	string				description		= null;
+		private	string				id				= null;
 		private	bool				isDummy			= false;
 
 
@@ -62,7 +62,7 @@ namespace Duality.Input
 					this.source = value;
 					if (this.source != null)
 					{
-						this.description = this.source.Description;
+						this.id = this.source.Id;
 					}
 				}
 			}
@@ -73,11 +73,11 @@ namespace Duality.Input
 			set { this.Source = value as IGamepadInputSource; }
 		}
 		/// <summary>
-		/// [GET] A string containing a unique description for this instance.
+		/// [GET] A string containing a unique id for this instance.
 		/// </summary>
-		public string Description
+		public string Id
 		{
-			get { return this.description; }
+			get { return this.id; }
 		}
 		/// <summary>
 		/// [GET] Returns whether this input is currently available.

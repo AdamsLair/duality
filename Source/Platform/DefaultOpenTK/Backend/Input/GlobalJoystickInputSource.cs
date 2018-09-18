@@ -14,7 +14,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private	OpenTK.Input.JoystickState state;
 		private	OpenTK.Input.JoystickCapabilities caps;
 		
-		public string Description
+		public string Id
 		{
 			get { return string.Format("Joystick {0}", this.deviceIndex); }
 		}
@@ -134,7 +134,7 @@ namespace Duality.Backend.DefaultOpenTK
 					Logs.Core.Write(
 						"Detected new Joystick Input: \"{0}\" at index {1}" + Environment.NewLine + 
 						"Capabilities: {2} axes, {3} buttons, {4} hats", 
-						joystick.Description, deviceIndex, 
+						joystick.Id, deviceIndex, 
 						joystick.AxisCount, joystick.ButtonCount, joystick.HatCount);
 				}
 				else if (deviceIndex >= MinDeviceCheckCount)

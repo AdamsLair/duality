@@ -8,9 +8,9 @@ namespace Duality.Input
 	public interface IUserInput
 	{
 		/// <summary>
-		/// [GET] A text description of this input.
+		/// [GET] The unique ID of this input.
 		/// </summary>
-		string Description { get; }
+		string Id { get; }
 		/// <summary>
 		/// [GET] Returns whether this input is currently available.
 		/// </summary>

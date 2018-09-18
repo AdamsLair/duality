@@ -1641,7 +1641,7 @@ namespace Duality.Editor.Plugins.CamView
 			get { return this.inputKeyPressed[(int)key]; }
 		}
 		
-		string IUserInputSource.Description
+		string IUserInputSource.Id
 		{
 			get { return "Camera View"; }
 		}

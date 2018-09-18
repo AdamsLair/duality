@@ -13,7 +13,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private	string			charInput;
 		private	StringBuilder	charInputBuffer = new StringBuilder();
 		
-		public string Description
+		public string Id
 		{
 			get { return "Keyboard"; }
 		}

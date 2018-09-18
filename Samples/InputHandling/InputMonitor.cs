@@ -92,7 +92,7 @@ namespace InputHandling
 			// Compose the formatted text to display
 			target.SourceText = 
 				"/f[1]Mouse Stats/f[0]/n/n" +
-				string.Format("Description: /cFF8800FF{0}/cFFFFFFFF/n", input.Description) +
+				string.Format("Id: /cFF8800FF{0}/cFFFFFFFF/n", input.Id) +
 				string.Format("IsAvailable: /cFF8800FF{0}/cFFFFFFFF/n", input.IsAvailable) +
 				string.Format("X:     /c44AAFFFF{0,8:F}/cFFFFFFFF | XSpeed:     /c44AAFFFF{1,8:F}/cFFFFFFFF/n", input.Pos.X, input.Vel.X) +
 				string.Format("Y:     /c44AAFFFF{0,8:F}/cFFFFFFFF | YSpeed:     /c44AAFFFF{1,8:F}/cFFFFFFFF/n", input.Pos.Y, input.Vel.Y) +
@@ -127,7 +127,7 @@ namespace InputHandling
 			// Compose the formatted text to display
 			target.SourceText = 
 				"/f[1]Keyboard Stats/f[0]/n/n" +
-				string.Format("Description: /cFF8800FF{0}/cFFFFFFFF/n", input.Description) +
+				string.Format("Id: /cFF8800FF{0}/cFFFFFFFF/n", input.Id) +
 				string.Format("IsAvailable: /cFF8800FF{0}/cFFFFFFFF/n", input.IsAvailable) +
 				string.Format("Text: /c44AAFFFF{0}/cFFFFFFFF/n", typedText) +
 				string.Format("Keys: /c44AAFFFF{0}/cFFFFFFFF/n", activeKeys);
@@ -188,7 +188,7 @@ namespace InputHandling
 			}
 
 			return 
-				string.Format("Description: /cFF8800FF{0}/cFFFFFFFF/n", input.Description) +
+				string.Format("Id: /cFF8800FF{0}/cFFFFFFFF/n", input.Id) +
 				string.Format("IsAvailable: /cFF8800FF{0}/cFFFFFFFF/n", input.IsAvailable) +
 				string.Format("ButtonCount: /cFF8800FF{0,2}/cFFFFFFFF | AxisCount: /cFF8800FF{1,2}/cFFFFFFFF | HatCount: /cFF8800FF{2,2}/cFFFFFFFF/n", input.ButtonCount, input.AxisCount, input.HatCount) +
 				string.Format("Buttons: /c44AAFFFF{0}/cFFFFFFFF/n", activeButtons) +
@@ -227,7 +227,7 @@ namespace InputHandling
 			}
 
 			return
-				string.Format("Description: /cFF8800FF{0}/cFFFFFFFF/n", input.Description) +
+				string.Format("Id: /cFF8800FF{0}/cFFFFFFFF/n", input.Id) +
 				string.Format("IsAvailable: /cFF8800FF{0}/cFFFFFFFF/n", input.IsAvailable) +
 				string.Format("Buttons:          /c44AAFFFF{0}/cFFFFFFFF/n", activeButtons) +
 				string.Format("Left  Trigger:    /c44AAFFFF{0}/cFFFFFFFF/n", input.LeftTrigger) +

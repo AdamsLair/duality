@@ -11,7 +11,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private GameWindow window;
 		private bool       cursorInView;
 
-		public string Description
+		public string Id
 		{
 			get { return "Mouse"; }
 		}
