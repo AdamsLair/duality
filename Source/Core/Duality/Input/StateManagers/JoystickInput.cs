@@ -52,7 +52,8 @@ namespace Duality.Input
 		private State                currentState = new State();
 		private State                lastState    = new State();
 		private string               id           = null;
-		private Guid                 hardwareGuid = Guid.Empty;
+		private Guid                 productId    = Guid.Empty;
+		private string               productName  = "Unknown";
 		private int                  axisCount    = 0;
 		private int                  buttonCount  = 0;
 		private int                  hatCount     = 0;
@@ -95,7 +96,14 @@ namespace Duality.Input
 		/// </summary>
 		public Guid ProductId
 		{
-			get { return this.hardwareGuid; }
+			get { return this.productId; }
+		}
+		/// <summary>
+		/// [GET] The name of the product that is providing this input.
+		/// </summary>
+		public string ProductName
+		{
+			get { return this.productName; }
 		}
 		/// <summary>
 		/// [GET] Returns whether this input is currently available.
@@ -266,7 +274,8 @@ namespace Duality.Input
 		}
 		private void UpdateSourceCapabilities()
 		{
-			this.hardwareGuid = this.source.ProductId;
+			this.productId = this.source.ProductId;
+			this.productName = this.source.ProductName;
 			this.axisCount = this.source.AxisCount;
 			this.buttonCount = this.source.ButtonCount;
 			this.hatCount = this.source.HatCount;

@@ -19,6 +19,10 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			get { return Guid.Empty; }
 		}
+		public string ProductName
+		{
+			get { return "Mouse"; }
+		}
 		public bool IsAvailable
 		{
 			get { return this.window != null && this.window.Mouse != null && this.cursorInView; }

@@ -11,7 +11,8 @@ namespace Duality.Backend.DefaultOpenTK
 	{
 		private static List<GlobalGamepadInputSource> cachedDevices = new List<GlobalGamepadInputSource>();
 
-		private Guid deviceGuid;
+		private Guid productId;
+		private string productName;
 		private int deviceIndex;
 		private bool hasAxesOrButtons;
 		private GamePadState state;
@@ -23,7 +24,11 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		public Guid ProductId
 		{
-			get { return this.deviceGuid; }
+			get { return this.productId; }
+		}
+		public string ProductName
+		{
+			get { return this.productName; }
 		}
 		public bool IsAvailable
 		{
@@ -85,8 +90,9 @@ namespace Duality.Backend.DefaultOpenTK
 		public void UpdateState()
 		{
 			// Retrieve the gamepads hardware GUID from the corresponding joystick device
-			this.deviceGuid = Joystick.GetGuid(this.deviceIndex);
+			this.productId = Joystick.GetGuid(this.deviceIndex);
 
+			this.productName = GamePad.GetName(this.deviceIndex);
 			this.caps = GamePad.GetCapabilities(this.deviceIndex);
 			this.state = GamePad.GetState(this.deviceIndex);
 

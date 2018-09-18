@@ -21,6 +21,10 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			get { return Guid.Empty; }
 		}
+		public string ProductName
+		{
+			get { return "Keyboard"; }
+		}
 		public bool IsAvailable
 		{
 			get { return this.window != null && this.window.Keyboard != null && this.hasFocus; }

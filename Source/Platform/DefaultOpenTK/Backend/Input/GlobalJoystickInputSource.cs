@@ -9,7 +9,7 @@ namespace Duality.Backend.DefaultOpenTK
 	{
 		private static List<GlobalJoystickInputSource> cachedDevices = new List<GlobalJoystickInputSource>();
 
-		private Guid deviceGuid;
+		private Guid productId;
 		private int deviceIndex;
 		private int detectedHatCount;
 		private OpenTK.Input.JoystickState state;
@@ -21,7 +21,11 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		public Guid ProductId
 		{
-			get { return this.deviceGuid; }
+			get { return this.productId; }
+		}
+		public string ProductName
+		{
+			get { return "Joystick"; }
 		}
 		public bool IsAvailable
 		{
@@ -84,7 +88,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 		public void UpdateState()
 		{
-			this.deviceGuid = OpenTK.Input.Joystick.GetGuid(this.deviceIndex);
+			this.productId = OpenTK.Input.Joystick.GetGuid(this.deviceIndex);
 			this.caps = OpenTK.Input.Joystick.GetCapabilities(this.deviceIndex);
 			this.state = OpenTK.Input.Joystick.GetState(this.deviceIndex);
 
