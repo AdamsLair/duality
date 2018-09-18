@@ -1645,6 +1645,10 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			get { return "Camera View"; }
 		}
+		Guid IUserInputSource.ProductId
+		{
+			get { return Guid.Empty; }
+		}
 		bool IUserInputSource.IsAvailable
 		{
 			// These should be separated.. but C# doesn't allow to implement IsAvailable for both sources separately.

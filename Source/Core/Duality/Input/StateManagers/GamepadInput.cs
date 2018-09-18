@@ -11,9 +11,9 @@ namespace Duality.Input
 	{
 		private class State
 		{
-			public bool		IsAvailable		= false;
-			public float[]	AxisValue		= new float[(int)GamepadAxis.Last + 1];
-			public bool[]	ButtonPressed	= new bool[(int)GamepadButton.Last + 1];
+			public bool    IsAvailable   = false;
+			public float[] AxisValue     = new float[(int)GamepadAxis.Last + 1];
+			public bool[]  ButtonPressed = new bool[(int)GamepadButton.Last + 1];
 
 			public State() {}
 			public State(State baseState)
@@ -42,11 +42,12 @@ namespace Duality.Input
 			}
 		}
 
-		private	IGamepadInputSource	source			= null;
-		private	State				currentState	= new State();
-		private	State				lastState		= new State();
-		private	string				id				= null;
-		private	bool				isDummy			= false;
+		private IGamepadInputSource source       = null;
+		private State               currentState = new State();
+		private State               lastState    = new State();
+		private string              id           = null;
+		private Guid                hardwareGuid = Guid.Empty;
+		private bool                isDummy      = false;
 
 
 		/// <summary>
@@ -78,6 +79,13 @@ namespace Duality.Input
 		public string Id
 		{
 			get { return this.id; }
+		}
+		/// <summary>
+		/// [GET] The unique ID of the product that is providing this input.
+		/// </summary>
+		public Guid ProductId
+		{
+			get { return this.hardwareGuid; }
 		}
 		/// <summary>
 		/// [GET] Returns whether this input is currently available.
@@ -237,8 +245,10 @@ namespace Duality.Input
 
 			if (this.source != null)
 			{
-				// Update source state
+				// Update source state and info
 				this.source.UpdateState();
+				this.hardwareGuid = this.source.ProductId;
+
 				// Obtain new state
 				this.currentState.UpdateFromSource(this.source);
 			}

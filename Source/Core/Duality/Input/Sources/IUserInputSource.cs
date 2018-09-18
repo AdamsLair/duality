@@ -12,6 +12,10 @@ namespace Duality.Input
 		/// </summary>
 		string Id { get; }
 		/// <summary>
+		/// [GET] The unique ID of the product that is providing this input.
+		/// </summary>
+		Guid ProductId { get; }
+		/// <summary>
 		/// [GET] Returns whether this input is currently available.
 		/// </summary>
 		bool IsAvailable { get; }

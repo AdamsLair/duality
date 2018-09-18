@@ -9,14 +9,19 @@ namespace Duality.Backend.DefaultOpenTK
 	{
 		private static List<GlobalJoystickInputSource> cachedDevices = new List<GlobalJoystickInputSource>();
 
-		private	int	deviceIndex;
-		private	int	detectedHatCount;
-		private	OpenTK.Input.JoystickState state;
-		private	OpenTK.Input.JoystickCapabilities caps;
-		
+		private Guid deviceGuid;
+		private int deviceIndex;
+		private int detectedHatCount;
+		private OpenTK.Input.JoystickState state;
+		private OpenTK.Input.JoystickCapabilities caps;
+
 		public string Id
 		{
 			get { return string.Format("Joystick {0}", this.deviceIndex); }
+		}
+		public Guid ProductId
+		{
+			get { return this.deviceGuid; }
 		}
 		public bool IsAvailable
 		{
@@ -79,6 +84,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 		public void UpdateState()
 		{
+			this.deviceGuid = OpenTK.Input.Joystick.GetGuid(this.deviceIndex);
 			this.caps = OpenTK.Input.Joystick.GetCapabilities(this.deviceIndex);
 			this.state = OpenTK.Input.Joystick.GetState(this.deviceIndex);
 
@@ -132,10 +138,14 @@ namespace Duality.Backend.DefaultOpenTK
 				{
 					inputManager.AddSource(joystick);
 					Logs.Core.Write(
-						"Detected new Joystick Input: \"{0}\" at index {1}" + Environment.NewLine + 
-						"Capabilities: {2} axes, {3} buttons, {4} hats", 
-						joystick.Id, deviceIndex, 
-						joystick.AxisCount, joystick.ButtonCount, joystick.HatCount);
+						"Detected new Joystick Input: \"{0}\" ({1}) at index {2}" + Environment.NewLine + 
+						"Capabilities: {3} axes, {4} buttons, {5} hats", 
+						joystick.Id, 
+						joystick.ProductId, 
+						deviceIndex, 
+						joystick.AxisCount, 
+						joystick.ButtonCount, 
+						joystick.HatCount);
 				}
 				else if (deviceIndex >= MinDeviceCheckCount)
 					break;

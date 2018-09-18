@@ -48,14 +48,15 @@ namespace Duality.Input
 			}
 		}
 
-		private	IJoystickInputSource	source			= null;
-		private	State					currentState	= new State();
-		private	State					lastState		= new State();
-		private	string					id				= null;
-		private	int						axisCount		= 0;
-		private	int						buttonCount		= 0;
-		private	int						hatCount		= 0;
-		private	bool					isDummy			= false;
+		private IJoystickInputSource source       = null;
+		private State                currentState = new State();
+		private State                lastState    = new State();
+		private string               id           = null;
+		private Guid                 hardwareGuid = Guid.Empty;
+		private int                  axisCount    = 0;
+		private int                  buttonCount  = 0;
+		private int                  hatCount     = 0;
+		private bool                 isDummy      = false;
 
 
 		/// <summary>
@@ -72,7 +73,7 @@ namespace Duality.Input
 					if (this.source != null)
 					{
 						this.id = this.source.Id;
-						this.UpdateInputCounts();
+						this.UpdateSourceCapabilities();
 					}
 				}
 			}
@@ -88,6 +89,13 @@ namespace Duality.Input
 		public string Id
 		{
 			get { return this.id; }
+		}
+		/// <summary>
+		/// [GET] The unique ID of the product that is providing this input.
+		/// </summary>
+		public Guid ProductId
+		{
+			get { return this.hardwareGuid; }
 		}
 		/// <summary>
 		/// [GET] Returns whether this input is currently available.
@@ -185,8 +193,10 @@ namespace Duality.Input
 			{
 				// Update source state
 				this.source.UpdateState();
+
 				// Update how many buttons, hats and axes there are - some sources aren't constant here.
-				this.UpdateInputCounts();
+				this.UpdateSourceCapabilities();
+
 				// Obtain new state
 				this.currentState.UpdateFromSource(this.source);
 			}
@@ -254,8 +264,9 @@ namespace Duality.Input
 				}
 			}
 		}
-		private void UpdateInputCounts()
+		private void UpdateSourceCapabilities()
 		{
+			this.hardwareGuid = this.source.ProductId;
 			this.axisCount = this.source.AxisCount;
 			this.buttonCount = this.source.ButtonCount;
 			this.hatCount = this.source.HatCount;

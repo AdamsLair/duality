@@ -79,6 +79,13 @@ namespace Duality.Input
 			get { return "Mouse"; }
 		}
 		/// <summary>
+		/// [GET] The unique ID of the product that is providing this input.
+		/// </summary>
+		public Guid ProductId
+		{
+			get { return Guid.Empty; }
+		}
+		/// <summary>
 		/// [GET] Returns whether this input is currently available.
 		/// </summary>
 		public bool IsAvailable
