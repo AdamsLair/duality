@@ -130,7 +130,6 @@
     <Compile Include="CorePluginManager.cs" />
     <Compile Include="Input\JoystickHatEventArgs.cs" />
     <Compile Include="Input\JoystickHatPosition.cs" />
-    <Compile Include="Input\JoystickHat.cs" />
     <Compile Include="IO\NamedDirectory.cs" />
     <Compile Include="Cloning\CloneBehaviorAttribute.cs" />
     <Compile Include="Cloning\CloneBehavior.cs" />
@@ -201,8 +200,6 @@
     <Compile Include="Input\UserInputEventArgs.cs" />
     <Compile Include="Input\JoystickButtonEventArgs.cs" />
     <Compile Include="Input\JoystickAxisEventArgs.cs" />
-    <Compile Include="Input\JoystickButton.cs" />
-    <Compile Include="Input\JoystickAxis.cs" />
     <Compile Include="Input\KeyboardKeyEventArgs.cs" />
     <Compile Include="Input\Key.cs" />
     <Compile Include="Input\MouseEventArgs.cs" />

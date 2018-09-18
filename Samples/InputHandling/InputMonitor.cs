@@ -157,38 +157,38 @@ namespace InputHandling
 		{
 			// Determine all pressed joystick buttons
 			string activeButtons = "";
-			foreach (JoystickButton button in Enum.GetValues(typeof(JoystickButton)))
+			for (int i = 0; i < input.ButtonCount; i++)
 			{
-				if (input.ButtonPressed(button))
+				if (input.ButtonPressed(i))
 				{
 					if (activeButtons.Length != 0)
 						activeButtons += ", ";
-					activeButtons += button.ToString();
+					activeButtons += string.Format("Button #{0}", i).ToString();
 				}
 			}
 
 			// Determine all joystick axis values
 			string axisValues = "";
-			foreach (JoystickAxis axis in Enum.GetValues(typeof(JoystickAxis)))
+			for (int i = 0; i < input.AxisCount; i++)
 			{
-				if (input.AxisValue(axis) == 0.0f && (int)axis >= input.AxisCount) 
+				if (input.AxisValue(i) == 0.0f) 
 					break;
 
 				if (axisValues.Length != 0)
 					axisValues += ", ";
-				axisValues += string.Format("{0:F}", input.AxisValue(axis));
+				axisValues += string.Format("{0:F}", input.AxisValue(i));
 			}
 
 			// Determine all joystick hat values
 			string hatValues = "";
-			foreach (JoystickHat hat in Enum.GetValues(typeof(JoystickHat)))
+			for (int i = 0; i < input.HatCount; i++)
 			{
-				if (input.HatPosition(hat) == JoystickHatPosition.Centered && (int)hat >= input.HatCount) 
+				if (input.HatPosition(i) == JoystickHatPosition.Centered) 
 					break;
 
 				if (hatValues.Length != 0)
 					hatValues += ", ";
-				hatValues += string.Format("({0})", input.HatPosition(hat));
+				hatValues += string.Format("({0})", input.HatPosition(i));
 			}
 
 			return 

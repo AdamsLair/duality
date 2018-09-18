@@ -9,12 +9,16 @@ namespace Duality.Input
 	/// </summary>
 	public sealed class JoystickInput : IUserInput
 	{
+		private static readonly int MaxAxisCount = 12;
+		private static readonly int MaxButtonCount = 32;
+		private static readonly int MaxHatCount = 4;
+
 		private class State
 		{
-			public bool                   IsAvailable    = false;
-			public float[]                AxisValue      = new float[(int)JoystickAxis.Last + 1];
-			public bool[]                 ButtonPressed  = new bool[(int)JoystickButton.Last + 1];
-			public JoystickHatPosition[]  HatPosition    = new JoystickHatPosition[(int)JoystickHat.Last + 1];
+			public bool                  IsAvailable   = false;
+			public float[]               AxisValue     = new float[MaxAxisCount];
+			public bool[]                ButtonPressed = new bool[MaxButtonCount];
+			public JoystickHatPosition[] HatPosition   = new JoystickHatPosition[MaxHatCount];
 
 			public State() {}
 			public State(State baseState)
@@ -34,17 +38,13 @@ namespace Duality.Input
 				if (source == null) return;
 
 				for (int i = 0; i < this.ButtonPressed.Length; i++)
-				{
-					this.ButtonPressed[i] = source[(JoystickButton)i];
-				}
+					this.ButtonPressed[i] = source.ButtonPressed(i);
+
 				for (int i = 0; i < this.AxisValue.Length; i++)
-				{
-					this.AxisValue[i] = source[(JoystickAxis)i];
-				}
+					this.AxisValue[i] = source.AxisValue(i);
+
 				for (int i = 0; i < this.HatPosition.Length; i++)
-				{
-					this.HatPosition[i] = source[(JoystickHat)i];
-				}
+					this.HatPosition[i] = source.HatPosition(i);
 			}
 		}
 
@@ -135,34 +135,6 @@ namespace Duality.Input
 		}
 
 		/// <summary>
-		/// [GET] Returns whether the specified device button is currently pressed.
-		/// </summary>
-		/// <param name="button"></param>
-		/// <returns></returns>
-		public bool this[JoystickButton button]
-		{
-			get { return this.currentState.ButtonPressed[(int)button]; }
-		}
-		/// <summary>
-		/// [GET] Returns the specified device axis current value.
-		/// </summary>
-		/// <param name="axis"></param>
-		/// <returns></returns>
-		public float this[JoystickAxis axis]
-		{
-			get { return this.currentState.AxisValue[(int)axis]; }
-		}
-		/// <summary>
-		/// [GET] Returns the current position of the specified joystick hat.
-		/// </summary>
-		/// <param name="hat"></param>
-		/// <returns></returns>
-		public JoystickHatPosition this[JoystickHat hat]
-		{
-			get { return this.currentState.HatPosition[(int)hat]; }
-		}
-
-		/// <summary>
 		/// Fired once when a device button is no longer pressed.
 		/// </summary>
 		public event EventHandler<JoystickButtonEventArgs> ButtonUp;
@@ -192,6 +164,7 @@ namespace Duality.Input
 		{
 			this.isDummy = dummy;
 		}
+
 		void IUserInput.Update()
 		{
 			// Memorize last state
@@ -228,7 +201,7 @@ namespace Duality.Input
 					{
 						this.ButtonDown(this, new JoystickButtonEventArgs(
 							this,
-							(JoystickButton)i, 
+							i, 
 							this.currentState.ButtonPressed[i]));
 					}
 				}
@@ -238,7 +211,7 @@ namespace Duality.Input
 					{
 						this.ButtonUp(this, new JoystickButtonEventArgs(
 							this,
-							(JoystickButton)i, 
+							i, 
 							this.currentState.ButtonPressed[i]));
 					}
 				}
@@ -251,7 +224,7 @@ namespace Duality.Input
 					{
 						this.AxisMove(this, new JoystickAxisEventArgs(
 							this,
-							(JoystickAxis)i,
+							i,
 							this.currentState.AxisValue[i],
 							this.currentState.AxisValue[i] - this.lastState.AxisValue[i]));
 					}
@@ -265,7 +238,7 @@ namespace Duality.Input
 					{
 						this.HatMove(this, new JoystickHatEventArgs(
 							this,
-							(JoystickHat)i,
+							i,
 							this.currentState.HatPosition[i],
 							this.lastState.HatPosition[i]));
 					}
@@ -280,80 +253,80 @@ namespace Duality.Input
 			this.buttonCount = this.source.ButtonCount;
 			this.hatCount = this.source.HatCount;
 		}
-		
+
 		/// <summary>
 		/// Returns whether the specified button is currently pressed.
 		/// </summary>
-		/// <param name="button"></param>
+		/// <param name="buttonIndex"></param>
 		/// <returns></returns>
-		public bool ButtonPressed(JoystickButton button)
+		public bool ButtonPressed(int buttonIndex)
 		{
-			return this.currentState.ButtonPressed[(int)button];
+			return this.currentState.ButtonPressed[buttonIndex];
 		}
 		/// <summary>
 		/// Returns whether the specified button was hit this frame.
 		/// </summary>
-		/// <param name="button"></param>
+		/// <param name="buttonIndex"></param>
 		/// <returns></returns>
-		public bool ButtonHit(JoystickButton button)
+		public bool ButtonHit(int buttonIndex)
 		{
-			return this.currentState.ButtonPressed[(int)button] && !this.lastState.ButtonPressed[(int)button];
+			return this.currentState.ButtonPressed[buttonIndex] && !this.lastState.ButtonPressed[buttonIndex];
 		}
 		/// <summary>
 		/// Returns whether the specified button was released this frame.
 		/// </summary>
-		/// <param name="button"></param>
+		/// <param name="buttonIndex"></param>
 		/// <returns></returns>
-		public bool ButtonReleased(JoystickButton button)
+		public bool ButtonReleased(int buttonIndex)
 		{
-			return !this.currentState.ButtonPressed[(int)button] && this.lastState.ButtonPressed[(int)button];
+			return !this.currentState.ButtonPressed[buttonIndex] && this.lastState.ButtonPressed[buttonIndex];
 		}
 		
 		/// <summary>
 		/// Returns the specified axis value.
 		/// </summary>
-		/// <param name="axis"></param>
+		/// <param name="axisIndex"></param>
 		/// <returns></returns>
-		public float AxisValue(JoystickAxis axis)
+		public float AxisValue(int axisIndex)
 		{
-			return this.currentState.AxisValue[(int)axis];
+			return this.currentState.AxisValue[axisIndex];
 		}
 		/// <summary>
 		/// Returns the specified axis value change since last frame.
 		/// </summary>
-		/// <param name="axis"></param>
+		/// <param name="axisIndex"></param>
 		/// <returns></returns>
-		public float AxisSpeed(JoystickAxis axis)
+		public float AxisSpeed(int axisIndex)
 		{
-			return this.currentState.AxisValue[(int)axis] - this.lastState.AxisValue[(int)axis];
+			return this.currentState.AxisValue[axisIndex] - this.lastState.AxisValue[axisIndex];
 		}
 		
 		/// <summary>
 		/// Returns the current position of the specified joystick hat.
 		/// </summary>
-		/// <param name="hat"></param>
+		/// <param name="hatIndex"></param>
 		/// <returns></returns>
-		public JoystickHatPosition HatPosition(JoystickHat hat)
+		public JoystickHatPosition HatPosition(int hatIndex)
 		{
-			return this.currentState.HatPosition[(int)hat];
+			return this.currentState.HatPosition[hatIndex];
 		}
 		/// <summary>
 		/// Returns all new hat displacement that occurred since last frame.
 		/// </summary>
-		/// <param name="hat"></param>
+		/// <param name="hatIndex"></param>
 		/// <returns></returns>
-		public JoystickHatPosition HatHit(JoystickHat hat)
+		public JoystickHatPosition HatHit(int hatIndex)
 		{
-			return this.currentState.HatPosition[(int)hat] & (~this.lastState.HatPosition[(int)hat]);
+			return this.currentState.HatPosition[hatIndex] & (~this.lastState.HatPosition[hatIndex]);
 		}
 		/// <summary>
 		/// Returns all old hat displacement that stopped since last frame.
 		/// </summary>
-		/// <param name="hat"></param>
+		/// <param name="hatIndex"></param>
 		/// <returns></returns>
-		public JoystickHatPosition HatReleased(JoystickHat hat)
+		public JoystickHatPosition HatReleased(int hatIndex)
 		{
-			return this.lastState.HatPosition[(int)hat] & (~this.currentState.HatPosition[(int)hat]);
+			return this.lastState.HatPosition[hatIndex] & (~this.currentState.HatPosition[hatIndex]);
 		}
 	}
 }
