@@ -142,10 +142,11 @@ namespace Duality.Backend.DefaultOpenTK
 				{
 					inputManager.AddSource(joystick);
 					Logs.Core.Write(
-						"Detected new Joystick Input: \"{0}\" ({1}) at index {2}" + Environment.NewLine + 
-						"Capabilities: {3} axes, {4} buttons, {5} hats", 
+						"Detected new Joystick Input: \"{0}\" ({1} | {2}) at index {3}" + Environment.NewLine + 
+						"Capabilities: {4} axes, {5} buttons, {6} hats", 
 						joystick.Id, 
 						joystick.ProductId, 
+						joystick.ProductName,
 						deviceIndex, 
 						joystick.AxisCount, 
 						joystick.ButtonCount, 
