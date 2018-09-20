@@ -79,14 +79,14 @@ namespace Duality.Backend.DefaultOpenTK
 		public bool ButtonPressed(int buttonIndex)
 		{
 			if (buttonIndex >= 0 && buttonIndex < this.ButtonCount)
-				return this.state.IsButtonDown(GetOpenTKJoystickButton(buttonIndex));
+				return this.state.IsButtonDown(buttonIndex);
 			else
 				return false;
 		}
 		public float AxisValue(int axisIndex)
 		{
 			if (axisIndex >= 0 && axisIndex < this.AxisCount)
-				return this.state.GetAxis(GetOpenTKJoystickAxis(axisIndex));
+				return this.state.GetAxis(axisIndex);
 			else
 				return 0.0f;
 		}
@@ -151,66 +151,6 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 		}
 
-		private static OpenTK.Input.JoystickButton GetOpenTKJoystickButton(int buttonIndex)
-		{
-			switch (buttonIndex)
-			{
-				case 0:  return OpenTK.Input.JoystickButton.Button0;
-				case 1:  return OpenTK.Input.JoystickButton.Button1;
-				case 2:  return OpenTK.Input.JoystickButton.Button2;
-				case 3:  return OpenTK.Input.JoystickButton.Button3;
-				case 4:  return OpenTK.Input.JoystickButton.Button4;
-				case 5:  return OpenTK.Input.JoystickButton.Button5;
-				case 6:  return OpenTK.Input.JoystickButton.Button6;
-				case 7:  return OpenTK.Input.JoystickButton.Button7;
-				case 8:  return OpenTK.Input.JoystickButton.Button8;
-				case 9:  return OpenTK.Input.JoystickButton.Button9;
-				case 10: return OpenTK.Input.JoystickButton.Button10;
-				case 11: return OpenTK.Input.JoystickButton.Button11;
-				case 12: return OpenTK.Input.JoystickButton.Button12;
-				case 13: return OpenTK.Input.JoystickButton.Button13;
-				case 14: return OpenTK.Input.JoystickButton.Button14;
-				case 15: return OpenTK.Input.JoystickButton.Button15;
-				case 16: return OpenTK.Input.JoystickButton.Button16;
-				case 17: return OpenTK.Input.JoystickButton.Button17;
-				case 18: return OpenTK.Input.JoystickButton.Button18;
-				case 19: return OpenTK.Input.JoystickButton.Button19;
-				case 20: return OpenTK.Input.JoystickButton.Button20;
-				case 21: return OpenTK.Input.JoystickButton.Button21;
-				case 22: return OpenTK.Input.JoystickButton.Button22;
-				case 23: return OpenTK.Input.JoystickButton.Button23;
-				case 24: return OpenTK.Input.JoystickButton.Button24;
-				case 25: return OpenTK.Input.JoystickButton.Button25;
-				case 26: return OpenTK.Input.JoystickButton.Button26;
-				case 27: return OpenTK.Input.JoystickButton.Button27;
-				case 28: return OpenTK.Input.JoystickButton.Button28;
-				case 29: return OpenTK.Input.JoystickButton.Button29;
-				case 30: return OpenTK.Input.JoystickButton.Button30;
-				case 31: return OpenTK.Input.JoystickButton.Button31;
-			}
-
-			return OpenTK.Input.JoystickButton.Last;
-		}
-		private static OpenTK.Input.JoystickAxis GetOpenTKJoystickAxis(int axisIndex)
-		{
-			switch (axisIndex)
-			{
-				case 0:  return OpenTK.Input.JoystickAxis.Axis0;
-				case 1:  return OpenTK.Input.JoystickAxis.Axis1;
-				case 2:  return OpenTK.Input.JoystickAxis.Axis2;
-				case 3:  return OpenTK.Input.JoystickAxis.Axis3;
-				case 4:  return OpenTK.Input.JoystickAxis.Axis4;
-				case 5:  return OpenTK.Input.JoystickAxis.Axis5;
-				case 6:  return OpenTK.Input.JoystickAxis.Axis6;
-				case 7:  return OpenTK.Input.JoystickAxis.Axis7;
-				case 8:  return OpenTK.Input.JoystickAxis.Axis8;
-				case 9:  return OpenTK.Input.JoystickAxis.Axis9;
-				case 10: return OpenTK.Input.JoystickAxis.Axis10;
-				case 11: return OpenTK.Input.JoystickAxis.Last; // OpenTK only has 11 axes, not 12
-			}
-
-			return OpenTK.Input.JoystickAxis.Last;
-		}
 		private static OpenTK.Input.JoystickHat GetOpenTKJoystickHat(int hatIndex)
 		{
 			switch (hatIndex)
