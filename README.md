@@ -7,7 +7,7 @@ If you have questions or just want to say Hi, feel free to join us in the [forum
 
 ### Latest Binary Release
 
-You can find the latest binary release [here](http://dualitybin.adamslair.net/). If you already have a Duality project, you can update your Duality version or any of its plugins in the [Package Manager](https://github.com/AdamsLair/duality/wiki/Package-Management).
+You can find the latest binary release [here](http://dualitybin.adamslair.net/). If you already have a Duality project, you can update your Duality version or any of its plugins in the [Package Manager](https://adamslair.github.io/duality-docs/pages/v2/Package-Management.html).
 
 ### Build status: 
 | [Branch](https://github.com/AdamsLair/duality/wiki/Branch-Descriptions)  | Status |
@@ -25,6 +25,6 @@ All framework build results will be located in the shared `Build/Output` folder.
 
 ### Contributing
 
-We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://github.com/AdamsLair/duality/wiki/How-to-Contribute).
+We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://adamslair.github.io/duality-docs/pages/v2/how-to-contribute.html).
 
 If you just want to say "Thank You", feel free to donate [on itch.io](http://adamslair.itch.io/duality).
