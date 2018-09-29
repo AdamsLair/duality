@@ -17,6 +17,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private Grid<Tile> selectedTiles          = new Grid<Tile>();
 		private Point      actionBeginTilePos     = Point.Empty;
 		private bool       isUserSelecting        = false;
+		private bool isUserScrolling = false;
+		private int lastMouseX = -1;
+		private int lastMouseY = -1;
 
 		public event EventHandler SelectedAreaChanged = null;
 		public event EventHandler SelectedAreaEditingFinished = null;
@@ -199,10 +202,22 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.HoveredTileIndex = -1;
 				}
 			}
+			if (e.Button == MouseButtons.Middle)
+			{
+				this.isUserScrolling = true;
+				this.lastMouseX = e.X;
+				this.lastMouseY = e.Y;
+			}
 		}
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
+			if (e.Button == MouseButtons.Middle)
+			{
+				this.isUserScrolling = false;
+				this.lastMouseX = -1;
+				this.lastMouseY = -1;
+			}
 			if (!this.isUserSelecting)
 			{
 				this.SelectedArea = Rectangle.Empty;
@@ -235,6 +250,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 						selectionBottomRight.X - selectionTopLeft.X + 1,
 						selectionBottomRight.Y - selectionTopLeft.Y + 1);
 				}
+			}
+			else if (this.isUserScrolling)
+			{
+				int newHoz = this.HorizontalScroll.Value - e.X + this.lastMouseX;
+				MathF.Clamp(newHoz, this.HorizontalScroll.Minimum, this.HorizontalScroll.Maximum);
+				int newVert = this.VerticalScroll.Value - e.Y + this.lastMouseY;
+				MathF.Clamp(newVert, this.VerticalScroll.Minimum, this.VerticalScroll.Maximum);
+				Log.Editor.Write(e.Y + ", " + this.lastMouseY);
+				Log.Editor.Write(this.VerticalScroll.Minimum + ", " + newVert + ", " + this.VerticalScroll.Maximum);
+				this.AutoScrollPosition = new Point(newHoz, newVert);
+				this.lastMouseX = e.X;
+				this.lastMouseY = e.Y;
 			}
 			else
 			{
