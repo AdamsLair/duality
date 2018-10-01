@@ -189,7 +189,16 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			if (e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons.Left && Control.ModifierKeys == Keys.Shift)
+			{
+				int tileIndex = this.PickTileIndexAt(e.X, e.Y);
+				if (tileIndex != -1)
+				{
+					this.isUserSelecting = true;
+					this.HoveredTileIndex = -1;
+				}
+			}
+			else if (e.Button == MouseButtons.Left)
 			{
 				int tileIndex = this.PickTileIndexAt(e.X, e.Y);
 				if (tileIndex != -1)
@@ -197,7 +206,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.actionBeginTilePos = this.GetTilePos(tileIndex);
 					this.isUserSelecting = true;
 					this.SelectedArea = new Rectangle(
-						this.GetDisplayedTilePos(this.actionBeginTilePos.X, this.actionBeginTilePos.Y), 
+						this.GetDisplayedTilePos(this.actionBeginTilePos.X, this.actionBeginTilePos.Y),
 						new Size(1, 1));
 					this.HoveredTileIndex = -1;
 				}
@@ -224,7 +233,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 				{
 					this.SelectedArea = Rectangle.Empty;
 				}
-				this.actionBeginTilePos = Point.Empty;
 				this.isUserSelecting = false;
 				this.RaiseSelectedAreaEditingFinished();
 			}
