@@ -34,6 +34,7 @@ namespace Duality.Components
 		[DontSerialize] private DrawDevice         drawDevice      = null;
 		[DontSerialize] private DrawDevice         transformDevice = null;
 		[DontSerialize] private PickingRenderSetup pickingSetup    = null;
+		[DontSerialize] private Vector2[]          cameraBounds    = new Vector2[4];
 		
 
 		/// <summary>
@@ -70,6 +71,16 @@ namespace Duality.Components
 			get { return this.focusDist; }
 			set { this.focusDist = MathF.Max(value, 0.01f); }
 		}
+
+		/// <summary>
+		/// [GET] The current point that the camera is focused on, as absolute world position.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public Vector3 FocusPos
+		{
+			get { return new Vector3(this.GameObj.Transform.Pos.Xy, this.GameObj.Transform.Pos.Z + this.focusDist); }
+		}
+
 		/// <summary>
 		/// [GET / SET] The rectangular area this camera will render into, relative to the
 		/// total available viewport during rendering.
@@ -324,6 +335,90 @@ namespace Duality.Components
 			return this.transformDevice.IsSphereInView(worldPos, radius);
 		}
 
+		/// <summary>
+		/// Return an axis-aligned Rect that contains the current viewport with the desired size.
+		/// </summary>
+		/// <param name="z">Z world-coordinate used to determine the extents of the viewport.</param>
+		/// <returns>An axis-aligned Rect that fits the viewport. Could be bigger if the Camera is not rotated in 90° increments.</returns>
+		public Rect GetWorldViewportBounds(float z)
+		{
+			return this.GetWorldViewportBounds(z, DualityApp.TargetViewSize);
+		}
+
+		/// <summary>
+		/// Return an axis-aligned Rect that contains the current viewport with the desired size.
+		/// </summary>
+		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
+		/// <returns>An axis-aligned Rect that fits the viewport. Could be bigger if the Camera is not rotated in 90° increments.</returns>
+		public Rect GetWorldViewportBounds(Vector2 imageSize)
+		{
+			return this.GetWorldViewportBounds(this.FocusPos.Z, DualityApp.TargetViewSize);
+		}
+
+		/// <summary>
+		/// Return an axis-aligned Rect that contains the current viewport with the desired size.
+		/// </summary>
+		/// <param name="z">Z world-coordinate used to determine the extents of the viewport.</param>
+		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
+		/// <returns>An axis-aligned Rect that fits the viewport. Could be bigger if the Camera is not rotated in 90° increments.</returns>
+		public Rect GetWorldViewportBounds(float z, Vector2 imageSize)
+		{
+			this.GetWorldViewportCorners(this.cameraBounds, z, imageSize);
+
+			float minX = float.PositiveInfinity;
+			float minY = float.PositiveInfinity;
+			float maxX = float.NegativeInfinity;
+			float maxY = float.NegativeInfinity;
+
+			for (int i = 0; i < 4; i++)
+			{
+				minX = MathF.Min(minX, this.cameraBounds[i].X);
+				minY = MathF.Min(minY, this.cameraBounds[i].Y);
+				maxX = MathF.Max(maxX, this.cameraBounds[i].X);
+				maxY = MathF.Max(maxY, this.cameraBounds[i].Y);
+			}
+
+			return Rect.Align(Alignment.Center, minX, minY, maxX - minX, maxY - minY);
+		}
+
+		/// <summary>
+		/// Fills an array with vectors that correspond to the 4 corners of the current viewport with the desired size.
+		/// </summary>
+		/// <param name="corners">An array that will contain the corners of the viewport, in counter-clockwise order, starting from the top-left. The array must fit at least 4 elements.</param>
+		/// <param name="z">Z world-coordinate used to determine the extents of the viewport.</param>
+		public void GetWorldViewportCorners(Vector2[] corners, float z)
+		{
+			this.GetWorldViewportCorners(corners, z, DualityApp.TargetViewSize);
+		}
+
+		/// <summary>
+		/// Fills an array with vectors that correspond to the 4 corners of the current viewport with the desired size.
+		/// </summary>
+		/// <param name="corners">An array that will contain the corners of the viewport, in counter-clockwise order, starting from the top-left. The array must fit at least 4 elements.</param>
+		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
+		public void GetWorldViewportCorners(Vector2[] corners, Vector2 imageSize)
+		{
+			this.GetWorldViewportCorners(corners, this.FocusPos.Z, imageSize);
+		}
+
+		/// <summary>
+		/// Fills an array with vectors that correspond to the 4 corners of the current viewport with the desired size.
+		/// </summary>
+		/// <param name="corners">An array that will contain the corners of the viewport, in counter-clockwise order, starting from the top-left. The array must fit at least 4 elements.</param>
+		/// <param name="z">Z world-coordinate used to determine the extents of the viewport.</param>
+		/// <param name="imageSize">Target size of the rendered image before adjusting it to fit the specified viewport.</param>
+		public void GetWorldViewportCorners(Vector2[] corners, float z, Vector2 imageSize)
+		{
+			if (corners == null || corners.Length < 4)
+				throw new ArgumentException("Array must contain at least 4 elements", "corners");
+
+			// counter clockwise query of points
+			corners[0] = this.GetWorldPos(new Vector3(Vector2.Zero, z)).Xy;
+			corners[1] = this.GetWorldPos(new Vector3(Vector2.UnitY * imageSize, z)).Xy;
+			corners[2] = this.GetWorldPos(new Vector3(Vector2.One * imageSize, z)).Xy;
+			corners[3] = this.GetWorldPos(new Vector3(Vector2.UnitX * imageSize, z)).Xy;
+		}
+
 		private void SetupDrawDevice()
 		{
 			if (this.drawDevice != null && !this.drawDevice.Disposed) return;
@@ -333,6 +428,7 @@ namespace Duality.Components
 			// It will never be used by the Cameras transform methods.
 			this.drawDevice = new DrawDevice();
 		}
+
 		private void ReleaseDrawDevice()
 		{
 			if (this.drawDevice == null) return;
