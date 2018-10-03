@@ -190,7 +190,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			if (e.Button == MouseButtons.Left && Control.ModifierKeys == Keys.Shift)
+			if (e.Button == MouseButtons.Left && Control.ModifierKeys == Keys.Shift && !this.isUserScrolling)
 			{
 				int tileIndex = this.PickTileIndexAt(e.X, e.Y);
 				if (tileIndex != -1)
@@ -228,7 +228,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					}
 				}
 			}
-			else if (e.Button == MouseButtons.Left)
+			else if (e.Button == MouseButtons.Left && !this.isUserScrolling)
 			{
 				int tileIndex = this.PickTileIndexAt(e.X, e.Y);
 				if (tileIndex != -1)
