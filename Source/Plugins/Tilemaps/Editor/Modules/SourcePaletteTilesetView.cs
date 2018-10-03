@@ -16,10 +16,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private Rectangle  selectedArea           = Rectangle.Empty;
 		private Grid<Tile> selectedTiles          = new Grid<Tile>();
 		private Point      actionBeginTilePos     = Point.Empty;
+		private bool       areTilesSelected       = false;
 		private bool       isUserSelecting        = false;
-		private bool isUserScrolling = false;
-		private int lastMouseX = -1;
-		private int lastMouseY = -1;
+		private bool       isUserScrolling        = false;
+		private int        lastMouseX             = -1;
+		private int        lastMouseY             = -1;
 
 		public event EventHandler SelectedAreaChanged = null;
 		public event EventHandler SelectedAreaEditingFinished = null;
@@ -196,7 +197,17 @@ namespace Duality.Editor.Plugins.Tilemaps
 				{
 					this.isUserSelecting = true;
 					this.HoveredTileIndex = -1;
-					if (tileIndex != -1)
+					if (tileIndex != -1 && !this.areTilesSelected)
+					{
+						this.areTilesSelected = true;
+						this.actionBeginTilePos = this.GetTilePos(tileIndex);
+						this.isUserSelecting = true;
+						this.SelectedArea = new Rectangle(
+							this.GetDisplayedTilePos(this.actionBeginTilePos.X, this.actionBeginTilePos.Y),
+							new Size(1, 1));
+						this.HoveredTileIndex = -1;
+					}
+					else if (tileIndex != -1)
 					{
 						Point tilePos = this.GetTilePos(tileIndex);
 						Point displayedBeginPos = this.GetDisplayedTilePos(this.actionBeginTilePos.X, this.actionBeginTilePos.Y);
@@ -222,6 +233,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 				int tileIndex = this.PickTileIndexAt(e.X, e.Y);
 				if (tileIndex != -1)
 				{
+					this.areTilesSelected = true;
 					this.actionBeginTilePos = this.GetTilePos(tileIndex);
 					this.isUserSelecting = true;
 					this.SelectedArea = new Rectangle(
@@ -243,6 +255,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (!this.isUserSelecting && !this.isUserScrolling)
 			{
 				this.SelectedArea = Rectangle.Empty;
+				this.areTilesSelected = false;
 			}
 			if (e.Button == MouseButtons.Middle)
 			{
