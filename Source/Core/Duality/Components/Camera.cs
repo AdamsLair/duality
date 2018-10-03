@@ -378,7 +378,7 @@ namespace Duality.Components
 				maxY = MathF.Max(maxY, this.cameraBounds[i].Y);
 			}
 
-			return Rect.Align(Alignment.Center, minX, minY, maxX - minX, maxY - minY);
+			return Rect.Align(Alignment.TopLeft, minX, minY, maxX - minX, maxY - minY);
 		}
 
 		/// <summary>
