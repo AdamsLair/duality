@@ -196,6 +196,25 @@ namespace Duality.Editor.Plugins.Tilemaps
 				{
 					this.isUserSelecting = true;
 					this.HoveredTileIndex = -1;
+					if (tileIndex != -1)
+					{
+						Point tilePos = this.GetTilePos(tileIndex);
+						Point displayedBeginPos = this.GetDisplayedTilePos(this.actionBeginTilePos.X, this.actionBeginTilePos.Y);
+						Point displayedCurrentPos = this.GetDisplayedTilePos(tilePos.X, tilePos.Y);
+
+						Point selectionTopLeft = new Point(
+							Math.Min(displayedBeginPos.X, displayedCurrentPos.X),
+							Math.Min(displayedBeginPos.Y, displayedCurrentPos.Y));
+						Point selectionBottomRight = new Point(
+							Math.Max(displayedBeginPos.X, displayedCurrentPos.X),
+							Math.Max(displayedBeginPos.Y, displayedCurrentPos.Y));
+
+						this.SelectedArea = new Rectangle(
+							selectionTopLeft.X,
+							selectionTopLeft.Y,
+							selectionBottomRight.X - selectionTopLeft.X + 1,
+							selectionBottomRight.Y - selectionTopLeft.Y + 1);
+					}
 				}
 			}
 			else if (e.Button == MouseButtons.Left)
@@ -221,6 +240,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
+			if (!this.isUserSelecting && !this.isUserScrolling)
+			{
+				this.SelectedArea = Rectangle.Empty;
+			}
 			if (e.Button == MouseButtons.Middle)
 			{
 				this.isUserScrolling = false;
@@ -229,10 +252,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 			if (e.Button == MouseButtons.Left)
 			{
-				if (!this.isUserSelecting)
-				{
-					this.SelectedArea = Rectangle.Empty;
-				}
 				this.isUserSelecting = false;
 				this.RaiseSelectedAreaEditingFinished();
 			}
