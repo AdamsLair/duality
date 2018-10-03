@@ -242,7 +242,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.HoveredTileIndex = -1;
 				}
 			}
-			else if (e.Button == MouseButtons.Middle)
+			else if (e.Button == MouseButtons.Middle && !this.isUserSelecting)
 			{
 				this.isUserScrolling = true;
 				this.lastMouseX = e.X;
