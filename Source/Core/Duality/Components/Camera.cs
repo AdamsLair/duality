@@ -412,11 +412,21 @@ namespace Duality.Components
 			if (corners == null || corners.Length < 4)
 				throw new ArgumentException("Array must contain at least 4 elements", "corners");
 
+			Vector2 center = DualityApp.TargetViewSize / 2;
+			Vector2 halfSize = imageSize / 2;
+
+			corners[0] = center - halfSize;
+			corners[2] = center + halfSize;
+			corners[1].X = corners[0].X;
+			corners[1].Y = corners[2].Y;
+			corners[3].X = corners[2].X;
+			corners[3].Y = corners[0].Y;
+
 			// counter clockwise query of points
-			corners[0] = this.GetWorldPos(new Vector3(Vector2.Zero, z)).Xy;
-			corners[1] = this.GetWorldPos(new Vector3(Vector2.UnitY * imageSize, z)).Xy;
-			corners[2] = this.GetWorldPos(new Vector3(Vector2.One * imageSize, z)).Xy;
-			corners[3] = this.GetWorldPos(new Vector3(Vector2.UnitX * imageSize, z)).Xy;
+			corners[0] = this.GetWorldPos(new Vector3(corners[0], z)).Xy;
+			corners[1] = this.GetWorldPos(new Vector3(corners[1], z)).Xy;
+			corners[2] = this.GetWorldPos(new Vector3(corners[2], z)).Xy;
+			corners[3] = this.GetWorldPos(new Vector3(corners[3], z)).Xy;
 		}
 
 		private void SetupDrawDevice()
