@@ -38,8 +38,8 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=1.1.11.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AdamsLair.OpenTK.1.1.11\lib\net20\OpenTK.dll</HintPath>
+    <Reference Include="OpenTK, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\AdamsLair.OpenTK.1.2.0\lib\net20\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
