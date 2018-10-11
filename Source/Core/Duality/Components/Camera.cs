@@ -19,6 +19,8 @@ namespace Duality.Components
 	[EditorHintImage(CoreResNames.ImageCamera)]
 	public sealed class Camera : Component, ICmpInitializable
 	{
+		private static readonly Vector2   screenCenter     = new Vector2(0.5f, 0.5f);
+
 		private float                     nearZ            = 50.0f;
 		private float                     farZ             = 10000.0f;
 		private float                     focusDist        = DrawDevice.DefaultFocusDist;
@@ -280,6 +282,7 @@ namespace Duality.Components
 		public Vector3 GetWorldPos(Vector3 screenPos)
 		{
 			this.UpdateTransformDevice();
+			screenPos.Xy += GetTargetRectDelta();
 			return this.transformDevice.GetWorldPos(screenPos);
 		}
 		/// <summary>
@@ -290,6 +293,7 @@ namespace Duality.Components
 		public Vector3 GetWorldPos(Vector2 screenPos)
 		{
 			this.UpdateTransformDevice();
+			screenPos += GetTargetRectDelta();
 			return this.transformDevice.GetWorldPos(screenPos);
 		}
 		/// <summary>
@@ -300,7 +304,7 @@ namespace Duality.Components
 		public Vector2 GetScreenPos(Vector3 spacePos)
 		{
 			this.UpdateTransformDevice();
-			return this.transformDevice.GetScreenPos(spacePos);
+			return this.transformDevice.GetScreenPos(spacePos) - GetTargetRectDelta();
 		}
 		/// <summary>
 		/// Transforms world space to screen space positions.
@@ -310,7 +314,7 @@ namespace Duality.Components
 		public Vector2 GetScreenPos(Vector2 spacePos)
 		{
 			this.UpdateTransformDevice();
-			return this.transformDevice.GetScreenPos(spacePos);
+			return this.transformDevice.GetScreenPos(spacePos) - GetTargetRectDelta();
 		}
 		/// <summary>
 		/// Returns whether the specified world space sphere is visible in the cameras view.
@@ -383,6 +387,10 @@ namespace Duality.Components
 			this.transformDevice.FarZ = this.farZ;
 			this.transformDevice.FocusDist = this.focusDist;
 			this.transformDevice.Projection = this.projection;
+		}
+		private Vector2 GetTargetRectDelta()
+		{
+			return (screenCenter - this.targetRect.Center) * DualityApp.TargetViewSize;
 		}
 
 		void ICmpInitializable.OnActivate()
