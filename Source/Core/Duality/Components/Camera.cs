@@ -19,8 +19,6 @@ namespace Duality.Components
 	[EditorHintImage(CoreResNames.ImageCamera)]
 	public sealed class Camera : Component, ICmpInitializable
 	{
-		private static readonly Vector2   screenCenter     = new Vector2(0.5f, 0.5f);
-
 		private float                     nearZ            = 50.0f;
 		private float                     farZ             = 10000.0f;
 		private float                     focusDist        = DrawDevice.DefaultFocusDist;
@@ -171,6 +169,17 @@ namespace Duality.Components
 		{
 			get { return this.shaderParameters; }
 		}
+		/// <summary>
+		/// [GET] Rendered image / screen space offset between the rendered <see cref="TargetRect"/> center
+		/// and the screen center. Used for internal screen / world space transformations.
+		/// 
+		/// For example, if the <see cref="TargetRect"/> is set to render only the left half of the screen,
+		/// this property will return the offset between the left halfs center and the actual screen center.
+		/// </summary>
+		private Vector2 TargetRectDelta
+		{
+			get { return (new Vector2(0.5f, 0.5f) - this.targetRect.Center) * DualityApp.TargetViewSize; }
+		}
 
 
 		/// <summary>
@@ -282,7 +291,9 @@ namespace Duality.Components
 		public Vector3 GetWorldPos(Vector3 screenPos)
 		{
 			this.UpdateTransformDevice();
-			screenPos.Xy += GetTargetRectDelta();
+			Vector2 offset = this.TargetRectDelta;
+			screenPos.X += offset.X;
+			screenPos.Y += offset.Y;
 			return this.transformDevice.GetWorldPos(screenPos);
 		}
 		/// <summary>
@@ -293,7 +304,7 @@ namespace Duality.Components
 		public Vector3 GetWorldPos(Vector2 screenPos)
 		{
 			this.UpdateTransformDevice();
-			screenPos += GetTargetRectDelta();
+			screenPos += this.TargetRectDelta;
 			return this.transformDevice.GetWorldPos(screenPos);
 		}
 		/// <summary>
@@ -301,20 +312,20 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="spacePos"></param>
 		/// <returns></returns>
-		public Vector2 GetScreenPos(Vector3 spacePos)
+		public Vector2 GetScreenPos(Vector3 worldPos)
 		{
 			this.UpdateTransformDevice();
-			return this.transformDevice.GetScreenPos(spacePos) - GetTargetRectDelta();
+			return this.transformDevice.GetScreenPos(worldPos) - this.TargetRectDelta;
 		}
 		/// <summary>
 		/// Transforms world space to screen space positions.
 		/// </summary>
 		/// <param name="spacePos"></param>
 		/// <returns></returns>
-		public Vector2 GetScreenPos(Vector2 spacePos)
+		public Vector2 GetScreenPos(Vector2 worldPos)
 		{
 			this.UpdateTransformDevice();
-			return this.transformDevice.GetScreenPos(spacePos) - GetTargetRectDelta();
+			return this.transformDevice.GetScreenPos(worldPos) - this.TargetRectDelta;
 		}
 		/// <summary>
 		/// Returns whether the specified world space sphere is visible in the cameras view.
@@ -387,10 +398,6 @@ namespace Duality.Components
 			this.transformDevice.FarZ = this.farZ;
 			this.transformDevice.FocusDist = this.focusDist;
 			this.transformDevice.Projection = this.projection;
-		}
-		private Vector2 GetTargetRectDelta()
-		{
-			return (screenCenter - this.targetRect.Center) * DualityApp.TargetViewSize;
 		}
 
 		void ICmpInitializable.OnActivate()
