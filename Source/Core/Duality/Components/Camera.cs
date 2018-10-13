@@ -180,6 +180,17 @@ namespace Duality.Components
 		{
 			get { return this.shaderParameters; }
 		}
+		/// <summary>
+		/// [GET] Rendered image / screen space offset between the rendered <see cref="TargetRect"/> center
+		/// and the screen center. Used for internal screen / world space transformations.
+		/// 
+		/// For example, if the <see cref="TargetRect"/> is set to render only the left half of the screen,
+		/// this property will return the offset between the left halfs center and the actual screen center.
+		/// </summary>
+		private Vector2 TargetRectDelta
+		{
+			get { return (new Vector2(0.5f, 0.5f) - this.targetRect.Center) * DualityApp.TargetViewSize; }
+		}
 
 
 		/// <summary>
@@ -291,6 +302,9 @@ namespace Duality.Components
 		public Vector3 GetWorldPos(Vector3 screenPos)
 		{
 			this.UpdateTransformDevice();
+			Vector2 offset = this.TargetRectDelta;
+			screenPos.X += offset.X;
+			screenPos.Y += offset.Y;
 			return this.transformDevice.GetWorldPos(screenPos);
 		}
 		/// <summary>
@@ -301,6 +315,7 @@ namespace Duality.Components
 		public Vector3 GetWorldPos(Vector2 screenPos)
 		{
 			this.UpdateTransformDevice();
+			screenPos += this.TargetRectDelta;
 			return this.transformDevice.GetWorldPos(screenPos);
 		}
 		/// <summary>
@@ -308,20 +323,20 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="spacePos"></param>
 		/// <returns></returns>
-		public Vector2 GetScreenPos(Vector3 spacePos)
+		public Vector2 GetScreenPos(Vector3 worldPos)
 		{
 			this.UpdateTransformDevice();
-			return this.transformDevice.GetScreenPos(spacePos);
+			return this.transformDevice.GetScreenPos(worldPos) - this.TargetRectDelta;
 		}
 		/// <summary>
 		/// Transforms world space to screen space positions.
 		/// </summary>
 		/// <param name="spacePos"></param>
 		/// <returns></returns>
-		public Vector2 GetScreenPos(Vector2 spacePos)
+		public Vector2 GetScreenPos(Vector2 worldPos)
 		{
 			this.UpdateTransformDevice();
-			return this.transformDevice.GetScreenPos(spacePos);
+			return this.transformDevice.GetScreenPos(worldPos) - this.TargetRectDelta;
 		}
 		/// <summary>
 		/// Returns whether the specified world space sphere is visible in the cameras view.

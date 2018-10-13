@@ -85,6 +85,7 @@
     <Compile Include="Components\VelocityTrackerTest.cs" />
     <Compile Include="Components\TransformTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
+    <Compile Include="IO\FileEventQueueTest.cs" />
     <Compile Include="Math\MathFTest.cs" />
     <Compile Include="Drawing\VertexBatchStoreTest.cs" />
     <Compile Include="Drawing\ShaderParameterCollectionTest.cs" />

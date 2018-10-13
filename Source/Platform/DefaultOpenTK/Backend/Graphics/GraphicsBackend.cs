@@ -17,7 +17,7 @@ namespace Duality.Backend.DefaultOpenTK
 	[DontSerialize]
 	public class GraphicsBackend : IGraphicsBackend
 	{
-		private static readonly Version MinOpenGLVersion = new Version(3, 0);
+		public static readonly Version MinOpenGLVersion = new Version(3, 0);
 
 		private static GraphicsBackend activeInstance = null;
 		public static GraphicsBackend ActiveInstance
@@ -472,6 +472,7 @@ namespace Duality.Backend.DefaultOpenTK
 					ShaderFieldInfo field = varInfo[i];
 					int location = locations[i];
 
+					if (field.Scope == ShaderFieldScope.Attribute) continue;
 					if (field.Type == ShaderFieldType.Sampler2D)
 					{
 						ContentRef<Texture> texRef;
@@ -550,6 +551,7 @@ namespace Duality.Backend.DefaultOpenTK
 				ShaderFieldInfo field = varInfo[i];
 				int location = locations[i];
 
+				if (field.Scope == ShaderFieldScope.Attribute) continue;
 				if (this.sharedShaderParameters.Contains(field.Name)) continue;
 
 				if (field.Type == ShaderFieldType.Sampler2D)

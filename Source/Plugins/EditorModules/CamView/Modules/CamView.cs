@@ -17,6 +17,7 @@ using AdamsLair.WinForms.ItemModels;
 using AdamsLair.WinForms.ItemViews;
 
 using Duality;
+using Duality.IO;
 using Duality.Input;
 using Duality.Components;
 using Duality.Drawing;
@@ -434,32 +435,30 @@ namespace Duality.Editor.Plugins.CamView
 		private void RegisterEditorEvents()
 		{
 			DualityApp.PluginManager.PluginsRemoving += this.PluginManager_PluginsRemoving;
-			FileEventManager.ResourceModified		+= this.FileEventManager_ResourceModified;
-			DualityEditorApp.Terminating			+= this.DualityEditorApp_Terminating;
-			DualityEditorApp.HighlightObject		+= this.DualityEditorApp_HighlightObject;
-			DualityEditorApp.ObjectPropertyChanged	+= this.DualityEditorApp_ObjectPropertyChanged;
-			DualityEditorApp.UpdatingEngine			+= this.DualityEditorApp_UpdatingEngine;
-			Scene.Entered							+= this.Scene_Entered;
-			Scene.Leaving							+= this.Scene_Leaving;
-			Scene.GameObjectsRemoved				+= this.Scene_GameObjectsUnregistered;
-			Scene.ComponentRemoving					+= this.Scene_ComponentRemoving;
+			DualityEditorApp.Terminating             += this.DualityEditorApp_Terminating;
+			DualityEditorApp.HighlightObject         += this.DualityEditorApp_HighlightObject;
+			DualityEditorApp.ObjectPropertyChanged   += this.DualityEditorApp_ObjectPropertyChanged;
+			DualityEditorApp.UpdatingEngine          += this.DualityEditorApp_UpdatingEngine;
+			Scene.Entered                            += this.Scene_Entered;
+			Scene.Leaving                            += this.Scene_Leaving;
+			Scene.GameObjectsRemoved                 += this.Scene_GameObjectsUnregistered;
+			Scene.ComponentRemoving                  += this.Scene_ComponentRemoving;
 
-			this.DockPanel.ActiveContentChanged		+= this.DockPanel_ActiveContentChanged;
+			this.DockPanel.ActiveContentChanged      += this.DockPanel_ActiveContentChanged;
 		}
 		private void UnregisterEditorEvents()
 		{
 			DualityApp.PluginManager.PluginsRemoving -= this.PluginManager_PluginsRemoving;
-			FileEventManager.ResourceModified		-= this.FileEventManager_ResourceModified;
-			DualityEditorApp.Terminating			-= this.DualityEditorApp_Terminating;
-			DualityEditorApp.HighlightObject		-= this.DualityEditorApp_HighlightObject;
-			DualityEditorApp.ObjectPropertyChanged	-= this.DualityEditorApp_ObjectPropertyChanged;
-			DualityEditorApp.UpdatingEngine			-= this.DualityEditorApp_UpdatingEngine;
-			Scene.Entered							-= this.Scene_Entered;
-			Scene.Leaving							-= this.Scene_Leaving;
-			Scene.GameObjectsRemoved				-= this.Scene_GameObjectsUnregistered;
-			Scene.ComponentRemoving					-= this.Scene_ComponentRemoving;
+			DualityEditorApp.Terminating             -= this.DualityEditorApp_Terminating;
+			DualityEditorApp.HighlightObject         -= this.DualityEditorApp_HighlightObject;
+			DualityEditorApp.ObjectPropertyChanged   -= this.DualityEditorApp_ObjectPropertyChanged;
+			DualityEditorApp.UpdatingEngine          -= this.DualityEditorApp_UpdatingEngine;
+			Scene.Entered                            -= this.Scene_Entered;
+			Scene.Leaving                            -= this.Scene_Leaving;
+			Scene.GameObjectsRemoved                 -= this.Scene_GameObjectsUnregistered;
+			Scene.ComponentRemoving                  -= this.Scene_ComponentRemoving;
 
-			this.DockPanel.ActiveContentChanged		-= this.DockPanel_ActiveContentChanged;
+			this.DockPanel.ActiveContentChanged      -= this.DockPanel_ActiveContentChanged;
 		}
 		/// <summary>
 		/// Updates the <see cref="IsHiddenDocument"/> value of the <see cref="CamView"/> and fires
@@ -1359,11 +1358,6 @@ namespace Duality.Editor.Plugins.CamView
 			this.RenderableControl.Invalidate();
 		}
 		
-		private void FileEventManager_ResourceModified(object sender, ResourceEventArgs e)
-		{
-			if (!e.IsResource) return;
-			this.RenderableControl.Invalidate();
-		}
 		private void PluginManager_PluginsRemoving(object sender, DualityPluginEventArgs e)
 		{
 			this.objectVisibility.ClearTypeCache();
@@ -1385,8 +1379,11 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
-			if (!e.Objects.Resources.Any() && !e.Objects.OfType<DesignTimeObjectData>().Any()) return;
-			this.RenderableControl.Invalidate();
+			// Redraw (at least) whenever any Resource or design-time data changes.
+			if (e.Objects.Resources.Any() || e.Objects.OfType<DesignTimeObjectData>().Any())
+			{
+				this.RenderableControl.Invalidate();
+			}
 		}
 		private void DualityEditorApp_UpdatingEngine(object sender, EventArgs e)
 		{
@@ -1644,9 +1641,13 @@ namespace Duality.Editor.Plugins.CamView
 			get { return this.inputKeyPressed[(int)key]; }
 		}
 		
-		string IUserInputSource.Description
+		string IUserInputSource.Id
 		{
 			get { return "Camera View"; }
+		}
+		Guid IUserInputSource.ProductId
+		{
+			get { return Guid.Empty; }
 		}
 		bool IUserInputSource.IsAvailable
 		{

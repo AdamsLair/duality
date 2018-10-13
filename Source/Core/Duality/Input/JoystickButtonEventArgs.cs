@@ -7,21 +7,21 @@ namespace Duality.Input
 {
 	public class JoystickButtonEventArgs : UserInputEventArgs
 	{
-		private JoystickButton button;
+		private int buttonIndex;
 		private bool pressed;
 
-		public JoystickButton Button
+		public int ButtonIndex
 		{
-			get { return this.button; }
+			get { return this.buttonIndex; }
 		}
 		public bool Pressed
 		{
 			get { return this.pressed; }
 		}
 
-		public JoystickButtonEventArgs(JoystickInput inputChannel, JoystickButton button, bool pressed) : base(inputChannel)
+		public JoystickButtonEventArgs(JoystickInput inputChannel, int buttonIndex, bool pressed) : base(inputChannel)
 		{
-			this.button = button;
+			this.buttonIndex = buttonIndex;
 			this.pressed = pressed;
 		}
 	}

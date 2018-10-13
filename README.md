@@ -7,15 +7,15 @@ If you have questions or just want to say Hi, feel free to join us in the [forum
 
 ### Latest Binary Release
 
-You can find the latest binary release [here](http://dualitybin.adamslair.net/). If you already have a Duality project, you can update your Duality version or any of its plugins in the [Package Manager](https://github.com/AdamsLair/duality/wiki/Package-Management).
+You can find the latest binary release [here](http://dualitybin.adamslair.net/). If you already have a Duality project, you can update your Duality version or any of its plugins in the [Package Manager](https://adamslair.github.io/duality-docs/pages/v3/Package-Management.html).
 
 ### Build status: 
 | [Branch](https://github.com/AdamsLair/duality/wiki/Branch-Descriptions)  | Status |
 |-------------|--------|
 | master      | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/master?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/master) |
 | release     | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/release?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/release) |
-| develop-3.0 | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/develop-3.0?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/develop-3.0) |
-| 1.x         | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/1.x?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/1.x)    |
+| 1.x         | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/archive/1.x?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/archive/1.x)    |
+| 2.x         | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/archive/2.x?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/archive/2.x)    |
 
 ### Building From Source
 
@@ -25,6 +25,6 @@ All framework build results will be located in the shared `Build/Output` folder.
 
 ### Contributing
 
-We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://github.com/AdamsLair/duality/wiki/How-to-Contribute).
+We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://adamslair.github.io/duality-docs/pages/v3/how-to-contribute.html).
 
 If you just want to say "Thank You", feel free to donate [on itch.io](http://adamslair.itch.io/duality).

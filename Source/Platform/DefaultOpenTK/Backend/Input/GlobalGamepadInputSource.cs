@@ -11,14 +11,24 @@ namespace Duality.Backend.DefaultOpenTK
 	{
 		private static List<GlobalGamepadInputSource> cachedDevices = new List<GlobalGamepadInputSource>();
 
-		private	int	deviceIndex;
+		private Guid productId;
+		private string productName;
+		private int deviceIndex;
 		private bool hasAxesOrButtons;
-		private	GamePadState state;
-		private	GamePadCapabilities caps;
+		private GamePadState state;
+		private GamePadCapabilities caps;
 		
-		public string Description
+		public string Id
 		{
 			get { return string.Format("Gamepad {0}", this.deviceIndex); }
+		}
+		public Guid ProductId
+		{
+			get { return this.productId; }
+		}
+		public string ProductName
+		{
+			get { return this.productName; }
 		}
 		public bool IsAvailable
 		{
@@ -79,6 +89,10 @@ namespace Duality.Backend.DefaultOpenTK
 
 		public void UpdateState()
 		{
+			// Retrieve the gamepads hardware GUID from the corresponding joystick device
+			this.productId = Joystick.GetGuid(this.deviceIndex);
+
+			this.productName = GamePad.GetName(this.deviceIndex);
 			this.caps = GamePad.GetCapabilities(this.deviceIndex);
 			this.state = GamePad.GetState(this.deviceIndex);
 
@@ -131,8 +145,11 @@ namespace Duality.Backend.DefaultOpenTK
 				{
 					inputManager.AddSource(gamepad);
 					Logs.Core.Write(
-						"Detected new Gamepad Input: \"{0}\" at index {1}",
-						gamepad.Description, deviceIndex);
+						"Detected new Gamepad Input: \"{0}\" ({1} | {2}) at index {3}",
+						gamepad.Id, 
+						gamepad.ProductId, 
+						gamepad.ProductName, 
+						deviceIndex);
 				}
 				else if (deviceIndex >= MinDeviceCheckCount)
 					break;

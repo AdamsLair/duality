@@ -940,6 +940,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				bool greyOut = this.selectedTilemap != null && this.selectedTilemap != tilemap;
 
 				// Configure the canvas so our shapes are properly rotated and scaled
+				canvas.PushState();
 				canvas.State.TransformHandle = -localRect.TopLeft;
 				canvas.State.TransformAngle = transform.Angle;
 				canvas.State.TransformScale = new Vector2(transform.Scale);
@@ -992,6 +993,9 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 						this.activePreviewValid ? TileHighlightMode.Normal : TileHighlightMode.Uncertain,
 						this.activeAreaOutlines);
 				}
+
+				// Reset canvas config
+				canvas.PopState();
 			}
 		}
 

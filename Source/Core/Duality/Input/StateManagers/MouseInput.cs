@@ -72,9 +72,23 @@ namespace Duality.Input
 			set { this.Source = value as IMouseInputSource; }
 		}
 		/// <summary>
-		/// [GET] A text description of this input.
+		/// [GET] The unique id of this input.
 		/// </summary>
-		public string Description
+		public string Id
+		{
+			get { return "Mouse"; }
+		}
+		/// <summary>
+		/// [GET] The unique ID of the product that is providing this input.
+		/// </summary>
+		public Guid ProductId
+		{
+			get { return Guid.Empty; }
+		}
+		/// <summary>
+		/// [GET] The name of the product that is providing this input.
+		/// </summary>
+		public string ProductName
 		{
 			get { return "Mouse"; }
 		}

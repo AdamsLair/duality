@@ -36,15 +36,18 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 			if (convert.Data.TryGetContentRefs(typeof(Prefab), out dropData))
 			{
 				// Instantiate Prefabs
-				foreach (ContentRef<Prefab> pRef in dropData.OfType<ContentRef<Prefab>>())
+				foreach (IContentRef contentRef in dropData)
 				{
-					if (convert.IsObjectHandled(pRef.Res)) continue;
-					if (!pRef.IsAvailable) continue;
-					GameObject newObj = pRef.Res.Instantiate();
+					ContentRef<Prefab> prefabRef = contentRef.As<Prefab>();
+
+					if (convert.IsObjectHandled(prefabRef.Res)) continue;
+					if (!prefabRef.IsAvailable) continue;
+
+					GameObject newObj = prefabRef.Res.Instantiate();
 					if (newObj != null)
 					{
 						convert.AddResult(newObj);
-						convert.MarkObjectHandled(pRef.Res);
+						convert.MarkObjectHandled(prefabRef.Res);
 					}
 				}
 			}
