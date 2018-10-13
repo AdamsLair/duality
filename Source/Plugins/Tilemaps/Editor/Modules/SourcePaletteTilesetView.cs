@@ -16,7 +16,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private Rectangle  selectedArea           = Rectangle.Empty;
 		private Grid<Tile> selectedTiles          = new Grid<Tile>();
 		private Point      actionBeginTilePos     = Point.Empty;
+		private bool       areTilesSelected       = false;
 		private bool       isUserSelecting        = false;
+		private bool       isUserScrolling        = false;
+		private int        lastMouseX             = -1;
+		private int        lastMouseY             = -1;
 
 		public event EventHandler SelectedAreaChanged = null;
 		public event EventHandler SelectedAreaEditingFinished = null;
@@ -186,30 +190,84 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			if (e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons.Left && Control.ModifierKeys == Keys.Shift && !this.isUserScrolling)
 			{
 				int tileIndex = this.PickTileIndexAt(e.X, e.Y);
 				if (tileIndex != -1)
 				{
+					this.isUserSelecting = true;
+					this.HoveredTileIndex = -1;
+					if (tileIndex != -1 && !this.areTilesSelected)
+					{
+						this.areTilesSelected = true;
+						this.actionBeginTilePos = this.GetTilePos(tileIndex);
+						this.isUserSelecting = true;
+						this.SelectedArea = new Rectangle(
+							this.GetDisplayedTilePos(this.actionBeginTilePos.X, this.actionBeginTilePos.Y),
+							new Size(1, 1));
+						this.HoveredTileIndex = -1;
+					}
+					else if (tileIndex != -1)
+					{
+						Point tilePos = this.GetTilePos(tileIndex);
+						Point displayedBeginPos = this.GetDisplayedTilePos(this.actionBeginTilePos.X, this.actionBeginTilePos.Y);
+						Point displayedCurrentPos = this.GetDisplayedTilePos(tilePos.X, tilePos.Y);
+
+						Point selectionTopLeft = new Point(
+							Math.Min(displayedBeginPos.X, displayedCurrentPos.X),
+							Math.Min(displayedBeginPos.Y, displayedCurrentPos.Y));
+						Point selectionBottomRight = new Point(
+							Math.Max(displayedBeginPos.X, displayedCurrentPos.X),
+							Math.Max(displayedBeginPos.Y, displayedCurrentPos.Y));
+
+						this.SelectedArea = new Rectangle(
+							selectionTopLeft.X,
+							selectionTopLeft.Y,
+							selectionBottomRight.X - selectionTopLeft.X + 1,
+							selectionBottomRight.Y - selectionTopLeft.Y + 1);
+					}
+				}
+			}
+			else if (e.Button == MouseButtons.Left && !this.isUserScrolling)
+			{
+				int tileIndex = this.PickTileIndexAt(e.X, e.Y);
+				if (tileIndex != -1)
+				{
+					this.areTilesSelected = true;
 					this.actionBeginTilePos = this.GetTilePos(tileIndex);
 					this.isUserSelecting = true;
 					this.SelectedArea = new Rectangle(
-						this.GetDisplayedTilePos(this.actionBeginTilePos.X, this.actionBeginTilePos.Y), 
+						this.GetDisplayedTilePos(this.actionBeginTilePos.X, this.actionBeginTilePos.Y),
 						new Size(1, 1));
 					this.HoveredTileIndex = -1;
 				}
+			}
+			else if (e.Button == MouseButtons.Middle && !this.isUserSelecting)
+			{
+				this.isUserScrolling = true;
+				this.lastMouseX = e.X;
+				this.lastMouseY = e.Y;
 			}
 		}
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
-			if (!this.isUserSelecting)
+			if (!this.isUserSelecting && !this.isUserScrolling)
 			{
 				this.SelectedArea = Rectangle.Empty;
+				this.areTilesSelected = false;
 			}
-			this.actionBeginTilePos = Point.Empty;
-			this.isUserSelecting = false;
-			this.RaiseSelectedAreaEditingFinished();
+			if (e.Button == MouseButtons.Middle)
+			{
+				this.isUserScrolling = false;
+				this.lastMouseX = -1;
+				this.lastMouseY = -1;
+			}
+			if (e.Button == MouseButtons.Left)
+			{
+				this.isUserSelecting = false;
+				this.RaiseSelectedAreaEditingFinished();
+			}
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
@@ -235,6 +293,16 @@ namespace Duality.Editor.Plugins.Tilemaps
 						selectionBottomRight.X - selectionTopLeft.X + 1,
 						selectionBottomRight.Y - selectionTopLeft.Y + 1);
 				}
+			}
+			else if (this.isUserScrolling)
+			{
+				int newHoz = this.HorizontalScroll.Value - e.X + this.lastMouseX;
+				MathF.Clamp(newHoz, this.HorizontalScroll.Minimum, this.HorizontalScroll.Maximum);
+				int newVert = this.VerticalScroll.Value - e.Y + this.lastMouseY;
+				MathF.Clamp(newVert, this.VerticalScroll.Minimum, this.VerticalScroll.Maximum);
+				this.AutoScrollPosition = new Point(newHoz, newVert);
+				this.lastMouseX = e.X;
+				this.lastMouseY = e.Y;
 			}
 			else
 			{
