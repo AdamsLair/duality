@@ -406,7 +406,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 				{
 					if (this.activeMode != null)
 						this.activeMode.RaiseOnTilesetModified(e);
-
+					
 					this.ApplyRequired = tileset.HasChangedSinceCompile;
 				}
 			}
