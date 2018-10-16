@@ -230,7 +230,7 @@ namespace Duality
 		/// <returns>A System.Int32 containing the unique hashcode for this instance.</returns>
 		public override int GetHashCode()
 		{
-			return this.X.GetHashCode() ^ this.Y.GetHashCode();
+			return this.X.GetHashCode() ^ ((this.Y << 16).GetHashCode());
 		}
 		/// <summary>
 		/// Indicates whether this instance and a specified object are equal.
