@@ -298,7 +298,6 @@ namespace Duality.Plugins.Tilemaps
 				MathF.CombineHashCode(ref hash, input.Id.GetHashCode());
 				MathF.CombineHashCode(ref hash, input.Name.GetHashCode());
 				MathF.CombineHashCode(ref hash, input.SourceData.GetHashCode());
-				MathF.CombineHashCode(ref hash, input.SourceTileSize.GetHashCode());
 				MathF.CombineHashCode(ref hash, input.SourceTileSize.GetHashCode() + input.SourceTileSize.X * input.SourceTileSize.Y);
 				MathF.CombineHashCode(ref hash, input.SourceTileSpacing.GetHashCode() + input.SourceTileSize.X * input.SourceTileSize.Y);
 				MathF.CombineHashCode(ref hash, input.TargetFormat.GetHashCode());
