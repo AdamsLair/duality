@@ -17,7 +17,7 @@ namespace Duality.Tests.Utility
 			Scene scene = new Scene();
 			scene.Activate();
 
-			Coroutine coroutine = Coroutine.Start(scene, BasicRoutine(), "basic");
+			Coroutine coroutine = Coroutine.Start(scene, this.BasicRoutine(), "basic");
 
 			// All code until first yield is already executed
 			Assert.AreEqual(10, this.x);
@@ -57,7 +57,7 @@ namespace Duality.Tests.Utility
 			Scene scene = new Scene();
 			scene.Activate();
 
-			Coroutine coroutine = Coroutine.Start(scene, BasicRoutine(), "disposable");
+			Coroutine coroutine = Coroutine.Start(scene, this.BasicRoutine(), "disposable");
 
 			// All code until first yield is already executed
 			Assert.AreEqual(10, this.x);
@@ -88,7 +88,7 @@ namespace Duality.Tests.Utility
 			Scene scene = new Scene();
 			scene.Activate();
 
-			Coroutine coroutine = Coroutine.Start(scene, BasicRoutine(), "resuming");
+			Coroutine coroutine = Coroutine.Start(scene, this.BasicRoutine(), "resuming");
 
 			// All code until first yield is already executed
 			Assert.AreEqual(10, this.x);
@@ -123,7 +123,7 @@ namespace Duality.Tests.Utility
 			scene.Activate();
 
 			int secondsToWait = 2;
-			Coroutine coroutine = Coroutine.Start(scene, WaitSeconds(secondsToWait), "waiting");
+			Coroutine coroutine = Coroutine.Start(scene, this.WaitSeconds(secondsToWait), "waiting");
 
 			// All code until first yield is already executed
 			Assert.AreEqual(10, this.x);
@@ -152,7 +152,7 @@ namespace Duality.Tests.Utility
 			Scene scene = new Scene();
 			scene.Activate();
 
-			Coroutine coroutine = Coroutine.Start(scene, ExceptionRoutine(), "exception");
+			Coroutine coroutine = Coroutine.Start(scene, this.ExceptionRoutine(), "exception");
 
 			// All code until first yield is already executed
 			Assert.True(coroutine.Status == CoroutineStatus.Running);
