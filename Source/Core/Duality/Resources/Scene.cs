@@ -325,17 +325,18 @@ namespace Duality.Resources
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
 		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
-		private	GameObjectManager objectManager = new GameObjectManager();
+		private GameObjectManager objectManager = new GameObjectManager();
 
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
-		private Dictionary<TypeInfo,List<Component>> componentsByType = new Dictionary<TypeInfo,List<Component>>();
+		private Dictionary<TypeInfo, List<Component>> componentsByType = new Dictionary<TypeInfo, List<Component>>();
 
 		// Temporary buffers used during scene updates, stored and re-used for efficiency
 		[DontSerialize] private List<Type> updateTypeOrder = new List<Type>();
 		[DontSerialize] private RawList<Component> updatableComponents = new RawList<Component>(256);
 		[DontSerialize] private RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
 
+		[DontSerialize] private CoroutineManager coroutineManager = new CoroutineManager();
 
 		/// <summary>
 		/// [GET / SET] The strategy that is used to determine which <see cref="ICmpRenderer">renderers</see> are visible.
@@ -364,6 +365,13 @@ namespace Duality.Resources
 		public PhysicsWorld Physics
 		{
 			get { return this.physicsWorld; }
+		}
+		/// <summary>
+		/// [GET] Returns the <see cref="Coroutine"/> manager for this <see cref="Scene"/>.
+		/// </summary>
+		public CoroutineManager Coroutines
+		{
+			get { return this.coroutineManager; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all registered objects.
@@ -562,6 +570,9 @@ namespace Duality.Resources
 				// Remove disposed objects from managers
 				this.CleanupDisposedObjects();
 
+				// Update coroutines
+				this.coroutineManager.Update();
+
 				// Update physics
 				this.physicsWorld.Simulate(Time.DeltaTime);
 
@@ -672,14 +683,14 @@ namespace Duality.Resources
 						activeProfiler = updateData[updateMapIndex].Profiler;
 						activeProfiler.BeginMeasure();
 					}
-					
+
 					// Skip inactive, disposed and detached Components
 					if (!data[i].Active) continue;
 
 					// Invoke the Component's update action
 					updateAction(data[i] as T);
 				}
-				
+
 				if (activeProfiler != null)
 					activeProfiler.EndMeasure();
 			}
@@ -887,7 +898,7 @@ namespace Duality.Resources
 
 			return result;
 		}
-		
+
 		/// <summary>
 		/// Finds a single GameObjects in the Scene that match the specified name or name path.
 		/// </summary>
@@ -1062,7 +1073,7 @@ namespace Duality.Resources
 				this.serializeObj = null;
 
 			base.OnSaved(saveAsPath);
-			
+
 			// Re-initialize all components after saving, sorted by type
 			List<ICmpSerializeListener> initList = this.FindComponents<ICmpSerializeListener>().ToList();
 			for (int i = 0; i < initList.Count; i++)
@@ -1098,7 +1109,7 @@ namespace Duality.Resources
 			base.OnLoaded();
 
 			this.ApplyPrefabLinks();
-			
+
 			// Initialize all loaded components, sorted by type
 			List<ICmpSerializeListener> initList = this.FindComponents<ICmpSerializeListener>().ToList();
 			for (int i = 0; i < initList.Count; i++)
