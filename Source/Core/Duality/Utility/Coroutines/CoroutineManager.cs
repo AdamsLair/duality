@@ -8,6 +8,7 @@ namespace Duality
 	{
 		private static QueuedPool<Coroutine> pool = new QueuedPool<Coroutine>();
 		private List<Coroutine> coroutines = new List<Coroutine>();
+		private List<Coroutine> scheduled = new List<Coroutine>();
 		private List<Coroutine> trashcan = new List<Coroutine>();
 		private Dictionary<Coroutine, Exception> lastFrameErrors = new Dictionary<Coroutine, Exception>();
 
@@ -16,7 +17,7 @@ namespace Duality
 			Coroutine coroutine = pool.GetOne();
 			coroutine.Setup(enumerator, name);
 
-			this.coroutines.Add(coroutine);
+			this.scheduled.Add(coroutine);
 			return coroutine;
 		}
 
@@ -25,12 +26,19 @@ namespace Duality
 			foreach (Coroutine c in this.coroutines)
 				c.Cancel();
 
+			foreach (Coroutine c in this.coroutines)
+				c.Cancel();
+
+			this.scheduled.Clear();
 			this.coroutines.Clear();
 		}
 
 		public void Update()
 		{
 			this.lastFrameErrors.Clear();
+
+			this.coroutines.AddRange(this.scheduled);
+			this.scheduled.Clear();
 
 			foreach (Coroutine c in this.coroutines)
 			{
