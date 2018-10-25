@@ -6,7 +6,7 @@ using Duality.Editor;
 
 namespace Duality.Resources
 {
-	public class RectAtlas : IList<Rect>
+	public class RectAtlas : IList<Rect>, IList
 	{
 		private readonly List<Rect> rects;
 		private Dictionary<string, List<int>> tags;
@@ -302,5 +302,84 @@ namespace Duality.Resources
 		{
 			return this.rects.GetEnumerator();
 		}
+
+		#region IList Implementation
+
+		private readonly object syncRoot = new object();
+
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public bool IsSynchronized
+		{
+			get { return false; }
+		}
+
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public object SyncRoot
+		{
+			get { return this.syncRoot; }
+		}
+
+		object IList.this[int index]
+		{
+			get { return this[index]; }
+			set { this[index] = (Rect) value; }
+		}
+
+		[EditorHintFlags(MemberFlags.Invisible)]
+		bool IList.IsFixedSize
+		{
+			get { return false; }
+		}
+
+		int IList.Add(object value)
+		{
+			if (value is Rect)
+			{
+				this.Add((Rect)value);
+				return this.Count - 1;
+			}
+			return -1;
+		}
+
+		void ICollection.CopyTo(Array array, int index)
+		{
+			((ICollection)this.rects).CopyTo(array, index);
+		}
+
+		bool IList.Contains(object value)
+		{
+			if (value is Rect)
+			{
+				return this.Contains((Rect)value);
+			}
+			return false;
+		}
+
+		int IList.IndexOf(object value)
+		{
+			if (value is Rect)
+			{
+				return this.IndexOf((Rect)value);
+			}
+			return -1;
+		}
+
+		void IList.Insert(int index, object value)
+		{
+			if (value is Rect)
+			{
+				this.Insert(index, (Rect)value);
+			}
+		}
+
+		void IList.Remove(object value)
+		{
+			if (value is Rect)
+			{
+				this.Remove((Rect)value);
+			}
+		}
+
+		#endregion
 	}
 }
