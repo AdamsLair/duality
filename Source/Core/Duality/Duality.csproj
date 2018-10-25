@@ -112,6 +112,7 @@
     <Compile Include="IO\FileEventQueue.cs" />
     <Compile Include="IO\FileEventType.cs" />
     <Compile Include="IO\FileEvent.cs" />
+    <Compile Include="Resources\RectAtlas.cs" />
     <Compile Include="Resources\Shaders\ShaderSourceBuilder.cs" />
     <Compile Include="Utility\Log\DebugLogOutput.cs" />
     <Compile Include="Utility\RawListPool.cs" />
