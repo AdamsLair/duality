@@ -7,18 +7,18 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 {
 	public class SetAtlasAction : UndoRedoAction
 	{
-		private List<Rect>   rects         = null;
-		private Pixmap[]     pixmaps       = null;
-		private List<Rect[]> originalRects = null;
+		private RectAtlas       atlas         = null;
+		private Pixmap[]        pixmaps       = null;
+		private List<RectAtlas> originalRects = null;
 
 		public override string Name
 		{
 			get { return EditorBaseRes.UndoRedo_SetAtlas; }
 		}
 
-		public SetAtlasAction(IEnumerable<Pixmap> pixmapsEnum, IEnumerable<Rect> atlasRects)
+		public SetAtlasAction(IEnumerable<Pixmap> pixmapsEnum, RectAtlas atlas)
 		{
-			this.rects = (atlasRects != null) ? atlasRects.ToList() : null;
+			this.atlas = atlas;
 			this.pixmaps = pixmapsEnum.Distinct().ToArray();
 		}
 
@@ -39,11 +39,11 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 				atlasAction.originalRects = this.originalRects;
 				atlasAction.Do();
 			}
-			this.rects = atlasAction.rects;
+			this.atlas = atlasAction.atlas;
 		}
 		public override void Do()
 		{
-			this.originalRects = new List<Rect[]>();
+			this.originalRects = new List<RectAtlas>();
 
 			for (int i = 0; i < this.pixmaps.Length; i++)
 			{
@@ -51,9 +51,9 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 				this.originalRects.Add(
 					this.pixmaps[i].Atlas == null ? 
 					null : 
-					this.pixmaps[i].Atlas.ToArray());
+					this.pixmaps[i].Atlas);
 
-				this.pixmaps[i].Atlas = this.rects;
+				this.pixmaps[i].Atlas = new RectAtlas(this.atlas);
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.pixmaps));
@@ -65,7 +65,7 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 				this.pixmaps[i].Atlas = 
 					this.originalRects[i] == null ? 
 					null : 
-					new List<Rect>(this.originalRects[i]);
+					new RectAtlas(this.originalRects[i]);
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.pixmaps));

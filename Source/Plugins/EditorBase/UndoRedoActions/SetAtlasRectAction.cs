@@ -47,7 +47,7 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 		public override void Do()
 		{
 			if (this.pixmap.Atlas == null)
-				this.pixmap.Atlas = new List<Rect>();
+				this.pixmap.Atlas = new RectAtlas();
 
 			if (this.atlasIndex < this.pixmap.Atlas.Count)
 			{

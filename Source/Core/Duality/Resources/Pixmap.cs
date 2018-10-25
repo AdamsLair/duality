@@ -73,7 +73,7 @@ namespace Duality.Resources
 
 		
 		private List<PixelData> layers = new List<PixelData>();
-		private List<Rect>      atlas  = null;
+		private RectAtlas       atlas  = null;
 		
 		/// <summary>
 		/// [GET / SET] The main <see cref="Duality.Drawing.PixelData"/> layer of this <see cref="Pixmap"/>.
@@ -134,7 +134,7 @@ namespace Duality.Resources
 		/// [GET / SET] The Pixmaps atlas array, distinguishing different areas in pixel coordinates
 		/// </summary>
 		[EditorHintFlags(MemberFlags.ForceWriteback)]
-		public List<Rect> Atlas
+		public RectAtlas Atlas
 		{
 			get { return this.atlas; }
 			set { this.atlas = value; }

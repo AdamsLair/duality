@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Duality.Editor;
 
 namespace Duality.Resources
 {
@@ -21,6 +22,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET] Whether or not the atlas is read only. Always false.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public bool IsReadOnly
 		{
 			get { return false; }
@@ -55,7 +57,7 @@ namespace Duality.Resources
 
 		public RectAtlas(IEnumerable<Rect> rects)
 		{
-			this.rects = this.rects.ToList();
+			this.rects = new List<Rect>(rects);
 		}
 
 		public RectAtlas(RectAtlas other)

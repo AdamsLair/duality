@@ -105,7 +105,7 @@ namespace Duality.Editor.Plugins.Base
 
 			// Clear old atlas
 			if (pixmap.Atlas == null)
-				pixmap.Atlas = new List<Rect>(frameCount);
+				pixmap.Atlas = new RectAtlas(frameCount);
 			else
 				pixmap.Atlas.Clear();
 

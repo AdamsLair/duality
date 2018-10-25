@@ -15,12 +15,12 @@ namespace Duality.Editor.Plugins.Base
 		/// <param name="rows"></param>
 		/// <param name="frameBorder"></param>
 		/// <returns></returns>
-		public static List<Rect> SliceGrid(Pixmap pixmap, int columns, int rows, int frameBorder)
+		public static RectAtlas SliceGrid(Pixmap pixmap, int columns, int rows, int frameBorder)
 		{
-			List<Rect> rects = new List<Rect>();
+			RectAtlas atlas = new RectAtlas();
 
 			if (columns <= 0 || rows <= 0)
-				return rects;
+				return atlas;
 
 			Vector2 frameSize = new Vector2(
 				(float)pixmap.Width / (float)columns, 
@@ -29,7 +29,7 @@ namespace Duality.Editor.Plugins.Base
 			// If the frame border is too big, we can't generate any rectangles
 			// as they would be zero or negative size
 			if (frameBorder >= (int)(MathF.Min(frameSize.X, frameSize.Y) * 0.5f) - 1)
-				return rects;
+				return atlas;
 
 			// Set up new atlas data
 			int index = 0;
@@ -42,12 +42,12 @@ namespace Duality.Editor.Plugins.Base
 						y * frameSize.Y + frameBorder,
 						frameSize.X - frameBorder * 2.0f,
 						frameSize.Y - frameBorder * 2.0f);
-					rects.Insert(index, frameRect);
+					atlas.Insert(index, frameRect);
 					index++;
 				}
 			}
 
-			return rects;
+			return atlas;
 		}
 		/// <summary>
 		/// Auto-generates an atlas for the given <see cref="Pixmap"/> by fitting rectangles to
@@ -55,9 +55,9 @@ namespace Duality.Editor.Plugins.Base
 		/// </summary>
 		/// <param name="alpha">Pixels with an alpha value less or equal to this value will be considered transparent.</param>
 		/// <param name="minSize">Rectangles with width or higher smaller than this will be ignored.</param>
-		public static List<Rect> SliceAutoFit(Pixmap pixmap, byte alpha = 0, int minSize = 2)
+		public static RectAtlas SliceAutoFit(Pixmap pixmap, byte alpha = 0, int minSize = 2)
 		{
-			List<Rect> rects = new List<Rect>();
+			RectAtlas atlas = new RectAtlas();
 
 			for (int i = 0; i < pixmap.Width; i++)
 			{
@@ -68,7 +68,7 @@ namespace Duality.Editor.Plugins.Base
 
 					// If this pixel is contained in a previously found rect,
 					// skip to the bottom of that rect
-					Rect rect = rects.FirstOrDefault(r => r.Contains(i, j));
+					Rect rect = atlas.FirstOrDefault(r => r.Contains(i, j));
 					if (rect != default(Rect))
 					{
 						j = (int)MathF.Ceiling(rect.BottomY);
@@ -79,11 +79,11 @@ namespace Duality.Editor.Plugins.Base
 
 					// Add if the rect is large enough
 					if (rect.W > minSize && rect.H > minSize)
-						rects.Add(rect);
+						atlas.Add(rect);
 				}
 			}
 
-			return rects;
+			return atlas;
 		}
 
 		/// <summary>

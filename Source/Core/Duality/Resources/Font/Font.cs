@@ -195,7 +195,7 @@ namespace Duality.Resources
 				return;
 			
 			this.pixmap = new Pixmap(fontData.Bitmap);
-			this.pixmap.Atlas = fontData.Atlas.ToList();
+			this.pixmap.Atlas = new RectAtlas(fontData.Atlas);
 		}
 		private void GenerateTexture()
 		{
