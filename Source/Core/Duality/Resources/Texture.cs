@@ -81,14 +81,14 @@ namespace Duality.Resources
 		private	bool				anisoFilter	= false;
 
 		[DontSerialize] private	INativeTexture nativeTex = null;
-		[DontSerialize] private	int		pxWidth		= 0;
-		[DontSerialize] private	int		pxHeight	= 0;
-		[DontSerialize] private	float	pxDiameter	= 0.0f;
-		[DontSerialize] private	int		texWidth	= 0;
-		[DontSerialize] private	int		texHeight	= 0;
-		[DontSerialize] private	Vector2	uvRatio		= new Vector2(1.0f, 1.0f);
-		[DontSerialize] private	bool	needsReload	= true;
-		[DontSerialize] private	Rect[]	atlas		= null;
+		[DontSerialize] private	int			pxWidth		= 0;
+		[DontSerialize] private	int			pxHeight	= 0;
+		[DontSerialize] private	float		pxDiameter	= 0.0f;
+		[DontSerialize] private	int			texWidth	= 0;
+		[DontSerialize] private	int			texHeight	= 0;
+		[DontSerialize] private	Vector2		uvRatio		= new Vector2(1.0f, 1.0f);
+		[DontSerialize] private	bool		needsReload	= true;
+		[DontSerialize] private	RectAtlas	atlas		= null;
 
 		
 		/// <summary>
@@ -364,7 +364,7 @@ namespace Duality.Resources
 				{
 					pixelData = basePixmapRes.MainLayer;
 					bool hasAtlas = (basePixmapRes.Atlas != null && basePixmapRes.Atlas.Count > 0);
-					this.atlas = hasAtlas ? basePixmapRes.Atlas.ToArray() : null;
+					this.atlas = hasAtlas ? new RectAtlas(basePixmapRes.Atlas) : null;
 				}
 
 				if (pixelData == null)
@@ -401,12 +401,14 @@ namespace Duality.Resources
 					Vector2 scale;
 					scale.X = this.uvRatio.X / this.pxWidth;
 					scale.Y = this.uvRatio.Y / this.pxHeight;
-					for (int i = 0; i < this.atlas.Length; i++)
+					for (int i = 0; i < this.atlas.Count; i++)
 					{
-						this.atlas[i].X *= scale.X;
-						this.atlas[i].W *= scale.X;
-						this.atlas[i].Y *= scale.Y;
-						this.atlas[i].H *= scale.Y;
+						Rect rect = this.atlas[i];
+						rect.X *= scale.X;
+						rect.W *= scale.X;
+						rect.Y *= scale.Y;
+						rect.H *= scale.Y;
+						this.atlas[i] = rect;
 					}
 				}
 			}
@@ -482,7 +484,7 @@ namespace Duality.Resources
 			}
 			else
 			{
-				uv = this.atlas[MathF.Clamp(index, 0, this.atlas.Length - 1)];
+				uv = this.atlas[MathF.Clamp(index, 0, this.atlas.Count - 1)];
 			}
 		}
 		/// <summary>

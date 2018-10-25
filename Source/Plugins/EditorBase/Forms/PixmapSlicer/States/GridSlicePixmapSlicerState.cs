@@ -25,7 +25,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 		private ToolStripNumericUpDown colsInput    = null;
 		private ToolStripNumericUpDown borderInput  = null;
 
-		private List<Rect> originalAtlas = null;
+		private RectAtlas originalAtlas = null;
 
 
 		public GridSlicePixmapSlicerState()
@@ -59,7 +59,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			// We don't use the outdated AnimCols / AnimRos properties here, as they'll be 
 			// gone in v3.0 anyway and are the legacy way to define an animated Pixmap.
-			List<Rect> generatedAtlas = PixmapSlicingUtility.SliceGrid(
+			RectAtlas generatedAtlas = PixmapSlicingUtility.SliceGrid(
 				this.TargetPixmap, 
 				(int)this.colsInput.Value, 
 				(int)this.rowsInput.Value, 
@@ -84,7 +84,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			if (this.TargetPixmap.Atlas != null)
 			{
-				this.originalAtlas = new List<Rect>(this.TargetPixmap.Atlas);
+				this.originalAtlas = new RectAtlas(this.TargetPixmap.Atlas);
 				this.rowsInput.Value = 3;
 				this.colsInput.Value = 3;
 				this.borderInput.Value = 0;

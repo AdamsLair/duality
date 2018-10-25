@@ -8,7 +8,7 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 	public class ClearAtlasAction : UndoRedoAction
 	{
 		private Pixmap[]		pixmaps			= null;
-		private List<Rect[]>	originalRects	= null;
+		private List<RectAtlas> originalAtlases	= null;
 
 		public override string Name
 		{
@@ -22,14 +22,14 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 
 		public override void Do()
 		{
-			this.originalRects = new List<Rect[]>();
+			this.originalAtlases = new List<RectAtlas>();
 
 			for (int i = 0; i < this.pixmaps.Length; i++)
 			{
 				// Copy the existing atlas
-				this.originalRects.Add(this.pixmaps[i].Atlas == null
+				this.originalAtlases.Add(this.pixmaps[i].Atlas == null
 					? null
-					: this.pixmaps[i].Atlas.ToArray());
+					: new RectAtlas(this.pixmaps[i].Atlas));
 
 				this.pixmaps[i].Atlas = null;
 			}
@@ -41,9 +41,9 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 		{
 			for (int i = 0; i < this.pixmaps.Length; i++)
 			{
-				this.pixmaps[i].Atlas = this.originalRects[i] == null
+				this.pixmaps[i].Atlas = this.originalAtlases[i] == null
 					? null
-					: new List<Rect>(this.originalRects[i]);
+					: new RectAtlas(this.originalAtlases[i]);
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.pixmaps.Distinct()));

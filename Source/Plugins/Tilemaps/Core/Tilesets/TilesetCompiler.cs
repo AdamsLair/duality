@@ -106,7 +106,7 @@ namespace Duality.Plugins.Tilemaps
 				// Create the texture to be used for this rendering input
 				using (Pixmap targetPixmap = new Pixmap(targetLayerData.PixelData))
 				{
-					targetPixmap.Atlas = targetLayerData.Atlas;
+					targetPixmap.Atlas = new RectAtlas(targetLayerData.Atlas);
 					Texture targetTexture = new Texture(
 						targetPixmap, TextureSizeMode.Enlarge, 
 						renderInput.TargetMagFilter, renderInput.TargetMinFilter, 

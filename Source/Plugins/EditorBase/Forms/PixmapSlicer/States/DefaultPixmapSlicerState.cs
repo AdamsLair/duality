@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
+using Duality.Resources;
 
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
@@ -93,8 +94,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			if (this.TargetPixmap == null) return;
 
 			byte alpha = (byte)this.alphaCutoffEntry.Value;
-			IEnumerable<Rect> rects = PixmapSlicingUtility.SliceAutoFit(this.TargetPixmap, alpha);
-			this.SetAtlas(rects);
+			RectAtlas atlas = PixmapSlicingUtility.SliceAutoFit(this.TargetPixmap, alpha);
+			this.SetAtlas(atlas);
 			UndoRedoManager.Finish();
 		}
 

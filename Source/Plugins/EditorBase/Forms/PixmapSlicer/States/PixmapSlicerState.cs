@@ -56,7 +56,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			}
 			this.InvalidatePixmap(updatedArea);
 		}
-		protected void SetAtlas(IEnumerable<Rect> atlas)
+		protected void SetAtlas(RectAtlas atlas)
 		{
 			if (this.TargetPixmap == null) return;
 

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
+using Duality.Resources;
 
 namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 {
@@ -35,7 +36,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 		private void FinishOrdering()
 		{
-			List<Rect> newAtlas = new List<Rect>();
+			RectAtlas newAtlas = new RectAtlas();
 
 			// Add indices that were order to the atlas first
 			foreach (int index in this.orderedIndices)
