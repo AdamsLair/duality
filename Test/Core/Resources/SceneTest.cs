@@ -10,6 +10,8 @@ using Duality.Components;
 using Duality.Components.Physics;
 using Duality.Components.Renderers;
 
+using Duality.Tests.Components;
+
 using NUnit.Framework;
 
 
@@ -339,6 +341,7 @@ namespace Duality.Tests.Resources
 			// Clean up
 			scene.Dispose();
 		}
+
 		/// <summary>
 		/// This test will determine whether a <see cref="Scene"/> can be activated, updated and deactivated
 		/// in isolation from the global <see cref="Scene.Current"/> setting.
@@ -432,6 +435,82 @@ namespace Duality.Tests.Resources
 			Vector2 ballPosInOutputImage = camera.GetScreenPos(ballTransform.Pos);
 			Assert.AreEqual(camera.ClearColor, renderedImage[0, 0]);
 			Assert.AreNotEqual(camera.ClearColor, renderedImage[(int)ballPosInOutputImage.X, (int)ballPosInOutputImage.Y]);
+		}
+		/// <summary>
+		/// This test will determine whether a <see cref="Scene"/> that was activated in isolation / without
+		/// being <see cref="Scene.Current"/> will ensure the initialization and shutdown of objects added
+		/// or removed during its lifetime.
+		/// </summary>
+		[Test] public void IsolatedInitAndShutdown()
+		{
+			// Create an isolated new test scene
+			Scene scene = new Scene();
+
+			GameObject testObj = new GameObject("TestObject");
+			InitializableEventReceiver testReceiver = testObj.AddComponent<InitializableEventReceiver>();
+			scene.AddObject(testObj);
+
+			// Ensure events are delivered in scene activation
+			testReceiver.Reset();
+			scene.Activate();
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Activate by Scene activation");
+
+			// Ensure events are delivered in scene deactivation
+			testReceiver.Reset();
+			scene.Deactivate();
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Deactivate by Scene deactivation");
+
+			// Ensure no events are delivered for removal while deactivated
+			testReceiver.Reset();
+			scene.RemoveObject(testObj);
+			scene.Activate();
+			Assert.AreEqual(InitializableEventReceiver.EventFlag.None, testReceiver.ReceivedEvents, "Removal from Scene, activation of Scene");
+
+			// Ensure events are delivered post-activation
+			testReceiver.Reset();
+			scene.AddObject(testObj);
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Activate by addition to active Scene");
+
+			testReceiver.Reset();
+			testObj.RemoveComponent(testReceiver);
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Removal from object in active Scene");
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.RemovingFromGameObject), "Removal from object in active Scene");
+
+			testReceiver.Reset();
+			testObj.AddComponent(testReceiver);
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Addition to object in active Scene");
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.AddToGameObject), "Addition to object in active Scene");
+
+			testReceiver.Reset();
+			testObj.Active = false;
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Deactivate by GameObject.Active property in active Scene");
+
+			testReceiver.Reset();
+			testObj.Active = true;
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Activate by GameObject.Active property in active Scene");
+
+			testReceiver.Reset();
+			testReceiver.Active = false;
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Deactivate by Component.Active property in active Scene");
+
+			testReceiver.Reset();
+			testReceiver.Active = true;
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Activate by Component.Active property in active Scene");
+
+			testReceiver.Reset();
+			scene.RemoveObject(testObj);
+			Assert.IsTrue(testReceiver.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Deactivate by removal from active Scene");
+
+			// Ensure no de/activation events are delivered in an inactive scene
+			scene.Deactivate();
+			testReceiver.Reset();
+			scene.AddObject(testObj);
+			testObj.Active = false;
+			testObj.Active = true;
+			testReceiver.Active = false;
+			testReceiver.Active = true;
+			scene.RemoveObject(testObj);
+			Assert.AreEqual(InitializableEventReceiver.EventFlag.None, testReceiver.ReceivedEvents, "No de/activation events in inactive Scene");
 		}
 
 		private class UpdateSwitchToSceneComponent : Component, ICmpUpdatable

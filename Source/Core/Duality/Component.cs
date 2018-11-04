@@ -48,7 +48,7 @@ namespace Duality
 			{
 				if (this.active != value)
 				{
-					if (this.gameobj != null && this.Scene != null && this.Scene.IsCurrent)
+					if (this.gameobj != null && this.Scene != null && this.Scene.IsActive)
 					{
 						if (value)
 						{
