@@ -984,6 +984,9 @@ namespace Duality
 		/// </summary>
 		internal void EnsureConsistentData()
 		{
+			bool anyChildRemoved = false;
+			bool anyComponentRemoved = false;
+
 			// Check for null or disposed child objects
 			if (this.children != null)
 			{
@@ -992,9 +995,7 @@ namespace Duality
 					if (this.children[i] == null || this.children[i].Disposed)
 					{
 						this.children.RemoveAt(i);
-						Logs.Core.WriteWarning(
-							"Missing or Disposed Child in GameObject '{0}'. Check for serialization problems. Did you recently rename or remove classes?", 
-							this);
+						anyChildRemoved = true;
 					}
 				}
 			}
@@ -1007,9 +1008,7 @@ namespace Duality
 					if (this.compList[i] == null || this.compList[i].Disposed)
 					{
 						this.compList.RemoveAt(i);
-						Logs.Core.WriteWarning(
-							"Missing or Disposed Component in GameObject '{0}'. Check for serialization problems. Did you recently rename or remove classes?", 
-							this);
+						anyComponentRemoved = true;
 					}
 				}
 			}
@@ -1017,7 +1016,7 @@ namespace Duality
 			{
 				this.compList = new List<Component>();
 				Logs.Core.WriteWarning(
-					"GameObject '{0}' didn't have a Component list. Check for serialization problems. Did you recently rename or remove classes?", 
+					"{0} didn't have a Component list. Check for serialization problems. Did you recently rename or remove classes?", 
 					this);
 			}
 
@@ -1029,10 +1028,7 @@ namespace Duality
 					if (this.compMap[key] == null || this.compMap[key].Disposed)
 					{
 						this.compMap.Remove(key);
-						Logs.Core.WriteWarning(
-							"Missing or Disposed Component '{0}' in GameObject '{1}'. Check for serialization problems. Did you recently rename or remove classes?", 
-							key,
-							this);
+						anyComponentRemoved = true;
 					}
 				}
 			}
@@ -1040,7 +1036,20 @@ namespace Duality
 			{
 				this.compMap = new Dictionary<Type,Component>();
 				Logs.Core.WriteWarning(
-					"GameObject '{0}' didn't have a Component map. Check for serialization problems. Did you recently rename or remove classes?", 
+					"{0} didn't have a Component map. Check for serialization problems. Did you recently rename or remove classes?", 
+					this);
+			}
+
+			if (anyChildRemoved)
+			{
+				Logs.Core.WriteWarning(
+					"Missing or disposed child in {0}. Check for serialization problems. Did you recently rename or remove classes?",
+					this);
+			}
+			if (anyComponentRemoved)
+			{
+				Logs.Core.WriteWarning(
+					"Missing or disposed Component in {0}. Check for serialization problems. Did you recently rename or remove classes?",
 					this);
 			}
 		}
