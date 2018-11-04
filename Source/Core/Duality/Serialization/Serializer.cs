@@ -227,6 +227,9 @@ namespace Duality.Serialization
 		private bool   disposed     = false;
 		private Log    log          = Logs.Core;
 
+		private Dictionary<string, Type>       typeResolveCache   = new Dictionary<string, Type>();
+		private Dictionary<string, MemberInfo> memberResolveCache = new Dictionary<string, MemberInfo>();
+
 
 		/// <summary>
 		/// [GET] Can this <see cref="Serializer"/> read data?
@@ -605,15 +608,25 @@ namespace Duality.Serialization
 		/// <param name="typeId"></param>
 		/// <param name="objId"></param>
 		/// <returns></returns>
-		protected Type ResolveType(string typeId, uint objId = uint.MaxValue)
+		protected Type ResolveType(string typeId, uint objId = 0)
 		{
-			Type result = ReflectionHelper.ResolveType(typeId);
-			if (result == null)
+			// Re-use already resolved type IDs from the local cache, if possible
+			Type result;
+			if (!this.typeResolveCache.TryGetValue(typeId, out result))
 			{
-				if (objId != uint.MaxValue)
-					this.log.WriteError("Can't resolve Type '{0}' in object Id {1}. Type not found.", typeId, objId);
-				else
-					this.log.WriteError("Can't resolve Type '{0}'. Type not found.", typeId);
+				// Otherwise, perform a global type resolve and temporarily store the result locally
+				result = ReflectionHelper.ResolveType(typeId);
+				this.typeResolveCache[typeId] = result;
+
+				// If the resolve failed, log an error. Since we're storing the null result in our
+				// local cache, this will happen only once per ID and read / write operation.
+				if (result == null)
+				{
+					if (objId != 0)
+						this.log.WriteError("Can't resolve Type '{0}' in object Id {1}. Type not found.", typeId, objId);
+					else
+						this.log.WriteError("Can't resolve Type '{0}'. Type not found.", typeId);
+				}
 			}
 			return result;
 		}
@@ -623,15 +636,25 @@ namespace Duality.Serialization
 		/// <param name="memberId"></param>
 		/// <param name="objId"></param>
 		/// <returns></returns>
-		protected MemberInfo ResolveMember(string memberId, uint objId = uint.MaxValue)
+		protected MemberInfo ResolveMember(string memberId, uint objId = 0)
 		{
-			MemberInfo result = ReflectionHelper.ResolveMember(memberId);
-			if (result == null)
+			// Re-use already resolved member IDs from the local cache, if possible
+			MemberInfo result;
+			if (!this.memberResolveCache.TryGetValue(memberId, out result))
 			{
-				if (objId != uint.MaxValue)
-					this.log.WriteError("Can't resolve Member '{0}' in object Id {1}. Member not found.", memberId, objId);
-				else
-					this.log.WriteError("Can't resolve Member '{0}'. Member not found.", memberId);
+				// Otherwise, perform a global member resolve and temporarily store the result locally
+				result = ReflectionHelper.ResolveMember(memberId);
+				this.memberResolveCache[memberId] = result;
+
+				// If the resolve failed, log an error. Since we're storing the null result in our
+				// local cache, this will happen only once per ID and read / write operation.
+				if (result == null)
+				{
+					if (objId != 0)
+						this.log.WriteError("Can't resolve Member '{0}' in object Id {1}. Member not found.", memberId, objId);
+					else
+						this.log.WriteError("Can't resolve Member '{0}'. Member not found.", memberId);
+				}
 			}
 			return result;
 		}
@@ -692,6 +715,8 @@ namespace Duality.Serialization
 			if (!this.opInProgress) throw new InvalidOperationException("Can't end the current operation, because no operation is in progress.");
 
 			this.idManager.Clear();
+			this.typeResolveCache.Clear();
+			this.memberResolveCache.Clear();
 			this.opInProgress = false;
 
 			this.OnEndReadOperation();
@@ -701,6 +726,8 @@ namespace Duality.Serialization
 			if (!this.opInProgress) throw new InvalidOperationException("Can't end the current operation, because no operation is in progress.");
 
 			this.idManager.Clear();
+			this.typeResolveCache.Clear();
+			this.memberResolveCache.Clear();
 			this.opInProgress = false;
 
 			this.OnEndWriteOperation();
