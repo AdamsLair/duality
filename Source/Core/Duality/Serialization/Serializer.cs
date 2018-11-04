@@ -29,7 +29,7 @@ namespace Duality.Serialization
 		/// </summary>
 		protected abstract class CustomSerialIOBase<T> : IDataReader, IDataWriter where T : Serializer
 		{
-			protected	Dictionary<string,object>	data;
+			protected Dictionary<string,object> data;
 			
 			/// <summary>
 			/// [GET] Enumerates all available keys.
@@ -130,10 +130,10 @@ namespace Duality.Serialization
 		/// </summary>
 		protected class ObjectHeader
 		{
-			private	uint			objectId;
-			private	DataType		dataType;
-			private	SerializeType	serializeType;
-			private	string			typeString;
+			private uint          objectId;
+			private DataType      dataType;
+			private SerializeType serializeType;
+			private string        typeString;
 
 			/// <summary>
 			/// [GET] The objects unique ID. May be zero for non-referenced object types.
@@ -216,18 +216,18 @@ namespace Duality.Serialization
 		/// A list of <see cref="System.Reflection.FieldInfo">field</see> blockers. If any registered field blocker
 		/// returns true upon serializing a specific field, a default value is assumed instead.
 		/// </summary>
-		protected	List<FieldBlocker>	fieldBlockers	= new List<FieldBlocker>();
+		protected List<FieldBlocker> fieldBlockers = new List<FieldBlocker>();
 		/// <summary>
 		/// Manages object IDs during de/serialization.
 		/// </summary>
-		protected	ObjectIdManager		idManager		= new ObjectIdManager();
+		protected ObjectIdManager    idManager     = new ObjectIdManager();
 
-		private	Stream	stream			= null;
-		private	bool	opInProgress	= false;
-		private	bool	disposed		= false;
-		private	Log		log				= Logs.Core;
+		private Stream stream       = null;
+		private bool   opInProgress = false;
+		private bool   disposed     = false;
+		private Log    log          = Logs.Core;
 
-		
+
 		/// <summary>
 		/// [GET] Can this <see cref="Serializer"/> read data?
 		/// </summary>
@@ -712,12 +712,12 @@ namespace Duality.Serialization
 		}
 
 
-		private	static List<Type>						availableSerializerTypes	= new List<Type>();
-		private	static List<Serializer>					tempCheckSerializers		= new List<Serializer>();
-		private	static Dictionary<Type,SerializeType>	serializeTypeCache			= new Dictionary<Type,SerializeType>();
-		private	static List<SerializeErrorHandler>		serializeHandlerCache		= new List<SerializeErrorHandler>();
-		private	static List<ISerializeSurrogate>		surrogates					= null;
-		private static Type								defaultSerializer			= null;
+		private static List<Type>                     availableSerializerTypes = new List<Type>();
+		private static List<Serializer>               tempCheckSerializers     = new List<Serializer>();
+		private static Dictionary<Type,SerializeType> serializeTypeCache       = new Dictionary<Type,SerializeType>();
+		private static List<SerializeErrorHandler>    serializeHandlerCache    = new List<SerializeErrorHandler>();
+		private static List<ISerializeSurrogate>      surrogates               = null;
+		private static Type                           defaultSerializer        = null;
 
 		/// <summary>
 		/// [GET / SET] The default <see cref="Serializer"/> type to use, if no other is specified.
