@@ -227,8 +227,9 @@ namespace Duality.Serialization
 		private bool   disposed     = false;
 		private Log    log          = Logs.Core;
 
-		private Dictionary<string, Type>       typeResolveCache   = new Dictionary<string, Type>();
-		private Dictionary<string, MemberInfo> memberResolveCache = new Dictionary<string, MemberInfo>();
+		private Dictionary<string, Type>       typeResolveCache       = new Dictionary<string, Type>();
+		private Dictionary<string, MemberInfo> memberResolveCache     = new Dictionary<string, MemberInfo>();
+		private HashSet<FieldInfo>             fieldTypeMismatchCache = new HashSet<FieldInfo>();
 
 
 		/// <summary>
@@ -554,11 +555,17 @@ namespace Duality.Serialization
 			{
 				if (!this.HandleAssignValueToField(objSerializeType, obj, fieldName, fieldValue))
 				{
-					this.LocalLog.WriteWarning("Actual Type '{0}' of object value in field '{1}' does not match reflected FieldType '{2}'. Trying to convert...'", 
-						fieldValue != null ? LogFormat.Type(fieldValue.GetType()) : "unknown", 
-						fieldName, 
-						LogFormat.Type(field.FieldType));
-					this.LocalLog.PushIndent();
+					// If this is the first time we encounter a type mismatch for this field, log a warning
+					Type serializedFieldType = fieldValue.GetType();
+					if (this.fieldTypeMismatchCache.Add(field))
+					{
+						this.LocalLog.WriteWarning(
+							"Serialized field value Type '{0}' does not match field Type '{2}' in field '{1}'. Converting values where possible, discarding otherwise.",
+							LogFormat.Type(serializedFieldType),
+							LogFormat.FieldInfo(field),
+							LogFormat.Type(field.FieldType));
+					}
+
 					object castVal;
 					try
 					{
@@ -571,14 +578,9 @@ namespace Duality.Serialization
 						{
 							castVal = Convert.ChangeType(fieldValue, field.FieldType, System.Globalization.CultureInfo.InvariantCulture);
 						}
-						this.LocalLog.Write("...succeeded! Assigning value '{0}'", castVal);
 						field.SetValue(obj, castVal);
 					}
-					catch (Exception)
-					{
-						this.LocalLog.WriteWarning("...failed! Discarding value '{0}'", fieldValue);
-					}
-					this.LocalLog.PopIndent();
+					catch (Exception) { }
 				}
 				return;
 			}
@@ -723,6 +725,7 @@ namespace Duality.Serialization
 			this.idManager.Clear();
 			this.typeResolveCache.Clear();
 			this.memberResolveCache.Clear();
+			this.fieldTypeMismatchCache.Clear();
 			this.opInProgress = false;
 
 			this.OnEndReadOperation();
@@ -734,6 +737,7 @@ namespace Duality.Serialization
 			this.idManager.Clear();
 			this.typeResolveCache.Clear();
 			this.memberResolveCache.Clear();
+			this.fieldTypeMismatchCache.Clear();
 			this.opInProgress = false;
 
 			this.OnEndWriteOperation();
