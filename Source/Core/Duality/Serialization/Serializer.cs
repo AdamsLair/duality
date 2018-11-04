@@ -524,9 +524,15 @@ namespace Duality.Serialization
 			FieldInfo field = null;
 			if (objSerializeType != null)
 			{
-				field = objSerializeType.Fields.FirstOrDefault(f => f.Name == fieldName);
+				field = objSerializeType.GetFieldByName(fieldName);
+
+				// If the serializer-specific type does not have a matching field, attempt a global resolve.
+				// This handles cases where a formerly serialized field is now flagged as non-serialized.
 				if (field == null)
 				{
+					// Note that we don't use the local ResolveType method, since we don't want to log an error
+					// in case it fails. If there's a custom error handler to pick it up later, fine - if not,
+					// the field simply has been removed and is no longer relevant.
 					field = ReflectionHelper.ResolveMember("F:" + objSerializeType.TypeString + ":" + fieldName) as FieldInfo;
 				}
 			}
