@@ -21,6 +21,13 @@ namespace Duality.Resources
 	[EditorHintImage(CoreResNames.ImageFont)]
 	public class Font : Resource
 	{
+		private static readonly FontData EmptyData = new FontData(
+			new PixelData(),
+			new Rect[0],
+			new FontGlyphData[0],
+			new FontMetrics(0.0f, 0, 0, 0, 0, 0, false),
+			new FontKerningPair[0]);
+
 		/// <summary>
 		/// A generic monospace Font (Size 8) that has been loaded from your systems font library.
 		/// This is usually "Courier New".
@@ -54,7 +61,7 @@ namespace Duality.Resources
 		}
 
 		
-		private FontData          fontData         = null;
+		private FontData          fontData         = EmptyData;
 		private FontRenderMode    renderMode       = FontRenderMode.SharpBitmap;
 		private float             spacing          = 0.0f;
 		private float             lineHeightFactor = 1.0f;
@@ -169,7 +176,9 @@ namespace Duality.Resources
 		{
 			this.ReleaseResources();
 
-			this.fontData = fontData;
+			// We always expect a valid data instance, fall back to
+			// an internal empty one in case of null.
+			this.fontData = fontData ?? EmptyData;
 
 			this.GenerateCharLookup();
 			this.GeneratePixmap();
@@ -191,11 +200,8 @@ namespace Duality.Resources
 		{
 			if (this.pixmap != null) this.pixmap.Dispose();
 
-			if (this.fontData == null)
-				return;
-			
-			this.pixmap = new Pixmap(fontData.Bitmap);
-			this.pixmap.Atlas = fontData.Atlas.ToList();
+			this.pixmap = new Pixmap(this.fontData.Bitmap);
+			this.pixmap.Atlas = this.fontData.Atlas.ToList();
 		}
 		private void GenerateTexture()
 		{
@@ -237,7 +243,7 @@ namespace Duality.Resources
 		}
 		private void GenerateCharLookup()
 		{
-			FontGlyphData[] glyphs = fontData.Glyphs;
+			FontGlyphData[] glyphs = this.fontData.Glyphs;
 			if (glyphs == null)
 			{
 				this.charLookup = new int[0];
@@ -258,7 +264,8 @@ namespace Duality.Resources
 		}
 		private void GenerateKerningLookup()
 		{
-			this.kerningLookup = new FontKerningLookup(this.fontData.KerningPairs);
+			FontKerningPair[] pairs = this.fontData.KerningPairs;
+			this.kerningLookup = new FontKerningLookup(pairs);
 		}
 
 		/// <summary>
@@ -272,7 +279,10 @@ namespace Duality.Resources
 			int glyphId = (int)glyph;
 			if (glyphId >= this.charLookup.Length)
 			{
-				data = this.fontData.Glyphs[0];
+				if (this.fontData.Glyphs.Length > 0)
+					data = this.fontData.Glyphs[0];
+				else
+					data = default(FontGlyphData);
 				return false;
 			}
 			else
@@ -632,6 +642,11 @@ namespace Duality.Resources
 
 		protected override void OnLoaded()
 		{
+			// Fall back to a default-initialized data instance, in case the actual
+			// data failed to load.
+			if (this.fontData == null)
+				this.fontData = EmptyData;
+
 			this.GenerateCharLookup();
 			this.GeneratePixmap();
 			this.GenerateTexture();
