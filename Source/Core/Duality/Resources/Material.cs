@@ -234,5 +234,14 @@ namespace Duality.Resources
 		{
 			return this.info.GetTexture(name);
 		}
+
+		protected override void OnLoaded()
+		{
+			// Fallback to default in case the internal data failed to load
+			if (this.info == null)
+				this.info = new BatchInfo();
+
+			base.OnLoaded();
+		}
 	}
 }
