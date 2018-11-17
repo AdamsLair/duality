@@ -39,6 +39,7 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="RenamedV3TypesErrorHandler.cs" />
     <Compile Include="BatchInfoInternalsErrorHandler.cs" />
     <Compile Include="InternalFieldRenameErrorhandler.cs" />
     <Compile Include="CorePlugin.cs" />
