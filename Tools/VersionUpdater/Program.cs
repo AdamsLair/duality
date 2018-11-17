@@ -435,28 +435,50 @@ namespace VersionUpdater
 					string projectDocNs = projectDoc.Root.GetDefaultNamespace().NamespaceName;
 					HashSet<string> outputDirs = new HashSet<string>();
 					HashSet<string> outputNames = new HashSet<string>();
-					foreach (XElement outPathElement in projectDoc.Descendants(XName.Get("OutputPath", projectDocNs)))
+
+					// Gather potential output directories from msbuild Copy steps in postbuild
+					foreach (XElement copyStepElement in projectDoc.Descendants(XName.Get("Copy", projectDocNs)))
 					{
-						string path = outPathElement.Value;
+						XAttribute targetFolderAttribute = copyStepElement.Attribute("DestinationFolder");
+						if (targetFolderAttribute == null) continue;
+
+						string path = targetFolderAttribute.Value;
 						path = path.Replace("$(SolutionDir)", solutionDir + Path.DirectorySeparatorChar);
+						path = path.Replace("$(Configuration)", "Release");
 						if (!Path.IsPathRooted(path))
 							path = Path.Combine(info.ProjectRootDir, path);
 						outputDirs.Add(path);
 					}
+					// Gather potential output directories from project output paths
+					foreach (XElement outPathElement in projectDoc.Descendants(XName.Get("OutputPath", projectDocNs)))
+					{
+						string path = outPathElement.Value;
+						path = path.Replace("$(SolutionDir)", solutionDir + Path.DirectorySeparatorChar);
+						path = path.Replace("$(Configuration)", "Release");
+						if (!Path.IsPathRooted(path))
+							path = Path.Combine(info.ProjectRootDir, path);
+						outputDirs.Add(path);
+					}
+					// Gather potential output names from project output assembly names
 					foreach (XElement outPathElement in projectDoc.Descendants(XName.Get("AssemblyName", projectDocNs)))
 					{
 						string name = outPathElement.Value;
 						outputNames.Add(name);
 					}
+
 					string[] extensions = new string[] { ".exe", ".dll" };
-					foreach (string dir in outputDirs)
 					foreach (string name in outputNames)
-					foreach (string ext in extensions)
-					{ 
-						string path = Path.Combine(dir, name) + ext;
-						if (File.Exists(path))
+					{
+						foreach (string ext in extensions)
 						{
-							info.OutputFilePaths.Add(path);
+							foreach (string dir in outputDirs)
+							{
+								string path = Path.Combine(dir, name) + ext;
+								if (File.Exists(path))
+								{
+									info.OutputFilePaths.Add(path);
+								}
+							}
 						}
 					}
 				}
