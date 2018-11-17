@@ -206,11 +206,24 @@ namespace VersionUpdater
 			}
 			Console.WriteLine();
 
-			// Determine the changes for each project individually and gather changelog entries
-			changes = GetChangesPerProject(config, allProjects, gitHistory);
+			if (config.ApplyGlobalMajorUpdate)
+			{
+				// Apply a major version step to all projects
+				changes = new List<ProjectChangeInfo>(allProjects.Select(p => new ProjectChangeInfo
+				{
+					Project = p,
+					Titles = new List<string> { "Major Version Update" },
+					UpdateMode = UpdateMode.Major
+				}));
+			}
+			else
+			{
+				// Determine the changes for each project individually and gather changelog entries
+				changes = GetChangesPerProject(config, allProjects, gitHistory);
 
-			// Display each change to the user and ask whether it should be considered a patch, minor or major release
-			RetrieveUpdateModes(config, changes);
+				// Display each change to the user and ask whether it should be considered a patch, minor or major release
+				RetrieveUpdateModes(config, changes);
+			}
 
 			// Apply the specified update modes to the version numbers of each project
 			UpdateVersionNumbers(config, changes);
