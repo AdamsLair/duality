@@ -625,13 +625,12 @@ namespace VersionUpdater
 			string commitIdLine = null;
 			string authorLine = null;
 			string dateLine = null;
+			string mergeLine = null;
 			List<string> messageLines = new List<string>();
 			List<string> fileLines = new List<string>();
 			using (StringReader reader = new StringReader(chunk))
 			{
 				commitIdLine = reader.ReadLine();
-				authorLine = reader.ReadLine();
-				dateLine = reader.ReadLine();
 				while (true)
 				{
 					string line = reader.ReadLine();
@@ -639,12 +638,27 @@ namespace VersionUpdater
 					if (line == null) break;
 					if (string.IsNullOrWhiteSpace(line)) continue;
 
-					string trimmedLine = line.TrimStart();
-					bool isIndentedLine = trimmedLine.Length != line.Length;
-					if (isIndentedLine)
-						messageLines.Add(trimmedLine);
+					if (line.StartsWith("Merge:"))
+					{
+						mergeLine = line;
+					}
+					else if (line.StartsWith("Author:"))
+					{
+						authorLine = line;
+					}
+					else if (line.StartsWith("Date:"))
+					{
+						dateLine = line;
+					}
 					else
-						fileLines.Add(trimmedLine);
+					{
+						string trimmedLine = line.TrimStart();
+						bool isIndentedLine = trimmedLine.Length != line.Length;
+						if (isIndentedLine)
+							messageLines.Add(trimmedLine);
+						else
+							fileLines.Add(trimmedLine);
+					}
 				}
 			}
 
