@@ -374,21 +374,27 @@ namespace NightlyBuilder
 						XElement elemId = doc.Descendants("id").FirstOrDefault();
 						XElement elemVersion = doc.Descendants("version").FirstOrDefault();
 						string targetFileName = string.Format("{0}.{1}.nupkg", elemId.Value.Trim(), elemVersion.Value.Trim());
-						ExecuteCommand(Path.GetFullPath(config.NuGetPath) + " pack " + fileAbs, config.NuGetPackageTargetDir, false);
+						string packResult = ExecuteCommand(Path.GetFullPath(config.NuGetPath) + " pack " + fileAbs, config.NuGetPackageTargetDir, false);
 
 						if (!File.Exists(Path.Combine(config.NuGetPackageTargetDir, targetFileName)))
 						{
+							string errorMessage = string.Format(
+								"Failed to create NuGet Package {0}:" + Environment.NewLine + "{1}", 
+								Path.GetFileName(file), 
+								packResult);
+
 							// If in non-interactive mode, continue to build packages even if one of them failed.
 							if (config.NonInteractive)
 							{
 								Console.ForegroundColor = ConsoleColor.Red;
 								Console.WriteLine("failed");
+								Console.WriteLine(errorMessage);
 								Console.ForegroundColor = ConsoleColor.Gray;
 							}
 							// Otherwise, stop with an exception.
 							else
 							{
-								throw new ApplicationException(string.Format("Failed to create NuGet Package {0}", Path.GetFileName(file)));
+								throw new ApplicationException(errorMessage);
 							}
 						}
 						else
@@ -480,25 +486,39 @@ namespace NightlyBuilder
 			info.WorkingDirectory = workingDir;
 			Process proc = Process.Start(info);
 		}
-		public static void ExecuteCommand(string command, string workingDir = null, bool verbose = true)
+		public static string ExecuteCommand(string command, string workingDir = null, bool verbose = true)
 		{
 			if (workingDir == null) workingDir = Environment.CurrentDirectory;
 			if (verbose) Console.WriteLine(command);
 
 			ProcessStartInfo info = new ProcessStartInfo("cmd.exe", "/C " + command);
-			info.UseShellExecute = !verbose;
-			info.RedirectStandardOutput = verbose;
+			info.UseShellExecute = false;
+			info.RedirectStandardOutput = true;
+			info.RedirectStandardError = true;
 			info.WindowStyle = ProcessWindowStyle.Hidden;
 			info.WorkingDirectory = workingDir;
 			Process proc = Process.Start(info);
-			if (verbose)
+
+			// Retrieve command output
+			StringBuilder resultBuilder = new StringBuilder();
+			while (!proc.HasExited)
 			{
 				while (!proc.StandardOutput.EndOfStream)
 				{
-					Console.WriteLine(proc.StandardOutput.ReadLine());
+					string output = proc.StandardOutput.ReadLine();
+					resultBuilder.AppendLine(output);
+					if (verbose) Console.WriteLine(output);
+				}
+				while (!proc.StandardError.EndOfStream)
+				{
+					string output = proc.StandardError.ReadLine();
+					resultBuilder.AppendLine(output);
+					if (verbose) Console.WriteLine(output);
 				}
 			}
+
 			proc.WaitForExit();
+			return resultBuilder.ToString();
 		}
 		
 		public static bool BuildVisualStudioSolution(string solutionFile, string configuration)
