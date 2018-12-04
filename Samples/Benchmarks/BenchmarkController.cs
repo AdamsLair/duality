@@ -15,6 +15,18 @@ namespace Duality.Samples.Benchmarks
 {
 	public class BenchmarkController
 	{
+		private static BenchmarkController instance = null;
+		public static BenchmarkController Instance
+		{
+			get
+			{
+				if (instance == null)
+					instance = new BenchmarkController();
+				return instance;
+			}
+		}
+
+
 		private List<Point2> renderSizes = new List<Point2>
 		{
 			new Point2(320, 300), 
@@ -180,7 +192,7 @@ namespace Duality.Samples.Benchmarks
 				this.StartStandardTestRun();
 		}
 
-		public void PrepareBenchmarks()
+		public void EnterBenchmarkMode()
 		{
 			// Retrieve a list of all available scenes to cycle through.
 			this.benchmarkScenes = ContentProvider.GetAvailableContent<Scene>();
@@ -188,6 +200,16 @@ namespace Duality.Samples.Benchmarks
 
 			// Make sure the benchmark setup is used globally
 			DualityApp.AppData.RenderingSetup = this.renderSetup.As<RenderSetup>();
+		}
+		public void LeaveBenchmarkMode()
+		{
+			// Uninstall the benchmark setup we set globally
+			DualityApp.AppData.RenderingSetup = null;
+
+			// Discard local references to content, since we know the controller 
+			// itself won't be discarded due to being static
+			this.benchmarkScenes.Clear();
+			this.renderSetup = null;
 		}
 		public void Update()
 		{

@@ -11,7 +11,7 @@ using Duality.Drawing;
 namespace Duality.Samples.Benchmarks
 {
 	[EditorHintCategory("Benchmarks")]
-    public class BenchmarkInfo : Component, ICmpBenchmarkOverlayRenderer, ICmpInitializable
+	public class BenchmarkInfo : Component, ICmpBenchmarkOverlayRenderer, ICmpInitializable
 	{
 		private int maxWidth = 500;
 		private Vector2 margin = new Vector2(15, 8);
