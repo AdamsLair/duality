@@ -341,6 +341,28 @@ namespace Duality.Tests.Resources
 			// Clean up
 			scene.Dispose();
 		}
+		[Test] public void AddChildrenOnInit()
+		{
+			// Set up an object that will recursively create child objects on activation
+			Scene scene = new Scene();
+			GameObject testObj = new GameObject("TestObject");
+			InitCreateChildComponent createComponent = testObj.AddComponent<InitCreateChildComponent>();
+			createComponent.CreateCount = 9;
+			scene.AddObject(testObj);
+
+			// Activate the scene, prompting child creation
+			scene.Activate();
+
+			// Assert that all child objects were created successfully
+			Assert.AreEqual(10, scene.AllObjects.Count());
+			Assert.AreEqual(1, scene.RootObjects.Count());
+			Assert.AreSame(testObj, scene.RootObjects.FirstOrDefault());
+			Assert.IsTrue(scene.AllObjects.All(obj => obj.Children.Count <= 1));
+
+			// Clean up
+			scene.Deactivate();
+			scene.Dispose();
+		}
 
 		/// <summary>
 		/// This test will determine whether a <see cref="Scene"/> can be activated, updated and deactivated
@@ -554,6 +576,23 @@ namespace Duality.Tests.Resources
 				Scene.SwitchTo(this.Target);
 				this.Switched = (last != Scene.Current && Scene.Current == this.Target);
 			}
+		}
+		private class InitCreateChildComponent : Component, ICmpInitializable
+		{
+			public int CreateCount { get; set; }
+			void ICmpInitializable.OnActivate()
+			{
+				if (this.CreateCount > 0)
+				{
+					GameObject other = new GameObject(string.Format("Object #{0}", this.CreateCount));
+					InitCreateChildComponent childComponent = other.AddComponent<InitCreateChildComponent>();
+					childComponent.CreateCount = this.CreateCount - 1;
+
+					// Only parent to this object in the end, since this will trigger activation
+					other.Parent = this.GameObj;
+				}
+			}
+			void ICmpInitializable.OnDeactivate() { }
 		}
 	}
 }

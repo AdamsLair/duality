@@ -371,6 +371,10 @@ namespace Duality.Resources
 		{
 			if (this.active) throw new InvalidOperationException("Cannot activate a scene that is already active.");
 
+			// Set state to active immediately, so the scene will be treated as
+			// such when reacting to added objects and similar events.
+			this.active = true;
+
 			// Apply physical properties
 			this.physicsWorld.ResetSimulation();
 			this.physicsWorld.Gravity = this.globalGravity;
@@ -408,8 +412,6 @@ namespace Duality.Resources
 			{
 				this.visibilityStrategy.Update();
 			});
-
-			this.active = true;
 		}
 		/// <summary>
 		/// Transitions the <see cref="Scene"/> into an inactive state, where it can no 
@@ -1109,7 +1111,13 @@ namespace Duality.Resources
 		{
 			base.OnDisposing(manually);
 
-			if (current.ResWeak == this) Current = null;
+			// If the scene is current, leave it
+			if (current.ResWeak == this)
+				Current = null;
+
+			// If the scene is otherwise active, deactivate it
+			if (this.active)
+				this.Deactivate();
 
 			GameObject[] obj = this.objectManager.AllObjects.ToArray();
 			this.objectManager.Clear();
