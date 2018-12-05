@@ -21,6 +21,24 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			this.Expanded = true;
 		}
 
+		protected override bool IsAutoCreateMember(MemberInfo info)
+		{
+			if (info.IsEquivalent(ReflectionInfo.Property_Pixmap_Atlas))
+				return true;
+			return base.IsAutoCreateMember(info);
+		}
+
+		protected override PropertyEditor AutoCreateMemberEditor(MemberInfo info)
+		{
+			if (info.IsEquivalent(ReflectionInfo.Property_Pixmap_Atlas))
+			{
+				RectAtlasPropertyEditor editor = new RectAtlasPropertyEditor();
+				editor.EditedType = typeof(RectAtlas);
+				return editor;
+			}
+			return base.AutoCreateMemberEditor(info);
+		}
+
 		protected override void OnValueChanged(object sender, PropertyEditorValueEventArgs args)
 		{
 			base.OnValueChanged(sender, args);

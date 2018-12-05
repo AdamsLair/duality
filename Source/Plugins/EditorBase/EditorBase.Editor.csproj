@@ -128,6 +128,7 @@
     <Compile Include="PropertyEditors\ComponentRefPropertyEditor.cs" />
     <Compile Include="PropertyEditors\GameObjectRefPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ObjectRefPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\RectAtlasPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ResourceImportExportPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ResourceOverviewPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ResourceAssetPropertyEditor.cs" />

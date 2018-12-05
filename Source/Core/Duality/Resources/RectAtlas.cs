@@ -9,6 +9,7 @@ namespace Duality.Resources
 	public class RectAtlas : IList<Rect>, IList
 	{
 		private readonly List<Rect> rects;
+		private Vector2[] pivots;
 		private Dictionary<string, List<int>> tags;
 
 		/// <summary>
@@ -45,24 +46,34 @@ namespace Duality.Resources
 			get { return this.rects[this.tags[tag][0]]; }
 		}
 
+		[EditorHintFlags(MemberFlags.AffectsOthers)]
+		public Vector2[] Pivots
+		{
+			get { return this.pivots; }
+		}
+
 		public RectAtlas()
 		{
 			this.rects = new List<Rect>();
+			this.pivots = new Vector2[0];
 		}
 
 		public RectAtlas(int count)
 		{
 			this.rects = new List<Rect>(count);
+			this.pivots = new Vector2[count];
 		}
 
 		public RectAtlas(IEnumerable<Rect> rects)
 		{
 			this.rects = new List<Rect>(rects);
+			this.pivots = new Vector2[this.rects.Count];
 		}
 
 		public RectAtlas(RectAtlas other)
 		{
 			this.rects = other.rects.ToList();
+			this.pivots = other.pivots.ToArray();
 			if (other.tags != null)
 			{
 				this.tags = new Dictionary<string, List<int>>();
@@ -80,6 +91,7 @@ namespace Duality.Resources
 		public void Add(Rect item)
 		{
 			this.rects.Add(item);
+			Array.Resize(ref this.pivots, this.rects.Count);
 		}
 
 		/// <summary>
@@ -88,6 +100,7 @@ namespace Duality.Resources
 		public void Clear()
 		{
 			this.rects.Clear();
+			this.pivots = new Vector2[0];
 			this.tags = null;
 		}
 
@@ -171,6 +184,9 @@ namespace Duality.Resources
 			}
 
 			this.rects.Insert(index, item);
+			Array.Resize(ref this.pivots, this.rects.Count);
+			Array.Copy(this.pivots, index, this.pivots, index + 1, this.rects.Count - index);
+			this.pivots[index] = default(Vector2);
 		}
 
 		/// <summary>
@@ -210,6 +226,14 @@ namespace Duality.Resources
 			}
 
 			this.rects.RemoveAt(index);
+
+			// Shift elements down
+			for (int a = index; a < this.pivots.Length - 1; a++)
+			{
+				this.pivots[a] = this.pivots[a + 1];
+			}
+			// Reduce array size
+			Array.Resize(ref this.pivots, this.pivots.Length - 1);
 		}
 
 		/// <summary>
