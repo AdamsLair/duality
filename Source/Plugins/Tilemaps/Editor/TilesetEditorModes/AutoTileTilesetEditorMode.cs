@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -198,6 +198,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		}
 		protected override void OnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args)
 		{
+			this.currentAutoTile = null;
 			this.UpdateTreeModel();
 		}
 		protected override void OnTilesetModified(ObjectPropertyChangedEventArgs args)
@@ -230,6 +231,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			}
 			else
 			{
+				this.currentAutoTile = null;
 				DualityEditorApp.Deselect(this, obj => obj is TilesetAutoTileInput);
 			}
 
