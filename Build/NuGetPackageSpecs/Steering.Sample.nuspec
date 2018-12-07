@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.Steering</id>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <authors>Daniel Herb, Fedja Adam</authors>
     <owners>Daniel Herb, Fedja Adam</owners>
     <title>Steering Behaviours Sample</title>
@@ -13,7 +13,7 @@
     <summary>Introduces a Steering Agent Component that allows for objects to evade each other.</summary>
     <description>Introduces a Steering Agent Component that allows for objects to evade each other.</description>
     <tags>Duality Sample Plugin Steering Component AI</tags>
-    <releaseNotes>Major Version Update
+    <releaseNotes>
 </releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="3.0.0" />
