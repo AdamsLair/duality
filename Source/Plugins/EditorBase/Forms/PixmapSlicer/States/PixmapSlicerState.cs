@@ -56,6 +56,17 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 			}
 			this.InvalidatePixmap(updatedArea);
 		}
+
+		protected void SetAtlasPivot(int index, Vector2 pivot)
+		{
+			if (this.TargetPixmap == null) return;
+
+			UndoRedoManager.Do(new SetAtlasRectPivotAction(this.TargetPixmap, index, pivot));
+
+			Rect atlasRect = this.View.GetAtlasRect(index);
+			this.InvalidatePixmap(atlasRect);
+		}
+
 		protected void SetAtlas(RectAtlas atlas)
 		{
 			if (this.TargetPixmap == null) return;

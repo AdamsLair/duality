@@ -244,6 +244,16 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			return this.targetPixmap.Atlas[index];
 		}
 
+		public Vector2 GetAtlasPivot(int index)
+		{
+			if (this.targetPixmap == null) return Vector2.Zero;
+			if (this.targetPixmap.Atlas == null) return Vector2.Zero;
+			if (index < 0) return Vector2.Zero;
+			if (index >= this.targetPixmap.Atlas.Count) return Vector2.Zero;
+
+			return this.targetPixmap.Atlas.Pivots[index];
+		}
+
 		/// <summary>
 		/// Transforms the given atlas rect to display coordinates
 		/// </summary>
@@ -486,6 +496,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			bool onBottomEdge = Math.Abs(rect.Bottom - y) <= maxDistanceToEdge;
 			bool onLeftEdge = Math.Abs(rect.Left - x) <= maxDistanceToEdge;
 			bool onRightEdge = Math.Abs(rect.Right - x) <= maxDistanceToEdge;
+			bool onCenter = Math.Abs(rect.Left + rect.Width / 2 - x) <= maxDistanceToEdge
+				&& Math.Abs(rect.Top + rect.Height / 2 - y) <= maxDistanceToEdge;
+			if (onCenter) return PixmapSlicingRectSide.Pivot;
 			if (onTopEdge) return PixmapSlicingRectSide.Top;
 			if (onBottomEdge) return PixmapSlicingRectSide.Bottom;
 			if (onLeftEdge) return PixmapSlicingRectSide.Left;
@@ -596,7 +609,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 					}
 				}
 
-				// Draw selected outline on top of all others
+				// Draw selected outline and pivot on top of all others
 				if (this.selectedRectIndex != -1)
 				{
 					Rect atlasRect = this.GetAtlasRect(this.selectedRectIndex);
@@ -604,6 +617,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 					e.Graphics.DrawRectangle(
 						this.SelectedRectPen,
 						displayRect);
+
+					Point pivotPos = this.GetDisplayPos(atlasRect.Center + this.TargetPixmap.Atlas.Pivots[this.selectedRectIndex]);
+					e.Graphics.DrawArc(this.SelectedRectPen, pivotPos.X - 4, pivotPos.Y - 4, 8, 8, 0, 360);
 				}
 			}
 

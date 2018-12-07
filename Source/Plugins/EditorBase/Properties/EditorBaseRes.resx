@@ -376,4 +376,7 @@
   <data name="IconShowIndices" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\IconShowIndices.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="UndoRedo_SetAtlasRectPivot" xml:space="preserve">
+    <value>Set Atlas Rect Pivot</value>
+  </data>
 </root>

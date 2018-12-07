@@ -11,7 +11,8 @@ namespace Duality.Editor.Plugins.Base
 		Left,
 		Right,
 		Top,
-		Bottom
+		Bottom,
+		Pivot
 	}
 
 	public static class ExtMethodsPixmapSlicingRectSide
@@ -24,6 +25,7 @@ namespace Duality.Editor.Plugins.Base
 				case PixmapSlicingRectSide.Right:	return PixmapSlicingRectSide.Left;
 				case PixmapSlicingRectSide.Top:		return PixmapSlicingRectSide.Bottom;
 				case PixmapSlicingRectSide.Bottom:	return PixmapSlicingRectSide.Top;
+				case PixmapSlicingRectSide.Pivot:	return PixmapSlicingRectSide.Pivot;
 				default: return PixmapSlicingRectSide.None;
 			}
 		}

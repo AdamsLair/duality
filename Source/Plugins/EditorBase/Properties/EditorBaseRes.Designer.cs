@@ -856,5 +856,14 @@ namespace Duality.Editor.Plugins.Base.Properties {
                 return ResourceManager.GetString("UndoRedo_SetAtlasRect", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Atlas Rect Pivot.
+        /// </summary>
+        public static string UndoRedo_SetAtlasRectPivot {
+            get {
+                return ResourceManager.GetString("UndoRedo_SetAtlasRectPivot", resourceCulture);
+            }
+        }
     }
 }

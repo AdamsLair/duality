@@ -167,6 +167,7 @@
     <Compile Include="UndoRedoActions\CreateRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\CreateSoundEmitterSourceAction.cs" />
     <Compile Include="UndoRedoActions\DeleteSoundEmitterSourceAction.cs" />
+    <Compile Include="UndoRedoActions\SetAtlasRectPivotAction.cs" />
     <Compile Include="UndoRedoActions\SoundEmitterSourceAction.cs" />
     <Compile Include="UndoRedoActions\ReparentRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\RigidBodyJointAction.cs" />
