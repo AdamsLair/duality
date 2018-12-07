@@ -176,9 +176,11 @@ namespace Duality.Components.Renderers
 			else
 				return null;
 		}
-		protected void PrepareVertices(ref VertexC1P3T2[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect)
+		protected void PrepareVertices(ref VertexC1P3T2[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect, Vector2 pivot)
 		{
 			Vector3 posTemp = this.gameobj.Transform.Pos;
+			posTemp.X -= pivot.X;
+			posTemp.Y -= pivot.Y;
 
 			Vector2 xDot, yDot;
 			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, this.gameobj.Transform.Scale, out xDot, out yDot);
@@ -297,6 +299,13 @@ namespace Duality.Components.Renderers
 					uvRect.H *= this.rect.H / fullSize.Y;
 			}
 		}
+		protected void GetPivot(Texture mainTex, int spriteIndex, out Vector2 pivot)
+		{
+			if (mainTex != null && spriteIndex != -1)
+				mainTex.LookupPivot(spriteIndex, out pivot);
+			else
+				pivot = Vector2.Zero;
+		}
 
 		/// <inheritdoc/>
 		public virtual void ApplySpriteAnimation(int currentSpriteIndex, int nextSpriteIndex, float progressToNext)
@@ -309,8 +318,10 @@ namespace Duality.Components.Renderers
 			Texture mainTex = this.RetrieveMainTex();
 
 			Rect uvRect;
+			Vector2 pivot;
 			this.GetUVRect(mainTex, this.spriteIndex, out uvRect);
-			this.PrepareVertices(ref this.vertices, device, this.colorTint, uvRect);
+			this.GetPivot(mainTex, this.spriteIndex, out pivot);
+			this.PrepareVertices(ref this.vertices, device, this.colorTint, uvRect, pivot);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);
 			else

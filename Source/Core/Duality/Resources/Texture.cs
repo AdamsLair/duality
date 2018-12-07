@@ -470,6 +470,29 @@ namespace Duality.Resources
 		}
 
 		/// <summary>
+		/// Does a safe (null-checked, clamped) texture <see cref="Duality.Resources.Pixmap.Atlas"/> pivot lookup.
+		/// </summary>
+		public void LookupPivot(int index, out Vector2 pivot)
+		{
+			if (this.atlas == null)
+			{
+				pivot = Vector2.Zero;
+			}
+			else
+			{
+				pivot = this.atlas.Pivots[MathF.Clamp(index, 0, this.atlas.Count - 1)];
+			}
+		}
+		/// <summary>
+		/// Does a safe (null-checked, clamped) texture <see cref="Duality.Resources.Pixmap.Atlas"/> pivot lookup.
+		/// </summary>
+		public Vector2 LookupPivot(int index)
+		{
+			Vector2 pivot;
+			this.LookupPivot(index, out pivot);
+			return pivot;
+		}
+		/// <summary>
 		/// Does a safe (null-checked, clamped) texture <see cref="Duality.Resources.Pixmap.Atlas"/> lookup.
 		/// </summary>
 		/// <param name="index"></param>
