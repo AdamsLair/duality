@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="EmbeddedResources\page_white_put.png" />
     <None Include="EmbeddedResources\WorkingFolderIcon16.png" />
     <None Include="EmbeddedResources\cut.png" />
     <None Include="EmbeddedResources\cross.png" />

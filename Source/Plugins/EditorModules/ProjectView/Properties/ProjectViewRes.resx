@@ -142,6 +142,9 @@
   <data name="ProjectFolderView_ContextItemName_New" xml:space="preserve">
     <value>New</value>
   </data>
+  <data name="ProjectFolderView_ContextItemName_Import" xml:space="preserve">
+    <value>Import...</value>
+  </data>
   <data name="ProjectFolderView_ContextItemName_Paste" xml:space="preserve">
     <value>Paste</value>
   </data>

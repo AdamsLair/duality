@@ -20,6 +20,7 @@ using Duality.Editor;
 using Duality.Editor.AssetManagement;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.ProjectView.TreeModels;
+using System.Xml.Linq;
 
 namespace Duality.Editor.Plugins.ProjectView
 {
@@ -57,6 +58,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		private	List<ScheduleSelectEntry>	scheduleSelectPath		= new List<ScheduleSelectEntry>();
 		private	List<string>				skipGlobalRenamePath	= new List<string>();
 		private	HashSet<string>				unsavedResRedrawCache	= new HashSet<string>();
+		private string						importSourcePath		= null;
 
 		private	Dictionary<Node,bool>	tempNodeVisibilityCache		= new Dictionary<Node,bool>();
 		private	string					tempUpperFilter				= null;
@@ -65,6 +67,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		private bool					tempScheduleSelectionChange	= false;
 
 		private MenuModelItem			nodeContextItemNew				= null;
+		private MenuModelItem			nodeContextItemImport			= null;
 		private MenuModelItem			nodeContextItemCut				= null;
 		private MenuModelItem			nodeContextItemCopy				= null;
 		private MenuModelItem			nodeContextItemPaste			= null;
@@ -116,6 +119,15 @@ namespace Duality.Editor.Plugins.ProjectView
 			FileEventManager.BeginGlobalRename     -= this.FileEventManager_BeginGlobalRename;
 			DualityEditorApp.ObjectPropertyChanged -= this.EditorForm_ObjectPropertyChanged;
 			Resource.ResourceSaved                 -= this.Resource_ResourceSaved;
+		}
+
+		internal void SaveUserData(XElement node)
+		{
+			node.SetElementValue("ImportSourcePath", this.importSourcePath);
+		}
+		internal void LoadUserData(XElement node)
+		{
+			this.importSourcePath = node.GetElementValue("ImportSourcePath", this.importSourcePath);
 		}
 
 		public void FlashNode(NodeBase node)
@@ -576,6 +588,27 @@ namespace Duality.Editor.Plugins.ProjectView
 				MessageBoxIcon.Question);
 			return result == DialogResult.Yes;
 		}
+		protected void DisplayFileImportDialog()
+		{
+			OpenFileDialog dialog = new OpenFileDialog
+			{
+				Multiselect = true,
+				InitialDirectory = this.importSourcePath ?? Path.GetFullPath(DualityApp.DataDirectory)
+			};
+			
+			if (dialog.ShowDialog() == DialogResult.OK)
+			{
+				string destinationPath = this.GetInsertActionTargetBasePath(
+					this.folderView.SelectedNode != null ? this.folderView.SelectedNode.Tag as NodeBase : null);
+
+				this.HandleFileImport(destinationPath, dialog.FileNames);
+
+				// Save the source directory; the next time the user opens the import
+				// dialog, the initial directory will be set to this.
+				this.importSourcePath = Path.GetDirectoryName(
+					dialog.FileNames.Last());
+			}
+		}
 
 		protected void SkipGlobalRenameEventFor(string path)
 		{
@@ -635,6 +668,12 @@ namespace Duality.Editor.Plugins.ProjectView
 							TypeHint		= MenuItemTypeHint.Separator
 						}
 					}
+				},
+				this.nodeContextItemImport = new MenuModelItem
+				{
+					Name			= Properties.ProjectViewRes.ProjectFolderView_ContextItemName_Import,
+					SortValue		= MenuModelItem.SortValue_UnderTop,
+					ActionHandler	= this.importToolStripMenuItem_Click
 				},
 				new MenuModelItem
 				{
@@ -713,6 +752,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			bool anyReadOnly = this.folderView.SelectedNodes.Any(viewNode => (viewNode.Tag as NodeBase).ReadOnly);
 
 			this.nodeContextItemNew.Visible = !anyReadOnly && !multiSelect;
+			this.nodeContextItemImport.Visible = !anyReadOnly && !multiSelect;
 
 			this.nodeContextItemCut.Visible = !noSelect && !anyReadOnly;
 			this.nodeContextItemCopy.Visible = !noSelect && !anyReadOnly;
@@ -1399,6 +1439,10 @@ namespace Duality.Editor.Plugins.ProjectView
 			this.UpdateContextMenu();
 		}
 
+		private void importToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.DisplayFileImportDialog();
+		}
 		private void cutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.ClipboardCutNodes(this.folderView.SelectedNodes);
