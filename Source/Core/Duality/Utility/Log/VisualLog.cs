@@ -17,68 +17,8 @@ namespace Duality
 	/// </summary>
 	public sealed class VisualLog
 	{
-		private	static	VisualLog						logDefault	= new VisualLog("Default");
-		private static	Dictionary<string,VisualLog>	logRegistry	= new Dictionary<string,VisualLog> { { logDefault.Name, logDefault } };
-
-		/// <summary>
-		/// [GET] Enumerates all currently existing logs.
-		/// </summary>
-		public static IEnumerable<VisualLog> All
-		{
-			get { return logRegistry.Values; }
-		}
-		/// <summary>
-		/// [GET] Returns the default log, which can be used for quick output hacks and miscellaneous data.
-		/// To set up a distinct layer for specific kinds of data, use <see cref="VisualLog.Get">a different</see>
-		/// log.
-		/// </summary>
-		public static VisualLog Default
-		{
-			get { return logDefault; }
-		}
-		/// <summary>
-		/// [GET] Creates or retrieves a named log. Once a log has been created, it will remain available until
-		/// explicitly removed.
-		/// </summary>
-		/// <param name="logName"></param>
-		/// <returns></returns>
-		public static VisualLog Get(string logName)
-		{
-			VisualLog log;
-			if (!logRegistry.TryGetValue(logName, out log))
-			{
-				log = new VisualLog(logName);
-				logRegistry[logName] = log;
-			}
-			return log;
-		}
-
-		internal static void PrepareRenderLogEntries()
-		{
-			if (logRegistry.Values.Any(log => log.entries.Count > 0) && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-			{
-				VisualLogRenderer renderer = Scene.Current.FindComponent<VisualLogRenderer>(false);
-				if (renderer == null)
-				{
-					GameObject obj = new GameObject("VisualLogRenderer");
-					obj.AddComponent<VisualLogRenderer>();
-					Scene.Current.AddObject(obj);
-				}
-			}
-		}
-		internal static void UpdateLogEntries()
-		{
-			foreach (VisualLog log in logRegistry.Values)
-				log.Update();
-		}
-		internal static void ClearAll()
-		{
-			foreach (VisualLog log in logRegistry.Values)
-				log.Clear();
-		}
-
-
 		private	string					name			= "VisualLog";
+		private	CustomVisualLogInfo		customInfo		= null;
 		private	bool					visible			= true;
 		private	ColorRgba				baseColor		= ColorRgba.White.WithAlpha(0.5f);
 		private	VisibilityFlag			visibilityGroup	= VisibilityFlag.AllGroups;
@@ -90,6 +30,13 @@ namespace Duality
 		public string Name
 		{
 			get { return this.name; }
+		}
+		/// <summary>
+		/// [GET] An optional <see cref="CustomVisualLogInfo"/> that was passed to the log on creation.
+		/// </summary>
+		public CustomVisualLogInfo CustomInfo
+		{
+			get { return this.customInfo; }
 		}
 		/// <summary>
 		/// [GET / SET] Whether or not this log will be displayed. It's basically an on / off switch.
@@ -119,15 +66,16 @@ namespace Duality
 		/// <summary>
 		/// [GET] Enumerates all log entries that have been added to this log and are currently active.
 		/// </summary>
-		public IEnumerable<VisualLogEntry> Entries
+		public IReadOnlyList<VisualLogEntry> Entries
 		{
 			get { return this.entries; }
 		}
 
 
-		private VisualLog(string name)
+		public VisualLog(string name, CustomVisualLogInfo customInfo = null)
 		{
 			this.name = name;
+			this.customInfo = customInfo;
 		}
 
 		/// <summary>
@@ -463,11 +411,21 @@ namespace Duality
 			return this.DrawText(worldPos.X, worldPos.Y, worldPos.Z, text);
 		}
 
-		private void Clear()
+		/// <summary>
+		/// Removes all previously added items from the log. Don't use this
+		/// when you're dealing with a global log, the system already calls
+		/// this method when appropriate.
+		/// </summary>
+		public void Clear()
 		{
 			this.entries.Clear();
 		}
-		private void Update()
+		/// <summary>
+		/// Updates all currently existing log items. Don't use this
+		/// when you're dealing with a global log, the system already calls
+		/// this method when appropriate.
+		/// </summary>
+		public void Update()
 		{
 			for (int i = entries.Count - 1; i >= 0; i--)
 			{

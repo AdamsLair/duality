@@ -103,7 +103,7 @@ namespace Duality.Tests.Components
 			// For this test, just expect the system to not crash. Check some select results that we
 			// can safely expect.
 			TestingLogOutput logWatcher = new TestingLogOutput();
-			Log.AddGlobalOutput(logWatcher);
+			Logs.AddGlobalOutput(logWatcher);
 
 			map.GetRequirements(typeof(TestComponentC1));
 			map.GetRequirements(typeof(TestComponentC2));
@@ -140,7 +140,7 @@ namespace Duality.Tests.Components
 			map.IsRequirementMet(new GameObject(), typeof(TestComponentC2), new[] { typeof(TestComponentC3), typeof(TestComponentC1) });
 			map.IsRequirementMet(new GameObject(), typeof(TestComponentC3), new[] { typeof(TestComponentC1), typeof(TestComponentC2) });
 
-			Log.RemoveGlobalOutput(logWatcher);
+			Logs.RemoveGlobalOutput(logWatcher);
 		}
 		[Test] public void AbstractRequirements()
 		{

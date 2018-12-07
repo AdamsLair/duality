@@ -25,6 +25,7 @@ namespace Duality.Editor.Plugins.CamView.Properties
 		public static readonly Bitmap   IconCmpRectCollider           = CamViewRes.IconCmpRectCollider;
 		public static readonly Bitmap   IconCmpEditVertices           = CamViewRes.IconCmpEditVertices;
 		public static readonly Icon     IconEye                       = CamViewRes.IconEye;
+		public static readonly Bitmap   IconMonitor                   = CamViewRes.IconMonitor;
 
 		public static readonly Bitmap   ObjectVisibility              = Resources.ObjectVisibility;
 		public static readonly Bitmap   ObjectVisibilityFiltered      = Resources.ObjectVisibilityFiltered;

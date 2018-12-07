@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DefaultOpenTK</id>
-    <version>2.0.22</version>
+    <version>3.0.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>OpenTK Backend</title>
@@ -13,11 +13,11 @@
     <summary>The default audiovisual backend layer for Duality.</summary>
     <description>The default audiovisual backend layer for Duality. It uses OpenGL and OpenAL, as provided by OpenTK.</description>
     <tags>Duality Core Plugin Backend</tags>
-    <releaseNotes>Streaming Audio Handling Bugfix
-#FIX: Fixed native audio source handling on streaming sources that do not contain any data.</releaseNotes>
+    <releaseNotes>Major Version Update
+</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.14.8" />
-      <dependency id="AdamsLair.OpenTK" version="1.1.10" />
+      <dependency id="AdamsLair.Duality" version="3.0.0" />
+      <dependency id="AdamsLair.OpenTK" version="1.2.0" />
     </dependencies>
   </metadata>
   <files>

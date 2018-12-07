@@ -35,13 +35,13 @@ namespace Duality
 				{
 					return string.Format("Skip {0} if {1} exists", 
 						this.SkipIfExists, 
-						Log.Type(this.RequiredType));
+						LogFormat.Type(this.RequiredType));
 				}
 				else
 				{
 					return string.Format("Require {0} or create {1}", 
-						Log.Type(this.RequiredType), 
-						Log.Type(this.CreateType));
+						LogFormat.Type(this.RequiredType), 
+						LogFormat.Type(this.CreateType));
 				}
 			}
 		}
@@ -65,9 +65,9 @@ namespace Duality
 				if (this.initRequirements == RecursiveInit.Initialized) return;
 				if (this.initRequirements == RecursiveInit.InProgress)
 				{
-					Log.Core.WriteWarning(
+					Logs.Core.WriteWarning(
 						"Detected a cyclic Component requirement in {0}. Requirements can not be ensured for cyclic dependencies.", 
-						Log.Type(this.Component));
+						LogFormat.Type(this.Component));
 					return;
 				}
 
@@ -80,9 +80,9 @@ namespace Duality
 				if (this.initCreationChain == RecursiveInit.Initialized) return;
 				if (this.initCreationChain == RecursiveInit.InProgress)
 				{
-					Log.Core.WriteWarning(
+					Logs.Core.WriteWarning(
 						"Detected a cyclic Component requirement in {0}. Requirements can not be ensured for cyclic dependencies.", 
-						Log.Type(this.Component));
+						LogFormat.Type(this.Component));
 					return;
 				}
 

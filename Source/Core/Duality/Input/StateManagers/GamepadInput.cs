@@ -11,9 +11,9 @@ namespace Duality.Input
 	{
 		private class State
 		{
-			public bool		IsAvailable		= false;
-			public float[]	AxisValue		= new float[(int)GamepadAxis.Last + 1];
-			public bool[]	ButtonPressed	= new bool[(int)GamepadButton.Last + 1];
+			public bool    IsAvailable   = false;
+			public float[] AxisValue     = new float[(int)GamepadAxis.Last + 1];
+			public bool[]  ButtonPressed = new bool[(int)GamepadButton.Last + 1];
 
 			public State() {}
 			public State(State baseState)
@@ -42,11 +42,13 @@ namespace Duality.Input
 			}
 		}
 
-		private	IGamepadInputSource	source			= null;
-		private	State				currentState	= new State();
-		private	State				lastState		= new State();
-		private	string				description		= null;
-		private	bool				isDummy			= false;
+		private IGamepadInputSource source       = null;
+		private State               currentState = new State();
+		private State               lastState    = new State();
+		private string              id           = null;
+		private Guid                productId    = Guid.Empty;
+		private string              productName  = "Unknown";
+		private bool                isDummy      = false;
 
 
 		/// <summary>
@@ -62,7 +64,7 @@ namespace Duality.Input
 					this.source = value;
 					if (this.source != null)
 					{
-						this.description = this.source.Description;
+						this.id = this.source.Id;
 					}
 				}
 			}
@@ -73,11 +75,25 @@ namespace Duality.Input
 			set { this.Source = value as IGamepadInputSource; }
 		}
 		/// <summary>
-		/// [GET] A string containing a unique description for this instance.
+		/// [GET] A string containing a unique id for this instance.
 		/// </summary>
-		public string Description
+		public string Id
 		{
-			get { return this.description; }
+			get { return this.id; }
+		}
+		/// <summary>
+		/// [GET] The unique ID of the product that is providing this input.
+		/// </summary>
+		public Guid ProductId
+		{
+			get { return this.productId; }
+		}
+		/// <summary>
+		/// [GET] The name of the product that is providing this input.
+		/// </summary>
+		public string ProductName
+		{
+			get { return this.productName; }
 		}
 		/// <summary>
 		/// [GET] Returns whether this input is currently available.
@@ -237,8 +253,11 @@ namespace Duality.Input
 
 			if (this.source != null)
 			{
-				// Update source state
+				// Update source state and info
 				this.source.UpdateState();
+				this.productId = this.source.ProductId;
+				this.productName = this.source.ProductName;
+
 				// Obtain new state
 				this.currentState.UpdateFromSource(this.source);
 			}

@@ -41,9 +41,9 @@ namespace Duality.Editor.Tests
 			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);
 
 			// Add some Console logs manually for NUnit
-			if (this.consoleLogOutput == null) 
+			if (this.consoleLogOutput == null)
 				this.consoleLogOutput = new TextWriterLogOutput(Console.Out);
-			Log.AddGlobalOutput(this.consoleLogOutput);
+			Logs.AddGlobalOutput(this.consoleLogOutput);
 
 			// Create a dummy window for the editor
 			if (this.dummyWindow == null)
@@ -59,13 +59,12 @@ namespace Duality.Editor.Tests
 			Console.WriteLine("----- Beginning Duality Editor environment teardown -----");
 			
 			// Remove NUnit Console logs
-			Log.RemoveGlobalOutput(this.consoleLogOutput);
+			Logs.RemoveGlobalOutput(this.consoleLogOutput);
 			this.consoleLogOutput = null;
 
 			if (this.dummyWindow != null)
 			{
 				ContentProvider.ClearContent();
-				ContentProvider.DisposeDefaultContent();
 			    this.dummyWindow.Dispose();
 			    this.dummyWindow = null;
 			}

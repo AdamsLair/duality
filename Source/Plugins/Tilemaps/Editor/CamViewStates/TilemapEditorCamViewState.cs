@@ -231,12 +231,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				button.AutoToolTip = true;
 				button.Alignment = ToolStripItemAlignment.Right;
 				button.Click += this.actionToolButton_Click;
-
-				string desc = entry.Action.Description;
-				if (!string.IsNullOrEmpty(desc))
-				{
-					button.Tag = HelpInfo.FromText(entry.Action.Name, desc);
-				}
+				button.Tag = entry.Action.HelpInfo;
 
 				entry.ToolButton = button;
 				this.toolstrip.Items.Add(button);
@@ -274,13 +269,16 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 		private IEnumerable<ICmpTilemapRenderer> QueryVisibleTilemapRenderers()
 		{
-			return Scene.Current.FindComponents<ICmpTilemapRenderer>().Where(r => 
+			return Scene.Current.FindComponents<ICmpTilemapRenderer>().Where(renderer => 
 			{
-				Component cmp = r as Component;
+				CullingInfo culling;
+				renderer.GetCullingInfo(out culling);
+
+				Component component = renderer as Component;
 				return
-					cmp.Active && 
-					!DesignTimeObjectData.Get(cmp.GameObj).IsHidden && 
-					this.IsCoordInView(cmp.GameObj.Transform.Pos, r.BoundRadius);
+					component.Active && 
+					!DesignTimeObjectData.Get(component.GameObj).IsHidden && 
+					this.IsSphereInView(component.GameObj.Transform.Pos, culling.Radius);
 			});
 		}
 		private IEnumerable<Tilemap> QueryTilemapsInScene()
@@ -303,7 +301,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			Transform transform = component.GameObj.Transform;
 
 			// Determine where the cursor is hovering in various coordinate systems
-			Vector3 worldCursorPos = this.CameraComponent.GetSpaceCoord(new Vector3(localPos.X, localPos.Y, transform.Pos.Z));
+			Vector3 worldCursorPos = this.CameraComponent.GetWorldPos(new Vector3(localPos.X, localPos.Y, transform.Pos.Z));
 			Vector2 localCursorPos = transform.GetLocalPoint(worldCursorPos.Xy);
 
 			// Determine tile coordinates of the cursor
@@ -942,10 +940,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				bool greyOut = this.selectedTilemap != null && this.selectedTilemap != tilemap;
 
 				// Configure the canvas so our shapes are properly rotated and scaled
+				canvas.PushState();
 				canvas.State.TransformHandle = -localRect.TopLeft;
 				canvas.State.TransformAngle = transform.Angle;
 				canvas.State.TransformScale = new Vector2(transform.Scale);
-				canvas.State.ZOffset = -0.01f;
+				canvas.State.DepthOffset = -0.01f;
 
 				// Draw the surrounding rect of the tilemap
 				canvas.State.ColorTint = ColorRgba.White.WithAlpha(greyOut ? 0.33f : 1.0f);
@@ -994,6 +993,9 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 						this.activePreviewValid ? TileHighlightMode.Normal : TileHighlightMode.Uncertain,
 						this.activeAreaOutlines);
 				}
+
+				// Reset canvas config
+				canvas.PopState();
 			}
 		}
 
@@ -1110,11 +1112,15 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 						TexturePixelFormat.Rgba);
 				}
 			}
-
-			BatchInfo defaultMaterial = new BatchInfo(DrawTechnique.Alpha, canvas.State.Material.MainColor);
-			BatchInfo strippleMaterial = new BatchInfo(DrawTechnique.Alpha, canvas.State.Material.MainColor, strippledLineTex);
+			
 			bool uncertain = (mode & TileHighlightMode.Uncertain) != 0;
 			bool selection = (mode & TileHighlightMode.Selection) != 0;
+
+			BatchInfo defaultMaterial = canvas.DrawDevice.RentMaterial();
+			defaultMaterial.Technique = DrawTechnique.Alpha;
+			BatchInfo strippleMaterial = canvas.DrawDevice.RentMaterial();
+			strippleMaterial.Technique = DrawTechnique.Alpha;
+			strippleMaterial.MainTexture = strippledLineTex;
 			
 			Component component = renderer as Component;
 			Transform transform = component.GameObj.Transform;
@@ -1229,7 +1235,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 							{
 								totalLength += (outline[i - 1] - outline[i]).Length;
 							}
-							canvas.State.TextureCoordinateRect = new Rect(totalLength / strippledLineTex.PixelWidth, 1.0f);
+							canvas.State.TextureCoordinateRect = new Rect(totalLength / strippledLineTex.ContentWidth, 1.0f);
 						}
 
 						// Draw the outline

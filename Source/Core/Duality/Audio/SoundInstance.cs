@@ -5,6 +5,7 @@ using System.Threading;
 
 using Duality.Resources;
 using Duality.Backend;
+using Duality.Components;
 
 namespace Duality.Audio
 {
@@ -227,8 +228,11 @@ namespace Duality.Audio
 		}
 
 		
-		internal SoundInstance(ContentRef<Sound> sound, GameObject attachObj)
+		internal SoundInstance(ContentRef<Sound> sound, GameObject attachObj, bool trackVelocity)
 		{
+			if (attachObj != null && trackVelocity)
+				attachObj.AddComponent<VelocityTracker>();
+
 			this.attachedTo = attachObj;
 			this.is3D = true;
 			this.sound = sound;
@@ -383,22 +387,22 @@ namespace Duality.Audio
 			switch (this.sound.IsAvailable ? this.sound.Res.Type : SoundType.World)
 			{
 				case SoundType.UserInterface:
-					optVolFactor = DualityApp.UserData.SfxEffectVol;
+					optVolFactor = DualityApp.UserData.SoundEffectVol;
 					break;
 				case SoundType.World:
-					optVolFactor = DualityApp.UserData.SfxEffectVol;
+					optVolFactor = DualityApp.UserData.SoundEffectVol;
 					break;
 				case SoundType.Speech:
-					optVolFactor = DualityApp.UserData.SfxSpeechVol;
+					optVolFactor = DualityApp.UserData.SoundSpeechVol;
 					break;
 				case SoundType.Music:
-					optVolFactor = DualityApp.UserData.SfxMusicVol;
+					optVolFactor = DualityApp.UserData.SoundMusicVol;
 					break;
 				default:
 					optVolFactor = 1.0f;
 					break;
 			}
-			return optVolFactor * DualityApp.UserData.SfxMasterVol * 0.5f;
+			return optVolFactor * DualityApp.UserData.SoundMasterVol * 0.5f;
 		}
 		private void RegisterPlaying()
 		{
@@ -432,7 +436,6 @@ namespace Duality.Audio
 
 			// Set up local variables for state calculation
 			Vector3 listenerPos = DualityApp.Sound.ListenerPos;
-			bool attachedToListener = this.attachedTo != null && ((this.attachedTo == DualityApp.Sound.Listener) || this.attachedTo.IsChildOf(DualityApp.Sound.Listener));
 			float optVolFactor = this.GetTypeVolFactor();
 			float priorityTemp = 1000.0f;
 			AudioSourceState nativeState = AudioSourceState.Default;
@@ -448,15 +451,18 @@ namespace Duality.Audio
 			nativeState.Velocity = this.vel;
 			if (this.is3D)
 			{
-				Components.Transform attachTransform = this.attachedTo != null ? this.attachedTo.Transform : null;
+				Transform attachTransform = this.attachedTo != null ? this.attachedTo.Transform : null;
 
 				// Attach to object
-				if (this.attachedTo != null)
+				if (attachTransform != null)
 				{
 					MathF.TransformCoord(ref nativeState.Position.X, ref nativeState.Position.Y, attachTransform.Angle);
 					MathF.TransformCoord(ref nativeState.Velocity.X, ref nativeState.Velocity.Y, attachTransform.Angle);
 					nativeState.Position += attachTransform.Pos;
-					nativeState.Velocity += attachTransform.Vel;
+
+					VelocityTracker attachVelocityTracker = attachTransform.GameObj.GetComponent<VelocityTracker>();
+					if (attachVelocityTracker != null)
+						nativeState.Velocity += attachVelocityTracker.Vel;
 				}
 
 				// Distance check
@@ -501,7 +507,7 @@ namespace Duality.Audio
 			{
 				if (this.fadeTarget != this.curFade)
 				{
-					float fadeTemp = Time.TimeMult * Time.SPFMult / Math.Max(0.05f, this.fadeTimeSec);
+					float fadeTemp = Time.TimeMult * Time.SecondsPerFrame / Math.Max(0.05f, this.fadeTimeSec);
 
 					if (this.fadeTarget > this.curFade)
 						this.curFade += fadeTemp;
@@ -516,11 +522,11 @@ namespace Duality.Audio
 			// Special paused-fading
 			if (this.paused && this.pauseFade > 0.0f)
 			{
-				this.pauseFade = MathF.Max(0.0f, this.pauseFade - Time.TimeMult * Time.SPFMult * 5.0f);
+				this.pauseFade = MathF.Max(0.0f, this.pauseFade - Time.TimeMult * Time.SecondsPerFrame * 5.0f);
 			}
 			else if (!this.paused && this.pauseFade < 1.0f)
 			{
-				this.pauseFade = MathF.Min(1.0f, this.pauseFade + Time.TimeMult * Time.SPFMult * 5.0f);
+				this.pauseFade = MathF.Min(1.0f, this.pauseFade + Time.TimeMult * Time.SecondsPerFrame * 5.0f);
 			}
 
 			// Apply the sounds state to its internal native audio source
@@ -528,6 +534,15 @@ namespace Duality.Audio
 			{
 				if (this.is3D)
 				{
+					bool attachedToListener = false;
+					if (this.attachedTo != null && DualityApp.Sound.Listener != null)
+					{
+						GameObject listenerObj = DualityApp.Sound.Listener.GameObj;
+						attachedToListener = 
+							(this.attachedTo == listenerObj) ||
+							this.attachedTo.IsChildOf(listenerObj);
+					}
+
 					nativeState.RelativeToListener = attachedToListener;
 					if (attachedToListener)
 						nativeState.Position -= listenerPos;
@@ -583,7 +598,7 @@ namespace Duality.Audio
 			// Update play time
 			if (!this.paused)
 			{
-				this.playTime += MathF.Max(0.5f, nativeState.Pitch) * Time.TimeMult * Time.SPFMult;
+				this.playTime += MathF.Max(0.5f, nativeState.Pitch) * Time.TimeMult * Time.SecondsPerFrame;
 				if (this.sound.Res.FadeOutAt > 0.0f && this.playTime >= this.sound.Res.FadeOutAt)
 					this.FadeOut(this.sound.Res.FadeOutTime);
 			}
@@ -607,7 +622,7 @@ namespace Duality.Audio
 			// Remove faded out sources
 			if (fadeOut && nativeState.Volume <= 0.0f)
 			{
-				this.fadeWaitEnd += Time.TimeMult * Time.MsPFMult;
+				this.fadeWaitEnd += Time.TimeMult * Time.MillisecondsPerFrame;
 				// After fading out entirely, wait 50 ms before actually stopping the source to prevent unpleasant audio tick / glitch noises
 				if (this.fadeWaitEnd > 50.0f)
 				{

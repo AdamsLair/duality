@@ -28,7 +28,7 @@ namespace Duality.Backend.DefaultOpenTK
 				curBound = prog;
 			}
 		}
-		public static void SetUniform(ref ShaderFieldInfo field, int location, params float[] data)
+		public static void SetUniform(ShaderFieldInfo field, int location, float[] data)
 		{
 			if (field.Scope != ShaderFieldScope.Uniform) return;
 			if (location == -1) return;
@@ -67,7 +67,6 @@ namespace Duality.Backend.DefaultOpenTK
 		private int handle;
 		private ShaderFieldInfo[] fields;
 		private int[] fieldLocations;
-		private int[] builtinIndex;
 
 		public int Handle
 		{
@@ -81,30 +80,40 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			get { return this.fieldLocations; }
 		}
-		/// <summary>
-		/// [GET] If a certain field refers to a builtin shader variable, the appropriate array element contains its index.
-		/// Otherwise, it contains <see cref="Duality.Resources.BuiltinShaderFields.InvalidIndex"/>. If no builtin variable
-		/// is used at all, this property will return an empty array.
-		/// </summary>
-		public int[] BuiltinVariableIndex
-		{
-			get { return this.builtinIndex; }
-		}
 
-		void INativeShaderProgram.LoadProgram(INativeShaderPart vertex, INativeShaderPart fragment)
+		void INativeShaderProgram.LoadProgram(IEnumerable<INativeShaderPart> shaderParts, IEnumerable<ShaderFieldInfo> shaderFields)
 		{
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
+			// Verify that we have exactly one shader part for each stage.
+			// Other scenarios are valid in desktop GL, but not GL ES, so 
+			// we'll enforce the stricter rules manually to ease portability.
+			int vertexCount = 0;
+			int fragmentCount = 0;
+			foreach (INativeShaderPart part in shaderParts)
+			{
+				Resources.ShaderType type = (part as NativeShaderPart).Type;
+				if (type == Resources.ShaderType.Fragment)
+					fragmentCount++;
+				else if (type == Resources.ShaderType.Vertex)
+					vertexCount++;
+			}
+			if (vertexCount == 0) throw new ArgumentException("Cannot load program without vertex shader.");
+			if (fragmentCount == 0) throw new ArgumentException("Cannot load program without fragment shader.");
+			if (vertexCount > 1) throw new ArgumentException("Cannot attach multiple vertex shaders to the same program.");
+			if (fragmentCount > 1) throw new ArgumentException("Cannot attach multiple fragment shaders to the same program.");
+
+			// Create or reset GL program
 			if (this.handle == 0) 
 				this.handle = GL.CreateProgram();
 			else
 				this.DetachShaders();
-			
-			// Attach both shaders
-			if (vertex != null)
-				GL.AttachShader(this.handle, (vertex as NativeShaderPart).Handle);
-			if (fragment != null)
-				GL.AttachShader(this.handle, (fragment as NativeShaderPart).Handle);
+
+			// Attach all individual shaders to the program
+			foreach (INativeShaderPart part in shaderParts)
+			{
+				GL.AttachShader(this.handle, (part as NativeShaderPart).Handle);
+			}
 
 			// Link the shader program
 			GL.LinkProgram(this.handle);
@@ -117,56 +126,28 @@ namespace Duality.Backend.DefaultOpenTK
 				this.RollbackAtFault();
 				throw new BackendException(string.Format("Linker error:{1}{0}", errorLog, Environment.NewLine));
 			}
-			
-			// Collect variable infos from sub programs
+
+			// Collect variables that are available through shader reflection, e.g.
+			// haven't been optimized of #ifdef'd away.
+			List<int> validLocations = new List<int>();
+			List<ShaderFieldInfo> validFields = new List<ShaderFieldInfo>();
+			foreach (ShaderFieldInfo field in shaderFields)
 			{
-				NativeShaderPart vert = vertex as NativeShaderPart;
-				NativeShaderPart frag = fragment as NativeShaderPart;
-
-				ShaderFieldInfo[] fragVarArray = frag != null ? frag.Fields : null;
-				ShaderFieldInfo[] vertVarArray = vert != null ? vert.Fields : null;
-
-				if (fragVarArray != null && vertVarArray != null)
-					this.fields = vertVarArray.Union(fragVarArray).ToArray();
-				else if (vertVarArray != null)
-					this.fields = vertVarArray.ToArray();
+				int location;
+				if (field.Scope == ShaderFieldScope.Uniform)
+					location = GL.GetUniformLocation(this.handle, field.Name);
 				else
-					this.fields = fragVarArray.ToArray();
-				
-			}
+					location = GL.GetAttribLocation(this.handle, field.Name);
 
-			// Determine each variables location
-			this.fieldLocations = new int[this.fields.Length];
-			for (int i = 0; i < this.fields.Length; i++)
-			{
-				if (this.fields[i].Scope == ShaderFieldScope.Uniform)
-					this.fieldLocations[i] = GL.GetUniformLocation(this.handle, this.fields[i].Name);
-				else
-					this.fieldLocations[i] = GL.GetAttribLocation(this.handle, this.fields[i].Name);
-			}
-
-			// Determine whether we're using builtin shader variables
-			this.builtinIndex = new int[this.fields.Length];
-			bool anyBuildinUsed = false;
-			for (int i = 0; i < this.fields.Length; i++)
-			{
-				if (this.fields[i].Scope == ShaderFieldScope.Uniform)
+				if (location >= 0)
 				{
-					this.builtinIndex[i] = BuiltinShaderFields.GetIndex(this.fields[i].Name);
-					if (this.builtinIndex[i] != BuiltinShaderFields.InvalidIndex)
-						anyBuildinUsed = true;
-				}
-				else
-				{ 
-					this.builtinIndex[i] = BuiltinShaderFields.InvalidIndex;
+					validLocations.Add(location);
+					validFields.Add(field);
 				}
 			}
-			if (!anyBuildinUsed)
-				this.builtinIndex = new int[0];
-		}
-		ShaderFieldInfo[] INativeShaderProgram.GetFields()
-		{
-			return this.fields.Clone() as ShaderFieldInfo[];
+
+			this.fields = validFields.ToArray();
+			this.fieldLocations = validLocations.ToArray();
 		}
 		void IDisposable.Dispose()
 		{
@@ -174,6 +155,30 @@ namespace Duality.Backend.DefaultOpenTK
 				return;
 
 			this.DeleteProgram();
+		}
+
+		/// <summary>
+		/// Given a vertex element declaration, this method selects, which of the shaders
+		/// attribute fields best matches it, and returns the <see cref="Fields"/> index.
+		/// Returns -1, if no match was found.
+		/// </summary>
+		/// <param name="element"></param>
+		/// <returns></returns>
+		public int SelectField(ref VertexElement element)
+		{
+			// Check for fields matching the elements preferred name
+			for (int i = 0; i < this.fields.Length; i++)
+			{
+				// Skip invalid and non-attribute fields
+				if (this.fieldLocations[i] == -1) continue;
+				if (this.fields[i].Scope != ShaderFieldScope.Attribute) continue;
+
+				// We do not check for type or data length matches. When matching
+				// explicitly, this is the users responsibility.
+				if (this.fields[i].Name == element.FieldName)
+					return i;
+			}
+			return -1;
 		}
 
 		private void DeleteProgram()
@@ -205,7 +210,6 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			this.fields = new ShaderFieldInfo[0];
 			this.fieldLocations = new int[0];
-			this.builtinIndex = new int[0];
 
 			this.DeleteProgram();
 		}

@@ -122,7 +122,7 @@ namespace DualStickSpaceShooter
 		{
 			Camera mainCamera = Scene.Current.FindComponent<Camera>();
 			Vector3 objPos = (referenceObj != null) ? referenceObj.Pos : Vector3.Zero;
-			Vector2 objPosOnScreen = (mainCamera != null) ? mainCamera.GetScreenCoord(objPos).Xy : Vector2.Zero;
+			Vector2 objPosOnScreen = (mainCamera != null) ? mainCamera.GetScreenPos(objPos) : Vector2.Zero;
 			this.controlLookAngle = (mouse.Pos - objPosOnScreen).Angle;
 			this.controlLookSpeed = MathF.Clamp((mouse.Pos - objPosOnScreen).Length / 100.0f, 0.0f, 1.0f);
 

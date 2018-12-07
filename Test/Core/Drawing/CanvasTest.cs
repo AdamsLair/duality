@@ -64,15 +64,17 @@ namespace Duality.Tests.Drawing
 			this.TestImagesEqual(TestRes.CanvasTestAllShapes, c => 
 			{
 				// Background
+				c.PushState();
 				c.State.ColorTint = new ColorRgba(128, 192, 255);
+				c.State.DepthOffset += 100.0f;
 				c.FillRect(0, 0, c.Width, c.Height);
-				c.State.ColorTint = ColorRgba.White;
+				c.PopState();
 
 				// White shapes
 				this.DrawTestImageRow(c, 100, 100);
 
 				// Textured shapes
-				c.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, ColorRgba.White, this.texCoordUV));
+				c.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.texCoordUV));
 				this.DrawTestImageRow(c, 100, 300);
 			});
 		}
@@ -81,9 +83,12 @@ namespace Duality.Tests.Drawing
 			this.TestImagesEqual(TestRes.CanvasTestAllShapesTransformed, c => 
 			{
 				// Background
+				c.PushState();
 				c.State.ColorTint = new ColorRgba(128, 192, 255);
+				c.State.DepthOffset += 100.0f;
 				c.FillRect(0, 0, c.Width, c.Height);
-				c.State.ColorTint = ColorRgba.White;
+				c.PopState();
+
 				c.State.TransformHandle = new Vector2(5, 5);
 				c.State.TransformScale = new Vector2(0.75f, 0.75f);
 				c.State.TransformAngle = MathF.RadAngle30;
@@ -93,7 +98,7 @@ namespace Duality.Tests.Drawing
 
 				// Textured shapes
 				c.PushState();
-				c.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, ColorRgba.White, this.texCoordUV));
+				c.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.texCoordUV));
 				this.DrawTestImageRow(c, 100, 300);
 				c.PopState();
 			});
@@ -201,7 +206,7 @@ namespace Duality.Tests.Drawing
 			ColorRgba[] firstData = first.Data;
 			ColorRgba[] secondData = second.Data;
 			float error = 0;
-			float maxError = firstData.Length; // (1/255) off per pixel is probably okay.
+			float maxError = firstData.Length / 10.0f; // (1/255) off per ten pixels is probably okay.
 			for (int i = 0; i < firstData.Length; i++)
 			{
 				error += MathF.Abs(firstData[i].R * (firstData[i].A / 255.0f) - secondData[i].R * (secondData[i].A / 255.0f));
@@ -261,21 +266,23 @@ namespace Duality.Tests.Drawing
 			PixelData pixelData;
 
 			using (Texture texture = new Texture(width, height, TextureSizeMode.NonPowerOfTwo, TextureMagFilter.Nearest, TextureMinFilter.Nearest))
-			using (RenderTarget renderTarget = new RenderTarget(AAQuality.Off, texture))
+			using (RenderTarget renderTarget = new RenderTarget(AAQuality.Off, true, texture))
 			using (DrawDevice device = new DrawDevice())
 			{
-				device.Perspective = PerspectiveMode.Flat;
+				device.Projection = ProjectionMode.Screen;
 				device.VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
-				device.RenderMode = RenderMatrix.OrthoScreen;
 				device.Target = renderTarget;
-				device.ViewportRect = new Rect(renderTarget.Width, renderTarget.Height);
+				device.TargetSize = renderTarget.Size;
+				device.ViewportRect = new Rect(renderTarget.Size);
 
 				device.PrepareForDrawcalls();
 				{
-					Canvas canvas = new Canvas(device);
+					Canvas canvas = new Canvas();
+					canvas.Begin(device);
 					renderMethod(canvas);
+					canvas.End();
 				}
-				device.Render(ClearFlag.All, ColorRgba.TransparentBlack, 1.0f);
+				device.Render();
 
 				pixelData = texture.GetPixelData();
 			}

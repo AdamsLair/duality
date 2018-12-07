@@ -16,12 +16,25 @@ using NUnit.Framework;
 
 namespace Duality.Tests.Cloning.HelperObjects
 {
-	internal class ReferenceBehaviourTestObject
+	internal class ReferenceBehaviourTestObject : ICloneExplicit
 	{
 		public ReferencedObject ReferencedObject;
 		[CloneBehavior(CloneBehavior.ChildObject)]
 		public ReferencedObject OwnedObject;
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneField(CloneFieldFlags.Skip)]
 		public ReferencedObject WeakReferencedObject;
+
+		void ICloneExplicit.SetupCloneTargets(object target, ICloneTargetSetup setup)
+		{
+			setup.HandleObject(this, target);
+		}
+		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
+		{
+			operation.HandleObject(this, target);
+
+			// Only assign WeakReferencedObject, if it was cloned as well. Otherwise, discard.
+			ReferenceBehaviourTestObject testTarget = target as ReferenceBehaviourTestObject;
+			testTarget.WeakReferencedObject = operation.GetWeakTarget(this.WeakReferencedObject);
+		}
 	}
 }

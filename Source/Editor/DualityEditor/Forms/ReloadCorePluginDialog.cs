@@ -163,7 +163,7 @@ namespace Duality.Editor.Forms
 				CorePlugin plugin = DualityApp.PluginManager.LoadedPlugins.FirstOrDefault(p => Path.GetFullPath(p.FilePath) == fullPath);
 				if (plugin == null) continue;
 
-				int hash = DualityApp.PluginManager.PluginLoader.GetAssemblyHash(this.reloadSchedule[i]);
+				int hash = DualityApp.PluginManager.AssemblyLoader.GetAssemblyHash(this.reloadSchedule[i]);
 				if (plugin.FileHash == hash)
 				{
 					this.reloadSchedule.RemoveAt(i);
@@ -247,13 +247,13 @@ namespace Duality.Editor.Forms
 					{
 						this.owner.SetTaskbarProgressState(ThumbnailProgressState.Error);
 						MessageBox.Show(this, 
-							String.Format(GeneralRes.Msg_ErrorReloadCorePlugin_Desc, "\n", Log.Exception(this.workerInterface.Error)), 
+							String.Format(GeneralRes.Msg_ErrorReloadCorePlugin_Desc, "\n", LogFormat.Exception(this.workerInterface.Error)), 
 							GeneralRes.Msg_ErrorReloadCorePlugin_Caption, 
 							MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
 					catch (Exception exception)
 					{
-						Log.Editor.WriteError("An error occurred after finishing a Core plugin reload operation: {0}", Log.Exception(exception));
+						Logs.Editor.WriteError("An error occurred after finishing a Core plugin reload operation: {0}", LogFormat.Exception(exception));
 					}
 					this.Close();
 				}
@@ -267,7 +267,7 @@ namespace Duality.Editor.Forms
 					}
 					catch (Exception exception)
 					{
-						Log.Editor.WriteError("An error occurred after finishing a Core plugin reload operation: {0}", Log.Exception(exception));
+						Logs.Editor.WriteError("An error occurred after finishing a Core plugin reload operation: {0}", LogFormat.Exception(exception));
 					}
 					this.Close();
 				}
@@ -289,8 +289,8 @@ namespace Duality.Editor.Forms
 				// If we failed for an unknown reason, let's try a full restart instead.
 				if (!fullRestart)
 				{
-					Log.Editor.WriteError("Failed reloading plugins during runtime: {0}", Log.Exception(e));
-					Log.Editor.Write("Trying full restart...");
+					Logs.Editor.WriteError("Failed reloading plugins during runtime: {0}", LogFormat.Exception(e));
+					Logs.Editor.Write("Trying full restart...");
 
 					try
 					{
@@ -301,14 +301,14 @@ namespace Duality.Editor.Forms
 					catch (Exception e2)
 					{
 						// Failed anyway? Log the error and stop.
-						Log.Editor.WriteError(Log.Exception(e2));
+						Logs.Editor.WriteError(LogFormat.Exception(e2));
 						workInterface.Error = e2;
 					}
 				}
 				// If even a full restart has failed, log the error and stop right there.
 				else
 				{
-					Log.Editor.WriteError(Log.Exception(e));
+					Logs.Editor.WriteError(LogFormat.Exception(e));
 					workInterface.Error = e;
 				}
 			}
@@ -342,7 +342,7 @@ namespace Duality.Editor.Forms
 				}
 
 				// Save temporary data to restore it later
-				Log.Editor.Write("Saving data...");
+				Logs.Editor.Write("Saving data...");
 				SaveTemporaryData(workInterface, strScene, strData);
 				Thread.Sleep(20);
 			
@@ -370,7 +370,7 @@ namespace Duality.Editor.Forms
 			}
 
 			// Reload data
-			Log.Editor.Write("Restoring data...");
+			Logs.Editor.Write("Restoring data...");
 			RestoreTemporaryData(workInterface, strScene, strData);
 			strScene.Close();
 			strData.Close();
@@ -419,21 +419,21 @@ namespace Duality.Editor.Forms
 		{
 			List<CorePlugin> initSchedule = new List<CorePlugin>();
 			
-			Log.Editor.Write("Reloading core plugins...");
-			Log.Editor.PushIndent();
+			Logs.Editor.Write("Reloading core plugins...");
+			Logs.Editor.PushIndent();
 			int count = workInterface.ReloadSchedule.Count;
 			while (workInterface.ReloadSchedule.Count > 0)
 			{
 				string curPath = workInterface.ReloadSchedule[0];
 				
-				Log.Editor.Write("{0}...", curPath);
-				Log.Editor.PushIndent();
+				Logs.Editor.Write("{0}...", curPath);
+				Logs.Editor.PushIndent();
 				{
 					CorePlugin plugin = workInterface.MainForm.Invoke((Func<string,CorePlugin>)DualityApp.PluginManager.ReloadPlugin, curPath) as CorePlugin;
 					if (plugin != null) initSchedule.Add(plugin);
 					workInterface.Progress += 0.10f / (float)count;
 				}
-				Log.Editor.PopIndent();
+				Logs.Editor.PopIndent();
 				Thread.Sleep(20);
 
 				string xmlDocFile = curPath.Replace(".dll", ".xml");
@@ -445,19 +445,19 @@ namespace Duality.Editor.Forms
 				workInterface.ReloadDone.Add(curPath);
 				workInterface.Progress += 0.05f / (float)count;
 			}
-			Log.Editor.PopIndent();
+			Logs.Editor.PopIndent();
 
-			Log.Editor.Write("Initializing reloaded core plugins...");
-			Log.Editor.PushIndent();
+			Logs.Editor.Write("Initializing reloaded core plugins...");
+			Logs.Editor.PushIndent();
 			foreach (CorePlugin plugin in initSchedule)
 			{
-				Log.Editor.Write("{0}...", plugin.AssemblyName);
-				Log.Editor.PushIndent();
+				Logs.Editor.Write("{0}...", plugin.AssemblyName);
+				Logs.Editor.PushIndent();
 				workInterface.MainForm.Invoke((Action<CorePlugin>)DualityApp.PluginManager.InitPlugin, plugin);
 				workInterface.Progress += 0.05f / (float)count;
-				Log.Editor.PopIndent();
+				Logs.Editor.PopIndent();
 			}
-			Log.Editor.PopIndent();
+			Logs.Editor.PopIndent();
 		}
 		private static void SaveTemporaryData(WorkerInterface workInterface, Stream strScene, Stream strData)
 		{

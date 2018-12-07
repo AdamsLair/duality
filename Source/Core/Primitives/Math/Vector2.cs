@@ -27,6 +27,7 @@ Note: This code has been heavily modified for the Duality framework.
 
 using System;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Duality
 {
@@ -201,7 +202,7 @@ namespace Duality
 			if (length < 1e-15f)
 			{
 				this = Vector2.Zero;
-			}
+		}
 			else
 			{
 				float scale = 1.0f / length;

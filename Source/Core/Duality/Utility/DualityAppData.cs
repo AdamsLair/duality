@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Duality.Resources;
+using Duality.Editor;
 
 namespace Duality
 {
@@ -12,19 +13,19 @@ namespace Duality
 	/// </summary>
 	public class DualityAppData
 	{
-		private string            appName               = "Duality Application";
-		private string            authorName            = "Unknown";
-		private string            websiteUrl            = "http://www.adamslair.net";
-		private uint              version               = 0;
-		private ContentRef<Scene> startScene            = null;
-		private float             speedOfSound          = 360.0f;
-		private float             soundDopplerFactor    = 1.0f;
-		private float             physicsVelThreshold   = 0.5f * PhysicsUnit.VelocityToDuality;
-		private bool              physicsFixedTime      = false;
-		private bool              localUserData         = true;
-		private bool              multisampleBackBuffer = true;
-		private string[]          skipBackends          = null;
-		private object            customData            = null;
+		private string                  appName                = "Duality Application";
+		private uint                    version                = 0;
+		private ContentRef<Scene>       startScene             = null;
+		private ContentRef<RenderSetup> renderSetup            = RenderSetup.Default;
+		private Point2                  forcedRenderSize       = Point2.Zero;
+		private TargetResize            forcedRenderResizeMode = TargetResize.Fit;
+		private float                   speedOfSound           = 360.0f;
+		private float                   soundDopplerFactor     = 1.0f;
+		private float                   physicsVelThreshold    = 0.5f * PhysicsUnit.VelocityToDuality;
+		private bool                    physicsFixedTime       = false;
+		private bool                    multisampleBackBuffer  = true;
+		private string[]                skipBackends           = null;
+		private object                  customData             = null;
 
 		/// <summary>
 		/// [GET / SET] The name of your application / game. It will also be used as a window title by the launcher app.
@@ -33,22 +34,6 @@ namespace Duality
 		{
 			get { return this.appName; }
 			set { this.appName = value; }
-		}
-		/// <summary>
-		/// [GET / SET] The author name of your application. Might be your or your team's name or -nickname.
-		/// </summary>
-		public string AuthorName
-		{
-			get { return this.authorName; }
-			set { this.authorName = value; }
-		}
-		/// <summary>
-		/// [GET / SET] The address of this game's official website or similar.
-		/// </summary>
-		public string WebsiteUrl
-		{
-			get { return this.websiteUrl; }
-			set { this.websiteUrl = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The current application / game version.
@@ -66,6 +51,33 @@ namespace Duality
 		{
 			get { return this.startScene; }
 			set { this.startScene = value; }
+		}
+		/// <summary>
+		/// [GET / SET] The default <see cref="RenderSetup"/> that describes both how to render a given <see cref="Scene"/>, e.g.
+		/// the rendering steps that a <see cref="Duality.Components.Camera"/> will execute by default.
+		/// </summary>
+		public ContentRef<RenderSetup> RenderingSetup
+		{
+			get { return this.renderSetup; }
+			set { this.renderSetup = value; }
+		}
+		/// <summary>
+		/// [GET / SET] When set to a non-zero value, the game's viewport will be adjusted to fit this size within the constraints
+		/// of the user-defined or default window size.
+		/// </summary>
+		[EditorHintRange(0, int.MaxValue)]
+		public Point2 ForcedRenderSize
+		{
+			get { return this.forcedRenderSize; }
+			set { this.forcedRenderSize = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Specifies how <see cref="ForcedRenderSize"/> will adjust the image to fit window constraints.
+		/// </summary>
+		public TargetResize ForcedRenderResizeMode
+		{
+			get { return this.forcedRenderResizeMode; }
+			set { this.forcedRenderResizeMode = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The speed of sound in "meters per second". Duality units will be converted to SI units that are used in the calculation
@@ -96,20 +108,12 @@ namespace Duality
 		}
 		/// <summary>
 		/// [GET / SET] Does the physics simulation use fixed time steps? However, this setting may be overwritten dynamically due
-		/// to frame timing restrictions. To check whether fixed-timestep physics is currently active, use <see cref="Duality.Resources.Scene.PhysicsFixedTime"/>
+		/// to frame timing restrictions. To check whether fixed-timestep physics is currently active, use <see cref="Duality.Components.Physics.PhysicsWorld.IsFixedTimestep"/>.
 		/// </summary>
 		public bool PhysicsFixedTime
 		{
 			get { return this.physicsFixedTime; }
 			set { this.physicsFixedTime = value; }
-		}
-		/// <summary>
-		/// [GET / SET] If true, user data is saved locally in the game folder instead of the current user account.
-		/// </summary>
-		public bool LocalUserData
-		{
-			get { return this.localUserData; }
-			set { this.localUserData = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Determines whether or not the backbuffer uses multisampling based on <see cref="DualityUserData.AntialiasingQuality"/>.

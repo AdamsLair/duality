@@ -1,4 +1,5 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Prefab" id="129723834">
+  <assetInfo />
   <objTree dataType="Struct" type="Duality.GameObject" id="422295141">
     <active dataType="Bool">true</active>
     <children />
@@ -26,16 +27,8 @@
           </posAbs>
           <scale dataType="Float">1</scale>
           <scaleAbs dataType="Float">1</scaleAbs>
-          <vel dataType="Struct" type="Duality.Vector3">
-            <X dataType="Float">0</X>
-            <Y dataType="Float">0</Y>
-            <Z dataType="Float">0</Z>
-          </vel>
-          <velAbs dataType="Struct" type="Duality.Vector3">
-            <X dataType="Float">0</X>
-            <Y dataType="Float">0</Y>
-            <Z dataType="Float">0</Z>
-          </velAbs>
+          <vel dataType="Struct" type="Duality.Vector3" />
+          <velAbs dataType="Struct" type="Duality.Vector3" />
         </item>
         <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="2164923963">
           <active dataType="Bool">true</active>
@@ -48,26 +41,15 @@
           </colorTint>
           <customMat />
           <gameobj dataType="ObjectRef">422295141</gameobj>
-          <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-            <contentPath />
-          </iconMat>
+          <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]" />
+          <offset dataType="Float">0</offset>
           <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3727897359">
-            <displayedText dataType="String">The RigidBodies used in this sample do not collide. All interaction is based solely on Agent decisions.</displayedText>
-            <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="216848302">
-              <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="3441381712">
-                <text dataType="String">The RigidBodies used in this sample do not collide. All interaction is based solely on Agent decisions.</text>
-              </item>
-            </elements>
             <flowAreas />
-            <fontGlyphCount dataType="Array" type="System.Int32[]" id="2817791690">
-              <item dataType="Int">103</item>
-            </fontGlyphCount>
-            <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1609707806">
+            <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="216848302">
               <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
                 <contentPath dataType="String">Data\SteeringSample\Data\InfoTextFont.Font.res</contentPath>
               </item>
             </fonts>
-            <iconCount dataType="Int">0</iconCount>
             <icons />
             <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
             <maxHeight dataType="Int">0</maxHeight>
@@ -79,16 +61,15 @@
         </item>
       </_items>
       <_size dataType="Int">2</_size>
-      <_version dataType="Int">2</_version>
     </compList>
     <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1234171194" surrogate="true">
       <header />
       <body>
-        <keys dataType="Array" type="System.Type[]" id="2888100468">
+        <keys dataType="Array" type="System.Object[]" id="2888100468">
           <item dataType="Type" id="1185136548" value="Duality.Components.Transform" />
           <item dataType="Type" id="3546349334" value="Duality.Components.Renderers.TextRenderer" />
         </keys>
-        <values dataType="Array" type="Duality.Component[]" id="4165465590">
+        <values dataType="Array" type="System.Object[]" id="4165465590">
           <item dataType="ObjectRef">2782610073</item>
           <item dataType="ObjectRef">2164923963</item>
         </values>
@@ -106,6 +87,5 @@
     <parent />
     <prefabLink />
   </objTree>
-  <sourcePath dataType="String">CollisionInfo</sourcePath>
 </root>
 <!-- XmlFormatterBase Document Separator -->

@@ -1,4 +1,5 @@
 ﻿<root dataType="Struct" type="DualStickSpaceShooter.EnemyBlueprint" id="129723834">
+  <assetInfo />
   <attackSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
     <contentPath dataType="String">Data\DualStickSpaceShooter\Audio\DangerLoop.Sound.res</contentPath>
   </attackSound>
@@ -20,6 +21,5 @@
   <moveSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
     <contentPath dataType="String">Data\DualStickSpaceShooter\Audio\EngineLoop.Sound.res</contentPath>
   </moveSound>
-  <sourcePath />
 </root>
 <!-- XmlFormatterBase Document Separator -->

@@ -16,16 +16,16 @@ namespace DualStickSpaceShooter
 			// Load all available content so we don't need on-demand loading at runtime.
 			// It's probably not a good idea for content-rich games, consider having a per-level
 			// loading screen instead, or something similar.
-			Log.Game.Write("Loading game content...");
-			Log.Game.PushIndent();
-			{
-				List<ContentRef<Resource>> availableContent = ContentProvider.GetAvailableContent<Resource>();
-				foreach (ContentRef<Resource> resourceReference in availableContent)
+				Logs.Game.Write("Loading game content...");
+				Logs.Game.PushIndent();
 				{
-					resourceReference.MakeAvailable();
+					List<ContentRef<Resource>> availableContent = ContentProvider.GetAvailableContent<Resource>();
+					foreach (ContentRef<Resource> resourceReference in availableContent)
+					{
+						resourceReference.EnsureLoaded();
+					}
 				}
+				Logs.Game.PopIndent();
 			}
-			Log.Game.PopIndent();
 		}
-	}
 }

@@ -21,12 +21,12 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <TargetFrameworkProfile />
     <RestorePackages>true</RestorePackages>
+    <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -37,7 +37,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)Build\Output\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -55,8 +54,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Source\Core\Duality\Backend\DefaultPluginLoader.cs">
-      <Link>DefaultPluginLoader.cs</Link>
+    <Compile Include="..\..\Source\Core\Duality\Backend\DefaultAssemblyLoader.cs">
+      <Link>DefaultAssemblyLoader.cs</Link>
     </Compile>
     <Compile Include="Cloning\HelperObjects\ExplicitCloneTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\InterfaceFieldTestObject.cs" />
@@ -83,9 +82,18 @@
     <Compile Include="Components\ExecutionOrderTest\EventOrderLog.cs" />
     <Compile Include="Components\ExecutionOrderTest\EventType.cs" />
     <Compile Include="Components\ExecutionOrderTest\TestComponent.cs" />
+    <Compile Include="Components\VelocityTrackerTest.cs" />
     <Compile Include="Components\TransformTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
+    <Compile Include="IO\FileEventQueueTest.cs" />
     <Compile Include="Math\MathFTest.cs" />
+    <Compile Include="Drawing\VertexBatchStoreTest.cs" />
+    <Compile Include="Drawing\ShaderParameterCollectionTest.cs" />
+    <Compile Include="Drawing\VertexBatchTest.cs" />
+    <Compile Include="Drawing\DrawDeviceTest.cs" />
+    <Compile Include="Drawing\VertexSliceTest.cs" />
+    <Compile Include="Resources\ContentProviderTest.cs" />
+    <Compile Include="Resources\Shaders\ShaderSourceBuilderTest.cs" />
     <Compile Include="Testing\ExtMethodsIList.cs" />
     <Compile Include="Resources\RenderTargetTest.cs" />
     <Compile Include="Testing\ExtMethodsPixelData.cs" />
@@ -93,6 +101,8 @@
     <Compile Include="Math\Vector3Test.cs" />
     <Compile Include="Math\Vector2Test.cs" />
     <Compile Include="Math\Point2Test.cs" />
+    <Compile Include="Math\RectTest.cs" />
+    <Compile Include="Resources\Font\FontKerningLookupTest.cs" />
     <Compile Include="Serialization\TestObjects\MismatchedComponent.cs" />
     <Compile Include="Serialization\TestObjects\NonExistentComponent.cs" />
     <Compile Include="Serialization\TestObjects\SomeEnum.cs" />
@@ -115,7 +125,7 @@
     <Compile Include="Resources\PrefabTest.cs" />
     <Compile Include="Serialization\TestObjects\NullDefaultTestObject.cs" />
     <Compile Include="PluginManager\MockAssembly.cs" />
-    <Compile Include="PluginManager\MockPluginLoader.cs" />
+    <Compile Include="PluginManager\MockAssemblyLoader.cs" />
     <Compile Include="PluginManager\CorePluginManagerTest.cs" />
     <Compile Include="Testing\TestCategory.cs" />
     <Compile Include="Testing\TestHelper.cs" />
@@ -126,9 +136,12 @@
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Drawing\CanvasTest.cs" />
     <Compile Include="Testing\IdentityComparer.cs" />
+    <Compile Include="Utility\RawListPoolTest.cs" />
     <Compile Include="Utility\SortingIntContainer.cs" />
+    <Compile Include="Utility\ExtMethodsRandomTest.cs" />
     <Compile Include="Utility\ExtMethodsMemberInfoTest.cs" />
-    <Compile Include="Math\RectTest.cs" />
+    <Compile Include="Utility\Log\LogsTest.cs" />
+    <Compile Include="Utility\Log\LogFormatTest.cs" />
     <Compile Include="Utility\ExtMethodsIListTest.cs" />
     <Compile Include="Utility\ExtMethodsTypeInfoTest.cs" />
     <Compile Include="Utility\ObjectCreatorTest.cs" />

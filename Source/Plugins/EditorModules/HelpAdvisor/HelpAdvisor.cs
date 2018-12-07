@@ -13,9 +13,9 @@ namespace Duality.Editor.Plugins.HelpAdvisor
 	{
 		private static	HelpInfo	advisorHelp = HelpInfo.FromText(HelpAdvisorRes.HelpInfo_Advisor_Topic, HelpAdvisorRes.HelpInfo_Advisor_Desc);
 
-		private	IHelpInfoReader	newHelp		= null;
-		private	IHelpInfoReader	currentHelp	= null;
-		private	IHelpInfoReader	lastHelp	= null;
+		private	IReadOnlyHelpInfo	newHelp		= null;
+		private	IReadOnlyHelpInfo	currentHelp	= null;
+		private	IReadOnlyHelpInfo	lastHelp	= null;
 		private	DateTime	changeTime	= DateTime.Now;
 
 		private float AnimProgress

@@ -17,7 +17,12 @@ namespace Duality
 		/// <returns></returns>
 		public static IEnumerable<GameObject> Children(this IEnumerable<GameObject> objEnum)
 		{
-			return objEnum.SelectMany(o => o.Children);
+			List<GameObject> result = new List<GameObject>();
+			foreach (GameObject obj in objEnum)
+			{
+				result.AddRange(obj.Children);
+			}
+			return result;
 		}
 		/// <summary>
 		/// Enumerates the <see cref="Duality.GameObject">GameObjects</see> children, grandchildren, etc.
@@ -26,7 +31,12 @@ namespace Duality
 		/// <returns></returns>
 		public static IEnumerable<GameObject> ChildrenDeep(this IEnumerable<GameObject> objEnum)
 		{
-			return objEnum.SelectMany(o => o.ChildrenDeep);
+			List<GameObject> result = new List<GameObject>();
+			foreach (GameObject obj in objEnum)
+			{
+				obj.GetChildrenDeep(result);
+			}
+			return result;
 		}
 		/// <summary>
 		/// Enumerates all <see cref="Duality.GameObject">GameObjects</see> that match the specified name.
@@ -216,27 +226,6 @@ namespace Duality
 		public static IEnumerable<T> Range<T>(this IEnumerable<T> collection, int startIndex, int length)
 		{
 			return collection.Skip(startIndex).Take(length);
-		}
-		/// <summary>
-		/// Shuffles the specified eumerable.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="collection"></param>
-		/// <param name="rnd">The random number generator to use. Defaults to <see cref="MathF.Rnd"/>, if null.</param>
-		/// <returns></returns>
-		public static IEnumerable<T> Shuffle<T>(this IList<T> collection, Random rnd = null)
-		{
-			if (!collection.Any()) yield break;
-			if (rnd == null) rnd = MathF.Rnd;
-
-			List<int> indices = Enumerable.Range(0, collection.Count).ToList();
-			while (indices.Count > 0)
-			{
-				int temp = rnd.Next(indices.Count);
-				int index = indices[temp];
-				indices.RemoveAt(temp);
-				yield return collection[index];
-			}
 		}
 
 		/// <summary>

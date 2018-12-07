@@ -17,7 +17,7 @@ namespace Duality.Tests.PluginManager
 			// as well as the specific case of selective loading, where non-core
 			// plugins and non-plugins are filtered out before loading.
 			//
-			using (MockPluginLoader pluginLoader = new MockPluginLoader())
+			using (MockAssemblyLoader assemblyLoader = new MockAssemblyLoader())
 			{
 				// Set up some mock data for available assemblies
 				MockAssembly[] mockPlugins = new MockAssembly[]
@@ -40,21 +40,21 @@ namespace Duality.Tests.PluginManager
 					mockNoise[0].Location, mockNoise[2].Location, mockNoise[3].Location, mockNoise[4].Location, mockNoise[5].Location,
 					"MockDir2/MockAuxillaryD.dll"};
 
-				pluginLoader.AddBaseDir("MockDir");
-				pluginLoader.AddBaseDir("MockDir2");
+				assemblyLoader.AddBaseDir("MockDir");
+				assemblyLoader.AddBaseDir("MockDir2");
 				for (int i = 0; i < mockPlugins.Length; i++)
 				{
-					pluginLoader.AddPlugin(mockPlugins[i]);
+					assemblyLoader.AddPlugin(mockPlugins[i]);
 				}
 				for (int i = 0; i < mockNoise.Length; i++)
 				{
-					pluginLoader.AddPlugin(mockNoise[i]);
+					assemblyLoader.AddPlugin(mockNoise[i]);
 				}
-				pluginLoader.AddIncompatibleDll("MockDir2/MockAuxillaryD.dll");
+				assemblyLoader.AddIncompatibleDll("MockDir2/MockAuxillaryD.dll");
 
 				// Set up a plugin manager using the mock loader
 				CorePluginManager pluginManager = new CorePluginManager();
-				pluginManager.Init(pluginLoader);
+				pluginManager.Init(assemblyLoader);
 
 				// Load all plugins
 				pluginManager.LoadPlugins();
@@ -66,13 +66,13 @@ namespace Duality.Tests.PluginManager
 
 				// Assert that we properly assigned all plugin properties
 				Assert.IsTrue(loadedPlugins.All(plugin => plugin.FilePath == plugin.PluginAssembly.Location));
-				Assert.IsTrue(loadedPlugins.All(plugin => plugin.FileHash == pluginLoader.GetAssemblyHash(plugin.FilePath)));
+				Assert.IsTrue(loadedPlugins.All(plugin => plugin.FileHash == assemblyLoader.GetAssemblyHash(plugin.FilePath)));
 				Assert.IsTrue(loadedPlugins.All(plugin => plugin.AssemblyName == plugin.PluginAssembly.GetShortAssemblyName()));
 
 				// Assert that we loaded core plugin and auxilliary libraries, but not editor plugins
 				CollectionAssert.AreEquivalent(
 					mockLoadedPaths, 
-					pluginLoader.LoadedAssemblyPaths);
+					assemblyLoader.LoadedAssemblyPaths);
 
 				// Assert that we can access all assemblies and types from plugins
 				foreach (MockAssembly mockAssembly in mockPlugins)
@@ -92,7 +92,7 @@ namespace Duality.Tests.PluginManager
 			// to load requested core plugins on-demand (to satisfy inter-plugin dependencies)
 			// as well as to reject non-core and non-plugins in those requests.
 			//
-			using (MockPluginLoader pluginLoader = new MockPluginLoader())
+			using (MockAssemblyLoader assemblyLoader = new MockAssemblyLoader())
 			{
 				MockAssembly[] mockAssemblies = new MockAssembly[]
 				{
@@ -105,40 +105,40 @@ namespace Duality.Tests.PluginManager
 				MockAssembly mockEditorAssembly = new MockAssembly("MockDir/MockPluginD.editor.dll");
 
 				// Set up some mock data for available assemblies
-				pluginLoader.AddBaseDir("MockDir");
+				assemblyLoader.AddBaseDir("MockDir");
 				for (int i = 0; i < mockAssemblies.Length; i++)
 				{
-					pluginLoader.AddPlugin(mockAssemblies[i]);
+					assemblyLoader.AddPlugin(mockAssemblies[i]);
 				}
-				pluginLoader.AddPlugin(mockEditorAssembly);
+				assemblyLoader.AddPlugin(mockEditorAssembly);
 
 				// Set up a plugin manager using the mock loader
 				CorePluginManager pluginManager = new CorePluginManager();
-				pluginManager.Init(pluginLoader);
+				pluginManager.Init(assemblyLoader);
 
 				{
 					// First, make sure the attempt to resolve a not-yet-loaded plugin
 					// will result in loading it immediately to satisfy dependency relations
-					Assembly resolvedAssembly = pluginLoader.InvokeResolveAssembly(mockAssemblies[0].FullName);
+					Assembly resolvedAssembly = assemblyLoader.InvokeResolveAssembly(mockAssemblies[0].FullName);
 
 					// Assert that we successfully resolved it with a plugin (not just an assembly)
 					Assert.IsNotNull(resolvedAssembly);
 					Assert.AreSame(mockAssemblies[0], resolvedAssembly);
 					Assert.AreEqual(1, pluginManager.LoadedPlugins.Count());
 					Assert.AreSame(mockAssemblies[0], pluginManager.LoadedPlugins.First().PluginAssembly);
-					Assert.AreEqual(1, pluginLoader.LoadedAssemblyPaths.Count());
-					CollectionAssert.Contains(pluginLoader.LoadedAssemblyPaths, mockAssemblies[0].Location);
+					Assert.AreEqual(1, assemblyLoader.LoadedAssemblyPaths.Count());
+					CollectionAssert.Contains(assemblyLoader.LoadedAssemblyPaths, mockAssemblies[0].Location);
 				}
 
 				{
 					// Attempt to resolve a not-yet-loaded editor plugin
-					Assembly resolvedAssembly = pluginLoader.InvokeResolveAssembly(mockEditorAssembly.FullName);
+					Assembly resolvedAssembly = assemblyLoader.InvokeResolveAssembly(mockEditorAssembly.FullName);
 
 					// Assert that we did not resolve this, nor load any assemblies.
 					// Leave this to the EditorPluginManager, which can properly load them as a plugin.
 					Assert.IsNull(resolvedAssembly);
 					Assert.AreEqual(1, pluginManager.LoadedPlugins.Count());
-					Assert.AreEqual(1, pluginLoader.LoadedAssemblyPaths.Count());
+					Assert.AreEqual(1, assemblyLoader.LoadedAssemblyPaths.Count());
 				}
 
 				// Load and init all plugins
@@ -153,7 +153,7 @@ namespace Duality.Tests.PluginManager
 				// both for plugins and auxilliary libraries
 				for (int i = 0; i < mockAssemblies.Length; i++)
 				{
-					Assert.AreSame(mockAssemblies[i], pluginLoader.InvokeResolveAssembly(mockAssemblies[i].FullName));
+					Assert.AreSame(mockAssemblies[i], assemblyLoader.InvokeResolveAssembly(mockAssemblies[i].FullName));
 				}
 				
 				// Assert that we still have the expected amount of loaded and disposed plugins

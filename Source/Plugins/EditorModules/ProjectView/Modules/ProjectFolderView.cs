@@ -100,28 +100,22 @@ namespace Duality.Editor.Plugins.ProjectView
 		{
 			base.OnShown(e);
 			this.InitResources();
-			DualityEditorApp.HighlightObject		+= this.DualityEditorApp_HighlightObject;
-			DualityEditorApp.SelectionChanged		+= this.EditorForm_SelectionChanged;
-			FileEventManager.ResourceCreated		+= this.FileEventManager_ResourceCreated;
-			FileEventManager.ResourceDeleted		+= this.FileEventManager_ResourceDeleted;
-			FileEventManager.ResourceModified		+= this.FileEventManager_ResourceModified;
-			FileEventManager.ResourceRenamed		+= this.FileEventManager_ResourceRenamed;
-			FileEventManager.BeginGlobalRename		+= this.FileEventManager_BeginGlobalRename;
-			DualityEditorApp.ObjectPropertyChanged	+= this.EditorForm_ObjectPropertyChanged;
-			Resource.ResourceSaved					+= this.Resource_ResourceSaved;
+			DualityEditorApp.HighlightObject       += this.DualityEditorApp_HighlightObject;
+			DualityEditorApp.SelectionChanged      += this.EditorForm_SelectionChanged;
+			FileEventManager.ResourcesChanged      += this.FileEventManager_ResourcesChanged;
+			FileEventManager.BeginGlobalRename     += this.FileEventManager_BeginGlobalRename;
+			DualityEditorApp.ObjectPropertyChanged += this.EditorForm_ObjectPropertyChanged;
+			Resource.ResourceSaved                 += this.Resource_ResourceSaved;
 		}
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
-			DualityEditorApp.HighlightObject		-= this.DualityEditorApp_HighlightObject;
-			DualityEditorApp.SelectionChanged		-= this.EditorForm_SelectionChanged;
-			FileEventManager.ResourceCreated		-= this.FileEventManager_ResourceCreated;
-			FileEventManager.ResourceDeleted		-= this.FileEventManager_ResourceDeleted;
-			FileEventManager.ResourceModified		-= this.FileEventManager_ResourceModified;
-			FileEventManager.ResourceRenamed		-= this.FileEventManager_ResourceRenamed;
-			FileEventManager.BeginGlobalRename		-= this.FileEventManager_BeginGlobalRename;
-			DualityEditorApp.ObjectPropertyChanged	-= this.EditorForm_ObjectPropertyChanged;
-			Resource.ResourceSaved					-= this.Resource_ResourceSaved;
+			DualityEditorApp.HighlightObject       -= this.DualityEditorApp_HighlightObject;
+			DualityEditorApp.SelectionChanged      -= this.EditorForm_SelectionChanged;
+			FileEventManager.ResourcesChanged      -= this.FileEventManager_ResourcesChanged;
+			FileEventManager.BeginGlobalRename     -= this.FileEventManager_BeginGlobalRename;
+			DualityEditorApp.ObjectPropertyChanged -= this.EditorForm_ObjectPropertyChanged;
+			Resource.ResourceSaved                 -= this.Resource_ResourceSaved;
 		}
 
 		public void FlashNode(NodeBase node)
@@ -283,7 +277,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 		protected DirectoryNode ScanDefaultContent()
 		{
-			DirectoryNode thisNode = new DirectoryNode(ContentProvider.VirtualContentPath, true);
+			DirectoryNode thisNode = new DirectoryNode(Resource.DefaultContentBasePath, true);
 
 			List<ContentRef<Resource>> defaultContent = ContentProvider.GetDefaultContent<Resource>();
 			foreach (ContentRef<Resource> resRef in defaultContent)
@@ -470,17 +464,18 @@ namespace Duality.Editor.Plugins.ProjectView
 
 			// Create a new Resource instance of the specified type
 			Resource resInstance = type.GetTypeInfo().CreateInstanceOf() as Resource;
+			Resource[] actionTargets = new Resource[] { resInstance };
 
 			// Gather all available user editing setup actions
 			IEnumerable<IEditorAction> setupActions = DualityEditorApp.GetEditorActions(
 				resInstance.GetType(), 
-				new[] { resInstance },
+				actionTargets,
 				DualityEditorApp.ActionContextSetupObjectForEditing);
 
 			// Invoke all of them on the new Resource
 			foreach (IEditorAction setupAction in setupActions)
 			{
-				setupAction.Perform(resInstance);
+				setupAction.Perform(actionTargets);
 			}
 
 			// Determine the actual name and path of our new Resource
@@ -507,7 +502,8 @@ namespace Duality.Editor.Plugins.ProjectView
 			if (openAction != null)
 			{
 				ResourceNode resNode = node.Tag as ResourceNode;
-				openAction.Perform(resNode.ResLink.Res);
+				Resource[] actionTargets = new Resource[] { resNode.ResLink.Res };
+				openAction.Perform(actionTargets);
 			}
 		}
 		protected IEditorAction GetResourceOpenAction(TreeNodeAdv node, bool loadWhenNecessary = true)
@@ -533,7 +529,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				select (c.Tag as ResourceNode).ResLink as IContentRef);
 			data.SetFiles(
 				from c in nodes
-				where c.Tag is NodeBase && !ContentProvider.IsDefaultContentPath((c.Tag as NodeBase).NodePath)
+				where c.Tag is NodeBase && !Resource.IsDefaultContentPath((c.Tag as NodeBase).NodePath)
 				select (c.Tag as NodeBase).NodePath);
 		}
 
@@ -594,7 +590,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 		protected string GetInsertActionTargetBasePath(NodeBase baseNode)
 		{
-			if (baseNode == null || ContentProvider.IsDefaultContentPath(baseNode.NodePath))
+			if (baseNode == null || Resource.IsDefaultContentPath(baseNode.NodePath))
 				return DualityApp.DataDirectory;
 
 			string baseTargetPath = baseNode.NodePath;
@@ -1113,14 +1109,14 @@ namespace Duality.Editor.Plugins.ProjectView
 
 						if (draggedObj != null)
 						{
-							UndoRedoManager.BeginMacro();
-							// Prevent recursion
-							UndoRedoManager.Do(new BreakPrefabLinkAction(draggedObj.ChildrenDeep.Where(c => c.PrefabLink != null && c.PrefabLink.Prefab == prefab)));
-							// Inject GameObject to Prefab & Establish PrefabLink
-							UndoRedoManager.Do(new ApplyToPrefabAction(draggedObj, prefab));
-							UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromLast);
-						}
+						UndoRedoManager.BeginMacro();
+						// Prevent recursion
+						UndoRedoManager.Do(new BreakPrefabLinkAction(draggedObj.GetChildrenDeep().Where(c => c.PrefabLink != null && c.PrefabLink.Prefab == prefab)));
+						// Inject GameObject to Prefab & Establish PrefabLink
+						UndoRedoManager.Do(new ApplyToPrefabAction(draggedObj, prefab));
+						UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromLast);
 					}
+				}
 				}
 				// See if we can retrieve Resources from data
 				else if (
@@ -1259,7 +1255,8 @@ namespace Duality.Editor.Plugins.ProjectView
 			string conflictPath;
 			if (!node.ApplyNameToPath(out conflictPath))
 			{
-				if (NodeBase.GetNodePathId(conflictPath) != node.NodePathId) this.DisplayErrorRenameFile(conflictPath);
+				if (conflictPath != null && NodeBase.GetNodePathId(conflictPath) != node.NodePathId)
+					this.DisplayErrorRenameFile(conflictPath);
 				node.Text = null;
 				node.ApplyPathToName();
 			}
@@ -1512,124 +1509,132 @@ namespace Duality.Editor.Plugins.ProjectView
 				}
 			}
 		}
-		private void FileEventManager_ResourceCreated(object sender, ResourceEventArgs e)
+		private void FileEventManager_ResourcesChanged(object sender, ResourceFilesChangedEventArgs e)
 		{
-			bool alreadyAdded = this.NodeFromPath(e.Path) != null; // Don't add Resources that are already present.
-
-			if (!alreadyAdded)
+			foreach (FileEvent item in e.FileEvents)
 			{
-				// Register newly detected Resource file
-				if (File.Exists(e.Path) && Resource.IsResourceFile(e.Path))
+				if (item.Type == FileEventType.Created)
 				{
-					NodeBase newNode = this.ScanFile(e.Path);
+					// Don't add Resources that are already present.
+					bool alreadyAdded = this.NodeFromPath(item.Path) != null;
 
-					Node parentNode = this.NodeFromPath(Path.GetDirectoryName(e.Path));
-					if (parentNode == null) parentNode = this.folderModel.Root;
-					
-					this.InsertNodeSorted(newNode, parentNode);
-					this.RegisterNodeTree(newNode);
-					newNode.NotifyVisible();
-				}
-				// Add new directory tree
-				else if (e.IsDirectory)
-				{
-					// Actually, only add the directory itsself. Each file will trigger its own ResourceCreated event
-					DirectoryNode newNode = new DirectoryNode(e.Path);
-					//NodeBase newNode = this.ScanDirectory(e.Path);
-
-					Node parentNode = this.NodeFromPath(Path.GetDirectoryName(e.Path));
-					if (parentNode == null) parentNode = this.folderModel.Root;
-
-					this.InsertNodeSorted(newNode, parentNode);
-					this.RegisterNodeTree(newNode);
-					newNode.NotifyVisible();
-				}
-			}
-
-			// Perform previously scheduled selection
-			this.PerformScheduleSelect(Path.GetFullPath(e.Path));
-		}
-		private void FileEventManager_ResourceDeleted(object sender, ResourceEventArgs e)
-		{
-			// Remove lost Resource file
-			NodeBase node = this.NodeFromPath(e.Path);
-			if (node != null)
-			{
-				this.UnregisterNodeTree(node);
-				node.Parent.Nodes.Remove(node);
-			}
-		}
-		private void FileEventManager_ResourceModified(object sender, ResourceEventArgs e)
-		{
-			// If a Prefab has been modified, update its appearance
-			if (e.IsResource && e.Content.Is<Duality.Resources.Prefab>())
-			{
-				ResourceNode modifiedNode = this.NodeFromPath(e.Content.Path) as ResourceNode;
-				if (modifiedNode != null) modifiedNode.UpdateImage();
-			}
-		}
-		private void FileEventManager_ResourceRenamed(object sender, ResourceRenamedEventArgs e)
-		{
-			NodeBase node = this.NodeFromPath(e.OldPath);
-			bool scanResFile = false;
-
-			// Modify existing node
-			if (node != null)
-			{
-				string newDirectory = Path.GetDirectoryName(e.Path);
-				bool moved = !PathOp.ArePathsEqual(Path.GetDirectoryName(e.OldPath), newDirectory);
-
-				// If its a file, remove and add it again
-				if (File.Exists(e.Path))
-				{
-					// Remove it
-					this.UnregisterNodeTree(node);
-					node.Parent.Nodes.Remove(node);
-
-					// Register it
-					scanResFile = true;
-				}
-				// Otherwise: Rename node according to file
-				else
-				{
-					this.UnregisterNodeTree(node);
-					if (moved)
+					if (!alreadyAdded)
 					{
-						node.Parent.Nodes.Remove(node);
-						Node newParent = this.NodeFromPath(newDirectory) ?? this.folderModel.Root;
-						this.InsertNodeSorted(node, newParent);
+						// Register newly detected Resource file
+						if (File.Exists(item.Path))
+						{
+							NodeBase newNode = this.ScanFile(item.Path);
+
+							Node parentNode = this.NodeFromPath(Path.GetDirectoryName(item.Path));
+							if (parentNode == null) parentNode = this.folderModel.Root;
+
+							this.InsertNodeSorted(newNode, parentNode);
+							this.RegisterNodeTree(newNode);
+							newNode.NotifyVisible();
+						}
+						// Add new directory tree
+						else if (item.IsDirectory)
+						{
+							// Actually, only add the directory itsself. Each file will trigger its own ResourceCreated event
+							DirectoryNode newNode = new DirectoryNode(item.Path);
+							//NodeBase newNode = this.ScanDirectory(e.Path);
+
+							Node parentNode = this.NodeFromPath(Path.GetDirectoryName(item.Path));
+							if (parentNode == null) parentNode = this.folderModel.Root;
+
+							this.InsertNodeSorted(newNode, parentNode);
+							this.RegisterNodeTree(newNode);
+							newNode.NotifyVisible();
+						}
 					}
-					node.NodePath = e.Path;
-					node.ApplyPathToName();
-					this.RegisterNodeTree(node);
+
+					// Perform previously scheduled selection
+					this.PerformScheduleSelect(Path.GetFullPath(item.Path));
+				}
+				else if (item.Type == FileEventType.Deleted)
+				{
+					// Remove lost Resource file
+					NodeBase node = this.NodeFromPath(item.Path);
+					if (node != null)
+					{
+						this.UnregisterNodeTree(node);
+						node.Parent.Nodes.Remove(node);
+					}
+				}
+				else if (item.Type == FileEventType.Changed)
+				{
+					// If a Prefab has been modified, update its appearance
+					ContentRef<Resource> content = new ContentRef<Resource>(item.Path);
+					if (!item.IsDirectory && content.Is<Prefab>())
+					{
+						ResourceNode modifiedNode = this.NodeFromPath(item.Path) as ResourceNode;
+						if (modifiedNode != null) modifiedNode.UpdateImage();
+					}
+				}
+				else if (item.Type == FileEventType.Renamed)
+				{
+					NodeBase node = this.NodeFromPath(item.OldPath);
+					bool scanResFile = false;
+
+					// Modify existing node
+					if (node != null)
+					{
+						string newDirectory = Path.GetDirectoryName(item.Path);
+						bool moved = !PathOp.ArePathsEqual(Path.GetDirectoryName(item.OldPath), newDirectory);
+
+						// If its a file, remove and add it again
+						if (File.Exists(item.Path))
+						{
+							// Remove it
+							this.UnregisterNodeTree(node);
+							node.Parent.Nodes.Remove(node);
+
+							// Register it
+							scanResFile = true;
+						}
+						// Otherwise: Rename node according to file
+						else
+						{
+							this.UnregisterNodeTree(node);
+							if (moved)
+							{
+								node.Parent.Nodes.Remove(node);
+								Node newParent = this.NodeFromPath(newDirectory) ?? this.folderModel.Root;
+								this.InsertNodeSorted(node, newParent);
+							}
+							node.NodePath = item.Path;
+							node.ApplyPathToName();
+							this.RegisterNodeTree(node);
+						}
+					}
+					// Register newly detected Resource file
+					else if (this.NodeFromPath(item.Path) == null)
+					{
+						scanResFile = true;
+					}
+
+					// If neccessary, check if the file is a Resource file and add it, if yes
+					if (scanResFile && Resource.IsResourceFile(item.Path))
+					{
+						node = this.ScanFile(item.Path);
+
+						Node parentNode = this.NodeFromPath(Path.GetDirectoryName(item.Path));
+						if (parentNode == null) parentNode = this.folderModel.Root;
+
+						this.InsertNodeSorted(node, parentNode);
+						this.RegisterNodeTree(node);
+						node.NotifyVisible();
+					}
+
+					// Perform previously scheduled selection
+					this.PerformScheduleSelect(Path.GetFullPath(item.Path));
 				}
 			}
-			// Register newly detected Resource file
-			else if (this.NodeFromPath(e.Path) == null)
-			{
-				scanResFile = true;
-			}
-
-			// If neccessary, check if the file is a Resource file and add it, if yes
-			if (scanResFile && Resource.IsResourceFile(e.Path))
-			{
-				node = this.ScanFile(e.Path);
-
-				Node parentNode = this.NodeFromPath(Path.GetDirectoryName(e.Path));
-				if (parentNode == null) parentNode = this.folderModel.Root;
-
-				this.InsertNodeSorted(node, parentNode);
-				this.RegisterNodeTree(node);
-				node.NotifyVisible();
-			}
-
-			// Perform previously scheduled selection
-			this.PerformScheduleSelect(Path.GetFullPath(e.Path));
 		}
 		private void FileEventManager_BeginGlobalRename(object sender, BeginGlobalRenameEventArgs e)
 		{
 			if (this.skipGlobalRenamePath.Remove(Path.GetFullPath(e.OldPath)))
-				e.Cancel = true;
+				e.Cancel();
 		}
 		private void Resource_ResourceSaved(object sender, ResourceSaveEventArgs e)
 		{
@@ -1653,8 +1658,8 @@ namespace Duality.Editor.Plugins.ProjectView
 					if (item.Tag is CreateContextEntryTag)
 						result = HelpInfo.FromMember(ReflectionHelper.ResolveType((item.Tag as CreateContextEntryTag).TypeId));
 					// Editor Actions
-					else if (item.Tag is IEditorAction && !string.IsNullOrEmpty((item.Tag as IEditorAction).Description))
-						result = HelpInfo.FromText(item.Text, (item.Tag as IEditorAction).Description);
+					else if (item.Tag is IEditorAction && (item.Tag as IEditorAction).HelpInfo != null)
+						result = (item.Tag as IEditorAction).HelpInfo;
 					// A HelpInfo attached to the item
 					else if (item.Tag is HelpInfo)
 						result = item.Tag as HelpInfo;
@@ -1695,10 +1700,16 @@ namespace Duality.Editor.Plugins.ProjectView
 		string IToolTipProvider.GetToolTip(TreeNodeAdv viewNode, Aga.Controls.Tree.NodeControls.NodeControl nodeControl)
 		{
 			IEditorAction action = this.GetResourceOpenAction(viewNode, false);
-			if (action != null) return string.Format(
-				Duality.Editor.Plugins.ProjectView.Properties.ProjectViewRes.ProjectFolderView_Help_Doubleclick,
-				action.Description);
-			else return null;
+			if (action != null && action.HelpInfo != null)
+			{
+				return string.Format(
+					Duality.Editor.Plugins.ProjectView.Properties.ProjectViewRes.ProjectFolderView_Help_Doubleclick,
+					action.HelpInfo.Description);
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		private int ContextMenuItemComparison(IMenuModelItem itemA, IMenuModelItem itemB)

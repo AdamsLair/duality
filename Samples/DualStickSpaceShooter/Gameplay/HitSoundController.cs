@@ -36,7 +36,7 @@ namespace DualStickSpaceShooter
 		{
 			if (this.hitSound != null && strength > 0.02f)
 			{
-				SoundInstance inst = DualityApp.Sound.PlaySound3D(this.hitSound, this.GameObj);
+				SoundInstance inst = DualityApp.Sound.PlaySound3D(this.hitSound, this.GameObj, false);
 				inst.Volume = this.volume * MathF.Clamp(strength, 0.0f, 1.0f);
 				inst.Pitch = this.pitch;
 			}

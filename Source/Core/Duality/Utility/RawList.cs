@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Duality
 {
@@ -73,12 +74,12 @@ namespace Duality
 		{
 			get
 			{
-				if (index >= count) throw new IndexOutOfRangeException();
+				if (index >= this.count) ThrowIndexOutOfRangeException();
 				return this.data[index];
 			}
 			set
 			{
-				if (index >= count) throw new IndexOutOfRangeException();
+				if (index >= this.count) ThrowIndexOutOfRangeException();
 				this.data[index] = value;
 			}
 		}
@@ -217,7 +218,7 @@ namespace Duality
 			this.count += count;
 		}
 		/// <summary>
-		/// Removes the first matchin item from the list.
+		/// Removes the first matching item from the list.
 		/// </summary>
 		/// <param name="item"></param>
 		/// <returns></returns>
@@ -252,40 +253,50 @@ namespace Duality
 			if (index + count >= this.count)
 			{
 				this.count -= count;
-				Array.Clear(this.data, this.count, count);
+				if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+				{
+					Array.Clear(this.data, this.count, count);
+				}
 			}
 			else
 			{
 				this.MoveInternal(index + count, this.count - (index + count), -count, false);
 				this.count -= count;
-				Array.Clear(this.data, this.count, count);
+				if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+				{
+					Array.Clear(this.data, this.count, count);
+				}
 			}
 		}
 		/// <summary>
-		/// Removes the first matchin item from the list.
+		/// Removes all matching items from the list.
 		/// </summary>
 		/// <param name="predicate"></param>
 		/// <returns></returns>
 		public int RemoveAll(Predicate<T> predicate)
 		{
+			// Iterate over the internal array with two indices:
+			// A source index that skips all removed items and a
+			// target index that assigns new positions to all remaining
+			// items.
 			int source = -1;
-			int count = -1;
+			int newCount = -1;
 			for (int target = 0; target < this.count; target++)
 			{
-				// Search for the index we want to copy from
+				// Determine the next source index to copy from
 				do
 				{
 					source++;
 					if (source >= this.count)
 					{
-						count = target;
+						newCount = target;
 						break;
 					}
 				}
 				while (predicate(this.data[source]));
 
 				// If we reached the end, stop
-				if (count != -1) break;
+				if (newCount != -1) break;
 
 				// Copy objects to their new indices
 				if (target != source)
@@ -294,12 +305,15 @@ namespace Duality
 				}
 			}
 
-			// Shrink the list accordingly.
-			if (count != this.count && count != -1)
+			// Shrink the list to match the new number of elements
+			if (newCount != this.count && newCount != -1)
 			{
-				int removedCount = this.count - count;
+				int removedCount = this.count - newCount;
 				this.count -= removedCount;
-				Array.Clear(this.data, this.count, removedCount);
+				if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+				{
+					Array.Clear(this.data, this.count, removedCount);
+				}
 				return removedCount;
 			}
 
@@ -310,7 +324,10 @@ namespace Duality
 		/// </summary>
 		public void Clear()
 		{
-			Array.Clear(this.data, 0, this.count);
+			if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+			{
+				Array.Clear(this.data, 0, this.count);
+			}
 			this.count = 0;
 		}
 
@@ -492,6 +509,11 @@ namespace Duality
 					Array.Clear(this.data, index + count - clearCount, clearCount);
 				}
 			}
+		}
+
+		private static void ThrowIndexOutOfRangeException()
+		{
+			throw new IndexOutOfRangeException();
 		}
 
 

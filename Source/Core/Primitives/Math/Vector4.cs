@@ -96,7 +96,11 @@ namespace Duality
 		{
 			get
 			{
-				return (float)System.Math.Sqrt(this.X * this.X + this.Y * this.Y + this.Z * this.Z + this.W * this.W);
+				return (float)System.Math.Sqrt(
+					this.X * this.X + 
+					this.Y * this.Y + 
+					this.Z * this.Z + 
+					this.W * this.W);
 			}
 		}
 		/// <summary>
@@ -111,7 +115,11 @@ namespace Duality
 		{
 			get
 			{
-				return this.X * this.X + this.Y * this.Y + this.Z * this.Z + this.W * this.W;
+				return 
+					this.X * this.X + 
+					this.Y * this.Y + 
+					this.Z * this.Z + 
+					this.W * this.W;
 			}
 		}
 		/// <summary>
@@ -136,19 +144,29 @@ namespace Duality
 		/// <summary>
 		/// Gets or sets the value at the index of the Vector.
 		/// </summary>
-		public float this[int index] {
-			get{
-				if(index == 0) return this.X;
-				else if(index == 1) return this.Y;
-				else if(index == 2) return this.Z;
-				else if(index == 3) return this.W;
-				throw new IndexOutOfRangeException("You tried to access this vector at index: " + index);
-			} set{
-				if(index == 0) this.X = value;
-				else if(index == 1) this.Y = value;
-				else if(index == 2) this.Z = value;
-				else if(index == 3) this.W = value;
-				else throw new IndexOutOfRangeException("You tried to set this vector at index: " + index);
+		public float this[int index]
+		{
+			get
+			{
+				switch (index)
+				{
+					case 0: return this.X;
+					case 1: return this.Y;
+					case 2: return this.Z;
+					case 3: return this.W;
+					default: throw new IndexOutOfRangeException("Vector4 access at index: " + index);
+				}
+			}
+			set
+			{
+				switch (index)
+				{
+					case 0: this.X = value; return;
+					case 1: this.Y = value; return;
+					case 2: this.Z = value; return;
+					case 3: this.W = value; return;
+					default: throw new IndexOutOfRangeException("Vector4 access at index: " + index);
+				}
 			}
 		}
 
@@ -161,7 +179,7 @@ namespace Duality
 			if (length < 1e-15f)
 			{
 				this = Vector4.Zero;
-			}
+		}
 			else
 			{
 				float scale = 1.0f / length;
@@ -445,14 +463,10 @@ namespace Duality
 		/// <param name="result">The transformed vector</param>
 		public static void Transform(ref Vector4 vec, ref Matrix4 mat, out Vector4 result)
 		{
-			Vector4 row0 = mat.Row0;
-			Vector4 row1 = mat.Row1;
-			Vector4 row2 = mat.Row2;
-			Vector4 row3 = mat.Row3;
-			result.X = vec.X * row0.X + vec.Y * row1.X + vec.Z * row2.X + vec.W * row3.X;
-			result.Y = vec.X * row0.Y + vec.Y * row1.Y + vec.Z * row2.Y + vec.W * row3.Y;
-			result.Z = vec.X * row0.Z + vec.Y * row1.Z + vec.Z * row2.Z + vec.W * row3.Z;
-			result.W = vec.X * row0.W + vec.Y * row1.W + vec.Z * row2.W + vec.W * row3.W;
+			result.X = vec.X * mat.Row0.X + vec.Y * mat.Row1.X + vec.Z * mat.Row2.X + vec.W * mat.Row3.X;
+			result.Y = vec.X * mat.Row0.Y + vec.Y * mat.Row1.Y + vec.Z * mat.Row2.Y + vec.W * mat.Row3.Y;
+			result.Z = vec.X * mat.Row0.Z + vec.Y * mat.Row1.Z + vec.Z * mat.Row2.Z + vec.W * mat.Row3.Z;
+			result.W = vec.X * mat.Row0.W + vec.Y * mat.Row1.W + vec.Z * mat.Row2.W + vec.W * mat.Row3.W;
 		}
 		/// <summary>
 		/// Transforms a vector by a quaternion rotation.

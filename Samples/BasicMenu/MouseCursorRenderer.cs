@@ -11,30 +11,28 @@ namespace BasicMenu
 {
 	public class MouseCursorRenderer : Component, ICmpRenderer
 	{
-		float ICmpRenderer.BoundRadius
+		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
 		{
-			get { return float.MaxValue; }
-		}
-
-		bool ICmpRenderer.IsVisible(IDrawDevice device)
-		{
-			return 
-				(device.VisibilityMask & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None &&
-				(device.VisibilityMask & VisibilityFlag.AllGroups) != VisibilityFlag.None;
+			info.Position = Vector3.Zero;
+			info.Radius = float.MaxValue;
+			info.Visibility = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay;
 		}
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			Canvas canvas = new Canvas(device);
+			Canvas canvas = new Canvas();
+			canvas.Begin(device);
 
 			// Draw the mouse cursor when available
 			if (DualityApp.Mouse.IsAvailable)
 			{
 				canvas.State.ColorTint = ColorRgba.White;
 				canvas.FillCircle(
-					DualityApp.Mouse.X, 
-					DualityApp.Mouse.Y, 
+					DualityApp.Mouse.Pos.X, 
+					DualityApp.Mouse.Pos.Y, 
 					2);
 			}
+
+			canvas.End();
 		}
 	}
 }

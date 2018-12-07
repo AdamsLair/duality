@@ -29,7 +29,7 @@ namespace Duality
 		/// </summary>
 		internal CorePluginManager()
 		{
-			this.PluginLog = Log.Core;
+			this.PluginLog = Logs.Core;
 		}
 		
 		/// <summary>
@@ -50,7 +50,7 @@ namespace Duality
 			this.PluginLog.PushIndent();
 
 			List<string> auxilLibs = new List<string>();
-			foreach (string dllPath in this.PluginLoader.AvailableAssemblyPaths)
+			foreach (string dllPath in this.AssemblyLoader.AvailableAssemblyPaths)
 			{
 				if (!dllPath.EndsWith(".core.dll", StringComparison.OrdinalIgnoreCase))
 				{ 
@@ -147,12 +147,12 @@ namespace Duality
 		protected override void OnInit()
 		{
 			base.OnInit();
-			this.PluginLoader.AssemblyResolve += this.pluginLoader_AssemblyResolve;
+			this.AssemblyLoader.AssemblyResolve += this.AssemblyLoader_AssemblyResolve;
 		}
 		protected override void OnTerminate()
 		{
 			base.OnTerminate();
-			this.PluginLoader.AssemblyResolve -= this.pluginLoader_AssemblyResolve;
+			this.AssemblyLoader.AssemblyResolve -= this.AssemblyLoader_AssemblyResolve;
 		}
 		protected override void OnInitPlugin(CorePlugin plugin)
 		{
@@ -182,7 +182,7 @@ namespace Duality
 			// Load the assembly from the specified path
 			try
 			{
-				auxilAssembly = this.PluginLoader.LoadAssembly(dllPath);
+				auxilAssembly = this.AssemblyLoader.LoadAssembly(dllPath);
 			}
 			catch (Exception)
 			{
@@ -201,7 +201,7 @@ namespace Duality
 			return auxilAssembly;
 		}
 
-		private void pluginLoader_AssemblyResolve(object sender, AssemblyResolveEventArgs args)
+		private void AssemblyLoader_AssemblyResolve(object sender, AssemblyResolveEventArgs args)
 		{
 			// Early-out, if the Assembly has already been resolved
 			if (args.IsResolved) return;
@@ -209,7 +209,7 @@ namespace Duality
 			// Search for core plugins that haven't been loaded yet, and load them first.
 			// This is required to satisfy dependencies while loading plugins, since
 			// we can't know which one requires which beforehand.
-			foreach (string libFile in this.PluginLoader.AvailableAssemblyPaths)
+			foreach (string libFile in this.AssemblyLoader.AvailableAssemblyPaths)
 			{
 				if (!libFile.EndsWith(".core.dll", StringComparison.OrdinalIgnoreCase))
 					continue;
@@ -227,7 +227,7 @@ namespace Duality
 			}
 
 			// Search for other libraries that might be located inside the plugin directory
-			foreach (string libFile in this.PluginLoader.AvailableAssemblyPaths)
+			foreach (string libFile in this.AssemblyLoader.AvailableAssemblyPaths)
 			{
 				// Don't load editor (or any other) plugins here, only auxilliary libs allowed
 				if (libFile.EndsWith(".editor.dll", StringComparison.OrdinalIgnoreCase))

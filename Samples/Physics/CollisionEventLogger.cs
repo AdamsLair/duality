@@ -19,7 +19,7 @@ namespace Duality.Samples.Physics
 		{
 			// Display the body we just began colliding with.
 			// Note that args.CollisionData is not available here.
-			VisualLog.Default
+			VisualLogs.Default
 				.DrawPoint(Vector3.UnitX * -5.0f)
 				.AnchorAt(this.GameObj)
 				.WithColor(ColorRgba.Green)
@@ -29,7 +29,7 @@ namespace Duality.Samples.Physics
 		{
 			// Display the body we just stopped colliding with.
 			// Note that args.CollisionData is not available here.
-			VisualLog.Default
+			VisualLogs.Default
 				.DrawPoint(Vector3.UnitX * 5.0f)
 				.AnchorAt(this.GameObj)
 				.WithColor(ColorRgba.Blue)
@@ -39,7 +39,7 @@ namespace Duality.Samples.Physics
 		{
 			// Display all the collision data we get while it happens.
 			Vector3 collisionPos = new Vector3(args.CollisionData.Pos, 0.0f);
-			VisualLog.Default
+			VisualLogs.Default
 				.DrawPoint(collisionPos)
 				.KeepAlive(50.0f);
 
@@ -47,7 +47,7 @@ namespace Duality.Samples.Physics
 			float normalArrowDir = MathF.Sign(args.CollisionData.NormalImpulse);
 			if (normalArrowLength >= 15.0f)
 			{
-				VisualLog.Default
+				VisualLogs.Default
 					.DrawVector(collisionPos, args.CollisionData.Normal * normalArrowLength * normalArrowDir)
 					.KeepAlive(1000.0f);
 			}
@@ -56,7 +56,7 @@ namespace Duality.Samples.Physics
 			float tangentArrowDir = MathF.Sign(args.CollisionData.TangentImpulse);
 			if (tangentArrowLength >= 15.0f)
 			{
-				VisualLog.Default
+				VisualLogs.Default
 					.DrawVector(collisionPos, args.CollisionData.Tangent * tangentArrowLength * tangentArrowDir)
 					.KeepAlive(1000.0f);
 			}

@@ -79,7 +79,7 @@ namespace DualStickSpaceShooter
 
 			if (this.owner != null)
 			{
-				CameraController camControl = Scene.Current.FindComponent<CameraController>();
+				CameraController camControl = this.Scene.FindComponent<CameraController>();
 				camControl.ShakeScreen(MathF.Pow(damage, 0.75f));
 			}
 		}
@@ -113,7 +113,7 @@ namespace DualStickSpaceShooter
 							emitter.BaseVel += new Vector3(body.LinearVelocity);
 						}
 					}
-					Scene.Current.AddObject(effectObj);
+					this.Scene.AddObject(effectObj);
 				}
 			}
 
@@ -174,7 +174,7 @@ namespace DualStickSpaceShooter
 			bullet.Fire(this.owner, body.LinearVelocity, worldPos, transform.Angle + localAngle, out recoilImpulse);
 			body.ApplyWorldImpulse(recoilImpulse);
 
-			Scene.Current.AddObject(bullet.GameObj);
+			this.Scene.AddObject(bullet.GameObj);
 
 			SoundInstance inst = null;
 			if (Player.AlivePlayers.Count() > 1)
@@ -194,7 +194,7 @@ namespace DualStickSpaceShooter
 			// Heal when damaged
 			if (this.hitpoints < 1.0f)
 			{
-				this.hitpoints = MathF.Clamp(this.hitpoints + blueprint.HealRate * Time.SPFMult * Time.TimeMult / blueprint.MaxHitpoints, 0.0f, 1.0f);
+				this.hitpoints = MathF.Clamp(this.hitpoints + blueprint.HealRate * Time.SecondsPerFrame * Time.TimeMult / blueprint.MaxHitpoints, 0.0f, 1.0f);
 			}
 
 			// Apply force according to the desired thrust
@@ -237,12 +237,12 @@ namespace DualStickSpaceShooter
 			}
 
 			// Weapon cooldown
-			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MsPFMult * Time.TimeMult);
+			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MillisecondsPerFrame * Time.TimeMult);
 
 			// Play the owners special flight sound, when available
 			if (this.owner != null && this.owner.FlightLoop != null)
 			{
-				SoundListener listener = Scene.Current.FindComponent<SoundListener>();
+				SoundListener listener = this.Scene.FindComponent<SoundListener>();
 				Vector3 listenerPos = listener.GameObj.Transform.Pos;
 
 				// Determine the target panning manually, because we don't want a true 3D sound here (doppler, falloff, ...)
@@ -262,7 +262,7 @@ namespace DualStickSpaceShooter
 				// Start the flight loop when requested
 				if (targetVolume > 0.0f && this.flightLoop == null)
 				{
-					if ((int)Time.MainTimer.TotalMilliseconds % 2976 <= (int)Time.MsPFMult)
+					if ((int)Time.MainTimer.TotalMilliseconds % 2976 <= (int)Time.MillisecondsPerFrame)
 					{
 						this.flightLoop = DualityApp.Sound.PlaySound(this.owner.FlightLoop);
 						this.flightLoop.Looped = true;
@@ -316,16 +316,13 @@ namespace DualStickSpaceShooter
 				this.damageEffect = null;
 			}
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context) {}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		void ICmpInitializable.OnActivate() {}
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
+			if (this.flightLoop != null)
 			{
-				if (this.flightLoop != null)
-				{
-					this.flightLoop.Dispose();
-					this.flightLoop = null;
-				}
+				this.flightLoop.Dispose();
+				this.flightLoop = null;
 			}
 		}
 	}

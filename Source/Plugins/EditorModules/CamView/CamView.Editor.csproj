@@ -12,38 +12,35 @@
     <AssemblyName>CamView.editor</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)Build\Output\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>CamView.editor.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)Build\Output\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>bin\Release\CamView.editor.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.WinForms, Version=1.1.15.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\AdamsLair.WinForms.1.1.15\lib\net45\AdamsLair.WinForms.dll</HintPath>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.16.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\AdamsLair.WinForms.1.1.16\lib\net45\AdamsLair.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -62,9 +59,7 @@
     <Compile Include="CamViewStates\ObjectEditor\ObjectEditorAction.cs" />
     <Compile Include="CamViewStates\ObjectEditor\ObjectEditorSelObj.cs" />
     <Compile Include="CamViewStates\ObjectEditor\ObjectEditorCamViewState.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelLoopShape.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyShape.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyLikeShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelVertexShape.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelCircleShape.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelShape.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelBody.cs" />
@@ -93,7 +88,6 @@
     <Compile Include="CamViewLayers\RigidBodyJointCamViewLayer.cs" />
     <Compile Include="CamViewLayers\RigidBodyShapeCamViewLayer.cs" />
     <Compile Include="CamViewStates\CamViewState.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelChainShape.cs" />
     <Compile Include="CamViewPlugin.cs" />
     <Compile Include="CamViewStates\GameViewCamViewState.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorCamViewState.cs" />
@@ -167,8 +161,10 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="EmbeddedResources\iconShapeSelect.png" />
+    <Content Include="EmbeddedResources\monitor.png" />
     <Content Include="EmbeddedResources\ObjectVisibility.png" />
     <Content Include="EmbeddedResources\ObjectVisibilityFiltered.png" />
+    <None Include="EmbeddedResources\RenderSetup.png" />
     <Content Include="EmbeddedResources\SnapToGrid.png" />
     <None Include="EmbeddedResources\iconCmpEditVertices.png" />
     <None Include="EmbeddedResources\curArrowEditVertices.png" />
@@ -187,4 +183,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
+  </Target>
 </Project>

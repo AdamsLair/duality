@@ -30,7 +30,6 @@ namespace DynamicLighting
 			public	List<Light>		PriorizedLights;
 			public	int				FrameId;
 		}
-		private	static	DeviceLightInfo	nullDeviceInfo = null;
 		private	static	Dictionary<IDrawDevice,DeviceLightInfo>	deviceInfo	= new Dictionary<IDrawDevice,DeviceLightInfo>();
 
 		public	const	int	MaxVisible	= 8;
@@ -149,9 +148,9 @@ namespace DynamicLighting
 			if (uniformScale <= 0.0f) return false;
 
 			Vector3 pos = this.GameObj.Transform.Pos;
-			if (device.IsCoordInView(pos, this.range * uniformScale)) return true;
-			if (device.IsCoordInView(pos - Vector3.UnitZ * this.range * 0.5f * uniformScale, this.range * uniformScale)) return true;
-			if (device.IsCoordInView(pos + Vector3.UnitZ * this.range * uniformScale, this.range * uniformScale)) return true;
+			if (device.IsSphereInView(pos, this.range * uniformScale)) return true;
+			if (device.IsSphereInView(pos - Vector3.UnitZ * this.range * 0.5f * uniformScale, this.range * uniformScale)) return true;
+			if (device.IsSphereInView(pos + Vector3.UnitZ * this.range * uniformScale, this.range * uniformScale)) return true;
 			return false;
 		}
 		public int CalcPriority(IDrawDevice device)
@@ -160,17 +159,16 @@ namespace DynamicLighting
 			{
 				float uniformScale = this.GameObj.Transform.Scale;
 				Vector3 pos = this.GameObj.Transform.Pos;
-				float scale = 1.0f;
-				device.PreprocessCoords(ref pos, ref scale);
+				float scale = device.GetScaleAtZ(pos.Z);
 
-				float planarDist = (this.GameObj.Transform.Pos.Xy - device.RefCoord.Xy).Length;
+				float planarDist = (this.GameObj.Transform.Pos.Xy - device.ViewerPos.Xy).Length;
 
 				float rangeFactor = 1.0f / (this.range * uniformScale);
 				float distFactor = (MathF.Min(scale, 1.0f) * planarDist);
 
 				float spotFactor;
 				if (this.dir != Vector3.Zero)
-					spotFactor = 0.5f * (1.0f + Vector3.Dot((device.RefCoord - this.GameObj.Transform.Pos).Normalized, this.dir));
+					spotFactor = 0.5f * (1.0f + Vector3.Dot((device.ViewerPos - this.GameObj.Transform.Pos).Normalized, this.dir));
 				else
 					spotFactor = 1.0f;
 
@@ -182,48 +180,26 @@ namespace DynamicLighting
 			}
 		}
 
-		private static DeviceLightInfo UpdateLighting(IDrawDevice device)
+		public static void UpdateLighting(IDrawDevice device)
 		{
+			// Only update lighting info once per frame and device
 			DeviceLightInfo info;
+			if (deviceInfo.TryGetValue(device, out info) && info != null && info.FrameId == Time.FrameCount)
+				return;
 
-			if (device == null)
+			if (info == null)
 			{
-				info = nullDeviceInfo;
-				if (info != null && info.FrameId == Time.FrameCount) return info;
-
-				if (info == null)
-				{
-					info = new DeviceLightInfo();
-					nullDeviceInfo = info;
-				}
-				info.FrameId = Time.FrameCount;
-				
-				info.PriorizedLights = Scene.Current.FindComponents<Light>().Where(l => l.Active).ToList();
+				info = new DeviceLightInfo();
+				deviceInfo[device] = info;
 			}
-			else
-			{
-				if (deviceInfo.TryGetValue(device, out info) && info != null && info.FrameId == Time.FrameCount) return info;
-
-				if (info == null)
-				{
-					info = new DeviceLightInfo();
-					deviceInfo[device] = info;
-				}
-				info.FrameId = Time.FrameCount;
-				info.PriorizedLights = Scene.Current.FindComponents<Light>().Where(l => l.Active).Where(l => l.IsVisibleTo(device)).ToList();
-				info.PriorizedLights.StableSort((Light a, Light b) => a.CalcPriority(device) - b.CalcPriority(device));
-			}
-
-			return info;
-		}
-		public static void SetupLighting(IDrawDevice device, BatchInfo material)
-		{
-			DeviceLightInfo info = UpdateLighting(device);
+			info.FrameId = Time.FrameCount;
+			info.PriorizedLights = Scene.Current.FindComponents<Light>().Where(l => l.Active).Where(l => l.IsVisibleTo(device)).ToList();
+			info.PriorizedLights.StableSort((Light a, Light b) => a.CalcPriority(device) - b.CalcPriority(device));
 
 			// Prepare shader dara
-			float[] _lightPos = new float[4 * MaxVisible];
-			float[] _lightDir = new float[4 * MaxVisible];
-			float[] _lightColor = new float[3 * MaxVisible];
+			Vector4[] _lightPos = new Vector4[MaxVisible];
+			Vector4[] _lightDir = new Vector4[MaxVisible];
+			Vector3[] _lightColor = new Vector3[MaxVisible];
 			int _lightCount = MathF.Min(MaxVisible, info.PriorizedLights.Count);
 
 			int i = 0;
@@ -252,46 +228,47 @@ namespace DynamicLighting
 
 				if (directional)
 				{
-					_lightPos[i * 4 + 0] = (float)light.ambientColor.R * light.ambientIntensity / 255.0f;
-					_lightPos[i * 4 + 1] = (float)light.ambientColor.G * light.ambientIntensity / 255.0f;
-					_lightPos[i * 4 + 2] = (float)light.ambientColor.B * light.ambientIntensity / 255.0f;
-					_lightPos[i * 4 + 3] = 0.0f;
+					_lightPos[i].X = (float)light.ambientColor.R * light.ambientIntensity / 255.0f;
+					_lightPos[i].Y = (float)light.ambientColor.G * light.ambientIntensity / 255.0f;
+					_lightPos[i].Z = (float)light.ambientColor.B * light.ambientIntensity / 255.0f;
+					_lightPos[i].W = 0.0f;
 				}
 				else
 				{
-					_lightPos[i * 4 + 0] = pos.X;
-					_lightPos[i * 4 + 1] = pos.Y;
-					_lightPos[i * 4 + 2] = pos.Z;
-					_lightPos[i * 4 + 3] = light.range * uniformScale;
+					_lightPos[i].X = pos.X;
+					_lightPos[i].Y = pos.Y;
+					_lightPos[i].Z = pos.Z;
+					_lightPos[i].W = light.range * uniformScale;
 				}
 
-				_lightDir[i * 4 + 0] = dir.X;
-				_lightDir[i * 4 + 1] = dir.Y;
-				_lightDir[i * 4 + 2] = dir.Z;
-				_lightDir[i * 4 + 3] = dir == Vector3.Zero ? 0.0f : MathF.Max(light.spotFocus, 1.0f);
+				_lightDir[i].X = dir.X;
+				_lightDir[i].Y = dir.Y;
+				_lightDir[i].Z = dir.Z;
+				_lightDir[i].W = dir == Vector3.Zero ? 0.0f : MathF.Max(light.spotFocus, 1.0f);
 
-				_lightColor[i * 3 + 0] = (float)light.color.R * light.intensity / 255.0f;
-				_lightColor[i * 3 + 1] = (float)light.color.G * light.intensity / 255.0f;
-				_lightColor[i * 3 + 2] = (float)light.color.B * light.intensity / 255.0f;
+				_lightColor[i].X = (float)light.color.R * light.intensity / 255.0f;
+				_lightColor[i].Y = (float)light.color.G * light.intensity / 255.0f;
+				_lightColor[i].Z = (float)light.color.B * light.intensity / 255.0f;
 
 				i++;
 				if (i >= _lightCount) break;
 			}
 			if (i + 1 < _lightCount) _lightCount = i + 1;
 
-			material.SetUniform("_lightCount", _lightCount);
-			material.SetUniform("_lightPos", _lightPos);
-			material.SetUniform("_lightDir", _lightDir);
-			material.SetUniform("_lightColor", _lightColor);
+			device.ShaderParameters.Set("_lightCount", _lightCount);
+			device.ShaderParameters.Set("_lightPos", _lightPos);
+			device.ShaderParameters.Set("_lightDir", _lightDir);
+			device.ShaderParameters.Set("_lightColor", _lightColor);
 		}
 		public static void GetLightAtWorldPos(Vector3 worldPos, out Vector4 lightColor, float translucency = 0.0f)
 		{
-			DeviceLightInfo info = UpdateLighting(null);
 			lightColor = Vector4.UnitW;
 
-			foreach (Light light in info.PriorizedLights)
+			IEnumerable<Light> lights = Scene.Current.FindComponents<Light>();
+			foreach (Light light in lights)
 			{
 				if (light.Disposed) continue;
+				if (!light.Active) continue;
 				if (light.IsDirectional)
 				{
 					float translucencyFactor = Vector3.Dot(light.dir, Vector3.UnitZ);

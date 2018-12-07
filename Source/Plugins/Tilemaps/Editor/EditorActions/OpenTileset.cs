@@ -10,15 +10,14 @@ using Duality.Editor.Plugins.Tilemaps.Properties;
 
 namespace Duality.Editor.Plugins.Tilemaps.EditorActions
 {
+	/// <summary>
+	/// Opens the Tileset for editing.
+	/// </summary>
 	public class OpenTileset : EditorSingleAction<Tileset>
 	{
 		public override string Name
 		{
 			get { return TilemapsRes.ActionName_OpenTileset; }
-		}
-		public override string Description
-		{
-			get { return TilemapsRes.ActionDesc_OpenTileset; }
 		}
 
 		public override void Perform(Tileset obj)

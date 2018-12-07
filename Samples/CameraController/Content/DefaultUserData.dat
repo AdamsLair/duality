@@ -1,15 +1,16 @@
 ﻿<root dataType="Struct" type="Duality.DualityUserData" id="129723834">
+  <antialiasingQuality dataType="Enum" type="Duality.AAQuality" name="High" value="0" />
   <customData />
-  <gfxAAQuality dataType="Enum" type="Duality.AAQuality" name="High" value="0" />
-  <gfxHeight dataType="Int">600</gfxHeight>
-  <gfxMode dataType="Enum" type="Duality.ScreenMode" name="Window" value="0" />
-  <gfxRefreshMode dataType="Enum" type="Duality.RefreshMode" name="VSync" value="2" />
-  <gfxWidth dataType="Int">800</gfxWidth>
-  <sfxEffectVol dataType="Float">1</sfxEffectVol>
-  <sfxMasterVol dataType="Float">1</sfxMasterVol>
-  <sfxMusicVol dataType="Float">1</sfxMusicVol>
-  <sfxSpeechVol dataType="Float">1</sfxSpeechVol>
+  <soundEffectVol dataType="Float">1</soundEffectVol>
+  <soundMasterVol dataType="Float">1</soundMasterVol>
+  <soundMusicVol dataType="Float">1</soundMusicVol>
+  <soundSpeechVol dataType="Float">1</soundSpeechVol>
   <systemCursorVisible dataType="Bool">true</systemCursorVisible>
-  <userName dataType="String">Unknown</userName>
+  <windowMode dataType="Enum" type="Duality.ScreenMode" name="Window" value="0" />
+  <windowRefreshMode dataType="Enum" type="Duality.RefreshMode" name="AdaptiveVSync" value="3" />
+  <windowSize dataType="Struct" type="Duality.Point2">
+    <X dataType="Int">800</X>
+    <Y dataType="Int">600</Y>
+  </windowSize>
 </root>
 <!-- XmlFormatterBase Document Separator -->

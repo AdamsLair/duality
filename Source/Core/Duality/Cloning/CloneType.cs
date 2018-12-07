@@ -56,14 +56,14 @@ namespace Duality.Cloning
 			}
 			public override string ToString()
 			{
-				return string.Format("Field {0}", Log.FieldInfo(this.field, false));
+				return string.Format("Field {0}", LogFormat.FieldInfo(this.field, false));
 			}
 		}
 
 		private	TypeInfo			type;
 		private	CloneType			elementType;
 		private	CloneField[]		fieldData;
-		private	bool				plainOldData;
+		private	bool				copyByAssignment;
 		private	bool				investigateOwnership;
 		private	CloneBehavior		behavior;
 		private	ICloneSurrogate		surrogate;
@@ -87,11 +87,11 @@ namespace Duality.Cloning
 			get { return this.fieldData; }
 		}
 		/// <summary>
-		/// [GET] Specifies whether this Type can be considered plain old data, i.e. can be cloned by assignment.
+		/// [GET] Specifies whether this Type can be deep-copied / cloned by assignment.
 		/// </summary>
-		public bool IsPlainOldData
+		public bool IsCopyByAssignment
 		{
-			get { return this.plainOldData; }
+			get { return this.copyByAssignment; }
 		}
 		/// <summary>
 		/// [GET] Returns whether the encapsulated Type is an array.
@@ -169,10 +169,10 @@ namespace Duality.Cloning
 		public CloneType(Type type)
 		{
 			this.type = type.GetTypeInfo();
-			this.plainOldData =
-				this.type.IsPlainOldData() ||
+			this.copyByAssignment =
+				this.type.IsDeepCopyByAssignment() ||
 				typeof(MemberInfo).GetTypeInfo().IsAssignableFrom(this.type); /* Handle MemberInfo like POD */ 
-			this.investigateOwnership = !this.plainOldData;
+			this.investigateOwnership = !this.copyByAssignment;
 			this.surrogate = CloneProvider.GetSurrogateFor(this.type);
 			if (this.type.IsArray)
 			{
@@ -196,11 +196,11 @@ namespace Duality.Cloning
 		public void Init()
 		{
 			if (this.surrogate != null) return;
-			if (this.plainOldData) return;
+			if (this.copyByAssignment) return;
 
 			if (this.type.IsArray)
 			{
-				this.investigateOwnership = !(this.elementType.IsPlainOldData || (this.elementType.Type.IsValueType && !this.elementType.InvestigateOwnership));
+				this.investigateOwnership = !(this.elementType.IsCopyByAssignment || (this.elementType.Type.IsValueType && !this.elementType.InvestigateOwnership));
 				return;
 			}
 			else
@@ -237,7 +237,7 @@ namespace Duality.Cloning
 				if (!this.investigateOwnership)
 				{
 					bool fieldCanOwnObjects = true;
-					if (fieldType.IsPlainOldData)
+					if (fieldType.IsCopyByAssignment)
 						fieldCanOwnObjects = false;
 					if (isAlwaysReference)
 						fieldCanOwnObjects = false;
@@ -355,7 +355,7 @@ namespace Duality.Cloning
 				FieldInfo field = this.fieldData[i].Field;
 				Expression assignment;
 
-				if (this.fieldData[i].FieldType.IsPlainOldData)
+				if (this.fieldData[i].FieldType.IsCopyByAssignment)
 				{
 					assignment = Expression.Assign(
 						Expression.Field(target, field), 
@@ -394,7 +394,7 @@ namespace Duality.Cloning
 			for (int i = 0; i < this.fieldData.Length; i++)
 			{
 				// Don't need to scan "plain old data" and reference fields
-				if (this.fieldData[i].FieldType.IsPlainOldData) continue;
+				if (this.fieldData[i].FieldType.IsCopyByAssignment) continue;
 				if (this.fieldData[i].IsAlwaysReference) continue;
 				if (this.fieldData[i].FieldType.Type.IsValueType && !this.fieldData[i].FieldType.InvestigateOwnership) continue;
 				anyContent = true;
@@ -462,7 +462,7 @@ namespace Duality.Cloning
 
 		public override string ToString()
 		{
-			return string.Format("CloneType {0}", Log.Type(this.type));
+			return string.Format("CloneType {0}", LogFormat.Type(this.type));
 		}
 
 		private static readonly MethodInfo SetupHandleObject = typeof(ICloneTargetSetup).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == "HandleObject");

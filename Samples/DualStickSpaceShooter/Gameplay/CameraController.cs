@@ -45,7 +45,14 @@ namespace DualStickSpaceShooter
 		public float ZoomFactor
 		{
 			get { return this.zoomFactor; }
-			set { this.zoomFactor = value; }
+			set
+			{
+				if (this.zoomFactor != value)
+				{
+					this.zoomFactor = value;
+					this.UpdateCameraZoom();
+				}
+			}
 		}
 		public float ZoomOutScale
 		{
@@ -63,11 +70,10 @@ namespace DualStickSpaceShooter
 			this.screenShakeStrength += strength;
 		}
 
-		private void AdjustToScreenSize()
+		private void UpdateCameraZoom()
 		{
-			Vector2 screenSize = DualityApp.TargetResolution;
 			Camera camera = this.GameObj.GetComponent<Camera>();
-			camera.FocusDist = ReferenceFocusDist * screenSize.Length * this.zoomFactor / ReferenceScreenDiameter;
+			camera.FocusDist = ReferenceFocusDist * this.zoomFactor;
 		}
 		private Vector3 GetTargetOffset(float maxDistFromCenter)
 		{
@@ -125,7 +131,7 @@ namespace DualStickSpaceShooter
 
 				// Move the camera so it can most likely see all of the required objects
 				Vector3 targetPos = focusPos + this.GetTargetOffset(maxDistFromCenter);
-				transform.MoveByAbs((targetPos - transform.Pos) * MathF.Pow(10.0f, -this.softness) * Time.TimeMult);
+				transform.MoveBy((targetPos - transform.Pos) * MathF.Pow(10.0f, -this.softness) * Time.TimeMult);
 			}
 
 			// Apply new screen shake offset
@@ -137,17 +143,14 @@ namespace DualStickSpaceShooter
 				this.microphone.Pos = new Vector3(this.microphone.Pos.Xy, 0.0f);
 			}
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				this.AdjustToScreenSize();
+			this.UpdateCameraZoom();
 
-				// Move near initial spawn point
-				Transform transform = this.GameObj.Transform;
-				transform.MoveToAbs(SpawnPoint.SpawnPos + this.GetTargetOffset(0.0f));
-			}
+			// Move near initial spawn point
+			Transform transform = this.GameObj.Transform;
+			transform.MoveTo(SpawnPoint.SpawnPos + this.GetTargetOffset(0.0f));
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
+		void ICmpInitializable.OnDeactivate() {}
 	}
 }

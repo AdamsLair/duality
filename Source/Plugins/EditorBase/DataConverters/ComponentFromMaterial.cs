@@ -43,34 +43,50 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				Texture mainTex = mat.MainTexture.Res;
 				Pixmap basePixmap = (mainTex != null) ? mainTex.BasePixmap.Res : null;
 				GameObject gameobj = convert.Result.OfType<GameObject>().FirstOrDefault();
-
-				if (mainTex == null || basePixmap == null || basePixmap.AnimFrames == 0)
+				bool hasAnimation = (mainTex != null && basePixmap != null && basePixmap.Atlas != null && basePixmap.Atlas.Count > 0);
+				
+				// Determine the size of the displayed sprite
+				Vector2 spriteSize;
+				if (hasAnimation)
 				{
-					SpriteRenderer sprite = convert.Result.OfType<SpriteRenderer>().FirstOrDefault();
-					if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<SpriteRenderer>();
-					if (sprite == null) sprite = new SpriteRenderer();
-					sprite.SharedMaterial = mat;
-					if (mainTex != null) sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, mainTex.PixelWidth, mainTex.PixelHeight);
-					convert.SuggestResultName(sprite, mat.Name);
-					results.Add(sprite);
+					Rect atlasRect = basePixmap.LookupAtlas(0);
+					spriteSize = atlasRect.Size;
+				}
+				else if (mainTex != null)
+				{
+					spriteSize = mainTex.ContentSize;
+
+					// If we're dealing with default content, clamp sprite size to
+					// something easily visible in order to avoid 1x1 sprites for
+					// default White / Black or similar fallback textures.
+					if (mainTex.IsDefaultContent)
+						spriteSize = Vector2.Max(spriteSize, new Vector2(32.0f, 32.0f));
 				}
 				else
 				{
-					AnimSpriteRenderer sprite = convert.Result.OfType<AnimSpriteRenderer>().FirstOrDefault();
-					if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<AnimSpriteRenderer>();
-					if (sprite == null) sprite = new AnimSpriteRenderer();
-					sprite.SharedMaterial = mat;
-					sprite.Rect = Rect.Align(Alignment.Center, 
-						0.0f, 
-						0.0f, 
-						(mainTex.PixelWidth / basePixmap.AnimCols) - basePixmap.AnimFrameBorder * 2, 
-						(mainTex.PixelHeight / basePixmap.AnimRows) - basePixmap.AnimFrameBorder * 2);
-					sprite.AnimDuration = 5.0f;
-					sprite.AnimFrameCount = basePixmap.AnimFrames;
-					convert.SuggestResultName(sprite, mat.Name);
-					results.Add(sprite);
+					spriteSize = Pixmap.Checkerboard.Res.Size;
 				}
 
+				// Create a sprite Component in any case
+				SpriteRenderer sprite = convert.Result.OfType<SpriteRenderer>().FirstOrDefault();
+				if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<SpriteRenderer>();
+				if (sprite == null) sprite = new SpriteRenderer();
+				sprite.SharedMaterial = mat;
+				sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, spriteSize.X, spriteSize.Y);
+				results.Add(sprite);
+
+				// If we have animation data, create an animator component as well
+				if (hasAnimation)
+				{
+					SpriteAnimator animator = convert.Result.OfType<SpriteAnimator>().FirstOrDefault();
+					if (animator == null && gameobj != null) animator = gameobj.GetComponent<SpriteAnimator>();
+					if (animator == null) animator = new SpriteAnimator();
+					animator.AnimDuration = 5.0f;
+					animator.FrameCount = basePixmap.Atlas.Count;
+					results.Add(animator);
+				}
+
+				convert.SuggestResultName(sprite, mat.Name);
 				convert.MarkObjectHandled(mat);
 			}
 

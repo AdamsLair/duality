@@ -14,29 +14,13 @@ namespace Duality.Components.Physics
 	/// <summary>
 	/// Describes a <see cref="RigidBody">Colliders</see> polygon shape.
 	/// </summary>
-	public sealed class PolyShapeInfo : ShapeInfo
+	public sealed class PolyShapeInfo : VertexBasedShapeInfo
 	{
 		[DontSerialize]
 		private List<Fixture> fixtures;
-		private Vector2[] vertices;
 		private List<Vector2[]> convexPolygons;
 
 
-		/// <summary>
-		/// [GET / SET] The polygons vertices. While assinging the array will cause an automatic update, simply modifying it will require you to call <see cref="ShapeInfo.UpdateShape"/> manually.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.ForceWriteback)]
-		[EditorHintIncrement(1)]
-		[EditorHintDecimalPlaces(1)]
-		public Vector2[] Vertices
-		{
-			get { return this.vertices ?? EmptyVertices; }
-			set
-			{
-				this.vertices = value ?? new Vector2[] { Vector2.Zero, Vector2.UnitX, Vector2.UnitY };
-				this.UpdateInternalShape(true);
-			}
-		}
 		/// <summary>
 		/// [GET] A read-only list of convex polygons that were generated 
 		/// from the shapes <see cref="Vertices"/>. Do not modify any of the
@@ -47,40 +31,32 @@ namespace Duality.Components.Physics
 		{
 			get { return this.convexPolygons; }
 		}
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public override Rect AABB
+		/// <inheritdoc />
+		public override VertexShapeTrait ShapeTraits
 		{
-			get 
-			{
-				if (this.vertices == null || this.vertices.Length == 0)
-					return Rect.Empty;
-
-				float minX = float.MaxValue;
-				float minY = float.MaxValue;
-				float maxX = float.MinValue;
-				float maxY = float.MinValue;
-				for (int i = 0; i < this.vertices.Length; i++)
-				{
-					minX = MathF.Min(minX, this.vertices[i].X);
-					minY = MathF.Min(minY, this.vertices[i].Y);
-					maxX = MathF.Max(maxX, this.vertices[i].X);
-					maxY = MathF.Max(maxY, this.vertices[i].Y);
-				}
-				return new Rect(minX, minY, maxX - minX, maxY - minY);
-			}
+			get { return VertexShapeTrait.IsLoop | VertexShapeTrait.IsSolid; }
 		}
 		protected override bool IsInternalShapeCreated
 		{
 			get { return this.fixtures != null && this.fixtures.Count > 0; }
 		}
 
-			
+		
+		/// <summary>
+		/// Creates a new, empty polygon shape.
+		/// </summary>
 		public PolyShapeInfo() {}
-		public PolyShapeInfo(IEnumerable<Vector2> vertices, float density)
+		/// <summary>
+		/// Creates a new polygon shape. Note that it will assume ownership of
+		/// the specified vertex array, so no copy will be made.
+		/// </summary>
+		/// <param name="vertices"></param>
+		/// <param name="density"></param>
+		public PolyShapeInfo(Vector2[] vertices, float density) : base(vertices)
 		{
-			this.vertices = vertices.ToArray();
 			this.density = density;
 		}
+
 
 		protected override void DestroyFixtures()
 		{
@@ -107,9 +83,9 @@ namespace Duality.Components.Physics
 				fixture.IsSensor = this.sensor;
 				fixture.Restitution = this.restitution;
 				fixture.Friction = this.friction;
-			
+				
 				PolygonShape shape = fixture.Shape as PolygonShape;
-				shape.Density = this.density;
+				shape.Density = this.density * PhysicsUnit.DensityToPhysical / (10.0f * 10.0f);
 			}
 		}
 
@@ -129,7 +105,7 @@ namespace Duality.Components.Physics
 			{
 				float distance = (fullPolygon[i - 1] - fullPolygon[i]).Length;
 				if (distance < 0.01f) return;
-			}
+		}
 
 			// Discard non-simple and micro area polygons early, as there
 			// is nothing that decomposition can do in this case.
@@ -138,7 +114,7 @@ namespace Duality.Components.Physics
 
 			// If the polygon is small enough and convex, use it as-is.
 			if (this.vertices.Length <= FarseerPhysics.Settings.MaxPolygonVertices)
-			{
+		{
 				fullPolygon.ForceCounterClockWise();
 				if (fullPolygon.IsConvex())
 				{
@@ -153,8 +129,8 @@ namespace Duality.Components.Physics
 			foreach (Vertices polygon in decomposed)
 			{
 				this.convexPolygons.Add(VerticesToDuality(polygon));
+				}
 			}
-		}
 		private bool EnsureFixtures()
 		{
 			if (this.convexPolygons == null || this.convexPolygons.Count == 0) return false;
@@ -186,12 +162,12 @@ namespace Duality.Components.Physics
 		}
 
 		private static Vector2[] VerticesToDuality(Vertices vertices)
-		{
+			{
 			Vector2[] transformed = new Vector2[vertices.Count];
 			for (int i = 0; i < transformed.Length; i++)
 				transformed[i] = PhysicsUnit.LengthToDuality * vertices[i];
 			return transformed;
-		}
+			}
 		private static Vertices VerticesToFarseer(Vector2[] vertices, float scale)
 		{
 			Vertices transformed = new Vertices(vertices.Length);

@@ -9,14 +9,16 @@ namespace Duality.Backend
 {
 	public class RenderOptions
 	{
-		private INativeRenderTarget	target			= null;
-		private ClearFlag		clearFlags			= ClearFlag.All;
-		private ColorRgba		clearColor			= ColorRgba.TransparentBlack;
-		private float			clearDepth			= 1.0f;
-		private	Rect			viewport			= new Rect(0, 0, 256, 256);
-		private	RenderMatrix	renderMode			= RenderMatrix.OrthoScreen;
-		private	Matrix4			modelViewMatrix		= Matrix4.Identity;
-		private	Matrix4			projectionMatrix	= Matrix4.Identity;
+		private INativeRenderTarget       target           = null;
+		private ClearFlag                 clearFlags       = ClearFlag.All;
+		private ColorRgba                 clearColor       = ColorRgba.TransparentBlack;
+		private float                     clearDepth       = 1.0f;
+		private Rect                      viewport         = new Rect(0, 0, 256, 256);
+		private bool                      depthTest        = true;
+		private bool                      depthWrite       = true;
+		private Matrix4                   viewMatrix       = Matrix4.Identity;
+		private Matrix4                   projectionMatrix = Matrix4.Identity;
+		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
 		
 		public INativeRenderTarget Target
 		{
@@ -43,20 +45,30 @@ namespace Duality.Backend
 			get { return this.viewport; }
 			set { this.viewport = value; }
 		}
-		public RenderMatrix RenderMode
+		public bool DepthTest
 		{
-			get { return this.renderMode; }
-			set { this.renderMode = value; }
+			get { return this.depthTest; }
+			set { this.depthTest = value; }
 		}
-		public Matrix4 ModelViewMatrix
+		public bool DepthWrite
 		{
-			get { return this.modelViewMatrix; }
-			set { this.modelViewMatrix = value; }
+			get { return this.depthWrite; }
+			set { this.depthWrite = value; }
+		}
+		public Matrix4 ViewMatrix
+		{
+			get { return this.viewMatrix; }
+			set { this.viewMatrix = value; }
 		}
 		public Matrix4 ProjectionMatrix
 		{
 			get { return this.projectionMatrix; }
 			set { this.projectionMatrix = value; }
+		}
+		public ShaderParameterCollection ShaderParameters
+		{
+			get { return this.shaderParameters; }
+			set { this.shaderParameters = value; }
 		}
 	}
 }

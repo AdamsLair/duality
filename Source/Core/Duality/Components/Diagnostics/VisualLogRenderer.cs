@@ -9,87 +9,45 @@ using Duality.Resources;
 namespace Duality.Components.Diagnostics
 {
 	[EditorHintFlags(MemberFlags.Invisible)]
-	public class VisualLogRenderer : Component, ICmpRenderer, ICmpInitializable
+	public class VisualLogRenderer : Component, ICmpInitializable, ICmpSerializeListener
 	{
-		private	CanvasBuffer	vertexBufferScreen	= new CanvasBuffer();
-		private	CanvasBuffer	vertexBufferWorld	= new CanvasBuffer();
+		private List<VisualLog> targetLogs = null;
+		private VisualLogLayerRenderer worldLayer = null;
+		private VisualLogLayerRenderer overlayLayer = null;
 
-		float ICmpRenderer.BoundRadius
+		public List<VisualLog> TargetLogs
 		{
-			get { return 0.0f; }
-		}
-
-		bool ICmpRenderer.IsVisible(IDrawDevice device)
-		{
-			return 
-				!device.IsPicking && 
-				(device.VisibilityMask & VisibilityFlag.AllGroups) != VisibilityFlag.None;
-		}
-		void ICmpRenderer.Draw(IDrawDevice device)
-		{
-			if (device.VisibilityMask.HasFlag(VisibilityFlag.ScreenOverlay))
+			get { return this.targetLogs; }
+			set
 			{
-				Canvas target = new Canvas(device, this.vertexBufferScreen);
-				target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
-				foreach (VisualLog log in VisualLog.All)
-				{
-					if (!log.Visible) continue;
-					if (log.BaseColor.A == 0) continue;
-					if ((log.VisibilityGroup & device.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) continue;
-
-					target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, log.BaseColor));
-					foreach (VisualLogEntry logEntry in log.Entries)
-					{
-						if (logEntry.Anchor != VisualLogAnchor.Screen) continue;
-						target.PushState();
-						if (logEntry.LifetimeAsAlpha)
-							target.State.ColorTint = new ColorRgba(1.0f, logEntry.LifetimeRatio);
-						else
-							target.State.ColorTint = ColorRgba.White;
-						logEntry.Draw(target);
-						target.PopState();
-					}
-				}
-			}
-			else
-			{
-				Canvas target = new Canvas(device, this.vertexBufferWorld);
-				target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
-				target.State.ZOffset = -1;
-				foreach (VisualLog log in VisualLog.All)
-				{
-					if (!log.Visible) continue;
-					if (log.BaseColor.A == 0) continue;
-					if ((log.VisibilityGroup & device.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) continue;
-
-					target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, log.BaseColor));
-					foreach (VisualLogEntry logEntry in log.Entries)
-					{
-						if (logEntry.Anchor == VisualLogAnchor.Screen) continue;
-						target.PushState();
-						target.State.ZOffset += logEntry.DepthOffset;
-						target.State.ColorTint = new ColorRgba(1.0f, logEntry.LifetimeRatio);
-						if (logEntry.Anchor == VisualLogAnchor.Object && logEntry.AnchorObj != null && logEntry.AnchorObj.Transform != null)
-						{
-							Transform anchorTransform = logEntry.AnchorObj.Transform;
-							logEntry.Draw(target, anchorTransform.Pos, anchorTransform.Angle, anchorTransform.Scale);
-						}
-						else
-						{
-							logEntry.Draw(target);
-						}
-						target.PopState();
-					}
-				}
+				this.targetLogs = value;
+				if (this.worldLayer != null) this.worldLayer.TargetLogs = this.targetLogs;
+				if (this.overlayLayer != null) this.overlayLayer.TargetLogs = this.targetLogs;
 			}
 		}
-		void ICmpInitializable.OnInit(InitContext context) {}
-		void ICmpInitializable.OnShutdown(ShutdownContext context)
+		
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == ShutdownContext.Deactivate || context == ShutdownContext.Saving)
-			{
-				this.GameObj.Dispose();
-			}
+			GameObject worldRendererObj = new GameObject("World", this.GameObj);
+			GameObject overlayRendererObj = new GameObject("Overlay", this.GameObj);
+			this.worldLayer = worldRendererObj.AddComponent<VisualLogLayerRenderer>();
+			this.overlayLayer = overlayRendererObj.AddComponent<VisualLogLayerRenderer>();
+			this.worldLayer.Overlay = false;
+			this.worldLayer.TargetLogs = this.targetLogs;
+			this.overlayLayer.Overlay = true;
+			this.overlayLayer.TargetLogs = this.targetLogs;
+		}
+		void ICmpInitializable.OnDeactivate()
+		{
+			this.GameObj.Dispose();
+		}
+		void ICmpSerializeListener.OnLoaded() { }
+		void ICmpSerializeListener.OnSaved() { }
+		void ICmpSerializeListener.OnSaving()
+		{
+			// This is a temp object that is generated on demand. Make
+			// sure it doesn't end up serialized anywhere.
+			this.GameObj.Dispose();
 		}
 	}
 }

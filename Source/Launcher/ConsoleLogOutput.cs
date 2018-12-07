@@ -65,9 +65,9 @@ namespace Duality.Launcher
 
 		private void SetConsoleBackColor(Log source)
 		{
-			if      (source == Log.Core)   Console.BackgroundColor = ConsoleColor.DarkBlue;
-			else if (source == Log.Game)   Console.BackgroundColor = ConsoleColor.DarkCyan;
-			else if (source == Log.Editor) Console.BackgroundColor = ConsoleColor.DarkMagenta;
+			if      (source == Logs.Core)   Console.BackgroundColor = ConsoleColor.DarkBlue;
+			else if (source == Logs.Game)   Console.BackgroundColor = ConsoleColor.DarkCyan;
+			else if (source == Logs.Editor) Console.BackgroundColor = ConsoleColor.DarkMagenta;
 			else                           Console.BackgroundColor = ConsoleColor.Black;
 		}
 		private void SetDarkConsoleColor(LogMessageType type)
@@ -96,7 +96,7 @@ namespace Duality.Launcher
 		private bool IsHighlightLine(Log source, string line)
 		{
 			// If it's an indented line, don't highlight it
-			if (source.Indent != 0) return false;
+			if (this.Indent != 0) return false;
 
 			// If the line ends with three dots, assume that it's the header of a series of actions
 			if (line.EndsWith("...")) return true;

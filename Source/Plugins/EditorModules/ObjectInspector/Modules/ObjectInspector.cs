@@ -8,11 +8,12 @@ using System.Collections.Generic;
 
 using WeifenLuo.WinFormsUI.Docking;
 using AdamsLair.WinForms.PropertyEditing;
-using PropertyGrid = AdamsLair.WinForms.PropertyEditing;
 
 using Duality;
+using Duality.IO;
 using Duality.Resources;
 using Duality.Editor;
+using Duality.Editor.AssetManagement;
 
 namespace Duality.Editor.Plugins.ObjectInspector
 {
@@ -83,10 +84,10 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			DualityEditorApp.SelectionChanged -= GlobalUpdateSelection;
 			DualityEditorApp.SelectionChanged += GlobalUpdateSelection;
 
-			DualityEditorApp.UpdatingEngine += this.EditorForm_AfterUpdateDualityApp;
-			DualityEditorApp.ObjectPropertyChanged += this.EditorForm_ObjectPropertyChanged;
-			FileEventManager.ResourceModified += this.EditorForm_ResourceModified;
+			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_AfterUpdateDualityApp;
+			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.Terminating += this.DualityEditorApp_Terminating;
+			AssetManager.ImportFinished += this.AssetManager_ImportFinished;
 
 			// Select something initially, if not done yet
 			if (this.propertyGrid.Selection.Count() == 0)
@@ -96,10 +97,10 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		{
 			base.OnClosed(e);
 
-			DualityEditorApp.UpdatingEngine -= this.EditorForm_AfterUpdateDualityApp;
-			DualityEditorApp.ObjectPropertyChanged -= this.EditorForm_ObjectPropertyChanged;
-			FileEventManager.ResourceModified -= this.EditorForm_ResourceModified;
+			DualityEditorApp.UpdatingEngine -= this.DualityEditorApp_AfterUpdateDualityApp;
+			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.Terminating -= this.DualityEditorApp_Terminating;
+			AssetManager.ImportFinished -= this.AssetManager_ImportFinished;
 		}
 		protected override void OnGotFocus(EventArgs e)
 		{
@@ -137,7 +138,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			if (expandStateNode != null)
 			{
 				this.gridExpandState.LoadFromXml(expandStateNode);
-			}
+		}
 		}
 
 		private void UpdateButtons()
@@ -190,6 +191,23 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			this.gridExpandState.ApplyTo(this.propertyGrid.MainEditor);
 			this.buttonClone.Enabled = this.propertyGrid.Selection.Any();
 		}
+
+		private void UpdateDisplayedValues(bool forceFullUpdate)
+		{
+			if (forceFullUpdate)
+			{
+				// Force a full update by re-selecting internally
+				object[] obj = this.propertyGrid.Selection.ToArray();
+				this.propertyGrid.SelectObject(null);
+				this.propertyGrid.SelectObjects(obj, false, 100);
+			}
+			else
+			{
+				// A (selective) regular update - deferred to make sure we don't do it redundantly
+				this.propertyGrid.UpdateFromObjects(100);
+			}
+		}
+
 		private void MainEditor_EditorAdded(object sender, PropertyEditorEventArgs e)
 		{
 			// Make sure new editors start in the correct expand state
@@ -197,8 +215,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			if (groupedEditor != null)
 				groupedEditor.Expanded = this.gridExpandState.IsEditorExpanded(groupedEditor);
 		}
-
-		private void EditorForm_AfterUpdateDualityApp(object sender, EventArgs e)
+		private void DualityEditorApp_AfterUpdateDualityApp(object sender, EventArgs e)
 		{
 			// Perform auto-refresh as the game state changes
 			if (this.buttonAutoRefresh.Checked)
@@ -225,7 +242,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 				}
 			}
 		}
-		private void EditorForm_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
+		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (!(e is PrefabAppliedEventArgs) && (sender is PropertyEditor) && (sender as PropertyEditor).ParentGrid == this.propertyGrid) return;
 			if (!(e is PrefabAppliedEventArgs) && sender == this.propertyGrid) return;
@@ -236,22 +253,23 @@ namespace Duality.Editor.Plugins.ObjectInspector
 				(e.Objects.Contains(Scene.Current) && this.propertyGrid.Selection.Any(o => o is GameObject || o is Component)))
 				this.propertyGrid.UpdateFromObjects(100);
 		}
-		private void EditorForm_ResourceModified(object sender, ResourceEventArgs e)
+		private void AssetManager_ImportFinished(object sender, AssetImportFinishedEventArgs e)
 		{
-			if (!e.IsResource) return;
-			if (!e.Content.IsLoaded) return;
-			if (this.propertyGrid.Selection.Contains(e.Content.Res))
+			if (!e.IsSuccessful) return;
+			if (!e.IsReImport) return;
+
+			// Force updating all potentially generated previews when we display a resource that was modified externally
+			bool forceFullUpdate = false;
+			foreach (AssetImportOutput item in e.Output)
 			{
-				// To force updating all probably generated previews, reselect everything
-				object[] obj = this.propertyGrid.Selection.ToArray();
-				this.propertyGrid.SelectObject(null);
-				this.propertyGrid.SelectObjects(obj, false, 100);
+				if (this.propertyGrid.Selection.Contains(item.Resource))
+				{
+					forceFullUpdate = true;
+					break;
+				}
 			}
-			else
-			{
-				// A (minimalistic) regular update - just in case
-				this.propertyGrid.UpdateFromObjects(100);
-			}
+
+			this.UpdateDisplayedValues(forceFullUpdate);
 		}
 		private void DualityEditorApp_Terminating(object sender, EventArgs e)
 		{

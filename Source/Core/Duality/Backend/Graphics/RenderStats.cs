@@ -15,5 +15,10 @@ namespace Duality.Backend
 			get { return this.drawcalls; }
 			set { this.drawcalls = value; }
 		}
+
+		public void Reset()
+		{
+			this.drawcalls = 0;
+		}
 	}
 }

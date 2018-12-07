@@ -16,7 +16,7 @@ namespace Duality.Audio
 	public sealed class SoundDevice : IDisposable
 	{
 		private	bool					disposed		= false;
-		private	GameObject				soundListener	= null;
+		private SoundListener			soundListener	= null;
 		private	List<SoundInstance>		sounds			= new List<SoundInstance>();
 		private	Dictionary<string,int>	resPlaying		= new Dictionary<string,int>();
 		private	int						numPlaying2D	= 0;
@@ -26,9 +26,9 @@ namespace Duality.Audio
 
 		/// <summary>
 		/// [GET / SET] The current listener object. This is automatically set to an available
-		/// <see cref="Duality.Components.SoundListener"/>.
+		/// <see cref="SoundListener"/>.
 		/// </summary>
-		public GameObject Listener
+		public SoundListener Listener
 		{
 			get { return this.soundListener; }
 			set { this.soundListener = value; }
@@ -38,21 +38,21 @@ namespace Duality.Audio
 		/// </summary>
 		public Vector3 ListenerPos
 		{
-			get { return (this.soundListener != null && this.soundListener.Transform != null) ? this.soundListener.Transform.Pos : Vector3.Zero; }
+			get { return (this.soundListener != null) ? this.soundListener.Position : Vector3.Zero; }
 		}
 		/// <summary>
 		/// [GET] The current listeners velocity.
 		/// </summary>
 		public Vector3 ListenerVel
 		{
-			get { return (this.soundListener != null && this.soundListener.Transform != null) ? this.soundListener.Transform.Vel : Vector3.Zero; }
+			get { return (this.soundListener != null) ? this.soundListener.Velocity : Vector3.Zero; }
 		}
 		/// <summary>
 		/// [GET] The current listeners rotation / angle in radians.
 		/// </summary>
 		public float ListenerAngle
 		{
-			get { return (this.soundListener != null && this.soundListener.Transform != null) ? this.soundListener.Transform.Angle : 0.0f; }
+			get { return (this.soundListener != null) ? this.soundListener.Angle : 0.0f; }
 		}
 		
 		/// <summary>
@@ -138,10 +138,6 @@ namespace Duality.Audio
 				// Clear all playing sounds
 				foreach (SoundInstance inst in this.sounds) inst.Dispose();
 				this.sounds.Clear();
-
-				// Clear all audio related Resources
-				ContentProvider.RemoveAllContent<AudioData>();
-				ContentProvider.RemoveAllContent<Sound>();
 			}
 		}
 
@@ -217,7 +213,7 @@ namespace Duality.Audio
 			// If no listener is defined, search one
 			if (this.soundListener == null)
 			{
-				this.soundListener = Scene.Current.FindGameObject<SoundListener>();
+				this.soundListener = Scene.Current.FindComponent<SoundListener>();
 			}
 
 			DualityApp.AudioBackend.UpdateListener(
@@ -234,10 +230,10 @@ namespace Duality.Audio
 		}
 		
 		/// <summary>
-		/// Plays a sound.
+		/// Plays a sound in 2D.
 		/// </summary>
-		/// <param name="snd">The Sound to play.</param>
-		/// <returns>A new SoundInstance representing the currentply playing sound.</returns>
+		/// <param name="snd">The <see cref="Sound"/> to play.</param>
+		/// <returns>A new <see cref="SoundInstance"/> representing the playing sound.</returns>
 		public SoundInstance PlaySound(ContentRef<Sound> snd)
 		{
 			SoundInstance inst = new SoundInstance(snd);
@@ -245,11 +241,11 @@ namespace Duality.Audio
 			return inst;
 		}
 		/// <summary>
-		/// Plays a sound 3d "in space".
+		/// Plays a sound in 3D, so it will be adjusted depending on its spatial relation to the <see cref="SoundListener"/>.
 		/// </summary>
-		/// <param name="snd">The Sound to play.</param>
+		/// <param name="snd">The <see cref="Sound"/> to play.</param>
 		/// <param name="pos">The position of the sound in space.</param>
-		/// <returns>A new SoundInstance representing the currentply playing sound.</returns>
+		/// <returns>A new <see cref="SoundInstance"/> representing the playing sound.</returns>
 		public SoundInstance PlaySound3D(ContentRef<Sound> snd, Vector3 pos)
 		{
 			SoundInstance inst = new SoundInstance(snd, pos);
@@ -257,27 +253,29 @@ namespace Duality.Audio
 			return inst;
 		}
 		/// <summary>
-		/// Plays a sound 3d "in space".
+		/// Plays a sound in 3D, so it will be adjusted depending on its spatial relation to the <see cref="SoundListener"/>.
 		/// </summary>
-		/// <param name="snd">The Sound to play.</param>
+		/// <param name="snd">The <see cref="Sound"/> to play.</param>
 		/// <param name="attachTo">The GameObject to which the sound will be attached.</param>
-		/// <returns>A new SoundInstance representing the currentply playing sound.</returns>
-		public SoundInstance PlaySound3D(ContentRef<Sound> snd, GameObject attachTo)
+		/// <param name="trackVelocity">Whether the attached objects movement will affect the sounds playback.</param>
+		/// <returns>A new <see cref="SoundInstance"/> representing the playing sound.</returns>
+		public SoundInstance PlaySound3D(ContentRef<Sound> snd, GameObject attachTo, bool trackVelocity)
 		{
-			SoundInstance inst = new SoundInstance(snd, attachTo);
+			SoundInstance inst = new SoundInstance(snd, attachTo, trackVelocity);
 			this.sounds.Add(inst);
 			return inst;
 		}
 		/// <summary>
-		/// Plays a sound 3d "in space".
+		/// Plays a sound in 3D, so it will be adjusted depending on its spatial relation to the <see cref="SoundListener"/>.
 		/// </summary>
-		/// <param name="snd">The Sound to play.</param>
+		/// <param name="snd">The <see cref="Sound"/> to play.</param>
 		/// <param name="attachTo">The GameObject to which the sound will be attached.</param>
 		/// <param name="relativePos">The position of the sound relative to the GameObject.</param>
-		/// <returns>A new SoundInstance representing the currentply playing sound.</returns>
-		public SoundInstance PlaySound3D(ContentRef<Sound> snd, GameObject attachTo, Vector3 relativePos)
+		/// <param name="trackVelocity">Whether the attached objects movement will affect the sounds playback.</param>
+		/// <returns>A new <see cref="SoundInstance"/> representing the playing sound.</returns>
+		public SoundInstance PlaySound3D(ContentRef<Sound> snd, GameObject attachTo, Vector3 relativePos, bool trackVelocity)
 		{
-			SoundInstance inst = new SoundInstance(snd, attachTo);
+			SoundInstance inst = new SoundInstance(snd, attachTo, trackVelocity);
 			inst.Pos = relativePos;
 			this.sounds.Add(inst);
 			return inst;

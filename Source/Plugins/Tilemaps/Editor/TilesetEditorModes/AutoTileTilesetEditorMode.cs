@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -59,12 +59,13 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		}
 
 
-		private	TreeModel        treeModel      = new TreeModel();
-		private TileConnection   hoveredArea    = TileConnection.None;
-		private bool             isUserDrawing  = false;
-		private bool             isBaseTileDraw = false;
-		private bool             isExternalDraw = false;
-		private AutoTileDrawMode userDrawMode   = AutoTileDrawMode.Add;
+		private TilesetAutoTileInput currentAutoTile = null;
+		private	TreeModel            treeModel       = new TreeModel();
+		private TileConnection       hoveredArea     = TileConnection.None;
+		private bool                 isUserDrawing   = false;
+		private bool                 isBaseTileDraw  = false;
+		private bool                 isExternalDraw  = false;
+		private AutoTileDrawMode     userDrawMode    = AutoTileDrawMode.Add;
 
 
 		public override string Id
@@ -90,10 +91,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		public override LayerEditingCaps AllowLayerEditing
 		{
 			get { return LayerEditingCaps.All; }
-		}
-		protected TilesetAutoTileInput SelectedAutoTile
-		{
-			get { return DualityEditorApp.Selection.Objects.OfType<TilesetAutoTileInput>().FirstOrDefault(); }
 		}
 
 
@@ -169,7 +166,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			base.RemoveLayer();
 
 			Tileset tileset = this.SelectedTileset.Res;
-			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
+			TilesetAutoTileInput autoTile = this.currentAutoTile;
 			if (tileset == null) return;
 			if (autoTile == null) return;
 
@@ -201,6 +198,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		}
 		protected override void OnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args)
 		{
+			this.currentAutoTile = null;
 			this.UpdateTreeModel();
 		}
 		protected override void OnTilesetModified(ObjectPropertyChangedEventArgs args)
@@ -227,9 +225,15 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 			// Update global editor selection, so an Object Inspector can pick up the AutoTile for editing
 			if (selectedNode != null)
+			{
+				this.currentAutoTile = selectedNode.AutoTileInput;
 				DualityEditorApp.Select(this, new ObjectSelection(new object[] { selectedNode.AutoTileInput }));
+			}
 			else
+			{
+				this.currentAutoTile = null;
 				DualityEditorApp.Deselect(this, obj => obj is TilesetAutoTileInput);
+			}
 
 			this.TilesetView.Invalidate();
 		}
@@ -241,7 +245,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Color externalDrawColor = Color.FromArgb(128, 192, 255);
 			Color nonConnectedColor = Color.FromArgb(128, 0, 0, 0);
 			Brush brushNonConnected = new SolidBrush(nonConnectedColor);
-			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
+			TilesetAutoTileInput autoTile = this.currentAutoTile;
 			
 			// Early-out if there is nothing we can edit right now
 			if (autoTile == null)
@@ -355,7 +359,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			}
 
 			// Update action state
-			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
+			TilesetAutoTileInput autoTile = this.currentAutoTile;
 			if (autoTile != null)
 			{
 				this.isBaseTileDraw = 
@@ -381,7 +385,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
 			
-			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
+			TilesetAutoTileInput autoTile = this.currentAutoTile;
 			if (autoTile == null) return;
 
 			int tileIndex = this.TilesetView.HoveredTileIndex;
@@ -418,7 +422,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 		private void UpdateExternalDrawMode()
 		{
-			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
+			TilesetAutoTileInput autoTile = this.currentAutoTile;
 			if (autoTile == null) return;
 
 			bool lastExternalDraw = this.isExternalDraw;
@@ -437,7 +441,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
 
-			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
+			TilesetAutoTileInput autoTile = this.currentAutoTile;
 			if (autoTile == null) return;
 
 			int tileIndex = this.TilesetView.HoveredTileIndex;

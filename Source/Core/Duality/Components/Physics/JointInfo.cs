@@ -16,22 +16,28 @@ namespace Duality.Components.Physics
 	/// </summary>
 	public abstract class JointInfo
 	{
-		[DontSerialize]	
-		internal protected	Joint	joint	= null;
-		[CloneBehavior(CloneBehavior.WeakReference)]
-		private		RigidBody	parentBody	= null;
-		[CloneBehavior(CloneBehavior.WeakReference)]
-		private		RigidBody	otherBody	= null;
-		private		bool		collide		= false;
-		private		bool		enabled		= true;
-		private		float		breakPoint	= -1.0f;
+		[DontSerialize] internal protected Joint joint = null;
+		[DontSerialize] private PhysicsWorld world = null;
+		[CloneField(CloneFieldFlags.Skip)] private RigidBody parentBody = null;
+		[CloneField(CloneFieldFlags.Skip)] private RigidBody otherBody  = null;
+
+		private bool      collide    = false;
+		private bool      enabled    = true;
+		private float     breakPoint = -1.0f;
 
 
+		/// <summary>
+		/// [GET] Whether this joint can be considered disposed. This is the case when either of its 
+		/// connecting <see cref="RigidBody"/> instances is invalid or has been disposed.
+		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public bool Disposed
 		{
 			get { return (this.parentBody != null && this.parentBody.Disposed) || (this.otherBody != null && this.otherBody.Disposed); }
 		}
+		/// <summary>
+		/// [GET] The <see cref="RigidBody"/> from which this joint originates.
+		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public RigidBody ParentBody
 		{
@@ -39,6 +45,9 @@ namespace Duality.Components.Physics
 			get { return this.parentBody != null && !this.parentBody.Disposed ? this.parentBody : null; }
 			internal set { this.parentBody = value; }
 		}
+		/// <summary>
+		/// [GET] The <see cref="RigidBody"/> to which this joint connects to.
+		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public RigidBody OtherBody
 		{
@@ -75,11 +84,14 @@ namespace Duality.Components.Physics
 		}
 
 			
-		protected abstract Joint CreateJoint(Body parentBody, Body otherBody);
+		protected abstract Joint CreateJoint(World world, Body parentBody, Body otherBody);
 		internal void DestroyJoint()
 		{
 			if (this.joint == null) return;
-			Scene.PhysicsWorld.RemoveJoint(this.joint);
+
+			this.world.Native.RemoveJoint(this.joint);
+			this.world = null;
+
 			this.joint.Broke -= this.joint_Broke;
 			this.joint = null;
 		}
@@ -91,7 +103,11 @@ namespace Duality.Components.Physics
 				{
 					this.parentBody.PrepareForJoint();
 					this.otherBody.PrepareForJoint();
-					this.joint = this.CreateJoint(this.parentBody.PhysicsBody, this.otherBody.PhysicsBody);
+					this.world = this.parentBody.Scene.Physics;
+					this.joint = this.CreateJoint(
+						this.world.Native, 
+						this.parentBody.PhysicsBody, 
+						this.otherBody.PhysicsBody);
 				}
 				if (this.joint == null) return;
 

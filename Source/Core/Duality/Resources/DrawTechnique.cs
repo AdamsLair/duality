@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Duality.Backend;
 using Duality.Drawing;
 using Duality.Editor;
+using Duality.Cloning;
 using Duality.Properties;
 
 namespace Duality.Resources
@@ -13,7 +15,8 @@ namespace Duality.Resources
 	/// vertex data is applied to screen. 
 	/// </summary>
 	/// <seealso cref="Duality.Resources.Material"/>
-	/// <seealso cref="Duality.Resources.ShaderProgram"/>
+	/// <seealso cref="Duality.Resources.FragmentShader"/>
+	/// <seealso cref="Duality.Resources.VertexShader"/>
 	/// <seealso cref="Duality.Drawing.BlendMode"/>
 	[EditorHintCategory(CoreResNames.CategoryGraphics)]
 	[EditorHintImage(CoreResNames.ImageDrawTechnique)]
@@ -58,41 +61,10 @@ namespace Duality.Resources
 		/// Renders geometry for a picking operation. This isn't used for regular rendering.
 		/// </summary>
 		public static ContentRef<DrawTechnique> Picking		{ get; private set; }
-		
-		/// <summary>
-		/// Renders SmoothAnim solid geometry without utilizing the alpha channel. This is the fastest default DrawTechnique.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Solid	{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim alpha-masked solid geometry. This is the recommended DrawTechnique for regular sprite rendering.
-		/// If multisampling is available, it is utilized to smooth masked edges.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Mask		{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim additive geometry. Ideal for glow effects.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Add		{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim geometry and using the alpha channel. However, for stencil-sharp alpha edges, <see cref="Mask"/> might
-		/// be sufficient and is a lot faster. Consider using it.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Alpha	{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim geometry multiplying the existing background with incoming color values. Can be used for shadowing effects.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Multiply	{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim geometry adding incoming color values weighted based on the existing background. Can be used for lighting effects.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Light	{ get; private set; }
-		/// <summary>
-		/// Renders SmoothAnim geometry inverting the background color.
-		/// </summary>
-		public static ContentRef<DrawTechnique> SmoothAnim_Invert	{ get; private set; }
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContent<DrawTechnique>(new Dictionary<string,DrawTechnique>
+			DefaultContent.InitType<DrawTechnique>(new Dictionary<string,DrawTechnique>
 			{
 				{ "Solid", new DrawTechnique(BlendMode.Solid) },
 				{ "Mask", new DrawTechnique(BlendMode.Mask) },
@@ -102,26 +74,58 @@ namespace Duality.Resources
 				{ "Light", new DrawTechnique(BlendMode.Light) },
 				{ "Invert", new DrawTechnique(BlendMode.Invert) },
 
-				{ "Picking", new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking) },
-				{ "SharpAlpha", new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpAlpha) },
-				
-				{ "SmoothAnim_Solid", new DrawTechnique(BlendMode.Solid, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Mask", new DrawTechnique(BlendMode.Mask, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Add", new DrawTechnique(BlendMode.Add, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Alpha", new DrawTechnique(BlendMode.Alpha, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Multiply", new DrawTechnique(BlendMode.Multiply, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Light", new DrawTechnique(BlendMode.Light, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
-				{ "SmoothAnim_Invert", new DrawTechnique(BlendMode.Invert, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
+				{ "Picking", new DrawTechnique(BlendMode.Mask, VertexShader.Minimal, FragmentShader.Picking) },
+				{ "SharpAlpha", new DrawTechnique(BlendMode.Alpha, VertexShader.Minimal, FragmentShader.SharpAlpha) }
 			});
 		}
 		
 
-		private	BlendMode					blendType	= BlendMode.Solid;
-		private	ContentRef<ShaderProgram>	shader		= null;
-		private	Type						prefType	= null;
-		[DontSerialize]
-		private	VertexDeclaration		prefFormat	= null;
+		private BlendMode                  blendType         = BlendMode.Solid;
+		private ContentRef<VertexShader>   vertexShader      = VertexShader.Minimal;
+		private ContentRef<FragmentShader> fragmentShader    = FragmentShader.Minimal;
+		private Type                       prefType          = null;
 
+		[DontSerialize] private VertexDeclaration         prefFormat        = null;
+		[DontSerialize] private ShaderParameterCollection defaultParameters = null;
+		[DontSerialize] private INativeShaderProgram      nativeShader      = null;
+		[DontSerialize] private bool                      compiled          = false;
+		[DontSerialize] private ShaderFieldInfo[]         shaderFields      = null;
+
+
+		/// <summary>
+		/// [GET] The shaders native backend. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public INativeShaderProgram NativeShader
+		{
+			get
+			{
+				if (!this.compiled)
+					this.Compile();
+				return this.nativeShader;
+			}
+		}
+		/// <summary>
+		/// [GET] Returns whether the internal shader program of this <see cref="DrawTechnique"/> has been compiled.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public bool Compiled
+		{
+			get { return this.compiled; }
+		}
+		/// <summary>
+		/// [GET] Returns an array containing information about the variables that have been declared in shader source code.
+		/// May trigger compiling the technique, if it wasn't compiled already.
+		/// </summary>
+		public IReadOnlyList<ShaderFieldInfo> DeclaredFields
+		{
+			get
+			{
+				if (!this.compiled)
+					this.Compile();
+				return this.shaderFields;
+			}
+		}
 		/// <summary>
 		/// [GET / SET] Specifies how incoming color values interact with the existing background color.
 		/// </summary>
@@ -132,12 +136,49 @@ namespace Duality.Resources
 			set { this.blendType = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The <see cref="Duality.Resources.ShaderProgram"/> that is used for rendering.
+		/// [GET / SET] The <see cref="Resources.VertexShader"/> that is used for rendering.
 		/// </summary>
-		public ContentRef<ShaderProgram> Shader
+		public ContentRef<VertexShader> Vertex
 		{
-			get { return this.shader; }
-			set { this.shader = value; }
+			get { return this.vertexShader; }
+			set
+			{
+				this.vertexShader = value;
+				this.compiled = false;
+			}
+		}
+		/// <summary>
+		/// [GET / SET] The <see cref="Resources.FragmentShader"/> that is used for rendering.
+		/// </summary>
+		public ContentRef<FragmentShader> Fragment
+		{
+			get { return this.fragmentShader; }
+			set
+			{
+				this.fragmentShader = value;
+				this.compiled = false;
+			}
+		}
+		/// <summary>
+		/// [GET] The set of default parameters that acts as a fallback in cases
+		/// where a parameter has not been set by a <see cref="Material"/> or <see cref="BatchInfo"/>.
+		/// 
+		/// The result of this property should be treated as read-only.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public ShaderParameterCollection DefaultParameters
+		{
+			get
+			{
+				if (this.defaultParameters == null)
+				{
+					// Setup default values on demand - for now, just a few hardcoded ones
+					this.defaultParameters = new ShaderParameterCollection();
+					this.defaultParameters.Set(BuiltinShaderFields.MainColor, Vector4.One);
+					this.defaultParameters.Set(BuiltinShaderFields.MainTex, Texture.White);
+				}
+				return this.defaultParameters;
+			}
 		}
 		/// <summary>
 		/// [GET / SET] The vertex format that is preferred by this DrawTechnique. If there is no specific preference,
@@ -168,14 +209,6 @@ namespace Duality.Resources
 					this.blendType == BlendMode.Light; 
 			}
 		}
-		/// <summary>
-		/// [GET] Returns whether this DrawTechnique requires any <see cref="PrepareRendering">rendering preparation</see>.
-		/// This is false for all standard DrawTechniques, but may return true when deriving custom DrawTechniques.
-		/// </summary>
-		public virtual bool NeedsPreparation
-		{
-			get { return false; }
-		}
 
 		/// <summary>
 		/// Creates a new, default DrawTechnique
@@ -190,30 +223,95 @@ namespace Duality.Resources
 			this.blendType = blendType;
 		}
 		/// <summary>
-		/// Creates a new DrawTechnique using the specified <see cref="BlendMode"/> and <see cref="Duality.Resources.ShaderProgram"/>.
+		/// Creates a new DrawTechnique using the specified <see cref="BlendMode"/> and shaders.
 		/// </summary>
 		/// <param name="blendType"></param>
 		/// <param name="shader"></param>
 		/// <param name="formatPref"></param>
-		public DrawTechnique(BlendMode blendType, ContentRef<ShaderProgram> shader, VertexDeclaration formatPref = null) 
+		public DrawTechnique(BlendMode blendType, ContentRef<VertexShader> vertexShader, ContentRef<FragmentShader> fragmentShader) 
 		{
 			this.blendType = blendType;
-			this.shader = shader;
-			this.prefFormat = formatPref;
-			this.prefType = formatPref != null ? formatPref.DataType : null;
+			this.vertexShader = vertexShader;
+			this.fragmentShader = fragmentShader;
 		}
 
 		/// <summary>
-		/// Prepares rendering using this DrawTechnique.
+		/// Compiles the internal shader program of this <see cref="DrawTechnique"/>. This is 
+		/// done automatically on load and only needs to be invoked manually when the technique
+		/// or one of its shader dependencies changed.
 		/// </summary>
-		/// <param name="device"></param>
-		/// <param name="material"></param>
-		public virtual void PrepareRendering(IDrawDevice device, BatchInfo material) {}
+		public void Compile()
+		{
+			Logs.Core.Write("Compiling DrawTechnique '{0}'...", this.FullName);
+			Logs.Core.PushIndent();
+
+			if (this.nativeShader == null)
+				this.nativeShader = DualityApp.GraphicsBackend.CreateShaderProgram();
+
+			// Create a list of all shader parts that we'll be linking
+			List<Shader> parts = new List<Shader>();
+			parts.Add(this.vertexShader.Res ?? VertexShader.Minimal.Res);
+			parts.Add(this.fragmentShader.Res ?? FragmentShader.Minimal.Res);
+
+			// Ensure all shader parts are compiled
+			List<INativeShaderPart> nativeParts = new List<INativeShaderPart>();
+			foreach (Shader part in parts)
+			{
+				if (!part.Compiled) part.Compile();
+				nativeParts.Add(part.Native);
+			}
+
+			// Gather shader field declarations from all shader parts
+			Dictionary<string, ShaderFieldInfo> fieldMap = new Dictionary<string, ShaderFieldInfo>();
+			foreach (Shader part in parts)
+			{
+				foreach (ShaderFieldInfo field in part.DeclaredFields)
+				{
+					fieldMap[field.Name] = field;
+				}
+			}
+
+			// Load the program with all shader parts attached
+			try
+			{
+				this.shaderFields = fieldMap.Values.ToArray();
+				this.nativeShader.LoadProgram(nativeParts, this.shaderFields);
+
+				// Validate that we have at least one attribute in the shader. Warn otherwise.
+				if (!this.shaderFields.Any(f => f.Scope == ShaderFieldScope.Attribute))
+					Logs.Core.WriteWarning("The shader doesn't seem to define any vertex attributes. Is this intended?");
+			}
+			catch (Exception e)
+			{
+				this.shaderFields = new ShaderFieldInfo[0];
+				Logs.Core.WriteError("Failed to compile DrawTechnique:{1}{0}", LogFormat.Exception(e), Environment.NewLine);
+			}
+
+			// Even if we failed, we tried to compile it. Don't do it again and again.
+			this.compiled = true;
+			Logs.Core.PopIndent();
+		}
 
 		protected override void OnLoaded()
 		{
+			this.Compile();
 			base.OnLoaded();
 			this.prefFormat = VertexDeclaration.Get(this.prefType);
+		}
+		protected override void OnDisposing(bool manually)
+		{
+			base.OnDisposing(manually);
+			if (this.nativeShader != null)
+			{
+				this.nativeShader.Dispose();
+				this.nativeShader = null;
+			}
+		}
+		protected override void OnCopyDataTo(object target, ICloneOperation operation)
+		{
+			base.OnCopyDataTo(target, operation);
+			DrawTechnique targetTechnique = target as DrawTechnique;
+			if (this.compiled) targetTechnique.Compile();
 		}
 	}
 }

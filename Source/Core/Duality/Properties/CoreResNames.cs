@@ -39,12 +39,15 @@ namespace Duality.Properties
 		public const string ImageAudioData			= ManifestBaseName + "iconResAudioData.png";
 		public const string ImageSound				= ManifestBaseName + "iconResSound.png";
 		public const string ImageFont				= ManifestBaseName + "iconResFont.png";
+		public const string ImageRenderSetup		= ManifestBaseName + "iconResRenderSetup.png";
 
 		public const string ImageSpriteRenderer		= ManifestBaseName + "iconCmpSpriteRenderer.png";
 		public const string ImageAnimSpriteRenderer	= ManifestBaseName + "iconCmpSpriteRenderer.png";
+		public const string ImageAnimSpriteAnimator = ManifestBaseName + "iconCmpSpriteAnimator.png";
 		public const string ImageTextRenderer		= ManifestBaseName + "iconResFont.png";
 		public const string ImageTransform			= ManifestBaseName + "iconCmpTransform.png";
-		public const string ImageCamera				= ManifestBaseName + "iconCmpCamera.png";
+		public const string ImageVelocityTracker	= ManifestBaseName + "iconCmpVelocityTracker.png";
+		public const string ImageCamera				= ManifestBaseName + "iconCmpCamera.png"; 
 		public const string ImageSoundEmitter		= ManifestBaseName + "iconResSound.png";
 		public const string ImageSoundListener		= ManifestBaseName + "iconCmpSoundListener.png";
 		public const string ImageRigidBody			= ManifestBaseName + "iconCmpRectCollider.png";

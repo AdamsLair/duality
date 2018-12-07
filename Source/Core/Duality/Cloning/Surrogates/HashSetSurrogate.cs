@@ -10,13 +10,13 @@ namespace Duality.Cloning.Surrogates
 	{
 		private class ReflectedHashsetData
 		{
-			public bool IsPlainOldData { get; private set; }
+			public bool IsDeepCopyByAssignment { get; private set; }
 			public MethodInfo CopyDataToMethod { get; private set; }
 
 			public ReflectedHashsetData(Type hashSetType)
 			{
-				this.IsPlainOldData = hashSetType.GenericTypeArguments[0].GetTypeInfo().IsPlainOldData();
-				string methodName = this.IsPlainOldData ? "CopyDataTo_PlainOldData" : "CopyDataTo_NotPlainOldData"; // Replace hardcoded strings with nameof in C#6
+				this.IsDeepCopyByAssignment = hashSetType.GenericTypeArguments[0].GetTypeInfo().IsDeepCopyByAssignment();
+				string methodName = this.IsDeepCopyByAssignment ? "CopyDataTo_DeepCopyByAssignment" : "CopyDataTo_DeepCopyByTraversal"; // Replace hardcoded strings with nameof in C#6
 				MethodInfo method = typeof(HashSetSurrogate).GetRuntimeMethods().First(m => m.Name == methodName);
 				this.CopyDataToMethod = method.MakeGenericMethod(hashSetType.GenericTypeArguments);
 			}
@@ -34,7 +34,7 @@ namespace Duality.Cloning.Surrogates
 		public override void SetupCloneTargets(IEnumerable source, IEnumerable target, ICloneTargetSetup setup)
 		{
 			ReflectedHashsetData reflectedHashsetData = GetReflectedHashsetData(source.GetType());
-			if (!reflectedHashsetData.IsPlainOldData)
+			if (!reflectedHashsetData.IsDeepCopyByAssignment)
 			{
 				if (source == target)
 				{
@@ -69,7 +69,7 @@ namespace Duality.Cloning.Surrogates
 			return reflectedHashsetData;
 		}
 
-		private static void CopyDataTo_PlainOldData<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation)
+		private static void CopyDataTo_DeepCopyByAssignment<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation)
 		{
 			target.Clear();
 			foreach (TItem value in source)
@@ -77,13 +77,13 @@ namespace Duality.Cloning.Surrogates
 				target.Add(value);
 			}
 		}
-		private static void CopyDataTo_NotPlainOldData<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation) where TItem : class
+		private static void CopyDataTo_DeepCopyByTraversal<TItem>(HashSet<TItem> source, HashSet<TItem> target, ICloneOperation operation) where TItem : class
 		{
 			target.Clear();
 			foreach (TItem value in source)
 			{
 				TItem handledObject = null;
-				if (!operation.HandleObject(value, ref handledObject)) continue;
+				operation.HandleObject(value, ref handledObject);
 				target.Add(handledObject);
 			}
 		}

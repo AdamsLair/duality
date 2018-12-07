@@ -9,6 +9,9 @@ using Duality.Editor.Plugins.Base.Properties;
 
 namespace Duality.Editor.Plugins.Base.EditorActions.FirstSession
 {
+	/// <summary>
+	/// Visual Studio 2013 (Update 3) or newer is required.
+	/// </summary>
 	public class DownloadVisualStudio : EditorAction<object>
 	{
 		public override Image Icon
@@ -18,10 +21,6 @@ namespace Duality.Editor.Plugins.Base.EditorActions.FirstSession
 		public override string Name
 		{
 			get { return EditorBaseRes.ActionName_DownloadVisualStudio; }
-		}
-		public override string Description
-		{
-			get { return EditorBaseRes.ActionDesc_DownloadVisualStudio; }
 		}
 
 		public override void Perform(IEnumerable<object> objEnum)

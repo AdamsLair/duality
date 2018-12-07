@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using Duality;
+using Duality.Drawing;
 using Duality.Serialization;
 
 using NUnit.Framework;
@@ -66,39 +67,121 @@ namespace Duality.Tests.Utility
 			ReflectionHelper.VisitObjectsDeep<string>(visitedRoot, s => { visitedCount++; return s; });
 			Assert.AreEqual(3, visitedCount);
 		}
-		[Test] public void IsPlainOldData()
+		[Test] public void IsReferenceOrContainsReferences()
 		{
 			// Primitives
-			Assert.IsTrue(typeof(bool).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(byte).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(sbyte).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(short).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(ushort).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(int).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(uint).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(long).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(ulong).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(float).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(double).GetTypeInfo().IsPlainOldData());
+			Assert.IsFalse(typeof(bool).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(byte).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(sbyte).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(short).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(ushort).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(int).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(uint).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(long).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(ulong).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(float).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(double).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<bool>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<byte>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<sbyte>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<short>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<ushort>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<int>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<uint>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<long>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<ulong>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<float>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<double>());
 
 			// Primitive special cases
-			Assert.IsTrue(typeof(decimal).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(string).GetTypeInfo().IsPlainOldData());
-			Assert.IsTrue(typeof(Alignment).GetTypeInfo().IsPlainOldData());
+			Assert.IsFalse(typeof(decimal).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(Alignment).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<decimal>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<Alignment>());
 
 			// Pure POD compound types
-			Assert.IsTrue(typeof(Vector2).GetTypeInfo().IsPlainOldData());
+			Assert.IsFalse(typeof(Vector2).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(typeof(ColorRgba).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<Vector2>());
+			Assert.IsFalse(ReflectionHelper.IsReferenceOrContainsReferences<ColorRgba>());
 
 			// Non-pure compound types
-			Assert.IsFalse(typeof(ContentRef<Resource>).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(ContentRef<Resource>).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(ReflectionHelper.IsReferenceOrContainsReferences<ContentRef<Resource>>());
 
 			// Various kinds of by-reference types
-			Assert.IsFalse(typeof(object).GetTypeInfo().IsPlainOldData());
-			Assert.IsFalse(typeof(int[]).GetTypeInfo().IsPlainOldData());
-			Assert.IsFalse(typeof(GameObject).GetTypeInfo().IsPlainOldData());
-			Assert.IsFalse(typeof(IComparable).GetTypeInfo().IsPlainOldData());
-			Assert.IsFalse(typeof(IContentRef).GetTypeInfo().IsPlainOldData());
-			Assert.IsFalse(typeof(IComparable<int>).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(string).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(object).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(int[]).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(GameObject).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(IComparable).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(IContentRef).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(typeof(IComparable<int>).GetTypeInfo().IsReferenceOrContainsReferences());
+			Assert.IsTrue(ReflectionHelper.IsReferenceOrContainsReferences<string>());
+			Assert.IsTrue(ReflectionHelper.IsReferenceOrContainsReferences<object>());
+			Assert.IsTrue(ReflectionHelper.IsReferenceOrContainsReferences<int[]>());
+			Assert.IsTrue(ReflectionHelper.IsReferenceOrContainsReferences<GameObject>());
+			Assert.IsTrue(ReflectionHelper.IsReferenceOrContainsReferences<IComparable>());
+			Assert.IsTrue(ReflectionHelper.IsReferenceOrContainsReferences<IContentRef>());
+			Assert.IsTrue(ReflectionHelper.IsReferenceOrContainsReferences<IComparable<int>>());
+		}
+		[Test] public void IsDeepCopyByAssignment()
+		{
+			// Primitives
+			Assert.IsTrue(typeof(bool).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(byte).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(sbyte).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(short).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(ushort).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(int).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(uint).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(long).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(ulong).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(float).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(double).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<bool>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<byte>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<sbyte>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<short>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<ushort>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<int>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<uint>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<long>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<ulong>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<float>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<double>());
+
+			// Primitive special cases
+			Assert.IsTrue(typeof(decimal).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(string).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(Alignment).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<decimal>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<string>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<Alignment>());
+
+			// Pure POD compound types
+			Assert.IsTrue(typeof(Vector2).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(typeof(ColorRgba).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<Vector2>());
+			Assert.IsTrue(ReflectionHelper.IsDeepCopyByAssignment<ColorRgba>());
+
+			// Non-pure compound types
+			Assert.IsFalse(typeof(ContentRef<Resource>).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(ReflectionHelper.IsDeepCopyByAssignment<ContentRef<Resource>>());
+
+			// Various kinds of by-reference types
+			Assert.IsFalse(typeof(object).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(typeof(int[]).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(typeof(GameObject).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(typeof(IComparable).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(typeof(IContentRef).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(typeof(IComparable<int>).GetTypeInfo().IsDeepCopyByAssignment());
+			Assert.IsFalse(ReflectionHelper.IsDeepCopyByAssignment<object>());
+			Assert.IsFalse(ReflectionHelper.IsDeepCopyByAssignment<int[]>());
+			Assert.IsFalse(ReflectionHelper.IsDeepCopyByAssignment<GameObject>());
+			Assert.IsFalse(ReflectionHelper.IsDeepCopyByAssignment<IComparable>());
+			Assert.IsFalse(ReflectionHelper.IsDeepCopyByAssignment<IContentRef>());
+			Assert.IsFalse(ReflectionHelper.IsDeepCopyByAssignment<IComparable<int>>());
 		}
 
 		private class TestVisitorClass

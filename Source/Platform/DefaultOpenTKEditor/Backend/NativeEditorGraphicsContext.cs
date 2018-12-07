@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using Duality.Drawing;
 using Duality.Backend;
+using Duality.Backend.DefaultOpenTK;
 
 using OpenTK;
 using OpenTK.Graphics;
@@ -14,9 +15,15 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 {
 	public class NativeEditorGraphicsContext : INativeEditorGraphicsContext
 	{
+		private AAQuality antialiasingQuality;
 		private GLControl mainContextControl;
 		private HashSet<IWindowInfo> swapSchedule = new HashSet<IWindowInfo>();
-
+		private List<GraphicsMode> availableGraphicsModes = null;
+		
+		public AAQuality AntialiasingQuality
+		{
+			get { return this.antialiasingQuality; }
+		}
 		public GraphicsMode MainGraphicsMode
 		{
 			get { return this.mainContextControl.GraphicsMode; }
@@ -25,13 +32,45 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 		{
 			get { return this.mainContextControl.Context; }
 		}
-
-		public NativeEditorGraphicsContext()
+		private IEnumerable<GraphicsMode> AvailableGraphicsModes
 		{
-			GraphicsMode defaultGraphicsMode = this.GetDefaultGraphicsMode();
-			this.mainContextControl = new GLControl(defaultGraphicsMode);
+			get
+			{
+				if (this.availableGraphicsModes == null)
+				{
+					int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
+					HashSet<GraphicsMode> modeSet = new HashSet<GraphicsMode>(new GraphicsModeComparer());
+					foreach (int samplecount in aaLevels)
+					{
+						GraphicsMode mode = new GraphicsMode(32, 24, 0, samplecount, new ColorFormat(0), 2, false);
+						if (!modeSet.Contains(mode)) modeSet.Add(mode);
+					}
+
+					this.availableGraphicsModes = new List<GraphicsMode>();
+					this.availableGraphicsModes.AddRange(modeSet);
+				}
+				return this.availableGraphicsModes;
+			}
+		}
+
+		public NativeEditorGraphicsContext(AAQuality antialiasingQuality)
+		{
+			this.antialiasingQuality = antialiasingQuality;
+
+			GraphicsMode defaultGraphicsMode = this.GetGraphicsMode(this.antialiasingQuality);
+			this.mainContextControl = new GLControl(
+				defaultGraphicsMode, 
+				GraphicsBackend.MinOpenGLVersion.Major, 
+				GraphicsBackend.MinOpenGLVersion.Minor, 
+				GraphicsContextFlags.ForwardCompatible);
 			this.mainContextControl.VSync = false;
 			this.mainContextControl.MakeCurrent();
+
+			// Log some general info on the graphics context we've set up
+			GraphicsBackend.LogOpenGLContextSpecs(this.mainContextControl.Context);
+
+			// Determine OpenGL capabilities and log them
+			GraphicsBackend.LogOpenGLSpecs();
 		}
 
 		public void ScheduleSwap(GLControl control)
@@ -57,8 +96,8 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 					// no way of checking its disposal state... so let's try it the hard way.
 					try
 					{
-						mainContextControl.Context.MakeCurrent(window);
-						mainContextControl.SwapBuffers();
+						this.mainContextControl.Context.MakeCurrent(window);
+						this.mainContextControl.SwapBuffers();
 					}
 					catch (Exception) {}
 				}
@@ -76,33 +115,20 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 			}
 		}
 
-		private GraphicsMode GetDefaultGraphicsMode()
+		private GraphicsMode GetGraphicsMode(AAQuality antialiasingQuality)
 		{
-			int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
-			HashSet<GraphicsMode> availGraphicsModes = new HashSet<GraphicsMode>(new GraphicsModeComparer());
-			foreach (int samplecount in aaLevels)
-			{
-				GraphicsMode mode = new GraphicsMode(32, 24, 0, samplecount, new OpenTK.Graphics.ColorFormat(0), 2, false);
-				if (!availGraphicsModes.Contains(mode)) availGraphicsModes.Add(mode);
-			}
-			int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(availGraphicsModes.Max(m => m.Samples), 1.0f), 2.0f));
+			IEnumerable<GraphicsMode> modes = this.AvailableGraphicsModes;
+			int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(modes.Max(m => m.Samples), 1.0f), 2.0f));
 			int targetAALevel = highestAALevel;
-			if (DualityApp.AppData.MultisampleBackBuffer)
+			switch (antialiasingQuality)
 			{
-				switch (DualityApp.UserData.AntialiasingQuality)
-				{
-					case AAQuality.High:	targetAALevel = highestAALevel;		break;
-					case AAQuality.Medium:	targetAALevel = highestAALevel / 2; break;
-					case AAQuality.Low:		targetAALevel = highestAALevel / 4; break;
-					case AAQuality.Off:		targetAALevel = 0;					break;
-				}
-			}
-			else
-			{
-				targetAALevel = 0;
+				case AAQuality.High:   targetAALevel = highestAALevel;     break;
+				case AAQuality.Medium: targetAALevel = highestAALevel / 2; break;
+				case AAQuality.Low:    targetAALevel = highestAALevel / 4; break;
+				case AAQuality.Off:    targetAALevel = 0;                  break;
 			}
 			int targetSampleCount = MathF.RoundToInt(MathF.Pow(2.0f, targetAALevel));
-			return availGraphicsModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? availGraphicsModes.Last();
+			return modes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? modes.Last();
 		}
 	}
 }

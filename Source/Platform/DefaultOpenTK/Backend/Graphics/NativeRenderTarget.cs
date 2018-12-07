@@ -72,10 +72,11 @@ namespace Duality.Backend.DefaultOpenTK
 		
 
 		private bool pendingPostRender = false;
-		private int  handleMainFBO     = 0;
-		private int  handleDepthRBO    = 0;
-		private int  handleMsaaFBO     = 0;
-		private int  samples           = 0;
+		private int  handleMainFBO  = 0;
+		private int  handleDepthRBO = 0;
+		private int  handleMsaaFBO  = 0;
+		private int  samples        = 0;
+		private bool depthBuffer    = false;
 		private RawList<TargetInfo> targetInfos = new RawList<TargetInfo>();
 
 
@@ -144,7 +145,7 @@ namespace Duality.Backend.DefaultOpenTK
 			this.pendingPostRender = false;
 		}
 
-		void INativeRenderTarget.Setup(IReadOnlyList<INativeTexture> targets, AAQuality multisample)
+		void INativeRenderTarget.Setup(IReadOnlyList<INativeTexture> targets, AAQuality multisample, bool depthBuffer)
 		{
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
@@ -166,6 +167,7 @@ namespace Duality.Backend.DefaultOpenTK
 				GraphicsBackend.ActiveInstance.AvailableGraphicsModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? 
 				GraphicsBackend.ActiveInstance.AvailableGraphicsModes.Last();
 			this.samples = sampleMode.Samples;
+			this.depthBuffer = depthBuffer;
 
 			// Synchronize target information
 			{
@@ -182,124 +184,16 @@ namespace Duality.Backend.DefaultOpenTK
 				}
 			}
 
-			#region Setup FBO & RBO: Non-multisampled
-			if (this.samples == 0)
-			{
-				// Generate FBO
-				if (this.handleMainFBO == 0) GL.Ext.GenFramebuffers(1, out this.handleMainFBO);
-				GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, this.handleMainFBO);
-
-				// Attach textures
-				int oglWidth = 0;
-				int oglHeight = 0;
-				for (int i = 0; i < this.targetInfos.Count; i++)
-				{
-					NativeTexture tex = this.targetInfos[i].Target;
-
-					FramebufferAttachment attachment = (FramebufferAttachment)((int)FramebufferAttachment.ColorAttachment0Ext + i);
-					GL.Ext.FramebufferTexture2D(
-						FramebufferTarget.FramebufferExt, 
-						attachment, 
-						TextureTarget.Texture2D, 
-						tex.Handle, 
-						0);
-					oglWidth = tex.Width;
-					oglHeight = tex.Height;
-				}
-
-				// Generate Depth Renderbuffer
-				if (this.handleDepthRBO == 0) GL.Ext.GenRenderbuffers(1, out this.handleDepthRBO);
-				GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, this.handleDepthRBO);
-				GL.Ext.RenderbufferStorage(RenderbufferTarget.RenderbufferExt, RenderbufferStorage.DepthComponent24, oglWidth, oglHeight);
-				GL.Ext.FramebufferRenderbuffer(FramebufferTarget.FramebufferExt, FramebufferAttachment.DepthAttachmentExt, RenderbufferTarget.RenderbufferExt, this.handleDepthRBO);
-
-				// Check status
-				FramebufferErrorCode status = GL.Ext.CheckFramebufferStatus(FramebufferTarget.FramebufferExt);
-				if (status != FramebufferErrorCode.FramebufferCompleteExt)
-				{
-					throw new BackendException(string.Format("Incomplete Framebuffer: {0}", status));
-				}
-
-				GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, 0);
-				GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
-			}
-			#endregion
-
-			#region Setup FBO & RBO: Multisampled
+			// Setup OpenGL resources
 			if (this.samples > 0)
-			{
-				// Generate texture target FBO
-				if (this.handleMainFBO == 0) GL.Ext.GenFramebuffers(1, out this.handleMainFBO);
-				GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, this.handleMainFBO);
-
-				// Attach textures
-				int oglWidth = 0;
-				int oglHeight = 0;
-				for (int i = 0; i < this.targetInfos.Count; i++)
-				{
-					NativeTexture tex = this.targetInfos[i].Target;
-
-					FramebufferAttachment attachment = (FramebufferAttachment)((int)FramebufferAttachment.ColorAttachment0Ext + i);
-					GL.Ext.FramebufferTexture2D(
-						FramebufferTarget.FramebufferExt, 
-						attachment, 
-						TextureTarget.Texture2D, 
-						tex.Handle, 
-						0);
-					oglWidth = tex.Width;
-					oglHeight = tex.Height;
-				}
-
-				// Check status
-				FramebufferErrorCode status = GL.Ext.CheckFramebufferStatus(FramebufferTarget.FramebufferExt);
-				if (status != FramebufferErrorCode.FramebufferCompleteExt)
-				{
-					throw new BackendException(string.Format("Incomplete Framebuffer: {0}", status));
-				}
-
-				// Generate rendering FBO
-				if (this.handleMsaaFBO == 0) GL.Ext.GenFramebuffers(1, out this.handleMsaaFBO);
-				GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, this.handleMsaaFBO);
-
-				// Attach color renderbuffers
-				for (int i = 0; i < this.targetInfos.Count; i++)
-				{
-					TargetInfo info = this.targetInfos.Data[i];
-
-					FramebufferAttachment attachment = (FramebufferAttachment)((int)FramebufferAttachment.ColorAttachment0Ext + i);
-					RenderbufferStorage rbColorFormat = TexFormatToRboFormat(info.Target.Format);
-
-					if (info.HandleMsaaColorRBO == 0) GL.GenRenderbuffers(1, out info.HandleMsaaColorRBO);
-					GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, info.HandleMsaaColorRBO);
-					GL.Ext.RenderbufferStorageMultisample(RenderbufferTarget.RenderbufferExt, this.samples, rbColorFormat, oglWidth, oglHeight);
-					GL.Ext.FramebufferRenderbuffer(FramebufferTarget.FramebufferExt, attachment, RenderbufferTarget.RenderbufferExt, info.HandleMsaaColorRBO);
-
-					this.targetInfos.Data[i] = info;
-				}
-				GL.Ext.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
-
-				// Attach depth renderbuffer
-				if (this.handleDepthRBO == 0) GL.Ext.GenRenderbuffers(1, out this.handleDepthRBO);
-				GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, this.handleDepthRBO);
-				GL.Ext.RenderbufferStorageMultisample(RenderbufferTarget.RenderbufferExt, this.samples, RenderbufferStorage.DepthComponent24, oglWidth, oglHeight);
-				GL.Ext.FramebufferRenderbuffer(FramebufferTarget.FramebufferExt, FramebufferAttachment.DepthAttachmentExt, RenderbufferTarget.RenderbufferExt, this.handleDepthRBO);
-				GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, 0);
-
-				// Check status
-				status = GL.Ext.CheckFramebufferStatus(FramebufferTarget.FramebufferExt);
-				if (status != FramebufferErrorCode.FramebufferCompleteExt)
-				{
-					throw new BackendException(string.Format("Incomplete Multisample Framebuffer: {0}", status));
-				}
-				
-				GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
-			}
-			#endregion
+				this.SetupMultisampled();
+			else
+				this.SetupNonMultisampled();
 		}
-		void INativeRenderTarget.GetData<T>(T[] buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int targetIndex, int x, int y, int width, int height)
+		void INativeRenderTarget.GetData(IntPtr buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int targetIndex, int x, int y, int width, int height)
 		{
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
-
+			
 			this.ApplyPostRender();
 			if (curBound != this) ApplyGLBind(this);
 			{
@@ -313,7 +207,7 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
 			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
-
+			
 			// If there are changes pending to be applied to the bound textures,
 			// they should be executed before the render target is gone.
 			this.ApplyPostRender();
@@ -341,6 +235,133 @@ namespace Duality.Backend.DefaultOpenTK
 					this.targetInfos.Data[i].HandleMsaaColorRBO = 0;
 				}
 			}
+		}
+
+		private void SetupNonMultisampled()
+		{
+			// Generate FBO
+			if (this.handleMainFBO == 0) GL.Ext.GenFramebuffers(1, out this.handleMainFBO);
+			GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, this.handleMainFBO);
+
+			// Attach textures
+			int oglWidth = 0;
+			int oglHeight = 0;
+			for (int i = 0; i < this.targetInfos.Count; i++)
+			{
+				NativeTexture tex = this.targetInfos[i].Target;
+
+				FramebufferAttachment attachment = (FramebufferAttachment)((int)FramebufferAttachment.ColorAttachment0Ext + i);
+				GL.Ext.FramebufferTexture2D(
+					FramebufferTarget.FramebufferExt, 
+					attachment, 
+					TextureTarget.Texture2D, 
+					tex.Handle, 
+					0);
+				oglWidth = tex.Width;
+				oglHeight = tex.Height;
+			}
+
+			// Generate or delete depth renderbuffer
+			if (this.depthBuffer)
+			{
+				if (this.handleDepthRBO == 0) GL.Ext.GenRenderbuffers(1, out this.handleDepthRBO);
+				GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, this.handleDepthRBO);
+				GL.Ext.RenderbufferStorage(RenderbufferTarget.RenderbufferExt, RenderbufferStorage.DepthComponent24, oglWidth, oglHeight);
+				GL.Ext.FramebufferRenderbuffer(FramebufferTarget.FramebufferExt, FramebufferAttachment.DepthAttachmentExt, RenderbufferTarget.RenderbufferExt, this.handleDepthRBO);
+			}
+			else
+			{
+				GL.Ext.FramebufferRenderbuffer(FramebufferTarget.FramebufferExt, FramebufferAttachment.DepthAttachmentExt, RenderbufferTarget.RenderbufferExt, 0);
+				if (this.handleDepthRBO != 0) GL.Ext.DeleteRenderbuffers(1, ref this.handleDepthRBO);
+				this.handleDepthRBO = 0;
+			}
+
+			// Check status
+			FramebufferErrorCode status = GL.Ext.CheckFramebufferStatus(FramebufferTarget.FramebufferExt);
+			if (status != FramebufferErrorCode.FramebufferCompleteExt)
+			{
+				throw new BackendException(string.Format("Incomplete Framebuffer: {0}", status));
+			}
+
+			GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, 0);
+			GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
+		}
+		private void SetupMultisampled()
+		{
+			// Generate texture target FBO
+			if (this.handleMainFBO == 0) GL.Ext.GenFramebuffers(1, out this.handleMainFBO);
+			GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, this.handleMainFBO);
+
+			// Attach textures
+			int oglWidth = 0;
+			int oglHeight = 0;
+			for (int i = 0; i < this.targetInfos.Count; i++)
+			{
+				NativeTexture tex = this.targetInfos[i].Target;
+
+				FramebufferAttachment attachment = (FramebufferAttachment)((int)FramebufferAttachment.ColorAttachment0Ext + i);
+				GL.Ext.FramebufferTexture2D(
+					FramebufferTarget.FramebufferExt, 
+					attachment, 
+					TextureTarget.Texture2D, 
+					tex.Handle, 
+					0);
+				oglWidth = tex.Width;
+				oglHeight = tex.Height;
+			}
+
+			// Check status
+			FramebufferErrorCode status = GL.Ext.CheckFramebufferStatus(FramebufferTarget.FramebufferExt);
+			if (status != FramebufferErrorCode.FramebufferCompleteExt)
+			{
+				throw new BackendException(string.Format("Incomplete Framebuffer: {0}", status));
+			}
+
+			// Generate rendering FBO
+			if (this.handleMsaaFBO == 0) GL.Ext.GenFramebuffers(1, out this.handleMsaaFBO);
+			GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, this.handleMsaaFBO);
+
+			// Attach color renderbuffers
+			for (int i = 0; i < this.targetInfos.Count; i++)
+			{
+				TargetInfo info = this.targetInfos.Data[i];
+
+				FramebufferAttachment attachment = (FramebufferAttachment)((int)FramebufferAttachment.ColorAttachment0Ext + i);
+				RenderbufferStorage rbColorFormat = TexFormatToRboFormat(info.Target.Format);
+
+				if (info.HandleMsaaColorRBO == 0) GL.GenRenderbuffers(1, out info.HandleMsaaColorRBO);
+				GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, info.HandleMsaaColorRBO);
+				GL.Ext.RenderbufferStorageMultisample(RenderbufferTarget.RenderbufferExt, this.samples, rbColorFormat, oglWidth, oglHeight);
+				GL.Ext.FramebufferRenderbuffer(FramebufferTarget.FramebufferExt, attachment, RenderbufferTarget.RenderbufferExt, info.HandleMsaaColorRBO);
+
+				this.targetInfos.Data[i] = info;
+			}
+			GL.Ext.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
+
+			// Generate or delete depth renderbuffer
+			if (this.depthBuffer)
+			{
+				if (this.handleDepthRBO == 0) GL.Ext.GenRenderbuffers(1, out this.handleDepthRBO);
+				GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, this.handleDepthRBO);
+				GL.Ext.RenderbufferStorageMultisample(RenderbufferTarget.RenderbufferExt, this.samples, RenderbufferStorage.DepthComponent24, oglWidth, oglHeight);
+				GL.Ext.FramebufferRenderbuffer(FramebufferTarget.FramebufferExt, FramebufferAttachment.DepthAttachmentExt, RenderbufferTarget.RenderbufferExt, this.handleDepthRBO);
+				GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, 0);
+			}
+			else
+			{
+				GL.Ext.FramebufferRenderbuffer(FramebufferTarget.FramebufferExt, FramebufferAttachment.DepthAttachmentExt, RenderbufferTarget.RenderbufferExt, 0);
+				if (this.handleDepthRBO != 0) GL.Ext.DeleteRenderbuffers(1, ref this.handleDepthRBO);
+				this.handleDepthRBO = 0;
+			}
+
+			// Check status
+			status = GL.Ext.CheckFramebufferStatus(FramebufferTarget.FramebufferExt);
+			if (status != FramebufferErrorCode.FramebufferCompleteExt)
+			{
+				throw new BackendException(string.Format("Incomplete Multisample Framebuffer: {0}", status));
+			}
+				
+			GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
 		}
 
 		private static RenderbufferStorage TexFormatToRboFormat(TexturePixelFormat format)

@@ -22,7 +22,7 @@ namespace BasicMenu
 			}
 
 			// update the volume value
-			volumeText.Text.SourceText = String.Format("Volume {0:0.0}", DualityApp.UserData.SfxMasterVol);
+			volumeText.Text.SourceText = String.Format("Volume {0:0.0}", DualityApp.UserData.SoundMasterVol);
 		}
 	}
 }

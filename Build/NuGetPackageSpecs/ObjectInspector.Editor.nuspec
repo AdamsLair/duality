@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.ObjectInspector</id>
-    <version>2.1.4</version>
+    <version>3.0.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Object Inspector</title>
@@ -13,12 +13,11 @@
     <summary>Allows editing the properties of selected objects.</summary>
     <description>Allows editing the properties of selected objects.</description>
     <tags>Duality Editor Plugin ObjectInspector</tags>
-    <releaseNotes>Object Inspector ExpandState, Updated AdamsLair.WinForms Dependency
-#ADD: Which items and tabs in the Object Inspector are expanded is now saved as part of editor user data.
-#CHANGE: Updated to AdamsLair.WinForms 1.1.15</releaseNotes>
+    <releaseNotes>Major Version Update
+</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.14.8" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.10.16" />
+      <dependency id="AdamsLair.Duality" version="3.0.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="3.0.0" />
     </dependencies>
   </metadata>
   <files>

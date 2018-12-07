@@ -6,7 +6,7 @@ using System.Text;
 using Duality;
 using Duality.Editor;
 using Duality.Drawing;
-using Duality.Input;
+using Duality.Resources;
 using Duality.Components;
 using Duality.Components.Physics;
 
@@ -23,7 +23,7 @@ namespace Duality.Samples.Physics
 			Vector2 startPos = transform.Pos.Xy;
 			Vector2 endPos = startPos + transform.Forward.Xy * 250.0f;
 			RayCastData nearestHit;
-			bool hitAnything = RigidBody.RayCast(startPos, endPos, hitData => 
+			bool hitAnything = this.Scene.Physics.RayCast(startPos, endPos, hitData => 
 			{
 				// Ignore this object, as we're the ones sending the raycast
 				if (hitData.Body.GameObj == this.GameObj) return -1.0f;
@@ -36,27 +36,27 @@ namespace Duality.Samples.Physics
 			// Display a visual log with the raycast results
 			if (hitAnything)
 			{
-				VisualLog.Default
+				VisualLogs.Default
 					.DrawCircle(Vector3.Zero, nearestHit.Body.BoundRadius)
 					.AnchorAt(nearestHit.GameObj)
 					.WithColor(ColorRgba.Green.WithAlpha(128));
 
 				Rect hitShapeRect = nearestHit.Shape.AABB;
-				VisualLog.Default
+				VisualLogs.Default
 					.DrawCircle(new Vector3(hitShapeRect.Center), hitShapeRect.BoundingRadius - hitShapeRect.Center.Length)
 					.AnchorAt(nearestHit.GameObj)
 					.WithColor(ColorRgba.Blue.WithAlpha(128));
 
-				VisualLog.Default
+				VisualLogs.Default
 					.DrawConnection(new Vector3(startPos), nearestHit.Pos)
 					.WithColor(ColorRgba.Red);
-				VisualLog.Default
+				VisualLogs.Default
 					.DrawVector(new Vector3(nearestHit.Pos), nearestHit.Normal * 25)
 					.WithColor(ColorRgba.Red);
 			}
 			else
 			{
-				VisualLog.Default.DrawConnection(new Vector3(startPos), endPos);
+				VisualLogs.Default.DrawConnection(new Vector3(startPos), endPos);
 			}
 		}
 	}

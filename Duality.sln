@@ -89,10 +89,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering", "Samples\Steerin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Physics.Sample", "Samples\Physics\Physics.Sample.csproj", "{45B4CC01-CCDC-4835-8EDF-F0B706EA3DDF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmoothAnimation", "Samples\SmoothAnimation\SmoothAnimation.csproj", "{D29F3890-96E1-491B-AFAC-AD82E70E4208}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRenderingSetup", "Samples\CustomRenderingSetup\CustomRenderingSetup.csproj", "{D220795D-8A59-432F-A8EC-CE9143DD07D5}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6EA4E6D3-5509-484F-B03C-9D912E9BD013}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.Sample", "Samples\Benchmarks\Benchmarks.Sample.csproj", "{165D83B8-EAE8-4CDC-9003-E595D4225B8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityPhysics", "Source\Core\Physics\DualityPhysics.csproj", "{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -236,6 +244,22 @@ Global
 		{45B4CC01-CCDC-4835-8EDF-F0B706EA3DDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45B4CC01-CCDC-4835-8EDF-F0B706EA3DDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45B4CC01-CCDC-4835-8EDF-F0B706EA3DDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D29F3890-96E1-491B-AFAC-AD82E70E4208}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D29F3890-96E1-491B-AFAC-AD82E70E4208}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D29F3890-96E1-491B-AFAC-AD82E70E4208}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D29F3890-96E1-491B-AFAC-AD82E70E4208}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D220795D-8A59-432F-A8EC-CE9143DD07D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D220795D-8A59-432F-A8EC-CE9143DD07D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D220795D-8A59-432F-A8EC-CE9143DD07D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D220795D-8A59-432F-A8EC-CE9143DD07D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{165D83B8-EAE8-4CDC-9003-E595D4225B8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{165D83B8-EAE8-4CDC-9003-E595D4225B8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{165D83B8-EAE8-4CDC-9003-E595D4225B8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{165D83B8-EAE8-4CDC-9003-E595D4225B8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -278,6 +302,13 @@ Global
 		{D014227E-3E69-4C8B-984A-1519AA35C1AD} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{0130132B-C38D-463E-90AC-5D389E934FAE} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{45B4CC01-CCDC-4835-8EDF-F0B706EA3DDF} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
+		{D29F3890-96E1-491B-AFAC-AD82E70E4208} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
+		{D220795D-8A59-432F-A8EC-CE9143DD07D5} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
+		{165D83B8-EAE8-4CDC-9003-E595D4225B8F} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
+		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A} = {FC08D0D6-612E-4AD2-950C-8E9BA895D5D1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A945D0B-5EF2-4D0D-BE86-3AEE6659F281}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74E2A280-F2F3-400D-9CC2-7A91D6D3D15C}

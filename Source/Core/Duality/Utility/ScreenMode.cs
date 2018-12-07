@@ -25,10 +25,6 @@ namespace Duality
 		/// <summary>
 		/// Duality runs in fullscreen mode, using whatever screen resolution is currently active on the users desktop.
 		/// </summary>
-		Native,
-		/// <summary>
-		/// Duality runs in fullscreen mode and changes desktop resolution whenever necesary.
-		/// </summary>
 		Fullscreen
 	}
 }

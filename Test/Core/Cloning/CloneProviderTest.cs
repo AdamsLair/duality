@@ -22,7 +22,7 @@ namespace Duality.Tests.Cloning
 	{
 		[Test] public void ClonePlainOldData()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestData data = new TestData(rnd);
 			TestData dataResult = data.DeepClone();
 
@@ -31,7 +31,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneComplexObject()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestObject data = new TestObject(rnd, 5);
 			TestObject dataResult = data.DeepClone();
 
@@ -63,16 +63,17 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneMemberInfo()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestMemberInfoData data = new TestMemberInfoData(rnd);
 			TestMemberInfoData dataResult = data.DeepClone();
 
 			Assert.AreNotSame(data, dataResult);
 			Assert.AreEqual(data, dataResult);
 		}
+
 		[Test] public void CopyToTarget()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestObject data = new TestObject(rnd, 5);
 			TestObject dataResult = new TestObject();
 			data.DeepCopyTo(dataResult);
@@ -103,7 +104,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void IdentityPreservation()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			{
 				IdentityTestObjectA data = new IdentityTestObjectA(rnd);
 				IdentityTestObjectA dataResult = data.DeepClone();
@@ -135,9 +136,10 @@ namespace Duality.Tests.Cloning
 				Assert.AreEqual(data.Identity, dataResultNoIdentity.Identity);
 			}
 		}
+
 		[Test] public void SkippedObjects()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			SkipFieldTestObject data = new SkipFieldTestObject(rnd);
 			SkipFieldTestObject dataResult = data.DeepClone();
 
@@ -145,11 +147,10 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotEqual(data.SkipField, dataResult.SkipField);
 			Assert.AreNotEqual(data.NonSerializedSkipField, dataResult.NonSerializedSkipField);
 			Assert.AreEqual(data.NonSerializedField, dataResult.NonSerializedField);
-			Assert.AreNotEqual(data.SkippedObject, dataResult.SkippedObject);
 		}
 		[Test] public void OwnershipBehavior()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			OwnershipTestObject data = new OwnershipTestObject(rnd);
 			OwnershipTestObject dataResult = data.DeepClone();
 
@@ -170,6 +171,7 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(data, dataResult);
 			Assert.AreNotSame(data.InterfaceValue, dataResult.InterfaceValue);
 		}
+
 		[Test] public void ReferenceBehavior()
 		{
 			ReferenceBehaviourTestObject data = new ReferenceBehaviourTestObject();
@@ -221,11 +223,6 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CombinedReferenceAndWeakReference()
 		{
-			// See here: https://github.com/AdamsLair/duality/issues/665
-			Assert.Inconclusive(
-				"Weak references are broken right now, see issue #665. " +
-				"Re-activate assert as soon as the issue was addressed.");
-
 			// In this test, we want to check for an edge case where an object is referenced
 			// both using a weak and a regular reference, but not part of the ownership graph.
 			ReferenceBehaviourTestObject data = new ReferenceBehaviourTestObject();
@@ -243,6 +240,7 @@ namespace Duality.Tests.Cloning
 			Assert.AreSame(data.ReferencedObject, dataClone.ReferencedObject);
 			Assert.AreNotSame(data.OwnedObject, dataClone.OwnedObject);
 		}
+
 		[Test] public void SimpleDelegates()
 		{
 			SimpleDelegateTestObject source = new SimpleDelegateTestObject();
@@ -395,6 +393,7 @@ namespace Duality.Tests.Cloning
 				Assert.IsFalse(dataResultPart.EventReceived);
 			}
 		}
+
 		[Test] public void OverwriteWithNull()
 		{
 			TestObject source = new TestObject();
@@ -420,7 +419,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void ExplicitCloning()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			{
 				ExplicitCloneTestObjectA data = new ExplicitCloneTestObjectA(rnd, 5);
 				ExplicitCloneTestObjectA dataResult = data.DeepClone();
@@ -447,7 +446,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void StructInvestigate()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestStructInvestigate source = new TestStructInvestigate(rnd);
 			TestStructInvestigate target = source.DeepClone();
 
@@ -456,7 +455,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void PartialCloning()
 		{
-			Random rnd = new Random();
+			Random rnd = new Random(1);
 			TestObject sourceStatic = new TestObject {
 				DictField = new Dictionary<string,TestObject>
 				{

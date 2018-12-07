@@ -22,8 +22,9 @@ namespace Duality.Resources
 	[EditorHintImage(CoreResNames.ImageRenderTarget)]
 	public class RenderTarget : Resource
 	{
-		private	List<ContentRef<Texture>>	targets			= new List<ContentRef<Texture>>();
-		private	AAQuality					multisampling	= AAQuality.Off;
+		private List<ContentRef<Texture>> targets       = new List<ContentRef<Texture>>();
+		private AAQuality                 multisampling = AAQuality.Off;
+		private bool                      depthBuffer   = true;
 
 		[DontSerialize] private	INativeRenderTarget native = null;
 
@@ -39,7 +40,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET / SET] Whether this RenderTarget is multisampled.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		public AAQuality Multisampling
 		{
 			get { return this.multisampling; }
@@ -48,6 +48,22 @@ namespace Duality.Resources
 				if (this.multisampling != value)
 				{
 					this.multisampling = value;
+					this.FreeNativeRes();
+					this.SetupNativeRes();
+				}
+			}
+		}
+		/// <summary>
+		/// [GET / SET] Whether this RenderTarget provides a depth buffer.
+		/// </summary>
+		public bool DepthBuffer
+		{
+			get { return this.depthBuffer; }
+			set
+			{
+				if (this.depthBuffer != value)
+				{
+					this.depthBuffer = value;
 					this.FreeNativeRes();
 					this.SetupNativeRes();
 				}
@@ -70,51 +86,47 @@ namespace Duality.Resources
 			}
 		}
 		/// <summary>
-		/// [GET] Width of this RenderTarget. This values is derived by its <see cref="Targets"/>.
+		/// [GET] The width of this <see cref="RenderTarget"/>. This value is derived from <see cref="Targets"/>.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public int Width
 		{
-			get
-			{
-				ContentRef<Texture> target = this.targets.Count > 0 ? this.targets[0] : null;
-				return target.IsAvailable ? target.Res.PixelWidth : 0;
-			}
+			get { return this.Size.X; }
 		}
 		/// <summary>
-		/// [GET] Height of this RenderTarget. This values is derived by its <see cref="Targets"/>.
+		/// [GET] The height of this <see cref="RenderTarget"/>. This value is derived from <see cref="Targets"/>.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public int Height
 		{
-			get
-			{
-				ContentRef<Texture> target = this.targets.Count > 0 ? this.targets[0] : null;
-				return target.IsAvailable ? target.Res.PixelHeight : 0;
-			}
+			get { return this.Size.Y; }
 		}
 		/// <summary>
-		/// [GET] UVRatio of this RenderTarget. This values is derived by its <see cref="Targets"/>.
+		/// [GET] The size of this <see cref="RenderTarget"/>. This value is derived from <see cref="Targets"/>.
 		/// </summary>
-		public Vector2 UVRatio
+		public Point2 Size
 		{
 			get
 			{
 				ContentRef<Texture> target = this.targets.Count > 0 ? this.targets[0] : null;
-				return target.IsAvailable ? target.Res.UVRatio : Vector2.One;
+				return target.IsAvailable ? target.Res.ContentSize : Point2.Zero;
 			}
 		}
 
 		/// <summary>
 		/// Creates a new, empty RenderTarget
 		/// </summary>
-		public RenderTarget() : this(AAQuality.Off, null) {}
+		public RenderTarget() : this(AAQuality.Off, true, null) {}
 		/// <summary>
 		/// Creates a new RenderTarget based on a set of <see cref="Duality.Resources.Texture">Textures</see>
 		/// </summary>
 		/// <param name="multisampling">The level of multisampling that is requested from this RenderTarget.</param>
+		/// <param name="depthBuffer">Whether or not this RenderTarget has a depth-buffer.</param>
 		/// <param name="targets">An array of <see cref="Duality.Resources.Texture">Textures</see> used as data destination.</param>
-		public RenderTarget(AAQuality multisampling, params ContentRef<Texture>[] targets)
+		public RenderTarget(AAQuality multisampling, bool depthBuffer, params ContentRef<Texture>[] targets)
 		{
 			this.multisampling = multisampling;
+			this.depthBuffer = depthBuffer;
 			if (targets != null) foreach (var t in targets) this.targets.Add(t);
 			this.SetupNativeRes();
 		}
@@ -213,9 +225,9 @@ namespace Duality.Resources
 		{
 			foreach (var target in this.targets.Where(t => t != null).Res())
 			{
-				if (target.PixelWidth == 0 || target.PixelHeight == 0)
+				if (target.ContentWidth == 0 || target.ContentHeight == 0)
 				{
-					Log.Core.WriteError("Error initializing '{0}' because '{1}' has a dimension of zero.", this, target);
+					Logs.Core.WriteError("Error initializing '{0}' because '{1}' has a dimension of zero.", this, target);
 					return;
 				}
 			}
@@ -228,11 +240,11 @@ namespace Duality.Resources
 
 			try
 			{
-				this.native.Setup(targets, this.multisampling);
+				this.native.Setup(targets, this.multisampling, this.depthBuffer);
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Error initializing RenderTarget {0}:{1}{2}", this, Environment.NewLine, Log.Exception(e));
+				Logs.Core.WriteError("Error initializing RenderTarget {0}:{1}{2}", this, Environment.NewLine, LogFormat.Exception(e));
 			}
 		}
 

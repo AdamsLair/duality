@@ -91,10 +91,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			RigidBody selectedBody = this.QuerySelectedCollider();
 
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
+			canvas.State.SetMaterial(DrawTechnique.Alpha);
 			canvas.State.TextFont = Font.GenericMonospace10;
-			canvas.State.TextInvariantScale = true;
-			canvas.State.ZOffset = this.depthOffset;
+			canvas.State.DepthOffset = this.depthOffset;
 			Font textFont = canvas.State.TextFont.Res;
 
 			// Retrieve selected shapes
@@ -123,11 +122,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				int shapeIndex = 0;
 				foreach (ShapeInfo shape in body.Shapes)
 				{
-					CircleShapeInfo circle = shape as CircleShapeInfo;
-					PolyShapeInfo poly = shape as PolyShapeInfo;
-					ChainShapeInfo chain = shape as ChainShapeInfo;
-					LoopShapeInfo loop = shape as LoopShapeInfo;
-
 					bool isShapeSelected = isBodySelected && editorSelectedObjects.Contains(shape);
 
 					float shapeAlpha = bodyAlpha * (isShapeSelected ? 1.0f : (isAnyShapeSelected && isBodySelected ? 0.75f : 1.0f));
@@ -145,16 +139,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 					// Calculate the center coordinate 
 					Vector2 shapeCenter = Vector2.Zero;
-					if (circle != null)
+					if (shape is CircleShapeInfo)
 					{
-						shapeCenter = circle.Position * objScale;
+						CircleShapeInfo circleShape = shape as CircleShapeInfo;
+						shapeCenter = circleShape.Position * objScale;
 					}
-					else
+					else if (shape is VertexBasedShapeInfo)
 					{
-						Vector2[] shapeVertices = null;
-						if      (poly  != null) shapeVertices = poly .Vertices;
-						else if (loop  != null) shapeVertices = loop .Vertices;
-						else if (chain != null) shapeVertices = chain.Vertices;
+						VertexBasedShapeInfo vertexShape = shape as VertexBasedShapeInfo;
+						Vector2[] shapeVertices = vertexShape.Vertices;
 
 						for (int i = 0; i < shapeVertices.Length; i++)
 							shapeCenter += shapeVertices[i];
@@ -169,10 +162,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 						string indexText = shapeIndex.ToString();
 						Vector2 textSize = textFont.MeasureText(indexText);
 						canvas.State.ColorTint = fontColor.WithAlpha((shapeAlpha + 1.0f) * 0.5f);
+						canvas.State.TransformScale = Vector2.One / canvas.DrawDevice.GetScaleAtZ(0.0f);
 						canvas.DrawText(indexText, 
 							objPos.X + shapeCenter.X, 
 							objPos.Y + shapeCenter.Y,
 							0.0f);
+						canvas.State.TransformScale = Vector2.One;
 					}
 
 					shapeIndex++;
@@ -214,18 +209,21 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		
 		private void DrawShape(Canvas canvas, Transform transform, ShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
 		{
-			if      (shape is CircleShapeInfo) this.DrawShape(canvas, transform, shape as CircleShapeInfo, fillColor, outlineColor);
-			else if (shape is LoopShapeInfo)   this.DrawShape(canvas, transform, shape as LoopShapeInfo  , fillColor, outlineColor);
-			else if (shape is ChainShapeInfo)  this.DrawShape(canvas, transform, shape as ChainShapeInfo , fillColor, outlineColor);
-			else if (shape is PolyShapeInfo)   this.DrawShape(canvas, transform, shape as PolyShapeInfo  , fillColor, outlineColor);
+			if      (shape is CircleShapeInfo)      this.DrawShape(canvas, transform, shape as CircleShapeInfo     , fillColor, outlineColor);
+			else if (shape is PolyShapeInfo)        this.DrawShape(canvas, transform, shape as PolyShapeInfo       , fillColor, outlineColor);
+			else if (shape is VertexBasedShapeInfo) this.DrawShape(canvas, transform, shape as VertexBasedShapeInfo, fillColor, outlineColor);
 		}
-		private void DrawShape(Canvas canvas, Transform transform, LoopShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
+		private void DrawShape(Canvas canvas, Transform transform, VertexBasedShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
 		{
-			this.DrawPolygonOutline(canvas, transform, shape.Vertices, outlineColor, true);
-		}
-		private void DrawShape(Canvas canvas, Transform transform, ChainShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
-		{
-			this.DrawPolygonOutline(canvas, transform, shape.Vertices, outlineColor, false);
+			bool isSolid = (shape.ShapeTraits & VertexShapeTrait.IsSolid) != VertexShapeTrait.None;
+			bool isLoop = (shape.ShapeTraits & VertexShapeTrait.IsLoop) != VertexShapeTrait.None;
+
+			if (isSolid)
+			{
+				this.FillPolygon(canvas, transform, shape.Vertices, fillColor);
+			}
+
+			this.DrawPolygonOutline(canvas, transform, shape.Vertices, outlineColor, isLoop);
 		}
 		private void DrawShape(Canvas canvas, Transform transform, PolyShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
 		{
@@ -238,16 +236,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				}
 
 				// Draw all convex polygon edges that are not outlines
-				canvas.State.ZOffset = this.depthOffset - 0.05f;
+				canvas.State.DepthOffset = this.depthOffset - 0.05f;
 				this.DrawPolygonInternals(canvas, transform, shape.Vertices, shape.ConvexPolygons, outlineColor);
-				canvas.State.ZOffset = this.depthOffset;
+				canvas.State.DepthOffset = this.depthOffset;
 			}
 
 
 			// Draw the polygon outline
-			canvas.State.ZOffset = this.depthOffset - 0.1f;
+			canvas.State.DepthOffset = this.depthOffset - 0.1f;
 			this.DrawPolygonOutline(canvas, transform, shape.Vertices, outlineColor, true);
-			canvas.State.ZOffset = this.depthOffset;
+			canvas.State.DepthOffset = this.depthOffset;
 		}
 		private void DrawShape(Canvas canvas, Transform transform, CircleShapeInfo shape, ColorRgba fillColor, ColorRgba outlineColor)
 		{
@@ -256,30 +254,30 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			float objScale = transform.Scale;
 
 			Vector2 circlePos = shape.Position * objScale;
-			MathF.TransformCoord(ref circlePos.X, ref circlePos.Y, objAngle);
+						MathF.TransformCoord(ref circlePos.X, ref circlePos.Y, objAngle);
 
 			if (fillColor.A > 0)
-			{
+						{
 				canvas.State.ColorTint = fillColor;
-				canvas.FillCircle(
-					objPos.X + circlePos.X,
-					objPos.Y + circlePos.Y,
+							canvas.FillCircle(
+								objPos.X + circlePos.X,
+								objPos.Y + circlePos.Y,
 					0.0f, 
 					shape.Radius * objScale);
-			}
+						}
 
 			float outlineWidth = this.GetScreenConstantScale(canvas, this.shapeOutlineWidth);
 			canvas.State.ColorTint = outlineColor;
-			canvas.State.ZOffset = this.depthOffset - 0.1f;
+			canvas.State.DepthOffset = this.depthOffset - 0.1f;
 			canvas.FillCircleSegment(
-				objPos.X + circlePos.X,
-				objPos.Y + circlePos.Y,
+							objPos.X + circlePos.X,
+							objPos.Y + circlePos.Y,
 				0.0f, 
 				shape.Radius * objScale,
 				0.0f,
 				MathF.RadAngle360,
 				outlineWidth);
-			canvas.State.ZOffset = this.depthOffset;
+			canvas.State.DepthOffset = this.depthOffset;
 		}
 
 		private void FillPolygon(Canvas canvas, Transform transform, Vector2[] polygon, ColorRgba fillColor)
@@ -296,9 +294,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			canvas.State.TransformAngle = 0.0f;
 			canvas.State.TransformScale = Vector2.One;
-		}
+					}
 		private void DrawPolygonOutline(Canvas canvas, Transform transform, Vector2[] polygon, ColorRgba outlineColor, bool closedLoop)
-		{
+					{
 			Vector3 objPos = transform.Pos;
 			float objAngle = transform.Angle;
 			float objScale = transform.Scale;
@@ -318,7 +316,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			canvas.State.TransformScale = Vector2.One;
 		}
 		private void DrawPolygonInternals(Canvas canvas, Transform transform, Vector2[] hullVertices, IReadOnlyList<Vector2[]> convexPolygons, ColorRgba outlineColor)
-		{
+						{
 			if (convexPolygons.Count <= 1) return;
 
 			Vector3 objPos = transform.Pos;
@@ -343,7 +341,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					((uint)currentHullIndex << 16) | (uint)nextHullIndex :
 					((uint)nextHullIndex << 16) | (uint)currentHullIndex;
 				drawnEdges.Add(edgeId);
-			}
+						}
 
 			canvas.State.ColorTint = outlineColor;
 
@@ -361,13 +359,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 					// Filter out edges that have already been drawn
 					if (currentHullIndex >= 0 && nextHullIndex >= 0)
-					{
+						{
 						uint edgeId = (currentHullIndex > nextHullIndex) ?
 							((uint)currentHullIndex << 16) | (uint)nextHullIndex :
 							((uint)nextHullIndex << 16) | (uint)currentHullIndex;
 						if (!drawnEdges.Add(edgeId))
 							continue;
-					}
+						}
 
 					Vector2 lineStart = new Vector2(
 						polygon[i].X, 
@@ -387,14 +385,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 						0.0f, 
 						DashPattern.Dash, 
 						1.0f / dashPatternLength);
+					}
+					}
 				}
-			}
-		}
 
 		private float GetScreenConstantScale(Canvas canvas, float baseScale)
-		{
+				{
 			return baseScale / MathF.Max(0.0001f, canvas.DrawDevice.GetScaleAtZ(0.0f));
-		}
+				}
 
 		private IEnumerable<RigidBody> QueryVisibleColliders()
 		{
@@ -402,7 +400,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			return allColliders.Where(r => 
 				r.Active && 
 				!DesignTimeObjectData.Get(r.GameObj).IsHidden && 
-				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
+				this.IsSphereInView(r.GameObj.Transform.Pos, r.BoundRadius));
 		}
 		private RigidBody QuerySelectedCollider()
 		{
@@ -418,7 +416,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				if (Math.Abs(vertices[i].X - checkVertex.X) < 0.001f &&
 					Math.Abs(vertices[i].Y - checkVertex.Y) < 0.001f)
 					return i;
-			}
+	}
 
 			return -1;
 		}

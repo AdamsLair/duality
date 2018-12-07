@@ -143,7 +143,7 @@ namespace Duality.Serialization
 			catch (Exception e)
 			{
 				// Log the error
-				this.LocalLog.WriteError("Error writing object: {0}", Log.Exception(e));
+				this.LocalLog.WriteError("Error writing object: {0}", LogFormat.Exception(e));
 			}
 			finally
 			{
@@ -453,7 +453,7 @@ namespace Duality.Serialization
 			}
 			catch (Exception e)
 			{
-				this.LocalLog.WriteError("Error reading object: {0}", Log.Exception(e));
+				this.LocalLog.WriteError("Error reading object: {0}", LogFormat.Exception(e));
 			}
 
 			return result;
@@ -539,7 +539,7 @@ namespace Duality.Serialization
 				else if (elementType == typeof(decimal))	{ decimal[]	array; this.ReadArrayData(element, out array); arrObj = array; }
 				else
 				{
-					this.LocalLog.WriteWarning("Can't read primitive value array. Unknown element type '{0}'. Discarding data.", Log.Type(elementType));
+					this.LocalLog.WriteWarning("Can't read primitive value array. Unknown element type '{0}'. Discarding data.", LogFormat.Type(elementType));
 					arrObj = elementType != null ? Array.CreateInstance(elementType, 0) : null;
 				}
 
@@ -586,8 +586,8 @@ namespace Duality.Serialization
 				if (objSurrogate == null)
 				{
 					this.LocalLog.WriteError(
-						"Object type '{0}' was serialized using a surrogate, but no such surrogate was found for deserialization.", 
-						Log.Type(header.SerializeType.Type));
+						"Object type '{0}' was serialized using a surrogate, but no such surrogate was found for deserialization.",
+						LogFormat.Type(header.SerializeType.Type));
 				}
 			}
 
@@ -652,7 +652,7 @@ namespace Duality.Serialization
 					this.LocalLog.WriteWarning(
 						"Object data (Id {0}) is flagged for custom deserialization, yet the objects Type ('{1}') does not support it. Guessing associated fields...",
 						header.ObjectId,
-						Log.Type(header.ObjectType));
+						LogFormat.Type(header.ObjectType));
 					this.LocalLog.PushIndent();
 					foreach (var pair in customIO.Data)
 					{
@@ -707,8 +707,8 @@ namespace Duality.Serialization
 				this.LocalLog.WriteError(
 					"An error occurred in deserializing MemberInfo object Id {0} of type '{1}': {2}",
 					header.ObjectId,
-					Log.Type(header.ObjectType),
-					Log.Exception(e));
+					LogFormat.Type(header.ObjectType),
+					LogFormat.Exception(e));
 			}
 
 			// Prepare object reference
@@ -811,7 +811,7 @@ namespace Duality.Serialization
 			}
 			catch (Exception e)
 			{
-				this.LocalLog.WriteError("Error reading primitive value array of element type {0}: {1}", Log.Type(typeof(T)), Log.Exception(e));
+				this.LocalLog.WriteError("Error reading primitive value array of element type {0}: {1}", LogFormat.Type(typeof(T)), LogFormat.Exception(e));
 			}
 		}
 		

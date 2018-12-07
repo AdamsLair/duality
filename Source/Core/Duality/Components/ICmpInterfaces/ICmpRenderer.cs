@@ -12,16 +12,11 @@ namespace Duality
 	public interface ICmpRenderer
 	{
 		/// <summary>
-		/// [GET] The Renderers bounding radius.
+		/// Retrieves information that can be used to decide whether this renderer could 
+		/// be visible to any given observer or not.
 		/// </summary>
-		float BoundRadius { get; }
-
-		/// <summary>
-		/// Determines whether or not this renderer is visible to the specified <see cref="IDrawDevice"/>.
-		/// </summary>
-		/// <param name="device">The <see cref="IDrawDevice"/> to which visibility is determined.</param>
-		/// <returns>True, if this renderer is visible to the <see cref="IDrawDevice"/>. False, if not.</returns>
-		bool IsVisible(IDrawDevice device);
+		/// <param name="info"></param>
+		void GetCullingInfo(out CullingInfo info);
 		/// <summary>
 		/// Draws the object.
 		/// </summary>

@@ -11,13 +11,11 @@ using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {
+	/// <summary>
+	/// Create a GameObject by instantiating the Prefab.
+	/// </summary>
 	public class InstantiatePrefab : EditorSingleAction<Prefab>
 	{
-		public override string Description
-		{
-			get { return EditorBaseRes.ActionDesc_InstantiatePrefab; }
-		}
-
 		public override void Perform(Prefab prefab)
 		{
 			try
@@ -28,8 +26,8 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 			}
 			catch (Exception exception)
 			{
-				Log.Editor.WriteError("An error occurred instanciating Prefab {1}: {0}", 
-					Log.Exception(exception),
+				Logs.Editor.WriteError("An error occurred instanciating Prefab {1}: {0}", 
+					LogFormat.Exception(exception),
 					prefab != null ? prefab.Path : "null");
 			}
 		}

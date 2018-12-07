@@ -7,15 +7,14 @@ using Duality.Resources;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {
+	/// <summary>
+	/// Opens a window for slicing a pixmap into atlas regions.
+	/// </summary>
 	public class SlicePixmap : EditorAction<Pixmap>
 	{
 		public override string Name
 		{
 			get { return EditorBaseRes.ActionName_SlicePixmap; }
-		}
-		public override string Description
-		{
-			get { return EditorBaseRes.ActionDesc_SlicePixmap; }
 		}
 		public override Image Icon
 		{

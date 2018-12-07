@@ -676,32 +676,24 @@
       </item>
     </_items>
     <_size dataType="Int">3</_size>
-    <_version dataType="Int">3</_version>
   </autoTileConfig>
   <baseMaterial dataType="Struct" type="Duality.Drawing.BatchInfo" id="2035693768">
-    <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
-    <hashCode dataType="Int">2037530614</hashCode>
     <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
       <A dataType="Byte">255</A>
       <B dataType="Byte">255</B>
       <G dataType="Byte">255</G>
       <R dataType="Byte">255</R>
     </mainColor>
-    <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-      <contentPath dataType="String">Default:DrawTechnique:Mask</contentPath>
-    </technique>
-    <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="2696347487" surrogate="true">
-      <header />
+    <parameters dataType="Struct" type="Duality.Drawing.ShaderParameterCollection" id="2696347487" custom="true">
       <body>
         <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
           <contentPath dataType="String">Default:Texture:White</contentPath>
         </mainTex>
       </body>
-    </textures>
-    <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="847900448" surrogate="true">
-      <header />
-      <body />
-    </uniforms>
+    </parameters>
+    <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
+      <contentPath dataType="String">Default:DrawTechnique:Mask</contentPath>
+    </technique>
   </baseMaterial>
   <renderConfig dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Plugins.Tilemaps.TilesetRenderInput]]" id="876525375">
     <_items dataType="Array" type="Duality.Plugins.Tilemaps.TilesetRenderInput[]" id="295733828" length="4">
@@ -719,11 +711,10 @@
         <targetFormat dataType="Enum" type="Duality.Drawing.TexturePixelFormat" name="Rgba" value="3" />
         <targetMagFilter dataType="Enum" type="Duality.Drawing.TextureMagFilter" name="Linear" value="1" />
         <targetMinFilter dataType="Enum" type="Duality.Drawing.TextureMinFilter" name="LinearMipmapLinear" value="5" />
-        <targetTileSpacing dataType="Int">1</targetTileSpacing>
+        <targetTileMargin dataType="Int">1</targetTileMargin>
       </item>
     </_items>
     <_size dataType="Int">1</_size>
-    <_version dataType="Int">1</_version>
   </renderConfig>
   <tileInput dataType="Struct" type="Duality.RawList`1[[Duality.Plugins.Tilemaps.TileInput]]" id="2716248726">
     <count dataType="Int">352</count>

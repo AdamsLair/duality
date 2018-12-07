@@ -22,17 +22,7 @@ namespace Duality.Cloning.Surrogates
 			// Because delegates are immutable, we'll need to defer their creation until we know exactly how the cloned object graph looks like.
 			target = null;
 		}
-		public override void SetupCloneTargets(Delegate source, Delegate target, ICloneTargetSetup setup)
-		{
-			if (source == null) return;
-
-			// Flag all invocation targets as weak references.
-			Delegate[] invokeList = source.GetInvocationList();
-			for (int i = 0; i < invokeList.Length; i++)
-			{
-				setup.HandleObject(invokeList[i].Target, null, CloneBehavior.WeakReference);
-			}
-		}
+		public override void SetupCloneTargets(Delegate source, Delegate target, ICloneTargetSetup setup) { }
 		public override void CreateTargetObjectLate(Delegate source, ref Delegate target, ICloneOperation operation)
 		{
 			Delegate[] sourceInvokeList = (source != null) ? source.GetInvocationList() : null;
@@ -48,8 +38,8 @@ namespace Duality.Cloning.Surrogates
 				{
 					if (sourceInvokeList[i].Target == null) continue;
 
-					object invokeTargetObject = null;
-					if (operation.GetTarget(sourceInvokeList[i].Target, ref invokeTargetObject))
+					object invokeTargetObject = operation.GetWeakTarget(sourceInvokeList[i].Target);
+					if (invokeTargetObject != null)
 					{
 						MethodInfo method = sourceInvokeList[i].GetMethodInfo();
 						Delegate targetSubDelegate = method.CreateDelegate(sourceInvokeList[i].GetType(), invokeTargetObject);

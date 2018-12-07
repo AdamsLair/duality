@@ -7,178 +7,97 @@ using Duality.Cloning;
 namespace Duality.Components
 {
 	/// <summary>
-	/// Represents a <see cref="GameObject">GameObjects</see> physical location in the world, relative to its <see cref="GameObject.Parent"/>.
+	/// Represents the location, rotation and scale of a <see cref="GameObject"/>, relative to its <see cref="GameObject.Parent"/>.
 	/// </summary>
 	[ManuallyCloned]
 	[EditorHintCategory(CoreResNames.CategoryNone)]
 	[EditorHintImage(CoreResNames.ImageTransform)]
-	public sealed class Transform : Component, ICmpUpdatable, ICmpEditorUpdatable, ICmpInitializable
+	public sealed class Transform : Component, ICmpAttachmentListener, ICmpSerializeListener
 	{
-		/// <summary>
-		/// Flags that are used to specify, whether certain Properties have been changed.
-		/// </summary>
-		[Flags]
-		public enum DirtyFlags
-		{
-			None  = 0x00,
-
-			Pos   = 0x01,
-			Angle = 0x04,
-			Scale = 0x10,
-
-			All   = Pos | Angle | Scale
-		}
-
 		private const float MinScale = 0.0000001f;
 
 		private Vector3   pos             = Vector3.Zero;
 		private float     angle           = 0.0f;
 		private float     scale           = 1.0f;
-		private bool      deriveAngle     = true;
 		private bool      ignoreParent    = false;
 
 		// Cached values, recalc on change
-		private Transform parentTransform = null;
 		private Vector3   posAbs          = Vector3.Zero;
 		private float     angleAbs        = 0.0f;
 		private float     scaleAbs        = 1.0f;
-		// Auto-calculated values
-		private Vector3   vel             = Vector3.Zero;
-		private Vector3   velAbs          = Vector3.Zero;
-		private float     angleVel        = 0.0f;
-		private float     angleVelAbs     = 0.0f;
-		// Cached values, non-serialized values
-		[DontSerialize] private Vector2    rotationDirAbs  = new Vector2(0.0f, -1.0f);
-		// Temporary per-frame values
-		[DontSerialize] private DirtyFlags changes         = DirtyFlags.None;
-		[DontSerialize] private Vector3    tempVel         = Vector3.Zero;
-		[DontSerialize] private Vector3    tempVelAbs      = Vector3.Zero;
-		[DontSerialize] private float      tempAngleVel    = 0.0f;
-		[DontSerialize] private float      tempAngleVelAbs = 0.0f;
 
-		[DontSerialize] 
-		private EventHandler<TransformChangedEventArgs> eventTransformChanged = null;
-		public event EventHandler<TransformChangedEventArgs> EventTransformChanged
-		{
-			add { this.eventTransformChanged += value; }
-			remove { this.eventTransformChanged -= value; }
-		}
+		[DontSerialize] private Vector2 rotationDirAbs = new Vector2(0.0f, -1.0f);
 
 
 		/// <summary>
-		/// [GET / SET] The objects position relative to its parent object.
+		/// [GET / SET] The objects position in local space of its parent object.
 		/// </summary>
-		public Vector3 RelativePos
+		public Vector3 LocalPos
 		{
 			get { return this.pos; }
 			set
 			{ 
 				// Update position
-				this.pos = value; 
-				this.changes |= DirtyFlags.Pos; 
+				this.pos = value;
 				this.UpdateAbs();
+				this.ResetVelocity();
 			}
 		}
 		/// <summary>
-		/// [GET / SET] The objects velocity relative to its parent object.
+		/// [GET / SET] The objects angle / rotation in local space of its parent object, in radians.
 		/// </summary>
-		public Vector3 RelativeVel
-		{
-			get { return this.vel; }
-		}
-		/// <summary>
-		/// [GET / SET] The objects angle / rotation relative to its parent object, in radians.
-		/// </summary>
-		public float RelativeAngle
+		public float LocalAngle
 		{
 			get { return this.angle; }
 			set 
 			{ 
 				// Update angle
 				this.angle = MathF.NormalizeAngle(value);
-				this.changes |= DirtyFlags.Angle; 
 				this.UpdateAbs();
+				this.ResetAngleVelocity();
 			}
 		}
 		/// <summary>
-		/// [GET / SET] The objects angle / rotation velocity relative to its parent object, in radians.
+		/// [GET / SET] The objects scale in local space of its parent object.
 		/// </summary>
-		public float RelativeAngleVel
-		{
-			get { return this.angleVel; }
-		}
-		/// <summary>
-		/// [GET / SET] The objects scale relative to its parent object.
-		/// </summary>
-		public float RelativeScale
+		public float LocalScale
 		{
 			get { return this.scale; }
 			set
 			{
 				this.scale = MathF.Max(value, MinScale);
-				this.changes |= DirtyFlags.Scale; 
 				this.UpdateAbs();
 			}
 		}
 		/// <summary>
-		/// [GET / SET] Specifies whether the Transform component should ignore its parent transform.
+		/// [GET] The objects directional forward vector in local space of its parent object.
 		/// </summary>
-		public bool IgnoreParent
-		{
-			get { return this.ignoreParent; }
-			set
-			{
-				if (this.ignoreParent != value)
-				{
-					this.ignoreParent = value;
-					this.UpdateAbs();
-				}
-			}
-		}
-		/// <summary>
-		/// [GET / SET] If false, this objects rotation values aren't relative to its parent.
-		/// However, its position, velocity, etc. still depend on parent rotation.
-		/// </summary>
-		public bool DeriveAngle
-		{
-			get { return this.deriveAngle; }
-			set
-			{
-				this.deriveAngle = value;
-				this.changes |= DirtyFlags.Angle;
-				this.UpdateRel();
-			}
-		}
-
-		/// <summary>
-		/// [GET] The objects forward vector, relative to its parent object.
-		/// </summary>
-		public Vector3 RelativeForward
+		public Vector3 LocalForward
 		{
 			get 
 			{ 
 				return new Vector3(
-					MathF.Sin(this.RelativeAngle),
-					-MathF.Cos(this.RelativeAngle),
+					MathF.Sin(this.LocalAngle),
+					-MathF.Cos(this.LocalAngle),
 					0.0f);
 			}
 		}
 		/// <summary>
-		/// [GET] The objects right (directional) vector, relative to its parent object.
+		/// [GET] The objects directional right vector in local space of its parent object.
 		/// </summary>
-		public Vector3 RelativeRight
+		public Vector3 LocalRight
 		{
 			get 
 			{
 				return new Vector3(
-					-MathF.Cos(this.RelativeAngle),
-					-MathF.Sin(this.RelativeAngle),
+					-MathF.Cos(this.LocalAngle),
+					-MathF.Sin(this.LocalAngle),
 					0.0f);
 			}
 		}
 		
 		/// <summary>
-		/// [GET / SET] The objects position.
+		/// [GET / SET] The objects position in world space.
 		/// </summary>
 		public Vector3 Pos
 		{
@@ -188,31 +107,25 @@ namespace Duality.Components
 				// Update position
 				this.posAbs = value;
 
-				if (this.parentTransform != null)
+				Transform parent = this.ParentTransform;
+				if (parent != null)
 				{
 					this.pos = this.posAbs;
-					Vector3.Subtract(ref this.pos, ref this.parentTransform.posAbs, out this.pos);
-					Vector3.Divide(ref this.pos, this.parentTransform.scaleAbs, out this.pos);
-					MathF.TransformCoord(ref this.pos.X, ref this.pos.Y, -this.parentTransform.angleAbs);
+					Vector3.Subtract(ref this.pos, ref parent.posAbs, out this.pos);
+					Vector3.Divide(ref this.pos, parent.scaleAbs, out this.pos);
+					MathF.TransformCoord(ref this.pos.X, ref this.pos.Y, -parent.angleAbs);
 				}
 				else
 				{
 					this.pos = this.posAbs;
 				}
 
-				this.changes |= DirtyFlags.Pos;
 				this.UpdateAbsChild();
+				this.ResetVelocity();
 			}
 		}
 		/// <summary>
-		/// [GET] The objects velocity.
-		/// </summary>
-		public Vector3 Vel
-		{
-			get { return this.velAbs; }
-		}
-		/// <summary>
-		/// [GET / SET] The objects angle / rotation, in radians.
+		/// [GET / SET] The objects angle / rotation in world space, in radians.
 		/// </summary>
 		public float Angle
 		{
@@ -222,25 +135,19 @@ namespace Duality.Components
 				// Update angle
 				this.angleAbs = MathF.NormalizeAngle(value);
 
-				if (this.parentTransform != null && this.deriveAngle)
-					this.angle = MathF.NormalizeAngle(this.angleAbs - this.parentTransform.angleAbs);
+				Transform parent = this.ParentTransform;
+				if (parent != null)
+					this.angle = MathF.NormalizeAngle(this.angleAbs - parent.angleAbs);
 				else
 					this.angle = this.angleAbs;
 
-				this.changes |= DirtyFlags.Angle;
 				this.UpdateRotationDirAbs();
 				this.UpdateAbsChild();
+				this.ResetAngleVelocity();
 			}
 		}
 		/// <summary>
-		/// [GET] The objects angle / rotation velocity, in radians.
-		/// </summary>
-		public float AngleVel
-		{
-			get { return this.angleVelAbs; }
-		}
-		/// <summary>
-		/// [GET / SET] The objects scale.
+		/// [GET / SET] The objects scale in world space.
 		/// </summary>
 		public float Scale
 		{
@@ -249,22 +156,17 @@ namespace Duality.Components
 			{ 
 				this.scaleAbs = MathF.Max(value, MinScale);
 
-				if (this.parentTransform != null)
-				{
-					this.scale = this.scaleAbs / this.parentTransform.scaleAbs;
-				}
+				Transform parent = this.ParentTransform;
+				if (parent != null)
+					this.scale = this.scaleAbs / parent.scaleAbs;
 				else
-				{
 					this.scale = value;
-				}
 
-				this.changes |= DirtyFlags.Scale;
 				this.UpdateAbsChild();
 			}
 		}
-		
 		/// <summary>
-		/// [GET] The objects forward vector.
+		/// [GET] The objects directional forward (zero degree angle) vector in world space.
 		/// </summary>
 		public Vector3 Forward
 		{
@@ -277,7 +179,7 @@ namespace Duality.Components
 			}
 		}
 		/// <summary>
-		/// [GET] The objects right (directional) vector.
+		/// [GET] The objects directional right (90 degree angle) vector in world space.
 		/// </summary>
 		public Vector3 Right
 		{
@@ -290,9 +192,40 @@ namespace Duality.Components
 			}
 		}
 
-		
 		/// <summary>
-		/// Calculates a world coordinate from a Transform-local coordinate.
+		/// [GET / SET] Specifies whether the <see cref="Transform"/> component should behave as if 
+		/// it was part of a root object. When true, it behaves the same as if it didn't have a 
+		/// parent <see cref="Transform"/>.
+		/// </summary>
+		public bool IgnoreParent
+		{
+			get { return this.ignoreParent; }
+			set
+			{
+				if (this.ignoreParent != value)
+				{
+					this.ignoreParent = value;
+					this.UpdateRel();
+				}
+			}
+		}
+		private Transform ParentTransform
+		{
+			get
+			{
+				if (this.ignoreParent) return null;
+				if (this.gameobj == null) return null;
+
+				GameObject parent = this.gameobj.Parent;
+				if (parent == null) return null;
+
+				return parent.Transform;
+			}
+		}
+
+
+		/// <summary>
+		/// Transforms a position from local space of this object to world space.
 		/// </summary>
 		/// <param name="local"></param>
 		/// <returns></returns>
@@ -304,7 +237,7 @@ namespace Duality.Components
 				local.Z * this.scaleAbs + this.posAbs.Z);
 		}
 		/// <summary>
-		/// Calculates a world coordinate from a Transform-local coordinate.
+		/// Transforms a position from local space of this object to world space.
 		/// </summary>
 		/// <param name="local"></param>
 		/// <returns></returns>
@@ -315,7 +248,7 @@ namespace Duality.Components
 				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y + this.posAbs.Y);
 		}
 		/// <summary>
-		/// Calculates a Transform-local coordinate from a world coordinate.
+		/// Transforms a position from world space to local space of this object.
 		/// </summary>
 		/// <param name="world"></param>
 		/// <returns></returns>
@@ -328,7 +261,7 @@ namespace Duality.Components
 				(world.Z - this.posAbs.Z) * inverseScale);
 		}
 		/// <summary>
-		/// Calculates a Transform-local coordinate from a world coordinate.
+		/// Transforms a position from world space to local space of this object.
 		/// </summary>
 		/// <param name="world"></param>
 		/// <returns></returns>
@@ -341,7 +274,7 @@ namespace Duality.Components
 		}
 
 		/// <summary>
-		/// Calculates a world vector from a Transform-local vector.
+		/// Transforms a vector from local space of this object to world space.
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="local"></param>
@@ -354,7 +287,7 @@ namespace Duality.Components
 				local.Z * this.scaleAbs);
 		}
 		/// <summary>
-		/// Calculates a world vector from a Transform-local vector.
+		/// Transforms a vector from local space of this object to world space.
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="local"></param>
@@ -366,7 +299,7 @@ namespace Duality.Components
 				local.X * this.scaleAbs * this.rotationDirAbs.X + local.Y * this.scaleAbs * -this.rotationDirAbs.Y);
 		}
 		/// <summary>
-		/// Calculates a Transform-local vector from a world vector.
+		/// Transforms a vector from world space to local space of this object.
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="world"></param>
@@ -380,7 +313,7 @@ namespace Duality.Components
 				world.Z * inverseScale);
 		}
 		/// <summary>
-		/// Calculates a Transform-local vector from a world vector.
+		/// Transforms a vector from world space to local space of this object.
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="world"></param>
@@ -394,62 +327,47 @@ namespace Duality.Components
 		}
 
 		/// <summary>
-		/// Calculates the Transforms world velocity at a given world coordinate;
+		/// Moves the object by the given local offset. This will be treates as movement, rather than teleportation.
 		/// </summary>
-		/// <param name="world"></param>
-		/// <returns></returns>
-		public Vector3 GetWorldVelocityAt(Vector3 world)
+		/// <param name="value"></param>
+		public void MoveByLocal(Vector3 value)
 		{
-			return GetWorldVector(GetLocalVelocityAt(GetLocalPoint(world)));
+			this.pos += value; 
+			this.UpdateAbs();
 		}
 		/// <summary>
-		/// Calculates the Transforms world velocity at a given world coordinate;
+		/// Moves the object by the given local offset. This will be treates as movement, rather than teleportation.
 		/// </summary>
-		/// <param name="world"></param>
-		/// <returns></returns>
-		public Vector2 GetWorldVelocityAt(Vector2 world)
+		/// <param name="value"></param>
+		public void MoveByLocal(Vector2 value)
 		{
-			return this.GetWorldVelocityAt(new Vector3(world)).Xy;
+			this.MoveByLocal(new Vector3(value));
 		}
 		/// <summary>
-		/// Calculates the Transforms local velocity at a given local coordinate;
-		/// </summary>
-		/// <param name="local"></param>
-		/// <returns></returns>
-		public Vector3 GetLocalVelocityAt(Vector3 local)
-		{
-			Vector3 vel = this.velAbs;
-			Vector2 angleVel = local.Xy.PerpendicularRight * this.angleVelAbs;
-			return vel + new Vector3(angleVel);
-		}
-		/// <summary>
-		/// Calculates the Transforms local velocity at a given local coordinate;
-		/// </summary>
-		/// <param name="local"></param>
-		/// <returns></returns>
-		public Vector2 GetLocalVelocityAt(Vector2 world)
-		{
-			return this.GetLocalVelocityAt(new Vector3(world)).Xy;
-		}
-
-		/// <summary>
-		/// Moves the object by the given vector. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object by given world offset. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveBy(Vector3 value)
 		{
-			// Accumulate velocity
-			if (MathF.Abs(Time.TimeMult) > float.Epsilon)
+			this.posAbs += value;
+
+			Transform parent = this.ParentTransform;
+			if (parent != null)
 			{
-				this.tempVel += value / Time.TimeMult;
+				this.pos = this.posAbs;
+				Vector3.Subtract(ref this.pos, ref parent.posAbs, out this.pos);
+				Vector3.Divide(ref this.pos, parent.scaleAbs, out this.pos);
+				MathF.TransformCoord(ref this.pos.X, ref this.pos.Y, -parent.angleAbs);
+			}
+			else
+			{
+				this.pos = this.posAbs;
 			}
 
-			this.pos += value; 
-			this.changes |= DirtyFlags.Pos; 
-			this.UpdateAbs(true);
+			this.UpdateAbsChild();
 		}
 		/// <summary>
-		/// Moves the object by the given vector. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object by given world offset. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveBy(Vector2 value)
@@ -457,288 +375,176 @@ namespace Duality.Components
 			this.MoveBy(new Vector3(value));
 		}
 		/// <summary>
-		/// Moves the object by given absolute vector. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object to the given position in local space of its parent object. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
-		public void MoveByAbs(Vector3 value)
+		public void MoveToLocal(Vector3 value)
 		{
-			// Accumulate velocity
-			if (MathF.Abs(Time.TimeMult) > float.Epsilon)
-			{
-				this.tempVelAbs += value / Time.TimeMult;
-			}
-
-			this.posAbs += value;
-
-			if (this.parentTransform != null)
-			{
-				this.pos = this.posAbs;
-				Vector3.Subtract(ref this.pos, ref this.parentTransform.posAbs, out this.pos);
-				Vector3.Divide(ref this.pos, this.parentTransform.scaleAbs, out this.pos);
-				MathF.TransformCoord(ref this.pos.X, ref this.pos.Y, -this.parentTransform.angleAbs);
-
-				this.tempVel = this.tempVelAbs;
-				Vector3.Subtract(ref this.tempVel, ref this.parentTransform.tempVelAbs, out this.tempVel);
-				Vector3.Divide(ref this.tempVel, this.parentTransform.scaleAbs, out this.tempVel);
-				MathF.TransformCoord(ref this.tempVel.X, ref this.tempVel.Y, -this.parentTransform.angleAbs);
-			}
-			else
-			{
-				this.pos = this.posAbs;
-				this.tempVel = this.tempVelAbs;
-			}
-
-			this.changes |= DirtyFlags.Pos;
-			this.UpdateAbsChild(true);
+			this.MoveByLocal(value - this.pos);
 		}
 		/// <summary>
-		/// Moves the object by given absolute vector. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object to the given position in local space of its parent object, leaving the Z coordinate unchanged.
+		/// This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
-		public void MoveByAbs(Vector2 value)
+		public void MoveToLocal(Vector2 value)
 		{
-			this.MoveByAbs(new Vector3(value));
+			this.MoveToLocal(new Vector3(value, this.pos.Z));
 		}
 		/// <summary>
-		/// Moves the object to the given relative position. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object to the given world position. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveTo(Vector3 value)
 		{
-			this.MoveBy(value - this.pos);
+			this.MoveBy(value - this.posAbs);
 		}
 		/// <summary>
-		/// Moves the object to the given relative position. This will affect the Transforms <see cref="Vel">velocity</see> value.
+		/// Moves the object to the given world position, leaving the Z coordinate unchanged.
+		/// This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveTo(Vector2 value)
 		{
-			this.MoveTo(new Vector3(value));
+			this.MoveTo(new Vector3(value, this.posAbs.Z));
 		}
 		/// <summary>
-		/// Moves the object to the given absolute position. This will affect the Transforms <see cref="Vel">velocity</see> value.
-		/// </summary>
-		/// <param name="value"></param>
-		public void MoveToAbs(Vector3 value)
-		{
-			this.MoveByAbs(value - this.posAbs);
-		}
-		/// <summary>
-		/// Moves the object to the given absolute position. This will affect the Transforms <see cref="Vel">velocity</see> value.
-		/// </summary>
-		/// <param name="value"></param>
-		public void MoveToAbs(Vector2 value)
-		{
-			this.MoveToAbs(new Vector3(value));
-		}
-		/// <summary>
-		/// Turns the object by the given radian angle. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
+		/// Turns the object by the given radian angle. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void TurnBy(float value)
 		{
-			// Accumulate velocity
-			if (MathF.Abs(Time.TimeMult) > float.Epsilon)
-			{
-				this.tempAngleVel += value / Time.TimeMult;
-				this.tempAngleVelAbs += value / Time.TimeMult;
-			}
-
 			this.angle = MathF.NormalizeAngle(this.angle + value);
-			this.changes |= DirtyFlags.Angle; 
-			this.UpdateAbs(true);
+			this.UpdateAbs();
 		}
 		/// <summary>
-		/// Turns the object to the given relative radian angle. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
+		/// Turns the object to the given radian angle in local space of its parent object. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
-		public void TurnTo(float value)
+		public void TurnToLocal(float value)
 		{
 			this.TurnBy(MathF.TurnDir(this.angle, value) * MathF.CircularDist(value, this.angle));
 		}
 		/// <summary>
-		/// Turns the object to the given absolute radian angle. This will affect the Transforms <see cref="AngleVel">angular velocity</see> value.
+		/// Turns the object to the given world space radian angle. This will be treates as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
-		public void TurnToAbs(float value)
+		public void TurnTo(float value)
 		{
 			this.TurnBy(MathF.TurnDir(this.angleAbs, value) * MathF.CircularDist(value, this.angleAbs));
 		}
 
 		/// <summary>
-		/// Updates the Transforms data all at once.
+		/// Updates the Transforms world space data all at once. This change is
+		/// not regarded as a continuous movement, but as a hard teleport.
 		/// </summary>
 		/// <param name="pos"></param>
 		/// <param name="vel"></param>
-		/// <param name="scale"></param>
 		/// <param name="angle"></param>
+		/// <param name="scale"></param>
 		/// <param name="angleVel"></param>
-		public void SetTransform(Vector3 pos, float scale, float angle)
+		public void SetTransform(Vector3 pos, float angle, float scale)
 		{
 			this.posAbs = pos;
 			this.angleAbs = angle;
 			this.scaleAbs = scale;
 
-			this.changes |= DirtyFlags.All;
 			this.UpdateRel();
 			this.UpdateAbsChild();
+
+			this.ResetVelocity();
+			this.ResetAngleVelocity();
 		}
 		/// <summary>
-		/// Updates the Transforms data all at once.
+		/// Updates the Transforms world space data all at once. This change is
+		/// not regarded as a continuous movement, but as a hard teleport.
 		/// </summary>
 		/// <param name="other"></param>
 		public void SetTransform(Transform other)
 		{
 			if (other == this) return;
-			this.SetTransform(other.Pos, other.Scale, other.Angle);
+			this.SetTransform(other.Pos, other.Angle, other.Scale);
 		}
 		/// <summary>
-		/// Updates the Transforms data all at once.
+		/// Updates the Transforms local space data all at once. This change is
+		/// not regarded as a continuous movement, but as a hard teleport.
 		/// </summary>
 		/// <param name="pos"></param>
 		/// <param name="vel"></param>
-		/// <param name="scale"></param>
 		/// <param name="angle"></param>
+		/// <param name="scale"></param>
 		/// <param name="angleVel"></param>
-		public void SetRelativeTransform(Vector3 pos, float scale, float angle)
+		public void SetLocalTransform(Vector3 pos, float angle, float scale)
 		{
 			this.pos = pos;
 			this.angle = angle;
 			this.scale = scale;
 
-			this.changes |= DirtyFlags.All;
 			this.UpdateAbs();
+
+			this.ResetVelocity();
+			this.ResetAngleVelocity();
 		}
 		/// <summary>
-		/// Updates the Transforms data all at once.
+		/// Updates the Transforms local space data all at once. This change is
+		/// not regarded as a continuous movement, but as a hard teleport.
 		/// </summary>
 		/// <param name="other"></param>
-		public void SetRelativeTransform(Transform other)
+		public void SetLocalTransform(Transform other)
 		{
 			if (other == this) return;
-			this.SetRelativeTransform(other.RelativePos, other.RelativeScale, other.RelativeAngle);
+			this.SetLocalTransform(other.LocalPos, other.LocalAngle, other.LocalScale);
 		}
 		
-		/// <summary>
-		/// Checks whether transform values have been changed, clears the changelist and fires the appropriate events
-		/// </summary>
-		/// <param name="sender"></param>
-		public void CommitChanges(Component sender = null)
+		private void SubscribeParentEvents()
 		{
-			if (this.changes == DirtyFlags.None) return;
-			if (this.eventTransformChanged != null)
+			if (this.gameobj == null) return;
+
+			this.gameobj.EventParentChanged += this.gameobj_EventParentChanged;
+			if (this.gameobj.Parent != null)
 			{
-				this.eventTransformChanged(
-					sender ?? this, 
-					new TransformChangedEventArgs(this, this.changes));
-			}
-			this.changes = DirtyFlags.None;
-		}
-
-		void ICmpUpdatable.OnUpdate()
-		{
-			this.CheckValidTransform();
-
-			// Calculate velocity values from last frames movement
-			if (MathF.Abs(Time.TimeMult) > float.Epsilon)
-			{
-				this.vel = this.tempVel;
-				this.velAbs = this.tempVelAbs;
-				this.angleVel = this.tempAngleVel;
-				this.angleVelAbs = this.tempAngleVelAbs;
-				this.tempVel = Vector3.Zero;
-				this.tempVelAbs = Vector3.Zero;
-				this.tempAngleVel = 0.0f;
-				this.tempAngleVelAbs = 0.0f;
-				this.CheckValidTransform();
-			}
-
-			// Clear change flags
-			this.CommitChanges();
-
-			this.CheckValidTransform();
-		}
-		void ICmpEditorUpdatable.OnUpdate()
-		{
-			this.CheckValidTransform();
-
-			if (this.ignoreParent)
-				this.UpdateRel();
-			else
-				this.UpdateAbs();
-
-			// Clear change flags
-			this.CommitChanges();
-
-			this.CheckValidTransform();
-		}
-		void ICmpInitializable.OnInit(InitContext context)
-		{
-			if (context == InitContext.AddToGameObject ||
-				context == InitContext.Loaded)
-			{
-				this.parentTransform = null;
-				if (this.gameobj != null)
-				{
-					this.gameobj.EventParentChanged += this.gameobj_EventParentChanged;
-					if (this.gameobj.Parent != null)
-					{
-						this.parentTransform = this.gameobj.Parent.Transform;
-						if (this.parentTransform == null)
-							this.gameobj.Parent.EventComponentAdded += this.Parent_EventComponentAdded;
-						else
-							this.gameobj.Parent.EventComponentRemoving += this.Parent_EventComponentRemoving;
-					}
-				}
-				this.UpdateRel();
-			}
-
-			// Since we're not serializing rotation dir values, recalculate them on load
-			if (context == InitContext.Loaded)
-			{
-				this.UpdateRotationDirAbs();
+				Transform parentTransform = this.gameobj.Parent.Transform;
+				if (parentTransform == null)
+					this.gameobj.Parent.EventComponentAdded += this.Parent_EventComponentAdded;
+				else
+					this.gameobj.Parent.EventComponentRemoving += this.Parent_EventComponentRemoving;
 			}
 		}
-		void ICmpInitializable.OnShutdown(ShutdownContext context)
+		private void UnsubscribeParentEvents()
 		{
-			if (context == ShutdownContext.RemovingFromGameObject)
+			if (this.gameobj == null) return;
+
+			this.gameobj.EventParentChanged -= this.gameobj_EventParentChanged;
+			if (this.gameobj.Parent != null)
 			{
-				if (this.gameobj != null)
-				{
-					this.gameobj.EventParentChanged -= this.gameobj_EventParentChanged;
-					if (this.gameobj.Parent != null)
-					{
-						if (this.parentTransform == null)
-							this.gameobj.Parent.EventComponentAdded -= this.Parent_EventComponentAdded;
-						else
-							this.gameobj.Parent.EventComponentRemoving -= this.Parent_EventComponentRemoving;
-					}
-				}
-				this.parentTransform = null;
-				this.UpdateRel();
+				this.gameobj.Parent.EventComponentAdded -= this.Parent_EventComponentAdded;
+				this.gameobj.Parent.EventComponentRemoving -= this.Parent_EventComponentRemoving;
 			}
 		}
+
+		void ICmpAttachmentListener.OnAddToGameObject()
+		{
+			this.SubscribeParentEvents();
+			this.UpdateRel();
+		}
+		void ICmpAttachmentListener.OnRemoveFromGameObject()
+		{
+			this.UnsubscribeParentEvents();
+			this.UpdateRel();
+		}
+		void ICmpSerializeListener.OnLoaded()
+		{
+			this.SubscribeParentEvents();
+			this.UpdateRel();
+
+			// Recalculate values we didn't serialize
+			this.UpdateRotationDirAbs();
+		}
+		void ICmpSerializeListener.OnSaved() { }
+		void ICmpSerializeListener.OnSaving() { }
+
 		private void gameobj_EventParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{
-			if (e.OldParent != null)
-			{
-				if (this.parentTransform == null)
-					e.OldParent.EventComponentAdded -= this.Parent_EventComponentAdded;
-				else
-					e.OldParent.EventComponentRemoving -= this.Parent_EventComponentRemoving;
-			}
-
-			if (e.NewParent != null)
-			{
-				this.parentTransform = e.NewParent.Transform;
-				if (this.parentTransform == null)
-					e.NewParent.EventComponentAdded += this.Parent_EventComponentAdded;
-				else
-					e.NewParent.EventComponentRemoving += this.Parent_EventComponentRemoving;
-			}
-			else
-				this.parentTransform = null;
-
 			this.UpdateRel();
 		}
 		private void Parent_EventComponentAdded(object sender, ComponentEventArgs e)
@@ -748,91 +554,68 @@ namespace Duality.Components
 			{
 				cmpTransform.GameObj.EventComponentAdded -= this.Parent_EventComponentAdded;
 				cmpTransform.GameObj.EventComponentRemoving += this.Parent_EventComponentRemoving;
-				this.parentTransform = cmpTransform;
 				this.UpdateRel();
 			}
 		}
 		private void Parent_EventComponentRemoving(object sender, ComponentEventArgs e)
 		{
-			if (this.parentTransform != null)
+			Transform cmpTransform = e.Component as Transform;
+			if (cmpTransform != null)
 			{
-				Transform cmpTransform = e.Component as Transform;
-				if (cmpTransform == this.parentTransform)
-				{
-					cmpTransform.GameObj.EventComponentAdded += this.Parent_EventComponentAdded;
-					cmpTransform.GameObj.EventComponentRemoving -= this.Parent_EventComponentRemoving;
-					this.parentTransform = null;
-					this.UpdateRel();
-				}
+				cmpTransform.GameObj.EventComponentAdded += this.Parent_EventComponentAdded;
+				cmpTransform.GameObj.EventComponentRemoving -= this.Parent_EventComponentRemoving;
+				this.UpdateRel();
 			}
 		}
-
+		
 		private void UpdateRotationDirAbs()
 		{
 			this.rotationDirAbs = new Vector2(
 				MathF.Sin(this.angleAbs), 
 				-MathF.Cos(this.angleAbs));
 		}
+		private void ResetVelocity()
+		{
+			if (this.gameobj == null) return;
+			VelocityTracker tracker = this.gameobj.GetComponent<VelocityTracker>();
+			if (tracker != null)
+				tracker.ResetVelocity(this.posAbs);
+		}
+		private void ResetAngleVelocity()
+		{
+			if (this.gameobj == null) return;
+			VelocityTracker tracker = this.gameobj.GetComponent<VelocityTracker>();
+			if (tracker != null)
+				tracker.ResetAngleVelocity(this.angleAbs);
+		}
 
-		private void UpdateAbs(bool updateTempVel = false)
+		private void UpdateAbs()
 		{
 			this.CheckValidTransform();
 
-			if (this.parentTransform == null)
+			Transform parent = this.ParentTransform;
+			if (parent == null)
 			{
 				this.angleAbs = this.angle;
 				this.posAbs = this.pos;
 				this.scaleAbs = this.scale;
-				if (updateTempVel)
-				{
-					this.tempVelAbs = this.tempVel;
-					this.tempAngleVelAbs = this.tempAngleVel;
-				}
 			}
 			else
 			{
-				if (this.deriveAngle)
-				{
-					this.angleAbs = MathF.NormalizeAngle(this.angle + this.parentTransform.angleAbs);
-					if (updateTempVel) this.tempAngleVelAbs = this.tempAngleVel + this.parentTransform.tempAngleVelAbs;
-				}
-				else
-				{
-					this.angleAbs = this.angle;
-					if (updateTempVel) this.tempAngleVelAbs = this.tempAngleVel;
-				}
-				
-				this.scaleAbs = this.scale * this.parentTransform.scaleAbs;
-				this.posAbs = this.parentTransform.GetWorldPoint(this.pos);
-
-				if (updateTempVel)
-				{
-					this.tempVelAbs = this.parentTransform.GetWorldVector(this.tempVel);
-					this.tempVelAbs.X += this.parentTransform.tempVelAbs.X;
-					this.tempVelAbs.Y += this.parentTransform.tempVelAbs.Y;
-					this.tempVelAbs.Z += this.parentTransform.tempVelAbs.Z;
-
-					// Calculate the parent rotation velocity's effect on this objects velocity.
-					// ToDo: Fix this, currently only works for small per-frame angle changes,
-					// reactivate TransformTest case when done.
-					Vector2 parentTurnVelAdjust = this.parentTransform.GetWorldVector(new Vector2(
-						-this.pos.Y * this.parentTransform.tempAngleVelAbs, 
-						this.pos.X * this.parentTransform.tempAngleVelAbs));
-
-					this.tempVelAbs.X += parentTurnVelAdjust.X;
-					this.tempVelAbs.Y += parentTurnVelAdjust.Y;
-				}
+				this.angleAbs = MathF.NormalizeAngle(this.angle + parent.angleAbs);
+				this.scaleAbs = this.scale * parent.scaleAbs;
+				this.posAbs = parent.GetWorldPoint(this.pos);
 			}
 
 			// Update cached values
 			this.UpdateRotationDirAbs();
 
 			// Update absolute children coordinates
-			this.UpdateAbsChild(updateTempVel);
+			this.UpdateAbsChild();
 
 			this.CheckValidTransform();
 		}
-		private void UpdateAbsChild(bool updateTempVel = false)
+		private void UpdateAbsChild()
 		{
 			this.CheckValidTransform();
 
@@ -840,122 +623,60 @@ namespace Duality.Components
 			{
 				foreach (GameObject obj in this.gameobj.Children)
 				{
-					Transform t = obj.Transform;
-					if (t == null) continue;
-					if (!t.ignoreParent)
-					{
-						t.changes |= this.changes;
-						if ((this.changes & DirtyFlags.Scale) != DirtyFlags.None || (this.changes & DirtyFlags.Angle) != DirtyFlags.None)
-							t.changes |= DirtyFlags.Pos;
+					Transform transform = obj.Transform;
+					if (transform == null) continue;
+					if (transform.ignoreParent) continue;
 
-						t.UpdateAbs(updateTempVel);
-					}
-					else
-					{
-						t.UpdateRel(updateTempVel);
-					}
+					transform.UpdateAbs();
 				}
 			}
 
 			this.CheckValidTransform();
 		}
-		private void UpdateRel(bool updateTempVel = false)
+		private void UpdateRel()
 		{
 			this.CheckValidTransform();
 
-			if (this.parentTransform == null)
+			Transform parent = this.ParentTransform;
+			if (parent == null)
 			{
 				this.angle = this.angleAbs;
 				this.pos = this.posAbs;
 				this.scale = this.scaleAbs;
-				if (updateTempVel)
-				{
-					this.tempVel = this.tempVelAbs;
-					this.tempAngleVel = this.tempAngleVelAbs;
-				}
 			}
 			else
 			{
-				if (this.deriveAngle)
-				{
-					this.angle = MathF.NormalizeAngle(this.angleAbs - this.parentTransform.angleAbs);
-					if (updateTempVel) this.tempAngleVel = this.tempAngleVelAbs - this.parentTransform.tempAngleVelAbs;
-				}
-				else
-				{
-					this.angle = this.angleAbs;
-					if (updateTempVel) this.tempAngleVel = this.tempAngleVelAbs;
-				}
-
-				this.scale = this.scaleAbs / this.parentTransform.scaleAbs;
+				this.angle = MathF.NormalizeAngle(this.angleAbs - parent.angleAbs);
+				this.scale = this.scaleAbs / parent.scaleAbs;
 				
 				Vector2 parentAngleAbsDotX;
 				Vector2 parentAngleAbsDotY;
-				MathF.GetTransformDotVec(-this.parentTransform.angleAbs, out parentAngleAbsDotX, out parentAngleAbsDotY);
+				MathF.GetTransformDotVec(-parent.angleAbs, out parentAngleAbsDotX, out parentAngleAbsDotY);
 
-				Vector3.Subtract(ref this.posAbs, ref this.parentTransform.posAbs, out this.pos);
+				Vector3.Subtract(ref this.posAbs, ref parent.posAbs, out this.pos);
 				MathF.TransformDotVec(ref this.pos, ref parentAngleAbsDotX, ref parentAngleAbsDotY);
-				Vector3.Divide(ref this.pos, this.parentTransform.scaleAbs, out this.pos);
-
-				if (updateTempVel)
-				{
-					Vector2 parentTurnVelAdjust = this.pos.Xy.PerpendicularRight;
-					Vector2.Multiply(ref parentTurnVelAdjust, this.parentTransform.tempAngleVelAbs, out parentTurnVelAdjust);
-					MathF.TransformDotVec(ref parentTurnVelAdjust, ref parentAngleAbsDotX, ref parentAngleAbsDotY);
-					
-					Vector3.Subtract(ref this.tempVelAbs, ref this.parentTransform.tempVelAbs, out this.tempVel);
-					MathF.TransformDotVec(ref this.tempVel, ref parentAngleAbsDotX, ref parentAngleAbsDotY);
-					Vector3.Divide(ref this.tempVel, this.parentTransform.scaleAbs, out this.tempVel);
-
-					this.tempVel.X -= parentTurnVelAdjust.X;
-					this.tempVel.Y -= parentTurnVelAdjust.Y;
-				}
+				Vector3.Divide(ref this.pos, parent.scaleAbs, out this.pos);
 			}
 
 			this.CheckValidTransform();
 		}
-
-		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
-		{
-			base.OnSetupCloneTargets(targetObj, setup);
-			Transform target = targetObj as Transform;
-
-			setup.HandleObject(this.parentTransform, target.parentTransform, CloneBehavior.WeakReference);
-		}
+		
 		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
 		{
 			base.OnCopyDataTo(targetObj, operation);
 			Transform target = targetObj as Transform;
 
-			target.deriveAngle		= this.deriveAngle;
-			target.ignoreParent		= this.ignoreParent;
+			target.ignoreParent   = this.ignoreParent;
 
-			target.pos				= this.pos;
-			target.angle			= this.angle;
-			target.scale			= this.scale;
+			target.pos            = this.pos;
+			target.angle          = this.angle;
+			target.scale          = this.scale;
 
-			target.posAbs			= this.posAbs;
-			target.angleAbs			= this.angleAbs;
-			target.scaleAbs			= this.scaleAbs;
-			target.rotationDirAbs	= this.rotationDirAbs;
-
-			target.tempVel			= this.tempVel;
-			target.tempVelAbs		= this.tempVelAbs;
-			target.tempAngleVel		= this.tempAngleVel;
-			target.tempAngleVelAbs	= this.tempAngleVelAbs;
-
-			target.velAbs			= this.velAbs;
-			target.vel				= this.vel;
-			target.angleVel			= this.angleVel;
-			target.angleVelAbs		= this.angleVelAbs;
-
-			// Initialize parentTransform, because it's required for UpdateAbs but is null until OnLoaded, which will be called after applying prefabs.
-			if (target.gameobj != null && target.gameobj.Parent != null)
-				target.parentTransform = target.gameobj.Parent.Transform;
-
-			// Handle parentTransform manually to prevent null-overwrites
-			operation.HandleObject(this.parentTransform, ref target.parentTransform, true);
-
+			target.posAbs         = this.posAbs;
+			target.angleAbs       = this.angleAbs;
+			target.scaleAbs       = this.scaleAbs;
+			target.rotationDirAbs = this.rotationDirAbs;
+			
 			// Update absolute transformation data, because the target is relative to a different parent.
 			target.UpdateAbs();
 		}
@@ -964,20 +685,12 @@ namespace Duality.Components
 		internal void CheckValidTransform()
 		{
 			MathF.CheckValidValue(this.pos);
-			MathF.CheckValidValue(this.vel);
 			MathF.CheckValidValue(this.scale);
 			MathF.CheckValidValue(this.angle);
-			MathF.CheckValidValue(this.angleVel);
-			MathF.CheckValidValue(this.tempVel);
-			MathF.CheckValidValue(this.tempAngleVel);
 
 			MathF.CheckValidValue(this.posAbs);
-			MathF.CheckValidValue(this.velAbs);
 			MathF.CheckValidValue(this.scaleAbs);
 			MathF.CheckValidValue(this.angleAbs);
-			MathF.CheckValidValue(this.angleVelAbs);
-			MathF.CheckValidValue(this.tempVelAbs);
-			MathF.CheckValidValue(this.tempAngleVelAbs);
 		}
 	}
 }

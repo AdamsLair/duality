@@ -56,8 +56,8 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			// Determine the rect in which the camera can move, given the
 			// rect of the map and the one of the cameras visible area
 			Rect moveRect;
-			Vector3 camAreaTopLeft = camera.GetSpaceCoord(new Vector2(0.0f, 0.0f));
-			Vector3 camAreaBottomRight = camera.GetSpaceCoord(DualityApp.TargetResolution);
+			Vector3 camAreaTopLeft = camera.GetWorldPos(new Vector2(0.0f, 0.0f));
+			Vector3 camAreaBottomRight = camera.GetWorldPos(DualityApp.TargetViewSize);
 			Rect camArea = new Rect(
 				camAreaTopLeft.X, 
 				camAreaTopLeft.Y, 
@@ -83,35 +83,32 @@ namespace Duality.Samples.Tilemaps.RpgLike
 			Vector3 targetVelocity = posDiff * 0.1f * MathF.Pow(2.0f, -this.smoothness);
 
 			// Move the camera
-			transform.MoveByAbs(targetVelocity * Time.TimeMult);
+			transform.MoveBy(targetVelocity * Time.TimeMult);
 		}
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
+			// Find the constrained rectangle we're allowed to move in,
+			// based on the rects of all the active tilemaps
+			bool first = true;
+			IEnumerable<ICmpTilemapRenderer> allTilemapRenderers = 
+				this.Scene.FindComponents<ICmpTilemapRenderer>();
+			foreach (ICmpTilemapRenderer tilemapRenderer in allTilemapRenderers)
 			{
-				// Find the constrained rectangle we're allowed to move in,
-				// based on the rects of all the active tilemaps
-				bool first = true;
-				IEnumerable<ICmpTilemapRenderer> allTilemapRenderers = 
-					this.GameObj.ParentScene.FindComponents<ICmpTilemapRenderer>();
-				foreach (ICmpTilemapRenderer tilemapRenderer in allTilemapRenderers)
+				Transform transform = (tilemapRenderer as Component).GameObj.Transform;
+				Vector3 pos = transform.Pos;
+				Rect localRect = tilemapRenderer.LocalTilemapRect;
+				Rect worldRect = localRect.WithOffset(pos.X, pos.Y);
+				if (first)
 				{
-					Transform transform = (tilemapRenderer as Component).GameObj.Transform;
-					Vector3 pos = transform.Pos;
-					Rect localRect = tilemapRenderer.LocalTilemapRect;
-					Rect worldRect = localRect.WithOffset(pos.X, pos.Y);
-					if (first)
-					{
-						this.mapRect = worldRect;
-						first = false;
-					}
-					else
-					{
-						this.mapRect = this.mapRect.Intersection(worldRect);
-					}
+					this.mapRect = worldRect;
+					first = false;
+				}
+				else
+				{
+					this.mapRect = this.mapRect.Intersection(worldRect);
 				}
 			}
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
+		void ICmpInitializable.OnDeactivate() { }
 	}
 }

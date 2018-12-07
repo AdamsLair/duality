@@ -67,9 +67,7 @@ namespace Duality
 			// Scale anti-proportional to perspective scale in order to keep a constant size 
 			// in screen space even when actually drawing in world space.
 			{
-				float scale = 1.0f;
-				Vector3 posTemp = this.pos + basePos;
-				target.DrawDevice.PreprocessCoords(ref posTemp, ref scale);
+				float scale = target.DrawDevice.GetScaleAtZ(this.pos.Z + basePos.Z);
 				borderRadius /= scale;
 				if (this.invariantScale) circleRadius /= scale;
 			}
@@ -90,7 +88,7 @@ namespace Duality
 				this.maxAngle + baseRotation);
 
 			// Draw circle outline
-			if (target.DrawDevice.DepthWrite) target.State.ZOffset -= 0.1f;
+			target.State.DepthOffset -= 0.01f;
 			target.State.ColorTint *= ColorRgba.Black;
 			target.FillCircleSegment(
 				circlePos.X, 

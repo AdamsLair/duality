@@ -829,9 +829,9 @@ namespace Duality.Editor.Forms
 		{
 			bool launcherAvailable = File.Exists(DualityEditorApp.LauncherAppPath);
 			this.actionRunApp.Enabled = launcherAvailable;
-			this.actionDebugApp.Enabled = launcherAvailable && EditorHelper.IsJITDebuggerAvailable;
+			this.actionDebugApp.Enabled = launcherAvailable;
 			this.menuRunApp.Enabled = launcherAvailable;
-			this.menuDebugApp.Enabled = launcherAvailable && EditorHelper.IsJITDebuggerAvailable;
+			this.menuDebugApp.Enabled = launcherAvailable;
 			this.menuProfileApp.Enabled = launcherAvailable;
 		}
 		private void VerifyStartScene()

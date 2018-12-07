@@ -26,7 +26,7 @@ namespace Duality.Samples.Tilemaps
 
 		void ICmpUpdatable.OnUpdate()
 		{
-			this.GameObj.Transform.MoveBy(this.velocity * Time.TimeMult);
+			this.GameObj.Transform.MoveByLocal(this.velocity * Time.TimeMult);
 		}
 	}
 }

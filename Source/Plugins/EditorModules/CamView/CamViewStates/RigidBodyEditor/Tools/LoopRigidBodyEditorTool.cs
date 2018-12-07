@@ -14,7 +14,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// <summary>
 	/// Creates a new loop shape in the selected <see cref="RigidBody"/>.
 	/// </summary>
-	public class LoopRigidBodyEditorTool : PolyLikeRigidBodyEditorTool
+	public class LoopRigidBodyEditorTool : VertexShapeRigidBodyEditorTool
 	{
 		public override string Name
 		{
@@ -41,17 +41,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get { return base.IsAvailable && this.Environment.ActiveBody.BodyType == BodyType.Static; }
 		}
 
-		protected override ShapeInfo CreateShapeInfo(Vector2[] vertices)
+		protected override VertexBasedShapeInfo CreateShapeInfo(Vector2[] vertices)
 		{
 			return new LoopShapeInfo(vertices);
-		}
-		protected override Vector2[] GetVertices(ShapeInfo shape)
-		{
-			return (shape as LoopShapeInfo).Vertices;
-		}
-		protected override void SetVertices(ShapeInfo shape, Vector2[] vertices)
-		{
-			(shape as LoopShapeInfo).Vertices = vertices;
 		}
 	}
 }

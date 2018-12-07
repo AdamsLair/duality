@@ -26,14 +26,14 @@ namespace Duality.Components.Physics
 		/// </summary>
 		public RigidBody Body
 		{
-			get { return shape != null ? shape.Parent : null; }
+			get { return this.shape != null ? this.shape.Parent : null; }
 		}
 		/// <summary>
 		/// [GET] The GameObject that was hit.
 		/// </summary>
 		public GameObject GameObj
 		{
-			get { return shape != null && shape.Parent != null ? shape.Parent.GameObj : null; }
+			get { return this.shape != null && this.shape.Parent != null ? this.shape.Parent.GameObj : null; }
 		}
 		/// <summary>
 		/// [GET] The world position at which the shape was hit.

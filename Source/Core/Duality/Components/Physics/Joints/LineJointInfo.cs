@@ -124,9 +124,9 @@ namespace Duality.Components.Physics
 		}
 
 
-		protected override Joint CreateJoint(Body bodyA, Body bodyB)
+		protected override Joint CreateJoint(World world, Body bodyA, Body bodyB)
 		{
-			return bodyA != null && bodyB != null ? JointFactory.CreateLineJoint(Scene.PhysicsWorld, bodyA, bodyB, Vector2.Zero, Vector2.UnitY) : null;
+			return bodyA != null && bodyB != null ? JointFactory.CreateLineJoint(world, bodyA, bodyB, Vector2.Zero, Vector2.UnitY) : null;
 		}
 		internal override void UpdateJoint()
 		{

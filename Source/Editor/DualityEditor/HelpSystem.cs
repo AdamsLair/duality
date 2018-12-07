@@ -29,7 +29,7 @@ namespace Duality.Editor
 			add { stack.ActiveHelpChanged += value; }
 			remove { stack.ActiveHelpChanged -= value; }
 		}
-		public static IHelpInfoReader ActiveHelp
+		public static IReadOnlyHelpInfo ActiveHelp
 		{
 			get { return stack.ActiveHelp; }
 		}
@@ -100,11 +100,11 @@ namespace Duality.Editor
 				if (!File.Exists(docPaths[i]))
 				{
 					string remappedPath = Path.Combine(PathHelper.ExecutingAssemblyDir, docPaths[i]);
-					if (File.Exists(remappedPath))
+				if (File.Exists(remappedPath))
 						docPaths[i] = remappedPath;
 					else
 						docPaths.RemoveAt(i);
-				}
+			}
 			}
 
 			// Load all documentation files that are available
@@ -116,7 +116,7 @@ namespace Duality.Editor
 				}
 				catch (Exception e)
 				{
-					Log.Editor.Write("Error loading XML documentation file '{0}': {1}", path, Log.Exception(e));
+					Logs.Editor.Write("Error loading XML documentation file '{0}': {1}", path, LogFormat.Exception(e));
 				}
 			}
 		}

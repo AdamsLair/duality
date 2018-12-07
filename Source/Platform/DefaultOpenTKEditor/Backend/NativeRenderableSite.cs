@@ -16,7 +16,11 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 		private NativeEditorGraphicsContext context;
 		private GLControl control;
 
-		Control INativeRenderableSite.Control
+		public AAQuality AntialiasingQuality
+		{
+			get { return this.context.AntialiasingQuality; }
+		}
+		public Control Control
 		{
 			get { return this.control; }
 		}
@@ -42,6 +46,9 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 		void INativeRenderableSite.MakeCurrent()
 		{
 			this.context.GLContext.MakeCurrent(this.control.WindowInfo);
+			DualityApp.GraphicsBackend.ExternalBackbufferSize = new Point2(
+				this.control.ClientSize.Width, 
+				this.control.ClientSize.Height);
 		}
 		void INativeRenderableSite.SwapBuffers()
 		{

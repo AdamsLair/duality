@@ -15,17 +15,13 @@ using Duality.Editor.Plugins.Tilemaps.Properties;
 namespace Duality.Editor.Plugins.Tilemaps.EditorActions
 {
 	/// <summary>
-	/// Opens a setup dialog that allows to configure the selected tilemaps.
+	/// Opens a user dialog that allows to resize the selected Tilemaps. If no tilemaps are selected, it will resize all currently active, non-hidden tilemaps in the current scene.
 	/// </summary>
 	public class OpenTilemapResizeDialog : EditorAction<Tilemap>
 	{
 		public override string Name
 		{
 			get { return TilemapsRes.ActionName_ResizeTilemap; }
-		}
-		public override string Description
-		{
-			get { return TilemapsRes.ActionDesc_ResizeTilemap; }
 		}
 		public override Image Icon
 		{
@@ -42,7 +38,7 @@ namespace Duality.Editor.Plugins.Tilemaps.EditorActions
 			{
 				Tilemap baseTilemap = tilemaps[0];
 				GameObject baseObject = baseTilemap.GameObj;
-				Scene baseScene = (baseObject != null) ? baseObject.ParentScene : null;
+				Scene baseScene = (baseObject != null) ? baseObject.Scene : null;
 				
 				// Prerequisite: We are operating on a tilemap with a proper parent and
 				// parent scene available. Otherwise, there is nothing we could do.

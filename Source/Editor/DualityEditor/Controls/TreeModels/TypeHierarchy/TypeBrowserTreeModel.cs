@@ -57,7 +57,7 @@ namespace Duality.Editor.Controls.TreeModels.TypeHierarchy
 
 			// Retrieve a list of all loaded, non-disposed Assemblies
 			Assembly[] loadedAssemblies = 
-				DualityApp.PluginLoader.LoadedAssemblies
+				DualityApp.AssemblyLoader.LoadedAssemblies
 				.Where(a => !DualityApp.PluginManager.DisposedPlugins.Contains(a))
 				.ToArray();
 
