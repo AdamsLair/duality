@@ -122,6 +122,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 				case PixmapSlicingRectSide.Bottom:
 					this.View.Cursor = Cursors.SizeNS;
 					break;
+				case PixmapSlicingRectSide.Pivot:
+					this.View.Cursor = Cursors.SizeAll;
+					break;
 				default:
 					this.View.Cursor = Cursors.Default;
 					break;
@@ -170,50 +173,67 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 
 			if (this.draggedRectSide != PixmapSlicingRectSide.None)
 			{
-				Vector2 atlasPos = this.View.GetAtlasPos(e.Location);
-				Rect draggedAtlasRect = this.View.GetAtlasRect(this.draggedRectIndex);
-
-				// Move dragged side to mouse
-				switch (this.draggedRectSide)
+				if (this.draggedRectSide == PixmapSlicingRectSide.Pivot)
 				{
-					case PixmapSlicingRectSide.Left:
-						draggedAtlasRect.W += draggedAtlasRect.X - atlasPos.X;
-						draggedAtlasRect.X = atlasPos.X;
-						break;
-					case PixmapSlicingRectSide.Right:
-						draggedAtlasRect.W += atlasPos.X - draggedAtlasRect.RightX;
-						break;
-					case PixmapSlicingRectSide.Top:
-						draggedAtlasRect.H += draggedAtlasRect.Y - atlasPos.Y;
-						draggedAtlasRect.Y = atlasPos.Y;
-						break;
-					case PixmapSlicingRectSide.Bottom:
-						draggedAtlasRect.H += atlasPos.Y - draggedAtlasRect.BottomY;
-						break;
+					Vector2 atlasPos = this.View.GetAtlasPos(e.Location);
+					Rect draggedAtlasRect = this.View.GetAtlasRect(this.draggedRectIndex);
+
+					// Keep the new pivot within the atlas rect
+					if (atlasPos.X < draggedAtlasRect.LeftX) atlasPos.X = draggedAtlasRect.LeftX;
+					if (atlasPos.Y < draggedAtlasRect.TopY) atlasPos.Y = draggedAtlasRect.TopY;
+					if (atlasPos.X > draggedAtlasRect.RightX) atlasPos.X = draggedAtlasRect.RightX;
+					if (atlasPos.Y > draggedAtlasRect.BottomY) atlasPos.Y = draggedAtlasRect.BottomY;
+
+					Vector2 newPivotInRectSpace = atlasPos - draggedAtlasRect.Center;
+					this.SetAtlasPivot(this.draggedRectIndex, newPivotInRectSpace);
 				}
-
-				// If width / height has gone negative, switch hover side
-				if (draggedAtlasRect.W < 0 || draggedAtlasRect.H < 0)
+				else
 				{
-					draggedAtlasRect = draggedAtlasRect.Normalized();
-					this.draggedRectSide = this.draggedRectSide.Opposite();
-				}
+					Vector2 atlasPos = this.View.GetAtlasPos(e.Location);
+					Rect draggedAtlasRect = this.View.GetAtlasRect(this.draggedRectIndex);
 
-				// Keep the displayRect within bounds of the image
-				Rect pixmapRect = new Rect(0.0f, 0.0f, this.TargetPixmap.Width, this.TargetPixmap.Height);
-				draggedAtlasRect = draggedAtlasRect.Intersection(pixmapRect);
+					// Move dragged side to mouse
+					switch (this.draggedRectSide)
+					{
+						case PixmapSlicingRectSide.Left:
+							draggedAtlasRect.W += draggedAtlasRect.X - atlasPos.X;
+							draggedAtlasRect.X = atlasPos.X;
+							break;
+						case PixmapSlicingRectSide.Right:
+							draggedAtlasRect.W += atlasPos.X - draggedAtlasRect.RightX;
+							break;
+						case PixmapSlicingRectSide.Top:
+							draggedAtlasRect.H += draggedAtlasRect.Y - atlasPos.Y;
+							draggedAtlasRect.Y = atlasPos.Y;
+							break;
+						case PixmapSlicingRectSide.Bottom:
+							draggedAtlasRect.H += atlasPos.Y - draggedAtlasRect.BottomY;
+							break;
+					}
 
-				// Clamp the atlas rect to full pixel values
-				draggedAtlasRect = new Rect(
-					MathF.RoundToInt(draggedAtlasRect.LeftX),
-					MathF.RoundToInt(draggedAtlasRect.TopY),
-					MathF.RoundToInt(draggedAtlasRect.RightX) - MathF.RoundToInt(draggedAtlasRect.LeftX),
-					MathF.RoundToInt(draggedAtlasRect.BottomY) - MathF.RoundToInt(draggedAtlasRect.TopY));
+					// If width / height has gone negative, switch hover side
+					if (draggedAtlasRect.W < 0 || draggedAtlasRect.H < 0)
+					{
+						draggedAtlasRect = draggedAtlasRect.Normalized();
+						this.draggedRectSide = this.draggedRectSide.Opposite();
+					}
 
-				// Apply the new atlas rect
-				if (draggedAtlasRect.W != 0 && draggedAtlasRect.H != 0)
-				{
-					this.SetAtlasRect(this.draggedRectIndex, draggedAtlasRect);
+					// Keep the displayRect within bounds of the image
+					Rect pixmapRect = new Rect(0.0f, 0.0f, this.TargetPixmap.Width, this.TargetPixmap.Height);
+					draggedAtlasRect = draggedAtlasRect.Intersection(pixmapRect);
+
+					// Clamp the atlas rect to full pixel values
+					draggedAtlasRect = new Rect(
+						MathF.RoundToInt(draggedAtlasRect.LeftX),
+						MathF.RoundToInt(draggedAtlasRect.TopY),
+						MathF.RoundToInt(draggedAtlasRect.RightX) - MathF.RoundToInt(draggedAtlasRect.LeftX),
+						MathF.RoundToInt(draggedAtlasRect.BottomY) - MathF.RoundToInt(draggedAtlasRect.TopY));
+
+					// Apply the new atlas rect
+					if (draggedAtlasRect.W != 0 && draggedAtlasRect.H != 0)
+					{
+						this.SetAtlasRect(this.draggedRectIndex, draggedAtlasRect);
+					}
 				}
 			}
 		}
