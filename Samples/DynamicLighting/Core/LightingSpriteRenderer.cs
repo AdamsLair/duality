@@ -33,11 +33,13 @@ namespace DynamicLighting
 			set { this.vertexTranslucency = value; }
 		}
 
-		protected void PrepareVerticesLight(ref VertexDynamicLighting[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect, DrawTechnique tech)
+		protected void PrepareVerticesLight(ref VertexDynamicLighting[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect, Vector2 pivot, DrawTechnique tech)
 		{
 			bool perPixel = tech is LightingTechnique;
 
 			Vector3 pos = this.GameObj.Transform.Pos;
+			pos.X -= pivot.X;
+			pos.Y -= pivot.Y;
 
 			Vector2 xDot, yDot;
 			float rotation = this.GameObj.Transform.Angle;
@@ -160,8 +162,10 @@ namespace DynamicLighting
 			DrawTechnique tech = this.RetrieveDrawTechnique();
 
 			Rect uvRect;
+			Vector2 pivot;
 			this.GetUVRect(mainTex, this.spriteIndex, out uvRect);
-			this.PrepareVerticesLight(ref this.verticesLight, device, this.colorTint, uvRect, tech);
+			this.GetPivot(mainTex, this.spriteIndex, out pivot);
+			this.PrepareVerticesLight(ref this.verticesLight, device, this.colorTint, uvRect, pivot, tech);
 
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.verticesLight);
