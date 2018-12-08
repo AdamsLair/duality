@@ -2,11 +2,11 @@
 <html>
   <head>
     <meta charset='utf-8'>
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-	
-	<!-- Add jQuery for fancyBox library -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    
+    <!-- Add jQuery for fancyBox library -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
-	
+    
     <!-- Add fancyBox -->
     <link rel="stylesheet" href="fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
     <script type="text/javascript" src="fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
@@ -15,13 +15,13 @@
         $(document).ready(function() {
             $(".fancybox").fancybox();
         });
-		
-		$('.fancybox-noanim').fancybox({
-			openEffect  : 'none',
-			closeEffect : 'none',
-			prevEffect : 'none',
-			nextEffect : 'none'
-		});
+        
+        $('.fancybox-noanim').fancybox({
+            openEffect  : 'none',
+            closeEffect : 'none',
+            prevEffect : 'none',
+            nextEffect : 'none'
+        });
     </script>
 
     <!-- Add highlight.js -->
@@ -29,8 +29,8 @@
     <script src="highlight/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
 
-	<!-- Google Analytics -->
-	<!--<script>
+    <!-- Google Analytics -->
+    <!--<script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -40,10 +40,10 @@
       ga('send', 'pageview');
     
     </script>-->
-	
+    
     <link rel="stylesheet" type="text/css" href="style/stylesheet.css" media="screen" />
-	
-	<!-- Specifying the icon -->
+    
+    <!-- Specifying the icon -->
     <link rel="apple-touch-icon" sizes="57x57" href="style/images/favicon/apple-touch-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="style/images/favicon/apple-touch-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="style/images/favicon/apple-touch-icon-72x72.png">
@@ -64,37 +64,37 @@
     <meta name="msapplication-TileImage" content="style/images/favicon/mstile-144x144.png">
     <meta name="msapplication-config" content="style/images/favicon/browserconfig.xml">
     <meta name="theme-color" content="#ffba53">
-	
+    
     <title>Duality - a 2D Game Development Framework</title>
   </head>
   
   <body>
     <header>
-	  <div class="documentContent">
-	    <div id="navContainer">
-	      <div id="social">
-		    <!--<a class="socialButton" id="facebook" title="Share this on Facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://duality.adamslair.net" target="_blank"></a>-->
-		    <!--<a class="socialButton" id="twitter" title="Tweet this" href="https://twitter.com/home?status=%0A%23Duality2D%20%23gamedev%0Ahttps%3A%2F%2Fduality.adamslair.net" target="_blank"></a>-->
-		    <a class="socialButton" id="twitter" title="Browse #Duality2D on Twitter" href="https://twitter.com/search?f=tweets&vertical=default&q=%23duality2d%20lang%3Aen%20-RT" target="_blank"></a>
-		    <!--<a class="socialButton" id="googleplus" title="Share this on Google+" href="https://plus.google.com/share?url=https://duality.adamslair.net" target="_blank"></a>-->
-		  </div>
+      <div class="documentContent">
+        <div id="navContainer">
+          <div id="social">
+            <!--<a class="socialButton" id="facebook" title="Share this on Facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://duality.adamslair.net" target="_blank"></a>-->
+            <!--<a class="socialButton" id="twitter" title="Tweet this" href="https://twitter.com/home?status=%0A%23Duality2D%20%23gamedev%0Ahttps%3A%2F%2Fduality.adamslair.net" target="_blank"></a>-->
+            <a class="socialButton" id="twitter" title="Browse #Duality2D on Twitter" href="https://twitter.com/search?f=tweets&vertical=default&q=%23duality2d%20lang%3Aen%20-RT" target="_blank"></a>
+            <!--<a class="socialButton" id="googleplus" title="Share this on Google+" href="https://plus.google.com/share?url=https://duality.adamslair.net" target="_blank"></a>-->
+          </div>
           <nav>
             <ul>
               <li><a href="https://blog.adamslair.net/">Blog</a></li>
-              <li><a href="http://dualitydocs.adamslair.net/">Docs</a></li>
+              <li><a href="https://docs.duality2d.net/">Docs</a></li>
               <li><a id="bugs" href="https://github.com/AdamsLair/duality">GitHub</a></li>
-			  <li id="separator"></li>
-              <li><a href="https://forum.adamslair.net/">Forum</a></li>
-              <li><a href="http://chat.adamslair.net/">Chat</a></li>
+              <li id="separator"></li>
+              <li><a href="https://forum.duality2d.net/">Forum</a></li>
+              <li><a href="https://chat.duality2d.net/">Chat</a></li>
               <!--<li><a href="https://duality-community.github.io/">Portal</a></li>-->
             </ul>
           </nav>
-		</div>
-	  </div>
+        </div>
+      </div>
     </header>
 
     <main>
-	  <div class="documentContent">
+      <div class="documentContent">
         <h1 style="display: none">Duality - a 2D Game Development Framework</h1>
         <section id="welcome">
           <img id="logo" src="style/images/logobig.png">
@@ -104,119 +104,119 @@
         </section>
         <section id="quickstart">
           <h2>Getting Started</h2>
-		  <div id="buttonContainer">
-		    <div id="buttonStrip">
-              <a href="https://dualitybin.adamslair.net/">
-			    <img src="style/images/download.png">
-				<div>
-				  <h3>Download</h3>
-			      <p>Get the latest build</p>
-			    </div>
-		      </a>
-		      <hr>
-              <a href="http://dualitytutorial.adamslair.net/">
-			    <img src="style/images/learn.png">
-				<div>
-				  <h3>Tutorials</h3>
-			      <p>Learn how use Duality</p>
-			    </div>
-		      </a>
-		      <hr>
+          <div id="buttonContainer">
+            <div id="buttonStrip">
+              <a href="https://get.duality2d.net/">
+                <img src="style/images/download.png">
+                <div>
+                  <h3>Download</h3>
+                  <p>Get the latest build</p>
+                </div>
+              </a>
+              <hr>
+              <a href="https://tutorial.duality2d.net/">
+                <img src="style/images/learn.png">
+                <div>
+                  <h3>Tutorials</h3>
+                  <p>Learn how use Duality</p>
+                </div>
+              </a>
+              <hr>
               <a href="https://github.com/AdamsLair/duality/">
-			    <img src="style/images/code.png">
-				<div>
-				  <h3>Source Code</h3>
-			      <p>Fork Duality on GitHub</p>
-			    </div>
-		      </a>
-		    </div>
-		  </div>
+                <img src="style/images/code.png">
+                <div>
+                  <h3>Source Code</h3>
+                  <p>Fork Duality on GitHub</p>
+                </div>
+              </a>
+            </div>
+          </div>
         </section>
-		<section id="features">
+        <section id="features">
           <div id="engine">
             <h2>Engine Features</h2>
-		    <ul>
-		      <li><h3>Plugin Architecture</h3><p>Easily introduce game logic via plugin</p></li>
-		      <li><h3>Component Based Design</h3><p>Allows your own code to blend in seamlessly</p></li>
-		      <li><h3>Base Infrastructure</h3><p>Rendering, Audio, Physics, User Input, ...</p></li>
-		      <li><h3>Content Management</h3><p>Takes care of all your game resources</p></li>
-		    </ul>
+            <ul>
+              <li><h3>Plugin Architecture</h3><p>Easily introduce game logic via plugin</p></li>
+              <li><h3>Component Based Design</h3><p>Allows your own code to blend in seamlessly</p></li>
+              <li><h3>Base Infrastructure</h3><p>Rendering, Audio, Physics, User Input, ...</p></li>
+              <li><h3>Content Management</h3><p>Takes care of all your game resources</p></li>
+            </ul>
           </div>
           <div id="editor">
             <h2>Editor Features</h2>
-		    <ul>
-		      <li><h3>Live Editing</h3><p>Preview and Test directly in the editor</p></li>
-		      <li><h3>Hot-Reload Resources</h3><p>Modified Assets are automatically reloaded</p></li>
-		      <li><h3>Hot-Reload Plugins</h3><p>Write code and test it directly without restart</p></li>
-		      <li><h3>Modular Design</h3><p>Tailor the editor exactly to fit your game</p></li>
-		    </ul>
+            <ul>
+              <li><h3>Live Editing</h3><p>Preview and Test directly in the editor</p></li>
+              <li><h3>Hot-Reload Resources</h3><p>Modified Assets are automatically reloaded</p></li>
+              <li><h3>Hot-Reload Plugins</h3><p>Write code and test it directly without restart</p></li>
+              <li><h3>Modular Design</h3><p>Tailor the editor exactly to fit your game</p></li>
+            </ul>
           </div>
-		</section>
+        </section>
         <section id="examples">
           <h2>Typical Workflow</h2>
-		  <p>For a lot of game libraries, your code has the active role of setting everything up and managing it. These roles are reversed here: Your primary job is to define objects and specify their behaviours - Duality can handle all the rest.</p>
-		  <ol>
-		    <li><h3>Import Assets</h3><p>Drag files into the editor and drag assets into the game.</p></li>
-			<hr>
-		    <li><h3>Write Code</h3><p>Type C# code for game logic and engine extensions.</p></li>
-			<hr>
-		    <li><h3>Attach Logic</h3><p>Add bits of your code to objects in the game.</p></li>
-		  </ol>
+          <p>For a lot of game libraries, your code has the active role of setting everything up and managing it. These roles are reversed here: Your primary job is to define objects and specify their behaviours - Duality can handle all the rest.</p>
+          <ol>
+            <li><h3>Import Assets</h3><p>Drag files into the editor and drag assets into the game.</p></li>
+            <hr>
+            <li><h3>Write Code</h3><p>Type C# code for game logic and engine extensions.</p></li>
+            <hr>
+            <li><h3>Attach Logic</h3><p>Add bits of your code to objects in the game.</p></li>
+          </ol>
         </section>
         <section id="screenshots">
           <h2>Screenshots</h2>
-		  <p>Duality is being constantly developed since 2011 - let's build some great games with it.</p>
-		  <div id="imageArea">
-		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot2.png"><img src="screenshots/screenshot2.png"></a>
-		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot4.jpg"><img src="screenshots/screenshot4.jpg"></a>
-		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot3.jpg"><img src="screenshots/screenshot3.jpg"></a>
-		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot6.jpg"><img src="screenshots/screenshot6.jpg"></a>
-		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot1.jpg"><img src="screenshots/screenshot1.jpg"></a>
-		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot5.jpg"><img src="screenshots/screenshot5.jpg"></a>
-		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot7.png"><img src="screenshots/screenshot7.png"></a>
-		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot8.png"><img src="screenshots/screenshot8.png"></a>
-		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot9.png"><img src="screenshots/screenshot9.png"></a>
-		  </div>
-		  <p id="viewMore"><a href="http://showcase.adamslair.net/">View More...</a></p>
+          <p>Duality is being constantly developed since 2011 - let's build some great games with it.</p>
+          <div id="imageArea">
+            <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot2.png"><img src="screenshots/screenshot2.png"></a>
+            <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot4.jpg"><img src="screenshots/screenshot4.jpg"></a>
+            <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot3.jpg"><img src="screenshots/screenshot3.jpg"></a>
+            <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot6.jpg"><img src="screenshots/screenshot6.jpg"></a>
+            <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot1.jpg"><img src="screenshots/screenshot1.jpg"></a>
+            <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot5.jpg"><img src="screenshots/screenshot5.jpg"></a>
+            <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot7.png"><img src="screenshots/screenshot7.png"></a>
+            <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot8.png"><img src="screenshots/screenshot8.png"></a>
+            <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot9.png"><img src="screenshots/screenshot9.png"></a>
+          </div>
+          <p id="viewMore"><a href="https://showcase.duality2d.net/">View More...</a></p>
         </section>
-		<section id="reviews">
-		  <h2>User Reviews</h2>
-		  <div id="quoteparent">
-		    <blockquote>
+        <section id="reviews">
+          <h2>User Reviews</h2>
+          <div id="quoteparent">
+            <blockquote>
               <p>This is the best open source engine I've ever worked with. <b>Clean and understandable code, all pure .Net</b>, an incredibly fully featured editor, and an awesome component-oriented approach to building games.</p>
-			  <cite>Andrew O'Connor, BatCat Games</cite>
+              <cite>Andrew O'Connor, BatCat Games</cite>
             </blockquote>
-		    <blockquote class="small">
+            <blockquote class="small">
               <p>Easy to learn while still <b>in-depth</b> enough to develop everything you want.</p>
-			  <cite>SirePi, forum user</cite>
+              <cite>SirePi, forum user</cite>
             </blockquote>
-		    <blockquote class="small">
+            <blockquote class="small">
               <p>Duality has <b>just the right balance</b> of code / design, and I think it's one of the engines standout features.</p>
-			  <cite>hsnabn, forum user</cite>
+              <cite>hsnabn, forum user</cite>
             </blockquote>
-		  </div>
-		</section>
-	  </div>
+          </div>
+        </section>
+      </div>
     </main>
 
     <footer>
-	  <div class="documentContent">
+      <div class="documentContent">
         <section id="donate">
           <h2>Donate</h2>
-		  <p>Because programmers eventually run out of complementary supplies.</p>
-		  <a href="http://adamslair.itch.io/duality" target="_blank"><img src="style/images/itchio.png" alt="Pay what you want on itch.io" title="Pay what you want on itch.io"></a>
+          <p>Because programmers eventually run out of complementary supplies.</p>
+          <a href="https://adamslair.itch.io/duality" target="_blank"><img src="style/images/itchio.png" alt="Pay what you want on itch.io" title="Pay what you want on itch.io"></a>
         </section>
-		<hr>
+        <hr>
         <section>
-	      <h2>Contact</h2>
-		  <p>Need to discuss something with Adam personally? Don't hesitate to write him an <a href="http://contact.adamslair.net/">E-Mail</a>.</p>
+          <h2>Contact</h2>
+          <p>Need to discuss something with Adam personally? Don't hesitate to write him an <a href="http://contact.adamslair.net/">E-Mail</a>.</p>
         </section>
-		<hr>
+        <hr>
         <section>
-	      <h2>Help</h2>
-		  <p>Stuck with developing your game? Check out the <a href="https://forum.adamslair.net/">forum</a> or <a href="http://chat.adamslair.net/">chat</a> for some quick help, or see if there's something useful in the <a href="https://github.com/AdamsLair/duality/wiki">wiki</a>. Hit F1 in the editor for a detailed API documentation.</p>
+          <h2>Help</h2>
+          <p>Stuck with developing your game? Check out the <a href="https://forum.duality2d.net/">forum</a> or <a href="https://chat.duality2d.net/">chat</a> for some quick help, or see if there's something useful in the <a href="https://github.com/AdamsLair/duality/wiki">wiki</a>. Hit F1 in the editor for a detailed API documentation.</p>
         </section>
-	  </div>
+      </div>
     </footer>
   </body>
 </html>
