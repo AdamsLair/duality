@@ -185,6 +185,8 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States
 					if (atlasPos.Y > draggedAtlasRect.BottomY) atlasPos.Y = draggedAtlasRect.BottomY;
 
 					Vector2 newPivotInRectSpace = atlasPos - draggedAtlasRect.Center;
+					newPivotInRectSpace.X = MathF.RoundToInt(newPivotInRectSpace.X);
+					newPivotInRectSpace.Y = MathF.RoundToInt(newPivotInRectSpace.Y);
 					this.SetAtlasPivot(this.draggedRectIndex, newPivotInRectSpace);
 				}
 				else
