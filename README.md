@@ -1,13 +1,13 @@
 Duality - A 2D GameDev Framework
 =======
 
-Duality is a plugin based 2D game development framework based on C# and OpenTK. To get a quick overview, please visit the [project page](http://duality.adamslair.net). For documentation, take a look at our [docs page](http://dualitydocs.adamslair.net).
+Duality is a plugin based 2D game development framework based on C# and OpenTK. To get a quick overview, please visit the [project page](https://www.duality2d.net). For documentation, take a look at our [docs page](https://docs.duality2d.net).
 
-If you have questions or just want to say Hi, feel free to join us in the [forum](http://forum.adamslair.net) or our [chat](http://chat.adamslair.net). Also, feedback is always welcome! Bugs and feature requests that do not require further discussion, however, should be filed in the issue tracking system, directly here on github.
+If you have questions or just want to say Hi, feel free to join us in the [forum](https://forum.duality2d.net) or our [chat](https://chat.duality2d.net). Also, feedback is always welcome! Bugs and feature requests that do not require further discussion, however, should be filed in the issue tracking system, directly here on github.
 
 ### Latest Binary Release
 
-You can find the latest binary release [here](http://dualitybin.adamslair.net/). If you already have a Duality project, you can update your Duality version or any of its plugins in the [Package Manager](https://adamslair.github.io/duality-docs/pages/v3/Package-Management.html).
+You can find the latest binary release [here](https://get.duality2d.net/). If you already have a Duality project, you can update your Duality version or any of its plugins in the [Package Manager](https://docs.duality2d.net/pages/v3/Package-Management.html).
 
 ### Build status: 
 | [Branch](https://github.com/AdamsLair/duality/wiki/Branch-Descriptions)  | Status |
@@ -25,6 +25,6 @@ All framework build results will be located in the shared `Build/Output` folder.
 
 ### Contributing
 
-We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://adamslair.github.io/duality-docs/pages/v3/how-to-contribute.html).
+We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://docs.duality2d.net/pages/v3/how-to-contribute.html).
 
-If you just want to say "Thank You", feel free to donate [on itch.io](http://adamslair.itch.io/duality).
+If you just want to say "Thank You", feel free to donate [on itch.io](https://adamslair.itch.io/duality).

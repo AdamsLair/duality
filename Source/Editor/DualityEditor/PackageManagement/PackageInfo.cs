@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 
 namespace Duality.Editor.PackageManagement
@@ -154,16 +155,23 @@ namespace Duality.Editor.PackageManagement
 			if (nuGetPackage.Tags != null)
 				this.tags.AddRange(nuGetPackage.Tags.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
 
-			// Retrieve the matching set of dependencies. For now, don't support different sets and just pick the first one.
-			var matchingDependencySet = nuGetPackage.DependencySets.FirstOrDefault();
-			if (matchingDependencySet != null)
+			// Retrieve the matching set of dependencies.
+			IEnumerable<NuGet.PackageDependencySet> dependencySets = nuGetPackage.DependencySets;
+			if (dependencySets != null)
 			{
-				foreach (NuGet.PackageDependency dependency in matchingDependencySet.Dependencies)
+				List<FrameworkName> availableTargetFrameworks = dependencySets.Select(item => item.TargetFramework).ToList();
+				FrameworkName matchingTargetFramework = PackageManager.SelectBestFrameworkMatch(availableTargetFrameworks);
+
+				NuGet.PackageDependencySet matchingDependencySet = dependencySets.FirstOrDefault(item => item.TargetFramework == matchingTargetFramework);
+				if (matchingDependencySet != null)
 				{
-					if (dependency.VersionSpec != null && dependency.VersionSpec.MinVersion != null)
-						this.dependencies.Add(new PackageName(dependency.Id, dependency.VersionSpec.MinVersion.Version));
-					else
-						this.dependencies.Add(new PackageName(dependency.Id, null));
+					foreach (NuGet.PackageDependency dependency in matchingDependencySet.Dependencies)
+					{
+						if (dependency.VersionSpec != null && dependency.VersionSpec.MinVersion != null)
+							this.dependencies.Add(new PackageName(dependency.Id, dependency.VersionSpec.MinVersion.Version));
+						else
+							this.dependencies.Add(new PackageName(dependency.Id, null));
+					}
 				}
 			}
 		}

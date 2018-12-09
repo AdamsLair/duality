@@ -159,7 +159,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 					}
 					foreach (BaseItem item in this.items)
 					{
-						if (itemFilter != null && !itemFilter(item)) continue;
+						if (this.itemFilter != null && !this.itemFilter(item)) continue;
 						displayedItems.Add(item);
 					}
 				}
