@@ -53,8 +53,6 @@ namespace Duality.Editor.PackageManagement
 		private NuGet.IPackageRepository repository = null;
 		private PackageManagerLogger     logger     = null;
 
-		private object operationLock = new object();
-
 		public event EventHandler<PackageLicenseAgreementEventArgs> PackageLicenseAcceptRequired = null;
 		public event EventHandler<PackageEventArgs>                 PackageInstalled             = null;
 		public event EventHandler<PackageEventArgs>                 PackageUninstalled           = null;
@@ -179,49 +177,46 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="localPackage"></param>
 		public void VerifyPackage(LocalPackage localPackage)
 		{
-			lock (this.operationLock)
+			Version oldPackageVersion = localPackage.Version;
+
+			// Determine the exact version that will be installed
+			PackageInfo packageInfo = this.GetPackage(localPackage.Name);
+			if (packageInfo == null)
 			{
-				Version oldPackageVersion = localPackage.Version;
+				throw new Exception(string.Format(
+					"Can't resolve version of package '{0}'. There seems to be no compatible version available.",
+					localPackage.Id));
+			}
 
-				// Determine the exact version that will be installed
-				PackageInfo packageInfo = this.GetPackage(localPackage.Name);
-				if (packageInfo == null)
+			// Prepare a listener to determine whether we actually installed something
+			EventHandler<PackageOperationEventArgs> installListener = null;
+			bool packageInstalled = false;
+			installListener = delegate(object sender, PackageOperationEventArgs args)
+			{
+				if (args.Package.Id == localPackage.Id)
 				{
-					throw new Exception(string.Format(
-						"Can't resolve version of package '{0}'. There seems to be no compatible version available.",
-						localPackage.Id));
+					packageInstalled = true;
 				}
+			};
 
-				// Prepare a listener to determine whether we actually installed something
-				EventHandler<PackageOperationEventArgs> installListener = null;
-				bool packageInstalled = false;
-				installListener = delegate (object sender, PackageOperationEventArgs args)
-				{
-					if (args.Package.Id == localPackage.Id)
-					{
-						packageInstalled = true;
-					}
-				};
+			// Install the package. Won't do anything if the package is already installed.
+			this.manager.PackageInstalled += installListener;
+			this.InstallPackage(localPackage.Name, true);
+			this.manager.PackageInstalled -= installListener;
 
-				// Install the package. Won't do anything if the package is already installed.
-				this.manager.PackageInstalled += installListener;
-				this.InstallPackage(localPackage.Name, true);
-				this.manager.PackageInstalled -= installListener;
+			// If we didn't install anything, that package was already in the local repo.
+			// Update the local setup to match its specific version.
+			if (!packageInstalled && oldPackageVersion == null)
+			{
+				// Add the explicit version to the PackageConfig file
+				this.setup.Packages.RemoveAll(p => p.Id == packageInfo.Id);
+				this.setup.Packages.Add(new LocalPackage(packageInfo));
+			}
 
-				// If we didn't install anything, that package was already in the local repo.
-				// Update the local setup to match its specific version.
-				if (!packageInstalled && oldPackageVersion == null)
-				{
-					// Add the explicit version to the PackageConfig file
-					this.setup.Packages.RemoveAll(p => p.Id == packageInfo.Id);
-					this.setup.Packages.Add(new LocalPackage(packageInfo));
-				}
-
-				// In case we've just retrieved an explicit version for the first time, save the config file.
-				if (oldPackageVersion == null)
-				{
-					this.setup.Save(this.env.ConfigFilePath);
-				}
+			// In case we've just retrieved an explicit version for the first time, save the config file.
+			if (oldPackageVersion == null)
+			{
+				this.setup.Save(this.env.ConfigFilePath);
 			}
 		}
 		/// <summary>
@@ -237,33 +232,30 @@ namespace Duality.Editor.PackageManagement
 		/// </summary>
 		public void UninstallNonRegisteredPackages()
 		{
-			lock (this.operationLock)
+			IPackage[] allInstalledPackages = this.manager
+				.LocalRepository
+				.GetPackages()
+				.ToArray();
+			LocalPackage[] registeredPackages = this.setup.Packages
+				.ToArray();
+
+			foreach (IPackage package in allInstalledPackages)
 			{
-				IPackage[] allInstalledPackages = this.manager
-					.LocalRepository
-					.GetPackages()
-					.ToArray();
-				LocalPackage[] registeredPackages = this.setup.Packages
-					.ToArray();
+				// Skip non-Duality packages. They're not registered anyway and not expected to.
+				if (!IsDualityPackage(package)) continue;
 
-				foreach (IPackage package in allInstalledPackages)
-				{
-					// Skip non-Duality packages. They're not registered anyway and not expected to.
-					if (!IsDualityPackage(package)) continue;
+				// Skip packages that are registered in the exact same version
+				bool isRegistered = registeredPackages.Any(p => 
+					p.Id == package.Id && 
+					p.Version == package.Version.Version);
+				if (isRegistered) continue;
 
-					// Skip packages that are registered in the exact same version
-					bool isRegistered = registeredPackages.Any(p =>
-						p.Id == package.Id &&
-						p.Version == package.Version.Version);
-					if (isRegistered) continue;
-
-					// Uninstall all others with a force-uninstall. If we happen to remove
-					// a package that is actually still needed, an additional package verification
-					// step afterwards will fix this.
-					this.UninstallPackage(
-						new PackageName(package.Id, package.Version.Version),
-						true);
-				}
+				// Uninstall all others with a force-uninstall. If we happen to remove
+				// a package that is actually still needed, an additional package verification
+				// step afterwards will fix this.
+				this.UninstallPackage(
+					new PackageName(package.Id, package.Version.Version), 
+					true);
 			}
 		}
 
@@ -273,10 +265,7 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="packageName"></param>
 		public void InstallPackage(PackageName packageName)
 		{
-			lock (this.operationLock)
-			{
-				this.InstallPackage(packageName, false);
-			}
+			this.InstallPackage(packageName, false);
 		}
 		private void InstallPackage(PackageName packageName, bool skipLicense)
 		{
@@ -312,10 +301,7 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="packageName"></param>
 		public void UninstallPackage(PackageName packageName)
 		{
-			lock (this.operationLock)
-			{
-				this.UninstallPackage(packageName, false);
-			}
+			this.UninstallPackage(packageName, false);
 		}
 		private void UninstallPackage(PackageName packageName, bool force)
 		{
@@ -395,31 +381,28 @@ namespace Duality.Editor.PackageManagement
 		[DebuggerNonUserCode]
 		public bool CanUninstallPackage(PackageName packageName)
 		{
-			lock (this.operationLock)
-			{
-				NuGet.IPackage uninstallPackage = this.manager.LocalRepository
-					.FindPackagesById(packageName.Id)
-					.FirstOrDefault(p => p.Version.Version == packageName.Version);
-				if (uninstallPackage == null) return false;
+			NuGet.IPackage uninstallPackage = this.manager.LocalRepository
+				.FindPackagesById(packageName.Id)
+				.FirstOrDefault(p => p.Version.Version == packageName.Version);
+			if (uninstallPackage == null) return false;
 
-				bool allowed = true;
-				this.manager.WhatIf = true;
-				this.manager.Logger = null;
-				try
-				{
-					this.manager.UninstallPackage(
-						uninstallPackage,
-						false,
-						true);
-				}
-				catch (Exception)
-				{
-					allowed = false;
-				}
-				this.manager.Logger = this.logger;
-				this.manager.WhatIf = false;
-				return allowed;
+			bool allowed = true;
+			this.manager.WhatIf = true;
+			this.manager.Logger = null;
+			try
+			{
+				this.manager.UninstallPackage(
+					uninstallPackage,
+					false, 
+					true);
 			}
+			catch (Exception)
+			{
+				allowed = false;
+			}
+			this.manager.Logger = this.logger;
+			this.manager.WhatIf = false;
+			return allowed;
 		}
 		/// <summary>
 		/// Updates the specified package to the latest available version.
@@ -427,39 +410,36 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="packageName"></param>
 		public void UpdatePackage(PackageName packageName)
 		{
-			lock (this.operationLock)
+			if (!this.manager.LocalRepository.FindPackagesById(packageName.Id).Any())
 			{
-				if (!this.manager.LocalRepository.FindPackagesById(packageName.Id).Any())
-				{
-					throw new InvalidOperationException(string.Format(
-						"Can't update package '{0}', because it is not installed.",
-						packageName));
-				}
+				throw new InvalidOperationException(string.Format(
+					"Can't update package '{0}', because it is not installed.",
+					packageName));
+		}
 
-				NuGet.IPackage latestPackage = this.cache.GetNuGetPackage(packageName.VersionInvariant);
-				if (latestPackage == null)
-				{
-					throw new InvalidOperationException(string.Format(
-						"Unable to update package '{0}', because no matching package could be found.",
-						packageName));
-				}
+			NuGet.IPackage latestPackage = this.cache.GetNuGetPackage(packageName.VersionInvariant);
+			if (latestPackage == null)
+		{
+				throw new InvalidOperationException(string.Format(
+					"Unable to update package '{0}', because no matching package could be found.",
+					packageName));
+			}
 
-				// Check license terms
-				if (!this.CheckDeepLicenseAgreements(latestPackage))
-				{
-					return;
-				}
-
-				Logs.Editor.Write("Updating package '{0}'...", packageName);
-				Logs.Editor.PushIndent();
-				try
-				{
-					this.manager.UpdatePackage(latestPackage, true, false);
-				}
-				finally
-				{
-					Logs.Editor.PopIndent();
-				}
+			// Check license terms
+			if (!this.CheckDeepLicenseAgreements(latestPackage))
+			{
+				return;
+			}
+			
+			Logs.Editor.Write("Updating package '{0}'...", packageName);
+			Logs.Editor.PushIndent();
+			try
+			{
+				this.manager.UpdatePackage(latestPackage, true, false);
+			}
+			finally
+			{
+				Logs.Editor.PopIndent();
 			}
 		}
 
@@ -475,40 +455,37 @@ namespace Duality.Editor.PackageManagement
 		{
 			if (!File.Exists(this.env.UpdateFilePath)) return false;
 
-			lock (this.operationLock)
+			Logs.Editor.Write("Applying package update...");
+			Logs.Editor.PushIndent();
+			try
 			{
-				Logs.Editor.Write("Applying package update...");
-				Logs.Editor.PushIndent();
+				// Manually perform update operations on the updater itself
 				try
 				{
-					// Manually perform update operations on the updater itself
-					try
-					{
-						Logs.Editor.Write("Preparing updater...");
-						PackageUpdateSchedule schedule = this.PrepareUpdateSchedule();
-						schedule.ApplyUpdaterChanges(this.env.UpdaterExecFilePath);
-						this.SaveUpdateSchedule(schedule);
-					}
-					catch (Exception e)
-					{
-						Logs.Editor.WriteError(
-							"Can't update '{0}', because an error occurred: {1}",
-							this.env.UpdaterExecFilePath,
-							LogFormat.Exception(e));
-						return false;
-					}
-
-					// Run the updater application
-					Logs.Editor.Write("Running updater...");
-					Process.Start(this.env.UpdaterExecFilePath, string.Format("\"{0}\" \"{1}\" \"{2}\"",
-						this.env.UpdateFilePath,
-						restartEditor ? typeof(DualityEditorApp).Assembly.Location : "",
-						restartEditor ? Environment.CurrentDirectory : ""));
+					Logs.Editor.Write("Preparing updater...");
+					PackageUpdateSchedule schedule = this.PrepareUpdateSchedule();
+					schedule.ApplyUpdaterChanges(this.env.UpdaterExecFilePath);
+					this.SaveUpdateSchedule(schedule);
 				}
-				finally
+				catch (Exception e)
 				{
-					Logs.Editor.PopIndent();
+					Logs.Editor.WriteError(
+						"Can't update '{0}', because an error occurred: {1}", 
+						this.env.UpdaterExecFilePath, 
+						LogFormat.Exception(e));
+					return false;
 				}
+
+				// Run the updater application
+				Logs.Editor.Write("Running updater...");
+				Process.Start(this.env.UpdaterExecFilePath, string.Format("\"{0}\" \"{1}\" \"{2}\"",
+					this.env.UpdateFilePath,
+					restartEditor ? typeof(DualityEditorApp).Assembly.Location : "",
+					restartEditor ? Environment.CurrentDirectory : ""));
+			}
+			finally
+			{
+				Logs.Editor.PopIndent();
 			}
 
 			return true;
@@ -521,10 +498,7 @@ namespace Duality.Editor.PackageManagement
 		/// </summary>
 		public void ClearCache()
 		{
-			lock (this.operationLock)
-			{
-				this.cache.Clear();
-			}
+			this.cache.Clear();
 		}
 		/// <summary>
 		/// Enumerates the latest versions of all available Duality packages from
@@ -533,10 +507,7 @@ namespace Duality.Editor.PackageManagement
 		/// <returns></returns>
 		public IEnumerable<PackageInfo> GetLatestDualityPackages()
 		{
-			lock (this.operationLock)
-			{
-				return this.cache.GetLatestDualityPackages();
-			}
+			return this.cache.GetLatestDualityPackages();
 		}
 		/// <summary>
 		/// Retrieves detailed information about the specified package from the
@@ -546,10 +517,7 @@ namespace Duality.Editor.PackageManagement
 		/// <returns></returns>
 		public PackageInfo GetPackage(PackageName name)
 		{
-			lock (this.operationLock)
-			{
-				return this.cache.GetPackage(name);
-			}
+			return this.cache.GetPackage(name);
 		}
 
 		/// <summary>
@@ -558,18 +526,15 @@ namespace Duality.Editor.PackageManagement
 		/// <returns></returns>
 		public IEnumerable<PackageInfo> GetUpdatablePackages()
 		{
-			lock (this.operationLock)
+			List<PackageInfo> updatePackages = new List<PackageInfo>();
+			LocalPackage[] targetPackages = this.setup.Packages.ToArray();
+			for (int i = 0; i < targetPackages.Length; i++)
 			{
-				List<PackageInfo> updatePackages = new List<PackageInfo>();
-				LocalPackage[] targetPackages = this.setup.Packages.ToArray();
-				for (int i = 0; i < targetPackages.Length; i++)
-				{
-					PackageInfo update = this.GetPackage(targetPackages[i].Name.VersionInvariant);
-					if (update.Version <= targetPackages[i].Version) continue;
-					updatePackages.Add(update);
-				}
-				return updatePackages;
+				PackageInfo update = this.GetPackage(targetPackages[i].Name.VersionInvariant);
+				if (update.Version <= targetPackages[i].Version) continue;
+				updatePackages.Add(update);
 			}
+			return updatePackages;
 		}
 		/// <summary>
 		/// Determines compatibility between the current package installs and the specified target package.
@@ -579,59 +544,56 @@ namespace Duality.Editor.PackageManagement
 		/// <returns></returns>
 		public PackageCompatibility GetCompatibilityLevel(PackageInfo target)
 		{
-			lock (this.operationLock)
+			// If the target package is already installed in the matching version, assume compatibility
+			if (this.setup.GetPackage(target.Id, target.Version) != null)
+				return PackageCompatibility.Definite;
+
+			// Determine all packages that might be updated or installed
+			this.dependencyWalker.Clear();
+			this.dependencyWalker.WalkGraph(target);
+			List<PackageInfo> touchedPackages = this.dependencyWalker.VisitedPackages.ToList();
+
+			// Verify properly specified dependencies for Duality packages
+			if (target.IsDualityPackage)
 			{
-				// If the target package is already installed in the matching version, assume compatibility
-				if (this.setup.GetPackage(target.Id, target.Version) != null)
-					return PackageCompatibility.Definite;
-
-				// Determine all packages that might be updated or installed
-				this.dependencyWalker.Clear();
-				this.dependencyWalker.WalkGraph(target);
-				List<PackageInfo> touchedPackages = this.dependencyWalker.VisitedPackages.ToList();
-
-				// Verify properly specified dependencies for Duality packages
-				if (target.IsDualityPackage)
-				{
-					// If none of the targets deep dependencies is anyhow related to Duality, assume they're incomplete and potentially incompatible
-					bool anyDualityDependency = false;
-					foreach (PackageInfo package in touchedPackages)
-					{
-						if (DualityPackageNames.Any(name => string.Equals(name, package.Id)))
-						{
-							anyDualityDependency = true;
-							break;
-						}
-					}
-					if (!anyDualityDependency)
-						return PackageCompatibility.None;
-				}
-
-				// Generate a mapping to already installed packages
-				Dictionary<PackageInfo, LocalPackage> localMap = new Dictionary<PackageInfo, LocalPackage>();
+				// If none of the targets deep dependencies is anyhow related to Duality, assume they're incomplete and potentially incompatible
+				bool anyDualityDependency = false;
 				foreach (PackageInfo package in touchedPackages)
 				{
-					LocalPackage local = this.setup.GetPackage(package.Id);
-					if (local == null) continue;
-
-					localMap.Add(package, local);
+					if (DualityPackageNames.Any(name => string.Equals(name, package.Id)))
+					{
+						anyDualityDependency = true;
+						break;
+					}
 				}
-
-				// Determine the maximum version difference between target and installed
-				PackageCompatibility compatibility = PackageCompatibility.Definite;
-				foreach (var pair in localMap)
-				{
-					Version targetVersion = pair.Key.Version;
-					Version localVersion = pair.Value.Version;
-
-					if (localVersion.Major != targetVersion.Major)
-						compatibility = compatibility.Combine(PackageCompatibility.Unlikely);
-					else if (localVersion.Minor != targetVersion.Minor)
-						compatibility = compatibility.Combine(PackageCompatibility.Likely);
-				}
-
-				return compatibility;
+				if (!anyDualityDependency)
+					return PackageCompatibility.None;
 			}
+
+			// Generate a mapping to already installed packages
+			Dictionary<PackageInfo,LocalPackage> localMap = new Dictionary<PackageInfo,LocalPackage>();
+			foreach (PackageInfo package in touchedPackages)
+			{
+				LocalPackage local = this.setup.GetPackage(package.Id);
+				if (local == null) continue;
+
+				localMap.Add(package, local);
+			}
+
+			// Determine the maximum version difference between target and installed
+			PackageCompatibility compatibility = PackageCompatibility.Definite;
+			foreach (var pair in localMap)
+			{
+				Version targetVersion = pair.Key.Version;
+				Version localVersion = pair.Value.Version;
+				
+				if (localVersion.Major != targetVersion.Major)
+					compatibility = compatibility.Combine(PackageCompatibility.Unlikely);
+				else if (localVersion.Minor != targetVersion.Minor)
+					compatibility = compatibility.Combine(PackageCompatibility.Likely);
+			}
+
+			return compatibility;
 		}
 
 		/// <summary>
@@ -643,20 +605,17 @@ namespace Duality.Editor.PackageManagement
 		{
 			if (packages.Count < 2) return;
 
-			lock (this.operationLock)
-			{
-				// Determine the number of deep dependencies for each package
-				this.dependencyWalker.Clear();
-				this.dependencyWalker.WalkGraph(packages);
+			// Determine the number of deep dependencies for each package
+			this.dependencyWalker.Clear();
+			this.dependencyWalker.WalkGraph(packages);
 
-				// Sort packages according to their deep dependency counts
-				packages.StableSort((a, b) =>
-				{
-					int countA = (a == null) ? 0 : this.dependencyWalker.GetDependencyCount(a.Name);
-					int countB = (b == null) ? 0 : this.dependencyWalker.GetDependencyCount(b.Name);
-					return countA - countB;
-				});
-			}
+			// Sort packages according to their deep dependency counts
+			packages.StableSort((a, b) =>
+			{
+				int countA = (a == null) ? 0 : this.dependencyWalker.GetDependencyCount(a.Name);
+				int countB = (b == null) ? 0 : this.dependencyWalker.GetDependencyCount(b.Name);
+				return countA - countB;
+			});
 		}
 		/// <summary>
 		/// Sorts the specified list of packages according to their dependencies, guaranteeing that no package
@@ -665,37 +624,34 @@ namespace Duality.Editor.PackageManagement
 		/// </summary>
 		public void OrderByDependencies(IList<LocalPackage> packages)
 		{
-			lock (this.operationLock)
+			// Map each list entry to its PackageInfo
+			PackageInfo[] localInfo = packages
+				.Select(p => p.Info ?? this.GetPackage(p.Name))
+				.NotNull()
+				.ToArray();
+
+			// Sort the mapped list
+			this.OrderByDependencies(localInfo);
+
+			// Now sort the original list to match the sorted mapped list
+			LocalPackage[] originalPackages = packages.ToArray();
+			int nonSortedCount = 0;
+			for (int i = 0; i < originalPackages.Length; i++)
 			{
-				// Map each list entry to its PackageInfo
-				PackageInfo[] localInfo = packages
-					.Select(p => p.Info ?? this.GetPackage(p.Name))
-					.NotNull()
-					.ToArray();
+				LocalPackage localPackage = originalPackages[i];
 
-				// Sort the mapped list
-				this.OrderByDependencies(localInfo);
+				int newIndex = localInfo.IndexOfFirst(p => p.Id == localPackage.Id && p.Version == localPackage.Version);
+				if (newIndex == -1)
+					newIndex = localInfo.IndexOfFirst(p => p.Id == localPackage.Id);
 
-				// Now sort the original list to match the sorted mapped list
-				LocalPackage[] originalPackages = packages.ToArray();
-				int nonSortedCount = 0;
-				for (int i = 0; i < originalPackages.Length; i++)
+				// Unresolved packages are always last in the sorted list
+				if (newIndex == -1)
 				{
-					LocalPackage localPackage = originalPackages[i];
-
-					int newIndex = localInfo.IndexOfFirst(p => p.Id == localPackage.Id && p.Version == localPackage.Version);
-					if (newIndex == -1)
-						newIndex = localInfo.IndexOfFirst(p => p.Id == localPackage.Id);
-
-					// Unresolved packages are always last in the sorted list
-					if (newIndex == -1)
-					{
-						newIndex = packages.Count - nonSortedCount - 1;
-						nonSortedCount++;
-					}
-
-					packages[newIndex] = localPackage;
+					newIndex = packages.Count - nonSortedCount - 1;
+					nonSortedCount++;
 				}
+
+				packages[newIndex] = localPackage;
 			}
 		}
 
