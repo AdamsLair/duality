@@ -5,10 +5,10 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 {
 	public class SetAtlasRectPivotAction : UndoRedoAction
 	{
-		private Vector2  pivot         = Vector2.Zero;
-		private Vector2? originalPivot = null;
-		private int      atlasIndex    = -1;
-		private Pixmap   pixmap        = null;
+		private Vector2           pivot         = Vector2.Zero;
+		private Vector2?          originalPivot = null;
+		private readonly int      atlasIndex    = -1;
+		private readonly Pixmap   pixmap        = null;
 
 		public override string Name
 		{
