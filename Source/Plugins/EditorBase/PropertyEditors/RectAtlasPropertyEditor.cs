@@ -46,6 +46,13 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			}
 		}
 
+		protected override void OnGetValue()
+		{
+			base.OnGetValue();
+			foreach (PropertyEditor e in this.ChildEditors)
+				e.PerformGetValue();
+		}
+
 		private Func<IEnumerable<object>> CreateRectsGetter()
 		{
 			return () => this.GetValue().Cast<IList<Rect>>();
