@@ -871,7 +871,7 @@ namespace Duality.Editor.PackageManagement
 
 				// Select the closest matching framework this package has and use all of its files,
 				// and none of the others
-				FrameworkName matchingFramework = this.SelectBestFrameworkMatch(availableFrameworks);
+				FrameworkName matchingFramework = SelectBestFrameworkMatch(availableFrameworks);
 				applicableLibFiles.AddRange(libFiles.Where(f => f.TargetFramework == matchingFramework));
 
 				// Check if we have files without a target framework that do not have an equivalent
@@ -931,66 +931,6 @@ namespace Duality.Editor.PackageManagement
 			}
 
 			return fileMapping;
-		}
-
-		/// <summary>
-		/// From the given list of target frameworks, this methods selects the one that best matches
-		/// the one we want for installed packages.
-		/// </summary>
-		/// <param name="frameworks"></param>
-		/// <returns></returns>
-		private FrameworkName SelectBestFrameworkMatch(List<FrameworkName> frameworks)
-		{
-			int highestScore = -1;
-			FrameworkName bestMatch = null;
-			foreach (FrameworkName framework in frameworks)
-			{
-				int score = this.GetFrameworkMatchScore(framework);
-				if (score > highestScore)
-				{
-					highestScore = score;
-					bestMatch = framework;
-				}
-			}
-			return bestMatch;
-		}
-		/// <summary>
-		/// Determines a score value for the given target framework representing how well it
-		/// matches the one we want for installed packages.
-		/// </summary>
-		/// <param name="framework"></param>
-		/// <returns></returns>
-		private int GetFrameworkMatchScore(FrameworkName framework)
-		{
-			// A null framework is a valid value, as it represents NuGet package files
-			// that are not associated with any specific target framework. For legacy
-			// reasons, we score them slightly higher than defined, but completely unknown
-			// frameworks.
-			if (framework == null) return 1;
-
-			// Since the context of our package selection is editor and desktop deployment
-			// we'll prefer .NET Framework 4.5 binaries over others.
-			switch (framework.Identifier)
-			{
-				case ".NETPortable":
-					if (framework.Profile == "net45+win8+wpa81") // Profile 111
-						return 50;
-					else if (framework.Profile.Contains("net45"))
-						return 49;
-					else if (framework.Profile.Contains("net40"))
-						return 48;
-					else
-						return 40;
-				case ".NETFramework":
-					if (framework.Version == new Version(4, 5))
-						return 100;
-					else if (framework.Version < new Version(4, 5))
-						return 90;
-					else
-						return 80;
-				default:
-					return 0;
-			}
 		}
 
 		private void OnPackageInstalled(PackageEventArgs args)
@@ -1143,6 +1083,66 @@ namespace Duality.Editor.PackageManagement
 			if (result == DialogResult.OK)
 			{
 				args.AcceptLicense();
+			}
+		}
+
+		/// <summary>
+		/// From the given list of target frameworks, this methods selects the one that best matches
+		/// the one we want for installed packages.
+		/// </summary>
+		/// <param name="frameworks"></param>
+		/// <returns></returns>
+		internal static FrameworkName SelectBestFrameworkMatch(List<FrameworkName> frameworks)
+		{
+			int highestScore = -1;
+			FrameworkName bestMatch = null;
+			foreach (FrameworkName framework in frameworks)
+			{
+				int score = GetFrameworkMatchScore(framework);
+				if (score > highestScore)
+				{
+					highestScore = score;
+					bestMatch = framework;
+				}
+			}
+			return bestMatch;
+		}
+		/// <summary>
+		/// Determines a score value for the given target framework representing how well it
+		/// matches the one we want for installed packages.
+		/// </summary>
+		/// <param name="framework"></param>
+		/// <returns></returns>
+		private static int GetFrameworkMatchScore(FrameworkName framework)
+		{
+			// A null framework is a valid value, as it represents NuGet package files
+			// that are not associated with any specific target framework. For legacy
+			// reasons, we score them slightly higher than defined, but completely unknown
+			// frameworks.
+			if (framework == null) return 1;
+
+			// Since the context of our package selection is editor and desktop deployment
+			// we'll prefer .NET Framework 4.5 binaries over others.
+			switch (framework.Identifier)
+			{
+				case ".NETPortable":
+					if (framework.Profile == "net45+win8+wpa81") // Profile 111
+						return 50;
+					else if (framework.Profile.Contains("net45"))
+						return 49;
+					else if (framework.Profile.Contains("net40"))
+						return 48;
+					else
+						return 40;
+				case ".NETFramework":
+					if (framework.Version == new Version(4, 5))
+						return 100;
+					else if (framework.Version < new Version(4, 5))
+						return 90;
+					else
+						return 80;
+				default:
+					return 0;
 			}
 		}
 	}
