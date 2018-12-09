@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
-using System.Xml;
-using System.Xml.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Runtime.Versioning;
@@ -46,8 +43,9 @@ namespace Duality.Editor.PackageManagement
 		private PackageManagerEnvironment env          = null;
 		private PackageCache              cache        = null;
 
-		private Dictionary<PackageName,bool> licenseAccepted  = new Dictionary<PackageName,bool>();
-		private PackageDependencyWalker      dependencyWalker = null;
+		private Dictionary<PackageName,bool>  licenseAccepted      = new Dictionary<PackageName,bool>();
+		private List<PackageDependencyWalker> dependencyWalkerPool = new List<PackageDependencyWalker>();
+		private object                        dependencyWalkerLock = new object();
 
 		private NuGet.PackageManager     manager    = null;
 		private NuGet.IPackageRepository repository = null;
@@ -161,8 +159,6 @@ namespace Duality.Editor.PackageManagement
 
 			this.logger = new PackageManagerLogger();
 			this.manager.Logger = this.logger;
-
-			this.dependencyWalker = new PackageDependencyWalker(this.GetPackage);
 
 			// Retrieve information about local packages
 			this.RetrieveLocalPackageInfo();
@@ -321,10 +317,11 @@ namespace Duality.Editor.PackageManagement
 				List<PackageInfo> uninstallDependencies = new List<PackageInfo>();
 				if (uninstallPackageInfo != null)
 				{
-					this.dependencyWalker.Clear();
-					this.dependencyWalker.WalkGraph(uninstallPackageInfo);
-					uninstallDependencies.AddRange(this.dependencyWalker.VisitedPackages);
+					PackageDependencyWalker dependencyWalker = this.RentDependencyWalker();
+					dependencyWalker.WalkGraph(uninstallPackageInfo);
+					uninstallDependencies.AddRange(dependencyWalker.VisitedPackages);
 					uninstallDependencies.RemoveAll(package => package.Id == uninstallPackageInfo.Id);
+					this.ReturnDependencyWalker(ref dependencyWalker);
 				}
 
 				// Filter out all dependencies that are used by other Duality packages
@@ -335,15 +332,16 @@ namespace Duality.Editor.PackageManagement
 					PackageInfo otherPackageInfo = otherPackage.Info ?? this.GetPackage(otherPackage.Name);
 					if (otherPackageInfo == null) continue;
 				
-					this.dependencyWalker.Clear();
-					this.dependencyWalker.IgnorePackage(uninstallPackage.Id);
-					this.dependencyWalker.WalkGraph(otherPackageInfo);
-					foreach (PackageInfo dependency in this.dependencyWalker.VisitedPackages)
+					PackageDependencyWalker dependencyWalker = this.RentDependencyWalker();
+					dependencyWalker.IgnorePackage(uninstallPackage.Id);
+					dependencyWalker.WalkGraph(otherPackageInfo);
+					foreach (PackageInfo dependency in dependencyWalker.VisitedPackages)
 					{
 						// Don't check versions, as dependencies are usually not resolved
 						// with an exact version match.
 						uninstallDependencies.RemoveAll(item => item.Id == dependency.Id);
 					}
+					this.ReturnDependencyWalker(ref dependencyWalker);
 				}
 
 				// Uninstall the package itself
@@ -549,9 +547,10 @@ namespace Duality.Editor.PackageManagement
 				return PackageCompatibility.Definite;
 
 			// Determine all packages that might be updated or installed
-			this.dependencyWalker.Clear();
-			this.dependencyWalker.WalkGraph(target);
-			List<PackageInfo> touchedPackages = this.dependencyWalker.VisitedPackages.ToList();
+			PackageDependencyWalker dependencyWalker = this.RentDependencyWalker();
+			dependencyWalker.WalkGraph(target);
+			List<PackageInfo> touchedPackages = dependencyWalker.VisitedPackages.ToList();
+			this.ReturnDependencyWalker(ref dependencyWalker);
 
 			// Verify properly specified dependencies for Duality packages
 			if (target.IsDualityPackage)
@@ -606,16 +605,18 @@ namespace Duality.Editor.PackageManagement
 			if (packages.Count < 2) return;
 
 			// Determine the number of deep dependencies for each package
-			this.dependencyWalker.Clear();
-			this.dependencyWalker.WalkGraph(packages);
+			PackageDependencyWalker dependencyWalker = this.RentDependencyWalker();
+			dependencyWalker.WalkGraph(packages);
 
 			// Sort packages according to their deep dependency counts
 			packages.StableSort((a, b) =>
 			{
-				int countA = (a == null) ? 0 : this.dependencyWalker.GetDependencyCount(a.Name);
-				int countB = (b == null) ? 0 : this.dependencyWalker.GetDependencyCount(b.Name);
+				int countA = (a == null) ? 0 : dependencyWalker.GetDependencyCount(a.Name);
+				int countB = (b == null) ? 0 : dependencyWalker.GetDependencyCount(b.Name);
 				return countA - countB;
 			});
+
+			this.ReturnDependencyWalker(ref dependencyWalker);
 		}
 		/// <summary>
 		/// Sorts the specified list of packages according to their dependencies, guaranteeing that no package
@@ -698,13 +699,52 @@ namespace Duality.Editor.PackageManagement
 			return PackageRepositoryFactory.Default.CreateRepository(repositoryUrl);
 		}
 
+		/// <summary>
+		/// Rents a pooled <see cref="PackageDependencyWalker"/> instance, or allocates a new one when required.
+		/// Not returning a rented instance will harm efficiency, but not cause a leak.
+		/// </summary>
+		/// <returns></returns>
+		private PackageDependencyWalker RentDependencyWalker()
+		{
+			lock (this.dependencyWalkerLock)
+			{
+				if (this.dependencyWalkerPool.Count == 0)
+				{
+					return new PackageDependencyWalker(this.GetPackage);
+				}
+				else
+				{
+					int lastWalkerIndex = this.dependencyWalkerPool.Count - 1;
+					PackageDependencyWalker walker = this.dependencyWalkerPool[lastWalkerIndex];
+					this.dependencyWalkerPool.RemoveAt(lastWalkerIndex);
+					return walker;
+				}
+			}
+		}
+		/// <summary>
+		/// Returns a previously rented <see cref="PackageDependencyWalker"/> instance, and nullifies the
+		/// provided reference to it afterwards to avoid further use.
+		/// </summary>
+		/// <param name="walker"></param>
+		private void ReturnDependencyWalker(ref PackageDependencyWalker walker)
+		{
+			walker.Clear();
+			lock (this.dependencyWalkerLock)
+			{
+				this.dependencyWalkerPool.Add(walker);
+				walker = null;
+			}
+		}
+
 		private bool CheckDeepLicenseAgreements(NuGet.IPackage package)
 		{
-			this.dependencyWalker.Clear();
-			this.dependencyWalker.WalkGraph(new PackageName(package.Id, package.Version.Version));
+			PackageDependencyWalker dependencyWalker = this.RentDependencyWalker();
+			dependencyWalker.WalkGraph(new PackageName(package.Id, package.Version.Version));
 
-			List<PackageInfo> packageGraph = this.dependencyWalker.VisitedPackages.ToList();
+			List<PackageInfo> packageGraph = dependencyWalker.VisitedPackages.ToList();
 			List<NuGet.IPackage> installedPackages = this.manager.LocalRepository.GetPackages().ToList();
+
+			this.ReturnDependencyWalker(ref dependencyWalker);
 
 			foreach (PackageInfo visitedPackage in packageGraph)
 			{
