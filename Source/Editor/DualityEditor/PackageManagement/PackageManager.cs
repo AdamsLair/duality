@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Runtime.Versioning;
 
 using NuGet;
 
@@ -33,7 +34,7 @@ namespace Duality.Editor.PackageManagement
 		/// If none of these show up anywhere in the deep dependency graph of a Duality package,
 		/// it will be assumed that dependencies are simply not specified properly.
 		/// </summary>
-		private readonly string[] DualityPackageNames = new string[] 
+		private static readonly string[] DualityPackageNames = new string[] 
 		{
 			"AdamsLair.Duality",
 			"AdamsLair.Duality.Editor",
@@ -803,14 +804,58 @@ namespace Duality.Editor.PackageManagement
 				contentBaseDir = this.env.RootPath;
 			}
 
-			IPackageFile[] packageFiles;
+			List<IPackageFile> applicableFiles = new List<IPackageFile>();
 			try
 			{
-				packageFiles = package.GetFiles()
-					.Where(f => f.TargetFramework == null || f.TargetFramework.Version < Environment.Version)
-					.OrderByDescending(f => f.TargetFramework == null ? new Version() : f.TargetFramework.Version)
-					.OrderByDescending(f => f.TargetFramework == null)
-					.ToArray();
+				// Separate package files in to framework-dependent lib files and framework-independent 
+				// non-lib files. Those include content and source files, but also any other folder structure
+				// that isn't specifically a lib binary.
+				List<IPackageFile> files = package.GetFiles().ToList();
+				List<IPackageFile> libFiles = new List<IPackageFile>();
+				List<IPackageFile> nonLibFiles = new List<IPackageFile>();
+				foreach (IPackageFile file in files)
+				{
+					string path = file.Path.Replace('/', '\\');
+					bool isLibFile = path.StartsWith("lib\\");
+					if (isLibFile)
+						libFiles.Add(file);
+					else
+						nonLibFiles.Add(file);
+				}
+				List<IPackageFile> applicableLibFiles = new List<IPackageFile>();
+
+				// Determine which frameworks are available in this package.
+				// Note that due to the NuGet version we're using, .NETStandard target frameworks
+				// are unknown and will be returned as "Unsupported, Version 0.0".
+				List<FrameworkName> availableFrameworks = libFiles.Select(f => f.TargetFramework).Distinct().ToList();
+
+				// Select the closest matching framework this package has and use all of its files,
+				// and none of the others
+				FrameworkName matchingFramework = this.SelectBestFrameworkMatch(availableFrameworks);
+				applicableLibFiles.AddRange(libFiles.Where(f => f.TargetFramework == matchingFramework));
+
+				// Check if we have files without a target framework that do not have an equivalent
+				// in the files from the selected match. To support legacy packages, we'll use them
+				// as a fallback. Packages that do this are for example AdamsLair.OpenTK, AdamsLair.WinForms
+				// and others which have a set of explicit root files and a subset of implicit framework files.
+				if (matchingFramework != null)
+				{
+					List<IPackageFile> rootFiles = libFiles.Where(f => f.TargetFramework == null).ToList();
+					foreach (IPackageFile file in rootFiles)
+					{
+						string fileName = Path.GetFileName(file.Path);
+						bool hasOverride = applicableLibFiles.Any(f => Path.GetFileName(f.Path) == fileName);
+						if (!hasOverride)
+						{
+							applicableLibFiles.Add(file);
+						}
+					}
+				}
+
+				// Non-lib files (content, source) are treated differently and used as-is, since they are
+				// not dependent on any target framework and just carried over.
+				applicableFiles.AddRange(applicableLibFiles);
+				applicableFiles.AddRange(nonLibFiles);
 			}
 			catch (DirectoryNotFoundException)
 			{
@@ -818,7 +863,7 @@ namespace Duality.Editor.PackageManagement
 				return fileMapping;
 			}
 
-			foreach (IPackageFile f in packageFiles)
+			foreach (IPackageFile f in applicableFiles)
 			{
 				// Determine where the file needs to go
 				string targetPath = f.EffectivePath;
@@ -848,6 +893,66 @@ namespace Duality.Editor.PackageManagement
 			return fileMapping;
 		}
 
+		/// <summary>
+		/// From the given list of target frameworks, this methods selects the one that best matches
+		/// the one we want for installed packages.
+		/// </summary>
+		/// <param name="frameworks"></param>
+		/// <returns></returns>
+		private FrameworkName SelectBestFrameworkMatch(List<FrameworkName> frameworks)
+		{
+			int highestScore = -1;
+			FrameworkName bestMatch = null;
+			foreach (FrameworkName framework in frameworks)
+			{
+				int score = this.GetFrameworkMatchScore(framework);
+				if (score > highestScore)
+				{
+					highestScore = score;
+					bestMatch = framework;
+				}
+			}
+			return bestMatch;
+		}
+		/// <summary>
+		/// Determines a score value for the given target framework representing how well it
+		/// matches the one we want for installed packages.
+		/// </summary>
+		/// <param name="framework"></param>
+		/// <returns></returns>
+		private int GetFrameworkMatchScore(FrameworkName framework)
+		{
+			// A null framework is a valid value, as it represents NuGet package files
+			// that are not associated with any specific target framework. For legacy
+			// reasons, we score them slightly higher than defined, but completely unknown
+			// frameworks.
+			if (framework == null) return 1;
+
+			// Since the context of our package selection is editor and desktop deployment
+			// we'll prefer .NET Framework 4.5 binaries over others.
+			switch (framework.Identifier)
+			{
+				case ".NETPortable":
+					if (framework.Profile == "net45+win8+wpa81") // Profile 111
+						return 50;
+					else if (framework.Profile.Contains("net45"))
+						return 49;
+					else if (framework.Profile.Contains("net40"))
+						return 48;
+					else
+						return 40;
+				case ".NETFramework":
+					if (framework.Version == new Version(4, 5))
+						return 100;
+					else if (framework.Version < new Version(4, 5))
+						return 90;
+					else
+						return 80;
+				default:
+					return 0;
+			}
+		}
+
 		private void OnPackageInstalled(PackageEventArgs args)
 		{
 			if (this.PackageInstalled != null)
@@ -868,7 +973,7 @@ namespace Duality.Editor.PackageManagement
 
 			// Schedule files for removal
 			PackageUpdateSchedule updateSchedule = this.PrepareUpdateSchedule();
-			foreach (var packageFile in localFiles)
+			foreach (string packageFile in localFiles)
 			{
 				// Don't remove any file that is still referenced by a local package
 				bool stillInUse = false;

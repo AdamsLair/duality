@@ -138,6 +138,31 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
 			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
 		}
+		[Test, TestCaseSource("InstallPackageWithFrameworkFolderTestCases")]
+		public void InstallPackageWithFrameworkFolder(PackageOperationTestCase testCase)
+		{
+			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
+
+			// Prepare the test by setting up remote repository and pre-installed local packages
+			this.SetupReporistoryForTest(testCase.Repository);
+			this.SetupPackagesForTest(packageManager, testCase.Setup);
+
+			using (PackageEventListener listener = new PackageEventListener(packageManager))
+			{
+				// Find and install the package to test
+				packageManager.InstallPackage(testCase.Target.Name);
+
+				// Assert that the expected events were fired
+				listener.AssertChanges(
+					testCase.Installed,
+					testCase.Uninstalled);
+			}
+
+			// Assert client state / setup after the install was done
+			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync");
+			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
+			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
+		}
 		[Test, TestCaseSource("UninstallPackageTestCases")]
 		public void UninstallPackage(PackageOperationTestCase testCase)
 		{
@@ -224,20 +249,18 @@ namespace Duality.Editor.PackageManagement.Tests
 
 		private IEnumerable<PackageOperationTestCase> InstallPackageTestCases()
 		{
-			// Note that NuGet by default does not recognize lib subfolders during installation.
-			// The files will be packaged with subfolders, but their EffectivePath won't include
-			// them - which is why, unless Duality addresses this at some point in the future, 
-			// all plugins will end up in the Plugins root folder, regardless of their previous
-			// hierarchy.
+			// Note that NuGet treats the very first lib subfolder as a target framework specifier,
+			// so we can't naively use a folder structure in the lib package directory. Otherwise,
+			// it will be treated as an unsupported / unknown target framework.
 
 			List<PackageOperationTestCase> cases = new List<PackageOperationTestCase>();
 
 			// Duality plugin without any dependencies
 			MockPackageSpec dualityPluginA = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA");
-			dualityPluginA.Files.Add("Subfolder\\TestPluginA.Second.dll", "lib\\Subfolder");
-			dualityPluginA.Files.Add("Data\\TestPluginA\\SomeRes.Pixmap.res", "content\\TestPluginA");
-			dualityPluginA.Files.Add("Source\\Foo\\SomeCode.cs", "source\\Foo");
-			dualityPluginA.LocalMapping.Add("lib\\Subfolder\\TestPluginA.Second.dll", "Plugins\\TestPluginA.Second.dll");
+			dualityPluginA.AddFile("Subfolder\\TestPluginA.Second.dll", "lib");
+			dualityPluginA.AddFile("Data\\TestPluginA\\SomeRes.Pixmap.res", "content\\TestPluginA");
+			dualityPluginA.AddFile("Source\\Foo\\SomeCode.cs", "source\\Foo");
+			dualityPluginA.LocalMapping.Add("lib\\TestPluginA.Second.dll", "Plugins\\TestPluginA.Second.dll");
 			dualityPluginA.LocalMapping.Add("content\\TestPluginA\\SomeRes.Pixmap.res", "Data\\TestPluginA\\SomeRes.Pixmap.res");
 			dualityPluginA.LocalMapping.Add("source\\Foo\\SomeCode.cs", "Source\\Code\\AdamsLair.Duality.TestPluginA\\Foo\\SomeCode.cs");
 
@@ -257,7 +280,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			// Duality plugin depending on a non-Duality NuGet package
 			MockPackageSpec otherLibraryA = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryA");
-			otherLibraryA.Files.Add("Data\\TestLibraryA\\SomeFile.txt", "content\\TestLibraryA");
+			otherLibraryA.AddFile("Data\\TestLibraryA\\SomeFile.txt", "content\\TestLibraryA");
 			otherLibraryA.LocalMapping.Add("content\\TestLibraryA\\SomeFile.txt", "TestLibraryA\\SomeFile.txt");
 
 			MockPackageSpec dualityPluginC = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC");
@@ -270,7 +293,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			
 			// Duality package that is not a plugin
 			MockPackageSpec dualityNonPluginA = MockPackageSpec.CreateDualityCorePart("AdamsLair.Duality.TestNonPluginA");
-			dualityNonPluginA.Files.Add("Data\\TestNonPluginA\\SomeFile.txt", "content\\TestNonPluginA");
+			dualityNonPluginA.AddFile("Data\\TestNonPluginA\\SomeFile.txt", "content\\TestNonPluginA");
 			dualityNonPluginA.LocalMapping.Add("content\\TestNonPluginA\\SomeFile.txt", "TestNonPluginA\\SomeFile.txt");
 
 			cases.Add(new PackageOperationTestCase(
@@ -309,6 +332,206 @@ namespace Duality.Editor.PackageManagement.Tests
 				new[] { dualityPluginA_New },
 				dualityPluginB, 
 				new[] { dualityPluginA_New, dualityPluginB }));
+
+			return cases;
+		}
+		private IEnumerable<PackageOperationTestCase> InstallPackageWithFrameworkFolderTestCases()
+		{
+			List<PackageOperationTestCase> cases = new List<PackageOperationTestCase>();
+
+			// Files are located in lib root, without any framework folder
+			{
+				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
+					"AdamsLair.Duality.TestPlugin", 
+					new Version(1, 0, 0, 0), 
+					null);
+				cases.Add(new PackageOperationTestCase(
+					"No Framework",
+					spec,
+					new[] { spec }));
+			}
+
+			// Files are located in a Portable Profile 111 framework lib folder
+			{
+				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
+					"AdamsLair.Duality.TestPlugin",
+					new Version(1, 0, 0, 0),
+					"portable-net45+win8+wpa81");
+				cases.Add(new PackageOperationTestCase(
+					"Portable Profile 111",
+					spec,
+					new[] { spec }));
+			}
+
+			// Files are located in a Portable Profile 328 framework lib folder
+			{
+				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
+					"AdamsLair.Duality.TestPlugin",
+					new Version(1, 0, 0, 0),
+					"portable-net40+sl5+win8+wp8+wpa81");
+				cases.Add(new PackageOperationTestCase(
+					"Portable Profile 328",
+					spec,
+					new[] { spec }));
+			}
+
+			// Files are located in a .NET Framework 4.5 framework lib folder
+			{
+				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
+					"AdamsLair.Duality.TestPlugin",
+					new Version(1, 0, 0, 0),
+					"net45");
+				cases.Add(new PackageOperationTestCase(
+					".NET Framework 4.5",
+					spec,
+					new[] { spec }));
+			}
+
+			// Files are located in a .NET Framework 2.0 framework lib folder
+			{
+				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
+					"AdamsLair.Duality.TestPlugin",
+					new Version(1, 0, 0, 0),
+					"net20");
+				cases.Add(new PackageOperationTestCase(
+					".NET Framework 2.0",
+					spec,
+					new[] { spec }));
+			}
+
+			// Files are located in a .NET Standard 1.1 framework lib folder
+			{
+				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
+					"AdamsLair.Duality.TestPlugin",
+					new Version(1, 0, 0, 0),
+					"netstandard1.1");
+				cases.Add(new PackageOperationTestCase(
+					".NET Standard 1.1",
+					spec,
+					new[] { spec }));
+			}
+
+			// Files are located in a .NET Standard 2.0 framework lib folder
+			{
+				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
+					"AdamsLair.Duality.TestPlugin",
+					new Version(1, 0, 0, 0),
+					"netstandard2.0");
+				cases.Add(new PackageOperationTestCase(
+					".NET Standard 2.0",
+					spec,
+					new[] { spec }));
+			}
+
+			// Different versions of the binaries are located in various framework folders, as well as the root folder
+			{
+				MockPackageSpec spec = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
+				spec.Tags.Add(PackageManager.DualityTag);
+				spec.Tags.Add(PackageManager.PluginTag);
+
+				// See here for a big list: https://docs.microsoft.com/en-us/nuget/reference/target-frameworks
+				spec.AddFile("TestPlugin-Root.dll", "lib");
+				spec.AddFile("TestPlugin-Portable111.dll", "lib\\portable-net45+win8+wpa81");
+				spec.AddFile("TestPlugin-Portable328.dll", "lib\\portable-net40+sl5+win8+wp8+wpa81");
+				spec.AddFile("TestPlugin-NetFramework47.dll", "lib\\net47");
+				spec.AddFile("TestPlugin-NetFramework46.dll", "lib\\net46");
+				spec.AddFile("TestPlugin-NetFramework45.dll", "lib\\net45");
+				spec.AddFile("TestPlugin-NetFramework40.dll", "lib\\net40");
+				spec.AddFile("TestPlugin-NetFramework30.dll", "lib\\net30");
+				spec.AddFile("TestPlugin-NetFramework20.dll", "lib\\net20");
+				spec.AddFile("TestPlugin-NetCore.dll", "lib\\netcore");
+				spec.AddFile("TestPlugin-NetCore451.dll", "lib\\netcore451");
+				spec.AddFile("TestPlugin-NetStandard10.dll", "lib\\netstandard1.0");
+				spec.AddFile("TestPlugin-NetStandard11.dll", "lib\\netstandard1.1");
+				spec.AddFile("TestPlugin-NetStandard13.dll", "lib\\netstandard1.3");
+				spec.AddFile("TestPlugin-NetStandard20.dll", "lib\\netstandard2.0");
+				spec.AddFile("TestPlugin-NetStandard21.dll", "lib\\netstandard2.1");
+				spec.AddFile("TestPlugin-NetStandard30.dll", "lib\\netstandard3.0");
+				spec.AddFile("TestPlugin-FooFramework.dll", "lib\\fooframework");
+
+				// We expect the package manager to make a choice to find the closest matching framework.
+				// Since the context of the package manager is editor / desktop development for now, we
+				// expect to prefer the closest we can get to .NET Framework 4.5, as that's what the editor
+				// is compiled with.
+				spec.LocalMapping.Add(
+					"lib\\net45\\TestPlugin-NetFramework45.dll",
+					"Plugins\\TestPlugin-NetFramework45.dll");
+
+				cases.Add(new PackageOperationTestCase(
+					"Primary Preference .NET Framework 4.5",
+					spec,
+					new[] { spec }));
+			}
+
+			// Different versions of binaries again. Checking for secondary portable / profile 111 preference this time
+			{
+				MockPackageSpec spec = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
+				spec.Tags.Add(PackageManager.DualityTag);
+				spec.Tags.Add(PackageManager.PluginTag);
+
+				// See here for a big list: https://docs.microsoft.com/en-us/nuget/reference/target-frameworks
+				spec.AddFile("TestPlugin-Root.dll", "lib");
+				spec.AddFile("TestPlugin-Portable111.dll", "lib\\portable-net45+win8+wpa81");
+				spec.AddFile("TestPlugin-Portable328.dll", "lib\\portable-net40+sl5+win8+wp8+wpa81");
+				spec.AddFile("TestPlugin-NetCore.dll", "lib\\netcore");
+				spec.AddFile("TestPlugin-NetCore451.dll", "lib\\netcore451");
+				spec.AddFile("TestPlugin-NetStandard10.dll", "lib\\netstandard1.0");
+				spec.AddFile("TestPlugin-NetStandard11.dll", "lib\\netstandard1.1");
+				spec.AddFile("TestPlugin-NetStandard13.dll", "lib\\netstandard1.3");
+				spec.AddFile("TestPlugin-NetStandard20.dll", "lib\\netstandard2.0");
+				spec.AddFile("TestPlugin-NetStandard21.dll", "lib\\netstandard2.1");
+				spec.AddFile("TestPlugin-NetStandard30.dll", "lib\\netstandard3.0");
+				spec.AddFile("TestPlugin-FooFramework.dll", "lib\\fooframework");
+
+				// We expect the package manager to make a choice to find the closest matching framework.
+				// Since the context of the package manager is editor / desktop development for now, we
+				// expect to prefer the closest we can get to .NET Framework 4.5, as that's what the editor
+				// is compiled with.
+				spec.LocalMapping.Add(
+					"lib\\portable-net45+win8+wpa81\\TestPlugin-Portable111.dll",
+					"Plugins\\TestPlugin-Portable111.dll");
+
+				cases.Add(new PackageOperationTestCase(
+					"Secondary Preference Portable Profile 111",
+					spec,
+					new[] { spec }));
+			}
+
+			// Legacy support: Files from the root folder are used as a fallback, if no framework-specific
+			// "override" is defined for any of them.
+			{
+				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
+					"AdamsLair.Duality.TestPlugin",
+					new Version(1, 0, 0, 0),
+					"net45");
+				spec.AddFile("AdamsLair.Duality.TestPlugin.dll", "lib");
+				spec.AddFile("AdamsLair.Duality.TestPlugin.xml", "lib");
+				spec.LocalMapping.Add("lib\\AdamsLair.Duality.TestPlugin.xml", "Plugins\\AdamsLair.Duality.TestPlugin.xml");
+				cases.Add(new PackageOperationTestCase(
+					"Root Folder Fallback",
+					spec,
+					new[] { spec }));
+			}
+
+			// Ensure framework selection does not affect content and source files
+			{
+				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
+					"AdamsLair.Duality.TestPlugin",
+					new Version(1, 0, 0, 0),
+					"net45");
+				spec.AddFile("Subfolder\\UnusedBinary.dll", "lib\\net20");
+				spec.AddFile("Subfolder\\UnusedBinary2.dll", "lib\\netstandard1.1");
+				spec.AddFile("Subfolder\\SecondBinary.dll", "lib");
+				spec.AddFile("Data\\TestPlugin\\SomeRes.Pixmap.res", "content\\TestPlugin");
+				spec.AddFile("Source\\Foo\\SomeCode.cs", "source\\Foo");
+				spec.LocalMapping.Add("lib\\SecondBinary.dll", "Plugins\\SecondBinary.dll");
+				spec.LocalMapping.Add("content\\TestPlugin\\SomeRes.Pixmap.res", "Data\\TestPlugin\\SomeRes.Pixmap.res");
+				spec.LocalMapping.Add("source\\Foo\\SomeCode.cs", "Source\\Code\\AdamsLair.Duality.TestPlugin\\Foo\\SomeCode.cs");
+				cases.Add(new PackageOperationTestCase(
+					"Content Remains Unaffected",
+					spec,
+					new[] { spec }));
+			}
 
 			return cases;
 		}
