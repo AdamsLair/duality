@@ -413,11 +413,11 @@ namespace Duality.Editor.PackageManagement
 				throw new InvalidOperationException(string.Format(
 					"Can't update package '{0}', because it is not installed.",
 					packageName));
-		}
+			}
 
 			NuGet.IPackage latestPackage = this.cache.GetNuGetPackage(packageName.VersionInvariant);
 			if (latestPackage == null)
-		{
+			{
 				throw new InvalidOperationException(string.Format(
 					"Unable to update package '{0}', because no matching package could be found.",
 					packageName));
