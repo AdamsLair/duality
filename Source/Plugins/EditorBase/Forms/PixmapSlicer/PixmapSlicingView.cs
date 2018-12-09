@@ -483,7 +483,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			g.DrawString(indexText, this.Font, IndexTextForeBrush, textPos.X, textPos.Y);
 		}
 
-		private PixmapSlicingRectSide GetHoveredRectSide(Rectangle rect, int x, int y, int maxDistanceToEdge)
+		private PixmapSlicingRectSide GetHoveredRectSide(Rectangle rect, Point pivot, int x, int y, int maxDistanceToEdge)
 		{
 			bool withinRange =
 				x + maxDistanceToEdge >= rect.Left &&
@@ -496,9 +496,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			bool onBottomEdge = Math.Abs(rect.Bottom - y) <= maxDistanceToEdge;
 			bool onLeftEdge = Math.Abs(rect.Left - x) <= maxDistanceToEdge;
 			bool onRightEdge = Math.Abs(rect.Right - x) <= maxDistanceToEdge;
-			bool onCenter = Math.Abs(rect.Left + rect.Width / 2 - x) <= maxDistanceToEdge
-				&& Math.Abs(rect.Top + rect.Height / 2 - y) <= maxDistanceToEdge;
-			if (onCenter) return PixmapSlicingRectSide.Pivot;
+			bool onPivot = Math.Abs(pivot.X - x) <= maxDistanceToEdge
+				&& Math.Abs(pivot.Y - y) <= maxDistanceToEdge;
+			if (onPivot) return PixmapSlicingRectSide.Pivot;
 			if (onTopEdge) return PixmapSlicingRectSide.Top;
 			if (onBottomEdge) return PixmapSlicingRectSide.Bottom;
 			if (onLeftEdge) return PixmapSlicingRectSide.Left;
@@ -510,9 +510,9 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 		/// Returns whether or not the specified rect is hovered. Outputs
 		/// the specific side of the rect that was hovered, if any.
 		/// </summary>
-		private bool IsRectHovered(Rectangle displayRect, int x, int y, int maxDistanceToEdge, out PixmapSlicingRectSide hoveredSide)
+		private bool IsRectHovered(Rectangle displayRect, Point pivot, int x, int y, int maxDistanceToEdge, out PixmapSlicingRectSide hoveredSide)
 		{
-			PixmapSlicingRectSide side = this.GetHoveredRectSide(displayRect, x, y, maxDistanceToEdge);
+			PixmapSlicingRectSide side = this.GetHoveredRectSide(displayRect, pivot, x, y, maxDistanceToEdge);
 			if (side != PixmapSlicingRectSide.None || displayRect.Contains(x, y))
 			{
 				hoveredSide = side;
@@ -646,8 +646,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			if (this.selectedRectIndex != -1)
 			{
 				Rectangle displayRect = this.GetDisplayRect(this.targetPixmap.Atlas[this.selectedRectIndex]);
+				Point pivot = this.GetDisplayPos(this.targetPixmap.Atlas[this.selectedRectIndex].Center + this.GetAtlasPivot(this.selectedRectIndex));
+
 				PixmapSlicingRectSide side;
-				if (this.IsRectHovered(displayRect, e.X, e.Y, 3, out side))
+				if (this.IsRectHovered(displayRect, pivot, e.X, e.Y, 3, out side))
 				{
 					if (side == PixmapSlicingRectSide.None)
 						hoveredRectCenterIndex = this.selectedRectIndex;
@@ -666,9 +668,10 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 				for (int i = this.targetPixmap.Atlas.Count - 1; i >= 0; i--)
 				{
 					Rectangle displayRect = this.GetDisplayRect(this.targetPixmap.Atlas[i]);
+					Point pivot = this.GetDisplayPos(this.targetPixmap.Atlas[i].Center + this.GetAtlasPivot(i));
 
 					PixmapSlicingRectSide side;
-					if (this.IsRectHovered(displayRect, e.X, e.Y, 3, out side))
+					if (this.IsRectHovered(displayRect, pivot, e.X, e.Y, 3, out side))
 					{
 						if (side == PixmapSlicingRectSide.None && hoveredRectCenterIndex == -1)
 							hoveredRectCenterIndex = i;
