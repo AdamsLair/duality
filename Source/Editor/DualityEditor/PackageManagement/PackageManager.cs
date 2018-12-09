@@ -318,6 +318,7 @@ namespace Duality.Editor.PackageManagement
 				if (uninstallPackageInfo != null)
 				{
 					PackageDependencyWalker dependencyWalker = this.RentDependencyWalker();
+					dependencyWalker.IgnorePackage("NETStandard.Library"); // Avoid dependency explosion, treat as opaque
 					dependencyWalker.WalkGraph(uninstallPackageInfo);
 					uninstallDependencies.AddRange(dependencyWalker.VisitedPackages);
 					uninstallDependencies.RemoveAll(package => package.Id == uninstallPackageInfo.Id);
@@ -334,6 +335,7 @@ namespace Duality.Editor.PackageManagement
 				
 					PackageDependencyWalker dependencyWalker = this.RentDependencyWalker();
 					dependencyWalker.IgnorePackage(uninstallPackage.Id);
+					dependencyWalker.IgnorePackage("NETStandard.Library"); // Avoid dependency explosion, treat as opaque
 					dependencyWalker.WalkGraph(otherPackageInfo);
 					foreach (PackageInfo dependency in dependencyWalker.VisitedPackages)
 					{
@@ -548,6 +550,7 @@ namespace Duality.Editor.PackageManagement
 
 			// Determine all packages that might be updated or installed
 			PackageDependencyWalker dependencyWalker = this.RentDependencyWalker();
+			dependencyWalker.IgnorePackage("NETStandard.Library"); // Avoid dependency explosion, doesn't matter for Duality compatibility anyway
 			dependencyWalker.WalkGraph(target);
 			List<PackageInfo> touchedPackages = dependencyWalker.VisitedPackages.ToList();
 			this.ReturnDependencyWalker(ref dependencyWalker);
@@ -606,6 +609,7 @@ namespace Duality.Editor.PackageManagement
 
 			// Determine the number of deep dependencies for each package
 			PackageDependencyWalker dependencyWalker = this.RentDependencyWalker();
+			dependencyWalker.IgnorePackage("NETStandard.Library"); // Avoid dependency explosion, treat as opaque
 			dependencyWalker.WalkGraph(packages);
 
 			// Sort packages according to their deep dependency counts
@@ -739,6 +743,7 @@ namespace Duality.Editor.PackageManagement
 		private bool CheckDeepLicenseAgreements(NuGet.IPackage package)
 		{
 			PackageDependencyWalker dependencyWalker = this.RentDependencyWalker();
+			dependencyWalker.IgnorePackage("NETStandard.Library"); // Avoid dependency explosion, doesn't require license acceptance anyway
 			dependencyWalker.WalkGraph(new PackageName(package.Id, package.Version.Version));
 
 			List<PackageInfo> packageGraph = dependencyWalker.VisitedPackages.ToList();
