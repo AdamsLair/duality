@@ -179,7 +179,16 @@ namespace Duality.Editor.Plugins.ProjectView.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Can&apos;t move file ähnelt.
+        ///   Looks up a localized string similar to Select the file(s) you wish to import.
+        /// </summary>
+        public static string ProjectFolderView_ImportFileDialog_Title {
+            get {
+                return ResourceManager.GetString("ProjectFolderView_ImportFileDialog_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t move file.
         /// </summary>
         public static string ProjectFolderView_MsgBox_CantMove_Caption {
             get {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -592,6 +592,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		{
 			OpenFileDialog dialog = new OpenFileDialog
 			{
+				Title = Properties.ProjectViewRes.ProjectFolderView_ImportFileDialog_Title,
 				Multiselect = true,
 				InitialDirectory = this.importSourcePath ?? Path.GetFullPath(DualityApp.DataDirectory)
 			};

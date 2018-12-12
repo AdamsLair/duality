@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -174,6 +174,9 @@
   </data>
   <data name="ProjectFolderView_MsgBox_ConfirmDeleteSelectedFiles_Text" xml:space="preserve">
     <value>Do you really want to delete the selected files?</value>
+  </data>
+  <data name="ProjectFolderView_ImportFileDialog_Title" xml:space="preserve">
+    <value>Select the file(s) you wish to import</value>
   </data>
   <data name="ProjectNameLabel" xml:space="preserve">
     <value>Project</value>
