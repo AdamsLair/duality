@@ -47,6 +47,7 @@ namespace Duality
 		public static readonly PropertyInfo	Property_Resource_AssetInfo;
 
 		public static readonly PropertyInfo	Property_Pixmap_Atlas;
+		public static readonly PropertyInfo	Property_RectAtlas_Items;
 
 		public static readonly PropertyInfo	Property_BatchInfo_Technique;
 		public static readonly PropertyInfo	Property_BatchInfo_MainColor;
@@ -97,6 +98,8 @@ namespace Duality
 
 			Type pixmap = typeof(Pixmap);
 			Property_Pixmap_Atlas			= GetProperty(pixmap, "Atlas");
+			Type rectAtlas = typeof(RectAtlas);
+			Property_RectAtlas_Items		= GetProperty(rectAtlas, "Items");
 
 			Type batchInfo = typeof(BatchInfo);
 			Property_BatchInfo_Technique	= GetProperty(batchInfo, "Technique");

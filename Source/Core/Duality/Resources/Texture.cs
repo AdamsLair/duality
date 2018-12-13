@@ -480,7 +480,7 @@ namespace Duality.Resources
 			}
 			else
 			{
-				pivot = this.atlas.Pivots[MathF.Clamp(index, 0, this.atlas.Count - 1)];
+				pivot = this.atlas.GetPivot(MathF.Clamp(index, 0, this.atlas.Count - 1));
 			}
 		}
 		/// <summary>
