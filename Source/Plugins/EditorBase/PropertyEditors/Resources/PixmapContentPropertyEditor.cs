@@ -32,7 +32,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			if (info.IsEquivalent(ReflectionInfo.Property_Pixmap_Atlas))
 			{
-				RectAtlasPropertyEditor editor = new RectAtlasPropertyEditor();
+				MemberwisePropertyEditor editor = new MemberwisePropertyEditor();
 				editor.EditedType = typeof(RectAtlas);
 				return editor;
 			}

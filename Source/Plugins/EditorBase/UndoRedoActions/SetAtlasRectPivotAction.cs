@@ -48,14 +48,14 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 
 			if (this.atlasIndex < this.pixmap.Atlas.Count)
 			{
-				this.originalPivot = this.pixmap.Atlas.Pivots[this.atlasIndex];
-				this.pixmap.Atlas.Pivots[this.atlasIndex] = this.pivot;
+				this.originalPivot = this.pixmap.Atlas.GetPivot(this.atlasIndex);
+				this.pixmap.Atlas.SetPivot(this.atlasIndex, this.pivot);
 			}
 			else
 			{
 				this.originalPivot = null;
 				this.pixmap.Atlas.Add(Rect.Empty);
-				this.pixmap.Atlas.Pivots[this.pixmap.Atlas.Count - 1] = this.pivot;
+				this.pixmap.Atlas.SetPivot(this.pixmap.Atlas.Count - 1, this.pivot);
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.pixmap));
@@ -65,7 +65,7 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 		{
 			if (this.originalPivot.HasValue)
 			{
-				this.pixmap.Atlas.Pivots[this.atlasIndex] = this.originalPivot.Value;
+				this.pixmap.Atlas.SetPivot(this.atlasIndex, this.originalPivot.Value);
 			}
 			else
 			{

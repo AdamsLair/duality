@@ -251,7 +251,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 			if (index < 0) return Vector2.Zero;
 			if (index >= this.targetPixmap.Atlas.Count) return Vector2.Zero;
 
-			return this.targetPixmap.Atlas.Pivots[index];
+			return this.targetPixmap.Atlas.GetPivot(index);
 		}
 
 		/// <summary>
@@ -618,7 +618,7 @@ namespace Duality.Editor.Plugins.Base.Forms.PixmapSlicer
 						this.SelectedRectPen,
 						displayRect);
 
-					Point pivotPos = this.GetDisplayPos(atlasRect.Center + this.TargetPixmap.Atlas.Pivots[this.selectedRectIndex]);
+					Point pivotPos = this.GetDisplayPos(atlasRect.Center + this.TargetPixmap.Atlas.GetPivot(this.selectedRectIndex));
 					e.Graphics.DrawArc(this.SelectedRectPen, pivotPos.X - 4, pivotPos.Y - 4, 8, 8, 0, 360);
 				}
 			}

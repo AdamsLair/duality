@@ -8,16 +8,38 @@ namespace Duality.Resources
 {
 	public class RectAtlas : IList<Rect>, IList
 	{
-		private readonly List<Rect> rects;
-		private Vector2[] pivots;
+		public struct RectAtlasItem
+		{
+			public Rect Rect;
+			public Vector2 Pivot;
+			public string Tag;
+		}
+
+		private RawList<RectAtlasItem> items;
 		private Dictionary<string, List<int>> tags;
+
+		/// <summary>
+		/// The items of the <see cref="RectAtlas"/>.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.ForceWriteback | MemberFlags.Visible)]
+		private RawList<RectAtlasItem> Items
+		{
+			get { return this.items; }
+			set
+			{
+				// Maybe even validate inspector-provided value contents here?
+				this.items = value;
+				this.RebuildTagLookup();
+			}
+		}
 
 		/// <summary>
 		/// [GET] The number of rects in the atlas
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public int Count
 		{
-			get { return this.rects.Count; }
+			get { return this.items.Count; }
 		}
 
 		/// <summary>
@@ -34,8 +56,8 @@ namespace Duality.Resources
 		/// </summary>
 		public Rect this[int index]
 		{
-			get { return this.rects[index]; }
-			set { this.rects[index] = value; }
+			get { return this.items[index].Rect; }
+			set { this.items.Data[index].Rect = value; }
 		}
 
 		/// <summary>
@@ -43,37 +65,34 @@ namespace Duality.Resources
 		/// </summary>
 		public Rect this[string tag]
 		{
-			get { return this.rects[this.tags[tag][0]]; }
-		}
-
-		[EditorHintFlags(MemberFlags.AffectsOthers)]
-		public Vector2[] Pivots
-		{
-			get { return this.pivots; }
+			get { return this.items[this.tags[tag][0]].Rect; }
 		}
 
 		public RectAtlas()
 		{
-			this.rects = new List<Rect>();
-			this.pivots = new Vector2[0];
+			this.items = new RawList<RectAtlasItem>();
 		}
 
 		public RectAtlas(int count)
 		{
-			this.rects = new List<Rect>(count);
-			this.pivots = new Vector2[count];
+			this.items = new RawList<RectAtlasItem>(count);
 		}
 
 		public RectAtlas(IEnumerable<Rect> rects)
 		{
-			this.rects = new List<Rect>(rects);
-			this.pivots = new Vector2[this.rects.Count];
+			this.items = new RawList<RectAtlasItem>();
+			foreach (var r in rects)
+			{
+				this.items.Add(new RectAtlasItem()
+				{
+					Rect = r
+				});
+			}
 		}
 
 		public RectAtlas(RectAtlas other)
 		{
-			this.rects = other.rects.ToList();
-			this.pivots = other.pivots.ToArray();
+			this.items = new RawList<RectAtlasItem>(other.items);
 			if (other.tags != null)
 			{
 				this.tags = new Dictionary<string, List<int>>();
@@ -90,8 +109,7 @@ namespace Duality.Resources
 		/// <param name="item">The rect to add</param>
 		public void Add(Rect item)
 		{
-			this.rects.Add(item);
-			Array.Resize(ref this.pivots, this.rects.Count);
+			this.items.Add(new RectAtlasItem{ Rect = item });
 		}
 
 		/// <summary>
@@ -99,8 +117,7 @@ namespace Duality.Resources
 		/// </summary>
 		public void Clear()
 		{
-			this.rects.Clear();
-			this.pivots = new Vector2[0];
+			this.items.Clear();
 			this.tags = null;
 		}
 
@@ -111,7 +128,12 @@ namespace Duality.Resources
 		/// <returns>Whether or not the rect is contained in the atlas</returns>
 		public bool Contains(Rect item)
 		{
-			return this.rects.Contains(item);
+			for (int i = 0; i < this.items.Count; i++)
+			{
+				if (this.items[i].Rect == item)
+					return true;
+			}
+			return false;
 		}
 
 		/// <summary>
@@ -121,7 +143,10 @@ namespace Duality.Resources
 		/// <param name="arrayIndex">The index within the given array to place the atlas rects</param>
 		public void CopyTo(Rect[] array, int arrayIndex)
 		{
-			this.rects.CopyTo(array, arrayIndex);
+			for (int i = 0; i < this.items.Count; i++)
+			{
+				array[i + arrayIndex] = this.items[i].Rect;
+			}
 		}
 
 		/// <summary>
@@ -149,7 +174,12 @@ namespace Duality.Resources
 		/// <returns>The index of the rect within the atlas, or -1 if the rect is not in the atlas.</returns>
 		public int IndexOf(Rect item)
 		{
-			return this.rects.IndexOf(item);
+			for (int i = 0; i < this.items.Count; i++)
+			{
+				if (this.items[i].Rect == item)
+					return i;
+			}
+			return -1;
 		}
 
 		/// <summary>
@@ -164,7 +194,7 @@ namespace Duality.Resources
 		{
 			if (index < 0)
 				throw new ArgumentOutOfRangeException("index", "The insertion index cannot be less than 0");
-			if (index > this.rects.Count)
+			if (index > this.items.Count)
 				throw new ArgumentOutOfRangeException("index", "The insertion index was greater than the size number of rects in the atlas");
 
 			if (this.tags != null)
@@ -183,10 +213,7 @@ namespace Duality.Resources
 				}
 			}
 
-			this.rects.Insert(index, item);
-			Array.Resize(ref this.pivots, this.rects.Count);
-			Array.Copy(this.pivots, index, this.pivots, index + 1, this.rects.Count - index);
-			this.pivots[index] = default(Vector2);
+			this.items.Insert(index, new RectAtlasItem { Rect = item });
 		}
 
 		/// <summary>
@@ -200,7 +227,7 @@ namespace Duality.Resources
 		{
 			if (index < 0)
 				throw new ArgumentOutOfRangeException("index", "The insertion index cannot be less than 0");
-			if (index > this.rects.Count)
+			if (index > this.items.Count)
 				throw new ArgumentOutOfRangeException("index", "The insertion index was greater than the size number of rects in the atlas");
 
 			if (this.tags != null)
@@ -225,20 +252,12 @@ namespace Duality.Resources
 				}
 			}
 
-			this.rects.RemoveAt(index);
-
-			// Shift elements down
-			for (int a = index; a < this.pivots.Length - 1; a++)
-			{
-				this.pivots[a] = this.pivots[a + 1];
-			}
-			// Reduce array size
-			Array.Resize(ref this.pivots, this.pivots.Length - 1);
+			this.items.RemoveAt(index);
 		}
 
 		/// <summary>
 		/// Tags the rects at the given indices with the given tag. If the rect at the given index
-		/// already has the given tag, it will be ignored. Note that a rect can have multiple tags.
+		/// already has the given tag, it will be ignored.
 		/// </summary>
 		/// <param name="tag">The tag to apply to the rects. Cannot be null or empty.</param>
 		/// <param name="indices">The indices of the rects to tag</param>
@@ -258,6 +277,8 @@ namespace Duality.Resources
 			List<int> taggedIndices = this.tags[tag];
 			foreach (int newTagIndex in indices)
 			{
+				this.items.Data[newTagIndex].Tag = tag;
+
 				int possibleIndex = taggedIndices.BinarySearch(newTagIndex);
 				// If possibleIndex >= 0, the index is already tagged,
 				// else BinarySearch returns the bitwise complement of
@@ -313,18 +334,121 @@ namespace Duality.Resources
 				// Find the index of the tagged index within the index listing
 				int index = indices.BinarySearch(indexToUnTag);
 				if (index >= 0)
+				{
 					indices.RemoveAt(index);
+					this.items.Data[index].Tag = null;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the tag associated with the given index.
+		/// </summary>
+		/// <param name="index">The index within the atlas to find the tag for.</param>
+		/// <param name="tag">The tag to associate with the given index.</param>
+		/// <returns>The tag of the given rect atlas index</returns>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The given index was outside the range of the number of elements in the atlas.
+		/// </exception>
+		public void SetTag(int index, string tag)
+		{
+			if (index < 0)
+				throw new ArgumentOutOfRangeException("index", "The index cannot be less than 0");
+			if (index > this.items.Count)
+				throw new ArgumentOutOfRangeException("index", "The index was greater than the size number of rects in the atlas");
+
+			this.items.Data[index].Tag = tag;
+		}
+
+		/// <summary>
+		/// Gets the tag associated with the given index.
+		/// </summary>
+		/// <param name="index">The index within the atlas to find the tag for.</param>
+		/// <returns>The tag of the given rect atlas index</returns>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The given index was outside the range of the number of elements in the atlas.
+		/// </exception>
+		public string GetTag(int index)
+		{
+			if (index < 0)
+				throw new ArgumentOutOfRangeException("index", "The index cannot be less than 0");
+			if (index > this.items.Count)
+				throw new ArgumentOutOfRangeException("index", "The index was greater than the size number of rects in the atlas");
+
+			return this.items[index].Tag;
+		}
+
+		/// <summary>
+		/// Gets the pivot associated with the given index
+		/// </summary>
+		/// <param name="index">The index within the atlas to find the pivot for.</param>
+		/// <returns>The pivot of the given rect atlas index</returns>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The given index was outside the range of the number of elements in the atlas.
+		/// </exception>
+		public Vector2 GetPivot(int index)
+		{
+			if (index < 0)
+				throw new ArgumentOutOfRangeException("index", "The index cannot be less than 0");
+			if (index > this.items.Count)
+				throw new ArgumentOutOfRangeException("index", "The index was greater than the size number of rects in the atlas");
+
+			return this.items[index].Pivot;
+		}
+
+		/// <summary>
+		/// Sets the pivot of the rect at the given index.
+		/// </summary>
+		/// <param name="index">The index of the rect to set the pivot for.</param>
+		/// <param name="pivot">The new pivot of the atlas rect.</param>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The given index was outside the range of the number of elements in the atlas.
+		/// </exception>
+		public void SetPivot(int index, Vector2 pivot)
+		{
+			if (index < 0)
+				throw new ArgumentOutOfRangeException("index", "The index cannot be less than 0");
+			if (index > this.items.Count)
+				throw new ArgumentOutOfRangeException("index", "The index was greater than the size number of rects in the atlas");
+
+			this.items.Data[index].Pivot = pivot;
+		}
+
+		/// <summary>
+		/// Rebuilds the tag lookup dictionary from scratch based
+		/// off of the data in the <see cref="items"/> field.
+		/// </summary>
+		private void RebuildTagLookup()
+		{
+			if (this.tags != null)
+				this.tags.Clear();
+
+			for (int i = 0; i < this.items.Count; i++)
+			{
+				if (string.IsNullOrEmpty(this.items[i].Tag))
+					continue;
+
+				if (this.tags == null)
+					this.tags = new Dictionary<string, List<int>>();
+
+				List<int> indices;
+				if (!this.tags.TryGetValue(this.items[i].Tag, out indices))
+				{
+					indices = new List<int>();
+					this.tags[this.items[i].Tag] = indices;
+				}
+				indices.Add(i);
 			}
 		}
 
 		public IEnumerator<Rect> GetEnumerator()
 		{
-			return ((ICollection<Rect>)this.rects).GetEnumerator();
+			return this.items.Select(i => i.Rect).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return this.rects.GetEnumerator();
+			return this.items.Select(i => i.Rect).GetEnumerator();
 		}
 
 		#region IList Implementation
@@ -367,7 +491,10 @@ namespace Duality.Resources
 
 		void ICollection.CopyTo(Array array, int index)
 		{
-			((ICollection)this.rects).CopyTo(array, index);
+			for (int i = 0; i < this.items.Count; i++)
+			{
+				array.SetValue(this.items[i].Rect, i + index);
+			}
 		}
 
 		bool IList.Contains(object value)
