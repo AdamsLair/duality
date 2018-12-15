@@ -299,6 +299,41 @@
       <parent />
       <prefabLink />
     </item>
+    <item dataType="Struct" type="Duality.GameObject" id="1458011729">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="159905203">
+        <_items dataType="Array" type="Duality.Component[]" id="1993552422" length="4">
+          <item dataType="Struct" type="Duality.Samples.Benchmarks.BenchmarkSceneTag" id="1656088695">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">1458011729</gameobj>
+          </item>
+        </_items>
+        <_size dataType="Int">1</_size>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2145523896" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Object[]" id="3800066009">
+            <item dataType="Type" id="714983886" value="Duality.Samples.Benchmarks.BenchmarkSceneTag" />
+          </keys>
+          <values dataType="Array" type="System.Object[]" id="1360038400">
+            <item dataType="ObjectRef">1656088695</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform />
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="3162386075">tW8R9XDGk0WT96Cn+EqxgQ==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">BenchmarkTag</name>
+      <parent />
+      <prefabLink />
+    </item>
   </serializeObj>
   <visibilityStrategy dataType="Struct" type="Duality.Components.DefaultRendererVisibilityStrategy" id="2035693768" />
 </root>

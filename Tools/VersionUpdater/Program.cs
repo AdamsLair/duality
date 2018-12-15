@@ -206,11 +206,24 @@ namespace VersionUpdater
 			}
 			Console.WriteLine();
 
-			// Determine the changes for each project individually and gather changelog entries
-			changes = GetChangesPerProject(config, allProjects, gitHistory);
+			if (config.ApplyGlobalMajorUpdate)
+			{
+				// Apply a major version step to all projects
+				changes = new List<ProjectChangeInfo>(allProjects.Select(p => new ProjectChangeInfo
+				{
+					Project = p,
+					Titles = new List<string> { "Major Version Update" },
+					UpdateMode = UpdateMode.Major
+				}));
+			}
+			else
+			{
+				// Determine the changes for each project individually and gather changelog entries
+				changes = GetChangesPerProject(config, allProjects, gitHistory);
 
-			// Display each change to the user and ask whether it should be considered a patch, minor or major release
-			RetrieveUpdateModes(config, changes);
+				// Display each change to the user and ask whether it should be considered a patch, minor or major release
+				RetrieveUpdateModes(config, changes);
+			}
 
 			// Apply the specified update modes to the version numbers of each project
 			UpdateVersionNumbers(config, changes);
@@ -435,28 +448,50 @@ namespace VersionUpdater
 					string projectDocNs = projectDoc.Root.GetDefaultNamespace().NamespaceName;
 					HashSet<string> outputDirs = new HashSet<string>();
 					HashSet<string> outputNames = new HashSet<string>();
-					foreach (XElement outPathElement in projectDoc.Descendants(XName.Get("OutputPath", projectDocNs)))
+
+					// Gather potential output directories from msbuild Copy steps in postbuild
+					foreach (XElement copyStepElement in projectDoc.Descendants(XName.Get("Copy", projectDocNs)))
 					{
-						string path = outPathElement.Value;
+						XAttribute targetFolderAttribute = copyStepElement.Attribute("DestinationFolder");
+						if (targetFolderAttribute == null) continue;
+
+						string path = targetFolderAttribute.Value;
 						path = path.Replace("$(SolutionDir)", solutionDir + Path.DirectorySeparatorChar);
+						path = path.Replace("$(Configuration)", "Release");
 						if (!Path.IsPathRooted(path))
 							path = Path.Combine(info.ProjectRootDir, path);
 						outputDirs.Add(path);
 					}
+					// Gather potential output directories from project output paths
+					foreach (XElement outPathElement in projectDoc.Descendants(XName.Get("OutputPath", projectDocNs)))
+					{
+						string path = outPathElement.Value;
+						path = path.Replace("$(SolutionDir)", solutionDir + Path.DirectorySeparatorChar);
+						path = path.Replace("$(Configuration)", "Release");
+						if (!Path.IsPathRooted(path))
+							path = Path.Combine(info.ProjectRootDir, path);
+						outputDirs.Add(path);
+					}
+					// Gather potential output names from project output assembly names
 					foreach (XElement outPathElement in projectDoc.Descendants(XName.Get("AssemblyName", projectDocNs)))
 					{
 						string name = outPathElement.Value;
 						outputNames.Add(name);
 					}
+
 					string[] extensions = new string[] { ".exe", ".dll" };
-					foreach (string dir in outputDirs)
 					foreach (string name in outputNames)
-					foreach (string ext in extensions)
-					{ 
-						string path = Path.Combine(dir, name) + ext;
-						if (File.Exists(path))
+					{
+						foreach (string ext in extensions)
 						{
-							info.OutputFilePaths.Add(path);
+							foreach (string dir in outputDirs)
+							{
+								string path = Path.Combine(dir, name) + ext;
+								if (File.Exists(path))
+								{
+									info.OutputFilePaths.Add(path);
+								}
+							}
 						}
 					}
 				}
@@ -625,13 +660,12 @@ namespace VersionUpdater
 			string commitIdLine = null;
 			string authorLine = null;
 			string dateLine = null;
+			string mergeLine = null;
 			List<string> messageLines = new List<string>();
 			List<string> fileLines = new List<string>();
 			using (StringReader reader = new StringReader(chunk))
 			{
 				commitIdLine = reader.ReadLine();
-				authorLine = reader.ReadLine();
-				dateLine = reader.ReadLine();
 				while (true)
 				{
 					string line = reader.ReadLine();
@@ -639,12 +673,27 @@ namespace VersionUpdater
 					if (line == null) break;
 					if (string.IsNullOrWhiteSpace(line)) continue;
 
-					string trimmedLine = line.TrimStart();
-					bool isIndentedLine = trimmedLine.Length != line.Length;
-					if (isIndentedLine)
-						messageLines.Add(trimmedLine);
+					if (line.StartsWith("Merge:"))
+					{
+						mergeLine = line;
+					}
+					else if (line.StartsWith("Author:"))
+					{
+						authorLine = line;
+					}
+					else if (line.StartsWith("Date:"))
+					{
+						dateLine = line;
+					}
 					else
-						fileLines.Add(trimmedLine);
+					{
+						string trimmedLine = line.TrimStart();
+						bool isIndentedLine = trimmedLine.Length != line.Length;
+						if (isIndentedLine)
+							messageLines.Add(trimmedLine);
+						else
+							fileLines.Add(trimmedLine);
+					}
 				}
 			}
 

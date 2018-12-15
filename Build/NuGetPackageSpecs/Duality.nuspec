@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.14.9</version>
+    <version>3.0.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,10 +13,10 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>
+    <releaseNotes>Major Version Update
 </releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Primitives" version="2.0.7" />
+      <dependency id="AdamsLair.Duality.Primitives" version="3.0.0" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
       <dependency id="AdamsLair.Duality.Physics" version="3.0.0" />
     </dependencies>

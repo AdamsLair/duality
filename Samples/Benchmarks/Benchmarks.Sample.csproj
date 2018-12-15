@@ -49,6 +49,7 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BenchmarkSceneTag.cs" />
     <Compile Include="BenchmarkSetup\BenchmarkDummyRenderer.cs" />
     <Compile Include="BenchmarkSetup\BenchmarkStaticMultiSpriteRenderer.cs" />
     <Compile Include="BenchmarkSetup\BenchmarkMultiSpriteRenderer.cs" />

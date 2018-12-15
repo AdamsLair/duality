@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.Base</id>
-    <version>2.3.1</version>
+    <version>3.0.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Editor Base Infrastructure</title>
@@ -13,11 +13,11 @@
     <summary>Provides basic infrastructure for the Duality editor, such as PropertyEditors and Importers.</summary>
     <description>Provides basic infrastructure for the Duality editor, such as PropertyEditors and Importers.</description>
     <tags>Duality Editor Plugin PropertyEditor Importer Preview EditorAction DataConverter</tags>
-    <releaseNotes>PixmapSlicer Revert Grid Slice Bugfix
-#FIX: Fixed reverting a grid slice operation when the previous state did not specify an atlas at all.</releaseNotes>
+    <releaseNotes>Major Version Update
+</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.14.9" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.10.19" />
+      <dependency id="AdamsLair.Duality" version="3.0.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="3.0.0" />
     </dependencies>
   </metadata>
   <files>

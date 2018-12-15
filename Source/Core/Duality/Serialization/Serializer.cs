@@ -29,7 +29,7 @@ namespace Duality.Serialization
 		/// </summary>
 		protected abstract class CustomSerialIOBase<T> : IDataReader, IDataWriter where T : Serializer
 		{
-			protected	Dictionary<string,object>	data;
+			protected Dictionary<string,object> data;
 			
 			/// <summary>
 			/// [GET] Enumerates all available keys.
@@ -130,10 +130,10 @@ namespace Duality.Serialization
 		/// </summary>
 		protected class ObjectHeader
 		{
-			private	uint			objectId;
-			private	DataType		dataType;
-			private	SerializeType	serializeType;
-			private	string			typeString;
+			private uint          objectId;
+			private DataType      dataType;
+			private SerializeType serializeType;
+			private string        typeString;
 
 			/// <summary>
 			/// [GET] The objects unique ID. May be zero for non-referenced object types.
@@ -216,18 +216,22 @@ namespace Duality.Serialization
 		/// A list of <see cref="System.Reflection.FieldInfo">field</see> blockers. If any registered field blocker
 		/// returns true upon serializing a specific field, a default value is assumed instead.
 		/// </summary>
-		protected	List<FieldBlocker>	fieldBlockers	= new List<FieldBlocker>();
+		protected List<FieldBlocker> fieldBlockers = new List<FieldBlocker>();
 		/// <summary>
 		/// Manages object IDs during de/serialization.
 		/// </summary>
-		protected	ObjectIdManager		idManager		= new ObjectIdManager();
+		protected ObjectIdManager    idManager     = new ObjectIdManager();
 
-		private	Stream	stream			= null;
-		private	bool	opInProgress	= false;
-		private	bool	disposed		= false;
-		private	Log		log				= Logs.Core;
+		private Stream stream       = null;
+		private bool   opInProgress = false;
+		private bool   disposed     = false;
+		private Log    log          = Logs.Core;
 
-		
+		private Dictionary<string, Type>       typeResolveCache       = new Dictionary<string, Type>();
+		private Dictionary<string, MemberInfo> memberResolveCache     = new Dictionary<string, MemberInfo>();
+		private HashSet<FieldInfo>             fieldTypeMismatchCache = new HashSet<FieldInfo>();
+
+
 		/// <summary>
 		/// [GET] Can this <see cref="Serializer"/> read data?
 		/// </summary>
@@ -521,9 +525,15 @@ namespace Duality.Serialization
 			FieldInfo field = null;
 			if (objSerializeType != null)
 			{
-				field = objSerializeType.Fields.FirstOrDefault(f => f.Name == fieldName);
+				field = objSerializeType.GetFieldByName(fieldName);
+
+				// If the serializer-specific type does not have a matching field, attempt a global resolve.
+				// This handles cases where a formerly serialized field is now flagged as non-serialized.
 				if (field == null)
 				{
+					// Note that we don't use the local ResolveType method, since we don't want to log an error
+					// in case it fails. If there's a custom error handler to pick it up later, fine - if not,
+					// the field simply has been removed and is no longer relevant.
 					field = ReflectionHelper.ResolveMember("F:" + objSerializeType.TypeString + ":" + fieldName) as FieldInfo;
 				}
 			}
@@ -545,11 +555,17 @@ namespace Duality.Serialization
 			{
 				if (!this.HandleAssignValueToField(objSerializeType, obj, fieldName, fieldValue))
 				{
-					this.LocalLog.WriteWarning("Actual Type '{0}' of object value in field '{1}' does not match reflected FieldType '{2}'. Trying to convert...'", 
-						fieldValue != null ? LogFormat.Type(fieldValue.GetType()) : "unknown", 
-						fieldName, 
-						LogFormat.Type(field.FieldType));
-					this.LocalLog.PushIndent();
+					// If this is the first time we encounter a type mismatch for this field, log a warning
+					Type serializedFieldType = fieldValue.GetType();
+					if (this.fieldTypeMismatchCache.Add(field))
+					{
+						this.LocalLog.WriteWarning(
+							"Serialized field value Type '{0}' does not match field Type '{2}' in field '{1}'. Converting values where possible, discarding otherwise.",
+							LogFormat.Type(serializedFieldType),
+							LogFormat.FieldInfo(field),
+							LogFormat.Type(field.FieldType));
+					}
+
 					object castVal;
 					try
 					{
@@ -562,14 +578,9 @@ namespace Duality.Serialization
 						{
 							castVal = Convert.ChangeType(fieldValue, field.FieldType, System.Globalization.CultureInfo.InvariantCulture);
 						}
-						this.LocalLog.Write("...succeeded! Assigning value '{0}'", castVal);
 						field.SetValue(obj, castVal);
 					}
-					catch (Exception)
-					{
-						this.LocalLog.WriteWarning("...failed! Discarding value '{0}'", fieldValue);
-					}
-					this.LocalLog.PopIndent();
+					catch (Exception) { }
 				}
 				return;
 			}
@@ -605,15 +616,25 @@ namespace Duality.Serialization
 		/// <param name="typeId"></param>
 		/// <param name="objId"></param>
 		/// <returns></returns>
-		protected Type ResolveType(string typeId, uint objId = uint.MaxValue)
+		protected Type ResolveType(string typeId, uint objId = 0)
 		{
-			Type result = ReflectionHelper.ResolveType(typeId);
-			if (result == null)
+			// Re-use already resolved type IDs from the local cache, if possible
+			Type result;
+			if (!this.typeResolveCache.TryGetValue(typeId, out result))
 			{
-				if (objId != uint.MaxValue)
-					this.log.WriteError("Can't resolve Type '{0}' in object Id {1}. Type not found.", typeId, objId);
-				else
-					this.log.WriteError("Can't resolve Type '{0}'. Type not found.", typeId);
+				// Otherwise, perform a global type resolve and temporarily store the result locally
+				result = ReflectionHelper.ResolveType(typeId);
+				this.typeResolveCache[typeId] = result;
+
+				// If the resolve failed, log an error. Since we're storing the null result in our
+				// local cache, this will happen only once per ID and read / write operation.
+				if (result == null)
+				{
+					if (objId != 0)
+						this.log.WriteError("Can't resolve Type '{0}' in object Id {1}. Type not found.", typeId, objId);
+					else
+						this.log.WriteError("Can't resolve Type '{0}'. Type not found.", typeId);
+				}
 			}
 			return result;
 		}
@@ -623,15 +644,25 @@ namespace Duality.Serialization
 		/// <param name="memberId"></param>
 		/// <param name="objId"></param>
 		/// <returns></returns>
-		protected MemberInfo ResolveMember(string memberId, uint objId = uint.MaxValue)
+		protected MemberInfo ResolveMember(string memberId, uint objId = 0)
 		{
-			MemberInfo result = ReflectionHelper.ResolveMember(memberId);
-			if (result == null)
+			// Re-use already resolved member IDs from the local cache, if possible
+			MemberInfo result;
+			if (!this.memberResolveCache.TryGetValue(memberId, out result))
 			{
-				if (objId != uint.MaxValue)
-					this.log.WriteError("Can't resolve Member '{0}' in object Id {1}. Member not found.", memberId, objId);
-				else
-					this.log.WriteError("Can't resolve Member '{0}'. Member not found.", memberId);
+				// Otherwise, perform a global member resolve and temporarily store the result locally
+				result = ReflectionHelper.ResolveMember(memberId);
+				this.memberResolveCache[memberId] = result;
+
+				// If the resolve failed, log an error. Since we're storing the null result in our
+				// local cache, this will happen only once per ID and read / write operation.
+				if (result == null)
+				{
+					if (objId != 0)
+						this.log.WriteError("Can't resolve Member '{0}' in object Id {1}. Member not found.", memberId, objId);
+					else
+						this.log.WriteError("Can't resolve Member '{0}'. Member not found.", memberId);
+				}
 			}
 			return result;
 		}
@@ -692,6 +723,9 @@ namespace Duality.Serialization
 			if (!this.opInProgress) throw new InvalidOperationException("Can't end the current operation, because no operation is in progress.");
 
 			this.idManager.Clear();
+			this.typeResolveCache.Clear();
+			this.memberResolveCache.Clear();
+			this.fieldTypeMismatchCache.Clear();
 			this.opInProgress = false;
 
 			this.OnEndReadOperation();
@@ -701,6 +735,9 @@ namespace Duality.Serialization
 			if (!this.opInProgress) throw new InvalidOperationException("Can't end the current operation, because no operation is in progress.");
 
 			this.idManager.Clear();
+			this.typeResolveCache.Clear();
+			this.memberResolveCache.Clear();
+			this.fieldTypeMismatchCache.Clear();
 			this.opInProgress = false;
 
 			this.OnEndWriteOperation();
@@ -712,12 +749,12 @@ namespace Duality.Serialization
 		}
 
 
-		private	static List<Type>						availableSerializerTypes	= new List<Type>();
-		private	static List<Serializer>					tempCheckSerializers		= new List<Serializer>();
-		private	static Dictionary<Type,SerializeType>	serializeTypeCache			= new Dictionary<Type,SerializeType>();
-		private	static List<SerializeErrorHandler>		serializeHandlerCache		= new List<SerializeErrorHandler>();
-		private	static List<ISerializeSurrogate>		surrogates					= null;
-		private static Type								defaultSerializer			= null;
+		private static List<Type>                     availableSerializerTypes = new List<Type>();
+		private static List<Serializer>               tempCheckSerializers     = new List<Serializer>();
+		private static Dictionary<Type,SerializeType> serializeTypeCache       = new Dictionary<Type,SerializeType>();
+		private static List<SerializeErrorHandler>    serializeHandlerCache    = new List<SerializeErrorHandler>();
+		private static List<ISerializeSurrogate>      surrogates               = null;
+		private static Type                           defaultSerializer        = null;
 
 		/// <summary>
 		/// [GET / SET] The default <see cref="Serializer"/> type to use, if no other is specified.

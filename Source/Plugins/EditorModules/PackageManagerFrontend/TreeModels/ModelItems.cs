@@ -18,7 +18,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		private BaseItem parent = null;
 		public BaseItem Parent
 		{
-			get { return parent; }
+			get { return this.parent; }
 		}
 		public abstract Image Icon { get; }
 		public abstract string Title { get; }

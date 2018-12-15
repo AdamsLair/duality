@@ -177,6 +177,14 @@ namespace Duality.Resources
 			return result;
 		}
 
+		protected override void OnLoaded()
+		{
+			// Fallback to default in case the internal data failed to load
+			if (this.layers == null)
+				this.layers = new List<PixelData>();
+
+			base.OnLoaded();
+		}
 		protected override void OnDisposing(bool manually)
 		{
 			base.OnDisposing(manually);
