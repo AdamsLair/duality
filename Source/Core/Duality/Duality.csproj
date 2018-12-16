@@ -113,7 +113,16 @@
     <Compile Include="IO\FileEventType.cs" />
     <Compile Include="IO\FileEvent.cs" />
     <Compile Include="Resources\Shaders\ShaderSourceBuilder.cs" />
+    <Compile Include="Utility\Coroutines\Conditions\WaitFrames.cs" />
+    <Compile Include="Utility\Coroutines\Conditions\WaitTime.cs" />
+    <Compile Include="Utility\Coroutines\Coroutine.cs" />
+    <Compile Include="Utility\Coroutines\CoroutineManager.cs" />
+    <Compile Include="Utility\Coroutines\CoroutineStatus.cs" />
+    <Compile Include="Utility\Coroutines\WaitCondition.cs" />
     <Compile Include="Utility\Log\DebugLogOutput.cs" />
+    <Compile Include="Utility\Pooling\DerivedObjectsPool.cs" />
+    <Compile Include="Utility\Pooling\IPoolable.cs" />
+    <Compile Include="Utility\Pooling\QueuedPool.cs" />
     <Compile Include="Utility\RawListPool.cs" />
     <Compile Include="Drawing\VertexData\VertexDrawRange.cs" />
     <Compile Include="Drawing\DrawBatch.cs" />
