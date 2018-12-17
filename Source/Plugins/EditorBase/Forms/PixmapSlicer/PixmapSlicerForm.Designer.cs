@@ -36,7 +36,9 @@
 			this.buttonZoomOut = new System.Windows.Forms.ToolStripButton();
 			this.buttonZoomIn = new System.Windows.Forms.ToolStripButton();
 			this.pixmapView = new Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView();
+			this.rectEditorPanel = new Duality.Editor.Plugins.Base.Forms.PixmapSlicer.RectEditorPanel();
 			this.stateControlToolStrip.SuspendLayout();
+			this.pixmapView.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// stateControlToolStrip
@@ -122,8 +124,10 @@
 			// 
 			// pixmapView
 			// 
+			this.pixmapView.AllowNumberingStyleChange = true;
 			this.pixmapView.AllowUserSelection = true;
 			this.pixmapView.AutoScroll = true;
+			this.pixmapView.Controls.Add(this.rectEditorPanel);
 			this.pixmapView.DarkMode = false;
 			this.pixmapView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pixmapView.Location = new System.Drawing.Point(0, 25);
@@ -134,12 +138,24 @@
 			this.pixmapView.Size = new System.Drawing.Size(428, 229);
 			this.pixmapView.TabIndex = 4;
 			this.pixmapView.TargetPixmap = null;
+			this.pixmapView.SelectedAtlasChanged += new System.EventHandler(this.pixmapView_SelectedAtlasChanged);
 			this.pixmapView.NumberingStyleChanged += new System.EventHandler(this.pixmapView_NumberingStyleChanged);
 			this.pixmapView.PaintContentOverlay += new System.EventHandler<System.Windows.Forms.PaintEventArgs>(this.pixmapView_PaintContentOverlay);
 			this.pixmapView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.pixmapView_KeyUp);
 			this.pixmapView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pixmapView_MouseDown);
 			this.pixmapView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pixmapView_MouseMove);
 			this.pixmapView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pixmapView_MouseUp);
+			// 
+			// rectEditorPanel
+			// 
+			this.rectEditorPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.rectEditorPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
+			this.rectEditorPanel.Location = new System.Drawing.Point(199, 112);
+			this.rectEditorPanel.Name = "rectEditorPanel";
+			this.rectEditorPanel.Padding = new System.Windows.Forms.Padding(3);
+			this.rectEditorPanel.Size = new System.Drawing.Size(226, 114);
+			this.rectEditorPanel.TabIndex = 5;
+			this.rectEditorPanel.SizeChanged += new System.EventHandler(this.rectEditorPanel_SizeChanged);
 			// 
 			// PixmapSlicerForm
 			// 
@@ -158,6 +174,7 @@
 			this.Text = "PixmapSlicer";
 			this.stateControlToolStrip.ResumeLayout(false);
 			this.stateControlToolStrip.PerformLayout();
+			this.pixmapView.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -171,5 +188,6 @@
 		private System.Windows.Forms.ToolStripButton buttonZoomIn;
 		private System.Windows.Forms.ToolStripButton buttonIndices;
 		private Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView pixmapView;
+		private PixmapSlicer.RectEditorPanel rectEditorPanel;
 	}
 }

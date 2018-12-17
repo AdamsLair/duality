@@ -33,6 +33,8 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 					this.pixmapView.TargetPixmap = value;
 					this.pixmapView.ZoomToFit();
+
+					this.UpdateRectEditorPanel();
 				}
 			}
 		}
@@ -116,6 +118,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 			this.UpdateIndicesButton();
 			this.pixmapView.Invalidate();
+			this.UpdateRectEditorPanel();
 
 			if (this.state != null)
 			{
@@ -137,6 +140,12 @@ namespace Duality.Editor.Plugins.Base.Forms
 					this.buttonIndices.Image = EditorBaseResCache.IconShowIndices;
 					break;
 			}
+		}
+
+		private void UpdateRectEditorPanel()
+		{
+			this.rectEditorPanel.Visible = this.pixmapView.AllowUserSelection && this.pixmapView.SelectedAtlasIndex >= 0;
+			this.rectEditorPanel.SetItem(this.targetPixmap, this.pixmapView.SelectedAtlasIndex);
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
@@ -174,7 +183,10 @@ namespace Duality.Editor.Plugins.Base.Forms
 			if (this.targetPixmap.Disposed)
 				this.TargetPixmap = null;
 			else if (e.HasObject(this.targetPixmap))
+			{
 				this.pixmapView.Invalidate();
+				this.rectEditorPanel.Invalidate();
+			}
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -206,6 +218,10 @@ namespace Duality.Editor.Plugins.Base.Forms
 		{
 			this.UpdateIndicesButton();
 		}
+		private void pixmapView_SelectedAtlasChanged(object sender, EventArgs e)
+		{
+			this.UpdateRectEditorPanel();
+		}
 
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
@@ -233,6 +249,15 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 			this.pixmapView.NumberingStyle = newStyle;
 			this.UpdateIndicesButton();
+		}
+		/// <summary>
+		/// Updates the position of the rect editor panel to keep it in the bottom left of the screen
+		/// </summary>
+		private void rectEditorPanel_SizeChanged(object sender, EventArgs e)
+		{
+			this.rectEditorPanel.Location = new Point(
+				this.pixmapView.ClientRectangle.Right - this.rectEditorPanel.Width,
+				this.pixmapView.ClientRectangle.Bottom - this.rectEditorPanel.Height);
 		}
 	}
 }
