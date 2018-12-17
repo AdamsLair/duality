@@ -93,6 +93,7 @@
     <Compile Include="Drawing\DrawDeviceTest.cs" />
     <Compile Include="Drawing\VertexSliceTest.cs" />
     <Compile Include="Resources\ContentProviderTest.cs" />
+    <Compile Include="Resources\RectAtlasTest.cs" />
     <Compile Include="Resources\Shaders\ShaderSourceBuilderTest.cs" />
     <Compile Include="Testing\ExtMethodsIList.cs" />
     <Compile Include="Resources\RenderTargetTest.cs" />
