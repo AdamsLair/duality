@@ -80,10 +80,12 @@ namespace Duality.Resources
 
 		public RectAtlas(IEnumerable<Rect> rects)
 		{
+			if (rects == null)
+				throw new ArgumentNullException("rects");
 			this.items = new RawList<RectAtlasItem>();
 			foreach (var r in rects)
 			{
-				this.items.Add(new RectAtlasItem()
+				this.items.Add(new RectAtlasItem
 				{
 					Rect = r
 				});
@@ -92,6 +94,8 @@ namespace Duality.Resources
 
 		public RectAtlas(RectAtlas other)
 		{
+			if (other == null)
+				throw new ArgumentNullException("other");
 			this.items = new RawList<RectAtlasItem>(other.items);
 			if (other.tags != null)
 			{
@@ -232,10 +236,13 @@ namespace Duality.Resources
 
 			if (this.tags != null)
 			{
+				List<string> emptyKeys = new List<string>();
+
 				// Adjust tagged indices to account for the removal of this item
-				foreach (List<int> indexList in this.tags.Values)
+				foreach (var kvp in this.tags)
 				{
-						for (int i = 0; i < indexList.Count; i++)
+					List<int> indexList = kvp.Value;
+					for (int i = 0; i < indexList.Count; i++)
 					{
 						// Index of rect being removed - remove from tag list
 						if (indexList[i] == index)
@@ -249,7 +256,14 @@ namespace Duality.Resources
 							indexList[i]--;
 						}
 					}
+
+					if (indexList.Count == 0)
+						emptyKeys.Add(kvp.Key);
 				}
+
+				// Remove any list of tagged indices that are now empty
+				foreach (string emptyKey in emptyKeys)
+					this.tags.Remove(emptyKey);
 			}
 
 			this.items.RemoveAt(index);
@@ -264,10 +278,15 @@ namespace Duality.Resources
 		/// <exception cref="ArgumentException">
 		/// The given tag was null or empty.
 		/// </exception>
+		/// /// <exception cref="ArgumentNullException">
+		/// The given indices array was null.
+		/// </exception>
 		public void TagIndices(string tag, int[] indices)
 		{
 			if (string.IsNullOrEmpty(tag))
 				throw new ArgumentException("The tag cannot be null or empty", "tag");
+			if (indices == null)
+				throw new ArgumentNullException("indices");
 
 			if (this.tags == null)
 				this.tags = new Dictionary<string, List<int>>();
@@ -277,6 +296,18 @@ namespace Duality.Resources
 			List<int> taggedIndices = this.tags[tag];
 			foreach (int newTagIndex in indices)
 			{
+				// Remove this index from the index list of its current tag
+				List<int> existingTagList;
+				if (this.items.Data[newTagIndex].Tag != null
+					&& this.tags.TryGetValue(this.items.Data[newTagIndex].Tag, out existingTagList))
+				{
+					existingTagList.Remove(newTagIndex);
+					if (existingTagList.Count == 0)
+					{
+						this.tags.Remove(this.items.Data[newTagIndex].Tag);
+					}
+				}
+
 				this.items.Data[newTagIndex].Tag = tag;
 
 				int possibleIndex = taggedIndices.BinarySearch(newTagIndex);
@@ -357,7 +388,7 @@ namespace Duality.Resources
 			if (index > this.items.Count)
 				throw new ArgumentOutOfRangeException("index", "The index was greater than the size number of rects in the atlas");
 
-			this.items.Data[index].Tag = tag;
+			this.TagIndices(tag, new []{ index });
 		}
 
 		/// <summary>
