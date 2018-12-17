@@ -94,6 +94,12 @@
     <Compile Include="Forms\PixmapSlicer\PixmapSlicingView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Forms\PixmapSlicer\RectEditorPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\PixmapSlicer\RectEditorPanel.Designer.cs">
+      <DependentUpon>RectEditorPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PixmapSlicer\States\GridSlicePixmapSlicerState.cs" />
     <Compile Include="Forms\PixmapSlicer\States\IPixmapSlicerState.cs" />
     <Compile Include="Forms\PixmapSlicer\States\PixmapNumberingStyle.cs" />
@@ -128,7 +134,6 @@
     <Compile Include="PropertyEditors\ComponentRefPropertyEditor.cs" />
     <Compile Include="PropertyEditors\GameObjectRefPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ObjectRefPropertyEditor.cs" />
-    <Compile Include="PropertyEditors\RectAtlasPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ResourceImportExportPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ResourceOverviewPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ResourceAssetPropertyEditor.cs" />
@@ -193,6 +198,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\PixmapSlicer\PixmapSlicerForm.resx">
       <DependentUpon>PixmapSlicerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PixmapSlicer\RectEditorPanel.resx">
+      <DependentUpon>RectEditorPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\EditorBaseRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
