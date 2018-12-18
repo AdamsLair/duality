@@ -178,9 +178,13 @@ namespace Duality.Components.Renderers
 		}
 		protected void PrepareVertices(ref VertexC1P3T2[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect, Vector2 pivot)
 		{
+			float pivotX = pivot.X;
+			float pivotY = pivot.Y;
+			MathF.TransformCoord(ref pivotX, ref pivotY, this.GameObj.Transform.Angle, this.GameObj.Transform.Scale);
+
 			Vector3 posTemp = this.gameobj.Transform.Pos;
-			posTemp.X -= pivot.X;
-			posTemp.Y -= pivot.Y;
+			posTemp.X -= pivotX;
+			posTemp.Y -= pivotY;
 
 			Vector2 xDot, yDot;
 			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, this.gameobj.Transform.Scale, out xDot, out yDot);
@@ -278,7 +282,7 @@ namespace Duality.Components.Renderers
 				}
 			}
 		}
-		protected void GetUVRect(Texture mainTex, int spriteIndex, out Rect uvRect)
+		protected void GetRectData(Texture mainTex, int spriteIndex, out Rect uvRect, out Vector2 pivot)
 		{
 			// Determine the rect area of the texture to be displayed
 			if (mainTex == null)
@@ -287,6 +291,11 @@ namespace Duality.Components.Renderers
 				mainTex.LookupAtlas(spriteIndex, out uvRect);
 			else
 				uvRect = new Rect(mainTex.UVRatio);
+
+			if (mainTex != null && spriteIndex != -1)
+				mainTex.LookupPivot(spriteIndex, out pivot);
+			else
+				pivot = Vector2.Zero;
 
 			// Determine wrap-around and stretch behavior if the displayed rect size does
 			// not equal the rect size that would be required for a 1:1 display.
@@ -297,14 +306,10 @@ namespace Duality.Components.Renderers
 					uvRect.W *= this.rect.W / fullSize.X;
 				if ((this.rectMode & UVMode.WrapVertical) != 0)
 					uvRect.H *= this.rect.H / fullSize.Y;
+
+				pivot.X *= this.rect.W / fullSize.X;
+				pivot.Y *= this.rect.H / fullSize.Y;
 			}
-		}
-		protected void GetPivot(Texture mainTex, int spriteIndex, out Vector2 pivot)
-		{
-			if (mainTex != null && spriteIndex != -1)
-				mainTex.LookupPivot(spriteIndex, out pivot);
-			else
-				pivot = Vector2.Zero;
 		}
 
 		/// <inheritdoc/>
@@ -319,8 +324,7 @@ namespace Duality.Components.Renderers
 
 			Rect uvRect;
 			Vector2 pivot;
-			this.GetUVRect(mainTex, this.spriteIndex, out uvRect);
-			this.GetPivot(mainTex, this.spriteIndex, out pivot);
+			this.GetRectData(mainTex, this.spriteIndex, out uvRect, out pivot);
 			this.PrepareVertices(ref this.vertices, device, this.colorTint, uvRect, pivot);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);

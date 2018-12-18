@@ -153,8 +153,10 @@ namespace SmoothAnimation
 
 			Rect uvRect;
 			Rect uvRectNext;
-			this.GetUVRect(mainTex, this.spriteIndex, out uvRect);
-			this.GetUVRect(mainTex, this.nextSpriteIndex, out uvRectNext);
+			Vector2 pivot;
+			Vector2 pivotNext;
+			this.GetRectData(mainTex, this.spriteIndex, out uvRect, out pivot);
+			this.GetRectData(mainTex, this.nextSpriteIndex, out uvRectNext, out pivotNext);
 			
 			this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.spriteIndexBlend, this.colorTint, uvRect, uvRectNext);
 			if (this.customMat != null)
