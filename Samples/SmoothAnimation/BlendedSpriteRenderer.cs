@@ -25,9 +25,19 @@ namespace SmoothAnimation
 		[DontSerialize] private VertexSmoothAnim[] verticesSmooth   = null;
 
 		
-		private void PrepareVerticesSmooth(ref VertexSmoothAnim[] vertices, IDrawDevice device, float curAnimFrameFade, ColorRgba mainClr, Rect uvRect, Rect uvRectNext)
+		private void PrepareVerticesSmooth(ref VertexSmoothAnim[] vertices, IDrawDevice device, float curAnimFrameFade, ColorRgba mainClr,
+			Rect uvRect, Rect uvRectNext, Vector2 pivot, Vector2 pivotNext)
 		{
+			float pivotX = pivot.X;
+			float pivotY = pivot.Y;
+			float pivotNextX = pivotNext.X;
+			float pivotNextY = pivotNext.Y;
+			MathF.TransformCoord(ref pivotX, ref pivotY, this.GameObj.Transform.Angle, this.GameObj.Transform.Scale);
+			MathF.TransformCoord(ref pivotNextX, ref pivotNextY, this.GameObj.Transform.Angle, this.GameObj.Transform.Scale);
+
 			Vector3 posTemp = this.GameObj.Transform.Pos;
+			posTemp.X -= MathF.Lerp(pivotX, pivotNextX, curAnimFrameFade);
+			posTemp.Y -= MathF.Lerp(pivotY, pivotNextY, curAnimFrameFade);
 
 			Vector2 xDot, yDot;
 			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, this.GameObj.Transform.Scale, out xDot, out yDot);
@@ -158,7 +168,7 @@ namespace SmoothAnimation
 			this.GetRectData(mainTex, this.spriteIndex, out uvRect, out pivot);
 			this.GetRectData(mainTex, this.nextSpriteIndex, out uvRectNext, out pivotNext);
 			
-			this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.spriteIndexBlend, this.colorTint, uvRect, uvRectNext);
+			this.PrepareVerticesSmooth(ref this.verticesSmooth, device, this.spriteIndexBlend, this.colorTint, uvRect, uvRectNext, pivot, pivotNext);
 			if (this.customMat != null)
 				device.AddVertices(this.customMat, VertexMode.Quads, this.verticesSmooth);
 			else
