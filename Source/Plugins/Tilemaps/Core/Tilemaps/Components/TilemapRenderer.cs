@@ -287,11 +287,6 @@ namespace Duality.Plugins.Tilemaps
 			// Determine rendering parameters
 			Material material = (tileset != null ? tileset.RenderMaterial : null) ?? Material.Checkerboard.Res;
 			ColorRgba mainColor = this.colorTint;
-
-			// Reserve the required space for vertex data in our locally cached buffer
-			if (this.vertices == null) this.vertices = new RawList<VertexC1P3T2>();
-			this.vertices.Count = renderedTileCount * 4;
-			VertexC1P3T2[] vertexData = this.vertices.Data;
 			
 			// Determine and adjust data for Z offset generation
 			float depthPerTile = -cullingIn.TileSize.Y * cullingIn.TilemapScale * this.tileDepthScale;
@@ -312,10 +307,17 @@ namespace Duality.Plugins.Tilemaps
 			float renderOffset = renderBaseOffset;
 			Point2 tileGridPos = cullingOut.VisibleTileStart;
 
+			// Reserve the required space for vertex data in our locally cached buffer
+			const int MaxVerticesPerBatch = 65532;
+			if (this.vertices == null) this.vertices = new RawList<VertexC1P3T2>();
+			this.vertices.Count = Math.Min(renderedTileCount * 4, MaxVerticesPerBatch);
+			VertexC1P3T2[] vertexData = this.vertices.Data;
+
 			// Prepare vertex data array for batch-submitting
 			IReadOnlyGrid<Tile> tiles = tilemap.Tiles;
 			TileInfo[] tileData = tileset.TileData.Data;
 			int submittedTileCount = 0;
+			int submittedBatchCount = 0;
 			int vertexBaseIndex = 0;
 			for (int tileIndex = 0; tileIndex < renderedTileCount; tileIndex++)
 			{
@@ -385,17 +387,34 @@ namespace Duality.Plugins.Tilemaps
 					renderPos.Y += tileYStep.Y * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
 					renderOffset = renderBaseOffset + tileGridPos.Y * depthPerTile;
 				}
+
+				// If we reached the maximum number of vertices per batch, submit early and restart
+				if (vertexBaseIndex >= MaxVerticesPerBatch)
+				{
+					device.AddVertices(
+						material,
+						VertexMode.Quads,
+						vertexData,
+						vertexBaseIndex);
+					vertexBaseIndex = 0;
+					submittedBatchCount++;
+				}
 			}
 
-			// Submit all the vertices as one draw batch
-			device.AddVertices(
-				material,
-				VertexMode.Quads, 
-				vertexData, 
-				submittedTileCount * 4);
+			// Submit the final batch will all remaining vertices
+			if (vertexBaseIndex > 0)
+			{
+				device.AddVertices(
+					material,
+					VertexMode.Quads,
+					vertexData,
+					vertexBaseIndex);
+				submittedBatchCount++;
+			}
 
 			Profile.AddToStat(@"Duality\Stats\Render\Tilemaps\NumTiles", renderedTileCount);
 			Profile.AddToStat(@"Duality\Stats\Render\Tilemaps\NumVertices", submittedTileCount * 4);
+			Profile.AddToStat(@"Duality\Stats\Render\Tilemaps\NumBatches", submittedBatchCount);
 		}
 	}
 }
