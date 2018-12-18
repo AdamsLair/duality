@@ -163,8 +163,7 @@ namespace DynamicLighting
 
 			Rect uvRect;
 			Vector2 pivot;
-			this.GetUVRect(mainTex, this.spriteIndex, out uvRect);
-			this.GetPivot(mainTex, this.spriteIndex, out pivot);
+			this.GetRectData(mainTex, this.spriteIndex, out uvRect, out pivot);
 			this.PrepareVerticesLight(ref this.verticesLight, device, this.colorTint, uvRect, pivot, tech);
 
 			if (this.customMat != null)
