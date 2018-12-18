@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -14,6 +14,7 @@ using Duality.Editor.Forms;
 using Duality.Editor.Properties;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.ProjectView.Properties;
+using System.Xml.Linq;
 
 
 namespace Duality.Editor.Plugins.ProjectView
@@ -52,6 +53,14 @@ namespace Duality.Editor.Plugins.ProjectView
 				Icon = ProjectViewResCache.IconProjectView.ToBitmap(),
 				ActionHandler = this.menuItemProjectView_Click
 			});
+		}
+		protected override void LoadUserData(XElement node)
+		{
+			this.projectView.LoadUserData(node);
+		}
+		protected override void SaveUserData(XElement node)
+		{
+			this.projectView.SaveUserData(node);
 		}
 		public ProjectFolderView RequestProjectView()
 		{

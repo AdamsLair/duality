@@ -33,6 +33,7 @@
 			this.toolStrip = new System.Windows.Forms.ToolStrip();
 			this.toolStripButtonWorkDir = new System.Windows.Forms.ToolStripButton();
 			this.toolStripLabelProjectName = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripButtonImport = new System.Windows.Forms.ToolStripButton();
 			this.folderView = new Duality.Editor.Controls.AutoExpandTreeView();
 			this.treeColumnName = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnType = new Aga.Controls.Tree.TreeColumn();
@@ -59,8 +60,9 @@
 			this.toolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButtonWorkDir,
-            this.toolStripLabelProjectName});
+			this.toolStripButtonWorkDir,
+			this.toolStripLabelProjectName,
+			this.toolStripButtonImport});
 			this.toolStrip.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Size = new System.Drawing.Size(304, 25);
@@ -83,9 +85,20 @@
 			this.toolStripLabelProjectName.Size = new System.Drawing.Size(115, 22);
 			this.toolStripLabelProjectName.Text = "Project: Some Name";
 			// 
+			// toolStripButtonImport
+			// 
+			this.toolStripButtonImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButtonImport.Image = global::Duality.Editor.Plugins.ProjectView.Properties.Resources.page_white_put;
+			this.toolStripButtonImport.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonImport.Name = "toolStripButtonImport";
+			this.toolStripButtonImport.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButtonImport.Text = "Import...";
+			this.toolStripButtonImport.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
+			// 
 			// folderView
 			// 
 			this.folderView.AllowDrop = true;
+			this.folderView.AutoExpandDelay = 750;
 			this.folderView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.folderView.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.folderView.Columns.Add(this.treeColumnName);
@@ -173,10 +186,10 @@
 			// contextMenuDragMoveCopy
 			// 
 			this.contextMenuDragMoveCopy.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyHereToolStripMenuItem,
-            this.moveHereToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.cancelToolStripMenuItem});
+			this.copyHereToolStripMenuItem,
+			this.moveHereToolStripMenuItem,
+			this.toolStripSeparator1,
+			this.cancelToolStripMenuItem});
 			this.contextMenuDragMoveCopy.Name = "contextMenuDragMoveCopy";
 			this.contextMenuDragMoveCopy.Size = new System.Drawing.Size(131, 76);
 			// 
@@ -251,9 +264,9 @@
 			this.Controls.Add(this.panelBottom);
 			this.Controls.Add(this.toolStrip);
 			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockLeft) 
-            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight) 
-            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
-            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
+			| WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight) 
+			| WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
+			| WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -273,7 +286,6 @@
 		#endregion
 
 		private System.Windows.Forms.ToolStrip toolStrip;
-		private Aga.Controls.Tree.TreeViewAdv folderView;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeTextBoxName;
 		private Aga.Controls.Tree.NodeControls.NodeStateIcon nodeStateIcon;
 		private System.Windows.Forms.Timer timerFlashItem;
@@ -291,5 +303,7 @@
 		private Aga.Controls.Tree.TreeColumn treeColumnName;
 		private Aga.Controls.Tree.TreeColumn treeColumnType;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeTextBoxType;
+		private System.Windows.Forms.ToolStripButton toolStripButtonImport;
+		private Controls.AutoExpandTreeView folderView;
 	}
 }
