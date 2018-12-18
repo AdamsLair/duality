@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.Tilemaps</id>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Editor)</title>
@@ -13,12 +13,12 @@
     <summary>Defines the editor integration of the dependent core tilemap plugin.</summary>
     <description>Defines the editor integration of the dependent core tilemap plugin.</description>
     <tags>Duality Editor Plugin Tilemaps</tags>
-    <releaseNotes>Major Version Update
-</releaseNotes>
+    <releaseNotes>Updated Dependencies
+#CHANGE: Updated AdamsLair.Duality.Plugins.Tilemaps dependency</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="2.0.0" />
+      <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="2.0.1" />
       <dependency id="AdamsLair.Duality" version="3.0.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="3.0.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="3.0.1" />
     </dependencies>
   </metadata>
   <files>
