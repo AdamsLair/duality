@@ -388,7 +388,10 @@ namespace Duality.Resources
 			if (index > this.items.Count)
 				throw new ArgumentOutOfRangeException("index", "The index was greater than the size number of rects in the atlas");
 
-			this.TagIndices(tag, new []{ index });
+			if (string.IsNullOrEmpty(tag))
+				this.UntagIndices(tag, new []{ index });
+			else
+				this.TagIndices(tag, new []{ index });
 		}
 
 		/// <summary>
