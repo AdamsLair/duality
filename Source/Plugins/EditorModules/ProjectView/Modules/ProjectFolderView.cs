@@ -673,13 +673,13 @@ namespace Duality.Editor.Plugins.ProjectView
 				this.nodeContextItemImport = new MenuModelItem
 				{
 					Name			= Properties.ProjectViewRes.ProjectFolderView_ContextItemName_Import,
-					SortValue		= MenuModelItem.SortValue_UnderTop,
+					SortValue		= MenuModelItem.SortValue_UnderTop + 1,
 					ActionHandler	= this.importToolStripMenuItem_Click
 				},
 				new MenuModelItem
 				{
 					Name			= "UnderTopSeparator",
-					SortValue		= MenuModelItem.SortValue_UnderTop,
+					SortValue		= MenuModelItem.SortValue_UnderTop + 1,
 					TypeHint		= MenuItemTypeHint.Separator
 				},
 				this.nodeContextItemCut = new MenuModelItem 
