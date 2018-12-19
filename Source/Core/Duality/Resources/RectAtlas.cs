@@ -231,7 +231,7 @@ namespace Duality.Resources
 		{
 			if (index < 0)
 				throw new ArgumentOutOfRangeException("index", "The insertion index cannot be less than 0");
-			if (index > this.items.Count)
+			if (index >= this.items.Count)
 				throw new ArgumentOutOfRangeException("index", "The insertion index was greater than the size number of rects in the atlas");
 
 			if (this.tags != null)
@@ -270,32 +270,96 @@ namespace Duality.Resources
 		}
 
 		/// <summary>
-		/// Tags the rects at the given indices with the given tag. If the rect at the given index
-		/// already has the given tag, it will be ignored.
+		/// Returns all rects with the given tag or an empty enumerable if no rects
+		/// with the given tag exist. The returned rects will be in index order.
 		/// </summary>
-		/// <param name="tag">The tag to apply to the rects. Cannot be null or empty.</param>
-		/// <param name="indices">The indices of the rects to tag</param>
-		/// <exception cref="ArgumentException">
-		/// The given tag was null or empty.
+		/// <param name="tag">The tag of the rects to look for</param>
+		/// <returns>
+		/// The rects with the given tag or an empty enumerable if no rects with the given tag exist.
+		/// </returns>
+		public IEnumerable<Rect> GetTaggedRects(string tag)
+		{
+			IEnumerable<int> indices = this.GetTaggedIndices(tag);
+			if (!indices.Any()) return Enumerable.Empty<Rect>();
+			return indices.Select(i => this[i]);
+		}
+
+		/// <summary>
+		/// Returns all the indices of all rects with the given tag or an empty enumerable if no rects
+		/// with the given tag exist.
+		/// </summary>
+		/// <param name="tag">The tag of the rects to look for.</param>
+		/// <returns>
+		/// The indices of rects with the given tag or an empty enumerable
+		/// if no rects with the given tag exist.
+		/// </returns>
+		public IEnumerable<int> GetTaggedIndices(string tag)
+		{
+			List<int> indices;
+			if (string.IsNullOrEmpty(tag))
+			{
+				indices = new List<int>();
+				for (int i = 0; i < this.items.Count; i++)
+				{
+					if (string.IsNullOrEmpty(this.items[i].Tag))
+						indices.Add(i);
+				}
+			}
+			else if (this.tags == null || !this.tags.TryGetValue(tag, out indices))
+			{
+				return Enumerable.Empty<int>();
+			}
+
+			return indices;
+		}
+
+		/// <summary>
+		/// Sets the tag associated with the given index.
+		/// </summary>
+		/// <param name="index">The index within the atlas to find the tag for.</param>
+		/// <param name="tag">The tag to associate with the given index.</param>
+		/// <returns>The tag of the given rect atlas index</returns>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The given index was outside the range of the number of elements in the atlas.
 		/// </exception>
+		public void SetTag(int index, string tag)
+		{
+			if (index < 0)
+				throw new ArgumentOutOfRangeException("index", "The index cannot be less than 0");
+			if (index >= this.items.Count)
+				throw new ArgumentOutOfRangeException("index", "The index was greater than the size number of rects in the atlas");
+
+			this.SetTags(tag, new []{ index });
+		}
+
+		/// <summary>
+		/// Tags the rects at the given indices with the given tag.
+		/// Indices that are out of range are safely ignored.
+		/// </summary>
+		/// <param name="tag">The tag to apply to the rects.</param>
+		/// <param name="indices">The indices of the rects to tag.</param>
 		/// /// <exception cref="ArgumentNullException">
 		/// The given indices array was null.
 		/// </exception>
-		public void TagIndices(string tag, int[] indices)
+		public void SetTags(string tag, int[] indices)
 		{
-			if (string.IsNullOrEmpty(tag))
-				throw new ArgumentException("The tag cannot be null or empty", "tag");
 			if (indices == null)
 				throw new ArgumentNullException("indices");
 
-			if (this.tags == null)
+			bool validTag = !string.IsNullOrEmpty(tag);
+
+			if (validTag && this.tags == null)
 				this.tags = new Dictionary<string, List<int>>();
-			if (!this.tags.ContainsKey(tag))
+			if (validTag && !this.tags.ContainsKey(tag))
 				this.tags.Add(tag, new List<int>());
 
-			List<int> taggedIndices = this.tags[tag];
+			List<int> taggedIndices = validTag ? this.tags[tag] : null;
 			foreach (int newTagIndex in indices)
 			{
+				// Ignore indices out of range
+				if (newTagIndex < 0 || newTagIndex >= this.items.Count)
+					continue;
+
 				// Remove this index from the index list of its current tag
 				List<int> existingTagList;
 				if (this.items.Data[newTagIndex].Tag != null
@@ -310,88 +374,16 @@ namespace Duality.Resources
 
 				this.items.Data[newTagIndex].Tag = tag;
 
-				int possibleIndex = taggedIndices.BinarySearch(newTagIndex);
-				// If possibleIndex >= 0, the index is already tagged,
-				// else BinarySearch returns the bitwise complement of
-				// the index the item should be inserted into.
-				if (possibleIndex < 0)
-					taggedIndices.Insert(~possibleIndex, newTagIndex);
-			}
-		}
-
-		/// <summary>
-		/// Returns all rects with the given tag or an empty enumerable if no rects
-		/// with the given tag exist. The returned rects will be in index order.
-		/// </summary>
-		/// <param name="tag">The tag of the rects to look for</param>
-		/// <returns>
-		/// The rects with the given tag or an empty enumerable if no rects with the given tag exist.
-		/// </returns>
-		public IEnumerable<Rect> GetTaggedRects(string tag)
-		{
-			return this.GetTaggedIndices(tag).Select(i => this[i]);
-		}
-
-		/// <summary>
-		/// Returns all the indices of all rects with the given tag or an empty enumerable if no rects
-		/// with the given tag exist.
-		/// </summary>
-		/// <param name="tag">The tag of the rects to look for</param>
-		/// <returns>
-		/// The indices of rects with the given tag or an empty enumerable if no rects with the given tag exist.
-		/// </returns>
-		public IEnumerable<int> GetTaggedIndices(string tag)
-		{
-			List<int> indices;
-			if (this.tags == null || !this.tags.TryGetValue(tag, out indices))
-				return Enumerable.Empty<int>();
-
-			return indices;
-		}
-
-		/// <summary>
-		/// Removes the given tag from all rects at the given indices.
-		/// </summary>
-		/// <param name="tag">The tag to remove from the rects</param>
-		/// <param name="taggedIndices">The indices of rects to untag</param>
-		public void UntagIndices(string tag, int[] taggedIndices)
-		{
-			List<int> indices;
-			if (this.tags == null || !this.tags.TryGetValue(tag, out indices))
-				return;
-
-			foreach (int indexToUnTag in taggedIndices)
-			{
-				// Find the index of the tagged index within the index listing
-				int index = indices.BinarySearch(indexToUnTag);
-				if (index >= 0)
+				if (validTag)
 				{
-					indices.RemoveAt(index);
-					this.items.Data[index].Tag = null;
+					int possibleIndex = taggedIndices.BinarySearch(newTagIndex);
+					// If possibleIndex >= 0, the index is already tagged,
+					// else BinarySearch returns the bitwise complement of
+					// the index the item should be inserted into.
+					if (possibleIndex < 0)
+						taggedIndices.Insert(~possibleIndex, newTagIndex);
 				}
 			}
-		}
-
-		/// <summary>
-		/// Gets the tag associated with the given index.
-		/// </summary>
-		/// <param name="index">The index within the atlas to find the tag for.</param>
-		/// <param name="tag">The tag to associate with the given index.</param>
-		/// <returns>The tag of the given rect atlas index</returns>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// The given index was outside the range of the number of elements in the atlas.
-		/// </exception>
-		public void SetTag(int index, string tag)
-		{
-			if (index < 0)
-				throw new ArgumentOutOfRangeException("index", "The index cannot be less than 0");
-			if (index > this.items.Count)
-				throw new ArgumentOutOfRangeException("index", "The index was greater than the size number of rects in the atlas");
-
-			if (string.IsNullOrEmpty(tag))
-				this.UntagIndices(tag, new []{ index });
-			else
-				this.TagIndices(tag, new []{ index });
 		}
 
 		/// <summary>
@@ -406,7 +398,7 @@ namespace Duality.Resources
 		{
 			if (index < 0)
 				throw new ArgumentOutOfRangeException("index", "The index cannot be less than 0");
-			if (index > this.items.Count)
+			if (index >= this.items.Count)
 				throw new ArgumentOutOfRangeException("index", "The index was greater than the size number of rects in the atlas");
 
 			return this.items[index].Tag;
@@ -424,7 +416,7 @@ namespace Duality.Resources
 		{
 			if (index < 0)
 				throw new ArgumentOutOfRangeException("index", "The index cannot be less than 0");
-			if (index > this.items.Count)
+			if (index >= this.items.Count)
 				throw new ArgumentOutOfRangeException("index", "The index was greater than the size number of rects in the atlas");
 
 			return this.items[index].Pivot;
@@ -442,7 +434,7 @@ namespace Duality.Resources
 		{
 			if (index < 0)
 				throw new ArgumentOutOfRangeException("index", "The index cannot be less than 0");
-			if (index > this.items.Count)
+			if (index >= this.items.Count)
 				throw new ArgumentOutOfRangeException("index", "The index was greater than the size number of rects in the atlas");
 
 			this.items.Data[index].Pivot = pivot;

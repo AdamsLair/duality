@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Duality.Resources;
 using NUnit.Framework;
 
@@ -101,24 +102,47 @@ namespace Duality.Tests.Resources
 			CollectionAssert.IsEmpty(atlas.GetTaggedIndices("Tag0"));
 		}
 
+		[Test]
+		public void GetSetPivot()
+		{
+			RectAtlas atlas = new RectAtlas();
+
+			Assert.Throws<ArgumentOutOfRangeException>(() => atlas.SetPivot(-1, Vector2.Zero));
+			Assert.Throws<ArgumentOutOfRangeException>(() => atlas.SetPivot(0, Vector2.Zero));
+			Assert.Throws<ArgumentOutOfRangeException>(() => atlas.GetPivot(-1));
+			Assert.Throws<ArgumentOutOfRangeException>(() => atlas.GetPivot(0));
+
+			atlas.Add(new Rect(0, 0, 0, 0));
+
+			atlas.SetPivot(0, new Vector2(1, 1));
+			Assert.AreEqual(new Vector2(1, 1), atlas.GetPivot(0));
+			atlas.SetPivot(0, new Vector2(0, 0));
+			Assert.AreEqual(new Vector2(0, 0), atlas.GetPivot(0));
+		}
+
 		[Test] public void TagAndUnTag()
 		{
 			RectAtlas atlas = new RectAtlas();
 
-			Assert.Throws<ArgumentException>(() => atlas.TagIndices(null, new int[0]));
-			Assert.Throws<ArgumentException>(() => atlas.TagIndices("", new int[0]));
-			Assert.Throws<ArgumentNullException>(() => atlas.TagIndices("Tag", null));
+			Assert.Throws<ArgumentOutOfRangeException>(() => atlas.SetTag(-1, null));
+			Assert.Throws<ArgumentOutOfRangeException>(() => atlas.SetTag(0, null));
+			Assert.Throws<ArgumentOutOfRangeException>(() => atlas.GetTag(-1));
+			Assert.Throws<ArgumentOutOfRangeException>(() => atlas.GetTag(0));
+			Assert.Throws<ArgumentNullException>(() => atlas.SetTags("Tag", null));
 
-			// Does nothing
-			atlas.UntagIndices("Non-ExistantTag", new int[0]);
+			atlas.SetTags("Non-ExistantTag", new int[0]);
+			CollectionAssert.IsEmpty(atlas.GetTaggedIndices("Non-ExistantTag"));
+
+			atlas.SetTags("OutOfRange", new[]{ 5 });
+			CollectionAssert.IsEmpty(atlas.GetTaggedIndices("OutOfRange"));
 
 			atlas.Add(new Rect());
-			atlas.TagIndices("Tag1", new[] { 0 });
+			atlas.SetTags("Tag1", new[] { 0 });
 			CollectionAssert.AreEquivalent(new[] { 0 }, atlas.GetTaggedIndices("Tag1"));
 			CollectionAssert.AreEquivalent(new[] { new Rect() }, atlas.GetTaggedRects("Tag1"));
 
 			atlas.Add(new Rect(1, 1, 1, 1));
-			atlas.TagIndices("Tag1", new[] { 1 });
+			atlas.SetTags("Tag1", new[] { 1 });
 			CollectionAssert.AreEquivalent(
 				new[] { 0, 1 },
 				atlas.GetTaggedIndices("Tag1"));
@@ -126,19 +150,21 @@ namespace Duality.Tests.Resources
 				(new[] { new Rect(), new Rect(1, 1, 1, 1), },
 				atlas.GetTaggedRects("Tag1"));
 
-			atlas.TagIndices("Tag2", new[] { 1 });
+			atlas.SetTags("Tag2", new[] { 1 });
 			CollectionAssert.AreEquivalent(new[] { 0 }, atlas.GetTaggedIndices("Tag1"));
 			CollectionAssert.AreEquivalent(new[] { new Rect() }, atlas.GetTaggedRects("Tag1"));
 			CollectionAssert.AreEquivalent(new[] { 1 }, atlas.GetTaggedIndices("Tag2"));
 			CollectionAssert.AreEquivalent(new[] { new Rect(1, 1, 1, 1) }, atlas.GetTaggedRects("Tag2"));
 
-			atlas.UntagIndices("Tag1", new[] { 0 });
+			atlas.SetTags(null, new[] { 0 });
+			Assert.AreEqual(1, atlas.GetTaggedIndices(null).Count());
+			Assert.AreEqual(1, atlas.GetTaggedRects(null).Count());
 			CollectionAssert.IsEmpty(atlas.GetTaggedIndices("Tag1"));
 			CollectionAssert.IsEmpty(atlas.GetTaggedRects("Tag1"));
 			CollectionAssert.AreEquivalent(new[] { 1 }, atlas.GetTaggedIndices("Tag2"));
 			CollectionAssert.AreEquivalent(new[] { new Rect(1, 1, 1, 1) }, atlas.GetTaggedRects("Tag2"));
 
-			atlas.TagIndices("Tag1", new[] { 1 });
+			atlas.SetTags("Tag1", new[] { 1 });
 			CollectionAssert.IsEmpty(atlas.GetTaggedIndices("Tag2"));
 			CollectionAssert.IsEmpty(atlas.GetTaggedRects("Tag2"));
 		}
