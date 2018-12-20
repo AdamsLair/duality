@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Duality.Resources;
 using NUnit.Framework;
 
@@ -12,6 +14,8 @@ namespace Duality.Tests.Resources
 		{
 			RectAtlas atlas1 = new RectAtlas();
 			Assert.AreEqual(0, atlas1.Count);
+			Assert.IsFalse(atlas1.IsReadOnly);
+
 			RectAtlas atlas2 = new RectAtlas(10);
 			Assert.AreEqual(0, atlas2.Count);
 
@@ -36,6 +40,11 @@ namespace Duality.Tests.Resources
 			Assert.AreEqual(null, atlas.GetTag(0));
 			Assert.AreEqual(1, atlas.Count);
 			Assert.AreEqual(0, atlas.IndexOf(new Rect(1, 1, 1, 1)));
+
+			atlas[0] = new Rect(2, 2, 2, 2);
+			Assert.AreEqual(new Rect(2, 2, 2, 2), atlas[0]);
+			atlas[0] = new Rect(1, 1, 1, 1);
+			Assert.AreEqual(new Rect(1, 1, 1, 1), atlas[0]);
 
 			atlas.Add(new Rect(2, 2, 2, 2));
 			Assert.IsTrue(atlas.Contains(new Rect(1, 1, 1, 1)));
@@ -138,6 +147,7 @@ namespace Duality.Tests.Resources
 
 			atlas.Add(new Rect());
 			atlas.SetTags("Tag1", new[] { 0 });
+			Assert.AreEqual(new Rect(), atlas["Tag1"]);
 			CollectionAssert.AreEquivalent(new[] { 0 }, atlas.GetTaggedIndices("Tag1"));
 			CollectionAssert.AreEquivalent(new[] { new Rect() }, atlas.GetTaggedRects("Tag1"));
 
@@ -167,6 +177,119 @@ namespace Duality.Tests.Resources
 			atlas.SetTags("Tag1", new[] { 1 });
 			CollectionAssert.IsEmpty(atlas.GetTaggedIndices("Tag2"));
 			CollectionAssert.IsEmpty(atlas.GetTaggedRects("Tag2"));
+		}
+
+		[Test] public void CopyConstructor()
+		{
+			RectAtlas atlas1 = new RectAtlas();
+			for (int i = 0; i < 3; i++)
+			{
+				atlas1.Add(new Rect(i, i, i, i));
+				atlas1.SetPivot(i, new Vector2(i, i));
+				atlas1.SetTag(i, i.ToString());
+			}
+
+			RectAtlas atlas2 = new RectAtlas(atlas1);
+			Assert.AreEqual(atlas1.Count, atlas2.Count);
+			for (int i = 0; i < 3; i++)
+			{
+				Assert.AreEqual(atlas1[i], atlas2[i]);
+				Assert.AreEqual(atlas1.GetPivot(i), atlas2.GetPivot(i));
+				Assert.AreEqual(atlas1.GetTag(i), atlas2.GetTag(i));
+			}
+		}
+
+		[Test] public void CopyTo()
+		{
+			RectAtlas atlas = new RectAtlas();
+			for (int i = 0; i < 5; i++)
+				atlas.Add(new Rect(i, i, i, i));
+
+			Rect[] rects = new Rect[5];
+			atlas.CopyTo(rects, 0);
+
+			for (int i = 0; i < 5; i++)
+				Assert.AreEqual(rects[i], atlas[i]);
+		}
+
+		[Test] public void Enumerator()
+		{
+			RectAtlas atlas = new RectAtlas();
+
+			bool any = false;
+			foreach (Rect rect in atlas)
+				any = true;
+			foreach (object obj in (IEnumerable)atlas)
+				any = true;
+			Assert.IsFalse(any);
+
+			for (int i = 0; i < 5; i++)
+				atlas.Add(new Rect(i, i, i, i));
+
+			int val = 0;
+			foreach (Rect rect in atlas)
+			{
+				Assert.AreEqual(new Rect(val, val, val, val), rect);
+				val++;
+			}
+			val = 0;
+			foreach (object obj in (IEnumerable) atlas)
+			{
+				Rect rect = (Rect) obj;
+				Assert.AreEqual(new Rect(val, val, val, val), rect);
+				val++;
+			}
+		}
+
+		/// <summary>
+		/// Uses reflection to test the private 'Items' property that
+		/// is used for editor support.
+		/// </summary>
+		[Test] public void EditorItems()
+		{
+			PropertyInfo itemsInfo = typeof(RectAtlas).GetProperty("Items", BindingFlags.NonPublic | BindingFlags.Instance);
+			RectAtlas atlas = new RectAtlas();
+
+			RawList<RectAtlas.RectAtlasItem> items = new RawList<RectAtlas.RectAtlasItem>();
+			for (int i = 0; i < 5; i++)
+			{
+				items.Add(new RectAtlas.RectAtlasItem
+				{
+					Rect = new Rect(i, i, i, i),
+					Pivot = new Vector2(i, i),
+					Tag = i.ToString()
+				});
+			}
+
+			itemsInfo.SetValue(atlas, items);
+
+			for (int i = 0; i < atlas.Count; i++)
+			{
+				Assert.AreEqual(new Rect(i, i, i, i), atlas[i]);
+				Assert.AreEqual(new Vector2(i, i), atlas.GetPivot(i));
+				Assert.AreEqual(i.ToString(), atlas.GetTag(i));
+			}
+
+			RawList<RectAtlas.RectAtlasItem> itemsFromGetter = (RawList<RectAtlas.RectAtlasItem>)itemsInfo.GetValue(atlas);
+			for (int i = 0; i < atlas.Count; i++)
+			{
+				Assert.AreEqual(itemsFromGetter[i].Rect, atlas[i]);
+				Assert.AreEqual(itemsFromGetter[i].Pivot, atlas.GetPivot(i));
+				Assert.AreEqual(itemsFromGetter[i].Tag, atlas.GetTag(i));
+			}
+
+			RawList<RectAtlas.RectAtlasItem> itemsWithNullTag = new RawList<RectAtlas.RectAtlasItem>();
+			itemsWithNullTag.Add(new RectAtlas.RectAtlasItem
+			{
+				Rect = new Rect(-1, -1, -1, -1),
+				Pivot = new Vector2(-1, -1),
+				Tag = null
+			});
+
+			itemsInfo.SetValue(atlas, itemsWithNullTag);
+			Assert.AreEqual(new Rect(-1, -1, -1, -1), atlas[0]);
+			Assert.AreEqual(new Vector2(-1, -1), atlas.GetPivot(0));
+			Assert.AreEqual(null, atlas.GetTag(0));
 		}
 	}
 }
