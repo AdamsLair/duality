@@ -37,9 +37,13 @@ namespace DynamicLighting
 		{
 			bool perPixel = tech is LightingTechnique;
 
+			float pivotX = pivot.X;
+			float pivotY = pivot.Y;
+			MathF.TransformCoord(ref pivotX, ref pivotY, this.GameObj.Transform.Angle, this.GameObj.Transform.Scale);
+
 			Vector3 pos = this.GameObj.Transform.Pos;
-			pos.X -= pivot.X;
-			pos.Y -= pivot.Y;
+			pos.X -= pivotX;
+			pos.Y -= pivotY;
 
 			Vector2 xDot, yDot;
 			float rotation = this.GameObj.Transform.Angle;
