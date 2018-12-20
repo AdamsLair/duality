@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Duality.Editor;
+using Duality.Serialization;
 
 namespace Duality.Resources
 {
-	public class RectAtlas : IList<Rect>
+	public class RectAtlas : IList<Rect>, ISerializeExplicit
 	{
 		public struct RectAtlasItem
 		{
@@ -479,6 +480,18 @@ namespace Duality.Resources
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.items.Select(i => i.Rect).GetEnumerator();
+		}
+
+		void ISerializeExplicit.WriteData(IDataWriter writer)
+		{
+			writer.WriteValue("items", this.items);
+		}
+
+		void ISerializeExplicit.ReadData(IDataReader reader)
+		{
+			RawList<RectAtlasItem> itemsList;
+			reader.ReadValue("items", out itemsList);
+			this.Items = itemsList;
 		}
 	}
 }
