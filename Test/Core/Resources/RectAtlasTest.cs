@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Duality.Resources;
+using Duality.Serialization;
 using NUnit.Framework;
 
 namespace Duality.Tests.Resources
@@ -290,6 +292,33 @@ namespace Duality.Tests.Resources
 			Assert.AreEqual(new Rect(-1, -1, -1, -1), atlas[0]);
 			Assert.AreEqual(new Vector2(-1, -1), atlas.GetPivot(0));
 			Assert.AreEqual(null, atlas.GetTag(0));
+		}
+
+		[Test] public void SerializationTest()
+		{
+			using (MemoryStream stream = new MemoryStream())
+			using (XmlSerializer reader = new XmlSerializer())
+			using (XmlSerializer writer = new XmlSerializer())
+			{
+				writer.TargetStream = stream;
+
+				RectAtlas atlasWritten = new RectAtlas();
+				atlasWritten.Add(new Rect(1, 1, 1, 1));
+				atlasWritten.SetPivot(0, new Vector2(1, 1));
+				atlasWritten.SetTag(0, "1");
+
+				writer.WriteObject(atlasWritten);
+
+				stream.Position = 0;
+
+				reader.TargetStream = stream;
+
+				RectAtlas atlasRead = reader.ReadObject<RectAtlas>();
+
+				Assert.AreEqual(atlasWritten[0], atlasRead[0]);
+				Assert.AreEqual(atlasWritten.GetPivot(0), atlasRead.GetPivot(0));
+				Assert.AreEqual(atlasWritten.GetTag(0), atlasRead.GetTag(0));
+			}
 		}
 	}
 }
