@@ -607,10 +607,12 @@ footer a:hover {
 
 /* Donate Section */
 
+/*
 footer section#donate a {
 	width: 93.75pt;
 	display: inline-block;
 }
+*/
 
 footer section#donate a img {
 	width: 100%;
