@@ -180,6 +180,7 @@
     <Compile Include="HelpSystem\HelpStack.cs" />
     <Compile Include="HelpSystem\IReadOnlyHelpInfo.cs" />
     <Compile Include="HelpSystem\IHelpProvider.cs" />
+    <Compile Include="PackageManagement\DualityNugetPackageManager.cs" />
     <Compile Include="PackageManagement\PackageDependencyWalker.cs" />
     <Compile Include="PackageManagement\PackageCache.cs" />
     <Compile Include="PackageManagement\PackageManagerLogger.cs" />
@@ -465,12 +466,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
-  
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe.config" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\" />
-	
     <Copy SourceFiles="$(OutputPath)AdamsLair.WinForms.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)AdamsLair.WinForms.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)Aga.Controls.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
@@ -481,6 +480,5 @@
     <Copy SourceFiles="$(OutputPath)VistaBridgeLibrary.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)Windows7.DesktopIntegration.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)Windows7.DesktopIntegration.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
-	
   </Target>
 </Project>
