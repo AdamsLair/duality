@@ -47,7 +47,7 @@ namespace Duality.Editor.PackageManagement
 		private List<PackageDependencyWalker> dependencyWalkerPool = new List<PackageDependencyWalker>();
 		private object                        dependencyWalkerLock = new object();
 
-		private DualityNugetPackageManager manager    = null;
+		private NuGetTargetedPackageManager manager    = null;
 		private NuGet.IPackageRepository   repository = null;
 		private PackageManagerLogger       logger     = null;
 
@@ -149,8 +149,10 @@ namespace Duality.Editor.PackageManagement
 				.Where(x => x != null)
 				.ToArray();
 			this.repository = new AggregateRepository(repositories);
-			var targetFramework = new FrameworkName(".NETFramework", new Version(4, 5, 2));
-			this.manager = new DualityNugetPackageManager(targetFramework, this.repository, this.env.RepositoryPath);
+			this.manager = new NuGetTargetedPackageManager(
+				new FrameworkName(".NETFramework", new Version(4, 5, 2)), 
+				this.repository, 
+				this.env.RepositoryPath);
 			this.manager.PackageInstalling += this.manager_PackageInstalling;
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
