@@ -180,7 +180,8 @@
     <Compile Include="HelpSystem\HelpStack.cs" />
     <Compile Include="HelpSystem\IReadOnlyHelpInfo.cs" />
     <Compile Include="HelpSystem\IHelpProvider.cs" />
-    <Compile Include="PackageManagement\DualityNugetPackageManager.cs" />
+    <Compile Include="PackageManagement\DependencySet.cs" />
+    <Compile Include="PackageManagement\NuGetTargetedPackageManager.cs" />
     <Compile Include="PackageManagement\PackageDependencyWalker.cs" />
     <Compile Include="PackageManagement\PackageCache.cs" />
     <Compile Include="PackageManagement\PackageManagerLogger.cs" />

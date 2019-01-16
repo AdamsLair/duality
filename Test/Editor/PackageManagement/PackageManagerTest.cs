@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.Versioning;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -68,7 +69,7 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 		[Test] public void GetPackage()
 		{
-			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.Test", new Version(1, 2, 3, 4));
+			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.Test", new Version(1, 2, 3, 4), DependencySet.Net452Target);
 			packageSpec.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
 
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
@@ -81,10 +82,10 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 		[Test] public void GetLatestDualityPackages()
 		{
-			MockPackageSpec packageSpecNonDuality = new MockPackageSpec("Some.Other.Package");
-			MockPackageSpec packageSpecPlugin = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
-			MockPackageSpec packageSpecPluginLatest = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 1, 0, 0));
-			MockPackageSpec packageSpecSample = new MockPackageSpec("AdamsLair.Duality.TestSample");
+			MockPackageSpec packageSpecNonDuality = new MockPackageSpec("Some.Other.Package", DependencySet.Net452Target);
+			MockPackageSpec packageSpecPlugin = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0), DependencySet.Net452Target);
+			MockPackageSpec packageSpecPluginLatest = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 1, 0, 0), DependencySet.Net452Target);
+			MockPackageSpec packageSpecSample = new MockPackageSpec("AdamsLair.Duality.TestSample", DependencySet.Net452Target);
 
 			packageSpecPlugin.Tags.Add(PackageManager.DualityTag);
 			packageSpecPlugin.Tags.Add(PackageManager.PluginTag);
@@ -271,7 +272,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			// Duality plugin depending on another Duality plugin
 			MockPackageSpec dualityPluginB = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB");
-			dualityPluginB.Dependencies.Add(dualityPluginA.Name);
+			dualityPluginB.AddDependency(DependencySet.Net452Target, dualityPluginA.Name);
 
 			cases.Add(new PackageOperationTestCase(
 				"Duality Plugin, With Duality Dependencies", 
@@ -283,8 +284,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			otherLibraryA.AddFile("Data\\TestLibraryA\\SomeFile.txt", "content\\TestLibraryA");
 			otherLibraryA.LocalMapping.Add("content\\TestLibraryA\\SomeFile.txt", "TestLibraryA\\SomeFile.txt");
 
-			MockPackageSpec dualityPluginC = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC");
-			dualityPluginC.Dependencies.Add(otherLibraryA.Name);
+			MockPackageSpec dualityPluginC = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC");				
+			dualityPluginC.AddDependency(DependencySet.Net452Target, otherLibraryA.Name);
 
 			cases.Add(new PackageOperationTestCase(
 				"Duality Plugin, With Lib Dependencies", 
@@ -356,7 +357,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
 					"AdamsLair.Duality.TestPlugin",
 					new Version(1, 0, 0, 0),
-					"portable-net45+win8+wpa81");
+					new FrameworkName(".NETFramework", new Version(4, 5), "net45+win8+wpa81"));
 				cases.Add(new PackageOperationTestCase(
 					"Portable Profile 111",
 					spec,
@@ -368,7 +369,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
 					"AdamsLair.Duality.TestPlugin",
 					new Version(1, 0, 0, 0),
-					"portable-net40+sl5+win8+wp8+wpa81");
+					new FrameworkName(".NETFramework", new Version(4, 0), "net40+sl5+win8+wp8+wpa81"));
 				cases.Add(new PackageOperationTestCase(
 					"Portable Profile 328",
 					spec,
@@ -380,7 +381,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
 					"AdamsLair.Duality.TestPlugin",
 					new Version(1, 0, 0, 0),
-					"net45");
+					DependencySet.Net452Target);
 				cases.Add(new PackageOperationTestCase(
 					".NET Framework 4.5",
 					spec,
@@ -392,7 +393,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
 					"AdamsLair.Duality.TestPlugin",
 					new Version(1, 0, 0, 0),
-					"net20");
+					new FrameworkName(".NETFramework", new Version(2, 0)));
 				cases.Add(new PackageOperationTestCase(
 					".NET Framework 2.0",
 					spec,
@@ -404,7 +405,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
 					"AdamsLair.Duality.TestPlugin",
 					new Version(1, 0, 0, 0),
-					"netstandard1.1");
+					new FrameworkName(".NETStandard", new Version(1, 1)));
 				cases.Add(new PackageOperationTestCase(
 					".NET Standard 1.1",
 					spec,
@@ -416,7 +417,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
 					"AdamsLair.Duality.TestPlugin",
 					new Version(1, 0, 0, 0),
-					"netstandard2.0");
+					new FrameworkName(".NETStandard", new Version(2, 0)));
 				cases.Add(new PackageOperationTestCase(
 					".NET Standard 2.0",
 					spec,
@@ -425,7 +426,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			// Different versions of the binaries are located in various framework folders, as well as the root folder
 			{
-				MockPackageSpec spec = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
+				MockPackageSpec spec = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0), DependencySet.Net452Target);
 				spec.Tags.Add(PackageManager.DualityTag);
 				spec.Tags.Add(PackageManager.PluginTag);
 
@@ -465,7 +466,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			// Different versions of binaries again. Checking for secondary portable / profile 111 preference this time
 			{
-				MockPackageSpec spec = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0));
+				MockPackageSpec spec = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0), DependencySet.Net452Target);
 				spec.Tags.Add(PackageManager.DualityTag);
 				spec.Tags.Add(PackageManager.PluginTag);
 
@@ -503,7 +504,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
 					"AdamsLair.Duality.TestPlugin",
 					new Version(1, 0, 0, 0),
-					"net45");
+					new FrameworkName(".NETFramework", new Version(4, 5)));
 				spec.AddFile("AdamsLair.Duality.TestPlugin.dll", "lib");
 				spec.AddFile("AdamsLair.Duality.TestPlugin.xml", "lib");
 				spec.LocalMapping.Add("lib\\AdamsLair.Duality.TestPlugin.xml", "Plugins\\AdamsLair.Duality.TestPlugin.xml");
@@ -518,7 +519,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
 					"AdamsLair.Duality.TestPlugin",
 					new Version(1, 0, 0, 0),
-					"net45");
+					new FrameworkName(".NETFramework", new Version(4, 5)));
 				spec.AddFile("Subfolder\\UnusedBinary.dll", "lib\\net20");
 				spec.AddFile("Subfolder\\UnusedBinary2.dll", "lib\\netstandard1.1");
 				spec.AddFile("Subfolder\\SecondBinary.dll", "lib");
@@ -550,7 +551,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			// Duality plugin with Duality plugin dependencies
 			MockPackageSpec dualityPluginB = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB");
-			dualityPluginB.Dependencies.Add(dualityPluginA.Name);
+			dualityPluginB.AddDependency(DependencySet.Net452Target, dualityPluginA.Name);
 
 			cases.Add(new PackageOperationTestCase(
 				"Duality Plugin, With Duality Dependencies", 
@@ -561,7 +562,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			// Duality plugin depending on a non-Duality NuGet package
 			MockPackageSpec otherLibraryA = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryA");
 			MockPackageSpec dualityPluginC = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC");
-			dualityPluginC.Dependencies.Add(otherLibraryA.Name);
+			dualityPluginC.AddDependency(DependencySet.Net452Target, otherLibraryA.Name);
 
 			cases.Add(new PackageOperationTestCase(
 				"Duality Plugin, With Lib Dependencies", 
@@ -571,7 +572,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			// Duality plugin that has a dependency that other plugins still need
 			MockPackageSpec dualityPluginD = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginD");
-			dualityPluginD.Dependencies.Add(dualityPluginA.Name);
+			dualityPluginD.AddDependency(DependencySet.Net452Target, dualityPluginA.Name);
 
 			cases.Add(new PackageOperationTestCase(
 				"Shared Dependencies", 
@@ -585,13 +586,13 @@ namespace Duality.Editor.PackageManagement.Tests
 			MockPackageSpec otherLibraryD = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryD");
 			MockPackageSpec otherLibraryE = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryE");
 			MockPackageSpec dualityPluginE = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginE");
-			otherLibraryB.Dependencies.Add(otherLibraryD.Name);
-			otherLibraryB.Dependencies.Add(otherLibraryE.Name);
-			otherLibraryD.Dependencies.Add(otherLibraryC.Name);
+			otherLibraryB.AddDependency(DependencySet.Net452Target, otherLibraryD.Name);
+			otherLibraryB.AddDependency(DependencySet.Net452Target, otherLibraryE.Name);
+			otherLibraryD.AddDependency(DependencySet.Net452Target, otherLibraryC.Name);
 			// Order is important - biggest dependency set comes centered to trigger most problems
-			dualityPluginE.Dependencies.Add(otherLibraryC.Name);
-			dualityPluginE.Dependencies.Add(otherLibraryB.Name);
-			dualityPluginE.Dependencies.Add(otherLibraryE.Name);
+			dualityPluginE.AddDependency(DependencySet.Net452Target, otherLibraryC.Name);
+			dualityPluginE.AddDependency(DependencySet.Net452Target, otherLibraryB.Name);
+			dualityPluginE.AddDependency(DependencySet.Net452Target, otherLibraryE.Name);
 
 			cases.Add(new PackageOperationTestCase(
 				"Interconnected Dependencies", 
@@ -618,8 +619,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			// Duality plugin with Duality plugin dependencies
 			MockPackageSpec dualityPluginB_Old = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 0, 0, 0));
 			MockPackageSpec dualityPluginB_New = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 1, 0, 0));
-			dualityPluginB_Old.Dependencies.Add(dualityPluginA_Old.Name);
-			dualityPluginB_New.Dependencies.Add(dualityPluginA_New.Name);
+			dualityPluginB_Old.AddDependency(DependencySet.Net452Target, dualityPluginA_Old.Name);
+			dualityPluginB_New.AddDependency(DependencySet.Net452Target, dualityPluginA_New.Name);
 
 			cases.Add(new PackageOperationTestCase(
 				"Duality Plugin, With Duality Dependencies", 
@@ -632,8 +633,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			MockPackageSpec otherLibraryA_New = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryA", new Version(1, 1, 0, 0));
 			MockPackageSpec dualityPluginC_Old = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC", new Version(1, 0, 0, 0));
 			MockPackageSpec dualityPluginC_New = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC", new Version(1, 1, 0, 0));
-			dualityPluginC_Old.Dependencies.Add(otherLibraryA_Old.Name);
-			dualityPluginC_New.Dependencies.Add(otherLibraryA_New.Name);
+			dualityPluginC_Old.AddDependency(DependencySet.Net452Target, otherLibraryA_Old.Name);
+			dualityPluginC_New.AddDependency(DependencySet.Net452Target, otherLibraryA_New.Name);
 
 			cases.Add(new PackageOperationTestCase(
 				"Duality Plugin, With Lib Dependencies", 
@@ -655,11 +656,11 @@ namespace Duality.Editor.PackageManagement.Tests
 			MockPackageSpec pluginC1 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC", new Version(1, 1, 2, 0));
 			MockPackageSpec pluginC2 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC", new Version(2, 2, 1, 0));
 			MockPackageSpec pluginD1 = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginD", new Version(1, 1, 3, 0));
-			pluginA1.Dependencies.Add(libraryA1.Name);
-			pluginA2.Dependencies.Add(libraryA2.Name);
-			pluginB1.Dependencies.Add(pluginA1.Name);
-			pluginB2.Dependencies.Add(pluginA2.Name);
-			pluginD1.Dependencies.Add(pluginA1.Name);
+			pluginA1.AddDependency(DependencySet.Net452Target, libraryA1.Name);
+			pluginA2.AddDependency(DependencySet.Net452Target, libraryA2.Name);
+			pluginB1.AddDependency(DependencySet.Net452Target, pluginA1.Name);
+			pluginB2.AddDependency(DependencySet.Net452Target, pluginA2.Name);
+			pluginD1.AddDependency(DependencySet.Net452Target, pluginA1.Name);
 
 			List<MockPackageSpec> repository = new List<MockPackageSpec>();
 			repository.Add(libraryA1);
@@ -815,8 +816,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			MockPackageSpec dualityPluginA_New = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 0, 0, 0));
 			MockPackageSpec dualityPluginB = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 0, 0, 0));
 			MockPackageSpec dualityPluginC = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC", new Version(1, 0, 0, 0));
-			dualityPluginB.Dependencies.Add(dualityPluginA_New.Name);
-			dualityPluginC.Dependencies.Add(dualityPluginA_Old.Name);
+			dualityPluginB.AddDependency(DependencySet.Net452Target, dualityPluginA_New.Name);
+			dualityPluginC.AddDependency(DependencySet.Net452Target, dualityPluginA_Old.Name);
 
 			List<MockPackageSpec> repository = new List<MockPackageSpec>();
 			repository.Add(dualityPluginA_Old);
