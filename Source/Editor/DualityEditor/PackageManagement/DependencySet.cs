@@ -7,7 +7,9 @@ namespace Duality.Editor.PackageManagement
 {
 	public class DependencySet
 	{
+		public static readonly FrameworkName Net472Target = new FrameworkName(".NETFramework", new Version(4, 7, 2));
 		public static readonly FrameworkName Net452Target = new FrameworkName(".NETFramework", new Version(4, 5, 2));
+		public static readonly FrameworkName NetStandard11 = new FrameworkName(".NETStandard", new Version(1, 1));
 
 		public readonly FrameworkName TargetFramework;
 		public readonly List<PackageName> Dependencies;

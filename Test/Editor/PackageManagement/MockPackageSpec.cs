@@ -80,7 +80,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.files.Add(new KeyValuePair<string, string>(sourcePath, packagePath));
 		}
 
-		public void AddDependency(FrameworkName targetFramework, PackageName package)
+		public DependencySet AddTarget(FrameworkName targetFramework)
 		{
 			DependencySet dependencySet;
 			if (!this.dependencySets.TryGetValue(targetFramework, out dependencySet))
@@ -89,6 +89,12 @@ namespace Duality.Editor.PackageManagement.Tests
 				this.dependencySets.Add(targetFramework, dependencySet);
 			}
 
+			return dependencySet;
+		}
+
+		public void AddDependency(FrameworkName targetFramework, PackageName package)
+		{
+			DependencySet dependencySet = this.AddTarget(targetFramework);
 			dependencySet.Dependencies.Add(package);
 		}
 
@@ -109,7 +115,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				Description = string.Format("Mock Package: {0} {1}", this.name.Id, this.name.Version),
 				Tags = string.Join(" ", this.tags),
 				DependencySets = this.dependencySets.Select(x => new NuGet.ManifestDependencySet()
-				{			
+				{
 					TargetFramework = VersionUtility.GetFrameworkString(x.Value.TargetFramework),
 					Dependencies = x.Value.Dependencies
 								.Select(item => new NuGet.ManifestDependency { Id = item.Id, Version = item.Version.ToString() })
@@ -136,7 +142,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			builder.PopulateFiles(buildPath, fileMetadata);
 			builder.Populate(metadata);
-			
+
 			string packageFileName = Path.Combine(
 				repositoryPath,
 				string.Format("{0}.{1}.nupkg", this.name.Id, this.name.Version));
@@ -182,6 +188,34 @@ namespace Duality.Editor.PackageManagement.Tests
 					string.Format("lib\\{0}\\{1}.dll", VersionUtility.GetShortFrameworkName(targetFramework), id) :
 					string.Format("lib\\{0}.dll", id),
 				string.Format("{0}.dll", id));
+			return package;
+		}
+		/// <summary>
+		/// Creates a package spec with a mock Assembly file, tagged as a Duality plugin.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="version"></param>
+		/// <param name="targetFrameworks"></param>
+		/// <returns></returns>
+		public static MockPackageSpec CreateDualityPlugin(string id, FrameworkName[] targetFrameworks, Version version = null)
+		{
+			MockPackageSpec package = new MockPackageSpec(id, version ?? new Version(1, 0, 0, 0), targetFrameworks);
+			package.Tags.Add(PackageManager.DualityTag);
+			package.Tags.Add(PackageManager.PluginTag);
+			foreach (var targetFramework in targetFrameworks)
+			{
+				package.AddFile(
+					string.Format("{0}.dll", id),
+					targetFramework != null ?
+						string.Format("lib\\{0}", VersionUtility.GetShortFrameworkName(targetFramework)) :
+						"lib");
+				package.LocalMapping.Add(
+					targetFramework != null ?
+						string.Format("lib\\{0}\\{1}.dll", VersionUtility.GetShortFrameworkName(targetFramework), id) :
+						string.Format("lib\\{0}.dll", id),
+					string.Format("Plugins\\{0}.dll", id));
+			}
+
 			return package;
 		}
 		/// <summary>

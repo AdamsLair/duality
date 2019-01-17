@@ -26,7 +26,9 @@ namespace Duality.Editor.PackageManagement
 
 		public event EventHandler<PackageOperationEventArgs> PackageUninstalled;
 
+		public DependencyVersion DependencyVersion { get; set; }
 
+		public bool WhatIf { get; set; }
 
 		public IFileSystem FileSystem { get; set; }
 
@@ -47,10 +49,6 @@ namespace Duality.Editor.PackageManagement
 				this._logger = value;
 			}
 		}
-
-		public DependencyVersion DependencyVersion { get; set; }
-
-		public bool WhatIf { get; set; }
 
 		public NuGetTargetedPackageManager(FrameworkName targetFrameWork, IPackageRepository sourceRepository, string path)
 			: this(sourceRepository, path)

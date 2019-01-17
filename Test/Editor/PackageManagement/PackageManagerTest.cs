@@ -7,7 +7,7 @@ using System.Xml;
 using System.Xml.Linq;
 
 using Duality.IO;
-
+using NuGet;
 using NUnit.Framework;
 
 namespace Duality.Editor.PackageManagement.Tests
@@ -24,16 +24,17 @@ namespace Duality.Editor.PackageManagement.Tests
 		private PackageSetup setup;
 
 
-		[SetUp] public void Init()
+		[SetUp]
+		public void Init()
 		{
 			if (Directory.Exists(TestBasePath))
 				Directory.Delete(TestBasePath, true);
 
 			Directory.CreateDirectory(TestClientPath);
 			Directory.CreateDirectory(TestRepositoryPath);
-			
+
 			string relativeRepositoryPath = PathHelper.MakeDirectoryPathRelative(
-				TestRepositoryPath, 
+				TestRepositoryPath,
 				TestClientPath);
 
 			this.workEnv = new PackageManagerEnvironment(TestClientPath);
@@ -41,7 +42,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.setup.RepositoryUrls.Clear();
 			this.setup.RepositoryUrls.Add(relativeRepositoryPath);
 		}
-		[TearDown] public void Cleanup()
+		[TearDown]
+		public void Cleanup()
 		{
 			this.workEnv = null;
 
@@ -49,7 +51,8 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 
 
-		[Test] public void EmptySetup()
+		[Test]
+		public void EmptySetup()
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 
@@ -58,7 +61,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsEmpty(packageManager.LocalSetup.Packages);
 			Assert.AreEqual(1, packageManager.LocalSetup.RepositoryUrls.Count);
 		}
-		[Test] public void NonExistentConfigFile()
+		[Test]
+		public void NonExistentConfigFile()
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv);
 
@@ -67,7 +71,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsEmpty(packageManager.LocalSetup.Packages);
 			Assert.AreEqual(1, packageManager.LocalSetup.RepositoryUrls.Count);
 		}
-		[Test] public void GetPackage()
+		[Test]
+		public void GetPackage()
 		{
 			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.Test", new Version(1, 2, 3, 4), DependencySet.Net452Target);
 			packageSpec.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
@@ -80,7 +85,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.AreEqual(packageSpec.Name.Version, info.Version);
 			Assert.AreEqual(packageSpec.Name, info.Name);
 		}
-		[Test] public void GetLatestDualityPackages()
+		[Test]
+		public void GetLatestDualityPackages()
 		{
 			MockPackageSpec packageSpecNonDuality = new MockPackageSpec("Some.Other.Package", DependencySet.Net452Target);
 			MockPackageSpec packageSpecPlugin = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0), DependencySet.Net452Target);
@@ -113,7 +119,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsNotNull(packageSampleInfo);
 			Assert.AreEqual(packageSpecPluginLatest.Name.Version, packagePluginInfo.Version);
 		}
-		
+
 		[Test, TestCaseSource("InstallPackageTestCases")]
 		public void InstallPackage(PackageOperationTestCase testCase)
 		{
@@ -130,7 +136,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 				// Assert that the expected events were fired
 				listener.AssertChanges(
-					testCase.Installed, 
+					testCase.Installed,
 					testCase.Uninstalled);
 			}
 
@@ -180,7 +186,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 				// Assert that the expected events were fired
 				listener.AssertChanges(
-					testCase.Installed, 
+					testCase.Installed,
 					testCase.Uninstalled);
 			}
 
@@ -205,7 +211,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 				// Assert that the expected events were fired
 				listener.AssertChanges(
-					testCase.Installed, 
+					testCase.Installed,
 					testCase.Uninstalled);
 			}
 
@@ -214,7 +220,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.AssertLocalSetup(packageManager.LocalSetup, testCase.DualityResults);
 			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
 		}
-		[Test, TestCaseSource("PackageRestoreTestCases")] 
+		[Test, TestCaseSource("PackageRestoreTestCases")]
 		public void PackageRestore(PackageRestoreTestCase testCase)
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
@@ -239,7 +245,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				}
 
 				listener.AssertChanges(
-					testCase.Installed, 
+					testCase.Installed,
 					testCase.Uninstalled);
 			}
 
@@ -266,72 +272,72 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityPluginA.LocalMapping.Add("source\\Foo\\SomeCode.cs", "Source\\Code\\AdamsLair.Duality.TestPluginA\\Foo\\SomeCode.cs");
 
 			cases.Add(new PackageOperationTestCase(
-				"Duality Plugin, No Dependencies", 
-				dualityPluginA, 
-				new [] { dualityPluginA }));
+				"Duality Plugin, No Dependencies",
+				dualityPluginA,
+				new[] { dualityPluginA }));
 
 			// Duality plugin depending on another Duality plugin
 			MockPackageSpec dualityPluginB = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB");
 			dualityPluginB.AddDependency(DependencySet.Net452Target, dualityPluginA.Name);
 
 			cases.Add(new PackageOperationTestCase(
-				"Duality Plugin, With Duality Dependencies", 
-				dualityPluginB, 
-				new [] { dualityPluginB, dualityPluginA }));
+				"Duality Plugin, With Duality Dependencies",
+				dualityPluginB,
+				new[] { dualityPluginB, dualityPluginA }));
 
 			// Duality plugin depending on a non-Duality NuGet package
 			MockPackageSpec otherLibraryA = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryA");
 			otherLibraryA.AddFile("Data\\TestLibraryA\\SomeFile.txt", "content\\TestLibraryA");
 			otherLibraryA.LocalMapping.Add("content\\TestLibraryA\\SomeFile.txt", "TestLibraryA\\SomeFile.txt");
 
-			MockPackageSpec dualityPluginC = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC");				
+			MockPackageSpec dualityPluginC = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC");
 			dualityPluginC.AddDependency(DependencySet.Net452Target, otherLibraryA.Name);
 
 			cases.Add(new PackageOperationTestCase(
-				"Duality Plugin, With Lib Dependencies", 
-				dualityPluginC, 
-				new [] { dualityPluginC, otherLibraryA }));
-			
+				"Duality Plugin, With Lib Dependencies",
+				dualityPluginC,
+				new[] { dualityPluginC, otherLibraryA }));
+
 			// Duality package that is not a plugin
 			MockPackageSpec dualityNonPluginA = MockPackageSpec.CreateDualityCorePart("AdamsLair.Duality.TestNonPluginA");
 			dualityNonPluginA.AddFile("Data\\TestNonPluginA\\SomeFile.txt", "content\\TestNonPluginA");
 			dualityNonPluginA.LocalMapping.Add("content\\TestNonPluginA\\SomeFile.txt", "TestNonPluginA\\SomeFile.txt");
 
 			cases.Add(new PackageOperationTestCase(
-				"Duality Non-Plugin Package", 
-				dualityNonPluginA, 
-				new [] { dualityNonPluginA }));
+				"Duality Non-Plugin Package",
+				dualityNonPluginA,
+				new[] { dualityNonPluginA }));
 
 			// Installing a package that was already installed
 			cases.Add(new PackageOperationTestCase(
-				"Package Already Installed", 
+				"Package Already Installed",
 				new[] { dualityPluginA },
-				dualityPluginA, 
+				dualityPluginA,
 				new[] { dualityPluginA }));
 
 			// Installing a package where one of its dependencies was already installed
 			cases.Add(new PackageOperationTestCase(
-				"Package Dependency Already Installed", 
+				"Package Dependency Already Installed",
 				new[] { dualityPluginA },
-				dualityPluginB, 
+				dualityPluginB,
 				new[] { dualityPluginA, dualityPluginB }));
 
 			// Installing a package where an old version of one of its dependencies is already installed
 			MockPackageSpec dualityPluginA_Old = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(0, 9, 0, 0));
 
 			cases.Add(new PackageOperationTestCase(
-				"Older Package Dependency Installed", 
+				"Older Package Dependency Installed",
 				new[] { dualityPluginA_Old },
-				dualityPluginB, 
+				dualityPluginB,
 				new[] { dualityPluginA, dualityPluginB }));
 
 			// Installing a package where a newer version of one of its dependencies is already installed
 			MockPackageSpec dualityPluginA_New = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 1, 0, 0));
 
 			cases.Add(new PackageOperationTestCase(
-				"Newer Package Dependency Installed", 
+				"Newer Package Dependency Installed",
 				new[] { dualityPluginA_New },
-				dualityPluginB, 
+				dualityPluginB,
 				new[] { dualityPluginA_New, dualityPluginB }));
 
 			return cases;
@@ -343,8 +349,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			// Files are located in lib root, without any framework folder
 			{
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
-					"AdamsLair.Duality.TestPlugin", 
-					new Version(1, 0, 0, 0), 
+					"AdamsLair.Duality.TestPlugin",
+					new Version(1, 0, 0, 0),
 					null);
 				cases.Add(new PackageOperationTestCase(
 					"No Framework",
@@ -544,9 +550,9 @@ namespace Duality.Editor.PackageManagement.Tests
 			MockPackageSpec dualityPluginA = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA");
 
 			cases.Add(new PackageOperationTestCase(
-				"Duality Plugin, No Dependencies", 
-				new [] { dualityPluginA },
-				dualityPluginA, 
+				"Duality Plugin, No Dependencies",
+				new[] { dualityPluginA },
+				dualityPluginA,
 				new MockPackageSpec[0]));
 
 			// Duality plugin with Duality plugin dependencies
@@ -554,20 +560,20 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityPluginB.AddDependency(DependencySet.Net452Target, dualityPluginA.Name);
 
 			cases.Add(new PackageOperationTestCase(
-				"Duality Plugin, With Duality Dependencies", 
-				new [] { dualityPluginA, dualityPluginB },
-				dualityPluginB, 
-				new [] { dualityPluginA }));
-			
+				"Duality Plugin, With Duality Dependencies",
+				new[] { dualityPluginA, dualityPluginB },
+				dualityPluginB,
+				new[] { dualityPluginA }));
+
 			// Duality plugin depending on a non-Duality NuGet package
 			MockPackageSpec otherLibraryA = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryA");
 			MockPackageSpec dualityPluginC = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginC");
 			dualityPluginC.AddDependency(DependencySet.Net452Target, otherLibraryA.Name);
 
 			cases.Add(new PackageOperationTestCase(
-				"Duality Plugin, With Lib Dependencies", 
-				new [] { dualityPluginC, otherLibraryA },
-				dualityPluginC, 
+				"Duality Plugin, With Lib Dependencies",
+				new[] { dualityPluginC, otherLibraryA },
+				dualityPluginC,
 				new MockPackageSpec[0]));
 
 			// Duality plugin that has a dependency that other plugins still need
@@ -575,10 +581,10 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityPluginD.AddDependency(DependencySet.Net452Target, dualityPluginA.Name);
 
 			cases.Add(new PackageOperationTestCase(
-				"Shared Dependencies", 
-				new [] { dualityPluginA, dualityPluginB, dualityPluginD },
-				dualityPluginD, 
-				new [] { dualityPluginA, dualityPluginB }));
+				"Shared Dependencies",
+				new[] { dualityPluginA, dualityPluginB, dualityPluginD },
+				dualityPluginD,
+				new[] { dualityPluginA, dualityPluginB }));
 
 			// Duality plugin that has multiple non-Duality dependencies that depend on each other
 			MockPackageSpec otherLibraryB = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryB");
@@ -595,9 +601,9 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityPluginE.AddDependency(DependencySet.Net452Target, otherLibraryE.Name);
 
 			cases.Add(new PackageOperationTestCase(
-				"Interconnected Dependencies", 
-				new [] { otherLibraryD, otherLibraryC, otherLibraryE, otherLibraryB, dualityPluginE },
-				dualityPluginE, 
+				"Interconnected Dependencies",
+				new[] { otherLibraryD, otherLibraryC, otherLibraryE, otherLibraryB, dualityPluginE },
+				dualityPluginE,
 				new MockPackageSpec[0]));
 
 			return cases;
@@ -611,10 +617,10 @@ namespace Duality.Editor.PackageManagement.Tests
 			MockPackageSpec dualityPluginA_New = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", new Version(1, 1, 0, 0));
 
 			cases.Add(new PackageOperationTestCase(
-				"Duality Plugin, No Dependencies", 
-				new [] { dualityPluginA_Old },
-				dualityPluginA_Old, 
-				new [] { dualityPluginA_New }));
+				"Duality Plugin, No Dependencies",
+				new[] { dualityPluginA_Old },
+				dualityPluginA_Old,
+				new[] { dualityPluginA_New }));
 
 			// Duality plugin with Duality plugin dependencies
 			MockPackageSpec dualityPluginB_Old = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", new Version(1, 0, 0, 0));
@@ -623,10 +629,10 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityPluginB_New.AddDependency(DependencySet.Net452Target, dualityPluginA_New.Name);
 
 			cases.Add(new PackageOperationTestCase(
-				"Duality Plugin, With Duality Dependencies", 
-				new [] { dualityPluginA_Old, dualityPluginB_Old },
-				dualityPluginB_Old, 
-				new [] { dualityPluginA_New, dualityPluginB_New }));
+				"Duality Plugin, With Duality Dependencies",
+				new[] { dualityPluginA_Old, dualityPluginB_Old },
+				dualityPluginB_Old,
+				new[] { dualityPluginA_New, dualityPluginB_New }));
 
 			// Duality plugin depending on a non-Duality NuGet package
 			MockPackageSpec otherLibraryA_Old = MockPackageSpec.CreateLibrary("Some.Other.TestLibraryA", new Version(1, 0, 0, 0));
@@ -637,10 +643,10 @@ namespace Duality.Editor.PackageManagement.Tests
 			dualityPluginC_New.AddDependency(DependencySet.Net452Target, otherLibraryA_New.Name);
 
 			cases.Add(new PackageOperationTestCase(
-				"Duality Plugin, With Lib Dependencies", 
-				new [] { otherLibraryA_Old, dualityPluginC_Old },
-				dualityPluginC_Old, 
-				new [] { otherLibraryA_New, dualityPluginC_New }));
+				"Duality Plugin, With Lib Dependencies",
+				new[] { otherLibraryA_Old, dualityPluginC_Old },
+				dualityPluginC_Old,
+				new[] { otherLibraryA_New, dualityPluginC_New }));
 
 			return cases;
 		}
@@ -685,8 +691,8 @@ namespace Duality.Editor.PackageManagement.Tests
 					"Full Restore, Newest",
  					repository,
 					new MockPackageSpec[0],
-					configSetup, 
-					new [] { libraryA2, pluginA2, pluginB2 }));
+					configSetup,
+					new[] { libraryA2, pluginA2, pluginB2 }));
 			}
 
 			// Full restore of all packages to specific package versions
@@ -699,8 +705,8 @@ namespace Duality.Editor.PackageManagement.Tests
 					"Full Restore, Specific",
  					repository,
 					new MockPackageSpec[0],
-					configSetup, 
-					new [] { libraryA1, pluginA1, pluginB1 }));
+					configSetup,
+					new[] { libraryA1, pluginA1, pluginB1 }));
 			}
 
 			// Partial restore of packages to newest available versions
@@ -712,9 +718,9 @@ namespace Duality.Editor.PackageManagement.Tests
 				cases.Add(new PackageRestoreTestCase(
 					"Partial Restore, Newest",
  					repository,
-					new [] { libraryA1, pluginA1 },
-					configSetup, 
-					new [] { libraryA1, pluginA1, pluginC2 }));
+					new[] { libraryA1, pluginA1 },
+					configSetup,
+					new[] { libraryA1, pluginA1, pluginC2 }));
 			}
 
 			// Partial restore of packages to specific package versions
@@ -726,9 +732,9 @@ namespace Duality.Editor.PackageManagement.Tests
 				cases.Add(new PackageRestoreTestCase(
 					"Partial Restore, Specific",
  					repository,
-					new [] { libraryA1, pluginA1 },
-					configSetup, 
-					new [] { libraryA1, pluginA1, pluginB1 }));
+					new[] { libraryA1, pluginA1 },
+					configSetup,
+					new[] { libraryA1, pluginA1, pluginB1 }));
 			}
 
 			// Partial restore of packages to newest available versions implicitly
@@ -741,9 +747,9 @@ namespace Duality.Editor.PackageManagement.Tests
 				cases.Add(new PackageRestoreTestCase(
 					"Partial Restore, Implicit Update",
  					repository,
-					new [] { libraryA1, pluginA1 },
-					configSetup, 
-					new [] { libraryA2, pluginA2, pluginB2 }));
+					new[] { libraryA1, pluginA1 },
+					configSetup,
+					new[] { libraryA2, pluginA2, pluginB2 }));
 			}
 
 			// Full uninstall of all packages because they've been removed from the config
@@ -753,8 +759,8 @@ namespace Duality.Editor.PackageManagement.Tests
 				cases.Add(new PackageRestoreTestCase(
 					"Full Uninstall",
  					repository,
-					new [] { libraryA2, pluginA2, pluginB2 },
-					configSetup, 
+					new[] { libraryA2, pluginA2, pluginB2 },
+					configSetup,
 					new MockPackageSpec[0]));
 			}
 
@@ -766,9 +772,9 @@ namespace Duality.Editor.PackageManagement.Tests
 				cases.Add(new PackageRestoreTestCase(
 					"Partial Uninstall, Leaf",
  					repository,
-					new [] { libraryA2, pluginA2, pluginB2 },
-					configSetup, 
-					new [] { libraryA2, pluginA2 }));
+					new[] { libraryA2, pluginA2, pluginB2 },
+					configSetup,
+					new[] { libraryA2, pluginA2 }));
 			}
 
 			// Uninstall of a package that others depend on
@@ -782,11 +788,11 @@ namespace Duality.Editor.PackageManagement.Tests
 				cases.Add(new PackageRestoreTestCase(
 					"Dependency Uninstall, Reinstall",
  					repository,
-					new [] { libraryA2, pluginA2, pluginB2 },
-					configSetup, 
-					new [] { libraryA2, pluginA2, pluginB2 },
-					new [] { libraryA2, pluginA2 },
-					new [] { libraryA2, pluginA2 }));
+					new[] { libraryA2, pluginA2, pluginB2 },
+					configSetup,
+					new[] { libraryA2, pluginA2, pluginB2 },
+					new[] { libraryA2, pluginA2 },
+					new[] { libraryA2, pluginA2 }));
 			}
 
 			// Uninstall of a package which has an older version that others depend on
@@ -799,15 +805,84 @@ namespace Duality.Editor.PackageManagement.Tests
 				cases.Add(new PackageRestoreTestCase(
 					"Dependency Uninstall, Revert to Old",
  					repository,
-					new [] { libraryA2, pluginA2, pluginD1 },
-					configSetup, 
-					new [] { libraryA1, pluginA1, pluginD1 }));
+					new[] { libraryA2, pluginA2, pluginD1 },
+					configSetup,
+					new[] { libraryA1, pluginA1, pluginD1 }));
 			}
 
 			return cases;
 		}
+		[Test]
+		public void MultiFrameworkPackage()
+		{
+			// Let's see how the package manager handles a package with multiple frameworks
+			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 
-		[Test] public void DuplicatePackage()
+			var targetFrameworks = new[] { DependencySet.Net452Target, DependencySet.NetStandard11 };
+			MockPackageSpec dualityPluginA = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", targetFrameworks);
+			MockPackageSpec dualityPluginB = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", targetFrameworks);
+			dualityPluginB.AddDependency(DependencySet.Net452Target, dualityPluginA.Name);
+			dualityPluginB.AddDependency(DependencySet.NetStandard11, dualityPluginA.Name);
+
+			List<MockPackageSpec> repository = new List<MockPackageSpec>();
+			repository.Add(dualityPluginA);
+			repository.Add(dualityPluginB);
+
+			// Prepare the test by setting up remote repository and pre-installed local packages
+			this.SetupReporistoryForTest(repository);
+
+			// Install pluginB and check if it correctly installs
+			packageManager.InstallPackage(dualityPluginB.Name);
+			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA, dualityPluginB });
+		}
+		[Test]
+		public void MultiFrameworkPackageWithDifferentDependencies()
+		{
+			// Let's see how the package manager handles a package with multiple frameworks but the dependencies also differ per framework
+			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
+
+			var targetFrameworks = new[] { DependencySet.Net452Target, DependencySet.NetStandard11 };
+			MockPackageSpec dualityPluginA = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", targetFrameworks);
+			MockPackageSpec dualityPluginB = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", targetFrameworks);
+			dualityPluginB.AddDependency(DependencySet.NetStandard11, dualityPluginA.Name);
+
+			List<MockPackageSpec> repository = new List<MockPackageSpec>();
+			repository.Add(dualityPluginA);
+			repository.Add(dualityPluginB);
+
+			// Prepare the test by setting up remote repository and pre-installed local packages
+			this.SetupReporistoryForTest(repository);
+
+			// Install pluginB which should not have any dependencies for the Net452Target
+			packageManager.InstallPackage(dualityPluginB.Name);
+			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginB });
+		}
+		[Test]
+		public void MultiFrameworkPackageWithUnsupportedFramework()
+		{
+			// Let's see how the package manager handles a package with multiple frameworks but one of the targetframeworks is unsupported!
+			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
+
+			var targetFrameworks = new[] { DependencySet.Net452Target, VersionUtility.UnsupportedFrameworkName };
+			MockPackageSpec dualityPluginA = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginA", targetFrameworks);
+			MockPackageSpec dualityPluginB = MockPackageSpec.CreateDualityPlugin("AdamsLair.Duality.TestPluginB", targetFrameworks);
+
+			dualityPluginB.AddDependency(DependencySet.Net452Target, dualityPluginA.Name);
+			dualityPluginB.AddDependency(VersionUtility.UnsupportedFrameworkName, new PackageName("SomeNonexistentPackage", new Version(1, 0, 0)));
+
+			List<MockPackageSpec> repository = new List<MockPackageSpec>();
+			repository.Add(dualityPluginA);
+			repository.Add(dualityPluginB);
+
+			// Prepare the test by setting up remote repository and pre-installed local packages
+			this.SetupReporistoryForTest(repository);
+
+			// Install pluginB and check if it correctly installs
+			packageManager.InstallPackage(dualityPluginB.Name);
+			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA, dualityPluginB });
+		}
+		[Test]
+		public void DuplicatePackage()
 		{
 			// Let's try to trick the package manager into having a duplicate version installed!
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
@@ -830,40 +905,41 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			// Install the old version first. Nothing special happens.
 			packageManager.InstallPackage(dualityPluginA_Old.Name);
-			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA_Old });
+			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA_Old });
 			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
 
 			// Install a newer version without uninstalling the old one.
 			// Expect the newer version to replace the old.
 			packageManager.InstallPackage(dualityPluginA_New.Name);
-			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA_New });
+			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA_New });
 			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
 
 			// Install an older version without uninstalling the newer one.
 			// Expect the newer version to persist with no old version being installed.
 			packageManager.InstallPackage(dualityPluginA_Old.Name);
-			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA_New });
+			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA_New });
 			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
 
 			// Downgrade from new to old explicitly
 			packageManager.UninstallPackage(dualityPluginA_New.Name);
 			packageManager.InstallPackage(dualityPluginA_Old.Name);
-			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA_Old });
+			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA_Old });
 			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
 
 			// Install a package that depends on the newer version of the package.
 			// Expect an update, but not a duplicate.
 			packageManager.InstallPackage(dualityPluginB.Name);
-			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA_New, dualityPluginB });
+			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA_New, dualityPluginB });
 			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
 
 			// Install a package that depends on the older version of the package.
 			// Expect the newer version to be used because it was already there.
 			packageManager.InstallPackage(dualityPluginC.Name);
-			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA_New, dualityPluginB, dualityPluginC });
+			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA_New, dualityPluginB, dualityPluginC });
 			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
 		}
-		[Test] public void InstallNonExistent()
+		[Test]
+		public void InstallNonExistent()
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 
@@ -872,31 +948,32 @@ namespace Duality.Editor.PackageManagement.Tests
 			List<MockPackageSpec> repository = new List<MockPackageSpec>();
 			repository.Add(dualityPluginA);
 			this.SetupReporistoryForTest(repository);
-			
+
 			// Install a non-existent package, invariant version
-			Assert.Throws<InvalidOperationException>(() => 
+			Assert.Throws<InvalidOperationException>(() =>
 			{
 				packageManager.InstallPackage(new PackageName("Unknown.Doesnt.Exist"));
 			});
 
 			// Install a non-existent package, specific version
-			Assert.Throws<InvalidOperationException>(() => 
+			Assert.Throws<InvalidOperationException>(() =>
 			{
 				packageManager.InstallPackage(new PackageName("Unknown.Doesnt.Exist", new Version(1, 0, 0, 0)));
 			});
-			
+
 			// Install an existing package in a non-existent version
-			Assert.Throws<InvalidOperationException>(() => 
+			Assert.Throws<InvalidOperationException>(() =>
 			{
 				packageManager.InstallPackage(new PackageName(dualityPluginA.Name.Id, new Version(9, 8, 7, 6)));
 			});
 
 			// Install a regular, existing package
 			packageManager.InstallPackage(dualityPluginA.Name);
-			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA });
+			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA });
 			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
 		}
-		[Test] public void UninstallNonExistent()
+		[Test]
+		public void UninstallNonExistent()
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 
@@ -905,7 +982,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			List<MockPackageSpec> repository = new List<MockPackageSpec>();
 			repository.Add(dualityPluginA);
 			this.SetupReporistoryForTest(repository);
-			
+
 			// Uninstall a package that is not installed
 			packageManager.UninstallPackage(dualityPluginA.Name);
 
@@ -914,7 +991,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			packageManager.UninstallPackage(new PackageName("Unknown.Doesnt.Exist", new Version(9, 8, 7, 6)));
 			packageManager.UninstallPackage(new PackageName(dualityPluginA.Name.Id, new Version(9, 8, 7, 6)));
 		}
-		[Test] public void UpdateNonExistent()
+		[Test]
+		public void UpdateNonExistent()
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 
@@ -928,20 +1006,20 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			// Install a regular, existing package
 			packageManager.InstallPackage(dualityPluginA.Name);
-			this.AssertLocalSetup(packageManager.LocalSetup, new [] { dualityPluginA });
+			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA });
 			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
-			
+
 			// Update the existing package
 			packageManager.UpdatePackage(dualityPluginA.Name);
-			
+
 			// Update a package that does not exist at all
-			Assert.Throws<InvalidOperationException>(() => 
+			Assert.Throws<InvalidOperationException>(() =>
 			{
 				packageManager.UpdatePackage(new PackageName("Unknown.Doesnt.Exist"));
 			});
 
 			// Update a package that is not installed
-			Assert.Throws<InvalidOperationException>(() => 
+			Assert.Throws<InvalidOperationException>(() =>
 			{
 				packageManager.UpdatePackage(dualityPluginB.Name);
 			});
@@ -966,7 +1044,7 @@ namespace Duality.Editor.PackageManagement.Tests
 					if (packageInfo == null || packageInfo.Name != package.Name)
 					{
 						Assert.Inconclusive(
-							"Failed to create the required package setup for the test. Unable to retrieve package '{0}'", 
+							"Failed to create the required package setup for the test. Unable to retrieve package '{0}'",
 							package.Name);
 					}
 
@@ -985,7 +1063,7 @@ namespace Duality.Editor.PackageManagement.Tests
 					if (localPackage == null)
 					{
 						Assert.Inconclusive(
-							"Failed to create the required package setup for the test. Install failed for package '{0}'", 
+							"Failed to create the required package setup for the test. Install failed for package '{0}'",
 							package.Name);
 					}
 				}
@@ -1011,7 +1089,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			catch (Exception e)
 			{
 				Assert.Inconclusive(
-					"Failed to create the required package setup for the test because an exception occurred: {0}", 
+					"Failed to create the required package setup for the test because an exception occurred: {0}",
 					e);
 			}
 		}
@@ -1019,11 +1097,11 @@ namespace Duality.Editor.PackageManagement.Tests
 		private void AssertLocalSetup(PackageSetup actualSetup, IEnumerable<MockPackageSpec> expectedSetup)
 		{
 			Assert.AreEqual(
-				expectedSetup.Count(), 
+				expectedSetup.Count(),
 				actualSetup.Packages.Count,
 				"Number of registered Duality packages in local setup");
 			CollectionAssert.AreEquivalent(
-				expectedSetup.Select(p => p.Name), 
+				expectedSetup.Select(p => p.Name),
 				actualSetup.Packages.Select(p => p.Name),
 				"Registered Duality packages in local setup");
 		}
@@ -1031,7 +1109,7 @@ namespace Duality.Editor.PackageManagement.Tests
 		{
 			bool anyUpdateExpected = installed.Any() || uninstalled.Any();
 			bool updateScheduleExists = File.Exists(this.workEnv.UpdateFilePath);
-			
+
 			// Assert that the existence of an update file reflects whether we expect an update
 			if (!anyUpdateExpected)
 			{
@@ -1054,9 +1132,9 @@ namespace Duality.Editor.PackageManagement.Tests
 				foreach (var pair in package.LocalMapping)
 				{
 					this.AssertUpdateScheduleCopy(
-						updateItems, 
-						package.Name, 
-						pair.Key, 
+						updateItems,
+						package.Name,
+						pair.Key,
 						pair.Value);
 
 					// Note that an install can supersede a previous uninstall by copying a 
@@ -1081,8 +1159,8 @@ namespace Duality.Editor.PackageManagement.Tests
 						continue;
 
 					this.AssertUpdateScheduleDelete(
-						updateItems, 
-						package.Name, 
+						updateItems,
+						package.Name,
 						pair.Value);
 				}
 			}
@@ -1099,7 +1177,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 				string itemTarget = item.GetAttributeValue("target");
 				Assert.IsTrue(
-					PathOp.ArePathsEqual(itemTarget, targetAbs), 
+					PathOp.ArePathsEqual(itemTarget, targetAbs),
 					"Found copy instruction with the expected source, but the target differs." + Environment.NewLine +
 					"  Matching source: '{0}'" + Environment.NewLine +
 					"  Expected target: '{1}'" + Environment.NewLine +
