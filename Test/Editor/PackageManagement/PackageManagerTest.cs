@@ -357,7 +357,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
 					"AdamsLair.Duality.TestPlugin",
 					new Version(1, 0, 0, 0),
-					new FrameworkName(".NETFramework", new Version(4, 5), "net45+win8+wpa81"));
+					new FrameworkName("portable", new Version(4, 5), "net45+win8+wpa81"));
 				cases.Add(new PackageOperationTestCase(
 					"Portable Profile 111",
 					spec,
@@ -369,7 +369,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
 					"AdamsLair.Duality.TestPlugin",
 					new Version(1, 0, 0, 0),
-					new FrameworkName(".NETFramework", new Version(4, 0), "net40+sl5+win8+wp8+wpa81"));
+					new FrameworkName("portable", new Version(4, 0), "net40+sl5+win8+wp8+wpa81"));
 				cases.Add(new PackageOperationTestCase(
 					"Portable Profile 328",
 					spec,
@@ -381,7 +381,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				MockPackageSpec spec = MockPackageSpec.CreateDualityPlugin(
 					"AdamsLair.Duality.TestPlugin",
 					new Version(1, 0, 0, 0),
-					DependencySet.Net452Target);
+					new FrameworkName(".NETFramework", new Version(4, 5)));
 				cases.Add(new PackageOperationTestCase(
 					".NET Framework 4.5",
 					spec,
