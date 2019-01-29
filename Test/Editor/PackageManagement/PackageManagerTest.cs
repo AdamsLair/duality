@@ -24,8 +24,7 @@ namespace Duality.Editor.PackageManagement.Tests
 		private PackageSetup setup;
 
 
-		[SetUp]
-		public void Init()
+		[SetUp] public void Init()
 		{
 			if (Directory.Exists(TestBasePath))
 				Directory.Delete(TestBasePath, true);
@@ -42,8 +41,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.setup.RepositoryUrls.Clear();
 			this.setup.RepositoryUrls.Add(relativeRepositoryPath);
 		}
-		[TearDown]
-		public void Cleanup()
+		[TearDown] public void Cleanup()
 		{
 			this.workEnv = null;
 
@@ -51,8 +49,7 @@ namespace Duality.Editor.PackageManagement.Tests
 		}
 
 
-		[Test]
-		public void EmptySetup()
+		[Test] public void EmptySetup()
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 
@@ -61,8 +58,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsEmpty(packageManager.LocalSetup.Packages);
 			Assert.AreEqual(1, packageManager.LocalSetup.RepositoryUrls.Count);
 		}
-		[Test]
-		public void NonExistentConfigFile()
+		[Test] public void NonExistentConfigFile()
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv);
 
@@ -71,8 +67,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.IsEmpty(packageManager.LocalSetup.Packages);
 			Assert.AreEqual(1, packageManager.LocalSetup.RepositoryUrls.Count);
 		}
-		[Test]
-		public void GetPackage()
+		[Test] public void GetPackage()
 		{
 			MockPackageSpec packageSpec = new MockPackageSpec("AdamsLair.Duality.Test", new Version(1, 2, 3, 4), DependencySet.Net452Target);
 			packageSpec.CreatePackage(TestPackageBuildPath, TestRepositoryPath);
@@ -85,8 +80,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.AreEqual(packageSpec.Name.Version, info.Version);
 			Assert.AreEqual(packageSpec.Name, info.Name);
 		}
-		[Test]
-		public void GetLatestDualityPackages()
+		[Test] public void GetLatestDualityPackages()
 		{
 			MockPackageSpec packageSpecNonDuality = new MockPackageSpec("Some.Other.Package", DependencySet.Net452Target);
 			MockPackageSpec packageSpecPlugin = new MockPackageSpec("AdamsLair.Duality.TestPlugin", new Version(1, 0, 0, 0), DependencySet.Net452Target);
@@ -812,8 +806,8 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			return cases;
 		}
-		[Test]
-		public void MultiFrameworkPackage()
+
+		[Test] public void MultiFrameworkPackage()
 		{
 			// Let's see how the package manager handles a package with multiple frameworks
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
@@ -835,8 +829,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			packageManager.InstallPackage(dualityPluginB.Name);
 			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA, dualityPluginB });
 		}
-		[Test]
-		public void MultiFrameworkPackageWithDifferentDependencies()
+		[Test] public void MultiFrameworkPackageWithDifferentDependencies()
 		{
 			// Let's see how the package manager handles a package with multiple frameworks but the dependencies also differ per framework
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
@@ -857,8 +850,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			packageManager.InstallPackage(dualityPluginB.Name);
 			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginB });
 		}
-		[Test]
-		public void MultiFrameworkPackageWithUnsupportedFramework()
+		[Test] public void MultiFrameworkPackageWithUnsupportedFramework()
 		{
 			// Let's see how the package manager handles a package with multiple frameworks but one of the targetframeworks is unsupported!
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
@@ -881,8 +873,8 @@ namespace Duality.Editor.PackageManagement.Tests
 			packageManager.InstallPackage(dualityPluginB.Name);
 			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA, dualityPluginB });
 		}
-		[Test]
-		public void DuplicatePackage()
+
+		[Test] public void DuplicatePackage()
 		{
 			// Let's try to trick the package manager into having a duplicate version installed!
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
@@ -938,8 +930,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA_New, dualityPluginB, dualityPluginC });
 			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
 		}
-		[Test]
-		public void InstallNonExistent()
+		[Test] public void InstallNonExistent()
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 
@@ -972,8 +963,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.AssertLocalSetup(packageManager.LocalSetup, new[] { dualityPluginA });
 			Assert.IsFalse(packageManager.IsPackageSyncRequired, "Package setup out of sync.");
 		}
-		[Test]
-		public void UninstallNonExistent()
+		[Test] public void UninstallNonExistent()
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 
@@ -991,8 +981,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			packageManager.UninstallPackage(new PackageName("Unknown.Doesnt.Exist", new Version(9, 8, 7, 6)));
 			packageManager.UninstallPackage(new PackageName(dualityPluginA.Name.Id, new Version(9, 8, 7, 6)));
 		}
-		[Test]
-		public void UpdateNonExistent()
+		[Test] public void UpdateNonExistent()
 		{
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup);
 

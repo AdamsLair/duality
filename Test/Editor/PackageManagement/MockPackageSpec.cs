@@ -21,6 +21,7 @@ namespace Duality.Editor.PackageManagement.Tests
 		private List<KeyValuePair<string, string>> files = new List<KeyValuePair<string, string>>();
 		private Dictionary<string, string> localMapping = new Dictionary<string, string>();
 
+
 		/// <summary>
 		/// [GET / SET] The packages ID and version.
 		/// </summary>
@@ -79,7 +80,6 @@ namespace Duality.Editor.PackageManagement.Tests
 		{
 			this.files.Add(new KeyValuePair<string, string>(sourcePath, packagePath));
 		}
-
 		public DependencySet AddTarget(FrameworkName targetFramework)
 		{
 			DependencySet dependencySet;
@@ -91,7 +91,6 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			return dependencySet;
 		}
-
 		public void AddDependency(FrameworkName targetFramework, PackageName package)
 		{
 			DependencySet dependencySet = this.AddTarget(targetFramework);
