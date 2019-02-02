@@ -83,8 +83,8 @@ namespace Duality.Editor.PackageManagement.Internal
 		{
 			this.Execute(package, new UninstallWalker(
 				this.LocalRepository, 
-				new DependentsWalker(this.LocalRepository, null),
-				null, 
+				new DependentsWalker(this.LocalRepository, this.targetFrameWork),
+				this.targetFrameWork, 
 				this.Logger, 
 				removeDependencies, 
 				forceRemove));
