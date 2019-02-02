@@ -9,10 +9,9 @@ using NuGet.Resources;
 namespace Duality.Editor.PackageManagement.Internal
 {
 	/// <summary>
-	/// Decompiled from <see cref="NuGet.PackageManager"/>, cleaned up afterwards.
-	/// Unfortunately nuget does not provide the ability to use a targetframework out of the box.
-	/// This is the sole reason this class exists as it adds this missing functionality solves.
-	/// Due to some shortcomings in the nuget API it had to use some less desirable code such as hiding a method.
+	/// A custom version of the NuGet <see cref="NuGet.PackageManager"/> based on a cleaned up decompile.
+	/// This was necessary in order to add support for framework-dependent dependencies via target framework
+	/// parameter in its internal package dependency walkers.
 	/// </summary>
 	public class NuGetTargetedPackageManager
 	{
@@ -202,27 +201,23 @@ namespace Duality.Editor.PackageManagement.Internal
 
 		private void OnInstalling(PackageOperationEventArgs e)
 		{
-			if (this.PackageInstalling == null)
-				return;
-			this.PackageInstalling(this, e);
+			if (this.PackageInstalling != null)
+				this.PackageInstalling(this, e);
 		}
 		private void OnInstalled(PackageOperationEventArgs e)
 		{
-			if (this.PackageInstalled == null)
-				return;
-			this.PackageInstalled(this, e);
+			if (this.PackageInstalled != null)
+				this.PackageInstalled(this, e);
 		}
 		private void OnUninstalling(PackageOperationEventArgs e)
 		{
-			if (this.PackageUninstalling == null)
-				return;
-			this.PackageUninstalling(this, e);
+			if (this.PackageUninstalling != null)
+				this.PackageUninstalling(this, e);
 		}
 		private void OnUninstalled(PackageOperationEventArgs e)
 		{
-			if (this.PackageUninstalled == null)
-				return;
-			this.PackageUninstalled(this, e);
+			if (this.PackageUninstalled != null)
+				this.PackageUninstalled(this, e);
 		}
 
 		private PackageOperationEventArgs CreateOperation(IPackage package)
