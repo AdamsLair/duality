@@ -16,8 +16,8 @@ namespace Duality.Editor.PackageManagement.Internal
 	/// </summary>
 	public class NuGetTargetedPackageManager
 	{
-		private ILogger _logger;
-		private readonly FrameworkName _targetFrameWork;
+		private ILogger logger;
+		private readonly FrameworkName targetFrameWork;
 
 
 		public event EventHandler<PackageOperationEventArgs> PackageInstalling;
@@ -34,40 +34,33 @@ namespace Duality.Editor.PackageManagement.Internal
 		public IPackagePathResolver PathResolver { get; private set; }
 		public ILogger Logger
 		{
-			get
-			{
-				return this._logger ?? NullLogger.Instance;
-			}
-			set
-			{
-				this._logger = value;
-			}
+			get { return this.logger ?? NullLogger.Instance; }
+			set { this.logger = value; }
 		}
 
 
-		public NuGetTargetedPackageManager(FrameworkName targetFrameWork, IPackageRepository sourceRepository, string path)
-			: this(sourceRepository, path)
+		public NuGetTargetedPackageManager(FrameworkName targetFrameWork, IPackageRepository sourceRepository, string path) : this(
+			sourceRepository, 
+			path)
 		{
-			this._targetFrameWork = targetFrameWork;
+			this.targetFrameWork = targetFrameWork;
 		}
-		public NuGetTargetedPackageManager(IPackageRepository sourceRepository, string path)
-			: this(sourceRepository, new DefaultPackagePathResolver(path), new PhysicalFileSystem(path))
-		{
-		}
-		public NuGetTargetedPackageManager(IPackageRepository sourceRepository, IPackagePathResolver pathResolver, IFileSystem fileSystem)
-			: this(sourceRepository, pathResolver, fileSystem, new LocalPackageRepository(pathResolver, fileSystem))
-		{
-		}
+		public NuGetTargetedPackageManager(IPackageRepository sourceRepository, string path) : this(
+			sourceRepository, 
+			new DefaultPackagePathResolver(path), 
+			new PhysicalFileSystem(path)) { }
+		public NuGetTargetedPackageManager(IPackageRepository sourceRepository, IPackagePathResolver pathResolver, IFileSystem fileSystem) : this(
+			sourceRepository, 
+			pathResolver, 
+			fileSystem, 
+			new LocalPackageRepository(pathResolver, fileSystem)) { }
 		public NuGetTargetedPackageManager(IPackageRepository sourceRepository, IPackagePathResolver pathResolver, IFileSystem fileSystem, IPackageRepository localRepository)
 		{
-			if (sourceRepository == null)
-				throw new ArgumentNullException("sourceRepository");
-			if (pathResolver == null)
-				throw new ArgumentNullException("pathResolver");
-			if (fileSystem == null)
-				throw new ArgumentNullException("fileSystem");
-			if (localRepository == null)
-				throw new ArgumentNullException("localRepository");
+			if (sourceRepository == null) throw new ArgumentNullException("sourceRepository");
+			if (pathResolver == null) throw new ArgumentNullException("pathResolver");
+			if (fileSystem == null) throw new ArgumentNullException("fileSystem");
+			if (localRepository == null) throw new ArgumentNullException("localRepository");
+
 			this.SourceRepository = sourceRepository;
 			this.PathResolver = pathResolver;
 			this.FileSystem = fileSystem;
@@ -77,24 +70,35 @@ namespace Duality.Editor.PackageManagement.Internal
 
 		public void InstallPackage(IPackage package, bool ignoreDependencies, bool allowPrereleaseVersions)
 		{
-			InstallWalker installWalker = new InstallWalker(this.LocalRepository, this.SourceRepository,
-				this._targetFrameWork, this.Logger, ignoreDependencies, allowPrereleaseVersions, this.DependencyVersion);
-
-			this.Execute(package, installWalker);
+			this.Execute(package, new InstallWalker(
+				this.LocalRepository,
+				this.SourceRepository,
+				this.targetFrameWork,
+				this.Logger,
+				ignoreDependencies,
+				allowPrereleaseVersions,
+				this.DependencyVersion));
 		}
 		public void UninstallPackage(IPackage package, bool forceRemove, bool removeDependencies = false)
 		{
-			this.Execute(package, new UninstallWalker(this.LocalRepository, new DependentsWalker(this.LocalRepository, null), null, this.Logger, removeDependencies, forceRemove));
+			this.Execute(package, new UninstallWalker(
+				this.LocalRepository, 
+				new DependentsWalker(this.LocalRepository, null),
+				null, 
+				this.Logger, 
+				removeDependencies, 
+				forceRemove));
 		}
 		public void UpdatePackage(IPackage newPackage, bool updateDependencies, bool allowPrereleaseVersions)
 		{
-			this.Execute(newPackage,
-				new UpdateWalker(this.LocalRepository, this.SourceRepository,
-					new DependentsWalker(this.LocalRepository, this._targetFrameWork),
-					NullConstraintProvider.Instance,
-					this._targetFrameWork,
-					this.Logger, updateDependencies,
-					allowPrereleaseVersions));
+			this.Execute(newPackage, new UpdateWalker(
+				this.LocalRepository, 
+				this.SourceRepository,
+				new DependentsWalker(this.LocalRepository, this.targetFrameWork),
+				NullConstraintProvider.Instance,
+				this.targetFrameWork,
+				this.Logger, updateDependencies,
+				allowPrereleaseVersions));
 		}
 
 
@@ -104,7 +108,9 @@ namespace Duality.Editor.PackageManagement.Internal
 			if (source.Any())
 			{
 				foreach (PackageOperation operation in source)
+				{
 					this.Execute(operation);
+				}
 			}
 			else
 			{
@@ -115,10 +121,10 @@ namespace Duality.Editor.PackageManagement.Internal
 		}
 		private void Execute(PackageOperation operation)
 		{
-			bool flag = this.LocalRepository.Exists(operation.Package);
+			bool isPackageInstalled = this.LocalRepository.Exists(operation.Package);
 			if (operation.Action == PackageAction.Install)
 			{
-				if (flag)
+				if (isPackageInstalled)
 					this.Logger.Log(MessageLevel.Info, NuGetResources.Log_PackageAlreadyInstalled, (object)operation.Package.GetFullName());
 				else if (this.WhatIf)
 					this.Logger.Log(MessageLevel.Info, NuGetResources.Log_InstallPackage, (object)operation.Package);
@@ -127,7 +133,7 @@ namespace Duality.Editor.PackageManagement.Internal
 			}
 			else
 			{
-				if (!flag)
+				if (!isPackageInstalled)
 					return;
 				if (this.WhatIf)
 					this.Logger.Log(MessageLevel.Info, NuGetResources.Log_UninstallPackage, (object)operation.Package);
@@ -144,7 +150,7 @@ namespace Duality.Editor.PackageManagement.Internal
 			this.OnInstalling(operation);
 			if (operation.Cancel)
 				return;
-			this.OnExpandFiles(operation);
+			this.ExpandFiles(operation.Package);
 			this.LocalRepository.AddPackage(package);
 			this.Logger.Log(MessageLevel.Info, NuGetResources.Log_PackageInstalledSuccessfully, (object)fullName);
 			this.OnInstalled(operation);
@@ -157,7 +163,7 @@ namespace Duality.Editor.PackageManagement.Internal
 			this.OnUninstalling(operation);
 			if (operation.Cancel)
 				return;
-			this.OnRemoveFiles(operation);
+			this.RemoveFiles(operation.Package);
 			this.LocalRepository.RemovePackage(package);
 			this.Logger.Log(MessageLevel.Info, NuGetResources.Log_SuccessfullyUninstalledPackage, (object)fullName);
 			this.OnUninstalled(operation);
@@ -176,7 +182,7 @@ namespace Duality.Editor.PackageManagement.Internal
 				string packageDirectory = this.PathResolver.GetPackageDirectory(package);
 				this.FileSystem.AddFiles(list, packageDirectory);
 				IPackage runtimePackage;
-				if (!PackageHelper.IsSatellitePackage(package, this.LocalRepository, this._targetFrameWork, out runtimePackage))
+				if (!PackageHelper.IsSatellitePackage(package, this.LocalRepository, this.targetFrameWork, out runtimePackage))
 					return;
 				this.FileSystem.AddFiles(package.GetSatelliteFiles(), this.PathResolver.GetPackageDirectory(runtimePackage));
 			}
@@ -189,7 +195,7 @@ namespace Duality.Editor.PackageManagement.Internal
 		{
 			string packageDirectory = this.PathResolver.GetPackageDirectory(package);
 			IPackage runtimePackage;
-			if (PackageHelper.IsSatellitePackage(package, this.LocalRepository, this._targetFrameWork, out runtimePackage))
+			if (PackageHelper.IsSatellitePackage(package, this.LocalRepository, this.targetFrameWork, out runtimePackage))
 				this.FileSystem.DeleteFiles(package.GetSatelliteFiles(), this.PathResolver.GetPackageDirectory(runtimePackage));
 			this.FileSystem.DeleteFiles(package.GetFiles(), packageDirectory);
 		}
@@ -217,15 +223,6 @@ namespace Duality.Editor.PackageManagement.Internal
 			if (this.PackageUninstalled == null)
 				return;
 			this.PackageUninstalled(this, e);
-		}
-
-		private void OnExpandFiles(PackageOperationEventArgs e)
-		{
-			this.ExpandFiles(e.Package);
-		}
-		private void OnRemoveFiles(PackageOperationEventArgs e)
-		{
-			this.RemoveFiles(e.Package);
 		}
 
 		private PackageOperationEventArgs CreateOperation(IPackage package)
