@@ -11,6 +11,7 @@ using NuGet;
 using Duality.IO;
 using Duality.Editor.Properties;
 using Duality.Editor.Forms;
+using Duality.Editor.PackageManagement.Internal;
 
 namespace Duality.Editor.PackageManagement
 {

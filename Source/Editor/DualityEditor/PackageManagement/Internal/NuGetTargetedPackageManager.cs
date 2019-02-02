@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
+
 using NuGet;
 using NuGet.Resources;
 
-namespace Duality.Editor.PackageManagement
+namespace Duality.Editor.PackageManagement.Internal
 {
 	/// <summary>
 	/// Decompiled from <see cref="NuGet.PackageManager"/>, cleaned up afterwards.
