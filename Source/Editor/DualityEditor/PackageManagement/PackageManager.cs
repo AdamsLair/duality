@@ -151,7 +151,7 @@ namespace Duality.Editor.PackageManagement
 				.ToArray();
 			this.repository = new AggregateRepository(repositories);
 			this.manager = new NuGetTargetedPackageManager(
-				DependencySet.Net452Target, 
+				new FrameworkName(".NETFramework", new Version(4, 5, 2)), 
 				this.repository, 
 				this.env.RepositoryPath);
 			this.manager.PackageInstalling += this.manager_PackageInstalling;
