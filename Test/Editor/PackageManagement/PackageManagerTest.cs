@@ -1171,6 +1171,11 @@ namespace Duality.Editor.PackageManagement.Tests
 					sourceAbs,
 					targetAbs,
 					itemTarget);
+				Assert.IsTrue(
+					File.Exists(sourceAbs),
+					"Found copy instruction with the expected source, but the source file does not exist." + Environment.NewLine +
+					"  Matching source: '{0}'",
+					sourceAbs);
 				return;
 			}
 
