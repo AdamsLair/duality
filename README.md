@@ -26,5 +26,3 @@ All framework build results will be located in the shared `Build/Output` folder.
 ### Contributing
 
 We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://docs.duality2d.net/pages/v3/how-to-contribute.html).
-
-If you just want to say "Thank You", feel free to donate [on itch.io](https://adamslair.itch.io/duality).
