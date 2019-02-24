@@ -74,10 +74,6 @@ namespace Duality
 				}
 			}
 
-			builder.Append(" (");
-			builder.Append(id);
-			builder.Append(')');
-
 			return builder.ToString();
 		}
 
