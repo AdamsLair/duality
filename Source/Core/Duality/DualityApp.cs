@@ -280,22 +280,6 @@ namespace Duality
 		public static ExecutionContext ExecContext
 		{
 			get { return execContext; }
-			internal set 
-			{
-				if (execContext != value)
-				{
-					ExecutionContext previous = execContext;
-					execContext = value;
-					
-					if (previous == ExecutionContext.Game && value != ExecutionContext.Game)
-						pluginManager.InvokeGameEnded();
-
-					pluginManager.InvokeExecContextChanged(previous);
-
-					if (previous != ExecutionContext.Game && value == ExecutionContext.Game)
-						pluginManager.InvokeGameStarting();
-				}
-			}
 		}
 		/// <summary>
 		/// [GET] Returns the <see cref="ExecutionEnvironment"/> in which this DualityApp is currently running.
@@ -501,6 +485,30 @@ namespace Duality
 
 			initialized = false;
 			execContext = ExecutionContext.Terminated;
+		}
+
+		/// <summary>
+		/// Switches to a different <see cref="ExecContext"/> at runtime. Intended for the editor
+		/// sandbox and similar features.
+		/// </summary>
+		/// <param name="targetContext"></param>
+		internal static void SwitchExecutionContext(ExecutionContext targetContext)
+		{
+			if (execContext == targetContext) return;
+
+			ExecutionContext previousContext = execContext;
+			execContext = targetContext;
+
+			if (previousContext == ExecutionContext.Game && targetContext != ExecutionContext.Game)
+				pluginManager.InvokeGameEnded();
+
+			pluginManager.InvokeExecContextChanged(previousContext);
+
+			// Reset time tracking / tick counters, so we start back at frame and game time zero
+			Time.Reset();
+
+			if (previousContext != ExecutionContext.Game && targetContext == ExecutionContext.Game)
+				pluginManager.InvokeGameStarting();
 		}
 
 		/// <summary>

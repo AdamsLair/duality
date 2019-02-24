@@ -134,6 +134,19 @@ namespace Duality
 				Resume();
 		}
 
+		/// <summary>
+		/// Resets all game-related timers and starts over at frame zero, time zero.
+		/// </summary>
+		internal static void Reset()
+		{
+			startup = DateTime.Now;
+			gameTimer = TimeSpan.Zero;
+			frameCount = 0;
+			frameBegin = 0.0d;
+			fpsFrameCount = 0;
+			fpsCountBegin = 0.0d;
+			watch.Reset();
+		}
 		internal static void FrameTick(bool forceFixedStep, bool advanceGameTime)
 		{
 			// Initial timer start
