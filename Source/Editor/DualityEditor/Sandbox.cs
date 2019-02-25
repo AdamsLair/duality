@@ -101,7 +101,7 @@ namespace Duality.Editor
 					activeScene.Res.Dispose();
 
 				state = SandboxState.Playing;
-				DualityApp.ExecContext = DualityApp.ExecutionContext.Game;
+				DualityApp.SwitchExecutionContext(DualityApp.ExecutionContext.Game);
 
 				// (Re)Load Scene - now in playing context
 				Scene.SwitchTo(activeScene);
@@ -142,7 +142,7 @@ namespace Duality.Editor
 			Time.TimeScale = 1.0f; // Reset time scale
 			Time.Resume(true);     // Reset any previously (user-)generated time freeze events
 			state = SandboxState.Inactive;
-			DualityApp.ExecContext = DualityApp.ExecutionContext.Editor;
+			DualityApp.SwitchExecutionContext(DualityApp.ExecutionContext.Editor);
 
 			// Check if the Scene we started the sandbox with is still valid, and switch back to it.
 			if (startScene.IsAvailable)
@@ -228,7 +228,7 @@ namespace Duality.Editor
 
 			// Force later Scene reload by disposing it
 			string curPath = null;
-			if (!String.IsNullOrEmpty(Scene.Current.Path))
+			if (!string.IsNullOrEmpty(Scene.Current.Path))
 			{
 				curPath = Scene.CurrentPath;
 				Scene.Current.Dispose();

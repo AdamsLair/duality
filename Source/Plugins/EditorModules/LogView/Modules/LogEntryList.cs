@@ -428,10 +428,10 @@ namespace Duality.Editor.Plugins.LogView
 			e.Graphics.FillRectangle(baseBrush, this.ClientRectangle);
 
 			int offsetY = this.firstDisplayOffset;
-			bool showTimestamp = this.ClientRectangle.Width >= 350;
-			bool showFramestamp = this.ClientRectangle.Width >= 400;
-			int timeStampWidth = this.Font.Height * 6;
-			int frameStampWidth = this.Font.Height * 5;
+			int timeStampWidth = this.Font.Height * 8;
+			int frameStampWidth = this.Font.Height * 7;
+			bool showTimestamp = this.ClientRectangle.Width >= 500 + timeStampWidth;
+			bool showFramestamp = this.ClientRectangle.Width >= 500 + timeStampWidth + frameStampWidth;
 			Size textMargin = new Size(10, 2);
 			for (int i = this.firstDisplayIndex; i < this.displayedEntryList.Count; i++)
 			{
@@ -501,10 +501,11 @@ namespace Duality.Editor.Plugins.LogView
 					{
 						DateTime localTime = logEntry.TimeStamp.ToLocalTime();
 						e.Graphics.DrawString(
-							string.Format("{0:00}:{1:00}:{2:00}", 
+							string.Format("{0:00}:{1:00}:{2:00} {3:000}", 
 								localTime.Hour, 
 								localTime.Minute,
-								localTime.Second), 
+								localTime.Second,
+								localTime.Millisecond), 
 							this.Font, foregroundBrushAlpha, 
 							new Rectangle(timeTextRect.Right - timeStampWidth, timeTextRect.Y, timeStampWidth, timeTextRect.Height), 
 							messageFormatTimestamp);
