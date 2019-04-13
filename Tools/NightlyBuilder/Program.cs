@@ -128,7 +128,7 @@ namespace NightlyBuilder
 					string resultFile = "UnitTestResult.xml";
 					ExecuteCommand(
 						string.Format("{0} {1} /result={2}", 
-							Path.Combine(config.NUnitBinDir, "nunit-console.exe"), 
+							Path.Combine(config.NUnitBinDir, "nunit3-console.exe"), 
 							nunitProjectFile,
 							resultFile), 
 						verbose: true);
