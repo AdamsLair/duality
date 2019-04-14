@@ -20,7 +20,7 @@ namespace Duality.Tests.Utility
 			for (int i = -10; i <= 10; i++)
 			{
 				string id = LogFormat.HumanFriendlyId(i);
-				Assert.That(id, Is.Not.Null.Or.Empty);
+				Assert.That(id, Is.Not.Null.And.Not.Empty);
 			}
 
 			// Check a large number of sequential ID tokens, expect no collisions
@@ -28,7 +28,7 @@ namespace Duality.Tests.Utility
 			for (int i = 0; i < 1000; i++)
 			{
 				string id = LogFormat.HumanFriendlyId(i);
-				Assert.That(id, Is.Not.Null.Or.Empty);
+				Assert.That(id, Is.Not.Null.And.Not.Empty);
 				Assert.IsTrue(knownIds.Add(id));
 			}
 
@@ -37,7 +37,7 @@ namespace Duality.Tests.Utility
 			for (int i = 0; i < 1000; i++)
 			{
 				string id = LogFormat.HumanFriendlyId(rnd.Next());
-				Assert.That(id, Is.Not.Null.Or.Empty);
+				Assert.That(id, Is.Not.Null.And.Not.Empty);
 			}
 
 			// Expect the same token to always return the same result
@@ -50,9 +50,9 @@ namespace Duality.Tests.Utility
 			}
 
 			// Check special numbers
-			Assert.That(LogFormat.HumanFriendlyId(0), Is.Not.Null.Or.Empty);
-			Assert.That(LogFormat.HumanFriendlyId(int.MaxValue), Is.Not.Null.Or.Empty);
-			Assert.That(LogFormat.HumanFriendlyId(int.MinValue), Is.Not.Null.Or.Empty);
+			Assert.That(LogFormat.HumanFriendlyId(0), Is.Not.Null.And.Not.Empty);
+			Assert.That(LogFormat.HumanFriendlyId(int.MaxValue), Is.Not.Null.And.Not.Empty);
+			Assert.That(LogFormat.HumanFriendlyId(int.MinValue), Is.Not.Null.And.Not.Empty);
 		}
 	}
 }
