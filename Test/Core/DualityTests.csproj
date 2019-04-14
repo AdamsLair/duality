@@ -3,14 +3,6 @@
   <Import Project="..\..\packages\NUnit3TestAdapter.3.13.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\..\packages\NUnit3TestAdapter.3.13.0\build\net35\NUnit3TestAdapter.props')" />
   <Import Project="..\..\packages\NUnit.3.11.0\build\NUnit.props" Condition="Exists('..\..\packages\NUnit.3.11.0\build\NUnit.props')" />
   <PropertyGroup>
-    <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)packages\NUnit.Runners.2.6.4\tools\nunit.exe</StartProgram>
-    <StartArguments>/run "$(SolutionDir)Test\Duality.nunit"</StartArguments>
-    <StartWorkingDirectory>$(SolutionDir)packages\NUnit.Runners.2.6.4\tools\</StartWorkingDirectory>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
