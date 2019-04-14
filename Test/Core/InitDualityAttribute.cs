@@ -9,7 +9,7 @@ using Duality.Serialization;
 using Duality.Backend;
 
 using NUnit.Framework;
-
+using NUnit.Framework.Interfaces;
 
 namespace Duality.Tests
 {
@@ -27,7 +27,7 @@ namespace Duality.Tests
 		}
 
 		public InitDualityAttribute() {}
-		public void BeforeTest(TestDetails details)
+		public void BeforeTest(ITest details)
 		{
 			Console.WriteLine("----- Beginning Duality environment setup -----");
 
@@ -68,7 +68,7 @@ namespace Duality.Tests
 
 			Console.WriteLine("----- Duality environment setup complete -----");
 		}
-		public void AfterTest(TestDetails details)
+		public void AfterTest(ITest details)
 		{
 			Console.WriteLine("----- Beginning Duality environment teardown -----");
 			
@@ -85,7 +85,7 @@ namespace Duality.Tests
 
 			// Save local testing memory. As this uses Duality serializers, 
 			// it needs to be done before terminating Duality.
-			if (TestContext.CurrentContext.Result.Status == TestStatus.Passed && !System.Diagnostics.Debugger.IsAttached)
+			if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Passed && !System.Diagnostics.Debugger.IsAttached)
 			{
 				Serializer.WriteObject(TestHelper.LocalTestMemory, TestHelper.LocalTestMemoryFilePath, typeof(XmlSerializer));
 			}

@@ -10,11 +10,6 @@ using System.IO.Compression;
 using System.Diagnostics;
 using System.Reflection;
 
-using Microsoft.Win32;
-using Microsoft.Build.Execution;
-using Microsoft.Build.Logging;
-using Microsoft.Build.Framework;
-
 namespace NightlyBuilder
 {
 	public class Program
@@ -133,43 +128,21 @@ namespace NightlyBuilder
 					string resultFile = "UnitTestResult.xml";
 					ExecuteCommand(
 						string.Format("{0} {1} /result={2}", 
-							Path.Combine(config.NUnitBinDir, "nunit-console.exe"), 
+							Path.Combine(config.NUnitBinDir, "nunit3-console.exe"), 
 							nunitProjectFile,
 							resultFile), 
 						verbose: true);
 
 					if (File.Exists(resultFile))
 					{
-						bool unitTestFailed = false;
 						XmlDocument resultDoc = new XmlDocument();
 						resultDoc.Load(resultFile);
 
-						Stack<XmlElement> elementStack = new Stack<XmlElement>();
-						elementStack.Push(resultDoc["test-results"]);
-						do
-						{
-							XmlElement currentElement = elementStack.Pop();
-							XmlAttribute successAttribute = currentElement.Attributes["success"];
+						XmlElement testRunElement = resultDoc["test-run"];
+						XmlAttribute failedAttribute = testRunElement.Attributes["failed"];
+						int failedCount = int.Parse(failedAttribute.Value);
 
-							if (successAttribute == null)
-							{
-								foreach (XmlElement child in currentElement.OfType<XmlElement>().Reverse())
-								{
-									elementStack.Push(child);
-								}
-							}
-							else
-							{
-								bool success = (successAttribute == null) || XmlConvert.ToBoolean(successAttribute.Value.ToLower());
-								if (!success)
-								{
-									unitTestFailed = true;
-									break;
-								}
-							}
-						} while (elementStack.Count > 0);
-
-						if (unitTestFailed)
+						if (failedCount > 0)
 						{
 							ExecuteBackgroundCommand(resultFile);
 							ExecuteBackgroundCommand(
@@ -521,34 +494,50 @@ namespace NightlyBuilder
 			return resultBuilder.ToString();
 		}
 		
-		public static bool BuildVisualStudioSolution(string solutionFile, string configuration)
+		private static bool BuildVisualStudioSolution(string solutionFile, string configuration)
 		{
-			try
+			// Find msbuild binary path
+			string msBuildPath = null;
+			List<string> searchPaths = new List<string>();
+			searchPaths.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Microsoft Visual Studio\\2017\\Community\\MSBuild\\15.0\\Bin"));
+			searchPaths.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Microsoft Visual Studio"));
+			foreach (string baseDir in searchPaths)
 			{
-				return _BuildVisualStudioSolution(solutionFile, configuration);
+				foreach (string candidatePath in Directory.EnumerateFiles(baseDir, "msbuild.exe", SearchOption.AllDirectories))
+				{
+					msBuildPath = candidatePath;
+					break;
+				}
+				if (msBuildPath != null)
+					break;
 			}
-			catch (FileNotFoundException e)
+
+			// Fail, if msbuild cannot be located
+			if (msBuildPath == null) throw new InvalidOperationException("Unable to locate msbuild path.");
+
+			// Run msbuild process
+			ProcessStartInfo procInfo = new ProcessStartInfo();
+			procInfo.WorkingDirectory = Environment.CurrentDirectory;
+			procInfo.FileName = msBuildPath;
+			procInfo.Arguments = string.Format(
+				"/t:Rebuild /p:Configuration={1} /p:Platform=\"Any CPU\" -verbosity:minimal {0}", 
+				solutionFile, 
+				configuration);
+			procInfo.CreateNoWindow = true;
+			procInfo.UseShellExecute = false;
+			procInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+			procInfo.RedirectStandardOutput = true;
+
+			Process proc = Process.Start(procInfo);
+			proc.BeginOutputReadLine();
+			proc.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
 			{
-				// This will be caught when the binding redirect from the old .Net MsBuild to the new VS MsBuild failed.
-				Console.WriteLine();
-				Console.WriteLine();
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine("ERROR: {0}", e);
-				Console.WriteLine();
-				Console.WriteLine("This error usually means the binding redirect from the old .Net 4.0 MsBuild to the new Visual Studio MsBuild failed. To fix this, upgrade to any version of Visual Studio 2013.");
-				Console.ForegroundColor = ConsoleColor.Gray;
-				Console.WriteLine();
-				return false;
-			}
-		}
-		private static bool _BuildVisualStudioSolution(string solutionFile, string configuration)
-		{
-			var buildProperties = new Dictionary<string,string>(){ { "Configuration", configuration } };
-			var buildRequest = new BuildRequestData(solutionFile, buildProperties, null, new string[] { "Build" }, null);
-			var buildParameters = new BuildParameters();
-			buildParameters.Loggers = new[] { new ConsoleLogger(LoggerVerbosity.Minimal) };
-			var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
-			return buildResult.OverallResult == BuildResultCode.Success;
+				if (e.Data == null) return;
+				Console.WriteLine(e.Data);
+			};
+			proc.WaitForExit();
+			return proc.ExitCode == 0;
 		}
 	}
 }

@@ -21,11 +21,11 @@ namespace Duality.Tests.Drawing
 	{
 		private Texture texCoordUV;
 
-		[TestFixtureSetUp] public void FixtureSetup()
+		[SetUp] public void FixtureSetup()
 		{
 			this.texCoordUV = new Texture(new Pixmap(BitmapToPixelData(TestRes.TexCoordUV)));
 		}
-		[TestFixtureTearDown] public void FixtureTearDown()
+		[TearDown] public void FixtureTearDown()
 		{
 			this.texCoordUV.Dispose();
 			this.texCoordUV = null;
