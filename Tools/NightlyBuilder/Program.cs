@@ -135,36 +135,14 @@ namespace NightlyBuilder
 
 					if (File.Exists(resultFile))
 					{
-						bool unitTestFailed = false;
 						XmlDocument resultDoc = new XmlDocument();
 						resultDoc.Load(resultFile);
 
-						Stack<XmlElement> elementStack = new Stack<XmlElement>();
-						elementStack.Push(resultDoc["test-results"]);
-						do
-						{
-							XmlElement currentElement = elementStack.Pop();
-							XmlAttribute successAttribute = currentElement.Attributes["success"];
+						XmlElement testRunElement = resultDoc["test-run"];
+						XmlAttribute failedAttribute = testRunElement.Attributes["failed"];
+						int failedCount = int.Parse(failedAttribute.Value);
 
-							if (successAttribute == null)
-							{
-								foreach (XmlElement child in currentElement.OfType<XmlElement>().Reverse())
-								{
-									elementStack.Push(child);
-								}
-							}
-							else
-							{
-								bool success = (successAttribute == null) || XmlConvert.ToBoolean(successAttribute.Value.ToLower());
-								if (!success)
-								{
-									unitTestFailed = true;
-									break;
-								}
-							}
-						} while (elementStack.Count > 0);
-
-						if (unitTestFailed)
+						if (failedCount > 0)
 						{
 							ExecuteBackgroundCommand(resultFile);
 							ExecuteBackgroundCommand(
