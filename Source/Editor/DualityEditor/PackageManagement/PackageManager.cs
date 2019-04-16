@@ -159,7 +159,7 @@ namespace Duality.Editor.PackageManagement
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
 			this.cache = new PackageCache(
 				this.repository,
-				repositories.OfType<LocalPackageRepository>().Any());
+				repositories.OfType<LocalPackageRepository>().Any() || repositories.OfType<LazyLocalPackageRepository>().Any());
 
 			this.logger = new PackageManagerLogger();
 			this.manager.Logger = this.logger;
