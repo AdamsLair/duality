@@ -67,5 +67,11 @@
     <string>*Tests.pdb</string>
     <string>nunit.framework.dll</string>
     <string>nunit.framework.xml</string>
+    <string>nunit.framework.pdb</string>
+    <string>nunit.engine.api.dll</string>
+    <string>nunit.engine.dll</string>
+    <string>nunit_random_seed.tmp</string>
+    <string>NUnit3.TestAdapter.dll</string>
+    <string>NUnit3.TestAdapter.pdb</string>
   </FileCopyBlackList>
 </ConfigFile>
