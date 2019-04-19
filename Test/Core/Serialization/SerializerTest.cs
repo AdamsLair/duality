@@ -31,9 +31,9 @@ namespace Duality.Tests.Serialization
 		{
 			get { return this.format; }
 		}
-		private IEnumerable<Type> OtherFormats
+		private static IEnumerable<Type> SerializerFormats
 		{
-			get { return Serializer.AvailableTypes.Where(m => m != this.PrimaryFormat); }
+			get { return Serializer.AvailableTypes; }
 		}
 
 		public SerializerTest(Type format)
@@ -370,7 +370,7 @@ namespace Duality.Tests.Serialization
 			Assert.IsTrue(rawDataB.Equals(rawDataResultB));
 			Assert.IsTrue(data.Equals(dataResult));
 		}
-		[Test] public void ConvertFormat([ValueSource("OtherFormats")] Type to)
+		[Test] public void ConvertFormat([ValueSource("SerializerFormats")] Type targetFormat)
 		{
 			Random rnd = new Random();
 			TestObject data = new TestObject(rnd);
@@ -392,7 +392,7 @@ namespace Duality.Tests.Serialization
 				}
 
 				// Write new format
-				using (Serializer formatterWrite = Serializer.Create(stream, to))
+				using (Serializer formatterWrite = Serializer.Create(stream, targetFormat))
 				{
 					formatterWrite.WriteObject(data);
 				}

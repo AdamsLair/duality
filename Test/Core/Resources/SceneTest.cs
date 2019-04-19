@@ -449,12 +449,16 @@ namespace Duality.Tests.Resources
 				renderedImage = texture.GetPixelData();
 			}
 
+			// Determine where in the resulting image we should see the ball object.
+			// Note that we need to do this after rendering, but before deactivating the scene again,
+			// so the correct target resolution is assumed.
+			Vector2 ballPosInOutputImage = camera.GetScreenPos(ballTransform.Pos);
+
 			// Deactivate the scene again
 			scene.Deactivate();
 
 			// Assert that the image target has the correct background color
 			// and deviates from it at the balls position
-			Vector2 ballPosInOutputImage = camera.GetScreenPos(ballTransform.Pos);
 			Assert.AreEqual(camera.ClearColor, renderedImage[0, 0]);
 			Assert.AreNotEqual(camera.ClearColor, renderedImage[(int)ballPosInOutputImage.X, (int)ballPosInOutputImage.Y]);
 		}

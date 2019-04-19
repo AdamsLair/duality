@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>3.0.3</version>
+    <version>3.0.4</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,8 +13,8 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>
-</releaseNotes>
+    <releaseNotes>Package Install Bugfix, Performance Improvements
+#FIX: Fixed a package install bug where retrieving the latest version would sometimes fail with no results due to using NuGet search API instead of lookup API. As a side effect, package install and restore performance has improved significantly.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="3.0.2" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
