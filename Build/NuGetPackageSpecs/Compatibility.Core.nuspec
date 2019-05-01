@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Compatibility</id>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Backwards Compatibility</title>
@@ -13,10 +13,10 @@
     <summary>Defines helper classes to retain backwards compatibility with older Duality versions.</summary>
     <description>Defines helper classes to retain backwards compatibility with older Duality versions.</description>
     <tags>Duality Core Plugin Compatibility</tags>
-    <releaseNotes>Major Version Update
+    <releaseNotes>Patch Version Update
 </releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.0.0" />
+      <dependency id="AdamsLair.Duality" version="3.0.3" />
     </dependencies>
   </metadata>
   <files>

@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.SceneView</id>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Scene View</title>
@@ -13,11 +13,11 @@
     <summary>Displays the contents of the current Scene hierarchically and allows editing the Scene graph.</summary>
     <description>Displays the contents of the current Scene hierarchically and allows editing the Scene graph.</description>
     <tags>Duality Editor Plugin SceneView</tags>
-    <releaseNotes>Major Version Update
+    <releaseNotes>Patch Version Update
 </releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.0.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="3.0.0" />
+      <dependency id="AdamsLair.Duality" version="3.0.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="3.1.2" />
     </dependencies>
   </metadata>
   <files>

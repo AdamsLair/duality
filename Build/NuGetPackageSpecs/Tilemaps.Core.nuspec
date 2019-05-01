@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Tilemaps</id>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Core)</title>
@@ -13,10 +13,10 @@
     <summary>Defines core Resources and Components for using tilemaps with Duality.</summary>
     <description>Defines core Resources and Components for using tilemaps with Duality.</description>
     <tags>Duality Core Plugin Tilemaps</tags>
-    <releaseNotes>TilemapRenderer Vertex Overflow Bugfix
-#FIX: Fixed TilemapRenderer exceeding per-batch indexable vertex limit for large Tilemaps.</releaseNotes>
+    <releaseNotes>Patch Version Update
+</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.0.0" />
+      <dependency id="AdamsLair.Duality" version="3.0.3" />
     </dependencies>
   </metadata>
   <files>

@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Primitives</id>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Primitives</title>
@@ -16,7 +16,7 @@
     <references>
       <reference file="DualityPrimitives.dll" />
     </references>
-    <releaseNotes>Major Version Update
+    <releaseNotes>Patch Version Update
 </releaseNotes>
   </metadata>
   <files>
