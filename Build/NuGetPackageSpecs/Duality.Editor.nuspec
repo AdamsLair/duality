@@ -28,12 +28,12 @@
     </references>
   </metadata>
   <files>
-    <file src="..\Output\DualityEditor.exe" target="lib" />
-    <file src="..\Output\DualityEditor.exe.config" target="lib" />
-    <file src="..\Output\DualityEditor.pdb" target="lib" />
-    <file src="..\Output\DualityEditor.xml" target="lib" />
-    <file src="..\Output\DualityUpdater.exe" target="lib" />
-    <file src="..\Output\VistaBridgeLibrary.dll" target="lib" />
-    <file src="..\Output\Windows7.DesktopIntegration.dll" target="lib" />
+    <file src="..\Output\DualityEditor.exe" target="lib\net45" />
+    <file src="..\Output\DualityEditor.exe.config" target="lib\net45" />
+    <file src="..\Output\DualityEditor.pdb" target="lib\net45" />
+    <file src="..\Output\DualityEditor.xml" target="lib\net45" />
+    <file src="..\Output\DualityUpdater.exe" target="lib\net45" />
+    <file src="..\Output\VistaBridgeLibrary.dll" target="lib\net45" />
+    <file src="..\Output\Windows7.DesktopIntegration.dll" target="lib\net45" />
   </files>
 </package>

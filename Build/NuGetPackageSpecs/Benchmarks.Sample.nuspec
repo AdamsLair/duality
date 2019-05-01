@@ -21,8 +21,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\Benchmarks\Content\Plugins\Benchmarks.Sample.core.dll" target="lib" />
-    <file src="..\..\Samples\Benchmarks\Content\Plugins\Benchmarks.Sample.core.xml" target="lib" />
+    <file src="..\..\Samples\Benchmarks\Content\Plugins\Benchmarks.Sample.core.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\..\Samples\Benchmarks\Content\Plugins\Benchmarks.Sample.core.xml" target="lib\portable45-net45+win8+wpa81" />
     <file src="..\..\Samples\Benchmarks\Content\Data\**\*.res" target="content" />
     <file src="..\..\Samples\Benchmarks\**\*.cs" target="source" exclude="..\..\Samples\Benchmarks\Content\**\*.*;..\..\Samples\Benchmarks\obj\**\*.*" />
     <file src="..\..\Samples\Benchmarks\Benchmarks.Sample.csproj" target="source" />

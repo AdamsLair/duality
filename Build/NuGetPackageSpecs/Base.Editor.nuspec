@@ -21,8 +21,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Output\Plugins\EditorBase.editor.dll" target="lib" />
-    <file src="..\Output\Plugins\EditorBase.editor.pdb" target="lib" />
-    <file src="..\Output\Plugins\EditorBase.editor.xml" target="lib" />
+    <file src="..\Output\Plugins\EditorBase.editor.dll" target="lib\net45" />
+    <file src="..\Output\Plugins\EditorBase.editor.pdb" target="lib\net45" />
+    <file src="..\Output\Plugins\EditorBase.editor.xml" target="lib\net45" />
   </files>
 </package>

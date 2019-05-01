@@ -21,9 +21,9 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Output\Plugins\DefaultOpenTKBackend.core.dll" target="lib" />
-    <file src="..\Output\Plugins\DefaultOpenTKBackend.core.pdb" target="lib" />
-    <file src="..\Output\Plugins\OpenALSoft32.dll" target="lib" />
-    <file src="..\Output\Plugins\OpenALSoft64.dll" target="lib" />
+    <file src="..\Output\Plugins\DefaultOpenTKBackend.core.dll" target="lib\net45" />
+    <file src="..\Output\Plugins\DefaultOpenTKBackend.core.pdb" target="lib\net45" />
+    <file src="..\Output\Plugins\OpenALSoft32.dll" target="lib\net45" />
+    <file src="..\Output\Plugins\OpenALSoft64.dll" target="lib\net45" />
   </files>
 </package>

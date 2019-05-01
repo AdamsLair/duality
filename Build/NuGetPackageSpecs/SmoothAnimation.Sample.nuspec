@@ -21,8 +21,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\SmoothAnimation\Content\Plugins\SmoothAnimation.core.dll" target="lib" />
-    <file src="..\..\Samples\SmoothAnimation\Content\Plugins\SmoothAnimation.core.xml" target="lib" />
+    <file src="..\..\Samples\SmoothAnimation\Content\Plugins\SmoothAnimation.core.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\..\Samples\SmoothAnimation\Content\Plugins\SmoothAnimation.core.xml" target="lib\portable45-net45+win8+wpa81" />
     <file src="..\..\Samples\SmoothAnimation\Content\Data\**\*.res" target="content" />
     <file src="..\..\Samples\SmoothAnimation\**\*.cs" target="source" exclude="..\..\Samples\SmoothAnimation\Content\**\*.*;..\..\Samples\SmoothAnimation\obj\**\*.*" />
     <file src="..\..\Samples\SmoothAnimation\SmoothAnimation.csproj" target="source" />

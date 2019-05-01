@@ -21,8 +21,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\AudioHandling\Content\Plugins\AudioHandling.core.dll" target="lib" />
-    <file src="..\..\Samples\AudioHandling\Content\Plugins\AudioHandling.core.xml" target="lib" />
+    <file src="..\..\Samples\AudioHandling\Content\Plugins\AudioHandling.core.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\..\Samples\AudioHandling\Content\Plugins\AudioHandling.core.xml" target="lib\portable45-net45+win8+wpa81" />
     <file src="..\..\Samples\AudioHandling\Content\Data\**\*.res" target="content" />
     <file src="..\..\Samples\AudioHandling\**\*.cs" target="source" exclude="..\..\Samples\AudioHandling\Content\**\*.*;..\..\Samples\AudioHandling\obj\**\*.*" />
     <file src="..\..\Samples\AudioHandling\AudioHandling.csproj" target="source" />

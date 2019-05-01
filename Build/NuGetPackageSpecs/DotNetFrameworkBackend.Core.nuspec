@@ -20,7 +20,7 @@
 </releaseNotes>
   </metadata>
   <files>
-    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.dll" target="lib" />
-    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.pdb" target="lib" />
+    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.dll" target="lib\net45" />
+    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.pdb" target="lib\net45" />
   </files>
 </package>

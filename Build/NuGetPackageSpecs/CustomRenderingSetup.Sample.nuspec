@@ -21,8 +21,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\CustomRenderingSetup\Content\Plugins\CustomRenderingSetup.core.dll" target="lib" />
-    <file src="..\..\Samples\CustomRenderingSetup\Content\Plugins\CustomRenderingSetup.core.xml" target="lib" />
+    <file src="..\..\Samples\CustomRenderingSetup\Content\Plugins\CustomRenderingSetup.core.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\..\Samples\CustomRenderingSetup\Content\Plugins\CustomRenderingSetup.core.xml" target="lib\portable45-net45+win8+wpa81" />
     <file src="..\..\Samples\CustomRenderingSetup\Content\Data\**\*.res" target="content" />
     <file src="..\..\Samples\CustomRenderingSetup\**\*.cs" target="source" exclude="..\..\Samples\CustomRenderingSetup\Content\**\*.*;..\..\Samples\CustomRenderingSetup\obj\**\*.*" />
     <file src="..\..\Samples\CustomRenderingSetup\CustomRenderingSetup.csproj" target="source" />

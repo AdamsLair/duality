@@ -20,8 +20,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Output\Plugins\Tilemaps.core.dll" target="lib" />
-    <file src="..\Output\Plugins\Tilemaps.core.pdb" target="lib" />
-    <file src="..\Output\Plugins\Tilemaps.core.xml" target="lib" />
+    <file src="..\Output\Plugins\Tilemaps.core.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\Output\Plugins\Tilemaps.core.pdb" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\Output\Plugins\Tilemaps.core.xml" target="lib\portable45-net45+win8+wpa81" />
   </files>
 </package>

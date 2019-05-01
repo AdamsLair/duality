@@ -21,8 +21,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\ParticleSystem\Content\Plugins\ParticleSystem.core.dll" target="lib" />
-    <file src="..\..\Samples\ParticleSystem\Content\Plugins\ParticleSystem.core.xml" target="lib" />
+    <file src="..\..\Samples\ParticleSystem\Content\Plugins\ParticleSystem.core.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\..\Samples\ParticleSystem\Content\Plugins\ParticleSystem.core.xml" target="lib\portable45-net45+win8+wpa81" />
     <file src="..\..\Samples\ParticleSystem\Content\Data\**\*.res" target="content" />
     <file src="..\..\Samples\ParticleSystem\**\*.cs" target="source" exclude="..\..\Samples\ParticleSystem\Content\**\*.*;..\..\Samples\ParticleSystem\obj\**\*.*" />
     <file src="..\..\Samples\ParticleSystem\ParticleSystem.csproj" target="source" />

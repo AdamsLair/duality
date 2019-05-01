@@ -22,8 +22,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.dll" target="lib" />
-    <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.xml" target="lib" />
+    <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.xml" target="lib\portable45-net45+win8+wpa81" />
     <file src="..\..\Samples\Tilemaps\Content\Data\**\*.res" target="content" />
     <file src="..\..\Samples\Tilemaps\**\*.cs" target="source" exclude="..\..\Samples\Tilemaps\Content\**\*.*;..\..\Samples\Tilemaps\obj\**\*.*" />
     <file src="..\..\Samples\Tilemaps\Tilemaps.Sample.csproj" target="source" />
