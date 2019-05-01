@@ -206,14 +206,23 @@ namespace VersionUpdater
 			}
 			Console.WriteLine();
 
-			if (config.ApplyGlobalMajorUpdate)
+			if (!string.IsNullOrEmpty(config.ApplyGlobalUpdate))
 			{
-				// Apply a major version step to all projects
+				UpdateMode mode;
+				switch (config.ApplyGlobalUpdate)
+				{
+					case "Major": mode = UpdateMode.Major; break;
+					case "Minor": mode = UpdateMode.Minor; break;
+					case "Patch": mode = UpdateMode.Patch; break;
+					default: mode = UpdateMode.None; break;
+				}
+
+				// Apply a version step to all projects
 				changes = new List<ProjectChangeInfo>(allProjects.Select(p => new ProjectChangeInfo
 				{
 					Project = p,
-					Titles = new List<string> { "Major Version Update" },
-					UpdateMode = UpdateMode.Major
+					Titles = new List<string> { mode.ToString() + " Version Update" },
+					UpdateMode = mode
 				}));
 			}
 			else
