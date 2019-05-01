@@ -36,18 +36,19 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.WinForms, Version=1.1.16.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\AdamsLair.WinForms.1.1.16\lib\net45\AdamsLair.WinForms.dll</HintPath>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\AdamsLair.WinForms.1.1.17\lib\net45\AdamsLair.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="PopupControl, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\AdamsLair.WinForms.PopupControl.1.0.1\lib\net40\PopupControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.8.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\packages\AdamsLair.DockPanelSuite.2.8.1.0\lib\net20\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.8.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\AdamsLair.DockPanelSuite.2.8.2\lib\net20\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
