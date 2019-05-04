@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.DualStickSpaceShooter</id>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Dual Stick Space Shooter Sample</title>
@@ -13,16 +13,16 @@
     <summary>A small dual stick space shooter made with Duality.</summary>
     <description>This package contains a small coop game for one to two players, controlled with mouse / keyboard and gamepads. Recommended to play with stereo audio at full volume.</description>
     <tags>Duality Sample Plugin Game Multiplayer Coop Shooter Topdown Minimalistic</tags>
-    <releaseNotes>Major Version Update
+    <releaseNotes>Patch Version Update
 </releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.0.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="3.0.0" />
+      <dependency id="AdamsLair.Duality" version="3.0.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="3.1.2" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.dll" target="lib" />
-    <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.xml" target="lib" />
+    <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.xml" target="lib\portable45-net45+win8+wpa81" />
     <file src="..\..\Samples\DualStickSpaceShooter\Content\Data\**\*.res" target="content" />
     <file src="..\..\Samples\DualStickSpaceShooter\**\*.cs" target="source" exclude="..\..\Samples\DualStickSpaceShooter\Content\**\*.*;..\..\Samples\DualStickSpaceShooter\obj\**\*.*" />
     <file src="..\..\Samples\DualStickSpaceShooter\DualStickSpaceShooter.csproj" target="source" />

@@ -20,6 +20,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Documentation\Help\DDoc.chm" target="lib" />
+    <file src="..\Documentation\Help\DDoc.chm" target="lib\portable45-net45+win8+wpa81" />
   </files>
 </package>
