@@ -182,9 +182,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Modules\TilemapSetupDialog.resx">
       <DependentUpon>TilemapSetupDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -250,6 +247,17 @@
     <None Include="EmbeddedResources\CursorPick.png" />
     <None Include="EmbeddedResources\IconPick.png" />
     <Content Include="EmbeddedResources\IconTileOval.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AdamsLair.DockPanelSuite">
+      <Version>2.8.2</Version>
+    </PackageReference>
+    <PackageReference Include="AdamsLair.TreeViewAdv">
+      <Version>1.7.7</Version>
+    </PackageReference>
+    <PackageReference Include="AdamsLair.WinForms">
+      <Version>1.1.17</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AggregateOutput" BeforeTargets="AfterBuild">

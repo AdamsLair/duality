@@ -79,7 +79,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="AdamsLair.OpenTK">
+      <Version>1.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="AdamsLair.OpenTK.GLControl">
+      <Version>1.2.2</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
