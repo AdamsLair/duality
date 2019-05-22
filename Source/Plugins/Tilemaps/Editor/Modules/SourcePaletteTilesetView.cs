@@ -323,6 +323,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void UpdateSelectedTiles()
 		{
+			if (this.DisplayedTileCount.X < this.SelectedArea.X + this.SelectedArea.Width ||
+				this.DisplayedTileCount.Y < this.SelectedArea.Y + this.SelectedArea.Height)
+			{
+				this.SelectedArea = Rectangle.Empty;
+				this.areTilesSelected = false;
+			}
+
 			// Allocate and clear a tile rect space of the appropriate size.
 			this.selectedTiles.ResizeClear(this.selectedArea.Width, this.selectedArea.Height);
 
