@@ -86,6 +86,19 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnTileDisplayModeChanged()
 		{
 			base.OnTileDisplayModeChanged();
+
+			// Remove selection if it extends beyound selectable boundaries now that the layout 
+			// may have changed. 
+			// Note that this only handles cases where the updated selection would tap outside 
+			// the valid region. If it's still within after the layout change, this code won't
+			// trigger and UpdateSelectedTiles will properly redo the mapping, which is probably
+			// just fine for now.
+			if (this.DisplayedTileCount.X < this.SelectedArea.X + this.SelectedArea.Width ||
+				this.DisplayedTileCount.Y < this.SelectedArea.Y + this.SelectedArea.Height)
+			{
+				this.SelectedArea = Rectangle.Empty;
+			}
+
 			this.UpdateSelectedTiles();
 			this.RaiseSelectedAreaChanged();
 			this.RaiseSelectedAreaEditingFinished();

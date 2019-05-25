@@ -6,8 +6,8 @@ using System.Text;
 namespace Duality
 {
 	/// <summary>
-	/// Provides information about user settings for this Duality application / game.
-	/// It is persistent beyond installing or deleting this Duality game.
+	/// Provides information about user settings for this Duality application.
+	/// It is persistent and usually tied to the game folder.
 	/// </summary>
 	public class DualityUserData
 	{
