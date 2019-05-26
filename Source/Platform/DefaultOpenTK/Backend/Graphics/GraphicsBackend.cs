@@ -367,14 +367,26 @@ namespace Duality.Backend.DefaultOpenTK
 
 		private void QueryGraphicsModes()
 		{
+			// Gather available graphics modes
+			Logs.Core.Write("Available graphics modes:");
+			Logs.Core.PushIndent();
 			int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
 			this.availGraphicsModes = new HashSet<GraphicsMode>(new GraphicsModeComparer());
 			foreach (int samplecount in aaLevels)
 			{
 				GraphicsMode mode = new GraphicsMode(32, 24, 0, samplecount, new OpenTK.Graphics.ColorFormat(0), 2, false);
-				if (!this.availGraphicsModes.Contains(mode)) this.availGraphicsModes.Add(mode);
+				if (!this.availGraphicsModes.Contains(mode))
+				{
+					this.availGraphicsModes.Add(mode);
+					Logs.Core.Write("{0}", mode);
+				}
 			}
-			int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(this.availGraphicsModes.Max(m => m.Samples), 1.0f), 2.0f));
+			Logs.Core.PopIndent();
+
+			// Select the default graphics mode we'll prefer for game window and other rendering surfaces
+			List<GraphicsMode> sortedModes = this.availGraphicsModes.ToList();
+			sortedModes.StableSort((a, b) => a.Samples - b.Samples);
+			int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(sortedModes.Max(m => m.Samples), 1.0f), 2.0f));
 			int targetAALevel = highestAALevel;
 			if (DualityApp.AppData.MultisampleBackBuffer)
 			{
@@ -391,7 +403,8 @@ namespace Duality.Backend.DefaultOpenTK
 				targetAALevel = 0;
 			}
 			int targetSampleCount = MathF.RoundToInt(MathF.Pow(2.0f, targetAALevel));
-			this.defaultGraphicsMode = this.availGraphicsModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? this.availGraphicsModes.Last();
+			this.defaultGraphicsMode = sortedModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? sortedModes.Last();
+			Logs.Core.Write("Default graphics mode: {0}", this.defaultGraphicsMode);
 		}
 		private void CheckContextCaps()
 		{
