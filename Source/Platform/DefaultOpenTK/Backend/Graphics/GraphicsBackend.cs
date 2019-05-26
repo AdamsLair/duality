@@ -404,7 +404,9 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			int targetSampleCount = MathF.RoundToInt(MathF.Pow(2.0f, targetAALevel));
 			this.defaultGraphicsMode = sortedModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? sortedModes.Last();
-			Logs.Core.Write("Default graphics mode: {0}", this.defaultGraphicsMode);
+
+			Logs.Core.Write("Duality default graphics mode: {0}", this.defaultGraphicsMode);
+			Logs.Core.Write("OpenTK default graphics mode: {0}", GraphicsMode.Default);
 		}
 		private void CheckContextCaps()
 		{
