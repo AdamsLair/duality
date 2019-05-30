@@ -8,6 +8,10 @@ namespace Duality.Backend
 {
 	public interface IGraphicsBackend : IDualityBackend
 	{
+		/// <summary>
+		/// Returns information about the backends graphics / rendering capabilities.
+		/// </summary>
+		GraphicsBackendCapabilities Capabilities { get; }
 		IEnumerable<ScreenResolution> AvailableScreenResolutions { get; }
 		Point2 ExternalBackbufferSize { get; set; }
 

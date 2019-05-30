@@ -62,6 +62,7 @@
     <Compile Include="Backend\Dummy\DummyNativeWindow.cs" />
     <Compile Include="Backend\Dummy\DummyNativeTexture.cs" />
     <Compile Include="Backend\Dummy\DummyGraphicsBackend.cs" />
+    <Compile Include="Backend\Graphics\GraphicsBackendCapabilities.cs" />
     <Compile Include="Backend\Graphics\INativeGraphicsBuffer.cs" />
     <Compile Include="Backend\Graphics\INativeRenderTarget.cs" />
     <Compile Include="Backend\Graphics\INativeShaderProgram.cs" />

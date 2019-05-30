@@ -8,6 +8,8 @@ namespace Duality.Backend.Dummy
 {
 	public class DummyGraphicsBackend : IGraphicsBackend
 	{
+		private GraphicsBackendCapabilities capabilities = new GraphicsBackendCapabilities();
+
 		string IDualityBackend.Id
 		{
 			get { return "DummyGraphicsBackend"; }
@@ -21,6 +23,10 @@ namespace Duality.Backend.Dummy
 			get { return int.MinValue; }
 		}
 
+		GraphicsBackendCapabilities IGraphicsBackend.Capabilities
+		{
+			get { return this.capabilities; }
+		}
 		IEnumerable<ScreenResolution> IGraphicsBackend.AvailableScreenResolutions
 		{
 			get { return new ScreenResolution[] { new ScreenResolution(640, 480, 60) }; }

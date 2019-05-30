@@ -69,8 +69,8 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 			// Log some general info on the graphics context we've set up
 			GraphicsBackend.LogOpenGLContextSpecs(this.mainContextControl.Context);
 
-			// Determine OpenGL capabilities and log them
-			GraphicsBackend.LogOpenGLSpecs();
+			// Let's see what rendering features we have available
+			GraphicsBackend.ActiveInstance.QueryOpenGLCapabilities();
 		}
 
 		public void ScheduleSwap(GLControl control)
