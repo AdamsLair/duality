@@ -680,8 +680,18 @@ namespace Duality.Plugins.Tilemaps
 					vertexBuffer.Count = 0;
 					for (int i = 0; i < currentChain.Count; i++)
 					{
-						int prevIndex = (i - 1 + currentChain.Count) % currentChain.Count;
-						int nextIndex = (i + 1) % currentChain.Count;
+						int prevIndex;
+						int nextIndex;
+						if (isLoop)
+						{
+							prevIndex = (i - 1 + currentChain.Count) % currentChain.Count;
+							nextIndex = (i + 1) % currentChain.Count;
+						}
+						else
+						{
+							prevIndex = Math.Max(i - 1, 0);
+							nextIndex = Math.Min(i + 1, currentChain.Count - 1);
+						}
 
 						Vector2 currentVert = origin + tileSize * (Vector2)currentChain[i];
 						Vector2 prevVert = origin + tileSize * (Vector2)currentChain[prevIndex];
@@ -708,8 +718,18 @@ namespace Duality.Plugins.Tilemaps
 					vertexBuffer.Count = 0;
 					for (int i = 0; i < currentChain.Count; i++)
 					{
-						int prevIndex = (i - 1 + currentChain.Count) % currentChain.Count;
-						int nextIndex = (i + 1) % currentChain.Count;
+						int prevIndex;
+						int nextIndex;
+						if (isLoop)
+						{
+							prevIndex = (i - 1 + currentChain.Count) % currentChain.Count;
+							nextIndex = (i + 1) % currentChain.Count;
+						}
+						else
+						{
+							prevIndex = Math.Max(i - 1, 0);
+							nextIndex = Math.Min(i + 1, currentChain.Count - 1);
+						}
 
 						Vector2 currentVert = origin + tileSize * (Vector2)currentChain[i];
 						Vector2 prevVert = origin + tileSize * (Vector2)currentChain[prevIndex];
