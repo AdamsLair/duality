@@ -97,7 +97,23 @@ namespace Duality.Backend.DefaultOpenTK
 			catch (Exception e)
 			{
 				Logs.Core.WriteWarning(
-					"Can't determine OpenGL base specs: {0}", 
+					"Unable to determine OpenGL base specs: {0}", 
+					LogFormat.Exception(e));
+			}
+
+			// Retrieve extended / in-depth specs from OpenGL
+			try
+			{
+				GraphicsBackend.CheckOpenGLErrors();
+				GL.GetInteger(GetPName.MaxTextureSize, out this.maxTextureSize);
+				GL.GetInteger(GetPName.MaxTextureImageUnits, out this.maxTextureBindings);
+				GL.GetInteger(GetPName.MaxRenderbufferSize, out this.maxRenderTargetSize);
+				GraphicsBackend.CheckOpenGLErrors();
+			}
+			catch (Exception e)
+			{
+				Logs.Core.WriteWarning(
+					"Unable to determine OpenGL extended specs: {0}",
 					LogFormat.Exception(e));
 			}
 
@@ -114,10 +130,8 @@ namespace Duality.Backend.DefaultOpenTK
 		/// <param name="messageBuilder"></param>
 		protected override void AppendToLogMessage(StringBuilder messageBuilder)
 		{
-			base.AppendToLogMessage(messageBuilder);
-
 			messageBuilder.AppendFormat(
-				"OpenGL Version: '{0}', i.e. {1}", 
+				"OpenGL Version: '{0}', i.e. {1}",
 				this.glVersionString,
 				this.glVersion);
 			messageBuilder.AppendLine();
@@ -137,6 +151,8 @@ namespace Duality.Backend.DefaultOpenTK
 				this.glslVersionString,
 				this.glslVersion);
 			messageBuilder.AppendLine();
+
+			base.AppendToLogMessage(messageBuilder);
 		}
 
 		/// <summary>

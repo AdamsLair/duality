@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Duality.Drawing;
+using Duality.Resources;
 
 namespace Duality.Backend
 {
@@ -12,7 +12,10 @@ namespace Duality.Backend
 	/// </summary>
 	public class GraphicsBackendCapabilities
 	{
-		protected Version apiVersion = new Version(0, 0);
+		protected Version apiVersion;
+		protected int maxTextureSize;
+		protected int maxTextureBindings;
+		protected int maxRenderTargetSize;
 
 		/// <summary>
 		/// The API version of the backends underlying graphics API, such as the available 
@@ -21,6 +24,27 @@ namespace Duality.Backend
 		public Version ApiVersion
 		{
 			get { return this.apiVersion; }
+		}
+		/// <summary>
+		/// The maximum edge length of a <see cref="Texture"/>.
+		/// </summary>
+		public int MaxTextureSize
+		{
+			get { return this.maxTextureSize; }
+		}
+		/// <summary>
+		/// The maximum number of textures that can be bound simultaneously for shader access.
+		/// </summary>
+		public int MaxTextureBindings
+		{
+			get { return this.maxTextureBindings; }
+		}
+		/// <summary>
+		/// The maximum edge length of a <see cref="RenderTarget"/>.
+		/// </summary>
+		public int MaxRenderTargetSize
+		{
+			get { return this.maxRenderTargetSize; }
 		}
 
 
@@ -34,6 +58,9 @@ namespace Duality.Backend
 		protected virtual void Reset()
 		{
 			this.apiVersion = new Version(0, 0);
+			this.maxTextureSize = 64;
+			this.maxTextureBindings = 8;
+			this.maxRenderTargetSize = 1;
 		}
 		/// <summary>
 		/// Appends all relevant capability values to the specified log message.
@@ -44,6 +71,21 @@ namespace Duality.Backend
 			messageBuilder.AppendFormat(
 				"API Version: {0}",
 				this.apiVersion);
+			messageBuilder.AppendLine();
+
+			messageBuilder.AppendFormat(
+				"Max Texture Size: {0}",
+				this.maxTextureSize);
+			messageBuilder.AppendLine();
+
+			messageBuilder.AppendFormat(
+				"Max Texture Bindings: {0}",
+				this.maxTextureBindings);
+			messageBuilder.AppendLine();
+
+			messageBuilder.AppendFormat(
+				"Max RenderTarget Size: {0}",
+				this.maxRenderTargetSize);
 			messageBuilder.AppendLine();
 		}
 
