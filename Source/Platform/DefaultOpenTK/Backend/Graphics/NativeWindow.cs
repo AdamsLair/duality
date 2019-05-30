@@ -154,8 +154,8 @@ namespace Duality.Backend.DefaultOpenTK
 			// Register events and input
 			this.HookIntoDuality();
 
-			// Determine OpenGL capabilities and log them
-			GraphicsBackend.LogOpenGLSpecs();
+			// Let's see what rendering features we have available
+			GraphicsBackend.ActiveInstance.QueryOpenGLCapabilities();
 		}
 		void INativeWindow.Run()
 		{

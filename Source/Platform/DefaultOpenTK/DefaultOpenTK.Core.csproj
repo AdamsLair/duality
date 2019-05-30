@@ -49,6 +49,7 @@
     <Compile Include="Backend\Audio\AudioBackend.cs" />
     <Compile Include="Backend\Audio\AudioLibraryLoader.cs" />
     <Compile Include="Backend\Graphics\ExtMethodsColorDataElementType.cs" />
+    <Compile Include="Backend\Graphics\OpenTKGraphicsCapabilities.cs" />
     <Compile Include="Backend\Graphics\NativeGraphicsBuffer.cs" />
     <Compile Include="Backend\Input\GameWindowKeyboardInputSource.cs" />
     <Compile Include="Backend\Input\GameWindowMouseInputSource.cs" />
