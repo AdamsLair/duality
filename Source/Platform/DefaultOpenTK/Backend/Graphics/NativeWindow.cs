@@ -138,10 +138,10 @@ namespace Duality.Backend.DefaultOpenTK
 			// just because of an icon. Log the error and continue.
 			catch (Exception e)
 			{
-				Logs.Core.WriteError(
+				Logs.Core.WriteWarning(
 					"There was an exception while trying to extract the " +
 					"window icon from the game's main executable '{0}'. This is " +
-					"uncritical, but still an error: {1}",
+					"uncritical, but still means something went wrong: {1}",
 					executablePath,
 					LogFormat.Exception(e));
 			}
