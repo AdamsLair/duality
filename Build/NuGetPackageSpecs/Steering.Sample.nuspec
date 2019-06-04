@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.Steering</id>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
     <authors>Daniel Herb, Fedja Adam</authors>
     <owners>Daniel Herb, Fedja Adam</owners>
     <title>Steering Behaviours Sample</title>
@@ -13,15 +13,15 @@
     <summary>Introduces a Steering Agent Component that allows for objects to evade each other.</summary>
     <description>Introduces a Steering Agent Component that allows for objects to evade each other.</description>
     <tags>Duality Sample Plugin Steering Component AI</tags>
-    <releaseNotes>
+    <releaseNotes>Patch Version Update
 </releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.0.0" />
+      <dependency id="AdamsLair.Duality" version="3.0.3" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\Steering\Content\Plugins\Steering.core.dll" target="lib" />
-    <file src="..\..\Samples\Steering\Content\Plugins\Steering.core.xml" target="lib" />
+    <file src="..\..\Samples\Steering\Content\Plugins\Steering.core.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\..\Samples\Steering\Content\Plugins\Steering.core.xml" target="lib\portable45-net45+win8+wpa81" />
     <file src="..\..\Samples\Steering\Content\Data\**\*.res" target="content" />
     <file src="..\..\Samples\Steering\**\*.cs" target="source" exclude="..\..\Samples\Steering\Content\**\*.*;..\..\Samples\Steering\obj\**\*.*" />
     <file src="..\..\Samples\Steering\**\*.png" target="source" exclude="..\..\Samples\Steering\Content\**\*.*;..\..\Samples\Steering\obj\**\*.*" />

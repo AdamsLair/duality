@@ -204,26 +204,13 @@ namespace Duality.Editor.PackageManagement
 				// Find the newest available, listed version online.
 				else
 				{
-					// Enumerate all package versions - do not rely on an indexed
-					// lookup to get the latest, as the index might not be up-to-date.
-					//
-					// Note: Make sure to include OrderByDescending. Without it, non-indexed
-					// packages will not be returned from the query.
-					IQueryable<NuGet.IPackage> query = 
-						this.repository.GetPackages()
-						.Where(p => p.Id == packageRef.Id)
-						.OrderByDescending(p => p.Version);
-
-					// Note: IQueryable LINQ expressions will actually be transformed into
-					// queries that are executed server-side. Unfortunately for us, the server
-					// will order versions as if they were strings, meaning that 1.0.10 < 1.0.9.
-					// To fix this, we'll have to iterate over them all and find the highest one
-					// manually. We'll still include the OrderByDescending, so we avoid running
-					// into a supposed caching mechanism that doesn't return non-indexed packages
-					// and appears to be active when just filtering by ID.
+					// Do an indexed lookup. This may fail for freshly released packages, 
+					// but turns out to be more robust otherwise. Our previous approach
+					// of querying non-indexed NuGet API via search sometimes failed with
+					// the server returning no results on the n-th query.
 					Version latestVersion = new Version(0, 0);
 					NuGet.IPackage latestPackage = null;
-					foreach (NuGet.IPackage package in query)
+					foreach (NuGet.IPackage package in this.GetRemotePackages(packageRef.Id))
 					{
 						if (!this.IsUserAvailable(package)) continue;
 						if (package.Version.Version > latestVersion)

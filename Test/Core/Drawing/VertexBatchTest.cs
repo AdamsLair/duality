@@ -86,7 +86,8 @@ namespace Duality.Tests.Drawing
 			Assert.IsTrue(weakRefToLockedData.IsAlive);
 			typedBatch = null;
 			abstractBatch = null;
-			GC.Collect();
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+			GC.WaitForPendingFinalizers();
 			Assert.IsFalse(weakRefToLockedData.IsAlive);
 		}
 

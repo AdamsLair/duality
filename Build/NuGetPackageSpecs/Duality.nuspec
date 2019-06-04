@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>3.0.2</version>
+    <version>3.1.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,20 +13,21 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>
-</releaseNotes>
+    <releaseNotes>Added Texture Size Backend Capabilities, Added GraphicsBackendCapabilities
+#ADD: Added graphics backend capability info for maximum texture sizes and bindings.
+#ADD: Added basic infrastructure for retrieving graphics and rendering capabilities of the active backend in core code.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Primitives" version="3.0.0" />
-      <dependency id="AdamsLair.NVorbis" version="0.7.5" />
-      <dependency id="AdamsLair.Duality.Physics" version="3.0.0" />
+      <dependency id="AdamsLair.Duality.Primitives" version="3.0.1" />
+      <dependency id="AdamsLair.NVorbis" version="0.7.6" />
+      <dependency id="AdamsLair.Duality.Physics" version="3.0.1" />
     </dependencies>
     <references>
       <reference file="Duality.dll" />
     </references>
   </metadata>
   <files>
-    <file src="..\Output\Duality.dll" target="lib" />
-    <file src="..\Output\Duality.pdb" target="lib" />
-    <file src="..\Output\Duality.xml" target="lib" />
+    <file src="..\Output\Duality.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\Output\Duality.pdb" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\Output\Duality.xml" target="lib\portable45-net45+win8+wpa81" />
   </files>
 </package>

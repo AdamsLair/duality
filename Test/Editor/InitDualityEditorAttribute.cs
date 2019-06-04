@@ -11,7 +11,7 @@ using Duality.Editor;
 using Duality.Editor.Forms;
 
 using NUnit.Framework;
-
+using NUnit.Framework.Interfaces;
 
 namespace Duality.Editor.Tests
 {
@@ -28,7 +28,7 @@ namespace Duality.Editor.Tests
 		}
 
 		public InitDualityEditorAttribute() {}
-		public void BeforeTest(TestDetails details)
+		public void BeforeTest(ITest details)
 		{
 			Console.WriteLine("----- Beginning Duality Editor environment setup -----");
 
@@ -54,7 +54,7 @@ namespace Duality.Editor.Tests
 
 			Console.WriteLine("----- Duality Editor environment setup complete -----");
 		}
-		public void AfterTest(TestDetails details)
+		public void AfterTest(ITest details)
 		{
 			Console.WriteLine("----- Beginning Duality Editor environment teardown -----");
 			

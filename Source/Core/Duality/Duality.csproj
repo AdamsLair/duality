@@ -41,12 +41,6 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NVorbis, Version=0.7.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AdamsLair.NVorbis.0.7.5\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\NVorbis.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Audio\Enums\AudioDataElementType.cs" />
     <Compile Include="Audio\Enums\AudioDataLayout.cs" />
     <Compile Include="Backend\Audio\AudioSourceState.cs" />
@@ -68,6 +62,7 @@
     <Compile Include="Backend\Dummy\DummyNativeWindow.cs" />
     <Compile Include="Backend\Dummy\DummyNativeTexture.cs" />
     <Compile Include="Backend\Dummy\DummyGraphicsBackend.cs" />
+    <Compile Include="Backend\Graphics\GraphicsBackendCapabilities.cs" />
     <Compile Include="Backend\Graphics\INativeGraphicsBuffer.cs" />
     <Compile Include="Backend\Graphics\INativeRenderTarget.cs" />
     <Compile Include="Backend\Graphics\INativeShaderProgram.cs" />
@@ -403,7 +398,6 @@
     <EmbeddedResource Include="EmbeddedResources\Cousine10.Font.res" />
     <EmbeddedResource Include="EmbeddedResources\Cousine8.Font.res" />
     <EmbeddedResource Include="EmbeddedResources\BuiltinShaderFunctions.glsl" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\Beep.ogg" />
@@ -473,6 +467,14 @@
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
       <Name>DualityPrimitives</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="NVorbis, Version=0.7.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\AdamsLair.NVorbis.0.7.6\lib\portable45-net45+win8+wpa81\NVorbis.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Target Name="AggregateOutput" BeforeTargets="AfterBuild">

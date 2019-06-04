@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.Tilemaps</id>
-    <version>2.0.1</version>
+    <version>2.0.4</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps Sample</title>
@@ -16,14 +16,14 @@
     <releaseNotes>Updated Dependencies
 #CHANGE: Updated AdamsLair.Duality.Plugins.Tilemaps dependency</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="2.0.1" />
-      <dependency id="AdamsLair.Duality.Editor.Plugins.Tilemaps" version="2.0.1" />
-      <dependency id="AdamsLair.Duality" version="3.0.0" />
+      <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="2.0.3" />
+      <dependency id="AdamsLair.Duality.Editor.Plugins.Tilemaps" version="2.0.4" />
+      <dependency id="AdamsLair.Duality" version="3.0.4" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.dll" target="lib" />
-    <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.xml" target="lib" />
+    <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\..\Samples\Tilemaps\Content\Plugins\Tilemaps.Sample.core.xml" target="lib\portable45-net45+win8+wpa81" />
     <file src="..\..\Samples\Tilemaps\Content\Data\**\*.res" target="content" />
     <file src="..\..\Samples\Tilemaps\**\*.cs" target="source" exclude="..\..\Samples\Tilemaps\Content\**\*.*;..\..\Samples\Tilemaps\obj\**\*.*" />
     <file src="..\..\Samples\Tilemaps\Tilemaps.Sample.csproj" target="source" />

@@ -250,7 +250,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			this.AssertUpdateSchedule(testCase.Installed, testCase.Uninstalled);
 		}
 
-		private IEnumerable<PackageOperationTestCase> InstallPackageTestCases()
+		private static IEnumerable<PackageOperationTestCase> InstallPackageTestCases()
 		{
 			// Note that NuGet treats the very first lib subfolder as a target framework specifier,
 			// so we can't naively use a folder structure in the lib package directory. Otherwise,
@@ -338,7 +338,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			return cases;
 		}
-		private IEnumerable<PackageOperationTestCase> InstallPackageWithFrameworkFolderTestCases()
+		private static IEnumerable<PackageOperationTestCase> InstallPackageWithFrameworkFolderTestCases()
 		{
 			List<PackageOperationTestCase> cases = new List<PackageOperationTestCase>();
 
@@ -532,7 +532,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			return cases;
 		}
-		private IEnumerable<PackageOperationTestCase> UninstallPackageTestCases()
+		private static IEnumerable<PackageOperationTestCase> UninstallPackageTestCases()
 		{
 			List<PackageOperationTestCase> cases = new List<PackageOperationTestCase>();
 
@@ -598,7 +598,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			return cases;
 		}
-		private IEnumerable<PackageOperationTestCase> UpdatePackageTestCases()
+		private static IEnumerable<PackageOperationTestCase> UpdatePackageTestCases()
 		{
 			List<PackageOperationTestCase> cases = new List<PackageOperationTestCase>();
 
@@ -640,7 +640,7 @@ namespace Duality.Editor.PackageManagement.Tests
 
 			return cases;
 		}
-		private IEnumerable<PackageRestoreTestCase> PackageRestoreTestCases()
+		private static IEnumerable<PackageRestoreTestCase> PackageRestoreTestCases()
 		{
 			// Create a shared repository for all test cases to save some space and redundancy
 			MockPackageSpec libraryA1 = MockPackageSpec.CreateLibrary("Some.Other.LibraryA", new Version(5, 0, 1, 0));

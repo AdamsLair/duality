@@ -615,9 +615,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 				// Find a suitable default display size for the tileset
 				this.defaultTileSizeFactor = 1.0f;
-				while (defaultTileSizeFactor * this.renderTileSize.X > MaxDisplayedSize)
+				while (this.defaultTileSizeFactor * this.renderTileSize.X > MaxDisplayedSize)
 					this.defaultTileSizeFactor /= 2.0f;
-				while (defaultTileSizeFactor * this.renderTileSize.X < MinDisplayedSize)
+				while (this.defaultTileSizeFactor * this.renderTileSize.X < MinDisplayedSize)
 					this.defaultTileSizeFactor *= 2.0f;
 
 				// Clamp tile size factors to min / max display size range
@@ -842,8 +842,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// and query tile indices using PickTileIndexAt?
 
 			// Determine rendering data for all visible tile items
-			paintTileBuffer.Count = 0;
-			paintTileBuffer.Reserve(lastIndex - firstIndex);
+			this.paintTileBuffer.Count = 0;
+			this.paintTileBuffer.Reserve(lastIndex - firstIndex);
 			{
 				Point basePos = firstItemPos;
 				Point curPos = basePos;
@@ -861,9 +861,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 						Point2 atlasTilePos;
 						Point2 atlasTileSize;
 						tileset.LookupTileSourceRect(this.displayedConfigIndex, i, out atlasTilePos, out atlasTileSize);
-				
-						paintTileBuffer.Count++;
-						paintTileBuffer.Data[paintTileBuffer.Count - 1] = new TilesetViewPaintTileData
+
+						this.paintTileBuffer.Count++;
+						this.paintTileBuffer.Data[this.paintTileBuffer.Count - 1] = new TilesetViewPaintTileData
 						{
 							TileIndex = i,
 							SourceRect = new Rectangle(atlasTilePos.X, atlasTilePos.Y, atlasTileSize.X, atlasTileSize.Y),
@@ -954,8 +954,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Pen indexTextBackPen = new Pen(Color.Black);
 
 			// Draw the previously determined visible tiles accordingly
-			TilesetViewPaintTileData[] rawPaintData = paintTileBuffer.Data;
-			int paintedTileCount = paintTileBuffer.Count;
+			TilesetViewPaintTileData[] rawPaintData = this.paintTileBuffer.Data;
+			int paintedTileCount = this.paintTileBuffer.Count;
 			for (int i = 0; i < rawPaintData.Length; i++)
 			{
 				if (i >= paintedTileCount) break;
@@ -1002,7 +1002,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					e.ClipRectangle,
 					tileset,
 					this.tileBitmap,
-					paintTileBuffer));
+					this.paintTileBuffer));
 		}
 		protected override void OnPaint(PaintEventArgs e)
 		{

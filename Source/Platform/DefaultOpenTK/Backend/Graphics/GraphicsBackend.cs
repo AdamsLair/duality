@@ -25,6 +25,8 @@ namespace Duality.Backend.DefaultOpenTK
 			get { return activeInstance; }
 		}
 
+
+		private OpenTKGraphicsCapabilities   capabilities            = new OpenTKGraphicsCapabilities();
 		private IDrawDevice                  currentDevice           = null;
 		private RenderOptions                renderOptions           = null;
 		private RenderStats                  renderStats             = null;
@@ -43,6 +45,10 @@ namespace Duality.Backend.DefaultOpenTK
 		private ShaderParameterCollection    internalShaderState     = new ShaderParameterCollection();
 		
 
+		public GraphicsBackendCapabilities Capabilities
+		{
+			get { return this.capabilities; }
+		}
 		public GraphicsMode DefaultGraphicsMode
 		{
 			get { return this.defaultGraphicsMode; }
@@ -128,7 +134,7 @@ namespace Duality.Backend.DefaultOpenTK
 		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats)
 		{
 			DebugCheckOpenGLErrors();
-			this.CheckContextCaps();
+			this.CheckRenderingCapabilities();
 
 			this.currentDevice = device;
 			this.renderOptions = options;
@@ -365,16 +371,44 @@ namespace Duality.Backend.DefaultOpenTK
 			NativeRenderTarget.Bind(lastRt);
 		}
 
+		public void QueryOpenGLCapabilities()
+		{
+			// Retrieve and log GL version as well as detected capabilities and limits
+			this.capabilities.RetrieveFromAPI();
+			this.capabilities.WriteToLog(Logs.Core);
+
+			// Log a warning if the detected GL version is below our supported minspec
+			Version glVersion = this.capabilities.GLVersion;
+			if (glVersion < MinOpenGLVersion)
+			{
+				Logs.Core.WriteWarning(
+					"The detected OpenGL version {0} appears to be lower than the required minimum. Version {1} or higher is required to run Duality applications.",
+					glVersion,
+					MinOpenGLVersion);
+			}
+		}
 		private void QueryGraphicsModes()
 		{
+			// Gather available graphics modes
+			Logs.Core.Write("Available graphics modes:");
+			Logs.Core.PushIndent();
 			int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
 			this.availGraphicsModes = new HashSet<GraphicsMode>(new GraphicsModeComparer());
 			foreach (int samplecount in aaLevels)
 			{
 				GraphicsMode mode = new GraphicsMode(32, 24, 0, samplecount, new OpenTK.Graphics.ColorFormat(0), 2, false);
-				if (!this.availGraphicsModes.Contains(mode)) this.availGraphicsModes.Add(mode);
+				if (!this.availGraphicsModes.Contains(mode))
+				{
+					this.availGraphicsModes.Add(mode);
+					Logs.Core.Write("{0}", mode);
+				}
 			}
-			int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(this.availGraphicsModes.Max(m => m.Samples), 1.0f), 2.0f));
+			Logs.Core.PopIndent();
+
+			// Select the default graphics mode we'll prefer for game window and other rendering surfaces
+			List<GraphicsMode> sortedModes = this.availGraphicsModes.ToList();
+			sortedModes.StableSort((a, b) => a.Samples - b.Samples);
+			int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(sortedModes.Max(m => m.Samples), 1.0f), 2.0f));
 			int targetAALevel = highestAALevel;
 			if (DualityApp.AppData.MultisampleBackBuffer)
 			{
@@ -391,14 +425,17 @@ namespace Duality.Backend.DefaultOpenTK
 				targetAALevel = 0;
 			}
 			int targetSampleCount = MathF.RoundToInt(MathF.Pow(2.0f, targetAALevel));
-			this.defaultGraphicsMode = this.availGraphicsModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? this.availGraphicsModes.Last();
+			this.defaultGraphicsMode = sortedModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? sortedModes.Last();
+
+			Logs.Core.Write("Duality default graphics mode: {0}", this.defaultGraphicsMode);
+			Logs.Core.Write("OpenTK default graphics mode: {0}", GraphicsMode.Default);
 		}
-		private void CheckContextCaps()
+		private void CheckRenderingCapabilities()
 		{
 			if (this.contextCapsRetrieved) return;
 			this.contextCapsRetrieved = true;
 
-			Logs.Core.Write("Determining OpenGL context capabilities...");
+			Logs.Core.Write("Determining OpenGL rendering capabilities...");
 			Logs.Core.PushIndent();
 
 			// Make sure we're not on a render target, which may override
@@ -835,7 +872,7 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			Logs.Core.Write("Available display devices:");
 			Logs.Core.PushIndent();
-			foreach (DisplayIndex index in new[] { DisplayIndex.First, DisplayIndex.Second, DisplayIndex.Third, DisplayIndex.Fourth, DisplayIndex.Sixth } )
+			foreach (DisplayIndex index in new[] { DisplayIndex.First, DisplayIndex.Second, DisplayIndex.Third, DisplayIndex.Fourth, DisplayIndex.Fifth, DisplayIndex.Sixth } )
 			{
 				DisplayDevice display = DisplayDevice.GetDisplay(index);
 				if (display == null) continue;
@@ -871,53 +908,6 @@ namespace Duality.Backend.DefaultOpenTK
 				context.GraphicsMode.Depth,
 				context.GraphicsMode.Stencil,
 				context.SwapInterval);
-		}
-		public static void LogOpenGLSpecs()
-		{
-			// Accessing OpenGL functionality requires context. Don't get confused by AccessViolationExceptions, fail better instead.
-			GraphicsContext.Assert();
-
-			string versionString = null;
-			try
-			{
-				CheckOpenGLErrors();
-				versionString = GL.GetString(StringName.Version);
-				Logs.Core.Write(
-					"OpenGL Version: {0}" + Environment.NewLine +
-					"Vendor: {1}" + Environment.NewLine +
-					"Renderer: {2}" + Environment.NewLine +
-					"Shader Version: {3}",
-					versionString,
-					GL.GetString(StringName.Vendor),
-					GL.GetString(StringName.Renderer),
-					GL.GetString(StringName.ShadingLanguageVersion));
-				CheckOpenGLErrors();
-			}
-			catch (Exception e)
-			{
-				Logs.Core.WriteWarning("Can't determine OpenGL specs, because an error occurred: {0}", LogFormat.Exception(e));
-			}
-
-			// Parse the OpenGL version string in order to determine if it's sufficient
-			if (versionString != null)
-			{
-				string[] token = versionString.Split(' ');
-				for (int i = 0; i < token.Length; i++)
-				{
-					Version version;
-					if (Version.TryParse(token[i], out version))
-					{
-						if (version.Major < MinOpenGLVersion.Major || (version.Major == MinOpenGLVersion.Major && version.Minor < MinOpenGLVersion.Minor))
-						{
-							Logs.Core.WriteWarning(
-								"The detected OpenGL version {0} appears to be lower than the required minimum. Version {1} or higher is required to run Duality applications.",
-								version,
-								MinOpenGLVersion);
-						}
-						break;
-					}
-				}
-			}
 		}
 		/// <summary>
 		/// Checks for errors that might have occurred during video processing. You should avoid calling this method due to performance reasons.

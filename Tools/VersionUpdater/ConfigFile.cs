@@ -13,7 +13,7 @@ namespace VersionUpdater
 		public string NuSpecRootDir { get; set; }
 		public string SolutionPath { get; set; }
 		public string InstallerPackageConfigPath { get; set; }
-		public bool ApplyGlobalMajorUpdate { get; set; }
+		public string ApplyGlobalUpdate { get; set; }
 
 		public void Save(string filePath)
 		{

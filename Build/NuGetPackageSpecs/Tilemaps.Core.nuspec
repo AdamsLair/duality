@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Tilemaps</id>
-    <version>2.0.1</version>
+    <version>2.0.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Core)</title>
@@ -13,15 +13,15 @@
     <summary>Defines core Resources and Components for using tilemaps with Duality.</summary>
     <description>Defines core Resources and Components for using tilemaps with Duality.</description>
     <tags>Duality Core Plugin Tilemaps</tags>
-    <releaseNotes>TilemapRenderer Vertex Overflow Bugfix
-#FIX: Fixed TilemapRenderer exceeding per-batch indexable vertex limit for large Tilemaps.</releaseNotes>
+    <releaseNotes>TilemapCollider Bugfix
+#FIX: Fixed TilemapCollider skipping the last edge when a fence collision tile turns out to be the last in line of its non-loop shape.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.0.0" />
+      <dependency id="AdamsLair.Duality" version="3.0.4" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Output\Plugins\Tilemaps.core.dll" target="lib" />
-    <file src="..\Output\Plugins\Tilemaps.core.pdb" target="lib" />
-    <file src="..\Output\Plugins\Tilemaps.core.xml" target="lib" />
+    <file src="..\Output\Plugins\Tilemaps.core.dll" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\Output\Plugins\Tilemaps.core.pdb" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\Output\Plugins\Tilemaps.core.xml" target="lib\portable45-net45+win8+wpa81" />
   </files>
 </package>

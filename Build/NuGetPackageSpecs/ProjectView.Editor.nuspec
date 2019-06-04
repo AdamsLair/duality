@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.ProjectView</id>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Project View</title>
@@ -13,15 +13,15 @@
     <summary>Provides an overview of project Resources and allows importing new Assets.</summary>
     <description>Provides an overview of project Resources and allows importing new Assets.</description>
     <tags>Duality Editor Plugin ProjectView</tags>
-    <releaseNotes>Added ability to Import via dialog in Project View (#702)
-#ADD: Added ability to import via context menu and tool button in Project View.</releaseNotes>
+    <releaseNotes>Patch Version Update
+</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.0.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="3.0.1" />
+      <dependency id="AdamsLair.Duality" version="3.0.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="3.1.2" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Output\Plugins\ProjectView.editor.dll" target="lib" />
-    <file src="..\Output\Plugins\ProjectView.editor.pdb" target="lib" />
+    <file src="..\Output\Plugins\ProjectView.editor.dll" target="lib\net45" />
+    <file src="..\Output\Plugins\ProjectView.editor.pdb" target="lib\net45" />
   </files>
 </package>

@@ -38,8 +38,8 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AdamsLair.OpenTK.1.2.1\lib\net20\OpenTK.dll</HintPath>
+    <Reference Include="OpenTK, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\AdamsLair.OpenTK.1.2.2\lib\net20\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -49,6 +49,7 @@
     <Compile Include="Backend\Audio\AudioBackend.cs" />
     <Compile Include="Backend\Audio\AudioLibraryLoader.cs" />
     <Compile Include="Backend\Graphics\ExtMethodsColorDataElementType.cs" />
+    <Compile Include="Backend\Graphics\OpenTKGraphicsCapabilities.cs" />
     <Compile Include="Backend\Graphics\NativeGraphicsBuffer.cs" />
     <Compile Include="Backend\Input\GameWindowKeyboardInputSource.cs" />
     <Compile Include="Backend\Input\GameWindowMouseInputSource.cs" />
