@@ -539,7 +539,7 @@ namespace Duality.Serialization
 					// Can't overwrite const values. This can happen when a field was replaced with a const of
 					// the same name. (We still allow overwriting readonly fields though, as serialization is
 					// a special case that may require it in some cases.)
-					if (field.IsLiteral) field = null;
+					if (field != null && field.IsLiteral) field = null;
 				}
 			}
 
