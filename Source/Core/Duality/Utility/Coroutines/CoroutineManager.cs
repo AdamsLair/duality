@@ -28,8 +28,6 @@ namespace Duality
 			Coroutine coroutine = pool.GetOne();
 			coroutine.Setup(enumerator, name);
 
-			coroutine.Setup(enumerator, name);
-
 			this.scheduled.Add(coroutine);
 			return coroutine;
 		}
@@ -41,9 +39,6 @@ namespace Duality
 
 		public void Clear()
 		{
-			foreach (Coroutine c in this.coroutines)
-				c.Cancel();
-
 			foreach (Coroutine c in this.coroutines)
 				c.Cancel();
 
@@ -64,7 +59,7 @@ namespace Duality
 
 				if (c.Status == CoroutineStatus.Error)
 					this.lastFrameErrors.Add(c, c.LastException);
-				if(c.Status != CoroutineStatus.Running && c.Status != CoroutineStatus.Paused)
+				if (c.Status != CoroutineStatus.Running && c.Status != CoroutineStatus.Paused)
 					this.trashcan.Add(c);
 			}
 
