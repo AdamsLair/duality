@@ -8,7 +8,7 @@ namespace Duality.Utility.Pooling
 {
 	internal class QueuedPool<T> where T : class, new()
 	{
-		private Queue<T> pool = new Queue<T>();
+		private readonly Queue<T> pool = new Queue<T>();
 
 		public T GetOne()
 		{

@@ -295,7 +295,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET] Returns the <see cref="Coroutine"/> manager for this <see cref="Scene"/>.
 		/// </summary>
-		public CoroutineManager Coroutines
+		public CoroutineManager CoroutineManager
 		{
 			get { return this.coroutineManager; }
 		}

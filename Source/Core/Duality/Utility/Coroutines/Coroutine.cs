@@ -10,23 +10,25 @@ namespace Duality
 		/// <summary>
 		/// Starts a coroutine and registers it in the scene's CoroutineManager
 		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="method"></param>
-		/// <returns></returns>
+		/// <param name="scene">The scene that will execute the coroutine</param>
+		/// <param name="method">The coroutine implementation</param>
+		/// <param name="name">The name of the coroutine, optional</param>
+		/// <returns>The created corutine</returns>
 		public static Coroutine Start(Scene scene, IEnumerable<IWaitCondition> method, string name = null)
 		{
-			return scene.Coroutines.StartNew(method.GetEnumerator(), name);
+			return Start(scene, method.GetEnumerator(), name);
 		}
 
 		/// <summary>
 		/// Starts a coroutine and registers it in the scene's CoroutineManager
 		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="method"></param>
-		/// <returns></returns>
+		/// <param name="scene">The scene that will execute the coroutine</param>
+		/// <param name="method">The coroutine implementation</param>
+		/// <param name="name">The name of the coroutine, optional</param>
+		/// <returns>The created corutine</returns>
 		public static Coroutine Start(Scene scene, IEnumerator<IWaitCondition> enumerator, string name = null)
 		{
-			return scene.Coroutines.StartNew(enumerator, name);
+			return scene.CoroutineManager.StartNew(enumerator, name);
 		}
 
 		private IEnumerator<IWaitCondition> enumerator = null;
@@ -40,9 +42,17 @@ namespace Duality
 
 		public string Name { get; private set; }
 
+		public object Tag { get; private set; }
+
+		public bool IsAlive
+		{
+			get { return this.Status == CoroutineStatus.Paused || this.Status == CoroutineStatus.Running; }
+		}
+
 		internal void Setup(IEnumerator<IWaitCondition> values, string name)
 		{
 			this.Status = CoroutineStatus.Running;
+
 			this.LastException = null;
 			this.Name = name;
 

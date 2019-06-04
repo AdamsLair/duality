@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Duality.Utility.Pooling;
 
 namespace Duality
@@ -7,18 +8,35 @@ namespace Duality
 	public class CoroutineManager
 	{
 		private static QueuedPool<Coroutine> pool = new QueuedPool<Coroutine>();
-		private List<Coroutine> coroutines = new List<Coroutine>();
-		private List<Coroutine> scheduled = new List<Coroutine>();
-		private List<Coroutine> trashcan = new List<Coroutine>();
-		private Dictionary<Coroutine, Exception> lastFrameErrors = new Dictionary<Coroutine, Exception>();
+		private readonly List<Coroutine> coroutines = new List<Coroutine>();
+		private readonly List<Coroutine> scheduled = new List<Coroutine>();
+		private readonly List<Coroutine> trashcan = new List<Coroutine>();
+		private readonly Dictionary<Coroutine, Exception> lastFrameErrors = new Dictionary<Coroutine, Exception>();
+
+		public IEnumerable<Coroutine> Coroutines
+		{
+			get { return this.coroutines.Concat(this.scheduled); }
+		}
+
+		public IEnumerable<KeyValuePair<Coroutine, Exception>> LastFrameErrors
+		{
+			get { return this.lastFrameErrors; }
+		}
 
 		public Coroutine StartNew(IEnumerator<IWaitCondition> enumerator, string name)
 		{
 			Coroutine coroutine = pool.GetOne();
 			coroutine.Setup(enumerator, name);
 
+			coroutine.Setup(enumerator, name);
+
 			this.scheduled.Add(coroutine);
 			return coroutine;
+		}
+
+		public bool IsCoroutineListed(Coroutine c)
+		{
+			return this.Coroutines.Contains(c);
 		}
 
 		public void Clear()

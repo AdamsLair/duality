@@ -27,8 +27,8 @@ namespace Duality
 
 	public class WaitCondition<T> : IWaitCondition
 	{
-		private Func<T, T> update;
-		private Func<T, bool> condition;
+		private readonly Func<T, T> update;
+		private readonly Func<T, bool> condition;
 		private T parameter;
 
 		public WaitCondition(Func<T, T> update, Func<T, bool> condition, T startingValue)
