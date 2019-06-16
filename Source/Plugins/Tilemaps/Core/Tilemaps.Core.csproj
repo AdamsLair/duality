@@ -48,6 +48,7 @@
     <Compile Include="Tilemaps\TilemapFloodFill.cs" />
     <Compile Include="Tilesets\TileCollisionShapes.cs" />
     <Compile Include="Tilesets\TileCollisionShape.cs" />
+    <Compile Include="Tilesets\TileQuadrant.cs" />
     <Compile Include="Tilesets\TilesetAutoTileItem.cs" />
     <Compile Include="Tilesets\TileConnection.cs" />
     <Compile Include="Tilesets\TileInfo.cs" />

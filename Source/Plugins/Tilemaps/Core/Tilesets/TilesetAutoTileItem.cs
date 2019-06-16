@@ -30,5 +30,14 @@ namespace Duality.Plugins.Tilemaps
 			MathF.CombineHashCode(ref hash, (int)this.Neighbours);
 			return hash;
 		}
+		public override string ToString()
+		{
+			if (this.IsAutoTile)
+				return string.Format("AutoTile: {0}", this.Neighbours);
+			else if (this.ConnectsToAutoTile)
+				return "Connected";
+			else
+				return "Unrelated";
+		}
 	}
 }
