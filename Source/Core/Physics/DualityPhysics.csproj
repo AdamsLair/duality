@@ -26,7 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>DualityPhysics.xml</DocumentationFile>
     <NoWarn>1574,1591</NoWarn>
-    <LangVersion>4</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,7 +37,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\DualityPhysics.xml</DocumentationFile>
     <NoWarn>1574,1591</NoWarn>
-    <LangVersion>4</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Collision\Collision.cs" />
