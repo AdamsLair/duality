@@ -522,7 +522,7 @@ namespace Duality.Drawing
 						}
 						else if (blend == BlendMode.Mask)
 						{
-							if (this.data[sourceN].A >= 0) target.data[targetN] = this.data[sourceN];
+							if (this.data[sourceN].A > 0) target.data[targetN] = this.data[sourceN];
 						}
 						else if (blend == BlendMode.Add)
 						{
@@ -643,7 +643,7 @@ namespace Duality.Drawing
 						}
 						else if (blend == BlendMode.Mask)
 						{
-							if (clrSource.A >= 0) target.data[targetN] = this.data[sourceN];
+							if (clrSource.A > 0) target.data[targetN] = this.data[sourceN];
 						}
 						else if (blend == BlendMode.Add)
 						{
