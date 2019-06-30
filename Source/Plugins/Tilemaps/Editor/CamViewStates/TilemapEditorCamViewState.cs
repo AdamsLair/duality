@@ -1310,7 +1310,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					Point2 next = edgeMap.GetClockwiseNextFrom(current);
 					if (next.X == -1 || next.Y == -1) break;
 
-					outlineBuilder.Add(next * tileSize);
+					outlineBuilder.Add(next * tileSize - new Vector2(0.5f, 0.5f));
 					edgeMap.RemoveEdge(current, next);
 					current = next;
 				}
