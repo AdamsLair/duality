@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,9 +13,8 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>GameObject Consistency Bugfixes, Serializer Bugfixes
-#FIX: Fixed a bug where certain serializer errors while loading a Scene or Prefab could corrupt the state of a GameObject and prevent from adding removed Component types again.
-#FIX: Fixed a bug where changing the definition of an already serialized field to be a const value would cause a serializer exception.</releaseNotes>
+    <releaseNotes>Fixed BlendMode.Mask in PixelData (#727)
+#CHANGE: Fixed BlendMode.Mask in PixelData.DrawOnto method group not evaluating alpha properly.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="3.0.1" />
       <dependency id="AdamsLair.NVorbis" version="0.7.6" />
