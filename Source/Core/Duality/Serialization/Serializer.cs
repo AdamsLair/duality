@@ -535,6 +535,11 @@ namespace Duality.Serialization
 					// in case it fails. If there's a custom error handler to pick it up later, fine - if not,
 					// the field simply has been removed and is no longer relevant.
 					field = ReflectionHelper.ResolveMember("F:" + objSerializeType.TypeString + ":" + fieldName) as FieldInfo;
+
+					// Can't overwrite const values. This can happen when a field was replaced with a const of
+					// the same name. (We still allow overwriting readonly fields though, as serialization is
+					// a special case that may require it in some cases.)
+					if (field != null && field.IsLiteral) field = null;
 				}
 			}
 

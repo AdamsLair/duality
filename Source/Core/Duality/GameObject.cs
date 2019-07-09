@@ -1025,7 +1025,8 @@ namespace Duality
 			{
 				foreach (Type key in this.compMap.Keys.ToArray())
 				{
-					if (this.compMap[key] == null || this.compMap[key].Disposed)
+					if (this.compMap[key] == null || this.compMap[key].Disposed || 
+						(anyComponentRemoved && !this.compList.Contains(this.compMap[key])))
 					{
 						this.compMap.Remove(key);
 						anyComponentRemoved = true;
