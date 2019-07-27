@@ -15,10 +15,17 @@ namespace Duality.Editor
 			foreach (ZipArchiveEntry entry in archive.Entries)
 			{
 				string targetFilePath = Path.GetFullPath(Path.Combine(targetDir, entry.FullName));
+				string targetFileDir = Path.GetDirectoryName(targetFilePath);
+
+				// Ensure the items target directory exists
+				Directory.CreateDirectory(targetFileDir);
+
+				// If the item is a directory itself, just create a directory
 				if (string.IsNullOrEmpty(Path.GetFileName(targetFilePath)))
 				{
 					Directory.CreateDirectory(targetFilePath);
 				}
+				// Otherwise, extract it as a file
 				else
 				{
 					entry.Extract(targetFilePath, overwrite);
