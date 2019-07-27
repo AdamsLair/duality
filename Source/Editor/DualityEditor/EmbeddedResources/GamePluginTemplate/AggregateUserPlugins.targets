@@ -1,0 +1,11 @@
+<Project>
+  <!-- Copy all plugin binaries to the plugin folder -->
+  <PropertyGroup>
+    <TargetPluginDir>$(SolutionDir)..\..\Plugins\</TargetPluginDir>
+  </PropertyGroup>
+  <Target Name="AggregateUserPlugins" BeforeTargets="AfterBuild">
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(TargetPluginDir)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(TargetPluginDir)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(TargetPluginDir)" />
+  </Target>
+</Project>
