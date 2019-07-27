@@ -477,4 +477,7 @@
     <Copy SourceFiles="$(OutputPath)Windows7.DesktopIntegration.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)Windows7.DesktopIntegration.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
   </Target>
+  <Target Name="ZipEmbeddedGamePluginTemplate" BeforeTargets="BeforeBuild">
+    <ZipDirectory SourceDirectory="EmbeddedResources\GamePluginTemplate" DestinationFile="EmbeddedResources\GamePluginTemplate.zip" Overwrite="true" />
+  </Target>
 </Project>
