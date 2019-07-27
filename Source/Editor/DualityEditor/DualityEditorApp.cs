@@ -774,33 +774,32 @@ namespace Duality.Editor
 				sourceCodeSolutionFile = EditorHelper.DefaultSourceCodeSolutionFile;
 			}
 
-			// Replace exec path in user files, since VS doesn't support relative paths there..
+			// Replace exec path in project files to account for custom launcher settings
 			{
 				XDocument projectDoc;
-				string coreProjectFile = EditorHelper.SourceCodeProjectCorePluginFile;
-				string editorProjectFile = EditorHelper.SourceCodeProjectEditorPluginFile;
 				string solutionDir = Path.GetFullPath(Path.GetDirectoryName(sourceCodeSolutionFile));
 
-				// Adjust the core plugin startup parameters, if a core plugin exists under the expected name
-				if (File.Exists(coreProjectFile))
+				string startProgram = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
+				string startProgramRelative = PathHelper.MakeFilePathRelative(startProgram, solutionDir);
+				if (startProgramRelative != null)
+					startProgramRelative = "$(SolutionDir)" + startProgramRelative;
+				else
+					startProgramRelative = startProgram;
+
+				string startWorkingDir = Path.GetFullPath(".");
+				string startWorkingDirRelative = PathHelper.MakeDirectoryPathRelative(startWorkingDir, solutionDir);
+				if (startWorkingDirRelative != null)
+					startWorkingDirRelative = "$(SolutionDir)" + startWorkingDirRelative;
+				else
+					startWorkingDirRelative = startWorkingDir;
+
+				// Adjust the game debugger startup parameters
+				string gameDebuggerProjectFile = EditorHelper.SourceCodeProjectGameDebuggerFile;
+				if (File.Exists(gameDebuggerProjectFile))
 				{
 					bool anythingChanged = false;
 
-					string startProgram = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
-					string startProgramRelative = PathHelper.MakeFilePathRelative(startProgram, solutionDir);
-					if (startProgramRelative != null)
-						startProgramRelative = "$(SolutionDir)" + startProgramRelative;
-					else
-						startProgramRelative = startProgram;
-
-					string startWorkingDir = Path.GetFullPath(".");
-					string startWorkingDirRelative = PathHelper.MakeDirectoryPathRelative(startWorkingDir, solutionDir);
-					if (startWorkingDirRelative != null)
-						startWorkingDirRelative = "$(SolutionDir)" + startWorkingDirRelative;
-					else
-						startWorkingDirRelative = startWorkingDir;
-
-					projectDoc = XDocument.Load(coreProjectFile);
+					projectDoc = XDocument.Load(gameDebuggerProjectFile);
 					foreach (XElement element in projectDoc.Descendants("StartProgram", true))
 					{
 						if (!string.Equals(element.Value, startProgramRelative))
@@ -819,30 +818,18 @@ namespace Duality.Editor
 					}
 					if (anythingChanged)
 					{
-						projectDoc.Save(coreProjectFile);
+						projectDoc.Save(gameDebuggerProjectFile);
 					}
 				}
-				
-				// Adjust the editor plugin startup parameters, if an editor plugin exists under the expected name
-				if (File.Exists(editorProjectFile))
+
+				// Legacy support 2019-07-27: 
+				// Adjust the core plugin startup parameters
+				string corePluginProjectFile = EditorHelper.SourceCodeProjectCorePluginFile;
+				if (File.Exists(corePluginProjectFile))
 				{
 					bool anythingChanged = false;
 
-					string startProgram = Path.GetFullPath("DualityEditor.exe");
-					string startProgramRelative = PathHelper.MakeFilePathRelative(startProgram, solutionDir);
-					if (startProgramRelative != null)
-						startProgramRelative = "$(SolutionDir)" + startProgramRelative;
-					else
-						startProgramRelative = startProgram;
-
-					string startWorkingDir = Path.GetFullPath(".");
-					string startWorkingDirRelative = PathHelper.MakeDirectoryPathRelative(startWorkingDir, solutionDir);
-					if (startWorkingDirRelative != null)
-						startWorkingDirRelative = "$(SolutionDir)" + startWorkingDirRelative;
-					else
-						startWorkingDirRelative = startWorkingDir;
-
-					projectDoc = XDocument.Load(editorProjectFile);
+					projectDoc = XDocument.Load(corePluginProjectFile);
 					foreach (XElement element in projectDoc.Descendants("StartProgram", true))
 					{
 						if (!string.Equals(element.Value, startProgramRelative))
@@ -861,7 +848,7 @@ namespace Duality.Editor
 					}
 					if (anythingChanged)
 					{
-						projectDoc.Save(editorProjectFile);
+						projectDoc.Save(corePluginProjectFile);
 					}
 				}
 			}
