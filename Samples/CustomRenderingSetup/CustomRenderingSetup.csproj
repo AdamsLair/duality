@@ -35,7 +35,7 @@
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>CustomRenderingSetup.core.xml</DocumentationFile>
-    <LangVersion>4</LangVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -47,7 +47,7 @@
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>CustomRenderingSetup.core.xml</DocumentationFile>
-    <LangVersion>4</LangVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CustomBloomRenderSetup.cs" />
