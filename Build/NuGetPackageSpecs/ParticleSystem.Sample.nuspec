@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.ParticleSystem</id>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Custom ParticleSystem Sample</title>
@@ -13,11 +13,11 @@
     <summary>Implements and showcases a custom Particle System in Duality.</summary>
     <description>This package implements a custom Particle System in Duality and showcases its functionality in a sample Scene.</description>
     <tags>Duality Sample Plugin Particles Rendering</tags>
-    <releaseNotes>Patch Version Update
+    <releaseNotes>
 </releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.0.3" />
-      <dependency id="AdamsLair.Duality.Editor" version="3.1.2" />
+      <dependency id="AdamsLair.Duality" version="3.1.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="3.1.4" />
     </dependencies>
   </metadata>
   <files>
