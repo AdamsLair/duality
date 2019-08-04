@@ -38,12 +38,6 @@
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AdamsLair.OpenTK.1.2.2\lib\net20\OpenTK.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTK.GLControl, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AdamsLair.OpenTK.GLControl.1.2.2\lib\net20\OpenTK.GLControl.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -79,13 +73,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="AdamsLair.OpenTK">
+      <Version>1.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="AdamsLair.OpenTK.GLControl" GeneratePathProperty="true">
+      <Version>1.2.2</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
-    <Copy SourceFiles="$(OutputPath)OpenTK.GLControl.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)OpenTK.GLControl.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.dll" DestinationFolder="$(SolutionDir)Build\Output\"/>
+	  <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.xml" DestinationFolder="$(SolutionDir)Build\Output\"/>
   </Target>
 </Project>
