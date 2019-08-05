@@ -103,9 +103,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				}
 				if (result == 0 || this.sortMode == SortMode.Downloads)
 				{
-					int itemANum = itemA.Downloads.HasValue ? itemA.Downloads.Value : 0;
-					int itemBNum = itemB.Downloads.HasValue ? itemB.Downloads.Value : 0;
-					result = itemANum - itemBNum;
+					long itemANum = itemA.Downloads.HasValue ? itemA.Downloads.Value : 0;
+					long itemBNum = itemB.Downloads.HasValue ? itemB.Downloads.Value : 0;
+					result = (int) (itemANum - itemBNum);
 				}
 				if (result == 0 || this.sortMode == SortMode.Name)
 				{
@@ -465,7 +465,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			// Retrieve the package manager and clear its remote package cache, so we'll
 			// get fresh data every time we re-open the package view dialog.
 			this.packageManager = DualityEditorApp.PackageManager;
-			this.packageManager.ClearCache();
 			this.nodeTextBoxVersion.PackageManager = this.packageManager;
 
 			this.modelOnline = new OnlinePackagesTreeModel(this.packageManager);

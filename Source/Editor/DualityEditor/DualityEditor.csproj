@@ -25,6 +25,7 @@
     <SignAssembly>false</SignAssembly>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -33,7 +34,6 @@
     <DebugType>full</DebugType>
     <DefineConstants>DEBUG</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
@@ -43,7 +43,6 @@
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build" />
@@ -163,7 +162,6 @@
     <Compile Include="HelpSystem\IHelpProvider.cs" />
     <Compile Include="PackageManagement\Internal\NuGetTargetedPackageManager.cs" />
     <Compile Include="PackageManagement\PackageDependencyWalker.cs" />
-    <Compile Include="PackageManagement\PackageCache.cs" />
     <Compile Include="PackageManagement\PackageManagerLogger.cs" />
     <Compile Include="PackageManagement\PackageManagerEnvironment.cs" />
     <Compile Include="PackageManagement\PackageUpdateSchedule.cs" />
@@ -457,8 +455,8 @@
     <PackageReference Include="Microsoft.Web.Xdt">
       <Version>2.1.1</Version>
     </PackageReference>
-    <PackageReference Include="NuGet.Core">
-      <Version>2.14.0</Version>
+    <PackageReference Include="NuGet.Resolver">
+      <Version>5.2.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -470,7 +468,13 @@
     <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.dll" DestinationFolder="$(SolutionDir)Build\Output\"/>
     <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.xml" DestinationFolder="$(SolutionDir)Build\Output\"/>
     <Copy SourceFiles="$(OutputPath)Aga.Controls.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)NuGet.Core.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)NuGet.Common.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)NuGet.Configuration.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)NuGet.Frameworks.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)NuGet.Packaging.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)NuGet.Protocol.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)NuGet.Resolver.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)NuGet.Versioning.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)PopupControl.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)WeifenLuo.WinFormsUI.Docking.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)VistaBridgeLibrary.dll" DestinationFolder="$(SolutionDir)Build\Output\" />

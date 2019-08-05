@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NuGet.Packaging.Core;
 
 namespace Duality.Editor.PackageManagement
 {
@@ -58,6 +59,11 @@ namespace Duality.Editor.PackageManagement
 		{
 			this.name = package;
 			this.info = null;
+		}
+
+		internal LocalPackage(PackageIdentity identity)
+		{
+			this.name = new PackageName(identity.Id, identity.Version.Version);
 		}
 
 		public override string ToString()

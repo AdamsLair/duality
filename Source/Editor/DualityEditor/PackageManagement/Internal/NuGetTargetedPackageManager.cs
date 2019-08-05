@@ -1,228 +1,456 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Runtime.Versioning;
-
-using NuGet;
-using NuGet.Resources;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using NuGet.Common;
+using NuGet.Configuration;
+using NuGet.Frameworks;
+using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.Packaging.Signing;
+using NuGet.Protocol;
+using NuGet.Protocol.Core.Types;
+using NuGet.Resolver;
+using NuGet.Versioning;
 
 namespace Duality.Editor.PackageManagement.Internal
 {
-	/// <summary>
-	/// A custom version of the NuGet <see cref="NuGet.PackageManager"/> based on a cleaned up decompile.
-	/// This was necessary in order to add support for framework-dependent dependencies via target framework
-	/// parameter in its internal package dependency walkers.
-	/// </summary>
-	public class NuGetTargetedPackageManager
+	public interface INuGetTargetedPackageManager
 	{
-		private ILogger logger;
-		private readonly FrameworkName targetFrameWork;
+		event EventHandler<PackageInstallingOperation> PackageInstalling;
+		event EventHandler<PackageInstalledOperation> PackageInstalled;
+		event EventHandler<PackageOperationEventArgs> PackageUninstalling;
+		event EventHandler<PackageOperationEventArgs> PackageUninstalled;
+		void InstallPackage(PackageIdentity package);
+		void UninstallPackage(PackageIdentity package, bool forceRemove, bool removeDependencies = false);
+		void UpdatePackage(string id, bool allowPrereleaseVersions);
+		IEnumerable<IPackageSearchMetadata> Search(string searchTerm, bool includePrereleases = false);
+		IPackageSearchMetadata GetMetadata(PackageIdentity packageIdentity);
+		ISet<PackageIdentity> GetInstalledPackages();
 
+		CanUninstallResult CanUninstallPackage(PackageIdentity packageIdentity);
+	}
 
-		public event EventHandler<PackageOperationEventArgs> PackageInstalling;
-		public event EventHandler<PackageOperationEventArgs> PackageInstalled;
+	public class PackageInstalledOperation : EventArgs
+	{
+		public PackageIdentity Package { get; }
+		public DownloadResourceResult Result { get; }
+
+		public PackageInstalledOperation(PackageIdentity package, DownloadResourceResult result)
+		{
+			this.Package = package;
+			this.Result = result;
+		}
+	}
+
+	public class PackageInstallingOperation : EventArgs
+	{
+		public PackageIdentity Package { get; }
+		public bool Cancel { get; set; }
+
+		public PackageInstallingOperation(PackageIdentity package)
+		{
+			this.Package = package;
+		}
+	}
+
+	public class PackageOperationEventArgs : EventArgs
+	{
+        public PackageIdentity Package { get; }
+		public PackageReaderBase Reader { get; }
+
+        public PackageOperationEventArgs(PackageIdentity package, PackageReaderBase reader)
+        {
+			this.Package = package;
+			this.Reader = reader;
+        }
+	}
+
+	public class NuGetTargetedPackageManager : INuGetTargetedPackageManager
+	{
+		private readonly ILogger _logger;
+		private readonly ISettings _settings;
+		private readonly NuGetFramework _nuGetFramework;
+
+		private readonly PackagePathResolver _packagePathResolver;
+		private readonly string _globalPackagesFolder;
+
+		//private readonly string _packageConfigPath;
+		private readonly PackageConfig _packageConfig;
+
+		private readonly SourceRepository[] _repositories;
+
+		public NuGetTargetedPackageManager(NuGetFramework nuGetFramework, ILogger logger, ISettings settings, string packagePath)
+		{
+			this._logger = logger;
+			this._settings = settings;
+			this._nuGetFramework = nuGetFramework;
+			this._packagePathResolver = new PackagePathResolver(packagePath);
+			var sourceRepositoryProvider = new SourceRepositoryProvider(this._settings, Repository.Provider.GetCoreV3());
+			this._repositories = sourceRepositoryProvider.GetRepositories().ToArray();
+			this._globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(this._settings);
+			this._packageConfig = new PackageConfig("packages.xml");
+		}
+
+		public event EventHandler<PackageInstallingOperation> PackageInstalling;
+		public event EventHandler<PackageInstalledOperation> PackageInstalled;
 		public event EventHandler<PackageOperationEventArgs> PackageUninstalling;
 		public event EventHandler<PackageOperationEventArgs> PackageUninstalled;
 
-
-		public DependencyVersion DependencyVersion { get; set; }
-		public bool WhatIf { get; set; }
-		public IFileSystem FileSystem { get; set; }
-		public IPackageRepository SourceRepository { get; private set; }
-		public IPackageRepository LocalRepository { get; private set; }
-		public IPackagePathResolver PathResolver { get; private set; }
-		public ILogger Logger
+		public void InstallPackage(PackageIdentity packageIdentity)
 		{
-			get { return this.logger ?? NullLogger.Instance; }
-			set { this.logger = value; }
+			Task.Run(async () => await this.InstallPackageAsync(packageIdentity)).Wait();
 		}
 
-
-		public NuGetTargetedPackageManager(FrameworkName targetFrameWork, IPackageRepository sourceRepository, string path) : this(
-			sourceRepository, 
-			path)
+		public void UpdatePackage(string id, bool allowPrereleaseVersions)
 		{
-			this.targetFrameWork = targetFrameWork;
-		}
-		public NuGetTargetedPackageManager(IPackageRepository sourceRepository, string path) : this(
-			sourceRepository, 
-			new DefaultPackagePathResolver(path), 
-			new PhysicalFileSystem(path)) { }
-		public NuGetTargetedPackageManager(IPackageRepository sourceRepository, IPackagePathResolver pathResolver, IFileSystem fileSystem) : this(
-			sourceRepository, 
-			pathResolver, 
-			fileSystem, 
-			new LocalPackageRepository(pathResolver, fileSystem)) { }
-		public NuGetTargetedPackageManager(IPackageRepository sourceRepository, IPackagePathResolver pathResolver, IFileSystem fileSystem, IPackageRepository localRepository)
-		{
-			if (sourceRepository == null) throw new ArgumentNullException("sourceRepository");
-			if (pathResolver == null) throw new ArgumentNullException("pathResolver");
-			if (fileSystem == null) throw new ArgumentNullException("fileSystem");
-			if (localRepository == null) throw new ArgumentNullException("localRepository");
-
-			this.SourceRepository = sourceRepository;
-			this.PathResolver = pathResolver;
-			this.FileSystem = fileSystem;
-			this.LocalRepository = localRepository;
-			this.DependencyVersion = DependencyVersion.Lowest;
+			Task.Run(async () => await this.UpdatePackageAsync(id, allowPrereleaseVersions)).Wait();
 		}
 
-		public void InstallPackage(IPackage package, bool ignoreDependencies, bool allowPrereleaseVersions)
+		public IPackageSearchMetadata GetMetadata(PackageIdentity packageIdentity)
 		{
-			this.Execute(package, new InstallWalker(
-				this.LocalRepository,
-				this.SourceRepository,
-				this.targetFrameWork,
-				this.Logger,
-				ignoreDependencies,
-				allowPrereleaseVersions,
-				this.DependencyVersion));
-		}
-		public void UninstallPackage(IPackage package, bool forceRemove, bool removeDependencies = false)
-		{
-			this.Execute(package, new UninstallWalker(
-				this.LocalRepository, 
-				new DependentsWalker(this.LocalRepository, this.targetFrameWork),
-				this.targetFrameWork, 
-				this.Logger, 
-				removeDependencies, 
-				forceRemove));
-		}
-		public void UpdatePackage(IPackage newPackage, bool updateDependencies, bool allowPrereleaseVersions)
-		{
-			this.Execute(newPackage, new UpdateWalker(
-				this.LocalRepository, 
-				this.SourceRepository,
-				new DependentsWalker(this.LocalRepository, this.targetFrameWork),
-				NullConstraintProvider.Instance,
-				this.targetFrameWork,
-				this.Logger, updateDependencies,
-				allowPrereleaseVersions));
+			return Task.Run(async () => await this.GetMetadataAsync(packageIdentity)).Result;
 		}
 
-
-		private void Execute(IPackage package, IPackageOperationResolver resolver)
+		public IEnumerable<IPackageSearchMetadata> Search(string searchTerm, bool includePrereleases = false)
 		{
-			IEnumerable<PackageOperation> source = resolver.ResolveOperations(package);
-			if (source.Any())
+            return Task.Run(async () => await this.SearchAsync(searchTerm, includePrereleases)).Result;
+		}
+
+		public void UninstallPackage(PackageIdentity package, bool forceRemove, bool removeDependencies = false)
+		{
+			Task.Run(async () => await this.UninstallPackageAsync(package, forceRemove, removeDependencies)).Wait();
+		}
+
+		public CanUninstallResult CanUninstallPackage(PackageIdentity packageIdentity)
+		{
+			return Task.Run(async () => await this.CanUninstallPackageAsync(packageIdentity)).Result;
+		}
+
+		private async Task<IPackageSearchMetadata> GetMetadataAsync(PackageIdentity packageIdentity)
+		{
+			PackageMetadataResource[] packageMetadataResources = this._repositories.Select(x => x.GetResource<PackageMetadataResource>()).ToArray();
+
+			using (var cacheContext = new SourceCacheContext())
 			{
-				foreach (PackageOperation operation in source)
+				foreach (PackageMetadataResource packageMetadataResource in packageMetadataResources)
 				{
-					this.Execute(operation);
+					IPackageSearchMetadata metadata = await packageMetadataResource.GetMetadataAsync(packageIdentity,
+						cacheContext, this._logger, CancellationToken.None);
+					if (metadata != null) return metadata;
+				}
+
+				throw new Exception($"Could not find metadata for package {packageIdentity}");
+			}
+		}
+
+		private async Task<IEnumerable<IPackageSearchMetadata>> SearchAsync(string searchTerm, bool includePrereleases = false)
+		{
+			PackageSearchResource[] packageMetadataResources = this._repositories.Select(x => x.GetResource<PackageSearchResource>()).ToArray();
+
+			IEnumerable<IPackageSearchMetadata> result = Enumerable.Empty<IPackageSearchMetadata>();
+			foreach (PackageSearchResource packageMetadataResource in packageMetadataResources)
+			{
+				result = result.Concat(await packageMetadataResource.SearchAsync(searchTerm, new SearchFilter(includePrereleases), 0, 1000, this._logger, CancellationToken.None));
+			}
+
+			return result;
+		}
+
+		private async Task UpdatePackageAsync(string id, bool allowPrereleaseVersions = false)
+		{
+			IPackageSearchMetadata packageMetadata = (await this.SearchAsync($"id:{id}", allowPrereleaseVersions)).First();
+			NuGetVersion latestVersion = (await packageMetadata.GetVersionsAsync()).Max(x => x.Version);
+			await this.InstallPackageAsync(new PackageIdentity(id, latestVersion));
+		}
+
+		private async Task InstallPackageAsync(PackageIdentity packageIdentity)
+		{
+			using (var cacheContext = new SourceCacheContext())
+			{
+				HashSet<SourcePackageDependencyInfo> availablePackages =
+					await this.GetPackageDependencies(packageIdentity, cacheContext);
+
+				var resolverContext = new PackageResolverContext(
+					DependencyBehavior.Lowest,
+					new[] {packageIdentity.Id},
+					Enumerable.Empty<string>(),
+					Enumerable.Empty<PackageReference>(),
+					Enumerable.Empty<PackageIdentity>(),
+					availablePackages,
+					this._repositories.Select(s => s.PackageSource),
+					NullLogger.Instance);
+
+				var resolver = new PackageResolver();
+				PackageIdentity[] packagesToInstall =
+					resolver.Resolve(resolverContext, CancellationToken.None).ToArray();
+
+				foreach (PackageIdentity identity in packagesToInstall)
+				{
+					PackageIdentity[] previouslyInstalledPackages =
+						this._packageConfig.Packages.Where(x => x.Id == identity.Id)
+							.ToArray(); //Take a copy to avoid modifying the enumerable
+					foreach (PackageIdentity previouslyInstalledPackage in previouslyInstalledPackages)
+					{
+						if (previouslyInstalledPackage.Version == identity.Version)
+							continue; //Nothing changed so just skip to save some time.
+						this.TryRemovePackageFolder(previouslyInstalledPackage);
+						this._packageConfig.Remove(previouslyInstalledPackage);
+					}
+
+					this._packageConfig.Add(identity);
+				}
+
+				this._packageConfig.Serialize();
+
+				var packageExtractionContext = new PackageExtractionContext(
+					PackageSaveMode.Defaultv3,
+					XmlDocFileSaveMode.None,
+					ClientPolicyContext.GetClientPolicy(this._settings, this._logger),
+					this._logger);
+
+				DependencyInfoResource[] dependencyInfoResources =
+					this._repositories.Select(x => x.GetResource<DependencyInfoResource>()).ToArray();
+				foreach (PackageIdentity packageToInstall in packagesToInstall)
+				{
+					await this.RestorePackage(dependencyInfoResources, packageToInstall, cacheContext,
+						packageExtractionContext);
 				}
 			}
-			else
-			{
-				if (!this.LocalRepository.Exists(package))
-					return;
-				this.Logger.Log(MessageLevel.Info, NuGetResources.Log_PackageAlreadyInstalled, (object)package.GetFullName());
-			}
 		}
-		private void Execute(PackageOperation operation)
+
+		public async Task RestorePackages()
 		{
-			bool isPackageInstalled = this.LocalRepository.Exists(operation.Package);
-			if (operation.Action == PackageAction.Install)
+			DependencyInfoResource[] dependencyInfoResources = this._repositories.Select(x => x.GetResource<DependencyInfoResource>()).ToArray();
+
+			using (var cacheContext = new SourceCacheContext())
 			{
-				if (isPackageInstalled)
-					this.Logger.Log(MessageLevel.Info, NuGetResources.Log_PackageAlreadyInstalled, (object)operation.Package.GetFullName());
-				else if (this.WhatIf)
-					this.Logger.Log(MessageLevel.Info, NuGetResources.Log_InstallPackage, (object)operation.Package);
-				else
-					this.ExecuteInstall(operation.Package);
-			}
-			else
-			{
-				if (!isPackageInstalled)
-					return;
-				if (this.WhatIf)
-					this.Logger.Log(MessageLevel.Info, NuGetResources.Log_UninstallPackage, (object)operation.Package);
-				else
-					this.ExecuteUninstall(operation.Package);
+
+				var packageExtractionContext = new PackageExtractionContext(
+					PackageSaveMode.Defaultv3,
+					XmlDocFileSaveMode.None,
+					ClientPolicyContext.GetClientPolicy(this._settings, this._logger),
+					this._logger);
+
+				foreach (PackageIdentity packageIdentity in this._packageConfig.Packages)
+				{
+					await this.RestorePackage(dependencyInfoResources, packageIdentity, cacheContext,
+						packageExtractionContext);
+				}
 			}
 		}
 
-		private void ExecuteInstall(IPackage package)
+		private async Task RestorePackage(DependencyInfoResource[] dependencyInfoResources, PackageIdentity packageIdentity, SourceCacheContext cacheContext, PackageExtractionContext packageExtractionContext)
 		{
-			string fullName = package.GetFullName();
-			this.Logger.Log(MessageLevel.Info, NuGetResources.Log_BeginInstallPackage, (object)fullName);
-			PackageOperationEventArgs operation = this.CreateOperation(package);
-			this.OnInstalling(operation);
-			if (operation.Cancel)
-				return;
-			this.ExpandFiles(operation.Package);
-			this.LocalRepository.AddPackage(package);
-			this.Logger.Log(MessageLevel.Info, NuGetResources.Log_PackageInstalledSuccessfully, (object)fullName);
-			this.OnInstalled(operation);
-		}
-		private void ExecuteUninstall(IPackage package)
-		{
-			string fullName = package.GetFullName();
-			this.Logger.Log(MessageLevel.Info, NuGetResources.Log_BeginUninstallPackage, (object)fullName);
-			PackageOperationEventArgs operation = this.CreateOperation(package);
-			this.OnUninstalling(operation);
-			if (operation.Cancel)
-				return;
-			this.RemoveFiles(operation.Package);
-			this.LocalRepository.RemovePackage(package);
-			this.Logger.Log(MessageLevel.Info, NuGetResources.Log_SuccessfullyUninstalledPackage, (object)fullName);
-			this.OnUninstalled(operation);
-		}
+			PackageInstallingOperation installingArgs = new PackageInstallingOperation(packageIdentity);
+			this.PackageInstalling?.Invoke(this, installingArgs);
+			foreach (DependencyInfoResource dependencyInfoResource in dependencyInfoResources)
+			{
+				SourcePackageDependencyInfo dependencyInfo = await dependencyInfoResource.ResolvePackage(packageIdentity, this._nuGetFramework, cacheContext, this._logger, CancellationToken.None);
+				if (dependencyInfo != null)
+				{
+					DownloadResource downloadResource = await dependencyInfo.Source.GetResourceAsync<DownloadResource>(CancellationToken.None);
 
-		private void ExpandFiles(IPackage package)
-		{
-			IBatchProcessor<string> fileSystem = this.FileSystem as IBatchProcessor<string>;
-			try
-			{
-				List<IPackageFile> list = package.GetFiles().ToList();
-				if (fileSystem != null)
-					fileSystem.BeginProcessing(
-						list.Select(p => p.Path),
-						PackageAction.Install);
-				string packageDirectory = this.PathResolver.GetPackageDirectory(package);
-				this.FileSystem.AddFiles(list, packageDirectory);
-				IPackage runtimePackage;
-				if (!PackageHelper.IsSatellitePackage(package, this.LocalRepository, this.targetFrameWork, out runtimePackage))
-					return;
-				this.FileSystem.AddFiles(package.GetSatelliteFiles(), this.PathResolver.GetPackageDirectory(runtimePackage));
-			}
-			finally
-			{
-				if (fileSystem != null) fileSystem.EndProcessing();
+					using (DownloadResourceResult downloadResult = await downloadResource.GetDownloadResourceResultAsync(dependencyInfo, new PackageDownloadContext(cacheContext), this._globalPackagesFolder, NullLogger.Instance, CancellationToken.None))
+					{
+						PackageInstalledOperation installedArgs = new PackageInstalledOperation(packageIdentity, downloadResult);
+						this.PackageInstalled?.Invoke(this, installedArgs);
+					}
+
+					//await PackageExtractor.ExtractPackageAsync(
+					//	downloadResult.PackageSource,
+					//	downloadResult.PackageStream,
+					//	this._packagePathResolver,
+					//	packageExtractionContext,
+					//	CancellationToken.None);
+					break;
+				}
 			}
 		}
-		private void RemoveFiles(IPackage package)
+
+		private void TryRemovePackageFolder(PackageIdentity packageIdentity)
 		{
-			string packageDirectory = this.PathResolver.GetPackageDirectory(package);
-			IPackage runtimePackage;
-			if (PackageHelper.IsSatellitePackage(package, this.LocalRepository, this.targetFrameWork, out runtimePackage))
-				this.FileSystem.DeleteFiles(package.GetSatelliteFiles(), this.PathResolver.GetPackageDirectory(runtimePackage));
-			this.FileSystem.DeleteFiles(package.GetFiles(), packageDirectory);
+			string path = this._packagePathResolver.GetInstallPath(packageIdentity);
+			if (Directory.Exists(path)) Directory.Delete(path, true);
 		}
 
-		private void OnInstalling(PackageOperationEventArgs e)
+		public ISet<PackageIdentity> GetInstalledPackages()
 		{
-			if (this.PackageInstalling != null)
-				this.PackageInstalling(this, e);
-		}
-		private void OnInstalled(PackageOperationEventArgs e)
-		{
-			if (this.PackageInstalled != null)
-				this.PackageInstalled(this, e);
-		}
-		private void OnUninstalling(PackageOperationEventArgs e)
-		{
-			if (this.PackageUninstalling != null)
-				this.PackageUninstalling(this, e);
-		}
-		private void OnUninstalled(PackageOperationEventArgs e)
-		{
-			if (this.PackageUninstalled != null)
-				this.PackageUninstalled(this, e);
+			return this._packageConfig.Packages.ToHashSet();
 		}
 
-		private PackageOperationEventArgs CreateOperation(IPackage package)
+		private async Task UninstallPackageAsync(PackageIdentity packageIdentity, bool forceRemove, bool removeDependencies = false)
 		{
-			return new PackageOperationEventArgs(package, this.FileSystem, this.PathResolver.GetInstallPath(package));
+			if (!forceRemove)
+			{
+				CanUninstallResult result = await this.CanUninstallPackage(packageIdentity, this._packageConfig);
+				if (!result)
+				{
+					throw new Exception(
+						$"Cannot uninstall {packageIdentity} because {result.DependentPackage} depends on it");
+				}
+			}
+
+			this.TryRemovePackageFolder(packageIdentity);
+			this._packageConfig.Remove(packageIdentity);
+			this._packageConfig.Serialize();
+		}
+
+		private async Task<CanUninstallResult> CanUninstallPackageAsync(PackageIdentity packageIdentity)
+		{
+			return await this.CanUninstallPackage(packageIdentity, this._packageConfig);
+		}
+
+		private async Task<CanUninstallResult> CanUninstallPackage(PackageIdentity packageIdentity, PackageConfig packageConfig)
+		{
+			using (var cacheContext = new SourceCacheContext())
+			{
+				foreach (PackageIdentity installedPackage in packageConfig.Packages)
+				{
+					if (installedPackage.Equals(packageIdentity)) continue;
+
+					HashSet<SourcePackageDependencyInfo> dependencies = await this.GetPackageDependencies(installedPackage, cacheContext);
+
+					if (dependencies.Contains(packageIdentity))
+						return new CanUninstallResult(packageIdentity);
+				}
+			}
+			return CanUninstallResult.Succes;
+		}
+
+		public async Task<HashSet<SourcePackageDependencyInfo>> GetPackageDependencies(PackageIdentity package,
+			SourceCacheContext cacheContext)
+		{
+			DependencyInfoResource[] dependencyInfoResources = this._repositories.Select(x => x.GetResource<DependencyInfoResource>()).ToArray();
+			HashSet<SourcePackageDependencyInfo> availablePackages = new HashSet<SourcePackageDependencyInfo>(PackageIdentityComparer.Default);
+
+			await this.GetPackageDependencies(package, this._nuGetFramework, cacheContext, this._logger, dependencyInfoResources,
+				availablePackages);
+
+			return availablePackages;
+		}
+
+		private async Task GetPackageDependencies(PackageIdentity package,
+			NuGetFramework framework,
+			SourceCacheContext cacheContext, ILogger logger, DependencyInfoResource[] dependencyInfoResources, HashSet<SourcePackageDependencyInfo> availablePackages)
+		{
+			if (availablePackages.Contains(package)) return;
+
+			foreach (DependencyInfoResource dependencyInfoResource in dependencyInfoResources)
+			{
+				SourcePackageDependencyInfo dependencyInfo = await dependencyInfoResource.ResolvePackage(package, framework, cacheContext, logger, CancellationToken.None);
+				if (dependencyInfo != null)
+				{
+					availablePackages.Add(dependencyInfo);
+
+					foreach (PackageDependency dependency in dependencyInfo.Dependencies)
+					{
+						await this.GetPackageDependencies(
+							new PackageIdentity(dependency.Id, dependency.VersionRange.MinVersion),
+							framework, cacheContext, logger, dependencyInfoResources, availablePackages);
+					}
+				}
+			}
+		}
+	}
+
+	public struct CanUninstallResult
+	{
+		public static readonly CanUninstallResult Succes = new CanUninstallResult();
+		public PackageIdentity DependentPackage;
+
+		public CanUninstallResult(PackageIdentity dependentPackage)
+		{
+			this.DependentPackage = dependentPackage;
+		}
+
+		public static implicit operator bool(CanUninstallResult result) => result.DependentPackage == null;
+	}
+
+	public class PackageConfig
+	{
+		public HashSet<PackageIdentity> Packages { get; } = new HashSet<PackageIdentity>(PackageIdentityComparer.Default);
+
+		public void Add(string id, string version) => this.Add(PackageIdentityParser.Parse(id, version));
+
+		public void Add(PackageIdentity packageIdentity) => this.Packages.Add(packageIdentity);
+
+		public void Remove(PackageIdentity packageIdentity) => this.Packages.Remove(packageIdentity);
+
+		private readonly string _path;
+
+		public PackageConfig(string path)
+		{
+			this._path = path;
+			if (File.Exists(path))
+			{
+				XElement packagesXml = XElement.Load(path);
+
+				foreach (XNode variable in packagesXml.Nodes())
+				{
+					if (variable is XElement xElement)
+					{
+						XAttribute idAttribute = xElement.Attribute("id");
+						XAttribute versionAttribute = xElement.Attribute("version");
+
+						PackageIdentity packageIdentity =
+							PackageIdentityParser.Parse(idAttribute.Value, versionAttribute.Value);
+						this.Packages.Add(packageIdentity);
+					}
+				}
+			}
+		}
+
+		public void Serialize()
+		{
+			IEnumerable<XElement> packagesXml = this.Packages.Select(x => new XElement("package", new XAttribute("id", x.Id), new XAttribute("version", x.Version)));
+
+			var rootXml = new XElement("packages", packagesXml);
+
+			new XDocument(rootXml).Save(this._path);
+		}
+	}
+
+	public static class PackageIdentityParser
+	{
+		public static PackageIdentity Parse(string id, string version)
+		{
+			NuGetVersion nugetVersion = NuGetVersion.Parse(version);
+			return new PackageIdentity(id, nugetVersion);
+		}
+
+		public static PackageIdentity Parse(string id, Version version)
+		{
+			var nugetVersion = new NuGetVersion(version.ToString());
+			return new PackageIdentity(id, nugetVersion);
+		}
+
+		public static PackageIdentity Parse(string fullname)
+		{
+			int dotIndex = fullname.Length;
+			int dotCount = 0;
+			while (true)
+			{
+				dotIndex = fullname.LastIndexOf('.', dotIndex - 1);
+				if (dotIndex == -1) break;
+
+				dotCount++;
+				if (dotCount < 3) continue;
+
+				string potentialVersionString = fullname.Substring(
+					dotIndex + 1,
+					fullname.Length - dotIndex - 1);
+				NuGetVersion version;
+				if (!NuGetVersion.TryParse(potentialVersionString, out version))
+					continue;
+
+				string packageName = fullname.Remove(dotIndex);
+				return new PackageIdentity(packageName, version);
+			}
+			throw new Exception($"{fullname} is not a correct package identity");
 		}
 	}
 }

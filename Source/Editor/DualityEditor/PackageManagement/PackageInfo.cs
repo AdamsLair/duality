@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
+using NuGet.Packaging;
+using NuGet.Protocol.Core.Types;
 
 namespace Duality.Editor.PackageManagement
 {
@@ -17,7 +19,7 @@ namespace Duality.Editor.PackageManagement
 		private Uri               projectUrl     = null;
 		private Uri               licenseUrl     = null;
 		private Uri               iconUrl        = null;
-		private int               downloadCount  = 0;
+		private long               downloadCount  = 0;
 		private DateTime          publishDate    = DateTime.MinValue;
 		private List<string>      authors        = new List<string>();
 		private List<string>      tags           = new List<string>();
@@ -92,7 +94,7 @@ namespace Duality.Editor.PackageManagement
 			get { return this.iconUrl; }
 			internal set { this.iconUrl = value; }
 		}
-		public int DownloadCount
+		public long DownloadCount
 		{
 			get { return this.downloadCount; }
 			internal set { this.downloadCount = value; }
@@ -135,40 +137,40 @@ namespace Duality.Editor.PackageManagement
 		{
 			this.name = package;
 		}
-		internal PackageInfo(NuGet.IPackage nuGetPackage)
+		internal PackageInfo(IPackageSearchMetadata nuGetPackage)
 		{
 			// Retrieve package data
-			this.name           = new PackageName(nuGetPackage.Id, nuGetPackage.Version.Version);
+			this.name           = new PackageName(nuGetPackage.Identity.Id, nuGetPackage.Identity.Version.Version);
 			this.title          = nuGetPackage.Title;
 			this.summary        = nuGetPackage.Summary;
 			this.description    = nuGetPackage.Description;
-			this.releaseNotes   = nuGetPackage.ReleaseNotes;
+			this.releaseNotes   = string.Empty;//nuGetPackage.ReleaseNotes;
 			this.requireLicense = nuGetPackage.RequireLicenseAcceptance;
 			this.projectUrl     = nuGetPackage.ProjectUrl;
 			this.licenseUrl     = nuGetPackage.LicenseUrl;
 			this.iconUrl        = nuGetPackage.IconUrl;
-			this.downloadCount  = nuGetPackage.DownloadCount;
+			this.downloadCount  = nuGetPackage.DownloadCount ?? 0;
 			this.publishDate    = nuGetPackage.Published.HasValue ? nuGetPackage.Published.Value.DateTime : DateTime.MinValue;
 			
 			if (nuGetPackage.Authors != null)
-				this.authors.AddRange(nuGetPackage.Authors);
+				this.authors.Add(nuGetPackage.Authors);
 			if (nuGetPackage.Tags != null)
 				this.tags.AddRange(nuGetPackage.Tags.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
 
 			// Retrieve the matching set of dependencies.
-			IEnumerable<NuGet.PackageDependencySet> dependencySets = nuGetPackage.DependencySets;
+			IEnumerable<PackageDependencyGroup> dependencySets = nuGetPackage.DependencySets;
 			if (dependencySets != null)
 			{
-				List<FrameworkName> availableTargetFrameworks = dependencySets.Select(item => item.TargetFramework).ToList();
-				FrameworkName matchingTargetFramework = PackageManager.SelectBestFrameworkMatch(availableTargetFrameworks);
+				var availableTargetFrameworks = dependencySets.Select(item => item.TargetFramework).ToList();
+				var matchingTargetFramework = PackageManager.SelectBestFrameworkMatch(availableTargetFrameworks);
 
-				NuGet.PackageDependencySet matchingDependencySet = dependencySets.FirstOrDefault(item => item.TargetFramework == matchingTargetFramework);
+				var matchingDependencySet = dependencySets.FirstOrDefault(item => item.TargetFramework == matchingTargetFramework);
 				if (matchingDependencySet != null)
 				{
-					foreach (NuGet.PackageDependency dependency in matchingDependencySet.Dependencies)
+					foreach (var dependency in matchingDependencySet.Packages)
 					{
-						if (dependency.VersionSpec != null && dependency.VersionSpec.MinVersion != null)
-							this.dependencies.Add(new PackageName(dependency.Id, dependency.VersionSpec.MinVersion.Version));
+						if (dependency.VersionRange != null && dependency.VersionRange.MinVersion != null)
+							this.dependencies.Add(new PackageName(dependency.Id, dependency.VersionRange.MinVersion.Version));
 						else
 							this.dependencies.Add(new PackageName(dependency.Id, null));
 					}

@@ -132,7 +132,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			get { return this.itemPackageInfo != null ? this.itemPackageInfo.Version : null; }
 		}
-		public int? Downloads
+		public long? Downloads
 		{
 			get
 			{

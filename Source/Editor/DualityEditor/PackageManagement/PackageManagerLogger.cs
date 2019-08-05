@@ -1,46 +1,87 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Xml;
-using System.Xml.Linq;
-using System.Windows.Forms;
-using System.Diagnostics;
-
-using Duality.IO;
-using Duality.Editor.Properties;
-using Duality.Editor.Forms;
+using System.Threading.Tasks;
+using NuGet.Common;
 
 namespace Duality.Editor.PackageManagement
 {
-	internal class PackageManagerLogger : NuGet.ILogger
+	internal class PackageManagerLogger : ILogger
 	{
-		void NuGet.ILogger.Log(NuGet.MessageLevel level, string message, params object[] args)
+		public void LogDebug(string data)
+		{
+			Logs.Editor.Write(data);
+		}
+
+		public void LogVerbose(string data)
+		{
+			Logs.Editor.Write(data);
+		}
+
+		public void LogInformation(string data)
+		{
+			Logs.Editor.Write(data);
+		}
+
+		public void LogMinimal(string data)
+		{
+			Logs.Editor.Write(data);
+		}
+
+		public void LogWarning(string data)
+		{
+			Logs.Editor.WriteWarning(data);
+		}
+
+		public void LogError(string data)
+		{
+			Logs.Editor.WriteError(data);
+		}
+
+		public void LogInformationSummary(string data)
+		{
+			Logs.Editor.Write(data);
+		}
+
+		public void Log(LogLevel level, string data)
 		{
 			switch (level)
 			{
-				case NuGet.MessageLevel.Debug:
-					#if DEBUG
-						Logs.Editor.Write(message, args);
-					#endif
+				case LogLevel.Debug:
+					this.LogDebug(data);
+					break;
+				case LogLevel.Verbose:
+					this.LogVerbose(data);
+					break;
+				case LogLevel.Information:
+					this.LogInformation(data);
+					break;
+				case LogLevel.Minimal:
+					this.LogMinimal(data);
+					break;
+				case LogLevel.Warning:
+					this.LogWarning(data);
+					break;
+				case LogLevel.Error:
+					this.LogError(data);
 					break;
 				default:
-				case NuGet.MessageLevel.Info:
-					Logs.Editor.Write(message, args);
-					break;
-				case NuGet.MessageLevel.Warning:
-					Logs.Editor.WriteWarning(message, args);
-					break;
-				case NuGet.MessageLevel.Error:
-					Logs.Editor.WriteError(message, args);
-					break;
+					throw new ArgumentOutOfRangeException(nameof(level), level, null);
 			}
 		}
-		NuGet.FileConflictResolution NuGet.IFileConflictResolver.ResolveFileConflict(string message)
+
+		public async Task LogAsync(LogLevel level, string data)
 		{
-			Logs.Editor.Write("Package File Conflict: {0}", message);
-			return NuGet.FileConflictResolution.Overwrite;
+			this.Log(level, data);
+			await Task.Yield();
+		}
+
+		public void Log(ILogMessage message)
+		{
+			this.Log(message.Level, message.Message);
+		}
+
+		public async Task LogAsync(ILogMessage message)
+		{
+			await this.LogAsync(message.Level, message.Message);
 		}
 	}
 }
