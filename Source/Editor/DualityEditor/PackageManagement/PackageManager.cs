@@ -17,6 +17,7 @@ using NuGet.Common;
 using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
+using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 
@@ -70,10 +71,13 @@ namespace Duality.Editor.PackageManagement
 		{
 			get
 			{
-				IEnumerable<PackageIdentity> allInstalledPackages = this.manager.GetInstalledPackages().ToArray();
+				LocalPackageInfo[] allInstalledPackages = this.manager
+					.LocalRepository
+					.GetPackages()
+					.ToArray();
 
 				// Do we have installed packages that are not registered, i.e. need to be uninstalled?
-				foreach (IPackageSearchMetadata package in allInstalledPackages.Select(x => this.manager.GetMetadata(x)))
+				foreach (LocalPackageInfo package in allInstalledPackages)
 				{
 					if (!IsDualityPackage(package)) continue;
 					if (this.setup.GetPackage(package.Identity.Id, package.Identity.Version.Version) == null)
@@ -89,8 +93,8 @@ namespace Duality.Editor.PackageManagement
 					if (package.Id == null) return true;
 					if (package.Version == null) return true;
 					if (!allInstalledPackages.Any(n => 
-						n.Id == package.Id && 
-						n.Version == new NuGetVersion(package.Version)))
+						n.Identity.Id == package.Id && 
+						n.Identity.Version == new NuGetVersion(package.Version)))
 						return true;
 				}
 
@@ -186,7 +190,7 @@ namespace Duality.Editor.PackageManagement
 
 			void InstallListener(object sender, PackageInstalledOperation args)
 			{
-				if (args.Package.Id == localPackage.Id)
+				if (args.Package.Identity.Id == localPackage.Id)
 				{
 					packageInstalled = true;
 				}
@@ -225,11 +229,11 @@ namespace Duality.Editor.PackageManagement
 		/// </summary>
 		public void UninstallNonRegisteredPackages()
 		{
-			IEnumerable<PackageIdentity> allInstalledPackages = this.manager.GetInstalledPackages();
+			IEnumerable<LocalPackageInfo> allInstalledPackages = this.manager.LocalRepository.GetPackages();
 			LocalPackage[] registeredPackages = this.setup.Packages
 				.ToArray();
 
-			foreach (IPackageSearchMetadata package in allInstalledPackages.Select(x => this.manager.GetMetadata(x)))
+			foreach (var package in allInstalledPackages)
 			{
 				// Skip non-Duality packages. They're not registered anyway and not expected to.
 				if (!IsDualityPackage(package)) continue;
@@ -302,7 +306,7 @@ namespace Duality.Editor.PackageManagement
 			try
 			{
 				// Find the local package that we'll uninstall
-				PackageIdentity uninstallPackage = this.manager.GetInstalledPackages().FirstOrDefault(x => x.Id == packageName.Id && x.Version.Version == packageName.Version);
+				PackageIdentity uninstallPackage = this.manager.LocalRepository.GetPackages().FirstOrDefault(x => x.Identity.Id == packageName.Id && x.Identity.Version.Version == packageName.Version)?.Identity;
 				if (uninstallPackage == null) return;
 
 				// Find all dependencies of the package we want to uninstall
@@ -350,11 +354,11 @@ namespace Duality.Editor.PackageManagement
 				uninstallDependencies.Reverse();
 				foreach (PackageInfo package in uninstallDependencies)
 				{
-					IEnumerable<PackageIdentity> matchingNuGetPackages = this.manager.GetInstalledPackages().Where(x => x.Id == package.Id);
+					IEnumerable<LocalPackageInfo> matchingNuGetPackages = this.manager.LocalRepository.GetPackages().Where(x => x.Identity.Id == package.Id);
 
-					foreach (PackageIdentity nugetPackage in matchingNuGetPackages)
+					foreach (LocalPackageInfo nugetPackage in matchingNuGetPackages)
 					{
-						this.manager.UninstallPackage(nugetPackage, force, false);
+						this.manager.UninstallPackage(nugetPackage.Identity, force, false);
 					}
 				}
 			}
@@ -380,7 +384,7 @@ namespace Duality.Editor.PackageManagement
 		/// <param name="packageName"></param>
 		public void UpdatePackage(PackageName packageName)
 		{
-			if (this.manager.GetInstalledPackages().FirstOrDefault(x => x.Id == packageName.Id) == null)
+			if (this.manager.LocalRepository.GetPackages().FirstOrDefault(x => x.Identity.Id == packageName.Id) == null)
 			{
 				throw new InvalidOperationException(string.Format(
 					"Can't update package '{0}', because it is not installed.",
@@ -681,8 +685,8 @@ namespace Duality.Editor.PackageManagement
 			dependencyWalker.IgnorePackage("NETStandard.Library"); // Avoid dependency explosion, doesn't require license acceptance anyway
 			dependencyWalker.WalkGraph(new PackageName(package.Identity.Id, package.Identity.Version.Version));
 
-			List<PackageInfo> packageGraph = dependencyWalker.VisitedPackages.ToList();
-			List<PackageIdentity> installedPackages = this.manager.GetInstalledPackages().ToList();
+			PackageInfo[] packageGraph = dependencyWalker.VisitedPackages.ToArray();
+			LocalPackageInfo[] installedPackages = this.manager.LocalRepository.GetPackages().ToArray();
 
 			this.ReturnDependencyWalker(ref dependencyWalker);
 
@@ -690,8 +694,8 @@ namespace Duality.Editor.PackageManagement
 			{
 				// Skip the ones that are already installed
 				if (installedPackages.Any(installed => 
-					installed.Id == visitedPackage.Id && 
-					installed.Version.Version >= visitedPackage.Version))
+					installed.Identity.Id == visitedPackage.Id && 
+					installed.Identity.Version.Version >= visitedPackage.Version))
 					continue;
 
 				if (!this.CheckLicenseAgreement(visitedPackage))
@@ -767,14 +771,15 @@ namespace Duality.Editor.PackageManagement
 			schedule.Save(updateFilePath);
 		}
 
-		private Dictionary<string,string> CreateFileMapping(DownloadResourceResult package)
+		private Dictionary<string,string> CreateFileMapping(LocalPackageInfo package)
 		{
 			Dictionary<string,string> fileMapping = new Dictionary<string,string>();
 
-			bool isDualityPackage = IsDualityPackage(package.PackageReader);
-			bool isPluginPackage = isDualityPackage && package.PackageReader.NuspecReader.GetTags().Contains(PluginTag);
+			PackageReaderBase packageReader = package.GetReader();
+			bool isDualityPackage = IsDualityPackage(packageReader);
+			bool isPluginPackage = isDualityPackage && packageReader.NuspecReader.GetTags().Contains(PluginTag);
 
-			string folderFriendlyPackageName = package.PackageReader.NuspecReader.GetId();
+			string folderFriendlyPackageName = packageReader.NuspecReader.GetId();
 			string binaryBaseDir = this.env.TargetPluginPath;
 			string contentBaseDir = this.env.TargetDataPath;
 			string sourceBaseDir = Path.Combine(this.env.TargetSourcePath, folderFriendlyPackageName);
@@ -791,8 +796,8 @@ namespace Duality.Editor.PackageManagement
 				// non-lib files. Those include content and source files, but also any other folder structure
 				// that isn't specifically a lib binary.
 
-				NuGetFramework matchingFramework = SelectBestFrameworkMatch(package.PackageReader.GetSupportedFrameworks());
-				var frameworkGroup = package.PackageReader.GetFrameworkItems().Single(x => x.TargetFramework == matchingFramework);
+				NuGetFramework matchingFramework = SelectBestFrameworkMatch(packageReader.GetSupportedFrameworks());
+				var frameworkGroup = packageReader.GetFrameworkItems().Single(x => x.TargetFramework == matchingFramework);
 
 				string[] files = frameworkGroup.Items.ToArray();
 				List<string> libFiles = new List<string>();
@@ -879,7 +884,7 @@ namespace Duality.Editor.PackageManagement
 			if (this.PackageUninstalled != null)
 				this.PackageUninstalled(this, args);
 		}
-		
+
 		//private void manager_PackageUninstalled(object sender, PackageOperationEventArgs e)
 		//{
 		//	Logs.Editor.Write("Integrating uninstall of package '{0} {1}'...", e.Package.Id, e.Package.Version);
@@ -893,9 +898,9 @@ namespace Duality.Editor.PackageManagement
 		//	{
 		//		// Don't remove any file that is still referenced by a local package
 		//		bool stillInUse = false;
-		//		foreach (IPackage localNugetPackage in this.manager.GetInstalledPackages())
+		//		foreach (LocalPackageInfo localNugetPackage in this.manager.LocalRepository.GetPackages())
 		//		{
-		//			Dictionary<string,string> localMapping = this.CreateFileMapping(localNugetPackage);
+		//			Dictionary<string, string> localMapping = this.CreateFileMapping(localNugetPackage);
 		//			if (localMapping.Any(p => Equals(p.Key, packageFile)))
 		//			{
 		//				stillInUse = true;
@@ -909,7 +914,7 @@ namespace Duality.Editor.PackageManagement
 		//		if (Path.GetExtension(packageFile) == ".csproj")
 		//		{
 		//			updateSchedule.AppendSeparateProject(
-		//				packageFile, 
+		//				packageFile,
 		//				this.env.TargetSolutionPathRelative);
 		//		}
 		//	}
@@ -927,21 +932,21 @@ namespace Duality.Editor.PackageManagement
 			// Duality does, by design, not support multiple versions of the same package to be
 			// installed at the same time. Enforce this constraint by double-checking every install
 			// for already installed versions of the same package.
-			IEnumerable<PackageIdentity> previousPackages = this.manager.GetInstalledPackages().Where(x => x.Id == e.Package.Id);
-			foreach (PackageIdentity package in previousPackages)
+			IEnumerable<LocalPackageInfo> previousPackages = this.manager.LocalRepository.GetPackages().Where(x => x.Identity.Id == e.Package.Id);
+			foreach (LocalPackageInfo package in previousPackages)
 			{
 				// Installing a newer version? Make sure to uninstall any older versions of it.
-				if (package.Version < e.Package.Version)
+				if (package.Identity.Version < e.Package.Version)
 				{
 					this.manager.UninstallPackage(
-						package,
+						package.Identity,
 						true, 
 						false);
 				}
 				// Installing an older version? Cancel the operation. We'll prefer the newer 
 				// version and if a downgrade is really desired, it should be done by explicitly 
 				// uninstalling the newer package first.
-				else if (package.Version > e.Package.Version)
+				else if (package.Identity.Version > e.Package.Version)
 				{
 					e.Cancel = true;
 				}
@@ -949,13 +954,13 @@ namespace Duality.Editor.PackageManagement
 		}
 		private void manager_PackageInstalled(object sender, PackageInstalledOperation e)
 		{
-			Logs.Editor.Write("Integrating install of package '{0} {1}'...", e.Package.Id, e.Package.Version);
+			Logs.Editor.Write("Integrating install of package '{0} {1}'...", e.Package.Identity.Id, e.Package.Identity.Version);
 			
 			// Update package entries from local config
-			PackageInfo packageInfo = this.GetPackage(new PackageName(e.Package.Id, e.Package.Version.Version));
+			PackageInfo packageInfo = this.GetPackage(new PackageName(e.Package.Identity.Id, e.Package.Identity.Version.Version));
 			if (packageInfo.IsDualityPackage)
 			{
-				this.setup.Packages.RemoveAll(p => p.Id == e.Package.Id);
+				this.setup.Packages.RemoveAll(p => p.Id == e.Package.Identity.Id);
 				this.setup.Packages.Add(new LocalPackage(packageInfo));
 				this.setup.Save(this.env.ConfigFilePath);
 			}
@@ -964,48 +969,66 @@ namespace Duality.Editor.PackageManagement
 			PackageUpdateSchedule updateSchedule = this.PrepareUpdateSchedule();
 
 			// Below logic should be handled by nuget itself??
-			//Dictionary<string,string> fileMapping = this.CreateFileMapping(e.Result);
-			//foreach (var pair in fileMapping)
-			//{
-			//	// Don't overwrite files from a newer version of this package with their old one (think of dependencies)
-			//	bool isOldVersion = false;
-			//	foreach (IPackageSearchMetadata localNugetPackage in this.manager.GetInstalledPackages().Select(x => this.manager.GetMetadata(x)))
-			//	{
-			//		if (localNugetPackage.Identity.Id != e.Package.Id) continue;
+			Dictionary<string, string> fileMapping = this.CreateFileMapping(e.Package);
+			foreach (var pair in fileMapping)
+			{
+				// Don't overwrite files from a newer version of this package with their old one (think of dependencies)
+				bool isOldVersion = false;
+				foreach (var localNugetPackage in this.manager.LocalRepository.GetPackages())
+				{
+					if (localNugetPackage.Identity.Id != e.Package.Identity.Id) continue;
 
-			//		Dictionary<string,string> localMapping = this.CreateFileMapping(localNugetPackage);
-			//		if (localMapping.Any(p => string.Equals(p.Value, pair.Value, StringComparison.InvariantCultureIgnoreCase)))
-			//		{
-			//			if (localNugetPackage.Identity.Version > e.Package.Version)
-			//			{
-			//				isOldVersion = true;
-			//				break;
-			//			}
-			//		}
-			//	}
-			//	if (isOldVersion) continue;
+					Dictionary<string, string> localMapping = this.CreateFileMapping(localNugetPackage);
+					if (localMapping.Any(p => string.Equals(p.Value, pair.Value, StringComparison.InvariantCultureIgnoreCase)))
+					{
+						if (localNugetPackage.Identity.Version > e.Package.Identity.Version)
+						{
+							isOldVersion = true;
+							break;
+						}
+					}
+				}
+				if (isOldVersion) continue;
 
-			//	// Append the scheduled operation to the updater config file.
-
-			//	string sourcePath = ((FileStream) e.Result.PackageStream).Name;
-			//	updateSchedule.AppendCopyFile(Path.Combine(sourcePath, pair.Value), pair.Key);
-			//	if (Path.GetExtension(pair.Key) == ".csproj")
-			//	{
-			//		updateSchedule.AppendIntegrateProject(
-			//			pair.Key, 
-			//			this.env.TargetSolutionPathRelative, 
-			//			this.env.TargetPluginPathRelative);
-			//	}
-			//}
+				// Append the scheduled operation to the updater config file.
+				updateSchedule.AppendCopyFile(Path.Combine(e.Package.Path, pair.Value), pair.Key);
+				if (Path.GetExtension(pair.Key) == ".csproj")
+				{
+					updateSchedule.AppendIntegrateProject(
+						pair.Key,
+						this.env.TargetSolutionPathRelative,
+						this.env.TargetPluginPathRelative);
+				}
+			}
 			this.SaveUpdateSchedule(updateSchedule);
 
-			this.OnPackageInstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
+			this.OnPackageInstalled(new PackageEventArgs(new PackageName(e.Package.Identity.Id, e.Package.Identity.Version.Version)));
 		}
-		
-		private static bool IsDualityPackage(IPackageSearchMetadata package) => IsDualityPackage(package.Tags);
-		private static bool IsDualityPackage(PackageReaderBase package) => IsDualityPackage(package.NuspecReader.GetTags());
 
-		private static bool IsDualityPackage(string tags) => tags?.Contains(DualityTag) == true;
+		private static bool IsDualityPackage(LocalPackageInfo package)
+		{
+			return IsDualityPackage(package.Nuspec);
+		}
+
+		private static bool IsDualityPackage(IPackageSearchMetadata package)
+		{
+			return IsDualityPackage(package.Tags);
+		}
+
+		private static bool IsDualityPackage(PackageReaderBase package)
+		{
+			return IsDualityPackage(package.NuspecReader);
+		}
+
+		private static bool IsDualityPackage(NuspecReader package)
+		{
+			return IsDualityPackage(package.GetTags());
+		}
+
+		private static bool IsDualityPackage(string tags)
+		{
+			return tags?.Contains(DualityTag) == true;
+		}
 
 
 		private static void DisplayDefaultLicenseAcceptDialog(PackageLicenseAgreementEventArgs args)

@@ -20,6 +20,7 @@ namespace Duality.Editor.PackageManagement.Internal
 {
 	public interface INuGetTargetedPackageManager
 	{
+		ILocalPackageRepository LocalRepository { get; }
 		event EventHandler<PackageInstallingOperation> PackageInstalling;
 		event EventHandler<PackageInstalledOperation> PackageInstalled;
 		event EventHandler<PackageOperationEventArgs> PackageUninstalling;
@@ -29,20 +30,17 @@ namespace Duality.Editor.PackageManagement.Internal
 		void UpdatePackage(string id, bool allowPrereleaseVersions);
 		IEnumerable<IPackageSearchMetadata> Search(string searchTerm, bool includePrereleases = false);
 		IPackageSearchMetadata GetMetadata(PackageIdentity packageIdentity);
-		ISet<PackageIdentity> GetInstalledPackages();
 
 		CanUninstallResult CanUninstallPackage(PackageIdentity packageIdentity);
 	}
 
 	public class PackageInstalledOperation : EventArgs
 	{
-		public PackageIdentity Package { get; }
-		public DownloadResourceResult Result { get; }
+        public LocalPackageInfo Package { get; }
 
-		public PackageInstalledOperation(PackageIdentity package, DownloadResourceResult result)
+		public PackageInstalledOperation(LocalPackageInfo package)
 		{
 			this.Package = package;
-			this.Result = result;
 		}
 	}
 
@@ -59,18 +57,54 @@ namespace Duality.Editor.PackageManagement.Internal
 
 	public class PackageOperationEventArgs : EventArgs
 	{
-        public PackageIdentity Package { get; }
+		public PackageIdentity Package { get; }
 		public PackageReaderBase Reader { get; }
 
-        public PackageOperationEventArgs(PackageIdentity package, PackageReaderBase reader)
-        {
+		public PackageOperationEventArgs(PackageIdentity package, PackageReaderBase reader)
+		{
 			this.Package = package;
 			this.Reader = reader;
-        }
+		}
+	}
+
+	public interface ILocalPackageRepository
+	{
+		IEnumerable<LocalPackageInfo> GetPackages();
+		LocalPackageInfo GetPackage(string packagePath);
+	}
+
+	public class LocalPackageRepository : ILocalPackageRepository
+	{
+		private readonly string _packagePath;
+
+		public LocalPackageRepository(string packagePath)
+		{
+			this._packagePath = packagePath;
+		}
+
+		public IEnumerable<LocalPackageInfo> GetPackages()
+		{
+			string[] packages = Directory.GetDirectories(this._packagePath);
+			foreach (string packagePath in packages)
+			{
+				yield return this.GetPackage(packagePath);
+			}
+		}
+
+		public LocalPackageInfo GetPackage(string packagePath)
+		{
+			string packageName = Path.GetFileName(packagePath);
+			PackageIdentity identity = PackageIdentityParser.Parse(packageName);
+			var packageReader = new Func<PackageReaderBase>(() => new PackageFolderReader(packagePath));
+			var nuspecReader = new Lazy<NuspecReader>(() => new NuspecReader(packageReader().GetNuspec()));
+			return new LocalPackageInfo(identity, packagePath, DateTime.Now, nuspecReader, packageReader);
+		}
 	}
 
 	public class NuGetTargetedPackageManager : INuGetTargetedPackageManager
 	{
+		public ILocalPackageRepository LocalRepository { get; }
+
 		private readonly ILogger _logger;
 		private readonly ISettings _settings;
 		private readonly NuGetFramework _nuGetFramework;
@@ -78,10 +112,10 @@ namespace Duality.Editor.PackageManagement.Internal
 		private readonly PackagePathResolver _packagePathResolver;
 		private readonly string _globalPackagesFolder;
 
-		//private readonly string _packageConfigPath;
 		private readonly PackageConfig _packageConfig;
 
 		private readonly SourceRepository[] _repositories;
+		
 
 		public NuGetTargetedPackageManager(NuGetFramework nuGetFramework, ILogger logger, ISettings settings, string packagePath)
 		{
@@ -93,6 +127,7 @@ namespace Duality.Editor.PackageManagement.Internal
 			this._repositories = sourceRepositoryProvider.GetRepositories().ToArray();
 			this._globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(this._settings);
 			this._packageConfig = new PackageConfig("packages.xml");
+			this.LocalRepository = new LocalPackageRepository(packagePath);
 		}
 
 		public event EventHandler<PackageInstallingOperation> PackageInstalling;
@@ -117,7 +152,7 @@ namespace Duality.Editor.PackageManagement.Internal
 
 		public IEnumerable<IPackageSearchMetadata> Search(string searchTerm, bool includePrereleases = false)
 		{
-            return Task.Run(async () => await this.SearchAsync(searchTerm, includePrereleases)).Result;
+			return Task.Run(async () => await this.SearchAsync(searchTerm, includePrereleases)).Result;
 		}
 
 		public void UninstallPackage(PackageIdentity package, bool forceRemove, bool removeDependencies = false)
@@ -176,7 +211,7 @@ namespace Duality.Editor.PackageManagement.Internal
 
 				var resolverContext = new PackageResolverContext(
 					DependencyBehavior.Lowest,
-					new[] {packageIdentity.Id},
+					new[] { packageIdentity.Id },
 					Enumerable.Empty<string>(),
 					Enumerable.Empty<PackageReference>(),
 					Enumerable.Empty<PackageIdentity>(),
@@ -256,16 +291,19 @@ namespace Duality.Editor.PackageManagement.Internal
 
 					using (DownloadResourceResult downloadResult = await downloadResource.GetDownloadResourceResultAsync(dependencyInfo, new PackageDownloadContext(cacheContext), this._globalPackagesFolder, NullLogger.Instance, CancellationToken.None))
 					{
-						PackageInstalledOperation installedArgs = new PackageInstalledOperation(packageIdentity, downloadResult);
+						await PackageExtractor.ExtractPackageAsync(
+							downloadResult.PackageSource,
+							downloadResult.PackageStream,
+							this._packagePathResolver,
+							packageExtractionContext,
+							CancellationToken.None);
+
+						string sourcePath = this._packagePathResolver.GetInstallPath(packageIdentity);
+						LocalPackageInfo packageInfo = this.LocalRepository.GetPackage(sourcePath);
+						PackageInstalledOperation installedArgs = new PackageInstalledOperation(packageInfo);
 						this.PackageInstalled?.Invoke(this, installedArgs);
 					}
 
-					//await PackageExtractor.ExtractPackageAsync(
-					//	downloadResult.PackageSource,
-					//	downloadResult.PackageStream,
-					//	this._packagePathResolver,
-					//	packageExtractionContext,
-					//	CancellationToken.None);
 					break;
 				}
 			}
@@ -275,11 +313,6 @@ namespace Duality.Editor.PackageManagement.Internal
 		{
 			string path = this._packagePathResolver.GetInstallPath(packageIdentity);
 			if (Directory.Exists(path)) Directory.Delete(path, true);
-		}
-
-		public ISet<PackageIdentity> GetInstalledPackages()
-		{
-			return this._packageConfig.Packages.ToHashSet();
 		}
 
 		private async Task UninstallPackageAsync(PackageIdentity packageIdentity, bool forceRemove, bool removeDependencies = false)
@@ -367,18 +400,30 @@ namespace Duality.Editor.PackageManagement.Internal
 			this.DependentPackage = dependentPackage;
 		}
 
-		public static implicit operator bool(CanUninstallResult result) => result.DependentPackage == null;
+		public static implicit operator bool(CanUninstallResult result)
+		{
+			return result.DependentPackage == null;
+		}
 	}
 
 	public class PackageConfig
 	{
 		public HashSet<PackageIdentity> Packages { get; } = new HashSet<PackageIdentity>(PackageIdentityComparer.Default);
 
-		public void Add(string id, string version) => this.Add(PackageIdentityParser.Parse(id, version));
+		public void Add(string id, string version)
+		{
+			this.Add(PackageIdentityParser.Parse(id, version));
+		}
 
-		public void Add(PackageIdentity packageIdentity) => this.Packages.Add(packageIdentity);
+		public void Add(PackageIdentity packageIdentity)
+		{
+			this.Packages.Add(packageIdentity);
+		}
 
-		public void Remove(PackageIdentity packageIdentity) => this.Packages.Remove(packageIdentity);
+		public void Remove(PackageIdentity packageIdentity)
+		{
+			this.Packages.Remove(packageIdentity);
+		}
 
 		private readonly string _path;
 
