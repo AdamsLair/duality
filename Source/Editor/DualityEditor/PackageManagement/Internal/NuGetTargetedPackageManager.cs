@@ -84,9 +84,12 @@ namespace Duality.Editor.PackageManagement.Internal
 
 		public IEnumerable<LocalPackageInfo> GetPackages()
 		{
+			if (!Directory.Exists(this._packagePath)) yield break;
 			string[] packages = Directory.GetDirectories(this._packagePath);
 			foreach (string packagePath in packages)
 			{
+                // Why the heck is there a iconcache inside the packages folder?
+                if(packagePath.EndsWith("IconCache")) continue; 
 				yield return this.GetPackage(packagePath);
 			}
 		}

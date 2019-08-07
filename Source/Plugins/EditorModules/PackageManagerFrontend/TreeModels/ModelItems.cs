@@ -255,7 +255,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		public override void RetrieveAsyncData(PackageManager manager)
 		{
 			// Retrieve info about newest online version
-			PackageInfo newestPackage = manager.GetPackage(this.itemPackageInfo.Name.VersionInvariant);
+			PackageInfo newestPackage = manager.GetPackage(this.itemPackageInfo.Name);
 			lock (this.asyncDataLock)
 			{
 				this.newestPackageInfo = newestPackage;

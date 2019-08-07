@@ -771,15 +771,15 @@ namespace Duality.Editor.PackageManagement
 			schedule.Save(updateFilePath);
 		}
 
-		private Dictionary<string,string> CreateFileMapping(LocalPackageInfo package)
+		private Dictionary<string, string> CreateFileMapping(LocalPackageInfo package)
 		{
-			Dictionary<string,string> fileMapping = new Dictionary<string,string>();
+			Dictionary<string, string> fileMapping = new Dictionary<string, string>();
 
 			PackageReaderBase packageReader = package.GetReader();
-			bool isDualityPackage = IsDualityPackage(packageReader);
+			bool isDualityPackage = IsDualityPackage(package);
 			bool isPluginPackage = isDualityPackage && packageReader.NuspecReader.GetTags().Contains(PluginTag);
 
-			string folderFriendlyPackageName = packageReader.NuspecReader.GetId();
+			string folderFriendlyPackageName = package.Identity.Id;
 			string binaryBaseDir = this.env.TargetPluginPath;
 			string contentBaseDir = this.env.TargetDataPath;
 			string sourceBaseDir = Path.Combine(this.env.TargetSourcePath, folderFriendlyPackageName);
@@ -789,20 +789,19 @@ namespace Duality.Editor.PackageManagement
 				contentBaseDir = this.env.RootPath;
 			}
 
-			List<string> applicableFiles = new List<string>();
+			var applicableFiles = new List<string>();
 			try
 			{
 				// Separate package files in to framework-dependent lib files and framework-independent 
 				// non-lib files. Those include content and source files, but also any other folder structure
 				// that isn't specifically a lib binary.
 
-				NuGetFramework matchingFramework = SelectBestFrameworkMatch(packageReader.GetSupportedFrameworks());
-				var frameworkGroup = packageReader.GetFrameworkItems().Single(x => x.TargetFramework == matchingFramework);
+				var matchingFramework = SelectBestFrameworkMatch(packageReader.GetLibItems().Select(x => x.TargetFramework));
 
-				string[] files = frameworkGroup.Items.ToArray();
-				List<string> libFiles = new List<string>();
-				List<string> nonLibFiles = new List<string>();
-				foreach (string file in files)
+				var frameworkSpecificGroup = packageReader.GetLibItems().Single(x => x.TargetFramework == matchingFramework);
+				var libFiles = new List<string>();
+				var nonLibFiles = new List<string>();
+				foreach (string file in frameworkSpecificGroup.Items)
 				{
 					string path = file.Replace('/', '\\');
 					bool isLibFile = path.StartsWith("lib\\");
@@ -811,31 +810,31 @@ namespace Duality.Editor.PackageManagement
 					else
 						nonLibFiles.Add(file);
 				}
-				//List<string> applicableLibFiles = new List<string>();
+				var applicableLibFiles = new List<string>();
 
-				//applicableLibFiles = libFiles;
+				applicableLibFiles.AddRange(libFiles);
 
-				//// Check if we have files without a target framework that do not have an equivalent
-				//// in the files from the selected match. To support legacy packages, we'll use them
-				//// as a fallback. Packages that do this are for example AdamsLair.OpenTK, AdamsLair.WinForms
-				//// and others which have a set of explicit root files and a subset of implicit framework files.
-				//if (matchingFramework != null)
-				//{
-				//	List<IPackageFile> rootFiles = libFiles.Where(f => f.TargetFramework == null).ToList();
-				//	foreach (IPackageFile file in rootFiles)
-				//	{
-				//		string fileName = Path.GetFileName(file.Path);
-				//		bool hasOverride = applicableLibFiles.Any(file => Path.GetFileName(file) == fileName);
-				//		if (!hasOverride)
-				//		{
-				//			applicableLibFiles.Add(file);
-				//		}
-				//	}
-				//}
+				// Check if we have files without a target framework that do not have an equivalent
+				// in the files from the selected match. To support legacy packages, we'll use them
+				// as a fallback. Packages that do this are for example AdamsLair.OpenTK, AdamsLair.WinForms
+				// and others which have a set of explicit root files and a subset of implicit framework files.
+				if (matchingFramework != null)
+				{
+					List<string> rootFiles = libFiles.ToList();
+					foreach (string file in rootFiles)
+					{
+						string fileName = Path.GetFileName(file);
+						bool hasOverride = applicableLibFiles.Any(f => Path.GetFileName(f) == fileName);
+						if (!hasOverride)
+						{
+							applicableLibFiles.Add(file);
+						}
+					}
+				}
 
 				// Non-lib files (content, source) are treated differently and used as-is, since they are
 				// not dependent on any target framework and just carried over.
-				applicableFiles.AddRange(libFiles);
+				applicableFiles.AddRange(applicableLibFiles);
 				applicableFiles.AddRange(nonLibFiles);
 			}
 			catch (DirectoryNotFoundException)
@@ -844,32 +843,32 @@ namespace Duality.Editor.PackageManagement
 				return fileMapping;
 			}
 
-			//foreach (IPackageFile f in applicableFiles)
-			//{
-			//	// Determine where the file needs to go
-			//	string targetPath = f.EffectivePath;
-			//	string baseDir = f.Path;
-			//	while (baseDir.Contains(Path.DirectorySeparatorChar) || baseDir.Contains(Path.AltDirectorySeparatorChar))
-			//	{
-			//		baseDir = Path.GetDirectoryName(baseDir);
-			//	}
-			//	if (string.Equals(baseDir, "lib", StringComparison.InvariantCultureIgnoreCase))
-			//		targetPath = Path.Combine(binaryBaseDir, targetPath);
-			//	else if (string.Equals(baseDir, "content", StringComparison.InvariantCultureIgnoreCase))
-			//		targetPath = Path.Combine(contentBaseDir, targetPath);
-			//	else if (string.Equals(baseDir, "source", StringComparison.InvariantCultureIgnoreCase))
-			//	{
-			//		if (targetPath.StartsWith("source") && targetPath.Length > "source".Length)
-			//			targetPath = targetPath.Remove(0, "source".Length + 1);
-			//		targetPath = Path.Combine(sourceBaseDir, targetPath);
-			//	}
-			//	else
-			//		continue;
+			foreach (string f in applicableFiles)
+			{
+				// Determine where the file needs to go
+				string targetPath = f;
+				string baseDir = Path.GetDirectoryName(f);
+				while (baseDir.Contains(Path.DirectorySeparatorChar) || baseDir.Contains(Path.AltDirectorySeparatorChar))
+				{
+					baseDir = Path.GetDirectoryName(baseDir);
+				}
+				if (string.Equals(baseDir, "lib", StringComparison.InvariantCultureIgnoreCase))
+					targetPath = Path.Combine(binaryBaseDir, targetPath);
+				else if (string.Equals(baseDir, "content", StringComparison.InvariantCultureIgnoreCase))
+					targetPath = Path.Combine(contentBaseDir, targetPath);
+				else if (string.Equals(baseDir, "source", StringComparison.InvariantCultureIgnoreCase))
+				{
+					if (targetPath.StartsWith("source") && targetPath.Length > "source".Length)
+						targetPath = targetPath.Remove(0, "source".Length + 1);
+					targetPath = Path.Combine(sourceBaseDir, targetPath);
+				}
+				else
+					continue;
 
-			//	// Add a file mapping entry linking target path to package path
-			//	if (fileMapping.ContainsKey(targetPath)) continue;
-			//	fileMapping[targetPath] = f.Path;
-			//}
+				// Add a file mapping entry linking target path to package path
+				if (fileMapping.ContainsKey(targetPath)) continue;
+				fileMapping[targetPath] = f;
+			}
 
 			return fileMapping;
 		}
