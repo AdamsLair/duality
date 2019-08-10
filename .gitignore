@@ -44,3 +44,4 @@ Source/Core/Physics/DualityPhysics.xml
 /.vs
 Samples/Benchmarks/Content/BenchmarkTestReport.txt
 Tools/.vs/
+Source/Editor/DualityEditor/EmbeddedResources/GamePluginTemplate.zip
