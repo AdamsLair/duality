@@ -4,8 +4,8 @@
     <TargetPluginDir>$(SolutionDir)..\..\Plugins\</TargetPluginDir>
   </PropertyGroup>
   <Target Name="AggregateUserPlugins" BeforeTargets="AfterBuild">
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(TargetPluginDir)" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(TargetPluginDir)" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(TargetPluginDir)" />
+    <Copy Condition="Exists('$(OutputPath)$(AssemblyName).dll')" SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(TargetPluginDir)" />
+    <Copy Condition="Exists('$(OutputPath)$(AssemblyName).pdb')" SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(TargetPluginDir)" />
+    <Copy Condition="Exists('$(OutputPath)$(AssemblyName).xml')" SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(TargetPluginDir)" />
   </Target>
 </Project>
