@@ -30,6 +30,7 @@ namespace Duality.Components
 		private ContentRef<RenderSetup>   renderSetup      = null;
 		private int                       priority         = 0;
 		private ShaderParameterCollection shaderParameters = new ShaderParameterCollection();
+		private Vector2                   tilt             = Vector2.Zero;
 
 		[DontSerialize] private DrawDevice         drawDevice      = null;
 		[DontSerialize] private DrawDevice         transformDevice = null;
@@ -177,6 +178,23 @@ namespace Duality.Components
 		public ShaderParameterCollection ShaderParameters
 		{
 			get { return this.shaderParameters; }
+		}
+		/// <summary>
+		/// [GET / SET] The camera orientation angles along the x and y axis in radians, used when
+		/// calculting the view matrix.
+		/// </summary>
+		public Vector2 Tilt
+		{
+			get { return this.tilt; }
+			set { this.tilt = value; }
+		}
+
+		/// <summary>
+		/// [GET] The camera's tilt angles along the x, y, and z axis in radians.
+		/// </summary>
+		public Vector3 Orientation
+		{
+			get { return new Vector3(this.tilt, this.gameobj.Transform.Angle); }
 		}
 		/// <summary>
 		/// [GET] Rendered image / screen space offset between the rendered <see cref="TargetRect"/> center
@@ -441,7 +459,7 @@ namespace Duality.Components
 			if (this.drawDevice == null) this.SetupDrawDevice();
 
 			this.drawDevice.ViewerPos = this.gameobj.Transform.Pos;
-			this.drawDevice.ViewerAngle = this.gameobj.Transform.Angle;
+			this.drawDevice.ViewerOrientation = this.Orientation;
 			this.drawDevice.NearZ = this.nearZ;
 			this.drawDevice.FarZ = this.farZ;
 			this.drawDevice.FocusDist = this.focusDist;
@@ -474,7 +492,7 @@ namespace Duality.Components
 			if (this.transformDevice == null) this.SetupTransformDevice();
 
 			this.transformDevice.ViewerPos = this.gameobj.Transform.Pos;
-			this.transformDevice.ViewerAngle = this.gameobj.Transform.Angle;
+			this.transformDevice.ViewerOrientation = this.Orientation;
 			this.transformDevice.NearZ = this.nearZ;
 			this.transformDevice.FarZ = this.farZ;
 			this.transformDevice.FocusDist = this.focusDist;
