@@ -113,7 +113,7 @@ namespace Duality.Plugins.Tilemaps
 			}
 
 			// Determine the edge length of a square that is big enough to enclose the world space rect of the Camera view
-			float visualAngle = input.TilemapAngle - device.ViewerAngle;
+			float visualAngle = input.TilemapAngle - device.ViewerOrientation.Z; // TODO: Tilemaps are broken with this change, need to fix
 			Vector2 visualBounds = new Vector2(
 				device.TargetSize.Y * MathF.Abs(MathF.Sin(visualAngle)) + device.TargetSize.X * MathF.Abs(MathF.Cos(visualAngle)),
 				device.TargetSize.X * MathF.Abs(MathF.Sin(visualAngle)) + device.TargetSize.Y * MathF.Abs(MathF.Cos(visualAngle)));

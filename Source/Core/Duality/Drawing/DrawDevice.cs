@@ -156,7 +156,7 @@ namespace Duality.Drawing
 		private Vector2                   targetSize       = Vector2.Zero;
 		private Rect                      viewportRect     = Rect.Empty;
 		private Vector3                   viewerPos        = Vector3.Zero;
-		private float                     viewerAngle      = 0.0f;
+		private Vector3                   viewerOrientation= Vector3.Zero;
 		private ContentRef<RenderTarget>  renderTarget     = null;
 		private ProjectionMode            projection       = ProjectionMode.Perspective;
 		private Matrix4                   matView          = Matrix4.Identity;
@@ -197,13 +197,13 @@ namespace Duality.Drawing
 				this.UpdateMatrices();
 			}
 		}
-		public float ViewerAngle
+		public Vector3 ViewerOrientation
 		{
-			get { return this.viewerAngle; }
+			get { return this.viewerOrientation; }
 			set
 			{
-				if (this.viewerAngle == value) return;
-				this.viewerAngle = value;
+				if (this.viewerOrientation == value) return;
+				this.viewerOrientation = value;
 				this.UpdateMatrices();
 			}
 		}
@@ -707,7 +707,7 @@ namespace Duality.Drawing
 				// Translate opposite to camera position
 				this.matView *= Matrix4.CreateTranslation(-this.viewerPos);
 				// Rotate opposite to camera angle
-				this.matView *= Matrix4.CreateRotationZ(-this.viewerAngle);
+				this.matView *= Matrix4.CreateRotationZ(-this.viewerOrientation.Z);
 			}
 		}
 		private void UpdateProjectionMatrix()
