@@ -432,14 +432,15 @@ namespace Duality.Drawing
 			clipPos.X *= invClipW;
 			clipPos.Y *= invClipW;
 			clipPos.Z *= invClipW;
-			Vector2 clipRadius;
+			Vector3 clipRadius;
 			clipRadius.X = radius * Math.Abs(this.matProjection.Row0.X) * invClipW;
 			clipRadius.Y = radius * Math.Abs(this.matProjection.Row1.Y) * invClipW;
+			clipRadius.Z = radius * Math.Abs(this.matProjection.Row2.Z) * invClipW;
 
 			// Check if the result would still be within valid device coordinates
 			return 
-				clipPos.Z >= -1.0f &&
-				clipPos.Z <= 1.0f &&
+				clipPos.Z >= -1.0f - clipRadius.Z && 
+				clipPos.Z <= 1.0f + clipRadius.Z &&
 				clipPos.X >= -1.0f - clipRadius.X &&
 				clipPos.X <= 1.0f + clipRadius.X &&
 				clipPos.Y >= -1.0f - clipRadius.Y &&

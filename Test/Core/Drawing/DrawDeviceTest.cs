@@ -45,7 +45,7 @@ namespace Duality.Tests.Drawing
 				Assert.IsFalse(device.IsSphereInView(new Vector3(viewportSize.X + 200, 0, 0), 150));
 				Assert.IsFalse(device.IsSphereInView(new Vector3(0, viewportSize.Y + 200, 0), 150));
 				Assert.IsFalse(device.IsSphereInView(new Vector3(0, 0, 1000000000), 150));
-				Assert.IsFalse(device.IsSphereInView(new Vector3(0, 0, -50), 150));
+				Assert.IsFalse(device.IsSphereInView(new Vector3(0, 0, -200), 150));
 			}
 		}
 		[Test] public void IsSphereInViewOrthographic()
@@ -69,16 +69,16 @@ namespace Duality.Tests.Drawing
 				Assert.IsTrue(device.IsSphereInView(new Vector3(0, -viewportSize.Y * 0.5f - 100, device.FocusDist), 150));
 				Assert.IsTrue(device.IsSphereInView(new Vector3(viewportSize.X * 0.5f + 100, 0, device.FocusDist), 150));
 				Assert.IsTrue(device.IsSphereInView(new Vector3(0, viewportSize.Y * 0.5f + 100, device.FocusDist), 150));
-				Assert.IsTrue(device.IsSphereInView(new Vector3(0, 0, device.FarZ - 50), 150));
-				Assert.IsTrue(device.IsSphereInView(new Vector3(0, 0, device.NearZ + 50), 150));
+				Assert.IsTrue(device.IsSphereInView(new Vector3(0, 0, device.FarZ + 100), 150));
+				Assert.IsTrue(device.IsSphereInView(new Vector3(0, 0, device.NearZ - 100), 150));
 				
 				// Just outside each of the viewports sides
 				Assert.IsFalse(device.IsSphereInView(new Vector3(-viewportSize.X * 0.5f - 200, 0, device.FocusDist), 150));
 				Assert.IsFalse(device.IsSphereInView(new Vector3(0, -viewportSize.Y * 0.5f - 200, device.FocusDist), 150));
 				Assert.IsFalse(device.IsSphereInView(new Vector3(viewportSize.X * 0.5f + 200, 0, device.FocusDist), 150));
 				Assert.IsFalse(device.IsSphereInView(new Vector3(0, viewportSize.Y * 0.5f + 200, device.FocusDist), 150));
-				Assert.IsFalse(device.IsSphereInView(new Vector3(0, 0, device.FarZ + 50), 150));
-				Assert.IsFalse(device.IsSphereInView(new Vector3(0, 0, device.NearZ - 50), 150));
+				Assert.IsFalse(device.IsSphereInView(new Vector3(0, 0, device.FarZ + 200), 150));
+				Assert.IsFalse(device.IsSphereInView(new Vector3(0, 0, device.NearZ - 200), 150));
 			}
 		}
 		[Test] public void IsSphereInViewPerspective()
@@ -102,16 +102,16 @@ namespace Duality.Tests.Drawing
 				Assert.IsTrue(device.IsSphereInView(new Vector3(0, -viewportSize.Y * 0.5f - 100, device.FocusDist), 150));
 				Assert.IsTrue(device.IsSphereInView(new Vector3(viewportSize.X * 0.5f + 100, 0, device.FocusDist), 150));
 				Assert.IsTrue(device.IsSphereInView(new Vector3(0, viewportSize.Y * 0.5f + 100, device.FocusDist), 150));
-				Assert.IsTrue(device.IsSphereInView(new Vector3(0, 0, device.FarZ - 50), 150));
-				Assert.IsTrue(device.IsSphereInView(new Vector3(0, 0, device.NearZ + 50), 150));
-				
+				Assert.IsTrue(device.IsSphereInView(new Vector3(0, 0, device.FarZ + 50), 150));
+				Assert.IsTrue(device.IsSphereInView(new Vector3(0, 0, device.NearZ - 50), 150));
+
 				// Just outside each of the viewports sides
 				Assert.IsFalse(device.IsSphereInView(new Vector3(-viewportSize.X * 0.5f - 200, 0, device.FocusDist), 150));
 				Assert.IsFalse(device.IsSphereInView(new Vector3(0, -viewportSize.Y * 0.5f - 200, device.FocusDist), 150));
 				Assert.IsFalse(device.IsSphereInView(new Vector3(viewportSize.X * 0.5f + 200, 0, device.FocusDist), 150));
 				Assert.IsFalse(device.IsSphereInView(new Vector3(0, viewportSize.Y * 0.5f + 200, device.FocusDist), 150));
-				Assert.IsFalse(device.IsSphereInView(new Vector3(0, 0, device.FarZ + 50), 150));
-				Assert.IsFalse(device.IsSphereInView(new Vector3(0, 0, device.NearZ - 50), 150));
+				Assert.IsFalse(device.IsSphereInView(new Vector3(0, 0, device.FarZ + 500), 1));
+				Assert.IsFalse(device.IsSphereInView(new Vector3(0, 0, device.NearZ - 200), 150));
 
 				// Things that are in/visible because of perspective projection
 				Assert.IsFalse(device.IsSphereInView(new Vector3(-viewportSize.X * 0.5f - 100, 0, device.FocusDist * 0.5f), 150));
