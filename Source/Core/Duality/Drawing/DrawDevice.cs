@@ -708,6 +708,8 @@ namespace Duality.Drawing
 				this.matView *= Matrix4.CreateTranslation(-this.viewerPos);
 				// Rotate opposite to camera angle
 				this.matView *= Matrix4.CreateRotationZ(-this.viewerOrientation.Z);
+				this.matView *= Matrix4.CreateRotationY(-this.viewerOrientation.Y);
+				this.matView *= Matrix4.CreateRotationX(-this.viewerOrientation.X);
 			}
 		}
 		private void UpdateProjectionMatrix()
