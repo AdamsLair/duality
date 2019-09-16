@@ -180,15 +180,27 @@ namespace Duality.Components
 			get { return this.shaderParameters; }
 		}
 		/// <summary>
-		/// [GET / SET] The camera orientation angles along the x and y axis in radians, used when
+		/// [GET / SET] The camera orientation angles along the x and y axis in degrees, used when
 		/// calculting the view matrix.
 		/// </summary>
 		public Vector2 Tilt
 		{
-			get { return this.tilt; }
-			set { this.tilt = value; }
+			get { return new Vector2(MathF.RadToDeg(this.tilt.X), MathF.RadToDeg(this.tilt.Y)); }
+			set { this.TiltInRadians = new Vector2(MathF.DegToRad(value.X), MathF.DegToRad(value.Y)); }
 		}
-
+		/// <summary>
+		/// [GET / SET] The camera orientation angles along the x and y axis in radians, used when
+		/// calculting the view matrix.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public Vector2 TiltInRadians
+		{
+			get { return this.tilt; }
+			set {
+				this.tilt.X = MathF.NormalizeAngle(value.X);
+				this.tilt.Y = MathF.NormalizeAngle(value.Y);
+			}
+		}
 		/// <summary>
 		/// [GET] The camera's tilt angles along the x, y, and z axis in radians.
 		/// </summary>
