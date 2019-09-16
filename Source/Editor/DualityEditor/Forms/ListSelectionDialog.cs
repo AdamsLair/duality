@@ -95,6 +95,7 @@ namespace Duality.Editor.Forms
 			this.itemListing.SelectionChanged += this.ResourceListingOnSelectedIndexChanged;
 			this.itemListing.DoubleClick += this.ResourceListingOnDoubleClick;
 			this.itemListing.NodeFilter += this.NodeFilter;
+			this.itemListing.Click += this.itemListing_Click;
 
 			this.txtFilterInput.KeyDown += this.TxtFilterInputOnKeyDown;
 
@@ -118,6 +119,7 @@ namespace Duality.Editor.Forms
 			if (this.SelectType)
 			{
 				this.Text = "Select a Type";
+				this.buttonOk.Enabled = false;
 
 				foreach (TypeInfo type in DualityApp.GetAvailDualityTypes(this.FilteredType).Where(t => !t.IsAbstract && !t.IsInterface))
 				{
@@ -271,8 +273,18 @@ namespace Duality.Editor.Forms
 			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, 212, 212, 212)), e.Bounds);
 			e.Handled = true;
 		}
+
+		private bool ShouldEnableOkButton
+		{
+			get
+			{
+				return this.itemListing.SelectedNode != null || this.txtFilterInput.Text.Length > 0;
+			}
+		}
+
 		private void txtFilterInput_TextChanged(object sender, EventArgs e)
 		{
+			this.buttonOk.Enabled = this.ShouldEnableOkButton;
 			this.itemListing.UpdateNodeFilter();
 
 			if (this.itemListing.Root.Children.Count > 0)
@@ -280,6 +292,12 @@ namespace Duality.Editor.Forms
 				this.itemListing.SelectedNode = this.itemListing.FirstVisibleNode();
 			}
 		}
+
+		private void itemListing_Click(object sender, EventArgs e)
+		{
+			this.buttonOk.Enabled = this.ShouldEnableOkButton;
+		}
+
 		private void itemListing_Resize(object sender, EventArgs e)
 		{
 			Size sizeChange = new Size(
