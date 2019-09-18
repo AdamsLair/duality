@@ -278,19 +278,20 @@ namespace Duality.Editor.Forms
 		{
 			get
 			{
-				return this.itemListing.SelectedNode != null || this.txtFilterInput.Text.Length > 0;
+				return this.itemListing.SelectedNode != null;
 			}
 		}
 
 		private void txtFilterInput_TextChanged(object sender, EventArgs e)
 		{
-			this.buttonOk.Enabled = this.ShouldEnableOkButton;
 			this.itemListing.UpdateNodeFilter();
 
 			if (this.itemListing.Root.Children.Count > 0)
 			{
 				this.itemListing.SelectedNode = this.itemListing.FirstVisibleNode();
 			}
+
+			this.buttonOk.Enabled = this.ShouldEnableOkButton;
 		}
 
 		private void itemListing_Click(object sender, EventArgs e)
