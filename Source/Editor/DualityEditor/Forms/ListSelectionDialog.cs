@@ -116,10 +116,10 @@ namespace Duality.Editor.Forms
 			this.itemListing.BeginUpdate();
 			this.Model.Nodes.Clear();
 
+			this.buttonOk.Enabled = false;
 			if (this.SelectType)
 			{
 				this.Text = "Select a Type";
-				this.buttonOk.Enabled = false;
 
 				foreach (TypeInfo type in DualityApp.GetAvailDualityTypes(this.FilteredType).Where(t => !t.IsAbstract && !t.IsInterface))
 				{
