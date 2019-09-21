@@ -80,6 +80,10 @@ namespace Duality.Editor.Forms
 		public Type TypeReference { get; set; }
 
 		private TreeModel Model { get; set; }
+		private bool ShouldEnableOkButton
+		{
+			get { return this.itemListing.SelectedNode != null; }
+		}
 
 
 		public ListSelectionDialog()
@@ -274,14 +278,6 @@ namespace Duality.Editor.Forms
 			e.Handled = true;
 		}
 
-		private bool ShouldEnableOkButton
-		{
-			get
-			{
-				return this.itemListing.SelectedNode != null;
-			}
-		}
-
 		private void txtFilterInput_TextChanged(object sender, EventArgs e)
 		{
 			this.itemListing.UpdateNodeFilter();
@@ -293,12 +289,10 @@ namespace Duality.Editor.Forms
 
 			this.buttonOk.Enabled = this.ShouldEnableOkButton;
 		}
-
 		private void itemListing_Click(object sender, EventArgs e)
 		{
 			this.buttonOk.Enabled = this.ShouldEnableOkButton;
 		}
-
 		private void itemListing_Resize(object sender, EventArgs e)
 		{
 			Size sizeChange = new Size(
