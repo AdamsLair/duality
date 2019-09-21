@@ -99,7 +99,6 @@ namespace Duality.Editor.Forms
 			this.itemListing.SelectionChanged += this.ResourceListingOnSelectedIndexChanged;
 			this.itemListing.DoubleClick += this.ResourceListingOnDoubleClick;
 			this.itemListing.NodeFilter += this.NodeFilter;
-			this.itemListing.Click += this.itemListing_Click;
 
 			this.txtFilterInput.KeyDown += this.TxtFilterInputOnKeyDown;
 
@@ -227,6 +226,8 @@ namespace Duality.Editor.Forms
 		}
 		private void ResourceListingOnSelectedIndexChanged(object sender, EventArgs eventArgs)
 		{
+			this.buttonOk.Enabled = this.ShouldEnableOkButton;
+
 			if (this.itemListing.SelectedNode == null)
 			{
 				this.ResourceReference = null;
@@ -287,10 +288,6 @@ namespace Duality.Editor.Forms
 				this.itemListing.SelectedNode = this.itemListing.FirstVisibleNode();
 			}
 
-			this.buttonOk.Enabled = this.ShouldEnableOkButton;
-		}
-		private void itemListing_Click(object sender, EventArgs e)
-		{
 			this.buttonOk.Enabled = this.ShouldEnableOkButton;
 		}
 		private void itemListing_Resize(object sender, EventArgs e)
