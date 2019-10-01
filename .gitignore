@@ -15,6 +15,7 @@ Samples/**/Content/Plugins/*.core.dll
 Samples/**/Content/Plugins/*.editor.dll
 Samples/**/PackageConfig.xml
 Samples/**/Content/Source/Code/
+Samples/**/Content/OpenAL32.dll
 *.core.xml
 *.editor.xml
 *.core.pdb
@@ -43,3 +44,4 @@ Source/Core/Physics/DualityPhysics.xml
 /.vs
 Samples/Benchmarks/Content/BenchmarkTestReport.txt
 Tools/.vs/
+Source/Editor/DualityEditor/EmbeddedResources/GamePluginTemplate.zip

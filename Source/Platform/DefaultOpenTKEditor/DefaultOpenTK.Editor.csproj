@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Duality.Editor.Backend.DefaultOpenTK</RootNamespace>
     <AssemblyName>DefaultOpenTKBackend.editor</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
@@ -25,7 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>4</LangVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,15 +35,9 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>4</LangVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AdamsLair.OpenTK.1.2.2\lib\net20\OpenTK.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTK.GLControl, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\AdamsLair.OpenTK.GLControl.1.2.2\lib\net20\OpenTK.GLControl.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -79,13 +73,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="AdamsLair.OpenTK">
+      <Version>1.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="AdamsLair.OpenTK.GLControl" GeneratePathProperty="true">
+      <Version>1.2.2</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
-    <Copy SourceFiles="$(OutputPath)OpenTK.GLControl.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)OpenTK.GLControl.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.dll" DestinationFolder="$(SolutionDir)Build\Output\"/>
+	  <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.xml" DestinationFolder="$(SolutionDir)Build\Output\"/>
   </Target>
 </Project>

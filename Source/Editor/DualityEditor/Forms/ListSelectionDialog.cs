@@ -80,6 +80,10 @@ namespace Duality.Editor.Forms
 		public Type TypeReference { get; set; }
 
 		private TreeModel Model { get; set; }
+		private bool ShouldEnableOkButton
+		{
+			get { return this.itemListing.SelectedNode != null; }
+		}
 
 
 		public ListSelectionDialog()
@@ -115,6 +119,7 @@ namespace Duality.Editor.Forms
 			this.itemListing.BeginUpdate();
 			this.Model.Nodes.Clear();
 
+			this.buttonOk.Enabled = false;
 			if (this.SelectType)
 			{
 				this.Text = "Select a Type";
@@ -221,6 +226,8 @@ namespace Duality.Editor.Forms
 		}
 		private void ResourceListingOnSelectedIndexChanged(object sender, EventArgs eventArgs)
 		{
+			this.buttonOk.Enabled = this.ShouldEnableOkButton;
+
 			if (this.itemListing.SelectedNode == null)
 			{
 				this.ResourceReference = null;
@@ -271,6 +278,7 @@ namespace Duality.Editor.Forms
 			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, 212, 212, 212)), e.Bounds);
 			e.Handled = true;
 		}
+
 		private void txtFilterInput_TextChanged(object sender, EventArgs e)
 		{
 			this.itemListing.UpdateNodeFilter();
@@ -279,6 +287,8 @@ namespace Duality.Editor.Forms
 			{
 				this.itemListing.SelectedNode = this.itemListing.FirstVisibleNode();
 			}
+
+			this.buttonOk.Enabled = this.ShouldEnableOkButton;
 		}
 		private void itemListing_Resize(object sender, EventArgs e)
 		{

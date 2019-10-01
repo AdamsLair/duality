@@ -264,14 +264,13 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			GraphicsPath connectedOutlines = new GraphicsPath();
 			GraphicsPath connectedRegion = new GraphicsPath();
 
-			// Draw all the tiles that we're supposed to paint
+			// Accumulate info on connectivity regions
 			for (int i = 0; i < e.PaintedTiles.Count; i++)
 			{
 				TilesetViewPaintTileData paintData = e.PaintedTiles[i];
 
 				// Prepare some data we'll need for drawing the per-tile info overlay
 				bool tileHovered = this.TilesetView.HoveredTileIndex == paintData.TileIndex;
-				bool isBaseTile = autoTile.BaseTileIndex == paintData.TileIndex;
 				TilesetAutoTileItem item = (autoTile.TileInput.Count > paintData.TileIndex) ? 
 					tileInput[paintData.TileIndex] : 
 					default(TilesetAutoTileItem);
@@ -295,12 +294,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				{
 					connectedRegion.AddRectangle(paintData.ViewRect);
 				}
-
-				// Highlight base tile and external connecting tiles
-				if (isBaseTile)
-					DrawTileHighlight(e.Graphics, paintData.ViewRect, baseTileDrawColor);
-				else if (!item.IsAutoTile && item.ConnectsToAutoTile)
-					DrawTileHighlight(e.Graphics, paintData.ViewRect, externalDrawColor);
 			}
 
 			// Fill all non-connected regions with the overlay brush
@@ -313,7 +306,25 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 			// Draw connected region outlines
 			e.Graphics.DrawPath(Pens.White, connectedOutlines);
-			
+
+			// Draw tile highlights
+			for (int i = 0; i < e.PaintedTiles.Count; i++)
+			{
+				TilesetViewPaintTileData paintData = e.PaintedTiles[i];
+
+				// Prepare some data we'll need for drawing the per-tile info overlay
+				bool isBaseTile = autoTile.BaseTileIndex == paintData.TileIndex;
+				TilesetAutoTileItem item = (autoTile.TileInput.Count > paintData.TileIndex) ?
+					tileInput[paintData.TileIndex] :
+					default(TilesetAutoTileItem);
+
+				// Highlight base tile and external connecting tiles
+				if (isBaseTile)
+					DrawTileHighlight(e.Graphics, paintData.ViewRect, baseTileDrawColor);
+				else if (!item.IsAutoTile && item.ConnectsToAutoTile)
+					DrawTileHighlight(e.Graphics, paintData.ViewRect, externalDrawColor);
+			}
+
 			// Draw a tile-based hover indicator
 			if (!hoveredData.ViewRect.IsEmpty && !this.isBaseTileDraw && !this.isExternalDraw)
 				DrawHoverIndicator(e.Graphics, hoveredData.ViewRect, 64, highlightColor);
@@ -362,9 +373,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			TilesetAutoTileInput autoTile = this.currentAutoTile;
 			if (autoTile != null)
 			{
-				this.isBaseTileDraw = 
-					autoTile.BaseTileIndex == -1 || 
-					autoTile.BaseTileIndex == this.TilesetView.HoveredTileIndex;
+				this.isBaseTileDraw = autoTile.BaseTileIndex == -1;
 			}
 			this.UpdateExternalDrawMode();
 
@@ -491,7 +500,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				else
 				{
 					newInput.Neighbours &= ~this.hoveredArea;
-					newInput.IsAutoTile = (newInput.Neighbours != TileConnection.None);
 				}
 			}
 			

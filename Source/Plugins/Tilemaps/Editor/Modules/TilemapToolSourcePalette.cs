@@ -233,6 +233,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 
 			// Retrieve selected tile data
+			Tileset tileset = this.SelectedTileset.Res;
 			IReadOnlyGrid<Tile> selectedTiles = this.tilesetView.SelectedTiles;
 			Grid<bool> shape = new Grid<bool>(selectedTiles.Width, selectedTiles.Height);
 			Grid<Tile> pattern = new Grid<Tile>(selectedTiles.Width, selectedTiles.Height);
@@ -240,8 +241,28 @@ namespace Duality.Editor.Plugins.Tilemaps
 			{
 				for (int x = 0; x < selectedTiles.Width; x++)
 				{
+					Tile tile = selectedTiles[x, y];
+
+					// For standard autotile parts, only paint the autotiles base index
+					// and ignore which specific part was selected. 
+					//
+					// Note that this doesn't ensure completely normalized autotile base indices
+					// across the tilemap, only normalized new indices being painted. A full
+					// normalization guarantee would be possible by changing Tile.ResolveIndex, 
+					// but since it isn't actually necessary and potentially destructive, we'll
+					// just make sure "most indices are generally" normalized.
+					int autoTileIndex = tileset.TileData[tile.BaseIndex].AutoTileLayer - 1;
+					if (autoTileIndex >= 0)
+					{
+						TilesetAutoTileInfo autoTile = tileset.AutoTileData[autoTileIndex];
+						TileConnection connectivity = autoTile.TileInfo[tile.BaseIndex].Neighbours;
+						bool isDefaultTile = autoTile.StateToTile[(int)connectivity] == tile.BaseIndex;
+						if (isDefaultTile)
+							tile.BaseIndex = autoTile.BaseTileIndex;
+					}
+
 					shape[x, y] = true;
-					pattern[x, y] = selectedTiles[x, y];
+					pattern[x, y] = tile;
 				}
 			}
 			this.paletteSource.SetData(shape, pattern);

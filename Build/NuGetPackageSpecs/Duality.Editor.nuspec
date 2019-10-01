@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>3.1.2</version>
+    <version>3.1.7</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,10 +13,10 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>Patch Version Update
-</releaseNotes>
+    <releaseNotes>Type Selection Dialog Bugfixes
+#FIX: Fixed type selection dialog causing an exception when closing via Ok button without selecting anything.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.0.3" />
+      <dependency id="AdamsLair.Duality" version="3.1.3" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.2" />
       <dependency id="AdamsLair.TreeViewAdv" version="1.7.7" />
       <dependency id="AdamsLair.WinForms" version="1.1.17" />

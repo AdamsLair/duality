@@ -27,7 +27,9 @@ namespace Duality.Plugins.Tilemaps
 		private static readonly TileConnection BottomRight = TileConnection.BottomRight;
 
 
-		private TileConnection[][] data;
+		private TileConnection[][] tileToFallbackList;
+		private TileConnection[] tileToBasePermutation;
+		private TileConnection[] basePermutation;
 
 		public TilesetAutoTileFallbackMap()
 		{
@@ -35,65 +37,137 @@ namespace Duality.Plugins.Tilemaps
 		}
 
 
+		/// <summary>
+		/// The reduced list of 47 tile connectivity permutations that are required to form 
+		/// a full AutoTile.
+		/// </summary>
+		public IReadOnlyList<TileConnection> BaseConnectivityTiles
+		{
+			get { return this.basePermutation; }
+		}
+
+
+		/// <summary>
+		/// Returns a connectivity bitmask that contains all relevant bits for the specified
+		/// subtile quadrant of an AutoTile.
+		/// </summary>
+		/// <param name="quadrant"></param>
+		/// <returns></returns>
+		public TileConnection GetSubTileMask(TileQuadrant quadrant)
+		{
+			switch (quadrant)
+			{
+				case TileQuadrant.TopLeft:     return TileConnection.Top | TileConnection.TopLeft | TileConnection.Left;
+				case TileQuadrant.TopRight:    return TileConnection.Top | TileConnection.TopRight | TileConnection.Right;
+				case TileQuadrant.BottomRight: return TileConnection.Bottom | TileConnection.BottomRight | TileConnection.Right;
+				case TileQuadrant.BottomLeft:  return TileConnection.Bottom | TileConnection.BottomLeft | TileConnection.Left;
+				default:                       return TileConnection.None;
+			}
+		}
+		/// <summary>
+		/// Given the specified connectivity bitmask, this method returns the functionally
+		/// equivalent base connectivity with all the DontCare bits for this case removed.
+		/// 
+		/// Not all bits in a connectivity mask make a difference in all cases, and instead
+		/// of the theoretical 256 tiles per AutoTile, we can get down to 47 tiles if we ignore
+		/// all the scenarios where individual connectivity bits don't matter. 
+		/// 
+		/// See this image for an illustration of this:
+		/// https://cloud.githubusercontent.com/assets/14859411/11279962/ccc1ac2e-8ef3-11e5-8e99-861b0d7a1c9a.png
+		/// </summary>
+		/// <param name="connection"></param>
+		/// <returns></returns>
+		public TileConnection GetBaseConnectivity(TileConnection connection)
+		{
+			return this.tileToBasePermutation[(int)connection];
+		}
+		/// <summary>
+		/// Given the specified connectivity bitmask, this method returns a list of other
+		/// connectivities that can be used to find a suitable fallback tile, if no tile
+		/// with the specified connectivity is available.
+		/// </summary>
+		/// <param name="connection"></param>
+		/// <returns></returns>
 		public IReadOnlyList<TileConnection> GetFallback(TileConnection connection)
 		{
-			return this.data[(int)connection] ?? NoFallbacks;
+			return this.tileToFallbackList[(int)connection] ?? NoFallbacks;
 		}
 
 		private void GenerateData()
 		{
+			// By default, every tile is considered a base permutation itself
+			this.tileToBasePermutation = new TileConnection[StateCount];
+			for (int i = 0; i < this.tileToBasePermutation.Length; i++)
+			{
+				this.tileToBasePermutation[i] = (TileConnection)i;
+			}
+
+			// Apply DontCare permutations, reducing the overall number of required connectivity states to 47.
+			// See here: https://cloud.githubusercontent.com/assets/14859411/11279962/ccc1ac2e-8ef3-11e5-8e99-861b0d7a1c9a.png
+			MapAllPermutations(this.tileToBasePermutation, Left | Right | BottomLeft | Bottom | BottomRight, TopLeft, TopRight);
+			MapAllPermutations(this.tileToBasePermutation, TopLeft | Top | Left | BottomLeft | Bottom,       TopRight, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, Left | BottomLeft | Bottom,                       TopLeft, TopRight, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, TopLeft | Top | TopRight | Left | Right,          BottomLeft, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, Left | Right,                                     TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, TopLeft | Top | Left,                             TopRight, BottomLeft, BottomRight);
+
+			MapAllPermutations(this.tileToBasePermutation, Left,                                             TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, Top | TopRight | Right | Bottom | BottomRight,    TopLeft, BottomLeft);
+			MapAllPermutations(this.tileToBasePermutation, Right | Bottom | BottomRight,                     TopLeft, TopRight, BottomLeft);
+			MapAllPermutations(this.tileToBasePermutation, Top | Bottom,                                     TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, Bottom,                                           TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, Top | TopRight | Right,                           TopLeft, BottomLeft, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, Right,                                            TopLeft, TopRight, BottomLeft, BottomRight);
+
+			MapAllPermutations(this.tileToBasePermutation, Top,                                              TopLeft, TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, None,                                             TopLeft, TopRight, BottomLeft, BottomRight);
+
+			MapAllPermutations(this.tileToBasePermutation, Left | Right | BottomLeft | Bottom,               TopLeft, TopRight);
+			MapAllPermutations(this.tileToBasePermutation, Left | Right | Bottom | BottomRight,              TopLeft, TopRight);
+			MapAllPermutations(this.tileToBasePermutation, Left | Right | Bottom,                            TopLeft, TopRight);
+			MapAllPermutations(this.tileToBasePermutation, Top | Left | BottomLeft | Bottom,                 TopRight, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, TopLeft | Top | Left | Bottom,                    TopRight, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, Top | Left | Bottom,                              TopRight, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, Left | Bottom,                                    TopLeft, TopRight, BottomRight);
+
+			MapAllPermutations(this.tileToBasePermutation, Top | TopRight | Left | Right,                    BottomLeft, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, TopLeft | Top | Left | Right,                     BottomLeft, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, Top | Left | Right,                               BottomLeft, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, Top | Left,                                       TopRight, BottomLeft, BottomRight);
+			MapAllPermutations(this.tileToBasePermutation, Top | Right | Bottom | BottomRight,               TopLeft, BottomLeft);
+			MapAllPermutations(this.tileToBasePermutation, Top | TopRight | Right | Bottom,                  TopLeft, BottomLeft);
+			MapAllPermutations(this.tileToBasePermutation, Top | Right | Bottom,                             TopLeft, BottomLeft);
+
+			MapAllPermutations(this.tileToBasePermutation, Right | Bottom,                                   TopLeft, TopRight, BottomLeft);
+			MapAllPermutations(this.tileToBasePermutation, Top | Right,                                      TopLeft, BottomLeft, BottomRight);
+
+			// Initialize the fallback map with falling back to each tiles base permutation, 
+			// and a sensible default otherwise
+			List<TileConnection> basePermutationList = new List<TileConnection>();
 			TileConnection[] directFallbacks = new TileConnection[StateCount];
 			for (int i = 0; i < directFallbacks.Length; i++)
 			{
-				// Since our default is the AutoTile's base tile, which is fully connected,
-				// use the fully connected state as a default.
-				directFallbacks[i] = TileConnection.All;
+				TileConnection connectivity = (TileConnection)i;
+				TileConnection basePermutation = this.tileToBasePermutation[i];
+
+				// If there is a base permutation to this connectivity, fall back to this one first
+				if (connectivity != basePermutation)
+				{
+					directFallbacks[i] = basePermutation;
+				}
+				// Otherwise, fall back to the AutoTile's base tile, which is fully connected
+				else
+				{
+					directFallbacks[i] = TileConnection.All;
+					basePermutationList.Add(connectivity);
+				}
 			}
+			this.basePermutation = basePermutationList.ToArray();
 
-			//
-			// DontCare permutations, reducing the overall number of required connectivity states to 47.
-			// See here: https://cloud.githubusercontent.com/assets/14859411/11279962/ccc1ac2e-8ef3-11e5-8e99-861b0d7a1c9a.png
-			//
-			MapAllPermutations(directFallbacks, Left | Right | BottomLeft | Bottom | BottomRight, TopLeft, TopRight);
-			MapAllPermutations(directFallbacks, TopLeft | Top | Left | BottomLeft | Bottom,       TopRight, BottomRight);
-			MapAllPermutations(directFallbacks, Left | BottomLeft | Bottom,                       TopLeft, TopRight, BottomRight);
-			MapAllPermutations(directFallbacks, TopLeft | Top | TopRight | Left | Right,          BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Left | Right,                                     TopLeft, TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, TopLeft | Top | Left,                             TopRight, BottomLeft, BottomRight);
-
-			MapAllPermutations(directFallbacks, Left,                                             TopLeft, TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Top | TopRight | Right | Bottom | BottomRight,    TopLeft, BottomLeft);
-			MapAllPermutations(directFallbacks, Right | Bottom | BottomRight,                     TopLeft, TopRight, BottomLeft);
-			MapAllPermutations(directFallbacks, Top | Bottom,                                     TopLeft, TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Bottom,                                           TopLeft, TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Top | TopRight | Right,                           TopLeft, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Right,                                            TopLeft, TopRight, BottomLeft, BottomRight);
-
-			MapAllPermutations(directFallbacks, Top,                                              TopLeft, TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, None,                                             TopLeft, TopRight, BottomLeft, BottomRight);
-
-			MapAllPermutations(directFallbacks, Left | Right | BottomLeft | Bottom,               TopLeft, TopRight);
-			MapAllPermutations(directFallbacks, Left | Right | Bottom | BottomRight,              TopLeft, TopRight);
-			MapAllPermutations(directFallbacks, Left | Right | Bottom,                            TopLeft, TopRight);
-			MapAllPermutations(directFallbacks, Top | Left | BottomLeft | Bottom,                 TopRight, BottomRight);
-			MapAllPermutations(directFallbacks, TopLeft | Top | Left | Bottom,                    TopRight, BottomRight);
-			MapAllPermutations(directFallbacks, Top | Left | Bottom,                              TopRight, BottomRight);
-			MapAllPermutations(directFallbacks, Left | Bottom,                                    TopLeft, TopRight, BottomRight);
-
-			MapAllPermutations(directFallbacks, Top | TopRight | Left | Right,                    BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, TopLeft | Top | Left | Right,                     BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Top | Left | Right,                               BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Top | Left,                                       TopRight, BottomLeft, BottomRight);
-			MapAllPermutations(directFallbacks, Top | Right | Bottom | BottomRight,               TopLeft, BottomLeft);
-			MapAllPermutations(directFallbacks, Top | TopRight | Right | Bottom,                  TopLeft, BottomLeft);
-			MapAllPermutations(directFallbacks, Top | Right | Bottom,                             TopLeft, BottomLeft);
-
-			MapAllPermutations(directFallbacks, Right | Bottom,                                   TopLeft, TopRight, BottomLeft);
-			MapAllPermutations(directFallbacks, Top | Right,                                      TopLeft, BottomLeft, BottomRight);
-			
-			//
-			// Actual fallbacks in case a certain connectivity state is unavailable.
-			//
+			// Define actual fallbacks in case a certain connectivity state is unavailable.
+			// Unlike the DontCare states above, these fallbacks are not functionally equivalent,
+			// so they will all look different degrees of wrong - but they'll work in some cases,
+			// and it's better than not having a fallback at all.
 			directFallbacks[(int)(Top | Left | Right | BottomLeft | Bottom | BottomRight)] = All;
 			directFallbacks[(int)(TopLeft | Top | Left | Right | BottomLeft | Bottom)]     = All;
 			directFallbacks[(int)(Top | TopRight | Left | Right | Bottom | BottomRight)]   = All;
@@ -136,7 +210,7 @@ namespace Duality.Plugins.Tilemaps
 			directFallbacks[(int)(Right | Bottom)] = Right | Bottom | BottomRight;
 
 			// Create a transitive fallback chain for each connectivity state
-			this.data = CreateTransitiveMap(directFallbacks);
+			this.tileToFallbackList = CreateTransitiveMap(directFallbacks);
 		}
 
 		/// <summary>
