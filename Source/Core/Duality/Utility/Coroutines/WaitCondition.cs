@@ -12,36 +12,43 @@ namespace Duality
 
 	public class WaitCondition : IWaitCondition
 	{
-		private Func<bool> condition;
+		private readonly Func<bool> exitCondition;
 
 		public WaitCondition(Func<bool> condition)
 		{
-			this.condition = condition;
+			this.exitCondition = condition;
 		}
 
 		public bool Update()
 		{
-			return this.condition();
+			return this.exitCondition();
 		}
 	}
 
 	public class WaitCondition<T> : IWaitCondition
 	{
 		private readonly Func<T, T> update;
-		private readonly Func<T, bool> condition;
-		private T parameter;
+		private readonly Func<T, bool> exitCondition;
+		private readonly T startingValue;
+		private T currentValue;
 
-		public WaitCondition(Func<T, T> update, Func<T, bool> condition, T startingValue)
+		public WaitCondition(Func<T, T> update, Func<T, bool> exitCondition, T startingValue)
 		{
 			this.update = update;
-			this.condition = condition;
-			this.parameter = startingValue;
+			this.exitCondition = exitCondition;
+			this.currentValue = this.startingValue = startingValue;
+		}
+
+		public IWaitCondition Reset()
+		{
+			this.currentValue = this.startingValue;
+			return this;
 		}
 
 		public bool Update()
 		{
-			this.parameter = this.update(this.parameter);
-			return this.condition(this.parameter);
+			this.currentValue = this.update(this.currentValue);
+			return this.exitCondition(this.currentValue);
 		}
 	}
 }
