@@ -36,6 +36,10 @@ namespace Duality.Backend.Dummy
 			get { return Point2.Zero; }
 			set { }
 		}
+		INativeWindow IGraphicsBackend.ActiveWindow
+		{
+			get { return null; }
+		}
 
 		bool IDualityBackend.CheckAvailable()
 		{

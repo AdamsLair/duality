@@ -10,6 +10,7 @@ using Duality.Drawing;
 
 using OpenTK;
 using OpenTK.Graphics;
+using Duality.Resources;
 
 namespace Duality.Backend.DefaultOpenTK
 {
@@ -273,6 +274,16 @@ namespace Duality.Backend.DefaultOpenTK
 			this.internalWindow.SwapBuffers();
 			Profile.TimeSwapBuffers.EndMeasure();
 			Profile.TimeRender.EndMeasure();
+		}
+
+		public void SetCursor(ContentRef<Pixmap> cursor, Point2 hotspot)
+		{
+			if (this.internalWindow != null && this.internalWindow.CursorVisible)
+			{
+				Pixmap pixmap = cursor.Res;
+				byte[] data = pixmap.MainLayer.Data.SelectMany(px => new byte[] { (byte)(px.B * px.A / 255), (byte)(px.G * px.A / 255), (byte)(px.R * px.A / 255), px.A }).ToArray();
+				this.internalWindow.Cursor = new MouseCursor(hotspot.X, hotspot.Y, pixmap.Width, pixmap.Height, data);
+			}
 		}
 	}
 }
