@@ -11,8 +11,9 @@ LastBuild.log
 *.nupkg
 DDoc.chm
 Build/NightlyBuild/Package/
-Samples/**/Content/Plugins/*.core.dll
-Samples/**/Content/Plugins/*.editor.dll
+Samples/**/Content/Plugins/*.dll
+Samples/**/Content/Plugins/*.pdb
+Samples/**/Content/Plugins/*.xml
 Samples/**/PackageConfig.xml
 Samples/**/Content/Source/Code/
 Samples/**/Content/OpenAL32.dll
