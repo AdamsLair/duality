@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DotNetFramework</id>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>DotNetFramework Backend</title>
@@ -14,9 +14,9 @@
     <description>The default system backend layer for Duality. It uses regular .Net Framework classes, as are available on desktop platforms.</description>
     <tags>Duality Core Plugin Backend</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.1.3" />
+      <dependency id="AdamsLair.Duality" version="3.1.4" />
     </dependencies>
-    <releaseNotes>
+    <releaseNotes>Patch Version Update
 </releaseNotes>
   </metadata>
   <files>
