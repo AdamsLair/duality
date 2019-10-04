@@ -204,4 +204,7 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <!-- Copy all required NUnit command line runner files to a local folder -->
+  <Import Project="..\AcquireNUnitRunner.targets" />
 </Project>

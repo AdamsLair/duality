@@ -4,7 +4,7 @@
   <BuildResultDir>..\Output</BuildResultDir>
   <DocSolutionPath>..\Documentation\Documentation.shfbproj</DocSolutionPath>
   <AdditionalFileDir>AdditionalFiles</AdditionalFileDir>
-  <NUnitBinDir>..\..\packages\NUnit.ConsoleRunner.3.10.0\tools</NUnitBinDir>
+  <NUnitBinDir>..\NUnit</NUnitBinDir>
   <UnitTestProjectDir>..\..\Test\</UnitTestProjectDir>
   <NuGetPath>nuget.exe</NuGetPath>
   <NuGetPackageSpecsDir>..\NuGetPackageSpecs</NuGetPackageSpecsDir>
