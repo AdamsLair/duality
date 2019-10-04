@@ -45,3 +45,13 @@ Source/Core/Physics/DualityPhysics.xml
 Samples/Benchmarks/Content/BenchmarkTestReport.txt
 Tools/.vs/
 Source/Editor/DualityEditor/EmbeddedResources/GamePluginTemplate.zip
+Build/NUnit/nunit3-console.exe.config
+Build/NUnit/nunit-agent.exe.config
+Build/NUnit/nunit-agent.exe
+Build/NUnit/nunit-agent-x86.exe.config
+Build/NUnit/nunit-agent-x86.exe
+Build/NUnit/nunit.engine.dll
+Build/NUnit/nunit.engine.api.dll
+Build/NUnit/nunit-project-loader.dll
+Build/NUnit/Mono.Cecil.dll
+Build/NUnit/nunit3-console.exe
