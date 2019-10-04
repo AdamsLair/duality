@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.AudioHandling</id>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Audio Handling Sample</title>
@@ -13,11 +13,11 @@
     <summary>Demonstrates how to handle Audio in Duality.</summary>
     <description>This package contains a sample Scene for handling audio using SoundEmitters, and another one for handling it manually using code.</description>
     <tags>Duality Sample Plugin Audio</tags>
-    <releaseNotes>
+    <releaseNotes>Patch Version Update
 </releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.1.3" />
-      <dependency id="AdamsLair.Duality.Editor" version="3.1.4" />
+      <dependency id="AdamsLair.Duality" version="3.1.4" />
+      <dependency id="AdamsLair.Duality.Editor" version="3.1.8" />
     </dependencies>
   </metadata>
   <files>
