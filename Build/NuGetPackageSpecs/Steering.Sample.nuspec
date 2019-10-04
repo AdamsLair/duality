@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.Steering</id>
-    <version>3.0.4</version>
+    <version>3.0.5</version>
     <authors>Daniel Herb, Fedja Adam</authors>
     <owners>Daniel Herb, Fedja Adam</owners>
     <title>Steering Behaviours Sample</title>
@@ -16,7 +16,7 @@
     <releaseNotes>Patch Version Update
 </releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.1.4" />
+      <dependency id="AdamsLair.Duality" version="3.1.5" />
     </dependencies>
   </metadata>
   <files>
