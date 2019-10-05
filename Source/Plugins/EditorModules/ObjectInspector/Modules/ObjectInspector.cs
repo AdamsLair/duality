@@ -223,6 +223,10 @@ namespace Duality.Editor.Plugins.ObjectInspector
 				// Continuous updates during play mode
 				if (Sandbox.State == SandboxState.Playing)
 				{
+					// Sandbox was restarted - MainTimer got reset
+					if (this.lastRefreshTime > Time.MainTimer)
+						this.lastRefreshTime = Time.MainTimer;
+
 					if ((Time.MainTimer - this.lastRefreshTime).TotalMilliseconds > 100.0d)
 					{
 						this.lastRefreshTime = Time.MainTimer;
