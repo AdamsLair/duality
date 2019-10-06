@@ -278,26 +278,29 @@ namespace Duality.Backend.DefaultOpenTK
 
 		public void SetCursor(ContentRef<Pixmap> cursor, Point2 hotspot)
 		{
-			if (!cursor.IsAvailable)
+			if (this.internalWindow != null)
 			{
-				Logs.Core.WriteWarning("SetCursor: pixmap {0} not available", cursor.Name);
-			}
-			else if (this.internalWindow != null && this.internalWindow.CursorVisible)
-			{
-				Pixmap pixmap = cursor.Res;
-				byte[] data = new byte[pixmap.MainLayer.Data.Length * 4];
-
-				for (int i = 0, j = 0; i < pixmap.MainLayer.Data.Length; i++, j += 4)
+				if (cursor.IsExplicitNull)
 				{
-					ColorRgba px = pixmap.MainLayer.Data[i];
-
-					data[j] = (byte)(px.B * px.A / 255);
-					data[j + 1] = (byte)(px.G * px.A / 255);
-					data[j + 2] = (byte)(px.R * px.A / 255);
-					data[j + 3] = px.A;
+					this.internalWindow.Cursor = MouseCursor.Default;
 				}
+				else
+				{
+					Pixmap pixmap = cursor.Res;
+					byte[] data = new byte[pixmap.MainLayer.Data.Length * 4];
 
-				this.internalWindow.Cursor = new MouseCursor(hotspot.X, hotspot.Y, pixmap.Width, pixmap.Height, data);
+					for (int i = 0, j = 0; i < pixmap.MainLayer.Data.Length; i++, j += 4)
+					{
+						ColorRgba px = pixmap.MainLayer.Data[i];
+
+						data[j] = (byte)(px.B * px.A / 255);
+						data[j + 1] = (byte)(px.G * px.A / 255);
+						data[j + 2] = (byte)(px.R * px.A / 255);
+						data[j + 3] = px.A;
+					}
+
+					this.internalWindow.Cursor = new MouseCursor(hotspot.X, hotspot.Y, pixmap.Width, pixmap.Height, data);
+				}
 			}
 		}
 	}
