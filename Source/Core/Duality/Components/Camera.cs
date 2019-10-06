@@ -42,7 +42,7 @@ namespace Duality.Components
 		/// </summary>
 		[EditorHintDecimalPlaces(0)]
 		[EditorHintIncrement(10.0f)]
-		[EditorHintRange(0.0f, 1000000.0f, 10.0f, 200.0f)]
+		[EditorHintRange(1.0f, 1000000.0f, 10.0f, 200.0f)]
 		public float NearZ
 		{
 			get { return this.nearZ; }
@@ -53,7 +53,7 @@ namespace Duality.Components
 		/// </summary>
 		[EditorHintDecimalPlaces(0)]
 		[EditorHintIncrement(1000.0f)]
-		[EditorHintRange(0.0f, 1000000.0f, 1000.0f, 100000.0f)]
+		[EditorHintRange(100.0f, 1000000.0f, 1000.0f, 100000.0f)]
 		public float FarZ
 		{
 			get { return this.farZ; }
@@ -65,7 +65,7 @@ namespace Duality.Components
 		/// </summary>
 		[EditorHintDecimalPlaces(1)]
 		[EditorHintIncrement(10.0f)]
-		[EditorHintRange(1.0f, 1000000.0f, 10.0f, 2000.0f)]
+		[EditorHintRange(10.0f, 1000000.0f, 10.0f, 2000.0f)]
 		public float FocusDist
 		{
 			get { return this.focusDist; }
