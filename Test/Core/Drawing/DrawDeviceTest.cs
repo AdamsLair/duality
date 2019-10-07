@@ -22,7 +22,7 @@ namespace Duality.Tests.Drawing
 				device.Projection = ProjectionMode.Screen;
 
 				// Screen space mode is supposed to ignore view dependent settings
-				device.ViewerOrientation = new Vector3(0, 0, MathF.DegToRad(90.0f));
+				device.ViewerAngle = MathF.DegToRad(90.0f);
 				device.ViewerPos = new Vector3(7000, 8000, -500);
 				device.FocusDist = 500;
 				device.NearZ = 100;

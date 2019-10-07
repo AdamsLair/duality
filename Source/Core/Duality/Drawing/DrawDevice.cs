@@ -197,13 +197,23 @@ namespace Duality.Drawing
 				this.UpdateMatrices();
 			}
 		}
-		public Vector3 ViewerOrientation
+		public float ViewerAngle
 		{
-			get { return this.viewerOrientation; }
+			get { return this.viewerOrientation.Z; }
 			set
 			{
-				if (this.viewerOrientation == value) return;
-				this.viewerOrientation = value;
+				if (this.viewerOrientation.Z == value) return;
+				this.viewerOrientation.Z = value;
+				this.UpdateMatrices();
+			}
+		}
+		public Vector2 ViewerTilt
+		{
+			get { return this.viewerOrientation.Xy; }
+			set
+			{
+				if (this.viewerOrientation.Xy == value) return;
+				this.viewerOrientation.Xy = value;
 				this.UpdateMatrices();
 			}
 		}
