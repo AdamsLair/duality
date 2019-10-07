@@ -192,21 +192,13 @@ namespace Duality.Components
 		/// [GET / SET] The camera orientation angles along the x and y axis in radians, used when
 		/// calculting the view matrix.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public Vector2 TiltInRadians
+		private Vector2 TiltInRadians
 		{
 			get { return this.tilt; }
 			set {
 				this.tilt.X = MathF.NormalizeAngle(value.X);
 				this.tilt.Y = MathF.NormalizeAngle(value.Y);
 			}
-		}
-		/// <summary>
-		/// [GET] The camera's tilt angles along the x, y, and z axis in radians.
-		/// </summary>
-		public Vector3 Orientation
-		{
-			get { return new Vector3(this.tilt, this.gameobj.Transform.Angle); }
 		}
 		/// <summary>
 		/// [GET] Rendered image / screen space offset between the rendered <see cref="TargetRect"/> center
@@ -471,7 +463,8 @@ namespace Duality.Components
 			if (this.drawDevice == null) this.SetupDrawDevice();
 
 			this.drawDevice.ViewerPos = this.gameobj.Transform.Pos;
-			this.drawDevice.ViewerOrientation = this.Orientation;
+			this.drawDevice.ViewerAngle = this.gameobj.Transform.Angle;
+			this.drawDevice.ViewerTilt = this.TiltInRadians;
 			this.drawDevice.NearZ = this.nearZ;
 			this.drawDevice.FarZ = this.farZ;
 			this.drawDevice.FocusDist = this.focusDist;
@@ -504,7 +497,8 @@ namespace Duality.Components
 			if (this.transformDevice == null) this.SetupTransformDevice();
 
 			this.transformDevice.ViewerPos = this.gameobj.Transform.Pos;
-			this.transformDevice.ViewerOrientation = this.Orientation;
+			this.transformDevice.ViewerAngle= this.gameobj.Transform.Angle;
+			this.transformDevice.ViewerTilt = this.TiltInRadians;
 			this.transformDevice.NearZ = this.nearZ;
 			this.transformDevice.FarZ = this.farZ;
 			this.transformDevice.FocusDist = this.focusDist;
