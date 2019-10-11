@@ -14,6 +14,7 @@ namespace Duality.Backend
 		GraphicsBackendCapabilities Capabilities { get; }
 		IEnumerable<ScreenResolution> AvailableScreenResolutions { get; }
 		Point2 ExternalBackbufferSize { get; set; }
+		INativeWindow ActiveWindow { get; }
 
 		void BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats = null);
 		void Render(IReadOnlyList<DrawBatch> batches);
