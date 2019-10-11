@@ -66,7 +66,7 @@ namespace Duality.Backend.DefaultOpenTK
 					.Distinct();
 			}
 		}
-		public NativeWindow ActiveWindow
+		public INativeWindow ActiveWindow
 		{
 			get { return this.activeWindow; }
 		}
