@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Duality.Utility.Pooling
 {
-	interface IPoolable
+	public interface IPoolable
 	{
 		void OnPickup();
 		void OnReturn();

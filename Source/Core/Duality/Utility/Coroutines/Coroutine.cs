@@ -23,7 +23,7 @@ namespace Duality
 		/// Starts a coroutine and registers it in the scene's CoroutineManager
 		/// </summary>
 		/// <param name="scene">The scene that will execute the coroutine</param>
-		/// <param name="method">The coroutine implementation</param>
+		/// <param name="enumerator">The coroutine IWaitConditions enumerator</param>
 		/// <param name="name">The name of the coroutine, optional</param>
 		/// <returns>The created corutine</returns>
 		public static Coroutine Start(Scene scene, IEnumerator<IWaitCondition> enumerator, string name = null)
@@ -33,9 +33,6 @@ namespace Duality
 
 		private IEnumerator<IWaitCondition> enumerator = null;
 
-		/// <summary>
-		/// Returns true if there are no more CoroutineActions to be performed
-		/// </summary>
 		public CoroutineStatus Status { get; private set; }
 
 		public Exception LastException { get; private set; }
@@ -65,6 +62,12 @@ namespace Duality
 				this.Status = CoroutineStatus.Complete;
 		}
 
+		/// <summary>
+		/// Updates the coroutine's current IWaitCondition and executes the coroutine's code until it finds the next one.
+		/// </summary>
+		/// <remarks>
+		/// A null currentYield is ignored
+		/// </remarks>
 		internal void Update()
 		{
 			if (this.Status != CoroutineStatus.Running) return;
@@ -95,12 +98,18 @@ namespace Duality
 			this.enumerator.MoveNext();
 		}
 
+		/// <summary>
+		/// Puts the coroutine on hold, to be resumed or cancelled later
+		/// </summary>
 		public void Pause()
 		{
 			if (this.Status == CoroutineStatus.Running)
 				this.Status = CoroutineStatus.Paused;
 		}
 
+		/// <summary>
+		/// Resumes a Paused coroutine
+		/// </summary>
 		public void Resume()
 		{
 			if (this.Status == CoroutineStatus.Paused)

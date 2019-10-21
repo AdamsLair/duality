@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Duality.Utility.Pooling
 {
-	internal class DerivedObjectsPool<T> where T : class
+	public sealed class DerivedObjectsPool<T> where T : class
 	{
-		private List<T> pool = new List<T>();
+		private readonly List<T> pool = new List<T>();
 		private int poolIndex = 0;
 		private int searchIndex = 0;
 
@@ -25,7 +25,7 @@ namespace Duality.Utility.Pooling
 				if (result != null)
 				{
 					this.poolIndex = this.searchIndex;
-					this.pool.Remove(result);
+					this.pool.RemoveAt(this.poolIndex);
 
 					break;
 				}
@@ -34,16 +34,16 @@ namespace Duality.Utility.Pooling
 			if (result == null)
 				result = new V();
 
-			if(result is IPoolable)
-				(result as IPoolable).OnPickup();
+			if (result is IPoolable poolable)
+				poolable.OnPickup();
 
 			return result;
 		}
 
 		public void ReturnOne(T obj)
 		{
-			if (obj is IPoolable)
-				(obj as IPoolable).OnReturn();
+			if (obj is IPoolable poolable)
+				poolable.OnReturn();
 
 			if (obj != null)
 				this.pool.Add(obj);

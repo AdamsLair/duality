@@ -7,11 +7,17 @@ namespace Duality
 {
 	public class CoroutineManager
 	{
+		// shared pool between all CoroutineManagers (one per scene)
 		private static QueuedPool<Coroutine> pool = new QueuedPool<Coroutine>();
-		private readonly List<Coroutine> coroutines = new List<Coroutine>();
-		private readonly List<Coroutine> scheduled = new List<Coroutine>();
-		private readonly List<Coroutine> trashcan = new List<Coroutine>();
+
+		private readonly Queue<Coroutine> coroutines = new Queue<Coroutine>(256);
+		private readonly Queue<Coroutine> nextCycle = new Queue<Coroutine>(256);
+		private readonly Queue<Coroutine> scheduled = new Queue<Coroutine>();
+		private readonly Queue<Coroutine> trashcan = new Queue<Coroutine>();
+
 		private readonly Dictionary<Coroutine, Exception> lastFrameErrors = new Dictionary<Coroutine, Exception>();
+
+        private int count;
 
 		public IEnumerable<Coroutine> Coroutines
 		{
@@ -28,7 +34,7 @@ namespace Duality
 			Coroutine coroutine = pool.GetOne();
 			coroutine.Setup(enumerator, name);
 
-			this.scheduled.Add(coroutine);
+			this.scheduled.Enqueue(coroutine);
 			return coroutine;
 		}
 
@@ -50,26 +56,35 @@ namespace Duality
 		{
 			this.lastFrameErrors.Clear();
 
-			this.coroutines.AddRange(this.scheduled);
-			this.scheduled.Clear();
+			// add any newly scheduled coroutine to the main queue
+			this.count = this.scheduled.Count;
+			for(int i = 0; i < this.count; i++)
+				this.coroutines.Enqueue(this.scheduled.Dequeue());
 
-			foreach (Coroutine c in this.coroutines)
+            this.count = this.coroutines.Count;
+			for (int i = 0; i < this.count; i++)
 			{
+				Coroutine c = this.coroutines.Dequeue();
 				c.Update();
 
 				if (c.Status == CoroutineStatus.Error)
 					this.lastFrameErrors.Add(c, c.LastException);
-				if (c.Status != CoroutineStatus.Running && c.Status != CoroutineStatus.Paused)
-					this.trashcan.Add(c);
+
+				if (c.Status == CoroutineStatus.Running || c.Status == CoroutineStatus.Paused)
+					this.nextCycle.Enqueue(c);
+				else
+					this.trashcan.Enqueue(c);
 			}
 
-			foreach (Coroutine c in this.trashcan)
-			{
-				this.coroutines.Remove(c);
-				pool.ReturnOne(c);
-			}
+            // put back the coroutines that are still alive
+            this.count = this.nextCycle.Count;
+			for (int i = 0; i < this.count; i++)
+				this.coroutines.Enqueue(this.nextCycle.Dequeue());
 
-			this.trashcan.Clear();
+            // cleaning up trashcan
+            this.count = this.trashcan.Count;
+			for (int i = 0; i < this.count; i++)
+				pool.ReturnOne(this.trashcan.Dequeue());
 		}
 	}
 }

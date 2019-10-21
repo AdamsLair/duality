@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Duality.Utility.Pooling
 {
-	internal class QueuedPool<T> where T : class, new()
+	public sealed class QueuedPool<T> where T : class, new()
 	{
 		private readonly Queue<T> pool = new Queue<T>();
 
@@ -19,16 +19,16 @@ namespace Duality.Utility.Pooling
 			else
 				result = new T();
 
-			if (result is IPoolable)
-				(result as IPoolable).OnPickup();
+			if (result is IPoolable poolable)
+				poolable.OnPickup();
 
 			return result;
 		}
 
 		public void ReturnOne(T obj)
 		{
-			if (obj is IPoolable)
-				(obj as IPoolable).OnReturn();
+			if (obj is IPoolable poolable)
+				poolable.OnReturn();
 
 			if (obj != null)
 				this.pool.Enqueue(obj);
