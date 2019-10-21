@@ -35,6 +35,7 @@ namespace Duality.Plugins.Tilemaps
 		[DontSerialize] private bool                      compiled       = false;
 		[DontSerialize] private int                       compileHash    = 0;
 		[DontSerialize] private int                       tileCount      = 0;
+		[DontSerialize] private int                       emptyTileIndex = -1;
 
 		
 		/// <summary>
@@ -166,7 +167,15 @@ namespace Duality.Plugins.Tilemaps
 					this.GetCompileHashCode() != this.compileHash;
 			}
 		}
-		
+        /// <summary>
+		/// [GET] Returns the tile index that should be used for painting an empty tile.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public int EmptyTileIndex
+		{
+			get { return this.emptyTileIndex; }
+		}
+
 
 		/// <summary>
 		/// Looks up the vertex UV rect for the specified rendering input / data and tile.
@@ -235,6 +244,7 @@ namespace Duality.Plugins.Tilemaps
 			this.tileData = data.TileData;
 			this.autoTileData = data.AutoTileData;
 			this.tileCount = data.TileCount;
+			this.emptyTileIndex = data.EmptyTileIndex;
 			this.GenerateRenderMaterial();
 
 			this.compiled = true;
