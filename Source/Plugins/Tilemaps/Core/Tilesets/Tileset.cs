@@ -167,7 +167,7 @@ namespace Duality.Plugins.Tilemaps
 					this.GetCompileHashCode() != this.compileHash;
 			}
 		}
-        /// <summary>
+		/// <summary>
 		/// [GET] Returns the tile index that should be used for painting an empty tile.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
