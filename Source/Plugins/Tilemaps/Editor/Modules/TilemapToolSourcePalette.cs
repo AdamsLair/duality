@@ -44,6 +44,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.ApplyTileIndexDrawMode();
 		}
 
+		public void TranslateSelectedArea(int offsetX, int offsetY)
+		{
+			this.tilesetView.TranslateSelectedArea(offsetX, offsetY);
+		}
+
 		internal void SaveUserData(XElement node)
 		{
 			node.SetElementValue("DarkBackground", this.buttonBrightness.Checked);

@@ -75,7 +75,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			get { return this.selectedTiles; }
 		}
-		public void TranslateSelectedArea(int offsetX, int offsetY)
+		internal void TranslateSelectedArea(int offsetX, int offsetY)
 		{
 			int newX = MathF.Clamp(this.selectedArea.X + offsetX, 0, this.DisplayedTileCount.X - this.selectedArea.Width);
 			int newY = MathF.Clamp(this.selectedArea.Y + offsetY, 0, this.DisplayedTileCount.Y - this.selectedArea.Height);
@@ -342,7 +342,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
-			if (ModifierKeys == Keys.Control)
+			if (ModifierKeys == Keys.Shift)
 			{
 				if (e.KeyCode == Keys.Up)
 				{
@@ -362,6 +362,19 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 			}
 		}
+		protected override bool IsInputKey(Keys keyData)
+		{
+			switch (keyData)
+			{
+				case Keys.Shift | Keys.Right:
+				case Keys.Shift | Keys.Left:
+				case Keys.Shift | Keys.Up:
+				case Keys.Shift | Keys.Down:
+					return true;
+			}
+			return base.IsInputKey(keyData);
+		}
+
 		private void UpdateSelectedTiles()
 		{
 			// Allocate and clear a tile rect space of the appropriate size.

@@ -605,7 +605,29 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (this.selectedTool == null) return;
 			DualityEditorApp.Deselect(this, new ObjectSelection(new object[] { this.selectedTool.Settings }));
 		}
-		
+
+		private void MoveTilePaletteSelection(Keys keyPressed)
+		{
+			TilemapToolSourcePalette sourcePalette = TilemapsEditorPlugin.Instance.PeekTilePalette();
+
+			if (keyPressed == Keys.Up)
+			{
+				sourcePalette.TranslateSelectedArea(0, -1);
+			}
+			if (keyPressed == Keys.Down)
+			{
+				sourcePalette.TranslateSelectedArea(0, 1);
+			}
+			if (keyPressed == Keys.Left)
+			{
+				sourcePalette.TranslateSelectedArea(-1, 0);
+			}
+			if (keyPressed == Keys.Right)
+			{
+				sourcePalette.TranslateSelectedArea(1, 0);
+			}
+		}
+
 		protected override string UpdateStatusText()
 		{
 			// Display which Tilemap we're currently using
@@ -755,9 +777,13 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
-			
+
+			if (Control.ModifierKeys == Keys.Shift && (e.KeyCode & (Keys.Up | Keys.Down | Keys.Left | Keys.Right)) != Keys.None)
+			{
+				this.MoveTilePaletteSelection(e.KeyCode);
+			}
 			// Hotkeys for switching the currently selected tilemap
-			if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+			else if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
 			{
 				Tilemap[] visibleTilemaps = 
 					this.QueryVisibleTilemapRenderers()
