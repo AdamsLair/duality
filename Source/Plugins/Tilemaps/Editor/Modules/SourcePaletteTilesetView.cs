@@ -75,7 +75,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			get { return this.selectedTiles; }
 		}
+		public void TranslateSelectedArea(int offsetX, int offsetY)
+		{
+			int newX = MathF.Clamp(this.selectedArea.X + offsetX, 0, this.DisplayedTileCount.X - this.selectedArea.Width);
+			int newY = MathF.Clamp(this.selectedArea.Y + offsetY, 0, this.DisplayedTileCount.Y - this.selectedArea.Height);
 
+			this.SelectedArea = new Rectangle(newX, newY, this.selectedArea.Width, this.selectedArea.Height); 
+		}
 
 		protected override void OnTilesetChanged()
 		{
@@ -203,7 +209,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			if (e.Button == MouseButtons.Left && Control.ModifierKeys == Keys.Shift && !this.isUserScrolling)
+			if (e.Button == MouseButtons.Left && ModifierKeys == Keys.Shift && !this.isUserScrolling)
 			{
 				int tileIndex = this.PickTileIndexAt(e.X, e.Y);
 				if (tileIndex != -1)
@@ -333,7 +339,29 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.InvalidateTile(this.HoveredTileIndex, 5);
 			base.OnMouseLeave(e);
 		}
-
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			base.OnKeyDown(e);
+			if (ModifierKeys == Keys.Control)
+			{
+				if (e.KeyCode == Keys.Up)
+				{
+					this.TranslateSelectedArea(0, -1);
+				}
+				if (e.KeyCode == Keys.Down)
+				{
+					this.TranslateSelectedArea(0, 1);
+				}
+				if (e.KeyCode == Keys.Left)
+				{
+					this.TranslateSelectedArea(-1, 0);
+				}
+				if (e.KeyCode == Keys.Right)
+				{
+					this.TranslateSelectedArea(1, 0);
+				}
+			}
+		}
 		private void UpdateSelectedTiles()
 		{
 			// Allocate and clear a tile rect space of the appropriate size.
@@ -370,13 +398,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void RaiseSelectedAreaEditingFinished()
 		{
-			if (this.SelectedAreaEditingFinished != null)
-				this.SelectedAreaEditingFinished(this, EventArgs.Empty);
+			this.SelectedAreaEditingFinished?.Invoke(this, EventArgs.Empty);
 		}
 		private void RaiseSelectedAreaChanged()
 		{
-			if (this.SelectedAreaChanged != null)
-				this.SelectedAreaChanged(this, EventArgs.Empty);
+			this.SelectedAreaChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
 }
