@@ -609,6 +609,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private void MoveTilePaletteSelection(Keys keyPressed)
 		{
 			TilemapToolSourcePalette sourcePalette = TilemapsEditorPlugin.Instance.PeekTilePalette();
+			if (sourcePalette == null) return;
 
 			if (keyPressed == Keys.Up)
 			{
@@ -630,6 +631,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private void ExpandTilePaletteSelection(Keys keyPressed)
 		{
 			TilemapToolSourcePalette sourcePalette = TilemapsEditorPlugin.Instance.PeekTilePalette();
+			if (sourcePalette == null) return;
 
 			if (keyPressed == Keys.Up)
 			{
@@ -651,6 +653,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private void ShrinkTilePaletteSelection(Keys keyPressed)
 		{
 			TilemapToolSourcePalette sourcePalette = TilemapsEditorPlugin.Instance.PeekTilePalette();
+			if (sourcePalette == null) return;
 
 			if (keyPressed == Keys.Up)
 			{

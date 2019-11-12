@@ -78,6 +78,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		internal void TranslateSelectedArea(int offsetX, int offsetY)
 		{
+			if (this.selectedArea.IsEmpty)
+			{
+				this.InitializeSelectedArea();
+				return;
+			}
+
 			int newX = MathF.Clamp(this.selectedArea.X + offsetX, 0, this.DisplayedTileCount.X - this.selectedArea.Width);
 			int newY = MathF.Clamp(this.selectedArea.Y + offsetY, 0, this.DisplayedTileCount.Y - this.selectedArea.Height);
 
@@ -87,6 +93,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		internal void ExpandSelectedArea(int diffX, int diffY)
 		{
+			if (this.selectedArea.IsEmpty)
+			{
+				this.InitializeSelectedArea();
+				return;
+			}
+
 			int newX = MathF.Max(this.selectedArea.X + MathF.Min(diffX, 0), 0);
 			int newY = MathF.Max(this.selectedArea.Y + MathF.Min(diffY, 0), 0);
 
@@ -104,6 +116,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		public void ShrinkSelectedArea(int diffX, int diffY)
 		{
+			if (this.selectedArea.IsEmpty)
+			{
+				this.InitializeSelectedArea();
+				return;
+			}
+
 			int newX = MathF.Min(this.selectedArea.X + MathF.Max(diffX, 0),
 				this.selectedArea.X + this.selectedArea.Width - 1);
 			int newY = MathF.Min(this.selectedArea.Y + MathF.Max(diffY, 0),
@@ -482,6 +500,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.selectedTiles[x, y] = new Tile(baseIndex, tileset);
 				}
 			}
+		}
+		private void InitializeSelectedArea()
+		{
+			Rectangle rect = new Rectangle(0, 0, 1, 1);
+			this.SelectedArea = rect;
+			this.RaiseSelectedAreaEditingFinished();
 		}
 
 		private void RaiseSelectedAreaEditingFinished()

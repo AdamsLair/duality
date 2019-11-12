@@ -45,7 +45,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 		/// <summary>
-		/// Translates the selected area in the source palette by a number of tiles in the X and Y axes.
+		/// Translates the selected area in the source palette by a number of tiles along the X and Y axes.
 		/// </summary>
 		public void TranslateSelectedArea(int offsetX, int offsetY)
 		{
