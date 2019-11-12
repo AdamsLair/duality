@@ -83,6 +83,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			this.SelectedArea = new Rectangle(newX, newY, this.selectedArea.Width, this.selectedArea.Height); 
 			this.RaiseSelectedAreaEditingFinished();
+			this.Invalidate();
 		}
 		internal void ExpandSelectedArea(int diffX, int diffY)
 		{
@@ -99,6 +100,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
 			this.RaiseSelectedAreaEditingFinished();
+			this.Invalidate();
 		}
 		public void ShrinkSelectedArea(int diffX, int diffY)
 		{
@@ -115,6 +117,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
 			this.RaiseSelectedAreaEditingFinished();
+			this.Invalidate();
 		}
 
 		protected override void OnTilesetChanged()
