@@ -4,9 +4,10 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
+using Duality.Input;
 using Duality.Resources;
 using Duality.Plugins.Tilemaps;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 
 namespace Duality.Editor.Plugins.Tilemaps
@@ -81,6 +82,39 @@ namespace Duality.Editor.Plugins.Tilemaps
 			int newY = MathF.Clamp(this.selectedArea.Y + offsetY, 0, this.DisplayedTileCount.Y - this.selectedArea.Height);
 
 			this.SelectedArea = new Rectangle(newX, newY, this.selectedArea.Width, this.selectedArea.Height); 
+			this.RaiseSelectedAreaEditingFinished();
+		}
+		internal void ExpandSelectedArea(int diffX, int diffY)
+		{
+			int newX = MathF.Max(this.selectedArea.X + MathF.Min(diffX, 0), 0);
+			int newY = MathF.Max(this.selectedArea.Y + MathF.Min(diffY, 0), 0);
+
+			int newWidth = this.selectedArea.Width + MathF.Max(diffX, 0);
+			newWidth = MathF.Min(newWidth, this.DisplayedTileCount.X - this.selectedArea.X);
+			newWidth += this.selectedArea.X - newX;
+
+			int newHeight = this.selectedArea.Height + MathF.Max(diffY, 0);
+			newHeight = MathF.Min(newHeight, this.DisplayedTileCount.Y - this.selectedArea.Y);
+			newHeight += this.selectedArea.Y - newY;
+
+			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
+			this.RaiseSelectedAreaEditingFinished();
+		}
+		public void ShrinkSelectedArea(int diffX, int diffY)
+		{
+			int newX = MathF.Min(this.selectedArea.X + MathF.Max(diffX, 0),
+				this.selectedArea.X + this.selectedArea.Width - 1);
+			int newY = MathF.Min(this.selectedArea.Y + MathF.Max(diffY, 0),
+				this.selectedArea.Y + this.selectedArea.Height - 1);
+
+			int newWidth = MathF.Max(this.selectedArea.Width + MathF.Min(diffX, 0), 1);
+			newWidth -= newX - this.selectedArea.X;
+
+			int newHeight = MathF.Max(this.selectedArea.Height + MathF.Min(diffY, 0), 1);
+			newHeight -= newY - this.selectedArea.Y;
+
+			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
+			this.RaiseSelectedAreaEditingFinished();
 		}
 
 		protected override void OnTilesetChanged()
@@ -359,6 +393,44 @@ namespace Duality.Editor.Plugins.Tilemaps
 				if (e.KeyCode == Keys.Right)
 				{
 					this.TranslateSelectedArea(1, 0);
+				}
+			}
+			if (ModifierKeys == Keys.Alt)
+			{
+				if (e.KeyCode == Keys.Up)
+				{
+					this.ExpandSelectedArea(0, -1);
+				}
+				if (e.KeyCode == Keys.Down)
+				{
+					this.ExpandSelectedArea(0, 1);
+				}
+				if (e.KeyCode == Keys.Left)
+				{
+					this.ExpandSelectedArea(-1, 0);
+				}
+				if (e.KeyCode == Keys.Right)
+				{
+					this.ExpandSelectedArea(1, 0);
+				}
+			}
+			if (ModifierKeys == (Keys.Alt | Keys.Shift))
+			{
+				if (e.KeyCode == Keys.Up)
+				{
+					this.ShrinkSelectedArea(0, 1);
+				}
+				if (e.KeyCode == Keys.Down)
+				{
+					this.ShrinkSelectedArea(0, -1);
+				}
+				if (e.KeyCode == Keys.Left)
+				{
+					this.ShrinkSelectedArea(1, 0);
+				}
+				if (e.KeyCode == Keys.Right)
+				{
+					this.ShrinkSelectedArea(-1, 0);
 				}
 			}
 		}

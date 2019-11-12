@@ -627,6 +627,48 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				sourcePalette.TranslateSelectedArea(1, 0);
 			}
 		}
+		private void ExpandTilePaletteSelection(Keys keyPressed)
+		{
+			TilemapToolSourcePalette sourcePalette = TilemapsEditorPlugin.Instance.PeekTilePalette();
+
+			if (keyPressed == Keys.Up)
+			{
+				sourcePalette.ExpandSelectedArea(0, -1);
+			}
+			if (keyPressed == Keys.Down)
+			{
+				sourcePalette.ExpandSelectedArea(0, 1);
+			}
+			if (keyPressed == Keys.Left)
+			{
+				sourcePalette.ExpandSelectedArea(-1, 0);
+			}
+			if (keyPressed == Keys.Right)
+			{
+				sourcePalette.ExpandSelectedArea(1, 0);
+			}
+		}
+		private void ShrinkTilePaletteSelection(Keys keyPressed)
+		{
+			TilemapToolSourcePalette sourcePalette = TilemapsEditorPlugin.Instance.PeekTilePalette();
+
+			if (keyPressed == Keys.Up)
+			{
+				sourcePalette.ShrinkTilePaletteSelection(0, 1);
+			}
+			if (keyPressed == Keys.Down)
+			{
+				sourcePalette.ShrinkTilePaletteSelection(0, -1);
+			}
+			if (keyPressed == Keys.Left)
+			{
+				sourcePalette.ShrinkTilePaletteSelection(1, 0);
+			}
+			if (keyPressed == Keys.Right)
+			{
+				sourcePalette.ShrinkTilePaletteSelection(-1, 0);
+			}
+		}
 
 		protected override string UpdateStatusText()
 		{
@@ -781,6 +823,16 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (Control.ModifierKeys == Keys.Shift && (e.KeyCode & (Keys.Up | Keys.Down | Keys.Left | Keys.Right)) != Keys.None)
 			{
 				this.MoveTilePaletteSelection(e.KeyCode);
+			}
+			else if (Control.ModifierKeys == Keys.Alt &&
+			         (e.KeyCode & (Keys.Up | Keys.Down | Keys.Left | Keys.Right)) != Keys.None)
+			{
+				this.ExpandTilePaletteSelection(e.KeyCode);
+			}
+			else if (Control.ModifierKeys == (Keys.Alt | Keys.Shift) &&
+			         (e.KeyCode & (Keys.Up | Keys.Down | Keys.Left | Keys.Right)) != Keys.None)
+			{
+				this.ShrinkTilePaletteSelection(e.KeyCode);
 			}
 			// Hotkeys for switching the currently selected tilemap
 			else if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)

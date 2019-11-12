@@ -48,6 +48,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			this.tilesetView.TranslateSelectedArea(offsetX, offsetY);
 		}
+		public void ExpandSelectedArea(int diffX, int diffY)
+		{
+			this.tilesetView.ExpandSelectedArea(diffX, diffY);
+		}
+		public void ShrinkTilePaletteSelection(int diffX, int diffY)
+		{
+			this.tilesetView.ShrinkSelectedArea(diffX, diffY);
+		}
 
 		internal void SaveUserData(XElement node)
 		{
