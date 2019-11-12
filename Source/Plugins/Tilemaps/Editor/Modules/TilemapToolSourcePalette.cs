@@ -44,14 +44,23 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.ApplyTileIndexDrawMode();
 		}
 
+		/// <summary>
+		/// Translates the selected area in the source palette by a number of tiles in the X and Y axes.
+		/// </summary>
 		public void TranslateSelectedArea(int offsetX, int offsetY)
 		{
 			this.tilesetView.TranslateSelectedArea(offsetX, offsetY);
 		}
+		/// <summary>
+		/// Expands the selected area in the positive or negative direction along the X and Y axes. 
+		/// </summary>
 		public void ExpandSelectedArea(int diffX, int diffY)
 		{
 			this.tilesetView.ExpandSelectedArea(diffX, diffY);
 		}
+		/// <summary>
+		/// Shrinks the selected area in the positive or negative direction along the X and Y axes.
+		/// </summary>
 		public void ShrinkTilePaletteSelection(int diffX, int diffY)
 		{
 			this.tilesetView.ShrinkSelectedArea(diffX, diffY);
