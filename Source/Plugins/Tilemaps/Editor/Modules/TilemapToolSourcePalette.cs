@@ -243,6 +243,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 				{
 					Tile tile = selectedTiles[x, y];
 
+					TileInfo baseTile = tileset.TileData[tile.BaseIndex];
+
 					// For standard autotile parts, only paint the autotiles base index
 					// and ignore which specific part was selected. 
 					//
@@ -251,7 +253,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					// normalization guarantee would be possible by changing Tile.ResolveIndex, 
 					// but since it isn't actually necessary and potentially destructive, we'll
 					// just make sure "most indices are generally" normalized.
-					int autoTileIndex = tileset.TileData[tile.BaseIndex].AutoTileLayer - 1;
+					int autoTileIndex = baseTile.AutoTileLayer - 1;
 					if (autoTileIndex >= 0)
 					{
 						TilesetAutoTileInfo autoTile = tileset.AutoTileData[autoTileIndex];
@@ -260,6 +262,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 						if (isDefaultTile)
 							tile.BaseIndex = autoTile.BaseTileIndex;
 					}
+
+					if (tileset.EmptyTileIndex >= 0 && baseTile.IsVisuallyEmpty)
+						tile.BaseIndex = tileset.EmptyTileIndex;
 
 					shape[x, y] = true;
 					pattern[x, y] = tile;
