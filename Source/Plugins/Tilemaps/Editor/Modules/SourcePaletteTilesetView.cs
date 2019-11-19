@@ -22,6 +22,17 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private bool       isUserScrolling        = false;
 		private int        lastMouseX             = -1;
 		private int        lastMouseY             = -1;
+		private SelectionSide activeSelectionSide = SelectionSide.None;
+
+		private enum SelectionSide
+		{
+			None,
+			Right,
+			Left, 
+			Up, 
+			Down
+		}
+		
 
 		public event EventHandler SelectedAreaChanged = null;
 		public event EventHandler SelectedAreaEditingFinished = null;
@@ -397,7 +408,42 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
-			if (ModifierKeys == Keys.Shift)
+
+			if (Control.ModifierKeys == Keys.Shift)
+			{
+				switch (e.KeyCode)
+				{
+					case Keys.Up when this.activeSelectionSide == SelectionSide.Down:
+						this.ShrinkSelectedArea(0, -1);
+						break;
+					case Keys.Up:
+						this.ExpandSelectedArea(0, -1);
+						this.activeSelectionSide = SelectionSide.Up;
+						break;
+					case Keys.Down when this.activeSelectionSide == SelectionSide.Up:
+						this.ShrinkSelectedArea(0, 1);
+						break;
+					case Keys.Down:
+						this.ExpandSelectedArea(0, 1);
+						this.activeSelectionSide = SelectionSide.Down;
+						break;
+					case Keys.Left when this.activeSelectionSide == SelectionSide.Right:
+						this.ShrinkSelectedArea(-1, 0);
+						break;
+					case Keys.Left:
+						this.ExpandSelectedArea(-1, 0);
+						this.activeSelectionSide = SelectionSide.Left;
+						break;
+					case Keys.Right when this.activeSelectionSide == SelectionSide.Left:
+						this.ShrinkSelectedArea(1, 0);
+						break;
+					case Keys.Right:
+						this.ExpandSelectedArea(1, 0);
+						this.activeSelectionSide = SelectionSide.Right;
+						break;
+				}
+			}
+			else
 			{
 				if (e.KeyCode == Keys.Up)
 				{
@@ -415,50 +461,26 @@ namespace Duality.Editor.Plugins.Tilemaps
 				{
 					this.TranslateSelectedArea(1, 0);
 				}
+				this.activeSelectionSide = SelectionSide.None;
 			}
-			if (ModifierKeys == Keys.Alt)
+		}
+
+		protected override void OnKeyUp(KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.ShiftKey)
 			{
-				if (e.KeyCode == Keys.Up)
-				{
-					this.ExpandSelectedArea(0, -1);
-				}
-				if (e.KeyCode == Keys.Down)
-				{
-					this.ExpandSelectedArea(0, 1);
-				}
-				if (e.KeyCode == Keys.Left)
-				{
-					this.ExpandSelectedArea(-1, 0);
-				}
-				if (e.KeyCode == Keys.Right)
-				{
-					this.ExpandSelectedArea(1, 0);
-				}
-			}
-			if (ModifierKeys == (Keys.Alt | Keys.Shift))
-			{
-				if (e.KeyCode == Keys.Up)
-				{
-					this.ShrinkSelectedArea(0, 1);
-				}
-				if (e.KeyCode == Keys.Down)
-				{
-					this.ShrinkSelectedArea(0, -1);
-				}
-				if (e.KeyCode == Keys.Left)
-				{
-					this.ShrinkSelectedArea(1, 0);
-				}
-				if (e.KeyCode == Keys.Right)
-				{
-					this.ShrinkSelectedArea(-1, 0);
-				}
+				this.activeSelectionSide = SelectionSide.None;
 			}
 		}
 		protected override bool IsInputKey(Keys keyData)
 		{
 			switch (keyData)
 			{
+				case Keys.Right:
+				case Keys.Left:
+				case Keys.Up:
+				case Keys.Down:
+				case Keys.Shift:
 				case Keys.Shift | Keys.Right:
 				case Keys.Shift | Keys.Left:
 				case Keys.Shift | Keys.Up:
