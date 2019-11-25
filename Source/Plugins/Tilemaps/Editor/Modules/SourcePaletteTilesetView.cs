@@ -87,66 +87,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			get { return this.selectedTiles; }
 		}
-		internal void TranslateSelectedArea(int offsetX, int offsetY)
+
+		internal void RaiseKeyDownEvent(KeyEventArgs e)
 		{
-			if (this.selectedArea.IsEmpty)
-			{
-				this.InitializeSelectedArea();
-				return;
-			}
-
-			int newX = MathF.Clamp(this.selectedArea.X + offsetX, 0, this.DisplayedTileCount.X - this.selectedArea.Width);
-			int newY = MathF.Clamp(this.selectedArea.Y + offsetY, 0, this.DisplayedTileCount.Y - this.selectedArea.Height);
-
-			this.SelectedArea = new Rectangle(newX, newY, this.selectedArea.Width, this.selectedArea.Height); 
-			this.RaiseSelectedAreaEditingFinished();
-			this.Invalidate();
+			this.OnKeyDown(e);
 		}
-		internal void ExpandSelectedArea(int diffX, int diffY)
+		internal void RaiseKeyUpEvent(KeyEventArgs e)
 		{
-			if (this.selectedArea.IsEmpty)
-			{
-				this.InitializeSelectedArea();
-				return;
-			}
-
-			int newX = MathF.Max(this.selectedArea.X + MathF.Min(diffX, 0), 0);
-			int newY = MathF.Max(this.selectedArea.Y + MathF.Min(diffY, 0), 0);
-
-			int newWidth = this.selectedArea.Width + MathF.Max(diffX, 0);
-			newWidth = MathF.Min(newWidth, this.DisplayedTileCount.X - this.selectedArea.X);
-			newWidth += this.selectedArea.X - newX;
-
-			int newHeight = this.selectedArea.Height + MathF.Max(diffY, 0);
-			newHeight = MathF.Min(newHeight, this.DisplayedTileCount.Y - this.selectedArea.Y);
-			newHeight += this.selectedArea.Y - newY;
-
-			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
-			this.RaiseSelectedAreaEditingFinished();
-			this.Invalidate();
-		}
-		public void ShrinkSelectedArea(int diffX, int diffY)
-		{
-			if (this.selectedArea.IsEmpty)
-			{
-				this.InitializeSelectedArea();
-				return;
-			}
-
-			int newX = MathF.Min(this.selectedArea.X + MathF.Max(diffX, 0),
-				this.selectedArea.X + this.selectedArea.Width - 1);
-			int newY = MathF.Min(this.selectedArea.Y + MathF.Max(diffY, 0),
-				this.selectedArea.Y + this.selectedArea.Height - 1);
-
-			int newWidth = MathF.Max(this.selectedArea.Width + MathF.Min(diffX, 0), 1);
-			newWidth -= newX - this.selectedArea.X;
-
-			int newHeight = MathF.Max(this.selectedArea.Height + MathF.Min(diffY, 0), 1);
-			newHeight -= newY - this.selectedArea.Y;
-
-			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
-			this.RaiseSelectedAreaEditingFinished();
-			this.Invalidate();
+			this.OnKeyUp(e);
 		}
 
 		protected override void OnTilesetChanged()
@@ -537,6 +485,67 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private void RaiseSelectedAreaChanged()
 		{
 			this.SelectedAreaChanged?.Invoke(this, EventArgs.Empty);
+		}
+		private void TranslateSelectedArea(int offsetX, int offsetY)
+		{
+			if (this.selectedArea.IsEmpty)
+			{
+				this.InitializeSelectedArea();
+				return;
+			}
+
+			int newX = MathF.Clamp(this.selectedArea.X + offsetX, 0, this.DisplayedTileCount.X - this.selectedArea.Width);
+			int newY = MathF.Clamp(this.selectedArea.Y + offsetY, 0, this.DisplayedTileCount.Y - this.selectedArea.Height);
+
+			this.SelectedArea = new Rectangle(newX, newY, this.selectedArea.Width, this.selectedArea.Height);
+			this.RaiseSelectedAreaEditingFinished();
+			this.Invalidate();
+		}
+		private void ExpandSelectedArea(int diffX, int diffY)
+		{
+			if (this.selectedArea.IsEmpty)
+			{
+				this.InitializeSelectedArea();
+				return;
+			}
+
+			int newX = MathF.Max(this.selectedArea.X + MathF.Min(diffX, 0), 0);
+			int newY = MathF.Max(this.selectedArea.Y + MathF.Min(diffY, 0), 0);
+
+			int newWidth = this.selectedArea.Width + MathF.Max(diffX, 0);
+			newWidth = MathF.Min(newWidth, this.DisplayedTileCount.X - this.selectedArea.X);
+			newWidth += this.selectedArea.X - newX;
+
+			int newHeight = this.selectedArea.Height + MathF.Max(diffY, 0);
+			newHeight = MathF.Min(newHeight, this.DisplayedTileCount.Y - this.selectedArea.Y);
+			newHeight += this.selectedArea.Y - newY;
+
+			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
+			this.RaiseSelectedAreaEditingFinished();
+			this.Invalidate();
+		}
+		private void ShrinkSelectedArea(int diffX, int diffY)
+		{
+			if (this.selectedArea.IsEmpty)
+			{
+				this.InitializeSelectedArea();
+				return;
+			}
+
+			int newX = MathF.Min(this.selectedArea.X + MathF.Max(diffX, 0),
+				this.selectedArea.X + this.selectedArea.Width - 1);
+			int newY = MathF.Min(this.selectedArea.Y + MathF.Max(diffY, 0),
+				this.selectedArea.Y + this.selectedArea.Height - 1);
+
+			int newWidth = MathF.Max(this.selectedArea.Width + MathF.Min(diffX, 0), 1);
+			newWidth -= newX - this.selectedArea.X;
+
+			int newHeight = MathF.Max(this.selectedArea.Height + MathF.Min(diffY, 0), 1);
+			newHeight -= newY - this.selectedArea.Y;
+
+			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
+			this.RaiseSelectedAreaEditingFinished();
+			this.Invalidate();
 		}
 	}
 }
