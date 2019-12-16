@@ -758,7 +758,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			TilemapsEditorPlugin.Instance.PeekTilePalette().RaiseKeyDownEvent(e);
 
 			// Hotkeys for switching the currently selected tilemap
-			if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+			if (e.KeyCode == Keys.PageUp || e.KeyCode == Keys.PageDown)
 			{
 				Tilemap[] visibleTilemaps = 
 					this.QueryVisibleTilemapRenderers()
@@ -771,9 +771,9 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 				if (visibleTilemaps.Length > 0)
 				{
-					if (e.KeyCode == Keys.Down)
+					if (e.KeyCode == Keys.PageDown)
 						selectedIndex = (selectedIndex == -1) ? (visibleTilemaps.Length - 1) : Math.Min(selectedIndex + 1, visibleTilemaps.Length - 1);
-					else if (e.KeyCode == Keys.Up)
+					else if (e.KeyCode == Keys.PageUp)
 						selectedIndex = (selectedIndex == -1) ? 0 : Math.Max(selectedIndex - 1, 0);
 
 					Tilemap newSelection = visibleTilemaps[selectedIndex];
@@ -783,7 +783,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				e.Handled = true;
 				return;
 			}
-			else if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+			else if (e.KeyCode == Keys.Escape)
 			{
 				DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
 				e.Handled = true;
