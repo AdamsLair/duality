@@ -81,6 +81,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.selectedArea.Width, 
 					this.selectedArea.Height, 
 					6);
+				this.SelectedAreaChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 		public IReadOnlyGrid<Tile> SelectedTiles

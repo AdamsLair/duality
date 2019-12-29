@@ -22,6 +22,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private bool globalEventsSubscribed = false;
 		private TilesetView.TileIndexDrawMode tileIndexDrawMode = TilesetView.TileIndexDrawMode.Never;
 
+		public event EventHandler SelectedAreaChanged;
 
 		private ContentRef<Tileset> SelectedTileset
 		{
@@ -42,6 +43,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.InitializeComponent();
 			this.mainToolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 			this.ApplyTileIndexDrawMode();
+
+			this.tilesetView.SelectedAreaChanged += this.SourcePaletteTilesetView_SelectedAreaChanged;
 		}
 
 		public void RaiseKeyDownEvent(KeyEventArgs e)
@@ -149,7 +152,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 			base.OnClosed(e);
 			this.OnBecameInvisible();
 		}
-		
+
+		private void SourcePaletteTilesetView_SelectedAreaChanged(object sender, EventArgs e)
+		{
+			this.SelectedAreaChanged?.Invoke(this, e);
+		}
+
 		private void OnBecameVisible()
 		{
 			if (!this.globalEventsSubscribed)

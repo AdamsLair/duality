@@ -630,6 +630,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_UpdatingEngine;
 			Scene.Entered += this.Scene_Entered;
+			TilemapsEditorPlugin.Instance.PeekTilePalette().SelectedAreaChanged += this.TilemapToolSourcePalette_SelectedAreaChanged;
 
 			// Initial update
 			this.UpdateTilemapToolButtons();
@@ -755,7 +756,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
-			TilemapsEditorPlugin.Instance.PeekTilePalette().RaiseKeyDownEvent(e);
 
 			// Hotkeys for switching the currently selected tilemap
 			if (e.KeyCode == Keys.PageUp || e.KeyCode == Keys.PageDown)
@@ -806,6 +806,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					break;
 				}
 			}
+			TilemapsEditorPlugin.Instance.PeekTilePalette().RaiseKeyDownEvent(e);
 		}
 		protected override void OnKeyUp(KeyEventArgs e)
 		{
@@ -1043,6 +1044,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			this.UpdateActionToolButtons();
 		}
+		private void TilemapToolSourcePalette_SelectedAreaChanged(object sender, EventArgs e)
+		{
+			this.Invalidate();
+		}
+
 		private void actionToolButton_Click(object sender, EventArgs e)
 		{
 			TilemapActionEntry clickedEntry = this.actions.FirstOrDefault(entry => entry.ToolButton == sender);
