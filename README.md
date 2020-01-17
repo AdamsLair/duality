@@ -39,4 +39,4 @@ Duality started its development around 2011, which makes this its nine year anni
 
 Thanks to all the contributors who helped me fix bugs, add features, improve the docs, and discuss design decisions. Without your help and input, the project would not have been where it is now. And of course, thanks to all the users who helped us improve Duality by pointing out both issues and use cases that might otherwise have gone unnoticed.
 
-For any questions or points for discussion, please use the GitHub thread for this commit.
+For any questions or points for discussion, please use the [GitHub thread for this commit](https://github.com/AdamsLair/duality/commit/bd61f2753fd57839b14773bb31a0d0d628e6ec3a).
