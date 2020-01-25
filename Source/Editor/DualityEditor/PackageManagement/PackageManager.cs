@@ -14,6 +14,7 @@ using Duality.Editor.Forms;
 using Duality.Editor.PackageManagement.Internal;
 using Microsoft.Build.Logging;
 using NuGet.Common;
+using NuGet.Configuration;
 using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
@@ -121,7 +122,7 @@ namespace Duality.Editor.PackageManagement
 		public PackageManager() : this(new PackageManagerEnvironment(null)) { }
 		public PackageManager(string rootPath) : this(new PackageManagerEnvironment(rootPath)) { }
 		public PackageManager(PackageManagerEnvironment workEnvironment) : this(workEnvironment, null) { }
-		public PackageManager(PackageManagerEnvironment workEnvironment, PackageSetup packageSetup)
+		public PackageManager(PackageManagerEnvironment workEnvironment, PackageSetup packageSetup, ISettings settings = null)
 		{
 			// If no external package setup is provided, load it from the config file
 			if (packageSetup == null)
@@ -154,7 +155,8 @@ namespace Duality.Editor.PackageManagement
 
 			// Create internal package management objects
 			var nuGetFramework = NuGetFramework.Parse("net472");
-			var settings = NuGet.Configuration.Settings.LoadDefaultSettings(root: null);
+
+			settings = settings ?? NuGet.Configuration.Settings.LoadDefaultSettings(root: null);
 			this.logger = new PackageManagerLogger();
 			this.manager = new NuGetTargetedPackageManager(nuGetFramework, this.logger, settings, this.env.RepositoryPath);
 			this.manager.PackageInstalling += this.manager_PackageInstalling;

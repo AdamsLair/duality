@@ -125,7 +125,7 @@ namespace Duality.Editor.PackageManagement.Internal
 			this._logger = logger;
 			this._settings = settings;
 			this._nuGetFramework = nuGetFramework;
-			this._packagePathResolver = new PackagePathResolver(packagePath);
+			this._packagePathResolver = new PackagePathResolver(Path.GetFullPath(packagePath));
 			var sourceRepositoryProvider = new SourceRepositoryProvider(this._settings, Repository.Provider.GetCoreV3());
 			this._repositories = sourceRepositoryProvider.GetRepositories().ToArray();
 			this._globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(this._settings);

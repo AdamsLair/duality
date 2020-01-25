@@ -4,7 +4,10 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Versioning;
 
-using NuGet;
+using NuGet.Packaging;
+using NuGet.Frameworks;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 
 namespace Duality.Editor.PackageManagement.Tests
 {
@@ -103,29 +106,26 @@ namespace Duality.Editor.PackageManagement.Tests
 		/// <param name="repositoryPath"></param>
 		public void CreatePackage(string buildPath, string repositoryPath)
 		{
-			NuGet.PackageBuilder builder = new NuGet.PackageBuilder();
-			NuGet.ManifestMetadata metadata = new NuGet.ManifestMetadata
+			PackageBuilder builder = new PackageBuilder();
+			ManifestMetadata metadata = new ManifestMetadata
 			{
-				Authors = "AdamsLair",
-				Version = this.name.Version.ToString(),
+				Authors = new[] {"AdamsLair"},
+				Version = new NuGetVersion(this.name.Version.ToString()),
 				Id = this.name.Id,
 				Description = string.Format("Mock Package: {0} {1}", this.name.Id, this.name.Version),
 				Tags = string.Join(" ", this.tags),
-				DependencySets = this.dependencySets.Select(pair => new NuGet.ManifestDependencySet()
-				{
-					TargetFramework = pair.Key,
-					Dependencies = 
-						pair.Value
-						.Select(item => new NuGet.ManifestDependency { Id = item.Id, Version = item.Version.ToString() })
-						.ToList()
-				}).ToList()
+				DependencyGroups = this.dependencySets.Select(pair => new PackageDependencyGroup(
+					new NuGetFramework(pair.Key),
+					pair.Value.Select(item =>
+							new PackageDependency(item.Id, new VersionRange(new NuGetVersion(item.Version.ToString()))))
+						.ToList()))
 			};
 
 			// Set up file contents metadata for the package
-			List<NuGet.ManifestFile> fileMetadata = new List<NuGet.ManifestFile>();
+			List<ManifestFile> fileMetadata = new List<ManifestFile>();
 			foreach (var pair in this.files)
 			{
-				fileMetadata.Add(new NuGet.ManifestFile { Source = pair.Key, Target = pair.Value });
+				fileMetadata.Add(new ManifestFile { Source = pair.Key, Target = pair.Value });
 				this.CreateFile(buildPath, pair.Key);
 			}
 
@@ -134,7 +134,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			// not actually interested in package contents at all.
 			if (this.files.Count == 0 && !this.dependencySets.SelectMany(pair => pair.Value).Any())
 			{
-				fileMetadata.Add(new NuGet.ManifestFile { Source = "Empty.dll", Target = "lib" });
+				fileMetadata.Add(new ManifestFile { Source = "Empty.dll", Target = "lib" });
 				this.CreateFile(buildPath, "Empty.dll");
 			}
 
