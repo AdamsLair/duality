@@ -456,7 +456,7 @@
       <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="NuGet.Resolver">
-      <Version>5.2.0</Version>
+      <Version>5.4.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -465,8 +465,8 @@
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe.config" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.dll" DestinationFolder="$(SolutionDir)Build\Output\"/>
-    <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.xml" DestinationFolder="$(SolutionDir)Build\Output\"/>
+    <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)Aga.Controls.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)NuGet.Common.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)NuGet.Configuration.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
