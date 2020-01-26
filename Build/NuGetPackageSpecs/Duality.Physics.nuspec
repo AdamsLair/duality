@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Physics</id>
-    <version>3.0.2</version>
+    <version>3.0.4</version>
     <authors>See original project authors</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Physics</title>
@@ -15,7 +15,7 @@
     <references>
       <reference file="DualityPhysics.dll" />
     </references>
-    <releaseNotes>
+    <releaseNotes>Patch Version Update
 </releaseNotes>
   </metadata>
   <files>

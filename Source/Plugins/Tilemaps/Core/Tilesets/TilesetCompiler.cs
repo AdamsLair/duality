@@ -103,7 +103,7 @@ namespace Duality.Plugins.Tilemaps
 				TilesetRenderInput renderInput = input.RenderConfig[renderInputIndex] ?? DefaultRenderInput;
 				PixelData sourceLayerData = (renderInput.SourceData.Res ?? Pixmap.Checkerboard.Res).MainLayer;
 
-				// Determine overal geometry values for this layer, such as tile bounds and texture sizes
+				// Determine overall geometry values for this layer, such as tile bounds and texture sizes
 				LayerGeometry layerGeometry = this.CalculateLayerGeometry(renderInput, sourceLayerData);
 
 				// Generate pixel data and atlas values for this layer's texture
@@ -150,6 +150,8 @@ namespace Duality.Plugins.Tilemaps
 			output.AutoTileData = output.AutoTileData ?? new List<TilesetAutoTileInfo>();
 			output.AutoTileData.Clear();
 			this.TransformAutoTileData(output.AutoTileData);
+
+			output.EmptyTileIndex = this.GetEmptyTileIndex();
 
 			this.ClearWorkingData();
 			return output;
@@ -573,6 +575,11 @@ namespace Duality.Plugins.Tilemaps
 			}
 
 			return target;
+		}
+
+		private int GetEmptyTileIndex()
+		{
+			return this.tiles.Data.IndexOfFirst(tileInfo => tileInfo.IsVisuallyEmpty);
 		}
 
 		/// <summary>

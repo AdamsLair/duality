@@ -34,5 +34,10 @@ namespace Duality.Plugins.Tilemaps
 		/// AutoTile input that was specified in the <see cref="TilesetCompilerInput"/>.
 		/// </summary>
 		public List<TilesetAutoTileInfo> AutoTileData;
+		/// <summary>
+		/// The tile index that should be used for painting empty tiles.
+		/// -1 indicates that there are no empty tiles.
+		/// </summary>
+		public int EmptyTileIndex;
 	}
 }
