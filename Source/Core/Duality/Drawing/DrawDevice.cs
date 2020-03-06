@@ -519,7 +519,7 @@ namespace Duality.Drawing
 			SortItem sortItem = new SortItem();
 			if (sortByDepth)
 			{
-				sortItem.SortDepth = this.CalcZSortIndex<T>(slice.Data, vertexCount);
+				sortItem.SortDepth = this.CalcZSortIndex<T>(slice.Data, slice.Offset, slice.Length);
 			}
 
 			// Determine whether we can batch the new vertex item with the previous one
@@ -681,15 +681,15 @@ namespace Duality.Drawing
 		}
 
 
-		private float CalcZSortIndex<T>(T[] vertices, int count) where T : struct, IVertexData
+		private float CalcZSortIndex<T>(T[] vertices, int offset, int length) where T : struct, IVertexData
 		{
 			// Require double precision, so we don't get "z fighting" issues in our sort.
 			double zSortIndex = 0.0d;
-			for (int i = 0; i < count; i++)
+			for (int i = offset; i < length; i++)
 			{
 				zSortIndex += vertices[i].Pos.Z + vertices[i].DepthOffset;
 			}
-			return (float)(zSortIndex / (double)count);
+			return (float)(zSortIndex / (double)length);
 		}
 		
 		private void UpdateMatrices()
