@@ -685,7 +685,7 @@ namespace Duality.Drawing
 		{
 			// Require double precision, so we don't get "z fighting" issues in our sort.
 			double zSortIndex = 0.0d;
-			for (int i = offset; i < length; i++)
+			for (int i = offset; i < offset + length; i++)
 			{
 				zSortIndex += vertices[i].Pos.Z + vertices[i].DepthOffset;
 			}
