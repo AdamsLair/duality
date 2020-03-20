@@ -117,7 +117,7 @@ namespace Duality.Editor.PackageManagement.Tests
 			Assert.AreEqual(packageSpecPluginLatest.Name.Version, packagePluginInfo.Version);
 		}
 
-		[Test, TestCaseSource("InstallPackageTestCases")]
+		[Test, TestCaseSource(nameof(InstallPackageTestCases))]
 		public void InstallPackage(PackageOperationTestCase testCase)
 		{
 			var settings = new Settings(this.workEnv.RootPath);
