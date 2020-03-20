@@ -70,6 +70,7 @@ namespace Duality.Editor.PackageManagement.Internal
 	public interface ILocalPackageRepository
 	{
 		IEnumerable<LocalPackageInfo> GetPackages();
+		bool Exist(PackageIdentity identity);
 		LocalPackageInfo GetPackage(string packagePath);
 	}
 
@@ -92,6 +93,11 @@ namespace Duality.Editor.PackageManagement.Internal
                 if(packagePath.EndsWith("IconCache")) continue; 
 				yield return this.GetPackage(packagePath);
 			}
+		}
+
+		public bool Exist(PackageIdentity identity)
+		{
+			return Directory.Exists(Path.Combine(this._packagePath, $"{identity.Id}.{identity.Version}"));
 		}
 
 		public LocalPackageInfo GetPackage(string packagePath)
@@ -283,6 +289,7 @@ namespace Duality.Editor.PackageManagement.Internal
 
 		private async Task RestorePackage(DependencyInfoResource[] dependencyInfoResources, PackageIdentity packageIdentity, SourceCacheContext cacheContext, PackageExtractionContext packageExtractionContext)
 		{
+			if (this.LocalRepository.Exist(packageIdentity)) return;
 			PackageInstallingOperation installingArgs = new PackageInstallingOperation(packageIdentity);
 			this.PackageInstalling?.Invoke(this, installingArgs);
 			foreach (DependencyInfoResource dependencyInfoResource in dependencyInfoResources)
