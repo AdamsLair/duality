@@ -11,6 +11,7 @@ using Duality.IO;
 using NuGet;
 
 using NUnit.Framework;
+using NuGet.Configuration;
 
 namespace Duality.Editor.PackageManagement.Tests
 {
