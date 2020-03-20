@@ -115,7 +115,7 @@ namespace Duality.Editor.PackageManagement.Tests
 				Description = string.Format("Mock Package: {0} {1}", this.name.Id, this.name.Version),
 				Tags = string.Join(" ", this.tags),
 				DependencyGroups = this.dependencySets.Select(pair => new PackageDependencyGroup(
-					new NuGetFramework(pair.Key),
+					NuGetFramework.Parse(pair.Key),
 					pair.Value.Select(item =>
 							new PackageDependency(item.Id, new VersionRange(new NuGetVersion(item.Version.ToString()))))
 						.ToList()))

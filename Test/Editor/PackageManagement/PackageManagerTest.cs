@@ -121,11 +121,9 @@ namespace Duality.Editor.PackageManagement.Tests
 		public void InstallPackage(PackageOperationTestCase testCase)
 		{
 			var settings = new Settings(this.workEnv.RootPath);
-			var section = settings.GetSection("packageSources");
 
-			//NuGet.Configuration.VirtualSettingSection
 			settings.Remove("packageSources", new SourceItem("nuget.org", "https://api.nuget.org/v3/index.json", "3"));
-			settings.AddOrUpdate("packageSources", new SourceItem("testrepository", this.setup.RepositoryUrls[0]));
+			settings.AddOrUpdate("packageSources", new SourceItem("testrepository", Path.GetFullPath(Path.Combine(this.workEnv.RootPath, this.setup.RepositoryUrls[0]))));
 			PackageManager packageManager = new PackageManager(this.workEnv, this.setup, settings);
 
 			// Prepare the test by setting up remote repository and pre-installed local packages
