@@ -1283,6 +1283,16 @@ namespace Duality.Editor.Plugins.ProjectView
 		{
 			NodeBase node = this.lastEditedNode;
 			string oldName = node.GetNameFromPath(node.NodePath);
+
+			// https://github.com/AdamsLair/duality/issues/773
+			if (string.IsNullOrWhiteSpace(node.Text))
+			{
+				node.Text = oldName;
+				this.FlashNode(node);
+				this.RevokeGlobalRenameEventFor(node.NodePath);
+				return;
+			}
+
 			if (oldName == node.Text)
 			{
 				this.RevokeGlobalRenameEventFor(node.NodePath);
