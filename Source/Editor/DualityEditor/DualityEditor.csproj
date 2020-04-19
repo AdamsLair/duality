@@ -161,13 +161,6 @@
     <Compile Include="HelpSystem\HelpStack.cs" />
     <Compile Include="HelpSystem\IReadOnlyHelpInfo.cs" />
     <Compile Include="HelpSystem\IHelpProvider.cs" />
-    <Compile Include="PackageManagement\Internal\NuGetTargetedPackageManager.cs" />
-    <Compile Include="PackageManagement\PackageDependencyWalker.cs" />
-    <Compile Include="PackageManagement\PackageCache.cs" />
-    <Compile Include="PackageManagement\PackageManagerLogger.cs" />
-    <Compile Include="PackageManagement\PackageManagerEnvironment.cs" />
-    <Compile Include="PackageManagement\PackageUpdateSchedule.cs" />
-    <Compile Include="PackageManagement\PackageSetup.cs" />
     <Compile Include="PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
     <Compile Include="Forms\LicenseAcceptDialog.cs">
@@ -214,13 +207,6 @@
     <Compile Include="Utility\Extensions\ExtMethodsBitmap.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsMemberInfoEditorHint.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsZipArchive.cs" />
-    <Compile Include="PackageManagement\PackageCompatibility.cs" />
-    <Compile Include="PackageManagement\PackageLicenseAgreementEventArgs.cs" />
-    <Compile Include="PackageManagement\PackageName.cs" />
-    <Compile Include="PackageManagement\PackageEventArgs.cs" />
-    <Compile Include="PackageManagement\PackageInfo.cs" />
-    <Compile Include="PackageManagement\LocalPackage.cs" />
-    <Compile Include="PackageManagement\PackageManager.cs" />
     <Compile Include="Properties\GeneralRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -247,12 +233,6 @@
     </Compile>
     <Compile Include="Forms\AppRunningDialog.Designer.cs">
       <DependentUpon>AppRunningDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\NewProjectDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\NewProjectDialog.Designer.cs">
-      <DependentUpon>NewProjectDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ProcessingBigTaskDialog.cs">
       <SubType>Form</SubType>
@@ -349,9 +329,6 @@
     <EmbeddedResource Include="Forms\AppRunningDialog.resx">
       <DependentUpon>AppRunningDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\NewProjectDialog.resx">
-      <DependentUpon>NewProjectDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProcessingBigTaskDialog.resx">
       <DependentUpon>ProcessingBigTaskDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -401,7 +378,6 @@
     <None Include="EmbeddedResources\clock.png" />
     <None Include="EmbeddedResources\EditorUserData.xml" />
     <None Include="EmbeddedResources\application_stopwatch.png" />
-    <EmbeddedResource Include="EmbeddedResources\ErrorHandlersTemplate.txt" />
     <EmbeddedResource Include="EmbeddedResources\Class.png" />
     <EmbeddedResource Include="EmbeddedResources\AssetImporter.png" />
     <Content Include="DualityLogoIcon.ico" />
@@ -416,8 +392,6 @@
     <None Include="EmbeddedResources\control_step_blue.png" />
     <None Include="EmbeddedResources\drive_disk.png" />
     <None Include="EmbeddedResources\working_bigtask.png" />
-    <None Include="EmbeddedResources\template_empty.png" />
-    <None Include="EmbeddedResources\template_current.png" />
     <None Include="EmbeddedResources\DualityIcon48.png" />
     <None Include="EmbeddedResources\DualityIcon256.png" />
     <None Include="EmbeddedResources\application_create.png" />
@@ -427,13 +401,11 @@
     <None Include="EmbeddedResources\control_play_blue.png" />
     <None Include="EmbeddedResources\control_pause_blue.png" />
     <None Include="EmbeddedResources\DualitorLogoHalfSize.png" />
-    <EmbeddedResource Include="EmbeddedResources\GameResTemplate.txt" />
     <None Include="EmbeddedResources\page_white_csharp.png" />
     <None Include="EmbeddedResources\disk_multiple.png" />
     <None Include="EmbeddedResources\application_bug.png" />
     <None Include="EmbeddedResources\application_go.png" />
     <None Include="EmbeddedResources\arrow_refresh.png" />
-    <EmbeddedResource Include="EmbeddedResources\GamePluginTemplate.zip" />
     <None Include="EmbeddedResources\icon_color.png" />
     <None Include="EmbeddedResources\add.png" />
     <None Include="EmbeddedResources\cross.png" />
@@ -457,28 +429,22 @@
     <PackageReference Include="Microsoft.Web.Xdt">
       <Version>2.1.1</Version>
     </PackageReference>
-    <PackageReference Include="NuGet.Core">
-      <Version>2.14.0</Version>
-    </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe.config" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.dll" DestinationFolder="$(SolutionDir)Build\Output\"/>
-    <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.xml" DestinationFolder="$(SolutionDir)Build\Output\"/>
+    <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)Aga.Controls.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)NuGet.Core.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)PopupControl.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)WeifenLuo.WinFormsUI.Docking.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)VistaBridgeLibrary.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)VistaBridgeLibrary.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)Windows7.DesktopIntegration.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
     <Copy SourceFiles="$(OutputPath)Windows7.DesktopIntegration.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
-  </Target>
-  <Target Name="ZipEmbeddedGamePluginTemplate" BeforeTargets="BeforeBuild">
-    <ZipDirectory SourceDirectory="EmbeddedResources\GamePluginTemplate" DestinationFile="EmbeddedResources\GamePluginTemplate.zip" Overwrite="true" />
   </Target>
 </Project>

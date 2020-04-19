@@ -290,16 +290,6 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] GamePluginTemplate {
-            get {
-                object obj = ResourceManager.GetObject("GamePluginTemplate", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to /*
         /// * A set of static helper classes that provide easy runtime access to the games resources.
         /// * This file is auto-generated. Any changes made to it are lost as soon as Duality decides
@@ -451,15 +441,6 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duality always works locally in a project folder. The New Project dialog will help you set up a new one..
-        /// </summary>
-        public static string MenuItemInfo_NewProject {
-            get {
-                return ResourceManager.GetString("MenuItemInfo_NewProject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The project source code is where your game logic happens. To help you get started, Duality will create and open a suitable Visual Studio solution for you..
         /// </summary>
         public static string MenuItemInfo_OpenProjectSource {
@@ -591,15 +572,6 @@ namespace Duality.Editor.Properties {
         public static string MenuItemName_ConfigureLauncher {
             get {
                 return ResourceManager.GetString("MenuItemName_ConfigureLauncher", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New Project....
-        /// </summary>
-        public static string MenuItemName_NewProject {
-            get {
-                return ResourceManager.GetString("MenuItemName_NewProject", resourceCulture);
             }
         }
         
@@ -1161,15 +1133,6 @@ namespace Duality.Editor.Properties {
         public static string PropertyGrid_N_Objects {
             get {
                 return ResourceManager.GetString("PropertyGrid_N_Objects", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select the folder in which a new project will be created below..
-        /// </summary>
-        public static string SelectNewProjectFolderDialog_Desc {
-            get {
-                return ResourceManager.GetString("SelectNewProjectFolderDialog_Desc", resourceCulture);
             }
         }
         

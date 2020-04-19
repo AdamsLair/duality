@@ -23,8 +23,8 @@ namespace Duality.Backend.DefaultOpenTK
 			// Determine working data
 			Assembly execAssembly = Assembly.GetEntryAssembly() ?? typeof(DualityApp).Assembly;
 			string execAssemblyDir = Path.GetFullPath(Path.GetDirectoryName(execAssembly.Location));
-			string sourceFileName32 = Path.Combine(DualityApp.PluginDirectory, "OpenALSoft32.dll");
-			string sourceFileName64 = Path.Combine(DualityApp.PluginDirectory, "OpenALSoft64.dll");
+			string sourceFileName32 = "OpenALSoft32.dll";
+			string sourceFileName64 = "OpenALSoft64.dll";
 			string targetFileName = "OpenAL32.dll";
 
 			// Determine the location of fallback libraries

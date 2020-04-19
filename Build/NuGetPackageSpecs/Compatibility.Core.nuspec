@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Compatibility</id>
-    <version>3.0.4</version>
+    <version>4.0.0-alpha</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Backwards Compatibility</title>
@@ -16,7 +16,7 @@
     <releaseNotes>Patch Version Update
 </releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.1.5" />
+      <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
     </dependencies>
   </metadata>
   <files>

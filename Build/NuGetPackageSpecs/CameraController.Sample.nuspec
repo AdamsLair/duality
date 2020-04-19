@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.CameraController</id>
-    <version>3.0.4</version>
+    <version>4.0.0-alpha</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Camera Controller Sample</title>
@@ -13,18 +13,18 @@
     <summary>Demonstrates various camera controller Components.</summary>
     <description>This package contains a testbed for camera controller Components and various sample implementations.</description>
     <tags>Duality Sample Plugin Camera</tags>
-    <releaseNotes>Patch Version Update
-</releaseNotes>
+    <releaseNotes>Patch Version Update</releaseNotes>
+    <contentFiles> 
+      <files include="**/*" buildAction="None" copyToOutput="true"/> 
+    </contentFiles> 
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.1.5" />
-      <dependency id="AdamsLair.Duality.Editor" version="3.1.9" />
+      <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
+      <dependency id="AdamsLair.Duality.Editor" version="4.0.0-alpha" />
     </dependencies>
   </metadata>
   <files>
     <file src="..\..\Samples\CameraController\Content\Plugins\CameraController.core.dll" target="lib\portable45-net45+win8+wpa81" />
     <file src="..\..\Samples\CameraController\Content\Plugins\CameraController.core.xml" target="lib\portable45-net45+win8+wpa81" />
-    <file src="..\..\Samples\CameraController\Content\Data\**\*.res" target="content" />
-    <file src="..\..\Samples\CameraController\**\*.cs" target="source" exclude="..\..\Samples\CameraController\Content\**\*.*;..\..\Samples\CameraController\obj\**\*.*" />
-    <file src="..\..\Samples\CameraController\CameraController.csproj" target="source" />
+    <file src="..\..\Samples\CameraController\Content\Data\**\*.res" target="contentFiles\any\any\Data" />
   </files>
 </package>

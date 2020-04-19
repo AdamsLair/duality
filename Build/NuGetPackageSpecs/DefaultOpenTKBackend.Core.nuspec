@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DefaultOpenTK</id>
-    <version>3.2.0</version>
+    <version>4.0.0-alpha</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>OpenTK Backend</title>
@@ -16,14 +16,14 @@
     <releaseNotes>Added Support for Setting Hardware Cursors
 #ADD: It is now possible to adjust the hardware cursor on the game window through `INativeWindow`.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.2.0" />
+      <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
       <dependency id="AdamsLair.OpenTK" version="1.2.2" />
     </dependencies>
   </metadata>
   <files>
     <file src="..\Output\Plugins\DefaultOpenTKBackend.core.dll" target="lib\net45" />
     <file src="..\Output\Plugins\DefaultOpenTKBackend.core.pdb" target="lib\net45" />
-    <file src="..\Output\Plugins\OpenALSoft32.dll" target="lib\net45" />
-    <file src="..\Output\Plugins\OpenALSoft64.dll" target="lib\net45" />
+    <file src="..\Output\OpenALSoft32.dll" target="lib\net45" />
+    <file src="..\Output\OpenALSoft64.dll" target="lib\net45" />
   </files>
 </package>
