@@ -480,13 +480,17 @@ namespace Duality.Drawing
 			if (vertexCount > vertexBuffer.Length) vertexCount = vertexBuffer.Length;
 			if (material == null) material = Material.Checkerboard.Res.Info;
 
+			// Move the added vertices to an internal shared buffer
+			VertexSlice<T> slice = this.drawVertices.Rent<T>(vertexCount);
+			Array.Copy(vertexBuffer, 0, slice.Data, slice.Offset, slice.Length);
+
 			// In picking mode, override incoming vertices material and vertex colors
 			// to generate a lookup texture by which we can retrieve each pixels object.
 			if (this.pickingIndex != 0)
 			{
 				ColorRgba clr = new ColorRgba((this.pickingIndex << 8) | 0xFF);
 				for (int i = 0; i < vertexCount; ++i)
-					vertexBuffer[i].Color = clr;
+					slice.Data[slice.Offset + i].Color = clr;
 
 				material = this.RentMaterial(material);
 				material.Technique = DrawTechnique.Picking;
@@ -497,10 +501,6 @@ namespace Duality.Drawing
 				material = this.RentMaterial(material);
 				material.Technique = DrawTechnique.Solid;
 			}
-			
-			// Move the added vertices to an internal shared buffer
-			VertexSlice<T> slice = this.drawVertices.Rent<T>(vertexCount);
-			Array.Copy(vertexBuffer, 0, slice.Data, slice.Offset, slice.Length);
 
 			// Aggregate all info we have about our incoming vertices
 			VertexDrawItem drawItem = new VertexDrawItem
@@ -519,7 +519,7 @@ namespace Duality.Drawing
 			SortItem sortItem = new SortItem();
 			if (sortByDepth)
 			{
-				sortItem.SortDepth = this.CalcZSortIndex<T>(vertexBuffer, vertexCount);
+				sortItem.SortDepth = this.CalcZSortIndex<T>(slice.Data, slice.Offset, slice.Length);
 			}
 
 			// Determine whether we can batch the new vertex item with the previous one
@@ -681,15 +681,15 @@ namespace Duality.Drawing
 		}
 
 
-		private float CalcZSortIndex<T>(T[] vertices, int count) where T : struct, IVertexData
+		private float CalcZSortIndex<T>(T[] vertices, int offset, int length) where T : struct, IVertexData
 		{
 			// Require double precision, so we don't get "z fighting" issues in our sort.
 			double zSortIndex = 0.0d;
-			for (int i = 0; i < count; i++)
+			for (int i = offset; i < offset + length; i++)
 			{
 				zSortIndex += vertices[i].Pos.Z + vertices[i].DepthOffset;
 			}
-			return (float)(zSortIndex / (double)count);
+			return (float)(zSortIndex / (double)length);
 		}
 		
 		private void UpdateMatrices()
