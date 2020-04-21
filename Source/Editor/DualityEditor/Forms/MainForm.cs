@@ -99,14 +99,6 @@ namespace Duality.Editor.Forms
 				{
 					new MenuModelItem
 					{
-						Name			= GeneralRes.MenuItemName_NewProject,
-						SortValue		= MenuModelItem.SortValue_Top,
-						Icon			= Properties.GeneralResCache.ImageAppCreate,
-						Tag				= HelpInfo.FromText(GeneralRes.MenuItemName_NewProject, GeneralRes.MenuItemInfo_NewProject),
-						ActionHandler	= this.newProjectItem_Click
-					},
-					new MenuModelItem
-					{
 						Name			= GeneralRes.MenuItemName_PublishGame,
 						SortValue		= MenuModelItem.SortValue_Top,
 						Tag				= HelpInfo.FromText(GeneralRes.MenuItemName_PublishGame, GeneralRes.MenuItemInfo_PublishGame),
@@ -565,7 +557,6 @@ namespace Duality.Editor.Forms
 		}
 		private void actionOpenCode_Click(object sender, EventArgs e)
 		{
-			DualityEditorApp.UpdatePluginSourceCode();
 			System.Diagnostics.Process.Start(EditorHelper.SourceCodeSolutionFilePath);
 		}
 		private void actionPublishGame_Click(object sender, EventArgs e) {
@@ -633,24 +624,6 @@ namespace Duality.Editor.Forms
 		{
 			this.welcomeDialog.Disposed -= this.welcomeDialog_Disposed;
 			this.welcomeDialog = null;
-		}
-		private void newProjectItem_Click(object sender, EventArgs e)
-		{
-			NewProjectDialog newProject = new NewProjectDialog();
-			DialogResult result = newProject.ShowDialog(this);
-
-			// Project successfully created?
-			if (result == DialogResult.OK)
-			{
-				// Open new project
-				var startInfo = new System.Diagnostics.ProcessStartInfo(newProject.ResultEditorBinary);
-				startInfo.WorkingDirectory = Path.GetDirectoryName(startInfo.FileName);
-				startInfo.UseShellExecute = false;
-				System.Diagnostics.Process.Start(startInfo);
-
-				// Don't need this DualityEditor anymore - close it!
-				this.CloseNonUser();
-			}
 		}
 
 		private void formatSetDefault_Click(object sender, EventArgs e)

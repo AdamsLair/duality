@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Docs</id>
-    <version>3.0.0</version>
+    <version>4.0.0-alpha</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Documentation</title>
@@ -16,7 +16,7 @@
     <releaseNotes>Major Version Update</releaseNotes>
     <!-- A dependency to at least some Duality Assembly is required, so this package is recognized as a proper Duality package -->
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.0.0" />
+      <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
     </dependencies>
   </metadata>
   <files>

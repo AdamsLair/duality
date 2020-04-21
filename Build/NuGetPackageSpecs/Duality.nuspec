@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>3.2.1</version>
+    <version>4.0.0-alpha</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -16,9 +16,9 @@
     <releaseNotes>
 </releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Primitives" version="3.0.4" />
+      <dependency id="AdamsLair.Duality.Primitives" version="4.0.0-alpha" />
       <dependency id="AdamsLair.NVorbis" version="0.7.6" />
-      <dependency id="AdamsLair.Duality.Physics" version="3.0.4" />
+      <dependency id="AdamsLair.Duality.Physics" version="4.0.0-alpha" />
     </dependencies>
     <references>
       <reference file="Duality.dll" />

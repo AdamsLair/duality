@@ -160,12 +160,6 @@
   <data name="CursorHandGrabbing" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\CursorHandGrabbing.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="GamePluginTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\GamePluginTemplate.zip;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="GameResTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\GameResTemplate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="HelpInfo_NotAvailable_Desc" xml:space="preserve">
     <value>No information available.</value>
   </data>
@@ -178,20 +172,11 @@
   <data name="ImageAppCreate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\application_create.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ImageTemplateCurrent" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\template_current.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ImageTemplateEmpty" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\template_empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Language" xml:space="preserve">
     <value>English</value>
   </data>
   <data name="MenuItemInfo_DebugGame" xml:space="preserve">
     <value>If you're using a professional version of Visual Studio, this action will run the Duality launcher and trigger a debug event that allows you to attach the debugger to your game before anything happens. You can achieve the same by clicking the "Run" button of your Core Plugin in Visual Studio itself.</value>
-  </data>
-  <data name="MenuItemInfo_NewProject" xml:space="preserve">
-    <value>Duality always works locally in a project folder. The New Project dialog will help you set up a new one.</value>
   </data>
   <data name="MenuItemInfo_OpenProjectSource" xml:space="preserve">
     <value>The project source code is where your game logic happens. To help you get started, Duality will create and open a suitable Visual Studio solution for you.</value>
@@ -222,9 +207,6 @@
   </data>
   <data name="MenuItemName_About" xml:space="preserve">
     <value>About</value>
-  </data>
-  <data name="MenuItemName_NewProject" xml:space="preserve">
-    <value>New Project...</value>
   </data>
   <data name="MenuItemName_Quit" xml:space="preserve">
     <value>Quit</value>
@@ -345,9 +327,6 @@
   </data>
   <data name="PropertyGrid_N_Objects" xml:space="preserve">
     <value>{0} objects</value>
-  </data>
-  <data name="SelectNewProjectFolderDialog_Desc" xml:space="preserve">
-    <value>Select the folder in which a new project will be created below.</value>
   </data>
   <data name="TaskBarOverlay_ReloadCorePlugin_Desc" xml:space="preserve">
     <value>Reloading core plugins...</value>
@@ -486,9 +465,6 @@
   </data>
   <data name="IconNamespace" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\namespace.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ErrorHandlersTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\ErrorHandlersTemplate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MenuItemInfo_PublishGame" xml:space="preserve">
     <value>Creates a version of the game ready to distribute to others, with all necessary files</value>

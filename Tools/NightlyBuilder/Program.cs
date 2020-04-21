@@ -336,13 +336,13 @@ namespace NightlyBuilder
 							}
 						}
 
-						if (skip)
-						{
-							Console.ForegroundColor = ConsoleColor.Yellow;
-							Console.WriteLine("dependency mismatch (skip)");
-							Console.ResetColor();
-							continue;
-						}
+						//if (skip)
+						//{
+						//	Console.ForegroundColor = ConsoleColor.Yellow;
+						//	Console.WriteLine("dependency mismatch (skip)");
+						//	Console.ResetColor();
+						//	continue;
+						//}
 						
 						XElement elemId = doc.Descendants("id").FirstOrDefault();
 						XElement elemVersion = doc.Descendants("version").FirstOrDefault();
@@ -357,7 +357,7 @@ namespace NightlyBuilder
 								packResult);
 
 							// If in non-interactive mode, continue to build packages even if one of them failed.
-							if (config.NonInteractive)
+							if (true)
 							{
 								Console.ForegroundColor = ConsoleColor.Red;
 								Console.WriteLine("failed");
@@ -503,6 +503,7 @@ namespace NightlyBuilder
 			searchPaths.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Microsoft Visual Studio"));
 			foreach (string baseDir in searchPaths)
 			{
+				if (!Directory.Exists(baseDir)) continue;
 				foreach (string candidatePath in Directory.EnumerateFiles(baseDir, "msbuild.exe", SearchOption.AllDirectories))
 				{
 					msBuildPath = candidatePath;
