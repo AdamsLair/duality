@@ -147,7 +147,7 @@ namespace NightlyBuilder
 							ExecuteBackgroundCommand(resultFile);
 							ExecuteBackgroundCommand(
 								string.Format("{0} {1}", 
-									Path.Combine(config.NUnitBinDir, "nunit.exe"), 
+									Path.Combine(config.NUnitBinDir, "nunit3-console.exe"), 
 									nunitProjectFile));
 							throw new ApplicationException(string.Format("At least one unit test has failed. See {0} for more information.", resultFile));
 						}
@@ -294,7 +294,7 @@ namespace NightlyBuilder
 					}
 
 					Console.WriteLine("Determining package data from '{0}'...", config.NuGetPackageSpecsDir);
-					Dictionary<string,Version> packageVersions = new Dictionary<string,Version>();
+					Dictionary<string,string> packageVersions = new Dictionary<string,string>();
 					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageSpecsDir, "*.nuspec", SearchOption.AllDirectories))
 					{
 						Console.Write("  {0}: ", Path.GetFileName(file));
@@ -305,7 +305,7 @@ namespace NightlyBuilder
 						XElement elemVersion = doc.Descendants("version").FirstOrDefault();
 
 						string id = elemId.Value.Trim();
-						Version version = Version.Parse(elemVersion.Value.Trim());
+						string version = elemVersion.Value.Trim();
 						packageVersions[id] = version;
 
 						Console.WriteLine("{0}", version);
@@ -324,8 +324,8 @@ namespace NightlyBuilder
 						foreach (XElement elemDependency in doc.Descendants("dependency"))
 						{
 							string id = elemDependency.Attribute("id").Value.Trim();
-							Version version = Version.Parse(elemDependency.Attribute("version").Value.Trim());
-							Version developedAgainstVersion;
+							string version = elemDependency.Attribute("version").Value.Trim();
+							string developedAgainstVersion;
 							if (packageVersions.TryGetValue(id, out developedAgainstVersion))
 							{
 								if (version != developedAgainstVersion)
@@ -336,14 +336,14 @@ namespace NightlyBuilder
 							}
 						}
 
-						//if (skip)
-						//{
-						//	Console.ForegroundColor = ConsoleColor.Yellow;
-						//	Console.WriteLine("dependency mismatch (skip)");
-						//	Console.ResetColor();
-						//	continue;
-						//}
-						
+						if (skip)
+						{
+							Console.ForegroundColor = ConsoleColor.Yellow;
+							Console.WriteLine("dependency mismatch (skip)");
+							Console.ResetColor();
+							continue;
+						}
+
 						XElement elemId = doc.Descendants("id").FirstOrDefault();
 						XElement elemVersion = doc.Descendants("version").FirstOrDefault();
 						string targetFileName = string.Format("{0}.{1}.nupkg", elemId.Value.Trim(), elemVersion.Value.Trim());
@@ -357,7 +357,7 @@ namespace NightlyBuilder
 								packResult);
 
 							// If in non-interactive mode, continue to build packages even if one of them failed.
-							if (true)
+							if (config.NonInteractive)
 							{
 								Console.ForegroundColor = ConsoleColor.Red;
 								Console.WriteLine("failed");
