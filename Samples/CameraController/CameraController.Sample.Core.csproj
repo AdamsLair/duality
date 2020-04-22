@@ -1,14 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Version>4.0.0-alpha</Version>
-		<Copyright>Copyright © Fedja Adam 2018</Copyright>
-		<NeutralLanguage>en</NeutralLanguage>
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<ProjectReference Include="..\Primitives\DualityPrimitives.csproj" />
+		<ProjectReference Include="..\..\Source\Core\Primitives\DualityPrimitives.csproj">
+			<Private>False</Private>
+		</ProjectReference>
+		<ProjectReference Include="..\..\Source\Core\Duality\Duality.csproj">
+			<Private>False</Private>
+		</ProjectReference>
 	</ItemGroup>
+
 </Project>

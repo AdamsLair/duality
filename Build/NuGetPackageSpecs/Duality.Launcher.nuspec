@@ -13,15 +13,16 @@
     <summary>The default launcher application for Duality games.</summary>
     <description>The default launcher application for Duality games.</description>
     <tags>Duality Launcher</tags>
-    <releaseNotes>Patch Version Update
-</releaseNotes>
+    <releaseNotes>Patch Version Update</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
+      <group targetFramework="net472">
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
+      </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Output\DualityLauncher.exe" target="lib\net45" />
-    <file src="..\Output\DualityLauncher.exe.config" target="lib\net45" />
-    <file src="..\Output\DualityLauncher.pdb" target="lib\net45" />
+    <file src="..\Output\DualityLauncher.exe" target="lib\net472" />
+    <file src="..\Output\DualityLauncher.exe.config" target="lib\net472" />
+    <file src="..\Output\DualityLauncher.pdb" target="lib\net472" />
   </files>
 </package>

@@ -13,26 +13,27 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>
-</releaseNotes>
+    <releaseNotes></releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
-      <dependency id="AdamsLair.DockPanelSuite" version="2.8.2" />
-      <dependency id="AdamsLair.TreeViewAdv" version="1.7.7" />
-      <dependency id="AdamsLair.WinForms" version="1.1.17" />
-      <dependency id="AdamsLair.WinForms.PopupControl" version="1.0.1" />
+      <group targetFramework="net472">
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
+        <dependency id="AdamsLair.DockPanelSuite" version="2.8.2" />
+        <dependency id="AdamsLair.TreeViewAdv" version="1.7.7" />
+        <dependency id="AdamsLair.WinForms" version="1.1.17" />
+        <dependency id="AdamsLair.WinForms.PopupControl" version="1.0.1" />
+      </group>
     </dependencies>
     <references>
       <reference file="DualityEditor.exe" />
     </references>
   </metadata>
   <files>
-    <file src="..\Output\DualityEditor.exe" target="lib\net45" />
-    <file src="..\Output\DualityEditor.exe.config" target="lib\net45" />
-    <file src="..\Output\DualityEditor.pdb" target="lib\net45" />
-    <file src="..\Output\DualityEditor.xml" target="lib\net45" />
-    <file src="..\Output\DualityUpdater.exe" target="lib\net45" />
-    <file src="..\Output\VistaBridgeLibrary.dll" target="lib\net45" />
-    <file src="..\Output\Windows7.DesktopIntegration.dll" target="lib\net45" />
+    <file src="..\Output\DualityEditor.exe" target="lib\net472" />
+    <file src="..\Output\DualityEditor.exe.config" target="lib\net472" />
+    <file src="..\Output\DualityEditor.pdb" target="lib\net472" />
+    <file src="..\Output\DualityEditor.xml" target="lib\net472" />
+    <file src="..\Output\DualityUpdater.exe" target="lib\net472" />
+    <file src="..\Output\VistaBridgeLibrary.dll" target="lib\net472" />
+    <file src="..\Output\Windows7.DesktopIntegration.dll" target="lib\net472" />
   </files>
 </package>

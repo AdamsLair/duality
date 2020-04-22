@@ -14,13 +14,14 @@
     <description>The default system backend layer for Duality. It uses regular .Net Framework classes, as are available on desktop platforms.</description>
     <tags>Duality Core Plugin Backend</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
+      <group targetFramework="net472">
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
+      </group>
     </dependencies>
-    <releaseNotes>Patch Version Update
-</releaseNotes>
+    <releaseNotes>Patch Version Update</releaseNotes>
   </metadata>
   <files>
-    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.dll" target="lib\net45" />
-    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.pdb" target="lib\net45" />
+    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.dll" target="lib\net472" />
+    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.pdb" target="lib\net472" />
   </files>
 </package>
