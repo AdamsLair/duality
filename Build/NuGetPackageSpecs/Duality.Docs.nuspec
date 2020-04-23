@@ -16,10 +16,12 @@
     <releaseNotes>Major Version Update</releaseNotes>
     <!-- A dependency to at least some Duality Assembly is required, so this package is recognized as a proper Duality package -->
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
+      <group targetFramework="netstandard2.0">
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
+      </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Documentation\Help\DDoc.chm" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\Documentation\Help\DDoc.chm" target="lib\netstandard2.0" />
   </files>
 </package>

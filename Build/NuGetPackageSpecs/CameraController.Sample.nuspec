@@ -18,13 +18,15 @@
       <files include="**/*" buildAction="None" copyToOutput="true"/> 
     </contentFiles> 
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
-      <dependency id="AdamsLair.Duality.Editor" version="4.0.0-alpha" />
+      <group targetFramework="netstandard2.0">
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
+        <dependency id="AdamsLair.Duality.Editor" version="4.0.0-alpha" />
+      </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\CameraController\Content\Plugins\CameraController.core.dll" target="lib\portable45-net45+win8+wpa81" />
-    <file src="..\..\Samples\CameraController\Content\Plugins\CameraController.core.xml" target="lib\portable45-net45+win8+wpa81" />
+    <file src="..\..\Samples\CameraController\bin\Release\netstandard2.0\CameraController.Sample.core.dll" target="lib\netstandard2.0" />
+    <file src="..\..\Samples\CameraController\bin\Release\netstandard2.0\CameraController.Sample.core.xml" target="lib\netstandard2.0" />
     <file src="..\..\Samples\CameraController\Content\Data\**\*.res" target="contentFiles\any\any\Data" />
   </files>
 </package>

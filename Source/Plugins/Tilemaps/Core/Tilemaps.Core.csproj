@@ -1,103 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2F7D1F9D-0803-4E13-85A6-0AF56AC05431}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Duality.Plugins.Tilemaps</RootNamespace>
-    <AssemblyName>Tilemaps.core</AssemblyName>
-    <FileAlignment>512</FileAlignment>
-    <RestorePackages>true</RestorePackages>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="CorePlugin.cs" />
-    <Compile Include="Properties\TilemapsResNames.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tilemaps\Components\TilemapChangedEventArgs.cs" />
-    <Compile Include="Tilemaps\Components\TilemapCollisionSource.cs" />
-    <Compile Include="Tilemaps\TilemapFloodFill.cs" />
-    <Compile Include="Tilesets\TileCollisionShapes.cs" />
-    <Compile Include="Tilesets\TileCollisionShape.cs" />
-    <Compile Include="Tilesets\TileQuadrant.cs" />
-    <Compile Include="Tilesets\TilesetAutoTileItem.cs" />
-    <Compile Include="Tilesets\TileConnection.cs" />
-    <Compile Include="Tilesets\TileInfo.cs" />
-    <Compile Include="Tilemaps\Tile.cs" />
-    <Compile Include="Tilemaps\TileEdgeMap.cs" />
-    <Compile Include="Tilemaps\TilemapData.cs" />
-    <Compile Include="Tilemaps\Components\TilemapCollider.cs" />
-    <Compile Include="Tilemaps\TilemapCulling.cs" />
-    <Compile Include="Tilemaps\Components\ICmpTilemapRenderer.cs" />
-    <Compile Include="Tilemaps\TileDepthOffsetMode.cs" />
-    <Compile Include="Tilemaps\TilePickMode.cs" />
-    <Compile Include="Tilemaps\Components\TilemapRenderer.cs" />
-    <Compile Include="Tilemaps\Components\Tilemap.cs" />
-    <Compile Include="Tilesets\TileCollisionLayer.cs" />
-    <Compile Include="Tilesets\TileInput.cs" />
-    <Compile Include="Tilesets\TilesetAutoTileFallbackMap.cs" />
-    <Compile Include="Tilesets\TilesetCompilerOutput.cs" />
-    <Compile Include="Tilesets\TilesetCompilerInput.cs" />
-    <Compile Include="Tilesets\TilesetCompiler.cs" />
-    <Compile Include="Tilesets\TilesetAutoTileInfo.cs" />
-    <Compile Include="Tilesets\TilesetAutoTileInput.cs" />
-    <Compile Include="Tilesets\TilesetRenderInput.cs" />
-    <Compile Include="Tilesets\Tileset.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Primitives\DualityPrimitives.csproj">
-      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
-      <Name>DualityPrimitives</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\Duality\Duality.csproj">
-      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
-      <Name>Duality</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="EmbeddedResources\ImageActorAnimator.png" />
-    <Content Include="EmbeddedResources\ImageTilesetBig.png" />
-    <Content Include="EmbeddedResources\ImageTilesetLarge.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="EmbeddedResources\ImageTilemap.png" />
-    <EmbeddedResource Include="EmbeddedResources\ImageTilemapCollider.png" />
-    <EmbeddedResource Include="EmbeddedResources\ImageTilemapRenderer.png" />
-    <EmbeddedResource Include="EmbeddedResources\ImageTileset.png" />
-    <EmbeddedResource Include="EmbeddedResources\ImageActorRenderer.png" />
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Version>4.0.0-alpha</Version>
+		<Copyright>Copyright © Fedja Adam 2015</Copyright>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Core\Primitives\DualityPrimitives.csproj">
+			<Private>False</Private>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Core\Duality\Duality.csproj">
+			<Private>False</Private>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="EmbeddedResources\ImageActorAnimator.png" />
+		<Content Include="EmbeddedResources\ImageTilesetBig.png" />
+		<Content Include="EmbeddedResources\ImageTilesetLarge.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="EmbeddedResources\ImageTilemap.png" />
+		<EmbeddedResource Include="EmbeddedResources\ImageTilemapCollider.png" />
+		<EmbeddedResource Include="EmbeddedResources\ImageTilemapRenderer.png" />
+		<EmbeddedResource Include="EmbeddedResources\ImageTileset.png" />
+		<EmbeddedResource Include="EmbeddedResources\ImageActorRenderer.png" />
+	</ItemGroup>
   <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
