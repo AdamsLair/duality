@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using Duality;
 using Duality.Drawing;
 using Duality.Tests.Properties;
-
+using Duality.Tests.Utility;
 using NUnit.Framework;
 
 namespace Duality.Tests.Drawing
@@ -53,42 +53,42 @@ namespace Duality.Tests.Drawing
 		}
 		[Test] public void Locking()
 		{
-			VertexBatch<VertexC1P3> typedBatch = new VertexBatch<VertexC1P3>();
-			IVertexBatch abstractBatch = typedBatch;
-
-			typedBatch.Vertices.Add(new VertexC1P3 { Color = new ColorRgba(0) });
-			typedBatch.Vertices.Add(new VertexC1P3 { Color = new ColorRgba(1) });
-			typedBatch.Vertices.Add(new VertexC1P3 { Color = new ColorRgba(2) });
-			typedBatch.Vertices.Add(new VertexC1P3 { Color = new ColorRgba(3) });
-
-			// Assert that we can retrieve all data via unmanaged pointer access
-			VertexDeclaration layout = typedBatch.Declaration;
-			int vertexSize = layout.Size;
-			int colorElementIndex = layout.Elements.IndexOfFirst(item => item.FieldName == VertexDeclaration.ShaderFieldPrefix + "Color");
-			int colorOffset = (int)layout.Elements[colorElementIndex].Offset;
-			using (PinnedArrayHandle locked = typedBatch.Lock())
+			GarbageCollectionUtils.CheckIfCleanedUp(() =>
 			{
-				Assert.AreEqual(new ColorRgba(0), ReadColor(locked.Address, vertexSize * 0 + colorOffset));
-				Assert.AreEqual(new ColorRgba(1), ReadColor(locked.Address, vertexSize * 1 + colorOffset));
-				Assert.AreEqual(new ColorRgba(2), ReadColor(locked.Address, vertexSize * 2 + colorOffset));
-				Assert.AreEqual(new ColorRgba(3), ReadColor(locked.Address, vertexSize * 3 + colorOffset));
-			}
-			using (PinnedArrayHandle locked = abstractBatch.Lock())
-			{
-				Assert.AreEqual(new ColorRgba(0), ReadColor(locked.Address, vertexSize * 0 + colorOffset));
-				Assert.AreEqual(new ColorRgba(1), ReadColor(locked.Address, vertexSize * 1 + colorOffset));
-				Assert.AreEqual(new ColorRgba(2), ReadColor(locked.Address, vertexSize * 2 + colorOffset));
-				Assert.AreEqual(new ColorRgba(3), ReadColor(locked.Address, vertexSize * 3 + colorOffset));
-			}
+				VertexBatch<VertexC1P3> typedBatch = new VertexBatch<VertexC1P3>();
+				IVertexBatch abstractBatch = typedBatch;
 
-			// Make sure that our locks released properly, i.e. allowing the array to be garbage collected
-			WeakReference weakRefToLockedData = new WeakReference(typedBatch.Vertices.Data);
-			Assert.IsTrue(weakRefToLockedData.IsAlive);
-			typedBatch = null;
-			abstractBatch = null;
-			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
-			GC.WaitForPendingFinalizers();
-			Assert.IsFalse(weakRefToLockedData.IsAlive);
+				typedBatch.Vertices.Add(new VertexC1P3 { Color = new ColorRgba(0) });
+				typedBatch.Vertices.Add(new VertexC1P3 { Color = new ColorRgba(1) });
+				typedBatch.Vertices.Add(new VertexC1P3 { Color = new ColorRgba(2) });
+				typedBatch.Vertices.Add(new VertexC1P3 { Color = new ColorRgba(3) });
+
+				// Assert that we can retrieve all data via unmanaged pointer access
+				VertexDeclaration layout = typedBatch.Declaration;
+				int vertexSize = layout.Size;
+				int colorElementIndex = layout.Elements.IndexOfFirst(item => item.FieldName == VertexDeclaration.ShaderFieldPrefix + "Color");
+				int colorOffset = (int)layout.Elements[colorElementIndex].Offset;
+				using (PinnedArrayHandle locked = typedBatch.Lock())
+				{
+					Assert.AreEqual(new ColorRgba(0), ReadColor(locked.Address, vertexSize * 0 + colorOffset));
+					Assert.AreEqual(new ColorRgba(1), ReadColor(locked.Address, vertexSize * 1 + colorOffset));
+					Assert.AreEqual(new ColorRgba(2), ReadColor(locked.Address, vertexSize * 2 + colorOffset));
+					Assert.AreEqual(new ColorRgba(3), ReadColor(locked.Address, vertexSize * 3 + colorOffset));
+				}
+				using (PinnedArrayHandle locked = abstractBatch.Lock())
+				{
+					Assert.AreEqual(new ColorRgba(0), ReadColor(locked.Address, vertexSize * 0 + colorOffset));
+					Assert.AreEqual(new ColorRgba(1), ReadColor(locked.Address, vertexSize * 1 + colorOffset));
+					Assert.AreEqual(new ColorRgba(2), ReadColor(locked.Address, vertexSize * 2 + colorOffset));
+					Assert.AreEqual(new ColorRgba(3), ReadColor(locked.Address, vertexSize * 3 + colorOffset));
+				}
+
+				// Make sure that our locks released properly, i.e. allowing the array to be garbage collected
+				WeakReference weakRefToLockedData = new WeakReference(typedBatch.Vertices.Data);
+				Assert.IsTrue(weakRefToLockedData.IsAlive);
+
+				return new CleanupTestSet(weakRefToLockedData);
+			});
 		}
 
 		private static ColorRgba ReadColor(IntPtr address, int offset)
