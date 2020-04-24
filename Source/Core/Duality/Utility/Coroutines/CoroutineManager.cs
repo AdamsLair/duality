@@ -17,7 +17,7 @@ namespace Duality
 
 		private readonly Dictionary<Coroutine, Exception> lastFrameErrors = new Dictionary<Coroutine, Exception>();
 
-        private int count;
+		private int count;
 
 		public IEnumerable<Coroutine> Coroutines
 		{
@@ -58,10 +58,10 @@ namespace Duality
 
 			// add any newly scheduled coroutine to the main queue
 			this.count = this.scheduled.Count;
-			for(int i = 0; i < this.count; i++)
+			for (int i = 0; i < this.count; i++)
 				this.coroutines.Enqueue(this.scheduled.Dequeue());
 
-            this.count = this.coroutines.Count;
+			this.count = this.coroutines.Count;
 			for (int i = 0; i < this.count; i++)
 			{
 				Coroutine c = this.coroutines.Dequeue();
@@ -76,13 +76,13 @@ namespace Duality
 					this.trashcan.Enqueue(c);
 			}
 
-            // put back the coroutines that are still alive
-            this.count = this.nextCycle.Count;
+			// put back the coroutines that are still alive
+			this.count = this.nextCycle.Count;
 			for (int i = 0; i < this.count; i++)
 				this.coroutines.Enqueue(this.nextCycle.Dequeue());
 
-            // cleaning up trashcan
-            this.count = this.trashcan.Count;
+			// cleaning up trashcan
+			this.count = this.trashcan.Count;
 			for (int i = 0; i < this.count; i++)
 				pool.ReturnOne(this.trashcan.Dequeue());
 		}

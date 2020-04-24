@@ -81,21 +81,13 @@ namespace Duality
 						this.Status = CoroutineStatus.Complete;
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Logs.Core.WriteError("An error occurred while processing Coroutine '{0}': {1}", this.Name, LogFormat.Exception(e));
 
 				this.LastException = e;
 				this.Status = CoroutineStatus.Error;
 			}
-		}
-		/// <summary>
-		/// Restarts the coroutine by moving the enumerator back to the first element.
-		/// </summary>
-		internal void Restart()
-		{
-			this.enumerator.Reset();
-			this.enumerator.MoveNext();
 		}
 
 		/// <summary>

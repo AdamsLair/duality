@@ -8,9 +8,10 @@ namespace Duality
 	public class WaitFrames : WaitCondition<int>
 	{
 		public WaitFrames(int frames) : base(
-			(i) => i - 1, 
-			(i) => i <= 0, 
+			(i) => i - 1,
+			(i) => i <= 0,
 			frames
-		) { }
+		)
+		{ }
 	}
 }

@@ -7,10 +7,14 @@ namespace Duality
 {
 	public class WaitTime : WaitCondition<float>
 	{
-		public WaitTime(TimeSpan time) : base(
-			(ts) => ts - Time.DeltaTime, 
-			(ts) => ts <= float.Epsilon, 
-			(float)time.TotalSeconds
-		) { }
+		public WaitTime(float seconds) : base(
+			(ts) => ts - Time.DeltaTime,
+			(ts) => ts <= float.Epsilon,
+			(float)seconds
+		)
+		{ }
+
+		public WaitTime(TimeSpan time) : this((float)time.TotalSeconds)
+		{ }
 	}
 }

@@ -9,6 +9,11 @@ using NUnit.Framework;
 
 namespace Duality.Tests.Utility
 {
+	class CoroutineObject
+	{
+		public int Value { get; set; }
+	}
+
 	[TestFixture]
 	public class CoroutinesTest
 	{
@@ -17,38 +22,39 @@ namespace Duality.Tests.Utility
 			Scene scene = new Scene();
 			scene.Activate();
 
-			Coroutine coroutine = Coroutine.Start(scene, this.BasicRoutine(), "basic");
+			CoroutineObject obj = new CoroutineObject();
+			Coroutine coroutine = Coroutine.Start(scene, this.BasicRoutine(obj), "basic");
 
 			// All code until first yield is already executed
-			Assert.AreEqual(10, this.x);
+			Assert.AreEqual(10, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Running);
 
 			scene.Update();
 
 			// All code until second yield is executed
-			Assert.AreEqual(20, this.x);
+			Assert.AreEqual(20, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Running);
 
 			scene.Update();
 
 			// Yelded null, value didn't change, need to wait one more update
-			Assert.AreEqual(20, this.x);
+			Assert.AreEqual(20, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Running);
 
 			scene.Update();
 			// Yielded condition is waiting for two frames now..
-			Assert.AreEqual(20, this.x);
+			Assert.AreEqual(20, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Running);
 
 			scene.Update();
 			// All remaining code has been executed
-			Assert.AreEqual(30, this.x);
+			Assert.AreEqual(30, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Complete);
 
 			scene.Update();
 
 			// No further changes
-			Assert.AreEqual(30, this.x);
+			Assert.AreEqual(30, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Complete);
 		}
 
@@ -57,29 +63,30 @@ namespace Duality.Tests.Utility
 			Scene scene = new Scene();
 			scene.Activate();
 
-			Coroutine coroutine = Coroutine.Start(scene, this.BasicRoutine(), "disposable");
+			CoroutineObject obj = new CoroutineObject();
+			Coroutine coroutine = Coroutine.Start(scene, this.BasicRoutine(obj), "disposable");
 
 			// All code until first yield is already executed
-			Assert.AreEqual(10, this.x);
+			Assert.AreEqual(10, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Running);
 
 			scene.Update();
 
 			// All code until second yield is executed
-			Assert.AreEqual(20, this.x);
+			Assert.AreEqual(20, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Running);
 
 			coroutine.Dispose();
 			scene.Update();
 
 			// Coroutine disposed
-			Assert.AreEqual(20, this.x);
+			Assert.AreEqual(20, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Disposed);
 
 			scene.Update();
 
 			// No further changes
-			Assert.AreEqual(20, this.x);
+			Assert.AreEqual(20, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Disposed);
 		}
 
@@ -88,17 +95,18 @@ namespace Duality.Tests.Utility
 			Scene scene = new Scene();
 			scene.Activate();
 
-			Coroutine coroutine = Coroutine.Start(scene, this.BasicRoutine(), "resuming");
+			CoroutineObject obj = new CoroutineObject();
+			Coroutine coroutine = Coroutine.Start(scene, this.BasicRoutine(obj), "resuming");
 
 			// All code until first yield is already executed
-			Assert.AreEqual(10, this.x);
+			Assert.AreEqual(10, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Running);
 
 			coroutine.Pause();
 			scene.Update();
 
 			// No changes, since the coroutine is now paused
-			Assert.AreEqual(10, this.x);
+			Assert.AreEqual(10, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Paused);
 
 			scene.Update();
@@ -106,14 +114,14 @@ namespace Duality.Tests.Utility
 			scene.Update();
 
 			// No matter how many updates
-			Assert.AreEqual(10, this.x);
+			Assert.AreEqual(10, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Paused);
 
 			coroutine.Resume();
 			scene.Update();
 
 			// All code until second yield is executed
-			Assert.AreEqual(20, this.x);
+			Assert.AreEqual(20, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Running);
 		}
 
@@ -123,14 +131,15 @@ namespace Duality.Tests.Utility
 			scene.Activate();
 
 			int secondsToWait = 2;
-			Coroutine coroutine = Coroutine.Start(scene, this.WaitSeconds(secondsToWait), "waiting");
+			CoroutineObject obj = new CoroutineObject();
+			Coroutine coroutine = Coroutine.Start(scene, this.WaitSeconds(obj, secondsToWait), "waiting");
 
 			// All code until first yield is already executed
-			Assert.AreEqual(10, this.x);
+			Assert.AreEqual(10, obj.Value);
 			TimeSpan startTime = Time.GameTimer;
 
 			// Waiting...
-			while (this.x == 10)
+			while (obj.Value == 10)
 			{
 				scene.Update();
 				Time.FrameTick(true, true);
@@ -138,7 +147,7 @@ namespace Duality.Tests.Utility
 
 			double secondsElapsed = (Time.GameTimer - startTime).TotalSeconds;
 
-			Assert.AreEqual(20, this.x);
+			Assert.AreEqual(20, obj.Value);
 
 			// Not being overly precise about the 2 seconds wait..
 			Assert.GreaterOrEqual(secondsElapsed, secondsToWait);
@@ -166,15 +175,14 @@ namespace Duality.Tests.Utility
 			Assert.True(coroutine.Status == CoroutineStatus.Error);
 		}
 
-		private int x = 0;
-		private IEnumerable<IWaitCondition> BasicRoutine()
+		private IEnumerable<IWaitCondition> BasicRoutine(CoroutineObject obj)
 		{
-			this.x = 10;
+			obj.Value = 10;
 			yield return new WaitFrames(1);
-			this.x = 20;
+			obj.Value = 20;
 			yield return null;
 			yield return new WaitFrames(2);
-			this.x = 30;
+			obj.Value = 30;
 
 		}
 
@@ -185,11 +193,11 @@ namespace Duality.Tests.Utility
 			throw new Exception("Test exception");
 		}
 
-		private IEnumerable<IWaitCondition> WaitSeconds(int seconds)
+		private IEnumerable<IWaitCondition> WaitSeconds(CoroutineObject obj, int seconds)
 		{
-			this.x = 10;
-			yield return new WaitTime(TimeSpan.FromSeconds(seconds));
-			this.x = 20;
+			obj.Value = 10;
+			yield return new WaitTime(2);
+			obj.Value = 20;
 		}
 	}
 }
