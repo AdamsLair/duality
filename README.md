@@ -16,6 +16,7 @@ You can find the latest binary release [here](https://get.duality2d.net/). If yo
 | release     | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/release?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/release) |
 | 1.x         | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/archive/1.x?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/archive/1.x)    |
 | 2.x         | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/archive/2.x?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/archive/2.x)    |
+| 3.x         | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/archive/3.x?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/archive/3.x)    |
 
 ### Building From Source
 
