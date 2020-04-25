@@ -128,6 +128,7 @@
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Drawing\CanvasTest.cs" />
     <Compile Include="Testing\IdentityComparer.cs" />
+    <Compile Include="Utility\GarbageCollectionTestSet.cs" />
     <Compile Include="Utility\GarbageCollectionUtils.cs" />
     <Compile Include="Utility\RawListPoolTest.cs" />
     <Compile Include="Utility\SortingIntContainer.cs" />
@@ -205,7 +206,6 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-
   <!-- Copy all required NUnit command line runner files to a local folder -->
   <Import Project="..\AcquireNUnitRunner.targets" />
 </Project>
