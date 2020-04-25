@@ -87,7 +87,7 @@ namespace Duality.Tests.Drawing
 				WeakReference weakRefToLockedData = new WeakReference(typedBatch.Vertices.Data);
 				Assert.IsTrue(weakRefToLockedData.IsAlive);
 
-				return new CleanupTestSet(weakRefToLockedData);
+				return new GarbageCollectionTestSet(weakRefToLockedData);
 			});
 		}
 
