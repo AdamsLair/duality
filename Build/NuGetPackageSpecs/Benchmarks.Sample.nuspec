@@ -8,7 +8,7 @@
     <title>Benchmarks Sample</title>
     <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/BenchmarksSample.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/Benchmarks</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Implements a set of benchmarks for profiling Duality.</summary>
     <description>This package implements a set of benchmarks for profiling Duality performance on your system.</description>

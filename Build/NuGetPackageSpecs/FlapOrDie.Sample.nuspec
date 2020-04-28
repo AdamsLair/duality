@@ -8,7 +8,7 @@
     <title>Flap-Or-Die Sample</title>
     <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Game.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/FlapOrDie</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>A clone of a commonly known casual game in Duality.</summary>
     <description>This package contains a simple implementation of a commonly known casual game.</description>

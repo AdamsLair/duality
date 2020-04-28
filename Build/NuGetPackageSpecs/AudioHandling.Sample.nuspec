@@ -8,7 +8,7 @@
     <title>Audio Handling Sample</title>
     <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/AudioHandlingSample.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/AudioHandling</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Demonstrates how to handle Audio in Duality.</summary>
     <description>This package contains a sample Scene for handling audio using SoundEmitters, and another one for handling it manually using code.</description>

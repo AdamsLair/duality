@@ -8,7 +8,7 @@
     <title>Basic Menu Sample</title>
     <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/BasicMenuSample.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/BasicMenu</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Demonstrates a GameObject-based way to create a game menu.</summary>
     <description>This package contains an object-based game menu sample with a custom Font, multiple menu pages and simple color animations.</description>

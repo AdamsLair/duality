@@ -8,7 +8,7 @@
     <title>Physics Sample</title>
     <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/PhysicsSample.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/Physics</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Demonstrates how to use physics simulation in Duality.</summary>
     <description>This package contains a testbed for RigidBody physics simulation, showing various aspects of their configuration and interaction.</description>
