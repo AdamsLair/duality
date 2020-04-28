@@ -151,7 +151,6 @@ namespace Duality.Drawing
 		/// Returns whether a variable with the specified name is defined in this parameter set.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		public bool HasValue(string name)
 		{
 			int index = this.FindIndex(name);
@@ -480,9 +479,6 @@ namespace Duality.Drawing
 		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="int"/>,
 		/// <see cref="Point2"/> and <see cref="bool"/>.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public bool TryGet<T>(string name, out T[] value) where T : struct
 		{
 			value = null;
@@ -664,9 +660,6 @@ namespace Duality.Drawing
 		/// <see cref="Vector4"/>, <see cref="Matrix3"/>, <see cref="Matrix4"/>, <see cref="int"/>,
 		/// <see cref="Point2"/> and <see cref="bool"/>.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public bool TryGet<T>(string name, out T value) where T : struct
 		{
 			value = default(T);
@@ -759,8 +752,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Retrieves a texture from the specified variable.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public bool TryGet(string name, out ContentRef<Texture> value)
 		{
 			return this.TryGetInternal(name, out value);
@@ -770,8 +761,6 @@ namespace Duality.Drawing
 		/// Retrieves the internal representation of the specified variables numeric value.
 		/// The returned array should be treated as read-only.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public bool TryGetInternal(string name, out float[] value)
 		{
 			int index = this.FindIndex(name);
@@ -790,8 +779,6 @@ namespace Duality.Drawing
 		/// Retrieves the internal representation of the specified variables texture value.
 		/// The returned value should be treated as read-only.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public bool TryGetInternal(string name, out ContentRef<Texture> value)
 		{
 			int index = this.FindIndex(name);

@@ -82,7 +82,6 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		/// <param name="device"></param>
 		/// <param name="input"></param>
-		/// <returns></returns>
 		public static TileOutput GetVisibleTileRect(IDrawDevice device, TileInput input)
 		{
 			TileOutput output;

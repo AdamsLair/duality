@@ -43,7 +43,6 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		/// <returns></returns>
 		public ICmpRenderer LookupPickingMap(int x, int y)
 		{
 			if (this.pickingBuffer == null) return null;
@@ -81,7 +80,6 @@ namespace Duality.Resources
 		/// <param name="y"></param>
 		/// <param name="w"></param>
 		/// <param name="h"></param>
-		/// <returns></returns>
 		public IEnumerable<ICmpRenderer> LookupPickingMap(int x, int y, int w, int h)
 		{
 			if (this.pickingBuffer == null)

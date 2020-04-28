@@ -119,7 +119,6 @@ namespace Duality.Cloning
 		/// already present, performance of subsequent clone operations within the same object
 		/// graph can benefit by this.
 		/// </param>
-		/// <returns></returns>
 		public T CloneObject<T>(T source, bool preserveCache = false)
 		{
 			object target; // Don't use T, we'll need to make sure "target" is a reference Type
@@ -246,8 +245,6 @@ namespace Duality.Cloning
 		/// reference assignment instead.
 		/// </summary>
 		/// <param name="source"></param>
-		/// <param name="target"></param>
-		/// <returns></returns>
 		private object GetTargetOf(object source)
 		{
 			if (object.ReferenceEquals(source, null))
@@ -266,7 +263,6 @@ namespace Duality.Cloning
 		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="typeData"></param>
-		/// <returns></returns>
 		private bool PushCurrentObject(object source, CloneType typeData)
 		{
 			return typeData.Type.IsValueType || object.ReferenceEquals(source, null) || this.handledObjects.Add(source);
@@ -277,7 +273,6 @@ namespace Duality.Cloning
 		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="typeData"></param>
-		/// <returns></returns>
 		private bool PopCurrentObject(object source, CloneType typeData)
 		{
 			return typeData.Type.IsValueType || object.ReferenceEquals(source, null) || this.handledObjects.Remove(source);
@@ -815,7 +810,6 @@ namespace Duality.Cloning
 		/// Returns the <see cref="CloneType"/> of a Type.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <returns></returns>
 		protected internal static CloneType GetCloneType(Type type)
 		{
 			if (type == null) return null;

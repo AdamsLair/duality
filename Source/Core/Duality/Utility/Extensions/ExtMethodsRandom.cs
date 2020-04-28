@@ -14,7 +14,6 @@ namespace Duality
 		/// Returns a random byte.
 		/// </summary>
 		/// <param name="r">A random number generator.</param>
-		/// <returns></returns>
 		public static byte NextByte(this Random r)
 		{
 			return (byte)(r.Next() % 256);
@@ -24,7 +23,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="r">A random number generator.</param>
 		/// <param name="max">Exclusive maximum value.</param>
-		/// <returns></returns>
 		public static byte NextByte(this Random r, byte max)
 		{
 			return (byte)(r.Next() % ((int)max + 1));
@@ -35,7 +33,6 @@ namespace Duality
 		/// <param name="r">A random number generator.</param>
 		/// <param name="min">Inclusive minimum value.</param>
 		/// <param name="max">Exclusive maximum value.</param>
-		/// <returns></returns>
 		public static byte NextByte(this Random r, byte min, byte max)
 		{
 			return (byte)(min + (r.Next() % ((int)max - min + 1)));
@@ -45,7 +42,6 @@ namespace Duality
 		/// Returns a random float.
 		/// </summary>
 		/// <param name="r">A random number generator.</param>
-		/// <returns></returns>
 		public static float NextFloat(this Random r)
 		{
 			return (float)r.NextDouble();
@@ -55,7 +51,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="r">A random number generator.</param>
 		/// <param name="max">Exclusive maximum value.</param>
-		/// <returns></returns>
 		public static float NextFloat(this Random r, float max)
 		{
 			return max * (float)r.NextDouble();
@@ -66,7 +61,6 @@ namespace Duality
 		/// <param name="r">A random number generator.</param>
 		/// <param name="min">Inclusive minimum value.</param>
 		/// <param name="max">Exclusive maximum value.</param>
-		/// <returns></returns>
 		public static float NextFloat(this Random r, float min, float max)
 		{
 			return min + (max - min) * (float)r.NextDouble();
@@ -76,7 +70,6 @@ namespace Duality
 		/// Returns a random bool.
 		/// </summary>
 		/// <param name="r">A random number generator.</param>
-		/// <returns></returns>
 		public static bool NextBool(this Random r)
 		{
 			return r.NextDouble() > 0.5d;
@@ -86,7 +79,6 @@ namespace Duality
 		/// Returns a random <see cref="Vector2"/> with length one.
 		/// </summary>
 		/// <param name="r">A random number generator.</param>
-		/// <returns></returns>
 		public static Vector2 NextVector2(this Random r)
 		{
 			float angle = r.NextFloat(0.0f, MathF.RadAngle360);
@@ -97,7 +89,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="r">A random number generator.</param>
 		/// <param name="radius">Length of the vector.</param>
-		/// <returns></returns>
 		public static Vector2 NextVector2(this Random r, float radius)
 		{
 			float angle = r.NextFloat(0.0f, MathF.RadAngle360);
@@ -109,7 +100,6 @@ namespace Duality
 		/// <param name="r">A random number generator.</param>
 		/// <param name="minRadius">Minimum length of the vector</param>
 		/// <param name="maxRadius">Maximum length of the vector</param>
-		/// <returns></returns>
 		public static Vector2 NextVector2(this Random r, float minRadius, float maxRadius)
 		{
 			return r.NextVector2(r.NextFloat(minRadius, maxRadius));
@@ -122,7 +112,6 @@ namespace Duality
 		/// <param name="y">Rectangle that contains the random vector.</param>
 		/// <param name="w">Rectangle that contains the random vector.</param>
 		/// <param name="h">Rectangle that contains the random vector.</param>
-		/// <returns></returns>
 		public static Vector2 NextVector2(this Random r, float x, float y, float w, float h)
 		{
 			return new Vector2(r.NextFloat(x, x + w), r.NextFloat(y, y + h));
@@ -132,7 +121,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="r">A random number generator.</param>
 		/// <param name="rect">Rectangle that contains the random vector.</param>
-		/// <returns></returns>
 		public static Vector2 NextVector2(this Random r, Rect rect)
 		{
 			return new Vector2(r.NextFloat(rect.X, rect.X + rect.W), r.NextFloat(rect.Y, rect.Y + rect.H));
@@ -142,7 +130,6 @@ namespace Duality
 		/// Returns a random <see cref="Vector3"/> with length one.
 		/// </summary>
 		/// <param name="r">A random number generator.</param>
-		/// <returns></returns>
 		public static Vector3 NextVector3(this Random r)
 		{
 			Quaternion rot = Quaternion.Identity;
@@ -156,7 +143,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="r">A random number generator.</param>
 		/// <param name="radius">Maximum length of the vector.</param>
-		/// <returns></returns>
 		public static Vector3 NextVector3(this Random r, float radius)
 		{
 			Quaternion rot = Quaternion.Identity;
@@ -171,7 +157,6 @@ namespace Duality
 		/// <param name="r">A random number generator.</param>
 		/// <param name="minRadius">Minimum length of the vector</param>
 		/// <param name="maxRadius">Maximum length of the vector</param>
-		/// <returns></returns>
 		public static Vector3 NextVector3(this Random r, float minRadius, float maxRadius)
 		{
 			return r.NextVector3(r.NextFloat(minRadius, maxRadius));
@@ -182,9 +167,10 @@ namespace Duality
 		/// <param name="r">A random number generator.</param>
 		/// <param name="x">Cube that contains the random vector.</param>
 		/// <param name="y">Cube that contains the random vector.</param>
+		/// <param name="z"></param>
 		/// <param name="w">Cube that contains the random vector.</param>
 		/// <param name="h">Cube that contains the random vector.</param>
-		/// <returns></returns>
+		/// <param name="d"></param>
 		public static Vector3 NextVector3(this Random r, float x, float y, float z, float w, float h, float d)
 		{
 			return new Vector3(r.NextFloat(x, x + w), r.NextFloat(y, y + h), r.NextFloat(z, z + d));
@@ -194,7 +180,6 @@ namespace Duality
 		/// Returns a random <see cref="ColorRgba"/> with full saturation and maximum brightness.
 		/// </summary>
 		/// <param name="r"></param>
-		/// <returns></returns>
 		public static ColorRgba NextColorRgba(this Random r)
 		{
 			return NextColorHsva(r).ToRgba();
@@ -205,7 +190,6 @@ namespace Duality
 		/// <param name="r"></param>
 		/// <param name="min"></param>
 		/// <param name="max"></param>
-		/// <returns></returns>
 		public static ColorRgba NextColorRgba(this Random r, ColorRgba min, ColorRgba max)
 		{
 			return new ColorRgba(
@@ -218,7 +202,6 @@ namespace Duality
 		/// Returns a random <see cref="ColorHsva"/> with full saturation and maximum brightness.
 		/// </summary>
 		/// <param name="r"></param>
-		/// <returns></returns>
 		public static ColorHsva NextColorHsva(this Random r)
 		{
 			return new ColorHsva(r.NextFloat(), 1.0f, 1.0f, 1.0f);
@@ -229,7 +212,6 @@ namespace Duality
 		/// <param name="r"></param>
 		/// <param name="min"></param>
 		/// <param name="max"></param>
-		/// <returns></returns>
 		public static ColorHsva NextColorHsva(this Random r, ColorHsva min, ColorHsva max)
 		{
 			return new ColorHsva(
@@ -246,7 +228,6 @@ namespace Duality
 		/// <param name="r">A random number generator.</param>
 		/// <param name="values">A pool of values.</param>
 		/// <param name="weights">One weight for each value in the pool.</param>
-		/// <returns></returns>
 		public static T OneOfWeighted<T>(this Random r, IEnumerable<T> values, IEnumerable<float> weights)
 		{
 			float totalWeight = weights.Sum();
@@ -271,7 +252,6 @@ namespace Duality
 		/// <param name="r">A random number generator.</param>
 		/// <param name="values">A pool of values.</param>
 		/// <param name="weights">One weight for each value in the pool.</param>
-		/// <returns></returns>
 		public static T OneOfWeighted<T>(this Random r, IEnumerable<T> values, params float[] weights)
 		{
 			return OneOfWeighted<T>(r, values, weights as IEnumerable<float>);
@@ -282,7 +262,6 @@ namespace Duality
 		/// <typeparam name="T">Type of the random values.</typeparam>
 		/// <param name="r">A random number generator.</param>
 		/// <param name="weightedValues">A weighted value pool.</param>
-		/// <returns></returns>
 		public static T OneOfWeighted<T>(this Random r, IEnumerable<KeyValuePair<T,float>> weightedValues)
 		{
 			float totalWeight = weightedValues.Sum(v => v.Value);
@@ -302,7 +281,6 @@ namespace Duality
 		/// <typeparam name="T">Type of the random values.</typeparam>
 		/// <param name="r">A random number generator.</param>
 		/// <param name="weightedValues">A weighted value pool.</param>
-		/// <returns></returns>
 		public static T OneOfWeighted<T>(this Random r, params KeyValuePair<T,float>[] weightedValues)
 		{
 			return OneOfWeighted<T>(r, weightedValues as IEnumerable<KeyValuePair<T,float>>);
@@ -314,7 +292,6 @@ namespace Duality
 		/// <param name="r">A random number generator.</param>
 		/// <param name="values">A pool of values.</param>
 		/// <param name="weightFunc">A weight function that provides a weight for each value from the pool.</param>
-		/// <returns></returns>
 		public static T OneOfWeighted<T>(this Random r, IEnumerable<T> values, Func<T,float> weightFunc)
 		{
 			return OneOfWeighted<T>(r, values, values.Select(v => weightFunc(v)));
@@ -326,7 +303,6 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="r"></param>
 		/// <param name="values"></param>
-		/// <returns></returns>
 		public static T OneOf<T>(this Random r, IEnumerable<T> values)
 		{
 			return values.ElementAt(r.Next(values.Count()));

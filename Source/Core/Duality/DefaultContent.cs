@@ -46,7 +46,6 @@ namespace Duality
 		/// Opens a <see cref="Stream"/> to an embedded Duality core resource with the specified name.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		public static Stream GetEmbeddedResourceStream(string name)
 		{
 			string embeddedNameBase = "Duality.EmbeddedResources.";

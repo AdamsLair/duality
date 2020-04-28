@@ -48,21 +48,18 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		/// <param name="localPos"></param>
 		/// <param name="pickMode">Specifies the desired behavior when attempting to get a tile outside the rendered area.</param>
-		/// <returns></returns>
 		Point2 GetTileAtLocalPos(Vector2 localPos, TilePickMode pickMode);
 		/// <summary>
 		/// Gets the local position of the specified tile at the upper left corner.
 		/// The function does not check if the point is a valid tile position.
 		/// </summary>
 		/// <param name="tilePos">The index of the tile of which to calculate the local position.</param>
-		/// <returns></returns>
 		Vector2 GetLocalPosAtTile(Point2 tilePos);
 		/// <summary>
 		/// Determines the generated depth offset for the tile at the specified tile coordinates.
 		/// This also inclues the renderers overall depth offset.
 		/// </summary>
 		/// <param name="tilePos">The index of the tile of which to calculate the depth offset.</param>
-		/// <returns></returns>
 		float GetTileDepthOffsetAt(Point2 tilePos);
 	}
 }

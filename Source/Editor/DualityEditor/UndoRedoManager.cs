@@ -356,7 +356,6 @@ namespace Duality.Editor
 		/// Determines whether the specified action could be merged with this one.
 		/// </summary>
 		/// <param name="action"></param>
-		/// <returns></returns>
 		public virtual bool CanAppend(UndoRedoAction action)
 		{
 			return false;

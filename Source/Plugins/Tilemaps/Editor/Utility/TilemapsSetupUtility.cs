@@ -21,7 +21,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		/// </summary>
 		/// <param name="tileset"></param>
 		/// <param name="isUpperLayer"></param>
-		/// <returns></returns>
 		public static int GetDefaultTileIndex(Tileset tileset, bool isUpperLayer)
 		{
 			if (tileset == null) return 0;

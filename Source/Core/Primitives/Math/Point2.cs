@@ -88,7 +88,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
-		/// <returns></returns>
 		public static float Distance(Point2 left, Point2 right)
 		{
 			Point2 diff;
@@ -219,7 +218,6 @@ namespace Duality
 		/// <summary>
 		/// Returns a System.String that represents the current Point.
 		/// </summary>
-		/// <returns></returns>
 		public override string ToString()
 		{
 			return string.Format("({0}, {1})", this.X, this.Y);

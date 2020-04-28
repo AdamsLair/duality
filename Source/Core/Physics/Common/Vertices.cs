@@ -77,7 +77,6 @@ namespace FarseerPhysics.Common
 		/// Nexts the index.
 		/// </summary>
 		/// <param name="index">The index.</param>
-		/// <returns></returns>
 		public int NextIndex(int index)
 		{
 			if (index == this.Count - 1)
@@ -96,7 +95,6 @@ namespace FarseerPhysics.Common
 		/// Gets the previous index.
 		/// </summary>
 		/// <param name="index">The index.</param>
-		/// <returns></returns>
 		public int PreviousIndex(int index)
 		{
 			if (index == 0)
@@ -114,7 +112,6 @@ namespace FarseerPhysics.Common
 		/// <summary>
 		/// Gets the signed area.
 		/// </summary>
-		/// <returns></returns>
 		public float GetSignedArea()
 		{
 			int i;
@@ -133,7 +130,6 @@ namespace FarseerPhysics.Common
 		/// <summary>
 		/// Gets the area.
 		/// </summary>
-		/// <returns></returns>
 		public float GetArea()
 		{
 			int i;
@@ -152,7 +148,6 @@ namespace FarseerPhysics.Common
 		/// <summary>
 		/// Gets the centroid.
 		/// </summary>
-		/// <returns></returns>
 		public Vector2 GetCentroid()
 		{
 			// Same algorithm is used by Box2D
@@ -189,7 +184,6 @@ namespace FarseerPhysics.Common
 		/// <summary>
 		/// Gets the radius based on area.
 		/// </summary>
-		/// <returns></returns>
 		public float GetRadius()
 		{
 			float area = GetSignedArea();
@@ -206,7 +200,6 @@ namespace FarseerPhysics.Common
 		/// <summary>
 		/// Returns an AABB for vertex.
 		/// </summary>
-		/// <returns></returns>
 		public AABB GetCollisionBox()
 		{
 			AABB aabb;
@@ -337,7 +330,6 @@ namespace FarseerPhysics.Common
 		/// <summary>
 		/// Check for edge crossings
 		/// </summary>
-		/// <returns></returns>
 		public bool IsSimple()
 		{
 			for (int i = 0; i < this.Count; ++i)
@@ -420,7 +412,6 @@ namespace FarseerPhysics.Common
 		/// - if more than one, pick one with "rightest" next point (two possibilities for each)
 		/// </summary>
 		/// <param name="verts">The vertices.</param>
-		/// <returns></returns>
 		public Vertices TraceEdge(Vertices verts)
 		{
 			PolyNode[] nodes = new PolyNode[verts.Count * verts.Count];

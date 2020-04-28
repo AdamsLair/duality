@@ -345,7 +345,6 @@ namespace Duality.Drawing
 		/// Returns the scale factor of objects that are located at the specified world space Z position.
 		/// </summary>
 		/// <param name="z"></param>
-		/// <returns></returns>
 		public float GetScaleAtZ(float z)
 		{
 			if (this.projection == ProjectionMode.Screen)
@@ -360,7 +359,6 @@ namespace Duality.Drawing
 		/// interpreted as the target world Z coordinate.
 		/// </summary>
 		/// <param name="screenPos"></param>
-		/// <returns></returns>
 		public Vector3 GetWorldPos(Vector3 screenPos)
 		{
 			// Determine which clip space depth and divide the target Z corresponds to
@@ -389,7 +387,6 @@ namespace Duality.Drawing
 		/// Transforms world space to screen space positions.
 		/// </summary>
 		/// <param name="worldPos"></param>
-		/// <returns></returns>
 		public Vector2 GetScreenPos(Vector3 worldPos)
 		{
 			// Transform coordinate into clip space
@@ -416,7 +413,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="worldPos">The points world space position.</param>
 		/// <param name="radius">A world space radius around the point.</param>
-		/// <returns></returns>
 		public bool IsSphereInView(Vector3 worldPos, float radius)
 		{
 			// Transform coordinate into clip space
@@ -450,7 +446,6 @@ namespace Duality.Drawing
 		/// Rents a temporary material instance which can be used for rendering. The instance
 		/// is returned implicitly when the device is done with the current rendering operation.
 		/// </summary>
-		/// <returns></returns>
 		public BatchInfo RentMaterial()
 		{
 			int index = this.tempMaterialIndex++;

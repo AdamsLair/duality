@@ -421,7 +421,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Retrieves the pixel data that is currently stored in video memory.
 		/// </summary>
-		/// <returns></returns>
 		public PixelData GetPixelData()
 		{
 			PixelData result = new PixelData();

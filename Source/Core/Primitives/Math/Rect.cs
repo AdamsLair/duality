@@ -355,7 +355,6 @@ namespace Duality
 		/// <summary>
 		/// Returns a normalized version of the rect, i.e. one with a positive width and height.
 		/// </summary>
-		/// <returns></returns>
 		public Rect Normalized()
 		{
 			Rect normalized = this;
@@ -478,7 +477,6 @@ namespace Duality
 		/// Tests if two Rects are equal.
 		/// </summary>
 		/// <param name="other"></param>
-		/// <returns></returns>
 		public bool Equals(Rect other)
 		{
 			return 
@@ -511,7 +509,6 @@ namespace Duality
 		/// <param name="y">The Rects y-Coordinate.</param>
 		/// <param name="w">The Rects width.</param>
 		/// <param name="h">The Rects height.</param>
-		/// <returns></returns>
 		public static Rect Align(Alignment align, float x, float y, float w, float h)
 		{
 			switch (align)
@@ -534,7 +531,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="left">The first Rect.</param>
 		/// <param name="right">The second Rect.</param>
-		/// <returns></returns>
 		public static bool operator ==(Rect left, Rect right)
 		{
 			return left.Equals(right);
@@ -544,7 +540,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="left">The first Rect.</param>
 		/// <param name="right">The second Rect.</param>
-		/// <returns></returns>
 		public static bool operator !=(Rect left, Rect right)
 		{
 			return !left.Equals(right);

@@ -61,7 +61,6 @@ namespace Duality.IO
 		/// Determines whether the specified path begins with a file system root.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		public static bool IsPathRooted(string path)
 		{
 			if (string.IsNullOrWhiteSpace(path)) return false;
@@ -78,7 +77,6 @@ namespace Duality.IO
 		/// Unlike most methods of <see cref="PathOp"/>, this method accesses the file system.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		public static string GetFullPath(string path)
 		{
 			if (string.IsNullOrWhiteSpace(path)) return string.Empty;
@@ -93,7 +91,6 @@ namespace Duality.IO
 		/// </summary>
 		/// <param name="firstPath"></param>
 		/// <param name="secondPath"></param>
-		/// <returns></returns>
 		public static bool ArePathsEqual(string firstPath, string secondPath)
 		{
 			// Early-out for null or empty cases
@@ -146,7 +143,6 @@ namespace Duality.IO
 		/// Determines the directory name component of a path, i.e. everything except the rightmost path element name.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		public static string GetDirectoryName(string path)
 		{
 			if (string.IsNullOrEmpty(path)) return string.Empty;
@@ -163,7 +159,6 @@ namespace Duality.IO
 		/// Determines the file name component of a path, i.e. the rightmost path element name.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		public static string GetFileName(string path)
 		{
 			if (string.IsNullOrEmpty(path)) return string.Empty;
@@ -180,7 +175,6 @@ namespace Duality.IO
 		/// Similar to <see cref="GetFileName"/>, but also strips away the files extension.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		public static string GetFileNameWithoutExtension(string path)
 		{
 			if (string.IsNullOrEmpty(path)) return string.Empty;
@@ -202,10 +196,6 @@ namespace Duality.IO
 		/// Determines the extension of a file path.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <param name="multiExt">
-		/// If true, multi-extensions such as ".Texture.res" will be considered a 
-		/// single extension, not two consecutive ones.
-		/// </param>
 		/// <returns>
 		/// The paths file extension, including the leading separator char. 
 		/// Returns an empty string, if no extension was found.
@@ -228,7 +218,6 @@ namespace Duality.IO
 		/// </summary>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static string Combine(string first, string second)
 		{
 			bool firstEmpty = string.IsNullOrWhiteSpace(first);
@@ -257,7 +246,6 @@ namespace Duality.IO
 		/// Concatenates any number of path strings.
 		/// </summary>
 		/// <param name="paths"></param>
-		/// <returns></returns>
 		public static string Combine(params string[] paths)
 		{
 			if (paths == null) throw new ArgumentNullException ("paths");
@@ -296,7 +284,6 @@ namespace Duality.IO
 		/// <summary>
 		/// Returns an array of characters which are invalid in path strings.
 		/// </summary>
-		/// <returns></returns>
 		public static char[] GetInvalidPathChars()
 		{
 			return InvalidPathChars.Clone() as char[];
@@ -304,7 +291,6 @@ namespace Duality.IO
 		/// <summary>
 		/// Returns an array of characters which are invalid in file name strings.
 		/// </summary>
-		/// <returns></returns>
 		public static char[] GetInvalidFileNameChars()
 		{
 			return InvalidFileNameChars.Clone() as char[];
@@ -315,7 +301,6 @@ namespace Duality.IO
 		/// cleared of all invalid path characters.
 		/// </summary>
 		/// <param name="fileName"></param>
-		/// <returns></returns>
 		public static string GetValidFileName(string fileName)
 		{
 			string invalidChars = new string(InvalidFileNameChars);

@@ -253,7 +253,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		/// from the currently selected objects and with the given key.
 		/// </summary>
 		/// <param name="key"></param>
-		/// <returns></returns>
 		private Func<IEnumerable<object>> CreatePropertyValueGetter(string key)
 		{
 			return () =>
@@ -279,7 +278,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		/// from the currently selected objects and with the given key.
 		/// </summary>
 		/// <param name="key"></param>
-		/// <returns></returns>
 		private Action<IEnumerable<object>> CreatePropertyValueSetter(string key)
 		{
 			return delegate(IEnumerable<object> values)
@@ -311,7 +309,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		/// </summary>
 		/// <param name="localPos"></param>
 		/// <param name="captured"></param>
-		/// <returns></returns>
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
 		{
 			return HelpInfo.FromMember(typeof(AssetInfo));

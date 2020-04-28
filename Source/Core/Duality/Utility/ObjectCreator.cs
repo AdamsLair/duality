@@ -48,8 +48,6 @@ namespace Duality
 		/// <summary>
 		/// Returns the default instance of a Type. Equals <c>default(T)</c>, but works for Reflection.
 		/// </summary>
-		/// <param name="instanceType">The Type to create a default instance of.</param>
-		/// <returns></returns>
 		public static object GetDefaultOf(this TypeInfo typeInfo)
 		{
 			if (typeInfo.IsValueType)

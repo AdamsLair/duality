@@ -79,7 +79,6 @@ namespace Duality.Drawing
 		/// Creates a new color-only BatchInfo.
 		/// </summary>
 		/// <param name="technique">The <see cref="Duality.Resources.DrawTechnique"/> to use.</param>
-		/// <param name="mainColor">The <see cref="MainColor"/> to use.</param>
 		public BatchInfo(ContentRef<DrawTechnique> technique) : this()
 		{
 			this.technique = technique;
@@ -120,7 +119,6 @@ namespace Duality.Drawing
 		/// target instance exactly, e.g. use the same <see cref="Technique"/> and
 		/// specify the same shader parameter values.
 		/// </summary>
-		/// <param name="target"></param>
 		public void InitFrom(BatchInfo source)
 		{
 			this.Reset();
@@ -192,7 +190,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		/// <seealso cref="ShaderParameterCollection.TryGet"/>
 		public T[] GetArray<T>(string name) where T : struct
 		{
@@ -214,7 +211,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		/// <seealso cref="ShaderParameterCollection.TryGet"/>
 		public T GetValue<T>(string name) where T : struct
 		{
@@ -234,7 +230,6 @@ namespace Duality.Drawing
 		/// Retrieves a texture from the specified variable.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		/// <seealso cref="ShaderParameterCollection.TryGet"/>
 		public ContentRef<Texture> GetTexture(string name)
 		{
@@ -256,7 +251,6 @@ namespace Duality.Drawing
 		/// The returned array should be treated as read-only.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		public float[] GetInternalData(string name)
 		{
 			// Retrieve the material parameter if available
@@ -276,7 +270,6 @@ namespace Duality.Drawing
 		/// The returned value should be treated as read-only.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		public ContentRef<Texture> GetInternalTexture(string name)
 		{
 			// Retrieve the material parameter if available

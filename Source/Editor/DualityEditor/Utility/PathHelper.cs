@@ -124,7 +124,6 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="directoryPath"></param>
 		/// <param name="relativeToDir"></param>
-		/// <returns></returns>
 		public static string MakeDirectoryPathRelative(string directoryPath, string relativeToDir = ".")
 		{
 			string dummyFilePath = Path.Combine(directoryPath, "dummy.txt");
@@ -139,7 +138,6 @@ namespace Duality.Editor
 		/// Determines the mutual base directory of a set of paths.
 		/// </summary>
 		/// <param name="paths"></param>
-		/// <returns></returns>
 		public static string GetMutualBaseDirectory(IEnumerable<string> paths)
 		{
 			bool originalIsRooted = Path.IsPathRooted(paths.First());
@@ -162,7 +160,6 @@ namespace Duality.Editor
 		/// will be assumed that the path is visible.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		public static bool IsPathVisible(string path)
 		{
 			// First, check if the path contains an element that begins with a dot.
@@ -191,7 +188,6 @@ namespace Duality.Editor
 		/// be validly used to address one.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		[System.Diagnostics.DebuggerStepThrough]
 		public static bool IsPathValid(string path)
 		{
@@ -207,7 +203,6 @@ namespace Duality.Editor
 		/// <param name="targetPath"></param>
 		/// <param name="overwrite"></param>
 		/// <param name="filter"></param>
-		/// <returns></returns>
 		public static bool CopyDirectory(string sourcePath, string targetPath, bool overwrite = false, Predicate<string> filter = null)
 		{
 			if (!Directory.Exists(sourcePath)) return false;
@@ -252,7 +247,6 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="filePathA"></param>
 		/// <param name="filePathB"></param>
-		/// <returns></returns>
 		public static bool FilesEqual(string filePathA, string filePathB)
 		{
 			filePathA = Path.GetFullPath(filePathA);

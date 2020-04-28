@@ -160,7 +160,6 @@ namespace Duality.Backend.DefaultOpenTK
 		/// </summary>
 		/// <param name="versionString"></param>
 		/// <param name="version"></param>
-		/// <returns></returns>
 		protected bool TryParseVersionString(string versionString, out Version version)
 		{
 			version = new Version();

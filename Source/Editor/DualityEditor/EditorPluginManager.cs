@@ -39,7 +39,6 @@ namespace Duality.Editor
 		/// Enumerates all currently loaded editor assemblies that are part of Duality, i.e. 
 		/// the editor Assembly itsself and all loaded plugins.
 		/// </summary>
-		/// <returns></returns>
 		public override IEnumerable<Assembly> GetAssemblies()
 		{
 			return this.editorAssemblies.Concat(base.GetAssemblies());
@@ -124,7 +123,6 @@ namespace Duality.Editor
 		/// a persistent type name to an instance of the desired type.
 		/// </summary>
 		/// <param name="typeName"></param>
-		/// <returns></returns>
 		public IDockContent DeserializeDockContent(string typeName)
 		{
 			// First ask plugins from the dock contents assembly for existing instances

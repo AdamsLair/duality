@@ -58,7 +58,6 @@ namespace Duality
 		/// <param name="name">The logs display name.</param>
 		/// <param name="id">The logs shorthand ID that will be displayed along with its log entries.</param>
 		/// <param name="customInfo">An optional <see cref="CustomLogInfo"/> object that acts as a tag.</param>
-		/// <param name="output">It will be initially connected to the specified outputs.</param>
 		public Log(string name, string id, CustomLogInfo customInfo = null)
 		{
 			this.name = name ?? string.Empty;

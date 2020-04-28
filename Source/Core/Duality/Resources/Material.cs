@@ -206,7 +206,6 @@ namespace Duality.Resources
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		/// <seealso cref="BatchInfo.GetArray"/>
 		public T[] GetArray<T>(string name) where T : struct
 		{
@@ -218,7 +217,6 @@ namespace Duality.Resources
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		/// <seealso cref="BatchInfo.GetValue"/>
 		public T GetValue<T>(string name) where T : struct
 		{
@@ -228,7 +226,6 @@ namespace Duality.Resources
 		/// Retrieves a texture from the specified variable.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		/// <seealso cref="BatchInfo.GetTexture"/>
 		public ContentRef<Texture> GetTexture(string name)
 		{

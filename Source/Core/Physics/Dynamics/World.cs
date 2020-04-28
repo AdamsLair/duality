@@ -343,7 +343,6 @@ namespace FarseerPhysics.Dynamics
 		/// <summary>
 		/// Add a rigid body.
 		/// </summary>
-		/// <returns></returns>
 		internal void AddBody(Body body)
 		{
 			Debug.Assert(!this._bodyAddList.Contains(body), "You are adding the same body more than once.");
@@ -1312,7 +1311,6 @@ namespace FarseerPhysics.Dynamics
 		/// Returns a list of fixtures that are at the specified point.
 		/// </summary>
 		/// <param name="point">The point.</param>
-		/// <returns></returns>
 		public List<Fixture> TestPointAll(Vector2 point)
 		{
 			AABB aabb;

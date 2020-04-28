@@ -34,7 +34,6 @@ namespace Duality.Editor.Plugins.CamView
 		/// Snaps the specified world position to this editing guide.
 		/// </summary>
 		/// <param name="pos"></param>
-		/// <returns></returns>
 		public Vector3 SnapPosition(Vector3 pos)
 		{
 			Vector3 localPos = (pos - this.snapPosOrigin) / this.snapScaleOrigin;
@@ -51,7 +50,6 @@ namespace Duality.Editor.Plugins.CamView
 		/// Snaps the specified world position to this editing guide.
 		/// </summary>
 		/// <param name="pos"></param>
-		/// <returns></returns>
 		public Vector2 SnapPosition(Vector2 pos)
 		{
 			return this.SnapPosition(new Vector3(pos)).Xy;
@@ -61,7 +59,6 @@ namespace Duality.Editor.Plugins.CamView
 		/// Snaps the specified size value according to match this editing guide.
 		/// </summary>
 		/// <param name="size"></param>
-		/// <returns></returns>
 		public Vector3 SnapSize(Vector3 size)
 		{
 			size /= this.snapScaleOrigin;
@@ -74,7 +71,6 @@ namespace Duality.Editor.Plugins.CamView
 		/// Snaps the specified size value according to match this editing guide.
 		/// </summary>
 		/// <param name="size"></param>
-		/// <returns></returns>
 		public Vector2 SnapSize(Vector2 size)
 		{
 			return this.SnapSize(new Vector3(size)).Xy;
@@ -83,7 +79,6 @@ namespace Duality.Editor.Plugins.CamView
 		/// Snaps the specified size value according to match this editing guide.
 		/// </summary>
 		/// <param name="size"></param>
-		/// <returns></returns>
 		public float SnapSize(float size)
 		{
 			float snapOrigin = 1.0f;

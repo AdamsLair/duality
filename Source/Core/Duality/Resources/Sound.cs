@@ -217,7 +217,6 @@ namespace Duality.Resources
 		/// Upon playing the Sound, this method is called once to determine which of the referenced
 		/// <see cref="Duality.Resources.AudioData"/> objects is to be played.
 		/// </summary>
-		/// <returns></returns>
 		public ContentRef<AudioData> FetchData()
 		{
 			return MathF.Rnd.OneOf(this.audioData);

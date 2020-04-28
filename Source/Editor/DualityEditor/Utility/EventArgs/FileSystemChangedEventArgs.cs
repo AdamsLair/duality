@@ -46,7 +46,6 @@ namespace Duality.Editor
 		/// multiple types, in which case any detected match will yield a "true" result.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <returns></returns>
 		public bool Any(FileEventType type)
 		{
 			return 
@@ -60,7 +59,6 @@ namespace Duality.Editor
 		/// multiple types, in which case any detected match will yield a "true" result.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <returns></returns>
 		public bool AnyFiles(FileEventType type)
 		{
 			return (this.fileEventTypes & type) != FileEventType.None;
@@ -72,7 +70,6 @@ namespace Duality.Editor
 		/// multiple types, in which case any detected match will yield a "true" result.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <returns></returns>
 		public bool AnyDirectories(FileEventType type)
 		{
 			return (this.directoryEventTypes & type) != FileEventType.None;
@@ -86,7 +83,6 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		public bool Contains(FileEventType type, string path)
 		{
 			// Early-out to avoid iterating if we don't have anything of that type
@@ -109,7 +105,6 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="paths"></param>
-		/// <returns></returns>
 		public bool Contains(FileEventType type, IEnumerable<string> paths)
 		{
 			// Early-out to avoid iterating if we don't have anything of that type

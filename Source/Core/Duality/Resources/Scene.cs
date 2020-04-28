@@ -199,7 +199,6 @@ namespace Duality.Resources
 		/// Performs a <see cref="Scene"/> switch operation that was scheduled using
 		/// <see cref="Scene.SwitchTo"/>.
 		/// </summary>
-		/// <returns></returns>
 		internal static bool PerformScheduledSwitch()
 		{
 			if (!switchToScheduled) return false;
@@ -731,7 +730,6 @@ namespace Duality.Resources
 		/// Finds all GameObjects in the Scene that match the specified name or name path.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		public IEnumerable<GameObject> FindGameObjects(string name)
 		{
 			return this.AllObjects.ByName(name);
@@ -739,8 +737,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Finds all GameObjects in the Scene which have a Component of the specified type.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public IEnumerable<GameObject> FindGameObjects(Type hasComponentOfType)
 		{
 			return this.FindComponents(hasComponentOfType).GameObject();
@@ -748,8 +744,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Finds all GameObjects in the Scene which have a Component of the specified type.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public IEnumerable<GameObject> FindGameObjects<T>() where T : class
 		{
 			return this.FindComponents<T>().OfType<Component>().GameObject();
@@ -757,8 +751,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Finds all Components of the specified type in this Scene.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public IEnumerable<T> FindComponents<T>() where T : class
 		{
 			return FindComponents(typeof(T)).OfType<T>();
@@ -766,8 +758,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Finds all Components of the specified type in this Scene.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public IEnumerable<Component> FindComponents(Type type)
 		{
 			TypeInfo typeInfo = type.GetTypeInfo();
@@ -819,8 +809,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Finds a single GameObjects in the Scene that match the specified name or name path.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public GameObject FindGameObject(string name, bool activeOnly = true)
 		{
 			return (activeOnly ? this.ActiveObjects : this.AllObjects).ByName(name).FirstOrDefault();
@@ -828,8 +816,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Finds a single GameObject in the Scene that has a Component of the specified type.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public GameObject FindGameObject(Type hasComponentOfType, bool activeOnly = true)
 		{
 			Component cmp = this.FindComponent(hasComponentOfType, activeOnly);
@@ -838,8 +824,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Finds a single GameObject in the Scene that has a Component of the specified type.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public GameObject FindGameObject<T>(bool activeOnly = true) where T : class
 		{
 			Component cmp = this.FindComponent<T>(activeOnly) as Component;
@@ -848,8 +832,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Finds a single Component of the specified type in this Scene.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public T FindComponent<T>(bool activeOnly = true) where T : class
 		{
 			return FindComponent(typeof(T), activeOnly) as T;
@@ -857,8 +839,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Finds a single Component of the specified type in this Scene.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public Component FindComponent(Type type, bool activeOnly = true)
 		{
 			TypeInfo typeInfo = type.GetTypeInfo();

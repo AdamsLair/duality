@@ -12,7 +12,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="times"></param>
-		/// <returns></returns>
 		public static string Multiply(this string source, int times)
 		{
 			StringBuilder builder = new StringBuilder();

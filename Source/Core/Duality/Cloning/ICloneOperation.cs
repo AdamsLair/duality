@@ -18,17 +18,12 @@ namespace Duality.Cloning
 		/// <summary>
 		/// Retrieves the target object that is mapped to the specified source object.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="source"></param>
-		/// <param name="target"></param>
-		/// <returns></returns>
 		T GetTarget<T>(T source) where T : class;
 		/// <summary>
 		/// Returns true if the specified object is part of the target object graph.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="target"></param>
-		/// <returns></returns>
 		bool IsTarget<T>(T target) where T : class;
 		
 		/// <summary>
@@ -60,7 +55,6 @@ namespace Duality.Cloning
 		/// <param name="operation"></param>
 		/// <param name="source"></param>
 		/// <param name="target"></param>
-		/// <returns></returns>
 		public static void HandleObject<T>(this ICloneOperation operation, T source, T target = null) where T : class
 		{
 			T targetObj = target;
@@ -75,7 +69,6 @@ namespace Duality.Cloning
 		/// <param name="source"></param>
 		/// <param name="target"></param>
 		/// <param name="dontNullifyExternal"></param>
-		/// <returns></returns>
 		public static void HandleObject<T>(this ICloneOperation operation, T source, ref T target, bool dontNullifyExternal) where T : class
 		{
 			if (object.ReferenceEquals(source, null) && dontNullifyExternal && !operation.IsTarget(target))
@@ -90,7 +83,6 @@ namespace Duality.Cloning
 		/// <typeparam name="T"></typeparam>
 		/// <param name="operation"></param>
 		/// <param name="source"></param>
-		/// <returns></returns>
 		public static T GetWeakTarget<T>(this ICloneOperation operation, T source) where T : class
 		{
 			T target = operation.GetTarget(source);

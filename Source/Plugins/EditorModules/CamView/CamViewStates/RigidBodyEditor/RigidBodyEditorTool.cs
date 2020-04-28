@@ -109,7 +109,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// While performing a continuous operation, this method can provide an optional
 		/// action text that will be displayed in the status area of the <see cref="RigidBody"/> editor.
 		/// </summary>
-		/// <returns></returns>
 		public virtual string GetActionText()
 		{
 			return null;
@@ -118,7 +117,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// Checks whether this tool can start a continuous operation given the specified
 		/// user input and environment state.
 		/// </summary>
-		/// <returns></returns>
 		public virtual bool CanBeginAction(MouseButtons mouseButton)
 		{
 			return false;

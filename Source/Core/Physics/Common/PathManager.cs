@@ -84,7 +84,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="type">The type.</param>
 		/// <param name="copies">The copies.</param>
 		/// <param name="userData"></param>
-		/// <returns></returns>
 		public static List<Body> EvenlyDistributeShapesAlongPath(World world, Path path, IEnumerable<Shape> shapes,
 																 BodyType type, int copies, object userData)
 		{
@@ -127,7 +126,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="type">The type.</param>
 		/// <param name="copies">The copies.</param>
 		/// <param name="userData">The user data.</param>
-		/// <returns></returns>
 		public static List<Body> EvenlyDistributeShapesAlongPath(World world, Path path, Shape shape, BodyType type,
 																 int copies, object userData)
 		{
@@ -208,7 +206,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="collideConnected">if set to <c>true</c> [collide connected].</param>
 		/// <param name="minLength">Minimum length of the slider joint.</param>
 		/// <param name="maxLength">Maximum length of the slider joint.</param>
-		/// <returns></returns>
 		public static List<SliderJoint> AttachBodiesWithSliderJoint(World world, List<Body> bodies, Vector2 localAnchorA,
 																	Vector2 localAnchorB, bool connectFirstAndLast,
 																	bool collideConnected, float minLength,

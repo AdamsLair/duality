@@ -30,7 +30,6 @@ namespace Duality.Input
 		/// [GET] Returns a specific input by index.
 		/// </summary>
 		/// <param name="index"></param>
-		/// <returns></returns>
 		public TInput this[int index]
 		{
 			get { return (index >= 0 && index < this.input.Count) ? this.input[index] : this.dummyInput; }
@@ -39,7 +38,6 @@ namespace Duality.Input
 		/// [GET] Returns a specific input by its <see cref="IUserInput.Id"/>.
 		/// </summary>
 		/// <param name="id"></param>
-		/// <returns></returns>
 		public TInput this[string id]
 		{
 			get { return this.input.FirstOrDefault(j => j.Id == id) as TInput ?? this.dummyInput as TInput; }
@@ -132,7 +130,6 @@ namespace Duality.Input
 		/// Returns the index of a specific user input.
 		/// </summary>
 		/// <param name="item"></param>
-		/// <returns></returns>
 		public int IndexOf(TInput item)
 		{
 			return this.input.IndexOf(item);
@@ -141,7 +138,6 @@ namespace Duality.Input
 		/// Returns whether a certain user input is known.
 		/// </summary>
 		/// <param name="item"></param>
-		/// <returns></returns>
 		public bool Contains(TInput item)
 		{
 			return this.input.Contains(item);
@@ -158,7 +154,6 @@ namespace Duality.Input
 		/// <summary>
 		/// Returns an enumerator to iterate over all known user inputs.
 		/// </summary>
-		/// <returns></returns>
 		public IEnumerator<TInput> GetEnumerator()
 		{
 			return this.input.GetEnumerator();

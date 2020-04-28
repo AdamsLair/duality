@@ -120,7 +120,6 @@ namespace Duality
 		/// Enumerates all currently loaded assemblies that are considered part of the 
 		/// managed subset of this <see cref="PluginManager{T}"/>.
 		/// </summary>
-		/// <returns></returns>
 		public virtual IEnumerable<Assembly> GetAssemblies()
 		{
 			return this.LoadedPlugins.Select(plugin => plugin.PluginAssembly);
@@ -207,7 +206,6 @@ namespace Duality
 		/// </remarks>
 		/// <param name="pluginAssembly"></param>
 		/// <param name="pluginFilePath"></param>
-		/// <returns></returns>
 		public T LoadPlugin(Assembly pluginAssembly, string pluginFilePath)
 		{
 			this.disposedPlugins.Remove(pluginAssembly);

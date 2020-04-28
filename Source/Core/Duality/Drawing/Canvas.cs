@@ -298,6 +298,8 @@ namespace Duality.Drawing
 		/// <param name="x2"></param>
 		/// <param name="y2"></param>
 		/// <param name="z2"></param>
+		/// <param name="pattern"></param>
+		/// <param name="patternLen"></param>
 		public void DrawDashLine(float x, float y, float z, float x2, float y2, float z2, DashPattern pattern = DashPattern.Dash, float patternLen = 1.0f)
 		{
 			uint patternBits = (uint)pattern;
@@ -337,10 +339,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Draws a flat line.
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="x2"></param>
-		/// <param name="y2"></param>
 		public void DrawDashLine(float x, float y, float x2, float y2, DashPattern pattern = DashPattern.Dash, float patternLen = 1.0f)
 		{
 			this.DrawDashLine(x, y, 0, x2, y2, 0, pattern, patternLen);
@@ -348,12 +346,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Draws a thick, three-dimensional line.
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="x2"></param>
-		/// <param name="y2"></param>
-		/// <param name="z2"></param>
 		public void DrawThickLine(float x, float y, float z, float x2, float y2, float z2, float width)
 		{
 			Vector3 pos = new Vector3(x, y, z);
@@ -397,10 +389,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Draws a thick, flat line.
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="x2"></param>
-		/// <param name="y2"></param>
 		public void DrawThickLine(float x, float y, float x2, float y2, float width)
 		{
 			this.DrawThickLine(x, y, 0, x2, y2, 0, width);
@@ -409,11 +397,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Draws a rectangle.
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
 		public void DrawRect(float x, float y, float z, float w, float h)
 		{
 			if (w < 0.0f) { x += w; w = -w; }
@@ -581,13 +564,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Draws the section of an oval.
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="minAngle"></param>
-		/// <param name="maxAngle"></param>
 		public void DrawOval(float x, float y, float z, float width, float height)
 		{
 			this.DrawOvalSegment(x, y, z, width, height, 0.0f, MathF.RadAngle360);
@@ -595,12 +571,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Draws the section of an oval.
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="minAngle"></param>
-		/// <param name="maxAngle"></param>
 		public void DrawOval(float x, float y, float width, float height)
 		{
 			this.DrawOvalSegment(x, y, 0, width, height, 0.0f, MathF.RadAngle360);
@@ -608,12 +578,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Draws the section of a circle.
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="radius"></param>
-		/// <param name="minAngle"></param>
-		/// <param name="maxAngle"></param>
 		public void DrawCircle(float x, float y, float z, float radius)
 		{
 			this.State.TransformHandle += new Vector2(radius, radius);
@@ -623,11 +587,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Draws the section of a circle
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="radius"></param>
-		/// <param name="minAngle"></param>
-		/// <param name="maxAngle"></param>
 		public void DrawCircle(float x, float y, float radius)
 		{
 			this.State.TransformHandle += new Vector2(radius, radius);
@@ -638,10 +597,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Fills a polygon. All vertices share the same Z value, and the polygon needs to be convex.
 		/// </summary>
-		/// <param name="points"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
 		public void FillPolygon(Vector2[] points, float x, float y, float z = 0.0f)
 		{
 			Vector3 pos = new Vector3(x, y, z);
@@ -701,12 +656,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Fills a three-dimensional line.
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="x2"></param>
-		/// <param name="y2"></param>
-		/// <param name="z2"></param>
 		public void FillThickLine(float x, float y, float z, float x2, float y2, float z2, float width)
 		{
 			Vector3 pos = new Vector3(x, y, z);
@@ -750,10 +699,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Fills a thick, flat line.
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="x2"></param>
-		/// <param name="y2"></param>
 		public void FillThickLine(float x, float y, float x2, float y2, float width)
 		{
 			this.FillThickLine(x, y, 0, x2, y2, 0, width);
@@ -1040,6 +985,7 @@ namespace Duality.Drawing
 		/// <param name="y"></param>
 		/// <param name="z"></param>
 		/// <param name="blockAlign">Specifies the alignment of the text block.</param>
+		/// <param name="drawBackground"></param>
 		public void DrawText(string text, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
 			if(!string.IsNullOrEmpty(text))
@@ -1054,6 +1000,7 @@ namespace Duality.Drawing
 		/// <param name="y"></param>
 		/// <param name="z"></param>
 		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, use the <see cref="FormattedText"/> overload.</param>
+		/// <param name="drawBackground"></param>
 		public void DrawText(string[] text, ref VertexC1P3T2[][] vertices, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
 			if (text == null || text.Length == 0) return;
@@ -1160,6 +1107,7 @@ namespace Duality.Drawing
 		/// <param name="y"></param>
 		/// <param name="z"></param>
 		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, use the <see cref="FormattedText"/> overload.</param>
+		/// <param name="drawBackground"></param>
 		public void DrawText(string[] text, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
 			VertexC1P3T2[][] vertices = null;
@@ -1176,6 +1124,7 @@ namespace Duality.Drawing
 		/// <param name="z"></param>
 		/// <param name="iconMat"></param>
 		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, make use of <see cref="FormattedText"/> format tags.</param>
+		/// <param name="drawBackground"></param>
 		public void DrawText(FormattedText text, ref VertexC1P3T2[][] vertText, ref VertexC1P3T2[] vertIcon, float x, float y, float z = 0.0f, BatchInfo iconMat = null, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
 			if (text == null || text.IsEmpty) return;
@@ -1286,6 +1235,7 @@ namespace Duality.Drawing
 		/// <param name="z"></param>
 		/// <param name="iconMat"></param>
 		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, make use of <see cref="FormattedText"/> format tags.</param>
+		/// <param name="drawBackground"></param>
 		public void DrawText(FormattedText text, float x, float y, float z = 0.0f, BatchInfo iconMat = null, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
 			VertexC1P3T2[][] vertText = null;
@@ -1297,7 +1247,6 @@ namespace Duality.Drawing
 		/// Measures the specified text using the currently used <see cref="Duality.Resources.Font"/>.
 		/// </summary>
 		/// <param name="text"></param>
-		/// <returns></returns>
 		public Vector2 MeasureText(string text)
 		{
 			Font font = this.State.TextFont.Res;
@@ -1307,7 +1256,6 @@ namespace Duality.Drawing
 		/// Measures the specified text using the currently used <see cref="Duality.Resources.Font"/>.
 		/// </summary>
 		/// <param name="text"></param>
-		/// <returns></returns>
 		public Vector2 MeasureText(string[] text)
 		{
 			Font font = this.State.TextFont.Res;
@@ -1487,7 +1435,6 @@ namespace Duality.Drawing
 		/// at a time, to be re-used after submitting it to the device.
 		/// </summary>
 		/// <param name="minLength"></param>
-		/// <returns></returns>
 		private VertexC1P3T2[] RentVertices(int minLength)
 		{
 			this.buffer.Count = minLength;

@@ -50,7 +50,6 @@ namespace Duality
 		/// implementation, as provided via generic type parameter.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public static VisualLog Get<T>() where T : CustomVisualLogInfo, new()
 		{
 			return CustomLogHolder<T>.Instance;

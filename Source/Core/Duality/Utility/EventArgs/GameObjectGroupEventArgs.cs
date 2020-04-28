@@ -23,7 +23,6 @@ namespace Duality
 		/// Note that the list is not copied for performance reasons. However, the event also does not
 		/// provide any write access to that internal list either.
 		/// </summary>
-		/// <param name="rootObjects"></param>
 		public GameObjectGroupEventArgs(List<GameObject> objects)
 		{
 			this.objects = objects;

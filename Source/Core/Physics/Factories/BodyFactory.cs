@@ -233,7 +233,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="density">The density.</param>
 		/// <param name="position">The position.</param>
 		/// <param name="userData"></param>
-		/// <returns></returns>
 		public static Body CreateCapsule(World world, float height, float topRadius, int topEdges,
 										 float bottomRadius,
 										 int bottomEdges, float density, Vector2 position, object userData)
@@ -305,7 +304,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="density">The density.</param>
 		/// <param name="position">The position.</param>
 		/// <param name="userData"></param>
-		/// <returns></returns>
 		public static Body CreateRoundedRectangle(World world, float width, float height, float xRadius,
 												  float yRadius,
 												  int segments, float density, Vector2 position,

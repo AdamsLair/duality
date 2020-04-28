@@ -243,7 +243,6 @@ namespace Duality
 		/// <summary>
 		/// Creates a deep copy of this Resource.
 		/// </summary>
-		/// <returns></returns>
 		public Resource Clone()
 		{
 			return this.DeepClone();
@@ -274,7 +273,6 @@ namespace Duality
 		/// this method in order to handle certain fields and cases manually. See <see cref="ICloneExplicit.SetupCloneTargets"/>
 		/// for a more thorough explanation.
 		/// </summary>
-		/// <param name="setup"></param>
 		protected virtual void OnSetupCloneTargets(object target, ICloneTargetSetup setup) {}
 		/// <summary>
 		/// This method performs the <see cref="CopyTo"/> operation for custom Resource Types.
@@ -408,7 +406,7 @@ namespace Duality
 		/// Desired Type of the returned reference. Does not affect the loaded Resource in any way - it is simply returned as T.
 		/// Results in returning null if the loaded Resource's Type isn't assignable to T.
 		/// </typeparam>
-		/// <param name="str">The stream to load the Resource from.</param>
+		/// <param name="formatter"></param>
 		/// <param name="resPath">The path that is assumed as the loaded Resource's origin.</param>
 		/// <param name="loadCallback">An optional callback that is invoked right after loading the Resource, but before initializing it.</param>
 		/// <param name="initResource">
@@ -463,7 +461,6 @@ namespace Duality
 		/// Determines the name of a Resource based on its path.
 		/// </summary>
 		/// <param name="resPath"></param>
-		/// <returns></returns>
 		public static string GetNameFromPath(string resPath)
 		{
 			if (string.IsNullOrEmpty(resPath)) return "null";
@@ -474,7 +471,6 @@ namespace Duality
 		/// Determines the full (hierarchical) name of a Resource based on its path.
 		/// </summary>
 		/// <param name="resPath"></param>
-		/// <returns></returns>
 		public static string GetFullNameFromPath(string resPath)
 		{
 			if (string.IsNullOrEmpty(resPath)) return "null";
@@ -486,7 +482,6 @@ namespace Duality
 		/// Returns whether or not the specified path points to Duality default content.
 		/// </summary>
 		/// <param name="resPath"></param>
-		/// <returns></returns>
 		public static bool IsDefaultContentPath(string resPath)
 		{
 			return
@@ -498,7 +493,6 @@ namespace Duality
 		/// Determines whether or not the specified path points to a Duality Resource file.
 		/// </summary>
 		/// <param name="filePath"></param>
-		/// <returns></returns>
 		public static bool IsResourceFile(string filePath)
 		{
 			return string.Equals(PathOp.GetExtension(filePath), FileExt, StringComparison.OrdinalIgnoreCase);
@@ -508,7 +502,6 @@ namespace Duality
 		/// any actual content- or load states.
 		/// </summary>
 		/// <param name="folderPath"></param>
-		/// <returns></returns>
 		public static IEnumerable<string> GetResourceFiles(string folderPath = null)
 		{
 			if (string.IsNullOrEmpty(folderPath)) folderPath = DualityApp.DataDirectory;
@@ -530,7 +523,7 @@ namespace Duality
 		/// <summary>
 		/// Returns the Resource file extension for a specific Resource Type.
 		/// </summary>
-		/// <param name="resType">The Resource Type to return the file extension from.</param>
+		/// <typeparam name="T">The Resource Type to return the file extension from.</typeparam>
 		/// <returns>The specified Resource Type's file extension.</returns>
 		public static string GetFileExtByType<T>() where T : Resource
 		{
@@ -574,7 +567,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="field"></param>
 		/// <param name="obj"></param>
-		/// <returns></returns>
 		public static bool DontSerializeResourceBlocker(FieldInfo field, object obj)
 		{
 			return field.HasAttributeCached<DontSerializeResourceAttribute>();
@@ -585,7 +577,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="field"></param>
 		/// <param name="obj"></param>
-		/// <returns></returns>
 		public static bool PrefabLinkedFieldBlocker(FieldInfo field, object obj)
 		{
 			Component cmp = obj as Component;

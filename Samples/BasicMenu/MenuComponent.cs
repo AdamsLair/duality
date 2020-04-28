@@ -55,7 +55,7 @@ namespace BasicMenu
 		/// 
 		/// A full 2.5D implementation (no ScreenOverlay) would require more complex calculations.
 		/// </summary>
-		/// <returns></returns>
+
 		public Rect GetAreaOnScreen()
 		{
 			if (this.sprite == null)

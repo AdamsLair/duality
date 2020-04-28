@@ -710,7 +710,6 @@ namespace FarseerPhysics.Dynamics
 		/// Warning: This function is locked during callbacks.
 		/// </summary>
 		/// <param name="shape">The shape.</param>
-		/// <returns></returns>
 		public Fixture CreateFixture(Shape shape)
 		{
 			return new Fixture(this, shape);
@@ -723,7 +722,6 @@ namespace FarseerPhysics.Dynamics
 		/// </summary>
 		/// <param name="shape">The shape.</param>
 		/// <param name="userData">Application specific data</param>
-		/// <returns></returns>
 		public Fixture CreateFixture(Shape shape, object userData)
 		{
 			return new Fixture(this, shape, userData);
@@ -1266,7 +1264,6 @@ namespace FarseerPhysics.Dynamics
 		/// It may lie, depending on the collideConnected flag.
 		/// </summary>
 		/// <param name="other">The other body.</param>
-		/// <returns></returns>
 		internal bool ShouldCollide(Body other)
 		{
 			// At least one body should be dynamic.

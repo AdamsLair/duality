@@ -69,7 +69,6 @@ namespace Duality
 		/// when attempting to access indices exceeding <see cref="Count"/>.
 		/// </summary>
 		/// <param name="index"></param>
-		/// <returns></returns>
 		public T this[int index]
 		{
 			get
@@ -126,7 +125,6 @@ namespace Duality
 		/// Returns the first index of the specified item within the used range of the internal array. Returns -1, if not found.
 		/// </summary>
 		/// <param name="item"></param>
-		/// <returns></returns>
 		public int IndexOf(T item)
 		{
 			return Array.IndexOf(this.data, item, 0, this.count);
@@ -135,7 +133,6 @@ namespace Duality
 		/// Returns whether the specified item is contained within the used range of the internal array.
 		/// </summary>
 		/// <param name="item"></param>
-		/// <returns></returns>
 		public bool Contains(T item)
 		{
 			return Array.IndexOf(this.data, item, 0, this.count) >= 0;
@@ -221,7 +218,6 @@ namespace Duality
 		/// Removes the first matching item from the list.
 		/// </summary>
 		/// <param name="item"></param>
-		/// <returns></returns>
 		public bool Remove(T item)
 		{
 			int index = this.IndexOf(item);
@@ -272,7 +268,6 @@ namespace Duality
 		/// Removes all matching items from the list.
 		/// </summary>
 		/// <param name="predicate"></param>
-		/// <returns></returns>
 		public int RemoveAll(Predicate<T> predicate)
 		{
 			// Iterate over the internal array with two indices:
