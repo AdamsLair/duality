@@ -1,0 +1,10 @@
+{
+  "profiles": {
+		"DualityUpdater": {
+			"commandName": "Executable",
+			"executablePath": ".\\DualityUpdater.exe",
+			"commandLineArgs": "ApplyUpdate.xml DualityEditor.exe",
+			"workingDirectory": "$(SolutionDir)Build\\Output"
+		}
+  }
+}

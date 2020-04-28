@@ -1,365 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)Build\Output\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)Build\Output\</StartWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Duality.Editor</RootNamespace>
-    <AssemblyName>DualityEditor</AssemblyName>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <RestorePackages>true</RestorePackages>
-    <ApplicationIcon>DualityLogoIcon.ico</ApplicationIcon>
-    <SignAssembly>false</SignAssembly>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>full</DebugType>
-    <DefineConstants>DEBUG</DefineConstants>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Build" />
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.XML" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="Windows7.DesktopIntegration">
-      <HintPath>.\Windows7.DesktopIntegration.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AssetManagement\AssetExportFinishedEventArgs.cs" />
-    <Compile Include="AssetManagement\AssetImporter.cs" />
-    <Compile Include="AssetManagement\AssetInternalHelper.cs" />
-    <Compile Include="AssetManagement\Export\ExtMethodsIAssetExportEnvironment.cs" />
-    <Compile Include="AssetManagement\AssetImportFinishedEventArgs.cs" />
-    <Compile Include="Backend\Dummy\DummyNativeRenderableSite.cs" />
-    <Compile Include="Backend\Dummy\DummyNativeEditorGraphicsContext.cs" />
-    <Compile Include="Backend\Dummy\DummyEditorGraphicsBackend.cs" />
-    <Compile Include="Backend\EditorGraphics\INativeEditorGraphicsContext.cs" />
-    <Compile Include="Backend\EditorGraphics\INativeRenderableSite.cs" />
-    <Compile Include="Backend\IEditorGraphicsBackend.cs" />
-    <Compile Include="Controls\AutoExpandTreeView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PropertyEditors\Point2PropertyEditor.cs" />
-    <Compile Include="Controls\PropertyEditors\SpriteIndexBlendPropertyEditor.cs" />
-    <Compile Include="Controls\ToolStrip\ToolStripTextBoxAdv.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
-    <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
-    <Compile Include="AssetManagement\Export\AssetExportEnvironment.cs" />
-    <Compile Include="AssetManagement\AssetImporterConflictHandler.cs" />
-    <Compile Include="AssetManagement\Export\AssetExportOperation.cs" />
-    <Compile Include="AssetManagement\Import\AssetImportOutput.cs" />
-    <Compile Include="AssetManagement\Import\AssetImportOperation.cs" />
-    <Compile Include="AssetManagement\Import\AssetReImportOperation.cs" />
-    <Compile Include="AssetManagement\Import\AssetFirstImportOperation.cs" />
-    <Compile Include="AssetManagement\Import\AssetImportInput.cs" />
-    <Compile Include="AssetManagement\Import\ExtMethodsIAssetImportEnvironment.cs" />
-    <Compile Include="AssetManagement\Export\IAssetExportEnvironment.cs" />
-    <Compile Include="EditorPluginManager.cs" />
-    <Compile Include="Extensibility\DataConversion\ConversionData.cs" />
-    <Compile Include="Extensibility\DataConversion\ConvertOperation.cs" />
-    <Compile Include="Extensibility\DataConversion\ExtMethodsDataConverter.cs" />
-    <Compile Include="Extensibility\EditorActions\EditorSingleAction.cs" />
-    <Compile Include="Extensibility\EditorActions\IEditorAction.cs" />
-    <Compile Include="AssetManagement\Import\AssetImportEnvironment.cs" />
-    <Compile Include="AssetManagement\Import\IAssetImportEnvironment.cs" />
-    <Compile Include="AssetManagement\IAssetImporter.cs" />
-    <Compile Include="Extensibility\Previews\PreviewImageQuery.cs" />
-    <Compile Include="Extensibility\Previews\IPreviewGenerator.cs" />
-    <Compile Include="Extensibility\Previews\PreviewGenerator.cs" />
-    <Compile Include="Extensibility\Previews\PreviewSoundQuery.cs" />
-    <Compile Include="Extensibility\Previews\PreviewQuery.cs" />
-    <Compile Include="Extensibility\Previews\IPreviewQuery.cs" />
-    <Compile Include="Extensibility\Previews\PreviewSizeMode.cs" />
-    <Compile Include="Forms\ListSelectionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ListSelectionDialog.Designer.cs">
-      <DependentUpon>ListSelectionDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\CreateObjectDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\CreateObjectDialog.Designer.cs">
-      <DependentUpon>CreateObjectDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\CueTextbox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\DualitorPropertyGrid.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ExplorerListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PropertyEditors\PropertyEditorAssignmentAttribute.cs" />
-    <Compile Include="Controls\PropertyEditors\RangePropertyEditor.cs" />
-    <Compile Include="Controls\ToolStrip\DualitorToolStripRenderer.cs" />
-    <Compile Include="Controls\ToolStrip\ToolStripCheckBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\ToolStrip\ToolStripNumericUpDown.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\TreeModels\FileSystem\ModelItems.cs" />
-    <Compile Include="Controls\TreeModels\FileSystem\FolderBrowserTreeModel.cs" />
-    <Compile Include="Controls\PropertyEditors\IColorDataPropertyEditor.cs" />
-    <Compile Include="Controls\PropertyEditors\RectPropertyEditor.cs" />
-    <Compile Include="Controls\PropertyEditors\Vector4PropertyEditor.cs" />
-    <Compile Include="Controls\PropertyEditors\Vector3PropertyEditor.cs" />
-    <Compile Include="Controls\PropertyEditors\VectorPropertyEditor.cs" />
-    <Compile Include="Controls\PropertyEditors\Provider.cs" />
-    <Compile Include="Controls\PropertyEditors\Vector2PropertyEditor.cs" />
-    <Compile Include="Extensibility\DataConversion\DataConverter.cs" />
-    <Compile Include="Extensibility\EditorActions\EditorAction.cs" />
-    <Compile Include="DesignTimeObjectData.cs" />
-    <Compile Include="Forms\WelcomeDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\WelcomeDialog.Designer.cs">
-      <DependentUpon>WelcomeDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HelpSystem\HelpAction.cs" />
-    <Compile Include="HelpSystem\HelpStack.cs" />
-    <Compile Include="HelpSystem\IReadOnlyHelpInfo.cs" />
-    <Compile Include="HelpSystem\IHelpProvider.cs" />
-    <Compile Include="PreviewProvider.cs" />
-    <Compile Include="DualityEditorApp.cs" />
-    <Compile Include="Forms\LicenseAcceptDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\LicenseAcceptDialog.Designer.cs">
-      <DependentUpon>LicenseAcceptDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\PublishGameDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\PublishGameDialog.Designer.cs">
-      <DependentUpon>PublishGameDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="AssetManagement\SelectAssetImporterDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AssetManagement\SelectAssetImporterDialog.Designer.cs">
-      <DependentUpon>SelectAssetImporterDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\GeneralResNames.cs" />
-    <Compile Include="UndoRedoActions\AddDictionaryKeyAction.cs" />
-    <Compile Include="UndoRedoActions\EditResourceAssetDataAction.cs" />
-    <Compile Include="UndoRedoActions\PasteGameObjectAction.cs" />
-    <Compile Include="UndoRedoActions\RemoveDictionaryKeyAction.cs" />
-    <Compile Include="UndoRedoActions\ResizeListAction.cs" />
-    <Compile Include="Utility\BuildHelper.cs" />
-    <Compile Include="Utility\EditorLogEntry.cs" />
-    <Compile Include="Utility\EditorLogOutput.cs" />
-    <Compile Include="Utility\EventArgs\ResourceFilesChangedEventArgs.cs" />
-    <Compile Include="Utility\EventArgs\FileSystemChangedEventArgs.cs" />
-    <Compile Include="Utility\EventArgs\PrefabAppliedEventArgs.cs" />
-    <Compile Include="Utility\EventArgs\ObjectPropertyChangedEventArgs.cs" />
-    <Compile Include="Utility\EventArgs\HighlightObjectEventArgs.cs" />
-    <Compile Include="Utility\EventArgs\SelectionChangedEventArgs.cs" />
-    <Compile Include="Utility\EventArgs\HelpStackChangedEventArgs.cs" />
-    <Compile Include="Utility\Extensions\DataObjectStorage.cs" />
-    <Compile Include="Utility\GlobalColorPickOperation.cs" />
-    <Compile Include="Utility\SelectionChangeReason.cs" />
-    <Compile Include="Utility\HighlightMode.cs" />
-    <Compile Include="Utility\AutosaveFrequency.cs" />
-    <Compile Include="Utility\SelectMode.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsPixelData.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsBitmap.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsMemberInfoEditorHint.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsZipArchive.cs" />
-    <Compile Include="Properties\GeneralRes.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GeneralRes.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\GeneralResCache.cs" />
-    <Compile Include="Utility\CursorHelper.cs" />
-    <Compile Include="Utility\EditorHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Utility\EventArgs\BeginGlobalRenameEventArgs.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsControl.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsDataObject.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsColor.cs" />
-    <Compile Include="AssetManagement\AssetManager.cs" />
-    <Compile Include="Forms\AboutBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\AboutBox.Designer.cs">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\AppRunningDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\AppRunningDialog.Designer.cs">
-      <DependentUpon>AppRunningDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ProcessingBigTaskDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ProcessingBigTaskDialog.Designer.cs">
-      <DependentUpon>ProcessingBigTaskDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="EditorPlugin.cs" />
-    <Compile Include="Forms\ReloadCorePluginDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ReloadCorePluginDialog.Designer.cs">
-      <DependentUpon>ReloadCorePluginDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Utility\Extensions\ExtMethodsTreeViewAdv.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsTreeNodeAdv.cs" />
-    <Compile Include="Forms\SplashScreen.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SplashScreen.Designer.cs">
-      <DependentUpon>SplashScreen.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HelpSystem\HelpInfo.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsGraphics.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsForm.cs" />
-    <Compile Include="Utility\MessageFilter.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsToolStrip.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsMouseButtons.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsKeys.cs" />
-    <Compile Include="Utility\NativeMethods.cs" />
-    <Compile Include="Utility\ObjectSelection.cs" />
-    <Compile Include="HelpSystem.cs" />
-    <Compile Include="FileEventManager.cs" />
-    <Compile Include="Sandbox.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utility\PathHelper.cs" />
-    <Compile Include="Utility\RecycleBin.cs" />
-    <Compile Include="Utility\SerializableReferenceWrapper.cs" />
-    <Compile Include="Utility\SerializableWrapper.cs" />
-    <Compile Include="Utility\XmlCodeDoc.cs" />
-    <Compile Include="UndoRedoActions\DeleteGameObjectAction.cs" />
-    <Compile Include="UndoRedoActions\CloneGameObjectAction.cs" />
-    <Compile Include="UndoRedoActions\DeleteComponentAction.cs" />
-    <Compile Include="UndoRedoActions\CreateGameObjectAction.cs" />
-    <Compile Include="UndoRedoActions\CreateComponentAction.cs" />
-    <Compile Include="UndoRedoActions\GameObjectAction.cs" />
-    <Compile Include="UndoRedoActions\ComponentAction.cs" />
-    <Compile Include="UndoRedoActions\EditPropertyAction.cs" />
-    <Compile Include="UndoRedoActions\EditFieldAction.cs" />
-    <Compile Include="UndoRedoActions\ApplyToPrefabAction.cs" />
-    <Compile Include="UndoRedoActions\BreakPrefabLinkAction.cs" />
-    <Compile Include="UndoRedoActions\ResetGameObjectAction.cs" />
-    <Compile Include="UndoRedoActions\ResetComponentAction.cs" />
-    <Compile Include="UndoRedoActions\SetGameObjectNameAction.cs" />
-    <Compile Include="UndoRedoActions\SetComponentParentAction.cs" />
-    <Compile Include="UndoRedoActions\SetGameObjectParentAction.cs" />
-    <Compile Include="UndoRedoActions\UndoRedoMacroAction.cs" />
-    <Compile Include="UndoRedoManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <EmbeddedResource Include="AssetManagement\SelectAssetImporterDialog.resx">
-      <DependentUpon>SelectAssetImporterDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ListSelectionDialog.resx">
-      <DependentUpon>ListSelectionDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CreateObjectDialog.resx">
-      <DependentUpon>CreateObjectDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\LicenseAcceptDialog.resx">
-      <DependentUpon>LicenseAcceptDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PublishGameDialog.resx">
-      <DependentUpon>PublishGameDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\WelcomeDialog.resx">
-      <DependentUpon>WelcomeDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\GeneralRes.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>GeneralRes.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AboutBox.resx">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AppRunningDialog.resx">
-      <DependentUpon>AppRunningDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ProcessingBigTaskDialog.resx">
-      <DependentUpon>ProcessingBigTaskDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ReloadCorePluginDialog.resx">
-      <DependentUpon>ReloadCorePluginDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SplashScreen.resx">
-      <DependentUpon>SplashScreen.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <None Include="app.config" />
-    <None Include="app.manifest" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<LangVersion>7.3</LangVersion>
+		<OutputPath>$(SolutionDir)Build\Output\</OutputPath>
+		<Copyright>Copyright © Fedja Adam 2012</Copyright>
+		<RootNamespace>Duality.Editor</RootNamespace>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<OutputType>WinExe</OutputType>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ApplicationIcon>DualityLogoIcon.ico</ApplicationIcon>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
+	</PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
@@ -370,49 +25,7 @@
       <Name>Duality</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="DualityIcon.ico" />
-    <None Include="EmbeddedResources\clock.png" />
-    <None Include="EmbeddedResources\EditorUserData.xml" />
-    <None Include="EmbeddedResources\application_stopwatch.png" />
-    <EmbeddedResource Include="EmbeddedResources\Class.png" />
-    <EmbeddedResource Include="EmbeddedResources\AssetImporter.png" />
-    <Content Include="DualityLogoIcon.ico" />
-    <None Include="EmbeddedResources\color_pick.png" />
-    <Content Include="EmbeddedResources\namespace.png" />
-    <None Include="EmbeddedResources\page_white.png" />
-    <Content Include="EmbeddedResources\WorkingFolderIcon.ico" />
-    <None Include="EmbeddedResources\arrow_undo.png" />
-    <None Include="EmbeddedResources\arrow_redo.png" />
-    <None Include="EmbeddedResources\CursorHandGrabbing.png" />
-    <None Include="EmbeddedResources\CursorHandGrab.png" />
-    <None Include="EmbeddedResources\control_step_blue.png" />
-    <None Include="EmbeddedResources\drive_disk.png" />
-    <None Include="EmbeddedResources\working_bigtask.png" />
-    <None Include="EmbeddedResources\DualityIcon48.png" />
-    <None Include="EmbeddedResources\DualityIcon256.png" />
-    <None Include="EmbeddedResources\application_create.png" />
-    <None Include="EmbeddedResources\page_gear.png" />
-    <None Include="EmbeddedResources\page_code.png" />
-    <None Include="EmbeddedResources\control_stop_blue.png" />
-    <None Include="EmbeddedResources\control_play_blue.png" />
-    <None Include="EmbeddedResources\control_pause_blue.png" />
-    <None Include="EmbeddedResources\DualitorLogoHalfSize.png" />
-    <None Include="EmbeddedResources\page_white_csharp.png" />
-    <None Include="EmbeddedResources\disk_multiple.png" />
-    <None Include="EmbeddedResources\application_bug.png" />
-    <None Include="EmbeddedResources\application_go.png" />
-    <None Include="EmbeddedResources\arrow_refresh.png" />
-    <None Include="EmbeddedResources\icon_color.png" />
-    <None Include="EmbeddedResources\add.png" />
-    <None Include="EmbeddedResources\cross.png" />
-    <None Include="EmbeddedResources\CursorArrowActionScale.png" />
-    <None Include="EmbeddedResources\CursorArrowActionRotate.png" />
-    <None Include="EmbeddedResources\CursorArrowActionMove.png" />
-    <None Include="EmbeddedResources\CursorArrowAction.png" />
-    <None Include="EmbeddedResources\CursorArrow.png" />
-    <None Include="EmbeddedResources\cog.ico" />
-  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="AdamsLair.DockPanelSuite">
       <Version>2.8.2</Version>
@@ -426,22 +39,50 @@
     <PackageReference Include="Microsoft.Web.Xdt">
       <Version>2.1.1</Version>
     </PackageReference>
+
+		<EmbeddedResource Update="Properties\GeneralRes.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<SubType>Designer</SubType>
+			<LastGenOutput>GeneralRes.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<Compile Update="Properties\GeneralRes.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+			<DependentUpon>GeneralRes.resx</DependentUpon>
+		</Compile>
+
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+			<SubType>Designer</SubType>
+		</EmbeddedResource>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+		</Compile>
+
+		<None Update="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
+		<Compile Update="Properties\Settings.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+		</Compile>
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe.config" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(PkgAdamsLair_WinForms)\lib\net45\AdamsLair.WinForms.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)Aga.Controls.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)PopupControl.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)WeifenLuo.WinFormsUI.Docking.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)VistaBridgeLibrary.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)VistaBridgeLibrary.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)Windows7.DesktopIntegration.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(OutputPath)Windows7.DesktopIntegration.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
-  </Target>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="VistaBridgeLibrary">
+      <HintPath>VistaBridgeLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Windows7.DesktopIntegration">
+      <HintPath>Windows7.DesktopIntegration.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

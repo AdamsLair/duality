@@ -1,70 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{35045E2E-7748-4D1D-BE05-BF72A19C295F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Duality.Backend.DefaultOpenTK</RootNamespace>
-    <AssemblyName>DefaultOpenTKBackend.core</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile />
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Backend\Audio\AudioBackend.cs" />
-    <Compile Include="Backend\Audio\AudioLibraryLoader.cs" />
-    <Compile Include="Backend\Graphics\ExtMethodsColorDataElementType.cs" />
-    <Compile Include="Backend\Graphics\OpenTKGraphicsCapabilities.cs" />
-    <Compile Include="Backend\Graphics\NativeGraphicsBuffer.cs" />
-    <Compile Include="Backend\Input\GameWindowKeyboardInputSource.cs" />
-    <Compile Include="Backend\Input\GameWindowMouseInputSource.cs" />
-    <Compile Include="Backend\Input\GlobalGamepadInputSource.cs" />
-    <Compile Include="Backend\Input\GlobalJoystickInputSource.cs" />
-    <Compile Include="Backend\Graphics\GraphicsBackend.cs" />
-    <Compile Include="Backend\Audio\NativeAudioBuffer.cs" />
-    <Compile Include="Backend\Audio\NativeAudioSource.cs" />
-    <Compile Include="Backend\Graphics\NativeRenderTarget.cs" />
-    <Compile Include="Backend\Graphics\ExtMethodsColorDataLayout.cs" />
-    <Compile Include="Backend\Graphics\NativeShaderPart.cs" />
-    <Compile Include="Backend\Graphics\NativeShaderProgram.cs" />
-    <Compile Include="Backend\Graphics\NativeWindow.cs" />
-    <Compile Include="Backend\Graphics\NativeTexture.cs" />
-    <Compile Include="Backend\Graphics\GraphicsModeComparer.cs" />
-    <Compile Include="CorePlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<LangVersion>7.3</LangVersion>
+		<Copyright>Copyright © Fedja Adam 2015</Copyright>
+		<RootNamespace>Duality.Backend.DefaultOpenTK</RootNamespace>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<Version>4.0.0-alpha</Version>
+	</PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Primitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
@@ -77,6 +21,13 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AdamsLair.OpenTK" GeneratePathProperty="true">
+      <Version>1.2.2</Version>
+    </PackageReference>
+  </ItemGroup>
+
   <ItemGroup>
     <Content Include="OpenALSoft32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -85,12 +36,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="AdamsLair.OpenTK" GeneratePathProperty="true">
-      <Version>1.2.2</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
   <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />

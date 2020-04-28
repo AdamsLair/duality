@@ -22,7 +22,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class SceneViewRes {
+    internal class SceneViewRes {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Duality.Editor.Plugins.SceneView.Properties.SceneViewRes", typeof(SceneViewRes).Assembly);
@@ -51,7 +51,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconEyeCross {
+        internal static System.Drawing.Bitmap IconEyeCross {
             get {
                 object obj = ResourceManager.GetObject("IconEyeCross", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -73,7 +73,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconLock {
+        internal static System.Drawing.Bitmap IconLock {
             get {
                 object obj = ResourceManager.GetObject("IconLock", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -83,7 +83,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        public static System.Drawing.Icon IconSceneView {
+        internal static System.Drawing.Icon IconSceneView {
             get {
                 object obj = ResourceManager.GetObject("IconSceneView", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
@@ -93,7 +93,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Can&apos;t remove {0} because it is required by the &apos;{1}&apos; Component..
         /// </summary>
-        public static string MenuItemDesc_CantRemoveComponent {
+        internal static string MenuItemDesc_CantRemoveComponent {
             get {
                 return ResourceManager.GetString("MenuItemDesc_CantRemoveComponent", resourceCulture);
             }
@@ -102,7 +102,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Remove.
         /// </summary>
-        public static string MenuItemName_RemoveComponent {
+        internal static string MenuItemName_RemoveComponent {
             get {
                 return ResourceManager.GetString("MenuItemName_RemoveComponent", resourceCulture);
             }
@@ -111,7 +111,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Reset.
         /// </summary>
-        public static string MenuItemName_ResetComponent {
+        internal static string MenuItemName_ResetComponent {
             get {
                 return ResourceManager.GetString("MenuItemName_ResetComponent", resourceCulture);
             }
@@ -120,7 +120,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Scene View.
         /// </summary>
-        public static string MenuItemName_SceneView {
+        internal static string MenuItemName_SceneView {
             get {
                 return ResourceManager.GetString("MenuItemName_SceneView", resourceCulture);
             }
@@ -129,7 +129,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap OverlayLink {
+        internal static System.Drawing.Bitmap OverlayLink {
             get {
                 object obj = ResourceManager.GetObject("OverlayLink", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -139,7 +139,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap OverlayLinkBroken {
+        internal static System.Drawing.Bitmap OverlayLinkBroken {
             get {
                 object obj = ResourceManager.GetObject("OverlayLinkBroken", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -149,7 +149,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Scene.
         /// </summary>
-        public static string SceneNameLabel {
+        internal static string SceneNameLabel {
             get {
                 return ResourceManager.GetString("SceneNameLabel", resourceCulture);
             }
@@ -158,7 +158,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Unsaved Scene.
         /// </summary>
-        public static string SceneNameNotYetSaved {
+        internal static string SceneNameNotYetSaved {
             get {
                 return ResourceManager.GetString("SceneNameNotYetSaved", resourceCulture);
             }
@@ -167,7 +167,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
-        public static string SceneView_ContextItemName_Copy {
+        internal static string SceneView_ContextItemName_Copy {
             get {
                 return ResourceManager.GetString("SceneView_ContextItemName_Copy", resourceCulture);
             }
@@ -176,7 +176,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        public static string SceneView_ContextItemName_Delete {
+        internal static string SceneView_ContextItemName_Delete {
             get {
                 return ResourceManager.GetString("SceneView_ContextItemName_Delete", resourceCulture);
             }
@@ -185,7 +185,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Duplicate.
         /// </summary>
-        public static string SceneView_ContextItemName_Duplicate {
+        internal static string SceneView_ContextItemName_Duplicate {
             get {
                 return ResourceManager.GetString("SceneView_ContextItemName_Duplicate", resourceCulture);
             }
@@ -194,7 +194,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Lock / Hide.
         /// </summary>
-        public static string SceneView_ContextItemName_LockHide {
+        internal static string SceneView_ContextItemName_LockHide {
             get {
                 return ResourceManager.GetString("SceneView_ContextItemName_LockHide", resourceCulture);
             }
@@ -203,7 +203,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to New.
         /// </summary>
-        public static string SceneView_ContextItemName_New {
+        internal static string SceneView_ContextItemName_New {
             get {
                 return ResourceManager.GetString("SceneView_ContextItemName_New", resourceCulture);
             }
@@ -212,7 +212,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Paste.
         /// </summary>
-        public static string SceneView_ContextItemName_Paste {
+        internal static string SceneView_ContextItemName_Paste {
             get {
                 return ResourceManager.GetString("SceneView_ContextItemName_Paste", resourceCulture);
             }
@@ -221,7 +221,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Rename.
         /// </summary>
-        public static string SceneView_ContextItemName_Rename {
+        internal static string SceneView_ContextItemName_Rename {
             get {
                 return ResourceManager.GetString("SceneView_ContextItemName_Rename", resourceCulture);
             }
@@ -230,7 +230,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Doubleclick: {0}.
         /// </summary>
-        public static string SceneView_Help_Doubleclick {
+        internal static string SceneView_Help_Doubleclick {
             get {
                 return ResourceManager.GetString("SceneView_Help_Doubleclick", resourceCulture);
             }
@@ -239,7 +239,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Hidden.
         /// </summary>
-        public static string SceneView_Item_Hidden {
+        internal static string SceneView_Item_Hidden {
             get {
                 return ResourceManager.GetString("SceneView_Item_Hidden", resourceCulture);
             }
@@ -248,7 +248,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The object is currently locked and hidden. Click to show and unlock..
         /// </summary>
-        public static string SceneView_Item_Hidden_Tooltip {
+        internal static string SceneView_Item_Hidden_Tooltip {
             get {
                 return ResourceManager.GetString("SceneView_Item_Hidden_Tooltip", resourceCulture);
             }
@@ -257,7 +257,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Locked.
         /// </summary>
-        public static string SceneView_Item_Locked {
+        internal static string SceneView_Item_Locked {
             get {
                 return ResourceManager.GetString("SceneView_Item_Locked", resourceCulture);
             }
@@ -266,7 +266,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The object is currently locked. Click to hide or unlock..
         /// </summary>
-        public static string SceneView_Item_Locked_Tooltip {
+        internal static string SceneView_Item_Locked_Tooltip {
             get {
                 return ResourceManager.GetString("SceneView_Item_Locked_Tooltip", resourceCulture);
             }
@@ -275,7 +275,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Lock / Hide.
         /// </summary>
-        public static string SceneView_Item_LockHide {
+        internal static string SceneView_Item_LockHide {
             get {
                 return ResourceManager.GetString("SceneView_Item_LockHide", resourceCulture);
             }
@@ -284,7 +284,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Click to lock or hide the object while editing..
         /// </summary>
-        public static string SceneView_Item_LockHide_Tooltip {
+        internal static string SceneView_Item_LockHide_Tooltip {
             get {
                 return ResourceManager.GetString("SceneView_Item_LockHide_Tooltip", resourceCulture);
             }
@@ -293,7 +293,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Linked to: {0}.
         /// </summary>
-        public static string SceneView_PrefabLink {
+        internal static string SceneView_PrefabLink {
             get {
                 return ResourceManager.GetString("SceneView_PrefabLink", resourceCulture);
             }
@@ -302,7 +302,7 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete {0} Objects.
         /// </summary>
-        public static string UndoRedo_DeleteObjects {
+        internal static string UndoRedo_DeleteObjects {
             get {
                 return ResourceManager.GetString("UndoRedo_DeleteObjects", resourceCulture);
             }
