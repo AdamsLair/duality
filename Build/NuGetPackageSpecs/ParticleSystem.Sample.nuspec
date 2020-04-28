@@ -8,7 +8,7 @@
     <title>Custom ParticleSystem Sample</title>
     <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/ParticleSystemSample.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/ParticleSystem</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Implements and showcases a custom Particle System in Duality.</summary>
     <description>This package implements a custom Particle System in Duality and showcases its functionality in a sample Scene.</description>

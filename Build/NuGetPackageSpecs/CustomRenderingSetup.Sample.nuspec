@@ -8,7 +8,7 @@
     <title>Custom Rendering Setup Sample</title>
     <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/CustomRenderingSetup.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/CustomRenderingSetup</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Demonstrates various custom rendering setups for post-processing or fixed-resolution rendering.</summary>
     <description>This package demonstrates custom rendering setups with fullscreen post-processing effects or fixed-resolution rendering. </description>
