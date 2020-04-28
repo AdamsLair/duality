@@ -17,7 +17,7 @@
     <dependencies>
       <group targetFramework="netstandard2.0">
         <dependency id="AdamsLair.Duality.Primitives" version="4.0.0-alpha" />
-        <dependency id="AdamsLair.NVorbis" version="0.7.6" />
+        <dependency id="NVorbis" version="0.10.1" />
         <dependency id="AdamsLair.Duality.Physics" version="4.0.0-alpha" />
       </group>
     </dependencies>
