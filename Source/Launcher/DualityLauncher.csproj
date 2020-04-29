@@ -27,10 +27,4 @@
     <Content Include="DualityLogoIcon.ico" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\Core\Duality\Backend\DefaultAssemblyLoader.cs">
-      <Link>DefaultAssemblyLoader.cs</Link>
-    </Compile>
-  </ItemGroup>
-
 </Project>

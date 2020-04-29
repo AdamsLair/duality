@@ -11,9 +11,6 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="EmbeddedResources\*"></EmbeddedResource>
-		<Compile Include="..\..\Source\Core\Duality\Backend\DefaultAssemblyLoader.cs">
-			<Link>DefaultAssemblyLoader.cs</Link>
-		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
