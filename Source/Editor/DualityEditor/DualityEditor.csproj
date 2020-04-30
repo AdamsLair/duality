@@ -59,9 +59,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Core\Duality\Backend\DefaultAssemblyLoader.cs">
-      <Link>DefaultAssemblyLoader.cs</Link>
-    </Compile>
     <Compile Include="AssetManagement\AssetExportFinishedEventArgs.cs" />
     <Compile Include="AssetManagement\AssetImporter.cs" />
     <Compile Include="AssetManagement\AssetInternalHelper.cs" />
