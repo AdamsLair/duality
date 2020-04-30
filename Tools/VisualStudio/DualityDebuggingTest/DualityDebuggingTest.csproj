@@ -52,9 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\Source\Core\Duality\Backend\DefaultAssemblyLoader.cs">
-      <Link>DefaultAssemblyLoader.cs</Link>
-    </Compile>
     <Compile Include="Program.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
