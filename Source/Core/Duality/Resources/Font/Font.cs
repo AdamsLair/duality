@@ -168,10 +168,6 @@ namespace Duality.Resources
 		/// Applies a new set of rendered glyphs to the <see cref="Font"/>, adjusts its typeface metadata 
 		/// re-generates texture and material.
 		/// </summary>
-		/// <param name="bitmap"></param>
-		/// <param name="atlas"></param>
-		/// <param name="glyphs"></param>
-		/// <param name="metrics"></param>
 		public void SetGlyphData(FontData fontData)
 		{
 			this.ReleaseResources();
@@ -538,7 +534,6 @@ namespace Duality.Resources
 		/// <param name="text">The original text.</param>
 		/// <param name="maxWidth">The maximum width it may occupy.</param>
 		/// <param name="fitMode">The mode by which the text fitting algorithm operates.</param>
-		/// <returns></returns>
 		public string FitText(string text, float maxWidth, FitTextMode fitMode = FitTextMode.ByChar)
 		{
 			if (this.texture == null) return text;

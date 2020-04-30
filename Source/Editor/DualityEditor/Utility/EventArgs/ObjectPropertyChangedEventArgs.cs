@@ -65,7 +65,6 @@ namespace Duality.Editor
 		/// Determines whether the specified object has been modified.
 		/// </summary>
 		/// <param name="obj"></param>
-		/// <returns></returns>
 		public bool HasObject(object obj)
 		{
 			return this.obj.Contains(obj);
@@ -74,7 +73,6 @@ namespace Duality.Editor
 		/// Determines whether any of the specified objects has been modified.
 		/// </summary>
 		/// <param name="objEnum"></param>
-		/// <returns></returns>
 		public bool HasAnyObject(IEnumerable<object> objEnum)
 		{
 			return objEnum.Any(o => this.obj.Contains(o));
@@ -84,7 +82,6 @@ namespace Duality.Editor
 		/// Determines whether the specified property has been modified.
 		/// </summary>
 		/// <param name="info"></param>
-		/// <returns></returns>
 		public bool HasProperty(PropertyInfo info)
 		{
 			// If the property is mentioned explicitly, we have a match
@@ -103,7 +100,6 @@ namespace Duality.Editor
 		/// Determines whether any of the specified properties has been modified.
 		/// </summary>
 		/// <param name="info"></param>
-		/// <returns></returns>
 		public bool HasAnyProperty(params PropertyInfo[] info)
 		{
 			// If a property is mentioned explicitly, we have a match

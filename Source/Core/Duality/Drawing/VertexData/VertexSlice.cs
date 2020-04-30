@@ -33,7 +33,6 @@ namespace Duality.Drawing
 		/// Addresses the underlying <see cref="Data"/> starting at the <see cref="Offset"/> of this slice.
 		/// </summary>
 		/// <param name="index"></param>
-		/// <returns></returns>
 		public T this[int index]
 		{
 			// No range checking for performance reasons.

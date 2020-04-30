@@ -87,7 +87,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="angle"></param>
 		/// <param name="length"></param>
-		/// <returns></returns>
 		public static Vector2 FromAngleLength(float angle, float length)
 		{
 			return new Vector2((float)Math.Sin(angle) * length, (float)Math.Cos(angle) * -length);
@@ -424,7 +423,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="vec"></param>
 		/// <param name="mat"></param>
-		/// <returns></returns>
 		public static Vector2 Transform(Vector2 vec, Matrix4 mat)
 		{
 			Vector2 result;
@@ -437,7 +435,6 @@ namespace Duality
 		/// <param name="vec"></param>
 		/// <param name="mat"></param>
 		/// <param name="result"></param>
-		/// <returns></returns>
 		public static void Transform(ref Vector2 vec, ref Matrix4 mat, out Vector2 result)
 		{
 			Vector4 row0 = mat.Row0;
@@ -562,7 +559,6 @@ namespace Duality
 		/// <summary>
 		/// Returns a System.String that represents the current Vector2.
 		/// </summary>
-		/// <returns></returns>
 		public override string ToString()
 		{
 			return string.Format("({0:F}, {1:F})", this.X, this.Y);

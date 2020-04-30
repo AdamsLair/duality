@@ -82,7 +82,6 @@ namespace Duality
 		/// Converts the specified float value to decimal and clamps it if necessary.
 		/// </summary>
 		/// <param name="v"></param>
-		/// <returns></returns>
 		public static decimal SafeToDecimal(float v)
 		{
 			if (float.IsNaN(v))
@@ -497,7 +496,6 @@ namespace Duality
 		/// <param name="a">The first anchor value.</param>
 		/// <param name="b">The second anchor value.</param>
 		/// <param name="ratio">Ratio between first and second anchor. Zero will result in anchor a, one will result in anchor b.</param>
-		/// <returns></returns>
 		public static float Lerp(float a, float b, float ratio)
 		{
 			return a + ratio * (b - a);
@@ -509,7 +507,6 @@ namespace Duality
 		/// <param name="min">The first anchor value.</param>
 		/// <param name="max">The second anchor value.</param>
 		/// <param name="value">The value between both anchor values.</param>
-		/// <returns></returns>
 		public static float InvLerp(float min, float max, float value)
 		{
 			return (value - min) / (max - min);
@@ -521,7 +518,6 @@ namespace Duality
 		/// <param name="min">The first anchor value.</param>
 		/// <param name="max">The second anchor value.</param>
 		/// <param name="value">The value between both anchor values.</param>
-		/// <returns></returns>
 		public static float InvLerp(int min, int max, int value)
 		{
 			return (float) (value - min) / (max - min);
@@ -531,7 +527,6 @@ namespace Duality
 		/// Performs a SmoothStep interpolation between 0 and 1.
 		/// </summary>
 		/// <param name="value">The input value.</param>
-		/// <returns></returns>
 		public static float SmoothStep(float value)
 		{
 			value = Clamp01(value);
@@ -544,7 +539,6 @@ namespace Duality
 		/// <param name="min">The lower bound anchor value</param>
 		/// <param name="max">The upper bound anchor value</param>
 		/// <param name="value">The input value.</param>
-		/// <returns></returns>
 		public static float SmoothStep(float min, float max, float value)
 		{
 			value = Clamp01(InvLerp(min, max, value));
@@ -555,7 +549,6 @@ namespace Duality
 		/// Returns the specified power of <see cref="E"/>.
 		/// </summary>
 		/// <param name="v"></param>
-		/// <returns></returns>
 		public static float Exp(float v)
 		{
 			return (float)System.Math.Exp(v);
@@ -564,7 +557,6 @@ namespace Duality
 		/// Returns the natural logarithm of a value.
 		/// </summary>
 		/// <param name="v"></param>
-		/// <returns></returns>
 		public static float Log(float v)
 		{
 			return (float)System.Math.Log(v);
@@ -574,7 +566,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="v">The base value.</param>
 		/// <param name="e">Specifies the power to return.</param>
-		/// <returns></returns>
 		public static float Pow(float v, float e)
 		{
 			return (float)System.Math.Pow(v, e);
@@ -584,7 +575,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="v">The value whichs logarithm is to be calculated.</param>
 		/// <param name="newBase">The base of the logarithm.</param>
-		/// <returns></returns>
 		public static float Log(float v, float newBase)
 		{
 			return (float)System.Math.Log(v, newBase);
@@ -594,7 +584,6 @@ namespace Duality
 		/// Returns the sine value of the specified (radian) angle.
 		/// </summary>
 		/// <param name="angle">A radian angle.</param>
-		/// <returns></returns>
 		public static float Sin(float angle)
 		{
 			return (float)System.Math.Sin(angle);
@@ -603,7 +592,6 @@ namespace Duality
 		/// Returns the cosine value of the specified (radian) angle.
 		/// </summary>
 		/// <param name="angle">A radian angle.</param>
-		/// <returns></returns>
 		public static float Cos(float angle)
 		{
 			return (float)System.Math.Cos(angle);
@@ -612,7 +600,6 @@ namespace Duality
 		/// Returns the tangent value of the specified (radian) angle.
 		/// </summary>
 		/// <param name="angle">A radian angle.</param>
-		/// <returns></returns>
 		public static float Tan(float angle)
 		{
 			return (float)System.Math.Tan(angle);
@@ -621,7 +608,6 @@ namespace Duality
 		/// Returns the inverse sine value of the specified (radian) angle.
 		/// </summary>
 		/// <param name="sin">A radian angle.</param>
-		/// <returns></returns>
 		public static float Asin(float sin)
 		{
 			return (float)System.Math.Asin(sin);
@@ -630,7 +616,6 @@ namespace Duality
 		/// Returns the inverse cosine value of the specified (radian) angle.
 		/// </summary>
 		/// <param name="cos">A radian angle.</param>
-		/// <returns></returns>
 		public static float Acos(float cos)
 		{
 			return (float)System.Math.Acos(cos);
@@ -639,7 +624,6 @@ namespace Duality
 		/// Returns the inverse tangent value of the specified (radian) angle.
 		/// </summary>
 		/// <param name="tan">A radian angle.</param>
-		/// <returns></returns>
 		public static float Atan(float tan)
 		{
 			return (float)System.Math.Atan(tan);
@@ -649,7 +633,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="y">The y coordinate of a point. </param>
 		/// <param name="x">The x coordinate of a point. </param>
-		/// <returns></returns>
 		public static float Atan2(float y, float x)
 		{
 			return (float)System.Math.Atan2(y, x);
@@ -659,7 +642,6 @@ namespace Duality
 		/// Converts degrees  to radians.
 		/// </summary>
 		/// <param name="deg"></param>
-		/// <returns></returns>
 		public static float DegToRad(float deg)
 		{
 			const float factor = (float)System.Math.PI / 180.0f;
@@ -669,7 +651,6 @@ namespace Duality
 		/// Converts radians to degrees.
 		/// </summary>
 		/// <param name="rad"></param>
-		/// <returns></returns>
 		public static float RadToDeg(float rad)
 		{
 			const float factor = 180.0f / (float)System.Math.PI;
@@ -1234,7 +1215,6 @@ namespace Duality
 		/// Returns whether or not the specified polygon is convex.
 		/// </summary>
 		/// <param name="vertices"></param>
-		/// <returns></returns>
 		public static bool IsPolygonConvex(params Vector2[] vertices)
 		{
 			bool neg = false;
@@ -1289,7 +1269,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="baseHash"></param>
 		/// <param name="otherHash"></param>
-		/// <returns></returns>
 		public static void CombineHashCode(ref int baseHash, int otherHash)
 		{
 			unchecked { baseHash = baseHash * 23 + otherHash; }
@@ -1298,7 +1277,6 @@ namespace Duality
 		/// Combines any number of hash codes.
 		/// </summary>
 		/// <param name="hashes"></param>
-		/// <returns></returns>
 		public static int CombineHashCode(params int[] hashes)
 		{
 			int result = hashes[0];

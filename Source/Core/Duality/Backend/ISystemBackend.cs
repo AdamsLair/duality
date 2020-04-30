@@ -18,7 +18,6 @@ namespace Duality.Backend
 		/// Retrieves the path of a named / special directory.
 		/// </summary>
 		/// <param name="dir"></param>
-		/// <returns></returns>
 		string GetNamedPath(NamedDirectory dir);
 	}
 }

@@ -241,7 +241,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Converts the color to int-Rgba.
 		/// </summary>
-		/// <returns></returns>
 		public int ToIntRgba()
 		{
 			return ((int)this.R << 24) | ((int)this.G << 16) | ((int)this.B << 8) | ((int)this.A);
@@ -249,7 +248,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Converts the color to int-Argb.
 		/// </summary>
-		/// <returns></returns>
 		public int ToIntArgb()
 		{
 			return ((int)this.A << 24) | ((int)this.R << 16) | ((int)this.G << 8) | ((int)this.B);
@@ -257,7 +255,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Converts the color to Hsva.
 		/// </summary>
-		/// <returns></returns>
 		public ColorHsva ToHsva()
 		{
 			return ColorHsva.FromRgba(this);
@@ -298,7 +295,6 @@ namespace Duality.Drawing
 		/// Returns whether this color equals the specified one.
 		/// </summary>
 		/// <param name="other"></param>
-		/// <returns></returns>
 		public bool Equals(ColorRgba other)
 		{
 			return this.R == other.R && this.G == other.G && this.B == other.B && this.A == other.A;
@@ -323,7 +319,6 @@ namespace Duality.Drawing
 		/// Creates a new color based on an int-Rgba value.
 		/// </summary>
 		/// <param name="rgba"></param>
-		/// <returns></returns>
 		public static ColorRgba FromIntRgba(int rgba)
 		{
 			ColorRgba temp = new ColorRgba();
@@ -334,7 +329,6 @@ namespace Duality.Drawing
 		/// Creates a new color based on an int-Argb value.
 		/// </summary>
 		/// <param name="argb"></param>
-		/// <returns></returns>
 		public static ColorRgba FromIntArgb(int argb)
 		{
 			ColorRgba temp = new ColorRgba();
@@ -345,7 +339,6 @@ namespace Duality.Drawing
 		/// Creates a new color based on a Hsva value.
 		/// </summary>
 		/// <param name="hsva"></param>
-		/// <returns></returns>
 		public static ColorRgba FromHsva(ColorHsva hsva)
 		{
 			return hsva.ToRgba();
@@ -373,7 +366,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="left">The first color.</param>
 		/// <param name="right">The second color.</param>
-		/// <returns></returns>
 		public static bool operator ==(ColorRgba left, ColorRgba right)
 		{
 			return left.Equals(right);
@@ -383,7 +375,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="left">The first color.</param>
 		/// <param name="right">The second color.</param>
-		/// <returns></returns>
 		public static bool operator !=(ColorRgba left, ColorRgba right)
 		{
 			return !left.Equals(right);
@@ -393,7 +384,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="left">The first color.</param>
 		/// <param name="right">The second color.</param>
-		/// <returns></returns>
 		public static ColorRgba operator +(ColorRgba left, ColorRgba right)
 		{
 			return new ColorRgba(
@@ -407,7 +397,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="left">The first color.</param>
 		/// <param name="right">The second color.</param>
-		/// <returns></returns>
 		public static ColorRgba operator -(ColorRgba left, ColorRgba right)
 		{
 			return new ColorRgba(
@@ -421,7 +410,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="left">The first color.</param>
 		/// <param name="right">The second color.</param>
-		/// <returns></returns>
 		public static ColorRgba operator *(ColorRgba left, ColorRgba right)
 		{
 			return new ColorRgba(
@@ -435,7 +423,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="left">The color to scale.</param>
 		/// <param name="right">The scaling factor.</param>
-		/// <returns></returns>
 		public static ColorRgba operator *(ColorRgba left, float right)
 		{
 			return new ColorRgba(

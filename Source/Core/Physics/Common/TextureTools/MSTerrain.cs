@@ -224,7 +224,6 @@ namespace FarseerPhysics.Common
 		/// </summary>
 		/// <param name="texture">Texture to convert.</param>
 		/// <param name="tester"></param>
-		/// <returns></returns>
 		public static sbyte[,] ConvertTextureToData(int texture, TerrainTester tester)
 		{
 			throw new System.NotImplementedException();

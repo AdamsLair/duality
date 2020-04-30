@@ -33,7 +33,6 @@ namespace Duality.Plugins.Tilemaps
 		/// [GET / SET] The collision shape on a given layer index from zero to (<see cref="LayerCount"/> - 1).
 		/// </summary>
 		/// <param name="layerIndex"></param>
-		/// <returns></returns>
 		public TileCollisionShape this[int layerIndex]
 		{
 			get
@@ -63,7 +62,6 @@ namespace Duality.Plugins.Tilemaps
 		/// [GET] The collision shape on the specified (set of) layer(s).
 		/// </summary>
 		/// <param name="layerMask"></param>
-		/// <returns></returns>
 		public TileCollisionShape this[TileCollisionLayer layerMask]
 		{
 			get

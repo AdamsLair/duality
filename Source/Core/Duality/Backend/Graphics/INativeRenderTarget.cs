@@ -23,7 +23,7 @@ namespace Duality.Backend
 		/// Note that generic, array-based variants of this method are available via extension method
 		/// when using the Duality.Backend namespace.
 		/// </summary>
-		/// <param name="target">The target buffer to store transferred pixel data in.</param>
+		/// <param name="buffer">The target buffer to store transferred pixel data in.</param>
 		/// <param name="dataLayout">The desired color layout of the specified buffer.</param>
 		/// <param name="dataElementType">The desired color element type of the specified buffer.</param>
 		/// <param name="targetIndex">The target texture lists index to read from.</param>
@@ -46,7 +46,8 @@ namespace Duality.Backend
 		/// Retrieves the rendering targets pixel data from video memory in the Rgba8 format.
 		/// As a storage array type, either byte or <see cref="ColorRgba"/> is recommended.
 		/// </summary>
-		/// <param name="target">The target buffer to store transferred pixel data in.</param>
+		/// <param name="renderTarget"></param>
+		/// <param name="buffer">The target buffer to store transferred pixel data in.</param>
 		/// <param name="dataLayout">The desired color layout of the specified buffer.</param>
 		/// <param name="dataElementType">The desired color element type of the specified buffer.</param>
 		/// <param name="targetIndex">The target texture lists index to read from.</param>

@@ -165,7 +165,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		/// <summary>
 		/// Informs the system that a <see cref="TilemapToolSourcePalette"/> is required and creates one, if none is present yet.
 		/// </summary>
-		/// <returns></returns>
 		public TilemapToolSourcePalette PushTilePalette()
 		{
 			this.pendingLocalTilePalettes++;
@@ -239,7 +238,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		/// to account for potential changes.
 		/// </summary>
 		/// <param name="pixmapRef"></param>
-		/// <returns></returns>
 		private List<Tileset> GetRecompileTilesets(ContentRef<Pixmap> pixmapRef)
 		{
 			List<Tileset> recompileTilesets = new List<Tileset>();

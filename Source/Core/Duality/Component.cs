@@ -159,7 +159,6 @@ namespace Duality
 		/// this method in order to handle certain fields and cases manually. See <see cref="ICloneExplicit.SetupCloneTargets"/>
 		/// for a more thorough explanation.
 		/// </summary>
-		/// <param name="setup"></param>
 		protected virtual void OnSetupCloneTargets(object target, ICloneTargetSetup setup)
 		{
 			setup.HandleObject(this, target);

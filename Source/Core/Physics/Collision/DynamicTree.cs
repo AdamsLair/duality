@@ -252,7 +252,6 @@ namespace FarseerPhysics.Collision
 		/// Compute the height of the binary tree in O(N) time. Should not be
 		/// called often.
 		/// </summary>
-		/// <returns></returns>
 		public int ComputeHeight()
 		{
 			return ComputeHeight(this._root);

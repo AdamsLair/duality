@@ -55,7 +55,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Returns a format string for changing the current text color to the specified one.
 		/// </summary>
-		/// <returns></returns>
 		public static string FormatColor(ColorRgba color)
 		{
 			int intClr = color.ToIntRgba();
@@ -800,7 +799,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Creates a deep copy of the FormattedText and returns it.
 		/// </summary>
-		/// <returns></returns>
 		public FormattedText Clone()
 		{
 			return this.DeepClone();
@@ -1339,8 +1337,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Renders a text to the specified target Image.
 		/// </summary>
-		/// <param name="text"></param>
-		/// <param name="target"></param>
 		public void RenderToBitmap(string text, PixelData target, float x = 0.0f, float y = 0.0f, PixelData icons = null)
 		{
 			// Rendering

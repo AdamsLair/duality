@@ -16,8 +16,7 @@ namespace Duality.Editor
 		/// </summary>
 		/// <typeparam name="T">The Type of editor hint to retrieve.</typeparam>
 		/// <param name="member">The member to extract the hint from. May be null.</param>
-		/// <param name="overrideHint">An optional override hint, that will be preferred, if applicable.</param>
-		/// <returns></returns>
+		/// <param name="overrideHints">An optional override hint, that will be preferred, if applicable.</param>
 		public static T Get<T>(MemberInfo member, IEnumerable<EditorHintAttribute> overrideHints = null) where T : EditorHintAttribute
 		{
 			T hint = member != null ? member.GetAttributesCached<T>().FirstOrDefault() : null;
@@ -34,7 +33,6 @@ namespace Duality.Editor
 		/// <typeparam name="T">The Type of editor hints to retrieve.</typeparam>
 		/// <param name="member">The member to extract the hints from. May be null.</param>
 		/// <param name="overrideHints">An optional collection of override hints, that will be preferred, if applicable.</param>
-		/// <returns></returns>
 		public static IEnumerable<T> GetAll<T>(MemberInfo member, IEnumerable<EditorHintAttribute> overrideHints = null) where T : EditorHintAttribute
 		{
 			IEnumerable<T> hints = member != null ? member.GetAttributesCached<T>() : null;

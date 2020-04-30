@@ -14,7 +14,6 @@ namespace Duality.Editor.Plugins.Base
 		/// <param name="columns"></param>
 		/// <param name="rows"></param>
 		/// <param name="frameBorder"></param>
-		/// <returns></returns>
 		public static List<Rect> SliceGrid(Pixmap pixmap, int columns, int rows, int frameBorder)
 		{
 			List<Rect> rects = new List<Rect>();

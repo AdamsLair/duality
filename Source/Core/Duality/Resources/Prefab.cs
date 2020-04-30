@@ -104,7 +104,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Creates a new instance of the Prefab. You will need to add it to a Scene in most cases.
 		/// </summary>
-		/// <returns></returns>
 		public GameObject Instantiate()
 		{
 			if (this.objTree == null)
@@ -120,7 +119,6 @@ namespace Duality.Resources
 		/// <param name="position"></param>
 		/// <param name="angle"></param>
 		/// <param name="scale"></param>
-		/// <returns></returns>
 		public GameObject Instantiate(Vector3 position, float angle = 0.0f, float scale = 1.0f)
 		{
 			GameObject obj = this.Instantiate();
@@ -176,7 +174,6 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="gameObjIndexPath">The <see cref="GameObject.GetIndexPathOfChild">index path</see> at which to search for a GameObject.</param>
 		/// <param name="cmpType">The Component type to search for inside the found GameObject.</param>
-		/// <returns></returns>
 		public bool HasComponent(IEnumerable<int> gameObjIndexPath, Type cmpType)
 		{
 			if (this.objTree == null) return false;
@@ -625,7 +622,6 @@ namespace Duality.Resources
 		/// Returns whether a specific object is affected by this PrefabLink.
 		/// </summary>
 		/// <param name="cmp"></param>
-		/// <returns></returns>
 		public bool AffectsObject(Component cmp)
 		{
 			return this.prefab.IsAvailable && this.prefab.Res.HasComponent(this.obj.GetIndexPathOfChild(cmp.GameObj), cmp.GetType());
@@ -633,8 +629,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Returns whether a specific object is affected by this PrefabLink.
 		/// </summary>
-		/// <param name="cmp"></param>
-		/// <returns></returns>
 		public bool AffectsObject(GameObject obj)
 		{
 			return this.prefab.IsAvailable && this.prefab.Res.HasGameObject(this.obj.GetIndexPathOfChild(obj));

@@ -1693,7 +1693,6 @@ namespace FarseerPhysics.Collision
 		/// <param name="normal">The normal.</param>
 		/// <param name="offset">The offset.</param>
 		/// <param name="vertexIndexA">The vertex index A.</param>
-		/// <returns></returns>
 		private static int ClipSegmentToLine(out FixedArray2<ClipVertex> vOut, ref FixedArray2<ClipVertex> vIn,
 											 Vector2 normal, float offset, int vertexIndexA)
 		{
@@ -1746,7 +1745,6 @@ namespace FarseerPhysics.Collision
 		/// <param name="edge1">The edge1.</param>
 		/// <param name="poly2">The poly2.</param>
 		/// <param name="xf2">The XF2.</param>
-		/// <returns></returns>
 		private static float EdgeSeparation(PolygonShape poly1, ref Transform xf1, int edge1,
 											PolygonShape poly2, ref Transform xf2)
 		{
@@ -1795,7 +1793,6 @@ namespace FarseerPhysics.Collision
 		/// <param name="xf1">The XF1.</param>
 		/// <param name="poly2">The poly2.</param>
 		/// <param name="xf2">The XF2.</param>
-		/// <returns></returns>
 		private static float FindMaxSeparation(out int edgeIndex,
 											   PolygonShape poly1, ref Transform xf1,
 											   PolygonShape poly2, ref Transform xf2)

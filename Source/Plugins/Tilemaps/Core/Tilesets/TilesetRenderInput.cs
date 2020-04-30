@@ -147,7 +147,6 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		/// <param name="sourceImageWidth"></param>
 		/// <param name="sourceImageHeight"></param>
-		/// <returns></returns>
 		public Point2 GetSourceTileCount(int sourceImageWidth, int sourceImageHeight)
 		{
 			Point2 advance = this.SourceTileAdvance;

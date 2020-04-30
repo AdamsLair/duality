@@ -134,7 +134,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Builds the merged, preprocessed source code.
 		/// </summary>
-		/// <returns></returns>
 		public string Build()
 		{
 			this.fields.Clear();
@@ -236,7 +235,6 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="ignoreRegions"></param>
-		/// <returns></returns>
 		private Dictionary<IndexRange,List<IndexRange>> IdentifyMetadataBlocks(string source, List<IndexRange> ignoreRegions)
 		{
 			Dictionary<IndexRange, List<IndexRange>> metadataBlocks = new Dictionary<IndexRange, List<IndexRange>>();
@@ -408,7 +406,6 @@ namespace Duality.Resources
 		/// <param name="source"></param>
 		/// <param name="ignoreRegions"></param>
 		/// <param name="removeSchedule"></param>
-		/// <returns></returns>
 		private void ParseFields(string source, List<IndexRange> ignoreRegions, List<IndexRange> removeSchedule)
 		{
 			// Read the source line by line and parse it along the way
@@ -478,7 +475,6 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="line"></param>
 		/// <param name="fieldMetadata"></param>
-		/// <returns></returns>
 		private ShaderFieldInfo ParseFieldDeclaration(string line, IReadOnlyList<string> fieldMetadata)
 		{
 			// Parse the field scope and detect whether the line is a field declaration at all
@@ -618,7 +614,6 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="range"></param>
-		/// <returns></returns>
 		private IndexRange ExpandToLine(string text, IndexRange range)
 		{
 			int lineBeginIndex = text.LastIndexOfAny(new char[] { '\n', '\r' }, range.Index) + 1;
@@ -630,7 +625,6 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="range"></param>
 		/// <param name="compareToRanges"></param>
-		/// <returns></returns>
 		private bool AnyRangeOverlap(IndexRange range, List<IndexRange> compareToRanges)
 		{
 			foreach (IndexRange ignoreRange in compareToRanges)

@@ -47,7 +47,6 @@ namespace FarseerPhysics.Common
 		/// <param name="f"></param>
 		/// <param name="lerpCount"></param>
 		/// <param name="combine"></param>
-		/// <returns></returns>
 		public static List<Vertices> DetectSquares(AABB domain, float cellWidth, float cellHeight, sbyte[,] f,
 												   int lerpCount, bool combine)
 		{

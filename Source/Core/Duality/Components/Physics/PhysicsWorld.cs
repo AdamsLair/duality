@@ -279,7 +279,6 @@ namespace Duality.Components.Physics
 		/// the specified world coordinate is located in.
 		/// </summary>
 		/// <param name="worldCoord"></param>
-		/// <returns></returns>
 		public ShapeInfo PickShape(Vector2 worldCoord)
 		{
 			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;

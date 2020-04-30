@@ -84,7 +84,6 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		/// <param name="from"></param>
 		/// <param name="to"></param>
-		/// <returns></returns>
 		public bool HasEdge(Point2 from, Point2 to)
 		{
 			Connection con = GetConnection(new Point2(to.X - from.X, to.Y - from.Y));
@@ -96,7 +95,6 @@ namespace Duality.Plugins.Tilemaps
 		/// Returns (-1, -1) if no neighbour is connected.
 		/// </summary>
 		/// <param name="from"></param>
-		/// <returns></returns>
 		public Point2 GetClockwiseNextFrom(Point2 from)
 		{
 			Connection con = this.connections[from.X, from.Y];
@@ -116,7 +114,6 @@ namespace Duality.Plugins.Tilemaps
 		/// Finds the first node that is connected to any other node.
 		/// Returns (-1, -1) if no node is connected to any other.
 		/// </summary>
-		/// <returns></returns>
 		public Point2 FindNonEmpty()
 		{
 			return this.connections.FindIndex(c => c != Connection.None);

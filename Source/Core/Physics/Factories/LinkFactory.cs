@@ -18,7 +18,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="linkHeight">The height.</param>
 		/// <param name="numberOfLinks">The number of links.</param>
 		/// <param name="linkDensity">The link density.</param>
-		/// <returns></returns>
 		public static Path CreateChain(World world, Vector2 start, Vector2 end, float linkWidth, float linkHeight, int numberOfLinks, float linkDensity)
 		{
 			//Chain start / end

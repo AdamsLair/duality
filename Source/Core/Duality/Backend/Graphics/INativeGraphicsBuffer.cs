@@ -48,7 +48,6 @@ namespace Duality.Backend
 		/// Sets up an empty storage with the specified size, in number of array elements of the
 		/// generic type of this method.
 		/// </summary>
-		/// <param name="count"></param>
 		public static void SetupEmpty<T>(this INativeGraphicsBuffer buffer, int count) where T : struct
 		{
 			int itemSize = Marshal.SizeOf(typeof(T));
@@ -80,6 +79,7 @@ namespace Duality.Backend
 		/// <summary>
 		/// Uploads the specified data block into a subsection of this buffer, keeping all other content.
 		/// </summary>
+		/// <param name="buffer"></param>
 		/// <param name="bufferIndex">The offset from the beginning of the existing buffer, as number of elements.</param>
 		/// <param name="data">An array containing the data that will be uploaded.</param>
 		/// <param name="index">The array starting index from which to start uploading data.</param>

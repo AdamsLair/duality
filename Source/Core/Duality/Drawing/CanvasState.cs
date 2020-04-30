@@ -157,7 +157,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Creates a clone of this State.
 		/// </summary>
-		/// <returns></returns>
 		public CanvasState Clone()
 		{
 			return new CanvasState(this);

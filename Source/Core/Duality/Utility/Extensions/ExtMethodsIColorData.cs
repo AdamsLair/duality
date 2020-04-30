@@ -13,7 +13,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="source"></param>
-		/// <returns></returns>
 		public static T ConvertTo<T>(this IColorData source) where T : IColorData
 		{
 			T clr = default(T);
@@ -33,7 +32,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="type"></param>
-		/// <returns></returns>
 		public static IColorData ConvertTo(this IColorData source, Type type)
 		{
 			TypeInfo typeInfo = type.GetTypeInfo();

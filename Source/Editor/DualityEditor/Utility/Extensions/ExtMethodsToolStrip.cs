@@ -24,7 +24,6 @@ namespace Duality.Editor
 		/// Returns null, if no dropdown is active.
 		/// </summary>
 		/// <param name="toolstrip"></param>
-		/// <returns></returns>
 		public static ToolStripDropDownItem GetActiveDropDown(this ToolStrip toolstrip)
 		{
 			if (!toolstrip.Visible) return null;

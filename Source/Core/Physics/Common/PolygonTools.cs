@@ -57,7 +57,6 @@ namespace FarseerPhysics.Common
 		/// <param name="xRadius">The rounding X radius.</param>
 		/// <param name="yRadius">The rounding Y radius.</param>
 		/// <param name="segments">The number of segments to subdivide the edges.</param>
-		/// <returns></returns>
 		public static Vertices CreateRoundedRectangle(float width, float height, float xRadius, float yRadius,
 													  int segments)
 		{
@@ -134,7 +133,6 @@ namespace FarseerPhysics.Common
 		/// </summary>
 		/// <param name="radius">The radius.</param>
 		/// <param name="numberOfEdges">The number of edges. The more edges, the more it resembles a circle</param>
-		/// <returns></returns>
 		public static Vertices CreateCircle(float radius, int numberOfEdges)
 		{
 			return CreateEllipse(radius, radius, numberOfEdges);
@@ -146,7 +144,6 @@ namespace FarseerPhysics.Common
 		/// <param name="xRadius">Width of the ellipse.</param>
 		/// <param name="yRadius">Height of the ellipse.</param>
 		/// <param name="numberOfEdges">The number of edges. The more edges, the more it resembles an ellipse</param>
-		/// <returns></returns>
 		public static Vertices CreateEllipse(float xRadius, float yRadius, int numberOfEdges)
 		{
 			Vertices vertices = new Vertices();
@@ -188,7 +185,6 @@ namespace FarseerPhysics.Common
 		/// <param name="height">Height (inner height + 2 * radius) of the capsule.</param>
 		/// <param name="endRadius">Radius of the capsule ends.</param>
 		/// <param name="edges">The number of edges of the capsule ends. The more edges, the more it resembles an capsule</param>
-		/// <returns></returns>
 		public static Vertices CreateCapsule(float height, float endRadius, int edges)
 		{
 			if (endRadius >= height / 2)
@@ -208,7 +204,6 @@ namespace FarseerPhysics.Common
 		/// <param name="topEdges">The number of edges of the top. The more edges, the more it resembles an capsule</param>
 		/// <param name="bottomRadius">Radius of bottom.</param>
 		/// <param name="bottomEdges">The number of edges of the bottom. The more edges, the more it resembles an capsule</param>
-		/// <returns></returns>
 		public static Vertices CreateCapsule(float height, float topRadius, int topEdges, float bottomRadius,
 											 int bottomEdges)
 		{
@@ -275,7 +270,6 @@ namespace FarseerPhysics.Common
 		/// <param name="numberOfTeeth">The number of teeth.</param>
 		/// <param name="tipPercentage">The tip percentage.</param>
 		/// <param name="toothHeight">Height of the tooth.</param>
-		/// <returns></returns>
 		public static Vertices CreateGear(float radius, int numberOfTeeth, float tipPercentage, float toothHeight)
 		{
 			Vertices vertices = new Vertices();
@@ -321,7 +315,6 @@ namespace FarseerPhysics.Common
 		/// </summary>
 		/// <param name="data">The texture data.</param>
 		/// <param name="width">The texture width.</param>
-		/// <returns></returns>
 		public static Vertices CreatePolygon(uint[] data, int width)
 		{
 			return TextureConverter.DetectVertices(data, width);
@@ -333,7 +326,6 @@ namespace FarseerPhysics.Common
 		/// <param name="data">The texture data.</param>
 		/// <param name="width">The texture width.</param>
 		/// <param name="holeDetection">if set to <c>true</c> it will perform hole detection.</param>
-		/// <returns></returns>
 		public static Vertices CreatePolygon(uint[] data, int width, bool holeDetection)
 		{
 			return TextureConverter.DetectVertices(data, width, holeDetection);
@@ -348,7 +340,6 @@ namespace FarseerPhysics.Common
 		/// <param name="alphaTolerance">The alpha tolerance.</param>
 		/// <param name="multiPartDetection">if set to <c>true</c> it will perform multi part detection.</param>
 		/// <param name="holeDetection">if set to <c>true</c> it will perform hole detection.</param>
-		/// <returns></returns>
 		public static List<Vertices> CreatePolygon(uint[] data, int width, float hullTolerance,
 												   byte alphaTolerance, bool multiPartDetection, bool holeDetection)
 		{
