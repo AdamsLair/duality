@@ -630,7 +630,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_UpdatingEngine;
 			Scene.Entered += this.Scene_Entered;
-			TilemapsEditorPlugin.Instance.PeekTilePalette().SelectedAreaChanged += this.TilemapToolSourcePalette_SelectedAreaChanged;
+			TilemapsEditorPlugin.Instance.TileDrawingSourceChanged += this.TilemapToolSourcePalette_SelectedAreaChanged;
 
 			// Initial update
 			this.UpdateTilemapToolButtons();
@@ -1046,6 +1046,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		}
 		private void TilemapToolSourcePalette_SelectedAreaChanged(object sender, EventArgs e)
 		{
+			this.activeTool.UpdatePreview();
 			this.Invalidate();
 		}
 
