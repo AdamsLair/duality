@@ -7,6 +7,7 @@
 		<Copyright>Copyright © Fedja Adam 2012</Copyright>
 		<RootNamespace>Duality.Launcher</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<ApplicationIcon>DualityIcon.ico</ApplicationIcon>
 		<OutputType>Exe</OutputType>
 		<Version>4.0.0-alpha</Version>
 	</PropertyGroup>
