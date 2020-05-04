@@ -6,6 +6,7 @@
 		<Version>4.0.0-alpha</Version>
 		<Copyright>Copyright © Fedja Adam 2012</Copyright>
 		<EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
+		<OutputPath>Content\Plugins\</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>

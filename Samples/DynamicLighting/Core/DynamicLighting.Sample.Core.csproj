@@ -5,6 +5,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Version>4.0.0-alpha</Version>
 		<Copyright>Copyright © Fedja Adam 2012</Copyright>
+		<OutputPath>Content\Plugins\</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>

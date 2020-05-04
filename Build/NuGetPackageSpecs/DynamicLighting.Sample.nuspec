@@ -26,8 +26,8 @@
   </metadata>
   <files>
     <file src="..\..\Samples\DynamicLighting\Content\Data\**\*.res" target="contentFiles\any\any\Data" />
-    <file src="..\..\Samples\DynamicLighting\Core\bin\Release\netstandard2.0\DynamicLighting.Sample.core.dll" target="lib\net472" />
-    <file src="..\..\Samples\DynamicLighting\Core\bin\Release\netstandard2.0\DynamicLighting.Sample.core.xml" target="lib\net472" />
-    <file src="..\..\Samples\DynamicLighting\Editor\bin\Release\net472\DynamicLighting.Sample.editor.dll" target="lib\net472" />
+    <file src="..\..\Samples\DynamicLighting\Core\Content\Plugins\netstandard2.0\DynamicLighting.Sample.core.dll" target="lib\net472" />
+    <file src="..\..\Samples\DynamicLighting\Core\Content\Plugins\netstandard2.0\DynamicLighting.Sample.core.xml" target="lib\net472" />
+    <file src="..\..\Samples\DynamicLighting\Editor\Content\Plugins\net472\DynamicLighting.Sample.editor.dll" target="lib\net472" />
   </files>
 </package>

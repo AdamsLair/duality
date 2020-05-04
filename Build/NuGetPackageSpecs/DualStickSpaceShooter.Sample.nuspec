@@ -25,8 +25,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\DualStickSpaceShooter\bin\Release\netstandard2.0\DualStickSpaceShooter.Sample.core.dll" target="lib\netstandard2.0" />
-    <file src="..\..\Samples\DualStickSpaceShooter\bin\Release\netstandard2.0\DualStickSpaceShooter.Sample.core.xml" target="lib\netstandard2.0" />
+    <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\netstandard2.0\DualStickSpaceShooter.Sample.core.dll" target="lib\netstandard2.0" />
+    <file src="..\..\Samples\DualStickSpaceShooter\Content\Plugins\netstandard2.0\DualStickSpaceShooter.Sample.core.xml" target="lib\netstandard2.0" />
     <file src="..\..\Samples\DualStickSpaceShooter\Content\Data\**\*.res" target="contentFiles\any\any\Data" />
   </files>
 </package>
