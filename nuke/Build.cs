@@ -74,7 +74,7 @@ class Build : NukeBuild
 		});
 
 	Target Test => _ => _
-	.DependsOn(Compile)
+		.DependsOn(Compile)
 		.Executes(() =>
 		{
 			NUnit3(s => s
@@ -82,23 +82,24 @@ class Build : NukeBuild
 		});
 
 	Target BuildNugetPackages => _ => _
-	.Executes(() =>
-	{
-		var nuspecs = NuGetPackageSpecsDirectory.GlobFiles("*.nuspec");
-
-		foreach (var item in nuspecs)
+		.DependsOn(Compile)
+		.Executes(() =>
 		{
-			try
-			{
-				NuGetPack(s => s
-					.SetTargetPath(item)
-					.SetOutputDirectory(NugetPackageDirectory));
-			}
-			catch (Exception e)
-			{
-				Logger.Warn($"Failed to pack {item}");
-			}
-		}
+			var nuspecs = NuGetPackageSpecsDirectory.GlobFiles("*.nuspec");
 
-	});
+			foreach (var item in nuspecs)
+			{
+				try
+				{
+					NuGetPack(s => s
+						.SetTargetPath(item)
+						.SetOutputDirectory(NugetPackageDirectory));
+				}
+				catch (Exception e)
+				{
+					Logger.Warn($"Failed to pack {item}");
+				}
+			}
+
+		});
 }
