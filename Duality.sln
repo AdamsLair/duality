@@ -101,6 +101,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DualityPhysics", "Source\Core\Physics\DualityPhysics.csproj", "{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DualityTemplates", "Source\DualityTemplates\DualityTemplates.csproj", "{3AB26D57-70D9-40DE-B12D-6B1489035805}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "nuke\_build.csproj", "{14290BE6-00B4-4279-901F-FFEAC2204E8D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityBenchmarks", "Benchmarks\DualityBenchmarks\DualityBenchmarks.csproj", "{20985018-3635-478D-BA4F-6AF1E278C0AB}"
 EndProject
@@ -258,6 +259,10 @@ Global
 		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CA66347-C3DA-47DA-B07B-E2B89E6E712A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14290BE6-00B4-4279-901F-FFEAC2204E8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14290BE6-00B4-4279-901F-FFEAC2204E8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14290BE6-00B4-4279-901F-FFEAC2204E8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14290BE6-00B4-4279-901F-FFEAC2204E8D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3AB26D57-70D9-40DE-B12D-6B1489035805}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3AB26D57-70D9-40DE-B12D-6B1489035805}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AB26D57-70D9-40DE-B12D-6B1489035805}.Release|Any CPU.ActiveCfg = Release|Any CPU
