@@ -41,6 +41,8 @@ class Build : NukeBuild
 	AbsolutePath NugetPackageDirectory => NightlyBuildDirectory / "NuGetPackages";
 	AbsolutePath NuGetPackageSpecsDirectory => BuildDirectory / "NuGetPackageSpecs";
 
+	AbsolutePath NunitProject => RootDirectory / "Test" / "Duality.nunit";
+
 	public static int Main() => Execute<Build>(x => x.Compile);
 
 	[Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
@@ -76,7 +78,7 @@ class Build : NukeBuild
 		.Executes(() =>
 		{
 			NUnit3(s => s
-				.AddInputFiles(Solution));			
+				.AddInputFiles(NunitProject));			
 		});
 
 	Target BuildNugetPackages => _ => _
