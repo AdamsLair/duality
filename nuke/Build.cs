@@ -14,9 +14,6 @@ using static Nuke.Common.IO.PathConstruction;
 using Nuke.Common.Tools.NUnit;
 using static Nuke.Common.Tools.NUnit.NUnitTasks;
 
-using Nuke.Common.Tools.DotNet;
-using static Nuke.Common.Tools.DotNet.DotNetTasks;
-
 using Nuke.Common.Tools.MSBuild;
 using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 
@@ -100,6 +97,5 @@ class Build : NukeBuild
 					Logger.Warn($"Failed to pack {item}");
 				}
 			}
-
 		});
 }
