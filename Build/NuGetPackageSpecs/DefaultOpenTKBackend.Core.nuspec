@@ -25,7 +25,7 @@
   <files>
     <file src="..\Output\Plugins\DefaultOpenTK.Core.dll" target="lib\net472" />
     <file src="..\Output\Plugins\DefaultOpenTK.Core.pdb" target="lib\net472" />
-    <file src="..\Output\OpenALSoft32.dll" target="lib\net472" />
-    <file src="..\Output\OpenALSoft64.dll" target="lib\net472" />
+    <file src="..\Output\OpenALSoft32.dll" target="runtimes\any\native" />
+    <file src="..\Output\OpenALSoft64.dll" target="runtimes\any\native" />
   </files>
 </package>
