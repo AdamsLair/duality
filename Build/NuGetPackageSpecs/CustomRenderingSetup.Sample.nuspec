@@ -6,8 +6,8 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Custom Rendering Setup Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/CustomRenderingSetup.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/CustomRenderingSetup</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Demonstrates various custom rendering setups for post-processing or fixed-resolution rendering.</summary>
@@ -25,6 +25,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="Icons\CustomRenderingSetup.png" target="\icon.png" />
     <file src="..\..\Samples\CustomRenderingSetup\Content\Plugins\netstandard2.0\CustomRenderingSetup.Sample.core.dll" target="lib\netstandard2.0" />
     <file src="..\..\Samples\CustomRenderingSetup\Content\Plugins\netstandard2.0\CustomRenderingSetup.Sample.core.xml" target="lib\netstandard2.0" />
     <file src="..\..\Samples\CustomRenderingSetup\Content\Data\**\*.res" target="contentFiles\any\any\Data" />

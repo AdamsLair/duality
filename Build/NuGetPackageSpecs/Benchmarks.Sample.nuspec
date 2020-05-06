@@ -6,8 +6,8 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Benchmarks Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/BenchmarksSample.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/Benchmarks</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Implements a set of benchmarks for profiling Duality.</summary>
@@ -25,6 +25,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="Icons\BenchmarksSample.png" target="\icon.png" />
     <file src="..\..\Samples\Benchmarks\Content\Plugins\netstandard2.0\Benchmarks.Sample.core.dll" target="lib\netstandard2.0" />
     <file src="..\..\Samples\Benchmarks\Content\Plugins\netstandard2.0\Benchmarks.Sample.core.xml" target="lib\netstandard2.0" />
     <file src="..\..\Samples\Benchmarks\Content\Data\**\*.res" target="contentFiles\any\any\Data" />
