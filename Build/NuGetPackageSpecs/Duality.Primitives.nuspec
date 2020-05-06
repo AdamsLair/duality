@@ -13,11 +13,10 @@
     <summary>A set of primitive classes that are used by Duality.</summary>
     <description>A set of primitive classes that are used by Duality and some of its dependencies.</description>
     <tags></tags>
-    <references>
-      <reference file="DualityPrimitives.dll" />
-    </references>
-    <releaseNotes>Patch Version Update
-</releaseNotes>
+    <releaseNotes>Patch Version Update</releaseNotes>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
   </metadata>
   <files>
     <file src="Icons\Primitives.png" target="\icon.png" />

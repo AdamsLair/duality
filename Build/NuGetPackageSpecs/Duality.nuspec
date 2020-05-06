@@ -21,9 +21,6 @@
         <dependency id="AdamsLair.Duality.Physics" version="4.0.0-alpha" />
       </group>
     </dependencies>
-    <references>
-      <reference file="Duality.dll" />
-    </references>
   </metadata>
   <files>
     <file src="Icons\Duality.png" target="\icon.png" />

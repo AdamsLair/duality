@@ -12,10 +12,10 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A custom version of Farseer Physics for being used with the Duality framework. Forked from https://farseerphysics.codeplex.com/</description>
     <tags></tags>
-    <references>
-      <reference file="DualityPhysics.dll" />
-    </references>
     <releaseNotes>Patch Version Update</releaseNotes>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
   </metadata>
   <files>
     <file src="Icons\Physics.png" target="\icon.png" />

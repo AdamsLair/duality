@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.Benchmarks</id>
-    <version>2.0.4</version>
+    <version>4.0.0-alpha</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Benchmarks Sample</title>
