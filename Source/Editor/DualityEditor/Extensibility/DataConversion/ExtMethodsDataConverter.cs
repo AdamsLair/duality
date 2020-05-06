@@ -14,11 +14,6 @@ namespace Duality.Editor
 		/// Given a source <see cref="Resource"/> and matching function, this method finds an already existing
 		/// target <see cref="Resource"/> to be used in a <see cref="DataConverter"/> operation.
 		/// </summary>
-		/// <typeparam name="TTarget"></typeparam>
-		/// <typeparam name="TSource"></typeparam>
-		/// <param name="source"></param>
-		/// <param name="matchFunc"></param>
-		/// <returns></returns>
 		public static IEnumerable<TTarget> FindMatchingResources<TSource,TTarget>(this DataConverter conv, TSource source, Func<TSource,TTarget,bool> matchFunc) 
 			where TTarget : Resource 
 			where TSource : Resource

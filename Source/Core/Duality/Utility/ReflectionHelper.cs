@@ -54,7 +54,6 @@ namespace Duality
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="member"></param>
-		/// <returns></returns>
 		public static IEnumerable<T> GetAttributesCached<T>(this MemberInfo member) where T : Attribute
 		{
 			lock (customMemberAttribCache)
@@ -139,7 +138,6 @@ namespace Duality
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="member"></param>
-		/// <returns></returns>
 		public static bool HasAttributeCached<T>(this MemberInfo member) where T : Attribute
 		{
 			return GetAttributesCached<T>(member).Any();
@@ -364,7 +362,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="sourceResType"></param>
 		/// <param name="targetResType"></param>
-		/// <returns></returns>
 		public static bool CanReferenceResource(Type sourceResType, Type targetResType)
 		{
 			lock (resRefCache)
@@ -412,7 +409,6 @@ namespace Duality
 		/// Types where this is false are completely irrelevant to garbage collection.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public static bool IsReferenceOrContainsReferences<T>()
 		{
 			return StaticLookup<T>.IsReferenceOrContainsReferences;
@@ -422,7 +418,6 @@ namespace Duality
 		/// Types where this is false are completely irrelevant to garbage collection.
 		/// </summary>
 		/// <param name="typeInfo"></param>
-		/// <returns></returns>
 		public static bool IsReferenceOrContainsReferences(this TypeInfo typeInfo)
 		{
 			// Early-out for some obvious cases
@@ -464,7 +459,6 @@ namespace Duality
 		/// consists only of those types, allowing to do a deep-copy by simply assigning it.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public static bool IsDeepCopyByAssignment<T>()
 		{
 			return StaticLookup<T>.IsDeepCopyByAssignment;
@@ -473,8 +467,6 @@ namespace Duality
 		/// Returns whether the specified type is a primitive, enum, string, decimal, or struct that
 		/// consists only of those types, allowing to do a deep-copy by simply assigning it.
 		/// </summary>
-		/// <param name="baseObj"></param>
-		/// <returns></returns>
 		public static bool IsDeepCopyByAssignment(this TypeInfo typeInfo)
 		{
 			// Early-out for some obvious cases
@@ -524,7 +516,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="typeString">The type string to resolve.</param>
 		/// <param name="declaringMethod">The generic method that is declaring the Type. Only necessary when resolving a generic methods parameter Type.</param>
-		/// <returns></returns>
 		public static Type ResolveType(string typeString, MethodInfo declaringMethod = null)
 		{
 			return ResolveType(typeString, null, declaringMethod);
@@ -533,8 +524,6 @@ namespace Duality
 		/// Resolves a Member based on its <see cref="GetMemberId">member id</see>.
 		/// </summary>
 		/// <param name="memberString">The <see cref="GetMemberId">member id</see> of the member.</param>
-		/// <param name="throwOnError">If true, an Exception is thrown on failure.</param>
-		/// <returns></returns>
 		public static MemberInfo ResolveMember(string memberString)
 		{
 			lock (memberResolveCache)
@@ -561,7 +550,6 @@ namespace Duality
 		/// Returns the short version of an Assembly name.
 		/// </summary>
 		/// <param name="assembly"></param>
-		/// <returns></returns>
 		public static string GetShortAssemblyName(this Assembly assembly)
 		{
 			return assembly.FullName.Split(',')[0];
@@ -570,7 +558,6 @@ namespace Duality
 		/// Returns the short version of an Assembly name.
 		/// </summary>
 		/// <param name="assemblyName"></param>
-		/// <returns></returns>
 		public static string GetShortAssemblyName(this AssemblyName assemblyName)
 		{
 			return assemblyName.FullName.Split(',')[0];
@@ -579,7 +566,6 @@ namespace Duality
 		/// Returns the short version of an Assembly name.
 		/// </summary>
 		/// <param name="assemblyName"></param>
-		/// <returns></returns>
 		public static string GetShortAssemblyName(string assemblyName)
 		{
 			return assemblyName.Split(',')[0];
@@ -589,7 +575,7 @@ namespace Duality
 		/// Returns a string describing a certain Type.
 		/// </summary>
 		/// <param name="type">The Type to describe</param>
-		/// <returns></returns>
+		/// <param name="shortName"></param>
 		public static string GetTypeCSCodeName(this Type type, bool shortName = false)
 		{
 			StringBuilder typeStr = new StringBuilder();
@@ -672,7 +658,6 @@ namespace Duality
 		/// Returns a string describing a certain Type.
 		/// </summary>
 		/// <param name="T">The Type to describe</param>
-		/// <returns></returns>
 		public static string GetTypeId(this Type T)
 		{
 			return T.FullName != null ? Regex.Replace(T.FullName, @"(, [^\]\[]*)", "") : T.Name;
@@ -681,7 +666,6 @@ namespace Duality
 		/// Returns a string describing a certain Member of a Type.
 		/// </summary>
 		/// <param name="member">The Member to describe.</param>
-		/// <returns></returns>
 		public static string GetMemberId(this MemberInfo member)
 		{
 			if (member is TypeInfo)
@@ -752,7 +736,6 @@ namespace Duality
 		/// <param name="popLevel">The char that decreases the current hierarchy level.</param>
 		/// <param name="separator">The char that separates two arguments.</param>
 		/// <param name="splitLevel">The hierarchy level at which to perform the split operation.</param>
-		/// <returns></returns>
 		public static string[] SplitArgs(string argList, char pushLevel, char popLevel, char separator, int splitLevel)
 		{
 			if (argList == null) return new string[0];

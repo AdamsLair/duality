@@ -205,7 +205,6 @@ namespace Duality.Input
 		/// [GET] Returns whether the specified gamepad button is currently pressed.
 		/// </summary>
 		/// <param name="button"></param>
-		/// <returns></returns>
 		public bool this[GamepadButton button]
 		{
 			get { return this.currentState.ButtonPressed[(int)button]; }
@@ -214,7 +213,6 @@ namespace Duality.Input
 		/// [GET] Returns the specified gamepad axis current value.
 		/// </summary>
 		/// <param name="axis"></param>
-		/// <returns></returns>
 		public float this[GamepadAxis axis]
 		{
 			get { return this.currentState.AxisValue[(int)axis]; }
@@ -316,7 +314,6 @@ namespace Duality.Input
 		/// Returns whether the specified button is currently pressed.
 		/// </summary>
 		/// <param name="button"></param>
-		/// <returns></returns>
 		public bool ButtonPressed(GamepadButton button)
 		{
 			return this.currentState.ButtonPressed[(int)button];
@@ -325,7 +322,6 @@ namespace Duality.Input
 		/// Returns whether the specified button was hit this frame.
 		/// </summary>
 		/// <param name="button"></param>
-		/// <returns></returns>
 		public bool ButtonHit(GamepadButton button)
 		{
 			return this.currentState.ButtonPressed[(int)button] && !this.lastState.ButtonPressed[(int)button];
@@ -334,7 +330,6 @@ namespace Duality.Input
 		/// Returns whether the specified button was released this frame.
 		/// </summary>
 		/// <param name="button"></param>
-		/// <returns></returns>
 		public bool ButtonReleased(GamepadButton button)
 		{
 			return !this.currentState.ButtonPressed[(int)button] && this.lastState.ButtonPressed[(int)button];
@@ -344,7 +339,6 @@ namespace Duality.Input
 		/// Returns the specified axis value.
 		/// </summary>
 		/// <param name="axis"></param>
-		/// <returns></returns>
 		public float AxisValue(GamepadAxis axis)
 		{
 			return this.currentState.AxisValue[(int)axis];
@@ -353,7 +347,6 @@ namespace Duality.Input
 		/// Returns the specified axis value change since last frame.
 		/// </summary>
 		/// <param name="axis"></param>
-		/// <returns></returns>
 		public float AxisSpeed(GamepadAxis axis)
 		{
 			return this.currentState.AxisValue[(int)axis] - this.lastState.AxisValue[(int)axis];

@@ -404,7 +404,6 @@ namespace Duality.Editor
 		/// no such check is performed and all editor actions that match the other criteria are returned.
 		/// </param>
 		/// <param name="context">The context in which this action is performed.</param>
-		/// <returns></returns>
 		public static IEnumerable<IEditorAction> GetEditorActions(Type subjectType, IEnumerable<object> objects, string context = ActionContextMenu)
 		{
 			if (objects != null)

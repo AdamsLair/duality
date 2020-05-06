@@ -24,19 +24,16 @@ namespace Duality.Input
 		/// Returns whether the specified device button is currently pressed.
 		/// </summary>
 		/// <param name="buttonIndex"></param>
-		/// <returns></returns>
 		bool ButtonPressed(int buttonIndex);
 		/// <summary>
 		/// Returns the specified device axis current value.
 		/// </summary>
 		/// <param name="axisIndex"></param>
-		/// <returns></returns>
 		float AxisValue(int axisIndex);
 		/// <summary>
 		/// [GET] Returns the current position of the specified joystick hat.
 		/// </summary>
 		/// <param name="hatIndex"></param>
-		/// <returns></returns>
 		JoystickHatPosition HatPosition(int hatIndex);
 	}
 }

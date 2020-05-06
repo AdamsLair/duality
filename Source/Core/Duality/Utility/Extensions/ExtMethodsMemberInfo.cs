@@ -13,7 +13,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static bool IsEquivalent(this MemberInfo first, MemberInfo second)
 		{
 			if (first == second)

@@ -57,7 +57,6 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="propertyType"></param>
 		/// <param name="context"></param>
-		/// <returns></returns>
 		public int MatchToProperty(Type propertyType, ProviderContext context)
 		{
 			if (this.dynamicAssign != null)

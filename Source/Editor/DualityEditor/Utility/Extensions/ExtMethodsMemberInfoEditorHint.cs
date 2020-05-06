@@ -13,7 +13,6 @@ namespace Duality.Editor
 		/// Returns the category tree which this Type prefers to be in.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <returns></returns>
 		public static string[] GetEditorCategory(this Type type)
 		{
 			string[] tree = null;
@@ -29,7 +28,6 @@ namespace Duality.Editor
 		/// Return the preferred icon image representation of the specified Type.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <returns></returns>
 		public static Image GetEditorImage(this Type type)
 		{
 			Image image = null;

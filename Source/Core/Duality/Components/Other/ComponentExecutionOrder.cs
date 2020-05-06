@@ -168,7 +168,6 @@ namespace Duality
 		/// Retrieves the sorting index of the specified <see cref="Component"/> type.
 		/// </summary>
 		/// <param name="componentType"></param>
-		/// <returns></returns>
 		public int GetSortIndex(Type componentType)
 		{
 			int index;
@@ -248,7 +247,6 @@ namespace Duality
 		/// types.
 		/// </summary>
 		/// <param name="typeSet"></param>
-		/// <returns></returns>
 		private static List<OrderConstraint> GatherConstraints(HashSet<Type> typeSet)
 		{
 			// This hashset will store a distinct set of constraints, but allow constraining
@@ -351,8 +349,6 @@ namespace Duality
 		/// since the number of <see cref="Component"/> types will likely stay below a few thousands
 		/// this is probably not necessary and can be skipped for convenience and maintenance reasons.
 		/// </summary>
-		/// <param name="constraints"></param>
-		/// <returns></returns>
 		private static Dictionary<Type,List<OrderConstraint>> CreateConstraintGraph(IEnumerable<Type> types, List<OrderConstraint> constraints)
 		{
 			Dictionary<Type,List<OrderConstraint>> graph = new Dictionary<Type,List<OrderConstraint>>();
@@ -373,7 +369,6 @@ namespace Duality
 		/// <summary>
 		/// Clears the specified constraint graph of all loops.
 		/// </summary>
-		/// <param name="graph"></param>
 		private static void ResolveConstraintLoops(Dictionary<Type,List<OrderConstraint>> graph)
 		{
 			while (true)
@@ -413,7 +408,6 @@ namespace Duality
 		/// The result is not necessarily the smallest loop. Returns null if no loop was found.
 		/// </summary>
 		/// <param name="graph"></param>
-		/// <returns></returns>
 		private static List<OrderConstraint> FindConstraintLoop(Dictionary<Type,List<OrderConstraint>> graph)
 		{
 			if (graph.Count == 0) return null;
@@ -479,8 +473,6 @@ namespace Duality
 		/// Assigns every node in the constraint graph a score that corresponds to its absolute position
 		/// in the desired execution order. Score collisions are possible but unlikely.
 		/// </summary>
-		/// <param name="graph"></param>
-		/// <returns></returns>
 		private static Dictionary<Type,int> ScoreGraphNodes(Dictionary<Type,List<OrderConstraint>> graph, IEnumerable<Type> types)
 		{
 			Dictionary<Type,int> graphScores = new Dictionary<Type,int>(graph.Count);
@@ -540,7 +532,6 @@ namespace Duality
 		/// Extracts a unique sorting index for each type in a previously scored constraint graph.
 		/// </summary>
 		/// <param name="graphScores"></param>
-		/// <returns></returns>
 		private static Dictionary<Type,int> ExtractSortIndices(Dictionary<Type,int> graphScores)
 		{
 			List<KeyValuePair<Type,int>> scoreItems = graphScores.ToList();

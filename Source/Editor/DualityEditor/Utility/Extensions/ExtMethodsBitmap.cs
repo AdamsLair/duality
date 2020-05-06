@@ -122,7 +122,6 @@ namespace Duality.Editor
 		/// <param name="w"></param>
 		/// <param name="h"></param>
 		/// <param name="mode"></param>
-		/// <returns></returns>
 		public static Bitmap ScaleToFit(this Bitmap bm, int w, int h, InterpolationMode mode = InterpolationMode.Bilinear)
 		{
 			Size imgSize = bm.Size;
@@ -157,7 +156,6 @@ namespace Duality.Editor
 		/// Measures the bounding rectangle of the opaque pixels in a Bitmap.
 		/// </summary>
 		/// <param name="bm"></param>
-		/// <returns></returns>
 		public static Rectangle OpaqueBounds(this Bitmap bm)
 		{
 			ColorRgba[] pixels = bm.GetPixelDataRgba();
@@ -182,7 +180,6 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="bm"></param>
 		/// <param name="weightTransparent">If true, the alpha value weights a pixels color value. </param>
-		/// <returns></returns>
 		public static ColorRgba GetAverageColor(this Bitmap bm, bool weightTransparent = true)
 		{
 			float[] sum = new float[4];
@@ -231,7 +228,6 @@ namespace Duality.Editor
 		/// Extracts a Bitmaps pixel data.
 		/// </summary>
 		/// <param name="bm"></param>
-		/// <returns></returns>
 		public static ColorRgba[] GetPixelDataRgba(this Bitmap bm)
 		{
 			int[] argbValues = GetPixelDataIntArgb(bm);

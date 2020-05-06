@@ -112,7 +112,6 @@ namespace Duality.Serialization
 		/// Returns whether the <see cref="Duality.Serialization.DataType"/> represents a primitive data type.
 		/// </summary>
 		/// <param name="dt"></param>
-		/// <returns></returns>
 		public static bool IsPrimitiveType(this DataType dt)
 		{
 			return ((ushort)dt >= (ushort)DataType.Bool && (ushort)dt <= (ushort)DataType.Char) || dt == DataType.String;
@@ -121,7 +120,6 @@ namespace Duality.Serialization
 		/// Returns whether the <see cref="Duality.Serialization.DataType"/> represents a <see cref="System.Reflection.MemberInfo"/> type.
 		/// </summary>
 		/// <param name="dt"></param>
-		/// <returns></returns>
 		public static bool IsMemberInfoType(this DataType dt)
 		{
 			return 
@@ -134,7 +132,6 @@ namespace Duality.Serialization
 		/// Returns whether the specified <see cref="DataType"/> requires an explicit type name during serialization.
 		/// </summary>
 		/// <param name="dt"></param>
-		/// <returns></returns>
 		public static bool HasTypeName(this DataType dt)
 		{
 			return dt == DataType.Struct || dt == DataType.Array || dt == DataType.Delegate || dt == DataType.Enum;
@@ -143,7 +140,6 @@ namespace Duality.Serialization
 		/// Returns whether the specified <see cref="DataType"/> requires a unique object id during serialization.
 		/// </summary>
 		/// <param name="dt"></param>
-		/// <returns></returns>
 		public static bool HasObjectId(this DataType dt)
 		{
 			return dt == DataType.Struct || dt == DataType.Array || dt == DataType.Delegate || dt.IsMemberInfoType();
@@ -152,7 +148,6 @@ namespace Duality.Serialization
 		/// Returns the actual <see cref="System.Type"/> that is associated with the <see cref="Duality.Serialization.DataType"/>.
 		/// </summary>
 		/// <param name="dt"></param>
-		/// <returns></returns>
 		public static Type ToActualType(this DataType dt)
 		{
 			switch (dt)

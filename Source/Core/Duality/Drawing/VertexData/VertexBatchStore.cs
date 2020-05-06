@@ -54,7 +54,6 @@ namespace Duality.Drawing
 		/// vertex type.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public int GetBatchCount<T>() where T : struct, IVertexData
 		{
 			int typeIndex = VertexDeclaration.Get<T>().TypeIndex;
@@ -66,7 +65,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="batchIndex"></param>
-		/// <returns></returns>
 		public VertexBatch<T> GetBatch<T>(int batchIndex) where T : struct, IVertexData
 		{
 			int typeIndex = VertexDeclaration.Get<T>().TypeIndex;
@@ -79,7 +77,6 @@ namespace Duality.Drawing
 		/// not represented in this <see cref="VertexBatchStore"/>.
 		/// </summary>
 		/// <param name="typeIndex"></param>
-		/// <returns></returns>
 		public IReadOnlyList<IVertexBatch> GetBatches(int typeIndex)
 		{
 			if (typeIndex < 0) return null;
@@ -97,7 +94,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="length"></param>
-		/// <returns></returns>
 		public VertexSlice<T> Rent<T>(int length) where T : struct, IVertexData
 		{
 			RawList<T> vertexList = this.GetVertexList<T>();

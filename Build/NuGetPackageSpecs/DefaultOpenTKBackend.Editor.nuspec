@@ -25,7 +25,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Output\Plugins\DefaultOpenTKBackend.editor.dll" target="lib\net472" />
-    <file src="..\Output\Plugins\DefaultOpenTKBackend.editor.pdb" target="lib\net472" />
+    <file src="..\Output\Plugins\DefaultOpenTK.Editor.dll" target="lib\net472" />
+    <file src="..\Output\Plugins\DefaultOpenTK.Editor.pdb" target="lib\net472" />
   </files>
 </package>

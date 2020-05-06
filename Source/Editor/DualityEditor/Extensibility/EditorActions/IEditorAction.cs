@@ -43,7 +43,6 @@ namespace Duality.Editor
 		/// <summary>
 		/// Returns whether the action can be performed on the specified set of objects.
 		/// </summary>
-		/// <param name="objEnum"></param>
 		bool CanPerformOn(IEnumerable<object> obj);
 		/// <summary>
 		/// Returns whether or not this action matches the 

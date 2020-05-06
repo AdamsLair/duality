@@ -25,7 +25,6 @@ namespace Duality.Editor.AssetManagement
 		/// of that <see cref="Resource"/>.
 		/// </summary>
 		/// <param name="resource"></param>
-		/// <returns></returns>
 		public static string GetSourceMediaBaseDir(ContentRef<Resource> resource)
 		{
 			string resFullNameInData = PathHelper.MakeFilePathRelative(resource.FullName, DualityApp.DataDirectory);
@@ -41,7 +40,6 @@ namespace Duality.Editor.AssetManagement
 		/// <param name="resource"></param>
 		/// <param name="parameterName"></param>
 		/// <param name="value"></param>
-		/// <returns></returns>
 		public static bool GetAssetInfoCustomValue<T>(Resource resource, string parameterName, out T value)
 		{
 			// Otherwise, perform a defensive lookup

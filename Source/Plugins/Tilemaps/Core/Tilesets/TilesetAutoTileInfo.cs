@@ -50,6 +50,7 @@ namespace Duality.Plugins.Tilemaps
 		/// of the border tile to use in this connectivity setup. This array is not copied. If you plan
 		/// to re-use it, pass a copy as a parameter.
 		/// </param>
+		/// <param name="tileInfo"></param>
 		public TilesetAutoTileInfo(int baseTile, int[] stateToTile, TilesetAutoTileItem[] tileInfo)
 		{
 			if (stateToTile == null) throw new ArgumentNullException("stateToTile");

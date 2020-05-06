@@ -279,7 +279,6 @@ namespace FarseerPhysics.Common.PolygonManipulation
 		/// Merges the identical points in the polygon.
 		/// </summary>
 		/// <param name="vertices">The vertices.</param>
-		/// <returns></returns>
 		public static Vertices MergeIdenticalPoints(Vertices vertices)
 		{
 			//We use a dictonary here because HashSet is not avaliable on all platforms.
@@ -304,7 +303,6 @@ namespace FarseerPhysics.Common.PolygonManipulation
 		/// </summary>
 		/// <param name="vertices">The vertices.</param>
 		/// <param name="distance">The distance between points. Points closer than this will be 'joined'.</param>
-		/// <returns></returns>
 		public static Vertices ReduceByDistance(Vertices vertices, float distance)
 		{
 			//We can't simplify polygons under 3 vertices
@@ -333,7 +331,6 @@ namespace FarseerPhysics.Common.PolygonManipulation
 		/// </summary>
 		/// <param name="vertices">The vertices.</param>
 		/// <param name="nth">The Nth point to remove. Example: 5.</param>
-		/// <returns></returns>
 		public static Vertices ReduceByNth(Vertices vertices, int nth)
 		{
 			//We can't simplify polygons under 3 vertices

@@ -8,7 +8,7 @@
     <title>Steering Behaviours Sample</title>
     <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Steering.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/Steering</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Introduces a Steering Agent Component that allows for objects to evade each other.</summary>
     <description>Introduces a Steering Agent Component that allows for objects to evade each other.</description>
@@ -24,8 +24,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\Steering\bin\Release\netstandard2.0\Steering.Sample.core.dll" target="lib\netstandard2.0" />
-    <file src="..\..\Samples\Steering\bin\Release\netstandard2.0\Steering.Sample.core.xml" target="lib\netstandard2.0" />
+    <file src="..\..\Samples\Steering\Content\Plugins\netstandard2.0\Steering.Sample.core.dll" target="lib\netstandard2.0" />
+    <file src="..\..\Samples\Steering\Content\Plugins\netstandard2.0\Steering.Sample.core.xml" target="lib\netstandard2.0" />
     <file src="..\..\Samples\Steering\Content\Data\**\*.res" target="contentFiles\any\any\Data" />
   </files>
 </package>

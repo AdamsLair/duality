@@ -45,7 +45,6 @@ namespace Duality
 		/// Generates a human-friendly string representation of a numeric ID value.
 		/// </summary>
 		/// <param name="id"></param>
-		/// <returns></returns>
 		public static string HumanFriendlyId(int id)
 		{
 			StringBuilder builder = new StringBuilder(48);
@@ -84,7 +83,6 @@ namespace Duality
 		/// <param name="callerInfoMember"></param>
 		/// <param name="callerInfoFile"></param>
 		/// <param name="callerInfoLine"></param>
-		/// <returns></returns>
 		public static string CurrentMethod([CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
 		{
 			return string.Format("{0} in '{1}', line {2}.",
@@ -97,7 +95,6 @@ namespace Duality
 		/// Returns a string that can be used for representing a <see cref="System.Reflection.Assembly"/> in log entries.
 		/// </summary>
 		/// <param name="asm"></param>
-		/// <returns></returns>
 		public static string Assembly(Assembly asm)
 		{
 			if (asm == null) return "null";
@@ -116,7 +113,6 @@ namespace Duality
 		/// Returns a string that can be used for representing a <see cref="System.Type"/> in log entries.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <returns></returns>
 		public static string Type(Type type)
 		{
 			if (type == null) return "null";
@@ -126,7 +122,6 @@ namespace Duality
 		/// Returns a string that can be used for representing a <see cref="System.Reflection.TypeInfo"/> in log entries.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <returns></returns>
 		public static string Type(TypeInfo type)
 		{
 			if (type == null) return "null";
@@ -137,7 +132,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="info"></param>
 		/// <param name="includeDeclaringType">If true, the methods declaring type is included in the returned name.</param>
-		/// <returns></returns>
 		public static string MethodInfo(MethodInfo info, bool includeDeclaringType = true)
 		{
 			if (info == null) return "null";
@@ -158,7 +152,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="info"></param>
 		/// <param name="includeDeclaringType">If true, the methods or constructors declaring type is included in the returned name.</param>
-		/// <returns></returns>
 		public static string MethodInfo(MethodBase info, bool includeDeclaringType = true)
 		{
 			if (info is MethodInfo)
@@ -175,7 +168,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="info"></param>
 		/// <param name="includeDeclaringType">If true, the constructors declaring type is included in the returned name.</param>
-		/// <returns></returns>
 		public static string ConstructorInfo(ConstructorInfo info, bool includeDeclaringType = true)
 		{
 			if (info == null) return "null";
@@ -192,7 +184,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="info"></param>
 		/// <param name="includeDeclaringType">If true, the properties declaring type is included in the returned name.</param>
-		/// <returns></returns>
 		public static string PropertyInfo(PropertyInfo info, bool includeDeclaringType = true)
 		{
 			if (info == null) return "null";
@@ -211,7 +202,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="info"></param>
 		/// <param name="includeDeclaringType">If true, the fields declaring type is included in the returned name.</param>
-		/// <returns></returns>
 		public static string FieldInfo(FieldInfo info, bool includeDeclaringType = true)
 		{
 			if (info == null) return "null";
@@ -228,7 +218,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="info"></param>
 		/// <param name="includeDeclaringType">If true, the events declaring type is included in the returned name.</param>
-		/// <returns></returns>
 		public static string EventInfo(EventInfo info, bool includeDeclaringType = true)
 		{
 			if (info == null) return "null";
@@ -245,7 +234,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="info"></param>
 		/// <param name="includeDeclaringType">If true, the members declaring type is included in the returned name.</param>
-		/// <returns></returns>
 		public static string MemberInfo(MemberInfo info, bool includeDeclaringType = true)
 		{
 			if (info is MethodInfo)
@@ -271,8 +259,6 @@ namespace Duality
 		/// It usually does not include the full call stack and is significantly shorter than
 		/// an <see cref="System.Exception">Exceptions</see> ToString method.
 		/// </summary>
-		/// <param name="e"></param>
-		/// <returns></returns>
 		public static string Exception(Exception e, bool callStack = true)
 		{
 			if (e == null) return "null";

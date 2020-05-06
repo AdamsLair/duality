@@ -82,7 +82,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		/// <returns></returns>
 		public T this[int x, int y]
 		{
 			get
@@ -139,7 +138,6 @@ namespace Duality
 		/// Determines the two-dimensional grid index from the specified raw data index.
 		/// </summary>
 		/// <param name="dataIndex"></param>
-		/// <returns></returns>
 		public Point2 GetGridIndex(int dataIndex)
 		{
 			return new Point2(dataIndex % this.width, dataIndex / this.width);
@@ -149,7 +147,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="gridX"></param>
 		/// <param name="gridY"></param>
-		/// <returns></returns>
 		public int GetDataIndex(int gridX, int gridY)
 		{
 			return gridX + gridY * this.width;
@@ -159,7 +156,6 @@ namespace Duality
 		/// Determines the index of the specified item.
 		/// </summary>
 		/// <param name="item"></param>
-		/// <returns></returns>
 		public Point2 IndexOf(T item)
 		{
 			int index = Array.IndexOf(this.sequence.Data, item, 0, this.sequence.Count);
@@ -172,7 +168,6 @@ namespace Duality
 		/// Finds an item that matches the specified predicate.
 		/// </summary>
 		/// <param name="predicate"></param>
-		/// <returns></returns>
 		public T Find(Predicate<T> predicate)
 		{
 			T[] data = this.sequence.Data;
@@ -190,7 +185,6 @@ namespace Duality
 		/// Finds all items that match the specified predicate.
 		/// </summary>
 		/// <param name="predicate"></param>
-		/// <returns></returns>
 		public IEnumerable<T> FindAll(Predicate<T> predicate)
 		{
 			T[] data = this.sequence.Data;
@@ -208,7 +202,6 @@ namespace Duality
 		/// Finds the index of an item that matches the specified predicate.
 		/// </summary>
 		/// <param name="predicate"></param>
-		/// <returns></returns>
 		public Point2 FindIndex(Predicate<T> predicate)
 		{
 			T[] data = this.sequence.Data;
@@ -226,7 +219,6 @@ namespace Duality
 		/// Finds all indices of items that match the specified predicate.
 		/// </summary>
 		/// <param name="predicate"></param>
-		/// <returns></returns>
 		public IEnumerable<Point2> FindAllIndices(Predicate<T> predicate)
 		{
 			T[] data = this.sequence.Data;
@@ -244,7 +236,6 @@ namespace Duality
 		/// Determines whether the specified item is contained within this grid.
 		/// </summary>
 		/// <param name="item"></param>
-		/// <returns></returns>
 		public bool Contains(T item)
 		{
 			int index = Array.IndexOf(this.sequence.Data, item, 0, this.sequence.Count);
@@ -253,7 +244,6 @@ namespace Duality
 		/// <summary>
 		/// Determines the boundaries of the grids non-null content.
 		/// </summary>
-		/// <returns></returns>
 		public void GetContentBoundaries(out Point2 topLeft, out Point2 size)
 		{
 			topLeft = new Point2(this.width, this.height);
@@ -313,7 +303,6 @@ namespace Duality
 		/// Removes the specified item from the grid.
 		/// </summary>
 		/// <param name="item"></param>
-		/// <returns></returns>
 		public bool Remove(T item)
 		{
 			int index = Array.IndexOf(this.sequence.Data, item, 0, this.sequence.Count);
@@ -331,7 +320,6 @@ namespace Duality
 		/// Removes all items from the grid that match the specified criteria.
 		/// </summary>
 		/// <param name="predicate"></param>
-		/// <returns></returns>
 		public int RemoveAll(Predicate<T> predicate)
 		{
 			int matchCount = 0;
@@ -431,9 +419,6 @@ namespace Duality
 		/// Resizes the grid and clears its contents. The fact that the old contents can be discarded
 		/// allows to perform the resize operation more efficiently.
 		/// </summary>
-		/// <param name="newWidth"></param>
-		/// <param name="newHeight"></param>
-		/// <param name="origin"></param>
 		public void ResizeClear(int newWidth, int newHeight)
 		{
 			if (newWidth < 0) throw new ArgumentException("Width needs to be greater than or equal to zero.", "newWidth");
@@ -451,7 +436,6 @@ namespace Duality
 		/// <summary>
 		/// Shrinks the grid to match its non-null content boundaries.
 		/// </summary>
-		/// <param name="mode"></param>
 		public void ShrinkToFit(ShrinkMode mode = ShrinkMode.Both)
 		{
 			if (mode == ShrinkMode.None) return;

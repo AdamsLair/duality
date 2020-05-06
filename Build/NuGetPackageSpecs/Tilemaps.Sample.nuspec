@@ -8,7 +8,7 @@
     <title>Tilemaps Sample</title>
     <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/Tilemaps</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>A sample project to show how to use Tilemaps.</summary>
     <description>A sample project to show how to use Tilemaps.</description>
@@ -27,8 +27,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\Tilemaps\bin\Release\netstandard2.0\Tilemaps.Sample.core.dll" target="lib\netstandard2.0" />
-    <file src="..\..\Samples\Tilemaps\bin\Release\netstandard2.0\Tilemaps.Sample.core.xml" target="lib\netstandard2.0" />
+    <file src="..\..\Samples\Tilemaps\Content\Plugins\netstandard2.0\Tilemaps.Sample.core.dll" target="lib\netstandard2.0" />
+    <file src="..\..\Samples\Tilemaps\Content\Plugins\netstandard2.0\Tilemaps.Sample.core.xml" target="lib\netstandard2.0" />
     <file src="..\..\Samples\Tilemaps\Content\Data\**\*.res" target="contentFiles\any\any\Data" />
   </files>
 </package>

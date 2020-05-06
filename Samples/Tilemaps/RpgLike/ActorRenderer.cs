@@ -144,7 +144,6 @@ namespace Duality.Samples.Tilemaps.RpgLike
 		/// This also inclues the renderers overall offset as specified in <see cref="DepthOffset"/>.
 		/// </summary>
 		/// <param name="worldPos"></param>
-		/// <returns></returns>
 		public float GetDepthOffsetAt(Vector2 worldPos)
 		{
 			Transform transform = this.GameObj.Transform;

@@ -62,20 +62,17 @@ namespace Duality.Drawing
 		/// Returns the scale factor of objects that are located at the specified (world space) z-Coordinate.
 		/// </summary>
 		/// <param name="z"></param>
-		/// <returns></returns>
 		float GetScaleAtZ(float z);
 		/// <summary>
 		/// Transforms screen space to world space. The screen positions Z coordinate is
 		/// interpreted as the target world Z coordinate.
 		/// </summary>
 		/// <param name="screenPos"></param>
-		/// <returns></returns>
 		Vector3 GetWorldPos(Vector3 screenPos);
 		/// <summary>
 		/// Transforms world space to screen space.
 		/// </summary>
 		/// <param name="spacePos"></param>
-		/// <returns></returns>
 		Vector2 GetScreenPos(Vector3 spacePos);
 
 		/// <summary>
@@ -84,7 +81,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="worldPos">The points world space position.</param>
 		/// <param name="radius">A world space radius around the point.</param>
-		/// <returns></returns>
 		bool IsSphereInView(Vector3 worldPos, float radius = 1.0f);
 
 		/// <summary>
@@ -92,7 +88,6 @@ namespace Duality.Drawing
 		/// The instance is returned implicitly when the device is done with the 
 		/// current rendering operation.
 		/// </summary>
-		/// <returns></returns>
 		BatchInfo RentMaterial();
 
 		/// <summary>
@@ -125,7 +120,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="screenPos"></param>
 		/// <param name="device"></param>
-		/// <returns></returns>
 		public static Vector3 GetWorldPos(this IDrawDevice device, Vector2 screenPos)
 		{
 			return device.GetWorldPos(new Vector3(screenPos));
@@ -135,7 +129,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="worldPos"></param>
 		/// <param name="device"></param>
-		/// <returns></returns>
 		public static Vector2 GetScreenPos(this IDrawDevice device, Vector2 worldPos)
 		{
 			return device.GetScreenPos(new Vector3(worldPos));
@@ -147,7 +140,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="device"></param>
 		/// <param name="baseMaterial"></param>
-		/// <returns></returns>
 		public static BatchInfo RentMaterial(this IDrawDevice device, BatchInfo baseMaterial)
 		{
 			BatchInfo material = device.RentMaterial();
@@ -160,7 +152,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="device"></param>
 		/// <param name="baseMaterial"></param>
-		/// <returns></returns>
 		public static BatchInfo RentMaterial(this IDrawDevice device, ContentRef<Material> baseMaterial)
 		{
 			return device.RentMaterial(

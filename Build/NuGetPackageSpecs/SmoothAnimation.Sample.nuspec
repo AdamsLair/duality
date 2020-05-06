@@ -8,7 +8,7 @@
     <title>Smooth Sprite Animation Blending Sample</title>
     <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/SmoothAnimationSample.png</iconUrl>
     <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/SmoothAnimation</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Demonstrates a smooth blending technique for sprite animations.</summary>
     <description>This package implements a custom sprite renderer that is able to smoothly blend between two animation frames using a shader, rather than switching between the two frames instantaneously.</description>
@@ -25,8 +25,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Samples\SmoothAnimation\bin\Release\netstandard2.0\SmoothAnimation.Sample.core.dll" target="lib\netstandard2.0" />
-    <file src="..\..\Samples\SmoothAnimation\bin\Release\netstandard2.0\SmoothAnimation.Sample.core.xml" target="lib\netstandard2.0" />
+    <file src="..\..\Samples\SmoothAnimation\Content\Plugins\netstandard2.0\SmoothAnimation.Sample.core.dll" target="lib\netstandard2.0" />
+    <file src="..\..\Samples\SmoothAnimation\Content\Plugins\netstandard2.0\SmoothAnimation.Sample.core.xml" target="lib\netstandard2.0" />
     <file src="..\..\Samples\SmoothAnimation\Content\Data\**\*.res" target="contentFiles\any\any\Data" />
   </files>
 </package>

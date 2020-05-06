@@ -148,7 +148,6 @@ namespace Duality.Input
 		/// [GET] Returns whether a specific <see cref="MouseButton"/> is currently pressed.
 		/// </summary>
 		/// <param name="btn"></param>
-		/// <returns></returns>
 		public bool this[MouseButton btn]
 		{
 			get { return this.currentState.ButtonPressed[(int)btn]; }
@@ -254,7 +253,6 @@ namespace Duality.Input
 		/// Returns whether the specified button is currently pressed.
 		/// </summary>
 		/// <param name="button"></param>
-		/// <returns></returns>
 		public bool ButtonPressed(MouseButton button)
 		{
 			return this.currentState.ButtonPressed[(int)button];
@@ -263,7 +261,6 @@ namespace Duality.Input
 		/// Returns whether the specified button was hit this frame.
 		/// </summary>
 		/// <param name="button"></param>
-		/// <returns></returns>
 		public bool ButtonHit(MouseButton button)
 		{
 			return this.currentState.ButtonPressed[(int)button] && !this.lastState.ButtonPressed[(int)button];
@@ -272,7 +269,6 @@ namespace Duality.Input
 		/// Returns whether the specified button was released this frame.
 		/// </summary>
 		/// <param name="button"></param>
-		/// <returns></returns>
 		public bool ButtonReleased(MouseButton button)
 		{
 			return !this.currentState.ButtonPressed[(int)button] && this.lastState.ButtonPressed[(int)button];

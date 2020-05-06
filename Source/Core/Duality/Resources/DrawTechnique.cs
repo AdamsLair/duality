@@ -225,9 +225,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Creates a new DrawTechnique using the specified <see cref="BlendMode"/> and shaders.
 		/// </summary>
-		/// <param name="blendType"></param>
-		/// <param name="shader"></param>
-		/// <param name="formatPref"></param>
 		public DrawTechnique(BlendMode blendType, ContentRef<VertexShader> vertexShader, ContentRef<FragmentShader> fragmentShader) 
 		{
 			this.blendType = blendType;

@@ -222,7 +222,6 @@ namespace Duality.Editor
 		/// thus to be ignored when detecing file system changes.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		public static bool IsPathEditorModified(string path)
 		{
 			return editorModifiedFiles.Contains(Path.GetFullPath(path));

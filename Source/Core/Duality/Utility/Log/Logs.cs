@@ -109,7 +109,6 @@ namespace Duality
 		/// implementation, as provided via generic type parameter.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public static Log Get<T>() where T : CustomLogInfo, new()
 		{
 			return CustomLogHolder<T>.Instance;

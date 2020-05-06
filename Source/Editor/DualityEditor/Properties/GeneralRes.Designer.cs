@@ -262,52 +262,6 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to using System;
-        ///using System.Collections.Generic;
-        ///using System.Linq;
-        ///using System.Text;
-        ///
-        ///using Duality;
-        ///using Duality.Serialization;
-        ///
-        ///namespace ROOTNAMESPACE.ErrorHandlers
-        ///{
-        ///	public class NewProjectErrorHandler : SerializeErrorHandler
-        ///	{
-        ///		public override void HandleError(SerializeError error)
-        ///		{
-        ///			ResolveTypeError resolveTypeError = error as ResolveTypeError;
-        ///			if (resolveTypeError != null)
-        ///			{
-        ///				string fixedTypeId = resolveTypeError.TypeId;
-        ///
-        ///				if (fixedTypeId.StartsWith(&quot;OLDROOTNA [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string ErrorHandlersTemplate {
-            get {
-                return ResourceManager.GetString("ErrorHandlersTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to /*
-        /// * A set of static helper classes that provide easy runtime access to the games resources.
-        /// * This file is auto-generated. Any changes made to it are lost as soon as Duality decides
-        /// * to regenerate it.
-        /// */
-        ///namespace GameRes
-        ///{
-        ///CONTENT
-        ///}
-        ///.
-        /// </summary>
-        public static string GameResTemplate {
-            get {
-                return ResourceManager.GetString("GameResTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No information available..
         /// </summary>
         public static string HelpInfo_NotAvailable_Desc {
@@ -362,26 +316,6 @@ namespace Duality.Editor.Properties {
         public static System.Drawing.Bitmap ImageAppCreate {
             get {
                 object obj = ResourceManager.GetObject("ImageAppCreate", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ImageTemplateCurrent {
-            get {
-                object obj = ResourceManager.GetObject("ImageTemplateCurrent", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ImageTemplateEmpty {
-            get {
-                object obj = ResourceManager.GetObject("ImageTemplateEmpty", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

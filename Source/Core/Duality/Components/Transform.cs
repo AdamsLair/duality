@@ -228,7 +228,6 @@ namespace Duality.Components
 		/// Transforms a position from local space of this object to world space.
 		/// </summary>
 		/// <param name="local"></param>
-		/// <returns></returns>
 		public Vector3 GetWorldPoint(Vector3 local)
 		{
 			return new Vector3(
@@ -240,7 +239,6 @@ namespace Duality.Components
 		/// Transforms a position from local space of this object to world space.
 		/// </summary>
 		/// <param name="local"></param>
-		/// <returns></returns>
 		public Vector2 GetWorldPoint(Vector2 local)
 		{
 			return new Vector2(
@@ -251,7 +249,6 @@ namespace Duality.Components
 		/// Transforms a position from world space to local space of this object.
 		/// </summary>
 		/// <param name="world"></param>
-		/// <returns></returns>
 		public Vector3 GetLocalPoint(Vector3 world)
 		{
 			float inverseScale = 1f / this.scaleAbs;
@@ -264,7 +261,6 @@ namespace Duality.Components
 		/// Transforms a position from world space to local space of this object.
 		/// </summary>
 		/// <param name="world"></param>
-		/// <returns></returns>
 		public Vector2 GetLocalPoint(Vector2 world)
 		{
 			float inverseScale = 1f / this.scaleAbs;
@@ -278,7 +274,6 @@ namespace Duality.Components
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="local"></param>
-		/// <returns></returns>
 		public Vector3 GetWorldVector(Vector3 local)
 		{
 			return new Vector3(
@@ -291,7 +286,6 @@ namespace Duality.Components
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="local"></param>
-		/// <returns></returns>
 		public Vector2 GetWorldVector(Vector2 local)
 		{
 			return new Vector2(
@@ -303,7 +297,6 @@ namespace Duality.Components
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="world"></param>
-		/// <returns></returns>
 		public Vector3 GetLocalVector(Vector3 world)
 		{
 			float inverseScale = 1f / this.scaleAbs;
@@ -317,7 +310,6 @@ namespace Duality.Components
 		/// Does only take scale and rotation into account, but not position.
 		/// </summary>
 		/// <param name="world"></param>
-		/// <returns></returns>
 		public Vector2 GetLocalVector(Vector2 world)
 		{
 			float inverseScale = 1f / this.scaleAbs;
@@ -438,11 +430,6 @@ namespace Duality.Components
 		/// Updates the Transforms world space data all at once. This change is
 		/// not regarded as a continuous movement, but as a hard teleport.
 		/// </summary>
-		/// <param name="pos"></param>
-		/// <param name="vel"></param>
-		/// <param name="angle"></param>
-		/// <param name="scale"></param>
-		/// <param name="angleVel"></param>
 		public void SetTransform(Vector3 pos, float angle, float scale)
 		{
 			this.posAbs = pos;
@@ -469,11 +456,6 @@ namespace Duality.Components
 		/// Updates the Transforms local space data all at once. This change is
 		/// not regarded as a continuous movement, but as a hard teleport.
 		/// </summary>
-		/// <param name="pos"></param>
-		/// <param name="vel"></param>
-		/// <param name="angle"></param>
-		/// <param name="scale"></param>
-		/// <param name="angleVel"></param>
 		public void SetLocalTransform(Vector3 pos, float angle, float scale)
 		{
 			this.pos = pos;

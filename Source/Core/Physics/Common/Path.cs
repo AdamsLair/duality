@@ -68,7 +68,6 @@ namespace FarseerPhysics.Common
 		/// Gets the next index of a controlpoint
 		/// </summary>
 		/// <param name="index">The index.</param>
-		/// <returns></returns>
 		public int NextIndex(int index)
 		{
 			if (index == this.ControlPoints.Count - 1)
@@ -82,7 +81,6 @@ namespace FarseerPhysics.Common
 		/// Gets the previous index of a controlpoint
 		/// </summary>
 		/// <param name="index">The index.</param>
-		/// <returns></returns>
 		public int PreviousIndex(int index)
 		{
 			if (index == 0)
@@ -145,7 +143,6 @@ namespace FarseerPhysics.Common
 		/// between each control point.
 		/// </summary>
 		/// <param name="divisions">Number of divisions between each control point.</param>
-		/// <returns></returns>
 		public Vertices GetVertices(int divisions)
 		{
 			Vertices verts = new Vertices();

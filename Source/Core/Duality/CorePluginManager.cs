@@ -35,7 +35,6 @@ namespace Duality
 		/// <summary>
 		/// Enumerates all currently loaded assemblies that are part of Duality, i.e. Duality itsself and all loaded plugins.
 		/// </summary>
-		/// <returns></returns>
 		public override IEnumerable<Assembly> GetAssemblies()
 		{
 			return this.coreAssemblies.Concat(base.GetAssemblies());
@@ -170,7 +169,6 @@ namespace Duality
 		/// (such as <see cref="BadImageFormatException"/>) are catched and ignored
 		/// without reporting an error.
 		/// </param>
-		/// <returns></returns>
 		private Assembly LoadAuxilliaryLibrary(string dllPath, bool tryAndFailSilently)
 		{
 			// Check for already loaded assemblies first

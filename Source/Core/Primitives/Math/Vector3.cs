@@ -123,7 +123,6 @@ namespace Duality
 		/// <summary>
 		/// Gets the length (magnitude) of the vector.
 		/// </summary>
-		/// <see cref="LengthFast"/>
 		/// <seealso cref="LengthSquared"/>
 		public float Length
 		{
@@ -142,8 +141,7 @@ namespace Duality
 		/// This property avoids the costly square root operation required by the Length property. This makes it more suitable
 		/// for comparisons.
 		/// </remarks>
-		/// <see cref="Length"/>
-		/// <seealso cref="LengthFast"/>
+		/// <seealso cref="Length"/>
 		public float LengthSquared
 		{
 			get
@@ -383,7 +381,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
-		/// <returns></returns>
 		public static float Distance(ref Vector3 left, ref Vector3 right)
 		{
 			Vector3 diff;
@@ -624,7 +621,6 @@ namespace Duality
 		/// <summary>
 		/// Returns a System.String that represents the current Vector3.
 		/// </summary>
-		/// <returns></returns>
 		public override string ToString()
 		{
 			return string.Format("({0}, {1}, {2})", this.X, this.Y, this.Z);

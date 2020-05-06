@@ -293,7 +293,9 @@ namespace Duality
 		/// <summary>
 		/// Initializes this DualityApp. Should be called before performing any operations within Duality.
 		/// </summary>
+		/// <param name="env"></param>
 		/// <param name="context">The <see cref="ExecutionContext"/> in which Duality runs.</param>
+		/// <param name="plugins"></param>
 		/// <param name="commandLineArgs">
 		/// Command line arguments to run this DualityApp with. 
 		/// Usually these are just the ones from the host application, passed on.
@@ -747,7 +749,6 @@ namespace Duality
 		/// <summary>
 		/// Enumerates all currently loaded assemblies that are part of Duality, i.e. Duality itsself and all loaded plugins.
 		/// </summary>
-		/// <returns></returns>
 		public static IEnumerable<Assembly> GetDualityAssemblies()
 		{
 			return pluginManager.GetAssemblies();

@@ -10,7 +10,6 @@ namespace Duality
 		/// <param name="mode"></param>
 		/// <param name="baseSize"></param>
 		/// <param name="targetSize"></param>
-		/// <returns></returns>
 		public static Vector2 Apply(this TargetResize mode, Vector2 baseSize, Vector2 targetSize)
 		{
 			Vector2 sizeRatio;

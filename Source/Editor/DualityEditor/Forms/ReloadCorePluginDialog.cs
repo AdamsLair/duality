@@ -496,7 +496,6 @@ namespace Duality.Editor.Forms
 		/// </summary>
 		/// <param name="pluginFilePath"></param>
 		/// <param name="assemblies"></param>
-		/// <returns></returns>
 		private static bool IsDependencyPlugin(string pluginFilePath, IEnumerable<Assembly> assemblies)
 		{
 			string asmName = Path.GetFileNameWithoutExtension(pluginFilePath);

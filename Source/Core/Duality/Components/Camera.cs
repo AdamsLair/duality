@@ -285,7 +285,6 @@ namespace Duality.Components
 		/// Returns the scale factor of objects that are located at the specified world space Z position.
 		/// </summary>
 		/// <param name="z"></param>
-		/// <returns></returns>
 		public float GetScaleAtZ(float z)
 		{
 			this.UpdateTransformDevice();
@@ -296,7 +295,6 @@ namespace Duality.Components
 		/// interpreted as the target world Z coordinate.
 		/// </summary>
 		/// <param name="screenPos"></param>
-		/// <returns></returns>
 		public Vector3 GetWorldPos(Vector3 screenPos)
 		{
 			this.UpdateTransformDevice();
@@ -309,7 +307,6 @@ namespace Duality.Components
 		/// Transforms screen space to world space.
 		/// </summary>
 		/// <param name="screenPos"></param>
-		/// <returns></returns>
 		public Vector3 GetWorldPos(Vector2 screenPos)
 		{
 			this.UpdateTransformDevice();
@@ -319,8 +316,6 @@ namespace Duality.Components
 		/// <summary>
 		/// Transforms world space to screen space positions.
 		/// </summary>
-		/// <param name="spacePos"></param>
-		/// <returns></returns>
 		public Vector2 GetScreenPos(Vector3 worldPos)
 		{
 			this.UpdateTransformDevice();
@@ -329,8 +324,6 @@ namespace Duality.Components
 		/// <summary>
 		/// Transforms world space to screen space positions.
 		/// </summary>
-		/// <param name="spacePos"></param>
-		/// <returns></returns>
 		public Vector2 GetScreenPos(Vector2 worldPos)
 		{
 			this.UpdateTransformDevice();
@@ -341,7 +334,6 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="worldPos">The spheres world space center position.</param>
 		/// <param name="radius">The spheres world space radius.</param>
-		/// <returns></returns>
 		public bool IsSphereInView(Vector3 worldPos, float radius = 1.0f)
 		{
 			this.UpdateTransformDevice();

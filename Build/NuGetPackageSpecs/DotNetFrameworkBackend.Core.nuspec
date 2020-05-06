@@ -21,7 +21,7 @@
     <releaseNotes>Patch Version Update</releaseNotes>
   </metadata>
   <files>
-    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.dll" target="lib\net472" />
-    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.pdb" target="lib\net472" />
+    <file src="..\Output\Plugins\DotNetFramework.Core.dll" target="lib\net472" />
+    <file src="..\Output\Plugins\DotNetFramework.Core.pdb" target="lib\net472" />
   </files>
 </package>

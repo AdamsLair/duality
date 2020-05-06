@@ -156,7 +156,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Converts the color to int-Rgba.
 		/// </summary>
-		/// <returns></returns>
 		public int ToIntRgba()
 		{
 			return this.ToRgba().ToIntRgba();
@@ -164,7 +163,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Converts the color to int-Argb.
 		/// </summary>
-		/// <returns></returns>
 		public int ToIntArgb()
 		{
 			return this.ToRgba().ToIntArgb();
@@ -172,7 +170,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Converts the color to Rgba.
 		/// </summary>
-		/// <returns></returns>
 		public ColorRgba ToRgba()
 		{
 			float hTemp = NormalizeHue(this.H) * 360.0f / 60.0f;
@@ -263,7 +260,6 @@ namespace Duality.Drawing
 		/// Returns whether this color equals the specified one.
 		/// </summary>
 		/// <param name="other"></param>
-		/// <returns></returns>
 		public bool Equals(ColorHsva other)
 		{
 			return this.H == other.H && this.S == other.S && this.V == other.V && this.A == other.A;
@@ -288,7 +284,6 @@ namespace Duality.Drawing
 		/// Creates a new color based on an int-Rgba value.
 		/// </summary>
 		/// <param name="rgba"></param>
-		/// <returns></returns>
 		public static ColorHsva FromIntRgba(int rgba)
 		{
 			ColorHsva temp = new ColorHsva();
@@ -299,7 +294,6 @@ namespace Duality.Drawing
 		/// Creates a new color based on an int-Argb value.
 		/// </summary>
 		/// <param name="argb"></param>
-		/// <returns></returns>
 		public static ColorHsva FromIntArgb(int argb)
 		{
 			ColorHsva temp = new ColorHsva();
@@ -310,7 +304,6 @@ namespace Duality.Drawing
 		/// Creates a new color based on a Rgba value.
 		/// </summary>
 		/// <param name="rgba"></param>
-		/// <returns></returns>
 		public static ColorHsva FromRgba(ColorRgba rgba)
 		{
 			ColorHsva temp = new ColorHsva();
@@ -323,7 +316,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="left">The first color.</param>
 		/// <param name="right">The second color.</param>
-		/// <returns></returns>
 		public static bool operator ==(ColorHsva left, ColorHsva right)
 		{
 			return left.Equals(right);
@@ -333,7 +325,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="left">The first color.</param>
 		/// <param name="right">The second color.</param>
-		/// <returns></returns>
 		public static bool operator !=(ColorHsva left, ColorHsva right)
 		{
 			return !left.Equals(right);

@@ -125,7 +125,6 @@ namespace Duality.Serialization
 		/// Retrieves a serialized field of this type by name.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		public FieldInfo GetFieldByName(string name)
 		{
 			for (int i = 0; i < this.fields.Length; i++)

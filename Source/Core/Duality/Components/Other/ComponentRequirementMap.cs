@@ -247,7 +247,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="componentType"></param>
 		/// <param name="requiredType"></param>
-		/// <returns></returns>
 		public bool IsRequired(Type componentType, Type requiredType)
 		{
 			if (componentType == requiredType) return false;
@@ -269,7 +268,6 @@ namespace Duality
 		/// <param name="targetObj"></param>
 		/// <param name="targetComponentType"></param>
 		/// <param name="whenAddingThose"></param>
-		/// <returns></returns>
 		public bool IsRequirementMet(GameObject targetObj, Type targetComponentType, IEnumerable<Type> whenAddingThose = null)
 		{
 			IEnumerable<Type> reqTypes = this.GetRequirements(targetComponentType);
@@ -292,7 +290,6 @@ namespace Duality
 		/// These may include abstract classes or interface definitions.
 		/// </summary>
 		/// <param name="componentType"></param>
-		/// <returns></returns>
 		public IEnumerable<Type> GetRequirements(Type componentType)
 		{
 			TypeData data;
@@ -313,7 +310,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="targetObj"></param>
 		/// <param name="targetComponentType"></param>
-		/// <returns></returns>
 		public IEnumerable<Type> GetRequirementsToCreate(GameObject targetObj, Type targetComponentType)
 		{
 			// Retrieve the component's requirements

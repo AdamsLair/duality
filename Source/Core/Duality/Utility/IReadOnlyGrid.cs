@@ -27,7 +27,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		/// <returns></returns>
 		T this[int x, int y] { get; }
 	}
 }

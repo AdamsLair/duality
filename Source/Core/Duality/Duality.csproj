@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -8,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AdamsLair.NVorbis" Version="0.7.6" GeneratePathProperty="true" />
+		<PackageReference Include="NVorbis" Version="0.10.1" GeneratePathProperty="true" />
 		<PackageReference Include="System.Threading.Tasks.Parallel" Version="4.3.0" />
 	</ItemGroup>
 
@@ -86,7 +85,7 @@
 		<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\" />
 		<Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\" />
 		<Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\" />
-		<copy SourceFiles="$(PkgAdamsLair_NVorbis)\lib\portable45-net45+win8+wpa81\NVorbis.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-		<copy SourceFiles="$(PkgAdamsLair_NVorbis)\lib\portable45-net45+win8+wpa81\NVorbis.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+		<Copy SourceFiles="$(PkgNVorbis)\lib\netstandard2.0\NVorbis.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+		<Copy SourceFiles="$(PkgNVorbis)\lib\netstandard2.0\NVorbis.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
 	</Target>
 </Project>

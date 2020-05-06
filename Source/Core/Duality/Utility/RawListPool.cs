@@ -22,7 +22,6 @@ namespace Duality
 		/// Rents a list instance with the specified min capacity.
 		/// </summary>
 		/// <param name="minCapacity"></param>
-		/// <returns></returns>
 		public RawList<T> Rent(int minCapacity)
 		{
 			// No pooled instances available? Create perfectly fitting one on-the-fly.
