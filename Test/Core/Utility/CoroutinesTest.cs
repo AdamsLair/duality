@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Duality.Resources;
+using Duality.Utility.Coroutines;
 using NUnit.Framework;
 
 namespace Duality.Tests.Utility
@@ -175,28 +176,27 @@ namespace Duality.Tests.Utility
 			Assert.True(coroutine.Status == CoroutineStatus.Error);
 		}
 
-		private IEnumerable<IWaitCondition> BasicRoutine(CoroutineObject obj)
+		private IEnumerable<WaitUntil> BasicRoutine(CoroutineObject obj)
 		{
 			obj.Value = 10;
-			yield return new WaitFrames(1);
+			yield return WaitUntil.NextFrame;
 			obj.Value = 20;
-			yield return null;
-			yield return new WaitFrames(2);
+			yield return WaitUntil.NextFrame;
+			yield return WaitUntil.Frames(2);
 			obj.Value = 30;
 
 		}
 
-		private IEnumerable<IWaitCondition> ExceptionRoutine()
+		private IEnumerable<WaitUntil> ExceptionRoutine()
 		{
-			yield return null;
-			yield return null;
+			yield return WaitUntil.Frames(2);
 			throw new Exception("Test exception");
 		}
 
-		private IEnumerable<IWaitCondition> WaitSeconds(CoroutineObject obj, int seconds)
+		private IEnumerable<WaitUntil> WaitSeconds(CoroutineObject obj, int seconds)
 		{
 			obj.Value = 10;
-			yield return new WaitTime(2);
+			yield return WaitUntil.Seconds(2);
 			obj.Value = 20;
 		}
 	}

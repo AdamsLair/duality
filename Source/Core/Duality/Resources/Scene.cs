@@ -8,6 +8,7 @@ using Duality.Components;
 using Duality.Components.Physics;
 using Duality.Cloning;
 using Duality.Properties;
+using Duality.Utility.Coroutines;
 
 namespace Duality.Resources
 {

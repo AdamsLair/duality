@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Duality.Utility.Pooling;
 
-namespace Duality
+namespace Duality.Utility.Coroutines
 {
+	/// <summary>
+	/// The Coroutine Manager
+	/// </summary>
 	public class CoroutineManager
 	{
-		// shared pool between all CoroutineManagers (one per scene)
-		private static QueuedPool<Coroutine> pool = new QueuedPool<Coroutine>();
-
+		private readonly Queue<Coroutine> pool = new Queue<Coroutine>(64);
 		private readonly Queue<Coroutine> coroutines = new Queue<Coroutine>(256);
 		private readonly Queue<Coroutine> nextCycle = new Queue<Coroutine>(256);
 		private readonly Queue<Coroutine> scheduled = new Queue<Coroutine>();
@@ -19,30 +19,55 @@ namespace Duality
 
 		private int count;
 
+		/// <summary>
+		/// Returns an IEnumerable of all currently active and scheduled Coroutines
+		/// </summary>
 		public IEnumerable<Coroutine> Coroutines
 		{
 			get { return this.coroutines.Concat(this.scheduled); }
 		}
 
+		/// <summary>
+		/// Returns an IEnumerable of the Exception encountered in the last cycle, with the relative Coroutine
+		/// </summary>
 		public IEnumerable<KeyValuePair<Coroutine, Exception>> LastFrameErrors
 		{
 			get { return this.lastFrameErrors; }
 		}
 
-		public Coroutine StartNew(IEnumerator<IWaitCondition> enumerator, string name)
+		/// <summary>
+		/// Prepares a new Coroutine and places it in the scheduled queue, to be started in the next cycle
+		/// </summary>
+		/// <param name="enumerator">The Coroutine's execution body</param>
+		/// <param name="name">The name of the Coroutine</param>
+		/// <returns>The prepared Coroutine</returns>
+		internal Coroutine StartNew(IEnumerator<WaitUntil> enumerator, string name)
 		{
-			Coroutine coroutine = pool.GetOne();
+			Coroutine coroutine;
+			if (this.pool.Count > 0)
+				coroutine = this.pool.Dequeue();
+			else
+				coroutine = new Coroutine();
+
 			coroutine.Setup(enumerator, name);
 
 			this.scheduled.Enqueue(coroutine);
 			return coroutine;
 		}
 
+		/// <summary>
+		/// Returns true if the Coroutine is currently in execution or scheduled for execution in the next cycle
+		/// </summary>
+		/// <param name="c">The Coroutine</param>
+		/// <returns>True if found</returns>
 		public bool IsCoroutineListed(Coroutine c)
 		{
 			return this.Coroutines.Contains(c);
 		}
 
+		/// <summary>
+		/// Cancels all currently active and scheduled Coroutines
+		/// </summary>
 		public void Clear()
 		{
 			foreach (Coroutine c in this.coroutines)
@@ -52,7 +77,7 @@ namespace Duality
 			this.coroutines.Clear();
 		}
 
-		public void Update()
+		internal void Update()
 		{
 			this.lastFrameErrors.Clear();
 
@@ -84,7 +109,7 @@ namespace Duality
 			// cleaning up trashcan
 			this.count = this.trashcan.Count;
 			for (int i = 0; i < this.count; i++)
-				pool.ReturnOne(this.trashcan.Dequeue());
+				this.pool.Enqueue(this.trashcan.Dequeue());
 		}
 	}
 }
