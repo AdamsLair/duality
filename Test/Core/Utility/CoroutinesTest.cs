@@ -196,7 +196,7 @@ namespace Duality.Tests.Utility
 		private IEnumerable<WaitUntil> WaitSeconds(CoroutineObject obj, int seconds)
 		{
 			obj.Value = 10;
-			yield return WaitUntil.Seconds(2);
+			yield return WaitUntil.Seconds(seconds);
 			obj.Value = 20;
 		}
 	}
