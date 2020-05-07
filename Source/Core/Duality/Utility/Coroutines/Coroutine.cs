@@ -10,30 +10,6 @@ namespace Duality.Utility.Coroutines
 	/// </summary>
 	public sealed class Coroutine : IDisposable
 	{
-		/// <summary>
-		/// Starts a coroutine and registers it in the scene's CoroutineManager
-		/// </summary>
-		/// <param name="scene">The scene that will execute the coroutine</param>
-		/// <param name="method">The coroutine implementation</param>
-		/// <param name="name">The name of the coroutine, optional</param>
-		/// <returns>The created corutine</returns>
-		public static Coroutine Start(Scene scene, IEnumerable<WaitUntil> method, string name = null)
-		{
-			return Start(scene, method.GetEnumerator(), name);
-		}
-
-		/// <summary>
-		/// Starts a coroutine and registers it in the scene's CoroutineManager
-		/// </summary>
-		/// <param name="scene">The scene that will execute the coroutine</param>
-		/// <param name="enumerator">The coroutine IWaitConditions enumerator</param>
-		/// <param name="name">The name of the coroutine, optional</param>
-		/// <returns>The created corutine</returns>
-		public static Coroutine Start(Scene scene, IEnumerator<WaitUntil> enumerator, string name = null)
-		{
-			return scene.CoroutineManager.StartNew(enumerator, name);
-		}
-
 		private IEnumerator<WaitUntil> enumerator = null;
 		private WaitUntil currentCondition;
 
@@ -51,11 +27,6 @@ namespace Duality.Utility.Coroutines
 		/// The Coroutine's Name
 		/// </summary>
 		public string Name { get; private set; }
-
-		/// <summary>
-		/// A Tag object
-		/// </summary>
-		public object Tag { get; private set; }
 
 		/// <summary>
 		/// True if this Coroutine's Status is <see cref="CoroutineStatus.Paused"/> or <see cref="CoroutineStatus.Running"/>
