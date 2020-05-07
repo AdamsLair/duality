@@ -38,7 +38,7 @@ namespace Duality.Utility.Coroutines
 		/// <param name="enumerator">The Coroutine's execution body</param>
 		/// <param name="name">The name of the Coroutine</param>
 		/// <returns>The prepared Coroutine</returns>
-		internal Coroutine StartNew(IEnumerable<WaitUntil> enumerator, string name)
+		public Coroutine StartNew(IEnumerable<WaitUntil> enumerator, string name)
 		{
 			Coroutine coroutine;
 			if (this.pool.Count > 0)
@@ -72,7 +72,10 @@ namespace Duality.Utility.Coroutines
 			this.nextCycle.Clear();
 		}
 
-		internal void Update()
+		/// <summary>
+		/// The Coroutine's update cycle.
+		/// </summary>
+		public void Update()
 		{
 			this.lastFrameErrors.Clear();
 
