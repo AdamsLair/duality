@@ -38,7 +38,7 @@ namespace Duality.Utility.Coroutines
 		/// <param name="enumerator">The Coroutine's execution body</param>
 		/// <param name="name">The name of the Coroutine</param>
 		/// <returns>The prepared Coroutine</returns>
-		internal Coroutine StartNew(IEnumerator<WaitUntil> enumerator, string name)
+		internal Coroutine StartNew(IEnumerable<WaitUntil> enumerator, string name)
 		{
 			Coroutine coroutine;
 			if (this.pool.Count > 0)
@@ -58,10 +58,18 @@ namespace Duality.Utility.Coroutines
 		public void Clear()
 		{
 			foreach (Coroutine c in this.currentCycle)
+			{
 				c.Cancel();
-
-			this.nextCycle.Clear();
+				this.pool.Enqueue(c);
+			}
 			this.currentCycle.Clear();
+
+			foreach (Coroutine c in this.nextCycle)
+			{
+				c.Cancel();
+				this.pool.Enqueue(c);
+			}
+			this.nextCycle.Clear();
 		}
 
 		internal void Update()

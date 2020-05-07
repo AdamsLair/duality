@@ -36,7 +36,7 @@ namespace Duality.Utility.Coroutines
 			get { return this.Status == CoroutineStatus.Paused || this.Status == CoroutineStatus.Running; }
 		}
 
-		internal void Setup(IEnumerator<WaitUntil> values, string name)
+		internal void Setup(IEnumerable<WaitUntil> values, string name)
 		{
 			this.Status = CoroutineStatus.Running;
 
@@ -46,7 +46,7 @@ namespace Duality.Utility.Coroutines
 			if (this.enumerator != null)
 				this.enumerator.Dispose();
 
-			this.enumerator = values;
+			this.enumerator = values.GetEnumerator();
 
 			this.MoveNext();
 		}
