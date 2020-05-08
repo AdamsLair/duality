@@ -26,19 +26,22 @@ namespace Duality.Utility.Coroutines
 		private readonly WaitType type;
 		private float internalValue;
 
+		public bool IsComplete
+		{
+			get { return this.internalValue <= 0; }
+		}
+
 		private WaitUntil(float startingValue, WaitType type)
 		{
 			this.internalValue = startingValue;
 			this.type = type;
 		}
 
-		internal bool HasEndedAfterUpdate()
+		internal void Update()
 		{
 			switch (this.type)
 			{
 				case WaitType.Invalid:
-					throw new InvalidOperationException("Please do not instantiate this struct directly, but use one of the static methods provided.");
-
 				case WaitType.NextFrame:
 					this.internalValue = -1;
 					break;
@@ -55,8 +58,6 @@ namespace Duality.Utility.Coroutines
 					this.internalValue -= Time.UnscaledDeltaTime;
 					break;
 			}
-
-			return this.internalValue <= 0;
 		}
 
 		/// <summary>

@@ -110,9 +110,9 @@ namespace Duality.Tests.Utility
 			Assert.AreEqual(10, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Paused);
 
-			scene.Update();
-			scene.Update();
-			scene.Update();
+			int rnd = MathF.Rnd.Next(ushort.MaxValue);
+			for(int i = 0; i < rnd; i++)
+				scene.Update();
 
 			// No matter how many updates
 			Assert.AreEqual(10, obj.Value);

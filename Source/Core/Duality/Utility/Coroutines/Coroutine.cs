@@ -47,8 +47,6 @@ namespace Duality.Utility.Coroutines
 				this.enumerator.Dispose();
 
 			this.enumerator = values.GetEnumerator();
-
-			this.MoveNext();
 		}
 
 		internal void Update()
@@ -57,8 +55,14 @@ namespace Duality.Utility.Coroutines
 
 			try
 			{
-				if (this.currentCondition.HasEndedAfterUpdate())
-					this.MoveNext();
+				this.currentCondition.Update();
+				if (this.currentCondition.IsComplete)
+				{
+					if (this.enumerator.MoveNext())
+						this.currentCondition = this.enumerator.Current;
+					else
+						this.Status = CoroutineStatus.Complete;
+				}
 			}
 			catch (Exception e)
 			{
@@ -67,14 +71,6 @@ namespace Duality.Utility.Coroutines
 				this.LastException = e;
 				this.Status = CoroutineStatus.Error;
 			}
-		}
-
-		private void MoveNext()
-		{
-			if (this.enumerator.MoveNext())
-				this.currentCondition = this.enumerator.Current;
-			else
-				this.Status = CoroutineStatus.Complete;
 		}
 
 		/// <summary>
