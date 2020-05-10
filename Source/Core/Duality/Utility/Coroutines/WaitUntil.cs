@@ -12,7 +12,6 @@ namespace Duality.Utility.Coroutines
 		private enum WaitType
 		{
 			Invalid,
-			NextFrame,
 			Frames,
 			GameTime,
 			RealTime
@@ -21,7 +20,7 @@ namespace Duality.Utility.Coroutines
 		/// <summary>
 		/// Waits until the next frame
 		/// </summary>
-		public static readonly WaitUntil NextFrame = new WaitUntil(0, WaitType.NextFrame);
+		public static readonly WaitUntil NextFrame = new WaitUntil(1, WaitType.Frames);
 
 		private readonly WaitType type;
 		private float internalValue;
@@ -42,7 +41,6 @@ namespace Duality.Utility.Coroutines
 			switch (this.type)
 			{
 				case WaitType.Invalid:
-				case WaitType.NextFrame:
 					this.internalValue = -1;
 					break;
 

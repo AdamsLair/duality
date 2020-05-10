@@ -8,7 +8,7 @@ namespace Duality.Utility.Coroutines
 	/// <summary>
 	/// A Coroutine's management class
 	/// </summary>
-	public sealed class Coroutine : IDisposable
+	public sealed class Coroutine
 	{
 		private IEnumerator<WaitUntil> enumerator = null;
 		private WaitUntil currentCondition;
@@ -17,17 +17,14 @@ namespace Duality.Utility.Coroutines
 		/// The Coroutine's current <see cref="CoroutineStatus">execution status</see>
 		/// </summary>
 		public CoroutineStatus Status { get; private set; }
-
 		/// <summary>
 		/// The Exception encountered during the last frame
 		/// </summary>
 		public Exception LastException { get; private set; }
-
 		/// <summary>
 		/// The Coroutine's Name
 		/// </summary>
 		public string Name { get; private set; }
-
 		/// <summary>
 		/// True if this Coroutine's Status is <see cref="CoroutineStatus.Paused"/> or <see cref="CoroutineStatus.Running"/>
 		/// </summary>
@@ -48,7 +45,6 @@ namespace Duality.Utility.Coroutines
 
 			this.enumerator = values.GetEnumerator();
 		}
-
 		internal void Update()
 		{
 			if (this.Status != CoroutineStatus.Running) return;
@@ -81,7 +77,6 @@ namespace Duality.Utility.Coroutines
 			if (this.Status == CoroutineStatus.Running)
 				this.Status = CoroutineStatus.Paused;
 		}
-
 		/// <summary>
 		/// Resumes a Paused coroutine
 		/// </summary>
@@ -90,7 +85,6 @@ namespace Duality.Utility.Coroutines
 			if (this.Status == CoroutineStatus.Paused)
 				this.Status = CoroutineStatus.Running;
 		}
-
 		/// <summary>
 		/// Cancels the coroutine without executing any further code.
 		/// </summary>
@@ -98,15 +92,6 @@ namespace Duality.Utility.Coroutines
 		{
 			this.enumerator.Dispose();
 			this.Status = CoroutineStatus.Cancelled;
-		}
-
-		/// <summary>
-		/// Dispose method. No need to call it.
-		/// </summary>
-		public void Dispose()
-		{
-			this.enumerator.Dispose();
-			this.Status = CoroutineStatus.Disposed;
 		}
 	}
 }

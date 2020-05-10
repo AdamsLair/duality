@@ -59,7 +59,7 @@ namespace Duality.Tests.Utility
 			Assert.True(coroutine.Status == CoroutineStatus.Complete);
 		}
 
-		[Test] public void Disposing()
+		[Test] public void Cancelling()
 		{
 			Scene scene = new Scene();
 			scene.Activate();
@@ -77,18 +77,18 @@ namespace Duality.Tests.Utility
 			Assert.AreEqual(20, obj.Value);
 			Assert.True(coroutine.Status == CoroutineStatus.Running);
 
-			coroutine.Dispose();
+			coroutine.Cancel();
 			scene.Update();
 
 			// Coroutine disposed
 			Assert.AreEqual(20, obj.Value);
-			Assert.True(coroutine.Status == CoroutineStatus.Disposed);
+			Assert.True(coroutine.Status == CoroutineStatus.Cancelled);
 
 			scene.Update();
 
 			// No further changes
 			Assert.AreEqual(20, obj.Value);
-			Assert.True(coroutine.Status == CoroutineStatus.Disposed);
+			Assert.True(coroutine.Status == CoroutineStatus.Cancelled);
 		}
 
 		[Test] public void Resuming()

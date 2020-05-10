@@ -23,7 +23,6 @@ namespace Duality.Utility.Coroutines
 		{
 			get { return this.currentCycle.Concat(this.nextCycle); }
 		}
-
 		/// <summary>
 		/// Returns an IEnumerable of the Exception encountered in the last cycle, with the relative Coroutine
 		/// </summary>

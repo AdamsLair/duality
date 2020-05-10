@@ -259,7 +259,7 @@ namespace Duality.Resources
 		[DontSerialize] private RawList<Component> updatableComponents = new RawList<Component>(256);
 		[DontSerialize] private RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
 
-		[DontSerialize] private CoroutineManager coroutineManager = new CoroutineManager();
+		[DontSerialize] private readonly CoroutineManager coroutineManager = new CoroutineManager();
 
 		/// <summary>
 		/// [GET / SET] The strategy that is used to determine which <see cref="ICmpRenderer">renderers</see> are visible.
@@ -496,9 +496,6 @@ namespace Duality.Resources
 				// Remove disposed objects from managers
 				this.CleanupDisposedObjects();
 
-				// Update coroutines
-				this.coroutineManager.Update();
-
 				// Update physics
 				this.physicsWorld.Simulate(Time.DeltaTime);
 
@@ -510,6 +507,11 @@ namespace Duality.Resources
 					this.visibilityStrategy.Update();
 				});
 				Profile.TimeUpdateScene.EndMeasure();
+
+				// Update coroutines
+				Profile.TimeUpdateCoroutines.BeginMeasure();
+				this.coroutineManager.Update();
+				Profile.TimeUpdateCoroutines.EndMeasure();
 			}
 			finally
 			{
