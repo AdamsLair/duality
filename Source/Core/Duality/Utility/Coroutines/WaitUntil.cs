@@ -11,7 +11,6 @@ namespace Duality.Utility.Coroutines
 	{
 		private enum WaitType
 		{
-			Invalid,
 			Frames,
 			GameTime,
 			RealTime
@@ -40,10 +39,6 @@ namespace Duality.Utility.Coroutines
 		{
 			switch (this.type)
 			{
-				case WaitType.Invalid:
-					this.internalValue = -1;
-					break;
-
 				case WaitType.Frames:
 					this.internalValue -= 1;
 					break;
