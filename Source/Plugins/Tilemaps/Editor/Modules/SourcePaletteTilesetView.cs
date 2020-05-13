@@ -448,7 +448,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// none to choose from. Keep the default-initialized ones we got above.
 			Tileset tileset = this.TargetTileset.Res;
 			if (tileset == null) return;
-
+			
 			// Determine a tile rect based on the current selection inside the Tileset.
 			Point selectedDisplayedPos = this.GetDisplayedTilePos(
 				this.selectedArea.X,
@@ -494,10 +494,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 				return;
 			}
 
-			int newX = MathF.Clamp(this.selectedArea.X + offsetX, 0, this.DisplayedTileCount.X - this.selectedArea.Width);
-			int newY = MathF.Clamp(this.selectedArea.Y + offsetY, 0, this.DisplayedTileCount.Y - this.selectedArea.Height);
+			Rectangle prevSelectedArea = this.SelectedArea; 
 
-			this.SelectedArea = new Rectangle(newX, newY, this.selectedArea.Width, this.selectedArea.Height);
+			int newX = MathF.Clamp(prevSelectedArea.X + offsetX, 0, this.DisplayedTileCount.X - prevSelectedArea.Width);
+			int newY = MathF.Clamp(prevSelectedArea.Y + offsetY, 0, this.DisplayedTileCount.Y - prevSelectedArea.Height);
+
+			this.SelectedArea = new Rectangle(newX, newY, prevSelectedArea.Width, prevSelectedArea.Height);
 			this.RaiseSelectedAreaEditingFinished();
 			this.Invalidate();
 		}
@@ -509,16 +511,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 				return;
 			}
 
-			int newX = MathF.Max(this.selectedArea.X + MathF.Min(diffX, 0), 0);
-			int newY = MathF.Max(this.selectedArea.Y + MathF.Min(diffY, 0), 0);
+			Rectangle prevSelectedArea = this.SelectedArea;
 
-			int newWidth = this.selectedArea.Width + MathF.Max(diffX, 0);
-			newWidth = MathF.Min(newWidth, this.DisplayedTileCount.X - this.selectedArea.X);
-			newWidth += this.selectedArea.X - newX;
+			int newX = MathF.Max(prevSelectedArea.X + MathF.Min(diffX, 0), 0);
+			int newY = MathF.Max(prevSelectedArea.Y + MathF.Min(diffY, 0), 0);
 
-			int newHeight = this.selectedArea.Height + MathF.Max(diffY, 0);
-			newHeight = MathF.Min(newHeight, this.DisplayedTileCount.Y - this.selectedArea.Y);
-			newHeight += this.selectedArea.Y - newY;
+			int newWidth = prevSelectedArea.Width + MathF.Max(diffX, 0);
+			newWidth = MathF.Min(newWidth, this.DisplayedTileCount.X - prevSelectedArea.X);
+			newWidth += prevSelectedArea.X - newX;
+
+			int newHeight = prevSelectedArea.Height + MathF.Max(diffY, 0);
+			newHeight = MathF.Min(newHeight, this.DisplayedTileCount.Y - prevSelectedArea.Y);
+			newHeight += prevSelectedArea.Y - newY;
 
 			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
 			this.RaiseSelectedAreaEditingFinished();
@@ -532,16 +536,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 				return;
 			}
 
-			int newX = MathF.Min(this.selectedArea.X + MathF.Max(diffX, 0),
-				this.selectedArea.X + this.selectedArea.Width - 1);
-			int newY = MathF.Min(this.selectedArea.Y + MathF.Max(diffY, 0),
-				this.selectedArea.Y + this.selectedArea.Height - 1);
+			Rectangle prevSelectedArea = this.SelectedArea;
 
-			int newWidth = MathF.Max(this.selectedArea.Width + MathF.Min(diffX, 0), 1);
-			newWidth -= newX - this.selectedArea.X;
+			int newX = MathF.Min(prevSelectedArea.X + MathF.Max(diffX, 0),
+				prevSelectedArea.X + prevSelectedArea.Width - 1);
+			int newY = MathF.Min(prevSelectedArea.Y + MathF.Max(diffY, 0),
+				prevSelectedArea.Y + prevSelectedArea.Height - 1);
 
-			int newHeight = MathF.Max(this.selectedArea.Height + MathF.Min(diffY, 0), 1);
-			newHeight -= newY - this.selectedArea.Y;
+			int newWidth = MathF.Max(prevSelectedArea.Width + MathF.Min(diffX, 0), 1);
+			newWidth -= newX - prevSelectedArea.X;
+
+			int newHeight = MathF.Max(prevSelectedArea.Height + MathF.Min(diffY, 0), 1);
+			newHeight -= newY - prevSelectedArea.Y;
 
 			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
 			this.RaiseSelectedAreaEditingFinished();
