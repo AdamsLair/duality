@@ -6,8 +6,8 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>DynamicLighting Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/DynamicLighting.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/DynamicLighting</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Introduces a naive implementation of dynamic lighting Components.</summary>
@@ -25,6 +25,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="Icons\DynamicLighting.png" target="\icon.png" />
     <file src="..\..\Samples\DynamicLighting\Content\Data\**\*.res" target="contentFiles\any\any\Data" />
     <file src="..\..\Samples\DynamicLighting\Core\Content\Plugins\netstandard2.0\DynamicLighting.Sample.core.dll" target="lib\net472" />
     <file src="..\..\Samples\DynamicLighting\Core\Content\Plugins\netstandard2.0\DynamicLighting.Sample.core.xml" target="lib\net472" />

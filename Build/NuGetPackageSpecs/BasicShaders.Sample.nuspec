@@ -6,8 +6,8 @@
     <authors>Pilati Alessandro, Fedja Adam</authors>
     <owners>Pilati Alessandro, Fedja Adam</owners>
     <title>Basic Shaders Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/BasicShadersSample.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/BasicShaders</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Demonstrates how to use shaders in Duality.</summary>
@@ -20,11 +20,11 @@
     <dependencies>
       <group targetFramework="netstandard2.0">
         <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
-        <dependency id="AdamsLair.Duality.Editor" version="4.0.0-alpha" />
       </group>
     </dependencies>
   </metadata>
   <files>
+    <file src="Icons\BasicShadersSample.png" target="\icon.png" />
     <file src="..\..\Samples\BasicShaders\Content\Data\**\*.res" target="contentFiles\any\any\Data" />
   </files>
 </package>

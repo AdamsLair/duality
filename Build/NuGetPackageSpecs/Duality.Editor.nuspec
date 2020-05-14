@@ -6,8 +6,8 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>The Duality editor.</summary>
@@ -23,11 +23,9 @@
         <dependency id="AdamsLair.WinForms.PopupControl" version="1.0.1" />
       </group>
     </dependencies>
-    <references>
-      <reference file="DualityEditor.exe" />
-    </references>
   </metadata>
   <files>
+    <file src="Icons\duality.png" target="\icon.png" />
     <file src="..\Output\DualityEditor.exe" target="lib\net472" />
     <file src="..\Output\DualityEditor.exe.config" target="lib\net472" />
     <file src="..\Output\DualityEditor.pdb" target="lib\net472" />

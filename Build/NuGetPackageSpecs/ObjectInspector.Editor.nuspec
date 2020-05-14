@@ -6,8 +6,8 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Object Inspector</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/ObjectInspector.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Allows editing the properties of selected objects.</summary>
@@ -23,6 +23,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="Icons\ObjectInspector.png" target="\icon.png" />
     <file src="..\Output\Plugins\ObjectInspector.editor.dll" target="lib\net472" />
     <file src="..\Output\Plugins\ObjectInspector.editor.pdb" target="lib\net472" />
   </files>

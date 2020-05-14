@@ -6,8 +6,8 @@
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Audio Handling Sample</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/AudioHandlingSample.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality/tree/master/Samples/AudioHandling</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Demonstrates how to handle Audio in Duality.</summary>
@@ -20,11 +20,11 @@
     <dependencies>
       <group targetFramework="netstandard2.0">
         <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
-        <dependency id="AdamsLair.Duality.Editor" version="4.0.0-alpha" />
       </group>
     </dependencies>
   </metadata>
   <files>
+    <file src="Icons\AudioHandlingSample.png" target="\icon.png" />
     <file src="..\..\Samples\AudioHandling\Content\Plugins\netstandard2.0\AudioHandling.Sample.core.dll" target="lib\netstandard2.0" />
     <file src="..\..\Samples\AudioHandling\Content\Plugins\netstandard2.0\AudioHandling.Sample.core.xml" target="lib\netstandard2.0" />
     <file src="..\..\Samples\AudioHandling\Content\Data\**\*.res" target="contentFiles\any\any\Data" />
