@@ -26,3 +26,17 @@ All framework build results will be located in the shared `Build/Output` folder.
 ### Contributing
 
 We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://docs.duality2d.net/pages/v3/how-to-contribute.html).
+
+----------
+
+### Important Note
+
+This project is no longer actively maintained. 
+
+Due to changes in my personal and professional life over the last year, I am no longer able to provide the required amount of my time to keep this project updated. As you may have noticed, there already has been an extended period of time where development activity was down compared to previous years, with me mostly focusing on reviewing PRs, providing some guidance in issue threads, and fixing smaller bugs. Unfortunately, I am now at a point where this doesn't work anymore either - meaning that from this point on, I am no longer actively maintaining the project.
+
+Duality started its development around 2011, which makes this its nine year anniversary. As with all projects of this scale, there are some areas that could still use developer attention - but I'm hoping that the project can be considered stable enough to keep being useful for a bit, and for now I'll keep the project and its infrastructure as-is. Within the realms of reason (and its license), feel free to use, fork, extend and repurpose any parts of Duality as you see fit.
+
+Thanks to all the contributors who helped me fix bugs, add features, improve the docs, and discuss design decisions. Without your help and input, the project would not have been where it is now. And of course, thanks to all the users who helped us improve Duality by pointing out both issues and use cases that might otherwise have gone unnoticed.
+
+For any questions or points for discussion, please use the [GitHub thread for this commit](https://github.com/AdamsLair/duality/commit/bd61f2753fd57839b14773bb31a0d0d628e6ec3a).
