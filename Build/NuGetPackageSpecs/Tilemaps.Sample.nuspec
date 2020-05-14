@@ -18,7 +18,7 @@
     <dependencies>
       <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="2.1.5" />
       <dependency id="AdamsLair.Duality.Editor.Plugins.Tilemaps" version="2.1.5" />
-      <dependency id="AdamsLair.Duality" version="3.2.0" />
+      <dependency id="AdamsLair.Duality" version="3.2.1" />
     </dependencies>
   </metadata>
   <files>
