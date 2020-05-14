@@ -422,9 +422,12 @@ namespace VersionUpdater
 		{
 			foreach (string dir in config.GitSearchPaths)
 			{
-				string localGitPath = Directory.EnumerateFiles(dir, "git.exe", SearchOption.TopDirectoryOnly).FirstOrDefault();
-				if (localGitPath != null)
-					return localGitPath;
+				if (Directory.Exists(dir))
+				{
+					string localGitPath = Directory.EnumerateFiles(dir, "git.exe", SearchOption.TopDirectoryOnly).FirstOrDefault();
+					if (localGitPath != null)
+						return localGitPath;
+				}
 			}
 			return null;
 		}

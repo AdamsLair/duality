@@ -4,7 +4,7 @@
   <NuSpecRootDir>../../NuGetPackageSpecs</NuSpecRootDir>
   <InstallerPackageConfigPath>../../NightlyBuild/AdditionalFiles/PackageConfig.xml</InstallerPackageConfigPath>
   <GitSearchPaths>
-    <string>C:/Program Files/Git/bin</string>
-    <string>{LocalAppData}/Atlassian/SourceTree/git_local/bin</string>
+	<string>C:/Program Files/Git/bin</string>
+	<string>{LocalAppData}/Atlassian/SourceTree/git_local/bin</string>
   </GitSearchPaths>
 </ConfigFile>
