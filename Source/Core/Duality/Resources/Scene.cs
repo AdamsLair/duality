@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 using Duality.Editor;
 using Duality.Components;
 using Duality.Components.Physics;
-using Duality.Serialization;
 using Duality.Cloning;
 using Duality.Properties;
-using Duality.Drawing;
+using Duality.Utility.Coroutines;
 
 namespace Duality.Resources
 {
@@ -261,6 +259,7 @@ namespace Duality.Resources
 		[DontSerialize] private RawList<Component> updatableComponents = new RawList<Component>(256);
 		[DontSerialize] private RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
 
+		[DontSerialize] private readonly CoroutineManager coroutineManager = new CoroutineManager();
 
 		/// <summary>
 		/// [GET / SET] The strategy that is used to determine which <see cref="ICmpRenderer">renderers</see> are visible.
@@ -289,6 +288,14 @@ namespace Duality.Resources
 		public PhysicsWorld Physics
 		{
 			get { return this.physicsWorld; }
+		}
+		/// <summary>
+		/// [GET] Returns the <see cref="Coroutine"/> manager for this <see cref="Scene"/>.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public CoroutineManager CoroutineManager
+		{
+			get { return this.coroutineManager; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all registered objects.
@@ -500,6 +507,11 @@ namespace Duality.Resources
 					this.visibilityStrategy.Update();
 				});
 				Profile.TimeUpdateScene.EndMeasure();
+
+				// Update coroutines
+				Profile.TimeUpdateCoroutines.BeginMeasure();
+				this.coroutineManager.Update();
+				Profile.TimeUpdateCoroutines.EndMeasure();
 			}
 			finally
 			{
@@ -753,7 +765,7 @@ namespace Duality.Resources
 		/// </summary>
 		public IEnumerable<T> FindComponents<T>() where T : class
 		{
-			return FindComponents(typeof(T)).OfType<T>();
+			return this.FindComponents(typeof(T)).OfType<T>();
 		}
 		/// <summary>
 		/// Finds all Components of the specified type in this Scene.
@@ -834,7 +846,7 @@ namespace Duality.Resources
 		/// </summary>
 		public T FindComponent<T>(bool activeOnly = true) where T : class
 		{
-			return FindComponent(typeof(T), activeOnly) as T;
+			return this.FindComponent(typeof(T), activeOnly) as T;
 		}
 		/// <summary>
 		/// Finds a single Component of the specified type in this Scene.

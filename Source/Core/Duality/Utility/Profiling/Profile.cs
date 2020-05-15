@@ -22,6 +22,7 @@ namespace Duality
 		public static readonly TimeCounter TimeUpdate;
 		public static readonly TimeCounter TimeUpdateScene;
 		public static readonly TimeCounter TimeUpdateSceneComponents;
+		public static readonly TimeCounter TimeUpdateCoroutines;
 		public static readonly TimeCounter TimeUpdateAudio;
 		public static readonly TimeCounter TimeUpdatePhysics;
 		public static readonly TimeCounter TimeUpdatePhysicsContacts;
@@ -62,6 +63,7 @@ namespace Duality
 			TimeUpdatePhysicsSolve      = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\Solve");
 			TimeUpdateScene             = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene");
 			TimeUpdateSceneComponents   = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene\All Components");
+			TimeUpdateCoroutines        = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene\Coroutines");
 			TimeUpdateAudio             = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Audio");
 			TimeRender                  = RequestCounter<TimeCounter>(@"Duality\Frame\Render");
 			TimeSwapBuffers             = RequestCounter<TimeCounter>(@"Duality\Frame\Render\SwapBuffers");
