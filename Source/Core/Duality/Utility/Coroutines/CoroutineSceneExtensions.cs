@@ -15,9 +15,9 @@ namespace Duality.Utility.Coroutines
 		/// <param name="method">The coroutine implementation</param>
 		/// <param name="name">The name of the coroutine, optional</param>
 		/// <returns>The created corutine</returns>
-		public static Coroutine StartCoroutine(this Scene scene, IEnumerable<WaitUntil> method, string name = null)
+		public static Coroutine StartCoroutine(this Scene scene, IEnumerable<WaitUntil> method)
 		{
-			return scene.CoroutineManager.StartNew(method, name);
+			return scene.CoroutineManager.StartNew(method);
 		}
 	}
 }

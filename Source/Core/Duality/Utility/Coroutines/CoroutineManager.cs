@@ -28,7 +28,7 @@ namespace Duality.Utility.Coroutines
 		/// <param name="enumerator">The Coroutine's execution body</param>
 		/// <param name="name">The name of the Coroutine</param>
 		/// <returns>The prepared Coroutine</returns>
-		public Coroutine StartNew(IEnumerable<WaitUntil> enumerator, string name)
+		public Coroutine StartNew(IEnumerable<WaitUntil> enumerator)
 		{
 			Coroutine coroutine;
 			if (this.pool.Count > 0)
@@ -36,7 +36,7 @@ namespace Duality.Utility.Coroutines
 			else
 				coroutine = new Coroutine();
 
-			coroutine.Setup(enumerator, name);
+			coroutine.Setup(enumerator);
 			coroutine.Update(); // run once as initialization phase, to get past the first Invalid (not yet set) Wait condition
 
 			this.nextCycle.Enqueue(coroutine);
