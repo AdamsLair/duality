@@ -398,6 +398,7 @@ namespace Duality
 			foreach (int i in indexPath)
 			{
 				if (i < 0) return null;
+				if (curObj.children == null) return null;
 				if (i >= curObj.children.Count) return null;
 				curObj = curObj.children[i];
 			}
