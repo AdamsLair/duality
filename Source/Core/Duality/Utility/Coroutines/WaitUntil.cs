@@ -14,7 +14,7 @@ namespace Duality.Utility.Coroutines
 			Frames,
 			GameTime,
 			RealTime,
-			Coroutine
+			Function
 		}
 
 		/// <summary>
@@ -23,7 +23,7 @@ namespace Duality.Utility.Coroutines
 		public static readonly WaitUntil NextFrame = new WaitUntil(1, WaitType.Frames);
 
 		private float internalValue;
-		private readonly Func<bool> subroutineMoveNext;
+		private readonly Func<float> updaterFunction;
 		private readonly WaitType type;
 
 		public bool IsComplete
@@ -34,15 +34,15 @@ namespace Duality.Utility.Coroutines
 		private WaitUntil(float startingValue, WaitType type)
 		{
 			this.internalValue = startingValue;
-			this.subroutineMoveNext = null;
+			this.updaterFunction = null;
 			this.type = type;
 		}
 
-		private WaitUntil(Func<bool> subroutineMoveNext)
+		private WaitUntil(Func<float> coroutineUpdate)
 		{
 			this.internalValue = float.PositiveInfinity;
-			this.subroutineMoveNext = subroutineMoveNext;
-			this.type = WaitType.Coroutine;
+			this.updaterFunction = coroutineUpdate;
+			this.type = WaitType.Function;
 		}
 
 		internal void Update()
@@ -61,8 +61,8 @@ namespace Duality.Utility.Coroutines
 					this.internalValue -= Time.UnscaledDeltaTime;
 					break;
 
-				case WaitType.Coroutine:
-					this.internalValue = this.subroutineMoveNext() ? float.PositiveInfinity : 0;
+				case WaitType.Function:
+					this.internalValue = this.updaterFunction();
 					break;
 			}
 		}
@@ -100,7 +100,7 @@ namespace Duality.Utility.Coroutines
 		}
 
 		/// <summary>
-		/// Waits until the 
+		/// Waits until the passed coroutine implementation has ended its execution
 		/// </summary>
 		/// <param name="coroutine"></param>
 		/// <returns></returns>
@@ -110,7 +110,7 @@ namespace Duality.Utility.Coroutines
 			enumerator.MoveNext();
 
 			WaitUntil currentCondition = enumerator.Current;
-			return new WaitUntil(() => CoroutineHelper.MoveNext(enumerator, ref currentCondition));
+			return new WaitUntil(() => CoroutineHelper.MoveNext(enumerator, ref currentCondition) ? float.PositiveInfinity : 0);
 		}
 	}
 }
