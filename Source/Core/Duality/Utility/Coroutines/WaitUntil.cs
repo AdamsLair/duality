@@ -13,7 +13,8 @@ namespace Duality.Utility.Coroutines
 		{
 			Frames,
 			GameTime,
-			RealTime
+			RealTime,
+			Coroutine
 		}
 
 		/// <summary>
@@ -21,8 +22,9 @@ namespace Duality.Utility.Coroutines
 		/// </summary>
 		public static readonly WaitUntil NextFrame = new WaitUntil(1, WaitType.Frames);
 
-		private readonly WaitType type;
 		private float internalValue;
+		private readonly Func<bool> subroutineMoveNext;
+		private readonly WaitType type;
 
 		public bool IsComplete
 		{
@@ -32,7 +34,15 @@ namespace Duality.Utility.Coroutines
 		private WaitUntil(float startingValue, WaitType type)
 		{
 			this.internalValue = startingValue;
+			this.subroutineMoveNext = null;
 			this.type = type;
+		}
+
+		private WaitUntil(Func<bool> subroutineMoveNext)
+		{
+			this.internalValue = float.PositiveInfinity;
+			this.subroutineMoveNext = subroutineMoveNext;
+			this.type = WaitType.Coroutine;
 		}
 
 		internal void Update()
@@ -49,6 +59,10 @@ namespace Duality.Utility.Coroutines
 
 				case WaitType.RealTime:
 					this.internalValue -= Time.UnscaledDeltaTime;
+					break;
+
+				case WaitType.Coroutine:
+					this.internalValue = this.subroutineMoveNext() ? float.PositiveInfinity : 0;
 					break;
 			}
 		}
@@ -83,6 +97,20 @@ namespace Duality.Utility.Coroutines
 		public static WaitUntil TimeSpan(TimeSpan timeSpan, bool realTime = false)
 		{
 			return WaitUntil.Seconds((float)timeSpan.TotalSeconds, realTime);
+		}
+
+		/// <summary>
+		/// Waits until the 
+		/// </summary>
+		/// <param name="coroutine"></param>
+		/// <returns></returns>
+		public static WaitUntil CoroutineEnds(IEnumerable<WaitUntil> coroutine)
+		{
+			IEnumerator<WaitUntil> enumerator = coroutine.GetEnumerator();
+			enumerator.MoveNext();
+
+			WaitUntil currentCondition = enumerator.Current;
+			return new WaitUntil(() => CoroutineHelper.MoveNext(enumerator, ref currentCondition));
 		}
 	}
 }

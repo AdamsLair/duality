@@ -37,7 +37,7 @@ namespace Duality.Utility.Coroutines
 				coroutine = new Coroutine();
 
 			coroutine.Setup(enumerator);
-			coroutine.Update(); // run once as initialization phase, to get past the first Invalid (not yet set) Wait condition
+			coroutine.Update(); // run once as initialization phase, to position the enumerator on the first WaitUntil condiiton
 
 			this.nextCycle.Enqueue(coroutine);
 			return coroutine;

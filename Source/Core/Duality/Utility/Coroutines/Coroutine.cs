@@ -46,14 +46,8 @@ namespace Duality.Utility.Coroutines
 
 			try
 			{
-				this.currentCondition.Update();
-				if (this.currentCondition.IsComplete)
-				{
-					if (this.enumerator.MoveNext())
-						this.currentCondition = this.enumerator.Current;
-					else
-						this.Status = CoroutineStatus.Complete;
-				}
+				if(!CoroutineHelper.MoveNext(this.enumerator, ref this.currentCondition))
+					this.Status = CoroutineStatus.Complete;
 			}
 			catch (Exception e)
 			{
@@ -87,6 +81,32 @@ namespace Duality.Utility.Coroutines
 		{
 			this.enumerator.Dispose();
 			this.Status = CoroutineStatus.Cancelled;
+		}
+	}
+
+	/// <summary>
+	/// Helper class for advancing a coroutine's enumerator 
+	/// </summary>
+	internal static class CoroutineHelper
+	{
+		/// <summary>
+		/// Evaluates the current condition, and moves to the next one, if it exists
+		/// </summary>
+		/// <param name="enumerator">The Coroutine's enumerator</param>
+		/// <param name="currentCondition">The Coroutine's current wait condition</param>
+		/// <returns>True if it found another WaitUntil item, false otherwise</returns>
+		public static bool MoveNext(IEnumerator<WaitUntil> enumerator, ref WaitUntil currentCondition)
+		{
+			currentCondition.Update();
+
+			if (currentCondition.IsComplete)
+			{
+				if (enumerator.MoveNext())
+					currentCondition = enumerator.Current;
+				else
+					return false;
+			}
+			return true;
 		}
 	}
 }
