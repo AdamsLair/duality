@@ -21,10 +21,10 @@ namespace Duality.Editor
 	{
 		public static readonly string DualityLauncherExecFile			= "DualityLauncher.exe";
 		public static readonly string BackupDirectory					= "Backup";
-		public static readonly string SourceDirectory					= "Source";
+		public static readonly string SourceDirectory					= "..";
 
-		public static readonly string SourceMediaDirectory				= Path.Combine(SourceDirectory, "Media");
-		public static readonly string SourceCodeDirectory				= Path.Combine(SourceDirectory, "Code");
+		public static readonly string AssetsDirectory				= Path.Combine(SourceDirectory, "assets");
+		public static readonly string SourceCodeDirectory				= Path.Combine(SourceDirectory, "src");
 
 		public static readonly string GlobalUserDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality");
 

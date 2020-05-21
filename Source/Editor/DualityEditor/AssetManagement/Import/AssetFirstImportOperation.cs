@@ -44,13 +44,13 @@ namespace Duality.Editor.AssetManagement
 			if (PathOp.ArePathsEqual(targetBaseDir, DualityApp.DataDirectory))
 			{
 				this.targetDir = DualityApp.DataDirectory;
-				this.sourceDir = EditorHelper.SourceMediaDirectory;
+				this.sourceDir = EditorHelper.AssetsDirectory;
 			}
 			else
 			{
 				string baseDir = PathHelper.MakeFilePathRelative(targetBaseDir, DualityApp.DataDirectory);
 				this.targetDir = Path.Combine(DualityApp.DataDirectory, baseDir);
-				this.sourceDir = Path.Combine(EditorHelper.SourceMediaDirectory, baseDir);
+				this.sourceDir = Path.Combine(EditorHelper.AssetsDirectory, baseDir);
 			}
 
 			string[] inputFileArray = inputFiles.ToArray();
