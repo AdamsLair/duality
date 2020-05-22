@@ -112,7 +112,7 @@ namespace Duality.Editor
 			sourceDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
 			sourceDirWatcher.EnableRaisingEvents = false;
 			sourceDirWatcher.IncludeSubdirectories = true;
-			sourceDirWatcher.Path = EditorHelper.SourceCodeDirectory;
+			sourceDirWatcher.Path = EditorHelper.SourceDirectory;
 			sourceDirWatcher.Created += fileSystemWatcher_ForwardSource;
 			sourceDirWatcher.Changed += fileSystemWatcher_ForwardSource;
 			sourceDirWatcher.Deleted += fileSystemWatcher_ForwardSource;
