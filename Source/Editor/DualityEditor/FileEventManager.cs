@@ -123,7 +123,7 @@ namespace Duality.Editor
 			assetsDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
 			assetsDirWatcher.EnableRaisingEvents = false;
 			assetsDirWatcher.IncludeSubdirectories = true;
-			assetsDirWatcher.Path = EditorHelper.AssetsDirectory;
+			assetsDirWatcher.Path = EditorHelper.ImportDirectory;
 			assetsDirWatcher.Created += fileSystemWatcher_ForwardSource;
 			assetsDirWatcher.Changed += fileSystemWatcher_ForwardSource;
 			assetsDirWatcher.Deleted += fileSystemWatcher_ForwardSource;
@@ -499,7 +499,7 @@ namespace Duality.Editor
 				// Mind modified source files for re-import
 				if (fileEvent.Type == FileEventType.Changed)
 				{
-					if (File.Exists(fileEvent.Path) && PathOp.IsPathLocatedIn(fileEvent.Path, EditorHelper.AssetsDirectory)) 
+					if (File.Exists(fileEvent.Path) && PathOp.IsPathLocatedIn(fileEvent.Path, EditorHelper.ImportDirectory)) 
 						reimportSchedule.Add(fileEvent.Path);
 				}
 			}
@@ -541,7 +541,7 @@ namespace Duality.Editor
 			else
 			{
 				string mediaPath = Path.Combine(
-					EditorHelper.AssetsDirectory, 
+					EditorHelper.ImportDirectory, 
 					PathHelper.MakeFilePathRelative(deleteEvent.Path, DualityApp.DataDirectory));
 				if (Directory.Exists(mediaPath))
 				{
@@ -594,12 +594,12 @@ namespace Duality.Editor
 			{
 				// Determine which source/media directory we're going to move
 				string oldMediaPath = Path.Combine(
-					EditorHelper.AssetsDirectory, 
+					EditorHelper.ImportDirectory, 
 					PathHelper.MakeFilePathRelative(renameEvent.OldPath, DualityApp.DataDirectory));
 
 				// Determine where that old source/media directory needs to be moved
 				string newMediaPath = Path.Combine(
-					EditorHelper.AssetsDirectory, 
+					EditorHelper.ImportDirectory, 
 					PathHelper.MakeFilePathRelative(renameEvent.Path, DualityApp.DataDirectory));
 
 				// Move the media directory to mirror the data directories movement

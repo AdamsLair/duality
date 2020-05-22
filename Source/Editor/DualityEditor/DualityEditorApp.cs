@@ -211,8 +211,7 @@ namespace Duality.Editor
 				fileInfoIcon.Attributes |= FileAttributes.Hidden;
 			}
 			if (!Directory.Exists(DualityApp.PluginDirectory)) Directory.CreateDirectory(DualityApp.PluginDirectory);
-			if (!Directory.Exists(EditorHelper.SourceDirectory)) Directory.CreateDirectory(EditorHelper.SourceDirectory);
-			if (!Directory.Exists(EditorHelper.AssetsDirectory)) Directory.CreateDirectory(EditorHelper.AssetsDirectory);
+			if (!Directory.Exists(EditorHelper.ImportDirectory)) Directory.CreateDirectory(EditorHelper.ImportDirectory);
 			if (!Directory.Exists(EditorHelper.SourceCodeDirectory)) Directory.CreateDirectory(EditorHelper.SourceCodeDirectory);
 
 			// Initialize Duality
