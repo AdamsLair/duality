@@ -19,12 +19,12 @@ namespace Duality.Editor
 {
 	public static class EditorHelper
 	{
-		public static readonly string DualityLauncherExecFile			= "DualityLauncher.exe";
-		public static readonly string BackupDirectory					= "Backup";
-		public static readonly string RootDirectory					= "..";
+		public static readonly string DualityLauncherExecFile = "DualityLauncher.exe";
+		public static readonly string BackupDirectory = "Backup";
+		public static readonly string RootDirectory = "..";
 
-		public static readonly string ImportDirectory				= Path.Combine(RootDirectory, "Import");
-		public static readonly string SourceDirectory				= Path.Combine(RootDirectory, "Source");
+		public static readonly string ImportDirectory = Path.Combine(RootDirectory, "Import");
+		public static readonly string SourceDirectory = Path.Combine(RootDirectory, "Source");
 
 		public static readonly string GlobalUserDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality");
 
@@ -40,8 +40,8 @@ namespace Duality.Editor
 				if (Directory.Exists(SourceDirectory))
 				{
 					sourceCodeSolutionFilePath = Directory.EnumerateFiles(
-						SourceDirectory, 
-						"*.sln", 
+						SourceDirectory,
+						"*.sln",
 						SearchOption.AllDirectories)
 						.FirstOrDefault();
 				}
@@ -106,7 +106,7 @@ namespace Duality.Editor
 					// that isn't a Form will just return null. In other cases, will throw an exception.
 				}
 			}
-			
+
 			return result;
 		}
 		public static Control GetFocusedControl()
@@ -125,7 +125,7 @@ namespace Duality.Editor
 		private class ImageOverlaySet
 		{
 			private Image baseImage;
-			private Dictionary<Image,Image> overlayDict;
+			private Dictionary<Image, Image> overlayDict;
 
 			public Image Base
 			{
@@ -135,7 +135,7 @@ namespace Duality.Editor
 			public ImageOverlaySet(Image baseImage)
 			{
 				this.baseImage = baseImage;
-				this.overlayDict = new Dictionary<Image,Image>();;
+				this.overlayDict = new Dictionary<Image, Image>(); ;
 			}
 			public Image GetOverlay(Image overlayImage)
 			{
@@ -152,7 +152,7 @@ namespace Duality.Editor
 				return baseWithOverlay;
 			}
 		}
-		private static Dictionary<Image,ImageOverlaySet> overlayCache = new Dictionary<Image,ImageOverlaySet>();
+		private static Dictionary<Image, ImageOverlaySet> overlayCache = new Dictionary<Image, ImageOverlaySet>();
 		public static Image GetImageWithOverlay(Image baseImage, Image overlayImage)
 		{
 			ImageOverlaySet overlaySet;
