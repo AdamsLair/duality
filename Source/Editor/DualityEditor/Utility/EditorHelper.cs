@@ -1,19 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
-using System.IO.Compression;
-using System.Xml.Linq;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using System.Drawing;
-using System.Reflection;
-using Microsoft.Win32;
-
-using Duality;
-using Duality.IO;
-using Duality.Serialization;
 
 namespace Duality.Editor
 {
