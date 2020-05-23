@@ -1,0 +1,38 @@
+<Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <AllowedReferenceRelatedFileExtensions>.pdb</AllowedReferenceRelatedFileExtensions>
+    <RuntimeIdentifier>any</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <Target Name="CopyNugetPackageFiles" BeforeTargets="Build">
+    <ItemGroup>
+      <PackageReferenceFiles Include="%(Reference.RelativeDir)%(Reference.Filename).xml;%(Reference.RelativeDir)%(Reference.Filename).pdb" />
+    </ItemGroup>
+    
+    <Message Text="Copying nuget package files to $(OutputPath)" Importance="High" />
+    <Copy SourceFiles="@(PackageReferenceFiles)" DestinationFolder="$(OutputPath)" Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
+  </Target>
+
+  <Target Name="CopyBuildOutputToDeploy" AfterTargets="Build">
+    <ItemGroup>
+      <PluginFiles Include="$(OutputPath)*.core.dll;$(OutputPath)*.core.pdb;$(OutputPath)*.core.xml;$(OutputPath)*.editor.dll;$(OutputPath)*.editor.pdb;$(OutputPath)*.editor.xml" />
+      <LibFiles Include="$(OutputPath)**/*" Exclude="@(PluginFiles)" />
+    </ItemGroup>
+
+    <Message Text="Copying plugin files to $(DeployFolder)Plugins" Importance="High" />
+    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(DeployFolder)Plugins" />
+
+    <Message Text="Copying lib files to $(DeployFolder)" Importance="High" />
+    <Copy SourceFiles="@(LibFiles)" DestinationFiles="@(LibFiles->'$(DeployFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
+  <Target Name="CoreCompile" />
+  <PropertyGroup>
+    <SkipCopyBuildProduct>true</SkipCopyBuildProduct>
+  </PropertyGroup>
+</Project>

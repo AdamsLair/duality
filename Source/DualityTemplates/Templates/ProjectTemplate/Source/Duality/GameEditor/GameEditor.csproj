@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  
+  <ItemGroup>
+    <PackageReference Include="AdamsLair.Duality.Editor.Backend.DefaultOpenTK" Version="4.0.0-alpha" />
+    <PackageReference Include="AdamsLair.Duality.Editor.Plugins.Base" Version="4.0.0-alpha" />
+    <PackageReference Include="AdamsLair.Duality.Editor.Plugins.CamView" Version="4.0.0-alpha" />
+    <PackageReference Include="AdamsLair.Duality.Editor.Plugins.HelpAdvisor" Version="4.0.0-alpha" />
+    <PackageReference Include="AdamsLair.Duality.Editor.Plugins.LogView" Version="4.0.0-alpha" />
+    <PackageReference Include="AdamsLair.Duality.Editor.Plugins.ObjectInspector" Version="4.0.0-alpha" />
+    <PackageReference Include="AdamsLair.Duality.Editor.Plugins.ProjectView" Version="4.0.0-alpha" />
+    <PackageReference Include="AdamsLair.Duality.Editor.Plugins.SceneView" Version="4.0.0-alpha" />
+    <PackageReference Include="AdamsLair.Duality.Editor" Version="4.0.0-alpha" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\GameLauncher\GameLauncher.csproj" >
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  
+</Project>
