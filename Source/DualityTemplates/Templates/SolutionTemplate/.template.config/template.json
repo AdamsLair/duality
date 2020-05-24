@@ -12,5 +12,17 @@
 			"fileRename": "DualityGame",
 			"isRequired": true
 		}
-	}
+	},
+	"postActions": [{
+		"actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D2",
+		"args": {
+			"executable": "dotnet",
+			"args": "build Source"
+		},
+		"manualInstructions": [{ 
+		   "text": "Builds the solution using dotnet build'" 
+		   }],
+		"continueOnError": false,
+		"description ": "runs the build"
+	  }]
 }
