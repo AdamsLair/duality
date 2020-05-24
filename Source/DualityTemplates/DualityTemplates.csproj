@@ -18,7 +18,10 @@
 
 	<ItemGroup>
 		<Content Include="Templates\**\*" CopyToOutputDirectory="PreserveNewest" />
-		<Compile Remove="**\*" />
+		<Content Remove="Templates\**\obj\**" />
+		<None Remove="Templates\**\obj\**" />
+		<Content Remove="Templates\**\.vs\**" />
+		<Compile Remove="**\*" />	
 	</ItemGroup>
 
 	<ItemGroup>
@@ -28,7 +31,7 @@
 	</ItemGroup>
 
 	<Target Name="CreateZips" AfterTargets="Build">
-		<ZipDirectory SourceDirectory="$(OutputPath)/Templates/ProjectTemplate" DestinationFile="$(OutputPath)\Duality.zip" Overwrite="true"/>
+		<ZipDirectory SourceDirectory="$(OutputPath)/Templates/ProjectTemplate" DestinationFile="$(OutputPath)\Duality.zip" Overwrite="true" />
 	</Target>
 
 </Project>
