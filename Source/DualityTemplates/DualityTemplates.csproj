@@ -2,11 +2,10 @@
 
 	<PropertyGroup>
 		<PackageType>Template</PackageType>
-		<PackageVersion>4.0.0</PackageVersion>
-		<PackageId>DualityProjectTemplate</PackageId>
-		<Title>DualityProjectTemplate</Title>
-		<Authors>Me</Authors>
-		<Description>Templates to use when creating a new duality project</Description>
+		<PackageId>DualityTemplates</PackageId>
+		<Title>DualityTemplates</Title>
+		<Authors>Rick van Dam</Authors>
+		<Description>Templates to use with the Duality game engine</Description>
 		<PackageTags>dotnet-new;templates;duality</PackageTags>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -14,6 +13,10 @@
 		<IncludeContentInPack>true</IncludeContentInPack>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<ContentTargetFolders>content</ContentTargetFolders>
+		<Version>4.0.0</Version>
+		<PackageProjectUrl>https://www.duality2d.net/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/AdamsLair/duality</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,13 +28,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Update="Templates\ProjectTemplate\.template.config\template.json">
+		<Content Update="Templates\SolutionTemplate\.template.config\template.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 
 	<Target Name="CreateZips" AfterTargets="Build">
-		<ZipDirectory SourceDirectory="$(OutputPath)/Templates/ProjectTemplate" DestinationFile="$(OutputPath)\Duality.zip" Overwrite="true" />
+		<ZipDirectory SourceDirectory="$(OutputPath)/Templates/SolutionTemplate" DestinationFile="$(OutputPath)\Duality.zip" Overwrite="true" />
 	</Target>
 
 </Project>

@@ -2,9 +2,9 @@
 	"$schema": "http://json.schemastore.org/template",
 	"author": "Rick van Dam",
 	"classifications": [ "Duality" ],
-	"identity": "DualityProjectTemplate",
-	"name": "DualityProjectTemplate",
-	"shortName": "duality",
+	"identity": "DualitySolutionTemplate",
+	"name": "DualitySolutionTemplate",
+	"shortName": "dualitySolution",
 	"symbols": {
 		"gameName": {
 			"type": "parameter",
