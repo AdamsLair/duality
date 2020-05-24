@@ -17,6 +17,8 @@
 		<PackageProjectUrl>https://www.duality2d.net/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/AdamsLair/duality</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>None</DebugType>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -35,6 +37,12 @@
 
 	<Target Name="CreateZips" AfterTargets="Build">
 		<ZipDirectory SourceDirectory="$(OutputPath)/Templates/SolutionTemplate" DestinationFile="$(OutputPath)\Duality.zip" Overwrite="true" />
+		<RemoveDir Directories="$(OutputPath)/Templates" />
 	</Target>
 
+
+	<Target Name="CoreCompile" />
+	<PropertyGroup>
+		<SkipCopyBuildProduct>true</SkipCopyBuildProduct>
+	</PropertyGroup>
 </Project>
