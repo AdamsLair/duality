@@ -6,12 +6,12 @@ using System.Text;
 
 using Duality;
 
-namespace __Namespace__
+namespace DualityGameCorePlugin
 {
 	/// <summary>
 	/// Defines a Duality core plugin.
 	/// </summary>
-	public class __CorePluginClassName__ : CorePlugin
+	public class DualityGameCorePlugin : CorePlugin
 	{
 		// Override methods here for global logic
 	}

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameLauncher", "Duality\Gam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameEditor", "Duality\GameEditor\GameEditor.csproj", "{E587311C-714A-4078-ADAE-EC00E8D971CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamePlugin", "Plugins\GamePlugin\GamePlugin.csproj", "{E77740F1-234A-4B92-B1BC-43AD9EB9BA03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DualityGameCorePlugin", "Plugins\DualityGameCorePlugin\DualityGameCorePlugin.csproj", "{E77740F1-234A-4B92-B1BC-43AD9EB9BA03}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{F75B2813-797D-44A5-A301-331C229992C7}"
 EndProject

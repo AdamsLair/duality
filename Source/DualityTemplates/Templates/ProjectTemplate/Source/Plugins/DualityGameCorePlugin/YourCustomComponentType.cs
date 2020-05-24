@@ -5,7 +5,7 @@ using System.Linq;
 
 using Duality;
 
-namespace __Namespace__
+namespace DualityGameCorePlugin
 {
 	public class YourCustomComponentType : Component
 	{

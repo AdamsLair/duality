@@ -4,5 +4,13 @@
 	"classifications": [ "Duality" ],
 	"identity": "DualityProjectTemplate",
 	"name": "DualityProjectTemplate",
-	"shortName": "DualityProjectTemplate"
+	"shortName": "duality",
+	"symbols": {
+		"gameName": {
+			"type": "parameter",
+			"replaces": "DualityGameCorePlugin",
+			"fileRename": "DualityGameCorePlugin",
+			"isRequired": true
+		}
+	}
 }
