@@ -8,8 +8,8 @@
 	"symbols": {
 		"gameName": {
 			"type": "parameter",
-			"replaces": "DualityGameCorePlugin",
-			"fileRename": "DualityGameCorePlugin",
+			"replaces": "DualityGame",
+			"fileRename": "DualityGame",
 			"isRequired": true
 		}
 	}
