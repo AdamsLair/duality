@@ -21,13 +21,13 @@
 		<Content Remove="Templates\**\obj\**" />
 		<None Remove="Templates\**\obj\**" />
 		<Content Remove="Templates\**\.vs\**" />
-		<Compile Remove="**\*" />	
+		<Compile Remove="**\*" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Update="Templates\ProjectTemplate\.template.config\template.json">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	  </Content>
+		<Content Update="Templates\ProjectTemplate\.template.config\template.json">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<Target Name="CreateZips" AfterTargets="Build">
