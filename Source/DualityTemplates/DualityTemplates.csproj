@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<PackageType>Template</PackageType>
-		<PackageId>DualityTemplates</PackageId>
-		<Title>DualityTemplates</Title>
+		<PackageId>AdamsLair.Duality.Templates</PackageId>
+		<Title>Duality Templates</Title>
 		<Authors>Rick van Dam</Authors>
 		<Description>Templates to use with the Duality game engine</Description>
 		<PackageTags>dotnet-new;templates;duality</PackageTags>
