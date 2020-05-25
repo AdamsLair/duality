@@ -17,7 +17,7 @@ namespace Duality.Editor
 		private string importPath = "Import";
 
 		/// <summary>
-		/// [GET / SET] The name of your application / game. It will also be used as a window title by the launcher app.
+		/// [GET / SET] The path to the source code of your game.
 		/// </summary>
 		public string SourcePath
 		{
@@ -26,7 +26,7 @@ namespace Duality.Editor
 		}
 
 		/// <summary>
-		/// [GET / SET] The name of your application / game. It will also be used as a window title by the launcher app.
+		/// [GET / SET] The path to the import folder.
 		/// </summary>
 		public string ImportPath
 		{
