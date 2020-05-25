@@ -235,11 +235,7 @@ namespace Duality.Editor
 				FileInfo fileInfoIcon = new FileInfo(Path.Combine(DualityApp.DataDirectory, "WorkingFolderIcon.ico"));
 				fileInfoIcon.Attributes |= FileAttributes.Hidden;
 			}
-			LoadEditorAppData();
-			SaveEditorAppData();
-			if (!Directory.Exists(DualityApp.PluginDirectory)) Directory.CreateDirectory(DualityApp.PluginDirectory);
-			if (!Directory.Exists(EditorAppData.ImportPath)) Directory.CreateDirectory(EditorAppData.ImportPath);
-			if (!Directory.Exists(EditorAppData.SourcePath)) Directory.CreateDirectory(EditorAppData.SourcePath);
+
 
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
@@ -259,6 +255,12 @@ namespace Duality.Editor
 			// Need to initialize graphics context and default content before instantiating anything that could require any of them
 			InitMainGraphicsContext();
 			DualityApp.InitPostWindow();
+
+			LoadEditorAppData();
+			SaveEditorAppData();
+			if (!Directory.Exists(DualityApp.PluginDirectory)) Directory.CreateDirectory(DualityApp.PluginDirectory);
+			if (!Directory.Exists(EditorAppData.ImportPath)) Directory.CreateDirectory(EditorAppData.ImportPath);
+			if (!Directory.Exists(EditorAppData.SourcePath)) Directory.CreateDirectory(EditorAppData.SourcePath);
 
 			LoadUserData();
 
