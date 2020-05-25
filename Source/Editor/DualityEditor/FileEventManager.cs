@@ -29,7 +29,7 @@ namespace Duality.Editor
 		private static FileSystemWatcher dataDirWatcherFile      = null;
 		private static FileSystemWatcher dataDirWatcherDirectory = null;
 		private static FileSystemWatcher sourceDirWatcher        = null;
-		private static FileSystemWatcher assetsDirWatcher        = null;
+		private static FileSystemWatcher importDirWatcher        = null;
 		private static HashSet<string>   reimportSchedule        = new HashSet<string>();
 		private static HashSet<string>   editorModifiedFiles     = new HashSet<string>();
 		private static HashSet<string>   editorModifiedFilesLast = new HashSet<string>();
@@ -119,16 +119,16 @@ namespace Duality.Editor
 			sourceDirWatcher.Renamed += fileSystemWatcher_ForwardSource;
 			sourceDirWatcher.EnableRaisingEvents = true;
 
-			assetsDirWatcher = new FileSystemWatcher();
-			assetsDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
-			assetsDirWatcher.EnableRaisingEvents = false;
-			assetsDirWatcher.IncludeSubdirectories = true;
-			assetsDirWatcher.Path = DualityEditorApp.EditorAppData.ImportPath;
-			assetsDirWatcher.Created += fileSystemWatcher_ForwardSource;
-			assetsDirWatcher.Changed += fileSystemWatcher_ForwardSource;
-			assetsDirWatcher.Deleted += fileSystemWatcher_ForwardSource;
-			assetsDirWatcher.Renamed += fileSystemWatcher_ForwardSource;
-			assetsDirWatcher.EnableRaisingEvents = true;
+			importDirWatcher = new FileSystemWatcher();
+			importDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
+			importDirWatcher.EnableRaisingEvents = false;
+			importDirWatcher.IncludeSubdirectories = true;
+			importDirWatcher.Path = DualityEditorApp.EditorAppData.ImportPath;
+			importDirWatcher.Created += fileSystemWatcher_ForwardSource;
+			importDirWatcher.Changed += fileSystemWatcher_ForwardSource;
+			importDirWatcher.Deleted += fileSystemWatcher_ForwardSource;
+			importDirWatcher.Renamed += fileSystemWatcher_ForwardSource;
+			importDirWatcher.EnableRaisingEvents = true;
 
 			// Register events
 			DualityEditorApp.EditorIdling += DualityEditorApp_EditorIdling;
