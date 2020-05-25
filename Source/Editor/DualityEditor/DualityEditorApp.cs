@@ -65,7 +65,7 @@ namespace Duality.Editor
 		private	static ContentRef<Scene>			lastOpenScene		= null;
 		private	static bool							startWithLastScene	= true;
 		private	static EditorLogOutput			memoryLogOutput		= null;
-
+		private static DualityEditorAppData editorAppData = null;
 
 		public	static	event	EventHandler	Terminating			= null;
 		public	static	event	EventHandler	EventLoopIdling		= null;
@@ -130,6 +130,22 @@ namespace Duality.Editor
 		{
 			get { return firstEditorSession; }
 		}
+		/// <summary>
+		/// [GET] Returns the path where this DualityApp's <see cref="DualityAppData">application data</see> is located at.
+		/// </summary>
+		public static string EditorAppDataPath
+		{
+			get { return "EditorAppData.dat"; }
+		}
+		/// <summary>
+		/// [GET / SET] Provides access to Duality's current <see cref="DualityEditorAppData">application data</see>. This is never null.
+		/// Any kind of data change event is fired as soon as you re-assign this property. Be sure to do that after changing its data.
+		/// </summary>
+		public static DualityEditorAppData EditorAppData
+		{
+			get { return editorAppData; }
+			set { editorAppData = value ?? new DualityEditorAppData(); }
+		}
 		public static bool BackupsEnabled
 		{
 			get { return backupsEnabled; }
@@ -172,8 +188,17 @@ namespace Duality.Editor
 				return !NativeMethods.PeekMessage(out msg, IntPtr.Zero, 0, 0, 0);
 			 }
 		}
-		
-		
+
+		public static void LoadEditorAppData()
+		{
+			editorAppData = Serializer.TryReadObject<DualityEditorAppData>(EditorAppDataPath) ?? new DualityEditorAppData();
+		}
+
+		public static void SaveEditorAppData()
+		{
+			Serializer.WriteObject(editorAppData, EditorAppDataPath, typeof(XmlSerializer));
+		}
+
 		public static void Init(MainForm mainForm, bool recover)
 		{
 			DualityEditorApp.needsRecovery = recover;
@@ -210,9 +235,11 @@ namespace Duality.Editor
 				FileInfo fileInfoIcon = new FileInfo(Path.Combine(DualityApp.DataDirectory, "WorkingFolderIcon.ico"));
 				fileInfoIcon.Attributes |= FileAttributes.Hidden;
 			}
+			LoadEditorAppData();
+			SaveEditorAppData();
 			if (!Directory.Exists(DualityApp.PluginDirectory)) Directory.CreateDirectory(DualityApp.PluginDirectory);
-			if (!Directory.Exists(EditorHelper.ImportDirectory)) Directory.CreateDirectory(EditorHelper.ImportDirectory);
-			if (!Directory.Exists(EditorHelper.SourceDirectory)) Directory.CreateDirectory(EditorHelper.SourceDirectory);
+			if (!Directory.Exists(EditorAppData.ImportPath)) Directory.CreateDirectory(EditorAppData.ImportPath);
+			if (!Directory.Exists(EditorAppData.SourcePath)) Directory.CreateDirectory(EditorAppData.SourcePath);
 
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
@@ -234,6 +261,7 @@ namespace Duality.Editor
 			DualityApp.InitPostWindow();
 
 			LoadUserData();
+
 			pluginManager.InitPlugins();
 
 
@@ -1013,6 +1041,8 @@ namespace Duality.Editor
 					// This is probably not the best idea for generalized behaviour, but sufficient for now
 					if (args.Objects.OtherObjects.Any(o => o is DualityAppData))
 						DualityApp.SaveAppData();
+					if (args.Objects.OtherObjects.Any(o => o is DualityEditorAppData))
+						DualityEditorApp.SaveEditorAppData();
 					else if (args.Objects.OtherObjects.Any(o => o is DualityUserData))
 						DualityApp.SaveUserData();
 				}

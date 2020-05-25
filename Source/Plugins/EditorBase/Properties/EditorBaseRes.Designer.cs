@@ -533,6 +533,15 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Editor Application Data.
+        /// </summary>
+        internal static string MenuItemName_EditorAppData {
+            get {
+                return ResourceManager.GetString("MenuItemName_EditorAppData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove.
         /// </summary>
         internal static string MenuItemName_RemoveComponent {

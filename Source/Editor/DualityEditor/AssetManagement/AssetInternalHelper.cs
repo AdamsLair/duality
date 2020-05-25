@@ -29,7 +29,7 @@ namespace Duality.Editor.AssetManagement
 		{
 			string resFullNameInData = PathHelper.MakeFilePathRelative(resource.FullName, DualityApp.DataDirectory);
 			string resDirInData = Path.GetDirectoryName(resFullNameInData);
-			string sourceMediaDir = Path.Combine(EditorHelper.ImportDirectory, resDirInData);
+			string sourceMediaDir = Path.Combine(DualityEditorApp.EditorAppData.ImportPath, resDirInData);
 			return sourceMediaDir;
 		}
 		

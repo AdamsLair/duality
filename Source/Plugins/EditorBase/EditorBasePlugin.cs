@@ -82,6 +82,11 @@ namespace Duality.Editor.Plugins.Base
 				{
 					Name = EditorBaseRes.MenuItemName_UserData,
 					ActionHandler = this.menuItemUserData_Click
+				},
+				new MenuModelItem
+				{
+					Name = EditorBaseRes.MenuItemName_EditorAppData,
+					ActionHandler = this.menuItemEditorAppData_Click
 				}
 			});
 
@@ -134,6 +139,10 @@ namespace Duality.Editor.Plugins.Base
 			this.slicingForm.FormClosed -= this.slicingForm_FormClosed;
 			this.slicingForm.Dispose();
 			this.slicingForm = null;
+		}
+		private void menuItemEditorAppData_Click(object sender, EventArgs e)
+		{
+			DualityEditorApp.Select(this, new ObjectSelection(new[] { DualityEditorApp.EditorAppData }));
 		}
 		private void menuItemAppData_Click(object sender, EventArgs e)
 		{

@@ -11,10 +11,6 @@ namespace Duality.Editor
 	{
 		public static readonly string DualityLauncherExecFile = "DualityLauncher.exe";
 		public static readonly string BackupDirectory = "Backup";
-		public static readonly string RootDirectory = "..";
-
-		public static readonly string ImportDirectory = Path.Combine(RootDirectory, "Import");
-		public static readonly string SourceDirectory = Path.Combine(RootDirectory, "Source");
 
 		public static readonly string GlobalUserDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality");
 
@@ -27,15 +23,15 @@ namespace Duality.Editor
 			get
 			{
 				string sourceCodeSolutionFilePath = null;
-				if (Directory.Exists(SourceDirectory))
+				if (Directory.Exists(DualityEditorApp.EditorAppData.SourcePath))
 				{
 					sourceCodeSolutionFilePath = Directory.EnumerateFiles(
-						SourceDirectory,
+							DualityEditorApp.EditorAppData.SourcePath,
 						"*.sln",
 						SearchOption.AllDirectories)
 						.FirstOrDefault();
 				}
-				return sourceCodeSolutionFilePath ?? throw new FileNotFoundException($"Could not find a solution file in {SourceDirectory}");
+				return sourceCodeSolutionFilePath ?? throw new FileNotFoundException($"Could not find a solution file in {DualityEditorApp.EditorAppData.SourcePath}");
 			}
 		}
 		public static string CurrentProjectName
