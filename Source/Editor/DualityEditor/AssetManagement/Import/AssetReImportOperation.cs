@@ -12,10 +12,10 @@ namespace Duality.Editor.AssetManagement
 	{
 		public AssetReImportOperation(IEnumerable<string> inputFiles)
 		{
-			if (inputFiles.Any(file => !PathOp.IsPathLocatedIn(file, DualityEditorApp.EditorAppData.ImportPath)))
+			if (inputFiles.Any(file => !PathOp.IsPathLocatedIn(file, EditorHelper.ImportDirectory)))
 			{
 				throw new ArgumentException(
-					string.Format("Can't re-import Assets using source files that are located outside the Duality '{0}' direcctory", DualityEditorApp.EditorAppData.ImportPath),
+					string.Format("Can't re-import Assets using source files that are located outside the Duality '{0}' directory", EditorHelper.ImportDirectory),
 					"inputFiles");
 			}
 
@@ -23,7 +23,7 @@ namespace Duality.Editor.AssetManagement
 			this.input = new AssetImportInput[inputFileArray.Length];
 			for (int i = 0; i < this.input.Length; i++)
 			{
-				this.input[i] = new AssetImportInput(inputFileArray[i], DualityEditorApp.EditorAppData.ImportPath);
+				this.input[i] = new AssetImportInput(inputFileArray[i], EditorHelper.ImportDirectory);
 			}
 		}
 
@@ -47,7 +47,7 @@ namespace Duality.Editor.AssetManagement
 		{
 			AssetImportEnvironment prepareEnv = new AssetImportEnvironment(
 				DualityApp.DataDirectory,
-				DualityEditorApp.EditorAppData.ImportPath, 
+				EditorHelper.ImportDirectory, 
 				this.input);
 			prepareEnv.IsPrepareStep = true;
 			prepareEnv.IsReImport = true;
@@ -82,7 +82,7 @@ namespace Duality.Editor.AssetManagement
 				ImportInputAssignment assignment = this.inputMapping.Data[assignmentIndex];
 				AssetImportEnvironment importEnv = new AssetImportEnvironment(
 					DualityApp.DataDirectory,
-					DualityEditorApp.EditorAppData.ImportPath, 
+					EditorHelper.ImportDirectory, 
 					assignment.HandledInputInSourceMedia);
 				importEnv.IsReImport = true;
 				

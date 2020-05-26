@@ -14,6 +14,7 @@ namespace Duality.Editor
 
 		public static readonly string GlobalUserDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality");
 
+		public static readonly string ImportDirectory = "Import";
 
 		/// <summary>
 		/// The path to the *.sln solution file. Will throw a <see cref="FileNotFoundException"/> if the solution file cannot be found.
@@ -23,15 +24,16 @@ namespace Duality.Editor
 			get
 			{
 				string sourceCodeSolutionFilePath = null;
-				if (Directory.Exists(DualityEditorApp.EditorAppData.SourcePath))
+				string sourcePath = DualityEditorApp.EditorAppData.SourceDirectory;
+				if (Directory.Exists(sourcePath))
 				{
 					sourceCodeSolutionFilePath = Directory.EnumerateFiles(
-							DualityEditorApp.EditorAppData.SourcePath,
+							sourcePath,
 						"*.sln",
 						SearchOption.AllDirectories)
 						.FirstOrDefault();
 				}
-				return sourceCodeSolutionFilePath ?? throw new FileNotFoundException($"Could not find a solution file in {DualityEditorApp.EditorAppData.SourcePath}");
+				return sourceCodeSolutionFilePath ?? throw new FileNotFoundException($"Could not find a solution file in {sourcePath}");
 			}
 		}
 		public static string CurrentProjectName

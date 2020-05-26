@@ -258,9 +258,9 @@ namespace Duality.Editor
 
 			LoadEditorAppData();
 			SaveEditorAppData();
-			if (!Directory.Exists(DualityApp.PluginDirectory)) Directory.CreateDirectory(DualityApp.PluginDirectory);
-			if (!Directory.Exists(EditorAppData.ImportPath)) Directory.CreateDirectory(EditorAppData.ImportPath);
-			if (!Directory.Exists(EditorAppData.SourcePath)) Directory.CreateDirectory(EditorAppData.SourcePath);
+			Directory.CreateDirectory(DualityApp.PluginDirectory);
+			Directory.CreateDirectory(EditorHelper.ImportDirectory);
+			Directory.CreateDirectory(EditorAppData.SourceDirectory);
 
 			LoadUserData();
 
