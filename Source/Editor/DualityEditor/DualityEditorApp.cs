@@ -210,10 +210,10 @@ namespace Duality.Editor
 				FileInfo fileInfoIcon = new FileInfo(Path.Combine(DualityApp.DataDirectory, "WorkingFolderIcon.ico"));
 				fileInfoIcon.Attributes |= FileAttributes.Hidden;
 			}
-			if (!Directory.Exists(DualityApp.PluginDirectory)) Directory.CreateDirectory(DualityApp.PluginDirectory);
-			if (!Directory.Exists(EditorHelper.SourceDirectory)) Directory.CreateDirectory(EditorHelper.SourceDirectory);
-			if (!Directory.Exists(EditorHelper.SourceMediaDirectory)) Directory.CreateDirectory(EditorHelper.SourceMediaDirectory);
-			if (!Directory.Exists(EditorHelper.SourceCodeDirectory)) Directory.CreateDirectory(EditorHelper.SourceCodeDirectory);
+
+			Directory.CreateDirectory(DualityApp.PluginDirectory);
+			Directory.CreateDirectory(EditorHelper.ImportDirectory);
+			Directory.CreateDirectory(EditorHelper.SourceDirectory);
 
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
