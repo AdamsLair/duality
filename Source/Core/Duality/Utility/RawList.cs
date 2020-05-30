@@ -437,7 +437,7 @@ namespace Duality
 			if (index < 0 || index >= this.count) throw new IndexOutOfRangeException("Parameter 'index' is out of range.");
 			if (index + count > this.count)       throw new IndexOutOfRangeException("'index + count' is out of range.");
 
-			Array.Sort(this.data, index, count, new FunctorComparer(comparison));
+			Array.Sort(this.data, index, count, Comparer<T>.Create(comparison));
 		}
 
 		/// <summary>
@@ -640,18 +640,6 @@ namespace Duality
 		#endregion
 
 
-		internal sealed class FunctorComparer : IComparer<T>
-		{
-			private Comparison<T> comparison;
-			public FunctorComparer(Comparison<T> comparison)
-			{
-				this.comparison = comparison;
-			}
-			public int Compare(T x, T y)
-			{
-				return this.comparison(x, y);
-			}
-		}
 		internal sealed class DebuggerTypeProxy
 		{
 			private RawList<T> rawList;
