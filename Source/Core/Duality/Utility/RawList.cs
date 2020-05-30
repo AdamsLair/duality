@@ -208,6 +208,31 @@ namespace Duality
 			}
 		}
 		/// <summary>
+		/// Removes the last item from the list. For primitives and unmanaged value types, this is a trivial
+		/// <see cref="Count"/> value change.
+		/// </summary>
+		public void RemoveLast()
+		{
+			this.count -= 1;
+			if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+			{
+				this.data[this.count] = default(T);
+			}
+		}
+		/// <summary>
+		/// Removes the last <paramref name="count"/> items from the list. For primitives and unmanaged value 
+		/// types, this is a trivial <see cref="Count"/> value change.
+		/// </summary>
+		/// <param name="count"></param>
+		public void RemoveLast(int count)
+		{
+			this.count -= count;
+			if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+			{
+				Array.Clear(this.data, this.count, count);
+			}
+		}
+		/// <summary>
 		/// Removes the element at the specified index.
 		/// </summary>
 		/// <param name="index"></param>
@@ -222,17 +247,64 @@ namespace Duality
 		/// <param name="count"></param>
 		public void RemoveRange(int index, int count)
 		{
+			// Fast path when items are removed all the way up to the end
 			if (index + count >= this.count)
 			{
+				this.RemoveLast(count);
+			}
+			// General case where items will have to be moved in order to keep ordering as-is
+			else
+			{
+				this.MoveInternal(index + count, this.count - (index + count), -count, false);
 				this.count -= count;
 				if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
 				{
 					Array.Clear(this.data, this.count, count);
 				}
 			}
+		}
+		/// <summary>
+		/// Removes the element at the specified index by overwriting it with the last element.
+		/// 
+		/// For large lists, removing items this way can be considerably faster than using the
+		/// <see cref="RemoveAt(int)"/> method, since no elements need to be moved around to
+		/// preserve list ordering.
+		/// </summary>
+		/// <param name="index"></param>
+		public void RemoveAtFast(int index)
+		{
+			this.count--;
+			this.data[index] = this.data[this.count];
+			if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+			{
+				this.data[this.count] = default(T);
+			}
+		}
+		/// <summary>
+		/// Removes a range of elements at the specified index by overwriting them with elements
+		/// taken from the back of the list. The exact order in which the elements of the removed 
+		/// range are overwritten is not defined.
+		/// 
+		/// For large lists, removing items this way can be considerably faster than using the
+		/// <see cref="RemoveRange(int, int)"/> method, since no elements need to be moved around
+		/// to preserve list ordering.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="count"></param>
+		public void RemoveRangeFast(int index, int count)
+		{
+			// Fast path when items are removed all the way up to the end
+			if (index + count >= this.count)
+			{
+				this.RemoveLast(count);
+			}
+			// General case where items will be overwritten with items from the end
 			else
 			{
-				this.MoveInternal(index + count, this.count - (index + count), -count, false);
+				for (int i = 0; i < count; i++)
+				{
+					this.data[index + i] = this.data[this.count - i - 1];
+				}
 				this.count -= count;
 				if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
 				{

@@ -46,9 +46,17 @@ namespace Duality.Tests.Utility
 			CollectionAssert.AreEqual(new int[] { 10, 150, 200, 250, 300, 17, 94 }, intList);
 			CollectionAssert.AreEqual(new int[] { 10, 150, 200, 250, 300, 17, 94 }, intList.Data.Take(intList.Count));
 
+			intList.RemoveLast();
+			CollectionAssert.AreEqual(new int[] { 10, 150, 200, 250, 300, 17 }, intList);
+			CollectionAssert.AreEqual(new int[] { 10, 150, 200, 250, 300, 17 }, intList.Data.Take(intList.Count));
+
+			intList.RemoveLast(4);
+			CollectionAssert.AreEqual(new int[] { 10, 150 }, intList);
+			CollectionAssert.AreEqual(new int[] { 10, 150 }, intList.Data.Take(intList.Count));
+
 			intList.Clear();
 			Assert.AreEqual(0, intList.Count);
-			Assert.IsTrue(!intList.Contains(94));
+			Assert.IsTrue(!intList.Contains(10));
 		}
 		[Test] public void Move()
 		{
@@ -147,6 +155,48 @@ namespace Duality.Tests.Utility
 				list.RemoveAll(i => removeList.Contains(i));
 				CollectionAssert.AreEqual(new int[] { 0, 3, 7, 8 }, list);
 			}
+		}
+		[Test] public void RemoveAtFast()
+		{
+			RawList<int> list = new RawList<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+			list.RemoveAtFast(9);
+			CollectionAssert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }, list);
+
+			list.RemoveAtFast(0);
+			CollectionAssert.AreEqual(new int[] { 8, 1, 2, 3, 4, 5, 6, 7 }, list);
+
+			list.RemoveAtFast(3);
+			CollectionAssert.AreEqual(new int[] { 8, 1, 2, 7, 4, 5, 6 }, list);
+
+			list.RemoveAtFast(6);
+			list.RemoveAtFast(5);
+			list.RemoveAtFast(4);
+			list.RemoveAtFast(3);
+			CollectionAssert.AreEqual(new int[] { 8, 1, 2 }, list);
+
+			list.RemoveAtFast(0);
+			list.RemoveAtFast(0);
+			CollectionAssert.AreEqual(new int[] { 1 }, list);
+
+			list.RemoveAtFast(0);
+			CollectionAssert.AreEqual(new int[0], list);
+		}
+		[Test] public void RemoveRangeFast()
+		{
+			RawList<int> list = new RawList<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+			list.RemoveRangeFast(7, 3);
+			CollectionAssert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6 }, list);
+
+			list.RemoveRangeFast(0, 3);
+			CollectionAssert.AreEqual(new int[] { 6, 5, 4, 3 }, list);
+
+			list.RemoveRangeFast(1, 3);
+			CollectionAssert.AreEqual(new int[] { 6 }, list);
+
+			list.RemoveRangeFast(0, 1);
+			CollectionAssert.AreEqual(new int[0], list);
 		}
 		[Test] public void RemoveResetsReferenceTypesToDefault()
 		{
