@@ -65,21 +65,17 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// [GET / SET] A safety-checked index accessor to the lists internal array. Will throw an <see cref="System.IndexOutOfRangeException"/>
+		/// [GET / SET] A safety-checked by-ref index accessor to the lists internal array. Will throw an <see cref="System.IndexOutOfRangeException"/>
 		/// when attempting to access indices exceeding <see cref="Count"/>.
 		/// </summary>
 		/// <param name="index"></param>
-		public T this[int index]
+		/// <returns></returns>
+		public ref T this[int index]
 		{
 			get
 			{
 				if (index >= this.count) ThrowIndexOutOfRangeException();
-				return this.data[index];
-			}
-			set
-			{
-				if (index >= this.count) ThrowIndexOutOfRangeException();
-				this.data[index] = value;
+				return ref this.data[index];
 			}
 		}
 
@@ -537,6 +533,27 @@ namespace Duality
 		{
 			get { return this[index]; }
 			set { this[index] = (T)value; }
+		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] T IList<T>.this[int index]
+		{
+			get
+			{
+				if (index >= this.count) ThrowIndexOutOfRangeException();
+				return this.data[index];
+			}
+			set
+			{
+				if (index >= this.count) ThrowIndexOutOfRangeException();
+				this.data[index] = value;
+			}
+		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] T IReadOnlyList<T>.this[int index]
+		{
+			get
+			{
+				if (index >= this.count) ThrowIndexOutOfRangeException();
+				return this.data[index];
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
