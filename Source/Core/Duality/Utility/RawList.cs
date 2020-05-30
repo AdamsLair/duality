@@ -90,11 +90,6 @@ namespace Duality
 		/// <param name="capacity"></param>
 		public RawList(int capacity) : this(new T[capacity], 0) {}
 		/// <summary>
-		/// Creates a new list with the specified contents.
-		/// </summary>
-		/// <param name="data"></param>
-		public RawList(IEnumerable<T> data) : this(data.ToArray()) {}
-		/// <summary>
 		/// Creates a new list that is a copy of the specified source list.
 		/// </summary>
 		/// <param name="source"></param>
@@ -151,14 +146,6 @@ namespace Duality
 			this.InsertRange(this.count, items);
 		}
 		/// <summary>
-		/// Adds a range of new items to the list.
-		/// </summary>
-		/// <param name="items"></param>
-		public void AddRange(IEnumerable<T> items)
-		{
-			this.InsertRange(this.count, items);
-		}
-		/// <summary>
 		/// Inserts a new item at a specified index.
 		/// </summary>
 		/// <param name="targetIndex">The index at which to insert the new items.</param>
@@ -173,15 +160,6 @@ namespace Duality
 			}
 			this.data[targetIndex] = item;
 			this.count++;
-		}
-		/// <summary>
-		/// Inserts a range of new items at a specified index.
-		/// </summary>
-		/// <param name="targetIndex">The index at which to insert the new items.</param>
-		/// <param name="items">The source enumerable to copy items from.</param>
-		public void InsertRange(int targetIndex, IEnumerable<T> items)
-		{
-			this.InsertRange(targetIndex, items.ToArray());
 		}
 		/// <summary>
 		/// Inserts a range of new items at a specified index.

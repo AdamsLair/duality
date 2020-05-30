@@ -121,28 +121,28 @@ namespace Duality.Tests.Utility
 		{
 			// Remove nothing
 			{
-				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10));
+				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10).ToArray());
 				list.RemoveAll(i => false);
 				CollectionAssert.AreEqual(Enumerable.Range(0, 10), list);
 			}
 
 			// Remove everything
 			{
-				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10));
+				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10).ToArray());
 				list.RemoveAll(i => true);
 				CollectionAssert.AreEqual(new int[0], list);
 			}
 
 			// Remove all even numbers
 			{
-				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10));
+				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10).ToArray());
 				list.RemoveAll(i => i % 2 == 0);
 				CollectionAssert.AreEqual(new int[] { 1, 3, 5, 7, 9 }, list);
 			}
 
 			// Remove numbers that are in a second list with no regularity
 			{
-				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10));
+				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10).ToArray());
 				RawList<int> removeList = new RawList<int>(new int[] { 1, 2, 4, 5, 6, 9 });
 				list.RemoveAll(i => removeList.Contains(i));
 				CollectionAssert.AreEqual(new int[] { 0, 3, 7, 8 }, list);
@@ -150,7 +150,10 @@ namespace Duality.Tests.Utility
 		}
 		[Test] public void RemoveResetsReferenceTypesToDefault()
 		{
-			RawList<string> list = new RawList<string>(Enumerable.Range(0, 10).Select(i => i.ToString()));
+			RawList<string> list = new RawList<string>(
+				Enumerable.Range(0, 10)
+				.Select(i => i.ToString())
+				.ToArray());
 
 			// Is the internal array empty if not assigned otherwise?
 			if (list.Capacity > list.Count)
