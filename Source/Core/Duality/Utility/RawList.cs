@@ -135,7 +135,9 @@ namespace Duality
 		/// <param name="item"></param>
 		public void Add(T item)
 		{
-			this.Insert(this.count, item);
+			this.Reserve(this.count + 1);
+			this.data[this.count] = item;
+			this.count++;
 		}
 		/// <summary>
 		/// Adds a range of new items to the list.
@@ -381,7 +383,7 @@ namespace Duality
 		public void Reserve(int capacity)
 		{
 			if (this.data.Length >= capacity) return;
-			Array.Resize(ref this.data, MathF.Max(this.data.Length * 2, capacity, BaseCapacity));
+			Array.Resize(ref this.data, Math.Max(Math.Max(this.data.Length * 2, capacity), BaseCapacity));
 		}
 		/// <summary>
 		/// Moves a range of elements by a certain value and resets the indices that now remain empty.
