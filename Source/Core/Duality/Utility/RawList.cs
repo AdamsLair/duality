@@ -25,8 +25,9 @@ namespace Duality
 		private const int BaseCapacity = 8;
 
 
-		private	T[]	data;
-		private	int	count;
+		private T[] data;
+		private int count;
+
 
 		/// <summary>
 		/// [GET / SET] The lists internal array for data storage. Assigning an array that is shorter than <see cref="Count"/> will
@@ -83,22 +84,22 @@ namespace Duality
 		/// <summary>
 		/// Creates a new, empty list.
 		/// </summary>
-		public RawList() : this(new T[BaseCapacity], 0) {}
+		public RawList() : this(new T[BaseCapacity], 0) { }
 		/// <summary>
 		/// Creates a new list with the specified capacity.
 		/// </summary>
 		/// <param name="capacity"></param>
-		public RawList(int capacity) : this(new T[capacity], 0) {}
+		public RawList(int capacity) : this(new T[capacity], 0) { }
 		/// <summary>
 		/// Creates a new list that is a copy of the specified source list.
 		/// </summary>
 		/// <param name="source"></param>
-		public RawList(RawList<T> source) : this(source.Data.Clone() as T[], source.Count) {}
+		public RawList(RawList<T> source) : this((T[])source.Data.Clone(), source.Count) { }
 		/// <summary>
 		/// Creates a new list that wraps the specified array. Does not copy the array.
 		/// </summary>
 		/// <param name="wrapAround"></param>
-		public RawList(T[] wrapAround) : this(wrapAround, wrapAround.Length) {}
+		public RawList(T[] wrapAround) : this(wrapAround, wrapAround.Length) { }
 		/// <summary>
 		/// Creates a new list that wraps the specified array. Does not copy the array.
 		/// </summary>
@@ -116,6 +117,7 @@ namespace Duality
 		/// Returns the first index of the specified item within the used range of the internal array. Returns -1, if not found.
 		/// </summary>
 		/// <param name="item"></param>
+		/// <returns></returns>
 		public int IndexOf(T item)
 		{
 			return Array.IndexOf(this.data, item, 0, this.count);
@@ -124,6 +126,7 @@ namespace Duality
 		/// Returns whether the specified item is contained within the used range of the internal array.
 		/// </summary>
 		/// <param name="item"></param>
+		/// <returns></returns>
 		public bool Contains(T item)
 		{
 			return Array.IndexOf(this.data, item, 0, this.count) >= 0;
@@ -147,6 +150,7 @@ namespace Duality
 		{
 			this.InsertRange(this.count, items);
 		}
+
 		/// <summary>
 		/// Inserts a new item at a specified index.
 		/// </summary>
@@ -190,10 +194,12 @@ namespace Duality
 			Array.Copy(items, sourceIndex, this.data, targetIndex, count);
 			this.count += count;
 		}
+
 		/// <summary>
 		/// Removes the first matching item from the list.
 		/// </summary>
 		/// <param name="item"></param>
+		/// <returns></returns>
 		public bool Remove(T item)
 		{
 			int index = this.IndexOf(item);
@@ -316,6 +322,7 @@ namespace Duality
 		/// Removes all matching items from the list.
 		/// </summary>
 		/// <param name="predicate"></param>
+		/// <returns></returns>
 		public int RemoveAll(Predicate<T> predicate)
 		{
 			// Iterate over the internal array with two indices:
@@ -362,6 +369,7 @@ namespace Duality
 
 			return 0;
 		}
+
 		/// <summary>
 		/// Clears the entire list of its contents and resets its size to zero.
 		/// </summary>
@@ -374,7 +382,6 @@ namespace Duality
 			this.count = 0;
 		}
 
-		
 		/// <summary>
 		/// Sorts the entire list.
 		/// </summary>
@@ -467,7 +474,7 @@ namespace Duality
 		{
 			this.MoveInternal(index, count, moveBy, true);
 		}
-		
+
 		/// <summary>
 		/// Copies the contents of this collection to the specified array.
 		/// </summary>
@@ -507,19 +514,21 @@ namespace Duality
 
 		private void MoveInternal(int index, int count, int moveBy, bool resetToDefault)
 		{
-			if (count < 0)									throw new ArgumentException("Parameter 'count' may not be negative.", "count");
-			if (index < 0 || index >= this.data.Length)		throw new IndexOutOfRangeException("Parameter 'index' is out of range.");
-			if (index + count > this.data.Length)			throw new IndexOutOfRangeException("'index + count' is out of range.");
-			if (index + moveBy < 0)							throw new IndexOutOfRangeException("'index + moveBy' is out of range.");
-			if (index + moveBy + count > this.data.Length)	throw new IndexOutOfRangeException("'index + moveBy + count' is out of range.");
+			if (count < 0)                                 throw new ArgumentException("Parameter 'count' may not be negative.", "count");
+			if (index < 0 || index >= this.data.Length)    throw new IndexOutOfRangeException("Parameter 'index' is out of range.");
+			if (index + count > this.data.Length)          throw new IndexOutOfRangeException("'index + count' is out of range.");
+			if (index + moveBy < 0)                        throw new IndexOutOfRangeException("'index + moveBy' is out of range.");
+			if (index + moveBy + count > this.data.Length) throw new IndexOutOfRangeException("'index + moveBy + count' is out of range.");
 
 			int baseIndex = index + moveBy;
 			if (moveBy > 0)
 			{
+				// Non-overlapping move
 				if (moveBy >= count)
 				{
 					Array.Copy(this.data, index, this.data, index + moveBy, count);
 				}
+				// Source and target range within the array are overlapping
 				else
 				{
 					for (int i = baseIndex + count - 1; i >= baseIndex; i--)
@@ -527,6 +536,7 @@ namespace Duality
 						this.data[i] = this.data[i - moveBy];
 					}
 				}
+
 				if (resetToDefault)
 				{
 					int clearCount = Math.Min(moveBy, count);
@@ -535,10 +545,12 @@ namespace Duality
 			}
 			else
 			{
+				// Non-overlapping move
 				if (-moveBy >= count)
 				{
 					Array.Copy(this.data, index, this.data, index + moveBy, count);
 				}
+				// Source and target range within the array are overlapping
 				else
 				{
 					for (int i = baseIndex; i < baseIndex + count; i++)
@@ -546,6 +558,7 @@ namespace Duality
 						this.data[i] = this.data[i - moveBy];
 					}
 				}
+
 				if (resetToDefault)
 				{
 					int clearCount = Math.Min(-moveBy, count);
