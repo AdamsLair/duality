@@ -9,13 +9,13 @@
     <RuntimeIdentifier>any</RuntimeIdentifier>
   </PropertyGroup>
 
-  <Target Name="CopyNugetPackageFiles" BeforeTargets="Build">
+  <Target Name="CopyAdditionalReferenceFiles" BeforeTargets="Build">
     <ItemGroup>
-      <PackageReferenceFiles Include="%(Reference.RelativeDir)%(Reference.Filename).xml;%(Reference.RelativeDir)%(Reference.Filename).pdb" />
+      <AdditionalReferenceFiles Include="%(Reference.RelativeDir)%(Reference.Filename).xml;%(Reference.RelativeDir)%(Reference.Filename).pdb" />
     </ItemGroup>
     
-    <Message Text="Copying nuget package files to $(OutputPath)" Importance="High" />
-    <Copy SourceFiles="@(PackageReferenceFiles)" DestinationFolder="$(OutputPath)" Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
+    <Message Text="Copying reference files to $(OutputPath)" Importance="High" />
+    <Copy SourceFiles="@(AdditionalReferenceFiles)" DestinationFolder="$(OutputPath)" Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
   </Target>
 
   <Target Name="CopyBuildOutputToDeploy" AfterTargets="Build">
@@ -24,11 +24,11 @@
       <LibFiles Include="$(OutputPath)**/*" Exclude="@(PluginFiles)" />
     </ItemGroup>
 
-    <Message Text="Copying plugin files to $(DeployFolder)Plugins" Importance="High" />
-    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(DeployFolder)Plugins" />
+    <Message Text="Copying plugin files to $(DualityFolder)Plugins" Importance="High" />
+    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(DualityFolder)Plugins" />
 
-    <Message Text="Copying lib files to $(DeployFolder)" Importance="High" />
-    <Copy SourceFiles="@(LibFiles)" DestinationFiles="@(LibFiles->'$(DeployFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Message Text="Copying lib files to $(DualityFolder)" Importance="High" />
+    <Copy SourceFiles="@(LibFiles)" DestinationFiles="@(LibFiles->'$(DualityFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
   <Target Name="CoreCompile" />

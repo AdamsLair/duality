@@ -1,5 +1,5 @@
 <Project>
   <PropertyGroup>
-    <DeployFolder>$(MSBuildThisFileDirectory)Duality/</DeployFolder>
+    <DualityFolder>$(MSBuildThisFileDirectory)</DualityFolder>
   </PropertyGroup>
 </Project>
