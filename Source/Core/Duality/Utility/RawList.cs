@@ -594,12 +594,13 @@ namespace Duality
 		{
 			get { return this.data; }
 		}
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)] object IList.this[int index]
+
+		object IList.this[int index]
 		{
 			get { return this[index]; }
 			set { this[index] = (T)value; }
 		}
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)] T IList<T>.this[int index]
+		T IList<T>.this[int index]
 		{
 			get
 			{
@@ -612,7 +613,7 @@ namespace Duality
 				this.data[index] = value;
 			}
 		}
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)] T IReadOnlyList<T>.this[int index]
+		T IReadOnlyList<T>.this[int index]
 		{
 			get
 			{
