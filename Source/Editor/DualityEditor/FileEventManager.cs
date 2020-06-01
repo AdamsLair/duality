@@ -107,17 +107,20 @@ namespace Duality.Editor
 			dataDirWatcherDirectory.Deleted += fileSystemWatcher_ForwardData;
 			dataDirWatcherDirectory.Renamed += fileSystemWatcher_ForwardData;
 			dataDirWatcherDirectory.EnableRaisingEvents = true;
-			
-			sourceDirWatcher = new FileSystemWatcher();
-			sourceDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
-			sourceDirWatcher.EnableRaisingEvents = false;
-			sourceDirWatcher.IncludeSubdirectories = true;
-			sourceDirWatcher.Path = EditorHelper.SourceDirectory;
-			sourceDirWatcher.Created += fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Changed += fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Deleted += fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Renamed += fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.EnableRaisingEvents = true;
+
+			if (Directory.Exists(EditorHelper.SourceDirectory))
+			{
+				sourceDirWatcher = new FileSystemWatcher();
+				sourceDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
+				sourceDirWatcher.EnableRaisingEvents = false;
+				sourceDirWatcher.IncludeSubdirectories = true;
+				sourceDirWatcher.Path = EditorHelper.SourceDirectory;
+				sourceDirWatcher.Created += fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Changed += fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Deleted += fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Renamed += fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.EnableRaisingEvents = true;
+			}
 
 			importDirWatcher = new FileSystemWatcher();
 			importDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
@@ -166,14 +169,17 @@ namespace Duality.Editor
 			dataDirWatcherDirectory.Dispose();
 			dataDirWatcherDirectory = null;
 
-			sourceDirWatcher.EnableRaisingEvents = false;
-			sourceDirWatcher.Created -= fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Changed -= fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Deleted -= fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Renamed -= fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.SynchronizingObject = null;
-			sourceDirWatcher.Dispose();
-			sourceDirWatcher = null;
+			if (sourceDirWatcher != null)
+			{
+				sourceDirWatcher.EnableRaisingEvents = false;
+				sourceDirWatcher.Created -= fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Changed -= fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Deleted -= fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Renamed -= fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.SynchronizingObject = null;
+				sourceDirWatcher.Dispose();
+				sourceDirWatcher = null;
+			}
 		}
 
 		/// <summary>
