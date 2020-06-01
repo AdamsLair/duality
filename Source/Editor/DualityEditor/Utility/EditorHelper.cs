@@ -1,33 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
-using System.IO.Compression;
-using System.Xml.Linq;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using System.Drawing;
-using System.Reflection;
-using Microsoft.Win32;
-
-using Duality;
-using Duality.IO;
-using Duality.Serialization;
 
 namespace Duality.Editor
 {
 	public static class EditorHelper
 	{
-		public static readonly string DualityLauncherExecFile			= "DualityLauncher.exe";
-		public static readonly string BackupDirectory					= "Backup";
-		public static readonly string SourceDirectory					= "Source";
-
-		public static readonly string SourceMediaDirectory				= Path.Combine(SourceDirectory, "Media");
-		public static readonly string SourceCodeDirectory				= Path.Combine(SourceDirectory, "Code");
+		public static readonly string DualityLauncherExecFile = "DualityLauncher.exe";
+		public static readonly string BackupDirectory = "Backup";
 
 		public static readonly string GlobalUserDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality");
 
+		public static readonly string ImportDirectory = "Import";
+		public static readonly string SourceDirectory = "Source";
 
 		/// <summary>
 		/// The path to the *.sln solution file. Will throw a <see cref="FileNotFoundException"/> if the solution file cannot be found.
@@ -37,15 +25,16 @@ namespace Duality.Editor
 			get
 			{
 				string sourceCodeSolutionFilePath = null;
-				if (Directory.Exists(SourceCodeDirectory))
+				string sourcePath = EditorHelper.SourceDirectory;
+				if (Directory.Exists(sourcePath))
 				{
 					sourceCodeSolutionFilePath = Directory.EnumerateFiles(
-						SourceCodeDirectory, 
-						"*.sln", 
+							sourcePath,
+						"*.sln",
 						SearchOption.AllDirectories)
 						.FirstOrDefault();
 				}
-				return sourceCodeSolutionFilePath ?? throw new FileNotFoundException($"Could not find a solution file in {SourceCodeDirectory}");
+				return sourceCodeSolutionFilePath ?? throw new FileNotFoundException($"Could not find a solution file in {sourcePath}");
 			}
 		}
 		public static string CurrentProjectName
@@ -106,7 +95,7 @@ namespace Duality.Editor
 					// that isn't a Form will just return null. In other cases, will throw an exception.
 				}
 			}
-			
+
 			return result;
 		}
 		public static Control GetFocusedControl()
@@ -125,7 +114,7 @@ namespace Duality.Editor
 		private class ImageOverlaySet
 		{
 			private Image baseImage;
-			private Dictionary<Image,Image> overlayDict;
+			private Dictionary<Image, Image> overlayDict;
 
 			public Image Base
 			{
@@ -135,7 +124,7 @@ namespace Duality.Editor
 			public ImageOverlaySet(Image baseImage)
 			{
 				this.baseImage = baseImage;
-				this.overlayDict = new Dictionary<Image,Image>();;
+				this.overlayDict = new Dictionary<Image, Image>(); ;
 			}
 			public Image GetOverlay(Image overlayImage)
 			{
@@ -152,7 +141,7 @@ namespace Duality.Editor
 				return baseWithOverlay;
 			}
 		}
-		private static Dictionary<Image,ImageOverlaySet> overlayCache = new Dictionary<Image,ImageOverlaySet>();
+		private static Dictionary<Image, ImageOverlaySet> overlayCache = new Dictionary<Image, ImageOverlaySet>();
 		public static Image GetImageWithOverlay(Image baseImage, Image overlayImage)
 		{
 			ImageOverlaySet overlaySet;
