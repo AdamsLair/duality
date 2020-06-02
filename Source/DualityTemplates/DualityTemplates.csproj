@@ -24,9 +24,24 @@
 	<ItemGroup>
 		<Content Include="Templates\**\*" CopyToOutputDirectory="PreserveNewest" />
 		<Content Remove="Templates\**\obj\**" />
+		<Content Remove="Templates\SolutionTemplate\Plugins\**" />
 		<None Remove="Templates\**\obj\**" />
+		<Content Remove="Templates\**\bin\**" />
+		<None Remove="Templates\**\bin\**" />
 		<Content Remove="Templates\**\.vs\**" />
 		<Compile Remove="**\*" />
+		<Compile Remove="Templates\SolutionTemplate\Plugins\**" />
+
+		<Content Remove="Templates\SolutionTemplate\*.dll" />
+		<None Remove="Templates\SolutionTemplate\*.dll" />
+		<Content Remove="Templates\SolutionTemplate\*.pdb" />
+		<None Remove="Templates\SolutionTemplate\*.pdb" />
+		<Content Remove="Templates\SolutionTemplate\*.exe" />
+		<None Remove="Templates\SolutionTemplate\*.exe" />
+		<Content Remove="Templates\SolutionTemplate\*.xml" />
+		<EmbeddedResource Remove="Templates\SolutionTemplate\Plugins\**" />
+		<None Remove="Templates\SolutionTemplate\*.xml" />
+		<None Remove="Templates\SolutionTemplate\Plugins\**" />
 	</ItemGroup>
 
 	<ItemGroup>
