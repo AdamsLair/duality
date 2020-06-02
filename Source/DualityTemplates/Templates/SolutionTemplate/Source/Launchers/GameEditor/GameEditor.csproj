@@ -13,7 +13,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\GameLauncher\GameLauncher.csproj" >
+    <ProjectReference Include="..\..\Plugins\DualityGameEditorPlugin\DualityGameEditorPlugin.csproj" />
+    <ProjectReference Include="..\GameLauncher\GameLauncher.csproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
