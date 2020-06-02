@@ -3,16 +3,16 @@
 **/obj
 
 # Duality specific files
-Duality/Temp
-Duality/Backup
-Duality/UserData.dat
-Duality/DesignTimeData.dat
-Duality/*.pdb
-Duality/*.dll
-Duality/*.exe
-Duality/*.txt
-Duality/*.xml
-Duality/Plugins
+/Temp
+/Backup
+/UserData.dat
+/DesignTimeData.dat
+*.pdb
+/*.dll
+/*.exe
+/*.txt
+/*.xml
+/Plugins
 
 # Visual studio specific files
 Source/.vs
