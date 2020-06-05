@@ -1,0 +1,18 @@
+﻿# Build output files
+**/bin
+**/obj
+
+# Duality specific files
+/Temp
+/Backup
+/UserData.dat
+/DesignTimeData.dat
+*.pdb
+/*.dll
+/*.exe
+/*.txt
+/*.xml
+/Plugins
+
+# Visual studio specific files
+Source/.vs
