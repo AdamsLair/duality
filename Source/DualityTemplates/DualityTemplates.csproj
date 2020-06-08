@@ -19,6 +19,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<DebugSymbols>false</DebugSymbols>
 		<DebugType>None</DebugType>
+		<NoDefaultExcludes>true</NoDefaultExcludes>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -52,12 +53,22 @@
 
 	<Target Name="CreateZips" AfterTargets="Build">
 		<ZipDirectory SourceDirectory="$(OutputPath)/Templates/SolutionTemplate" DestinationFile="$(OutputPath)\Duality.zip" Overwrite="true" />
+	
 		<RemoveDir Directories="$(OutputPath)/Templates" />
+	</Target>
+
+	<Target Name="CopyPackage" AfterTargets="Pack">
+		<ItemGroup>
+			<NugetPackages Include="$(OutputPath)*.nupkg" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(NugetPackages)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\Build\NightlyBuild\NuGetPackages" />
 	</Target>
 
 
 	<Target Name="CoreCompile" />
 	<PropertyGroup>
 		<SkipCopyBuildProduct>true</SkipCopyBuildProduct>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 </Project>
