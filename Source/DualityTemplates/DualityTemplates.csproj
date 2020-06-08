@@ -19,6 +19,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<DebugSymbols>false</DebugSymbols>
 		<DebugType>None</DebugType>
+		<NoDefaultExcludes>true</NoDefaultExcludes>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -61,7 +62,7 @@
 			<NugetPackages Include="$(OutputPath)*.nupkg" />
 		</ItemGroup>
 
-		<Copy SourceFiles="@(NugetPackages)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\Build\NightlyBuild\NuGetPackages"/>
+		<Copy SourceFiles="@(NugetPackages)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\Build\NightlyBuild\NuGetPackages" />
 	</Target>
 
 
