@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameLauncher", "Launchers\GameLauncher\GameLauncher.csproj", "{EB32E368-2C3C-444F-9F7A-C808C03D462E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameLauncher", "Source\Launchers\GameLauncher\GameLauncher.csproj", "{EB32E368-2C3C-444F-9F7A-C808C03D462E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameEditor", "Launchers\GameEditor\GameEditor.csproj", "{E587311C-714A-4078-ADAE-EC00E8D971CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameEditor", "Source\Launchers\GameEditor\GameEditor.csproj", "{E587311C-714A-4078-ADAE-EC00E8D971CB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DualityGameCorePlugin", "Plugins\DualityGameCorePlugin\DualityGameCorePlugin.csproj", "{E77740F1-234A-4B92-B1BC-43AD9EB9BA03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DualityGameCorePlugin", "Source\Plugins\DualityGameCorePlugin\DualityGameCorePlugin.csproj", "{E77740F1-234A-4B92-B1BC-43AD9EB9BA03}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{F75B2813-797D-44A5-A301-331C229992C7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Source\Plugins", "{F75B2813-797D-44A5-A301-331C229992C7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DualityGameEditorPlugin", "Plugins\DualityGameEditorPlugin\DualityGameEditorPlugin.csproj", "{F0DCA20C-6888-4294-97C4-14C82B4DBC82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DualityGameEditorPlugin", "Source\Plugins\DualityGameEditorPlugin\DualityGameEditorPlugin.csproj", "{F0DCA20C-6888-4294-97C4-14C82B4DBC82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
