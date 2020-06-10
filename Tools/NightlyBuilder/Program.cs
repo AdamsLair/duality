@@ -6,7 +6,6 @@ using System.Xml.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
-using System.IO.Compression;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -207,75 +206,6 @@ namespace NightlyBuilder
 				Console.WriteLine();
 				Console.WriteLine();
 			}
-
-			// Copy the results to the target directory
-			Console.WriteLine("================================ Copy to Target ===============================");
-			{
-				Console.WriteLine("Creating target directory '{0}'", config.IntermediateTargetDir);
-				if (Directory.Exists(config.IntermediateTargetDir))
-					Directory.Delete(config.IntermediateTargetDir, true);
-				CopyDirectory(config.BuildResultDir, config.IntermediateTargetDir, true, path => 
-					{
-						string fileName = Path.GetFileName(path);
-						foreach (string blackListEntry in config.FileCopyBlackList)
-						{
-							if (Regex.IsMatch(fileName, WildcardToRegex(blackListEntry), RegexOptions.IgnoreCase))
-							{
-								Console.ForegroundColor = ConsoleColor.DarkGray;
-								Console.WriteLine("Ignore {0}", path);
-								Console.ForegroundColor = ConsoleColor.Gray;
-								return false;
-							}
-						}
-						Console.WriteLine("Copy   {0}", path);
-						return true;
-					});
-				if (!string.IsNullOrEmpty(config.AdditionalFileDir) && Directory.Exists(config.AdditionalFileDir))
-				{
-					CopyDirectory(config.AdditionalFileDir, config.IntermediateTargetDir, true);
-				}
-			}
-			Console.WriteLine("===============================================================================");
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// Create the ZIP package
-			Console.WriteLine("============================== Create ZIP Package =============================");
-			{
-				Console.WriteLine("Package Path: {0}", packagePath);
-				if (!Directory.Exists(config.PackageDir))
-					Directory.CreateDirectory(config.PackageDir);
-
-				string[] files = Directory.GetFiles(config.IntermediateTargetDir, "*", SearchOption.AllDirectories);
-				using (FileStream packageStream = File.Open(packagePath, FileMode.Create))
-				using (ZipArchive archive = new ZipArchive(packageStream, ZipArchiveMode.Create, true))
-				{
-					foreach (string filePath in files)
-					{                    
-						ZipArchiveEntry fileEntry = archive.CreateEntry(filePath);
-						using (Stream entryStream = fileEntry.Open())
-						using (BinaryWriter entryWriter = new BinaryWriter(entryStream))
-						{
-							byte[] fileData = File.ReadAllBytes(filePath);
-							entryWriter.Write(fileData);
-						}
-					}
-				}
-			}
-			Console.WriteLine("===============================================================================");
-			Console.WriteLine();
-			Console.WriteLine();
-			
-			// Cleanup
-			Console.WriteLine("=================================== Cleanup ===================================");
-			{
-				Console.WriteLine("Deleting target directory '{0}'", config.IntermediateTargetDir);
-				if (Directory.Exists(config.IntermediateTargetDir))
-					Directory.Delete(config.IntermediateTargetDir, true);
-			}
-			Console.WriteLine("===============================================================================");
-			Console.WriteLine();
-			Console.WriteLine();
 			
 			// Build all NuGet Packages
 			Console.WriteLine("============================= Build NuGet Packages ============================");

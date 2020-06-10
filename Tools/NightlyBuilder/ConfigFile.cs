@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
+﻿using System.IO;
 using System.Xml.Serialization;
 
 namespace NightlyBuilder
@@ -14,10 +10,8 @@ namespace NightlyBuilder
 		public string DocSolutionPath { get; set; }
 		public string DocBuildResultDir { get; set; }
 		public string DocBuildResultFile { get; set; }
-		public string AdditionalFileDir { get; set; }
 		public string NUnitBinDir { get; set; }
 		public string UnitTestProjectDir { get; set; }
-		public string IntermediateTargetDir { get; set; }
 		public string PackageDir { get; set; }
 		public string PackageName { get; set; }
 		public string CopyPackageTo { get; set; }
@@ -28,7 +22,6 @@ namespace NightlyBuilder
 		public bool NoTests { get; set; }
 		public bool NoDocs { get; set; }
 		public bool NonInteractive { get; set; }
-		public List<string> FileCopyBlackList { get; set; }
 
 		public void Save(string filePath)
 		{
