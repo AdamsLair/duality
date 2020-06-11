@@ -59,7 +59,7 @@
 
 	<Target Name="CopyPackage" AfterTargets="Pack">
 		<ItemGroup>
-			<NugetPackages Include="$(OutputPath)*.nupkg" />
+			<NugetPackages Include="$(OutputPath)\*.nupkg" />
 		</ItemGroup>
 
 		<Copy SourceFiles="@(NugetPackages)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\Build\NightlyBuild\NuGetPackages" />
