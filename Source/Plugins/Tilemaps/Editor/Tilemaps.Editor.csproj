@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<Version>4.0.0-alpha</Version>
+		<Version>4.0.0-alpha0</Version>
 		<Copyright>Copyright © Fedja Adam 2015</Copyright>
 		<RootNamespace>Duality.Editor.Plugins.Tilemaps</RootNamespace>
 		<UseWindowsForms>true</UseWindowsForms>

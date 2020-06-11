@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.Physics</id>
-    <version>4.0.0-alpha</version>
+    <version>4.0.0-alpha0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Physics Sample</title>
@@ -19,7 +19,7 @@
     </contentFiles> 
     <dependencies>
       <group targetFramework="netstandard2.0">
-        <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha0" />
       </group>
     </dependencies>
   </metadata>

@@ -13,7 +13,7 @@
 		<IncludeContentInPack>true</IncludeContentInPack>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<ContentTargetFolders>content</ContentTargetFolders>
-		<Version>4.0.0-alpha</Version>
+		<Version>4.0.0-alpha0</Version>
 		<PackageProjectUrl>https://www.duality2d.net/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/AdamsLair/duality</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>

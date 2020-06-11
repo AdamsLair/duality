@@ -6,7 +6,7 @@
 		<Copyright>Copyright © Fedja Adam 2015</Copyright>
 		<RootNamespace>Duality.Backend.DotNetFramework</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<Version>4.0.0-alpha</Version>
+		<Version>4.0.0-alpha0</Version>
 	</PropertyGroup>
 
   <ItemGroup>

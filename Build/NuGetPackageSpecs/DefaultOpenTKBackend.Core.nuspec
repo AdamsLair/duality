@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DefaultOpenTK</id>
-    <version>4.0.0-alpha</version>
+    <version>4.0.0-alpha0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>OpenTK Backend</title>
@@ -17,7 +17,7 @@
 #ADD: It is now possible to adjust the hardware cursor on the game window through `INativeWindow`.</releaseNotes>
     <dependencies>
       <group targetFramework="net472">
-        <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha0" />
         <dependency id="AdamsLair.OpenTK" version="1.2.2" />
       </group>
     </dependencies>

@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.Base</id>
-    <version>4.0.0-alpha</version>
+    <version>4.0.0-alpha0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Editor Base Infrastructure</title>
@@ -16,8 +16,8 @@
     <releaseNotes>Patch Version Update</releaseNotes>
     <dependencies>
       <group targetFramework="net472">
-        <dependency id="AdamsLair.Duality" version="4.0.0-alpha" />
-        <dependency id="AdamsLair.Duality.Editor" version="4.0.0-alpha" />
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha0" />
+        <dependency id="AdamsLair.Duality.Editor" version="4.0.0-alpha0" />
       </group>
     </dependencies>
   </metadata>
