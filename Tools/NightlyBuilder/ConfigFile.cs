@@ -17,6 +17,7 @@ namespace NightlyBuilder
 		public string CopyPackageTo { get; set; }
 		public string NuGetPath { get; set; }
 		public string NuGetPackageSpecsDir { get; set; }
+		public bool NoCleanNugetPackageTargetDir { get; set; }
 		public string NuGetPackageTargetDir { get; set; }
 		public bool NoBuild { get; set; }
 		public bool NoTests { get; set; }

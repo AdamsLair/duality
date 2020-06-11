@@ -61,7 +61,7 @@
 		<ItemGroup>
 			<NugetPackages Include="$(OutputPath)\*.nupkg" />
 		</ItemGroup>
-
+		<Message Importance="High" Text="Copying @(NugetPackages) to $(MSBuildProjectDirectory)\..\..\Build\NightlyBuild\NuGetPackages" />
 		<Copy SourceFiles="@(NugetPackages)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\Build\NightlyBuild\NuGetPackages" />
 	</Target>
 
