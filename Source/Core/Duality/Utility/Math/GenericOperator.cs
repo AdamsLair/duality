@@ -20,7 +20,6 @@ namespace Duality
 		/// <typeparam name="U"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static T Add<T,U>(T first, U second)
 		{
 			return DualType<T,U>.Add(first, second);
@@ -32,7 +31,6 @@ namespace Duality
 		/// <typeparam name="U"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static T Subtract<T,U>(T first, U second)
 		{
 			return DualType<T,U>.Subtract(first, second);
@@ -44,7 +42,6 @@ namespace Duality
 		/// <typeparam name="U"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static T Multiply<T,U>(T first, U second)
 		{
 			return DualType<T,U>.Multiply(first, second);
@@ -56,7 +53,6 @@ namespace Duality
 		/// <typeparam name="U"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static T Divide<T,U>(T first, U second)
 		{
 			return DualType<T,U>.Divide(first, second);
@@ -67,7 +63,6 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static T Modulo<T>(T first, T second)
 		{
 			return SingleType<T>.Modulo(first, second);
@@ -77,7 +72,6 @@ namespace Duality
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="value"></param>
-		/// <returns></returns>
 		public static T Negate<T>(T value)
 		{
 			return SingleType<T>.Negate(value);
@@ -87,7 +81,6 @@ namespace Duality
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="value"></param>
-		/// <returns></returns>
 		public static T Abs<T>(T value)
 		{
 			return SingleType<T>.Abs(value);
@@ -99,7 +92,6 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static T Or<T>(T first, T second)
 		{
 			return SingleType<T>.Or(first, second);
@@ -110,7 +102,6 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static T And<T>(T first, T second)
 		{
 			return SingleType<T>.And(first, second);
@@ -121,7 +112,6 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static T Xor<T>(T first, T second)
 		{
 			return SingleType<T>.Xor(first, second);
@@ -129,10 +119,6 @@ namespace Duality
 		/// <summary>
 		/// Performs a bitwise NOT on a generic value.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="first"></param>
-		/// <param name="second"></param>
-		/// <returns></returns>
 		public static T Not<T>(T value)
 		{
 			return SingleType<T>.Not(value);
@@ -144,7 +130,6 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static bool Equal<T>(T first, T second)
 		{
 			return SingleType<T>.Equal(first, second);
@@ -155,7 +140,6 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static bool GreaterThan<T>(T first, T second)
 		{
 			return SingleType<T>.GreaterThan(first, second);
@@ -166,7 +150,6 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static bool GreaterThanOrEqual<T>(T first, T second)
 		{
 			return SingleType<T>.GreaterThanOrEqual(first, second);
@@ -177,7 +160,6 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static bool LessThan<T>(T first, T second)
 		{
 			return SingleType<T>.LessThan(first, second);
@@ -188,7 +170,6 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static bool LessThanOrEqual<T>(T first, T second)
 		{
 			return SingleType<T>.LessThanOrEqual(first, second);
@@ -200,7 +181,6 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <typeparam name="U"></typeparam>
 		/// <param name="value"></param>
-		/// <returns></returns>
 		public static U Convert<T,U>(T value)
 		{
 			return DualType<T,U>.Convert(value);
@@ -213,7 +193,6 @@ namespace Duality
 		/// <param name="first"></param>
 		/// <param name="second"></param>
 		/// <param name="factor"></param>
-		/// <returns></returns>
 		public static T Lerp<T>(T first, T second, float factor)
 		{
 			return SingleType<T>.Lerp(first, second, factor);

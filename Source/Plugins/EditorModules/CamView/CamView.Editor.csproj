@@ -1,189 +1,74 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E67350ED-2676-492A-9FBE-A08B5FBF3726}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Duality.Editor.Plugins.CamView</RootNamespace>
-    <AssemblyName>CamView.editor</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile />
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.XML" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CamViewLayers\GridLayerData.cs" />
-    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorAxisLock.cs" />
-    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorAction.cs" />
-    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorSelObj.cs" />
-    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorCamViewState.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelVertexShape.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelCircleShape.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelShape.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelBody.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\Tools\ChainRigidBodyEditorTool.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\Tools\VertexRigidBodyEditorTool.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\Tools\PolyLikeRigidBodyEditorTool.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\Tools\LoopRigidBodyEditorTool.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\Tools\PolygonRigidBodyEditorTool.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\IRigidBodyEditorToolEnvironment.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\Tools\CircleRigidBodyEditorTool.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\Tools\NoRigidBodyEditorTool.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorTool.cs" />
-    <Compile Include="CamViewStates\SceneEditor\SelObj\SceneEditorSelGameObj.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Modules\CamView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Modules\CamView.Designer.cs">
-      <DependentUpon>CamView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Modules\CamViewClient.cs" />
-    <Compile Include="CamViewLayers\CamViewLayer.cs" />
-    <Compile Include="CamViewLayers\BackPlateCamViewLayer.cs" />
-    <Compile Include="CamViewLayers\GridCamViewLayer.cs" />
-    <Compile Include="CamViewLayers\RigidBodyJointCamViewLayer.cs" />
-    <Compile Include="CamViewLayers\RigidBodyShapeCamViewLayer.cs" />
-    <Compile Include="CamViewStates\CamViewState.cs" />
-    <Compile Include="CamViewPlugin.cs" />
-    <Compile Include="CamViewStates\GameViewCamViewState.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorCamViewState.cs" />
-    <Compile Include="CamViewStates\SceneEditor\SceneEditorCamViewState.cs" />
-    <Compile Include="Modules\GameObjectTypeFilter.cs" />
-    <Compile Include="Modules\EditingGuide.cs" />
-    <Compile Include="Modules\GridSizeDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Modules\GridSizeDialog.Designer.cs">
-      <DependentUpon>GridSizeDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\CamViewRes.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CamViewRes.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\CamViewResCache.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="UndoRedoActions\CamViewObjAction.cs" />
-    <Compile Include="UndoRedoActions\EditRigidBodyPolyShapeAction.cs" />
-    <Compile Include="UndoRedoActions\CreateRigidBodyShapeAction.cs" />
-    <Compile Include="UndoRedoActions\DeleteRigidBodyShapeAction.cs" />
-    <Compile Include="UndoRedoActions\DropGameObjectInSceneAction.cs" />
-    <Compile Include="UndoRedoActions\RigidBodyShapeAction.cs" />
-    <Compile Include="UndoRedoActions\ScaleCamViewObjAction.cs" />
-    <Compile Include="UndoRedoActions\RotateCamViewObjAction.cs" />
-    <Compile Include="UndoRedoActions\MoveCamViewObjAction.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Editor\DualityEditor\DualityEditor.csproj">
-      <Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
-      <Name>DualityEditor</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\Primitives\DualityPrimitives.csproj">
-      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
-      <Name>DualityPrimitives</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\Duality\Duality.csproj">
-      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
-      <Name>Duality</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Modules\CamView.resx">
-      <DependentUpon>CamView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Modules\GridSizeDialog.resx">
-      <DependentUpon>GridSizeDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\CamViewRes.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>CamViewRes.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="AdamsLair.DockPanelSuite">
-      <Version>2.8.2</Version>
-    </PackageReference>
-    <PackageReference Include="AdamsLair.WinForms">
-      <Version>1.1.17</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="EmbeddedResources\iconShapeSelect.png" />
-    <Content Include="EmbeddedResources\monitor.png" />
-    <Content Include="EmbeddedResources\ObjectVisibility.png" />
-    <Content Include="EmbeddedResources\ObjectVisibilityFiltered.png" />
-    <None Include="EmbeddedResources\RenderSetup.png" />
-    <Content Include="EmbeddedResources\SnapToGrid.png" />
-    <None Include="EmbeddedResources\iconCmpEditVertices.png" />
-    <None Include="EmbeddedResources\curArrowEditVertices.png" />
-    <None Include="EmbeddedResources\shape_perspective.png" />
-    <None Include="EmbeddedResources\curArrowCreateCircle.png" />
-    <None Include="EmbeddedResources\curArrowCreatePolygon.png" />
-    <None Include="EmbeddedResources\curArrowCreateEdge.png" />
-    <None Include="EmbeddedResources\curArrowCreateLoop.png" />
-    <Content Include="EmbeddedResources\eye.ico" />
-    <None Include="EmbeddedResources\iconCmpCircleCollider.png" />
-    <None Include="EmbeddedResources\iconCmpRectCollider.png" />
-    <None Include="EmbeddedResources\layers.png" />
-    <None Include="EmbeddedResources\iconCmpEdgeCollider.png" />
-    <None Include="EmbeddedResources\iconCmpLoopCollider.png" />
-    <None Include="EmbeddedResources\magnifier_one.png" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
-  </Target>
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Version>4.0.0-alpha0</Version>
+		<Copyright>Copyright © Fedja Adam 2012</Copyright>
+		<RootNamespace>Duality.Editor.Plugins.CamView</RootNamespace>
+		<UseWindowsForms>true</UseWindowsForms>
+		<EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AdamsLair.DockPanelSuite">
+			<Version>2.8.2</Version>
+		</PackageReference>
+		<PackageReference Include="AdamsLair.WinForms">
+			<Version>1.1.17</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Editor\DualityEditor\DualityEditor.csproj">
+			<Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
+			<Name>DualityEditor</Name>
+			<Private>False</Private>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Core\Primitives\DualityPrimitives.csproj">
+			<Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
+			<Name>DualityPrimitives</Name>
+			<Private>False</Private>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Core\Duality\Duality.csproj">
+			<Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+			<Name>Duality</Name>
+			<Private>False</Private>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+			<SubType>Designer</SubType>
+		</EmbeddedResource>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+		</Compile>
+
+		<EmbeddedResource Update="Properties\CamViewRes.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>CamViewRes.Designer.cs</LastGenOutput>
+			<SubType>Designer</SubType>
+		</EmbeddedResource>
+		<Compile Update="Properties\CamViewRes.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DependentUpon>CamViewRes.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="System.Windows.Forms" />
+	</ItemGroup>
+
+	<Target Name="AggregateOutput" BeforeTargets="AfterBuild">
+		<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
+		<Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
+		<Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
+	</Target>
+
 </Project>

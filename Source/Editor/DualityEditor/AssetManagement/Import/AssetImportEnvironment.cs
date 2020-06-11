@@ -110,7 +110,6 @@ namespace Duality.Editor.AssetManagement
 		/// <summary>
 		/// Requests the specified input path to be handled by the current importer.
 		/// </summary>
-		/// <param name="inputPath"></param>
 		/// <returns>True, if the current importer is allowed to handle this input item, false if not.</returns>
 		public bool HandleInput(string filePath)
 		{
@@ -133,7 +132,6 @@ namespace Duality.Editor.AssetManagement
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="assetName">The name of the requested output <see cref="Duality.Resource"/> (see <see cref="AssetImportInput.AssetName"/>).</param>
-		/// <returns></returns>
 		public ContentRef<T> GetOutput<T>(string assetName) where T : Resource, new()
 		{
 			string targetResPath = this.GetTargetPath<T>(assetName);

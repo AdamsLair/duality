@@ -25,8 +25,9 @@ namespace Duality
 		private const int BaseCapacity = 8;
 
 
-		private	T[]	data;
-		private	int	count;
+		private T[] data;
+		private int count;
+
 
 		/// <summary>
 		/// [GET / SET] The lists internal array for data storage. Assigning an array that is shorter than <see cref="Count"/> will
@@ -65,22 +66,17 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// [GET / SET] A safety-checked index accessor to the lists internal array. Will throw an <see cref="System.IndexOutOfRangeException"/>
+		/// [GET / SET] A safety-checked by-ref index accessor to the lists internal array. Will throw an <see cref="System.IndexOutOfRangeException"/>
 		/// when attempting to access indices exceeding <see cref="Count"/>.
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		public T this[int index]
+		public ref T this[int index]
 		{
 			get
 			{
 				if (index >= this.count) ThrowIndexOutOfRangeException();
-				return this.data[index];
-			}
-			set
-			{
-				if (index >= this.count) ThrowIndexOutOfRangeException();
-				this.data[index] = value;
+				return ref this.data[index];
 			}
 		}
 
@@ -88,27 +84,22 @@ namespace Duality
 		/// <summary>
 		/// Creates a new, empty list.
 		/// </summary>
-		public RawList() : this(new T[BaseCapacity], 0) {}
+		public RawList() : this(new T[BaseCapacity], 0) { }
 		/// <summary>
 		/// Creates a new list with the specified capacity.
 		/// </summary>
 		/// <param name="capacity"></param>
-		public RawList(int capacity) : this(new T[capacity], 0) {}
-		/// <summary>
-		/// Creates a new list with the specified contents.
-		/// </summary>
-		/// <param name="data"></param>
-		public RawList(IEnumerable<T> data) : this(data.ToArray()) {}
+		public RawList(int capacity) : this(new T[capacity], 0) { }
 		/// <summary>
 		/// Creates a new list that is a copy of the specified source list.
 		/// </summary>
 		/// <param name="source"></param>
-		public RawList(RawList<T> source) : this(source.Data.Clone() as T[], source.Count) {}
+		public RawList(RawList<T> source) : this((T[])source.Data.Clone(), source.Count) { }
 		/// <summary>
 		/// Creates a new list that wraps the specified array. Does not copy the array.
 		/// </summary>
 		/// <param name="wrapAround"></param>
-		public RawList(T[] wrapAround) : this(wrapAround, wrapAround.Length) {}
+		public RawList(T[] wrapAround) : this(wrapAround, wrapAround.Length) { }
 		/// <summary>
 		/// Creates a new list that wraps the specified array. Does not copy the array.
 		/// </summary>
@@ -147,7 +138,9 @@ namespace Duality
 		/// <param name="item"></param>
 		public void Add(T item)
 		{
-			this.Insert(this.count, item);
+			this.Reserve(this.count + 1);
+			this.data[this.count] = item;
+			this.count++;
 		}
 		/// <summary>
 		/// Adds a range of new items to the list.
@@ -157,14 +150,7 @@ namespace Duality
 		{
 			this.InsertRange(this.count, items);
 		}
-		/// <summary>
-		/// Adds a range of new items to the list.
-		/// </summary>
-		/// <param name="items"></param>
-		public void AddRange(IEnumerable<T> items)
-		{
-			this.InsertRange(this.count, items);
-		}
+
 		/// <summary>
 		/// Inserts a new item at a specified index.
 		/// </summary>
@@ -180,15 +166,6 @@ namespace Duality
 			}
 			this.data[targetIndex] = item;
 			this.count++;
-		}
-		/// <summary>
-		/// Inserts a range of new items at a specified index.
-		/// </summary>
-		/// <param name="targetIndex">The index at which to insert the new items.</param>
-		/// <param name="items">The source enumerable to copy items from.</param>
-		public void InsertRange(int targetIndex, IEnumerable<T> items)
-		{
-			this.InsertRange(targetIndex, items.ToArray());
 		}
 		/// <summary>
 		/// Inserts a range of new items at a specified index.
@@ -217,6 +194,7 @@ namespace Duality
 			Array.Copy(items, sourceIndex, this.data, targetIndex, count);
 			this.count += count;
 		}
+
 		/// <summary>
 		/// Removes the first matching item from the list.
 		/// </summary>
@@ -236,6 +214,31 @@ namespace Duality
 			}
 		}
 		/// <summary>
+		/// Removes the last item from the list. For primitives and unmanaged value types, this is a trivial
+		/// <see cref="Count"/> value change.
+		/// </summary>
+		public void RemoveLast()
+		{
+			this.count -= 1;
+			if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+			{
+				this.data[this.count] = default(T);
+			}
+		}
+		/// <summary>
+		/// Removes the last <paramref name="count"/> items from the list. For primitives and unmanaged value 
+		/// types, this is a trivial <see cref="Count"/> value change.
+		/// </summary>
+		/// <param name="count"></param>
+		public void RemoveLast(int count)
+		{
+			this.count -= count;
+			if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+			{
+				Array.Clear(this.data, this.count, count);
+			}
+		}
+		/// <summary>
 		/// Removes the element at the specified index.
 		/// </summary>
 		/// <param name="index"></param>
@@ -250,17 +253,64 @@ namespace Duality
 		/// <param name="count"></param>
 		public void RemoveRange(int index, int count)
 		{
+			// Fast path when items are removed all the way up to the end
 			if (index + count >= this.count)
 			{
+				this.RemoveLast(count);
+			}
+			// General case where items will have to be moved in order to keep ordering as-is
+			else
+			{
+				this.MoveInternal(index + count, this.count - (index + count), -count, false);
 				this.count -= count;
 				if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
 				{
 					Array.Clear(this.data, this.count, count);
 				}
 			}
+		}
+		/// <summary>
+		/// Removes the element at the specified index by overwriting it with the last element.
+		/// 
+		/// For large lists, removing items this way can be considerably faster than using the
+		/// <see cref="RemoveAt(int)"/> method, since no elements need to be moved around to
+		/// preserve list ordering.
+		/// </summary>
+		/// <param name="index"></param>
+		public void RemoveAtFast(int index)
+		{
+			this.count--;
+			this.data[index] = this.data[this.count];
+			if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
+			{
+				this.data[this.count] = default(T);
+			}
+		}
+		/// <summary>
+		/// Removes a range of elements at the specified index by overwriting them with elements
+		/// taken from the back of the list. The exact order in which the elements of the removed 
+		/// range are overwritten is not defined.
+		/// 
+		/// For large lists, removing items this way can be considerably faster than using the
+		/// <see cref="RemoveRange(int, int)"/> method, since no elements need to be moved around
+		/// to preserve list ordering.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="count"></param>
+		public void RemoveRangeFast(int index, int count)
+		{
+			// Fast path when items are removed all the way up to the end
+			if (index + count >= this.count)
+			{
+				this.RemoveLast(count);
+			}
+			// General case where items will be overwritten with items from the end
 			else
 			{
-				this.MoveInternal(index + count, this.count - (index + count), -count, false);
+				for (int i = 0; i < count; i++)
+				{
+					this.data[index + i] = this.data[this.count - i - 1];
+				}
 				this.count -= count;
 				if (ReflectionHelper.IsReferenceOrContainsReferences<T>())
 				{
@@ -319,6 +369,7 @@ namespace Duality
 
 			return 0;
 		}
+
 		/// <summary>
 		/// Clears the entire list of its contents and resets its size to zero.
 		/// </summary>
@@ -331,7 +382,6 @@ namespace Duality
 			this.count = 0;
 		}
 
-		
 		/// <summary>
 		/// Sorts the entire list.
 		/// </summary>
@@ -394,7 +444,7 @@ namespace Duality
 			if (index < 0 || index >= this.count) throw new IndexOutOfRangeException("Parameter 'index' is out of range.");
 			if (index + count > this.count)       throw new IndexOutOfRangeException("'index + count' is out of range.");
 
-			Array.Sort(this.data, index, count, new FunctorComparer(comparison));
+			Array.Sort(this.data, index, count, Comparer<T>.Create(comparison));
 		}
 
 		/// <summary>
@@ -412,7 +462,7 @@ namespace Duality
 		public void Reserve(int capacity)
 		{
 			if (this.data.Length >= capacity) return;
-			Array.Resize(ref this.data, MathF.Max(this.data.Length * 2, capacity, BaseCapacity));
+			Array.Resize(ref this.data, Math.Max(Math.Max(this.data.Length * 2, capacity), BaseCapacity));
 		}
 		/// <summary>
 		/// Moves a range of elements by a certain value and resets the indices that now remain empty.
@@ -424,7 +474,7 @@ namespace Duality
 		{
 			this.MoveInternal(index, count, moveBy, true);
 		}
-		
+
 		/// <summary>
 		/// Copies the contents of this collection to the specified array.
 		/// </summary>
@@ -464,19 +514,21 @@ namespace Duality
 
 		private void MoveInternal(int index, int count, int moveBy, bool resetToDefault)
 		{
-			if (count < 0)									throw new ArgumentException("Parameter 'count' may not be negative.", "count");
-			if (index < 0 || index >= this.data.Length)		throw new IndexOutOfRangeException("Parameter 'index' is out of range.");
-			if (index + count > this.data.Length)			throw new IndexOutOfRangeException("'index + count' is out of range.");
-			if (index + moveBy < 0)							throw new IndexOutOfRangeException("'index + moveBy' is out of range.");
-			if (index + moveBy + count > this.data.Length)	throw new IndexOutOfRangeException("'index + moveBy + count' is out of range.");
+			if (count < 0)                                 throw new ArgumentException("Parameter 'count' may not be negative.", "count");
+			if (index < 0 || index >= this.data.Length)    throw new IndexOutOfRangeException("Parameter 'index' is out of range.");
+			if (index + count > this.data.Length)          throw new IndexOutOfRangeException("'index + count' is out of range.");
+			if (index + moveBy < 0)                        throw new IndexOutOfRangeException("'index + moveBy' is out of range.");
+			if (index + moveBy + count > this.data.Length) throw new IndexOutOfRangeException("'index + moveBy + count' is out of range.");
 
 			int baseIndex = index + moveBy;
 			if (moveBy > 0)
 			{
+				// Non-overlapping move
 				if (moveBy >= count)
 				{
 					Array.Copy(this.data, index, this.data, index + moveBy, count);
 				}
+				// Source and target range within the array are overlapping
 				else
 				{
 					for (int i = baseIndex + count - 1; i >= baseIndex; i--)
@@ -484,6 +536,7 @@ namespace Duality
 						this.data[i] = this.data[i - moveBy];
 					}
 				}
+
 				if (resetToDefault)
 				{
 					int clearCount = Math.Min(moveBy, count);
@@ -492,10 +545,12 @@ namespace Duality
 			}
 			else
 			{
+				// Non-overlapping move
 				if (-moveBy >= count)
 				{
 					Array.Copy(this.data, index, this.data, index + moveBy, count);
 				}
+				// Source and target range within the array are overlapping
 				else
 				{
 					for (int i = baseIndex; i < baseIndex + count; i++)
@@ -503,6 +558,7 @@ namespace Duality
 						this.data[i] = this.data[i - moveBy];
 					}
 				}
+
 				if (resetToDefault)
 				{
 					int clearCount = Math.Min(-moveBy, count);
@@ -538,10 +594,32 @@ namespace Duality
 		{
 			get { return this.data; }
 		}
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)] object IList.this[int index]
+
+		object IList.this[int index]
 		{
 			get { return this[index]; }
 			set { this[index] = (T)value; }
+		}
+		T IList<T>.this[int index]
+		{
+			get
+			{
+				if (index >= this.count) ThrowIndexOutOfRangeException();
+				return this.data[index];
+			}
+			set
+			{
+				if (index >= this.count) ThrowIndexOutOfRangeException();
+				this.data[index] = value;
+			}
+		}
+		T IReadOnlyList<T>.this[int index]
+		{
+			get
+			{
+				if (index >= this.count) ThrowIndexOutOfRangeException();
+				return this.data[index];
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -576,18 +654,6 @@ namespace Duality
 		#endregion
 
 
-		internal sealed class FunctorComparer : IComparer<T>
-		{
-			private Comparison<T> comparison;
-			public FunctorComparer(Comparison<T> comparison)
-			{
-				this.comparison = comparison;
-			}
-			public int Compare(T x, T y)
-			{
-				return this.comparison(x, y);
-			}
-		}
 		internal sealed class DebuggerTypeProxy
 		{
 			private RawList<T> rawList;

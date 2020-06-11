@@ -2,26 +2,28 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Launcher</id>
-    <version>3.0.4</version>
+    <version>4.0.0-alpha0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Launcher</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>The default launcher application for Duality games.</summary>
     <description>The default launcher application for Duality games.</description>
     <tags>Duality Launcher</tags>
-    <releaseNotes>Patch Version Update
-</releaseNotes>
+    <releaseNotes>Patch Version Update</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.1.5" />
+      <group targetFramework="net472">
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha0" />
+      </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Output\DualityLauncher.exe" target="lib\net45" />
-    <file src="..\Output\DualityLauncher.exe.config" target="lib\net45" />
-    <file src="..\Output\DualityLauncher.pdb" target="lib\net45" />
+    <file src="Icons\Duality.png" target="\icon.png" />
+    <file src="..\Output\DualityLauncher.exe" target="lib\net472" />
+    <file src="..\Output\DualityLauncher.exe.config" target="lib\net472" />
+    <file src="..\Output\DualityLauncher.pdb" target="lib\net472" />
   </files>
 </package>

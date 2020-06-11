@@ -2,25 +2,27 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DotNetFramework</id>
-    <version>3.0.4</version>
+    <version>4.0.0-alpha0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>DotNetFramework Backend</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/DotNetFrameworkBackend.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>The default system backend layer for Duality.</summary>
     <description>The default system backend layer for Duality. It uses regular .Net Framework classes, as are available on desktop platforms.</description>
     <tags>Duality Core Plugin Backend</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.1.5" />
+      <group targetFramework="net472">
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha0" />
+      </group>
     </dependencies>
-    <releaseNotes>Patch Version Update
-</releaseNotes>
+    <releaseNotes>Patch Version Update</releaseNotes>
   </metadata>
   <files>
-    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.dll" target="lib\net45" />
-    <file src="..\Output\Plugins\DotNetFrameworkBackend.core.pdb" target="lib\net45" />
+    <file src="Icons\DotNetFrameworkBackend.png" target="\icon.png" />
+    <file src="..\Output\Plugins\DotNetFramework.Core.dll" target="lib\net472" />
+    <file src="..\Output\Plugins\DotNetFramework.Core.pdb" target="lib\net472" />
   </files>
 </package>

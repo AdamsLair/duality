@@ -258,7 +258,6 @@ namespace Duality.Input
 		/// Returns whether the specified button is currently pressed.
 		/// </summary>
 		/// <param name="buttonIndex"></param>
-		/// <returns></returns>
 		public bool ButtonPressed(int buttonIndex)
 		{
 			return this.currentState.ButtonPressed[buttonIndex];
@@ -267,7 +266,6 @@ namespace Duality.Input
 		/// Returns whether the specified button was hit this frame.
 		/// </summary>
 		/// <param name="buttonIndex"></param>
-		/// <returns></returns>
 		public bool ButtonHit(int buttonIndex)
 		{
 			return this.currentState.ButtonPressed[buttonIndex] && !this.lastState.ButtonPressed[buttonIndex];
@@ -276,7 +274,6 @@ namespace Duality.Input
 		/// Returns whether the specified button was released this frame.
 		/// </summary>
 		/// <param name="buttonIndex"></param>
-		/// <returns></returns>
 		public bool ButtonReleased(int buttonIndex)
 		{
 			return !this.currentState.ButtonPressed[buttonIndex] && this.lastState.ButtonPressed[buttonIndex];
@@ -286,7 +283,6 @@ namespace Duality.Input
 		/// Returns the specified axis value.
 		/// </summary>
 		/// <param name="axisIndex"></param>
-		/// <returns></returns>
 		public float AxisValue(int axisIndex)
 		{
 			return this.currentState.AxisValue[axisIndex];
@@ -295,7 +291,6 @@ namespace Duality.Input
 		/// Returns the specified axis value change since last frame.
 		/// </summary>
 		/// <param name="axisIndex"></param>
-		/// <returns></returns>
 		public float AxisSpeed(int axisIndex)
 		{
 			return this.currentState.AxisValue[axisIndex] - this.lastState.AxisValue[axisIndex];
@@ -305,7 +300,6 @@ namespace Duality.Input
 		/// Returns the current position of the specified joystick hat.
 		/// </summary>
 		/// <param name="hatIndex"></param>
-		/// <returns></returns>
 		public JoystickHatPosition HatPosition(int hatIndex)
 		{
 			return this.currentState.HatPosition[hatIndex];
@@ -314,7 +308,6 @@ namespace Duality.Input
 		/// Returns all new hat displacement that occurred since last frame.
 		/// </summary>
 		/// <param name="hatIndex"></param>
-		/// <returns></returns>
 		public JoystickHatPosition HatHit(int hatIndex)
 		{
 			return this.currentState.HatPosition[hatIndex] & (~this.lastState.HatPosition[hatIndex]);
@@ -323,7 +316,6 @@ namespace Duality.Input
 		/// Returns all old hat displacement that stopped since last frame.
 		/// </summary>
 		/// <param name="hatIndex"></param>
-		/// <returns></returns>
 		public JoystickHatPosition HatReleased(int hatIndex)
 		{
 			return this.lastState.HatPosition[hatIndex] & (~this.currentState.HatPosition[hatIndex]);

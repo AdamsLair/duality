@@ -22,7 +22,7 @@ namespace Duality.Editor.Plugins.HelpAdvisor.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class HelpAdvisorRes {
+    internal class HelpAdvisorRes {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Duality.Editor.Plugins.HelpAdvisor.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Duality.Editor.Plugins.HelpAdvisor.Properties.HelpAdvisorRes", typeof(HelpAdvisorRes).Assembly);
@@ -51,7 +51,7 @@ namespace Duality.Editor.Plugins.HelpAdvisor.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Duality.Editor.Plugins.HelpAdvisor.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The Advisor will support you with context-based information about Duality. Press F1 at any time to access more information about the current topic..
         /// </summary>
-        public static string HelpInfo_Advisor_Desc {
+        internal static string HelpInfo_Advisor_Desc {
             get {
                 return ResourceManager.GetString("HelpInfo_Advisor_Desc", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Duality.Editor.Plugins.HelpAdvisor.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Advisor Window.
         /// </summary>
-        public static string HelpInfo_Advisor_Topic {
+        internal static string HelpInfo_Advisor_Topic {
             get {
                 return ResourceManager.GetString("HelpInfo_Advisor_Topic", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Duality.Editor.Plugins.HelpAdvisor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconHelp {
+        internal static System.Drawing.Bitmap IconHelp {
             get {
                 object obj = ResourceManager.GetObject("IconHelp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -91,7 +91,7 @@ namespace Duality.Editor.Plugins.HelpAdvisor.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Advisor.
         /// </summary>
-        public static string MenuItemName_Advisor {
+        internal static string MenuItemName_Advisor {
             get {
                 return ResourceManager.GetString("MenuItemName_Advisor", resourceCulture);
             }

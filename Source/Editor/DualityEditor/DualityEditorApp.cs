@@ -21,7 +21,6 @@ using Duality.Backend;
 using Duality.Editor.Backend;
 using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
-using Duality.Editor.PackageManagement;
 using Duality.Editor.AssetManagement;
 
 using WeifenLuo.WinFormsUI.Docking;
@@ -65,7 +64,6 @@ namespace Duality.Editor
 		private	static string						launcherApp			= null;
 		private	static ContentRef<Scene>			lastOpenScene		= null;
 		private	static bool							startWithLastScene	= true;
-		private	static PackageManager				packageManager		= null;
 		private	static EditorLogOutput			memoryLogOutput		= null;
 
 
@@ -94,10 +92,6 @@ namespace Duality.Editor
 		public static EditorLogOutput GlobalLogData
 		{
 			get { return memoryLogOutput; }
-		}
-		public static PackageManager PackageManager
-		{
-			get { return packageManager; }
 		}
 		public static MainForm MainForm
 		{
@@ -167,7 +161,6 @@ namespace Duality.Editor
 				if (value != launcherApp)
 				{
 					launcherApp = value;
-					UpdatePluginSourceCode();
 				}
 			}
 		}
@@ -217,13 +210,9 @@ namespace Duality.Editor
 				FileInfo fileInfoIcon = new FileInfo(Path.Combine(DualityApp.DataDirectory, "WorkingFolderIcon.ico"));
 				fileInfoIcon.Attributes |= FileAttributes.Hidden;
 			}
-			if (!Directory.Exists(DualityApp.PluginDirectory)) Directory.CreateDirectory(DualityApp.PluginDirectory);
-			if (!Directory.Exists(EditorHelper.SourceDirectory)) Directory.CreateDirectory(EditorHelper.SourceDirectory);
-			if (!Directory.Exists(EditorHelper.SourceMediaDirectory)) Directory.CreateDirectory(EditorHelper.SourceMediaDirectory);
-			if (!Directory.Exists(EditorHelper.SourceCodeDirectory)) Directory.CreateDirectory(EditorHelper.SourceCodeDirectory);
 
-			// Initialize Package Management system
-			packageManager = new PackageManager();
+			Directory.CreateDirectory(DualityApp.PluginDirectory);
+			Directory.CreateDirectory(EditorHelper.ImportDirectory);
 
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
@@ -414,7 +403,6 @@ namespace Duality.Editor
 		/// no such check is performed and all editor actions that match the other criteria are returned.
 		/// </param>
 		/// <param name="context">The context in which this action is performed.</param>
-		/// <returns></returns>
 		public static IEnumerable<IEditorAction> GetEditorActions(Type subjectType, IEnumerable<object> objects, string context = ActionContextMenu)
 		{
 			if (objects != null)
@@ -761,226 +749,6 @@ namespace Duality.Editor
 			catch (Exception e)
 			{
 				Logs.Editor.WriteError("Backup of file '{0}' failed: {1}", path, LogFormat.Exception(e));
-			}
-		}
-		
-		public static void UpdatePluginSourceCode()
-		{
-			string sourceCodeSolutionFile = EditorHelper.SourceCodeSolutionFilePath;
-			// Initially generate source code, if not existing yet
-			if (!File.Exists(sourceCodeSolutionFile))
-			{
-				InitPluginSourceCode();
-				sourceCodeSolutionFile = EditorHelper.DefaultSourceCodeSolutionFile;
-			}
-
-			// Replace exec path in project files to account for custom launcher settings
-			{
-				XDocument projectDoc;
-				string solutionDir = Path.GetFullPath(Path.GetDirectoryName(sourceCodeSolutionFile));
-
-				string startProgram = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
-				string startProgramRelative = PathHelper.MakeFilePathRelative(startProgram, solutionDir);
-				if (startProgramRelative != null)
-					startProgramRelative = "$(SolutionDir)" + startProgramRelative;
-				else
-					startProgramRelative = startProgram;
-
-				string startWorkingDir = Path.GetFullPath(".");
-				string startWorkingDirRelative = PathHelper.MakeDirectoryPathRelative(startWorkingDir, solutionDir);
-				if (startWorkingDirRelative != null)
-					startWorkingDirRelative = "$(SolutionDir)" + startWorkingDirRelative;
-				else
-					startWorkingDirRelative = startWorkingDir;
-
-				// Adjust the game debugger startup parameters
-				string gameDebuggerProjectFile = EditorHelper.SourceCodeProjectGameDebuggerFile;
-				if (File.Exists(gameDebuggerProjectFile))
-				{
-					bool anythingChanged = false;
-
-					projectDoc = XDocument.Load(gameDebuggerProjectFile);
-					foreach (XElement element in projectDoc.Descendants("StartProgram", true))
-					{
-						if (!string.Equals(element.Value, startProgramRelative))
-						{
-							element.Value = startProgramRelative;
-							anythingChanged = true;
-						}
-					}
-					foreach (XElement element in projectDoc.Descendants("StartWorkingDirectory", true))
-					{
-						if (!string.Equals(element.Value, startWorkingDirRelative))
-						{
-							element.Value = startWorkingDirRelative;
-							anythingChanged = true;
-						}
-					}
-					if (anythingChanged)
-					{
-						projectDoc.Save(gameDebuggerProjectFile);
-					}
-				}
-
-				// Legacy support 2019-07-27: 
-				// Adjust the core plugin startup parameters
-				string corePluginProjectFile = EditorHelper.SourceCodeProjectCorePluginFile;
-				if (File.Exists(corePluginProjectFile))
-				{
-					bool anythingChanged = false;
-
-					projectDoc = XDocument.Load(corePluginProjectFile);
-					foreach (XElement element in projectDoc.Descendants("StartProgram", true))
-					{
-						if (!string.Equals(element.Value, startProgramRelative))
-						{
-							element.Value = startProgramRelative;
-							anythingChanged = true;
-						}
-					}
-					foreach (XElement element in projectDoc.Descendants("StartWorkingDirectory", true))
-					{
-						if (!string.Equals(element.Value, startWorkingDirRelative))
-						{
-							element.Value = startWorkingDirRelative;
-							anythingChanged = true;
-						}
-					}
-					if (anythingChanged)
-					{
-						projectDoc.Save(corePluginProjectFile);
-					}
-				}
-			}
-		}
-		public static void ReadPluginSourceCodeContentData(out string rootNamespace, out string desiredRootNamespace)
-		{
-			rootNamespace = null;
-			desiredRootNamespace = EditorHelper.GenerateClassNameFromPath(EditorHelper.CurrentProjectName);
-
-			// Read root namespaces
-			if (File.Exists(EditorHelper.SourceCodeProjectCorePluginFile))
-			{
-				XDocument projXml = XDocument.Load(EditorHelper.SourceCodeProjectCorePluginFile);
-				foreach (XElement element in projXml.Descendants("RootNamespace", true))
-				{
-					if (rootNamespace == null) rootNamespace = element.Value;
-				}
-			}
-		}
-		public static void InitPluginSourceCode()
-		{
-			// Check if the solution file has to be created		
-			if (!File.Exists(EditorHelper.SourceCodeSolutionFilePath))
-			{
-				// Create solution file
-				using (MemoryStream gamePluginStream = new MemoryStream(Properties.GeneralRes.GamePluginTemplate))
-				using (ZipArchive gamePluginZip = new ZipArchive(gamePluginStream))
-				{
-					gamePluginZip.ExtractAll(EditorHelper.SourceCodeDirectory, false);
-				}
-			}
-
-			string projectClassName = EditorHelper.GenerateClassNameFromPath(EditorHelper.CurrentProjectName);
-			string newRootNamespaceCore = projectClassName;
-			string newRootNamespaceEditor = newRootNamespaceCore + ".Editor";
-			string pluginNameCore = projectClassName + "CorePlugin";
-			string pluginNameEditor = projectClassName + "EditorPlugin";
-			string oldRootNamespaceCore = null;
-			string oldRootNamespaceEditor = null;
-
-			// Update root namespaces
-			if (File.Exists(EditorHelper.SourceCodeProjectCorePluginFile))
-			{
-				XDocument projXml = XDocument.Load(EditorHelper.SourceCodeProjectCorePluginFile);
-				foreach (XElement element in projXml.Descendants("RootNamespace", true))
-				{
-					if (oldRootNamespaceCore == null) oldRootNamespaceCore = element.Value;
-					element.Value = newRootNamespaceCore;
-				}
-				projXml.Save(EditorHelper.SourceCodeProjectCorePluginFile);
-			}
-
-			if (File.Exists(EditorHelper.SourceCodeProjectEditorPluginFile))
-			{
-				XDocument projXml = XDocument.Load(EditorHelper.SourceCodeProjectEditorPluginFile);
-				foreach (XElement element in projXml.Descendants("RootNamespace", true))
-				{
-					if (oldRootNamespaceEditor == null) oldRootNamespaceEditor = element.Value;
-					element.Value = newRootNamespaceEditor;
-				}
-				projXml.Save(EditorHelper.SourceCodeProjectEditorPluginFile);
-			}
-
-			// Guess old plugin class names
-			string oldPluginNameCore = oldRootNamespaceCore + "CorePlugin";
-			string oldPluginNameEditor = oldRootNamespaceCore + "EditorPlugin";
-			string regExpr;
-			string regExprReplace;
-
-			// Replace namespace names: Core
-			if (Directory.Exists(EditorHelper.SourceCodeProjectCorePluginDir))
-			{
-				regExpr = @"^(\s*namespace\s*)(.*)(" + oldRootNamespaceCore + @")(.*)(\s*{)";
-				regExprReplace = @"$1$2" + newRootNamespaceCore + @"$4$5";
-				foreach (string filePath in Directory.GetFiles(EditorHelper.SourceCodeProjectCorePluginDir, "*.cs", SearchOption.AllDirectories))
-				{
-					string fileContent = File.ReadAllText(filePath);
-					fileContent = Regex.Replace(fileContent, regExpr, regExprReplace, RegexOptions.Multiline);
-					File.WriteAllText(filePath, fileContent, Encoding.UTF8);
-				}
-			}
-
-			// Replace namespace names: Editor
-			if (Directory.Exists(EditorHelper.SourceCodeProjectEditorPluginDir))
-			{
-				regExpr = @"^(\s*namespace\s*)(.*)(" + oldRootNamespaceEditor + @")(.*)(\s*{)";
-				regExprReplace = @"$1$2" + newRootNamespaceEditor + @"$4$5";
-				foreach (string filePath in Directory.GetFiles(EditorHelper.SourceCodeProjectEditorPluginDir, "*.cs", SearchOption.AllDirectories))
-				{
-					string fileContent = File.ReadAllText(filePath);
-					fileContent = Regex.Replace(fileContent, regExpr, regExprReplace, RegexOptions.Multiline);
-					File.WriteAllText(filePath, fileContent, Encoding.UTF8);
-				}
-			}
-
-			// Replace class names: Core
-			if (File.Exists(EditorHelper.SourceCodeCorePluginFile))
-			{
-				string fileContent = File.ReadAllText(EditorHelper.SourceCodeCorePluginFile);
-
-				// Replace class name
-				regExpr = @"(\bclass\b)(.*)(" + oldPluginNameCore + @")(.*)(\s*{)";
-				regExprReplace = @"$1$2" + pluginNameCore + @"$4$5";
-				fileContent = Regex.Replace(fileContent, regExpr, regExprReplace, RegexOptions.Multiline);
-
-				regExpr = @"(\bclass\b)(.*)(" + @"__CorePluginClassName__" + @")(.*)(\s*{)";
-				regExprReplace = @"$1$2" + pluginNameCore + @"$4$5";
-				fileContent = Regex.Replace(fileContent, regExpr, regExprReplace, RegexOptions.Multiline);
-
-				File.WriteAllText(EditorHelper.SourceCodeCorePluginFile, fileContent, Encoding.UTF8);
-			}
-
-			// Replace class names: Editor
-			if (File.Exists(EditorHelper.SourceCodeEditorPluginFile))
-			{
-				string fileContent = File.ReadAllText(EditorHelper.SourceCodeEditorPluginFile);
-
-				// Replace class name
-				regExpr = @"(\bclass\b)(.*)(" + oldPluginNameEditor + @")(.*)(\s*{)";
-				regExprReplace = @"$1$2" + pluginNameEditor + @"$4$5";
-				fileContent = Regex.Replace(fileContent, regExpr, regExprReplace, RegexOptions.Multiline);
-
-				regExpr = @"(\bclass\b)(.*)(" + @"__EditorPluginClassName__" + @")(.*)(\s*{)";
-				regExprReplace = @"$1$2" + pluginNameEditor + @"$4$5";
-				fileContent = Regex.Replace(fileContent, regExpr, regExprReplace, RegexOptions.Multiline);
-
-				// Repalce Id property
-				regExpr = @"(\boverride\s*string\s*Id\s*{\s*get\s*{\s*return\s*" + '"' + @")(.*)(" + '"' + @"\s*;\s*}\s*})";
-				regExprReplace = @"$1" + pluginNameEditor + @"$3";
-				fileContent = Regex.Replace(fileContent, regExpr, regExprReplace, RegexOptions.Multiline);
-
-				File.WriteAllText(EditorHelper.SourceCodeEditorPluginFile, fileContent, Encoding.UTF8);
 			}
 		}
 
@@ -1429,9 +1197,7 @@ namespace Duality.Editor
 		}
 		private static void mainForm_Deactivate(object sender, EventArgs e)
 		{
-			// Update source code, in case the user is switching to his IDE without hitting the "open source code" button again
-			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
-				DualityEditorApp.UpdatePluginSourceCode();
+
 		}
 
 		private static void editorObjects_GameObjectsAdded(object sender, GameObjectGroupEventArgs e)

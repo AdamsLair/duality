@@ -1,56 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FDA91F3F-1621-4E41-A1FC-2C3F45754CE4}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Duality.Editor.Backend.DefaultOpenTK</RootNamespace>
-    <AssemblyName>DefaultOpenTKBackend.editor</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile />
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Backend\GraphicsModeComparer.cs" />
-    <Compile Include="Backend\NativeRenderableSite.cs" />
-    <Compile Include="Backend\NativeEditorGraphicsContext.cs" />
-    <Compile Include="Backend\EditorGraphicsBackend.cs" />
-    <Compile Include="EditorPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<LangVersion>7.3</LangVersion>
+		<Copyright>Copyright © Fedja Adam 2015</Copyright>
+		<RootNamespace>Duality.Editor.Backend.DefaultOpenTK</RootNamespace>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<Version>4.0.0-alpha0</Version>
+	</PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Editor\DualityEditor\DualityEditor.csproj">
       <Project>{9fb9f397-fd39-460c-a9ad-b4780d19945f}</Project>
@@ -72,6 +30,7 @@
       <Name>DefaultOpenTK.Core</Name>
     </ProjectReference>
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="AdamsLair.OpenTK">
       <Version>1.2.2</Version>
@@ -80,11 +39,15 @@
       <Version>1.2.2</Version>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
   <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
-    <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.dll" DestinationFolder="$(SolutionDir)Build\Output\"/>
-	  <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.xml" DestinationFolder="$(SolutionDir)Build\Output\"/>
+    <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
   </Target>
 </Project>

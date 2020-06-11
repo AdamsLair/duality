@@ -66,7 +66,6 @@ namespace Duality.Resources
 		/// Merges two character sets to form a new one that contains both of their characters without duplicates.
 		/// </summary>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public FontCharSet MergedWith(FontCharSet second)
 		{
 			return new FontCharSet(

@@ -29,6 +29,7 @@ namespace Duality.Editor
 		private static FileSystemWatcher dataDirWatcherFile      = null;
 		private static FileSystemWatcher dataDirWatcherDirectory = null;
 		private static FileSystemWatcher sourceDirWatcher        = null;
+		private static FileSystemWatcher importDirWatcher        = null;
 		private static HashSet<string>   reimportSchedule        = new HashSet<string>();
 		private static HashSet<string>   editorModifiedFiles     = new HashSet<string>();
 		private static HashSet<string>   editorModifiedFilesLast = new HashSet<string>();
@@ -106,17 +107,31 @@ namespace Duality.Editor
 			dataDirWatcherDirectory.Deleted += fileSystemWatcher_ForwardData;
 			dataDirWatcherDirectory.Renamed += fileSystemWatcher_ForwardData;
 			dataDirWatcherDirectory.EnableRaisingEvents = true;
-			
-			sourceDirWatcher = new FileSystemWatcher();
-			sourceDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
-			sourceDirWatcher.EnableRaisingEvents = false;
-			sourceDirWatcher.IncludeSubdirectories = true;
-			sourceDirWatcher.Path = EditorHelper.SourceDirectory;
-			sourceDirWatcher.Created += fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Changed += fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Deleted += fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Renamed += fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.EnableRaisingEvents = true;
+
+			if (Directory.Exists(EditorHelper.SourceDirectory))
+			{
+				sourceDirWatcher = new FileSystemWatcher();
+				sourceDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
+				sourceDirWatcher.EnableRaisingEvents = false;
+				sourceDirWatcher.IncludeSubdirectories = true;
+				sourceDirWatcher.Path = EditorHelper.SourceDirectory;
+				sourceDirWatcher.Created += fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Changed += fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Deleted += fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Renamed += fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.EnableRaisingEvents = true;
+			}
+
+			importDirWatcher = new FileSystemWatcher();
+			importDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
+			importDirWatcher.EnableRaisingEvents = false;
+			importDirWatcher.IncludeSubdirectories = true;
+			importDirWatcher.Path = EditorHelper.ImportDirectory;
+			importDirWatcher.Created += fileSystemWatcher_ForwardSource;
+			importDirWatcher.Changed += fileSystemWatcher_ForwardSource;
+			importDirWatcher.Deleted += fileSystemWatcher_ForwardSource;
+			importDirWatcher.Renamed += fileSystemWatcher_ForwardSource;
+			importDirWatcher.EnableRaisingEvents = true;
 
 			// Register events
 			DualityEditorApp.EditorIdling += DualityEditorApp_EditorIdling;
@@ -154,14 +169,17 @@ namespace Duality.Editor
 			dataDirWatcherDirectory.Dispose();
 			dataDirWatcherDirectory = null;
 
-			sourceDirWatcher.EnableRaisingEvents = false;
-			sourceDirWatcher.Created -= fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Changed -= fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Deleted -= fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.Renamed -= fileSystemWatcher_ForwardSource;
-			sourceDirWatcher.SynchronizingObject = null;
-			sourceDirWatcher.Dispose();
-			sourceDirWatcher = null;
+			if (sourceDirWatcher != null)
+			{
+				sourceDirWatcher.EnableRaisingEvents = false;
+				sourceDirWatcher.Created -= fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Changed -= fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Deleted -= fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.Renamed -= fileSystemWatcher_ForwardSource;
+				sourceDirWatcher.SynchronizingObject = null;
+				sourceDirWatcher.Dispose();
+				sourceDirWatcher = null;
+			}
 		}
 
 		/// <summary>
@@ -222,7 +240,6 @@ namespace Duality.Editor
 		/// thus to be ignored when detecing file system changes.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		public static bool IsPathEditorModified(string path)
 		{
 			return editorModifiedFiles.Contains(Path.GetFullPath(path));
@@ -488,7 +505,7 @@ namespace Duality.Editor
 				// Mind modified source files for re-import
 				if (fileEvent.Type == FileEventType.Changed)
 				{
-					if (File.Exists(fileEvent.Path) && PathOp.IsPathLocatedIn(fileEvent.Path, EditorHelper.SourceMediaDirectory)) 
+					if (File.Exists(fileEvent.Path) && PathOp.IsPathLocatedIn(fileEvent.Path, EditorHelper.ImportDirectory)) 
 						reimportSchedule.Add(fileEvent.Path);
 				}
 			}
@@ -530,7 +547,7 @@ namespace Duality.Editor
 			else
 			{
 				string mediaPath = Path.Combine(
-					EditorHelper.SourceMediaDirectory, 
+					EditorHelper.ImportDirectory, 
 					PathHelper.MakeFilePathRelative(deleteEvent.Path, DualityApp.DataDirectory));
 				if (Directory.Exists(mediaPath))
 				{
@@ -583,12 +600,12 @@ namespace Duality.Editor
 			{
 				// Determine which source/media directory we're going to move
 				string oldMediaPath = Path.Combine(
-					EditorHelper.SourceMediaDirectory, 
+					EditorHelper.ImportDirectory, 
 					PathHelper.MakeFilePathRelative(renameEvent.OldPath, DualityApp.DataDirectory));
 
 				// Determine where that old source/media directory needs to be moved
 				string newMediaPath = Path.Combine(
-					EditorHelper.SourceMediaDirectory, 
+					EditorHelper.ImportDirectory, 
 					PathHelper.MakeFilePathRelative(renameEvent.Path, DualityApp.DataDirectory));
 
 				// Move the media directory to mirror the data directories movement

@@ -941,7 +941,6 @@ namespace Duality.Backend.DefaultOpenTK
 		/// <summary>
 		/// Checks for OpenGL errors using <see cref="CheckOpenGLErrors"/> when both compiled in debug mode and a with an attached debugger.
 		/// </summary>
-		/// <returns></returns>
 		[System.Diagnostics.Conditional("DEBUG")]
 		public static void DebugCheckOpenGLErrors([CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
 		{

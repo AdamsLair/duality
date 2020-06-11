@@ -21,7 +21,6 @@ namespace Duality.Editor
 		/// Returns whether the action can be performed on the specified object.
 		/// </summary>
 		/// <param name="obj"></param>
-		/// <returns></returns>
 		public virtual bool CanPerformOn(T obj)
 		{
 			return true;

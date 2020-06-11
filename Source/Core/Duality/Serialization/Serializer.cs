@@ -20,7 +20,6 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="field"></param>
 		/// <param name="obj"></param>
-		/// <returns></returns>
 		public delegate bool FieldBlocker(FieldInfo field, object obj);
 
 		/// <summary>
@@ -315,7 +314,6 @@ namespace Duality.Serialization
 		/// <summary>
 		/// Reads a single object and returns it.
 		/// </summary>
-		/// <returns></returns>
 		public object ReadObject()
 		{
 			if (!this.CanRead) throw new InvalidOperationException("Can't read object from a write-only serializer!");
@@ -328,7 +326,6 @@ namespace Duality.Serialization
 		/// Reads a single object, casts it to the specified Type and returns it.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public T ReadObject<T>()
 		{
 			object result = this.ReadObject();
@@ -408,12 +405,10 @@ namespace Duality.Serialization
 		/// used for any given input <see cref="Stream"/>.
 		/// </summary>
 		/// <param name="stream"></param>
-		/// <returns></returns>
 		protected abstract bool MatchesStreamFormat(Stream stream);
 		/// <summary>
 		/// Writes the specified object including all referenced objects.
 		/// </summary>
-		/// <param name="obj">The object to write.</param>
 		protected abstract object ReadObjectData();
 		/// <summary>
 		/// Reads an object including all referenced objects.
@@ -596,10 +591,6 @@ namespace Duality.Serialization
 		/// <summary>
 		/// Assigns the specified value to a specific array index.
 		/// </summary>
-		/// <param name="objSerializeType"></param>
-		/// <param name="obj"></param>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
 		protected void AssignValueToArray(SerializeType elementSerializeType, Array array, int index, object value)
 		{
 			if (array == null) return;
@@ -620,7 +611,6 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="typeId"></param>
 		/// <param name="objId"></param>
-		/// <returns></returns>
 		protected Type ResolveType(string typeId, uint objId = 0)
 		{
 			// Re-use already resolved type IDs from the local cache, if possible
@@ -648,7 +638,6 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="memberId"></param>
 		/// <param name="objId"></param>
-		/// <returns></returns>
 		protected MemberInfo ResolveMember(string memberId, uint objId = 0)
 		{
 			// Re-use already resolved member IDs from the local cache, if possible
@@ -677,7 +666,6 @@ namespace Duality.Serialization
 		/// <param name="enumType"></param>
 		/// <param name="enumField"></param>
 		/// <param name="value"></param>
-		/// <returns></returns>
 		protected Enum ResolveEnumValue(Type enumType, string enumField, long value)
 		{
 			try
@@ -832,7 +820,6 @@ namespace Duality.Serialization
 		/// Uses a (seekable, random access) Stream to detect the serializer that can handle it.
 		/// </summary>
 		/// <param name="stream"></param>
-		/// <returns></returns>
 		public static Type Detect(Stream stream)
 		{
 			if (!stream.CanRead || !stream.CanSeek) throw new ArgumentException("The specified Stream needs to be readable, seekable and provide random-access functionality.");
@@ -903,7 +890,6 @@ namespace Duality.Serialization
 		/// <typeparam name="T"></typeparam>
 		/// <param name="file"></param>
 		/// <param name="preferredSerializer"></param>
-		/// <returns></returns>
 		public static T TryReadObject<T>(string file, Type preferredSerializer = null)
 		{
 			try
@@ -927,7 +913,6 @@ namespace Duality.Serialization
 		/// <typeparam name="T"></typeparam>
 		/// <param name="stream"></param>
 		/// <param name="preferredSerializer"></param>
-		/// <returns></returns>
 		public static T TryReadObject<T>(Stream stream, Type preferredSerializer = null)
 		{
 			try
@@ -948,7 +933,6 @@ namespace Duality.Serialization
 		/// <typeparam name="T"></typeparam>
 		/// <param name="file"></param>
 		/// <param name="preferredSerializer"></param>
-		/// <returns></returns>
 		public static T ReadObject<T>(string file, Type preferredSerializer = null)
 		{
 			using (Stream str = FileOp.Open(file, FileAccessMode.Read))
@@ -962,7 +946,6 @@ namespace Duality.Serialization
 		/// <typeparam name="T"></typeparam>
 		/// <param name="stream"></param>
 		/// <param name="preferredSerializer"></param>
-		/// <returns></returns>
 		public static T ReadObject<T>(Stream stream, Type preferredSerializer = null)
 		{
 			using (Serializer formatter = Serializer.Create(stream, preferredSerializer))
@@ -1006,7 +989,6 @@ namespace Duality.Serialization
 		/// Returns the <see cref="SerializeType"/> of a Type.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <returns></returns>
 		protected static SerializeType GetSerializeType(Type type)
 		{
 			if (type == null) return null;
@@ -1021,8 +1003,7 @@ namespace Duality.Serialization
 		/// <summary>
 		/// Retrieves a matching <see cref="Duality.Serialization.ISerializeSurrogate"/> for the specified <see cref="System.Type"/>.
 		/// </summary>
-		/// <param name="t">The <see cref="System.Type"/> to retrieve a <see cref="Duality.Serialization.ISerializeSurrogate"/> for.</param>
-		/// <returns></returns>
+		/// <param name="type">The <see cref="System.Type"/> to retrieve a <see cref="Duality.Serialization.ISerializeSurrogate"/> for.</param>
 		internal static ISerializeSurrogate GetSurrogateFor(TypeInfo type)
 		{
 			if (surrogates == null)

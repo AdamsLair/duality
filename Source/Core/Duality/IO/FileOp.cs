@@ -14,7 +14,6 @@ namespace Duality.IO
 		/// Returns whether the specified path refers to an existing file.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		public static bool Exists(string path)
 		{
 			if (string.IsNullOrWhiteSpace(path)) return false;

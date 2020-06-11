@@ -66,7 +66,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		/// <returns></returns>
 		public ColorRgba this[int x, int y]
 		{
 			get
@@ -115,7 +114,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Clones the pixel data layer and returns the new instance.
 		/// </summary>
-		/// <returns></returns>
 		public PixelData Clone()
 		{
 			return new PixelData(
@@ -266,7 +264,6 @@ namespace Duality.Drawing
 		/// Determines the average color of a Layer.
 		/// </summary>
 		/// <param name="weightTransparent">If true, the alpha value weights a pixels color value. </param>
-		/// <returns></returns>
 		public ColorRgba GetAverageColor(bool weightTransparent = true)
 		{
 			float[] sum = new float[4];

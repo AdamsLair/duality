@@ -36,7 +36,6 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 		/// </summary>
 		/// <param name="baseRes"></param>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		private static ContentRef<Sound> CreateFromAudioData(IEnumerable<ContentRef<AudioData>> baseRes, string name = null)
 		{
 			if (!baseRes.Any()) return null;
@@ -54,7 +53,6 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 		/// The incoming AudioData is automatically grouped to the least number of Sounds, according to naming and path conventions.
 		/// </summary>
 		/// <param name="baseRes"></param>
-		/// <returns></returns>
 		public static List<ContentRef<Sound>> CreateMultipleFromAudioData(IEnumerable<ContentRef<AudioData>> baseRes)
 		{
 			char[] trimEndChars = new []{'0','1','2','3','4','5','6','7','8','9','_','-','.','#','~'};

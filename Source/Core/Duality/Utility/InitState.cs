@@ -32,7 +32,6 @@ namespace Duality
 		/// after initialization and during disposal.
 		/// </summary>
 		/// <param name="state"></param>
-		/// <returns></returns>
 		public static bool IsActive(this InitState state)
 		{
 			return state == InitState.Initialized || state == InitState.Disposing;

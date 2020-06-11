@@ -203,13 +203,6 @@ namespace Duality.Plugins.Tilemaps
 		/// <summary>
 		/// Resolves the <see cref="Index"/> values of the specified <see cref="Tile"/> grid area, given the grid's raw data block.
 		/// </summary>
-		/// <param name="tileGridData"></param>
-		/// <param name="beginX"></param>
-		/// <param name="beginY"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="stride"></param>
-		/// <param name="tilesetRes"></param>
 		public static void ResolveIndices(Tile[] tileGridData, int stride, int beginX, int beginY, int width, int height, ContentRef<Tileset> tileset)
 		{
 			if (tileset.Res == null) throw new ArgumentNullException("tileset");
@@ -250,13 +243,6 @@ namespace Duality.Plugins.Tilemaps
 		/// Updates the <see cref="AutoTileCon"/> state of an arbitrary region on the specified tile grid
 		/// based on its connectivity state with neighbouring tiles.
 		/// </summary>
-		/// <param name="tileGrid"></param>
-		/// <param name="updateMask"></param>
-		/// <param name="beginX"></param>
-		/// <param name="beginY"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="tilesetRes"></param>
 		public static void UpdateAutoTileCon(Grid<Tile> tileGrid, Grid<bool> updateMask, int beginX, int beginY, int width, int height, ContentRef<Tileset> tileset)
 		{
 			if (tileset.Res == null) throw new ArgumentNullException("tileset");

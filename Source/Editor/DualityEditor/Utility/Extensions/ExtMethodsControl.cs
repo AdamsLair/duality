@@ -16,7 +16,6 @@ namespace Duality.Editor
 		/// <param name="control"></param>
 		/// <param name="globalPos"></param>
 		/// <param name="isOnActiveDropDown"></param>
-		/// <returns></returns>
 		public static ToolStripItem GetHoveredToolStripItem(this Control control, Point globalPos, out bool isOnActiveDropDown)
 		{
 			isOnActiveDropDown = false;

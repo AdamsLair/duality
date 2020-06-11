@@ -275,7 +275,6 @@ namespace FarseerPhysics.Common.Decomposition
 		/// </summary>
 		/// <param name="x">The x.</param>
 		/// <param name="modulus">The modulus.</param>
-		/// <returns></returns>
 		private static int Remainder(int x, int modulus)
 		{
 			int rem = x % modulus;

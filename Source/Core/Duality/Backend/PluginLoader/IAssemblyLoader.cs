@@ -33,7 +33,6 @@ namespace Duality.Backend
 		/// <summary>
 		/// [GET] Enumerates all Assemblies that are currently loaded in the context of this application.
 		/// </summary>
-		/// <returns></returns>
 		IEnumerable<Assembly> LoadedAssemblies { get; }
 
 		/// <summary>
@@ -41,7 +40,6 @@ namespace Duality.Backend
 		/// usage, that path should be one of the <see cref="AvailableAssemblyPaths"/>.
 		/// </summary>
 		/// <param name="assemblyPath">The path from which the Assembly will be loaded.</param>
-		/// <returns></returns>
 		Assembly LoadAssembly(string assemblyPath);
 		/// <summary>
 		/// Determines the hash code of the specified Assembly. This may be used for
@@ -49,7 +47,6 @@ namespace Duality.Backend
 		/// are equal.
 		/// </summary>
 		/// <param name="assemblyPath"></param>
-		/// <returns></returns>
 		int GetAssemblyHash(string assemblyPath);
 
 		/// <summary>

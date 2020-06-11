@@ -17,7 +17,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="bodyA"></param>
 		/// <param name="bodyB"></param>
 		/// <param name="localAnchorB">The anchor of bodyB in local coordinates</param>
-		/// <returns></returns>
 		public static RevoluteJoint CreateRevoluteJoint(Body bodyA, Body bodyB, Vector2 localAnchorB)
 		{
 			Vector2 localanchorA = bodyA.GetLocalPoint(bodyB.GetWorldPoint(localAnchorB));
@@ -32,7 +31,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="bodyA"></param>
 		/// <param name="bodyB"></param>
 		/// <param name="anchor"></param>
-		/// <returns></returns>
 		public static RevoluteJoint CreateRevoluteJoint(World world, Body bodyA, Body bodyB, Vector2 anchor)
 		{
 			RevoluteJoint joint = CreateRevoluteJoint(bodyA, bodyB, anchor);
@@ -50,7 +48,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="bodyA"></param>
 		/// <param name="bodyB"></param>
 		/// <param name="localAnchor"></param>
-		/// <returns></returns>
 		public static WeldJoint CreateWeldJoint(Body bodyA, Body bodyB, Vector2 localAnchor)
 		{
 			WeldJoint joint = new WeldJoint(bodyA, bodyB, bodyA.GetLocalPoint(localAnchor),
@@ -65,7 +62,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="bodyA"></param>
 		/// <param name="bodyB"></param>
 		/// <param name="localanchorB"></param>
-		/// <returns></returns>
 		public static WeldJoint CreateWeldJoint(World world, Body bodyA, Body bodyB, Vector2 localanchorB)
 		{
 			WeldJoint joint = CreateWeldJoint(bodyA, bodyB, localanchorB);
@@ -92,7 +88,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="bodyB"></param>
 		/// <param name="localanchorB"></param>
 		/// <param name="axis"></param>
-		/// <returns></returns>
 		public static PrismaticJoint CreatePrismaticJoint(Body bodyA, Body bodyB, Vector2 localanchorB, Vector2 axis)
 		{
 			Vector2 localanchorA = bodyA.GetLocalPoint(bodyB.GetWorldPoint(localanchorB));
@@ -108,7 +103,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="bodyB"></param>
 		/// <param name="localanchorB"></param>
 		/// <param name="axis"></param>
-		/// <returns></returns>
 		public static PrismaticJoint CreatePrismaticJoint(World world, Body bodyA, Body bodyB, Vector2 localanchorB,
 														  Vector2 axis)
 		{
@@ -128,7 +122,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="bodyB"></param>
 		/// <param name="anchor"></param>
 		/// <param name="axis"></param>
-		/// <returns></returns>
 		public static LineJoint CreateLineJoint(Body bodyA, Body bodyB, Vector2 anchor, Vector2 axis)
 		{
 			LineJoint joint = new LineJoint(bodyA, bodyB, anchor, axis);
@@ -143,7 +136,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="bodyB"></param>
 		/// <param name="localanchorB"></param>
 		/// <param name="axis"></param>
-		/// <returns></returns>
 		public static LineJoint CreateLineJoint(World world, Body bodyA, Body bodyB, Vector2 localanchorB, Vector2 axis)
 		{
 			LineJoint joint = CreateLineJoint(bodyA, bodyB, localanchorB, axis);
@@ -161,7 +153,6 @@ namespace FarseerPhysics.Factories
 		/// <param name="world">The world.</param>
 		/// <param name="bodyA">The first body.</param>
 		/// <param name="bodyB">The second body.</param>
-		/// <returns></returns>
 		public static AngleJoint CreateAngleJoint(World world, Body bodyA, Body bodyB)
 		{
 			AngleJoint angleJoint = new AngleJoint(bodyA, bodyB);

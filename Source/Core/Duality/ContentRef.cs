@@ -336,7 +336,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		/// <remarks>
 		/// This is a two-step comparison. First, their actual Resources references are compared.
 		/// If they're both not null and equal, true is returned. Otherwise, their Resource paths
@@ -372,7 +371,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="first"></param>
 		/// <param name="second"></param>
-		/// <returns></returns>
 		public static bool operator !=(ContentRef<T> first, ContentRef<T> second)
 		{
 			return !(first == second);

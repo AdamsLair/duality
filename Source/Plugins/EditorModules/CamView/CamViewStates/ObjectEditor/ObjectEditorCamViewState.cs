@@ -253,7 +253,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// <param name="baseVec">The base vector without any locking in place.</param>
 		/// <param name="lockedVec">A reference vector that represents the base vector being locked to all axes at once.</param>
 		/// <param name="beginToTarget">The movement vector to evaluate in order to determine the axes to which the base vector will be locked.</param>
-		/// <returns></returns>
 		protected Vector3 ApplyAxisLock(Vector3 baseVec, Vector3 lockedVec, Vector3 beginToTarget)
 		{
 			bool shift = (Control.ModifierKeys & Keys.Shift) != Keys.None;

@@ -100,7 +100,6 @@ namespace Duality.Input
 		/// [GET] Returns whether a specific key is currently pressed.
 		/// </summary>
 		/// <param name="key"></param>
-		/// <returns></returns>
 		public bool this[Key key]
 		{
 			get { return this.currentState.KeyPressed[(int)key]; }
@@ -172,7 +171,6 @@ namespace Duality.Input
 		/// Returns whether the specified key is currently pressed.
 		/// </summary>
 		/// <param name="key"></param>
-		/// <returns></returns>
 		public bool KeyPressed(Key key)
 		{
 			return this.currentState.KeyPressed[(int)key];
@@ -181,7 +179,6 @@ namespace Duality.Input
 		/// Returns whether the specified key was hit this frame.
 		/// </summary>
 		/// <param name="key"></param>
-		/// <returns></returns>
 		public bool KeyHit(Key key)
 		{
 			return this.currentState.KeyPressed[(int)key] && !this.lastState.KeyPressed[(int)key];
@@ -190,7 +187,6 @@ namespace Duality.Input
 		/// Returns whether the specified key was released this frame.
 		/// </summary>
 		/// <param name="key"></param>
-		/// <returns></returns>
 		public bool KeyReleased(Key key)
 		{
 			return !this.currentState.KeyPressed[(int)key] && this.lastState.KeyPressed[(int)key];

@@ -13,7 +13,6 @@ namespace Duality.IO
 		/// Wraps the Stream inside a <see cref="NonClosingStreamWrapper">proxy</see> that won't close the underlying stream when being closed.
 		/// </summary>
 		/// <param name="stream"></param>
-		/// <returns></returns>
 		public static Stream NonClosing(this Stream stream)
 		{
 			return new NonClosingStreamWrapper(stream);
@@ -26,7 +25,6 @@ namespace Duality.IO
 		/// </summary>
 		/// <param name="stream"></param>
 		/// <param name="maxLength">The maximum length in bytes that is accessible using the sub-Stream. Specify -1 for not limiting it.</param>
-		/// <returns></returns>
 		public static Stream SubStream(this Stream stream, long maxLength = -1)
 		{
 			return new SubStreamWrapper(stream, maxLength);

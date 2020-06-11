@@ -85,8 +85,6 @@ namespace Duality.Editor.Plugins.CamView
 		/// Switches an existing <see cref="CamView"/> to the specified <see cref="CamViewState"/> type id,
 		/// or creates a new one, should none exist that is allowed to switch.
 		/// </summary>
-		/// <param name="camViewState"></param>
-		/// <returns></returns>
 		public CamView CreateOrSwitchCamView(string stateTypeId)
 		{
 			Type stateType = ReflectionHelper.ResolveType(stateTypeId) ?? typeof(CamViewStates.SceneEditorCamViewState);
@@ -97,7 +95,6 @@ namespace Duality.Editor.Plugins.CamView
 		/// or creates a new one, should none exist that is allowed to switch.
 		/// </summary>
 		/// <param name="camViewState"></param>
-		/// <returns></returns>
 		public CamView CreateOrSwitchCamView(Type camViewState)
 		{
 			// Search for existing cam views already using the requested state
@@ -122,7 +119,6 @@ namespace Duality.Editor.Plugins.CamView
 		/// Creates a new <see cref="CamView"/> and initializes it with the specified <see cref="CamViewState"/>.
 		/// </summary>
 		/// <param name="initStateTypeId"></param>
-		/// <returns></returns>
 		public CamView CreateCamView(string initStateTypeId = null)
 		{
 			CamView cam = new CamView(this.camViews.Count, initStateTypeId);

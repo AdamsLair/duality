@@ -624,7 +624,6 @@ namespace Duality
 		/// <summary>
 		/// Returns a System.String that represents the current Vector4.
 		/// </summary>
-		/// <returns></returns>
 		public override string ToString()
 		{
 			return string.Format("({0}, {1}, {2}, {3})", this.X, this.Y, this.Z, this.W);

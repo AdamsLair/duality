@@ -150,7 +150,6 @@ namespace FarseerPhysics.Common
 		/// This is a approximate yet fast inverse square-root.
 		/// </summary>
 		/// <param name="x">The x.</param>
-		/// <returns></returns>
 		public static float InvSqrt(float x)
 		{
 			FloatConverter convert = new FloatConverter();
@@ -231,7 +230,6 @@ namespace FarseerPhysics.Common
 		/// <param name="a">First vertex</param>
 		/// <param name="b">Second vertex</param>
 		/// <param name="c">Third vertex</param>
-		/// <returns></returns>
 		public static bool Collinear(ref Vector2 a, ref Vector2 b, ref Vector2 c)
 		{
 			return Collinear(ref a, ref b, ref c, 0);
@@ -421,7 +419,6 @@ namespace FarseerPhysics.Common
 		/// than computing the inverse in one-shot cases.
 		/// </summary>
 		/// <param name="b">The b.</param>
-		/// <returns></returns>
 		public Vector2 Solve(Vector2 b)
 		{
 			float a11 = this.Col1.X, a12 = this.Col2.X, a21 = this.Col1.Y, a22 = this.Col2.Y;
@@ -476,7 +473,6 @@ namespace FarseerPhysics.Common
 		/// than computing the inverse in one-shot cases.
 		/// </summary>
 		/// <param name="b">The b.</param>
-		/// <returns></returns>
 		public Vector3 Solve33(Vector3 b)
 		{
 			float det = Vector3.Dot(this.Col1, Vector3.Cross(this.Col2, this.Col3));
@@ -496,7 +492,6 @@ namespace FarseerPhysics.Common
 		/// 2-by-2 matrix equation.
 		/// </summary>
 		/// <param name="b">The b.</param>
-		/// <returns></returns>
 		public Vector2 Solve22(Vector2 b)
 		{
 			float a11 = this.Col1.X, a12 = this.Col2.X, a21 = this.Col1.Y, a22 = this.Col2.Y;

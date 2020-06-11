@@ -21,7 +21,7 @@ namespace Duality.Editor
         /// <summary>
         /// Send file to recycle bin
         /// </summary>
-        /// <param name="path">Location of directory or file to recycle</param>
+        /// <param name="paths">Location of directory or file to recycle</param>
         /// <param name="flags">FileOperationFlags to add in addition to FOF_ALLOWUNDO</param>
         private static bool Send(IEnumerable<string> paths, NativeMethods.FileOperationFlags flags)
         {

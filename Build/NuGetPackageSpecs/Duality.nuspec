@@ -2,31 +2,30 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>3.2.2</version>
+    <version>4.0.0-alpha0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>
-</releaseNotes>
+    <releaseNotes></releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Primitives" version="3.0.4" />
-      <dependency id="AdamsLair.NVorbis" version="0.7.6" />
-      <dependency id="AdamsLair.Duality.Physics" version="3.0.4" />
+      <group targetFramework="netstandard2.0">
+        <dependency id="AdamsLair.Duality.Primitives" version="4.0.0-alpha0" />
+        <dependency id="NVorbis" version="0.10.1" />
+        <dependency id="AdamsLair.Duality.Physics" version="4.0.0-alpha0" />
+      </group>
     </dependencies>
-    <references>
-      <reference file="Duality.dll" />
-    </references>
   </metadata>
   <files>
-    <file src="..\Output\Duality.dll" target="lib\portable45-net45+win8+wpa81" />
-    <file src="..\Output\Duality.pdb" target="lib\portable45-net45+win8+wpa81" />
-    <file src="..\Output\Duality.xml" target="lib\portable45-net45+win8+wpa81" />
+    <file src="Icons\Duality.png" target="\icon.png" />
+    <file src="..\Output\Duality.dll" target="lib\netstandard2.0" />
+    <file src="..\Output\Duality.pdb" target="lib\netstandard2.0" />
+    <file src="..\Output\Duality.xml" target="lib\netstandard2.0" />
   </files>
 </package>

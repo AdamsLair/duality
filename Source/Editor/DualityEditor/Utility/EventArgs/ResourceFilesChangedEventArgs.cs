@@ -22,7 +22,6 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="content"></param>
-		/// <returns></returns>
 		/// <seealso cref="FileSystemChangedEventArgs.Contains(FileEventType, string)"/>
 		public bool Contains(FileEventType type, Resource content)
 		{
@@ -34,7 +33,6 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="content"></param>
-		/// <returns></returns>
 		/// <seealso cref="FileSystemChangedEventArgs.Contains(FileEventType, string)"/>
 		public bool Contains(FileEventType type, ContentRef<Resource> content)
 		{
@@ -45,7 +43,6 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="content"></param>
-		/// <returns></returns>
 		/// <seealso cref="FileSystemChangedEventArgs.Contains(FileEventType, IEnumerable{string})"/>
 		public bool Contains(FileEventType type, IEnumerable<Resource> content)
 		{
@@ -64,7 +61,6 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="content"></param>
-		/// <returns></returns>
 		/// <seealso cref="FileSystemChangedEventArgs.Contains(FileEventType, IEnumerable{string})"/>
 		public bool Contains(FileEventType type, IEnumerable<ContentRef<Resource>> content)
 		{
@@ -82,8 +78,6 @@ namespace Duality.Editor
 		/// Returns whether a change was made on a <see cref="Resource"/> of the specified type.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <param name="content"></param>
-		/// <returns></returns>
 		/// <seealso cref="FileSystemChangedEventArgs.Contains(FileEventType, string)"/>
 		public bool Contains(FileEventType type, Type contentType)
 		{

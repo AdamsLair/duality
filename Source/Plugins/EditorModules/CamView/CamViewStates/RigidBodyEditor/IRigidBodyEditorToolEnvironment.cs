@@ -12,7 +12,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
 	/// <summary>
 	/// Provides an interface for <see cref="RigidBodyEditorTool"/> instances to access 
-	/// <see="RigidBodyEditorCamViewState"/> internals and perform editing operations.
+	/// <see cref="RigidBodyEditorCamViewState"/> internals and perform editing operations.
 	/// </summary>
 	public interface IRigidBodyEditorToolEnvironment
 	{
@@ -88,26 +88,22 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		/// </summary>
 		/// <param name="worldPos"></param>
 		/// <param name="radius"></param>
-		/// <returns></returns>
 		bool IsSphereInView(Vector3 worldPos, float radius = 1.0f);
 		/// <summary>
 		/// Determins the view scale at a given world space Z position.
 		/// </summary>
 		/// <param name="z"></param>
-		/// <returns></returns>
 		float GetScaleAtZ(float z);
 		/// <summary>
 		/// Determins the world space position of a given point in screen space.
 		/// The Z coordinate of that point will be evaluated as the assumed Z position.
 		/// </summary>
 		/// <param name="screenPos"></param>
-		/// <returns></returns>
 		Vector3 GetWorldPos(Vector3 screenPos);
 		/// <summary>
 		/// Determines the screen space position of a given point in world space.
 		/// </summary>
 		/// <param name="worldPos"></param>
-		/// <returns></returns>
 		Vector2 GetScreenPos(Vector3 worldPos);
 	}
 }

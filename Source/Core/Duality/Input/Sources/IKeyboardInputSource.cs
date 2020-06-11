@@ -16,7 +16,6 @@ namespace Duality.Input
 		/// [GET] Returns whether a specific key is currently pressed.
 		/// </summary>
 		/// <param name="key"></param>
-		/// <returns></returns>
 		bool this[Key key] { get; }
 	}
 }

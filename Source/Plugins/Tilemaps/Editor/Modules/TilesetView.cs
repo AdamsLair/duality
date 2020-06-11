@@ -319,7 +319,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		/// <param name="y"></param>
 		/// <param name="scrolled"></param>
 		/// <param name="allowNearest"></param>
-		/// <returns></returns>
 		public int PickTileIndexAt(int x, int y, bool scrolled = true, bool allowNearest = false)
 		{
 			if (scrolled)
@@ -403,7 +402,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		/// </summary>
 		/// <param name="tileIndex"></param>
 		/// <param name="scrolled"></param>
-		/// <returns></returns>
 		public Point GetTileIndexLocation(int tileIndex, bool scrolled = true)
 		{
 			Point result = this.ClientRectangle.Location;
@@ -446,7 +444,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		/// </summary>
 		/// <param name="displayedTileX"></param>
 		/// <param name="displayedTileY"></param>
-		/// <returns></returns>
 		public Point GetTilesetTilePos(int displayedTileX, int displayedTileY)
 		{
 			int rowIndex = displayedTileY;
@@ -473,7 +470,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		/// </summary>
 		/// <param name="tilesetTileX"></param>
 		/// <param name="tilesetTileY"></param>
-		/// <returns></returns>
 		public Point GetDisplayedTilePos(int tilesetTileX, int tilesetTileY)
 		{
 			int rowIndex = tilesetTileY;
@@ -501,7 +497,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		/// </summary>
 		/// <param name="tileX"></param>
 		/// <param name="tileY"></param>
-		/// <returns></returns>
 		public int GetTileIndex(int tileX, int tileY)
 		{
 			return tileX + tileY * this.tileCount.X;
@@ -510,7 +505,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		/// Converts a tile index into a 2D tile (not pixel) coordinate, in tileset space.
 		/// </summary>
 		/// <param name="tileIndex"></param>
-		/// <returns></returns>
 		public Point GetTilePos(int tileIndex)
 		{
 			return new Point(

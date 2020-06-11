@@ -100,6 +100,7 @@ namespace Duality.Backend
 		/// As a storage array type, either byte or <see cref="ColorRgba"/> is recommended.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
+		/// <param name="texture"></param>
 		/// <param name="target">The buffer to store pixel values into.</param>
 		/// <param name="dataLayout">The desired color layout of the specified buffer.</param>
 		/// <param name="dataElementType">The desired color element type of the specified buffer.</param>

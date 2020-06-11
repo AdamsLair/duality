@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<AssemblyName>DualityGameCorePlugin.core</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AdamsLair.Duality" Version="4.0.0-alpha0" />
+    <PackageReference Include="AdamsLair.Duality.Primitives" Version="4.0.0-alpha0" />
+  </ItemGroup>
+
+</Project>

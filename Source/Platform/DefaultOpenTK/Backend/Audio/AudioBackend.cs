@@ -323,7 +323,6 @@ namespace Duality.Backend.DefaultOpenTK
 		/// <summary>
 		/// Checks for OpenAL errors using <see cref="CheckOpenALErrors"/> when both compiled in debug mode and a with an attached debugger.
 		/// </summary>
-		/// <returns></returns>
 		[System.Diagnostics.Conditional("DEBUG")]
 		public static void DebugCheckOpenALErrors([CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
 		{

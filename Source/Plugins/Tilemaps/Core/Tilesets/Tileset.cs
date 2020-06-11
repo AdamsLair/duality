@@ -293,8 +293,6 @@ namespace Duality.Plugins.Tilemaps
 		/// Determines the <see cref="Compile"/>-relevant hash code of the specified <see cref="Tileset"/>.
 		/// This value is used internally to determine whether a <see cref="Tileset"/> needs to be recompiled.
 		/// </summary>
-		/// <param name="tileset"></param>
-		/// <returns></returns>
 		public int GetCompileHashCode()
 		{
 			int hash = 17;

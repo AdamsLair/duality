@@ -38,7 +38,6 @@ namespace Duality.Editor.Plugins.CamView
 		/// <see cref="Component"/> types, or if the filter is empty.
 		/// </summary>
 		/// <param name="obj"></param>
-		/// <returns></returns>
 		public bool Matches(GameObject obj)
 		{
 			if (this.typeIds.Count == 0) return true;
@@ -56,7 +55,6 @@ namespace Duality.Editor.Plugins.CamView
 		/// Returns true, if the specified <see cref="Type"/> is considered a match.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <returns></returns>
 		public bool Matches(Type type)
 		{
 			this.UpdateTypeCache();
@@ -84,7 +82,6 @@ namespace Duality.Editor.Plugins.CamView
 		/// </summary>
 		/// <param name="objectType"></param>
 		/// <param name="isMatch"></param>
-		/// <returns></returns>
 		public bool SetTypeMatches(Type objectType, bool isMatch)
 		{
 			string objectTypeId = objectType.GetTypeId();

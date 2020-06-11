@@ -25,7 +25,6 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Locks the batch in order to access its vertex data directly using an <see cref="IntPtr"/>.
 		/// </summary>
-		/// <returns></returns>
 		PinnedArrayHandle Lock();
 	}
 }

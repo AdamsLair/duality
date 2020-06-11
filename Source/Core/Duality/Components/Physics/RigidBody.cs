@@ -458,7 +458,6 @@ namespace Duality.Components.Physics
 		/// <summary>
 		/// Removes an existing joint from the body.
 		/// </summary>
-		/// <param name="joint"></param>
 		public void RemoveJoint(JointInfo joint)
 		{
 			if (joint == null) throw new ArgumentNullException("joint");
@@ -477,7 +476,6 @@ namespace Duality.Components.Physics
 		/// <summary>
 		/// Adds a new joint to the body.
 		/// </summary>
-		/// <param name="joint"></param>
 		public void AddJoint(JointInfo joint, RigidBody other = null)
 		{
 			if (joint == null) throw new ArgumentNullException("joint");
@@ -707,7 +705,6 @@ namespace Duality.Components.Physics
 		/// the specified world coordinate is located in.
 		/// </summary>
 		/// <param name="worldCoord"></param>
-		/// <returns></returns>
 		public ShapeInfo PickShape(Vector2 worldCoord)
 		{
 			if (this.body == null) return null;

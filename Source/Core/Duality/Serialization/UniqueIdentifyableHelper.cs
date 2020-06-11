@@ -17,7 +17,6 @@ namespace Duality.Serialization
 		/// It is guaranteed to remain the same across .NET runtimes, libraries and platforms.
 		/// </summary>
 		/// <param name="value"></param>
-		/// <returns></returns>
 		public static int GetIdentifier(string value)
 		{
 			// Based on https://stackoverflow.com/a/2351171
@@ -36,7 +35,6 @@ namespace Duality.Serialization
 		/// It is guaranteed to remain the same across .NET runtimes, libraries and platforms.
 		/// </summary>
 		/// <param name="guid"></param>
-		/// <returns></returns>
 		public static int GetIdentifier(Guid guid)
 		{
 			// Based on https://stackoverflow.com/a/2351171
