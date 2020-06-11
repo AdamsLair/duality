@@ -86,6 +86,19 @@ namespace NightlyBuilder
 
 		public static void PerformNightlyBuild(ConfigFile config)
 		{
+			Console.WriteLine("============================= Clean NuGet Packages ============================");
+			if (Directory.Exists(config.NuGetPackageTargetDir))
+			{
+				Console.WriteLine("Deleting old package files in '{0}'...", config.NuGetPackageTargetDir);
+				foreach (string file in Directory.EnumerateFiles(config.NuGetPackageTargetDir, "*.nupkg", SearchOption.TopDirectoryOnly))
+				{
+					File.Delete(file);
+				}
+			}
+			Console.WriteLine("===============================================================================");
+			Console.WriteLine();
+			Console.WriteLine();
+
 			string packagePath = Path.Combine(config.PackageDir, config.PackageName);
 			FileVersionInfo versionCore = null;
 			FileVersionInfo versionEditor = null;
@@ -206,7 +219,7 @@ namespace NightlyBuilder
 				Console.WriteLine();
 				Console.WriteLine();
 			}
-			
+
 			// Build all NuGet Packages
 			Console.WriteLine("============================= Build NuGet Packages ============================");
 			{
@@ -216,12 +229,6 @@ namespace NightlyBuilder
 				{
 					if (!Directory.Exists(config.NuGetPackageTargetDir))
 						Directory.CreateDirectory(config.NuGetPackageTargetDir);
-
-					Console.WriteLine("Deleting old package files in '{0}'...", config.NuGetPackageTargetDir);
-					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageTargetDir, "*.nupkg", SearchOption.TopDirectoryOnly))
-					{
-						File.Delete(file);
-					}
 
 					Console.WriteLine("Determining package data from '{0}'...", config.NuGetPackageSpecsDir);
 					Dictionary<string,string> packageVersions = new Dictionary<string,string>();
