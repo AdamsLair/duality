@@ -86,18 +86,23 @@ namespace NightlyBuilder
 
 		public static void PerformNightlyBuild(ConfigFile config)
 		{
-			Console.WriteLine("============================= Clean NuGet Packages ============================");
-			if (Directory.Exists(config.NuGetPackageTargetDir))
+			if (!config.NoCleanNugetPackageTargetDir)
 			{
-				Console.WriteLine("Deleting old package files in '{0}'...", config.NuGetPackageTargetDir);
-				foreach (string file in Directory.EnumerateFiles(config.NuGetPackageTargetDir, "*.nupkg", SearchOption.TopDirectoryOnly))
+				Console.WriteLine("============================= Clean NuGet Packages ============================");
+				if (Directory.Exists(config.NuGetPackageTargetDir))
 				{
-					File.Delete(file);
+					Console.WriteLine("Deleting old package files in '{0}'...", config.NuGetPackageTargetDir);
+					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageTargetDir, "*.nupkg",
+						SearchOption.TopDirectoryOnly))
+					{
+						File.Delete(file);
+					}
 				}
+
+				Console.WriteLine("===============================================================================");
+				Console.WriteLine();
+				Console.WriteLine();
 			}
-			Console.WriteLine("===============================================================================");
-			Console.WriteLine();
-			Console.WriteLine();
 
 			string packagePath = Path.Combine(config.PackageDir, config.PackageName);
 			FileVersionInfo versionCore = null;
