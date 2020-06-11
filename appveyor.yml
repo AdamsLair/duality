@@ -24,25 +24,26 @@ test:
   categories:
     except:
       - Rendering   # AppVeyor VMs don't have GPU access.
-  
+
 #
 # The following lines trigger a complete NuGet Package and Binary Release build.
 # They do not attempt to deploy them - it's just a build, made available through artifacts.
-# The reason why it's inactive is that releases are in fact a relatively rare thing,
-# while AppVeyor runs on each commit. It's probably for the best to not accumulate 6 - 11 MB
-# of disk space in the AppVeyor VM on each commit, never to go away because of build history.
 #
 # In order to do a manual build on your local machine, use the "Package Binary NoDocs.bat" script,
 # or, if you have SandCastle HelpFile Builder installed, use the "Package Binary.bat" script.
 # You will find the build results in the below artifact paths.
-#
-  
-#after_test: '"Build\Scripts\Package Binary CI Script.bat"'
+#     
 
-#artifacts:
-#  - path: 'Build\NightlyBuild\Package\Duality.zip'
-#    name: "Binary Release"
-#  - path: 'Build\NightlyBuild\NuGetPackages'
-#    name: "All NuGet Packages"
-#  - path: 'Build\NightlyBuild\NuGetPackages\*.nupkg'
-#    name: "NuGet Packages"
+after_test: '"Build\Scripts\Package Binary CI Script.bat"'
+
+artifacts: 
+  - path: 'Source\DualityTemplates\bin\Duality.zip'
+    name: "Binary Release"
+  - path: 'Build\NightlyBuild\NuGetPackages\*.nupkg'
+    name: "NuGet Packages"
+
+deploy:
+  - provider: Environment
+    name: NuGetPackageRelease
+    on:
+      branch: release

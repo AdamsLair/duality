@@ -3,75 +3,13 @@
   <SolutionPath>..\..\Duality.sln</SolutionPath>
   <BuildResultDir>..\Output</BuildResultDir>
   <DocSolutionPath>..\Documentation\Documentation.shfbproj</DocSolutionPath>
-  <AdditionalFileDir>AdditionalFiles</AdditionalFileDir>
   <NUnitBinDir>..\NUnit</NUnitBinDir>
   <UnitTestProjectDir>..\..\Test\</UnitTestProjectDir>
   <NuGetPath>nuget.exe</NuGetPath>
   <NuGetPackageSpecsDir>..\NuGetPackageSpecs</NuGetPackageSpecsDir>
   <NuGetPackageTargetDir>NuGetPackages</NuGetPackageTargetDir>
-  <IntermediateTargetDir>Duality</IntermediateTargetDir>
   <PackageDir>Package</PackageDir>
   <PackageName>Duality.zip</PackageName>
   <NoDocs>false</NoDocs>
   <CommitSVN>false</CommitSVN>
-  <FileCopyBlackList>
-    <string>Backup</string>
-    <string>Source</string>
-    <string>Data</string>
-    <string>DDoc.chm</string>
-    <string>GamePlugin.*.dll</string>
-    <string>DynamicLighting.*.dll</string>
-    <string>Steering.*.dll</string>
-    <string>GamePlugin.*.xml</string>
-    <string>DynamicLighting.*.xml</string>
-    <string>Steering.*.xml</string>
-    <string>*.vshost.*</string>
-    <string>logfile*</string>
-    <string>perflog*</string>
-    <string>userdata.dat</string>
-    <string>defaultuserdata.dat</string>
-    <string>designtimedata.dat</string>
-    <string>appdata.dat</string>
-    <string>editoruserdata.xml</string>
-    <string>FarseerOpenTK.xml</string>
-    <string>OpenTK.GLControl.xml</string>
-    <string>OpenTK.GLControl.xml</string>
-    <string>VistaBridgeLibrary.xml</string>
-    <string>WeifenLuo.WinFormsUI.Docking.pdb</string>
-    <string>Windows7.DesktopIntegration.xml</string>
-    <string>OpenAL32.dll</string>
-	<!-- Since we have Package Management now, omit a lot more -->
-    <string>Plugins</string>
-    <string>AdamsLair.WinForms.*</string>
-    <string>Aga.Controls.*</string>
-    <string>DualityPrimitives.pdb</string>
-    <string>DualityPrimitives.xml</string>
-    <string>Duality.pdb</string>
-    <string>Duality.xml</string>
-    <string>DualityEditor.pdb</string>
-    <string>DualityEditor.xml</string>
-    <string>DualityLauncher.*</string>
-    <string>DualityUpdater.*</string>
-    <string>DualityPhysics.pdb</string>
-    <string>DualityPhysics.xml</string>
-    <string>Ionic.Zip.*</string>
-    <string>NVorbis.*</string>
-    <string>OpenALSoft32.*</string>
-    <string>OpenALSoft64.*</string>
-    <string>OpenTK.*</string>
-    <string>OpenTK.GLControl.*</string>
-    <string>PopupControl.*</string>
-    <string>WeifenLuo.WinFormsUI.Docking.*</string>
-	<!-- Added items after switching to a shared build output directory -->
-    <string>*Tests.dll</string>
-    <string>*Tests.pdb</string>
-    <string>nunit.framework.dll</string>
-    <string>nunit.framework.xml</string>
-    <string>nunit.framework.pdb</string>
-    <string>nunit.engine.api.dll</string>
-    <string>nunit.engine.dll</string>
-    <string>nunit_random_seed.tmp</string>
-    <string>NUnit3.TestAdapter.dll</string>
-    <string>NUnit3.TestAdapter.pdb</string>
-  </FileCopyBlackList>
 </ConfigFile>
