@@ -36,17 +36,11 @@ test:
 
 after_test: '"Build\Scripts\Package Binary CI Script.bat"'
 
-for:
-  - 
-    branches:
-      only: 
-        - master
-        - release
-    artifacts: 
-      - path: 'Source\DualityTemplates\bin\Duality.zip'
-        name: "Binary Release"
-      - path: 'Build\NightlyBuild\NuGetPackages\*.nupkg'
-        name: "NuGet Packages"
+artifacts: 
+  - path: 'Source\DualityTemplates\bin\Duality.zip'
+    name: "Binary Release"
+  - path: 'Build\NightlyBuild\NuGetPackages\*.nupkg'
+    name: "NuGet Packages"
 
 deploy:
   - provider: Environment
