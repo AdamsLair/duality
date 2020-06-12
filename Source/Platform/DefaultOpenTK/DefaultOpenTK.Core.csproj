@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
 		<LangVersion>7.3</LangVersion>
-		<Copyright>Copyright © Fedja Adam 2015</Copyright>
+		<Copyright>Copyright © Duality Core Team 2020</Copyright>
 		<RootNamespace>Duality.Backend.DefaultOpenTK</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<Version>4.0.0-alpha0</Version>

@@ -4,7 +4,7 @@
 		<TargetFramework>net472</TargetFramework>
 		<LangVersion>7.3</LangVersion>
 		<OutputPath>$(SolutionDir)Build\Output\</OutputPath>
-		<Copyright>Copyright © Fedja Adam 2014</Copyright>
+		<Copyright>Copyright © Duality Core Team 2020</Copyright>
 		<RootNamespace>Duality.Updater</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputType>Exe</OutputType>
