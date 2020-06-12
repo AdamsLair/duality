@@ -25,10 +25,10 @@
     </ItemGroup>
 
     <Message Text="Copying plugin files to $(DualityFolder)Plugins" Importance="High" />
-    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(DualityFolder)Plugins" />
+    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(DualityFolder)Plugins" SkipUnchangedFiles="true" />
 
     <Message Text="Copying lib files to $(DualityFolder)" Importance="High" />
-    <Copy SourceFiles="@(LibFiles)" DestinationFiles="@(LibFiles->'$(DualityFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(LibFiles)" DestinationFiles="@(LibFiles->'$(DualityFolder)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
   <Target Name="CoreCompile" />
