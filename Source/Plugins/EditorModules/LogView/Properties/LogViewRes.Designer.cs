@@ -22,7 +22,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class LogViewRes {
+    internal class LogViewRes {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Duality.Editor.Plugins.LogView.Properties.LogViewRes", typeof(LogViewRes).Assembly);
@@ -51,7 +51,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconLogCore {
+        internal static System.Drawing.Bitmap IconLogCore {
             get {
                 object obj = ResourceManager.GetObject("IconLogCore", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -73,7 +73,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconLogEditor {
+        internal static System.Drawing.Bitmap IconLogEditor {
             get {
                 object obj = ResourceManager.GetObject("IconLogEditor", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -83,7 +83,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconLogError {
+        internal static System.Drawing.Bitmap IconLogError {
             get {
                 object obj = ResourceManager.GetObject("IconLogError", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -93,7 +93,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconLogGame {
+        internal static System.Drawing.Bitmap IconLogGame {
             get {
                 object obj = ResourceManager.GetObject("IconLogGame", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -103,7 +103,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconLogMessage {
+        internal static System.Drawing.Bitmap IconLogMessage {
             get {
                 object obj = ResourceManager.GetObject("IconLogMessage", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -113,7 +113,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        public static System.Drawing.Icon IconLogView {
+        internal static System.Drawing.Icon IconLogView {
             get {
                 object obj = ResourceManager.GetObject("IconLogView", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
@@ -123,7 +123,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconLogWarning {
+        internal static System.Drawing.Bitmap IconLogWarning {
             get {
                 object obj = ResourceManager.GetObject("IconLogWarning", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -133,7 +133,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Copy All.
         /// </summary>
-        public static string LogView_ContextMenu_CopyAllItems {
+        internal static string LogView_ContextMenu_CopyAllItems {
             get {
                 return ResourceManager.GetString("LogView_ContextMenu_CopyAllItems", resourceCulture);
             }
@@ -142,7 +142,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
-        public static string LogView_ContextMenu_CopyItem {
+        internal static string LogView_ContextMenu_CopyItem {
             get {
                 return ResourceManager.GetString("LogView_ContextMenu_CopyItem", resourceCulture);
             }
@@ -151,7 +151,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Show Source.
         /// </summary>
-        public static string LogView_ContextMenu_ShowSource {
+        internal static string LogView_ContextMenu_ShowSource {
             get {
                 return ResourceManager.GetString("LogView_ContextMenu_ShowSource", resourceCulture);
             }
@@ -160,7 +160,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Errors.
         /// </summary>
-        public static string LogView_Errors {
+        internal static string LogView_Errors {
             get {
                 return ResourceManager.GetString("LogView_Errors", resourceCulture);
             }
@@ -169,7 +169,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Warnings.
         /// </summary>
-        public static string LogView_Warnings {
+        internal static string LogView_Warnings {
             get {
                 return ResourceManager.GetString("LogView_Warnings", resourceCulture);
             }
@@ -178,7 +178,7 @@ namespace Duality.Editor.Plugins.LogView.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Log View.
         /// </summary>
-        public static string MenuItemName_LogView {
+        internal static string MenuItemName_LogView {
             get {
                 return ResourceManager.GetString("MenuItemName_LogView", resourceCulture);
             }

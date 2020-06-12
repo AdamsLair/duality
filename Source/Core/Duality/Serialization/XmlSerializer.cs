@@ -822,7 +822,6 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="array"></param>
 		/// <param name="elementType"></param>
-		/// <returns></returns>
 		private int GetArrayNonDefaultElementCount(Array array, TypeInfo elementType)
 		{
 			if (array.Length == 0) return 0;
@@ -841,7 +840,6 @@ namespace Duality.Serialization
 		/// Wraps the specified <see cref="Stream"/> in a sub-stream that can only access the next available XML document section.
 		/// </summary>
 		/// <param name="stream"></param>
-		/// <returns></returns>
 		private static Stream ReadSingleDocument(Stream stream)
 		{
 			if (!stream.CanSeek) throw new InvalidOperationException("The specified stream needs to be seekable.");

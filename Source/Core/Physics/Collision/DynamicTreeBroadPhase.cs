@@ -106,7 +106,6 @@ namespace FarseerPhysics.Collision
 		/// UpdatePairs is called.
 		/// </summary>
 		/// <param name="proxy">The user data.</param>
-		/// <returns></returns>
 		public int AddProxy(ref FixtureProxy proxy)
 		{
 			int proxyId = this._tree.AddProxy(ref proxy.AABB, proxy);
@@ -149,7 +148,6 @@ namespace FarseerPhysics.Collision
 		/// Get user data from a proxy. Returns null if the id is invalid.
 		/// </summary>
 		/// <param name="proxyId">The proxy id.</param>
-		/// <returns></returns>
 		public FixtureProxy GetProxy(int proxyId)
 		{
 			return this._tree.GetUserData(proxyId);
@@ -160,7 +158,6 @@ namespace FarseerPhysics.Collision
 		/// </summary>
 		/// <param name="proxyIdA">The proxy id A.</param>
 		/// <param name="proxyIdB">The proxy id B.</param>
-		/// <returns></returns>
 		public bool TestOverlap(int proxyIdA, int proxyIdB)
 		{
 			AABB aabbA, aabbB;
@@ -264,7 +261,6 @@ namespace FarseerPhysics.Collision
 		/// <summary>
 		/// Compute the height of the embedded tree.
 		/// </summary>
-		/// <returns></returns>
 		public int ComputeHeight()
 		{
 			return this._tree.ComputeHeight();

@@ -71,7 +71,6 @@ namespace Duality
 		/// Performs a linear interpolation between the Ranges minimum and maximum value using the specified blend factor.
 		/// </summary>
 		/// <param name="ratio"></param>
-		/// <returns></returns>
 		public float Lerp(float ratio)
 		{
 			return MathF.Lerp(this.MinValue, this.MaxValue, ratio);
@@ -90,7 +89,6 @@ namespace Duality
 		/// Returns whether this Range contains a certain value.
 		/// </summary>
 		/// <param name="value"></param>
-		/// <returns></returns>
 		public bool Contains(float value)
 		{
 			return this.MinValue <= value && this.MaxValue >= value;
@@ -99,7 +97,6 @@ namespace Duality
 		/// Returns whether this Range contains a certain other range.
 		/// </summary>
 		/// <param name="value"></param>
-		/// <returns></returns>
 		public bool Contains(Range value)
 		{
 			return this.Contains(value.MinValue) && this.Contains(value.MaxValue);
@@ -132,7 +129,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
-		/// <returns></returns>
 		public static bool operator ==(Range left, Range right)
 		{
 			return left.Equals(right);
@@ -142,7 +138,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
-		/// <returns></returns>
 		public static bool operator !=(Range left, Range right)
 		{
 			return !left.Equals(right);
@@ -153,7 +148,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
-		/// <returns></returns>
 		public static Range operator +(Range left, Range right)
 		{
 			return new Range(
@@ -165,7 +159,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
-		/// <returns></returns>
 		public static Range operator -(Range left, Range right)
 		{
 			return new Range(
@@ -177,7 +170,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
-		/// <returns></returns>
 		public static Range operator *(Range left, Range right)
 		{
 			return new Range(
@@ -189,7 +181,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
-		/// <returns></returns>
 		public static Range operator /(Range left, Range right)
 		{
 			return new Range(
@@ -201,7 +192,6 @@ namespace Duality
 		/// Performs an implicit conversion from a single value to a ranged value.
 		/// </summary>
 		/// <param name="value"></param>
-		/// <returns></returns>
 		public static implicit operator Range(float value)
 		{
 			return new Range(value);

@@ -291,7 +291,6 @@ namespace FarseerPhysics.Common
 		/// </summary>
 		/// <param name="data">The texture data.</param>
 		/// <param name="width">The texture width.</param>
-		/// <returns></returns>
 		public static Vertices DetectVertices(uint[] data, int width)
 		{
 			TextureConverter tc = new TextureConverter(data, width);
@@ -307,7 +306,6 @@ namespace FarseerPhysics.Common
 		/// <param name="data">The texture data.</param>
 		/// <param name="width">The texture width.</param>
 		/// <param name="holeDetection">if set to <c>true</c> it will perform hole detection.</param>
-		/// <returns></returns>
 		public static Vertices DetectVertices(uint[] data, int width, bool holeDetection)
 		{
 			TextureConverter tc =
@@ -330,7 +328,6 @@ namespace FarseerPhysics.Common
 		/// <param name="hullTolerance">The hull tolerance.</param>
 		/// <param name="alphaTolerance">The alpha tolerance.</param>
 		/// <param name="multiPartDetection">if set to <c>true</c> it will perform multi part detection.</param>
-		/// <returns></returns>
 		public static List<Vertices> DetectVertices(uint[] data, int width, float hullTolerance,
 													byte alphaTolerance, bool multiPartDetection, bool holeDetection)
 		{
@@ -1006,7 +1003,6 @@ namespace FarseerPhysics.Common
 		/// </summary>
 		/// <param name="entrance"></param>
 		/// <param name="last"></param>
-		/// <returns></returns>
 		private Vertices CreateSimplePolygon(Vector2 entrance, Vector2 last)
 		{
 			bool entranceFound = false;

@@ -17,7 +17,6 @@ namespace Duality.VisualStudio
 		/// </summary>
 		/// <param name="bm"></param>
 		/// <param name="weightTransparent">If true, the alpha value weights a pixels color value. </param>
-		/// <returns></returns>
 		public static ColorRgba GetAverageColor(this Bitmap bm, bool weightTransparent = true)
 		{
 			float[] sum = new float[4];
@@ -65,7 +64,6 @@ namespace Duality.VisualStudio
 		/// Extracts a Bitmaps pixel data.
 		/// </summary>
 		/// <param name="bm"></param>
-		/// <returns></returns>
 		public static ColorRgba[] GetPixelDataRgba(this Bitmap bm)
 		{
 			int[] argbValues = GetPixelDataIntArgb(bm);

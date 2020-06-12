@@ -1283,6 +1283,19 @@ namespace Duality.Editor.Plugins.ProjectView
 		{
 			NodeBase node = this.lastEditedNode;
 			string oldName = node.GetNameFromPath(node.NodePath);
+
+			// This piece of code blocks the user from setting an empty string as a Resource's name,
+			// avoiding the appearence of the behavior described in https://github.com/AdamsLair/duality/issues/773
+			// If an invalid name is set, it is reverted back to the previous one, and the Resource 
+			// flashes to warn the user
+			if (string.IsNullOrWhiteSpace(node.Text))
+			{
+				node.Text = oldName;
+				this.FlashNode(node);
+				this.RevokeGlobalRenameEventFor(node.NodePath);
+				return;
+			}
+
 			if (oldName == node.Text)
 			{
 				this.RevokeGlobalRenameEventFor(node.NodePath);

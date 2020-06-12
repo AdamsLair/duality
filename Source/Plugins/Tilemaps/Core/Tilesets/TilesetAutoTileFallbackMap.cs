@@ -52,7 +52,6 @@ namespace Duality.Plugins.Tilemaps
 		/// subtile quadrant of an AutoTile.
 		/// </summary>
 		/// <param name="quadrant"></param>
-		/// <returns></returns>
 		public TileConnection GetSubTileMask(TileQuadrant quadrant)
 		{
 			switch (quadrant)
@@ -76,7 +75,6 @@ namespace Duality.Plugins.Tilemaps
 		/// https://cloud.githubusercontent.com/assets/14859411/11279962/ccc1ac2e-8ef3-11e5-8e99-861b0d7a1c9a.png
 		/// </summary>
 		/// <param name="connection"></param>
-		/// <returns></returns>
 		public TileConnection GetBaseConnectivity(TileConnection connection)
 		{
 			return this.tileToBasePermutation[(int)connection];
@@ -87,7 +85,6 @@ namespace Duality.Plugins.Tilemaps
 		/// with the specified connectivity is available.
 		/// </summary>
 		/// <param name="connection"></param>
-		/// <returns></returns>
 		public IReadOnlyList<TileConnection> GetFallback(TileConnection connection)
 		{
 			return this.tileToFallbackList[(int)connection] ?? NoFallbacks;
@@ -244,7 +241,6 @@ namespace Duality.Plugins.Tilemaps
 		/// Generates a transitive fallback map where each item is a sorted list of all items in the items fallback chain.
 		/// </summary>
 		/// <param name="directMap"></param>
-		/// <returns></returns>
 		private static TileConnection[][] CreateTransitiveMap(TileConnection[] directMap)
 		{
 			TileConnection[][] transitiveMap = new TileConnection[StateCount][];

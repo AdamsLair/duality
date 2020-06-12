@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "GameEditor": {
+      "commandName": "Executable",
+      "executablePath": ".\\DualityEditor.exe",
+      "workingDirectory": ".\\..\\..\\..\\.."
+    }
+  }
+}

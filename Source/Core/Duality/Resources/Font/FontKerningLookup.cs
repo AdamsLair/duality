@@ -39,7 +39,6 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="firstChar"></param>
 		/// <param name="secondChar"></param>
-		/// <returns></returns>
 		public float GetAdvanceOffset(char firstChar, char secondChar)
 		{
 			// Find a matching range of entries for the first char

@@ -414,7 +414,6 @@ namespace FarseerPhysics.Dynamics
 		/// Test a point for containment in this fixture.
 		/// </summary>
 		/// <param name="point">A point in world coordinates.</param>
-		/// <returns></returns>
 		public bool TestPoint(ref Vector2 point)
 		{
 			return this.Shape.TestPoint(ref this.Body.Xf, ref point);
@@ -426,7 +425,6 @@ namespace FarseerPhysics.Dynamics
 		/// <param name="output">The ray-cast results.</param>
 		/// <param name="input">The ray-cast input parameters.</param>
 		/// <param name="childIndex">Index of the child.</param>
-		/// <returns></returns>
 		public bool RayCast(out RayCastOutput output, ref RayCastInput input, int childIndex)
 		{
 			return this.Shape.RayCast(out output, ref input, ref this.Body.Xf, childIndex);

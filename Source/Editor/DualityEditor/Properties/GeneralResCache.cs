@@ -24,9 +24,6 @@ namespace Duality.Editor.Properties
 		public static readonly Bitmap	CursorArrowActionScale	= GeneralRes.CursorArrowActionScale;
 		public static readonly Bitmap	CursorHandGrab			= GeneralRes.CursorHandGrab;
 		public static readonly Bitmap	CursorHandGrabbing		= GeneralRes.CursorHandGrabbing;
-		public static readonly Bitmap	ImageAppCreate			= GeneralRes.ImageAppCreate;
-		public static readonly Bitmap	ImageTemplateCurrent	= GeneralRes.ImageTemplateCurrent;
-		public static readonly Bitmap	ImageTemplateEmpty		= GeneralRes.ImageTemplateEmpty;
 		public static readonly Icon		IconCog					= GeneralRes.IconCog;
 		public static readonly Icon		IconWorkingFolder		= GeneralRes.IconWorkingFolder;
 	}

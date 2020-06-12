@@ -32,7 +32,6 @@ namespace Duality.Drawing
 		/// via generic parameter. This is a very efficient compile-time lookup.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public static VertexDeclaration Get<T>() where T : struct, IVertexData
 		{
 			return Cache<T>.Instance;
@@ -41,7 +40,6 @@ namespace Duality.Drawing
 		/// Retrieves the <see cref="VertexDeclaration"/> for the specified type index.
 		/// Returns null if the type index is not valid.
 		/// </summary>
-		/// <returns></returns>
 		public static VertexDeclaration Get(int typeIndex)
 		{
 			if (typeIndex < 0 || typeIndex >= delcarationByIndex.Count)
@@ -55,7 +53,6 @@ namespace Duality.Drawing
 		/// possible, use the generic <see cref="Get{T}()"/> method instead.
 		/// </summary>
 		/// <param name="vertexType"></param>
-		/// <returns></returns>
 		public static VertexDeclaration Get(Type vertexType)
 		{
 			if (vertexType == null) return null;

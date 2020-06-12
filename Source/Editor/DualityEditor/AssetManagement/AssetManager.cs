@@ -73,7 +73,6 @@ namespace Duality.Editor.AssetManagement
 		/// The base directory of the previously specified input source files, 
 		/// which is mapped to the target base directory.
 		/// </param>
-		/// <returns></returns>
 		public static AssetImportOutput[] ImportAssets(IEnumerable<string> inputFiles, string targetBaseDir, string inputBaseDir)
 		{
 			return ImportAssets(inputFiles, targetBaseDir, inputBaseDir, false);
@@ -87,7 +86,6 @@ namespace Duality.Editor.AssetManagement
 		/// The base directory of the previously specified input source files, 
 		/// which is mapped to the target base directory.
 		/// </param>
-		/// <returns></returns>
 		public static AssetImportOutput[] SimulateImportAssets(IEnumerable<string> inputFiles, string targetBaseDir, string inputBaseDir)
 		{
 			return ImportAssets(inputFiles, targetBaseDir, inputBaseDir, true);
@@ -139,7 +137,6 @@ namespace Duality.Editor.AssetManagement
 		/// <param name="localInputFiles">
 		/// An enumerable of input source files that are already part of the local media source folder.
 		/// </param>
-		/// <returns></returns>
 		public static AssetImportOutput[] ReImportAssets(IEnumerable<string> localInputFiles)
 		{
 			return ReImportAssets(localInputFiles, false);
@@ -150,7 +147,6 @@ namespace Duality.Editor.AssetManagement
 		/// <param name="localInputFiles">
 		/// An enumerable of input source files that are already part of the local media source folder.
 		/// </param>
-		/// <returns></returns>
 		public static AssetImportOutput[] SimulateReImportAssets(IEnumerable<string> localInputFiles)
 		{
 			return ReImportAssets(localInputFiles, true);
@@ -189,7 +185,6 @@ namespace Duality.Editor.AssetManagement
 		/// </summary>
 		/// <param name="inputResource">The <see cref="Resource"/> to be exported.</param>
 		/// <param name="exportDir">The target directory that serves as a base for creating output source files.</param>
-		/// <returns></returns>
 		public static string[] ExportAssets(ContentRef<Resource> inputResource, string exportDir = null)
 		{
 			return ExportAssets(inputResource, exportDir, false);
@@ -199,7 +194,6 @@ namespace Duality.Editor.AssetManagement
 		/// </summary>
 		/// <param name="inputResource">The <see cref="Resource"/> to be exported.</param>
 		/// <param name="exportDir">The target directory that serves as a base for creating output source files.</param>
-		/// <returns></returns>
 		public static string[] SimulateExportAssets(ContentRef<Resource> inputResource, string exportDir = null)
 		{
 			return ExportAssets(inputResource, exportDir, true);
@@ -261,7 +255,6 @@ namespace Duality.Editor.AssetManagement
 		/// were used during the most recent import and can be re-used during export and re-import operations.
 		/// </summary>
 		/// <param name="resource"></param>
-		/// <returns></returns>
 		public static string[] GetAssetSourceFiles(ContentRef<Resource> resource)
 		{
 			// Early-out, if the input Resource isn't available

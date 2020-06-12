@@ -214,14 +214,12 @@ namespace FarseerPhysics.Dynamics.Joints
 		/// Get the reaction force on body2 at the joint anchor in Newtons.
 		/// </summary>
 		/// <param name="inv_dt">The inv_dt.</param>
-		/// <returns></returns>
 		public abstract Vector2 GetReactionForce(float inv_dt);
 
 		/// <summary>
 		/// Get the reaction torque on body2 in N*m.
 		/// </summary>
 		/// <param name="inv_dt">The inv_dt.</param>
-		/// <returns></returns>
 		public abstract float GetReactionTorque(float inv_dt);
 
 		protected void WakeBodies()

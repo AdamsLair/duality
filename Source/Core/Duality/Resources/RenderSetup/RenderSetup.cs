@@ -180,11 +180,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Renders a scene from the perspective of a single, pre-configured drawing device.
 		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="drawDevice"></param>
-		/// <param name="viewportRect"></param>
-		/// <param name="imageSize"></param>
-		/// <param name="outputTargetRect"></param>
 		public void RenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize)
 		{
 			// Memorize projection matrix settings, so the drawing device can be properly reset later
@@ -210,7 +205,6 @@ namespace Duality.Resources
 		/// Applies auto-resizing rules to all <see cref="RenderTarget"/> resources that are in the resize list
 		/// of this <see cref="RenderSetup"/>.
 		/// </summary>
-		/// <param name="outputSize"></param>
 		protected void ApplyOutputAutoResize(Point2 outputSize)
 		{
 			foreach (RenderSetupTargetResize autoResize in this.autoResizeTargets)
@@ -271,12 +265,6 @@ namespace Duality.Resources
 		/// Performs the specified <see cref="RenderStep"/>. This method will do some basic, localized configuration on
 		/// the drawing device and then invoke <see cref="OnRenderSingleStep"/> for running the actual rendering operations.
 		/// </summary>
-		/// <param name="step"></param>
-		/// <param name="scene"></param>
-		/// <param name="drawDevice"></param>
-		/// <param name="viewportRect"></param>
-		/// <param name="imageSize"></param>
-		/// <param name="outputTargetRect"></param>
 		protected void RenderSingleStep(RenderStep step, Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize)
 		{
 			// Memorize old draw device settings to reset them later
@@ -345,7 +333,6 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="scene"></param>
 		/// <param name="drawDevice"></param>
-		/// <param name="pickingMap"></param>
 		protected void CollectRendererDrawcalls(Scene scene, DrawDevice drawDevice)
 		{
 			Profile.TimeCollectDrawcalls.BeginMeasure();
@@ -472,11 +459,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Called to render a scene from the perspective of a single, pre-configured drawing device.
 		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="drawDevice"></param>
-		/// <param name="viewportRect"></param>
-		/// <param name="imageSize"></param>
-		/// <param name="outputTargetRect"></param>
 		protected virtual void OnRenderPointOfView(Scene scene, DrawDevice drawDevice, Rect viewportRect, Vector2 imageSize)
 		{
 			// Resize all render targets to the viewport size we're dealing with
@@ -491,8 +473,6 @@ namespace Duality.Resources
 		/// <summary>
 		/// Called to process the specified <see cref="RenderStep"/>.
 		/// </summary>
-		/// <param name="step"></param>
-		/// <param name="drawDevice"></param>
 		protected virtual void OnRenderSingleStep(RenderStep step, Scene scene, DrawDevice drawDevice)
 		{
 			drawDevice.PrepareForDrawcalls();

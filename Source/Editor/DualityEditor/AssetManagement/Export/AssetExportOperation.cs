@@ -90,7 +90,6 @@ namespace Duality.Editor.AssetManagement
 		/// <summary>
 		/// Performs the operation and returns whether it was successful.
 		/// </summary>
-		/// <returns></returns>
 		public bool Perform()
 		{
 			this.ResetWorkingData();
@@ -111,7 +110,6 @@ namespace Duality.Editor.AssetManagement
 		/// This can be used to determine which files would be affected when performing
 		/// the operation.
 		/// </summary>
-		/// <returns></returns>
 		public bool SimulatePerform()
 		{
 			this.ResetWorkingData();

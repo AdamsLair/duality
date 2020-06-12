@@ -1,0 +1,74 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<PackageType>Template</PackageType>
+		<PackageId>AdamsLair.Duality.Templates</PackageId>
+		<Title>Duality Templates</Title>
+		<Authors>Rick van Dam</Authors>
+		<Description>Templates to use with the Duality game engine</Description>
+		<PackageTags>dotnet-new;templates;duality</PackageTags>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<OutputPath>$(MSBuildProjectDirectory)\bin</OutputPath>
+		<IncludeContentInPack>true</IncludeContentInPack>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<ContentTargetFolders>content</ContentTargetFolders>
+		<Version>4.0.0-alpha0</Version>
+		<PackageProjectUrl>https://www.duality2d.net/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/AdamsLair/duality</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>None</DebugType>
+		<NoDefaultExcludes>true</NoDefaultExcludes>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="Templates\**\*" CopyToOutputDirectory="PreserveNewest" />
+		<Content Remove="Templates\**\obj\**" />
+		<Content Remove="Templates\SolutionTemplate\Plugins\**" />
+		<None Remove="Templates\**\obj\**" />
+		<Content Remove="Templates\**\bin\**" />
+		<None Remove="Templates\**\bin\**" />
+		<Content Remove="Templates\**\.vs\**" />
+		<Compile Remove="**\*" />
+		<Compile Remove="Templates\SolutionTemplate\Plugins\**" />
+
+		<Content Remove="Templates\SolutionTemplate\*.dll" />
+		<None Remove="Templates\SolutionTemplate\*.dll" />
+		<Content Remove="Templates\SolutionTemplate\*.pdb" />
+		<None Remove="Templates\SolutionTemplate\*.pdb" />
+		<Content Remove="Templates\SolutionTemplate\*.exe" />
+		<None Remove="Templates\SolutionTemplate\*.exe" />
+		<Content Remove="Templates\SolutionTemplate\*.xml" />
+		<EmbeddedResource Remove="Templates\SolutionTemplate\Plugins\**" />
+		<None Remove="Templates\SolutionTemplate\*.xml" />
+		<None Remove="Templates\SolutionTemplate\Plugins\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="Templates\SolutionTemplate\.template.config\template.json">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<Target Name="CreateZips" AfterTargets="Build">
+		<ZipDirectory SourceDirectory="$(OutputPath)/Templates/SolutionTemplate" DestinationFile="$(OutputPath)\Duality.zip" Overwrite="true" />
+	
+		<RemoveDir Directories="$(OutputPath)/Templates" />
+	</Target>
+
+	<Target Name="CopyPackage" AfterTargets="Pack">
+		<ItemGroup>
+			<NugetPackages Include="$(OutputPath)\*.nupkg" />
+		</ItemGroup>
+		<Message Importance="High" Text="Copying @(NugetPackages) to $(MSBuildProjectDirectory)\..\..\Build\NightlyBuild\NuGetPackages" />
+		<Copy SourceFiles="@(NugetPackages)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\Build\NightlyBuild\NuGetPackages" />
+	</Target>
+
+
+	<Target Name="CoreCompile" />
+	<PropertyGroup>
+		<SkipCopyBuildProduct>true</SkipCopyBuildProduct>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+</Project>

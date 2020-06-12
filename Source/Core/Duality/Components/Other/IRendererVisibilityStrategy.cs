@@ -25,7 +25,6 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="device"></param>
 		/// <param name="visibleRenderers"></param>
-		/// <returns></returns>
 		void QueryVisibleRenderers(DrawDevice device, RawList<ICmpRenderer> visibleRenderers);
 		/// <summary>
 		/// Updates the strategy to account for changes in the <see cref="Duality.Resources.Scene"/>

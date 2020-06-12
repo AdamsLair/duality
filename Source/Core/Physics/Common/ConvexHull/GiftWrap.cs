@@ -23,7 +23,6 @@ namespace FarseerPhysics.Common.ConvexHull
 		/// Warning: May be buggy with colinear points on hull.
 		/// </summary>
 		/// <param name="vertices">The vertices.</param>
-		/// <returns></returns>
 		public static Vertices GetConvexHull(Vertices vertices)
 		{
 			if (vertices.Count < 3)

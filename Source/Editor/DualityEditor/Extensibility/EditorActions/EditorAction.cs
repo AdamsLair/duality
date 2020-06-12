@@ -87,7 +87,6 @@ namespace Duality.Editor
 		/// Returns whether the action matches the specified context.
 		/// </summary>
 		/// <param name="context"></param>
-		/// <returns></returns>
 		public virtual bool MatchesContext(string context)
 		{
 			return context == DualityEditorApp.ActionContextMenu;

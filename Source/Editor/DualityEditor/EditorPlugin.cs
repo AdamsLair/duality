@@ -37,7 +37,6 @@ namespace Duality.Editor
 		/// DockContent, a new an pre-setup instance or null as default.
 		/// </summary>
 		/// <param name="dockContentType"></param>
-		/// <returns></returns>
 		internal protected virtual IDockContent DeserializeDockContent(Type dockContentType) { return null; }
 	}
 }

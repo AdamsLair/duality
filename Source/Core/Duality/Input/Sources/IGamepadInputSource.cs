@@ -11,13 +11,11 @@ namespace Duality.Input
 		/// [GET] Returns whether the specified gamepad button is currently pressed.
 		/// </summary>
 		/// <param name="button"></param>
-		/// <returns></returns>
 		bool this[GamepadButton button] { get; }
 		/// <summary>
 		/// [GET] Returns the specified gamepad axis value.
 		/// </summary>
 		/// <param name="axis"></param>
-		/// <returns></returns>
 		float this[GamepadAxis axis] { get; }
 
 		/// <summary>

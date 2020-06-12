@@ -588,7 +588,6 @@ namespace Duality
 		/// <summary>
 		/// Returns a System.String that represents the current Quaternion.
 		/// </summary>
-		/// <returns></returns>
 		public override string ToString()
 		{
 			return string.Format("V: {0}, W: {1}", this.Xyz, this.W);

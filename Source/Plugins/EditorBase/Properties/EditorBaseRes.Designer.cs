@@ -22,7 +22,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class EditorBaseRes {
+    internal class EditorBaseRes {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Duality.Editor.Plugins.Base.Properties.EditorBaseRes", typeof(EditorBaseRes).Assembly);
@@ -51,7 +51,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Exports the Resource..
         /// </summary>
-        public static string ActionDesc_ExportResource {
+        internal static string ActionDesc_ExportResource {
             get {
                 return ResourceManager.GetString("ActionDesc_ExportResource", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Imports the Resource using the previously used source files..
         /// </summary>
-        public static string ActionDesc_ReImportResource {
+        internal static string ActionDesc_ReImportResource {
             get {
                 return ResourceManager.GetString("ActionDesc_ReImportResource", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Shows the Resource&apos;s source files in your file system..
         /// </summary>
-        public static string ActionDesc_ShowResourceSources {
+        internal static string ActionDesc_ShowResourceSources {
             get {
                 return ResourceManager.GetString("ActionDesc_ShowResourceSources", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Create Material.
         /// </summary>
-        public static string ActionName_CreateMaterial {
+        internal static string ActionName_CreateMaterial {
             get {
                 return ResourceManager.GetString("ActionName_CreateMaterial", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Create ShaderProgram.
         /// </summary>
-        public static string ActionName_CreateShaderProgram {
+        internal static string ActionName_CreateShaderProgram {
             get {
                 return ResourceManager.GetString("ActionName_CreateShaderProgram", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Create Sound.
         /// </summary>
-        public static string ActionName_CreateSound {
+        internal static string ActionName_CreateSound {
             get {
                 return ResourceManager.GetString("ActionName_CreateSound", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Create Texture.
         /// </summary>
-        public static string ActionName_CreateTexture {
+        internal static string ActionName_CreateTexture {
             get {
                 return ResourceManager.GetString("ActionName_CreateTexture", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Download Visual Studio.
         /// </summary>
-        public static string ActionName_DownloadVisualStudio {
+        internal static string ActionName_DownloadVisualStudio {
             get {
                 return ResourceManager.GetString("ActionName_DownloadVisualStudio", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Export Resource.
         /// </summary>
-        public static string ActionName_ExportResource {
+        internal static string ActionName_ExportResource {
             get {
                 return ResourceManager.GetString("ActionName_ExportResource", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Import Resource.
         /// </summary>
-        public static string ActionName_ReImportResource {
+        internal static string ActionName_ReImportResource {
             get {
                 return ResourceManager.GetString("ActionName_ReImportResource", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Show Source Files.
         /// </summary>
-        public static string ActionName_ShowResourceSources {
+        internal static string ActionName_ShowResourceSources {
             get {
                 return ResourceManager.GetString("ActionName_ShowResourceSources", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Slice Pixmap.
         /// </summary>
-        public static string ActionName_SlicePixmap {
+        internal static string ActionName_SlicePixmap {
             get {
                 return ResourceManager.GetString("ActionName_SlicePixmap", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Getting Started Tutorial.
         /// </summary>
-        public static string ActionName_ViewGettingStartedTutorial {
+        internal static string ActionName_ViewGettingStartedTutorial {
             get {
                 return ResourceManager.GetString("ActionName_ViewGettingStartedTutorial", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Join the Community.
         /// </summary>
-        public static string ActionName_VisitCommunityForum {
+        internal static string ActionName_VisitCommunityForum {
             get {
                 return ResourceManager.GetString("ActionName_VisitCommunityForum", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Auto-Slice.
         /// </summary>
-        public static string Button_AutoSlice {
+        internal static string Button_AutoSlice {
             get {
                 return ResourceManager.GetString("Button_AutoSlice", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Grid-Slice.
         /// </summary>
-        public static string Button_GridSlice {
+        internal static string Button_GridSlice {
             get {
                 return ResourceManager.GetString("Button_GridSlice", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap DropdownSettingsBlack {
+        internal static System.Drawing.Bitmap DropdownSettingsBlack {
             get {
                 object obj = ResourceManager.GetObject("DropdownSettingsBlack", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -217,7 +217,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The Pixmap Slicer provides tools for automatically or manually specifying atlas rectangles..
         /// </summary>
-        public static string Help_PixmapSlicer_Desc {
+        internal static string Help_PixmapSlicer_Desc {
             get {
                 return ResourceManager.GetString("Help_PixmapSlicer_Desc", resourceCulture);
             }
@@ -226,7 +226,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Pixmap Slicer.
         /// </summary>
-        public static string Help_PixmapSlicer_Topic {
+        internal static string Help_PixmapSlicer_Topic {
             get {
                 return ResourceManager.GetString("Help_PixmapSlicer_Topic", resourceCulture);
             }
@@ -235,7 +235,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Click on rects to select them. Selected rects can be resized with the mouse..
         /// </summary>
-        public static string Help_PixmapSlicerDefaultState_Desc {
+        internal static string Help_PixmapSlicerDefaultState_Desc {
             get {
                 return ResourceManager.GetString("Help_PixmapSlicerDefaultState_Desc", resourceCulture);
             }
@@ -244,7 +244,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Pixmap Slicer.
         /// </summary>
-        public static string Help_PixmapSlicerDefaultState_Topic {
+        internal static string Help_PixmapSlicerDefaultState_Topic {
             get {
                 return ResourceManager.GetString("Help_PixmapSlicerDefaultState_Topic", resourceCulture);
             }
@@ -253,7 +253,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Use the toolstrip controsl to specify the grid parameters..
         /// </summary>
-        public static string Help_PixmapSlicerGridSlice_Desc {
+        internal static string Help_PixmapSlicerGridSlice_Desc {
             get {
                 return ResourceManager.GetString("Help_PixmapSlicerGridSlice_Desc", resourceCulture);
             }
@@ -262,7 +262,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Grid Slicing.
         /// </summary>
-        public static string Help_PixmapSlicerGridSlice_Topic {
+        internal static string Help_PixmapSlicerGridSlice_Topic {
             get {
                 return ResourceManager.GetString("Help_PixmapSlicerGridSlice_Topic", resourceCulture);
             }
@@ -271,7 +271,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Click and drag to define a new atlas rect. New rects are added to the end of the atlas..
         /// </summary>
-        public static string Help_PixmapSlicerNewRect_Desc {
+        internal static string Help_PixmapSlicerNewRect_Desc {
             get {
                 return ResourceManager.GetString("Help_PixmapSlicerNewRect_Desc", resourceCulture);
             }
@@ -280,7 +280,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to New Rect.
         /// </summary>
-        public static string Help_PixmapSlicerNewRect_Topic {
+        internal static string Help_PixmapSlicerNewRect_Topic {
             get {
                 return ResourceManager.GetString("Help_PixmapSlicerNewRect_Topic", resourceCulture);
             }
@@ -289,7 +289,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Click on the atlas rects in the desired order. Remaining rects will be be placed last in the rect order..
         /// </summary>
-        public static string Help_PixmapSlicerRectOrdering_Desc {
+        internal static string Help_PixmapSlicerRectOrdering_Desc {
             get {
                 return ResourceManager.GetString("Help_PixmapSlicerRectOrdering_Desc", resourceCulture);
             }
@@ -298,7 +298,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Rect Ordering.
         /// </summary>
-        public static string Help_PixmapSlicerRectOrdering_Topic {
+        internal static string Help_PixmapSlicerRectOrdering_Topic {
             get {
                 return ResourceManager.GetString("Help_PixmapSlicerRectOrdering_Topic", resourceCulture);
             }
@@ -307,7 +307,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconAbortCross {
+        internal static System.Drawing.Bitmap IconAbortCross {
             get {
                 object obj = ResourceManager.GetObject("IconAbortCross", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -317,7 +317,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconAcceptCheck {
+        internal static System.Drawing.Bitmap IconAcceptCheck {
             get {
                 object obj = ResourceManager.GetObject("IconAcceptCheck", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -327,7 +327,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconCancel {
+        internal static System.Drawing.Bitmap IconCancel {
             get {
                 object obj = ResourceManager.GetObject("IconCancel", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -337,7 +337,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconCommunity {
+        internal static System.Drawing.Bitmap IconCommunity {
             get {
                 object obj = ResourceManager.GetObject("IconCommunity", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -347,7 +347,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconDownloadCodeIDE {
+        internal static System.Drawing.Bitmap IconDownloadCodeIDE {
             get {
                 object obj = ResourceManager.GetObject("IconDownloadCodeIDE", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -357,7 +357,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        public static System.Drawing.Icon IconEye {
+        internal static System.Drawing.Icon IconEye {
             get {
                 object obj = ResourceManager.GetObject("IconEye", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
@@ -367,7 +367,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconHideIndices {
+        internal static System.Drawing.Bitmap IconHideIndices {
             get {
                 object obj = ResourceManager.GetObject("IconHideIndices", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -377,7 +377,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconPixmapSlicer {
+        internal static System.Drawing.Bitmap IconPixmapSlicer {
             get {
                 object obj = ResourceManager.GetObject("IconPixmapSlicer", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -387,7 +387,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconRevealIndices {
+        internal static System.Drawing.Bitmap IconRevealIndices {
             get {
                 object obj = ResourceManager.GetObject("IconRevealIndices", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -397,7 +397,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconShowIndices {
+        internal static System.Drawing.Bitmap IconShowIndices {
             get {
                 object obj = ResourceManager.GetObject("IconShowIndices", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -407,7 +407,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconSpeakerBlack {
+        internal static System.Drawing.Bitmap IconSpeakerBlack {
             get {
                 object obj = ResourceManager.GetObject("IconSpeakerBlack", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -417,7 +417,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconSpeakerWhite {
+        internal static System.Drawing.Bitmap IconSpeakerWhite {
             get {
                 object obj = ResourceManager.GetObject("IconSpeakerWhite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -427,7 +427,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconSquareAdd {
+        internal static System.Drawing.Bitmap IconSquareAdd {
             get {
                 object obj = ResourceManager.GetObject("IconSquareAdd", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -437,7 +437,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconSquareDelete {
+        internal static System.Drawing.Bitmap IconSquareDelete {
             get {
                 object obj = ResourceManager.GetObject("IconSquareDelete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -447,7 +447,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconSquareDeleteMany {
+        internal static System.Drawing.Bitmap IconSquareDeleteMany {
             get {
                 object obj = ResourceManager.GetObject("IconSquareDeleteMany", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -457,7 +457,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconSquareNumbers {
+        internal static System.Drawing.Bitmap IconSquareNumbers {
             get {
                 object obj = ResourceManager.GetObject("IconSquareNumbers", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -467,7 +467,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconTutorial {
+        internal static System.Drawing.Bitmap IconTutorial {
             get {
                 object obj = ResourceManager.GetObject("IconTutorial", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -477,7 +477,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconViewBrightness {
+        internal static System.Drawing.Bitmap IconViewBrightness {
             get {
                 object obj = ResourceManager.GetObject("IconViewBrightness", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -487,7 +487,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconZoomDefault {
+        internal static System.Drawing.Bitmap IconZoomDefault {
             get {
                 object obj = ResourceManager.GetObject("IconZoomDefault", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -497,7 +497,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconZoomIn {
+        internal static System.Drawing.Bitmap IconZoomIn {
             get {
                 object obj = ResourceManager.GetObject("IconZoomIn", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -507,7 +507,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconZoomOut {
+        internal static System.Drawing.Bitmap IconZoomOut {
             get {
                 object obj = ResourceManager.GetObject("IconZoomOut", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -517,7 +517,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Can&apos;t remove {0} because it is required by the &apos;{1}&apos; Component..
         /// </summary>
-        public static string MenuItemDesc_CantRemoveComponent {
+        internal static string MenuItemDesc_CantRemoveComponent {
             get {
                 return ResourceManager.GetString("MenuItemDesc_CantRemoveComponent", resourceCulture);
             }
@@ -526,7 +526,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Application Data.
         /// </summary>
-        public static string MenuItemName_AppData {
+        internal static string MenuItemName_AppData {
             get {
                 return ResourceManager.GetString("MenuItemName_AppData", resourceCulture);
             }
@@ -535,7 +535,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Remove.
         /// </summary>
-        public static string MenuItemName_RemoveComponent {
+        internal static string MenuItemName_RemoveComponent {
             get {
                 return ResourceManager.GetString("MenuItemName_RemoveComponent", resourceCulture);
             }
@@ -544,7 +544,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Reset.
         /// </summary>
-        public static string MenuItemName_ResetComponent {
+        internal static string MenuItemName_ResetComponent {
             get {
                 return ResourceManager.GetString("MenuItemName_ResetComponent", resourceCulture);
             }
@@ -553,7 +553,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Default User Data.
         /// </summary>
-        public static string MenuItemName_UserData {
+        internal static string MenuItemName_UserData {
             get {
                 return ResourceManager.GetString("MenuItemName_UserData", resourceCulture);
             }
@@ -562,7 +562,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Select a joint type and click the add button to add a new joint to the Collider.
         /// </summary>
-        public static string PropertyDesc_AddJoint {
+        internal static string PropertyDesc_AddJoint {
             get {
                 return ResourceManager.GetString("PropertyDesc_AddJoint", resourceCulture);
             }
@@ -571,7 +571,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The joints second Collider, i.e. the one that is connected to this one using the joint..
         /// </summary>
-        public static string PropertyDesc_OtherCollider {
+        internal static string PropertyDesc_OtherCollider {
             get {
                 return ResourceManager.GetString("PropertyDesc_OtherCollider", resourceCulture);
             }
@@ -580,7 +580,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Add Joint....
         /// </summary>
-        public static string PropertyName_AddJoint {
+        internal static string PropertyName_AddJoint {
             get {
                 return ResourceManager.GetString("PropertyName_AddJoint", resourceCulture);
             }
@@ -589,7 +589,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Other Collider.
         /// </summary>
-        public static string PropertyName_OtherCollider {
+        internal static string PropertyName_OtherCollider {
             get {
                 return ResourceManager.GetString("PropertyName_OtherCollider", resourceCulture);
             }
@@ -598,7 +598,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap ReferenceInput {
+        internal static System.Drawing.Bitmap ReferenceInput {
             get {
                 object obj = ResourceManager.GetObject("ReferenceInput", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -608,7 +608,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to RigidBody.
         /// </summary>
-        public static string RigidBodyCamViewState_SelBodyName {
+        internal static string RigidBodyCamViewState_SelBodyName {
             get {
                 return ResourceManager.GetString("RigidBodyCamViewState_SelBodyName", resourceCulture);
             }
@@ -617,7 +617,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Circle Shape.
         /// </summary>
-        public static string RigidBodyCamViewState_SelCircleShapeName {
+        internal static string RigidBodyCamViewState_SelCircleShapeName {
             get {
                 return ResourceManager.GetString("RigidBodyCamViewState_SelCircleShapeName", resourceCulture);
             }
@@ -626,7 +626,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Loop Shape.
         /// </summary>
-        public static string RigidBodyCamViewState_SelLoopShapeName {
+        internal static string RigidBodyCamViewState_SelLoopShapeName {
             get {
                 return ResourceManager.GetString("RigidBodyCamViewState_SelLoopShapeName", resourceCulture);
             }
@@ -635,7 +635,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Polygon Shape.
         /// </summary>
-        public static string RigidBodyCamViewState_SelPolyShapeName {
+        internal static string RigidBodyCamViewState_SelPolyShapeName {
             get {
                 return ResourceManager.GetString("RigidBodyCamViewState_SelPolyShapeName", resourceCulture);
             }
@@ -644,7 +644,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Shape.
         /// </summary>
-        public static string RigidBodyCamViewState_SelShapeName {
+        internal static string RigidBodyCamViewState_SelShapeName {
             get {
                 return ResourceManager.GetString("RigidBodyCamViewState_SelShapeName", resourceCulture);
             }
@@ -653,7 +653,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Add a new atlas rect.
         /// </summary>
-        public static string ToolTip_PixmapSlicerAddRect {
+        internal static string ToolTip_PixmapSlicerAddRect {
             get {
                 return ResourceManager.GetString("ToolTip_PixmapSlicerAddRect", resourceCulture);
             }
@@ -662,7 +662,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Automatically calculate atlas rects.
         /// </summary>
-        public static string ToolTip_PixmapSlicerAutoSlice {
+        internal static string ToolTip_PixmapSlicerAutoSlice {
             get {
                 return ResourceManager.GetString("ToolTip_PixmapSlicerAutoSlice", resourceCulture);
             }
@@ -671,7 +671,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
-        public static string ToolTip_PixmapSlicerCancel {
+        internal static string ToolTip_PixmapSlicerCancel {
             get {
                 return ResourceManager.GetString("ToolTip_PixmapSlicerCancel", resourceCulture);
             }
@@ -680,7 +680,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete all atlas rects.
         /// </summary>
-        public static string ToolTip_PixmapSlicerClear {
+        internal static string ToolTip_PixmapSlicerClear {
             get {
                 return ResourceManager.GetString("ToolTip_PixmapSlicerClear", resourceCulture);
             }
@@ -689,7 +689,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete the selected atlas rect (Delete).
         /// </summary>
-        public static string ToolTip_PixmapSlicerDelete {
+        internal static string ToolTip_PixmapSlicerDelete {
             get {
                 return ResourceManager.GetString("ToolTip_PixmapSlicerDelete", resourceCulture);
             }
@@ -698,7 +698,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Accept Changes.
         /// </summary>
-        public static string ToolTip_PixmapSlicerDone {
+        internal static string ToolTip_PixmapSlicerDone {
             get {
                 return ResourceManager.GetString("ToolTip_PixmapSlicerDone", resourceCulture);
             }
@@ -707,7 +707,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Slice the pixmap with a grid.
         /// </summary>
-        public static string ToolTip_PixmapSlicerGridSlice {
+        internal static string ToolTip_PixmapSlicerGridSlice {
             get {
                 return ResourceManager.GetString("ToolTip_PixmapSlicerGridSlice", resourceCulture);
             }
@@ -716,7 +716,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Specify the order of atlas rects.
         /// </summary>
-        public static string ToolTip_PixmapSlicerOrderRects {
+        internal static string ToolTip_PixmapSlicerOrderRects {
             get {
                 return ResourceManager.GetString("ToolTip_PixmapSlicerOrderRects", resourceCulture);
             }
@@ -725,7 +725,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Clear Atlas.
         /// </summary>
-        public static string UndoRedo_ClearAtlas {
+        internal static string UndoRedo_ClearAtlas {
             get {
                 return ResourceManager.GetString("UndoRedo_ClearAtlas", resourceCulture);
             }
@@ -734,7 +734,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Create {0}.
         /// </summary>
-        public static string UndoRedo_CreateRigidBodyJoint {
+        internal static string UndoRedo_CreateRigidBodyJoint {
             get {
                 return ResourceManager.GetString("UndoRedo_CreateRigidBodyJoint", resourceCulture);
             }
@@ -743,7 +743,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Create {0} Joints.
         /// </summary>
-        public static string UndoRedo_CreateRigidBodyJointMulti {
+        internal static string UndoRedo_CreateRigidBodyJointMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_CreateRigidBodyJointMulti", resourceCulture);
             }
@@ -752,7 +752,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Create Source {0}.
         /// </summary>
-        public static string UndoRedo_CreateSoundEmitterSource {
+        internal static string UndoRedo_CreateSoundEmitterSource {
             get {
                 return ResourceManager.GetString("UndoRedo_CreateSoundEmitterSource", resourceCulture);
             }
@@ -761,7 +761,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Create {0} Sources.
         /// </summary>
-        public static string UndoRedo_CreateSoundEmitterSourceMulti {
+        internal static string UndoRedo_CreateSoundEmitterSourceMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_CreateSoundEmitterSourceMulti", resourceCulture);
             }
@@ -770,7 +770,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete Atlas Rect.
         /// </summary>
-        public static string UndoRedo_DeleteAtlasRect {
+        internal static string UndoRedo_DeleteAtlasRect {
             get {
                 return ResourceManager.GetString("UndoRedo_DeleteAtlasRect", resourceCulture);
             }
@@ -779,7 +779,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete {0} Objects.
         /// </summary>
-        public static string UndoRedo_DeleteObjects {
+        internal static string UndoRedo_DeleteObjects {
             get {
                 return ResourceManager.GetString("UndoRedo_DeleteObjects", resourceCulture);
             }
@@ -788,7 +788,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete {0}.
         /// </summary>
-        public static string UndoRedo_DeleteRigidBodyJoint {
+        internal static string UndoRedo_DeleteRigidBodyJoint {
             get {
                 return ResourceManager.GetString("UndoRedo_DeleteRigidBodyJoint", resourceCulture);
             }
@@ -797,7 +797,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete {0} Joints.
         /// </summary>
-        public static string UndoRedo_DeleteRigidBodyJointMulti {
+        internal static string UndoRedo_DeleteRigidBodyJointMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_DeleteRigidBodyJointMulti", resourceCulture);
             }
@@ -806,7 +806,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete Source {0}.
         /// </summary>
-        public static string UndoRedo_DeleteSoundEmitterSource {
+        internal static string UndoRedo_DeleteSoundEmitterSource {
             get {
                 return ResourceManager.GetString("UndoRedo_DeleteSoundEmitterSource", resourceCulture);
             }
@@ -815,7 +815,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete {0} Sources.
         /// </summary>
-        public static string UndoRedo_DeleteSoundEmitterSourceMulti {
+        internal static string UndoRedo_DeleteSoundEmitterSourceMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_DeleteSoundEmitterSourceMulti", resourceCulture);
             }
@@ -824,7 +824,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Reparent {0}.
         /// </summary>
-        public static string UndoRedo_ReparentRigidBodyJoint {
+        internal static string UndoRedo_ReparentRigidBodyJoint {
             get {
                 return ResourceManager.GetString("UndoRedo_ReparentRigidBodyJoint", resourceCulture);
             }
@@ -833,7 +833,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Reparent {0} Joints.
         /// </summary>
-        public static string UndoRedo_ReparentRigidBodyJointMulti {
+        internal static string UndoRedo_ReparentRigidBodyJointMulti {
             get {
                 return ResourceManager.GetString("UndoRedo_ReparentRigidBodyJointMulti", resourceCulture);
             }
@@ -842,7 +842,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Set Atlas.
         /// </summary>
-        public static string UndoRedo_SetAtlas {
+        internal static string UndoRedo_SetAtlas {
             get {
                 return ResourceManager.GetString("UndoRedo_SetAtlas", resourceCulture);
             }
@@ -851,7 +851,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Set Atlas Rect.
         /// </summary>
-        public static string UndoRedo_SetAtlasRect {
+        internal static string UndoRedo_SetAtlasRect {
             get {
                 return ResourceManager.GetString("UndoRedo_SetAtlasRect", resourceCulture);
             }

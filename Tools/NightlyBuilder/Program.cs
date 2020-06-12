@@ -6,7 +6,6 @@ using System.Xml.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
-using System.IO.Compression;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -87,6 +86,24 @@ namespace NightlyBuilder
 
 		public static void PerformNightlyBuild(ConfigFile config)
 		{
+			if (!config.NoCleanNugetPackageTargetDir)
+			{
+				Console.WriteLine("============================= Clean NuGet Packages ============================");
+				if (Directory.Exists(config.NuGetPackageTargetDir))
+				{
+					Console.WriteLine("Deleting old package files in '{0}'...", config.NuGetPackageTargetDir);
+					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageTargetDir, "*.nupkg",
+						SearchOption.TopDirectoryOnly))
+					{
+						File.Delete(file);
+					}
+				}
+
+				Console.WriteLine("===============================================================================");
+				Console.WriteLine();
+				Console.WriteLine();
+			}
+
 			string packagePath = Path.Combine(config.PackageDir, config.PackageName);
 			FileVersionInfo versionCore = null;
 			FileVersionInfo versionEditor = null;
@@ -147,7 +164,7 @@ namespace NightlyBuilder
 							ExecuteBackgroundCommand(resultFile);
 							ExecuteBackgroundCommand(
 								string.Format("{0} {1}", 
-									Path.Combine(config.NUnitBinDir, "nunit.exe"), 
+									Path.Combine(config.NUnitBinDir, "nunit3-console.exe"), 
 									nunitProjectFile));
 							throw new ApplicationException(string.Format("At least one unit test has failed. See {0} for more information.", resultFile));
 						}
@@ -208,75 +225,6 @@ namespace NightlyBuilder
 				Console.WriteLine();
 			}
 
-			// Copy the results to the target directory
-			Console.WriteLine("================================ Copy to Target ===============================");
-			{
-				Console.WriteLine("Creating target directory '{0}'", config.IntermediateTargetDir);
-				if (Directory.Exists(config.IntermediateTargetDir))
-					Directory.Delete(config.IntermediateTargetDir, true);
-				CopyDirectory(config.BuildResultDir, config.IntermediateTargetDir, true, path => 
-					{
-						string fileName = Path.GetFileName(path);
-						foreach (string blackListEntry in config.FileCopyBlackList)
-						{
-							if (Regex.IsMatch(fileName, WildcardToRegex(blackListEntry), RegexOptions.IgnoreCase))
-							{
-								Console.ForegroundColor = ConsoleColor.DarkGray;
-								Console.WriteLine("Ignore {0}", path);
-								Console.ForegroundColor = ConsoleColor.Gray;
-								return false;
-							}
-						}
-						Console.WriteLine("Copy   {0}", path);
-						return true;
-					});
-				if (!string.IsNullOrEmpty(config.AdditionalFileDir) && Directory.Exists(config.AdditionalFileDir))
-				{
-					CopyDirectory(config.AdditionalFileDir, config.IntermediateTargetDir, true);
-				}
-			}
-			Console.WriteLine("===============================================================================");
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// Create the ZIP package
-			Console.WriteLine("============================== Create ZIP Package =============================");
-			{
-				Console.WriteLine("Package Path: {0}", packagePath);
-				if (!Directory.Exists(config.PackageDir))
-					Directory.CreateDirectory(config.PackageDir);
-
-				string[] files = Directory.GetFiles(config.IntermediateTargetDir, "*", SearchOption.AllDirectories);
-				using (FileStream packageStream = File.Open(packagePath, FileMode.Create))
-				using (ZipArchive archive = new ZipArchive(packageStream, ZipArchiveMode.Create, true))
-				{
-					foreach (string filePath in files)
-					{                    
-						ZipArchiveEntry fileEntry = archive.CreateEntry(filePath);
-						using (Stream entryStream = fileEntry.Open())
-						using (BinaryWriter entryWriter = new BinaryWriter(entryStream))
-						{
-							byte[] fileData = File.ReadAllBytes(filePath);
-							entryWriter.Write(fileData);
-						}
-					}
-				}
-			}
-			Console.WriteLine("===============================================================================");
-			Console.WriteLine();
-			Console.WriteLine();
-			
-			// Cleanup
-			Console.WriteLine("=================================== Cleanup ===================================");
-			{
-				Console.WriteLine("Deleting target directory '{0}'", config.IntermediateTargetDir);
-				if (Directory.Exists(config.IntermediateTargetDir))
-					Directory.Delete(config.IntermediateTargetDir, true);
-			}
-			Console.WriteLine("===============================================================================");
-			Console.WriteLine();
-			Console.WriteLine();
-			
 			// Build all NuGet Packages
 			Console.WriteLine("============================= Build NuGet Packages ============================");
 			{
@@ -287,14 +235,8 @@ namespace NightlyBuilder
 					if (!Directory.Exists(config.NuGetPackageTargetDir))
 						Directory.CreateDirectory(config.NuGetPackageTargetDir);
 
-					Console.WriteLine("Deleting old package files in '{0}'...", config.NuGetPackageTargetDir);
-					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageTargetDir, "*.nupkg", SearchOption.TopDirectoryOnly))
-					{
-						File.Delete(file);
-					}
-
 					Console.WriteLine("Determining package data from '{0}'...", config.NuGetPackageSpecsDir);
-					Dictionary<string,Version> packageVersions = new Dictionary<string,Version>();
+					Dictionary<string,string> packageVersions = new Dictionary<string,string>();
 					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageSpecsDir, "*.nuspec", SearchOption.AllDirectories))
 					{
 						Console.Write("  {0}: ", Path.GetFileName(file));
@@ -305,7 +247,7 @@ namespace NightlyBuilder
 						XElement elemVersion = doc.Descendants("version").FirstOrDefault();
 
 						string id = elemId.Value.Trim();
-						Version version = Version.Parse(elemVersion.Value.Trim());
+						string version = elemVersion.Value.Trim();
 						packageVersions[id] = version;
 
 						Console.WriteLine("{0}", version);
@@ -324,8 +266,8 @@ namespace NightlyBuilder
 						foreach (XElement elemDependency in doc.Descendants("dependency"))
 						{
 							string id = elemDependency.Attribute("id").Value.Trim();
-							Version version = Version.Parse(elemDependency.Attribute("version").Value.Trim());
-							Version developedAgainstVersion;
+							string version = elemDependency.Attribute("version").Value.Trim();
+							string developedAgainstVersion;
 							if (packageVersions.TryGetValue(id, out developedAgainstVersion))
 							{
 								if (version != developedAgainstVersion)
@@ -343,7 +285,7 @@ namespace NightlyBuilder
 							Console.ResetColor();
 							continue;
 						}
-						
+
 						XElement elemId = doc.Descendants("id").FirstOrDefault();
 						XElement elemVersion = doc.Descendants("version").FirstOrDefault();
 						string targetFileName = string.Format("{0}.{1}.nupkg", elemId.Value.Trim(), elemVersion.Value.Trim());
@@ -503,6 +445,7 @@ namespace NightlyBuilder
 			searchPaths.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Microsoft Visual Studio"));
 			foreach (string baseDir in searchPaths)
 			{
+				if (!Directory.Exists(baseDir)) continue;
 				foreach (string candidatePath in Directory.EnumerateFiles(baseDir, "msbuild.exe", SearchOption.AllDirectories))
 				{
 					msBuildPath = candidatePath;

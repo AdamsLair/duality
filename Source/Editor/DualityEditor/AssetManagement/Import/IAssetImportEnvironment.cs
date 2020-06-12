@@ -37,7 +37,6 @@ namespace Duality.Editor.AssetManagement
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="assetName">The name of the requested output <see cref="Duality.Resource"/> (see <see cref="AssetImportInput.AssetName"/>).</param>
-		/// <returns></returns>
 		ContentRef<T> GetOutput<T>(string assetName) where T : Resource, new();
 		/// <summary>
 		/// Specifies that the current importer will create or modify a <see cref="Duality.Resource"/> with 

@@ -21,7 +21,6 @@ namespace Duality.Tests
 		/// <param name="index"></param>
 		/// <param name="count"></param>
 		/// <param name="comparer"></param>
-		/// <returns></returns>
 		public static bool IsSorted<T>(this IList<T> values, int index, int count, Comparer<T> comparer = null)
 		{
 			if (comparer == null)
@@ -48,7 +47,6 @@ namespace Duality.Tests
 		/// <param name="count"></param>
 		/// <param name="valuesInOriginalOrder"></param>
 		/// <param name="comparer"></param>
-		/// <returns></returns>
 		public static bool IsStableOrder<T>(this IList<T> values, int index, int count, IList<T> valuesInOriginalOrder, Comparer<T> comparer = null)
 		{
 			if (comparer == null)

@@ -33,7 +33,6 @@ namespace Duality.Editor.Controls.PropertyEditors
 		/// </summary>
 		/// <param name="baseType"></param>
 		/// <param name="context"></param>
-		/// <returns></returns>
 		public int IsResponsibleFor(Type baseType, ProviderContext context)
 		{
 			if (this.propertyEditorAssignments == null)
@@ -56,7 +55,6 @@ namespace Duality.Editor.Controls.PropertyEditors
 		/// </summary>
 		/// <param name="baseType"></param>
 		/// <param name="context"></param>
-		/// <returns></returns>
 		public PropertyEditor CreateEditor(Type baseType, ProviderContext context)
 		{
 			if (this.propertyEditorAssignments == null)

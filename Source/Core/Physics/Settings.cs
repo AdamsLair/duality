@@ -200,7 +200,6 @@ namespace FarseerPhysics
 		/// </summary>
 		/// <param name="friction1">The friction1.</param>
 		/// <param name="friction2">The friction2.</param>
-		/// <returns></returns>
 		public static float MixFriction(float friction1, float friction2)
 		{
 			return (float)Math.Sqrt(friction1 * friction2);
@@ -211,7 +210,6 @@ namespace FarseerPhysics
 		/// </summary>
 		/// <param name="restitution1">The restitution1.</param>
 		/// <param name="restitution2">The restitution2.</param>
-		/// <returns></returns>
 		public static float MixRestitution(float restitution1, float restitution2)
 		{
 			return restitution1 > restitution2 ? restitution1 : restitution2;

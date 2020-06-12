@@ -117,8 +117,6 @@ namespace Duality
 		/// <summary>
 		/// Gathers ProfileCounter data for generating a profile report.
 		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="options"></param>
 		public abstract void GetReportData(out ProfileReportCounterData data);
 		protected virtual void OnFrameTick() {}
 

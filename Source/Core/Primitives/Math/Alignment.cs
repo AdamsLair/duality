@@ -106,7 +106,6 @@
 		/// <param name="align"></param>
 		/// <param name="vec"></param>
 		/// <param name="size"></param>
-		/// <returns></returns>
 		public static Vector2 ApplyTo(this Alignment align, Vector2 vec, Vector2 size)
 		{
 			ApplyTo(align, ref vec, ref size);
@@ -140,7 +139,6 @@
 		/// <param name="y"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		/// <returns></returns>
 		public static Vector2 ApplyTo(this Alignment align, float x, float y, float width, float height)
 		{
 			Vector2 vec;

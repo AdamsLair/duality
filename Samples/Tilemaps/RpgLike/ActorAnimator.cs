@@ -121,7 +121,6 @@ namespace Duality.Samples.Tilemaps.RpgLike
 		/// Retrieves one of the available animations that matches the specified name.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		public ActorAnimation GetAnimation(string name)
 		{
 			foreach (ActorAnimation anim in this.animations)

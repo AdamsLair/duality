@@ -377,7 +377,6 @@ namespace Duality
 		/// Returns the first child GameObject with the specified name. You may also specify a full name to access children's children.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <returns></returns>
 		public GameObject GetChildByName(string name)
 		{
 			if (this.children == null || string.IsNullOrEmpty(name)) return null;

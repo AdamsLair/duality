@@ -2,12 +2,12 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Docs</id>
-    <version>3.0.0</version>
+    <version>4.0.0-alpha0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Documentation</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/Docs.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Contains the external Duality API documentation help files.</summary>
@@ -16,10 +16,13 @@
     <releaseNotes>Major Version Update</releaseNotes>
     <!-- A dependency to at least some Duality Assembly is required, so this package is recognized as a proper Duality package -->
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.0.0" />
+      <group targetFramework="netstandard2.0">
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha0" />
+      </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Documentation\Help\DDoc.chm" target="lib\portable45-net45+win8+wpa81" />
+    <file src="Icons\Docs.png" target="\icon.png" />
+    <file src="..\Documentation\Help\DDoc.chm" target="lib\netstandard2.0" />
   </files>
 </package>

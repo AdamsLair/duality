@@ -13,7 +13,6 @@ namespace Duality.IO
 		/// Returns whether the specified path refers to an existing directory.
 		/// </summary>
 		/// <param name="path"></param>
-		/// <returns></returns>
 		public static bool Exists(string path)
 		{
 			if (string.IsNullOrWhiteSpace(path)) return false;
@@ -45,7 +44,6 @@ namespace Duality.IO
 		/// </summary>
 		/// <param name="path"></param>
 		/// <param name="recursive">If true, the specified path will be searched recursively and yield all descendant file paths.</param>
-		/// <returns></returns>
 		public static IEnumerable<string> GetFiles(string path, bool recursive = false)
 		{
 			if (string.IsNullOrWhiteSpace(path)) return Enumerable.Empty<string>();
@@ -57,7 +55,6 @@ namespace Duality.IO
 		/// </summary>
 		/// <param name="path"></param>
 		/// <param name="recursive">If true, the specified path will be searched recursively and yield all descendant directory paths.</param>
-		/// <returns></returns>
 		public static IEnumerable<string> GetDirectories(string path, bool recursive = false)
 		{
 			if (string.IsNullOrWhiteSpace(path)) return Enumerable.Empty<string>();

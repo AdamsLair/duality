@@ -163,6 +163,7 @@ namespace Duality.Drawing
 		/// This method changes neither size nor vertex type associated with this buffer.
 		/// This method is unsafe. Where possible, prefer the overload that accepts a managed array.
 		/// </summary>
+		/// <param name="vertexType"></param>
 		/// <param name="bufferIndex">Offset in this buffer to which the new data will be copied, as number of elements.</param>
 		/// <param name="vertexData"></param>
 		/// <param name="vertexCount"></param>

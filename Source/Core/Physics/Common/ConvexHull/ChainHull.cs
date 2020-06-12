@@ -14,7 +14,6 @@ namespace FarseerPhysics.Common.ConvexHull
 		/// <remarks>
 		/// http://www.softsurfer.com/Archive/algorithm_0109/algorithm_0109.htm
 		/// </remarks>
-		/// <returns></returns>
 		public static Vertices GetConvexHull(Vertices P)
 		{
 			P.Sort(new PointComparer());

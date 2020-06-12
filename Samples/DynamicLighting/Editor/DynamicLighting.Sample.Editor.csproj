@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Version>4.0.0-alpha0</Version>
+		<Copyright>Copyright © Fedja Adam 2012</Copyright>
+		<EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
+		<OutputPath>Content\Plugins\</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Editor\DualityEditor\DualityEditor.csproj">
+      <Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
+      <Name>DualityEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\DynamicLighting.Sample.Core.csproj">
+      <Project>{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}</Project>
+      <Name>DynamicLighting.Sample.Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Core\Primitives\DualityPrimitives.csproj">
+      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
+      <Name>DualityPrimitives</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Core\Duality\Duality.csproj">
+      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+      <Name>Duality</Name>
+      <Private>False</Private>
+    </ProjectReference>
+	</ItemGroup>
+
+</Project>

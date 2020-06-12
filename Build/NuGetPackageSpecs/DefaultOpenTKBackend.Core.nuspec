@@ -2,12 +2,12 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DefaultOpenTK</id>
-    <version>3.2.0</version>
+    <version>4.0.0-alpha0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>OpenTK Backend</title>
-    <iconUrl>https://github.com/AdamsLair/duality/raw/release/Build/NuGetPackageSpecs/Icons/DefaultOpenTKBackend.png</iconUrl>
-    <licenseUrl>https://github.com/AdamsLair/duality/raw/release/LICENSE</licenseUrl>
+    <icon>icon.png</icon>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>The default audiovisual backend layer for Duality.</summary>
@@ -16,14 +16,17 @@
     <releaseNotes>Added Support for Setting Hardware Cursors
 #ADD: It is now possible to adjust the hardware cursor on the game window through `INativeWindow`.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="3.2.0" />
-      <dependency id="AdamsLair.OpenTK" version="1.2.2" />
+      <group targetFramework="net472">
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha0" />
+        <dependency id="AdamsLair.OpenTK" version="1.2.2" />
+      </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Output\Plugins\DefaultOpenTKBackend.core.dll" target="lib\net45" />
-    <file src="..\Output\Plugins\DefaultOpenTKBackend.core.pdb" target="lib\net45" />
-    <file src="..\Output\Plugins\OpenALSoft32.dll" target="lib\net45" />
-    <file src="..\Output\Plugins\OpenALSoft64.dll" target="lib\net45" />
+    <file src="Icons\DefaultOpenTKBackend.png" target="\icon.png" />
+    <file src="..\Output\Plugins\DefaultOpenTK.Core.dll" target="lib\net472" />
+    <file src="..\Output\Plugins\DefaultOpenTK.Core.pdb" target="lib\net472" />
+    <file src="..\Output\OpenALSoft32.dll" target="runtimes\any\native" />
+    <file src="..\Output\OpenALSoft64.dll" target="runtimes\any\native" />
   </files>
 </package>

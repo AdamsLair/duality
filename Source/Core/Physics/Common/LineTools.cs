@@ -49,7 +49,6 @@ namespace FarseerPhysics.Common
 		/// <param name="b0"></param>
 		/// <param name="b1"></param>
 		/// <param name="intersectionPoint"></param>
-		/// <returns></returns>
 		public static bool LineIntersect2(Vector2 a0, Vector2 a1, Vector2 b0, Vector2 b1, out Vector2 intersectionPoint)
 		{
 			intersectionPoint = Vector2.Zero;

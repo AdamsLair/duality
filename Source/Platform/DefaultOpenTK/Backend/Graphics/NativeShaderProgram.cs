@@ -163,7 +163,6 @@ namespace Duality.Backend.DefaultOpenTK
 		/// Returns -1, if no match was found.
 		/// </summary>
 		/// <param name="element"></param>
-		/// <returns></returns>
 		public int SelectField(ref VertexElement element)
 		{
 			// Check for fields matching the elements preferred name

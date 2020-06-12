@@ -38,7 +38,6 @@ namespace Duality.Editor
 		/// <param name="desiredWidth">The desired width of the image</param>
 		/// <param name="desiredHeight">The desired height of the image</param>
 		/// <param name="mode">Determines how the image will be scaled or resized to match the given dimensions</param>
-		/// <returns></returns>
 		public static Bitmap GetPreviewImage(object obj, int desiredWidth, int desiredHeight, PreviewSizeMode mode = PreviewSizeMode.FixedNone)
 		{
 			if (desiredWidth <= 0) return null;
@@ -52,7 +51,6 @@ namespace Duality.Editor
 		/// Provides a suitable preview sound for the given object or null if none is available.
 		/// </summary>
 		/// <param name="obj">The object being previewed</param>
-		/// <returns></returns>
 		public static Sound GetPreviewSound(object obj)
 		{
 			PreviewSoundQuery query = new PreviewSoundQuery(obj);

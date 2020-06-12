@@ -218,7 +218,6 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="topRightIndex"></param>
 		/// <param name="bottomRightIndex"></param>
 		/// <param name="bottomLeftIndex"></param>
-		/// <returns></returns>
 		private int ScheduleGenerateTile(int baseTileIndex, int topLeftIndex, int topRightIndex, int bottomRightIndex, int bottomLeftIndex)
 		{
 			GeneratedQuadTile generatedTile = new GeneratedQuadTile
@@ -269,7 +268,6 @@ namespace Duality.Plugins.Tilemaps
 		/// while also collecting information on generated tiles and connectivity state mappings.
 		/// </summary>
 		/// <param name="autoTileConfig"></param>
-		/// <returns></returns>
 		private void GatherAutoTileData(IReadOnlyList<TilesetAutoTileInput> autoTileConfig)
 		{
 			for (int autoTileIndex = 0; autoTileIndex < autoTileConfig.Count; autoTileIndex++)
@@ -395,7 +393,6 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		/// <param name="renderInput"></param>
 		/// <param name="layerData"></param>
-		/// <returns></returns>
 		private LayerGeometry CalculateLayerGeometry(TilesetRenderInput renderInput, PixelData layerData)
 		{
 			LayerGeometry geometry;
@@ -424,11 +421,6 @@ namespace Duality.Plugins.Tilemaps
 		/// <summary>
 		/// Composes pixel and atlas data for a single <see cref="Tileset"/> visual layer.
 		/// </summary>
-		/// <param name="renderInput"></param>
-		/// <param name="sourceData"></param>
-		/// <param name="geometry"></param>
-		/// <param name="tileData"></param>
-		/// <returns></returns>
 		private LayerPixelData ComposeLayerPixelData(TilesetRenderInput renderInput, PixelData sourceData, LayerGeometry geometry)
 		{
 			// Create a buffer for writing target pixel data
@@ -693,7 +685,6 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="data"></param>
 		/// <param name="pos"></param>
 		/// <param name="size"></param>
-		/// <returns></returns>
 		private static bool IsCompletelyTransparent(PixelData data, Point2 pos, Point2 size)
 		{
 			for (int y = pos.Y; y < pos.Y + size.Y; y++)
@@ -714,7 +705,6 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="quadrant"></param>
 		/// <param name="targetConnectivity"></param>
 		/// <param name="isStateAvailable"></param>
-		/// <returns></returns>
 		private static TileConnection FindGeneratedAutoTileBase(TileQuadrant quadrant, TileConnection targetConnectivity, bool[] isStateAvailable)
 		{
 			TileConnection mask = AutoTileFallbackMap.GetSubTileMask(quadrant);
@@ -757,7 +747,6 @@ namespace Duality.Plugins.Tilemaps
 		/// Counts the number of connected neighbours in the specified connectivity state.
 		/// </summary>
 		/// <param name="connectivity"></param>
-		/// <returns></returns>
 		private static int GetConnectedNeighbours(TileConnection connectivity)
 		{
 			// See here: https://stackoverflow.com/questions/12171584/what-is-the-fastest-way-to-count-set-bits-in-uint32

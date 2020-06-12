@@ -281,7 +281,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		/// </summary>
 		/// <param name="localPos"></param>
 		/// <param name="captured"></param>
-		/// <returns></returns>
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
 		{
 			HelpInfo result = null;

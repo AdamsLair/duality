@@ -37,7 +37,6 @@ namespace Duality
 		/// <summary>
 		/// Returns a list of embedded default content that matches the specified type.
 		/// </summary>
-		/// <returns></returns>
 		public static List<ContentRef<T>> GetDefaultContent<T>() where T : Resource
 		{
 			return defaultContent.OfType<T>().Select(r => new ContentRef<T>(r)).ToList();
@@ -45,7 +44,6 @@ namespace Duality
 		/// <summary>
 		/// Returns a list of embedded default content that matches the specified type.
 		/// </summary>
-		/// <returns></returns>
 		public static List<IContentRef> GetDefaultContent(Type t)
 		{
 			TypeInfo typeInfo = t.GetTypeInfo();
@@ -55,7 +53,6 @@ namespace Duality
 		/// Returns a list of all currently loaded content matching the specified Type
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public static List<ContentRef<T>> GetLoadedContent<T>() where T : Resource
 		{
 			return resLibrary.Values
@@ -68,7 +65,6 @@ namespace Duality
 		/// Returns a list of all currently loaded content matching the specified Type
 		/// </summary>
 		/// <param name="t"></param>
-		/// <returns></returns>
 		public static List<IContentRef> GetLoadedContent(Type t)
 		{
 			TypeInfo typeInfo = t.GetTypeInfo();
@@ -82,7 +78,6 @@ namespace Duality
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="baseDirectory">The base directory to search in. Defaults to <see cref="DualityApp.DataDirectory"/> if not specified otherwise.</param>
-		/// <returns></returns>
 		public static List<ContentRef<T>> GetAvailableContent<T>(string baseDirectory = null) where T : Resource
 		{
 			IEnumerable<string> resFiles = Resource.GetResourceFiles(baseDirectory);
@@ -98,7 +93,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="t"></param>
 		/// <param name="baseDirectory">The base directory to search in. Defaults to <see cref="DualityApp.DataDirectory"/> if not specified otherwise.</param>
-		/// <returns></returns>
 		public static List<IContentRef> GetAvailableContent(Type t, string baseDirectory = null)
 		{
 			TypeInfo typeInfo = t.GetTypeInfo();
@@ -182,7 +176,6 @@ namespace Duality
 		/// </summary>
 		/// <param name="content"></param>
 		/// <param name="dispose"></param>
-		/// <returns></returns>
 		public static bool RemoveContent(Resource content, bool dispose = true)
 		{
 			if (content == null) return false;

@@ -57,7 +57,6 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <param name="isNewId"></param>
-		/// <returns></returns>
 		public uint Request(object obj, out bool isNewId)
 		{
 			uint id;
@@ -122,7 +121,6 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="obj"></param>
-		/// <returns></returns>
 		public bool Lookup(uint id, out object obj)
 		{
 			return this.idObjRefMap.TryGetValue(id, out obj);

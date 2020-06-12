@@ -58,8 +58,8 @@ namespace Duality
 		/// Performs a zero-alloc stable sort on the specified list. Requires
 		/// a buffer of at least the size of the array that is to be sorted.
 		/// </summary>
-		/// <typeparam name="T">The array element type.</typeparam>
-		/// <param name="array">Array to perform the sort operation on.</param>
+		/// <typeparam name="T">The list element type.</typeparam>
+		/// <param name="list">List to perform the sort operation on.</param>
 		/// <param name="buffer"></param>
 		public static void StableSort<T>(this IList<T> list, IList<T> buffer)
 		{
@@ -69,8 +69,8 @@ namespace Duality
 		/// Performs a zero-alloc stable sort on the specified list. Requires
 		/// a buffer of at least the size of the array that is to be sorted.
 		/// </summary>
-		/// <typeparam name="T">The array element type.</typeparam>
-		/// <param name="array">Array to perform the sort operation on.</param>
+		/// <typeparam name="T">The list element type.</typeparam>
+		/// <param name="list">List to perform the sort operation on.</param>
 		/// <param name="buffer"></param>
 		/// <param name="comparison"></param>
 		public static void StableSort<T>(this IList<T> list, IList<T> buffer, Comparison<T> comparison)
@@ -81,8 +81,8 @@ namespace Duality
 		/// Performs a zero-alloc stable sort on the specified list. Requires
 		/// a buffer of at least the size of the array that is to be sorted.
 		/// </summary>
-		/// <typeparam name="T">The array element type.</typeparam>
-		/// <param name="array">Array to perform the sort operation on.</param>
+		/// <typeparam name="T">The list element type.</typeparam>
+		/// <param name="list">List to perform the sort operation on.</param>
 		/// <param name="buffer"></param>
 		/// <param name="index"></param>
 		/// <param name="count"></param>
@@ -94,8 +94,8 @@ namespace Duality
 		/// Performs a zero-alloc stable sort on the specified list. Requires
 		/// a buffer of at least the size of the array that is to be sorted.
 		/// </summary>
-		/// <typeparam name="T">The array element type.</typeparam>
-		/// <param name="array">Array to perform the sort operation on.</param>
+		/// <typeparam name="T">The list element type.</typeparam>
+		/// <param name="list">List to perform the sort operation on.</param>
 		/// <param name="buffer"></param>
 		/// <param name="index"></param>
 		/// <param name="count"></param>
@@ -320,7 +320,6 @@ namespace Duality
 		/// <typeparam name="T">The lists object type.</typeparam>
 		/// <param name="collection">List to perform the sort operation on.</param>
 		/// <param name="val">Object to compare the lists contents to.</param>
-		/// <returns></returns>
 		public static int IndexOfFirst<T>(this IList<T> collection, T val)
 		{
 			var cmp = EqualityComparer<T>.Default;
@@ -334,7 +333,6 @@ namespace Duality
 		/// <typeparam name="T">The lists object type.</typeparam>
 		/// <param name="collection">List to perform the sort operation on.</param>
 		/// <param name="pred">The predicate to use on the lists contents.</param>
-		/// <returns></returns>
 		public static int IndexOfFirst<T>(this IList<T> collection, Predicate<T> pred)
 		{
 			for (int i = 0; i < collection.Count; i++)
@@ -347,7 +345,6 @@ namespace Duality
 		/// <typeparam name="T">The lists object type.</typeparam>
 		/// <param name="collection">List to perform the sort operation on.</param>
 		/// <param name="val">Object to compare the lists contents to.</param>
-		/// <returns></returns>
 		public static int IndexOfLast<T>(this IList<T> collection, T val)
 		{
 			var cmp = EqualityComparer<T>.Default;
@@ -361,7 +358,6 @@ namespace Duality
 		/// <typeparam name="T">The lists object type.</typeparam>
 		/// <param name="collection">List to perform the sort operation on.</param>
 		/// <param name="pred">The predicate to use on the lists contents.</param>
-		/// <returns></returns>
 		public static int IndexOfLast<T>(this IList<T> collection, Predicate<T> pred)
 		{
 			for (int i = collection.Count - 1; i >= 0; i--)
@@ -372,8 +368,6 @@ namespace Duality
 		/// <summary>
 		/// Returns the combined hash code of the specified byte list.
 		/// </summary>
-		/// <param name="list"></param>
-		/// <returns></returns>
 		public static int GetCombinedHashCode(this IList<byte> list, int firstIndex = 0, int length = -1)
 		{
 			if (length == -1) length = list.Count;
@@ -392,8 +386,6 @@ namespace Duality
 		/// <summary>
 		/// Returns the combined hash code of the specified list.
 		/// </summary>
-		/// <param name="list"></param>
-		/// <returns></returns>
 		public static int GetCombinedHashCode<T>(this IList<T> list, int firstIndex = 0, int length = -1)
 		{
 			if (length == -1) length = list.Count;
@@ -414,7 +406,6 @@ namespace Duality
 		/// Determines the bounding box of a list of vectors.
 		/// </summary>
 		/// <param name="list"></param>
-		/// <returns></returns>
 		public static Rect BoundingBox(this IList<Vector2> list)
 		{
 			Rect pointBoundingRect = new Rect(

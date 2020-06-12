@@ -22,7 +22,7 @@ namespace Duality.Editor.Plugins.ObjectInspector.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ObjectInspectorRes {
+    internal class ObjectInspectorRes {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Duality.Editor.Plugins.ObjectInspector.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Duality.Editor.Plugins.ObjectInspector.Properties.ObjectInspectorRes", typeof(ObjectInspectorRes).Assembly);
@@ -51,7 +51,7 @@ namespace Duality.Editor.Plugins.ObjectInspector.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Duality.Editor.Plugins.ObjectInspector.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        public static System.Drawing.Icon IconObjView {
+        internal static System.Drawing.Icon IconObjView {
             get {
                 object obj = ResourceManager.GetObject("IconObjView", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
@@ -73,7 +73,7 @@ namespace Duality.Editor.Plugins.ObjectInspector.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Object Inspector.
         /// </summary>
-        public static string MenuItemName_ObjView {
+        internal static string MenuItemName_ObjView {
             get {
                 return ResourceManager.GetString("MenuItemName_ObjView", resourceCulture);
             }

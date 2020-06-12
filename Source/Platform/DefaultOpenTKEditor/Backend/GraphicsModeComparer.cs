@@ -13,7 +13,6 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		/// <returns></returns>
 		public bool Equals(GraphicsMode x, GraphicsMode y)
 		{
 			return 
@@ -29,7 +28,6 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 		/// Returns the hash code of a GraphicsMode.
 		/// </summary>
 		/// <param name="obj"></param>
-		/// <returns></returns>
 		public int GetHashCode(GraphicsMode obj)
 		{
 			return 
