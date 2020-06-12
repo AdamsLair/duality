@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.Benchmarks</id>
-    <version>4.0.0-alpha0</version>
+    <version>4.0.0-alpha1</version>
     <authors>Duality Core Team</authors>
     <owners>Duality Core Team</owners>
     <title>Benchmarks Sample</title>
@@ -19,7 +19,7 @@
     </contentFiles> 
     <dependencies>
       <group targetFramework="netstandard2.0">
-        <dependency id="AdamsLair.Duality" version="4.0.0-alpha0" />
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha1" />
       </group>
     </dependencies>
   </metadata>

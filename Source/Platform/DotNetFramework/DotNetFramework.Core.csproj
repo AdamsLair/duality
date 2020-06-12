@@ -6,7 +6,7 @@
 		<Copyright>Copyright © Duality Core Team 2020</Copyright>
 		<RootNamespace>Duality.Backend.DotNetFramework</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<Version>4.0.0-alpha0</Version>
+		<Version>4.0.0-alpha1</Version>
 	</PropertyGroup>
 
   <ItemGroup>
