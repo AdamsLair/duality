@@ -4,7 +4,7 @@
 		<TargetFramework>net472</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Version>4.0.0-alpha0</Version>
-		<Copyright>Copyright © Fedja Adam 2012</Copyright>
+		<Copyright>Copyright © Duality Core Team 2020</Copyright>
 		<RootNamespace>Duality.Editor.Plugins.CamView</RootNamespace>
 		<UseWindowsForms>true</UseWindowsForms>
 		<EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>

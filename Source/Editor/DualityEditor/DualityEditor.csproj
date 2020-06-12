@@ -5,7 +5,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LangVersion>7.3</LangVersion>
 		<OutputPath>$(SolutionDir)Build\Output\</OutputPath>
-		<Copyright>Copyright © Fedja Adam 2012</Copyright>
+		<Copyright>Copyright © Duality Core Team 2020</Copyright>
 		<RootNamespace>Duality.Editor</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputType>WinExe</OutputType>

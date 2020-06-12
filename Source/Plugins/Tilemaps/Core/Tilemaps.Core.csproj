@@ -3,7 +3,7 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Version>4.0.0-alpha0</Version>
-		<Copyright>Copyright © Fedja Adam 2015</Copyright>
+		<Copyright>Copyright © Duality Core Team 2020</Copyright>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Core\Primitives\DualityPrimitives.csproj">

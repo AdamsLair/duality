@@ -3,8 +3,8 @@
   <metadata>
     <id>AdamsLair.Duality.Samples.AudioHandling</id>
     <version>4.0.0-alpha0</version>
-    <authors>Fedja Adam</authors>
-    <owners>Fedja Adam</owners>
+    <authors>Duality Core Team</authors>
+    <owners>Duality Core Team</owners>
     <title>Audio Handling Sample</title>
     <icon>icon.png</icon>
     <license type="expression">MIT</license>
