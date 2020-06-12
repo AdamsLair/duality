@@ -25,16 +25,16 @@ namespace Duality.Editor
 			get
 			{
 				string sourceCodeSolutionFilePath = null;
-				string sourcePath = EditorHelper.SourceDirectory;
-				if (Directory.Exists(sourcePath))
+				string rootPath = Directory.GetCurrentDirectory();
+				if (Directory.Exists(rootPath))
 				{
 					sourceCodeSolutionFilePath = Directory.EnumerateFiles(
-							sourcePath,
+							rootPath,
 						"*.sln",
 						SearchOption.AllDirectories)
 						.FirstOrDefault();
 				}
-				return sourceCodeSolutionFilePath ?? throw new FileNotFoundException($"Could not find a solution file in {sourcePath}");
+				return sourceCodeSolutionFilePath ?? throw new FileNotFoundException($"Could not find a solution file in {rootPath}");
 			}
 		}
 		public static string CurrentProjectName
