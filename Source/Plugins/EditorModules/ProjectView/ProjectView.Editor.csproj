@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<Version>4.0.0-alpha1</Version>
+		<Version>4.0.0-alpha2</Version>
 		<Copyright>Copyright © Duality Core Team 2020</Copyright>
 		<RootNamespace>Duality.Editor.Plugins.ProjectView</RootNamespace>
 		<UseWindowsForms>true</UseWindowsForms>

@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.FlapOrDie</id>
-    <version>4.0.0-alpha1</version>
+    <version>4.0.0-alpha2</version>
     <authors>Pilati Alessandro</authors>
     <owners>Pilati Alessandro</owners>
     <title>Flap-Or-Die Sample</title>
@@ -19,7 +19,7 @@
     </contentFiles>
     <dependencies>
       <group targetFramework="netstandard2.0">
-        <dependency id="AdamsLair.Duality" version="4.0.0-alpha1" />
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha2" />
       </group>
     </dependencies>
   </metadata>

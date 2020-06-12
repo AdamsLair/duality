@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DotNetFramework</id>
-    <version>4.0.0-alpha1</version>
+    <version>4.0.0-alpha2</version>
     <authors>Duality Core Team</authors>
     <owners>Duality Core Team</owners>
     <title>DotNetFramework Backend</title>
@@ -15,7 +15,7 @@
     <tags>Duality Core Plugin Backend</tags>
     <dependencies>
       <group targetFramework="net472">
-        <dependency id="AdamsLair.Duality" version="4.0.0-alpha1" />
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha2" />
       </group>
     </dependencies>
     <releaseNotes>Patch Version Update</releaseNotes>

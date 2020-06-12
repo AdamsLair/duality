@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AdamsLair.Duality" Version="4.0.0-alpha1" />
-    <PackageReference Include="AdamsLair.Duality.Primitives" Version="4.0.0-alpha1" />
-    <PackageReference Include="AdamsLair.Duality.Editor" Version="4.0.0-alpha1" />
+    <PackageReference Include="AdamsLair.Duality" Version="4.0.0-alpha2" />
+    <PackageReference Include="AdamsLair.Duality.Primitives" Version="4.0.0-alpha2" />
+    <PackageReference Include="AdamsLair.Duality.Editor" Version="4.0.0-alpha2" />
   </ItemGroup>
 
 </Project>
