@@ -79,9 +79,9 @@
 	</ItemGroup>
 
 	<Target Name="AggregateOutput" BeforeTargets="AfterBuild">
-		<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
-		<Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
-		<Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
+		<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(RootFolder)Build\Output\Plugins\" />
+		<Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(RootFolder)Build\Output\Plugins\" />
+		<Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(RootFolder)Build\Output\Plugins\" />
 	</Target>
 
 </Project>

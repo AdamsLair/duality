@@ -4,7 +4,7 @@
 		<TargetFramework>net472</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LangVersion>7.3</LangVersion>
-		<OutputPath>$(SolutionDir)Build\Output\</OutputPath>
+		<OutputPath>$(RootFolder)Build\Output\</OutputPath>
 		<Copyright>Copyright © Duality Core Team 2020</Copyright>
 		<RootNamespace>Duality.Editor</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -15,31 +15,31 @@
 		<EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Primitives\DualityPrimitives.csproj">
-      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
-      <Name>DualityPrimitives</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Duality\Duality.csproj">
-      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
-      <Name>Duality</Name>
-    </ProjectReference>
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\Primitives\DualityPrimitives.csproj">
+			<Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
+			<Name>DualityPrimitives</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\Core\Duality\Duality.csproj">
+			<Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+			<Name>Duality</Name>
+		</ProjectReference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AdamsLair.DockPanelSuite">
-      <Version>2.8.2</Version>
-    </PackageReference>
-    <PackageReference Include="AdamsLair.TreeViewAdv">
-      <Version>1.7.7</Version>
-    </PackageReference>
-    <PackageReference Include="AdamsLair.WinForms" GeneratePathProperty="true">
-      <Version>1.1.17</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Web.Xdt">
-      <Version>2.1.1</Version>
-    </PackageReference>
-
+	<ItemGroup>
+		<PackageReference Include="AdamsLair.DockPanelSuite">
+			<Version>2.8.2</Version>
+		</PackageReference>
+		<PackageReference Include="AdamsLair.TreeViewAdv">
+			<Version>1.7.7</Version>
+		</PackageReference>
+		<PackageReference Include="AdamsLair.WinForms" GeneratePathProperty="true">
+			<Version>1.1.17</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Web.Xdt">
+			<Version>2.1.1</Version>
+		</PackageReference>
+		<PackageReference Include="System.Resources.Extensions" Version="4.7.1" />
 		<EmbeddedResource Update="Properties\GeneralRes.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<SubType>Designer</SubType>
@@ -71,18 +71,18 @@
 			<DependentUpon>Settings.settings</DependentUpon>
 			<DesignTimeSharedInput>True</DesignTimeSharedInput>
 		</Compile>
-  </ItemGroup>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.Build" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="VistaBridgeLibrary">
-      <HintPath>VistaBridgeLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Windows7.DesktopIntegration">
-      <HintPath>Windows7.DesktopIntegration.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="Microsoft.Build" />
+		<Reference Include="System.IO.Compression" />
+		<Reference Include="System.Windows.Forms" />
+		<Reference Include="VistaBridgeLibrary">
+			<HintPath>VistaBridgeLibrary.dll</HintPath>
+		</Reference>
+		<Reference Include="Windows7.DesktopIntegration">
+			<HintPath>Windows7.DesktopIntegration.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
 </Project>

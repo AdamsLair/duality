@@ -45,9 +45,9 @@
   </ItemGroup>
 
   <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(SolutionDir)Build\Output\Plugins\" />
-    <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.dll" DestinationFolder="$(SolutionDir)Build\Output\" />
-    <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.xml" DestinationFolder="$(SolutionDir)Build\Output\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(RootFolder)Build\Output\Plugins\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(RootFolder)Build\Output\Plugins\" />
+    <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.dll" DestinationFolder="$(RootFolder)Build\Output\" />
+    <Copy SourceFiles="$(PkgAdamsLair_OpenTK_GLControl)\lib\net20\OpenTK.GLControl.xml" DestinationFolder="$(RootFolder)Build\Output\" />
   </Target>
 </Project>
