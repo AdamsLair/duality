@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+	  <OutputType>Exe</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AdamsLair.Duality.Backend.DefaultOpenTK" Version="4.0.0-alpha3" />
+		<PackageReference Include="AdamsLair.Duality.Backend.DotNetFramework" Version="4.0.0-alpha3" />
+		<PackageReference Include="AdamsLair.Duality.Launcher" Version="4.0.0-alpha3" />
+		<PackageReference Include="AdamsLair.Duality.Plugins.Compatibility" Version="4.0.0-alpha3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Plugins\DualityGameCorePlugin\DualityGameCorePlugin.csproj" />
+	</ItemGroup>
+
+</Project>

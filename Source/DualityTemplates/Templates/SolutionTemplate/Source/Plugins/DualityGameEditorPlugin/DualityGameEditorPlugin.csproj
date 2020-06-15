@@ -1,16 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-	  <AssemblyName>DualityGameEditorPlugin.editor</AssemblyName>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>DualityGameEditorPlugin.editor</AssemblyName>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AdamsLair.Duality" Version="4.0.0-alpha3" />
-    <PackageReference Include="AdamsLair.Duality.Primitives" Version="4.0.0-alpha3" />
-    <PackageReference Include="AdamsLair.Duality.Editor" Version="4.0.0-alpha3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AdamsLair.Duality" Version="4.0.0-alpha3" />
+		<PackageReference Include="AdamsLair.Duality.Primitives" Version="4.0.0-alpha3" />
+		<PackageReference Include="AdamsLair.Duality.Editor" Version="4.0.0-alpha3" />
+	</ItemGroup>
+
+		
+    <Target Name="CoreCompile" />
+	<PropertyGroup>
+		<SkipCopyBuildProduct>true</SkipCopyBuildProduct>
+	</PropertyGroup>
 
 </Project>

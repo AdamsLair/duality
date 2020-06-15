@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Duality.Launcher
+namespace DualityGame
 {
 	internal static class Program
 	{
