@@ -46,6 +46,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Remove="Templates\SolutionTemplate\Source\Launchers\DualityGame\NativeMethods.cs" />
+	  <Content Remove="Templates\SolutionTemplate\Source\Launchers\DualityGame\Program.cs" />
+	  <Content Remove="Templates\SolutionTemplate\Source\Launchers\DualityGame\SafeNativeMethods.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="Templates\SolutionTemplate\Source\Launchers\DualityGame\NativeMethods.cs" />
+	  <Compile Include="Templates\SolutionTemplate\Source\Launchers\DualityGame\Program.cs" />
+	  <Compile Include="Templates\SolutionTemplate\Source\Launchers\DualityGame\SafeNativeMethods.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Update="Templates\SolutionTemplate\.template.config\template.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>

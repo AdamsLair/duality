@@ -16,7 +16,6 @@ namespace Duality.Launcher
 			bool isDebugging = System.Diagnostics.Debugger.IsAttached || args.Contains(DualityApp.CmdArgDebug);
 			bool isRunFromEditor = args.Contains(DualityApp.CmdArgEditor);
 			bool isProfiling = args.Contains(DualityApp.CmdArgProfiling);
-			if (isDebugging || isRunFromEditor) ShowConsole();
 
 			// Set up console logging
 			Logs.AddGlobalOutput(new ConsoleLogOutput());
@@ -90,14 +89,6 @@ namespace Duality.Launcher
 				Logs.Core.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
 			}
 			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
-		}
-
-		private static bool hasConsole = false;
-		private static void ShowConsole()
-		{
-			if (hasConsole) return;
-			SafeNativeMethods.AllocConsole();
-			hasConsole = true;
 		}
 	}
 }
