@@ -10,22 +10,22 @@ using Duality.Editor.Plugins.Base.Properties;
 namespace Duality.Editor.Plugins.Base.EditorActions.FirstSession
 {
 	/// <summary>
-	/// Visual Studio 2013 (Update 3) or newer is required.
+	/// Need help? Ask a fellow user!
 	/// </summary>
-	public class DownloadVisualStudio : EditorAction<object>
+	public class VisitCommunity : EditorAction<object>
 	{
 		public override Image Icon
 		{
-			get { return EditorBaseResCache.IconDownloadCodeIDE; }
+			get { return EditorBaseResCache.IconCommunity; }
 		}
 		public override string Name
 		{
-			get { return EditorBaseRes.ActionName_DownloadVisualStudio; }
+			get { return EditorBaseRes.ActionName_VisitCommunity; }
 		}
 
 		public override void Perform(IEnumerable<object> objEnum)
 		{
-			System.Diagnostics.Process.Start("https://www.visualstudio.com/");
+			System.Diagnostics.Process.Start("https://chat.duality2d.net");
 		}
 		public override bool MatchesContext(string context)
 		{
