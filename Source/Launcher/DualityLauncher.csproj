@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
 		<LangVersion>7.3</LangVersion>
-		<OutputPath>$(SolutionDir)Build\Output\</OutputPath>
+		<OutputPath>$(RootFolder)Build\Output\</OutputPath>
 		<Copyright>Copyright © Duality Core Team 2020</Copyright>
 		<RootNamespace>Duality.Launcher</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
