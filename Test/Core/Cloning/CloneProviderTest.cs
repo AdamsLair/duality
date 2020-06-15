@@ -511,37 +511,5 @@ namespace Duality.Tests.Cloning
 			provider.ClearCachedMapping();
 			Assert.DoesNotThrow(() => provider.CloneObject(targetStatic3, true));
 		}
-		[Test] public void PerformanceTest()
-		{
-			Random rnd = new Random(0);
-			TestObject data = new TestObject(rnd, 5);
-			TestObject[] results = new TestObject[200];
-
-			GC.Collect();
-
-			var watch = new System.Diagnostics.Stopwatch();
-			watch.Start();
-			for (int i = 0; i < results.Length; i++)
-			{
-				results[i] = data.DeepClone();
-			}
-			watch.Stop();
-			TestHelper.LogNumericTestResult(this, "CloneTestObjectGraph", watch.Elapsed.TotalMilliseconds, "ms");
-
-			GC.Collect();
-
-			var watch2 = new System.Diagnostics.Stopwatch();
-			watch2.Start();
-			for (int i = 0; i < results.Length; i++)
-			{
-				results[i] = new TestObject(rnd, 5);
-			}
-			watch2.Stop();
-			TestHelper.LogNumericTestResult(this, "CreateWithoutClone", watch2.Elapsed.TotalMilliseconds, "ms");
-			TestHelper.LogNumericTestResult(this, "CloneVersusRaw", watch.Elapsed.TotalMilliseconds / watch2.Elapsed.TotalMilliseconds, null);
-
-			GC.Collect();
-			Assert.Pass();
-		}
 	}
 }
