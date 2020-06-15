@@ -25,7 +25,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions.FirstSession
 
 		public override void Perform(IEnumerable<object> objEnum)
 		{
-			System.Diagnostics.Process.Start("http://dualitytutorial.adamslair.net");
+			System.Diagnostics.Process.Start("https://tutorial.duality2d.net/");
 		}
 		public override bool MatchesContext(string context)
 		{

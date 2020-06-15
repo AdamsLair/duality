@@ -124,15 +124,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download Visual Studio.
-        /// </summary>
-        internal static string ActionName_DownloadVisualStudio {
-            get {
-                return ResourceManager.GetString("ActionName_DownloadVisualStudio", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Export Resource.
         /// </summary>
         internal static string ActionName_ExportResource {
@@ -180,9 +171,9 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Join the Community.
         /// </summary>
-        internal static string ActionName_VisitCommunityForum {
+        internal static string ActionName_VisitCommunity {
             get {
-                return ResourceManager.GetString("ActionName_VisitCommunityForum", resourceCulture);
+                return ResourceManager.GetString("ActionName_VisitCommunity", resourceCulture);
             }
         }
         
