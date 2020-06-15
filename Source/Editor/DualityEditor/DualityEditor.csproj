@@ -39,7 +39,7 @@
 		<PackageReference Include="Microsoft.Web.Xdt">
 			<Version>2.1.1</Version>
 		</PackageReference>
-		<PackageReference Include="System.Resources.Extensions" Version="4.7.1" />
+		<PackageReference Include="System.Resources.Extensions" Version="4.6.0" />
 		<EmbeddedResource Update="Properties\GeneralRes.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<SubType>Designer</SubType>
