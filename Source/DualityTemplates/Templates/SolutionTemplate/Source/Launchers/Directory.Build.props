@@ -31,8 +31,4 @@
     <Copy SourceFiles="@(LibFiles)" DestinationFiles="@(LibFiles->'$(DualityFolder)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
-  <Target Name="CoreCompile" />
-  <PropertyGroup>
-    <SkipCopyBuildProduct>true</SkipCopyBuildProduct>
-  </PropertyGroup>
 </Project>

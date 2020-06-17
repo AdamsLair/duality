@@ -13,10 +13,4 @@
 		<PackageReference Include="AdamsLair.Duality.Editor" Version="4.0.0-alpha3" />
 	</ItemGroup>
 
-		
-    <Target Name="CoreCompile" />
-	<PropertyGroup>
-		<SkipCopyBuildProduct>true</SkipCopyBuildProduct>
-	</PropertyGroup>
-
 </Project>

@@ -17,4 +17,9 @@
     <ProjectReference Include="..\DualityGame\DualityGame.csproj" />
   </ItemGroup>
   
+  <Target Name="CoreCompile" />
+  <PropertyGroup>
+    <SkipCopyBuildProduct>true</SkipCopyBuildProduct>
+  </PropertyGroup>
+
 </Project>
