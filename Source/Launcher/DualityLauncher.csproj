@@ -1,32 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net472</TargetFramework>
-		<LangVersion>7.3</LangVersion>
-		<OutputPath>$(RootFolder)Build\Output\</OutputPath>
-		<Copyright>Copyright © Duality Core Team 2020</Copyright>
-		<RootNamespace>Duality.Launcher</RootNamespace>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<ApplicationIcon>DualityIcon.ico</ApplicationIcon>
-		<OutputType>WinExe</OutputType>
-		<Version>4.0.0-alpha3</Version>
-		<Packable>false</Packable>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <OutputPath>$(RootFolder)Build\Output\</OutputPath>
+    <Copyright>Copyright © Duality Core Team 2020</Copyright>
+    <RootNamespace>Duality.Launcher</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <ApplicationIcon>DualityIcon.ico</ApplicationIcon>
+    <OutputType>WinExe</OutputType>
+    <Version>4.0.0-alpha3</Version>
+    <Packable>false</Packable>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Core\Primitives\DualityPrimitives.csproj">
-			<Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
-			<Name>DualityPrimitives</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\Core\Duality\Duality.csproj">
-			<Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
-			<Name>Duality</Name>
-		</ProjectReference>
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Primitives\DualityPrimitives.csproj">
+      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
+      <Name>DualityPrimitives</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Duality\Duality.csproj">
+      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+      <Name>Duality</Name>
+    </ProjectReference>
+  </ItemGroup>
 
-	<ItemGroup>
-		<Content Include="DualityIcon.ico" />
-		<Content Include="DualityLogoIcon.ico" />
-	</ItemGroup>
+  <ItemGroup>
+    <Content Include="DualityIcon.ico" />
+    <Content Include="DualityLogoIcon.ico" />
+  </ItemGroup>
 
 </Project>

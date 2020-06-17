@@ -8,7 +8,7 @@ root = true
 indent_style = tab
 
 # Xml project files
-[*.{csproj}]
+[*.csproj]
 indent_style = space
 indent_size = 2
 
