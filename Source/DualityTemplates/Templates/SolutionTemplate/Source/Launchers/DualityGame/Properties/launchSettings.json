@@ -2,8 +2,8 @@
   "profiles": {
     "Debug Game": {
       "commandName": "Executable",
-      "executablePath": ".\\DualityLauncher.exe",
-      "workingDirectory": ".\\..\\..\\..\\.."
+      "executablePath": ".\\DualityGame.exe",
+      "workingDirectory": ".\\..\\..\\.."
     }
   }
 }
