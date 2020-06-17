@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Samples.DualStickSpaceShooter</id>
-    <version>4.0.0-alpha2</version>
+    <version>4.0.0-alpha3</version>
     <authors>Duality Core Team</authors>
     <owners>Duality Core Team</owners>
     <title>Dual Stick Space Shooter Sample</title>
@@ -19,7 +19,7 @@
     </contentFiles> 
     <dependencies>
       <group targetFramework="netstandard2.0">
-        <dependency id="AdamsLair.Duality" version="4.0.0-alpha2" />
+        <dependency id="AdamsLair.Duality" version="4.0.0-alpha3" />
       </group>
     </dependencies>
   </metadata>

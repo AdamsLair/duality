@@ -6,7 +6,7 @@
 		<Copyright>Copyright © Duality Core Team 2020</Copyright>
 		<RootNamespace>Duality.Editor.Backend.DefaultOpenTK</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<Version>4.0.0-alpha2</Version>
+		<Version>4.0.0-alpha3</Version>
 	</PropertyGroup>
 
   <ItemGroup>

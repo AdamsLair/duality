@@ -8,7 +8,7 @@
 		<RootNamespace>Duality.Updater</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputType>Exe</OutputType>
-		<Version>4.0.0-alpha2</Version>
+		<Version>4.0.0-alpha3</Version>
 	</PropertyGroup>
 	
 </Project>

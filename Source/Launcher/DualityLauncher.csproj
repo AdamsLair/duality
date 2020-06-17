@@ -9,7 +9,7 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<ApplicationIcon>DualityIcon.ico</ApplicationIcon>
 		<OutputType>Exe</OutputType>
-		<Version>4.0.0-alpha2</Version>
+		<Version>4.0.0-alpha3</Version>
 	</PropertyGroup>
 
   <ItemGroup>
