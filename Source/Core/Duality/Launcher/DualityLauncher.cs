@@ -77,8 +77,6 @@ namespace Duality.Launcher
 				Logs.RemoveGlobalOutput(logfileOutput);
 				logfileWriter.Flush();
 				logfileWriter.Close();
-				logfileWriter = null;
-				logfileOutput = null;
 			}
 		}
 
