@@ -5,6 +5,7 @@ using Duality.Tests.Serialization;
 
 namespace DualityBenchmarks
 {
+	[MemoryDiagnoser]
 	public class CloneProviderBenchmarks
 	{
 		private Random rnd;

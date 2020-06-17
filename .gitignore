@@ -57,3 +57,4 @@ Build/NUnit/nunit-project-loader.dll
 Build/NUnit/Mono.Cecil.dll
 Build/NUnit/nunit3-console.exe
 Samples/**/Content/Plugins
+Benchmarks/DualityBenchmarks/BenchmarkDotNet.Artifacts
