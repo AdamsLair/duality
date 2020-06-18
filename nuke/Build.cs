@@ -61,6 +61,7 @@ class Build : NukeBuild
 		.Executes(() =>
 		{
 			DotNetBuild(s => s
+				.SetConfiguration(Configuration)
 				.SetProjectFile(Solution));
 		});
 
@@ -69,6 +70,7 @@ class Build : NukeBuild
 		.Executes(() =>
 		{
 			DotNetTest(s => s
+				.SetConfiguration(Configuration)
 				.SetProjectFile(Solution));
 		});
 
