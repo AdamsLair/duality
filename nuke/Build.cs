@@ -51,6 +51,7 @@ class Build : NukeBuild
 		.Executes(() =>
 		{
 			EnsureCleanDirectory(OutputDirectory);
+			EnsureCleanDirectory(NugetPackageDirectory);
 		});
 
 	Target Restore => _ => _
@@ -88,6 +89,7 @@ class Build : NukeBuild
 
 	Target BuildNugetPackages => _ => _
 		.DependsOn(Compile)
+		.After(BuildDocs)
 		.Executes(() =>
 		{
 			var nuspecs = NuGetPackageSpecsDirectory.GlobFiles("*.nuspec");
