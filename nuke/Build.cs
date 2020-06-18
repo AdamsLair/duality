@@ -14,8 +14,8 @@ using static Nuke.Common.IO.PathConstruction;
 using Nuke.Common.Tools.NUnit;
 using static Nuke.Common.Tools.NUnit.NUnitTasks;
 
-using Nuke.Common.Tools.MSBuild;
-using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
+using Nuke.Common.Tools.DotNet;
+using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 using Nuke.Common.Tools.NuGet;
 using static Nuke.Common.Tools.NuGet.NuGetTasks;
@@ -57,16 +57,15 @@ class Build : NukeBuild
 		.After(Clean)
 		.Executes(() =>
 		{
-			NuGetRestore(s => s
-				.SetTargetPath(Solution));
-
+			DotNetRestore(s => s
+				.SetProjectFile(Solution));
 		});
 
 	Target Compile => _ => _
 		.DependsOn(Restore)
 		.Executes(() =>
 		{
-			MSBuild(s => s
+			DotNetBuild(s => s
 				.SetProjectFile(Solution));
 		});
 
