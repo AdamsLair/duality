@@ -11,6 +11,9 @@ using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 
+using Nuke.Common.Tools.MSBuild;
+using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
+
 using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
@@ -34,6 +37,8 @@ class Build : NukeBuild
 	AbsolutePath NightlyBuildDirectory => BuildDirectory / "NightlyBuild";
 	AbsolutePath NugetPackageDirectory => NightlyBuildDirectory / "NuGetPackages";
 	AbsolutePath NuGetPackageSpecsDirectory => BuildDirectory / "NuGetPackageSpecs";
+
+	AbsolutePath DocSolution => BuildDirectory / "Documentation" / "Documentation.shfbproj";
 
 	public static int Main() => Execute<Build>(x => x.Compile);
 
@@ -72,6 +77,13 @@ class Build : NukeBuild
 			DotNetTest(s => s
 				.SetConfiguration(Configuration)
 				.SetProjectFile(Solution));
+		});
+
+	Target BuildDocs => _ => _
+		.DependsOn(Compile)
+		.Executes(() =>
+		{
+			MSBuild(s => s.SetProjectFile(DocSolution));
 		});
 
 	Target BuildNugetPackages => _ => _
