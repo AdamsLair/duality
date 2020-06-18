@@ -21,6 +21,7 @@
         <dependency id="AdamsLair.TreeViewAdv" version="1.7.7" />
         <dependency id="AdamsLair.WinForms" version="1.1.17" />
         <dependency id="AdamsLair.WinForms.PopupControl" version="1.0.1" />
+        <dependency id="System.Resources.Extensions" version="4.6.0" />
       </group>
     </dependencies>
   </metadata>
