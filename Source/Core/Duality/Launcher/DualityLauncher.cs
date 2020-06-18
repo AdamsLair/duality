@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.IO;
-using System.Drawing;
-
-using Duality;
-using Duality.Resources;
+using System.Linq;
 using Duality.Backend;
+using Duality.Resources;
 
 namespace Duality.Launcher
 {
-	internal static class Program
+	public class DualityLauncher
 	{
-		[STAThread]
-		public static void Main(string[] args)
+		public static void Run(string[] args)
 		{
 			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 			System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -22,8 +16,7 @@ namespace Duality.Launcher
 			bool isDebugging = System.Diagnostics.Debugger.IsAttached || args.Contains(DualityApp.CmdArgDebug);
 			bool isRunFromEditor = args.Contains(DualityApp.CmdArgEditor);
 			bool isProfiling = args.Contains(DualityApp.CmdArgProfiling);
-			if (isDebugging || isRunFromEditor) ShowConsole();
-			
+
 			// Set up console logging
 			Logs.AddGlobalOutput(new ConsoleLogOutput());
 
@@ -46,7 +39,7 @@ namespace Duality.Launcher
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
 			// Write initial log message before actually booting Duality
-			Logs.Core.Write("Running DualityLauncher with flags: {1}{0}", 
+			Logs.Core.Write("Running DualityLauncher with flags: {1}{0}",
 				Environment.NewLine,
 				new[] { isDebugging ? "Debugging" : null, isProfiling ? "Profiling" : null, isRunFromEditor ? "RunFromEditor" : null }.NotNull().ToString(", "));
 
@@ -56,7 +49,7 @@ namespace Duality.Launcher
 				DualityApp.ExecutionContext.Game,
 				new DefaultAssemblyLoader(),
 				args);
-			
+
 			// Open up a new window
 			WindowOptions options = new WindowOptions
 			{
@@ -77,15 +70,13 @@ namespace Duality.Launcher
 				// Shut down the Duality core
 				DualityApp.Terminate();
 			}
-			
+
 			// Clean up the log file
 			if (logfileWriter != null)
 			{
 				Logs.RemoveGlobalOutput(logfileOutput);
 				logfileWriter.Flush();
 				logfileWriter.Close();
-				logfileWriter = null;
-				logfileOutput = null;
 			}
 		}
 
@@ -94,16 +85,8 @@ namespace Duality.Launcher
 			try
 			{
 				Logs.Core.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
-		}
+			}
 			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
-		}
-
-		private static bool hasConsole = false;
-		public static void ShowConsole()
-		{
-			if (hasConsole) return;
-			SafeNativeMethods.AllocConsole();
-			hasConsole = true;
 		}
 	}
 }

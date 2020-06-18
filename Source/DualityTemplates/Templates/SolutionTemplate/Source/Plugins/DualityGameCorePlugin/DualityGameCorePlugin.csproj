@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<AssemblyName>DualityGameCorePlugin.core</AssemblyName>
+    <AssemblyName>DualityGameCorePlugin.core</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

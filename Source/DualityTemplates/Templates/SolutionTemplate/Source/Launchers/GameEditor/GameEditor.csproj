@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
+
   <ItemGroup>
     <PackageReference Include="AdamsLair.Duality.Editor.Backend.DefaultOpenTK" Version="4.0.0-alpha3" />
     <PackageReference Include="AdamsLair.Duality.Editor.Plugins.Base" Version="4.0.0-alpha3" />
@@ -11,12 +11,15 @@
     <PackageReference Include="AdamsLair.Duality.Editor.Plugins.SceneView" Version="4.0.0-alpha3" />
     <PackageReference Include="AdamsLair.Duality.Editor" Version="4.0.0-alpha3" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\Plugins\DualityGameEditorPlugin\DualityGameEditorPlugin.csproj" />
-    <ProjectReference Include="..\GameLauncher\GameLauncher.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+    <ProjectReference Include="..\DualityGame\DualityGame.csproj" />
   </ItemGroup>
-  
+
+  <Target Name="CoreCompile" />
+  <PropertyGroup>
+    <SkipCopyBuildProduct>true</SkipCopyBuildProduct>
+  </PropertyGroup>
+
 </Project>

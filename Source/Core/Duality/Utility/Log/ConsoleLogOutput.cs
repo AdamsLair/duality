@@ -1,6 +1,7 @@
 ﻿using System;
+using Duality;
 
-namespace Duality.Launcher
+namespace Duality
 {
 	/// <summary>
 	/// A <see cref="ILogOutput">Log output</see> that uses the <see cref="System.Console"/> as message destination.

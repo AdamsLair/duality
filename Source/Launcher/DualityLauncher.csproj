@@ -1,16 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net472</TargetFramework>
-		<LangVersion>7.3</LangVersion>
-		<OutputPath>$(RootFolder)Build\Output\</OutputPath>
-		<Copyright>Copyright © Duality Core Team 2020</Copyright>
-		<RootNamespace>Duality.Launcher</RootNamespace>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<ApplicationIcon>DualityIcon.ico</ApplicationIcon>
-		<OutputType>Exe</OutputType>
-		<Version>4.0.0-alpha3</Version>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <OutputPath>$(RootFolder)Build\Output\</OutputPath>
+    <Copyright>Copyright © Duality Core Team 2020</Copyright>
+    <RootNamespace>DualityGame</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <ApplicationIcon>DualityIcon.ico</ApplicationIcon>
+    <OutputType>WinExe</OutputType>
+    <Version>4.0.0-alpha3</Version>
+    <Packable>false</Packable>
+    <AssemblyName>DualityGame</AssemblyName>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Primitives\DualityPrimitives.csproj">
@@ -24,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\DualityTemplates\Templates\SolutionTemplate\Source\Launchers\DualityGame\*.cs"></Compile>
     <Content Include="DualityIcon.ico" />
     <Content Include="DualityLogoIcon.ico" />
   </ItemGroup>
