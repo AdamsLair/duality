@@ -11,9 +11,6 @@ using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 
-using Nuke.Common.Tools.NUnit;
-using static Nuke.Common.Tools.NUnit.NUnitTasks;
-
 using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
@@ -37,8 +34,6 @@ class Build : NukeBuild
 	AbsolutePath NightlyBuildDirectory => BuildDirectory / "NightlyBuild";
 	AbsolutePath NugetPackageDirectory => NightlyBuildDirectory / "NuGetPackages";
 	AbsolutePath NuGetPackageSpecsDirectory => BuildDirectory / "NuGetPackageSpecs";
-
-	AbsolutePath NunitProject => RootDirectory / "Test" / "Duality.nunit";
 
 	public static int Main() => Execute<Build>(x => x.Compile);
 
@@ -73,8 +68,8 @@ class Build : NukeBuild
 		.DependsOn(Compile)
 		.Executes(() =>
 		{
-			NUnit3(s => s
-				.AddInputFiles(NunitProject));			
+			DotNetTest(s => s
+				.SetProjectFile(Solution));
 		});
 
 	Target BuildNugetPackages => _ => _

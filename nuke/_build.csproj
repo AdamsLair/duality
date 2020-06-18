@@ -16,8 +16,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Nuke.Common" Version="0.24.10" />
-    <PackageReference Include="NUnit" Version="3.12.0" />
-    <PackageReference Include="NUnit.Console" Version="3.11.1" />
   </ItemGroup>
 
 </Project>

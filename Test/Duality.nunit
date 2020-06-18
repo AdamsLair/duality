@@ -1,7 +1,0 @@
-﻿<NUnitProject>
-  <Settings activeconfig="Default" processModel="Default" domainUsage="Default" appbase="..\Build\Output" />
-  <Config name="Default" binpathtype="Auto">
-    <assembly path="DualityTests.dll" />
-    <assembly path="DualityEditorTests.dll" />
-  </Config>
-</NUnitProject>
