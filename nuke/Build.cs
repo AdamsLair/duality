@@ -82,6 +82,7 @@ class Build : NukeBuild
 
 	Target BuildDocs => _ => _
 		.DependsOn(Compile)
+		.After(Test)
 		.Executes(() =>
 		{
 			MSBuild(s => s.SetProjectFile(DocSolution));
@@ -89,7 +90,7 @@ class Build : NukeBuild
 
 	Target BuildNugetPackages => _ => _
 		.DependsOn(Compile)
-		.After(BuildDocs)
+		.After(BuildDocs, Test)
 		.Executes(() =>
 		{
 			var nuspecs = NuGetPackageSpecsDirectory.GlobFiles("*.nuspec");
