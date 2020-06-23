@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using Duality.Backend;
 using Duality.Resources;
 
@@ -8,14 +7,10 @@ namespace Duality.Launcher
 {
 	public class DualityLauncher
 	{
-		public static void Run(string[] args)
+		public static void Run(LauncherArgs launcherArgs)
 		{
 			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 			System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
-
-			bool isDebugging = System.Diagnostics.Debugger.IsAttached || args.Contains(DualityApp.CmdArgDebug);
-			bool isRunFromEditor = args.Contains(DualityApp.CmdArgEditor);
-			bool isProfiling = args.Contains(DualityApp.CmdArgProfiling);
 
 			// Set up console logging
 			Logs.AddGlobalOutput(new ConsoleLogOutput());
@@ -41,23 +36,23 @@ namespace Duality.Launcher
 			// Write initial log message before actually booting Duality
 			Logs.Core.Write("Running DualityLauncher with flags: {1}{0}",
 				Environment.NewLine,
-				new[] { isDebugging ? "Debugging" : null, isProfiling ? "Profiling" : null, isRunFromEditor ? "RunFromEditor" : null }.NotNull().ToString(", "));
+				launcherArgs);
 
 			// Initialize the Duality core
 			DualityApp.Init(
 				DualityApp.ExecutionEnvironment.Launcher,
 				DualityApp.ExecutionContext.Game,
 				new DefaultAssemblyLoader(),
-				args);
+				launcherArgs);
 
 			// Open up a new window
 			WindowOptions options = new WindowOptions
 			{
 				Size = DualityApp.UserData.WindowSize,
-				ScreenMode = isDebugging ? ScreenMode.Window : DualityApp.UserData.WindowMode,
-				RefreshMode = (isDebugging || isProfiling) ? RefreshMode.NoSync : DualityApp.UserData.WindowRefreshMode,
+				ScreenMode = launcherArgs.IsDebugging ? ScreenMode.Window : DualityApp.UserData.WindowMode,
+				RefreshMode = (launcherArgs.IsDebugging || launcherArgs.IsProfiling) ? RefreshMode.NoSync : DualityApp.UserData.WindowRefreshMode,
 				Title = DualityApp.AppData.AppName,
-				SystemCursorVisible = isDebugging || DualityApp.UserData.SystemCursorVisible
+				SystemCursorVisible = launcherArgs.IsDebugging || DualityApp.UserData.SystemCursorVisible
 			};
 			using (INativeWindow window = DualityApp.OpenWindow(options))
 			{
