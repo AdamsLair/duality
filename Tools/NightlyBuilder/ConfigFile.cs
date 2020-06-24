@@ -8,13 +8,8 @@ namespace NightlyBuilder
 		public string SolutionPath { get; set; }
 		public string BuildResultDir { get; set; }
 		public string DocSolutionPath { get; set; }
-		public string DocBuildResultDir { get; set; }
-		public string DocBuildResultFile { get; set; }
 		public string NUnitBinDir { get; set; }
 		public string UnitTestProjectDir { get; set; }
-		public string PackageDir { get; set; }
-		public string PackageName { get; set; }
-		public string CopyPackageTo { get; set; }
 		public string NuGetPath { get; set; }
 		public string NuGetPackageSpecsDir { get; set; }
 		public bool NoCleanNugetPackageTargetDir { get; set; }

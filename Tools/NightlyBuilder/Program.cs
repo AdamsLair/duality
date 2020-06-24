@@ -4,7 +4,6 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.IO;
 using System.Diagnostics;
 using System.Reflection;
@@ -104,11 +103,6 @@ namespace NightlyBuilder
 				Console.WriteLine();
 			}
 
-			string packagePath = Path.Combine(config.PackageDir, config.PackageName);
-			FileVersionInfo versionCore = null;
-			FileVersionInfo versionEditor = null;
-			FileVersionInfo versionLauncher = null;
-
 			// Build the target Solution
 			if (!config.NoBuild)
 			{
@@ -118,9 +112,9 @@ namespace NightlyBuilder
 					if (!buildSuccess)
 						throw new ApplicationException("The project doesn't compile properly. Cannot proceed in this state.");
 
-					versionCore = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "Duality.dll"));
-					versionEditor = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "DualityEditor.exe"));
-					versionLauncher = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "DualityLauncher.exe"));
+					FileVersionInfo versionCore = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "Duality.dll"));
+					FileVersionInfo versionEditor = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "DualityEditor.exe"));
+					FileVersionInfo versionLauncher = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "DualityLauncher.exe"));
 
 					Console.WriteLine("Build Successful");
 					Console.WriteLine("  Core Version:     {0}", versionCore.FileVersion);
@@ -184,10 +178,6 @@ namespace NightlyBuilder
 				Console.WriteLine();
 			}
 
-			// Build the documentation
-			bool includeDocs =
-				!string.IsNullOrWhiteSpace(config.DocBuildResultDir) &&
-				!string.IsNullOrWhiteSpace(config.DocBuildResultFile);
 			if (!config.NoDocs)
 			{
 				Console.WriteLine("================================== Build Docs =================================");
@@ -197,28 +187,6 @@ namespace NightlyBuilder
 						throw new ApplicationException("Documentation Build Failure");
 
 					Console.WriteLine("Documentation Build Successful");
-
-					if (includeDocs)
-					{
-						File.Copy(
-							Path.Combine(config.DocBuildResultDir, config.DocBuildResultFile), 
-							Path.Combine(config.BuildResultDir, config.DocBuildResultFile),
-							true);
-						Console.WriteLine("Documentation copied to build directory");
-					}
-				}
-				Console.WriteLine("===============================================================================");
-				Console.WriteLine();
-				Console.WriteLine();
-			}
-			else if (includeDocs && File.Exists(Path.Combine(config.DocBuildResultDir, config.DocBuildResultFile)))
-			{
-				Console.WriteLine("============================== Copy existing Docs =============================");
-				{
-					File.Copy(
-						Path.Combine(config.DocBuildResultDir, config.DocBuildResultFile), 
-						Path.Combine(config.BuildResultDir, config.DocBuildResultFile),
-						true);
 				}
 				Console.WriteLine("===============================================================================");
 				Console.WriteLine();
@@ -331,21 +299,6 @@ namespace NightlyBuilder
 			Console.WriteLine();
 			Console.WriteLine();
 			
-			// Copy ZIP Package
-			if (!string.IsNullOrWhiteSpace(config.CopyPackageTo))
-			{
-				Console.WriteLine("=============================== Copy ZIP Package ==============================");
-				{
-					Console.WriteLine("Copying package to '{0}'", config.CopyPackageTo);
-					if (!Directory.Exists(config.CopyPackageTo))
-						Directory.CreateDirectory(config.CopyPackageTo);
-					File.Copy(packagePath, Path.Combine(config.CopyPackageTo, config.PackageName), true);
-				}
-				Console.WriteLine("===============================================================================");
-				Console.WriteLine();
-				Console.WriteLine();
-			}
-
 			Console.WriteLine("Finished Build.");
 			if (!config.NonInteractive)
 				Console.ReadLine();
@@ -367,31 +320,7 @@ namespace NightlyBuilder
 
 			return preferredPath;
 		}
-		public static string WildcardToRegex(string pattern)
-		{
-			return "^" + Regex.Escape(pattern).
-							   Replace(@"\*", ".*").
-							   Replace(@"\?", ".") + "$";
-		}
-		public static void CopyDirectory(string sourcePath, string targetPath, bool overwrite = false, Predicate<string> filter = null)
-		{
-			if (!Directory.Exists(sourcePath)) throw new DirectoryNotFoundException("Source path not found");
-			if (!overwrite && Directory.Exists(targetPath)) return;
 
-			if (!Directory.Exists(targetPath)) 
-				Directory.CreateDirectory(targetPath);
-
-			foreach (string file in Directory.GetFiles(sourcePath))
-			{
-				if (filter != null && !filter(file)) continue;
-				File.Copy(file, Path.Combine(targetPath, Path.GetFileName(file)), overwrite);
-			}
-			foreach (string subDir in Directory.GetDirectories(sourcePath))
-			{
-				if (filter != null && !filter(subDir)) continue;
-				CopyDirectory(subDir, Path.Combine(targetPath, Path.GetFileName(subDir)), overwrite, filter);
-			}
-		}
 		public static void ExecuteBackgroundCommand(string command, string workingDir = null)
 		{
 			if (workingDir == null) workingDir = Environment.CurrentDirectory;
