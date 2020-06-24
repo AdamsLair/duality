@@ -131,6 +131,25 @@ namespace Duality.Editor
 		{
 			get { return firstEditorSession; }
 		}
+
+		private static DualityProjectSettings projectSettings = null;
+		/// <summary>
+		/// [GET] Returns the path where this DualityApp's <see cref="DualityProjectSettings">application data</see> is located at.
+		/// </summary>
+		public static string ProjectSettingsPath
+		{
+			get { return "ProjectSettings.dat"; }
+		}
+		/// <summary>
+		/// [GET / SET] Provides access to Duality's current <see cref="DualityProjectSettings">application data</see>. This is never null.
+		/// Any kind of data change event is fired as soon as you re-assign this property. Be sure to do that after changing its data.
+		/// </summary>
+		public static DualityProjectSettings ProjectSettings
+		{
+			get { return projectSettings; }
+			set { projectSettings = value ?? new DualityProjectSettings(); }
+		}
+
 		public static bool BackupsEnabled
 		{
 			get { return backupsEnabled; }
@@ -173,8 +192,17 @@ namespace Duality.Editor
 				return !NativeMethods.PeekMessage(out msg, IntPtr.Zero, 0, 0, 0);
 			 }
 		}
-		
-		
+
+		public static void LoadProjectSettings()
+		{
+			projectSettings = Serializer.TryReadObject<DualityProjectSettings>(ProjectSettingsPath) ?? new DualityProjectSettings();
+		}
+
+		public static void SaveProjectSettings()
+		{
+			Serializer.WriteObject(projectSettings, ProjectSettingsPath, typeof(XmlSerializer));
+		}
+
 		public static void Init(MainForm mainForm, bool recover)
 		{
 			DualityEditorApp.needsRecovery = recover;
@@ -233,6 +261,9 @@ namespace Duality.Editor
 			// Need to initialize graphics context and default content before instantiating anything that could require any of them
 			InitMainGraphicsContext();
 			DualityApp.InitPostWindow();
+
+			LoadProjectSettings();
+			SaveProjectSettings();
 
 			LoadUserData();
 			pluginManager.InitPlugins();
@@ -1016,6 +1047,8 @@ namespace Duality.Editor
 						DualityApp.SaveAppData();
 					else if (args.Objects.OtherObjects.Any(o => o is DualityUserData))
 						DualityApp.SaveUserData();
+					if (args.Objects.OtherObjects.Any(o => o is DualityProjectSettings))
+						DualityEditorApp.SaveProjectSettings();
 				}
 			}
 
