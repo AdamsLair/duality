@@ -5,9 +5,16 @@ using Duality.Resources;
 
 namespace Duality.Launcher
 {
-	public class DualityLauncher
+	public class DualityLauncher : IDisposable
 	{
-		public static void Run(LauncherArgs launcherArgs)
+		private LauncherArgs launcherArgs;
+
+		public DualityLauncher(LauncherArgs launcherArgs)
+		{
+			this.launcherArgs = launcherArgs;
+		}
+
+		public void Run()
 		{
 			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 			System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -36,23 +43,23 @@ namespace Duality.Launcher
 			// Write initial log message before actually booting Duality
 			Logs.Core.Write("Running DualityLauncher with flags: {1}{0}",
 				Environment.NewLine,
-				launcherArgs);
+				this.launcherArgs);
 
 			// Initialize the Duality core
 			DualityApp.Init(
 				DualityApp.ExecutionEnvironment.Launcher,
 				DualityApp.ExecutionContext.Game,
 				new DefaultAssemblyLoader(),
-				launcherArgs);
+				this.launcherArgs);
 
 			// Open up a new window
 			WindowOptions options = new WindowOptions
 			{
 				Size = DualityApp.UserData.WindowSize,
-				ScreenMode = launcherArgs.IsDebugging ? ScreenMode.Window : DualityApp.UserData.WindowMode,
-				RefreshMode = (launcherArgs.IsDebugging || launcherArgs.IsProfiling) ? RefreshMode.NoSync : DualityApp.UserData.WindowRefreshMode,
+				ScreenMode = this.launcherArgs.IsDebugging ? ScreenMode.Window : DualityApp.UserData.WindowMode,
+				RefreshMode = (this.launcherArgs.IsDebugging || this.launcherArgs.IsProfiling) ? RefreshMode.NoSync : DualityApp.UserData.WindowRefreshMode,
 				Title = DualityApp.AppData.AppName,
-				SystemCursorVisible = launcherArgs.IsDebugging || DualityApp.UserData.SystemCursorVisible
+				SystemCursorVisible = this.launcherArgs.IsDebugging || DualityApp.UserData.SystemCursorVisible
 			};
 			using (INativeWindow window = DualityApp.OpenWindow(options))
 			{
@@ -82,6 +89,11 @@ namespace Duality.Launcher
 				Logs.Core.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
 			}
 			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
+		}
+
+		public void Dispose()
+		{
+			AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
 		}
 	}
 }

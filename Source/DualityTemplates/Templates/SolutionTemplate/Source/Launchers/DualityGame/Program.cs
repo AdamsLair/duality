@@ -1,5 +1,7 @@
 ﻿using System;
+using Duality;
 using Duality.Launcher;
+using Duality.Resources;
 
 namespace DualityGame
 {
@@ -11,7 +13,11 @@ namespace DualityGame
 			var launcherArgs = new LauncherArgs(args);
 
 			if (launcherArgs.IsDebugging|| launcherArgs.IsRunFromEditor) ShowConsole();
-			DualityLauncher.Run(launcherArgs);
+
+			using (var launcher = new DualityLauncher(launcherArgs))
+			{
+				launcher.Run();
+			}
 		}
 
 		private static bool hasConsole = false;
