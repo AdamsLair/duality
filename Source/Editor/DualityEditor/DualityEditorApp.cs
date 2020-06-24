@@ -160,30 +160,7 @@ namespace Duality.Editor
 			get { return autosaveFrequency; }
 			set { autosaveFrequency = value; }
 		}
-		public static string LauncherAppPath
-		{
-			get
-			{
-				string launcherPath = string.IsNullOrWhiteSpace(launcherApp) ? ProjectSettings.LauncherPath : launcherApp;
-				if (File.Exists(launcherPath)) return launcherPath;
 
-				if (!Path.IsPathRooted(launcherPath))
-				{
-					string appDirLauncherApp = Path.Combine(PathHelper.ExecutingAssemblyDir, launcherPath);
-					if (File.Exists(appDirLauncherApp)) return appDirLauncherApp;
-				}
-
-				return ProjectSettings.LauncherPath;
-			}
-			set
-			{
-				if (Path.GetFullPath(value) == Path.GetFullPath(ProjectSettings.LauncherPath)) value = null;
-				if (value != launcherApp)
-				{
-					launcherApp = value;
-				}
-			}
-		}
 		private static bool AppStillIdle
 		{
 			 get
@@ -264,6 +241,8 @@ namespace Duality.Editor
 
 			LoadProjectSettings();
 			SaveProjectSettings();
+
+			mainForm.UpdateLaunchAppActions();
 
 			LoadUserData();
 			pluginManager.InitPlugins();
