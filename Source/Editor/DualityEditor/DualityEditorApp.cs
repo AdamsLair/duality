@@ -133,13 +133,7 @@ namespace Duality.Editor
 		}
 
 		private static DualityProjectSettings projectSettings = null;
-		/// <summary>
-		/// [GET] Returns the path where this DualityApp's <see cref="DualityProjectSettings">application data</see> is located at.
-		/// </summary>
-		public static string ProjectSettingsPath
-		{
-			get { return "ProjectSettings.dat"; }
-		}
+
 		/// <summary>
 		/// [GET / SET] Provides access to Duality's current <see cref="DualityProjectSettings">application data</see>. This is never null.
 		/// Any kind of data change event is fired as soon as you re-assign this property. Be sure to do that after changing its data.
@@ -168,16 +162,6 @@ namespace Duality.Editor
 				NativeMethods.Message msg;
 				return !NativeMethods.PeekMessage(out msg, IntPtr.Zero, 0, 0, 0);
 			 }
-		}
-
-		public static void LoadProjectSettings()
-		{
-			projectSettings = Serializer.TryReadObject<DualityProjectSettings>(ProjectSettingsPath) ?? new DualityProjectSettings();
-		}
-
-		public static void SaveProjectSettings()
-		{
-			Serializer.WriteObject(projectSettings, ProjectSettingsPath, typeof(XmlSerializer));
 		}
 
 		public static void Init(MainForm mainForm, bool recover)
@@ -239,8 +223,8 @@ namespace Duality.Editor
 			InitMainGraphicsContext();
 			DualityApp.InitPostWindow();
 
-			LoadProjectSettings();
-			SaveProjectSettings();
+			ProjectSettings = DualityProjectSettings.Load();
+			ProjectSettings.Save();
 
 			mainForm.UpdateLaunchAppActions();
 
@@ -1027,7 +1011,7 @@ namespace Duality.Editor
 					else if (args.Objects.OtherObjects.Any(o => o is DualityUserData))
 						DualityApp.SaveUserData();
 					if (args.Objects.OtherObjects.Any(o => o is DualityProjectSettings))
-						DualityEditorApp.SaveProjectSettings();
+						ProjectSettings.Save();
 				}
 			}
 
