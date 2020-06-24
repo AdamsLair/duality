@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "DualityEditor": {
+      "commandName": "Project"
+    },
+    "Debug Sample": {
+      "commandName": "Executable",
+      "executablePath": "$(SolutionDir)Build\\Output\\DualityEditor.exe",
+      "workingDirectory": "$(SolutionDir)Samples\\DualStickSpaceShooter\\Content"
+    }
+  }
+}
