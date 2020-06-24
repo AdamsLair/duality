@@ -5,7 +5,6 @@
     <NoWarn>1701;1702;CS1591;CS0419</NoWarn>
     <DefaultItemExcludes>$(DefaultItemExcludes);Content\**</DefaultItemExcludes>
     <RootFolder>$(MSBuildThisFileDirectory)</RootFolder>
-    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>

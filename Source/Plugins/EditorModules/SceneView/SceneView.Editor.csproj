@@ -1,28 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
-	<PropertyGroup>
-		<TargetFramework>net472</TargetFramework>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<Version>4.0.0-alpha3</Version>
-		<Copyright>Copyright © Duality Core Team 2020</Copyright>
-		<RootNamespace>Duality.Editor.Plugins.SceneView</RootNamespace>
-		<UseWindowsForms>true</UseWindowsForms>
-		<EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>4.0.0-alpha3</Version>
+    <Copyright>Copyright © Duality Core Team 2020</Copyright>
+    <RootNamespace>Duality.Editor.Plugins.SceneView</RootNamespace>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="AdamsLair.DockPanelSuite">
-			<Version>2.8.2</Version>
-		</PackageReference>
-		<PackageReference Include="AdamsLair.TreeViewAdv">
-			<Version>1.7.7</Version>
-		</PackageReference>
-		<PackageReference Include="AdamsLair.WinForms">
-			<Version>1.1.17</Version>
-		</PackageReference>
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AdamsLair.DockPanelSuite">
+      <Version>2.8.2</Version>
+    </PackageReference>
+    <PackageReference Include="AdamsLair.TreeViewAdv">
+      <Version>1.7.7</Version>
+    </PackageReference>
+    <PackageReference Include="AdamsLair.WinForms">
+      <Version>1.1.17</Version>
+    </PackageReference>
+  </ItemGroup>
 
-	<ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\Editor\DualityEditor\DualityEditor.csproj">
       <Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
       <Name>DualityEditor</Name>
@@ -38,41 +39,42 @@
       <Name>Duality</Name>
       <Private>False</Private>
     </ProjectReference>
-	</ItemGroup>
+    <PackageReference Include="System.Resources.Extensions" Version="4.6.0" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Update="Properties\Resources.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
-			<SubType>Designer</SubType>
-		</EmbeddedResource>
-		<Compile Update="Properties\Resources.Designer.cs">
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Resources.resx</DependentUpon>
-			<DesignTime>True</DesignTime>
-		</Compile>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
 
-		<EmbeddedResource Update="Properties\SceneViewRes.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>SceneViewRes.Designer.cs</LastGenOutput>
-			<SubType>Designer</SubType>
-		</EmbeddedResource>
-		<Compile Update="Properties\SceneViewRes.Designer.cs">
-			<AutoGen>True</AutoGen>
-			<DependentUpon>SceneViewRes.resx</DependentUpon>
-			<DesignTime>True</DesignTime>
-		</Compile>
-		
-	</ItemGroup>
+    <EmbeddedResource Update="Properties\SceneViewRes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SceneViewRes.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Update="Properties\SceneViewRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SceneViewRes.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
 
-	<ItemGroup>
-		<Reference Include="System.Windows.Forms" />
-	</ItemGroup>
+  </ItemGroup>
 
-	<Target Name="AggregateOutput" BeforeTargets="AfterBuild">
-		<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(RootFolder)Build\Output\Plugins\" />
-		<Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(RootFolder)Build\Output\Plugins\" />
-		<Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(RootFolder)Build\Output\Plugins\" />
-	</Target>
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <Target Name="AggregateOutput" BeforeTargets="AfterBuild">
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(RootFolder)Build\Output\Plugins\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(RootFolder)Build\Output\Plugins\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(RootFolder)Build\Output\Plugins\" />
+  </Target>
 
 </Project>
