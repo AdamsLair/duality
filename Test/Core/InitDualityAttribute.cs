@@ -4,6 +4,7 @@ using Duality.Backend;
 
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using Duality.Launcher;
 
 namespace Duality.Tests
 {
@@ -43,7 +44,7 @@ namespace Duality.Tests
 				DualityApp.ExecutionEnvironment.Launcher, 
 				DualityApp.ExecutionContext.Game, 
 				new DefaultAssemblyLoader(),
-				null);
+				new LauncherArgs());
 
 			// Manually register pseudo-plugin for the Unit Testing Assembly
 			this.unitTestPlugin = DualityApp.PluginManager.LoadPlugin(
