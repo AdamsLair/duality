@@ -17,15 +17,10 @@ namespace Duality.Editor.Forms
 			this.InitializeComponent();
 			FileVersionInfo versionCore = FileVersionInfo.GetVersionInfo(typeof(DualityApp).Assembly.Location);
 			FileVersionInfo versionEditor = FileVersionInfo.GetVersionInfo(typeof(DualityEditorApp).Assembly.Location);
-			FileVersionInfo versionLauncher;
-			if (File.Exists(EditorHelper.DualityLauncherExecFile))
-				versionLauncher = FileVersionInfo.GetVersionInfo(EditorHelper.DualityLauncherExecFile);
-			else
-				versionLauncher = null;
+
 			this.labelVersionData.Text = string.Format(this.labelVersionData.Text, 
 				versionCore.FileVersion,
-				versionEditor.FileVersion,
-				(versionLauncher != null) ? versionLauncher.FileVersion : "unavailable");
+				versionEditor.FileVersion);
 		}
 
 		private void buttonOk_Click(object sender, EventArgs e)

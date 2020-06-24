@@ -9,7 +9,6 @@ namespace Duality.Editor
 {
 	public static class EditorHelper
 	{
-		public static readonly string DualityLauncherExecFile = "DualityLauncher.exe";
 		public static readonly string BackupDirectory = "Backup";
 
 		public static readonly string GlobalUserDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality");

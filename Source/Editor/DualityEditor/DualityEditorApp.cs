@@ -164,7 +164,7 @@ namespace Duality.Editor
 		{
 			get
 			{
-				string launcherPath = string.IsNullOrWhiteSpace(launcherApp) ? EditorHelper.DualityLauncherExecFile : launcherApp;
+				string launcherPath = string.IsNullOrWhiteSpace(launcherApp) ? ProjectSettings.LauncherPath : launcherApp;
 				if (File.Exists(launcherPath)) return launcherPath;
 
 				if (!Path.IsPathRooted(launcherPath))
@@ -173,11 +173,11 @@ namespace Duality.Editor
 					if (File.Exists(appDirLauncherApp)) return appDirLauncherApp;
 				}
 
-				return EditorHelper.DualityLauncherExecFile;
+				return ProjectSettings.LauncherPath;
 			}
 			set
 			{
-				if (Path.GetFullPath(value) == Path.GetFullPath(EditorHelper.DualityLauncherExecFile)) value = null;
+				if (Path.GetFullPath(value) == Path.GetFullPath(ProjectSettings.LauncherPath)) value = null;
 				if (value != launcherApp)
 				{
 					launcherApp = value;
