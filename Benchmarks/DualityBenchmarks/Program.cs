@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 using Duality;
@@ -6,7 +6,7 @@ using Duality.Backend;
 
 namespace DualityBenchmarks
 {
-    class Program
+	class Program
     {
         static void Main(string[] args)
         {
@@ -17,7 +17,13 @@ namespace DualityBenchmarks
 				new DefaultAssemblyLoader(),
 				null);
 
-			BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, new DebugInProcessConfig());
+			if (Debugger.IsAttached)
+			{
+				BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, new DebugInProcessConfig());
+			}
+			else {
+				BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
+			}			
 		}
     }
 }
