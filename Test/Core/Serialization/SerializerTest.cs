@@ -416,45 +416,7 @@ namespace Duality.Tests.Serialization
 			// Test Data last updated 2014-03-11
 			// this.CreateReferenceFile("Old", obj, this.PrimaryFormat);
 		}
-		[Test] public void PerformanceTest()
-		{
-			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
-			
-			Random rnd = new Random(0);
-			TestObject data = new TestObject(rnd, 5);
-			TestObject[] results = new TestObject[50];
-			
-			watch.Start();
-			long memUsage;
-			using (MemoryStream stream = new MemoryStream())
-			{
-				// Write
-				for (int i = 0; i < results.Length; i++)
-				{
-					using (Serializer formatterWrite = Serializer.Create(stream, this.format))
-					{
-						formatterWrite.WriteObject(data);
-					}
-				}
 
-				memUsage = stream.Length / 1024;
-				stream.Position = 0;
-
-				// Read
-				for (int i = 0; i < results.Length; i++)
-				{
-					using (Serializer formatterRead = Serializer.Create(stream))
-					{
-						results[i] = formatterRead.ReadObject<TestObject>();
-					}
-				}
-			}
-			watch.Stop();
-			TestHelper.LogNumericTestResult(this, "ReadWritePerformance" + this.format.ToString(), watch.Elapsed.TotalMilliseconds, "ms");
-			TestHelper.LogNumericTestResult(this, "MemoryUsage" + this.format.ToString(), memUsage, "Kb");
-
-			Assert.Pass();
-		}
 		[Test] public void CleanupAfterDisposedStream()
 		{
 			Random rnd = new Random();
