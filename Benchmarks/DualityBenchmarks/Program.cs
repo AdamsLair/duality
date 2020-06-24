@@ -10,13 +10,6 @@ namespace DualityBenchmarks
     {
         static void Main(string[] args)
         {
-			// Initialize Duality
-			DualityApp.Init(
-				DualityApp.ExecutionEnvironment.Launcher,
-				DualityApp.ExecutionContext.Game,
-				new DefaultAssemblyLoader(),
-				null);
-
 			if (Debugger.IsAttached)
 			{
 				BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, new DebugInProcessConfig());
