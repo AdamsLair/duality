@@ -317,10 +317,16 @@ namespace Duality.Serialization
 		public object ReadObject()
 		{
 			if (!this.CanRead) throw new InvalidOperationException("Can't read object from a write-only serializer!");
-			this.BeginReadOperation();
-			object result = this.ReadObjectData();
-			this.EndReadOperation();
-			return result;
+
+			try
+			{
+				this.BeginReadOperation();
+				return this.ReadObjectData();
+			}
+			finally
+			{
+				this.EndReadOperation();
+			}
 		}
 		/// <summary>
 		/// Reads a single object, casts it to the specified Type and returns it.
@@ -349,9 +355,16 @@ namespace Duality.Serialization
 		public void WriteObject(object obj)
 		{
 			if (!this.CanWrite) throw new InvalidOperationException("Can't write object to a read-only serializer!");
-			this.BeginWriteOperation();
-			this.WriteObjectData(obj);
-			this.EndWriteOperation();
+
+			try
+			{
+				this.BeginWriteOperation();
+				this.WriteObjectData(obj);
+			}
+			finally
+			{
+				this.EndWriteOperation();
+			}
 		}
 		/// <summary>
 		/// Writes a single object.
