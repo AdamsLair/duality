@@ -10,31 +10,23 @@ namespace DualityBenchmarks
 	public class PrefabBenchmarks
 	{
 		private Prefab prefab;
-		private GameObject[] results;
 
 		[GlobalSetup]
 		public void Setup()
 		{
 			this.prefab = new Prefab(this.CreateSimpleGameObject());
-			this.results = new GameObject[1000];
 		}
 
 		[Benchmark(Baseline = true)]
-		public void CreateWithoutPrefabs()
+		public GameObject CreateWithoutPrefabs()
 		{
-			for (int i = 0; i < this.results.Length; i++)
-			{
-				this.CreateSimpleGameObject();
-			}
+			return this.CreateSimpleGameObject();
 		}
 
 		[Benchmark]
-		public void Instantiate()
+		public GameObject Instantiate()
 		{
-			for (int i = 0; i < this.results.Length; i++)
-			{
-				this.results[i] = this.prefab.Instantiate();
-			}
+			return this.prefab.Instantiate();
 		}
 
 		private GameObject CreateSimpleGameObject(GameObject parent = null)

@@ -11,7 +11,6 @@ namespace DualityBenchmarks
 	{
 		[Params(typeof(XmlSerializer), typeof(BinarySerializer))]
 		public Type type;
-		private Random rnd;
 		private TestObject[] results;
 		private byte[] readData;
 		private TestObject data;
@@ -19,49 +18,35 @@ namespace DualityBenchmarks
 		[GlobalSetup]
 		public void Setup()
 		{
-			this.rnd = new Random(0);
 			this.results = new TestObject[50];
-			this.data = new TestObject(this.rnd, 5);
+			this.data = new TestObject(new Random(0), 5);
 
-			using (MemoryStream stream = new MemoryStream())
-			{
-				for (int i = 0; i < this.results.Length; i++)
-				{
-					using (Serializer formatterWrite = Serializer.Create(stream, this.type))
-					{
-						formatterWrite.WriteObject(this.data);
-					}
-				}
-				this.readData = stream.GetBuffer();
-			}
+			this.readData = this.Write().GetBuffer();
 		}
 
 		[Benchmark]
-		public void Write()
+		public MemoryStream Write()
 		{
-			using (MemoryStream stream = new MemoryStream())
+			MemoryStream stream = new MemoryStream();
+			for (int i = 0; i < this.results.Length; i++)
 			{
-				for (int i = 0; i < this.results.Length; i++)
+				using (Serializer formatter = Serializer.Create(stream, this.type))
 				{
-					using (Serializer formatterWrite = Serializer.Create(stream, this.type))
-					{
-						formatterWrite.WriteObject(this.data);
-					}
+					formatter.WriteObject(this.data);
 				}
 			}
+			return stream;
 		}
 
 		[Benchmark]
 		public void Read()
 		{
-			using (MemoryStream stream = new MemoryStream(this.readData))
+			MemoryStream stream = new MemoryStream(this.readData);
+			for (int i = 0; i < this.results.Length; i++)
 			{
-				for (int i = 0; i < this.results.Length; i++)
+				using (Serializer formatter = Serializer.Create(stream))
 				{
-					using (Serializer formatterRead = Serializer.Create(stream))
-					{
-						this.results[i] = formatterRead.ReadObject<TestObject>();
-					}
+					this.results[i] = formatter.ReadObject<TestObject>();
 				}
 			}
 		}

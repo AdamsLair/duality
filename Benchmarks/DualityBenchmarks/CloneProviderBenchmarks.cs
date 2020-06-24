@@ -9,33 +9,25 @@ namespace DualityBenchmarks
 	public class CloneProviderBenchmarks
 	{
 		private Random rnd;
-		private TestObject[] results;
 		private TestObject data;
 
 		[GlobalSetup]
 		public void Setup()
 		{
 			this.rnd = new Random(0);
-			this.results = new TestObject[200];
 			this.data = new TestObject(this.rnd, 5);
 		}
 
 		[Benchmark]
-		public void CloneTestObjectGraph()
+		public TestObject CloneTestObjectGraph()
 		{
-			for (int i = 0; i < this.results.Length; i++)
-			{
-				this.results[i] = this.data.DeepClone();
-			}
+			return this.data.DeepClone();
 		}
 
 		[Benchmark(Baseline = true)]
-		public void CreateWithoutClone()
+		public TestObject CreateWithoutClone()
 		{
-			for (int i = 0; i < this.results.Length; i++)
-			{
-				this.results[i] = new TestObject(this.rnd, 5);
-			}
+			return new TestObject(this.rnd, 5);
 		}
 	}
 }
