@@ -1,7 +1,5 @@
 ﻿using System;
-using Duality;
 using Duality.Launcher;
-using Duality.Resources;
 
 namespace DualityGame
 {
