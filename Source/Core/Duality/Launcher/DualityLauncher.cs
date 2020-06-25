@@ -7,6 +7,7 @@ namespace Duality.Launcher
 {
 	/// <summary>
 	/// A class that allows you to easily initialize duality, run it and clean it up afterwards.
+	/// As static state is used under the hood please make sure to only have 1 instance at a time of this class.
 	/// </summary>
 	public class DualityLauncher : IDisposable
 	{
