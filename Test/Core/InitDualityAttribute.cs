@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-
-using Duality;
-using Duality.Serialization;
 using Duality.Backend;
 
 using NUnit.Framework;
@@ -63,9 +57,6 @@ namespace Duality.Tests
 				this.dummyWindow = DualityApp.OpenWindow(options);
 			}
 
-			// Load local testing memory
-			TestHelper.LocalTestMemory = Serializer.TryReadObject<TestMemory>(TestHelper.LocalTestMemoryFilePath, typeof(XmlSerializer));
-
 			Console.WriteLine("----- Duality environment setup complete -----");
 		}
 		public void AfterTest(ITest details)
@@ -81,13 +72,6 @@ namespace Duality.Tests
 				ContentProvider.ClearContent();
 			    this.dummyWindow.Dispose();
 			    this.dummyWindow = null;
-			}
-
-			// Save local testing memory. As this uses Duality serializers, 
-			// it needs to be done before terminating Duality.
-			if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Passed && !System.Diagnostics.Debugger.IsAttached)
-			{
-				Serializer.WriteObject(TestHelper.LocalTestMemory, TestHelper.LocalTestMemoryFilePath, typeof(XmlSerializer));
 			}
 
 			DualityApp.Terminate();
