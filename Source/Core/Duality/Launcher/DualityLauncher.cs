@@ -5,13 +5,19 @@ using Duality.Backend;
 
 namespace Duality.Launcher
 {
+	/// <summary>
+	/// A class that allows you to easily initialize duality, run it and clean it up afterwards.
+	/// </summary>
 	public class DualityLauncher : IDisposable
 	{
-		private readonly LauncherArgs launcherArgs;
 		private readonly List<ILogOutput> logOutputs = new List<ILogOutput>();
 		private readonly Stack<IDisposable> disposables = new Stack<IDisposable>();
 		private readonly INativeWindow window;
 
+		/// <summary>
+		/// Initializes duality but does not yet run it.
+		/// </summary>
+		/// <param name="launcherArgs"></param>
 		public DualityLauncher(LauncherArgs launcherArgs = null)
 		{
 			if (launcherArgs == null)
@@ -21,7 +27,6 @@ namespace Duality.Launcher
 
 			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 			System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
-			this.launcherArgs = launcherArgs;
 
 			// Set up console logging
 			this.AddGlobalOutput(new ConsoleLogOutput());
@@ -46,32 +51,40 @@ namespace Duality.Launcher
 			// Write initial log message before actually booting Duality
 			Logs.Core.Write("Running DualityLauncher with flags: {1}{0}",
 				Environment.NewLine,
-				this.launcherArgs);
+				launcherArgs);
 
 			// Initialize the Duality core
 			DualityApp.Init(
 				DualityApp.ExecutionEnvironment.Launcher,
 				DualityApp.ExecutionContext.Game,
 				new DefaultAssemblyLoader(),
-				this.launcherArgs);
+				launcherArgs);
 
 			// Open up a new window
 			WindowOptions options = new WindowOptions
 			{
 				Size = DualityApp.UserData.WindowSize,
-				ScreenMode = this.launcherArgs.IsDebugging ? ScreenMode.Window : DualityApp.UserData.WindowMode,
-				RefreshMode = this.launcherArgs.IsProfiling ? RefreshMode.NoSync : DualityApp.UserData.WindowRefreshMode,
+				ScreenMode = launcherArgs.IsDebugging ? ScreenMode.Window : DualityApp.UserData.WindowMode,
+				RefreshMode = launcherArgs.IsProfiling ? RefreshMode.NoSync : DualityApp.UserData.WindowRefreshMode,
 				Title = DualityApp.AppData.AppName,
-				SystemCursorVisible = this.launcherArgs.IsDebugging || DualityApp.UserData.SystemCursorVisible
+				SystemCursorVisible = launcherArgs.IsDebugging || DualityApp.UserData.SystemCursorVisible
 			};
 			this.window = DualityApp.OpenWindow(options);
 		}
 
+		/// <summary>
+		/// Runs duality. This will block till the game ends.
+		/// Don't call this if you want full control of the update loop (such as in unit tests).
+		/// </summary>
 		public void Run()
 		{
 			this.window.Run();
 		}
 
+		/// <summary>
+		/// Adds a global log output and also makes sure its removed when <see cref="Dispose"/> is called
+		/// </summary>
+		/// <param name="logOutput"></param>
 		public void AddGlobalOutput(ILogOutput logOutput)
 		{
 			this.logOutputs.Add(logOutput);
