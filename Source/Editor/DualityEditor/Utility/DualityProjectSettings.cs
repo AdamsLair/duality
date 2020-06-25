@@ -4,13 +4,7 @@ namespace Duality.Editor
 {
 	public class DualityProjectSettings
 	{
-		/// <summary>
-		/// [GET] Returns the path where this DualityApp's <see cref="DualityProjectSettings">application data</see> is located at.
-		/// </summary>
-		public static string ProjectSettingsPath
-		{
-			get { return "ProjectSettings.dat"; }
-		}
+		private static readonly string ProjectSettingsPath = "ProjectSettings.dat";
 
 		private string launcherPath = "DualityGame.exe";
 		public string LauncherPath

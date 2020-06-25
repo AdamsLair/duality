@@ -141,7 +141,7 @@ namespace Duality.Editor
 		public static DualityProjectSettings ProjectSettings
 		{
 			get { return projectSettings; }
-			set { projectSettings = value ?? new DualityProjectSettings(); }
+			set { projectSettings = value ?? throw new ArgumentNullException($"You cannot assign null to {nameof(ProjectSettings)}"); }
 		}
 
 		public static bool BackupsEnabled
