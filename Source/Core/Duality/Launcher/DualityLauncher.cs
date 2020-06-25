@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using Duality.Backend;
-using Duality.Resources;
 
 namespace Duality.Launcher
 {
@@ -11,16 +10,18 @@ namespace Duality.Launcher
 		private readonly LauncherArgs launcherArgs;
 		private readonly List<ILogOutput> logOutputs = new List<ILogOutput>();
 		private readonly Stack<IDisposable> disposables = new Stack<IDisposable>();
+		private readonly INativeWindow window;
 
-		public DualityLauncher(LauncherArgs launcherArgs)
+		public DualityLauncher(LauncherArgs launcherArgs = null)
 		{
-			this.launcherArgs = launcherArgs;
-		}
+			if (launcherArgs == null)
+			{
+				launcherArgs = new LauncherArgs();
+			}
 
-		public void Run()
-		{
 			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 			System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
+			this.launcherArgs = launcherArgs;
 
 			// Set up console logging
 			this.AddGlobalOutput(new ConsoleLogOutput());
@@ -63,14 +64,12 @@ namespace Duality.Launcher
 				Title = DualityApp.AppData.AppName,
 				SystemCursorVisible = this.launcherArgs.IsDebugging || DualityApp.UserData.SystemCursorVisible
 			};
-			using (INativeWindow window = DualityApp.OpenWindow(options))
-			{
-				// Load the starting Scene
-				Scene.SwitchTo(DualityApp.AppData.StartScene);
+			this.window = DualityApp.OpenWindow(options);
+		}
 
-				// Enter the applications update / render loop
-				window.Run();
-			}
+		public void Run()
+		{
+			this.window.Run();
 		}
 
 		public void AddGlobalOutput(ILogOutput logOutput)
@@ -90,6 +89,8 @@ namespace Duality.Launcher
 
 		public void Dispose()
 		{
+			this.window.Dispose();
+
 			// Shut down the Duality core
 			DualityApp.Terminate();
 
