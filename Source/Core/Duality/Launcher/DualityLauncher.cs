@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Duality.Backend;
 using Duality.Resources;
@@ -7,7 +8,9 @@ namespace Duality.Launcher
 {
 	public class DualityLauncher : IDisposable
 	{
-		private LauncherArgs launcherArgs;
+		private readonly LauncherArgs launcherArgs;
+		private readonly List<ILogOutput> logOutputs = new List<ILogOutput>();
+		private readonly Stack<IDisposable> disposables = new Stack<IDisposable>();
 
 		public DualityLauncher(LauncherArgs launcherArgs)
 		{
@@ -20,17 +23,16 @@ namespace Duality.Launcher
 			System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
 
 			// Set up console logging
-			Logs.AddGlobalOutput(new ConsoleLogOutput());
+			this.AddGlobalOutput(new ConsoleLogOutput());
 
 			// Set up file logging
-			StreamWriter logfileWriter = null;
-			TextWriterLogOutput logfileOutput = null;
 			try
 			{
-				logfileWriter = new StreamWriter("logfile.txt");
+				StreamWriter logfileWriter = new StreamWriter("logfile.txt");
 				logfileWriter.AutoFlush = true;
-				logfileOutput = new TextWriterLogOutput(logfileWriter);
-				Logs.AddGlobalOutput(logfileOutput);
+				this.disposables.Push(logfileWriter);
+
+				this.AddGlobalOutput(new TextWriterLogOutput(logfileWriter));
 			}
 			catch (Exception e)
 			{
@@ -68,18 +70,13 @@ namespace Duality.Launcher
 
 				// Enter the applications update / render loop
 				window.Run();
-
-				// Shut down the Duality core
-				DualityApp.Terminate();
 			}
+		}
 
-			// Clean up the log file
-			if (logfileWriter != null)
-			{
-				Logs.RemoveGlobalOutput(logfileOutput);
-				logfileWriter.Flush();
-				logfileWriter.Close();
-			}
+		public void AddGlobalOutput(ILogOutput logOutput)
+		{
+			this.logOutputs.Add(logOutput);
+			Logs.AddGlobalOutput(logOutput);
 		}
 
 		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -93,7 +90,22 @@ namespace Duality.Launcher
 
 		public void Dispose()
 		{
+			// Shut down the Duality core
+			DualityApp.Terminate();
+
 			AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+
+			foreach (ILogOutput logOutput in this.logOutputs)
+			{
+				Logs.RemoveGlobalOutput(logOutput);
+			}
+			this.logOutputs.Clear();
+
+			foreach (IDisposable disposable in this.disposables)
+			{
+				disposable.Dispose();
+			}
+			this.disposables.Clear();
 		}
 	}
 }
