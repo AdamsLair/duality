@@ -4,7 +4,16 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Version>4.0.0-alpha3</Version>
 		<Copyright>Copyright © Duality Core Team 2020</Copyright>
-	</PropertyGroup>
+	
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
 
 	<ItemGroup>
 		<PackageReference Include="NVorbis" Version="0.10.1" GeneratePathProperty="true" />
