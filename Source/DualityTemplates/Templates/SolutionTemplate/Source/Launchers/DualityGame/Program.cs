@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Duality;
 using Duality.Launcher;
 
 namespace DualityGame
@@ -10,10 +8,14 @@ namespace DualityGame
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			bool isDebugging = System.Diagnostics.Debugger.IsAttached || args.Contains(DualityApp.CmdArgDebug);
-			bool isRunFromEditor = args.Contains(DualityApp.CmdArgEditor);
-			if (isDebugging || isRunFromEditor) ShowConsole();
-			DualityLauncher.Run(args);
+			var launcherArgs = new LauncherArgs(args);
+
+			if (launcherArgs.IsDebugging|| launcherArgs.IsRunFromEditor) ShowConsole();
+
+			using (var launcher = new DualityLauncher(launcherArgs))
+			{
+				launcher.Run();
+			}
 		}
 
 		private static bool hasConsole = false;

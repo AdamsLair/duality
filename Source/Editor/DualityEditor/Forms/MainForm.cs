@@ -16,6 +16,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 using AdamsLair.WinForms.ItemModels;
 using AdamsLair.WinForms.ItemViews;
+using Duality.Launcher;
 
 namespace Duality.Editor.Forms
 {
@@ -494,7 +495,7 @@ namespace Duality.Editor.Forms
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
 			startInfo.FileName = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
-			startInfo.Arguments = DualityApp.CmdArgEditor;
+			startInfo.Arguments = LauncherArgs.CmdArgEditor;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
 
@@ -508,7 +509,7 @@ namespace Duality.Editor.Forms
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
 			startInfo.FileName = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
-			startInfo.Arguments = DualityApp.CmdArgEditor + " " + DualityApp.CmdArgDebug;
+			startInfo.Arguments = LauncherArgs.CmdArgEditor + " " + LauncherArgs.CmdArgDebug;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
 
@@ -522,7 +523,7 @@ namespace Duality.Editor.Forms
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
 			startInfo.FileName = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
-			startInfo.Arguments = DualityApp.CmdArgEditor + " " + DualityApp.CmdArgProfiling;
+			startInfo.Arguments = LauncherArgs.CmdArgEditor + " " + LauncherArgs.CmdArgProfiling;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
 

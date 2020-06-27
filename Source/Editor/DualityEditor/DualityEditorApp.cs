@@ -24,6 +24,7 @@ using Duality.Editor.UndoRedoActions;
 using Duality.Editor.AssetManagement;
 
 using WeifenLuo.WinFormsUI.Docking;
+using Duality.Launcher;
 
 namespace Duality.Editor
 {
@@ -221,7 +222,7 @@ namespace Duality.Editor
 				DualityApp.ExecutionEnvironment.Editor, 
 				DualityApp.ExecutionContext.Editor, 
 				new DefaultAssemblyLoader(), 
-				null);
+				new LauncherArgs());
 
 			// Initialize the plugin manager for the editor. We'll use the same loader as the core.
 			pluginManager.Init(DualityApp.PluginManager.AssemblyLoader);

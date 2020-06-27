@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
-using Duality.Backend;
-
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using Duality.Launcher;
 
 namespace Duality.Tests
 {
@@ -12,14 +11,13 @@ namespace Duality.Tests
 	{
 		private	string				oldEnvDir			= null;
 		private	CorePlugin			unitTestPlugin		= null;
-		private	INativeWindow		dummyWindow			= null;
-		private	TextWriterLogOutput	consoleLogOutput	= null;
 
 		public ActionTargets Targets
 		{
 			get { return ActionTargets.Suite; }
 		}
 
+		private DualityLauncher launcher;
 		public InitDualityAttribute() {}
 		public void BeforeTest(ITest details)
 		{
@@ -33,48 +31,27 @@ namespace Duality.Tests
 			Console.WriteLine("Testing Core Assembly: {0}", codeBasePath);
 			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);
 
-			// Add some Console logs manually for NUnit
-			if (this.consoleLogOutput == null)
-				this.consoleLogOutput = new TextWriterLogOutput(Console.Out);
-			Logs.AddGlobalOutput(this.consoleLogOutput);
-
-			// Initialize Duality
-			DualityApp.Init(
-				DualityApp.ExecutionEnvironment.Launcher, 
-				DualityApp.ExecutionContext.Game, 
-				new DefaultAssemblyLoader(),
-				null);
-
+			if (this.launcher == null)
+			{
+				this.launcher = new DualityLauncher();
+			}
+			
 			// Manually register pseudo-plugin for the Unit Testing Assembly
 			this.unitTestPlugin = DualityApp.PluginManager.LoadPlugin(
 				typeof(DualityTestsPlugin).Assembly, 
 				codeBasePath);
-
-			// Create a dummy window, to get access to all the device contexts
-			if (this.dummyWindow == null)
-			{
-				WindowOptions options = new WindowOptions();
-				this.dummyWindow = DualityApp.OpenWindow(options);
-			}
 
 			Console.WriteLine("----- Duality environment setup complete -----");
 		}
 		public void AfterTest(ITest details)
 		{
 			Console.WriteLine("----- Beginning Duality environment teardown -----");
-			
-			// Remove NUnit Console logs
-			Logs.RemoveGlobalOutput(this.consoleLogOutput);
-			this.consoleLogOutput = null;
 
-			if (this.dummyWindow != null)
+			if (this.launcher != null)
 			{
-				ContentProvider.ClearContent();
-			    this.dummyWindow.Dispose();
-			    this.dummyWindow = null;
+				this.launcher.Dispose();
 			}
 
-			DualityApp.Terminate();
 			Environment.CurrentDirectory = this.oldEnvDir;
 
 			Console.WriteLine("----- Duality environment teardown complete -----");

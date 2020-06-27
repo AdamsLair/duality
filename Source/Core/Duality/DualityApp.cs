@@ -13,6 +13,7 @@ using Duality.Audio;
 using Duality.Cloning;
 using Duality.Input;
 using Duality.IO;
+using Duality.Launcher;
 
 namespace Duality
 {
@@ -64,9 +65,6 @@ namespace Duality
 			Editor
 		}
 
-		public const string CmdArgDebug     = "debug";
-		public const string CmdArgEditor    = "editor";
-		public const string CmdArgProfiling = "profile";
 		public const string PluginDirectory = "Plugins";
 		public const string DataDirectory   = "Data";
 
@@ -296,26 +294,22 @@ namespace Duality
 		/// <param name="env"></param>
 		/// <param name="context">The <see cref="ExecutionContext"/> in which Duality runs.</param>
 		/// <param name="plugins"></param>
-		/// <param name="commandLineArgs">
+		/// <param name="launcherArgs">
 		/// Command line arguments to run this DualityApp with. 
 		/// Usually these are just the ones from the host application, passed on.
 		/// </param>
-		public static void Init(ExecutionEnvironment env, ExecutionContext context, IAssemblyLoader plugins, string[] commandLineArgs)
+		public static void Init(ExecutionEnvironment env, ExecutionContext context, IAssemblyLoader plugins, LauncherArgs launcherArgs)
 		{
 			if (initialized) return;
 
 			// Process command line options
-			if (commandLineArgs != null)
-			{
-				// Enter debug mode
-				if (commandLineArgs.Contains(CmdArgDebug)) System.Diagnostics.Debugger.Launch();
-				// Run from editor
-				if (commandLineArgs.Contains(CmdArgEditor)) runFromEditor = true;
-			}
+			if (launcherArgs.IsDebugging) System.Diagnostics.Debugger.Launch();
+			// Run from editor
+			if (launcherArgs.IsRunFromEditor) runFromEditor = true;
 
 			// If the core was compiled in debug mode and a debugger is attached, log 
 			// to the Debug channel, so we can put the VS output window to good use.
-			#if DEBUG
+#if DEBUG
 			bool isDebugging = System.Diagnostics.Debugger.IsAttached;
 			if (isDebugging)
 			{
@@ -393,7 +387,7 @@ namespace Duality
 				"Debug Mode: {0}" + Environment.NewLine +
 				"Command line arguments: {1}",
 				System.Diagnostics.Debugger.IsAttached,
-				commandLineArgs != null ? commandLineArgs.ToString(", ") : "null");
+				launcherArgs.ToString());
 		}
 		/// <summary>
 		/// Opens up a window for Duality to render into. This also initializes the part of Duality that requires a 
