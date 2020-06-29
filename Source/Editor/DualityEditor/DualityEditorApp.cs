@@ -131,6 +131,19 @@ namespace Duality.Editor
 		{
 			get { return firstEditorSession; }
 		}
+
+		private static DualityProjectSettings projectSettings = null;
+
+		/// <summary>
+		/// [GET / SET] Provides access to Duality's current <see cref="DualityProjectSettings">application data</see>. This is never null.
+		/// Any kind of data change event is fired as soon as you re-assign this property. Be sure to do that after changing its data.
+		/// </summary>
+		public static DualityProjectSettings ProjectSettings
+		{
+			get { return projectSettings; }
+			set { projectSettings = value ?? throw new ArgumentNullException($"You cannot assign null to {nameof(ProjectSettings)}"); }
+		}
+
 		public static bool BackupsEnabled
 		{
 			get { return backupsEnabled; }
@@ -141,30 +154,7 @@ namespace Duality.Editor
 			get { return autosaveFrequency; }
 			set { autosaveFrequency = value; }
 		}
-		public static string LauncherAppPath
-		{
-			get
-			{
-				string launcherPath = string.IsNullOrWhiteSpace(launcherApp) ? EditorHelper.DualityLauncherExecFile : launcherApp;
-				if (File.Exists(launcherPath)) return launcherPath;
 
-				if (!Path.IsPathRooted(launcherPath))
-				{
-					string appDirLauncherApp = Path.Combine(PathHelper.ExecutingAssemblyDir, launcherPath);
-					if (File.Exists(appDirLauncherApp)) return appDirLauncherApp;
-				}
-
-				return EditorHelper.DualityLauncherExecFile;
-			}
-			set
-			{
-				if (Path.GetFullPath(value) == Path.GetFullPath(EditorHelper.DualityLauncherExecFile)) value = null;
-				if (value != launcherApp)
-				{
-					launcherApp = value;
-				}
-			}
-		}
 		private static bool AppStillIdle
 		{
 			 get
@@ -173,8 +163,7 @@ namespace Duality.Editor
 				return !NativeMethods.PeekMessage(out msg, IntPtr.Zero, 0, 0, 0);
 			 }
 		}
-		
-		
+
 		public static void Init(MainForm mainForm, bool recover)
 		{
 			DualityEditorApp.needsRecovery = recover;
@@ -233,6 +222,11 @@ namespace Duality.Editor
 			// Need to initialize graphics context and default content before instantiating anything that could require any of them
 			InitMainGraphicsContext();
 			DualityApp.InitPostWindow();
+
+			ProjectSettings = DualityProjectSettings.Load();
+			ProjectSettings.Save();
+
+			mainForm.UpdateLaunchAppActions();
 
 			LoadUserData();
 			pluginManager.InitPlugins();
@@ -1016,6 +1010,8 @@ namespace Duality.Editor
 						DualityApp.SaveAppData();
 					else if (args.Objects.OtherObjects.Any(o => o is DualityUserData))
 						DualityApp.SaveUserData();
+					if (args.Objects.OtherObjects.Any(o => o is DualityProjectSettings))
+						ProjectSettings.Save();
 				}
 			}
 

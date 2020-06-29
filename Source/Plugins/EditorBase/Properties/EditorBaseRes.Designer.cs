@@ -524,6 +524,15 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Project Settings.
+        /// </summary>
+        internal static string MenuItemName_ProjectSettings {
+            get {
+                return ResourceManager.GetString("MenuItemName_ProjectSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove.
         /// </summary>
         internal static string MenuItemName_RemoveComponent {

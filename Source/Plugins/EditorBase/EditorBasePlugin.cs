@@ -82,6 +82,11 @@ namespace Duality.Editor.Plugins.Base
 				{
 					Name = EditorBaseRes.MenuItemName_UserData,
 					ActionHandler = this.menuItemUserData_Click
+				},
+				new MenuModelItem
+				{
+					Name = EditorBaseRes.MenuItemName_ProjectSettings,
+					ActionHandler = this.menuItemProjectSettings_Click
 				}
 			});
 
@@ -142,6 +147,11 @@ namespace Duality.Editor.Plugins.Base
 		private void menuItemUserData_Click(object sender, EventArgs e)
 		{
 			DualityEditorApp.Select(this, new ObjectSelection(new [] { DualityApp.UserData }));
+		}
+
+		private void menuItemProjectSettings_Click(object sender, EventArgs e)
+		{
+			DualityEditorApp.Select(this, new ObjectSelection(new[] { DualityEditorApp.ProjectSettings }));
 		}
 
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
