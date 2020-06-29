@@ -132,17 +132,10 @@ namespace Duality.Editor
 			get { return firstEditorSession; }
 		}
 
-		private static DualityProjectSettings projectSettings = null;
-
 		/// <summary>
-		/// [GET / SET] Provides access to Duality's current <see cref="DualityProjectSettings">application data</see>. This is never null.
-		/// Any kind of data change event is fired as soon as you re-assign this property. Be sure to do that after changing its data.
+		/// [GET] Provides access to Duality's current <see cref="DualityProjectSettings">application data</see>. This is never null.
 		/// </summary>
-		public static DualityProjectSettings ProjectSettings
-		{
-			get { return projectSettings; }
-			set { projectSettings = value ?? throw new ArgumentNullException($"You cannot assign null to {nameof(ProjectSettings)}"); }
-		}
+		public static SettingsContainer<DualityProjectSettings> ProjectSettings { get; } = new SettingsContainer<DualityProjectSettings>("ProjectSettings.dat");
 
 		public static bool BackupsEnabled
 		{
@@ -223,7 +216,7 @@ namespace Duality.Editor
 			InitMainGraphicsContext();
 			DualityApp.InitPostWindow();
 
-			ProjectSettings = DualityProjectSettings.Load();
+			ProjectSettings.Load();
 			ProjectSettings.Save();
 
 			mainForm.UpdateLaunchAppActions();
