@@ -86,7 +86,6 @@ namespace Duality
 		private static SoundDevice             sound              = null;
 		private static ExecutionEnvironment    environment        = ExecutionEnvironment.Unknown;
 		private static ExecutionContext        execContext        = ExecutionContext.Terminated;
-		private static DualityAppData          appData            = null;
 		private static DualityUserData         userData           = null;
 		private static List<object>            disposeSchedule    = new List<object>();
 		
@@ -110,10 +109,7 @@ namespace Duality
 		/// Called when the games UserData changes
 		/// </summary>
 		public static event EventHandler UserDataChanged = null;
-		/// <summary>
-		/// Called when the games AppData changes
-		/// </summary>
-		public static event EventHandler AppDataChanged = null;
+
 		/// <summary>
 		/// Called when Duality is being terminated by choice (e.g. not because of crashes or similar).
 		/// It is also called in an editor environment.
@@ -180,7 +176,7 @@ namespace Duality
 		{
 			get
 			{
-				Point2 forcedRenderSize = DualityApp.AppData.ForcedRenderSize;
+				Point2 forcedRenderSize = DualityApp.AppData.Value.ForcedRenderSize;
 				if (forcedRenderSize.X > 0 && forcedRenderSize.Y > 0)
 					return forcedRenderSize;
 				else
@@ -232,18 +228,9 @@ namespace Duality
 		}
 		/// <summary>
 		/// [GET / SET] Provides access to Duality's current <see cref="DualityAppData">application data</see>. This is never null.
-		/// Any kind of data change event is fired as soon as you re-assign this property. Be sure to do that after changing its data.
 		/// </summary>
-		public static DualityAppData AppData
-		{
-			get { return appData; }
-			set 
-			{ 
-				appData = value ?? new DualityAppData();
-				// We're currently missing direct changes without invoking this setter
-				OnAppDataChanged();
-			}
-		}
+		public static SettingsContainer<DualityAppData> AppData { get; } = new SettingsContainer<DualityAppData>("AppData.dat");
+
 		/// <summary>
 		/// [GET / SET] Provides access to Duality's current <see cref="DualityUserData">user data</see>. This is never null.
 		/// Any kind of data change event is fired as soon as you re-assign this property. Be sure to do that after changing its data.
@@ -257,13 +244,6 @@ namespace Duality
 				// We're currently missing direct changes without invoking this setter
 				OnUserDataChanged();
 			}
-		}
-		/// <summary>
-		/// [GET] Returns the path where this DualityApp's <see cref="DualityAppData">application data</see> is located at.
-		/// </summary>
-		public static string AppDataPath
-		{
-			get { return "AppData.dat"; }
 		}
 		/// <summary>
 		/// [GET] Returns the path where this DualityApp's <see cref="DualityUserData">user data</see> is located at.
@@ -364,9 +344,8 @@ namespace Duality
 			InitBackend(out systemBack);
 
 			// Load application and user data and submit a change event, so all settings are applied
-			LoadAppData();
+			DualityApp.AppData.Load();
 			LoadUserData();
-			OnAppDataChanged();
 			OnUserDataChanged();
 
 			// Initialize the graphics backend
@@ -636,8 +615,8 @@ namespace Duality
 		/// <param name="renderTargetSize"></param>
 		public static void CalculateGameViewport(Point2 windowSize, out Rect windowViewport, out Vector2 renderTargetSize)
 		{
-			Point2 forcedSize = DualityApp.AppData.ForcedRenderSize;
-			TargetResize forcedResizeMode = DualityApp.AppData.ForcedRenderResizeMode;
+			Point2 forcedSize = DualityApp.AppData.Value.ForcedRenderSize;
+			TargetResize forcedResizeMode = DualityApp.AppData.Value.ForcedRenderResizeMode;
 
 			renderTargetSize = windowSize;
 			windowViewport = new Rect(renderTargetSize);
@@ -705,13 +684,6 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Triggers Duality to (re)load its <see cref="DualityAppData"/>.
-		/// </summary>
-		public static void LoadAppData()
-		{
-			appData = Serializer.TryReadObject<DualityAppData>(AppDataPath) ?? new DualityAppData();
-		}
-		/// <summary>
 		/// Triggers Duality to (re)load its <see cref="DualityUserData"/>.
 		/// </summary>
 		public static void LoadUserData()
@@ -720,13 +692,7 @@ namespace Duality
 			if (!FileOp.Exists(path) || execContext == ExecutionContext.Editor || runFromEditor) path = "DefaultUserData.dat";
 			userData = Serializer.TryReadObject<DualityUserData>(path) ?? new DualityUserData();
 		}
-		/// <summary>
-		/// Triggers Duality to save its <see cref="DualityAppData"/>.
-		/// </summary>
-		public static void SaveAppData()
-		{
-			Serializer.WriteObject(appData, AppDataPath, typeof(XmlSerializer));
-		}
+
 		/// <summary>
 		/// Triggers Duality to save its <see cref="DualityUserData"/>.
 		/// </summary>
@@ -808,9 +774,8 @@ namespace Duality
 			T selectedBackend = null;
 			foreach (T backend in backends)
 			{
-				if (appData != null && 
-					appData.SkipBackends != null && 
-					appData.SkipBackends.Any(s => string.Equals(s, backend.Id, StringComparison.OrdinalIgnoreCase)))
+				if (DualityApp.AppData.Value.SkipBackends != null && 
+					DualityApp.AppData.Value.SkipBackends.Any(s => string.Equals(s, backend.Id, StringComparison.OrdinalIgnoreCase)))
 				{
 					Logs.Core.Write("Backend '{0}' skipped because of AppData settings.", backend.Name);
 					continue;
@@ -895,11 +860,6 @@ namespace Duality
 			if (UserDataChanged != null)
 				UserDataChanged(null, EventArgs.Empty);
 		}
-		private static void OnAppDataChanged()
-		{
-			if (AppDataChanged != null)
-				AppDataChanged(null, EventArgs.Empty);
-		}
 		private static void OnTerminating()
 		{
 			if (Terminating != null)
@@ -911,7 +871,7 @@ namespace Duality
 			// Save user and app data, they'll be reloaded after plugin reload is done,
 			// as they can reference plugin data as well.
 			SaveUserData();
-			SaveAppData();
+			DualityApp.AppData.Save();
 
 			// Dispose static Resources that could reference plugin data
 			VisualLogs.ClearAll();
@@ -959,7 +919,7 @@ namespace Duality
 				CleanEventBindings(plugin.PluginAssembly);
 
 			// Reload user and app data
-			LoadAppData();
+			DualityApp.AppData.Load();
 			LoadUserData();
 		}
 

@@ -67,7 +67,7 @@ namespace Duality.Launcher
 				Size = DualityApp.UserData.WindowSize,
 				ScreenMode = launcherArgs.IsDebugging ? ScreenMode.Window : DualityApp.UserData.WindowMode,
 				RefreshMode = launcherArgs.IsProfiling ? RefreshMode.NoSync : DualityApp.UserData.WindowRefreshMode,
-				Title = DualityApp.AppData.AppName,
+				Title = DualityApp.AppData.Value.AppName,
 				SystemCursorVisible = launcherArgs.IsDebugging || DualityApp.UserData.SystemCursorVisible
 			};
 			this.window = DualityApp.OpenWindow(options);

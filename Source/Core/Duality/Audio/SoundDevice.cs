@@ -116,7 +116,7 @@ namespace Duality.Audio
 
 		public SoundDevice()
 		{
-			DualityApp.AppDataChanged += this.DualityApp_AppDataChanged;
+			DualityApp.AppData.Changed += this.DualityApp_AppDataChanged;
 			UpdateWorldSettings();
 		}
 		~SoundDevice()
@@ -133,7 +133,7 @@ namespace Duality.Audio
 			if (!this.disposed)
 			{
 				this.disposed = true;
-				DualityApp.AppDataChanged -= this.DualityApp_AppDataChanged;
+				DualityApp.AppData.Changed -= this.DualityApp_AppDataChanged;
 
 				// Clear all playing sounds
 				foreach (SoundInstance inst in this.sounds) inst.Dispose();
@@ -225,8 +225,8 @@ namespace Duality.Audio
 		private void UpdateWorldSettings()
 		{
 			DualityApp.AudioBackend.UpdateWorldSettings(
-				DualityApp.AppData.SpeedOfSound, // Already in meters per second / audio units
-				DualityApp.AppData.SoundDopplerFactor);
+				DualityApp.AppData.Value.SpeedOfSound, // Already in meters per second / audio units
+				DualityApp.AppData.Value.SoundDopplerFactor);
 		}
 		
 		/// <summary>

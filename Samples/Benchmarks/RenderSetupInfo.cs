@@ -64,7 +64,7 @@ namespace Duality.Samples.Benchmarks
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 			{
-				this.renderSetup = DualityApp.AppData.RenderingSetup.As<BenchmarkRenderSetup>();
+				this.renderSetup = DualityApp.AppData.Value.RenderingSetup.As<BenchmarkRenderSetup>();
 				this.text = new FormattedText();
 				this.text.LineAlign = Alignment.Right;
 				this.text.MaxWidth = 200;

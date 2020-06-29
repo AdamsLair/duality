@@ -199,12 +199,12 @@ namespace Duality.Samples.Benchmarks
 			this.renderSetup = ContentProvider.GetAvailableContent<BenchmarkRenderSetup>().FirstOrDefault();
 
 			// Make sure the benchmark setup is used globally
-			DualityApp.AppData.RenderingSetup = this.renderSetup.As<RenderSetup>();
+			DualityApp.AppData.Value.RenderingSetup = this.renderSetup.As<RenderSetup>();
 		}
 		public void LeaveBenchmarkMode()
 		{
 			// Uninstall the benchmark setup we set globally
-			DualityApp.AppData.RenderingSetup = null;
+			DualityApp.AppData.Value.RenderingSetup = null;
 
 			// Discard local references to content, since we know the controller 
 			// itself won't be discarded due to being static

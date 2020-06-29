@@ -85,7 +85,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get
 			{
-				return DualityApp.AppData.MultisampleBackBuffer ?
+				return DualityApp.AppData.Value.MultisampleBackBuffer ?
 					DualityApp.UserData.AntialiasingQuality : 
 					AAQuality.Off;
 			}
@@ -99,11 +99,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get
 			{
 				bool isUsingForcedSize = 
-					DualityApp.AppData.ForcedRenderResizeMode != TargetResize.None &&
-					DualityApp.AppData.ForcedRenderSize.X != 0 && 
-					DualityApp.AppData.ForcedRenderSize.Y != 0;
+					DualityApp.AppData.Value.ForcedRenderResizeMode != TargetResize.None &&
+					DualityApp.AppData.Value.ForcedRenderSize.X != 0 && 
+					DualityApp.AppData.Value.ForcedRenderSize.Y != 0;
 				return isUsingForcedSize ? 
-					DualityApp.AppData.ForcedRenderSize : 
+					DualityApp.AppData.Value.ForcedRenderSize : 
 					DualityApp.UserData.WindowSize;
 			}
 		}

@@ -668,7 +668,7 @@ namespace Duality.Editor
 			
 			// Rename in static application data
 			state.StateDesc = "DualityApp Data"; yield return null;
-			DualityApp.LoadAppData();
+			DualityApp.AppData.Load();
 			DualityApp.LoadUserData();
 			state.Progress += 0.04f; yield return null;
 
@@ -676,7 +676,7 @@ namespace Duality.Editor
 			totalCounter += async_RenameContentRefs_Perform(DualityApp.UserData, renameData);
 			state.Progress += 0.02f; yield return null;
 
-			DualityApp.SaveAppData();
+			DualityApp.AppData.Save();
 			DualityApp.SaveUserData();
 			state.Progress += 0.04f; yield return null;
 

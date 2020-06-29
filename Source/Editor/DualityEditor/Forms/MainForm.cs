@@ -472,7 +472,7 @@ namespace Duality.Editor.Forms
 
 			// Save UserData before quitting
 			DualityEditorApp.SaveUserData();
-			DualityApp.SaveAppData();
+			DualityApp.AppData.Save();
 
 			bool isClosedByUser = 
 				isUserCloseReason && 
@@ -678,11 +678,11 @@ namespace Duality.Editor.Forms
 		private System.Collections.IEnumerable async_ChangeDataFormat(ProcessingBigTaskDialog.WorkerInterface state)
 		{
 			state.StateDesc = "DualityApp Data"; yield return null;
-			DualityApp.LoadAppData();
+			DualityApp.AppData.Save();
 			DualityApp.LoadUserData();
 			state.Progress += 0.05f; yield return null;
-					
-			DualityApp.SaveAppData();
+
+			DualityApp.AppData.Save();
 			DualityApp.SaveUserData();
 			state.Progress += 0.05f; yield return null;
 
@@ -810,27 +810,27 @@ namespace Duality.Editor.Forms
 		}
 		private void VerifyStartScene()
 		{
-			if (DualityApp.AppData.StartScene != null) return;
+			if (DualityApp.AppData.Value.StartScene != null) return;
 
 			// If there is no StartScene defined, attempt to find one automatically.
 			if (!Scene.Current.IsRuntimeResource)
 			{
-				DualityApp.AppData.StartScene = Scene.Current;
-				DualityApp.SaveAppData();
+				DualityApp.AppData.Value.StartScene = Scene.Current;
+				DualityApp.AppData.Save();
 			}
 			else
 			{
 				ContentRef<Scene> existingScene = ContentProvider.GetAvailableContent<Scene>().FirstOrDefault();
 				if (existingScene != null)
 				{
-					DualityApp.AppData.StartScene = existingScene;
-					DualityApp.SaveAppData();
+					DualityApp.AppData.Value.StartScene = existingScene;
+					DualityApp.AppData.Save();
 				}
 				else if (!Scene.Current.IsEmpty)
 				{
 					DualityEditorApp.SaveCurrentScene(false);
-					DualityApp.AppData.StartScene = Scene.Current;
-					DualityApp.SaveAppData();
+					DualityApp.AppData.Value.StartScene = Scene.Current;
+					DualityApp.AppData.Save();
 				}
 			}
 		}
