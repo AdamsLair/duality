@@ -678,12 +678,12 @@ namespace Duality.Editor.Forms
 		private System.Collections.IEnumerable async_ChangeDataFormat(ProcessingBigTaskDialog.WorkerInterface state)
 		{
 			state.StateDesc = "DualityApp Data"; yield return null;
-			DualityApp.AppData.Save();
-			DualityApp.LoadUserData();
+			DualityApp.AppData.Load();
+			DualityApp.UserData.Load();
 			state.Progress += 0.05f; yield return null;
 
 			DualityApp.AppData.Save();
-			DualityApp.SaveUserData();
+			DualityApp.UserData.Save();
 			state.Progress += 0.05f; yield return null;
 
 			// Special case: Current Scene in sandbox mode

@@ -412,7 +412,7 @@ namespace Duality.Backend.DefaultOpenTK
 			int targetAALevel = highestAALevel;
 			if (DualityApp.AppData.Value.MultisampleBackBuffer)
 			{
-				switch (DualityApp.UserData.AntialiasingQuality)
+				switch (DualityApp.UserData.Value.AntialiasingQuality)
 				{
 					case AAQuality.High:	targetAALevel = highestAALevel;		break;
 					case AAQuality.Medium:	targetAALevel = highestAALevel / 2; break;

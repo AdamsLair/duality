@@ -563,7 +563,7 @@ namespace Duality.Editor
 				// from them at some point, so the editor can use independent settings.
 				mainGraphicsContext = graphicsBack.CreateContext(
 					DualityApp.AppData.Value.MultisampleBackBuffer ?
-					DualityApp.UserData.AntialiasingQuality :
+					DualityApp.UserData.Value.AntialiasingQuality :
 					AAQuality.Off);
 			}
 			catch (Exception e)
@@ -996,15 +996,9 @@ namespace Duality.Editor
 				}
 
 				// If DualityAppData or DualityUserData is modified, save it
-				if (args.Objects.OtherObjectCount > 0)
+				foreach (var settings in args.Objects.OfType<ISettingsContainer>())
 				{
-					// This is probably not the best idea for generalized behaviour, but sufficient for now
-					if (args.Objects.OtherObjects.Any(o => o is DualityAppData))
-						DualityApp.AppData.Save();
-					else if (args.Objects.OtherObjects.Any(o => o is DualityUserData))
-						DualityApp.SaveUserData();
-					if (args.Objects.OtherObjects.Any(o => o is DualityProjectSettings))
-						ProjectSettings.Save();
+					settings.Save();
 				}
 			}
 

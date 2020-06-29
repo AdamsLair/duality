@@ -176,7 +176,7 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			DualityApp.Mouse.Source = new GameWindowMouseInputSource(this.internalWindow);
 			DualityApp.Keyboard.Source = new GameWindowKeyboardInputSource(this.internalWindow);
-			DualityApp.UserDataChanged += this.OnUserDataChanged;
+			DualityApp.UserData.Changed += this.OnUserDataChanged;
 		}
 		internal void UnhookFromDuality()
 		{
@@ -184,7 +184,7 @@ namespace Duality.Backend.DefaultOpenTK
 				DualityApp.Mouse.Source = null;
 			if (DualityApp.Keyboard.Source is GameWindowKeyboardInputSource)
 				DualityApp.Keyboard.Source = null;
-			DualityApp.UserDataChanged -= this.OnUserDataChanged;
+			DualityApp.UserData.Changed -= this.OnUserDataChanged;
 		}
 
 		private void OnUserDataChanged(object sender, EventArgs e)
@@ -193,22 +193,22 @@ namespace Duality.Backend.DefaultOpenTK
 			if (DisplayDevice.Default == null) return;
 
 			// Determine the target state for our window
-			MouseCursor targetCursor = DualityApp.UserData.SystemCursorVisible ? MouseCursor.Default : MouseCursor.Empty;
+			MouseCursor targetCursor = DualityApp.UserData.Value.SystemCursorVisible ? MouseCursor.Default : MouseCursor.Empty;
 			WindowState targetWindowState = this.internalWindow.WindowState;
 			WindowBorder targetWindowBorder = this.internalWindow.WindowBorder;
 			Size targetSize = this.internalWindow.ClientSize;
-			switch (DualityApp.UserData.WindowMode)
+			switch (DualityApp.UserData.Value.WindowMode)
 			{
 				case ScreenMode.Window:
 					targetWindowState = WindowState.Normal;
 					targetWindowBorder = WindowBorder.Resizable;
-					targetSize = new Size(DualityApp.UserData.WindowSize.X, DualityApp.UserData.WindowSize.Y);
+					targetSize = new Size(DualityApp.UserData.Value.WindowSize.X, DualityApp.UserData.Value.WindowSize.Y);
 					break;
 
 				case ScreenMode.FixedWindow:
 					targetWindowState = WindowState.Normal;
 					targetWindowBorder = WindowBorder.Fixed;
-					targetSize = new Size(DualityApp.UserData.WindowSize.X, DualityApp.UserData.WindowSize.Y);
+					targetSize = new Size(DualityApp.UserData.Value.WindowSize.X, DualityApp.UserData.Value.WindowSize.Y);
 					break;
 
 				case ScreenMode.FullWindow:
