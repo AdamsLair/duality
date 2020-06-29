@@ -14,7 +14,6 @@ using System.Text.RegularExpressions;
 using Duality;
 using Duality.IO;
 using Duality.Components;
-using Duality.Serialization;
 using Duality.Resources;
 using Duality.Drawing;
 using Duality.Backend;
