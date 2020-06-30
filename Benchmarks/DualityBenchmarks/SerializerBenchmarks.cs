@@ -5,6 +5,7 @@ using Duality.Serialization;
 using BenchmarkDotNet.Attributes;
 using Duality;
 using Duality.Backend;
+using Duality.Launcher;
 
 namespace DualityBenchmarks
 {
@@ -27,7 +28,7 @@ namespace DualityBenchmarks
 				DualityApp.ExecutionEnvironment.Launcher,
 				DualityApp.ExecutionContext.Game,
 				new DefaultAssemblyLoader(),
-				null);
+				new LauncherArgs());
 
 			this.results = new TestObject[this.N];
 			this.data = new TestObject(new Random(0), 5);
