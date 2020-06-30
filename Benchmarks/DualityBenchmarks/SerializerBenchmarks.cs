@@ -3,9 +3,8 @@ using System.IO;
 using Duality.Tests.Serialization;
 using Duality.Serialization;
 using BenchmarkDotNet.Attributes;
-using Duality;
-using Duality.Backend;
 using Duality.Launcher;
+using Duality.Tests;
 
 namespace DualityBenchmarks
 {
@@ -21,14 +20,12 @@ namespace DualityBenchmarks
 		private byte[] readData;
 		private TestObject data;
 
+		private DualityTestLauncher launcher;
+
 		[GlobalSetup]
 		public void Setup()
 		{
-			DualityApp.Init(
-				DualityApp.ExecutionEnvironment.Launcher,
-				DualityApp.ExecutionContext.Game,
-				new DefaultAssemblyLoader(),
-				new LauncherArgs());
+			this.launcher = new DualityTestLauncher();
 
 			this.results = new TestObject[this.N];
 			this.data = new TestObject(new Random(0), 5);
@@ -39,7 +36,7 @@ namespace DualityBenchmarks
 		[GlobalCleanup]
 		public void Cleanup()
 		{
-			DualityApp.Terminate();
+			this.launcher.Dispose();
 		}
 
 		[Benchmark]

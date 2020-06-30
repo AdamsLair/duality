@@ -1,45 +1,37 @@
 ﻿using System;
-using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
-using Duality.Launcher;
 
 namespace Duality.Tests
 {
+
 	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
 	public class InitDualityAttribute : Attribute, ITestAction
 	{
-		private	string				oldEnvDir			= null;
-		private	CorePlugin			unitTestPlugin		= null;
+		private DualityTestLauncher launcher;
+		private CorePlugin unitTestPlugin = null;
 
 		public ActionTargets Targets
 		{
 			get { return ActionTargets.Suite; }
 		}
 
-		private DualityLauncher launcher;
-		public InitDualityAttribute() {}
+		public InitDualityAttribute() { }
+
+
 		public void BeforeTest(ITest details)
 		{
 			Console.WriteLine("----- Beginning Duality environment setup -----");
 
-			// Set environment directory to Duality binary directory
-			this.oldEnvDir = Environment.CurrentDirectory;
-			string codeBaseURI = typeof(DualityApp).Assembly.CodeBase;
-			string codeBasePath = codeBaseURI.StartsWith("file:") ? codeBaseURI.Remove(0, "file:".Length) : codeBaseURI;
-			codeBasePath = codeBasePath.TrimStart('/');
-			Console.WriteLine("Testing Core Assembly: {0}", codeBasePath);
-			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);
-
 			if (this.launcher == null)
 			{
-				this.launcher = new DualityLauncher();
+				this.launcher = new DualityTestLauncher();
 			}
-			
+
 			// Manually register pseudo-plugin for the Unit Testing Assembly
 			this.unitTestPlugin = DualityApp.PluginManager.LoadPlugin(
-				typeof(DualityTestsPlugin).Assembly, 
-				codeBasePath);
+				typeof(DualityTestsPlugin).Assembly,
+				this.launcher.CodeBasePath);
 
 			Console.WriteLine("----- Duality environment setup complete -----");
 		}
@@ -51,8 +43,6 @@ namespace Duality.Tests
 			{
 				this.launcher.Dispose();
 			}
-
-			Environment.CurrentDirectory = this.oldEnvDir;
 
 			Console.WriteLine("----- Duality environment teardown complete -----");
 		}
