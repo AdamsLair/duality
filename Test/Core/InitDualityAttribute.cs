@@ -1,8 +1,9 @@
 ﻿using System;
-using System.IO;
+
+using Duality.Launcher;
+
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
-using Duality.Launcher;
 
 namespace Duality.Tests
 {
@@ -25,21 +26,18 @@ namespace Duality.Tests
 
 			// Set environment directory to Duality binary directory
 			this.oldEnvDir = Environment.CurrentDirectory;
-			string codeBaseURI = typeof(DualityApp).Assembly.CodeBase;
-			string codeBasePath = codeBaseURI.StartsWith("file:") ? codeBaseURI.Remove(0, "file:".Length) : codeBaseURI;
-			codeBasePath = codeBasePath.TrimStart('/');
-			Console.WriteLine("Testing Core Assembly: {0}", codeBasePath);
-			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);
+			Console.WriteLine("Testing Core Assembly: {0}", TestContext.CurrentContext.TestDirectory);
+			Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
 
 			if (this.launcher == null)
 			{
 				this.launcher = new DualityLauncher();
 			}
-			
+
 			// Manually register pseudo-plugin for the Unit Testing Assembly
 			this.unitTestPlugin = DualityApp.PluginManager.LoadPlugin(
-				typeof(DualityTestsPlugin).Assembly, 
-				codeBasePath);
+				typeof(DualityTestsPlugin).Assembly,
+				typeof(DualityTestsPlugin).Assembly.Location);
 
 			Console.WriteLine("----- Duality environment setup complete -----");
 		}

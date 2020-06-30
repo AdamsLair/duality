@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 
-using Duality;
-using Duality.Serialization;
-using Duality.Backend;
-using Duality.Editor;
 using Duality.Editor.Forms;
 
 using NUnit.Framework;
@@ -34,11 +26,8 @@ namespace Duality.Editor.Tests
 
 			// Set environment directory to Duality binary directory
 			this.oldEnvDir = Environment.CurrentDirectory;
-			string codeBaseURI = typeof(DualityEditorApp).Assembly.CodeBase;
-			string codeBasePath = codeBaseURI.StartsWith("file:") ? codeBaseURI.Remove(0, "file:".Length) : codeBaseURI;
-			codeBasePath = codeBasePath.TrimStart('/');
-			Console.WriteLine("Testing Editor Assembly: {0}", codeBasePath);
-			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);
+			Console.WriteLine("Testing Editor Assembly: {0}", TestContext.CurrentContext.TestDirectory);
+			Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
 
 			// Add some Console logs manually for NUnit
 			if (this.consoleLogOutput == null)
