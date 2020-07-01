@@ -33,7 +33,7 @@ namespace Duality.Editor
 		public	const	string	EditorPrevLogfileName	= "logfile_editor_{0}.txt";
 		public	const	string	EditorPrevLogfileDir	= "Temp";
 		public	const	string	DesignTimeDataFile		= "DesignTimeData.dat";
-		public	const	string	UserDataFile			= "EditorUserData.xml";
+		public	const	string	UserDataFile			= "EditorUserData.dat";
 		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";
 
 		public	const	string	ActionContextMenu					= "ContextMenu";
@@ -132,9 +132,9 @@ namespace Duality.Editor
 		}
 
 		/// <summary>
-		/// [GET] Provides access to Duality's current <see cref="DualityProjectSettings">application data</see>. This is never null.
+		/// [GET] Provides access to Duality's current <see cref="EditorAppData">application data</see>. This is never null.
 		/// </summary>
-		public static SettingsContainer<DualityProjectSettings> ProjectSettings { get; } = new SettingsContainer<DualityProjectSettings>("ProjectSettings.dat");
+		public static SettingsContainer<EditorAppData> EditorAppData { get; } = new SettingsContainer<EditorAppData>("EditorAppData.dat");
 
 		public static bool BackupsEnabled
 		{
@@ -215,8 +215,8 @@ namespace Duality.Editor
 			InitMainGraphicsContext();
 			DualityApp.InitPostWindow();
 
-			ProjectSettings.Load();
-			ProjectSettings.Save();
+			EditorAppData.Load();
+			EditorAppData.Save();
 
 			mainForm.UpdateLaunchAppActions();
 

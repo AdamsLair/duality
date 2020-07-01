@@ -493,7 +493,7 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFullPath(DualityEditorApp.ProjectSettings.Value.LauncherPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.EditorAppData.Value.LauncherPath);
 			startInfo.Arguments = LauncherArgs.CmdArgEditor;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
@@ -507,7 +507,7 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFullPath(DualityEditorApp.ProjectSettings.Value.LauncherPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.EditorAppData.Value.LauncherPath);
 			startInfo.Arguments = LauncherArgs.CmdArgEditor + " " + LauncherArgs.CmdArgDebug;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
@@ -521,7 +521,7 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFullPath(DualityEditorApp.ProjectSettings.Value.LauncherPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.EditorAppData.Value.LauncherPath);
 			startInfo.Arguments = LauncherArgs.CmdArgEditor + " " + LauncherArgs.CmdArgProfiling;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
@@ -532,10 +532,10 @@ namespace Duality.Editor.Forms
 		private void actionConfigureLauncher_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog fileDialog = new OpenFileDialog();
-			fileDialog.InitialDirectory = Path.GetDirectoryName(DualityEditorApp.ProjectSettings.Value.LauncherPath);
+			fileDialog.InitialDirectory = Path.GetDirectoryName(DualityEditorApp.EditorAppData.Value.LauncherPath);
 			if (string.IsNullOrWhiteSpace(fileDialog.InitialDirectory))
 				fileDialog.InitialDirectory = Environment.CurrentDirectory;
-			fileDialog.FileName = Path.GetFileName(DualityEditorApp.ProjectSettings.Value.LauncherPath);
+			fileDialog.FileName = Path.GetFileName(DualityEditorApp.EditorAppData.Value.LauncherPath);
 			fileDialog.Filter = "Executable files (*.exe)|*.exe";
 			fileDialog.FilterIndex = 1;
 			fileDialog.RestoreDirectory = true;
@@ -546,8 +546,8 @@ namespace Duality.Editor.Forms
 			fileDialog.CustomPlaces.Add(Environment.CurrentDirectory);
 			if (fileDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				DualityEditorApp.ProjectSettings.Value.LauncherPath = PathHelper.MakeFilePathRelative(fileDialog.FileName);
-				DualityEditorApp.ProjectSettings.Save();
+				DualityEditorApp.EditorAppData.Value.LauncherPath = PathHelper.MakeFilePathRelative(fileDialog.FileName);
+				DualityEditorApp.EditorAppData.Save();
 				this.UpdateLaunchAppActions();
 			}
 		}
@@ -801,7 +801,7 @@ namespace Duality.Editor.Forms
 		}
 		public void UpdateLaunchAppActions()
 		{
-			bool launcherAvailable = File.Exists(DualityEditorApp.ProjectSettings.Value.LauncherPath);
+			bool launcherAvailable = File.Exists(DualityEditorApp.EditorAppData.Value.LauncherPath);
 			this.actionRunApp.Enabled = launcherAvailable;
 			this.actionDebugApp.Enabled = launcherAvailable;
 			this.menuRunApp.Enabled = launcherAvailable;

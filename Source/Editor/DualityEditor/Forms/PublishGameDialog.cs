@@ -204,7 +204,7 @@ namespace Duality.Editor.Forms
 				string shortcutFilePath = Path.Combine(archiveBaseDir, gameDirName + ".bat");
 				File.WriteAllText(
 					shortcutFilePath,
-					"cd GameData && start " + PathHelper.MakeFilePathRelative(DualityEditorApp.ProjectSettings.Value.LauncherPath));
+					"cd GameData && start " + PathHelper.MakeFilePathRelative(DualityEditorApp.EditorAppData.Value.LauncherPath));
 
 				// Create a shortcut to the editor
 				if (includeEditor)

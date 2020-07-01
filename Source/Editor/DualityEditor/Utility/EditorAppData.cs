@@ -1,6 +1,6 @@
 ﻿namespace Duality.Editor
 {
-	public class DualityProjectSettings
+	public class EditorAppData
 	{
 		private string launcherPath = "DualityGame.exe";
 		public string LauncherPath
