@@ -153,12 +153,18 @@ namespace Duality.Serialization
 		private void WriteObjectBody(XElement element, object obj, ObjectHeader header)
 		{
 			if (header.IsPrimitive)							this.WritePrimitive		(element, obj);
+			else if (obj is XElement childElement)          this.WriteXml(element, childElement);
 			else if (header.DataType == DataType.Enum)		this.WriteEnum			(element, obj as Enum, header);
 			else if (header.DataType == DataType.Struct)	this.WriteStruct		(element, obj, header);
 			else if (header.DataType == DataType.ObjectRef)	element.Value = XmlConvert.ToString(header.ObjectId);
 			else if	(header.DataType == DataType.Array)		this.WriteArray			(element, obj, header);
 			else if (header.DataType == DataType.Delegate)	this.WriteDelegate		(element, obj, header);
 			else if (header.DataType.IsMemberInfoType())	this.WriteMemberInfo	(element, obj, header);
+		}
+
+		private void WriteXml(XElement element, XElement childElement)
+		{
+			element.Add(childElement);
 		}
 		private void WritePrimitive(XElement element, object obj)
 		{
@@ -464,6 +470,7 @@ namespace Duality.Serialization
 
 			if (header.IsPrimitive)							result = this.ReadPrimitive(element, header.DataType);
 			else if (header.DataType == DataType.Enum)		result = this.ReadEnum(element, header);
+			else if (header.ObjectType == typeof(XElement)) result = this.ReadXml(element, header);
 			else if (header.DataType == DataType.Struct)	result = this.ReadStruct(element, header);
 			else if (header.DataType == DataType.ObjectRef)	result = this.ReadObjectRef(element);
 			else if (header.DataType == DataType.Array)		result = this.ReadArray(element, header);
@@ -471,6 +478,10 @@ namespace Duality.Serialization
 			else if (header.DataType.IsMemberInfoType())	result = this.ReadMemberInfo(element, header);
 
 			return result;
+		}
+		private object ReadXml(XElement element, ObjectHeader header)
+		{
+			return element.FirstNode;
 		}
 		private object ReadPrimitive(XElement element, DataType dataType)
 		{
