@@ -153,12 +153,26 @@ namespace Duality.Serialization
 		private void WriteObjectBody(XElement element, object obj, ObjectHeader header)
 		{
 			if (header.IsPrimitive)							this.WritePrimitive		(element, obj);
+			else if (obj is XElement childElement)          this.WriteXml(element, childElement);
 			else if (header.DataType == DataType.Enum)		this.WriteEnum			(element, obj as Enum, header);
 			else if (header.DataType == DataType.Struct)	this.WriteStruct		(element, obj, header);
 			else if (header.DataType == DataType.ObjectRef)	element.Value = XmlConvert.ToString(header.ObjectId);
 			else if	(header.DataType == DataType.Array)		this.WriteArray			(element, obj, header);
 			else if (header.DataType == DataType.Delegate)	this.WriteDelegate		(element, obj, header);
 			else if (header.DataType.IsMemberInfoType())	this.WriteMemberInfo	(element, obj, header);
+		}
+
+		/// <summary>
+		/// This method is not strictly necessary to serialize <see cref="XElement"/> as that is already solved in <see cref="Surrogates.XElementSurrogate"/>
+		/// However this method nicely embeds the xml in a readable way.
+		/// See https://github.com/AdamsLair/duality/pull/861 for more info.
+		/// </summary>
+		/// <param name="element"></param>
+		/// <param name="childElement"></param>
+		private void WriteXml(XElement element, XElement childElement)
+		{
+			// Simply add the XElement as a child.
+			element.Add(childElement);
 		}
 		private void WritePrimitive(XElement element, object obj)
 		{
@@ -464,6 +478,7 @@ namespace Duality.Serialization
 
 			if (header.IsPrimitive)							result = this.ReadPrimitive(element, header.DataType);
 			else if (header.DataType == DataType.Enum)		result = this.ReadEnum(element, header);
+			else if (header.ObjectType == typeof(XElement)) result = this.ReadXml(element, header);
 			else if (header.DataType == DataType.Struct)	result = this.ReadStruct(element, header);
 			else if (header.DataType == DataType.ObjectRef)	result = this.ReadObjectRef(element);
 			else if (header.DataType == DataType.Array)		result = this.ReadArray(element, header);
@@ -471,6 +486,16 @@ namespace Duality.Serialization
 			else if (header.DataType.IsMemberInfoType())	result = this.ReadMemberInfo(element, header);
 
 			return result;
+		}
+		/// <summary>
+		/// Counterpart of <see cref="WriteXml"/>
+		/// </summary>
+		/// <param name="element"></param>
+		/// <param name="header"></param>
+		/// <returns></returns>
+		private object ReadXml(XElement element, ObjectHeader header)
+		{
+			return element.FirstNode;
 		}
 		private object ReadPrimitive(XElement element, DataType dataType)
 		{

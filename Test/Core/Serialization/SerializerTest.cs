@@ -7,7 +7,8 @@ using System.IO;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-
+using System.Xml;
+using System.Xml.Linq;
 using Duality;
 using Duality.Components;
 using Duality.Drawing;
@@ -211,6 +212,12 @@ namespace Duality.Tests.Serialization
 
 			// Can we properly serialize null and default values?
 			this.TestWriteRead(nullTestObj, this.PrimaryFormat);
+		}
+		[Test] public void SerializeXml()
+		{
+			var rnd = new Random(6);
+			var xElement = this.GenerateRandomXml(rnd, 10, 10);
+			this.TestWriteRead(xElement, this.PrimaryFormat, (element, element1) => XElement.DeepEquals(element, element1));
 		}
 		[Test] public void SerializeEnumArrays()
 		{
@@ -747,6 +754,27 @@ namespace Duality.Tests.Serialization
 
 			Assert.IsTrue(checkEqual(writeObjA, readObjA), "Failed random access WriteRead of Type {0} with Value {1}", typeof(T), writeObjA);
 			Assert.IsTrue(checkEqual(writeObjB, readObjB), "Failed random access WriteRead of Type {0} with Value {1}", typeof(T), writeObjB);
+		}
+		private XElement GenerateRandomXml(Random rnd, int maxDepth, int maxChilds, XElement parent = null)
+		{
+			if (parent == null) parent = new XElement("root");
+			var index = rnd.Next();
+			var child = new XElement($"Foo{index}");
+			if (index % 3 == 0)
+			{
+				child.SetAttributeValue($"dummyatrribute{rnd.Next()}", $"dummyvalue{rnd.Next()}");
+			}
+
+			if (maxDepth - 1 > 0)
+			{
+				for (int j = 1; j < rnd.Next(maxChilds); j++)
+				{
+					this.GenerateRandomXml(rnd, maxDepth - 1, maxChilds, child);
+				}
+			}
+
+			parent.Add(child);
+			return parent;
 		}
 	}
 }
