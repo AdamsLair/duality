@@ -224,12 +224,12 @@ namespace Duality
 		/// <summary>
 		/// [GET / SET] Provides access to Duality's current <see cref="DualityAppData">application data</see>. This is never null.
 		/// </summary>
-		public static SettingsContainer<DualityAppData> AppData { get; } = new SettingsContainer<DualityAppData>("AppData.dat");
+		public static SettingsContainer<DualityAppData> AppData { get; } = new SettingsContainer<DualityAppData>("AppData.xml");
 
 		/// <summary>
 		/// [GET / SET] Provides access to Duality's current <see cref="DualityUserData">user data</see>. This is never null.
 		/// </summary>
-		public static SettingsContainer<DualityUserData> UserData { get; } = new SettingsContainer<DualityUserData>(execContext == ExecutionContext.Editor ? "DefaultUserData.dat" : "UserData.dat");
+		public static SettingsContainer<DualityUserData> UserData { get; } = new SettingsContainer<DualityUserData>(execContext == ExecutionContext.Editor ? "DefaultUserData.xml" : "UserData.xml");
 
 		/// <summary>
 		/// [GET] Returns the <see cref="ExecutionContext"/> in which this DualityApp is currently running.

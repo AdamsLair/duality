@@ -134,7 +134,7 @@ namespace Duality.Editor
 		/// <summary>
 		/// [GET] Provides access to Duality's current <see cref="EditorAppData">application data</see>. This is never null.
 		/// </summary>
-		public static SettingsContainer<EditorAppData> EditorAppData { get; } = new SettingsContainer<EditorAppData>("EditorAppData.dat");
+		public static SettingsContainer<EditorAppData> EditorAppData { get; } = new SettingsContainer<EditorAppData>("EditorAppData.xml");
 
 		public static bool BackupsEnabled
 		{

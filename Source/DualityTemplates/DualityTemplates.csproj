@@ -46,6 +46,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="Templates\SolutionTemplate\EditorAppData.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Templates\SolutionTemplate\EditorAppData.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Update="Templates\SolutionTemplate\.template.config\template.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>

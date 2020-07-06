@@ -36,8 +36,8 @@ namespace Duality
 		/// </summary>
 		public void Load()
 		{
-			this.Value = Serializer.TryReadObject<TSettings>(this.path) ?? new TSettings();
-			Changed?.Invoke(this, EventArgs.Empty);
+			this.Value = Serializer.TryReadObject<TSettings>(this.path, typeof(XmlSerializer)) ?? new TSettings();
+			this.Changed?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>

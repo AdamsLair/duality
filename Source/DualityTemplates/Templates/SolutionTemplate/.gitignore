@@ -5,14 +5,14 @@
 # Duality specific files
 /Temp
 /Backup
-/UserData.dat
-/DesignTimeData.dat
 *.pdb
 /*.dll
 /*.exe
 /*.txt
 /*.xml
 /Plugins
+!AppData.xml
+!EditorAppData.xml
 
 # Visual studio specific files
 /.vs
