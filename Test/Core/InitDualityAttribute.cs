@@ -26,7 +26,7 @@ namespace Duality.Tests
 
 			// Set environment directory to Duality binary directory
 			this.oldEnvDir = Environment.CurrentDirectory;
-			Console.WriteLine("Testing Core Assembly: {0}", TestContext.CurrentContext.TestDirectory);
+			Console.WriteLine("Testing in working directory: {0}", TestContext.CurrentContext.TestDirectory);
 			Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
 
 			if (this.launcher == null)
