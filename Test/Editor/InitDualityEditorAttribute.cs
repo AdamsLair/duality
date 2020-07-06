@@ -26,7 +26,7 @@ namespace Duality.Editor.Tests
 
 			// Set environment directory to Duality binary directory
 			this.oldEnvDir = Environment.CurrentDirectory;
-			Console.WriteLine("Testing Editor Assembly: {0}", TestContext.CurrentContext.TestDirectory);
+			Console.WriteLine("Testing in working directory: {0}", TestContext.CurrentContext.TestDirectory);
 			Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
 
 			// Add some Console logs manually for NUnit
