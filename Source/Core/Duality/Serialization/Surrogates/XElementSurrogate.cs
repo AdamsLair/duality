@@ -2,6 +2,9 @@
 
 namespace Duality.Serialization.Surrogates
 {
+	/// <summary>
+	/// Ensures that serializing and deserializing a <see cref="XElement"/> works properly
+	/// </summary>
 	public class XElementSurrogate : SerializeSurrogate<XElement>
 	{
 		public override void WriteData(IDataWriter writer)

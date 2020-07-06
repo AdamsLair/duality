@@ -162,8 +162,16 @@ namespace Duality.Serialization
 			else if (header.DataType.IsMemberInfoType())	this.WriteMemberInfo	(element, obj, header);
 		}
 
+		/// <summary>
+		/// This method is not strictly necessary to serialize <see cref="XElement"/> as that is already solved in <see cref="Surrogates.XElementSurrogate"/>
+		/// However this method nicely embeds the xml in a readable way.
+		/// See https://github.com/AdamsLair/duality/pull/861 for more info.
+		/// </summary>
+		/// <param name="element"></param>
+		/// <param name="childElement"></param>
 		private void WriteXml(XElement element, XElement childElement)
 		{
+			// Simply add the XElement as a child.
 			element.Add(childElement);
 		}
 		private void WritePrimitive(XElement element, object obj)
@@ -479,6 +487,12 @@ namespace Duality.Serialization
 
 			return result;
 		}
+		/// <summary>
+		/// Counterpart of <see cref="WriteXml"/>
+		/// </summary>
+		/// <param name="element"></param>
+		/// <param name="header"></param>
+		/// <returns></returns>
 		private object ReadXml(XElement element, ObjectHeader header)
 		{
 			return element.FirstNode;
