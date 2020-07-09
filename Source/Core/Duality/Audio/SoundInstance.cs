@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Threading;
 
 using Duality.Resources;
 using Duality.Backend;
@@ -193,6 +190,7 @@ namespace Duality.Audio
 			set { this.vel = value; }
 		}
 
+		private readonly SettingsContainer<DualityUserData> userData;
 
 		~SoundInstance()
 		{
@@ -228,8 +226,9 @@ namespace Duality.Audio
 		}
 
 		
-		internal SoundInstance(ContentRef<Sound> sound, GameObject attachObj, bool trackVelocity)
+		internal SoundInstance(SettingsContainer<DualityUserData> userData, ContentRef<Sound> sound, GameObject attachObj, bool trackVelocity)
 		{
+			this.userData = userData;
 			if (attachObj != null && trackVelocity)
 				attachObj.AddComponent<VelocityTracker>();
 
@@ -238,15 +237,17 @@ namespace Duality.Audio
 			this.sound = sound;
 			this.audioData = this.sound.IsAvailable ? this.sound.Res.FetchData() : null;
 		}
-		internal SoundInstance(ContentRef<Sound> sound, Vector3 pos)
+		internal SoundInstance(SettingsContainer<DualityUserData> userData, ContentRef<Sound> sound, Vector3 pos)
 		{
+			this.userData = userData;
 			this.pos = pos;
 			this.is3D = true;
 			this.sound = sound;
 			this.audioData = this.sound.IsAvailable ? this.sound.Res.FetchData() : null;
 		}
-		internal SoundInstance(ContentRef<Sound> sound)
+		internal SoundInstance(SettingsContainer<DualityUserData> userData, ContentRef<Sound> sound)
 		{
+			this.userData = userData;
 			this.sound = sound;
 			this.is3D = false;
 			this.audioData = this.sound.IsAvailable ? this.sound.Res.FetchData() : null;
@@ -387,22 +388,22 @@ namespace Duality.Audio
 			switch (this.sound.IsAvailable ? this.sound.Res.Type : SoundType.World)
 			{
 				case SoundType.UserInterface:
-					optVolFactor = DualityApp.UserData.Value.SoundEffectVol;
+					optVolFactor = this.userData.Value.SoundEffectVol;
 					break;
 				case SoundType.World:
-					optVolFactor = DualityApp.UserData.Value.SoundEffectVol;
+					optVolFactor = this.userData.Value.SoundEffectVol;
 					break;
 				case SoundType.Speech:
-					optVolFactor = DualityApp.UserData.Value.SoundSpeechVol;
+					optVolFactor = this.userData.Value.SoundSpeechVol;
 					break;
 				case SoundType.Music:
-					optVolFactor = DualityApp.UserData.Value.SoundMusicVol;
+					optVolFactor = this.userData.Value.SoundMusicVol;
 					break;
 				default:
 					optVolFactor = 1.0f;
 					break;
 			}
-			return optVolFactor * DualityApp.UserData.Value.SoundMasterVol * 0.5f;
+			return optVolFactor * this.userData.Value.SoundMasterVol * 0.5f;
 		}
 		private void RegisterPlaying()
 		{

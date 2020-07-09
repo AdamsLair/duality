@@ -331,7 +331,7 @@ namespace Duality
 
 			// Initialize the audio backend
 			InitBackend(out audioBack);
-			sound = new SoundDevice();
+			sound = new SoundDevice(AppData, UserData);
 
 			// Initialize all core plugins, this may allocate Resources or establish references between plugins
 			pluginManager.InitPlugins();
