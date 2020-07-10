@@ -561,8 +561,8 @@ namespace Duality.Editor
 				// Currently bound to game-specific settings. Should be decoupled
 				// from them at some point, so the editor can use independent settings.
 				mainGraphicsContext = graphicsBack.CreateContext(
-					DualityApp.AppData.Value.MultisampleBackBuffer ?
-					DualityApp.UserData.Value.AntialiasingQuality :
+					DualityApp.AppData.Instance.MultisampleBackBuffer ?
+					DualityApp.UserData.Instance.AntialiasingQuality :
 					AAQuality.Off);
 			}
 			catch (Exception e)
@@ -640,7 +640,7 @@ namespace Duality.Editor
 				if (IsResourceUnsaved(Scene.Current))
 				{
 					Scene.Current.Save();
-					DualityApp.AppData.Value.Version++;
+					DualityApp.AppData.Instance.Version++;
 				}
 			}
 			else if (!skipYetUnsaved)
@@ -648,12 +648,12 @@ namespace Duality.Editor
 				string basePath = Path.Combine(DualityApp.DataDirectory, "Scene");
 				string path = PathHelper.GetFreePath(basePath, Resource.GetFileExtByType<Scene>());
 				Scene.Current.Save(path);
-				DualityApp.AppData.Value.Version++;
+				DualityApp.AppData.Instance.Version++;
 				
 				// If there is no start scene defined, use this one.
-				if (DualityApp.AppData.Value.StartScene == null)
+				if (DualityApp.AppData.Instance.StartScene == null)
 				{
-					DualityApp.AppData.Value.StartScene = Scene.Current;
+					DualityApp.AppData.Instance.StartScene = Scene.Current;
 					DualityApp.AppData.Save();
 				}
 			}
@@ -669,7 +669,7 @@ namespace Duality.Editor
 				anySaved = true;
 			}
 			unsavedResources.Clear();
-			if (anySaved) DualityApp.AppData.Value.Version++;
+			if (anySaved) DualityApp.AppData.Instance.Version++;
 		}
 		public static void FlagResourceUnsaved(IEnumerable<Resource> res)
 		{
@@ -1250,7 +1250,7 @@ namespace Duality.Editor
 				if (!corePluginReloader.ReloadSchedule.Contains(fileEvent.Path))
 				{
 					corePluginReloader.ReloadSchedule.Add(fileEvent.Path);
-					DualityApp.AppData.Value.Version++;
+					DualityApp.AppData.Instance.Version++;
 				}
 			}
 			corePluginReloader.State = ReloadCorePluginDialog.ReloaderState.WaitForPlugins;

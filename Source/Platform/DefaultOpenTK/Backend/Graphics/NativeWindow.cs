@@ -193,22 +193,22 @@ namespace Duality.Backend.DefaultOpenTK
 			if (DisplayDevice.Default == null) return;
 
 			// Determine the target state for our window
-			MouseCursor targetCursor = DualityApp.UserData.Value.SystemCursorVisible ? MouseCursor.Default : MouseCursor.Empty;
+			MouseCursor targetCursor = DualityApp.UserData.Instance.SystemCursorVisible ? MouseCursor.Default : MouseCursor.Empty;
 			WindowState targetWindowState = this.internalWindow.WindowState;
 			WindowBorder targetWindowBorder = this.internalWindow.WindowBorder;
 			Size targetSize = this.internalWindow.ClientSize;
-			switch (DualityApp.UserData.Value.WindowMode)
+			switch (DualityApp.UserData.Instance.WindowMode)
 			{
 				case ScreenMode.Window:
 					targetWindowState = WindowState.Normal;
 					targetWindowBorder = WindowBorder.Resizable;
-					targetSize = new Size(DualityApp.UserData.Value.WindowSize.X, DualityApp.UserData.Value.WindowSize.Y);
+					targetSize = new Size(DualityApp.UserData.Instance.WindowSize.X, DualityApp.UserData.Instance.WindowSize.Y);
 					break;
 
 				case ScreenMode.FixedWindow:
 					targetWindowState = WindowState.Normal;
 					targetWindowBorder = WindowBorder.Fixed;
-					targetSize = new Size(DualityApp.UserData.Value.WindowSize.X, DualityApp.UserData.Value.WindowSize.Y);
+					targetSize = new Size(DualityApp.UserData.Instance.WindowSize.X, DualityApp.UserData.Instance.WindowSize.Y);
 					break;
 
 				case ScreenMode.FullWindow:

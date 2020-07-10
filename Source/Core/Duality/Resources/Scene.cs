@@ -472,7 +472,7 @@ namespace Duality.Resources
 			{
 				// Retrieve the rendering setup that will be used for rendering the scene
 				RenderSetup setup =
-					DualityApp.AppData.Value.RenderingSetup.Res ??
+					DualityApp.AppData.Instance.RenderingSetup.Res ??
 					RenderSetup.Default.Res;
 
 				// Render the scene

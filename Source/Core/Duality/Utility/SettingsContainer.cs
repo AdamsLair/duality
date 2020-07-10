@@ -10,17 +10,17 @@ namespace Duality
 	public class SettingsContainer<TSettings> : ISettingsContainer
 		where TSettings : class, new()
 	{
+		private readonly string path;
+
 		/// <summary>
-		/// Fired when <see cref="Value"/> has changed.
+		/// Fired when <see cref="Instance"/> has changed.
 		/// </summary>
 		public event EventHandler Changed;
 
 		/// <summary>
 		/// The settings data. This is null till <see cref="Load"/> is called after which it can never be null again.
 		/// </summary>
-		public TSettings Value { get; private set; }
-
-		private readonly string path;
+		public TSettings Instance { get; private set; }
 
 		/// <summary>
 		/// Creates a new settings container where the data for the settings will be saved and loaded from <paramref name="path"/>.
@@ -36,7 +36,7 @@ namespace Duality
 		/// </summary>
 		public void Load()
 		{
-			this.Value = Serializer.TryReadObject<TSettings>(this.path, typeof(XmlSerializer)) ?? new TSettings();
+			this.Instance = Serializer.TryReadObject<TSettings>(this.path, typeof(XmlSerializer)) ?? new TSettings();
 			this.Changed?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -45,7 +45,7 @@ namespace Duality
 		/// </summary>
 		public void Save()
 		{
-			Serializer.WriteObject(this.Value, this.path, typeof(XmlSerializer));
+			Serializer.WriteObject(this.Instance, this.path, typeof(XmlSerializer));
 		}
 	}
 }

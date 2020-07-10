@@ -225,8 +225,8 @@ namespace Duality.Audio
 		private void UpdateWorldSettings()
 		{
 			DualityApp.AudioBackend.UpdateWorldSettings(
-				this.appData.Value.SpeedOfSound, // Already in meters per second / audio units
-				this.appData.Value.SoundDopplerFactor);
+				this.appData.Instance.SpeedOfSound, // Already in meters per second / audio units
+				this.appData.Instance.SoundDopplerFactor);
 		}
 		
 		/// <summary>

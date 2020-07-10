@@ -171,7 +171,7 @@ namespace Duality
 		{
 			get
 			{
-				Point2 forcedRenderSize = DualityApp.AppData.Value.ForcedRenderSize;
+				Point2 forcedRenderSize = DualityApp.AppData.Instance.ForcedRenderSize;
 				if (forcedRenderSize.X > 0 && forcedRenderSize.Y > 0)
 					return forcedRenderSize;
 				else
@@ -593,8 +593,8 @@ namespace Duality
 		/// <param name="renderTargetSize"></param>
 		public static void CalculateGameViewport(Point2 windowSize, out Rect windowViewport, out Vector2 renderTargetSize)
 		{
-			Point2 forcedSize = DualityApp.AppData.Value.ForcedRenderSize;
-			TargetResize forcedResizeMode = DualityApp.AppData.Value.ForcedRenderResizeMode;
+			Point2 forcedSize = DualityApp.AppData.Instance.ForcedRenderSize;
+			TargetResize forcedResizeMode = DualityApp.AppData.Instance.ForcedRenderResizeMode;
 
 			renderTargetSize = windowSize;
 			windowViewport = new Rect(renderTargetSize);
@@ -729,8 +729,8 @@ namespace Duality
 			T selectedBackend = null;
 			foreach (T backend in backends)
 			{
-				if (DualityApp.AppData.Value?.SkipBackends != null && 
-					DualityApp.AppData.Value.SkipBackends.Any(s => string.Equals(s, backend.Id, StringComparison.OrdinalIgnoreCase)))
+				if (DualityApp.AppData.Instance?.SkipBackends != null && 
+					DualityApp.AppData.Instance.SkipBackends.Any(s => string.Equals(s, backend.Id, StringComparison.OrdinalIgnoreCase)))
 				{
 					Logs.Core.Write("Backend '{0}' skipped because of AppData settings.", backend.Name);
 					continue;

@@ -64,11 +64,11 @@ namespace Duality.Launcher
 			// Open up a new window
 			WindowOptions options = new WindowOptions
 			{
-				Size = DualityApp.UserData.Value.WindowSize,
-				ScreenMode = launcherArgs.IsDebugging ? ScreenMode.Window : DualityApp.UserData.Value.WindowMode,
-				RefreshMode = launcherArgs.IsProfiling ? RefreshMode.NoSync : DualityApp.UserData.Value.WindowRefreshMode,
-				Title = DualityApp.AppData.Value.AppName,
-				SystemCursorVisible = launcherArgs.IsDebugging || DualityApp.UserData.Value.SystemCursorVisible
+				Size = DualityApp.UserData.Instance.WindowSize,
+				ScreenMode = launcherArgs.IsDebugging ? ScreenMode.Window : DualityApp.UserData.Instance.WindowMode,
+				RefreshMode = launcherArgs.IsProfiling ? RefreshMode.NoSync : DualityApp.UserData.Instance.WindowRefreshMode,
+				Title = DualityApp.AppData.Instance.AppName,
+				SystemCursorVisible = launcherArgs.IsDebugging || DualityApp.UserData.Instance.SystemCursorVisible
 			};
 			this.window = DualityApp.OpenWindow(options);
 		}

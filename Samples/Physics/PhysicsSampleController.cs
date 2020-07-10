@@ -101,7 +101,7 @@ namespace Duality.Samples.Physics
 
 			// When the mouse is hovering over the game area and the system cursor 
 			// is disabled, draw a custom cursor as a replacement
-			if (!DualityApp.UserData.Value.SystemCursorVisible && DualityApp.Mouse.IsAvailable)
+			if (!DualityApp.UserData.Instance.SystemCursorVisible && DualityApp.Mouse.IsAvailable)
 			{
 				canvas.State.ColorTint = (this.dragObj != null) ? this.interactionColor : this.defaultColor;
 				canvas.FillThickLine(
