@@ -156,7 +156,7 @@ namespace Duality.Components
 			{
 				return 
 					this.renderSetup.Res ?? 
-					DualityApp.AppData.RenderingSetup.Res ?? 
+					DualityApp.AppData.Instance.RenderingSetup.Res ?? 
 					RenderSetup.Default.Res;
 			}
 		}

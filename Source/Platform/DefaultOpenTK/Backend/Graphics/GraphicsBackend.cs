@@ -410,9 +410,9 @@ namespace Duality.Backend.DefaultOpenTK
 			sortedModes.StableSort((a, b) => a.Samples - b.Samples);
 			int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(sortedModes.Max(m => m.Samples), 1.0f), 2.0f));
 			int targetAALevel = highestAALevel;
-			if (DualityApp.AppData.MultisampleBackBuffer)
+			if (DualityApp.AppData.Instance.MultisampleBackBuffer)
 			{
-				switch (DualityApp.UserData.AntialiasingQuality)
+				switch (DualityApp.UserData.Instance.AntialiasingQuality)
 				{
 					case AAQuality.High:	targetAALevel = highestAALevel;		break;
 					case AAQuality.Medium:	targetAALevel = highestAALevel / 2; break;

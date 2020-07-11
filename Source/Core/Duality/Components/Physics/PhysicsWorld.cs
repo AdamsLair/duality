@@ -65,7 +65,7 @@ namespace Duality.Components.Physics
 		/// </summary>
 		public bool IsFixedTimestep
 		{
-			get { return DualityApp.AppData.PhysicsFixedTime && !this.lowFramerateMode; }
+			get { return DualityApp.AppData.Instance.PhysicsFixedTime && !this.lowFramerateMode; }
 		}
 
 
@@ -384,7 +384,7 @@ namespace Duality.Components.Physics
 
 		private void UpdateNativeSettings()
 		{
-			Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * DualityApp.AppData.PhysicsVelocityThreshold;
+			Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * DualityApp.AppData.Instance.PhysicsVelocityThreshold;
 		}
 	}
 }

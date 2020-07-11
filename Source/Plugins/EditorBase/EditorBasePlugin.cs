@@ -151,7 +151,7 @@ namespace Duality.Editor.Plugins.Base
 
 		private void menuItemProjectSettings_Click(object sender, EventArgs e)
 		{
-			DualityEditorApp.Select(this, new ObjectSelection(new[] { DualityEditorApp.ProjectSettings }));
+			DualityEditorApp.Select(this, new ObjectSelection(new[] { DualityEditorApp.EditorAppData }));
 		}
 
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)

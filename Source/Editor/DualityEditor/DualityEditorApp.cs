@@ -14,7 +14,6 @@ using System.Text.RegularExpressions;
 using Duality;
 using Duality.IO;
 using Duality.Components;
-using Duality.Serialization;
 using Duality.Resources;
 using Duality.Drawing;
 using Duality.Backend;
@@ -34,7 +33,7 @@ namespace Duality.Editor
 		public	const	string	EditorPrevLogfileName	= "logfile_editor_{0}.txt";
 		public	const	string	EditorPrevLogfileDir	= "Temp";
 		public	const	string	DesignTimeDataFile		= "DesignTimeData.dat";
-		public	const	string	UserDataFile			= "EditorUserData.xml";
+		public	const	string	UserDataFile			= "EditorUserData.dat";
 		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";
 
 		public	const	string	ActionContextMenu					= "ContextMenu";
@@ -132,17 +131,10 @@ namespace Duality.Editor
 			get { return firstEditorSession; }
 		}
 
-		private static DualityProjectSettings projectSettings = null;
-
 		/// <summary>
-		/// [GET / SET] Provides access to Duality's current <see cref="DualityProjectSettings">application data</see>. This is never null.
-		/// Any kind of data change event is fired as soon as you re-assign this property. Be sure to do that after changing its data.
+		/// [GET] Provides access to Duality's current <see cref="EditorAppData">application data</see>. This is never null.
 		/// </summary>
-		public static DualityProjectSettings ProjectSettings
-		{
-			get { return projectSettings; }
-			set { projectSettings = value ?? throw new ArgumentNullException($"You cannot assign null to {nameof(ProjectSettings)}"); }
-		}
+		public static SettingsContainer<EditorAppData> EditorAppData { get; } = new SettingsContainer<EditorAppData>("EditorAppData.xml");
 
 		public static bool BackupsEnabled
 		{
@@ -223,8 +215,8 @@ namespace Duality.Editor
 			InitMainGraphicsContext();
 			DualityApp.InitPostWindow();
 
-			ProjectSettings = DualityProjectSettings.Load();
-			ProjectSettings.Save();
+			EditorAppData.Load();
+			EditorAppData.Save();
 
 			mainForm.UpdateLaunchAppActions();
 
@@ -569,8 +561,8 @@ namespace Duality.Editor
 				// Currently bound to game-specific settings. Should be decoupled
 				// from them at some point, so the editor can use independent settings.
 				mainGraphicsContext = graphicsBack.CreateContext(
-					DualityApp.AppData.MultisampleBackBuffer ?
-					DualityApp.UserData.AntialiasingQuality :
+					DualityApp.AppData.Instance.MultisampleBackBuffer ?
+					DualityApp.UserData.Instance.AntialiasingQuality :
 					AAQuality.Off);
 			}
 			catch (Exception e)
@@ -648,7 +640,7 @@ namespace Duality.Editor
 				if (IsResourceUnsaved(Scene.Current))
 				{
 					Scene.Current.Save();
-					DualityApp.AppData.Version++;
+					DualityApp.AppData.Instance.Version++;
 				}
 			}
 			else if (!skipYetUnsaved)
@@ -656,13 +648,13 @@ namespace Duality.Editor
 				string basePath = Path.Combine(DualityApp.DataDirectory, "Scene");
 				string path = PathHelper.GetFreePath(basePath, Resource.GetFileExtByType<Scene>());
 				Scene.Current.Save(path);
-				DualityApp.AppData.Version++;
+				DualityApp.AppData.Instance.Version++;
 				
 				// If there is no start scene defined, use this one.
-				if (DualityApp.AppData.StartScene == null)
+				if (DualityApp.AppData.Instance.StartScene == null)
 				{
-					DualityApp.AppData.StartScene = Scene.Current;
-					DualityApp.SaveAppData();
+					DualityApp.AppData.Instance.StartScene = Scene.Current;
+					DualityApp.AppData.Save();
 				}
 			}
 			return Scene.Current.Path;
@@ -677,7 +669,7 @@ namespace Duality.Editor
 				anySaved = true;
 			}
 			unsavedResources.Clear();
-			if (anySaved) DualityApp.AppData.Version++;
+			if (anySaved) DualityApp.AppData.Instance.Version++;
 		}
 		public static void FlagResourceUnsaved(IEnumerable<Resource> res)
 		{
@@ -1003,15 +995,9 @@ namespace Duality.Editor
 				}
 
 				// If DualityAppData or DualityUserData is modified, save it
-				if (args.Objects.OtherObjectCount > 0)
+				foreach (var settings in args.Objects.OfType<ISettingsContainer>())
 				{
-					// This is probably not the best idea for generalized behaviour, but sufficient for now
-					if (args.Objects.OtherObjects.Any(o => o is DualityAppData))
-						DualityApp.SaveAppData();
-					else if (args.Objects.OtherObjects.Any(o => o is DualityUserData))
-						DualityApp.SaveUserData();
-					if (args.Objects.OtherObjects.Any(o => o is DualityProjectSettings))
-						ProjectSettings.Save();
+					settings.Save();
 				}
 			}
 
@@ -1264,7 +1250,7 @@ namespace Duality.Editor
 				if (!corePluginReloader.ReloadSchedule.Contains(fileEvent.Path))
 				{
 					corePluginReloader.ReloadSchedule.Add(fileEvent.Path);
-					DualityApp.AppData.Version++;
+					DualityApp.AppData.Instance.Version++;
 				}
 			}
 			corePluginReloader.State = ReloadCorePluginDialog.ReloaderState.WaitForPlugins;
