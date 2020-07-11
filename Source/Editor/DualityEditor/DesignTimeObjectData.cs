@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Drawing;
-using System.IO;
 
-using Duality;
-using Duality.Serialization;
 using Duality.Resources;
 
 namespace Duality.Editor
@@ -77,41 +73,19 @@ namespace Duality.Editor
 			}
 		}
 
-		private	static	DesignTimeObjectDataManager	manager	= new DesignTimeObjectDataManager();
-		
 		internal static void Init()
 		{
-			Load(DualityEditorApp.DesignTimeDataFile);
 			Scene.Leaving += Scene_Leaving;
 		}
 		internal static void Terminate()
 		{
 			Scene.Leaving -= Scene_Leaving;
-			Save(DualityEditorApp.DesignTimeDataFile);
 		}
 
-		public static DesignTimeObjectData Get(Guid objId)
-		{
-			return manager.RequestDesignTimeData(objId);
-		}
-		public static DesignTimeObjectData Get(GameObject obj)
-		{
-			return manager.RequestDesignTimeData(obj.Id);
-		}
-
-		private static void Save(string filePath)
-		{
-			Serializer.WriteObject(manager, filePath, typeof(BinarySerializer));
-		}
-		private static void Load(string filePath)
-		{
-			manager = Serializer.TryReadObject<DesignTimeObjectDataManager>(filePath) ?? new DesignTimeObjectDataManager();
-		}
 		private static void Scene_Leaving(object sender, EventArgs e)
 		{
-			manager.CleanupDesignTimeData();
+			DualityEditorApp.DualityEditorUserData.Instance?.DesignTimeObjectDataManager.CleanupDesignTimeData();
 		}
-
 
 		public static readonly DesignTimeObjectData Default = new DesignTimeObjectData();
 
@@ -184,6 +158,11 @@ namespace Duality.Editor
 			this.attached = true;
 		}
 
+		public static DesignTimeObjectData Get(GameObject obj)
+		{
+			return DualityEditorApp.DualityEditorUserData.Instance.DesignTimeObjectDataManager.RequestDesignTimeData(obj.Id);
+		}
+
 		public T RequestCustomData<T>() where T : new()
 		{
 			this.Detach();
@@ -231,14 +210,10 @@ namespace Duality.Editor
 		}
 	}
 
-	internal class DesignTimeObjectDataManager : ISerializeExplicit
+	public class DesignTimeObjectDataManager
 	{
-		private static readonly int GuidByteLength = Guid.Empty.ToByteArray().Length;
-		private	const int Version_First	= 1;
-
 		private	Dictionary<Guid,DesignTimeObjectData>	dataStore	= new Dictionary<Guid,DesignTimeObjectData>();
-		
-		
+
 		public DesignTimeObjectData RequestDesignTimeData(Guid objId)
 		{
 			DesignTimeObjectData data;
@@ -271,67 +246,6 @@ namespace Duality.Editor
 					data.TryShareData(other);
 				}
 				shareValues.RemoveAt(shareValues.Count - 1);
-			}
-		}
-
-		void ISerializeExplicit.WriteData(IDataWriter writer)
-		{
-			this.CleanupDesignTimeData();
-			this.OptimizeDesignTimeData();
-
-			Guid[] guidArray = dataStore.Keys.ToArray();
-			byte[] data = new byte[guidArray.Length * GuidByteLength];
-			for (int i = 0; i < guidArray.Length; i++)
-			{
-				Array.Copy(
-					guidArray[i].ToByteArray(), 0, 
-					data, i * GuidByteLength, GuidByteLength);
-			}
-			DesignTimeObjectData.DataContainer[] objData = dataStore.Values.Select(d => d.Data).ToArray();
-			bool[] objDataDirty = dataStore.Values.Select(d => d.IsAttached).ToArray();
-
-			writer.WriteValue("version", Version_First);
-			writer.WriteValue("dataStoreKeys", data);
-			writer.WriteValue("dataStoreValues", objData);
-			writer.WriteValue("dataStoreDirtyFlag", objDataDirty);
-		}
-		void ISerializeExplicit.ReadData(IDataReader reader)
-		{
-			int version;
-			reader.ReadValue("version", out version);
-			
-			if (this.dataStore == null)
-				this.dataStore = new Dictionary<Guid,DesignTimeObjectData>();
-			else
-				this.dataStore.Clear();
-
-			if (version == Version_First)
-			{
-				byte[] data;
-				DesignTimeObjectData.DataContainer[] objData;
-				bool[] objDataDirty;
-				reader.ReadValue("dataStoreKeys", out data);
-				reader.ReadValue("dataStoreValues", out objData);
-				reader.ReadValue("dataStoreDirtyFlag", out objDataDirty);
-
-				Guid[] guidArray = new Guid[data.Length / GuidByteLength];
-				byte[] guidData = new byte[GuidByteLength];
-				for (int i = 0; i < guidArray.Length; i++)
-				{
-					Array.Copy(
-						data, i * GuidByteLength,
-						guidData, 0, GuidByteLength);
-					guidArray[i] = new Guid(guidData);
-				}
-
-				for (int i = 0; i < objData.Length; i++)
-				{
-					this.dataStore.Add(guidArray[i], new DesignTimeObjectData(guidArray[i], objData[i], objDataDirty[i]));
-				}
-			}
-			else
-			{
-				// Unknown format
 			}
 		}
 	}

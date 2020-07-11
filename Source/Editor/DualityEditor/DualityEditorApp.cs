@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.IO.Compression;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Xml;
-using System.Xml.Linq;
-using System.Text.RegularExpressions;
 
-using Duality;
 using Duality.IO;
 using Duality.Components;
 using Duality.Resources;
@@ -22,7 +17,6 @@ using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.AssetManagement;
 
-using WeifenLuo.WinFormsUI.Docking;
 using Duality.Launcher;
 
 namespace Duality.Editor
@@ -32,9 +26,6 @@ namespace Duality.Editor
 		public	const	string	EditorLogfilePath		= "logfile_editor.txt";
 		public	const	string	EditorPrevLogfileName	= "logfile_editor_{0}.txt";
 		public	const	string	EditorPrevLogfileDir	= "Temp";
-		public	const	string	DesignTimeDataFile		= "DesignTimeData.dat";
-		public	const	string	UserDataFile			= "EditorUserData.dat";
-		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";
 
 		public	const	string	ActionContextMenu					= "ContextMenu";
 		public	const	string	ActionContextOpenRes				= "OpenRes";
@@ -132,6 +123,11 @@ namespace Duality.Editor
 		}
 
 		/// <summary>
+		/// [GET] Provides access to Duality's current <see cref="DualityEditorUserData">user data</see>. This is never null.
+		/// </summary>
+		public static SettingsContainer<DualityEditorUserData> DualityEditorUserData { get; } = new SettingsContainer<DualityEditorUserData>("EditorUserData.xml");
+
+		/// <summary>
 		/// [GET] Provides access to Duality's current <see cref="EditorAppData">application data</see>. This is never null.
 		/// </summary>
 		public static SettingsContainer<EditorAppData> EditorAppData { get; } = new SettingsContainer<EditorAppData>("EditorAppData.xml");
@@ -216,11 +212,12 @@ namespace Duality.Editor
 			DualityApp.InitPostWindow();
 
 			EditorAppData.Load();
-			EditorAppData.Save();
 
 			mainForm.UpdateLaunchAppActions();
 
-			LoadUserData();
+			DualityEditorUserData.Load();
+		 	mainForm.LoadDockPanelData(DualityEditorUserData.Instance.DockPanelState);
+			PluginManager.LoadUserData(DualityEditorUserData.Instance.PluginSettings);
 			pluginManager.InitPlugins();
 
 
@@ -405,146 +402,6 @@ namespace Duality.Editor
 					a.SubjectType.IsAssignableFrom(subjectType) && 
 					a.MatchesContext(context));
 			}
-		}
-
-		public static void SaveUserData()
-		{
-			Logs.Editor.Write("Saving user data...");
-			Logs.Editor.PushIndent();
-
-			using (FileStream str = File.Create(UserDataFile))
-			{
-				Encoding encoding = Encoding.Default;
-				using (StreamWriter writer = new StreamWriter(str.NonClosing()))
-				{
-					encoding = writer.Encoding;
-
-					XDocument xmlDoc = new XDocument();
-					XElement rootElement = new XElement("UserData");
-					{
-						XElement editorAppElement = new XElement("EditorApp");
-						{
-							editorAppElement.SetElementValue("Backups", backupsEnabled);
-							editorAppElement.SetElementValue("Autosaves", autosaveFrequency);
-							editorAppElement.SetElementValue("LauncherPath", launcherApp);
-							editorAppElement.SetElementValue("FirstSession", false);
-							editorAppElement.SetElementValue("ActiveDocumentIndex", mainForm.ActiveDocumentIndex);
-							editorAppElement.SetElementValue("LastOpenScene", lastOpenScene.Path);
-							editorAppElement.SetElementValue("StartWithLastScene", startWithLastScene);							
-						}
-						if (!editorAppElement.IsEmpty)
-							rootElement.Add(editorAppElement);
-
-						XElement pluginsElement = new XElement("Plugins");
-						pluginManager.SaveUserData(pluginsElement);
-						if (!pluginsElement.IsEmpty)
-							rootElement.Add(pluginsElement);
-					}
-					xmlDoc.Add(rootElement);
-					xmlDoc.Save(writer.BaseStream);
-
-					writer.WriteLine();
-					writer.WriteLine(UserDataDockSeparator);
-					writer.Flush();
-				}
-				mainForm.MainDockPanel.SaveAsXml(str, encoding);
-			}
-
-			Logs.Editor.PopIndent();
-		}
-		private static void LoadUserData()
-		{
-			if (!File.Exists(UserDataFile))
-			{
-				File.WriteAllText(UserDataFile, Properties.GeneralRes.DefaultEditorUserData);
-				if (!File.Exists(UserDataFile)) return;
-			}
-
-			Logs.Editor.Write("Loading user data...");
-			Logs.Editor.PushIndent();
-
-			Encoding encoding = Encoding.Default;
-			StringBuilder editorData = new StringBuilder();
-			StringBuilder dockPanelData = new StringBuilder();
-			using (StreamReader reader = new StreamReader(UserDataFile))
-			{
-				encoding = reader.CurrentEncoding;
-				string line;
-
-				// Retrieve pre-DockPanel section
-				while ((line = reader.ReadLine()) != null && line.Trim() != UserDataDockSeparator) 
-					editorData.AppendLine(line);
-
-				// Retrieve DockPanel section
-				while ((line = reader.ReadLine()) != null) 
-					dockPanelData.AppendLine(line);
-			}
-
-			// Load DockPanel Data
-			{
-				Logs.Editor.Write("Loading DockPanel data...");
-				Logs.Editor.PushIndent();
-				MemoryStream dockPanelDataStream = new MemoryStream(encoding.GetBytes(dockPanelData.ToString()));
-				try
-				{
-					mainForm.MainDockPanel.LoadFromXml(dockPanelDataStream, DeserializeDockContent);
-				}
-				catch (Exception e)
-				{
-					Logs.Editor.WriteError("Cannot load DockPanel data due to malformed or non-existent Xml: {0}", LogFormat.Exception(e));
-				}
-				Logs.Editor.PopIndent();
-			}
-
-			// Load editor userdata
-			{
-				Logs.Editor.Write("Loading editor user data...");
-				Logs.Editor.PushIndent();
-				try
-				{
-					int activeDocumentIndex = 0;
-
-					// Load main editor data
-					XDocument xmlDoc = XDocument.Parse(editorData.ToString());
-					XElement rootElement = xmlDoc.Root;
-					XElement editorAppElement = rootElement.Elements("EditorApp").FirstOrDefault();
-					if (editorAppElement != null)
-					{
-						editorAppElement.TryGetElementValue("Backups", ref backupsEnabled);
-						editorAppElement.TryGetElementValue("Autosaves", ref autosaveFrequency);
-						editorAppElement.TryGetElementValue("LauncherPath", ref launcherApp);
-						editorAppElement.TryGetElementValue("FirstSession", ref firstEditorSession);
-						editorAppElement.TryGetElementValue("ActiveDocumentIndex", ref activeDocumentIndex);
-
-						string scenePath;
-						editorAppElement.GetElementValue("LastOpenScene", out scenePath);
-						if (scenePath != null) lastOpenScene = new ContentRef<Scene>(null, scenePath);
-
-						editorAppElement.TryGetElementValue("StartWithLastScene", ref startWithLastScene);
-					}
-
-					// Load plugin editor data
-					XElement pluginsElement = rootElement.Elements("Plugins").FirstOrDefault();
-					if (pluginsElement != null)
-						pluginManager.LoadUserData(pluginsElement);
-
-					// Set the active document as loaded from user data
-					mainForm.ActiveDocumentIndex = activeDocumentIndex;
-				}
-				catch (Exception e)
-				{
-					Logs.Editor.WriteError("Error loading editor user data: {0}", LogFormat.Exception(e));
-				}
-				Logs.Editor.PopIndent();
-			}
-
-			Logs.Editor.PopIndent();
-			return;
-		}
-		private static IDockContent DeserializeDockContent(string persistName)
-		{
-			Logs.Editor.Write("Deserializing layout: '" + persistName + "'");
-			return pluginManager.DeserializeDockContent(persistName);
 		}
 
 		private static void InitMainGraphicsContext()
