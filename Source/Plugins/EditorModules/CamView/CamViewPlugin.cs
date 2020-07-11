@@ -53,6 +53,12 @@ namespace Duality.Editor.Plugins.CamView
 				this.camViews[i].SaveUserData(camViewElem);
 			}
 		}
+
+		protected override XElement GetDefaultUserData()
+		{
+			return XElement.Parse(Properties.Resources.DefaultSettings);
+		}
+
 		protected override void LoadUserData(XElement node)
 		{
 			this.isLoading = true;
