@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI.Docking;
-
-using Duality;
-using Duality.Editor;
 
 namespace Duality.Editor.Plugins.LogView
 {
@@ -90,29 +83,27 @@ namespace Duality.Editor.Plugins.LogView
 			}
 		}
 		
-		internal void SaveUserData(XElement node)
+		internal void SaveUserData(LogViewSettings logViewSettings)
 		{
-			node.SetElementValue("ShowMessages", this.buttonMessages.Checked);
-			node.SetElementValue("ShowWarnings", this.buttonWarnings.Checked);
-			node.SetElementValue("ShowErrors", this.buttonErrors.Checked);
-			node.SetElementValue("ShowCore", this.buttonCore.Checked);
-			node.SetElementValue("ShowEditor", this.buttonEditor.Checked);
-			node.SetElementValue("ShowGame", this.buttonGame.Checked);
-			node.SetElementValue("AutoClear", this.checkAutoClear.Checked);
-			node.SetElementValue("PauseOnError", this.buttonPauseOnError.Checked);
+			logViewSettings.ShowMessages = this.buttonMessages.Checked;
+			logViewSettings.ShowWarnings = this.buttonWarnings.Checked;
+			logViewSettings.ShowErrors = this.buttonErrors.Checked;
+			logViewSettings.ShowCore = this.buttonCore.Checked;
+			logViewSettings.ShowEditor = this.buttonEditor.Checked;
+			logViewSettings.ShowGame = this.buttonGame.Checked;
+			logViewSettings.AutoClear = this.checkAutoClear.Checked;
+			logViewSettings.PauseOnError = this.buttonPauseOnError.Checked;
 		}
-		internal void LoadUserData(XElement node)
+		internal void LoadUserData(LogViewSettings logViewSettings)
 		{
-			bool tryParseBool;
-
-			if (node.GetElementValue("ShowMessages", out tryParseBool)) this.buttonMessages.Checked = tryParseBool;
-			if (node.GetElementValue("ShowWarnings", out tryParseBool)) this.buttonWarnings.Checked = tryParseBool;
-			if (node.GetElementValue("ShowErrors", out tryParseBool))   this.buttonErrors.Checked = tryParseBool;
-			if (node.GetElementValue("ShowCore", out tryParseBool))     this.buttonCore.Checked = tryParseBool;
-			if (node.GetElementValue("ShowEditor", out tryParseBool))   this.buttonEditor.Checked = tryParseBool;
-			if (node.GetElementValue("ShowGame", out tryParseBool))     this.buttonGame.Checked = tryParseBool;
-			if (node.GetElementValue("AutoClear", out tryParseBool))    this.checkAutoClear.Checked = tryParseBool;
-			if (node.GetElementValue("PauseOnError", out tryParseBool)) this.buttonPauseOnError.Checked = tryParseBool;
+			this.buttonMessages.Checked = logViewSettings.ShowMessages;
+			this.buttonWarnings.Checked = logViewSettings.ShowWarnings;
+			this.buttonErrors.Checked = logViewSettings.ShowErrors;
+			this.buttonCore.Checked = logViewSettings.ShowCore;
+			this.buttonEditor.Checked = logViewSettings.ShowEditor;
+			this.buttonGame.Checked = logViewSettings.ShowGame;
+			this.checkAutoClear.Checked = logViewSettings.AutoClear;
+			this.buttonPauseOnError.Checked = logViewSettings.PauseOnError;
 
 			this.logEntryList.SetSourceFilter(Logs.Core.Id, !this.buttonCore.Checked);
 			this.logEntryList.SetSourceFilter(Logs.Editor.Id, !this.buttonEditor.Checked);
