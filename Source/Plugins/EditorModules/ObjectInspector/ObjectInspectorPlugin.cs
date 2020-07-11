@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
-using System.IO;
-using System.Xml.Linq;
 
-using Duality;
-using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Properties;
-using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.ObjectInspector.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
@@ -57,25 +51,31 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			this.isLoading = false;
 			return result;
 		}
-		protected override void SaveUserData(XElement node)
+		protected override void SaveUserData(PluginSettings pluginSettings)
 		{
+			ObjectInspectorSettings objectInspectorSettings = pluginSettings.GetSettings<ObjectInspectorSettings>();
+			objectInspectorSettings.ObjectInspectors = new List<ObjectInspectorState>();
 			for (int i = 0; i < this.objViews.Count; i++)
 			{
-				XElement elem = new XElement("ObjectInspector");
-				elem.SetAttributeValue("id", i);
-				node.Add(elem);
-				this.objViews[i].SaveUserData(elem);
+				var inspectorState = new ObjectInspectorState
+				{
+					Id = i
+				};
+				this.objViews[i].SaveUserData(inspectorState);
+
+				objectInspectorSettings.ObjectInspectors.Add(inspectorState);
 			}
 		}
-		protected override void LoadUserData(XElement node)
+
+		protected override void LoadUserData(PluginSettings pluginSettings)
 		{
 			this.isLoading = true;
-			foreach (XElement elem in node.Elements("ObjectInspector"))
+			ObjectInspectorSettings objectInspectorSettings = pluginSettings.GetSettings<ObjectInspectorSettings>();
+			foreach (ObjectInspectorState inspectorState in objectInspectorSettings.ObjectInspectors)
 			{
-				int i = elem.GetAttributeValue("id", 0);
-				if (i < 0 || i >= this.objViews.Count) continue;
+				if (inspectorState.Id < 0 || inspectorState.Id >= this.objViews.Count) continue;
 
-				this.objViews[i].LoadUserData(elem);
+				this.objViews[inspectorState.Id].LoadUserData(inspectorState);
 			}
 			this.isLoading = false;
 		}
