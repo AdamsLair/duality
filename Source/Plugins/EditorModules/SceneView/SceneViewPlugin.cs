@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.IO;
-using System.Xml.Linq;
 
-using Duality;
-using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Properties;
-using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.SceneView.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
@@ -42,28 +36,21 @@ namespace Duality.Editor.Plugins.SceneView
 			this.isLoading = false;
 			return result;
 		}
-		protected override void SaveUserData(XElement node)
+		protected override void SaveUserData(PluginSettings settings)
 		{
+			SceneViewSettings sceneViewSettings = settings.GetSettings<SceneViewSettings>();
 			if (this.sceneView != null)
 			{
-				XElement sceneViewElem = new XElement("SceneView");
-				this.sceneView.SaveUserData(sceneViewElem);
-				if (!sceneViewElem.IsEmpty)
-					node.Add(sceneViewElem);
+				this.sceneView.SaveUserData(sceneViewSettings);
 			}
 		}
-		protected override void LoadUserData(XElement node)
+		protected override void LoadUserData(PluginSettings settings)
 		{
+			SceneViewSettings sceneViewSettings = settings.GetSettings<SceneViewSettings>();
 			this.isLoading = true;
 			if (this.sceneView != null)
 			{
-				foreach (XElement sceneViewElem in node.Elements("SceneView"))
-				{
-					int i = sceneViewElem.GetAttributeValue("id", 0);
-					if (i < 0 || i >= 1) continue;
-
-					this.sceneView.LoadUserData(sceneViewElem);
-				}
+				this.sceneView.LoadUserData(sceneViewSettings);
 			}
 			this.isLoading = false;
 		}

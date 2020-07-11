@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Reflection;
-using System.Xml.Linq;
 using CancelEventHandler = System.ComponentModel.CancelEventHandler;
 using CancelEventArgs = System.ComponentModel.CancelEventArgs;
 
@@ -13,11 +12,9 @@ using Aga.Controls.Tree;
 using AdamsLair.WinForms.ItemModels;
 using AdamsLair.WinForms.ItemViews;
 
-using Duality;
 using Duality.Cloning;
 using Duality.Resources;
 using Duality.IO;
-using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
 
@@ -172,16 +169,13 @@ namespace Duality.Editor.Plugins.SceneView
 			Scene.ComponentRemoving -= this.Scene_ComponentRemoving;
 		}
 
-		internal void SaveUserData(XElement node)
+		internal void SaveUserData(SceneViewSettings sceneViewSettings)
 		{
-			node.SetElementValue("ShowComponents", this.buttonShowComponents.Checked);
+			sceneViewSettings.ShowComponents = this.buttonShowComponents.Checked;
 		}
-		internal void LoadUserData(XElement node)
+		internal void LoadUserData(SceneViewSettings sceneViewSettings)
 		{
-			bool tryParseBool;
-
-			if (node.GetElementValue("ShowComponents", out tryParseBool))
-				this.buttonShowComponents.Checked = tryParseBool;
+			this.buttonShowComponents.Checked = sceneViewSettings.ShowComponents;
 		}
 
 		public void FlashNode(NodeBase node)
