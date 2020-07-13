@@ -27,7 +27,7 @@ namespace Duality.Editor.Plugins.Base
 		private static readonly string ElementNamePixmapSlicer = "PixmapSlicer";
 
 		private PixmapSlicerForm	slicingForm				= null;
-		private XElement			pixmapSlicerSettings	= null;
+		private EditorBaseSettings	editorBaseSettings	= null;
 
 		private bool isLoading = false;
 
@@ -45,8 +45,8 @@ namespace Duality.Editor.Plugins.Base
 				this.slicingForm.FormClosed += this.slicingForm_FormClosed;
 
 				// If there are cached settings available, apply them to the new editor
-				if (this.pixmapSlicerSettings != null)
-					this.slicingForm.LoadUserData(this.pixmapSlicerSettings);
+				if (this.editorBaseSettings != null)
+					this.slicingForm.LoadUserData(this.editorBaseSettings);
 
 				if (!this.isLoading)
 				{
@@ -92,32 +92,24 @@ namespace Duality.Editor.Plugins.Base
 
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 		}
-		protected override void SaveUserData(XElement node)
+		protected override void SaveUserData(PluginSettings pluginSettings)
 		{
 			if (this.slicingForm != null)
 			{
-				this.pixmapSlicerSettings = new XElement(ElementNamePixmapSlicer);
-				this.slicingForm.SaveUserData(this.pixmapSlicerSettings);
+				this.editorBaseSettings = pluginSettings.GetSettings<EditorBaseSettings>();
+				this.slicingForm.SaveUserData(this.editorBaseSettings);
 			}
-
-			if (this.slicingForm != null && !this.pixmapSlicerSettings.IsEmpty)
-				node.Add(this.pixmapSlicerSettings);
 		}
-		protected override void LoadUserData(XElement node)
+		protected override void LoadUserData(PluginSettings pluginSettings)
 		{
 			this.isLoading = true;
-			foreach (XElement pixmapSlicerElem in node.Elements(ElementNamePixmapSlicer))
+
+			if (this.slicingForm != null)
 			{
-				int i = pixmapSlicerElem.GetAttributeValue("id", 0);
-				if (i < 0 || i >= 1) continue;
-
-				this.pixmapSlicerSettings = new XElement(pixmapSlicerElem);
-				break;
+				this.editorBaseSettings = pluginSettings.GetSettings<EditorBaseSettings>();
+				this.slicingForm.LoadUserData(this.editorBaseSettings);
 			}
-
-			if (this.slicingForm != null && this.pixmapSlicerSettings != null)
-				this.slicingForm.LoadUserData(this.pixmapSlicerSettings);
-
+			
 			this.isLoading = false;
 		}
 		protected override IDockContent DeserializeDockContent(Type dockContentType)
@@ -133,8 +125,7 @@ namespace Duality.Editor.Plugins.Base
 		}
 		private void slicingForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			this.pixmapSlicerSettings = new XElement(ElementNamePixmapSlicer);
-			this.slicingForm.SaveUserData(this.pixmapSlicerSettings);
+			this.slicingForm.SaveUserData(this.editorBaseSettings);
 
 			this.slicingForm.FormClosed -= this.slicingForm_FormClosed;
 			this.slicingForm.Dispose();

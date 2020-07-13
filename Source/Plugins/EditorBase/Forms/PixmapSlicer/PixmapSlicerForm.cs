@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using Duality.Drawing;
+
 using Duality.Editor.Controls.ToolStrip;
-using Duality.Editor.Plugins.Base.Forms.PixmapSlicer;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Resources;
@@ -60,20 +57,15 @@ namespace Duality.Editor.Plugins.Base.Forms
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 		}
 
-		internal void SaveUserData(XElement node)
+		internal void SaveUserData(EditorBaseSettings editorBaseSettings)
 		{
-			node.SetElementValue("DarkBackground", this.buttonBrightness.Checked);
-			node.SetElementValue("DisplayIndices", this.pixmapView.NumberingStyle);
+			editorBaseSettings.DarkBackground = this.buttonBrightness.Checked;
+			editorBaseSettings.DisplayIndices = this.pixmapView.NumberingStyle;
 		}
-		internal void LoadUserData(XElement node)
+		internal void LoadUserData(EditorBaseSettings editorBaseSettings)
 		{
-			bool tryParseBool;
-			PixmapNumberingStyle tryParseNumeringStyle;
-
-			if (node.GetElementValue("DarkBackground", out tryParseBool))
-				this.buttonBrightness.Checked = tryParseBool;
-			if (node.GetElementValue("DisplayIndices", out tryParseNumeringStyle))
-				this.pixmapView.NumberingStyle = tryParseNumeringStyle;
+			this.buttonBrightness.Checked = editorBaseSettings.DarkBackground;
+			this.pixmapView.NumberingStyle = editorBaseSettings.DisplayIndices;
 
 			this.UpdateIndicesButton();
 		}
