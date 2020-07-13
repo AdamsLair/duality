@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reflection;
 using System.Drawing;
@@ -10,17 +9,15 @@ using System.IO;
 
 using WeifenLuo.WinFormsUI.Docking;
 using Aga.Controls.Tree;
+
 using AdamsLair.WinForms.ItemModels;
 using AdamsLair.WinForms.ItemViews;
 
-using Duality;
 using Duality.IO;
 using Duality.Resources;
-using Duality.Editor;
 using Duality.Editor.AssetManagement;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.ProjectView.TreeModels;
-using System.Xml.Linq;
 
 namespace Duality.Editor.Plugins.ProjectView
 {
@@ -121,13 +118,13 @@ namespace Duality.Editor.Plugins.ProjectView
 			Resource.ResourceSaved                 -= this.Resource_ResourceSaved;
 		}
 
-		internal void SaveUserData(XElement node)
+		internal void SaveUserData(ProjectViewSettings settings)
 		{
-			node.SetElementValue("ImportSourcePath", this.importSourcePath);
+			settings.ImportSourcePath = this.importSourcePath;
 		}
-		internal void LoadUserData(XElement node)
+		internal void LoadUserData(ProjectViewSettings settings)
 		{
-			this.importSourcePath = node.GetElementValue("ImportSourcePath", this.importSourcePath);
+			this.importSourcePath = settings.ImportSourcePath;
 		}
 
 		public void FlashNode(NodeBase node)
