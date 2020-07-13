@@ -5,7 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
-
+using System.Text;
+using System.Xml.Linq;
 using Duality;
 using Duality.IO;
 using Duality.Serialization;
@@ -471,7 +472,9 @@ namespace Duality.Editor.Forms
 			}
 
 			// Save UserData before quitting
-			DualityEditorApp.SaveUserData();
+			this.SaveDockPanelData(DualityEditorApp.DualityEditorUserData.Instance);
+			DualityEditorApp.PluginManager.SaveUserData(DualityEditorApp.DualityEditorUserData.Instance.PluginSettings);
+			DualityEditorApp.DualityEditorUserData.Save();
 			DualityApp.AppData.Save();
 
 			bool isClosedByUser = 
@@ -500,6 +503,36 @@ namespace Duality.Editor.Forms
 
 			AppRunningDialog runningDialog = new AppRunningDialog(appProc);
 			runningDialog.ShowDialog(this);
+		}
+		public void SaveDockPanelData(DualityEditorUserData dualityEditorUserData)
+		{
+			using (var str = new MemoryStream())
+			{
+				this.MainDockPanel.SaveAsXml(str, Encoding.Default);
+				string xmlString = Encoding.Default.GetString(str.ToArray());
+
+				dualityEditorUserData.DockPanelState = XElement.Parse(xmlString);
+			}
+		}
+		public void LoadDockPanelData(XElement dockPanelState)
+		{
+			Logs.Editor.Write("Loading DockPanel data...");
+			Logs.Editor.PushIndent();
+			MemoryStream dockPanelDataStream = new MemoryStream(Encoding.Default.GetBytes(dockPanelState.ToString()));
+			try
+			{
+				this.MainDockPanel.LoadFromXml(dockPanelDataStream, DeserializeDockContent);
+			}
+			catch (Exception e)
+			{
+				Logs.Editor.WriteError("Cannot load DockPanel data due to malformed or non-existent Xml: {0}", LogFormat.Exception(e));
+			}
+			Logs.Editor.PopIndent();
+		}
+		private static IDockContent DeserializeDockContent(string persistName)
+		{
+			Logs.Editor.Write("Deserializing layout: '" + persistName + "'");
+			return DualityEditorApp.PluginManager.DeserializeDockContent(persistName);
 		}
 		private void actionDebugApp_Click(object sender, EventArgs e)
 		{

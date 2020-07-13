@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Drawing;
-using System.IO;
 
-using Duality;
 using Duality.Serialization;
 using Duality.Resources;
 
@@ -77,41 +74,19 @@ namespace Duality.Editor
 			}
 		}
 
-		private	static	DesignTimeObjectDataManager	manager	= new DesignTimeObjectDataManager();
-		
 		internal static void Init()
 		{
-			Load(DualityEditorApp.DesignTimeDataFile);
 			Scene.Leaving += Scene_Leaving;
 		}
 		internal static void Terminate()
 		{
 			Scene.Leaving -= Scene_Leaving;
-			Save(DualityEditorApp.DesignTimeDataFile);
 		}
 
-		public static DesignTimeObjectData Get(Guid objId)
-		{
-			return manager.RequestDesignTimeData(objId);
-		}
-		public static DesignTimeObjectData Get(GameObject obj)
-		{
-			return manager.RequestDesignTimeData(obj.Id);
-		}
-
-		private static void Save(string filePath)
-		{
-			Serializer.WriteObject(manager, filePath, typeof(BinarySerializer));
-		}
-		private static void Load(string filePath)
-		{
-			manager = Serializer.TryReadObject<DesignTimeObjectDataManager>(filePath) ?? new DesignTimeObjectDataManager();
-		}
 		private static void Scene_Leaving(object sender, EventArgs e)
 		{
-			manager.CleanupDesignTimeData();
+			DualityEditorApp.DualityEditorUserData.Instance?.DesignTimeObjectDataManager.CleanupDesignTimeData();
 		}
-
 
 		public static readonly DesignTimeObjectData Default = new DesignTimeObjectData();
 
@@ -184,6 +159,11 @@ namespace Duality.Editor
 			this.attached = true;
 		}
 
+		public static DesignTimeObjectData Get(GameObject obj)
+		{
+			return DualityEditorApp.DualityEditorUserData.Instance.DesignTimeObjectDataManager.RequestDesignTimeData(obj.Id);
+		}
+
 		public T RequestCustomData<T>() where T : new()
 		{
 			this.Detach();
@@ -234,11 +214,10 @@ namespace Duality.Editor
 	internal class DesignTimeObjectDataManager : ISerializeExplicit
 	{
 		private static readonly int GuidByteLength = Guid.Empty.ToByteArray().Length;
-		private	const int Version_First	= 1;
+		private const int Version_First = 1;
 
 		private	Dictionary<Guid,DesignTimeObjectData>	dataStore	= new Dictionary<Guid,DesignTimeObjectData>();
-		
-		
+
 		public DesignTimeObjectData RequestDesignTimeData(Guid objId)
 		{
 			DesignTimeObjectData data;
@@ -252,7 +231,7 @@ namespace Duality.Editor
 		public void CleanupDesignTimeData()
 		{
 			// Remove trivial / default data
-			var removeQuery = 
+			var removeQuery =
 				from p in this.dataStore
 				where p.Value.IsDefault
 				select p.Value.ParentObjectId;
@@ -284,7 +263,7 @@ namespace Duality.Editor
 			for (int i = 0; i < guidArray.Length; i++)
 			{
 				Array.Copy(
-					guidArray[i].ToByteArray(), 0, 
+					guidArray[i].ToByteArray(), 0,
 					data, i * GuidByteLength, GuidByteLength);
 			}
 			DesignTimeObjectData.DataContainer[] objData = dataStore.Values.Select(d => d.Data).ToArray();
@@ -299,9 +278,9 @@ namespace Duality.Editor
 		{
 			int version;
 			reader.ReadValue("version", out version);
-			
+
 			if (this.dataStore == null)
-				this.dataStore = new Dictionary<Guid,DesignTimeObjectData>();
+				this.dataStore = new Dictionary<Guid, DesignTimeObjectData>();
 			else
 				this.dataStore.Clear();
 

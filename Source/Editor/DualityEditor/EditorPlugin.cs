@@ -25,12 +25,30 @@ namespace Duality.Editor
 		/// Saves the plugins user data to the provided Xml Node.
 		/// </summary>
 		/// <param name="node"></param>
+		[Obsolete("Use the model based api")]
 		internal protected virtual void SaveUserData(XElement node) {}
+
+		[Obsolete("Use the model based api")]
+		internal protected virtual XElement GetDefaultUserData()
+		{
+			return null;
+		}
 		/// <summary>
 		/// Loads the plugins user data from the provided Xml Node.
 		/// </summary>
 		/// <param name="node"></param>
+		[Obsolete("Use the model based api")]
 		internal protected virtual void LoadUserData(XElement node) {}
+
+		/// <summary>
+		/// Saves the plugins user data by serializing the returned object.
+		/// </summary>
+		internal protected virtual void SaveUserData(PluginSettings settings) { }
+		/// <summary>
+		/// Loads the plugins user data from the provided <see cref="PluginSettings"/>.
+		/// </summary>
+		/// <param name="settings"></param>
+		internal protected virtual void LoadUserData(PluginSettings settings) { }
 		/// <summary>
 		/// Called when initializing the editors layout and trying to set up one of this plugins DockContent.
 		/// Returns an IDockContent instance of the specified dockContentType. May return already existing

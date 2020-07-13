@@ -84,38 +84,60 @@ namespace Duality.Editor
 		}
 
 		/// <summary>
-		/// Saves all editor plugin user data into the specified parent <see cref="XElement"/>.
+		/// Saves all editor plugin user data into the <see cref="PluginSettings"/>/>.
 		/// </summary>
-		/// <param name="parentElement"></param>
-		public void SaveUserData(XElement parentElement)
+		/// <param name="settings"></param>
+		public void SaveUserData(PluginSettings settings)
 		{
+			settings.Clear();
+			foreach (EditorPlugin loadedPlugin in this.LoadedPlugins)
+			{
+				loadedPlugin.SaveUserData(settings);
+			}
+
+			// Legacy support
+			XElement parentElement = settings.OldStyleSettings;
 			foreach (EditorPlugin plugin in this.LoadedPlugins)
 			{
 				XElement pluginElement = new XElement("Plugin");
 				pluginElement.SetAttributeValue("id", plugin.Id);
+
 				plugin.SaveUserData(pluginElement);
 				if (!pluginElement.IsEmpty)
 					parentElement.Add(pluginElement);
 			}
+
+			settings.OldStyleSettings = parentElement;
 		}
 		/// <summary>
-		/// Loads all editor plugin user data from the specified parent <see cref="XElement"/>.
+		/// Loads all editor plugin user data from the <see cref="PluginSettings"/>>.
 		/// </summary>
-		/// <param name="parentElement"></param>
-		public void LoadUserData(XElement parentElement)
+		/// <param name="pluginSettings"></param>
+		public void LoadUserData(PluginSettings pluginSettings)
 		{
-			foreach (XElement child in parentElement.Elements("Plugin"))
+			foreach (EditorPlugin loadedPlugin in this.LoadedPlugins)
 			{
-				string id = child.GetAttributeValue("id");
-				if (id == null) continue;
+				loadedPlugin.LoadUserData(pluginSettings);
+			}
 
-				foreach (EditorPlugin plugin in this.LoadedPlugins)
+			// Legacy support
+			XElement parentElement = pluginSettings.OldStyleSettings;
+			XElement[] childs = parentElement.Elements("Plugin").ToArray();
+
+			foreach (EditorPlugin loadedPlugin in this.LoadedPlugins)
+			{
+				XElement pluginSetting = childs.FirstOrDefault(x => x.GetAttributeValue("id") == loadedPlugin.Id);
+				if (pluginSetting == null)
 				{
-					if (plugin.Id != id) continue;
+					XElement defaultSettings = loadedPlugin.GetDefaultUserData();
 
-					plugin.LoadUserData(child);
-					break;
+					if (defaultSettings == null) continue;
+					if (defaultSettings.Name != "Plugin") throw new InvalidOperationException("Expected a Plugin element as root");
+
+					defaultSettings.SetAttributeValue("id", loadedPlugin.Id);
+					pluginSetting = defaultSettings;
 				}
+				loadedPlugin.LoadUserData(pluginSetting);
 			}
 		}
 		/// <summary>
