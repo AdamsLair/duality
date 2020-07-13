@@ -61,6 +61,33 @@ namespace Duality.Editor.Plugins.CamView.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;CamView id=&quot;0&quot;&gt;
+        ///	&lt;Perspective&gt;Parallax&lt;/Perspective&gt;
+        ///	&lt;FocusDist&gt;500&lt;/FocusDist&gt;
+        ///	&lt;BackgroundColor&gt;
+        ///		&lt;R&gt;64&lt;/R&gt;
+        ///		&lt;G&gt;64&lt;/G&gt;
+        ///		&lt;B&gt;64&lt;/B&gt;
+        ///		&lt;A&gt;0&lt;/A&gt;
+        ///	&lt;/BackgroundColor&gt;
+        ///	&lt;SnapToGridSize&gt;
+        ///		&lt;X&gt;0&lt;/X&gt;
+        ///		&lt;Y&gt;0&lt;/Y&gt;
+        ///		&lt;Z&gt;0&lt;/Z&gt;
+        ///	&lt;/SnapToGridSize&gt;
+        ///	&lt;ActiveState&gt;Duality.Editor.Plugins.CamView.CamViewStates.SceneEditorCamViewState&lt;/ActiveState&gt;
+        ///	&lt;States&gt;
+        ///		&lt;State type=&quot;Duality.Editor.Plugins.CamView.CamViewStates.RigidBodyEditorCamViewState&quot;&gt;
+        ///			&lt;ActiveLayers&gt;
+        ///				&lt;Item&gt;Duality.Editor.Plugins.CamView. [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DefaultSettings {
+            get {
+                return ResourceManager.GetString("DefaultSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap layers {
