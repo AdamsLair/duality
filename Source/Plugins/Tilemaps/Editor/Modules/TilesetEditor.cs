@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
 using System.Windows.Forms;
 
 using Duality.Plugins.Tilemaps;
@@ -16,7 +14,6 @@ using Duality.Editor.Plugins.Tilemaps.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
 using Aga.Controls.Tree;
-using Aga.Controls.Tree.NodeControls;
 
 namespace Duality.Editor.Plugins.Tilemaps
 {
@@ -87,18 +84,15 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.UpdateZoomButtons();
 		}
 		
-		internal void SaveUserData(XElement node)
+		internal void SaveUserData(TilesetEditorSettings settings)
 		{
-			node.SetElementValue("DarkBackground", this.buttonBrightness.Checked);
-			node.SetElementValue("DisplayTileIndices", this.tileIndexDrawMode);
+			settings.DarkBackground = this.buttonBrightness.Checked;
+			settings.DisplayTileIndices = this.tileIndexDrawMode;
 		}
-		internal void LoadUserData(XElement node)
+		internal void LoadUserData(TilesetEditorSettings settings)
 		{
-			bool tryParseBool;
-			TilesetView.TileIndexDrawMode tryParseTileIndices;
-
-			if (node.GetElementValue("DarkBackground", out tryParseBool)) this.buttonBrightness.Checked = tryParseBool;
-			if (node.GetElementValue("DisplayTileIndices", out tryParseTileIndices)) this.tileIndexDrawMode = tryParseTileIndices;
+			this.buttonBrightness.Checked = settings.DarkBackground;
+			this.tileIndexDrawMode = settings.DisplayTileIndices;
 
 			this.ApplyBrightness();
 			this.ApplyTileIndexDrawMode();
