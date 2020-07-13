@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Drawing;
-using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using System.Windows.Forms;
-using System.Collections.Generic;
 
 using WeifenLuo.WinFormsUI.Docking;
 using AdamsLair.WinForms.PropertyEditing;
 
-using Duality;
-using Duality.IO;
 using Duality.Resources;
-using Duality.Editor;
 using Duality.Editor.AssetManagement;
 
 namespace Duality.Editor.Plugins.ObjectInspector
@@ -108,13 +103,13 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			this.propertyGrid.Focus();
 		}
 
-		internal void SaveUserData(XElement node)
+		internal void SaveUserData(ObjectInspectorState inspectorState)
 		{
-			node.SetElementValue("AutoRefresh", this.buttonAutoRefresh.Checked);
-			node.SetElementValue("Locked", this.buttonLock.Checked);
-			node.SetElementValue("TitleText", this.Text);
-			node.SetElementValue("DebugMode", this.buttonDebug.Checked);
-			node.SetElementValue("SortByName", this.buttonSortByName.Checked);
+			inspectorState.AutoRefresh = this.buttonAutoRefresh.Checked;
+			inspectorState.Locked = this.buttonLock.Checked;
+			inspectorState.TitleText = this.Text;
+			inspectorState.DebugMode = this.buttonDebug.Checked;
+			inspectorState.SortByName = this.buttonSortByName.Checked;
 
 			// gridExpandState is normally only updated when the current selection changes.
 			// Make sure we have the latest information when saving UserData.
@@ -122,23 +117,20 @@ namespace Duality.Editor.Plugins.ObjectInspector
 
 			XElement expandStateNode = new XElement("ExpandState");
 			this.gridExpandState.SaveToXml(expandStateNode);
-			node.Add(expandStateNode);
+			inspectorState.ExpandState = expandStateNode;
 		}
-		internal void LoadUserData(XElement node)
+		internal void LoadUserData(ObjectInspectorState inspectorState)
 		{
-			bool tryParseBool;
+			this.buttonAutoRefresh.Checked = inspectorState.AutoRefresh;
+			this.buttonLock.Checked = inspectorState.Locked;
+			this.buttonDebug.Checked = inspectorState.DebugMode;
+			this.buttonSortByName.Checked = inspectorState.SortByName;
+			this.Text = inspectorState.TitleText;
 
-			if (node.GetElementValue("AutoRefresh", out tryParseBool)) this.buttonAutoRefresh.Checked = tryParseBool;
-			if (node.GetElementValue("Locked", out tryParseBool)) this.buttonLock.Checked = tryParseBool;
-			if (node.GetElementValue("DebugMode", out tryParseBool)) this.buttonDebug.Checked = tryParseBool;
-			if (node.GetElementValue("SortByName", out tryParseBool)) this.buttonSortByName.Checked = tryParseBool;
-			this.Text = node.GetElementValue("TitleText", this.Text);
-
-			XElement expandStateNode = node.Element("ExpandState", true);
-			if (expandStateNode != null)
+			if (inspectorState.ExpandState != null)
 			{
-				this.gridExpandState.LoadFromXml(expandStateNode);
-		}
+				this.gridExpandState.LoadFromXml(inspectorState.ExpandState);
+			}
 		}
 
 		private void UpdateButtons()
