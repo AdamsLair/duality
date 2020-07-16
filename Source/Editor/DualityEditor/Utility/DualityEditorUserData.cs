@@ -8,11 +8,11 @@ namespace Duality.Editor
 {
 	public class DualityEditorUserData
 	{
-		private DesignTimeObjectDataManager designTimeObjectDataManager = new DesignTimeObjectDataManager();
-		internal DesignTimeObjectDataManager DesignTimeObjectDataManager
+		private DesignTimeObjectDataManager perObjectData = new DesignTimeObjectDataManager();
+		internal DesignTimeObjectDataManager PerObjectData
 		{
-			get { return this.designTimeObjectDataManager; }
-			set { this.designTimeObjectDataManager = value; }
+			get { return this.perObjectData; }
+			set { this.perObjectData = value; }
 		}
 
 		private XElement dockPanelState = XElement.Parse(Properties.GeneralRes.DefaultDockPanelData);
