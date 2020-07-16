@@ -85,7 +85,7 @@ namespace Duality.Editor
 
 		private static void Scene_Leaving(object sender, EventArgs e)
 		{
-			DualityEditorApp.UserData.Instance?.DesignTimeObjectDataManager.CleanupDesignTimeData();
+			DualityEditorApp.UserData.Instance?.PerObjectData.Cleanup();
 		}
 
 		public static readonly DesignTimeObjectData Default = new DesignTimeObjectData();
@@ -161,7 +161,7 @@ namespace Duality.Editor
 
 		public static DesignTimeObjectData Get(GameObject obj)
 		{
-			return DualityEditorApp.UserData.Instance.DesignTimeObjectDataManager.RequestDesignTimeData(obj.Id);
+			return DualityEditorApp.UserData.Instance.PerObjectData.Request(obj.Id);
 		}
 
 		public T RequestCustomData<T>() where T : new()
@@ -218,7 +218,7 @@ namespace Duality.Editor
 
 		private	Dictionary<Guid,DesignTimeObjectData>	dataStore	= new Dictionary<Guid,DesignTimeObjectData>();
 
-		public DesignTimeObjectData RequestDesignTimeData(Guid objId)
+		public DesignTimeObjectData Request(Guid objId)
 		{
 			DesignTimeObjectData data;
 			if (!this.dataStore.TryGetValue(objId, out data))
@@ -228,7 +228,7 @@ namespace Duality.Editor
 			}
 			return data;
 		}
-		public void CleanupDesignTimeData()
+		public void Cleanup()
 		{
 			// Remove trivial / default data
 			var removeQuery =
@@ -238,7 +238,7 @@ namespace Duality.Editor
 			foreach (Guid objId in removeQuery.ToArray())
 				this.dataStore.Remove(objId);
 		}
-		public void OptimizeDesignTimeData()
+		public void Optimize()
 		{
 			// Optimize data by sharing
 			var shareValues = this.dataStore.Values.ToList();
@@ -255,10 +255,10 @@ namespace Duality.Editor
 
 		void ISerializeExplicit.WriteData(IDataWriter writer)
 		{
-			this.CleanupDesignTimeData();
-			this.OptimizeDesignTimeData();
+			this.Cleanup();
+			this.Optimize();
 
-			Guid[] guidArray = dataStore.Keys.ToArray();
+			Guid[] guidArray = this.dataStore.Keys.ToArray();
 			byte[] data = new byte[guidArray.Length * GuidByteLength];
 			for (int i = 0; i < guidArray.Length; i++)
 			{
@@ -266,8 +266,8 @@ namespace Duality.Editor
 					guidArray[i].ToByteArray(), 0,
 					data, i * GuidByteLength, GuidByteLength);
 			}
-			DesignTimeObjectData.DataContainer[] objData = dataStore.Values.Select(d => d.Data).ToArray();
-			bool[] objDataDirty = dataStore.Values.Select(d => d.IsAttached).ToArray();
+			DesignTimeObjectData.DataContainer[] objData = this.dataStore.Values.Select(d => d.Data).ToArray();
+			bool[] objDataDirty = this.dataStore.Values.Select(d => d.IsAttached).ToArray();
 
 			writer.WriteValue("version", Version_First);
 			writer.WriteValue("dataStoreKeys", data);
