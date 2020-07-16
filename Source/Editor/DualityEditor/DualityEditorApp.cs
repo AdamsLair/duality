@@ -125,13 +125,13 @@ namespace Duality.Editor
 		/// <summary>
 		/// [GET] Provides access to Duality's current <see cref="DualityEditorUserData">user data</see>. This is never null.
 		/// </summary>
-		public static SettingsContainer<DualityEditorUserData> DualityEditorUserData { get; } = new SettingsContainer<DualityEditorUserData>("EditorUserData.xml");
 
+		public static SettingsContainer<DualityEditorUserData> UserData { get; } = new SettingsContainer<DualityEditorUserData>("EditorUserData.xml");
 		/// <summary>
 		/// [GET] Provides access to Duality's current <see cref="EditorAppData">application data</see>. This is never null.
 		/// </summary>
-		public static SettingsContainer<EditorAppData> EditorAppData { get; } = new SettingsContainer<EditorAppData>("EditorAppData.xml");
 
+		public static SettingsContainer<EditorAppData> AppData { get; } = new SettingsContainer<EditorAppData>("EditorAppData.xml");
 		public static bool BackupsEnabled
 		{
 			get { return backupsEnabled; }
@@ -211,13 +211,13 @@ namespace Duality.Editor
 			InitMainGraphicsContext();
 			DualityApp.InitPostWindow();
 
-			EditorAppData.Load();
+			AppData.Load();
 
 			mainForm.UpdateLaunchAppActions();
 
-			DualityEditorUserData.Load();
-		 	mainForm.LoadDockPanelData(DualityEditorUserData.Instance.DockPanelState);
-			PluginManager.LoadUserData(DualityEditorUserData.Instance.PluginSettings);
+			UserData.Load();
+		 	mainForm.LoadDockPanelData(UserData.Instance.DockPanelState);
+			PluginManager.LoadUserData(UserData.Instance.PluginSettings);
 			pluginManager.InitPlugins();
 
 

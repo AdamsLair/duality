@@ -85,7 +85,7 @@ namespace Duality.Editor
 
 		private static void Scene_Leaving(object sender, EventArgs e)
 		{
-			DualityEditorApp.DualityEditorUserData.Instance?.DesignTimeObjectDataManager.CleanupDesignTimeData();
+			DualityEditorApp.UserData.Instance?.DesignTimeObjectDataManager.CleanupDesignTimeData();
 		}
 
 		public static readonly DesignTimeObjectData Default = new DesignTimeObjectData();
@@ -161,7 +161,7 @@ namespace Duality.Editor
 
 		public static DesignTimeObjectData Get(GameObject obj)
 		{
-			return DualityEditorApp.DualityEditorUserData.Instance.DesignTimeObjectDataManager.RequestDesignTimeData(obj.Id);
+			return DualityEditorApp.UserData.Instance.DesignTimeObjectDataManager.RequestDesignTimeData(obj.Id);
 		}
 
 		public T RequestCustomData<T>() where T : new()

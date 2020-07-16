@@ -503,9 +503,9 @@ namespace Duality.Editor.Forms
 			}
 
 			// Save UserData before quitting
-			this.SaveDockPanelData(DualityEditorApp.DualityEditorUserData.Instance);
-			DualityEditorApp.PluginManager.SaveUserData(DualityEditorApp.DualityEditorUserData.Instance.PluginSettings);
-			DualityEditorApp.DualityEditorUserData.Save();
+			this.SaveDockPanelData(DualityEditorApp.UserData.Instance);
+			DualityEditorApp.PluginManager.SaveUserData(DualityEditorApp.UserData.Instance.PluginSettings);
+			DualityEditorApp.UserData.Save();
 			DualityApp.AppData.Save();
 
 			bool isClosedByUser = 
@@ -527,7 +527,7 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFullPath(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.AppData.Instance.LauncherPath);
 			startInfo.Arguments = LauncherArgs.CmdArgEditor;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
@@ -541,7 +541,7 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFullPath(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.AppData.Instance.LauncherPath);
 			startInfo.Arguments = LauncherArgs.CmdArgEditor + " " + LauncherArgs.CmdArgDebug;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
@@ -555,7 +555,7 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFullPath(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.AppData.Instance.LauncherPath);
 			startInfo.Arguments = LauncherArgs.CmdArgEditor + " " + LauncherArgs.CmdArgProfiling;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
@@ -566,10 +566,10 @@ namespace Duality.Editor.Forms
 		private void actionConfigureLauncher_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog fileDialog = new OpenFileDialog();
-			fileDialog.InitialDirectory = Path.GetDirectoryName(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			fileDialog.InitialDirectory = Path.GetDirectoryName(DualityEditorApp.AppData.Instance.LauncherPath);
 			if (string.IsNullOrWhiteSpace(fileDialog.InitialDirectory))
 				fileDialog.InitialDirectory = Environment.CurrentDirectory;
-			fileDialog.FileName = Path.GetFileName(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			fileDialog.FileName = Path.GetFileName(DualityEditorApp.AppData.Instance.LauncherPath);
 			fileDialog.Filter = "Executable files (*.exe)|*.exe";
 			fileDialog.FilterIndex = 1;
 			fileDialog.RestoreDirectory = true;
@@ -580,8 +580,8 @@ namespace Duality.Editor.Forms
 			fileDialog.CustomPlaces.Add(Environment.CurrentDirectory);
 			if (fileDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				DualityEditorApp.EditorAppData.Instance.LauncherPath = PathHelper.MakeFilePathRelative(fileDialog.FileName);
-				DualityEditorApp.EditorAppData.Save();
+				DualityEditorApp.AppData.Instance.LauncherPath = PathHelper.MakeFilePathRelative(fileDialog.FileName);
+				DualityEditorApp.AppData.Save();
 				this.UpdateLaunchAppActions();
 			}
 		}
@@ -835,7 +835,7 @@ namespace Duality.Editor.Forms
 		}
 		public void UpdateLaunchAppActions()
 		{
-			bool launcherAvailable = File.Exists(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			bool launcherAvailable = File.Exists(DualityEditorApp.AppData.Instance.LauncherPath);
 			this.actionRunApp.Enabled = launcherAvailable;
 			this.actionDebugApp.Enabled = launcherAvailable;
 			this.menuRunApp.Enabled = launcherAvailable;

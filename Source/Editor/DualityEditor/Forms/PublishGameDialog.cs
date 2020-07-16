@@ -41,7 +41,7 @@ namespace Duality.Editor.Forms
 			@".\DualityPrimitives.xml",
 			@".\DualityPhysics.xml",
 			@".\DDoc.chm",
-			@".\" + DualityEditorApp.DualityEditorUserData.Path,
+			@".\" + DualityEditorApp.UserData.Path,
 			@".\AdamsLair.WinForms.*",
 			@".\Aga.Controls.*",
 			@".\VistaBridgeLibrary.*",
@@ -203,7 +203,7 @@ namespace Duality.Editor.Forms
 				string shortcutFilePath = Path.Combine(archiveBaseDir, gameDirName + ".bat");
 				File.WriteAllText(
 					shortcutFilePath,
-					"cd GameData && start " + PathHelper.MakeFilePathRelative(DualityEditorApp.EditorAppData.Instance.LauncherPath));
+					"cd GameData && start " + PathHelper.MakeFilePathRelative(DualityEditorApp.AppData.Instance.LauncherPath));
 
 				// Create a shortcut to the editor
 				if (includeEditor)
