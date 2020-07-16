@@ -316,6 +316,37 @@ namespace Duality.Editor.Forms
 			this.checkBackups.Tag = HelpInfo.FromText(this.checkBackups.Text, GeneralRes.MenuItemInfo_ToggleBackups);
 		}
 
+		public void SaveDockPanelData(DualityEditorUserData dualityEditorUserData)
+		{
+			using (var stream = new MemoryStream())
+			{
+				this.MainDockPanel.SaveAsXml(stream, Encoding.Default);
+				string xmlString = Encoding.Default.GetString(stream.ToArray());
+
+				dualityEditorUserData.DockPanelState = XElement.Parse(xmlString);
+			}
+		}
+		public void LoadDockPanelData(XElement dockPanelState)
+		{
+			Logs.Editor.Write("Loading DockPanel data...");
+			Logs.Editor.PushIndent();
+			MemoryStream dockPanelDataStream = new MemoryStream(Encoding.Default.GetBytes(dockPanelState.ToString()));
+			try
+			{
+				this.MainDockPanel.LoadFromXml(dockPanelDataStream, DeserializeDockContent);
+			}
+			catch (Exception e)
+			{
+				Logs.Editor.WriteError("Cannot load DockPanel data due to malformed or non-existent Xml: {0}", LogFormat.Exception(e));
+			}
+			Logs.Editor.PopIndent();
+		}
+		private static IDockContent DeserializeDockContent(string persistName)
+		{
+			Logs.Editor.Write("Deserializing layout: '" + persistName + "'");
+			return DualityEditorApp.PluginManager.DeserializeDockContent(persistName);
+		}
+
 		private void UpdateWindowTitle()
 		{
 			string editorName = GeneralRes.EditorApplicationTitle;
@@ -503,36 +534,6 @@ namespace Duality.Editor.Forms
 
 			AppRunningDialog runningDialog = new AppRunningDialog(appProc);
 			runningDialog.ShowDialog(this);
-		}
-		public void SaveDockPanelData(DualityEditorUserData dualityEditorUserData)
-		{
-			using (var str = new MemoryStream())
-			{
-				this.MainDockPanel.SaveAsXml(str, Encoding.Default);
-				string xmlString = Encoding.Default.GetString(str.ToArray());
-
-				dualityEditorUserData.DockPanelState = XElement.Parse(xmlString);
-			}
-		}
-		public void LoadDockPanelData(XElement dockPanelState)
-		{
-			Logs.Editor.Write("Loading DockPanel data...");
-			Logs.Editor.PushIndent();
-			MemoryStream dockPanelDataStream = new MemoryStream(Encoding.Default.GetBytes(dockPanelState.ToString()));
-			try
-			{
-				this.MainDockPanel.LoadFromXml(dockPanelDataStream, DeserializeDockContent);
-			}
-			catch (Exception e)
-			{
-				Logs.Editor.WriteError("Cannot load DockPanel data due to malformed or non-existent Xml: {0}", LogFormat.Exception(e));
-			}
-			Logs.Editor.PopIndent();
-		}
-		private static IDockContent DeserializeDockContent(string persistName)
-		{
-			Logs.Editor.Write("Deserializing layout: '" + persistName + "'");
-			return DualityEditorApp.PluginManager.DeserializeDockContent(persistName);
 		}
 		private void actionDebugApp_Click(object sender, EventArgs e)
 		{
