@@ -121,16 +121,13 @@ namespace Duality.Editor
 		{
 			get { return firstEditorSession; }
 		}
-
 		/// <summary>
-		/// [GET] Provides access to Duality's current <see cref="DualityEditorUserData">user data</see>. This is never null.
+		/// [GET] Provides access to editor user data, such as personal settings or UI layouts. This is never null.
 		/// </summary>
-
 		public static SettingsContainer<DualityEditorUserData> UserData { get; } = new SettingsContainer<DualityEditorUserData>("EditorUserData.xml");
 		/// <summary>
-		/// [GET] Provides access to Duality's current <see cref="EditorAppData">application data</see>. This is never null.
+		/// [GET] Provides access to editor application / project data. This is never null.
 		/// </summary>
-
 		public static SettingsContainer<EditorAppData> AppData { get; } = new SettingsContainer<EditorAppData>("EditorAppData.xml");
 		public static bool BackupsEnabled
 		{
@@ -142,7 +139,6 @@ namespace Duality.Editor
 			get { return autosaveFrequency; }
 			set { autosaveFrequency = value; }
 		}
-
 		private static bool AppStillIdle
 		{
 			 get
@@ -151,6 +147,7 @@ namespace Duality.Editor
 				return !NativeMethods.PeekMessage(out msg, IntPtr.Zero, 0, 0, 0);
 			 }
 		}
+
 
 		public static void Init(MainForm mainForm, bool recover)
 		{
@@ -216,7 +213,7 @@ namespace Duality.Editor
 			mainForm.UpdateLaunchAppActions();
 
 			UserData.Load();
-		 	mainForm.LoadDockPanelData(UserData.Instance.DockPanelState);
+			mainForm.LoadDockPanelData(UserData.Instance.DockPanelState);
 			PluginManager.LoadUserData(UserData.Instance.PluginSettings);
 			pluginManager.InitPlugins();
 
