@@ -208,15 +208,22 @@ namespace Duality.Editor
 			InitMainGraphicsContext();
 			DualityApp.InitPostWindow();
 
+			// Load editor app data / project settings
 			AppData.Load();
-
 			mainForm.UpdateLaunchAppActions();
 
+			// Load editor user data
 			UserData.Load();
 			mainForm.LoadDockPanelData(UserData.Instance.DockPanelState);
 			PluginManager.LoadUserData(UserData.Instance.PluginSettings);
 			pluginManager.InitPlugins();
 
+			// If this is the first session, set it to false and save user data again
+			if (UserData.Instance.FirstSession)
+			{
+				UserData.Instance.FirstSession = false;
+				UserData.Save();
+			}
 
 			// Set up core plugin reloader
 			corePluginReloader = new ReloadCorePluginDialog(mainForm);
