@@ -13,11 +13,11 @@ namespace Duality.Editor
 	{
 		private DesignTimeObjectDataManager perObjectData = new DesignTimeObjectDataManager();
 		private XElement dockPanelState = XElement.Parse(Properties.GeneralRes.DefaultDockPanelData);
-		private bool backups = false;
+		private bool backups = true;
 		private AutosaveFrequency autoSaves = AutosaveFrequency.ThirtyMinutes;
 		private bool firstSession = false;
 		private int activeDocumentIndex = 0;
-		private bool startWithLastScene = false;
+		private bool startWithLastScene = true;
 		private ContentRef<Scene> lastOpenScene = null;
 		private PluginSettings pluginSettings = new PluginSettings();
 

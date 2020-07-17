@@ -23,7 +23,6 @@ namespace Duality.Editor.Forms
 {
 	public partial class MainForm : Form, IHelpProvider
 	{
-		private int               activeDocumentIndex = -1;
 		private bool              shownWasCalled      = false;
 		private bool              nonUserClosing      = false;
 		private MenuModel         mainMenuModel       = new MenuModel();
@@ -54,17 +53,6 @@ namespace Duality.Editor.Forms
 		{
 			get { return this.mainMenuModel; }
 		}
-		public int ActiveDocumentIndex
-		{
-			get { return this.activeDocumentIndex; }
-			set
-			{
-				this.activeDocumentIndex = value;
-				if (this.shownWasCalled)
-					this.ApplyActiveDocumentIndex();
-			}
-		}
-
 
 
 		public MainForm()
@@ -443,7 +431,7 @@ namespace Duality.Editor.Forms
 			int index = 0;
 			foreach (IDockContent document in this.dockPanel.Documents)
 			{
-				if (index == this.activeDocumentIndex)
+				if (index == DualityEditorApp.UserData.Instance.ActiveDocumentIndex)
 				{
 					if (document != null && document.DockHandler != null)
 						document.DockHandler.Activate();
@@ -470,7 +458,7 @@ namespace Duality.Editor.Forms
 			this.ApplyActiveDocumentIndex();
 
 			// Show the welcome dialog when appropriate
-			if (DualityEditorApp.IsFirstEditorSession)
+			if (DualityEditorApp.UserData.Instance.FirstSession)
 			{
 				this.welcomeDialogItem_Click(this, EventArgs.Empty);
 			}
@@ -771,37 +759,45 @@ namespace Duality.Editor.Forms
 			if (!this.shownWasCalled) return;
 
 			// Determine which document (tab) is currently active
-			this.activeDocumentIndex = 0;
+			int docIndex = 0;
 			foreach (IDockContent document in this.dockPanel.Documents)
 			{
-				if (document == this.dockPanel.ActiveDocument)
-					break;
-				this.activeDocumentIndex++;
+				if (document == this.dockPanel.ActiveDocument) break;
+				docIndex++;
 			}
+			DualityEditorApp.UserData.Instance.ActiveDocumentIndex = docIndex;
 		}
 		private void checkBackups_Clicked(object sender, EventArgs e)
 		{
-			DualityEditorApp.BackupsEnabled = !DualityEditorApp.BackupsEnabled;
+			DualityEditorApp.UserData.Instance.Backups = !DualityEditorApp.UserData.Instance.Backups;
 			this.UpdateSplitButtonBackupSettings();
 		}
 		private void optionAutosaveDisabled_Clicked(object sender, EventArgs e)
 		{
-			DualityEditorApp.Autosaves = DualityEditorApp.Autosaves != AutosaveFrequency.Disabled ? AutosaveFrequency.Disabled : AutosaveFrequency.ThirtyMinutes;
+			DualityEditorApp.UserData.Instance.AutoSaves = (DualityEditorApp.UserData.Instance.AutoSaves != AutosaveFrequency.Disabled) ? 
+				AutosaveFrequency.Disabled : 
+				AutosaveFrequency.ThirtyMinutes;
 			this.UpdateSplitButtonBackupSettings();
 		}
 		private void optionAutosaveTenMinutes_Clicked(object sender, EventArgs e)
 		{
-			DualityEditorApp.Autosaves = DualityEditorApp.Autosaves != AutosaveFrequency.TenMinutes ? AutosaveFrequency.TenMinutes : AutosaveFrequency.Disabled;
+			DualityEditorApp.UserData.Instance.AutoSaves = (DualityEditorApp.UserData.Instance.AutoSaves != AutosaveFrequency.TenMinutes) ? 
+				AutosaveFrequency.TenMinutes : 
+				AutosaveFrequency.Disabled;
 			this.UpdateSplitButtonBackupSettings();
 		}
 		private void optionAutosaveThirtyMinutes_Clicked(object sender, EventArgs e)
 		{
-			DualityEditorApp.Autosaves = DualityEditorApp.Autosaves != AutosaveFrequency.ThirtyMinutes ? AutosaveFrequency.ThirtyMinutes : AutosaveFrequency.Disabled;
+			DualityEditorApp.UserData.Instance.AutoSaves = (DualityEditorApp.UserData.Instance.AutoSaves != AutosaveFrequency.ThirtyMinutes) ? 
+				AutosaveFrequency.ThirtyMinutes : 
+				AutosaveFrequency.Disabled;
 			this.UpdateSplitButtonBackupSettings();
 		}
 		private void optionAutoSaveOneHour_Clicked(object sender, EventArgs e)
 		{
-			DualityEditorApp.Autosaves = DualityEditorApp.Autosaves != AutosaveFrequency.OneHour ? AutosaveFrequency.OneHour : AutosaveFrequency.Disabled;
+			DualityEditorApp.UserData.Instance.AutoSaves = (DualityEditorApp.UserData.Instance.AutoSaves != AutosaveFrequency.OneHour) ? 
+				AutosaveFrequency.OneHour : 
+				AutosaveFrequency.Disabled;
 			this.UpdateSplitButtonBackupSettings();
 		}
 		private void splitButtonBackupSettings_DropDownOpening(object sender, EventArgs e)
@@ -827,11 +823,11 @@ namespace Duality.Editor.Forms
 
 		private void UpdateSplitButtonBackupSettings()
 		{
-			this.checkBackups.Checked = DualityEditorApp.BackupsEnabled;
-			this.optionAutosaveDisabled.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.Disabled;
-			this.optionAutosaveTenMinutes.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.TenMinutes;
-			this.optionAutosaveThirtyMinutes.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.ThirtyMinutes;
-			this.optionAutoSaveOneHour.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.OneHour;
+			this.checkBackups.Checked = DualityEditorApp.UserData.Instance.Backups;
+			this.optionAutosaveDisabled.Checked = DualityEditorApp.UserData.Instance.AutoSaves == AutosaveFrequency.Disabled;
+			this.optionAutosaveTenMinutes.Checked = DualityEditorApp.UserData.Instance.AutoSaves == AutosaveFrequency.TenMinutes;
+			this.optionAutosaveThirtyMinutes.Checked = DualityEditorApp.UserData.Instance.AutoSaves == AutosaveFrequency.ThirtyMinutes;
+			this.optionAutoSaveOneHour.Checked = DualityEditorApp.UserData.Instance.AutoSaves == AutosaveFrequency.OneHour;
 		}
 		public void UpdateLaunchAppActions()
 		{

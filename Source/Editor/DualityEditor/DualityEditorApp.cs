@@ -48,14 +48,8 @@ namespace Duality.Editor
 		private	static ObjectSelection.Category		selectionActiveCat	= ObjectSelection.Category.None;
 		private	static bool							selectionChanging	= false;
 		private	static Dictionary<Guid,Type>		selectionTempScene	= null;	// GameObjCmp sel inbetween scene switches
-		private	static bool							firstEditorSession	= false;
-		private	static bool							backupsEnabled		= true;
-		private	static AutosaveFrequency			autosaveFrequency	= AutosaveFrequency.ThirtyMinutes;
 		private	static DateTime						autosaveLast		= DateTime.Now;
-		private	static string						launcherApp			= null;
-		private	static ContentRef<Scene>			lastOpenScene		= null;
-		private	static bool							startWithLastScene	= true;
-		private	static EditorLogOutput			memoryLogOutput		= null;
+		private	static EditorLogOutput				memoryLogOutput		= null;
 
 
 		public	static	event	EventHandler	Terminating			= null;
@@ -117,10 +111,6 @@ namespace Duality.Editor
 		{
 			get { return unsavedResources.Where(r => !r.Disposed && !r.IsDefaultContent && !r.IsRuntimeResource && (r != Scene.Current || !Sandbox.IsActive)); }
 		}
-		public static bool IsFirstEditorSession
-		{
-			get { return firstEditorSession; }
-		}
 		/// <summary>
 		/// [GET] Provides access to editor user data, such as personal settings or UI layouts. This is never null.
 		/// </summary>
@@ -129,16 +119,6 @@ namespace Duality.Editor
 		/// [GET] Provides access to editor application / project data. This is never null.
 		/// </summary>
 		public static SettingsContainer<EditorAppData> AppData { get; } = new SettingsContainer<EditorAppData>("EditorAppData.xml");
-		public static bool BackupsEnabled
-		{
-			get { return backupsEnabled; }
-			set { backupsEnabled = value; }
-		}
-		public static AutosaveFrequency Autosaves
-		{
-			get { return autosaveFrequency; }
-			set { autosaveFrequency = value; }
-		}
 		private static bool AppStillIdle
 		{
 			 get
@@ -216,6 +196,8 @@ namespace Duality.Editor
 			UserData.Load();
 			mainForm.LoadDockPanelData(UserData.Instance.DockPanelState);
 			PluginManager.LoadUserData(UserData.Instance.PluginSettings);
+
+			// Initialize editor plugins now that their user data is loaded
 			pluginManager.InitPlugins();
 
 			// If this is the first session, set it to false and save user data again
@@ -262,9 +244,9 @@ namespace Duality.Editor
 			}
 			editorActions.StableSort((a, b) => b.Priority.CompareTo(a.Priority));
 			
-			if (startWithLastScene && lastOpenScene.IsAvailable)
+			if (UserData.Instance.StartWithLastScene && UserData.Instance.LastOpenScene.IsAvailable)
 			{				
-				Scene.SwitchTo(lastOpenScene, true);
+				Scene.SwitchTo(UserData.Instance.LastOpenScene, true);
 			}
 			else
 			{
@@ -904,12 +886,12 @@ namespace Duality.Editor
 				OnEditorIdling();
 
 				// Trigger autosave after a while
-				if (autosaveFrequency != AutosaveFrequency.Disabled)
+				if (UserData.Instance.AutoSaves != AutosaveFrequency.Disabled)
 				{
 					TimeSpan timeSinceLastAutosave = DateTime.Now - autosaveLast;
-					if ((autosaveFrequency == AutosaveFrequency.OneHour && timeSinceLastAutosave.TotalMinutes > 60) ||
-						(autosaveFrequency == AutosaveFrequency.ThirtyMinutes && timeSinceLastAutosave.TotalMinutes > 30) ||
-						(autosaveFrequency == AutosaveFrequency.TenMinutes && timeSinceLastAutosave.TotalMinutes > 10))
+					if ((UserData.Instance.AutoSaves == AutosaveFrequency.OneHour && timeSinceLastAutosave.TotalMinutes > 60) ||
+						(UserData.Instance.AutoSaves == AutosaveFrequency.ThirtyMinutes && timeSinceLastAutosave.TotalMinutes > 30) ||
+						(UserData.Instance.AutoSaves == AutosaveFrequency.TenMinutes && timeSinceLastAutosave.TotalMinutes > 10))
 					{
 						SaveAllProjectData();
 						autosaveLast = DateTime.Now;
@@ -973,7 +955,7 @@ namespace Duality.Editor
 		}
 		private static void Scene_Entered(object sender, EventArgs e)
 		{
-			lastOpenScene = Scene.Current;
+			UserData.Instance.LastOpenScene = Scene.Current;
 			if (selectionTempScene != null)
 			{
 				// Try to restore last GameObject / Component selection
@@ -1005,7 +987,7 @@ namespace Duality.Editor
 		private static void Resource_ResourceSaving(object sender, ResourceSaveEventArgs e)
 		{
 			if (string.IsNullOrEmpty(e.SaveAsPath)) return; // Ignore unknown destinations
-			if (backupsEnabled) BackupResource(e.SaveAsPath);
+			if (UserData.Instance.Backups) BackupResource(e.SaveAsPath);
 		}
 		private static void Resource_ResourceDisposing(object sender, ResourceEventArgs e)
 		{
