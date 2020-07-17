@@ -200,13 +200,6 @@ namespace Duality.Editor
 			// Initialize editor plugins now that their user data is loaded
 			pluginManager.InitPlugins();
 
-			// If this is the first session, set it to false and save user data again
-			if (UserData.Instance.FirstSession)
-			{
-				UserData.Instance.FirstSession = false;
-				UserData.Save();
-			}
-
 			// Set up core plugin reloader
 			corePluginReloader = new ReloadCorePluginDialog(mainForm);
 			

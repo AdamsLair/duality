@@ -15,7 +15,7 @@ namespace Duality.Editor
 		private XElement dockPanelState = XElement.Parse(Properties.GeneralRes.DefaultDockPanelData);
 		private bool backups = true;
 		private AutosaveFrequency autoSaves = AutosaveFrequency.ThirtyMinutes;
-		private bool firstSession = false;
+		private bool firstSession = true;
 		private int activeDocumentIndex = 0;
 		private bool startWithLastScene = true;
 		private ContentRef<Scene> lastOpenScene = null;

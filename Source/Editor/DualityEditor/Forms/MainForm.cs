@@ -490,6 +490,9 @@ namespace Duality.Editor.Forms
 					break;
 			}
 
+			// Ensure flagging next session as not being the first
+			DualityEditorApp.UserData.Instance.FirstSession = false;
+
 			// Save UserData before quitting
 			this.SaveDockPanelData(DualityEditorApp.UserData.Instance);
 			DualityEditorApp.PluginManager.SaveUserData(DualityEditorApp.UserData.Instance.PluginSettings);
