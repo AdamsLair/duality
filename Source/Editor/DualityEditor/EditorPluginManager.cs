@@ -84,7 +84,7 @@ namespace Duality.Editor
 		}
 
 		/// <summary>
-		/// Saves all editor plugin user data into the <see cref="PluginSettings"/>/>.
+		/// Saves all editor plugin user data into the <see cref="PluginSettings"/>.
 		/// </summary>
 		/// <param name="settings"></param>
 		public void SaveUserData(PluginSettings settings)
@@ -110,7 +110,7 @@ namespace Duality.Editor
 			settings.OldStyleSettings = parentElement;
 		}
 		/// <summary>
-		/// Loads all editor plugin user data from the <see cref="PluginSettings"/>>.
+		/// Loads all editor plugin user data from the <see cref="PluginSettings"/>.
 		/// </summary>
 		/// <param name="pluginSettings"></param>
 		public void LoadUserData(PluginSettings pluginSettings)
