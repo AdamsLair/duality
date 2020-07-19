@@ -194,7 +194,6 @@ namespace Duality.Editor
 
 			// Load editor user data
 			UserData.Load();
-			mainForm.LoadDockPanelData(UserData.Instance.DockPanelState);
 			PluginManager.LoadUserData(UserData.Instance.PluginSettings);
 
 			// Initialize editor plugins now that their user data is loaded

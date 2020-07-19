@@ -65,10 +65,13 @@ namespace Duality.Editor.Forms
 			this.splitButtonBackupSettings.DropDown.Closing += this.splitButtonBackupSettings_Closing;
 			this.menuAutosave.DropDown.Closing += this.menuAutosave_Closing;
 
+			DualityEditorApp.UserData.Applying += this.EditorUserData_Applying;
+			DualityEditorApp.UserData.Saving += this.EditorUserData_Saving;
+
 			this.InitMenus();
 			this.UpdateWindowTitle();
 		}
-		
+
 		public void CloseNonUser()
 		{
 			// Because FormClosingEventArgs.CloseReason is UserClosing on this.Close()
@@ -304,28 +307,30 @@ namespace Duality.Editor.Forms
 			this.checkBackups.Tag = HelpInfo.FromText(this.checkBackups.Text, GeneralRes.MenuItemInfo_ToggleBackups);
 		}
 
-		public void SaveDockPanelData(DualityEditorUserData dualityEditorUserData)
+		private XElement SaveDockPanelData()
 		{
-			using (var stream = new MemoryStream())
+			using (MemoryStream stream = new MemoryStream())
 			{
 				this.MainDockPanel.SaveAsXml(stream, Encoding.Default);
 				string xmlString = Encoding.Default.GetString(stream.ToArray());
 
-				dualityEditorUserData.DockPanelState = XElement.Parse(xmlString);
+				return XElement.Parse(xmlString);
 			}
 		}
-		public void LoadDockPanelData(XElement dockPanelState)
+		private void LoadDockPanelData(XElement dockPanelState)
 		{
 			Logs.Editor.Write("Loading DockPanel data...");
 			Logs.Editor.PushIndent();
-			MemoryStream dockPanelDataStream = new MemoryStream(Encoding.Default.GetBytes(dockPanelState.ToString()));
-			try
+			using (MemoryStream dockPanelDataStream = new MemoryStream(Encoding.Default.GetBytes(dockPanelState.ToString())))
 			{
-				this.MainDockPanel.LoadFromXml(dockPanelDataStream, DeserializeDockContent);
-			}
-			catch (Exception e)
-			{
-				Logs.Editor.WriteError("Cannot load DockPanel data due to malformed or non-existent Xml: {0}", LogFormat.Exception(e));
+				try
+				{
+					this.MainDockPanel.LoadFromXml(dockPanelDataStream, DeserializeDockContent);
+				}
+				catch (Exception e)
+				{
+					Logs.Editor.WriteError("Cannot load DockPanel data: {0}", LogFormat.Exception(e));
+				}
 			}
 			Logs.Editor.PopIndent();
 		}
@@ -494,7 +499,6 @@ namespace Duality.Editor.Forms
 			DualityEditorApp.UserData.Instance.FirstSession = false;
 
 			// Save UserData before quitting
-			this.SaveDockPanelData(DualityEditorApp.UserData.Instance);
 			DualityEditorApp.PluginManager.SaveUserData(DualityEditorApp.UserData.Instance.PluginSettings);
 			DualityEditorApp.UserData.Save();
 			DualityApp.AppData.Save();
@@ -509,6 +513,10 @@ namespace Duality.Editor.Forms
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
 			base.OnFormClosed(e);
+
+			DualityEditorApp.UserData.Applying -= this.EditorUserData_Applying;
+			DualityEditorApp.UserData.Saving -= this.EditorUserData_Saving;
+
 			Application.Exit();
 		}
 
@@ -619,7 +627,6 @@ namespace Duality.Editor.Forms
 		{
 			Sandbox.Faster();
 		}
-
 		private void menuEditUndo_Click(object sender, EventArgs e)
 		{
 			UndoRedoManager.Undo();
@@ -651,7 +658,6 @@ namespace Duality.Editor.Forms
 			this.welcomeDialog.Disposed -= this.welcomeDialog_Disposed;
 			this.welcomeDialog = null;
 		}
-
 		private void formatSetDefault_Click(object sender, EventArgs e)
 		{
 			MenuModelItem item = sender as MenuModelItem;
@@ -681,7 +687,21 @@ namespace Duality.Editor.Forms
 		{
 			this.selectFormattingMethod.ShowDropDown();
 		}
-		
+
+		private void EditorUserData_Applying(object sender, EventArgs e)
+		{
+			// DockPanel doesn't support restoring content when it has already been populated,
+			// so for the time being we'll just ignore subsequent user data apply events. Could
+			// probably be extended later to allow layout reset or different presets by re-creating
+			// the entire panel, but for now we'll just skip it.
+			if (this.MainDockPanel.Contents.Count > 0) return;
+
+			this.LoadDockPanelData(DualityEditorApp.UserData.Instance.DockPanelState);
+		}
+		private void EditorUserData_Saving(object sender, EventArgs e)
+		{
+			DualityEditorApp.UserData.Instance.DockPanelState = this.SaveDockPanelData();
+		}
 		private void Sandbox_StateChanged(object sender, EventArgs e)
 		{
 			this.UpdateToolbar();
