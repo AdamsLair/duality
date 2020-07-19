@@ -65,6 +65,7 @@ namespace Duality.Editor.Forms
 			this.splitButtonBackupSettings.DropDown.Closing += this.splitButtonBackupSettings_Closing;
 			this.menuAutosave.DropDown.Closing += this.menuAutosave_Closing;
 
+			DualityEditorApp.AppData.Applying += this.EditorAppData_Applying;
 			DualityEditorApp.UserData.Applying += this.EditorUserData_Applying;
 			DualityEditorApp.UserData.Saving += this.EditorUserData_Saving;
 
@@ -715,6 +716,10 @@ namespace Duality.Editor.Forms
 			this.selectFormattingMethod.ShowDropDown();
 		}
 
+		private void EditorAppData_Applying(object sender, EventArgs e)
+		{
+			this.UpdateLaunchAppActions();
+		}
 		private void EditorUserData_Applying(object sender, EventArgs e)
 		{
 			// DockPanel doesn't support restoring content when it has already been populated,

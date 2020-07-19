@@ -188,11 +188,8 @@ namespace Duality.Editor
 			InitMainGraphicsContext();
 			DualityApp.InitPostWindow();
 
-			// Load editor app data / project settings
+			// Load editor app data / project settings, and user data (such as window layouts)
 			AppData.Load();
-			mainForm.UpdateLaunchAppActions();
-
-			// Load editor user data
 			UserData.Load();
 
 			// Initialize editor plugins now that all user data is loaded
