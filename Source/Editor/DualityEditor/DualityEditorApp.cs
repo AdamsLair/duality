@@ -194,9 +194,8 @@ namespace Duality.Editor
 
 			// Load editor user data
 			UserData.Load();
-			PluginManager.LoadUserData(UserData.Instance.PluginSettings);
 
-			// Initialize editor plugins now that their user data is loaded
+			// Initialize editor plugins now that all user data is loaded
 			pluginManager.InitPlugins();
 
 			// Set up core plugin reloader

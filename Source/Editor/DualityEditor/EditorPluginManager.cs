@@ -87,7 +87,7 @@ namespace Duality.Editor
 		/// Saves all editor plugin user data into the <see cref="PluginSettings"/>.
 		/// </summary>
 		/// <param name="settings"></param>
-		public void SaveUserData(PluginSettings settings)
+		private void SaveUserData(PluginSettings settings)
 		{
 			settings.Clear();
 			foreach (EditorPlugin loadedPlugin in this.LoadedPlugins)
@@ -113,7 +113,7 @@ namespace Duality.Editor
 		/// Loads all editor plugin user data from the <see cref="PluginSettings"/>.
 		/// </summary>
 		/// <param name="pluginSettings"></param>
-		public void LoadUserData(PluginSettings pluginSettings)
+		private void LoadUserData(PluginSettings pluginSettings)
 		{
 			foreach (EditorPlugin loadedPlugin in this.LoadedPlugins)
 			{
@@ -140,52 +140,20 @@ namespace Duality.Editor
 				loadedPlugin.LoadUserData(pluginSetting);
 			}
 		}
-		/// <summary>
-		/// As part of the docking suite layout deserialization, this method resolves
-		/// a persistent type name to an instance of the desired type.
-		/// </summary>
-		/// <param name="typeName"></param>
-		public IDockContent DeserializeDockContent(string typeName)
-		{
-			// First ask plugins from the dock contents assembly for existing instances
-			foreach (EditorPlugin plugin in this.LoadedPlugins)
-			{
-				Type dockContentType = plugin.PluginAssembly.GetType(typeName);
-				if (dockContentType != null)
-				{
-					// Ask the plugin to deserialize this docking content, but fall back on
-					// creating the appropriate one using reflection.
-					IDockContent deserializeDockContent = plugin.DeserializeDockContent(dockContentType);
-					return 
-						deserializeDockContent ?? 
-						(dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent);
-				}
-			}
-
-			// If none of the available plugins can handle that type name, query all available assemblies
-			Assembly[] allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-			foreach (Assembly assembly in allAssemblies)
-			{
-				Type dockContentType = assembly.GetType(typeName);
-				if (dockContentType != null)
-				{
-					return dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent;
-				}
-			}
-
-			// Still nothing? Can't resolve this one then.
-			return null;
-		}
 
 		protected override void OnInit()
 		{
 			base.OnInit();
 			this.AssemblyLoader.AssemblyResolve += this.assemblyLoader_AssemblyResolve;
+			DualityEditorApp.UserData.Applying += this.EditorUserData_Applying;
+			DualityEditorApp.UserData.Saving += this.EditorUserData_Saving;
 		}
 		protected override void OnTerminate()
 		{
 			base.OnTerminate();
 			this.AssemblyLoader.AssemblyResolve -= this.assemblyLoader_AssemblyResolve;
+			DualityEditorApp.UserData.Applying -= this.EditorUserData_Applying;
+			DualityEditorApp.UserData.Saving -= this.EditorUserData_Saving;
 		}
 		protected override void OnInitPlugin(EditorPlugin plugin)
 		{
@@ -216,6 +184,14 @@ namespace Duality.Editor
 					}
 				}
 			}
+		}
+		private void EditorUserData_Applying(object sender, EventArgs e)
+		{
+			this.LoadUserData(DualityEditorApp.UserData.Instance.PluginSettings);
+		}
+		private void EditorUserData_Saving(object sender, EventArgs e)
+		{
+			this.SaveUserData(DualityEditorApp.UserData.Instance.PluginSettings);
 		}
 	}
 }

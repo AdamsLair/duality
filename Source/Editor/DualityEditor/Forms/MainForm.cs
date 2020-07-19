@@ -334,10 +334,38 @@ namespace Duality.Editor.Forms
 			}
 			Logs.Editor.PopIndent();
 		}
-		private static IDockContent DeserializeDockContent(string persistName)
+		private static IDockContent DeserializeDockContent(string typeName)
 		{
-			Logs.Editor.Write("Deserializing layout: '" + persistName + "'");
-			return DualityEditorApp.PluginManager.DeserializeDockContent(persistName);
+			Logs.Editor.Write("Deserializing layout: '" + typeName + "'");
+
+			// First ask plugins from the dock contents assembly for existing instances
+			foreach (EditorPlugin plugin in DualityEditorApp.PluginManager.LoadedPlugins)
+			{
+				Type dockContentType = plugin.PluginAssembly.GetType(typeName);
+				if (dockContentType != null)
+				{
+					// Ask the plugin to deserialize this docking content, but fall back on
+					// creating the appropriate one using reflection.
+					IDockContent deserializeDockContent = plugin.DeserializeDockContent(dockContentType);
+					return
+						deserializeDockContent ??
+						(dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent);
+				}
+			}
+
+			// If none of the available plugins can handle that type name, query all available assemblies
+			Assembly[] allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+			foreach (Assembly assembly in allAssemblies)
+			{
+				Type dockContentType = assembly.GetType(typeName);
+				if (dockContentType != null)
+				{
+					return dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent;
+				}
+			}
+
+			// Still nothing? Can't resolve this one then.
+			return null;
 		}
 
 		private void UpdateWindowTitle()
@@ -495,12 +523,11 @@ namespace Duality.Editor.Forms
 					break;
 			}
 
-			// Ensure flagging next session as not being the first
+			// Save editor user data (UI settings, window layout, etc.) and ensure 
+			// flagging next session as not being the first
 			DualityEditorApp.UserData.Instance.FirstSession = false;
-
-			// Save UserData before quitting
-			DualityEditorApp.PluginManager.SaveUserData(DualityEditorApp.UserData.Instance.PluginSettings);
 			DualityEditorApp.UserData.Save();
+
 			DualityApp.AppData.Save();
 
 			bool isClosedByUser = 
