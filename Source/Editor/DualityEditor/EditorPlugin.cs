@@ -21,18 +21,18 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="main"></param>
 		internal protected virtual void InitPlugin(MainForm main) {}
-		/// <summary>
-		/// Saves the plugins user data to the provided Xml Node.
-		/// </summary>
-		/// <param name="node"></param>
-		[Obsolete("Use the model based api")]
-		internal protected virtual void SaveUserData(XElement node) {}
 
 		[Obsolete("Use the model based api")]
 		internal protected virtual XElement GetDefaultUserData()
 		{
 			return null;
 		}
+		/// <summary>
+		/// Saves the plugins user data to the provided Xml Node.
+		/// </summary>
+		/// <param name="node"></param>
+		[Obsolete("Use the model based api")]
+		internal protected virtual void SaveUserData(XElement node) {}
 		/// <summary>
 		/// Loads the plugins user data from the provided Xml Node.
 		/// </summary>
