@@ -12,7 +12,7 @@ namespace Duality.Editor
 	public class PluginSettings
 	{
 		private XElement oldStyleSettings = XElement.Parse("<Plugins></Plugins>");
-		private List<object> plugins = new List<object>();
+		private List<object> data = new List<object>();
 
 		/// <summary>
 		/// Serialized XML blob that provides access to user data that is still serialized manually, as opposed to
@@ -31,13 +31,13 @@ namespace Duality.Editor
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public T GetSettings<T>() where T : class, new()
+		public T Get<T>() where T : class, new()
 		{
-			T setting = this.plugins.OfType<T>().FirstOrDefault();
+			T setting = this.data.OfType<T>().FirstOrDefault();
 			if (setting == null)
 			{
 				setting = new T();
-				this.plugins.Add(setting);
+				this.data.Add(setting);
 			}
 
 			return setting;
@@ -47,7 +47,7 @@ namespace Duality.Editor
 		/// </summary>
 		internal void Clear()
 		{
-			this.plugins.Clear();
+			this.data.Clear();
 			this.oldStyleSettings = XElement.Parse("<Plugins></Plugins>");
 		}
 	}
