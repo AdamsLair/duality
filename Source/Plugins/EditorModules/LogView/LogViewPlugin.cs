@@ -35,24 +35,22 @@ namespace Duality.Editor.Plugins.LogView
 			this.isLoading = false;
 			return result;
 		}
-		protected override void SaveUserData(PluginSettings pluginSettings)
-		{
-			if (this.logView != null)
-			{
-				var logViewSettings = pluginSettings.GetSettings<LogViewSettings>();
-				this.logView.SaveUserData(logViewSettings);
-			}
-		}
-
 		protected override void LoadUserData(PluginSettings pluginSettings)
 		{
 			this.isLoading = true;
 			if (this.logView != null)
 			{
-				var logViewSettings = pluginSettings.GetSettings<LogViewSettings>();
-				this.logView.LoadUserData(logViewSettings);
+				this.logView.UserSettings = pluginSettings.Get<LogViewSettings>();
 			}
 			this.isLoading = false;
+		}
+		protected override void SaveUserData(PluginSettings settings)
+		{
+			base.SaveUserData(settings);
+			if (this.logView != null)
+			{
+				settings.Set(this.logView.UserSettings);
+			}
 		}
 		protected override void InitPlugin(MainForm main)
 		{

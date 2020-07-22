@@ -9,9 +9,24 @@ namespace Duality.Editor.Plugins.LogView
 {
 	public partial class LogView : DockContent
 	{
+		private LogViewSettings userSettings = new LogViewSettings();
 		private int unseenWarnings = 0;
-		private int unseenErrors   = 0;
+		private int unseenErrors = 0;
 		private Dictionary<string,ToolStripButton> sourceFilterButtons = new Dictionary<string,ToolStripButton>();
+
+
+		public LogViewSettings UserSettings
+		{
+			get { return this.userSettings; }
+			set
+			{
+				if (this.userSettings != value)
+				{
+					this.userSettings = value;
+					this.ApplyUserSettings();
+				}
+			}
+		}
 
 
 		public LogView()
@@ -29,6 +44,29 @@ namespace Duality.Editor.Plugins.LogView
 
 			this.toolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
+
+		public void ApplyUserSettings()
+		{
+			this.buttonMessages.Checked = this.userSettings.ShowMessages;
+			this.buttonWarnings.Checked = this.userSettings.ShowWarnings;
+			this.buttonErrors.Checked = this.userSettings.ShowErrors;
+
+			this.buttonCore.Checked = this.userSettings.ShowCore;
+			this.buttonEditor.Checked = this.userSettings.ShowEditor;
+			this.buttonGame.Checked = this.userSettings.ShowGame;
+
+			this.checkAutoClear.Checked = this.userSettings.AutoClear;
+			this.buttonPauseOnError.Checked = this.userSettings.PauseOnError;
+
+			this.logEntryList.SetSourceFilter(Logs.Core.Id, !this.userSettings.ShowCore);
+			this.logEntryList.SetSourceFilter(Logs.Editor.Id, !this.userSettings.ShowEditor);
+			this.logEntryList.SetSourceFilter(Logs.Game.Id, !this.userSettings.ShowGame);
+
+			this.logEntryList.SetTypeFilter(LogMessageType.Message, !this.userSettings.ShowMessages);
+			this.logEntryList.SetTypeFilter(LogMessageType.Warning, !this.userSettings.ShowWarnings);
+			this.logEntryList.SetTypeFilter(LogMessageType.Error, !this.userSettings.ShowErrors);
+		}
+
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
@@ -83,36 +121,6 @@ namespace Duality.Editor.Plugins.LogView
 			}
 		}
 		
-		internal void SaveUserData(LogViewSettings logViewSettings)
-		{
-			logViewSettings.ShowMessages = this.buttonMessages.Checked;
-			logViewSettings.ShowWarnings = this.buttonWarnings.Checked;
-			logViewSettings.ShowErrors = this.buttonErrors.Checked;
-			logViewSettings.ShowCore = this.buttonCore.Checked;
-			logViewSettings.ShowEditor = this.buttonEditor.Checked;
-			logViewSettings.ShowGame = this.buttonGame.Checked;
-			logViewSettings.AutoClear = this.checkAutoClear.Checked;
-			logViewSettings.PauseOnError = this.buttonPauseOnError.Checked;
-		}
-		internal void LoadUserData(LogViewSettings logViewSettings)
-		{
-			this.buttonMessages.Checked = logViewSettings.ShowMessages;
-			this.buttonWarnings.Checked = logViewSettings.ShowWarnings;
-			this.buttonErrors.Checked = logViewSettings.ShowErrors;
-			this.buttonCore.Checked = logViewSettings.ShowCore;
-			this.buttonEditor.Checked = logViewSettings.ShowEditor;
-			this.buttonGame.Checked = logViewSettings.ShowGame;
-			this.checkAutoClear.Checked = logViewSettings.AutoClear;
-			this.buttonPauseOnError.Checked = logViewSettings.PauseOnError;
-
-			this.logEntryList.SetSourceFilter(Logs.Core.Id, !this.buttonCore.Checked);
-			this.logEntryList.SetSourceFilter(Logs.Editor.Id, !this.buttonEditor.Checked);
-			this.logEntryList.SetSourceFilter(Logs.Game.Id, !this.buttonGame.Checked);
-			this.logEntryList.SetTypeFilter(LogMessageType.Message, !this.buttonMessages.Checked);
-			this.logEntryList.SetTypeFilter(LogMessageType.Warning, !this.buttonWarnings.Checked);
-			this.logEntryList.SetTypeFilter(LogMessageType.Error, !this.buttonErrors.Checked);
-		}
-
 		private void MarkAsRead()
 		{
 			this.unseenErrors = 0;
@@ -215,20 +223,35 @@ namespace Duality.Editor.Plugins.LogView
 			ToolStripButton button = sender as ToolStripButton;
 			string sourceId = button.Tag as string;
 			this.logEntryList.SetSourceFilter(sourceId, !button.Checked);
+
+			// No support for saving custom log source filter states as user settings right now, could be added later
+			if (button == this.buttonCore) this.userSettings.ShowCore = button.Checked;
+			else if (button == this.buttonEditor) this.userSettings.ShowEditor = button.Checked;
+			else if(button == this.buttonGame) this.userSettings.ShowGame = button.Checked;
 		}
 		private void buttonMessages_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetTypeFilter(LogMessageType.Message, !this.buttonMessages.Checked);
+			this.userSettings.ShowMessages = this.buttonMessages.Checked;
+			this.logEntryList.SetTypeFilter(LogMessageType.Message, !this.userSettings.ShowMessages);
 		}
 		private void buttonWarnings_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetTypeFilter(LogMessageType.Warning, !this.buttonWarnings.Checked);
+			this.userSettings.ShowWarnings = this.buttonWarnings.Checked;
+			this.logEntryList.SetTypeFilter(LogMessageType.Warning, !this.userSettings.ShowWarnings);
 		}
 		private void buttonErrors_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetTypeFilter(LogMessageType.Error, !this.buttonErrors.Checked);
+			this.userSettings.ShowErrors = this.buttonErrors.Checked;
+			this.logEntryList.SetTypeFilter(LogMessageType.Error, !this.userSettings.ShowErrors);
 		}
-		private void buttonPauseOnError_CheckedChanged(object sender, EventArgs e) {}
+		private void buttonPauseOnError_CheckedChanged(object sender, EventArgs e)
+		{
+			this.userSettings.PauseOnError = this.buttonPauseOnError.Checked;
+		}
+		private void checkAutoClear_CheckedChanged(object sender, EventArgs e)
+		{
+			this.userSettings.AutoClear = this.checkAutoClear.Checked;
+		}
 		private void actionClear_ButtonClick(object sender, EventArgs e)
 		{
 			this.logEntryList.Clear();
@@ -300,7 +323,7 @@ namespace Duality.Editor.Plugins.LogView
 
 		private void Sandbox_Entering(object sender, EventArgs e)
 		{
-			if (this.checkAutoClear.Checked) this.actionClear_ButtonClick(sender, e);
+			if (this.userSettings.AutoClear) this.actionClear_ButtonClick(sender, e);
 		}
 		private void textBoxEntry_KeyDown(object sender, KeyEventArgs e)
 		{
