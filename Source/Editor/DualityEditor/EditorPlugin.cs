@@ -41,11 +41,11 @@ namespace Duality.Editor
 		internal protected virtual void LoadUserData(XElement node) {}
 
 		/// <summary>
-		/// Saves the plugins user data by serializing the returned object.
+		/// Saves the plugins user data by populating the provided settings object.
 		/// </summary>
 		internal protected virtual void SaveUserData(PluginSettings settings) { }
 		/// <summary>
-		/// Loads the plugins user data from the provided <see cref="PluginSettings"/>.
+		/// Loads the plugins user data from the provided settings object.
 		/// </summary>
 		/// <param name="settings"></param>
 		internal protected virtual void LoadUserData(PluginSettings settings) { }
