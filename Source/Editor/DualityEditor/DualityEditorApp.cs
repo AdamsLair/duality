@@ -118,7 +118,7 @@ namespace Duality.Editor
 		/// <summary>
 		/// [GET] Provides access to editor application / project data. This is never null.
 		/// </summary>
-		public static SettingsContainer<EditorAppData> AppData { get; } = new SettingsContainer<EditorAppData>("EditorAppData.xml");
+		public static SettingsContainer<DualityEditorAppData> AppData { get; } = new SettingsContainer<DualityEditorAppData>("EditorAppData.xml");
 		private static bool AppStillIdle
 		{
 			 get
