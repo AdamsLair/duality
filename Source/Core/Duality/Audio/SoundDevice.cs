@@ -109,15 +109,11 @@ namespace Duality.Audio
 			get { return this.sounds; }
 		}
 
-		private readonly SettingsContainer<DualityAppData> appData;
-		private readonly SettingsContainer<DualityUserData> userData;
 
-		public SoundDevice(SettingsContainer<DualityAppData> appData, SettingsContainer<DualityUserData> userData)
+		public SoundDevice()
 		{
-			this.appData = appData;
-			this.userData = userData;
-			this.appData.Changed += this.AppDataChanged;
-			UpdateWorldSettings();
+			DualityApp.AppData.Applying += this.OnAppDataApplying;
+			this.UpdateWorldSettings();
 		}
 		~SoundDevice()
 		{
@@ -133,7 +129,7 @@ namespace Duality.Audio
 			if (!this.disposed)
 			{
 				this.disposed = true;
-				this.appData.Changed -= this.AppDataChanged;
+				DualityApp.AppData.Applying -= this.OnAppDataApplying;
 
 				// Clear all playing sounds
 				foreach (SoundInstance inst in this.sounds) inst.Dispose();
@@ -225,8 +221,8 @@ namespace Duality.Audio
 		private void UpdateWorldSettings()
 		{
 			DualityApp.AudioBackend.UpdateWorldSettings(
-				this.appData.Instance.SpeedOfSound, // Already in meters per second / audio units
-				this.appData.Instance.SoundDopplerFactor);
+				DualityApp.AppData.Instance.SpeedOfSound, // Already in meters per second / audio units
+				DualityApp.AppData.Instance.SoundDopplerFactor);
 		}
 		
 		/// <summary>
@@ -236,7 +232,7 @@ namespace Duality.Audio
 		/// <returns>A new <see cref="SoundInstance"/> representing the playing sound.</returns>
 		public SoundInstance PlaySound(ContentRef<Sound> snd)
 		{
-			SoundInstance inst = new SoundInstance(this.userData, snd);
+			SoundInstance inst = new SoundInstance(snd);
 			this.sounds.Add(inst);
 			return inst;
 		}
@@ -248,7 +244,7 @@ namespace Duality.Audio
 		/// <returns>A new <see cref="SoundInstance"/> representing the playing sound.</returns>
 		public SoundInstance PlaySound3D(ContentRef<Sound> snd, Vector3 pos)
 		{
-			SoundInstance inst = new SoundInstance(this.userData, snd, pos);
+			SoundInstance inst = new SoundInstance(snd, pos);
 			this.sounds.Add(inst);
 			return inst;
 		}
@@ -261,7 +257,7 @@ namespace Duality.Audio
 		/// <returns>A new <see cref="SoundInstance"/> representing the playing sound.</returns>
 		public SoundInstance PlaySound3D(ContentRef<Sound> snd, GameObject attachTo, bool trackVelocity)
 		{
-			SoundInstance inst = new SoundInstance(this.userData, snd, attachTo, trackVelocity);
+			SoundInstance inst = new SoundInstance(snd, attachTo, trackVelocity);
 			this.sounds.Add(inst);
 			return inst;
 		}
@@ -275,7 +271,7 @@ namespace Duality.Audio
 		/// <returns>A new <see cref="SoundInstance"/> representing the playing sound.</returns>
 		public SoundInstance PlaySound3D(ContentRef<Sound> snd, GameObject attachTo, Vector3 relativePos, bool trackVelocity)
 		{
-			SoundInstance inst = new SoundInstance(this.userData, snd, attachTo, trackVelocity);
+			SoundInstance inst = new SoundInstance(snd, attachTo, trackVelocity);
 			inst.Pos = relativePos;
 			this.sounds.Add(inst);
 			return inst;
@@ -291,9 +287,9 @@ namespace Duality.Audio
 			}
 		}
 		
-		private void AppDataChanged(object sender, EventArgs e)
+		private void OnAppDataApplying(object sender, EventArgs e)
 		{
-			UpdateWorldSettings();
+			this.UpdateWorldSettings();
 		}
 	}
 }

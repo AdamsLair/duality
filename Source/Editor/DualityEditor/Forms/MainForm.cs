@@ -5,7 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
-
+using System.Text;
+using System.Xml.Linq;
 using Duality;
 using Duality.IO;
 using Duality.Serialization;
@@ -22,7 +23,6 @@ namespace Duality.Editor.Forms
 {
 	public partial class MainForm : Form, IHelpProvider
 	{
-		private int               activeDocumentIndex = -1;
 		private bool              shownWasCalled      = false;
 		private bool              nonUserClosing      = false;
 		private MenuModel         mainMenuModel       = new MenuModel();
@@ -53,17 +53,6 @@ namespace Duality.Editor.Forms
 		{
 			get { return this.mainMenuModel; }
 		}
-		public int ActiveDocumentIndex
-		{
-			get { return this.activeDocumentIndex; }
-			set
-			{
-				this.activeDocumentIndex = value;
-				if (this.shownWasCalled)
-					this.ApplyActiveDocumentIndex();
-			}
-		}
-
 
 
 		public MainForm()
@@ -76,10 +65,14 @@ namespace Duality.Editor.Forms
 			this.splitButtonBackupSettings.DropDown.Closing += this.splitButtonBackupSettings_Closing;
 			this.menuAutosave.DropDown.Closing += this.menuAutosave_Closing;
 
+			DualityEditorApp.AppData.Applying += this.EditorAppData_Applying;
+			DualityEditorApp.UserData.Applying += this.EditorUserData_Applying;
+			DualityEditorApp.UserData.Saving += this.EditorUserData_Saving;
+
 			this.InitMenus();
 			this.UpdateWindowTitle();
 		}
-		
+
 		public void CloseNonUser()
 		{
 			// Because FormClosingEventArgs.CloseReason is UserClosing on this.Close()
@@ -315,6 +308,67 @@ namespace Duality.Editor.Forms
 			this.checkBackups.Tag = HelpInfo.FromText(this.checkBackups.Text, GeneralRes.MenuItemInfo_ToggleBackups);
 		}
 
+		private XElement SaveDockPanelData()
+		{
+			using (MemoryStream stream = new MemoryStream())
+			{
+				this.MainDockPanel.SaveAsXml(stream, Encoding.Default);
+				string xmlString = Encoding.Default.GetString(stream.ToArray());
+
+				return XElement.Parse(xmlString);
+			}
+		}
+		private void LoadDockPanelData(XElement dockPanelState)
+		{
+			Logs.Editor.Write("Loading DockPanel data...");
+			Logs.Editor.PushIndent();
+			using (MemoryStream dockPanelDataStream = new MemoryStream(Encoding.Default.GetBytes(dockPanelState.ToString())))
+			{
+				try
+				{
+					this.MainDockPanel.LoadFromXml(dockPanelDataStream, DeserializeDockContent);
+				}
+				catch (Exception e)
+				{
+					Logs.Editor.WriteError("Cannot load DockPanel data: {0}", LogFormat.Exception(e));
+				}
+			}
+			Logs.Editor.PopIndent();
+		}
+		private static IDockContent DeserializeDockContent(string typeName)
+		{
+			Logs.Editor.Write("Deserializing layout: '" + typeName + "'");
+
+			// First ask plugins from the dock contents assembly for existing instances
+			foreach (EditorPlugin plugin in DualityEditorApp.PluginManager.LoadedPlugins)
+			{
+				Type dockContentType = plugin.PluginAssembly.GetType(typeName);
+				if (dockContentType != null)
+				{
+					// Ask the plugin to deserialize this docking content, but fall back on
+					// creating the appropriate one using reflection.
+					IDockContent deserializeDockContent = plugin.DeserializeDockContent(dockContentType);
+					return
+						deserializeDockContent ??
+						(dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent);
+				}
+			}
+
+			// If none of the available plugins can handle that type name, query all available assemblies
+			Assembly[] allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+			foreach (Assembly assembly in allAssemblies)
+			{
+				Type dockContentType = assembly.GetType(typeName);
+				if (dockContentType != null)
+				{
+					return dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent;
+				}
+			}
+
+			// Still nothing? Can't resolve this one then.
+			return null;
+		}
+
 		private void UpdateWindowTitle()
 		{
 			string editorName = GeneralRes.EditorApplicationTitle;
@@ -411,7 +465,7 @@ namespace Duality.Editor.Forms
 			int index = 0;
 			foreach (IDockContent document in this.dockPanel.Documents)
 			{
-				if (index == this.activeDocumentIndex)
+				if (index == DualityEditorApp.UserData.Instance.ActiveDocumentIndex)
 				{
 					if (document != null && document.DockHandler != null)
 						document.DockHandler.Activate();
@@ -438,7 +492,7 @@ namespace Duality.Editor.Forms
 			this.ApplyActiveDocumentIndex();
 
 			// Show the welcome dialog when appropriate
-			if (DualityEditorApp.IsFirstEditorSession)
+			if (DualityEditorApp.UserData.Instance.FirstSession)
 			{
 				this.welcomeDialogItem_Click(this, EventArgs.Empty);
 			}
@@ -470,8 +524,11 @@ namespace Duality.Editor.Forms
 					break;
 			}
 
-			// Save UserData before quitting
-			DualityEditorApp.SaveUserData();
+			// Save editor user data (UI settings, window layout, etc.) and ensure 
+			// flagging next session as not being the first
+			DualityEditorApp.UserData.Instance.FirstSession = false;
+			DualityEditorApp.UserData.Save();
+
 			DualityApp.AppData.Save();
 
 			bool isClosedByUser = 
@@ -484,6 +541,10 @@ namespace Duality.Editor.Forms
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
 			base.OnFormClosed(e);
+
+			DualityEditorApp.UserData.Applying -= this.EditorUserData_Applying;
+			DualityEditorApp.UserData.Saving -= this.EditorUserData_Saving;
+
 			Application.Exit();
 		}
 
@@ -493,7 +554,7 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFullPath(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.AppData.Instance.LauncherPath);
 			startInfo.Arguments = LauncherArgs.CmdArgEditor;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
@@ -507,7 +568,7 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFullPath(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.AppData.Instance.LauncherPath);
 			startInfo.Arguments = LauncherArgs.CmdArgEditor + " " + LauncherArgs.CmdArgDebug;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
@@ -521,7 +582,7 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFullPath(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.AppData.Instance.LauncherPath);
 			startInfo.Arguments = LauncherArgs.CmdArgEditor + " " + LauncherArgs.CmdArgProfiling;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
@@ -532,10 +593,10 @@ namespace Duality.Editor.Forms
 		private void actionConfigureLauncher_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog fileDialog = new OpenFileDialog();
-			fileDialog.InitialDirectory = Path.GetDirectoryName(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			fileDialog.InitialDirectory = Path.GetDirectoryName(DualityEditorApp.AppData.Instance.LauncherPath);
 			if (string.IsNullOrWhiteSpace(fileDialog.InitialDirectory))
 				fileDialog.InitialDirectory = Environment.CurrentDirectory;
-			fileDialog.FileName = Path.GetFileName(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			fileDialog.FileName = Path.GetFileName(DualityEditorApp.AppData.Instance.LauncherPath);
 			fileDialog.Filter = "Executable files (*.exe)|*.exe";
 			fileDialog.FilterIndex = 1;
 			fileDialog.RestoreDirectory = true;
@@ -546,8 +607,8 @@ namespace Duality.Editor.Forms
 			fileDialog.CustomPlaces.Add(Environment.CurrentDirectory);
 			if (fileDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				DualityEditorApp.EditorAppData.Instance.LauncherPath = PathHelper.MakeFilePathRelative(fileDialog.FileName);
-				DualityEditorApp.EditorAppData.Save();
+				DualityEditorApp.AppData.Instance.LauncherPath = PathHelper.MakeFilePathRelative(fileDialog.FileName);
+				DualityEditorApp.AppData.Save();
 				this.UpdateLaunchAppActions();
 			}
 		}
@@ -594,7 +655,6 @@ namespace Duality.Editor.Forms
 		{
 			Sandbox.Faster();
 		}
-
 		private void menuEditUndo_Click(object sender, EventArgs e)
 		{
 			UndoRedoManager.Undo();
@@ -626,7 +686,6 @@ namespace Duality.Editor.Forms
 			this.welcomeDialog.Disposed -= this.welcomeDialog_Disposed;
 			this.welcomeDialog = null;
 		}
-
 		private void formatSetDefault_Click(object sender, EventArgs e)
 		{
 			MenuModelItem item = sender as MenuModelItem;
@@ -656,7 +715,25 @@ namespace Duality.Editor.Forms
 		{
 			this.selectFormattingMethod.ShowDropDown();
 		}
-		
+
+		private void EditorAppData_Applying(object sender, EventArgs e)
+		{
+			this.UpdateLaunchAppActions();
+		}
+		private void EditorUserData_Applying(object sender, EventArgs e)
+		{
+			// DockPanel doesn't support restoring content when it has already been populated,
+			// so for the time being we'll just ignore subsequent user data apply events. Could
+			// probably be extended later to allow layout reset or different presets by re-creating
+			// the entire panel, but for now we'll just skip it.
+			if (this.MainDockPanel.Contents.Count > 0) return;
+
+			this.LoadDockPanelData(DualityEditorApp.UserData.Instance.DockPanelState);
+		}
+		private void EditorUserData_Saving(object sender, EventArgs e)
+		{
+			DualityEditorApp.UserData.Instance.DockPanelState = this.SaveDockPanelData();
+		}
 		private void Sandbox_StateChanged(object sender, EventArgs e)
 		{
 			this.UpdateToolbar();
@@ -737,37 +814,45 @@ namespace Duality.Editor.Forms
 			if (!this.shownWasCalled) return;
 
 			// Determine which document (tab) is currently active
-			this.activeDocumentIndex = 0;
+			int docIndex = 0;
 			foreach (IDockContent document in this.dockPanel.Documents)
 			{
-				if (document == this.dockPanel.ActiveDocument)
-					break;
-				this.activeDocumentIndex++;
+				if (document == this.dockPanel.ActiveDocument) break;
+				docIndex++;
 			}
+			DualityEditorApp.UserData.Instance.ActiveDocumentIndex = docIndex;
 		}
 		private void checkBackups_Clicked(object sender, EventArgs e)
 		{
-			DualityEditorApp.BackupsEnabled = !DualityEditorApp.BackupsEnabled;
+			DualityEditorApp.UserData.Instance.Backups = !DualityEditorApp.UserData.Instance.Backups;
 			this.UpdateSplitButtonBackupSettings();
 		}
 		private void optionAutosaveDisabled_Clicked(object sender, EventArgs e)
 		{
-			DualityEditorApp.Autosaves = DualityEditorApp.Autosaves != AutosaveFrequency.Disabled ? AutosaveFrequency.Disabled : AutosaveFrequency.ThirtyMinutes;
+			DualityEditorApp.UserData.Instance.AutoSaves = (DualityEditorApp.UserData.Instance.AutoSaves != AutosaveFrequency.Disabled) ? 
+				AutosaveFrequency.Disabled : 
+				AutosaveFrequency.ThirtyMinutes;
 			this.UpdateSplitButtonBackupSettings();
 		}
 		private void optionAutosaveTenMinutes_Clicked(object sender, EventArgs e)
 		{
-			DualityEditorApp.Autosaves = DualityEditorApp.Autosaves != AutosaveFrequency.TenMinutes ? AutosaveFrequency.TenMinutes : AutosaveFrequency.Disabled;
+			DualityEditorApp.UserData.Instance.AutoSaves = (DualityEditorApp.UserData.Instance.AutoSaves != AutosaveFrequency.TenMinutes) ? 
+				AutosaveFrequency.TenMinutes : 
+				AutosaveFrequency.Disabled;
 			this.UpdateSplitButtonBackupSettings();
 		}
 		private void optionAutosaveThirtyMinutes_Clicked(object sender, EventArgs e)
 		{
-			DualityEditorApp.Autosaves = DualityEditorApp.Autosaves != AutosaveFrequency.ThirtyMinutes ? AutosaveFrequency.ThirtyMinutes : AutosaveFrequency.Disabled;
+			DualityEditorApp.UserData.Instance.AutoSaves = (DualityEditorApp.UserData.Instance.AutoSaves != AutosaveFrequency.ThirtyMinutes) ? 
+				AutosaveFrequency.ThirtyMinutes : 
+				AutosaveFrequency.Disabled;
 			this.UpdateSplitButtonBackupSettings();
 		}
 		private void optionAutoSaveOneHour_Clicked(object sender, EventArgs e)
 		{
-			DualityEditorApp.Autosaves = DualityEditorApp.Autosaves != AutosaveFrequency.OneHour ? AutosaveFrequency.OneHour : AutosaveFrequency.Disabled;
+			DualityEditorApp.UserData.Instance.AutoSaves = (DualityEditorApp.UserData.Instance.AutoSaves != AutosaveFrequency.OneHour) ? 
+				AutosaveFrequency.OneHour : 
+				AutosaveFrequency.Disabled;
 			this.UpdateSplitButtonBackupSettings();
 		}
 		private void splitButtonBackupSettings_DropDownOpening(object sender, EventArgs e)
@@ -793,15 +878,15 @@ namespace Duality.Editor.Forms
 
 		private void UpdateSplitButtonBackupSettings()
 		{
-			this.checkBackups.Checked = DualityEditorApp.BackupsEnabled;
-			this.optionAutosaveDisabled.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.Disabled;
-			this.optionAutosaveTenMinutes.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.TenMinutes;
-			this.optionAutosaveThirtyMinutes.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.ThirtyMinutes;
-			this.optionAutoSaveOneHour.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.OneHour;
+			this.checkBackups.Checked = DualityEditorApp.UserData.Instance.Backups;
+			this.optionAutosaveDisabled.Checked = DualityEditorApp.UserData.Instance.AutoSaves == AutosaveFrequency.Disabled;
+			this.optionAutosaveTenMinutes.Checked = DualityEditorApp.UserData.Instance.AutoSaves == AutosaveFrequency.TenMinutes;
+			this.optionAutosaveThirtyMinutes.Checked = DualityEditorApp.UserData.Instance.AutoSaves == AutosaveFrequency.ThirtyMinutes;
+			this.optionAutoSaveOneHour.Checked = DualityEditorApp.UserData.Instance.AutoSaves == AutosaveFrequency.OneHour;
 		}
 		public void UpdateLaunchAppActions()
 		{
-			bool launcherAvailable = File.Exists(DualityEditorApp.EditorAppData.Instance.LauncherPath);
+			bool launcherAvailable = File.Exists(DualityEditorApp.AppData.Instance.LauncherPath);
 			this.actionRunApp.Enabled = launcherAvailable;
 			this.actionDebugApp.Enabled = launcherAvailable;
 			this.menuRunApp.Enabled = launcherAvailable;

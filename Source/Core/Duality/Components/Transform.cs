@@ -319,7 +319,7 @@ namespace Duality.Components
 		}
 
 		/// <summary>
-		/// Moves the object by the given local offset. This will be treates as movement, rather than teleportation.
+		/// Moves the object by the given local offset. This will be treated as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveByLocal(Vector3 value)
@@ -328,7 +328,7 @@ namespace Duality.Components
 			this.UpdateAbs();
 		}
 		/// <summary>
-		/// Moves the object by the given local offset. This will be treates as movement, rather than teleportation.
+		/// Moves the object by the given local offset. This will be treated as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveByLocal(Vector2 value)
@@ -336,7 +336,7 @@ namespace Duality.Components
 			this.MoveByLocal(new Vector3(value));
 		}
 		/// <summary>
-		/// Moves the object by given world offset. This will be treates as movement, rather than teleportation.
+		/// Moves the object by given world offset. This will be treated as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveBy(Vector3 value)
@@ -359,7 +359,7 @@ namespace Duality.Components
 			this.UpdateAbsChild();
 		}
 		/// <summary>
-		/// Moves the object by given world offset. This will be treates as movement, rather than teleportation.
+		/// Moves the object by given world offset. This will be treated as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveBy(Vector2 value)
@@ -367,7 +367,7 @@ namespace Duality.Components
 			this.MoveBy(new Vector3(value));
 		}
 		/// <summary>
-		/// Moves the object to the given position in local space of its parent object. This will be treates as movement, rather than teleportation.
+		/// Moves the object to the given position in local space of its parent object. This will be treated as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveToLocal(Vector3 value)
@@ -376,7 +376,7 @@ namespace Duality.Components
 		}
 		/// <summary>
 		/// Moves the object to the given position in local space of its parent object, leaving the Z coordinate unchanged.
-		/// This will be treates as movement, rather than teleportation.
+		/// This will be treated as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveToLocal(Vector2 value)
@@ -384,7 +384,7 @@ namespace Duality.Components
 			this.MoveToLocal(new Vector3(value, this.pos.Z));
 		}
 		/// <summary>
-		/// Moves the object to the given world position. This will be treates as movement, rather than teleportation.
+		/// Moves the object to the given world position. This will be treated as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveTo(Vector3 value)
@@ -393,7 +393,7 @@ namespace Duality.Components
 		}
 		/// <summary>
 		/// Moves the object to the given world position, leaving the Z coordinate unchanged.
-		/// This will be treates as movement, rather than teleportation.
+		/// This will be treated as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void MoveTo(Vector2 value)
@@ -401,7 +401,7 @@ namespace Duality.Components
 			this.MoveTo(new Vector3(value, this.posAbs.Z));
 		}
 		/// <summary>
-		/// Turns the object by the given radian angle. This will be treates as movement, rather than teleportation.
+		/// Turns the object by the given radian angle. This will be treated as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void TurnBy(float value)
@@ -410,7 +410,7 @@ namespace Duality.Components
 			this.UpdateAbs();
 		}
 		/// <summary>
-		/// Turns the object to the given radian angle in local space of its parent object. This will be treates as movement, rather than teleportation.
+		/// Turns the object to the given radian angle in local space of its parent object. This will be treated as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void TurnToLocal(float value)
@@ -418,7 +418,7 @@ namespace Duality.Components
 			this.TurnBy(MathF.TurnDir(this.angle, value) * MathF.CircularDist(value, this.angle));
 		}
 		/// <summary>
-		/// Turns the object to the given world space radian angle. This will be treates as movement, rather than teleportation.
+		/// Turns the object to the given world space radian angle. This will be treated as movement, rather than teleportation.
 		/// </summary>
 		/// <param name="value"></param>
 		public void TurnTo(float value)

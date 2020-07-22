@@ -7,7 +7,7 @@
     <Copyright>Copyright © Duality Core Team 2020</Copyright>
     <RootNamespace>DualityGame</RootNamespace>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <ApplicationIcon>DualityIcon.ico</ApplicationIcon>
+    <ApplicationIcon>DualityLogoIcon.ico</ApplicationIcon>
     <OutputType>WinExe</OutputType>
     <Version>4.0.0-alpha3</Version>
     <Packable>false</Packable>
