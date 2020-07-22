@@ -84,86 +84,76 @@ namespace Duality.Editor
 		}
 
 		/// <summary>
-		/// Saves all editor plugin user data into the specified parent <see cref="XElement"/>.
+		/// Saves all editor plugin user data into the <see cref="PluginSettings"/>.
 		/// </summary>
-		/// <param name="parentElement"></param>
-		public void SaveUserData(XElement parentElement)
+		/// <param name="settings"></param>
+		private void SaveUserData(PluginSettings settings)
 		{
+			settings.Clear();
+			foreach (EditorPlugin loadedPlugin in this.LoadedPlugins)
+			{
+				loadedPlugin.SaveUserData(settings);
+			}
+
+			// Legacy support
+			XElement parentElement = settings.OldStyleSettings;
 			foreach (EditorPlugin plugin in this.LoadedPlugins)
 			{
 				XElement pluginElement = new XElement("Plugin");
 				pluginElement.SetAttributeValue("id", plugin.Id);
+
 				plugin.SaveUserData(pluginElement);
 				if (!pluginElement.IsEmpty)
 					parentElement.Add(pluginElement);
 			}
+
+			settings.OldStyleSettings = parentElement;
 		}
 		/// <summary>
-		/// Loads all editor plugin user data from the specified parent <see cref="XElement"/>.
+		/// Loads all editor plugin user data from the <see cref="PluginSettings"/>.
 		/// </summary>
-		/// <param name="parentElement"></param>
-		public void LoadUserData(XElement parentElement)
+		/// <param name="pluginSettings"></param>
+		private void LoadUserData(PluginSettings pluginSettings)
 		{
-			foreach (XElement child in parentElement.Elements("Plugin"))
+			foreach (EditorPlugin loadedPlugin in this.LoadedPlugins)
 			{
-				string id = child.GetAttributeValue("id");
-				if (id == null) continue;
-
-				foreach (EditorPlugin plugin in this.LoadedPlugins)
-				{
-					if (plugin.Id != id) continue;
-
-					plugin.LoadUserData(child);
-					break;
-				}
-			}
-		}
-		/// <summary>
-		/// As part of the docking suite layout deserialization, this method resolves
-		/// a persistent type name to an instance of the desired type.
-		/// </summary>
-		/// <param name="typeName"></param>
-		public IDockContent DeserializeDockContent(string typeName)
-		{
-			// First ask plugins from the dock contents assembly for existing instances
-			foreach (EditorPlugin plugin in this.LoadedPlugins)
-			{
-				Type dockContentType = plugin.PluginAssembly.GetType(typeName);
-				if (dockContentType != null)
-				{
-					// Ask the plugin to deserialize this docking content, but fall back on
-					// creating the appropriate one using reflection.
-					IDockContent deserializeDockContent = plugin.DeserializeDockContent(dockContentType);
-					return 
-						deserializeDockContent ?? 
-						(dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent);
-				}
+				loadedPlugin.LoadUserData(pluginSettings);
 			}
 
-			// If none of the available plugins can handle that type name, query all available assemblies
-			Assembly[] allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-			foreach (Assembly assembly in allAssemblies)
-			{
-				Type dockContentType = assembly.GetType(typeName);
-				if (dockContentType != null)
-				{
-					return dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent;
-				}
-			}
+			// Legacy support
+			XElement parentElement = pluginSettings.OldStyleSettings;
+			XElement[] childs = parentElement.Elements("Plugin").ToArray();
 
-			// Still nothing? Can't resolve this one then.
-			return null;
+			foreach (EditorPlugin loadedPlugin in this.LoadedPlugins)
+			{
+				XElement pluginSetting = childs.FirstOrDefault(x => x.GetAttributeValue("id") == loadedPlugin.Id);
+				if (pluginSetting == null)
+				{
+					XElement defaultSettings = loadedPlugin.GetDefaultUserData();
+
+					if (defaultSettings == null) continue;
+					if (defaultSettings.Name != "Plugin") throw new InvalidOperationException("Expected a Plugin element as root");
+
+					defaultSettings.SetAttributeValue("id", loadedPlugin.Id);
+					pluginSetting = defaultSettings;
+				}
+				loadedPlugin.LoadUserData(pluginSetting);
+			}
 		}
 
 		protected override void OnInit()
 		{
 			base.OnInit();
 			this.AssemblyLoader.AssemblyResolve += this.assemblyLoader_AssemblyResolve;
+			DualityEditorApp.UserData.Applying += this.EditorUserData_Applying;
+			DualityEditorApp.UserData.Saving += this.EditorUserData_Saving;
 		}
 		protected override void OnTerminate()
 		{
 			base.OnTerminate();
 			this.AssemblyLoader.AssemblyResolve -= this.assemblyLoader_AssemblyResolve;
+			DualityEditorApp.UserData.Applying -= this.EditorUserData_Applying;
+			DualityEditorApp.UserData.Saving -= this.EditorUserData_Saving;
 		}
 		protected override void OnInitPlugin(EditorPlugin plugin)
 		{
@@ -194,6 +184,14 @@ namespace Duality.Editor
 					}
 				}
 			}
+		}
+		private void EditorUserData_Applying(object sender, EventArgs e)
+		{
+			this.LoadUserData(DualityEditorApp.UserData.Instance.PluginSettings);
+		}
+		private void EditorUserData_Saving(object sender, EventArgs e)
+		{
+			this.SaveUserData(DualityEditorApp.UserData.Instance.PluginSettings);
 		}
 	}
 }

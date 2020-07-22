@@ -222,15 +222,13 @@ namespace Duality
 			get { return sound; }
 		}
 		/// <summary>
-		/// [GET / SET] Provides access to Duality's current <see cref="DualityAppData">application data</see>. This is never null.
+		/// [GET] Provides access to core application / game config, such as physics or backend settings. This is never null.
 		/// </summary>
 		public static SettingsContainer<DualityAppData> AppData { get; } = new SettingsContainer<DualityAppData>("AppData.xml");
-
 		/// <summary>
-		/// [GET / SET] Provides access to Duality's current <see cref="DualityUserData">user data</see>. This is never null.
+		/// [GET] Provides access to game options / user data, such as display resolution or audio volume. This is never null.
 		/// </summary>
 		public static SettingsContainer<DualityUserData> UserData { get; } = new SettingsContainer<DualityUserData>(execContext == ExecutionContext.Editor ? "DefaultUserData.xml" : "UserData.xml");
-
 		/// <summary>
 		/// [GET] Returns the <see cref="ExecutionContext"/> in which this DualityApp is currently running.
 		/// </summary>

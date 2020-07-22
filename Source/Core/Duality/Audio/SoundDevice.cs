@@ -112,7 +112,7 @@ namespace Duality.Audio
 
 		public SoundDevice()
 		{
-			DualityApp.AppData.Changed += this.AppDataChanged;
+			DualityApp.AppData.Applying += this.OnAppDataApplying;
 			this.UpdateWorldSettings();
 		}
 		~SoundDevice()
@@ -129,7 +129,7 @@ namespace Duality.Audio
 			if (!this.disposed)
 			{
 				this.disposed = true;
-				DualityApp.AppData.Changed -= this.AppDataChanged;
+				DualityApp.AppData.Applying -= this.OnAppDataApplying;
 
 				// Clear all playing sounds
 				foreach (SoundInstance inst in this.sounds) inst.Dispose();
@@ -287,7 +287,7 @@ namespace Duality.Audio
 			}
 		}
 		
-		private void AppDataChanged(object sender, EventArgs e)
+		private void OnAppDataApplying(object sender, EventArgs e)
 		{
 			this.UpdateWorldSettings();
 		}

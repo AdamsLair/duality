@@ -176,7 +176,7 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			DualityApp.Mouse.Source = new GameWindowMouseInputSource(this.internalWindow);
 			DualityApp.Keyboard.Source = new GameWindowKeyboardInputSource(this.internalWindow);
-			DualityApp.UserData.Changed += this.OnUserDataChanged;
+			DualityApp.UserData.Applying += this.OnUserDataApplying;
 		}
 		internal void UnhookFromDuality()
 		{
@@ -184,10 +184,10 @@ namespace Duality.Backend.DefaultOpenTK
 				DualityApp.Mouse.Source = null;
 			if (DualityApp.Keyboard.Source is GameWindowKeyboardInputSource)
 				DualityApp.Keyboard.Source = null;
-			DualityApp.UserData.Changed -= this.OnUserDataChanged;
+			DualityApp.UserData.Applying -= this.OnUserDataApplying;
 		}
 
-		private void OnUserDataChanged(object sender, EventArgs e)
+		private void OnUserDataApplying(object sender, EventArgs e)
 		{
 			// Early-out, if no display is connected / available anyway
 			if (DisplayDevice.Default == null) return;
