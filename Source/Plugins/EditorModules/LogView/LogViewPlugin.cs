@@ -41,6 +41,7 @@ namespace Duality.Editor.Plugins.LogView
 			if (this.logView != null)
 			{
 				this.logView.UserSettings = pluginSettings.Get<LogViewSettings>();
+				this.logView.ApplyUserSettings();
 			}
 			this.isLoading = false;
 		}

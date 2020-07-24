@@ -18,14 +18,7 @@ namespace Duality.Editor.Plugins.LogView
 		public LogViewSettings UserSettings
 		{
 			get { return this.userSettings; }
-			set
-			{
-				if (this.userSettings != value)
-				{
-					this.userSettings = value;
-					this.ApplyUserSettings();
-				}
-			}
+			set { this.userSettings = value ?? new LogViewSettings(); }
 		}
 
 
@@ -83,7 +76,7 @@ namespace Duality.Editor.Plugins.LogView
 		{
 			base.OnShown(e);
 
-			this.DockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
+			this.DockPanel.ActiveContentChanged += this.DockPanel_ActiveContentChanged;
 			Sandbox.Entering += this.Sandbox_Entering;
 		}
 		protected override void OnClosed(EventArgs e)
@@ -92,7 +85,7 @@ namespace Duality.Editor.Plugins.LogView
 
 			this.logEntryList.BindTo(null);
 
-			this.DockPanel.ActiveContentChanged -= DockPanel_ActiveContentChanged;
+			this.DockPanel.ActiveContentChanged -= this.DockPanel_ActiveContentChanged;
 			Sandbox.Entering -= this.Sandbox_Entering;
 		}
 		protected override void OnGotFocus(EventArgs e)
