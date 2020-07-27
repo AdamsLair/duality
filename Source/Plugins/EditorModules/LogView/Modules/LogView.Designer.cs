@@ -189,6 +189,7 @@
 			this.checkAutoClear.Name = "checkAutoClear";
 			this.checkAutoClear.Size = new System.Drawing.Size(143, 22);
 			this.checkAutoClear.Text = "Clear on Play";
+			this.checkAutoClear.CheckedChanged += new System.EventHandler(this.checkAutoClear_CheckedChanged);
 			// 
 			// buttonPauseOnError
 			// 

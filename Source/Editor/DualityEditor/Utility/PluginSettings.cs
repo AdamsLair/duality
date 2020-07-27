@@ -43,6 +43,16 @@ namespace Duality.Editor
 			return setting;
 		}
 		/// <summary>
+		/// Adds or replaces the stored editor plugin settings instance of type <typeparamref name="T"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="settings"></param>
+		public void Set<T>(T settings) where T : class
+		{
+			this.data.RemoveAll(obj => obj is T);
+			this.data.Add(settings);
+		}
+		/// <summary>
 		/// Clears all editor plugin settings from this container, and resets it to an empty state.
 		/// </summary>
 		internal void Clear()

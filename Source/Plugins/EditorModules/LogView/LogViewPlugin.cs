@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
-using System.IO;
-using System.Xml.Linq;
 
-using Duality;
-using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Properties;
 using Duality.Editor.Plugins.LogView.Properties;
@@ -41,30 +35,23 @@ namespace Duality.Editor.Plugins.LogView
 			this.isLoading = false;
 			return result;
 		}
-		protected override void SaveUserData(XElement node)
-		{
-			if (this.logView != null)
-			{
-				XElement logViewElem = new XElement("LogView");
-				this.logView.SaveUserData(logViewElem);
-				if (!logViewElem.IsEmpty)
-					node.Add(logViewElem);
-			}
-		}
-		protected override void LoadUserData(XElement node)
+		protected override void LoadUserData(PluginSettings pluginSettings)
 		{
 			this.isLoading = true;
 			if (this.logView != null)
 			{
-				foreach (XElement logViewElem in node.Elements("LogView"))
-				{
-					int i = logViewElem.GetAttributeValue("id", 0);
-					if (i < 0 || i >= 1) continue;
-
-					this.logView.LoadUserData(logViewElem);
-				}
+				this.logView.UserSettings = pluginSettings.Get<LogViewSettings>();
+				this.logView.ApplyUserSettings();
 			}
 			this.isLoading = false;
+		}
+		protected override void SaveUserData(PluginSettings settings)
+		{
+			base.SaveUserData(settings);
+			if (this.logView != null)
+			{
+				settings.Set(this.logView.UserSettings);
+			}
 		}
 		protected override void InitPlugin(MainForm main)
 		{

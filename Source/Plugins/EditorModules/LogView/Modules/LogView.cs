@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Drawing;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI.Docking;
-
-using Duality;
-using Duality.Editor;
 
 namespace Duality.Editor.Plugins.LogView
 {
 	public partial class LogView : DockContent
 	{
+		private LogViewSettings userSettings = new LogViewSettings();
 		private int unseenWarnings = 0;
-		private int unseenErrors   = 0;
+		private int unseenErrors = 0;
 		private Dictionary<string,ToolStripButton> sourceFilterButtons = new Dictionary<string,ToolStripButton>();
+
+
+		public LogViewSettings UserSettings
+		{
+			get { return this.userSettings; }
+			set { this.userSettings = value ?? new LogViewSettings(); }
+		}
 
 
 		public LogView()
@@ -36,6 +37,29 @@ namespace Duality.Editor.Plugins.LogView
 
 			this.toolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
+
+		public void ApplyUserSettings()
+		{
+			this.buttonMessages.Checked = this.userSettings.ShowMessages;
+			this.buttonWarnings.Checked = this.userSettings.ShowWarnings;
+			this.buttonErrors.Checked = this.userSettings.ShowErrors;
+
+			this.buttonCore.Checked = this.userSettings.ShowCore;
+			this.buttonEditor.Checked = this.userSettings.ShowEditor;
+			this.buttonGame.Checked = this.userSettings.ShowGame;
+
+			this.checkAutoClear.Checked = this.userSettings.AutoClear;
+			this.buttonPauseOnError.Checked = this.userSettings.PauseOnError;
+
+			this.logEntryList.SetSourceFilter(Logs.Core.Id, !this.userSettings.ShowCore);
+			this.logEntryList.SetSourceFilter(Logs.Editor.Id, !this.userSettings.ShowEditor);
+			this.logEntryList.SetSourceFilter(Logs.Game.Id, !this.userSettings.ShowGame);
+
+			this.logEntryList.SetTypeFilter(LogMessageType.Message, !this.userSettings.ShowMessages);
+			this.logEntryList.SetTypeFilter(LogMessageType.Warning, !this.userSettings.ShowWarnings);
+			this.logEntryList.SetTypeFilter(LogMessageType.Error, !this.userSettings.ShowErrors);
+		}
+
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
@@ -52,7 +76,7 @@ namespace Duality.Editor.Plugins.LogView
 		{
 			base.OnShown(e);
 
-			this.DockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
+			this.DockPanel.ActiveContentChanged += this.DockPanel_ActiveContentChanged;
 			Sandbox.Entering += this.Sandbox_Entering;
 		}
 		protected override void OnClosed(EventArgs e)
@@ -61,7 +85,7 @@ namespace Duality.Editor.Plugins.LogView
 
 			this.logEntryList.BindTo(null);
 
-			this.DockPanel.ActiveContentChanged -= DockPanel_ActiveContentChanged;
+			this.DockPanel.ActiveContentChanged -= this.DockPanel_ActiveContentChanged;
 			Sandbox.Entering -= this.Sandbox_Entering;
 		}
 		protected override void OnGotFocus(EventArgs e)
@@ -90,38 +114,6 @@ namespace Duality.Editor.Plugins.LogView
 			}
 		}
 		
-		internal void SaveUserData(XElement node)
-		{
-			node.SetElementValue("ShowMessages", this.buttonMessages.Checked);
-			node.SetElementValue("ShowWarnings", this.buttonWarnings.Checked);
-			node.SetElementValue("ShowErrors", this.buttonErrors.Checked);
-			node.SetElementValue("ShowCore", this.buttonCore.Checked);
-			node.SetElementValue("ShowEditor", this.buttonEditor.Checked);
-			node.SetElementValue("ShowGame", this.buttonGame.Checked);
-			node.SetElementValue("AutoClear", this.checkAutoClear.Checked);
-			node.SetElementValue("PauseOnError", this.buttonPauseOnError.Checked);
-		}
-		internal void LoadUserData(XElement node)
-		{
-			bool tryParseBool;
-
-			if (node.GetElementValue("ShowMessages", out tryParseBool)) this.buttonMessages.Checked = tryParseBool;
-			if (node.GetElementValue("ShowWarnings", out tryParseBool)) this.buttonWarnings.Checked = tryParseBool;
-			if (node.GetElementValue("ShowErrors", out tryParseBool))   this.buttonErrors.Checked = tryParseBool;
-			if (node.GetElementValue("ShowCore", out tryParseBool))     this.buttonCore.Checked = tryParseBool;
-			if (node.GetElementValue("ShowEditor", out tryParseBool))   this.buttonEditor.Checked = tryParseBool;
-			if (node.GetElementValue("ShowGame", out tryParseBool))     this.buttonGame.Checked = tryParseBool;
-			if (node.GetElementValue("AutoClear", out tryParseBool))    this.checkAutoClear.Checked = tryParseBool;
-			if (node.GetElementValue("PauseOnError", out tryParseBool)) this.buttonPauseOnError.Checked = tryParseBool;
-
-			this.logEntryList.SetSourceFilter(Logs.Core.Id, !this.buttonCore.Checked);
-			this.logEntryList.SetSourceFilter(Logs.Editor.Id, !this.buttonEditor.Checked);
-			this.logEntryList.SetSourceFilter(Logs.Game.Id, !this.buttonGame.Checked);
-			this.logEntryList.SetTypeFilter(LogMessageType.Message, !this.buttonMessages.Checked);
-			this.logEntryList.SetTypeFilter(LogMessageType.Warning, !this.buttonWarnings.Checked);
-			this.logEntryList.SetTypeFilter(LogMessageType.Error, !this.buttonErrors.Checked);
-		}
-
 		private void MarkAsRead()
 		{
 			this.unseenErrors = 0;
@@ -224,20 +216,35 @@ namespace Duality.Editor.Plugins.LogView
 			ToolStripButton button = sender as ToolStripButton;
 			string sourceId = button.Tag as string;
 			this.logEntryList.SetSourceFilter(sourceId, !button.Checked);
+
+			// No support for saving custom log source filter states as user settings right now, could be added later
+			if (button == this.buttonCore) this.userSettings.ShowCore = button.Checked;
+			else if (button == this.buttonEditor) this.userSettings.ShowEditor = button.Checked;
+			else if(button == this.buttonGame) this.userSettings.ShowGame = button.Checked;
 		}
 		private void buttonMessages_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetTypeFilter(LogMessageType.Message, !this.buttonMessages.Checked);
+			this.userSettings.ShowMessages = this.buttonMessages.Checked;
+			this.logEntryList.SetTypeFilter(LogMessageType.Message, !this.userSettings.ShowMessages);
 		}
 		private void buttonWarnings_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetTypeFilter(LogMessageType.Warning, !this.buttonWarnings.Checked);
+			this.userSettings.ShowWarnings = this.buttonWarnings.Checked;
+			this.logEntryList.SetTypeFilter(LogMessageType.Warning, !this.userSettings.ShowWarnings);
 		}
 		private void buttonErrors_CheckedChanged(object sender, EventArgs e)
 		{
-			this.logEntryList.SetTypeFilter(LogMessageType.Error, !this.buttonErrors.Checked);
+			this.userSettings.ShowErrors = this.buttonErrors.Checked;
+			this.logEntryList.SetTypeFilter(LogMessageType.Error, !this.userSettings.ShowErrors);
 		}
-		private void buttonPauseOnError_CheckedChanged(object sender, EventArgs e) {}
+		private void buttonPauseOnError_CheckedChanged(object sender, EventArgs e)
+		{
+			this.userSettings.PauseOnError = this.buttonPauseOnError.Checked;
+		}
+		private void checkAutoClear_CheckedChanged(object sender, EventArgs e)
+		{
+			this.userSettings.AutoClear = this.checkAutoClear.Checked;
+		}
 		private void actionClear_ButtonClick(object sender, EventArgs e)
 		{
 			this.logEntryList.Clear();
@@ -309,7 +316,7 @@ namespace Duality.Editor.Plugins.LogView
 
 		private void Sandbox_Entering(object sender, EventArgs e)
 		{
-			if (this.checkAutoClear.Checked) this.actionClear_ButtonClick(sender, e);
+			if (this.userSettings.AutoClear) this.actionClear_ButtonClick(sender, e);
 		}
 		private void textBoxEntry_KeyDown(object sender, KeyEventArgs e)
 		{
