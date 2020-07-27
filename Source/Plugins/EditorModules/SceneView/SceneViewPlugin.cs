@@ -38,10 +38,9 @@ namespace Duality.Editor.Plugins.SceneView
 		}
 		protected override void SaveUserData(PluginSettings settings)
 		{
-			SceneViewSettings sceneViewSettings = settings.Get<SceneViewSettings>();
 			if (this.sceneView != null)
 			{
-				this.sceneView.SaveUserData(sceneViewSettings);
+				settings.Set(this.sceneView.UserSettings);
 			}
 		}
 		protected override void LoadUserData(PluginSettings settings)
@@ -50,7 +49,8 @@ namespace Duality.Editor.Plugins.SceneView
 			this.isLoading = true;
 			if (this.sceneView != null)
 			{
-				this.sceneView.LoadUserData(sceneViewSettings);
+				this.sceneView.UserSettings = sceneViewSettings;
+				this.sceneView.ApplyUserSettings();
 			}
 			this.isLoading = false;
 		}

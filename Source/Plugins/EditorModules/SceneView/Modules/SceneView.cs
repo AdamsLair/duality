@@ -74,6 +74,14 @@ namespace Duality.Editor.Plugins.SceneView
 		private MenuModelItem	nodeContextItemCopy		= null;
 		private MenuModelItem	nodeContextItemPaste	= null;
 
+		private SceneViewSettings userSettings = new SceneViewSettings();
+
+		public SceneViewSettings UserSettings
+		{
+			get { return this.userSettings; }
+			set { this.userSettings = value; }
+		}
+
 		public IEnumerable<NodeBase> SelectedNodes
 		{
 			get
@@ -168,14 +176,10 @@ namespace Duality.Editor.Plugins.SceneView
 			Scene.ComponentAdded -= this.Scene_ComponentAdded;
 			Scene.ComponentRemoving -= this.Scene_ComponentRemoving;
 		}
-
-		internal void SaveUserData(SceneViewSettings sceneViewSettings)
+		
+		internal void ApplyUserSettings()
 		{
-			sceneViewSettings.ShowComponents = this.buttonShowComponents.Checked;
-		}
-		internal void LoadUserData(SceneViewSettings sceneViewSettings)
-		{
-			this.buttonShowComponents.Checked = sceneViewSettings.ShowComponents;
+			this.buttonShowComponents.Checked = this.userSettings.ShowComponents;
 		}
 
 		public void FlashNode(NodeBase node)
@@ -1806,6 +1810,7 @@ namespace Duality.Editor.Plugins.SceneView
 		}
 		private void buttonShowComponents_CheckedChanged(object sender, EventArgs e)
 		{
+			this.userSettings.ShowComponents = this.buttonShowComponents.Checked;
 			// Save expand data
 			HashSet<object> expandedMap = new HashSet<object>();
 			this.objectView.SaveNodesExpanded(this.objectView.Root, expandedMap, this.NodeIdFuncCoreObject);
