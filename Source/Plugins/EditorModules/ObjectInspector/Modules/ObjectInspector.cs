@@ -28,7 +28,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		public ObjectInspectorState UserSettings
 		{
 			get { return this.userSettings; }
-			set { this.userSettings = value ?? new ObjectInspectorState(); }
+			set { this.userSettings = value; }
 		}
 
 		public bool LockedSelection
@@ -54,6 +54,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		public ObjectInspector(int runtimeId)
 		{
 			this.InitializeComponent();
+			this.userSettings = new ObjectInspectorState();
 			this.buttonLock.CheckedChanged += (sender, args) => this.UserSettings.Locked = this.buttonLock.Checked;
 			this.runtimeId = runtimeId;
 			this.toolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
@@ -376,7 +377,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		}
 		private void buttonSortByName_CheckedChanged(object sender, EventArgs e)
 		{
-			this.UserSettings.SortByName = this.buttonSortByName.Checked
+			this.UserSettings.SortByName = this.buttonSortByName.Checked;
 			this.propertyGrid.SortEditorsByName = this.buttonSortByName.Checked;
 		}
 	}
