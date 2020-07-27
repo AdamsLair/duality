@@ -23,7 +23,13 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		private ObjectSelection.Category displayCat          = ObjectSelection.Category.None;
 
 		private ExpandState              gridExpandState     = new ExpandState();
-
+		private ObjectInspectorState userSettings;
+		
+		public ObjectInspectorState UserSettings
+		{
+			get { return this.userSettings; }
+			set { this.userSettings = value ?? new ObjectInspectorState(); }
+		}
 
 		public bool LockedSelection
 		{
@@ -48,9 +54,36 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		public ObjectInspector(int runtimeId)
 		{
 			this.InitializeComponent();
+			this.buttonLock.CheckedChanged += (sender, args) => this.UserSettings.Locked = this.buttonLock.Checked;
 			this.runtimeId = runtimeId;
 			this.toolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
+		
+		public void ApplyUserSettings()
+		{
+			this.buttonAutoRefresh.Checked = this.userSettings.AutoRefresh;
+			this.buttonLock.Checked = this.userSettings.Locked;
+			this.buttonDebug.Checked = this.userSettings.DebugMode;
+			this.buttonSortByName.Checked = this.userSettings.SortByName;
+			this.Text = this.userSettings.TitleText;
+
+			if (this.userSettings.ExpandState != null)
+			{
+				this.gridExpandState.LoadFromXml(this.userSettings.ExpandState);
+			}
+		}
+
+		internal void SaveGridExpandState()
+		{
+			// gridExpandState is normally only updated when the current selection changes.
+			// Make sure we have the latest information when saving UserData.
+			this.gridExpandState.UpdateFrom(this.propertyGrid.MainEditor);
+
+			XElement expandStateNode = new XElement("ExpandState");
+			this.gridExpandState.SaveToXml(expandStateNode);
+			this.userSettings.ExpandState = expandStateNode;
+		}
+		
 		public void CopyTo(ObjectInspector other)
 		{
 			this.gridExpandState.UpdateFrom(this.propertyGrid.MainEditor);
@@ -101,36 +134,6 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		{
 			base.OnGotFocus(e);
 			this.propertyGrid.Focus();
-		}
-
-		internal void SaveUserData(ObjectInspectorState inspectorState)
-		{
-			inspectorState.AutoRefresh = this.buttonAutoRefresh.Checked;
-			inspectorState.Locked = this.buttonLock.Checked;
-			inspectorState.TitleText = this.Text;
-			inspectorState.DebugMode = this.buttonDebug.Checked;
-			inspectorState.SortByName = this.buttonSortByName.Checked;
-
-			// gridExpandState is normally only updated when the current selection changes.
-			// Make sure we have the latest information when saving UserData.
-			this.gridExpandState.UpdateFrom(this.propertyGrid.MainEditor);
-
-			XElement expandStateNode = new XElement("ExpandState");
-			this.gridExpandState.SaveToXml(expandStateNode);
-			inspectorState.ExpandState = expandStateNode;
-		}
-		internal void LoadUserData(ObjectInspectorState inspectorState)
-		{
-			this.buttonAutoRefresh.Checked = inspectorState.AutoRefresh;
-			this.buttonLock.Checked = inspectorState.Locked;
-			this.buttonDebug.Checked = inspectorState.DebugMode;
-			this.buttonSortByName.Checked = inspectorState.SortByName;
-			this.Text = inspectorState.TitleText;
-
-			if (inspectorState.ExpandState != null)
-			{
-				this.gridExpandState.LoadFromXml(inspectorState.ExpandState);
-			}
 		}
 
 		private void UpdateButtons()
@@ -358,6 +361,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		}
 		private void buttonAutoRefresh_CheckedChanged(object sender, EventArgs e)
 		{
+			this.UserSettings.AutoRefresh = this.buttonAutoRefresh.Checked;
 			if (this.buttonAutoRefresh.Checked)
 			{
 				this.lastRefreshTime = Time.MainTimer;
@@ -367,10 +371,12 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		}
 		private void buttonDebug_CheckedChanged(object sender, EventArgs e)
 		{
+			this.UserSettings.DebugMode = this.buttonDebug.Checked;
 			this.propertyGrid.ShowNonPublic = this.buttonDebug.Checked;
 		}
 		private void buttonSortByName_CheckedChanged(object sender, EventArgs e)
 		{
+			this.UserSettings.SortByName = this.buttonSortByName.Checked
 			this.propertyGrid.SortEditorsByName = this.buttonSortByName.Checked;
 		}
 	}

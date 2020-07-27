@@ -24,7 +24,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 
 		private	List<ObjectInspector>	objViews		= new List<ObjectInspector>();
 		private	bool					isLoading		= false;
-
+		private ObjectInspectorSettings userSettings;
 
 		public override string Id
 		{
@@ -53,29 +53,22 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		}
 		protected override void SaveUserData(PluginSettings pluginSettings)
 		{
-			ObjectInspectorSettings objectInspectorSettings = pluginSettings.GetSettings<ObjectInspectorSettings>();
-			objectInspectorSettings.ObjectInspectors = new List<ObjectInspectorState>();
-			for (int i = 0; i < this.objViews.Count; i++)
+			foreach (ObjectInspector objectInspector in this.objViews)
 			{
-				var inspectorState = new ObjectInspectorState
-				{
-					Id = i
-				};
-				this.objViews[i].SaveUserData(inspectorState);
-
-				objectInspectorSettings.ObjectInspectors.Add(inspectorState);
+				objectInspector.SaveGridExpandState();
 			}
+			pluginSettings.Set(this.userSettings);
 		}
 
 		protected override void LoadUserData(PluginSettings pluginSettings)
 		{
 			this.isLoading = true;
-			ObjectInspectorSettings objectInspectorSettings = pluginSettings.GetSettings<ObjectInspectorSettings>();
-			foreach (ObjectInspectorState inspectorState in objectInspectorSettings.ObjectInspectors)
+			this.userSettings = pluginSettings.Get<ObjectInspectorSettings>();
+			foreach (ObjectInspectorState inspectorState in this.userSettings.ObjectInspectors)
 			{
 				if (inspectorState.Id < 0 || inspectorState.Id >= this.objViews.Count) continue;
-
-				this.objViews[inspectorState.Id].LoadUserData(inspectorState);
+				this.objViews[inspectorState.Id].UserSettings = inspectorState;
+				this.objViews[inspectorState.Id].ApplyUserSettings();
 			}
 			this.isLoading = false;
 		}
