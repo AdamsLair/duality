@@ -38,7 +38,7 @@ namespace Duality.Editor.Plugins.SceneView
 		}
 		protected override void SaveUserData(PluginSettings settings)
 		{
-			SceneViewSettings sceneViewSettings = settings.GetSettings<SceneViewSettings>();
+			SceneViewSettings sceneViewSettings = settings.Get<SceneViewSettings>();
 			if (this.sceneView != null)
 			{
 				this.sceneView.SaveUserData(sceneViewSettings);
@@ -46,7 +46,7 @@ namespace Duality.Editor.Plugins.SceneView
 		}
 		protected override void LoadUserData(PluginSettings settings)
 		{
-			SceneViewSettings sceneViewSettings = settings.GetSettings<SceneViewSettings>();
+			SceneViewSettings sceneViewSettings = settings.Get<SceneViewSettings>();
 			this.isLoading = true;
 			if (this.sceneView != null)
 			{
