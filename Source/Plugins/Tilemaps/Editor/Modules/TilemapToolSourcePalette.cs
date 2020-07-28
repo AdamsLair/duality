@@ -16,9 +16,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 	{
 		private PatternTileDrawSource paletteSource = new PatternTileDrawSource();
 		private bool globalEventsSubscribed = false;
-		private TilesetView.TileIndexDrawMode tileIndexDrawMode = TilesetView.TileIndexDrawMode.Never;
-
-
+		private TilemapToolSourcePaletteSettings userSettings;
+		
 		private ContentRef<Tileset> SelectedTileset
 		{
 			get { return this.tilesetView.TargetTileset; }
@@ -33,22 +32,17 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 
-		public TilemapToolSourcePalette()
+		public TilemapToolSourcePalette(TilemapToolSourcePaletteSettings userSettings)
 		{
+			this.userSettings = userSettings;
 			this.InitializeComponent();
 			this.mainToolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 			this.ApplyTileIndexDrawMode();
 		}
-
-		internal void SaveUserData(TilemapToolSourcePaletteSettings settings)
+		
+		internal void ApplyUserSettings()
 		{
-			settings.DarkBackground = this.buttonBrightness.Checked;
-			settings.DisplayTileIndices = this.tileIndexDrawMode;
-		}
-		internal void LoadUserData(TilemapToolSourcePaletteSettings settings)
-		{
-			this.buttonBrightness.Checked = settings.DarkBackground;
-			this.tileIndexDrawMode = settings.DisplayTileIndices;
+			this.buttonBrightness.Checked = this.userSettings.DarkBackground;
 
 			this.ApplyBrightness();
 			this.ApplyTileIndexDrawMode();
@@ -95,8 +89,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void ApplyTileIndexDrawMode()
 		{
-			this.tilesetView.DrawTileIndices = this.tileIndexDrawMode;
-			switch (this.tileIndexDrawMode)
+			this.tilesetView.DrawTileIndices = this.userSettings.DisplayTileIndices;
+			switch (this.userSettings.DisplayTileIndices)
 			{
 				case TilesetView.TileIndexDrawMode.Never:
 					this.buttonDrawTileIndices.Image = TilemapsResCache.IconHideIndices;
@@ -169,11 +163,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
+			this.userSettings.DarkBackground = this.buttonBrightness.Checked;
 			this.ApplyBrightness();
 		}
 		private void buttonDrawTileIndices_Click(object sender, EventArgs e)
 		{
-			this.tileIndexDrawMode = (TilesetView.TileIndexDrawMode)(((int)this.tileIndexDrawMode + 1) % 3);
+			this.userSettings.DisplayTileIndices = (TilesetView.TileIndexDrawMode)(((int)this.userSettings.DisplayTileIndices + 1) % 3);
 			this.ApplyTileIndexDrawMode();
 		}
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)

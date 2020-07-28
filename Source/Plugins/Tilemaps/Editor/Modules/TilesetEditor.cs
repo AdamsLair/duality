@@ -37,9 +37,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private ContentRef<Tileset> backupTarget   = null;
 		private Tileset             tilesetBackup  = null;
 		private bool                applyRequired  = false;
-		private TilesetView.TileIndexDrawMode tileIndexDrawMode = TilesetView.TileIndexDrawMode.Hovering;
 
-
+		private TilesetEditorSettings userSettings;
+		
 		/// <summary>
 		/// [GET] The currently selected <see cref="Tileset"/> in this editor. This property
 		/// is dependent on and automatically set by editor-wide selection events.
@@ -72,8 +72,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 
-		public TilesetEditor()
+		public TilesetEditor(TilesetEditorSettings userSettings)
 		{
+			this.userSettings = userSettings;
 			this.InitializeComponent();
 			this.treeColumnMain.DrawColHeaderBg += this.treeColumnMain_DrawColHeaderBg;
 			this.toolStripModeSelect.Renderer = new DualitorToolStripProfessionalRenderer();
@@ -84,15 +85,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.UpdateZoomButtons();
 		}
 		
-		internal void SaveUserData(TilesetEditorSettings settings)
+		internal void ApplyUserSettings()
 		{
-			settings.DarkBackground = this.buttonBrightness.Checked;
-			settings.DisplayTileIndices = this.tileIndexDrawMode;
-		}
-		internal void LoadUserData(TilesetEditorSettings settings)
-		{
-			this.buttonBrightness.Checked = settings.DarkBackground;
-			this.tileIndexDrawMode = settings.DisplayTileIndices;
+			this.buttonBrightness.Checked = this.userSettings.DarkBackground;
 
 			this.ApplyBrightness();
 			this.ApplyTileIndexDrawMode();
@@ -178,9 +173,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			bool allowIndices = (this.activeMode != null) ? this.activeMode.AllowTileIndexDisplay : true;
 
-			this.tilesetView.DrawTileIndices = allowIndices ? this.tileIndexDrawMode : TilesetView.TileIndexDrawMode.Never;
+			this.tilesetView.DrawTileIndices = allowIndices ? this.userSettings.DisplayTileIndices : TilesetView.TileIndexDrawMode.Never;
 			this.buttonDrawTileIndices.Enabled = allowIndices;
-			switch (this.tileIndexDrawMode)
+			switch (this.userSettings.DisplayTileIndices)
 			{
 				case TilesetView.TileIndexDrawMode.Never:
 					this.buttonDrawTileIndices.Image = TilemapsResCache.IconHideIndices;
@@ -431,11 +426,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
+			this.userSettings.DarkBackground = this.buttonBrightness.Checked;
 			this.ApplyBrightness();
 		}
 		private void buttonDrawTileIndices_Click(object sender, EventArgs e)
 		{
-			this.tileIndexDrawMode = (TilesetView.TileIndexDrawMode)(((int)this.tileIndexDrawMode + 1) % 3);
+			this.userSettings.DisplayTileIndices = (TilesetView.TileIndexDrawMode)(((int)this.userSettings.DisplayTileIndices + 1) % 3);
 			this.ApplyTileIndexDrawMode();
 		}
 		private void modeToolButton_Click(object sender, EventArgs e)

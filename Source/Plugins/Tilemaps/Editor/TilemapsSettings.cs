@@ -15,7 +15,7 @@
 			set { this.darkBackground = value; }
 		}
 
-		private TilesetView.TileIndexDrawMode displayTileIndices;
+		private TilesetView.TileIndexDrawMode displayTileIndices = TilesetView.TileIndexDrawMode.Never;
 		public TilesetView.TileIndexDrawMode DisplayTileIndices
 		{
 			get { return this.displayTileIndices; }
@@ -32,7 +32,7 @@
 			set { this.darkBackground = value; }
 		}
 
-		private TilesetView.TileIndexDrawMode displayTileIndices;
+		private TilesetView.TileIndexDrawMode displayTileIndices = TilesetView.TileIndexDrawMode.Hovering;
 		public TilesetView.TileIndexDrawMode DisplayTileIndices
 		{
 			get { return this.displayTileIndices; }

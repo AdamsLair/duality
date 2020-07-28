@@ -34,10 +34,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private TilesetEditor            tilesetEditor            = null;
 		private TilemapToolSourcePalette tilePalette              = null;
 		private int                      pendingLocalTilePalettes = 0;
-		private TilemapToolSourcePaletteSettings tilePaletteSettings      = null;
-		private TilesetEditorSettings tilesetEditorSettings    = null;
 		private ITileDrawSource          tileDrawingSource        = EmptyTileDrawingSource;
 		private HashSet<ContentRef<Tileset>> recompileOnChange    = new HashSet<ContentRef<Tileset>>();
+		private TilemapsSettings userSettings;
 
 		/// <summary>
 		/// An event that is fired when the <see cref="TileDrawingSource"/> is assigned a new value.
@@ -108,32 +107,23 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		protected override void SaveUserData(PluginSettings pluginSettings)
 		{
-			var tilemapsSettings = pluginSettings.Get<TilemapsSettings>();
-			// Save editor settings to local cache node
-			if (this.tilePalette != null)
-			{
-				this.tilePaletteSettings = tilemapsSettings.TilemapToolSourcePaletteSettings;
-				this.tilePalette.SaveUserData(this.tilePaletteSettings);
-			}
-			if (this.tilesetEditor != null)
-			{
-				this.tilesetEditorSettings = tilemapsSettings.TilesetEditorSettings;
-				this.tilesetEditor.SaveUserData(this.tilesetEditorSettings);
-			}
+			pluginSettings.Set(this.userSettings);
 		}
 		protected override void LoadUserData(PluginSettings pluginSettings)
 		{
 			this.isLoading = true;
-			var tilemapsSettings = pluginSettings.Get<TilemapsSettings>();
-			// Retrieve settings from persistent editor data and put them into the local cache node
-			this.tilePaletteSettings = tilemapsSettings.TilemapToolSourcePaletteSettings;
-			this.tilesetEditorSettings = tilemapsSettings.TilesetEditorSettings;
+			this.userSettings = pluginSettings.Get<TilemapsSettings>();
 
 			// If we have an active matching editors, apply the settings directly
 			if (this.tilePalette != null)
-				this.tilePalette.LoadUserData(this.tilePaletteSettings);
+			{
+				this.tilePalette.ApplyUserSettings();
+			}
+
 			if (this.tilesetEditor != null)
-				this.tilesetEditor.LoadUserData(this.tilesetEditorSettings);
+			{
+				this.tilesetEditor.ApplyUserSettings();
+			}
 
 			this.isLoading = false;
 		}
@@ -169,12 +159,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Create a new tileset editor, if no is available right now
 			if (this.tilesetEditor == null || this.tilesetEditor.IsDisposed)
 			{
-				this.tilesetEditor = new TilesetEditor();
+				this.tilesetEditor = new TilesetEditor(this.userSettings.TilesetEditorSettings);
 				this.tilesetEditor.FormClosed += this.tilesetEditor_FormClosed;
-			
-				// If there are cached settings available, apply them to the new editor
-				if (this.tilePaletteSettings != null)
-					this.tilesetEditor.LoadUserData(this.tilesetEditorSettings);
+
+				this.tilesetEditor.ApplyUserSettings();
 			}
 
 			// If we're not creating it as part of the loading procedure, add it to the main docking layout directly
@@ -190,13 +178,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Create a new tile palette, if none is available right now
 			if (this.tilePalette == null || this.tilePalette.IsDisposed)
 			{
-				this.tilePalette = new TilemapToolSourcePalette();
+				this.tilePalette = new TilemapToolSourcePalette(this.userSettings.TilemapToolSourcePaletteSettings);
 				this.tilePalette.DockStateChanged += this.tilePalette_DockStateChanged;
 				this.tilePalette.HideOnClose = true;
-			
-				// If there are cached settings available, apply them to the new palette
-				if (this.tilePaletteSettings != null)
-					this.tilePalette.LoadUserData(this.tilePaletteSettings);
+
+				this.tilePalette.ApplyUserSettings();
 			}
 
 			// If we're not creating it as part of the loading procedure, add it to the main docking layout directly
@@ -247,8 +233,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void tilesetEditor_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			this.tilesetEditor.SaveUserData(this.tilesetEditorSettings);
-
 			this.tilesetEditor.FormClosed -= this.tilesetEditor_FormClosed;
 			this.tilesetEditor.Dispose();
 			this.tilesetEditor = null;
