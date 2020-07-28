@@ -56,12 +56,12 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 		protected override void LoadUserData(PluginSettings settings)
 		{
-			ProjectViewSettings projectViewSettings = settings.GetSettings<ProjectViewSettings>();
+			ProjectViewSettings projectViewSettings = settings.Get<ProjectViewSettings>();
 			this.projectView.LoadUserData(projectViewSettings);
 		}
 		protected override void SaveUserData(PluginSettings settings)
 		{
-			ProjectViewSettings projectViewSettings = settings.GetSettings<ProjectViewSettings>();
+			ProjectViewSettings projectViewSettings = settings.Get<ProjectViewSettings>();
 			this.projectView.SaveUserData(projectViewSettings);
 		}
 		public ProjectFolderView RequestProjectView()
