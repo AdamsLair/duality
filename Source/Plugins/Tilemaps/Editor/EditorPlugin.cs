@@ -108,7 +108,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		protected override void SaveUserData(PluginSettings pluginSettings)
 		{
-			var tilemapsSettings = pluginSettings.GetSettings<TilemapsSettings>();
+			var tilemapsSettings = pluginSettings.Get<TilemapsSettings>();
 			// Save editor settings to local cache node
 			if (this.tilePalette != null)
 			{
@@ -124,7 +124,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void LoadUserData(PluginSettings pluginSettings)
 		{
 			this.isLoading = true;
-			var tilemapsSettings = pluginSettings.GetSettings<TilemapsSettings>();
+			var tilemapsSettings = pluginSettings.Get<TilemapsSettings>();
 			// Retrieve settings from persistent editor data and put them into the local cache node
 			this.tilePaletteSettings = tilemapsSettings.TilemapToolSourcePaletteSettings;
 			this.tilesetEditorSettings = tilemapsSettings.TilesetEditorSettings;
