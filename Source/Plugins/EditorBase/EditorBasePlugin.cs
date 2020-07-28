@@ -96,7 +96,7 @@ namespace Duality.Editor.Plugins.Base
 		{
 			if (this.slicingForm != null)
 			{
-				this.editorBaseSettings = pluginSettings.GetSettings<EditorBaseSettings>();
+				this.editorBaseSettings = pluginSettings.Get<EditorBaseSettings>();
 				this.slicingForm.SaveUserData(this.editorBaseSettings);
 			}
 		}
@@ -106,7 +106,7 @@ namespace Duality.Editor.Plugins.Base
 
 			if (this.slicingForm != null)
 			{
-				this.editorBaseSettings = pluginSettings.GetSettings<EditorBaseSettings>();
+				this.editorBaseSettings = pluginSettings.Get<EditorBaseSettings>();
 				this.slicingForm.LoadUserData(this.editorBaseSettings);
 			}
 			
