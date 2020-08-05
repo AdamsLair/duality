@@ -74,6 +74,7 @@ namespace Duality.Editor.Plugins.SceneView
 		private MenuModelItem	nodeContextItemCopy		= null;
 		private MenuModelItem	nodeContextItemPaste	= null;
 
+		
 		private SceneViewSettings userSettings = new SceneViewSettings();
 
 		public SceneViewSettings UserSettings
@@ -111,8 +112,7 @@ namespace Duality.Editor.Plugins.SceneView
 					select c.Tag as GameObjectNode;
 			}
 		}
-
-
+		
 		public SceneView()
 		{
 			this.InitializeComponent();
@@ -176,6 +176,7 @@ namespace Duality.Editor.Plugins.SceneView
 			Scene.ComponentAdded -= this.Scene_ComponentAdded;
 			Scene.ComponentRemoving -= this.Scene_ComponentRemoving;
 		}
+		
 		
 		internal void ApplyUserSettings()
 		{

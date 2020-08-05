@@ -4,6 +4,9 @@
 	{
 		private bool showComponents = true;
 
+		/// <summary>
+		/// Controls whether components are shown as individual nodes in the scene tree
+		/// </summary>
 		public bool ShowComponents
 		{
 			get { return this.showComponents; }
