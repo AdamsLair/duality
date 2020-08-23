@@ -18,9 +18,16 @@ namespace Duality.Editor.Forms
 			FileVersionInfo versionCore = FileVersionInfo.GetVersionInfo(typeof(DualityApp).Assembly.Location);
 			FileVersionInfo versionEditor = FileVersionInfo.GetVersionInfo(typeof(DualityEditorApp).Assembly.Location);
 
-			this.labelVersionData.Text = string.Format(this.labelVersionData.Text, 
-				versionCore.FileVersion,
-				versionEditor.FileVersion);
+			try
+			{
+				this.labelVersion.Text = string.Format(this.labelVersion.Text,
+					versionCore.FileVersion,
+					versionEditor.FileVersion);
+			}
+			catch(Exception e)
+			{
+				this.labelVersion.Text = e.Message;
+			}
 		}
 
 		private void buttonOk_Click(object sender, EventArgs e)
