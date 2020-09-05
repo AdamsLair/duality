@@ -35,7 +35,6 @@
 			this.labelDevWebsite = new System.Windows.Forms.Label();
 			this.linkLabelWebsite = new System.Windows.Forms.LinkLabel();
 			this.labelVersion = new System.Windows.Forms.Label();
-			this.labelVersionData = new System.Windows.Forms.Label();
 			this.tableLayoutPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -53,7 +52,6 @@
 			this.tableLayoutPanel.Controls.Add(this.labelDevWebsite, 0, 2);
 			this.tableLayoutPanel.Controls.Add(this.linkLabelWebsite, 1, 1);
 			this.tableLayoutPanel.Controls.Add(this.labelVersion, 2, 1);
-			this.tableLayoutPanel.Controls.Add(this.labelVersionData, 3, 1);
 			this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel.Location = new System.Drawing.Point(5, 5);
 			this.tableLayoutPanel.Name = "tableLayoutPanel";
@@ -72,7 +70,7 @@
 			this.linkLabelDevWebsite.Location = new System.Drawing.Point(110, 235);
 			this.linkLabelDevWebsite.Margin = new System.Windows.Forms.Padding(3);
 			this.linkLabelDevWebsite.Name = "linkLabelDevWebsite";
-			this.linkLabelDevWebsite.Size = new System.Drawing.Size(129, 17);
+			this.linkLabelDevWebsite.Size = new System.Drawing.Size(138, 17);
 			this.linkLabelDevWebsite.TabIndex = 6;
 			this.linkLabelDevWebsite.TabStop = true;
 			this.linkLabelDevWebsite.Text = "http://www.adamslair.net";
@@ -136,7 +134,7 @@
 			this.linkLabelWebsite.Location = new System.Drawing.Point(110, 212);
 			this.linkLabelWebsite.Margin = new System.Windows.Forms.Padding(3);
 			this.linkLabelWebsite.Name = "linkLabelWebsite";
-			this.linkLabelWebsite.Size = new System.Drawing.Size(129, 17);
+			this.linkLabelWebsite.Size = new System.Drawing.Size(138, 17);
 			this.linkLabelWebsite.TabIndex = 5;
 			this.linkLabelWebsite.TabStop = true;
 			this.linkLabelWebsite.Text = "http://duality.adamslair.net/";
@@ -146,32 +144,17 @@
 			// labelVersion
 			// 
 			this.labelVersion.AutoSize = true;
+			this.tableLayoutPanel.SetColumnSpan(this.labelVersion, 2);
 			this.labelVersion.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.labelVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelVersion.Location = new System.Drawing.Point(245, 212);
+			this.labelVersion.Location = new System.Drawing.Point(254, 212);
 			this.labelVersion.Margin = new System.Windows.Forms.Padding(3);
 			this.labelVersion.Name = "labelVersion";
 			this.tableLayoutPanel.SetRowSpan(this.labelVersion, 2);
-			this.labelVersion.Size = new System.Drawing.Size(96, 40);
+			this.labelVersion.Size = new System.Drawing.Size(247, 40);
 			this.labelVersion.TabIndex = 7;
-			this.labelVersion.Text = "Core Version: \r\nEditor Version: \r\nLauncher Version: ";
-			this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.labelVersion.Text = "Core Version: {0}\r\nEditor Version: {1}";
 			this.labelVersion.Click += new System.EventHandler(this.labelVersion_Click);
-			// 
-			// labelVersionData
-			// 
-			this.labelVersionData.AutoSize = true;
-			this.labelVersionData.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.labelVersionData.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelVersionData.Location = new System.Drawing.Point(347, 212);
-			this.labelVersionData.Margin = new System.Windows.Forms.Padding(3);
-			this.labelVersionData.Name = "labelVersionData";
-			this.tableLayoutPanel.SetRowSpan(this.labelVersionData, 2);
-			this.labelVersionData.Size = new System.Drawing.Size(154, 40);
-			this.labelVersionData.TabIndex = 8;
-			this.labelVersionData.Text = "{0}\r\n{1}\r\n{2}";
-			this.labelVersionData.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.labelVersionData.Click += new System.EventHandler(this.labelVersion_Click);
 			// 
 			// AboutBox
 			// 
@@ -205,7 +188,6 @@
 		private System.Windows.Forms.Label labelDevWebsite;
 		private System.Windows.Forms.LinkLabel linkLabelWebsite;
 		private System.Windows.Forms.Label labelVersion;
-		private System.Windows.Forms.Label labelVersionData;
 
 	}
 }
