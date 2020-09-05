@@ -5,6 +5,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LangVersion>7.3</LangVersion>
 		<OutputPath>$(RootFolder)Build\Output\</OutputPath>
+		<Version>4.0.0-alpha3</Version>
 		<Copyright>Copyright © Duality Core Team 2020</Copyright>
 		<RootNamespace>Duality.Editor</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
