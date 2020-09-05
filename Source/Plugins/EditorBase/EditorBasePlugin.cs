@@ -85,7 +85,7 @@ namespace Duality.Editor.Plugins.Base
 				},
 				new MenuModelItem
 				{
-					Name = EditorBaseRes.MenuItemName_ProjectSettings,
+					Name = EditorBaseRes.MenuItemName_EditorAppData,
 					ActionHandler = this.menuItemProjectSettings_Click
 				}
 			});

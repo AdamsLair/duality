@@ -524,11 +524,11 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project Settings.
+        ///   Looks up a localized string similar to Editor Application Data.
         /// </summary>
-        internal static string MenuItemName_ProjectSettings {
+        internal static string MenuItemName_EditorAppData {
             get {
-                return ResourceManager.GetString("MenuItemName_ProjectSettings", resourceCulture);
+                return ResourceManager.GetString("MenuItemName_EditorAppData", resourceCulture);
             }
         }
         
