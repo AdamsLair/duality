@@ -131,6 +131,7 @@ namespace Duality.Editor.Plugins.Base
 			this.isLoading = false;
 			return result;
 		}
+
 		private void slicingForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			this.pixmapSlicerSettings = new XElement(ElementNamePixmapSlicer);
@@ -142,16 +143,15 @@ namespace Duality.Editor.Plugins.Base
 		}
 		private void menuItemAppData_Click(object sender, EventArgs e)
 		{
-			DualityEditorApp.Select(this, new ObjectSelection(new [] { DualityApp.AppData }));
+			DualityEditorApp.Select(this, new ObjectSelection(new [] { DualityApp.AppData.Instance }));
 		}
 		private void menuItemUserData_Click(object sender, EventArgs e)
 		{
-			DualityEditorApp.Select(this, new ObjectSelection(new [] { DualityApp.UserData }));
+			DualityEditorApp.Select(this, new ObjectSelection(new [] { DualityApp.UserData.Instance }));
 		}
-
 		private void menuItemProjectSettings_Click(object sender, EventArgs e)
 		{
-			DualityEditorApp.Select(this, new ObjectSelection(new[] { DualityEditorApp.AppData }));
+			DualityEditorApp.Select(this, new ObjectSelection(new[] { DualityEditorApp.AppData.Instance }));
 		}
 
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)

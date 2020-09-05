@@ -830,6 +830,14 @@ namespace Duality.Editor
 				{
 					settings.Save();
 				}
+				// If any settings are modified, save them
+				if (args.Objects.OtherObjectCount > 0)
+				{
+					if (args.HasObject(DualityApp.AppData.Instance)) DualityApp.AppData.Save();
+					if (args.HasObject(DualityApp.UserData.Instance)) DualityApp.UserData.Save();
+					if (args.HasObject(DualityEditorApp.AppData.Instance)) DualityEditorApp.AppData.Save();
+					if (args.HasObject(DualityEditorApp.UserData.Instance)) DualityEditorApp.UserData.Save();
+				}
 			}
 
 			// Fire the actual event
