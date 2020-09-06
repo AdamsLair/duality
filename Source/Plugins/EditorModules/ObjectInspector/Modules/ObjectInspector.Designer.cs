@@ -144,6 +144,7 @@
 			this.buttonLock.Name = "buttonLock";
 			this.buttonLock.Size = new System.Drawing.Size(23, 22);
 			this.buttonLock.Text = "Lock View";
+			this.buttonLock.CheckedChanged += new System.EventHandler(this.buttonLock_CheckedChanged);
 			// 
 			// ObjectInspector
 			// 

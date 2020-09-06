@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Drawing;
-using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using System.Windows.Forms;
-using System.Collections.Generic;
 
 using WeifenLuo.WinFormsUI.Docking;
 using AdamsLair.WinForms.PropertyEditing;
 
-using Duality;
-using Duality.IO;
 using Duality.Resources;
-using Duality.Editor;
 using Duality.Editor.AssetManagement;
 
 namespace Duality.Editor.Plugins.ObjectInspector
@@ -28,8 +23,18 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		private ObjectSelection.Category displayCat          = ObjectSelection.Category.None;
 
 		private ExpandState              gridExpandState     = new ExpandState();
+		private ObjectInspectorSettings  userSettings        = new ObjectInspectorSettings();
+		
 
-
+		public int Id
+		{
+			get { return this.runtimeId; }
+		}
+		public ObjectInspectorSettings UserSettings
+		{
+			get { return this.userSettings; }
+			set { this.userSettings = value; }
+		}
 		public bool LockedSelection
 		{
 			get { return this.buttonLock.Checked; }
@@ -56,6 +61,31 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			this.runtimeId = runtimeId;
 			this.toolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
+		
+		public void ApplyUserSettings()
+		{
+			this.buttonAutoRefresh.Checked = this.userSettings.AutoRefresh;
+			this.buttonLock.Checked = this.userSettings.Locked;
+			this.buttonDebug.Checked = this.userSettings.DebugMode;
+			this.buttonSortByName.Checked = this.userSettings.SortByName;
+			this.Text = this.userSettings.TitleText;
+
+			if (this.userSettings.ExpandState != null)
+			{
+				this.gridExpandState.LoadFromXml(this.userSettings.ExpandState);
+			}
+		}
+		internal void SaveGridExpandState()
+		{
+			// gridExpandState is normally only updated when the current selection changes.
+			// Make sure we have the latest information when saving UserData.
+			this.gridExpandState.UpdateFrom(this.propertyGrid.MainEditor);
+
+			XElement expandStateNode = new XElement("ExpandState");
+			this.gridExpandState.SaveToXml(expandStateNode);
+			this.userSettings.ExpandState = expandStateNode;
+		}
+		
 		public void CopyTo(ObjectInspector other)
 		{
 			this.gridExpandState.UpdateFrom(this.propertyGrid.MainEditor);
@@ -78,6 +108,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		{
 			base.OnShown(e);
 
+			this.ApplyUserSettings();
 			this.UpdateButtons();
 
 			// Add the global selection event once
@@ -106,39 +137,6 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		{
 			base.OnGotFocus(e);
 			this.propertyGrid.Focus();
-		}
-
-		internal void SaveUserData(XElement node)
-		{
-			node.SetElementValue("AutoRefresh", this.buttonAutoRefresh.Checked);
-			node.SetElementValue("Locked", this.buttonLock.Checked);
-			node.SetElementValue("TitleText", this.Text);
-			node.SetElementValue("DebugMode", this.buttonDebug.Checked);
-			node.SetElementValue("SortByName", this.buttonSortByName.Checked);
-
-			// gridExpandState is normally only updated when the current selection changes.
-			// Make sure we have the latest information when saving UserData.
-			this.gridExpandState.UpdateFrom(this.propertyGrid.MainEditor);
-
-			XElement expandStateNode = new XElement("ExpandState");
-			this.gridExpandState.SaveToXml(expandStateNode);
-			node.Add(expandStateNode);
-		}
-		internal void LoadUserData(XElement node)
-		{
-			bool tryParseBool;
-
-			if (node.GetElementValue("AutoRefresh", out tryParseBool)) this.buttonAutoRefresh.Checked = tryParseBool;
-			if (node.GetElementValue("Locked", out tryParseBool)) this.buttonLock.Checked = tryParseBool;
-			if (node.GetElementValue("DebugMode", out tryParseBool)) this.buttonDebug.Checked = tryParseBool;
-			if (node.GetElementValue("SortByName", out tryParseBool)) this.buttonSortByName.Checked = tryParseBool;
-			this.Text = node.GetElementValue("TitleText", this.Text);
-
-			XElement expandStateNode = node.Element("ExpandState", true);
-			if (expandStateNode != null)
-			{
-				this.gridExpandState.LoadFromXml(expandStateNode);
-		}
 		}
 
 		private void UpdateButtons()
@@ -191,7 +189,6 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			this.gridExpandState.ApplyTo(this.propertyGrid.MainEditor);
 			this.buttonClone.Enabled = this.propertyGrid.Selection.Any();
 		}
-
 		private void UpdateDisplayedValues(bool forceFullUpdate)
 		{
 			if (forceFullUpdate)
@@ -366,6 +363,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		}
 		private void buttonAutoRefresh_CheckedChanged(object sender, EventArgs e)
 		{
+			this.UserSettings.AutoRefresh = this.buttonAutoRefresh.Checked;
 			if (this.buttonAutoRefresh.Checked)
 			{
 				this.lastRefreshTime = Time.MainTimer;
@@ -375,11 +373,17 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		}
 		private void buttonDebug_CheckedChanged(object sender, EventArgs e)
 		{
+			this.UserSettings.DebugMode = this.buttonDebug.Checked;
 			this.propertyGrid.ShowNonPublic = this.buttonDebug.Checked;
 		}
 		private void buttonSortByName_CheckedChanged(object sender, EventArgs e)
 		{
+			this.UserSettings.SortByName = this.buttonSortByName.Checked;
 			this.propertyGrid.SortEditorsByName = this.buttonSortByName.Checked;
+		}
+		private void buttonLock_CheckedChanged(object sender, EventArgs e)
+		{
+			this.UserSettings.Locked = this.buttonLock.Checked;
 		}
 	}
 }
