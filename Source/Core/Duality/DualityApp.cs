@@ -228,7 +228,7 @@ namespace Duality
 		/// <summary>
 		/// [GET] Provides access to game options / user data, such as display resolution or audio volume. This is never null.
 		/// </summary>
-		public static SettingsContainer<DualityUserData> UserData { get; } = new SettingsContainer<DualityUserData>(execContext == ExecutionContext.Editor ? "DefaultUserData.xml" : "UserData.xml");
+		public static SettingsContainer<DualityUserData> UserData { get; } = new SettingsContainer<DualityUserData>("UserData.xml", LoadUserData, SaveUserData);
 		/// <summary>
 		/// [GET] Returns the <see cref="ExecutionContext"/> in which this DualityApp is currently running.
 		/// </summary>
@@ -460,6 +460,34 @@ namespace Duality
 
 			if (previousContext != ExecutionContext.Game && targetContext == ExecutionContext.Game)
 				pluginManager.InvokeGameStarting();
+		}
+
+		/// <summary>
+		/// Specialized loading routine for <see cref="UserData"/>.
+		/// </summary>
+		private static DualityUserData LoadUserData()
+		{
+			string path = UserData.Path;
+
+			// Load from editor-specified defaults when running in or from the editor, and as a runtime fallback
+			if (!FileOp.Exists(path) || execContext == ExecutionContext.Editor || runFromEditor)
+				path = "DefaultUserData.xml";
+
+			return Serializer.TryReadObject<DualityUserData>(path, typeof(XmlSerializer));
+		}
+
+		/// <summary>
+		/// Specialized saving routine for <see cref="UserData"/>.
+		/// </summary>
+		private static void SaveUserData(DualityUserData instance)
+		{
+			Serializer.WriteObject(instance, UserData.Path, typeof(XmlSerializer));
+
+			// When in the editor, always write both default settings and current game / runtime settings
+			if (execContext == ExecutionContext.Editor)
+			{
+				Serializer.WriteObject(instance, "DefaultUserData.xml", typeof(XmlSerializer));
+			}
 		}
 
 		/// <summary>

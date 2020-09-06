@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Reflection;
-using System.Xml.Linq;
 using CancelEventHandler = System.ComponentModel.CancelEventHandler;
 using CancelEventArgs = System.ComponentModel.CancelEventArgs;
 
@@ -13,11 +12,9 @@ using Aga.Controls.Tree;
 using AdamsLair.WinForms.ItemModels;
 using AdamsLair.WinForms.ItemViews;
 
-using Duality;
 using Duality.Cloning;
 using Duality.Resources;
 using Duality.IO;
-using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
 
@@ -77,6 +74,15 @@ namespace Duality.Editor.Plugins.SceneView
 		private MenuModelItem	nodeContextItemCopy		= null;
 		private MenuModelItem	nodeContextItemPaste	= null;
 
+		
+		private SceneViewSettings userSettings = new SceneViewSettings();
+
+		public SceneViewSettings UserSettings
+		{
+			get { return this.userSettings; }
+			set { this.userSettings = value; }
+		}
+
 		public IEnumerable<NodeBase> SelectedNodes
 		{
 			get
@@ -106,8 +112,7 @@ namespace Duality.Editor.Plugins.SceneView
 					select c.Tag as GameObjectNode;
 			}
 		}
-
-
+		
 		public SceneView()
 		{
 			this.InitializeComponent();
@@ -171,17 +176,11 @@ namespace Duality.Editor.Plugins.SceneView
 			Scene.ComponentAdded -= this.Scene_ComponentAdded;
 			Scene.ComponentRemoving -= this.Scene_ComponentRemoving;
 		}
-
-		internal void SaveUserData(XElement node)
+		
+		
+		internal void ApplyUserSettings()
 		{
-			node.SetElementValue("ShowComponents", this.buttonShowComponents.Checked);
-		}
-		internal void LoadUserData(XElement node)
-		{
-			bool tryParseBool;
-
-			if (node.GetElementValue("ShowComponents", out tryParseBool))
-				this.buttonShowComponents.Checked = tryParseBool;
+			this.buttonShowComponents.Checked = this.userSettings.ShowComponents;
 		}
 
 		public void FlashNode(NodeBase node)
@@ -1812,6 +1811,7 @@ namespace Duality.Editor.Plugins.SceneView
 		}
 		private void buttonShowComponents_CheckedChanged(object sender, EventArgs e)
 		{
+			this.userSettings.ShowComponents = this.buttonShowComponents.Checked;
 			// Save expand data
 			HashSet<object> expandedMap = new HashSet<object>();
 			this.objectView.SaveNodesExpanded(this.objectView.Root, expandedMap, this.NodeIdFuncCoreObject);

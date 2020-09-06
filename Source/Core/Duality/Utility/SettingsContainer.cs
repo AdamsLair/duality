@@ -9,6 +9,10 @@ namespace Duality
 	/// <typeparam name="TSettings"></typeparam>
 	public class SettingsContainer<TSettings> : ISettingsContainer where TSettings : class, new()
 	{
+		private Func<TSettings> loadDelegate = null;
+		private Action<TSettings> saveDelegate = null;
+
+
 		/// <summary>
 		/// The path of the file where the settings are loaded from and saved persistently.
 		/// </summary>
@@ -40,13 +44,32 @@ namespace Duality
 		{
 			this.Path = path;
 		}
+		/// <summary>
+		/// Creates a new settings container with specialized load and save routines.
+		/// </summary>
+		/// <param name="path"></param>
+		/// <param name="loadDelegate"></param>
+		/// <param name="saveDelegate"></param>
+		public SettingsContainer(string path, Func<TSettings> loadDelegate, Action<TSettings> saveDelegate)
+		{
+			this.Path = path;
+			this.loadDelegate = loadDelegate;
+			this.saveDelegate = saveDelegate;
+		}
 
 		/// <summary>
 		/// Loads the data of <typeparamref name="TSettings"/> from file.
 		/// </summary>
 		public void Load()
 		{
-			this.Instance = Serializer.TryReadObject<TSettings>(this.Path, typeof(XmlSerializer)) ?? new TSettings();
+			if (this.loadDelegate != null)
+			{
+				this.Instance = this.loadDelegate() ?? new TSettings();
+			}
+			else
+			{
+				this.Instance = Serializer.TryReadObject<TSettings>(this.Path, typeof(XmlSerializer)) ?? new TSettings();
+			}
 			this.Applying?.Invoke(this, EventArgs.Empty);
 		}
 		/// <summary>
@@ -55,7 +78,14 @@ namespace Duality
 		public void Save()
 		{
 			this.Saving?.Invoke(this, EventArgs.Empty);
-			Serializer.WriteObject(this.Instance, this.Path, typeof(XmlSerializer));
+			if (this.saveDelegate != null)
+			{
+				this.saveDelegate(this.Instance);
+			}
+			else
+			{
+				Serializer.WriteObject(this.Instance, this.Path, typeof(XmlSerializer));
+			}
 		}
 		/// <summary>
 		/// Ensures that any modifications to the settings <see cref="Instance"/> are applied to 
