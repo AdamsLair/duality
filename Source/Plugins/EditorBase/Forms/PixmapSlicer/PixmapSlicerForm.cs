@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using Duality.Drawing;
+
 using Duality.Editor.Controls.ToolStrip;
-using Duality.Editor.Plugins.Base.Forms.PixmapSlicer;
 using Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Resources;
@@ -17,7 +14,14 @@ namespace Duality.Editor.Plugins.Base.Forms
 	{
 		private Pixmap targetPixmap = null;
 		private IPixmapSlicerState state = null;
+		private PixmapSlicerSettings userSettings = new PixmapSlicerSettings();
 
+
+		public PixmapSlicerSettings UserSettings
+		{
+			get { return this.userSettings; }
+			set { this.userSettings = value ?? new PixmapSlicerSettings(); }
+		}
 		/// <summary>
 		/// The <see cref="Pixmap"/> currently being sliced
 		/// </summary>
@@ -37,9 +41,10 @@ namespace Duality.Editor.Plugins.Base.Forms
 			}
 		}
 
+
 		public PixmapSlicerForm()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 
 			this.stateControlToolStrip.Renderer = new DualitorToolStripProfessionalRenderer();
 			this.stateControlToolStrip.Enabled = false;
@@ -60,21 +65,10 @@ namespace Duality.Editor.Plugins.Base.Forms
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 		}
 
-		internal void SaveUserData(XElement node)
+		public void ApplyUserSettings()
 		{
-			node.SetElementValue("DarkBackground", this.buttonBrightness.Checked);
-			node.SetElementValue("DisplayIndices", this.pixmapView.NumberingStyle);
-		}
-		internal void LoadUserData(XElement node)
-		{
-			bool tryParseBool;
-			PixmapNumberingStyle tryParseNumeringStyle;
-
-			if (node.GetElementValue("DarkBackground", out tryParseBool))
-				this.buttonBrightness.Checked = tryParseBool;
-			if (node.GetElementValue("DisplayIndices", out tryParseNumeringStyle))
-				this.pixmapView.NumberingStyle = tryParseNumeringStyle;
-
+			this.buttonBrightness.Checked = this.userSettings.DarkBackground;
+			this.pixmapView.NumberingStyle = this.userSettings.DisplayIndices;
 			this.UpdateIndicesButton();
 		}
 
@@ -209,7 +203,9 @@ namespace Duality.Editor.Plugins.Base.Forms
 
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
-			this.pixmapView.DarkMode = this.buttonBrightness.Checked;
+			bool darkMode = this.buttonBrightness.Checked;
+			this.pixmapView.DarkMode = darkMode;
+			this.userSettings.DarkBackground = darkMode;
 		}
 		private void buttonZoomIn_Click(object sender, EventArgs e)
 		{
@@ -232,6 +228,7 @@ namespace Duality.Editor.Plugins.Base.Forms
 				((int)PixmapNumberingStyle.All + 1));
 
 			this.pixmapView.NumberingStyle = newStyle;
+			this.userSettings.DisplayIndices = newStyle;
 			this.UpdateIndicesButton();
 		}
 	}
