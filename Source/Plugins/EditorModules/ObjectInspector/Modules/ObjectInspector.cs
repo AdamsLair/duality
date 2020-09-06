@@ -23,14 +23,18 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		private ObjectSelection.Category displayCat          = ObjectSelection.Category.None;
 
 		private ExpandState              gridExpandState     = new ExpandState();
-		private ObjectInspectorState userSettings;
+		private ObjectInspectorSettings  userSettings        = new ObjectInspectorSettings();
 		
-		public ObjectInspectorState UserSettings
+
+		public int Id
+		{
+			get { return this.runtimeId; }
+		}
+		public ObjectInspectorSettings UserSettings
 		{
 			get { return this.userSettings; }
 			set { this.userSettings = value; }
 		}
-
 		public bool LockedSelection
 		{
 			get { return this.buttonLock.Checked; }
@@ -54,8 +58,6 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		public ObjectInspector(int runtimeId)
 		{
 			this.InitializeComponent();
-			this.userSettings = new ObjectInspectorState();
-			this.buttonLock.CheckedChanged += (sender, args) => this.UserSettings.Locked = this.buttonLock.Checked;
 			this.runtimeId = runtimeId;
 			this.toolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
@@ -73,7 +75,6 @@ namespace Duality.Editor.Plugins.ObjectInspector
 				this.gridExpandState.LoadFromXml(this.userSettings.ExpandState);
 			}
 		}
-
 		internal void SaveGridExpandState()
 		{
 			// gridExpandState is normally only updated when the current selection changes.
@@ -107,6 +108,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		{
 			base.OnShown(e);
 
+			this.ApplyUserSettings();
 			this.UpdateButtons();
 
 			// Add the global selection event once
@@ -187,7 +189,6 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			this.gridExpandState.ApplyTo(this.propertyGrid.MainEditor);
 			this.buttonClone.Enabled = this.propertyGrid.Selection.Any();
 		}
-
 		private void UpdateDisplayedValues(bool forceFullUpdate)
 		{
 			if (forceFullUpdate)
@@ -379,6 +380,10 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		{
 			this.UserSettings.SortByName = this.buttonSortByName.Checked;
 			this.propertyGrid.SortEditorsByName = this.buttonSortByName.Checked;
+		}
+		private void buttonLock_CheckedChanged(object sender, EventArgs e)
+		{
+			this.UserSettings.Locked = this.buttonLock.Checked;
 		}
 	}
 }

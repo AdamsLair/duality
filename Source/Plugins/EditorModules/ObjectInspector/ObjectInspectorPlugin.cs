@@ -15,16 +15,17 @@ namespace Duality.Editor.Plugins.ObjectInspector
 {
 	public class ObjectInspectorPlugin : EditorPlugin
 	{
-		private	static	ObjectInspectorPlugin	instance	= null;
+		private static ObjectInspectorPlugin instance = null;
 		internal static ObjectInspectorPlugin Instance
 		{
 			get { return instance; }
 		}
 
 
-		private	List<ObjectInspector>	objViews		= new List<ObjectInspector>();
-		private	bool					isLoading		= false;
-		private ObjectInspectorSettings userSettings;
+		private List<ObjectInspector>   objViews     = new List<ObjectInspector>();
+		private bool                    isLoading    = false;
+		private ObjectInspectorPluginSettings userSettings = new ObjectInspectorPluginSettings();
+
 
 		public override string Id
 		{
@@ -40,57 +41,12 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		{
 			instance = this;
 		}
-		protected override IDockContent DeserializeDockContent(Type dockContentType)
-		{
-			this.isLoading = true;
-			IDockContent result;
-			if (dockContentType == typeof(ObjectInspector))
-				result = this.RequestObjView();
-			else
-				result = base.DeserializeDockContent(dockContentType);
-			this.isLoading = false;
-			return result;
-		}
-		protected override void SaveUserData(PluginSettings pluginSettings)
-		{
-			foreach (ObjectInspector objectInspector in this.objViews)
-			{
-				objectInspector.SaveGridExpandState();
-			}
-			pluginSettings.Set(this.userSettings);
-		}
 
-		protected override void LoadUserData(PluginSettings pluginSettings)
-		{
-			this.isLoading = true;
-			this.userSettings = pluginSettings.Get<ObjectInspectorSettings>();
-			foreach (ObjectInspectorState inspectorState in this.userSettings.ObjectInspectors)
-			{
-				if (inspectorState.Id < 0 || inspectorState.Id >= this.objViews.Count) continue;
-				this.objViews[inspectorState.Id].UserSettings = inspectorState;
-				this.objViews[inspectorState.Id].ApplyUserSettings();
-			}
-			this.isLoading = false;
-		}
-		protected override void InitPlugin(MainForm main)
-		{
-			base.InitPlugin(main);
-			
-			// Request menu
-			MenuModelItem viewItem = main.MainMenu.RequestItem(GeneralRes.MenuName_View);
-			viewItem.AddItem(new MenuModelItem
-			{
-				Name = ObjectInspectorRes.MenuItemName_ObjView,
-				Icon = ObjectInspectorResCache.IconObjView.ToBitmap(),
-				ActionHandler = this.menuItemObjView_Click
-			});
-		}
-		
 		public ObjectInspector RequestObjView(bool dontShow = false)
 		{
 			ObjectInspector objView = new ObjectInspector(this.objViews.Count);
 			this.objViews.Add(objView);
-			objView.FormClosed += delegate(object sender, FormClosedEventArgs e) { this.objViews.Remove(sender as ObjectInspector); };
+			objView.FormClosed += delegate (object sender, FormClosedEventArgs e) { this.objViews.Remove(sender as ObjectInspector); };
 
 			if (!this.isLoading && !dontShow)
 			{
@@ -102,6 +58,54 @@ namespace Duality.Editor.Plugins.ObjectInspector
 				}
 			}
 			return objView;
+		}
+
+		protected override IDockContent DeserializeDockContent(Type dockContentType)
+		{
+			this.isLoading = true;
+			IDockContent result;
+			if (dockContentType == typeof(ObjectInspector))
+				result = this.RequestObjView();
+			else
+				result = base.DeserializeDockContent(dockContentType);
+			this.isLoading = false;
+			return result;
+		}
+		protected override void InitPlugin(MainForm main)
+		{
+			base.InitPlugin(main);
+
+			// Request menu
+			MenuModelItem viewItem = main.MainMenu.RequestItem(GeneralRes.MenuName_View);
+			viewItem.AddItem(new MenuModelItem
+			{
+				Name = ObjectInspectorRes.MenuItemName_ObjView,
+				Icon = ObjectInspectorResCache.IconObjView.ToBitmap(),
+				ActionHandler = this.menuItemObjView_Click
+			});
+		}
+
+		protected override void SaveUserData(PluginSettings pluginSettings)
+		{
+			this.userSettings.InspectorSettingsById.Clear();
+			foreach (ObjectInspector inspector in this.objViews)
+			{
+				inspector.SaveGridExpandState();
+				this.userSettings.InspectorSettingsById[inspector.Id] = inspector.UserSettings;
+			}
+			pluginSettings.Set(this.userSettings);
+		}
+		protected override void LoadUserData(PluginSettings pluginSettings)
+		{
+			this.isLoading = true;
+			this.userSettings = pluginSettings.Get<ObjectInspectorPluginSettings>();
+			foreach (var pair in this.userSettings.InspectorSettingsById)
+			{
+				if (pair.Key < 0 || pair.Key >= this.objViews.Count) continue;
+				this.objViews[pair.Key].UserSettings = pair.Value;
+				this.objViews[pair.Key].ApplyUserSettings();
+			}
+			this.isLoading = false;
 		}
 
 		private void menuItemObjView_Click(object sender, EventArgs e)
