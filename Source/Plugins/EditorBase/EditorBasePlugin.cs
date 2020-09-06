@@ -26,15 +26,17 @@ namespace Duality.Editor.Plugins.Base
 	{
 		private static readonly string ElementNamePixmapSlicer = "PixmapSlicer";
 
-		private PixmapSlicerForm	slicingForm				= null;
-		private EditorBaseSettings	editorBaseSettings	= null;
+		private PixmapSlicerForm         slicingForm        = null;
+		private EditorBasePluginSettings editorBaseSettings = new EditorBasePluginSettings();
 
 		private bool isLoading = false;
+
 
 		public override string Id
 		{
 			get { return "EditorBase"; }
 		}
+
 
 		public PixmapSlicerForm RequestPixmapSlicerForm()
 		{
@@ -46,7 +48,10 @@ namespace Duality.Editor.Plugins.Base
 
 				// If there are cached settings available, apply them to the new editor
 				if (this.editorBaseSettings != null)
-					this.slicingForm.LoadUserData(this.editorBaseSettings);
+				{
+					this.slicingForm.UserSettings = this.editorBaseSettings.PixmapSlicer;
+					this.slicingForm.ApplyUserSettings();
+				}
 
 				if (!this.isLoading)
 				{
@@ -94,20 +99,17 @@ namespace Duality.Editor.Plugins.Base
 		}
 		protected override void SaveUserData(PluginSettings pluginSettings)
 		{
-			if (this.slicingForm != null)
-			{
-				this.editorBaseSettings = pluginSettings.Get<EditorBaseSettings>();
-				this.slicingForm.SaveUserData(this.editorBaseSettings);
-			}
+			pluginSettings.Set(this.editorBaseSettings);
 		}
 		protected override void LoadUserData(PluginSettings pluginSettings)
 		{
 			this.isLoading = true;
 
+			this.editorBaseSettings = pluginSettings.Get<EditorBasePluginSettings>();
 			if (this.slicingForm != null)
 			{
-				this.editorBaseSettings = pluginSettings.Get<EditorBaseSettings>();
-				this.slicingForm.LoadUserData(this.editorBaseSettings);
+				this.slicingForm.UserSettings = this.editorBaseSettings.PixmapSlicer;
+				this.slicingForm.ApplyUserSettings();
 			}
 			
 			this.isLoading = false;
@@ -126,7 +128,9 @@ namespace Duality.Editor.Plugins.Base
 
 		private void slicingForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			this.slicingForm.SaveUserData(this.editorBaseSettings);
+			// Store the slicer forms user settings for when we re-open the form later on, or serialize
+			// while it remains closed.
+			this.editorBaseSettings.PixmapSlicer = this.slicingForm.UserSettings;
 
 			this.slicingForm.FormClosed -= this.slicingForm_FormClosed;
 			this.slicingForm.Dispose();
