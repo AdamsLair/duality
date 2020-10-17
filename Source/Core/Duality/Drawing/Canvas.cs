@@ -395,6 +395,168 @@ namespace Duality.Drawing
 		}
 
 		/// <summary>
+		/// Draws an image.
+		/// </summary>
+		public void DrawImage(ContentRef<Material> material, float x, float y, float z, float w, float h)
+		{
+			this.PushState();
+
+			if (w < 0.0f) { x += w; w = -w; }
+			if (h < 0.0f) { y += h; h = -h; }
+
+			Vector3 pos = new Vector3(x, y, z);
+
+			Vector2 shapeHandle = pos.Xy;
+			float offset = this.State.DepthOffset;
+			ColorRgba shapeColor = material.Res.MainColor;
+			VertexC1P3T2[] vertices = this.RentVertices(4);
+
+			vertices[0].Pos = new Vector3(pos.X, pos.Y, pos.Z);
+			vertices[1].Pos = new Vector3(pos.X + w, pos.Y, pos.Z);
+			vertices[2].Pos = new Vector3(pos.X + w, pos.Y + h, pos.Z);
+			vertices[3].Pos = new Vector3(pos.X, pos.Y + h, pos.Z);
+
+			vertices[0].DepthOffset = offset;
+			vertices[1].DepthOffset = offset;
+			vertices[2].DepthOffset = offset;
+			vertices[3].DepthOffset = offset;
+
+			vertices[0].TexCoord = Vector2.Zero;
+			vertices[1].TexCoord = Vector2.UnitX;
+			vertices[2].TexCoord = Vector2.One;
+			vertices[3].TexCoord = Vector2.UnitY;
+
+			vertices[0].Color = shapeColor;
+			vertices[1].Color = shapeColor;
+			vertices[2].Color = shapeColor;
+			vertices[3].Color = shapeColor;
+
+			this.State.SetMaterial(material);
+			this.State.TransformVertices(vertices, shapeHandle);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, 4);
+
+			this.PopState();
+		}
+
+		/// <summary>
+		/// Draws an image.
+		/// </summary>
+		/// <param name="material"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="w"></param>
+		/// <param name="h"></param>
+		public void DrawImage(ContentRef<Material> material, float x, float y, float w, float h)
+		{
+			this.DrawImage(material, x, y, 0, w, h);
+		}
+
+		/// <summary>
+		/// Draws an image.
+		/// </summary>
+		/// <param name="material"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="z"></param>
+		public void DrawImage(ContentRef<Material> material, float x, float y, float z)
+		{
+			Texture tx = material.Res.MainTexture.Res;
+			this.DrawImage(material, x, y, z, tx.ContentWidth, tx.ContentHeight);
+		}
+
+		/// <summary>
+		/// Draws an image.
+		/// </summary>
+		/// <param name="material"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		public void DrawImage(ContentRef<Material> material, float x, float y)
+		{
+			this.DrawImage(material, x, y, 0);
+		}
+
+		/// <summary>
+		/// Draws an image.
+		/// </summary>
+		public void DrawImage(BatchInfo batch, float x, float y, float z, float w, float h)
+		{
+			this.PushState();
+
+			if (w < 0.0f) { x += w; w = -w; }
+			if (h < 0.0f) { y += h; h = -h; }
+
+			Vector3 pos = new Vector3(x, y, z);
+
+			Vector2 shapeHandle = pos.Xy;
+			float offset = this.State.DepthOffset;
+			ColorRgba shapeColor = batch.MainColor;
+			VertexC1P3T2[] vertices = this.RentVertices(4);
+
+			vertices[0].Pos = new Vector3(pos.X, pos.Y, pos.Z);
+			vertices[1].Pos = new Vector3(pos.X + w, pos.Y, pos.Z);
+			vertices[2].Pos = new Vector3(pos.X + w, pos.Y + h, pos.Z);
+			vertices[3].Pos = new Vector3(pos.X, pos.Y + h, pos.Z);
+
+			vertices[0].DepthOffset = offset;
+			vertices[1].DepthOffset = offset;
+			vertices[2].DepthOffset = offset;
+			vertices[3].DepthOffset = offset;
+
+			vertices[0].TexCoord = Vector2.Zero;
+			vertices[1].TexCoord = Vector2.UnitX;
+			vertices[2].TexCoord = Vector2.One;
+			vertices[3].TexCoord = Vector2.UnitY;
+
+			vertices[0].Color = shapeColor;
+			vertices[1].Color = shapeColor;
+			vertices[2].Color = shapeColor;
+			vertices[3].Color = shapeColor;
+
+			this.State.SetMaterial(batch);
+			this.State.TransformVertices(vertices, shapeHandle);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, 4);
+
+			this.PopState();
+		}
+
+		/// <summary>
+		/// Draws an image.
+		/// </summary>
+		/// <param name="batch"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="w"></param>
+		/// <param name="h"></param>
+		public void DrawImage(BatchInfo batch, float x, float y, float w, float h)
+		{
+			this.DrawImage(batch, x, y, 0, w, h);
+		}
+
+		/// <summary>
+		/// Draws an image.
+		/// </summary>
+		/// <param name="batch"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="z"></param>
+		public void DrawImage(BatchInfo batch, float x, float y, float z)
+		{
+			Texture tx = batch.MainTexture.Res;
+			this.DrawImage(batch, x, y, z, tx.ContentWidth, tx.ContentHeight);
+		}
+
+		/// <summary>
+		/// Draws an image.
+		/// </summary>
+		/// <param name="batch"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		public void DrawImage(BatchInfo batch, float x, float y)
+		{
+			this.DrawImage(batch, x, y, 0);
+		}
+
+		/// <summary>
 		/// Draws a rectangle.
 		/// </summary>
 		public void DrawRect(float x, float y, float z, float w, float h)
