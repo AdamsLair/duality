@@ -397,45 +397,41 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Draws an image.
 		/// </summary>
-		public void DrawImage(ContentRef<Material> material, float x, float y, float z, float w, float h)
+		/// <param name="texture"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="z"></param>
+		/// <param name="w"></param>
+		/// <param name="h"></param>
+		public void DrawImage(ContentRef<Texture> texture, float x, float y, float z, float w, float h)
 		{
-			this.PushState();
+			BatchInfo batch = this.device.RentMaterial();
+			batch.MainTexture = texture;
 
-			if (w < 0.0f) { x += w; w = -w; }
-			if (h < 0.0f) { y += h; h = -h; }
+			this.DrawImage(batch, x, y, z, w, h);
+		}
 
-			Vector3 pos = new Vector3(x, y, z);
+		/// <summary>
+		/// Draws an image.
+		/// </summary>
+		/// <param name="texture"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		public void DrawImage(ContentRef<Texture> texture, float x, float y)
+		{
+			this.DrawImage(texture, x, y, 0);
+		}
 
-			Vector2 shapeHandle = pos.Xy;
-			float offset = this.State.DepthOffset;
-			ColorRgba shapeColor = material.Res.MainColor;
-			VertexC1P3T2[] vertices = this.RentVertices(4);
-
-			vertices[0].Pos = new Vector3(pos.X, pos.Y, pos.Z);
-			vertices[1].Pos = new Vector3(pos.X + w, pos.Y, pos.Z);
-			vertices[2].Pos = new Vector3(pos.X + w, pos.Y + h, pos.Z);
-			vertices[3].Pos = new Vector3(pos.X, pos.Y + h, pos.Z);
-
-			vertices[0].DepthOffset = offset;
-			vertices[1].DepthOffset = offset;
-			vertices[2].DepthOffset = offset;
-			vertices[3].DepthOffset = offset;
-
-			vertices[0].TexCoord = Vector2.Zero;
-			vertices[1].TexCoord = Vector2.UnitX;
-			vertices[2].TexCoord = Vector2.One;
-			vertices[3].TexCoord = Vector2.UnitY;
-
-			vertices[0].Color = shapeColor;
-			vertices[1].Color = shapeColor;
-			vertices[2].Color = shapeColor;
-			vertices[3].Color = shapeColor;
-
-			this.State.SetMaterial(material);
-			this.State.TransformVertices(vertices, shapeHandle);
-			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, 4);
-
-			this.PopState();
+		/// <summary>
+		/// Draws an image.
+		/// </summary>
+		/// <param name="texture"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="z"></param>
+		public void DrawImage(ContentRef<Texture> texture, float x, float y, float z)
+		{
+			this.DrawImage(texture, x, y, z, texture.Res.ContentWidth, texture.Res.ContentHeight);
 		}
 
 		/// <summary>
@@ -448,7 +444,7 @@ namespace Duality.Drawing
 		/// <param name="h"></param>
 		public void DrawImage(ContentRef<Material> material, float x, float y, float w, float h)
 		{
-			this.DrawImage(material, x, y, 0, w, h);
+			this.DrawImage(material.Res.Info, x, y, 0, w, h);
 		}
 
 		/// <summary>
@@ -460,8 +456,7 @@ namespace Duality.Drawing
 		/// <param name="z"></param>
 		public void DrawImage(ContentRef<Material> material, float x, float y, float z)
 		{
-			Texture tx = material.Res.MainTexture.Res;
-			this.DrawImage(material, x, y, z, tx.ContentWidth, tx.ContentHeight);
+			this.DrawImage(material.Res.Info, x, y, z);
 		}
 
 		/// <summary>
@@ -472,7 +467,7 @@ namespace Duality.Drawing
 		/// <param name="y"></param>
 		public void DrawImage(ContentRef<Material> material, float x, float y)
 		{
-			this.DrawImage(material, x, y, 0);
+			this.DrawImage(material.Res.Info, x, y);
 		}
 
 		/// <summary>
@@ -489,8 +484,12 @@ namespace Duality.Drawing
 
 			Vector2 shapeHandle = pos.Xy;
 			float offset = this.State.DepthOffset;
-			ColorRgba shapeColor = batch.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint;
 			VertexC1P3T2[] vertices = this.RentVertices(4);
+
+			Vector2 uvRatio = Vector2.One;
+			if (batch.MainTexture.IsAvailable)
+				uvRatio = batch.MainTexture.Res.UVRatio;
 
 			vertices[0].Pos = new Vector3(pos.X, pos.Y, pos.Z);
 			vertices[1].Pos = new Vector3(pos.X + w, pos.Y, pos.Z);
@@ -503,9 +502,9 @@ namespace Duality.Drawing
 			vertices[3].DepthOffset = offset;
 
 			vertices[0].TexCoord = Vector2.Zero;
-			vertices[1].TexCoord = Vector2.UnitX;
-			vertices[2].TexCoord = Vector2.One;
-			vertices[3].TexCoord = Vector2.UnitY;
+			vertices[1].TexCoord = Vector2.UnitX * uvRatio;
+			vertices[2].TexCoord = Vector2.One * uvRatio;
+			vertices[3].TexCoord = Vector2.UnitY * uvRatio;
 
 			vertices[0].Color = shapeColor;
 			vertices[1].Color = shapeColor;
@@ -514,7 +513,7 @@ namespace Duality.Drawing
 
 			this.State.SetMaterial(batch);
 			this.State.TransformVertices(vertices, shapeHandle);
-			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, 4);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.Quads, vertices, 4);
 
 			this.PopState();
 		}
