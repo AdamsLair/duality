@@ -395,92 +395,22 @@ namespace Duality.Drawing
 		}
 
 		/// <summary>
-		/// Draws an image.
+		/// Draws the specified texture in its original pixel size at the specified position.
+		/// 
+		/// This is a shortcut for using <see cref="CanvasState.SetMaterial"/> with a temporary material
+		/// using the specified texture and specifying the appropriate size values in <see cref="FillRect"/>.
 		/// </summary>
 		/// <param name="texture"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="z"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
-		public void DrawImage(ContentRef<Texture> texture, float x, float y, float z, float w, float h)
+		public void DrawImage(ContentRef<Texture> texture, float x, float y, float z = 0.0f)
 		{
-			BatchInfo batch = this.device.RentMaterial();
-			batch.MainTexture = texture;
-
-			this.DrawImage(batch, x, y, z, w, h);
-		}
-
-		/// <summary>
-		/// Draws an image.
-		/// </summary>
-		/// <param name="texture"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		public void DrawImage(ContentRef<Texture> texture, float x, float y)
-		{
-			this.DrawImage(texture, x, y, 0);
-		}
-
-		/// <summary>
-		/// Draws an image.
-		/// </summary>
-		/// <param name="texture"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		public void DrawImage(ContentRef<Texture> texture, float x, float y, float z)
-		{
-			this.DrawImage(texture, x, y, z, texture.Res.ContentWidth, texture.Res.ContentHeight);
-		}
-
-		/// <summary>
-		/// Draws an image.
-		/// </summary>
-		/// <param name="material"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
-		public void DrawImage(ContentRef<Material> material, float x, float y, float w, float h)
-		{
-			this.DrawImage(material.Res.Info, x, y, 0, w, h);
-		}
-
-		/// <summary>
-		/// Draws an image.
-		/// </summary>
-		/// <param name="material"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		public void DrawImage(ContentRef<Material> material, float x, float y, float z)
-		{
-			this.DrawImage(material.Res.Info, x, y, z);
-		}
-
-		/// <summary>
-		/// Draws an image.
-		/// </summary>
-		/// <param name="material"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		public void DrawImage(ContentRef<Material> material, float x, float y)
-		{
-			this.DrawImage(material.Res.Info, x, y);
-		}
-
-		/// <summary>
-		/// Draws an image.
-		/// </summary>
-		public void DrawImage(BatchInfo batch, float x, float y, float z, float w, float h)
-		{
-			this.PushState();
-
-			if (w < 0.0f) { x += w; w = -w; }
-			if (h < 0.0f) { y += h; h = -h; }
+			BatchInfo tempMaterial = this.device.RentMaterial(this.State.MaterialDirect);
+			tempMaterial.MainTexture = texture;
 
 			Vector3 pos = new Vector3(x, y, z);
+			Vector2 size = tempMaterial.MainTexture.Res.ContentSize;
 
 			Vector2 shapeHandle = pos.Xy;
 			float offset = this.State.DepthOffset;
@@ -488,13 +418,13 @@ namespace Duality.Drawing
 			VertexC1P3T2[] vertices = this.RentVertices(4);
 
 			Vector2 uvRatio = Vector2.One;
-			if (batch.MainTexture.IsAvailable)
-				uvRatio = batch.MainTexture.Res.UVRatio;
+			if (tempMaterial.MainTexture.IsAvailable)
+				uvRatio = tempMaterial.MainTexture.Res.UVRatio;
 
 			vertices[0].Pos = new Vector3(pos.X, pos.Y, pos.Z);
-			vertices[1].Pos = new Vector3(pos.X + w, pos.Y, pos.Z);
-			vertices[2].Pos = new Vector3(pos.X + w, pos.Y + h, pos.Z);
-			vertices[3].Pos = new Vector3(pos.X, pos.Y + h, pos.Z);
+			vertices[1].Pos = new Vector3(pos.X + size.X, pos.Y, pos.Z);
+			vertices[2].Pos = new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z);
+			vertices[3].Pos = new Vector3(pos.X, pos.Y + size.Y, pos.Z);
 
 			vertices[0].DepthOffset = offset;
 			vertices[1].DepthOffset = offset;
@@ -511,48 +441,8 @@ namespace Duality.Drawing
 			vertices[2].Color = shapeColor;
 			vertices[3].Color = shapeColor;
 
-			this.State.SetMaterial(batch);
 			this.State.TransformVertices(vertices, shapeHandle);
-			this.device.AddVertices(this.State.MaterialDirect, VertexMode.Quads, vertices, 4);
-
-			this.PopState();
-		}
-
-		/// <summary>
-		/// Draws an image.
-		/// </summary>
-		/// <param name="batch"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
-		public void DrawImage(BatchInfo batch, float x, float y, float w, float h)
-		{
-			this.DrawImage(batch, x, y, 0, w, h);
-		}
-
-		/// <summary>
-		/// Draws an image.
-		/// </summary>
-		/// <param name="batch"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		public void DrawImage(BatchInfo batch, float x, float y, float z)
-		{
-			Texture tx = batch.MainTexture.Res;
-			this.DrawImage(batch, x, y, z, tx.ContentWidth, tx.ContentHeight);
-		}
-
-		/// <summary>
-		/// Draws an image.
-		/// </summary>
-		/// <param name="batch"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		public void DrawImage(BatchInfo batch, float x, float y)
-		{
-			this.DrawImage(batch, x, y, 0);
+			this.device.AddVertices(tempMaterial, VertexMode.Quads, vertices, 4);
 		}
 
 		/// <summary>

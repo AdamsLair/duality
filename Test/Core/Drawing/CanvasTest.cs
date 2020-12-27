@@ -103,6 +103,34 @@ namespace Duality.Tests.Drawing
 				c.PopState();
 			});
 		}
+		[Test] public void DrawImage()
+		{
+			this.TestImagesEqual(TestRes.CanvasTestDrawImage, c => 
+			{
+				// Background
+				c.PushState();
+				c.State.ColorTint = new ColorRgba(128, 192, 255);
+				c.State.DepthOffset += 100.0f;
+				c.FillRect(0, 0, c.Width, c.Height);
+				c.PopState();
+
+				// Draw a few test images
+				c.State.SetMaterial(DrawTechnique.Alpha);
+				c.DrawImage(Texture.Checkerboard, 10, 10);
+				c.DrawImage(Texture.DualityLogoMedium, 10, 300);
+
+				// Draw it with color modifications
+				c.State.ColorTint = ColorRgba.Red;
+				c.DrawImage(Texture.DualityLogoMedium, 300, 10);
+
+				// Draw it with transformed vertices
+				c.State.ColorTint = ColorRgba.White;
+				c.State.TransformHandle = new Vector2(5, 5);
+				c.State.TransformScale = new Vector2(1.5f, 0.75f);
+				c.State.TransformAngle = MathF.RadAngle30;
+				c.DrawImage(Texture.DualityLogoMedium, 300, 150);
+			});
+		}
 		
 		private void DrawTestImageRow(Canvas c, int baseX, int baseY)
 		{
