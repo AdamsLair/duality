@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Duality;
+using Duality.Launcher;
 using Duality.Backend;
 using Duality.Resources;
 
@@ -10,13 +11,13 @@ namespace Duality.VisualStudio
 	public static class DualityDebuggingTester 
 	{
 		[STAThread]
-		public static void Main()
+		public static void Main(string[] args)
 		{
 			DualityApp.Init(
 				DualityApp.ExecutionEnvironment.Launcher, 
 				DualityApp.ExecutionContext.Game, 
 				new DefaultAssemblyLoader(),
-				null);
+				new LauncherArgs(args));
 			
 			WindowOptions options = new WindowOptions
 			{
