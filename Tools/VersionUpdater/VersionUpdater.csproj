@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
 		<LangVersion>7.3</LangVersion>
-		<OutputPath>$(RootFolder)..\Build\Scripts\bin\</OutputPath>
+		<OutputPath>$(RootFolder)Build\Scripts\bin\</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
