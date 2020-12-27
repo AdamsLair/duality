@@ -395,6 +395,57 @@ namespace Duality.Drawing
 		}
 
 		/// <summary>
+		/// Draws the specified texture in its original pixel size at the specified position.
+		/// 
+		/// This is a shortcut for using <see cref="CanvasState.SetMaterial"/> with a temporary material
+		/// using the specified texture and specifying the appropriate size values in <see cref="FillRect"/>.
+		/// </summary>
+		/// <param name="texture"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="z"></param>
+		public void DrawImage(ContentRef<Texture> texture, float x, float y, float z = 0.0f)
+		{
+			BatchInfo tempMaterial = this.device.RentMaterial(this.State.MaterialDirect);
+			tempMaterial.MainTexture = texture;
+
+			Vector3 pos = new Vector3(x, y, z);
+			Vector2 size = tempMaterial.MainTexture.Res.ContentSize;
+
+			Vector2 shapeHandle = pos.Xy;
+			float offset = this.State.DepthOffset;
+			ColorRgba shapeColor = this.State.ColorTint;
+			VertexC1P3T2[] vertices = this.RentVertices(4);
+
+			Vector2 uvRatio = Vector2.One;
+			if (tempMaterial.MainTexture.IsAvailable)
+				uvRatio = tempMaterial.MainTexture.Res.UVRatio;
+
+			vertices[0].Pos = new Vector3(pos.X, pos.Y, pos.Z);
+			vertices[1].Pos = new Vector3(pos.X + size.X, pos.Y, pos.Z);
+			vertices[2].Pos = new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z);
+			vertices[3].Pos = new Vector3(pos.X, pos.Y + size.Y, pos.Z);
+
+			vertices[0].DepthOffset = offset;
+			vertices[1].DepthOffset = offset;
+			vertices[2].DepthOffset = offset;
+			vertices[3].DepthOffset = offset;
+
+			vertices[0].TexCoord = Vector2.Zero;
+			vertices[1].TexCoord = Vector2.UnitX * uvRatio;
+			vertices[2].TexCoord = Vector2.One * uvRatio;
+			vertices[3].TexCoord = Vector2.UnitY * uvRatio;
+
+			vertices[0].Color = shapeColor;
+			vertices[1].Color = shapeColor;
+			vertices[2].Color = shapeColor;
+			vertices[3].Color = shapeColor;
+
+			this.State.TransformVertices(vertices, shapeHandle);
+			this.device.AddVertices(tempMaterial, VertexMode.Quads, vertices, 4);
+		}
+
+		/// <summary>
 		/// Draws a rectangle.
 		/// </summary>
 		public void DrawRect(float x, float y, float z, float w, float h)

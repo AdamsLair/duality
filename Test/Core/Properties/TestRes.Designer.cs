@@ -93,6 +93,16 @@ namespace Duality.Tests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CanvasTestDrawImage {
+            get {
+                object obj = ResourceManager.GetObject("CanvasTestDrawImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap CanvasTestNothing {
             get {
                 object obj = ResourceManager.GetObject("CanvasTestNothing", resourceCulture);
