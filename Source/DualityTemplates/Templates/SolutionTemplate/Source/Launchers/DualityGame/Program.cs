@@ -8,11 +8,12 @@ namespace DualityGame
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			var launcherArgs = new LauncherArgs(args);
+			LauncherArgs launcherArgs = new LauncherArgs(args);
 
-			if (launcherArgs.IsDebugging|| launcherArgs.IsRunFromEditor) ShowConsole();
+			if (launcherArgs.IsDebugging|| launcherArgs.IsRunFromEditor)
+				ShowConsole();
 
-			using (var launcher = new DualityLauncher(launcherArgs))
+			using (DualityLauncher launcher = new DualityLauncher(launcherArgs))
 			{
 				launcher.Run();
 			}

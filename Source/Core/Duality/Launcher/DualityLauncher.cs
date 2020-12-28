@@ -33,7 +33,7 @@ namespace Duality.Launcher
 			System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
 
 			// Set up console logging
-			this.AddGlobalOutput(new ConsoleLogOutput());
+			this.AddLogOutput(new ConsoleLogOutput());
 
 			// Set up file logging
 			try
@@ -42,7 +42,7 @@ namespace Duality.Launcher
 				logfileWriter.AutoFlush = true;
 				this.disposables.Push(logfileWriter);
 
-				this.AddGlobalOutput(new TextWriterLogOutput(logfileWriter));
+				this.AddLogOutput(new TextWriterLogOutput(logfileWriter));
 			}
 			catch (Exception e)
 			{
@@ -75,39 +75,6 @@ namespace Duality.Launcher
 			};
 			this.window = DualityApp.OpenWindow(options);
 		}
-
-		/// <summary>
-		/// Runs duality. This will block till the game ends.
-		/// Don't call this if you want full control of the update loop (such as in unit tests).
-		/// </summary>
-		public void Run()
-		{
-			// Load the starting Scene
-			Scene.SwitchTo(DualityApp.AppData.Instance.StartScene);
-
-			// Enter the game loop
-			this.window.Run();
-		}
-
-		/// <summary>
-		/// Adds a global log output and also makes sure its removed when <see cref="Dispose"/> is called
-		/// </summary>
-		/// <param name="logOutput"></param>
-		public void AddGlobalOutput(ILogOutput logOutput)
-		{
-			this.logOutputs.Add(logOutput);
-			Logs.AddGlobalOutput(logOutput);
-		}
-
-		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			try
-			{
-				Logs.Core.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
-			}
-			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
-		}
-
 		public void Dispose()
 		{
 			this.window.Dispose();
@@ -128,6 +95,38 @@ namespace Duality.Launcher
 				disposable.Dispose();
 			}
 			this.disposables.Clear();
+		}
+
+		/// <summary>
+		/// Runs duality. This will block till the game ends.
+		/// Don't call this if you want full control of the update loop (such as in unit tests).
+		/// </summary>
+		public void Run()
+		{
+			// Load the starting Scene
+			Scene.SwitchTo(DualityApp.AppData.Instance.StartScene);
+
+			// Enter the game loop
+			this.window.Run();
+		}
+
+		/// <summary>
+		/// Adds a global log output and also makes sure its removed when <see cref="Dispose"/> is called
+		/// </summary>
+		/// <param name="logOutput"></param>
+		private void AddLogOutput(ILogOutput logOutput)
+		{
+			this.logOutputs.Add(logOutput);
+			Logs.AddGlobalOutput(logOutput);
+		}
+
+		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			try
+			{
+				Logs.Core.WriteError(LogFormat.Exception(e.ExceptionObject as Exception));
+			}
+			catch (Exception) { /* Ensure we're not causing any further exception by logging... */ }
 		}
 	}
 }
