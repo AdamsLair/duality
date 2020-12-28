@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+
 using Duality.Backend;
+using Duality.Resources;
+
 
 namespace Duality.Launcher
 {
@@ -79,6 +82,10 @@ namespace Duality.Launcher
 		/// </summary>
 		public void Run()
 		{
+			// Load the starting Scene
+			Scene.SwitchTo(DualityApp.AppData.Instance.StartScene);
+
+			// Enter the game loop
 			this.window.Run();
 		}
 
