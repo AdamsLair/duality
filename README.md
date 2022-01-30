@@ -1,13 +1,13 @@
 Duality - A 2D GameDev Framework
 =======
 
-Duality is a plugin based 2D game development framework based on C# and OpenTK. To get a quick overview, please visit the [project page](https://www.duality2d.net). For documentation, take a look at our [docs page](https://docs.duality2d.net).
+Duality is a plugin based 2D game development framework based on C# and OpenTK. To get a quick overview, please visit the [project page](https://adamslair.github.io/duality). For documentation, take a look at our [docs page](https://adamslair.github.io/duality-docs).
 
-If you have questions or just want to say Hi, feel free to check out the [discussions](https://forum.duality2d.net) area, or join us in the [chat](https://chat.duality2d.net). Also, feedback is always welcome! Bugs and feature requests that do not require further discussion, however, should be filed in the issue tracking system, directly here on github.
+If you have questions or just want to say Hi, feel free to check out the [discussions](https://github.com/AdamsLair/duality/discussions) area, or join us in the [chat](https://discord.com/invite/ZgnhPzr). Also, feedback is always welcome! Bugs and feature requests that do not require further discussion, however, should be filed in the issue tracking system, directly here on github.
 
 ### Latest Binary Release
 
-You can find the latest binary release [here](https://get.duality2d.net/). If you already have a Duality project, you can update your Duality version or any of its plugins in the [Package Manager](https://docs.duality2d.net/pages/v3/Package-Management.html).
+You can find the latest binary release [here](https://github.com/AdamsLair/duality/releases/download/v3.0/Duality.zip). If you already have a Duality project, you can update your Duality version or any of its plugins in the [Package Manager](https://adamslair.github.io/duality-docs/pages/v3/Package-Management.html).
 
 ### Build status: 
 | [Branch](https://github.com/AdamsLair/duality/wiki/Branch-Descriptions)  | Status |
@@ -26,7 +26,7 @@ All framework build results will be located in the shared `Build/Output` folder.
 
 ### Contributing
 
-We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://docs.duality2d.net/pages/v3/how-to-contribute.html).
+We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://adamslair.github.io/duality-docs/pages/v3/how-to-contribute.html).
 
 ----------
 

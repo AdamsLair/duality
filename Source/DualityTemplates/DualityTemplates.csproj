@@ -14,7 +14,7 @@
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<ContentTargetFolders>content</ContentTargetFolders>
 		<Version>4.0.0-alpha3</Version>
-		<PackageProjectUrl>https://www.duality2d.net/</PackageProjectUrl>
+		<PackageProjectUrl>https://adamslair.github.io/duality</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/AdamsLair/duality</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<DebugSymbols>false</DebugSymbols>
