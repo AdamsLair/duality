@@ -54,13 +54,15 @@ namespace Duality.Editor.Plugins.ProjectView
 				ActionHandler = this.menuItemProjectView_Click
 			});
 		}
-		protected override void LoadUserData(XElement node)
+		protected override void LoadUserData(PluginSettings settings)
 		{
-			this.projectView.LoadUserData(node);
+			ProjectViewSettings projectViewSettings = settings.Get<ProjectViewSettings>();
+			this.projectView.LoadUserData(projectViewSettings);
 		}
-		protected override void SaveUserData(XElement node)
+		protected override void SaveUserData(PluginSettings settings)
 		{
-			this.projectView.SaveUserData(node);
+			ProjectViewSettings projectViewSettings = settings.Get<ProjectViewSettings>();
+			this.projectView.SaveUserData(projectViewSettings);
 		}
 		public ProjectFolderView RequestProjectView()
 		{
