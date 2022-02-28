@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Linq;
 
 using WeifenLuo.WinFormsUI.Docking;
 
 using AdamsLair.WinForms.ItemModels;
 
-using Duality;
-using Duality.IO;
 using Duality.Resources;
 using Duality.Plugins.Tilemaps;
 
-using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Properties;
 using Duality.Editor.Plugins.Tilemaps.Properties;
@@ -39,10 +34,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private TilesetEditor            tilesetEditor            = null;
 		private TilemapToolSourcePalette tilePalette              = null;
 		private int                      pendingLocalTilePalettes = 0;
-		private XElement                 tilePaletteSettings      = null;
-		private XElement                 tilesetEditorSettings    = null;
 		private ITileDrawSource          tileDrawingSource        = EmptyTileDrawingSource;
 		private HashSet<ContentRef<Tileset>> recompileOnChange    = new HashSet<ContentRef<Tileset>>();
+		private TilemapsSettings userSettings;
 
 		/// <summary>
 		/// An event that is fired when the <see cref="TileDrawingSource"/> is assigned a new value.
@@ -111,53 +105,25 @@ namespace Duality.Editor.Plugins.Tilemaps
 			FileEventManager.BeginGlobalRename += this.FileEventManager_BeginGlobalRename;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 		}
-		protected override void SaveUserData(XElement node)
+		protected override void SaveUserData(PluginSettings pluginSettings)
 		{
-			// Save editor settings to local cache node
-			if (this.tilePalette != null)
-			{
-				this.tilePaletteSettings = new XElement(ElementNameTilePalette);
-				this.tilePalette.SaveUserData(this.tilePaletteSettings);
-			}
-			if (this.tilesetEditor != null)
-			{
-				this.tilesetEditorSettings = new XElement(ElementNameTilesetEditor);
-				this.tilesetEditor.SaveUserData(this.tilesetEditorSettings);
-			}
-
-			// Save settings from the local cache node persistently.
-			if (this.tilePaletteSettings != null && !this.tilePaletteSettings.IsEmpty)
-				node.Add(new XElement(this.tilePaletteSettings));
-			if (this.tilesetEditorSettings != null && !this.tilesetEditorSettings.IsEmpty)
-				node.Add(new XElement(this.tilesetEditorSettings));
+			pluginSettings.Set(this.userSettings);
 		}
-		protected override void LoadUserData(XElement node)
+		protected override void LoadUserData(PluginSettings pluginSettings)
 		{
 			this.isLoading = true;
-
-			// Retrieve settings from persistent editor data and put them into the local cache node
-			foreach (XElement tilePaletteElem in node.Elements(ElementNameTilePalette))
-			{
-				int i = tilePaletteElem.GetAttributeValue("id", 0);
-				if (i < 0 || i >= 1) continue;
-
-				this.tilePaletteSettings = new XElement(tilePaletteElem);
-				break;
-			}
-			foreach (XElement tilesetEditorElem in node.Elements(ElementNameTilesetEditor))
-			{
-				int i = tilesetEditorElem.GetAttributeValue("id", 0);
-				if (i < 0 || i >= 1) continue;
-
-				this.tilesetEditorSettings = new XElement(tilesetEditorElem);
-				break;
-			}
+			this.userSettings = pluginSettings.Get<TilemapsSettings>();
 
 			// If we have an active matching editors, apply the settings directly
-			if (this.tilePalette != null && this.tilePaletteSettings != null)
-				this.tilePalette.LoadUserData(this.tilePaletteSettings);
-			if (this.tilesetEditor != null && this.tilesetEditorSettings != null)
-				this.tilesetEditor.LoadUserData(this.tilesetEditorSettings);
+			if (this.tilePalette != null)
+			{
+				this.tilePalette.ApplyUserSettings();
+			}
+
+			if (this.tilesetEditor != null)
+			{
+				this.tilesetEditor.ApplyUserSettings();
+			}
 
 			this.isLoading = false;
 		}
@@ -193,12 +159,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Create a new tileset editor, if no is available right now
 			if (this.tilesetEditor == null || this.tilesetEditor.IsDisposed)
 			{
-				this.tilesetEditor = new TilesetEditor();
+				this.tilesetEditor = new TilesetEditor(this.userSettings.TilesetEditorSettings);
 				this.tilesetEditor.FormClosed += this.tilesetEditor_FormClosed;
-			
-				// If there are cached settings available, apply them to the new editor
-				if (this.tilePaletteSettings != null)
-					this.tilesetEditor.LoadUserData(this.tilePaletteSettings);
+
+				this.tilesetEditor.ApplyUserSettings();
 			}
 
 			// If we're not creating it as part of the loading procedure, add it to the main docking layout directly
@@ -214,13 +178,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Create a new tile palette, if none is available right now
 			if (this.tilePalette == null || this.tilePalette.IsDisposed)
 			{
-				this.tilePalette = new TilemapToolSourcePalette();
+				this.tilePalette = new TilemapToolSourcePalette(this.userSettings.TilemapToolSourcePaletteSettings);
 				this.tilePalette.DockStateChanged += this.tilePalette_DockStateChanged;
 				this.tilePalette.HideOnClose = true;
-			
-				// If there are cached settings available, apply them to the new palette
-				if (this.tilePaletteSettings != null)
-					this.tilePalette.LoadUserData(this.tilePaletteSettings);
+
+				this.tilePalette.ApplyUserSettings();
 			}
 
 			// If we're not creating it as part of the loading procedure, add it to the main docking layout directly
@@ -271,9 +233,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void tilesetEditor_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			this.tilesetEditorSettings = new XElement(ElementNameTilesetEditor);
-			this.tilesetEditor.SaveUserData(this.tilesetEditorSettings);
-
 			this.tilesetEditor.FormClosed -= this.tilesetEditor_FormClosed;
 			this.tilesetEditor.Dispose();
 			this.tilesetEditor = null;
