@@ -3,7 +3,7 @@ Duality - A 2D GameDev Framework
 
 Duality is a plugin based 2D game development framework based on C# and OpenTK. To get a quick overview, please visit the [project page](https://adamslair.github.io/duality). For documentation, take a look at our [docs page](https://adamslair.github.io/duality-docs).
 
-If you have questions or just want to say Hi, feel free to check out the [discussions](https://github.com/AdamsLair/duality/discussions) area, or join us in the [chat](https://discord.gg/GsZuF8W5). Also, feedback is always welcome! Bugs and feature requests that do not require further discussion, however, should be filed in the issue tracking system, directly here on github.
+If you have questions or just want to say Hi, feel free to check out the [discussions](https://github.com/AdamsLair/duality/discussions) area, or join us in the [chat](https://discord.gg/JZxzXrzXc6). Also, feedback is always welcome! Bugs and feature requests that do not require further discussion, however, should be filed in the issue tracking system, directly here on github.
 
 ### Latest Binary Release
 
