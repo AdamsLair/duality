@@ -273,6 +273,10 @@ namespace Duality.Plugins.Tilemaps
 					int tileY = y + beginY;
 					int i = tileX + tileStride * tileY;
 
+					//Skip out of bounds tiles
+					if(i >= tiles.Length) continue;
+					if(tiles[i].BaseIndex >= tileData.Length) continue;
+
 					// Skip non-AutoTiles
 					int autoTileIndex = tileData[tiles[i].BaseIndex].AutoTileLayer - 1;
 					if (autoTileIndex == -1) continue;
