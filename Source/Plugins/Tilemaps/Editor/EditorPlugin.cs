@@ -187,7 +187,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 			else
 				this.pendingLocalTilePalettes--;
 		}
-		
+		/// <summary>
+		/// Gets the <see cref="TilemapToolSourcePalette"/> if there is one, returns null otherwise.
+		/// </summary>
+		public TilemapToolSourcePalette PeekTilePalette()
+		{
+			return this.tilePalette;
+		}
+
 		public TilesetEditor RequestTilesetEditor()
 		{
 			// Create a new tileset editor, if no is available right now

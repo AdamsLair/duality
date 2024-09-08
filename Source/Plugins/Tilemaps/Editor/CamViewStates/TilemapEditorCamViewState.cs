@@ -605,7 +605,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (this.selectedTool == null) return;
 			DualityEditorApp.Deselect(this, new ObjectSelection(new object[] { this.selectedTool.Settings }));
 		}
-		
+
 		protected override string UpdateStatusText()
 		{
 			// Display which Tilemap we're currently using
@@ -630,6 +630,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_UpdatingEngine;
 			Scene.Entered += this.Scene_Entered;
+			TilemapsEditorPlugin.Instance.TileDrawingSourceChanged += this.TilemapToolSourcePalette_SelectedAreaChanged;
 
 			// Initial update
 			this.UpdateTilemapToolButtons();
@@ -755,9 +756,9 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
-			
+
 			// Hotkeys for switching the currently selected tilemap
-			if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+			if (e.KeyCode == Keys.PageUp || e.KeyCode == Keys.PageDown)
 			{
 				Tilemap[] visibleTilemaps = 
 					this.QueryVisibleTilemapRenderers()
@@ -770,9 +771,9 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 				if (visibleTilemaps.Length > 0)
 				{
-					if (e.KeyCode == Keys.Down)
+					if (e.KeyCode == Keys.PageDown)
 						selectedIndex = (selectedIndex == -1) ? (visibleTilemaps.Length - 1) : Math.Min(selectedIndex + 1, visibleTilemaps.Length - 1);
-					else if (e.KeyCode == Keys.Up)
+					else if (e.KeyCode == Keys.PageUp)
 						selectedIndex = (selectedIndex == -1) ? 0 : Math.Max(selectedIndex - 1, 0);
 
 					Tilemap newSelection = visibleTilemaps[selectedIndex];
@@ -782,7 +783,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				e.Handled = true;
 				return;
 			}
-			else if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+			else if (e.KeyCode == Keys.Escape)
 			{
 				DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
 				e.Handled = true;
@@ -805,11 +806,13 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					break;
 				}
 			}
+			TilemapsEditorPlugin.Instance.PeekTilePalette().RaiseKeyDownEvent(e);
 		}
 		protected override void OnKeyUp(KeyEventArgs e)
 		{
 			base.OnKeyUp(e);
-			
+			TilemapsEditorPlugin.Instance.PeekTilePalette().RaiseKeyUpEvent(e);
+
 			if (this.overrideTool != null && this.overrideTool.OverrideKey == e.KeyCode)
 			{
 				this.OverrideTool = null;
@@ -1041,6 +1044,12 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			this.UpdateActionToolButtons();
 		}
+		private void TilemapToolSourcePalette_SelectedAreaChanged(object sender, EventArgs e)
+		{
+			this.activeTool.UpdatePreview();
+			this.Invalidate();
+		}
+
 		private void actionToolButton_Click(object sender, EventArgs e)
 		{
 			TilemapActionEntry clickedEntry = this.actions.FirstOrDefault(entry => entry.ToolButton == sender);
