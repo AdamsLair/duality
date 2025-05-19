@@ -24,9 +24,16 @@ If you want to build Duality yourself, you can do so using Visual Studio or Mono
 
 All framework build results will be located in the shared `Build/Output` folder. Sample project build results will be separate, and located in their respective `Content/Plugins` subdirectories. To launch any of the included sample projects after building Duality, select it as a startup project in your IDE. Otherwise, you can use either `DualityEditor` or `DualityLauncher` as a startup project.
 
-### Contributing
+### ⚠️ Project status
 
-We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://adamslair.github.io/duality-docs/pages/v3/how-to-contribute.html).
+The project is on hold indefinitely - probably forever. The latest version is stable and usable, with some caveats:
+
+* The package manager is not working, as it broke following a change in the NuGet APIs. If you want to check and use the available plugins you can [search for Duality on NuGet](https://www.nuget.org/packages?q=duality+plugin&includeComputedFrameworks=true&prerel=true&sortby=relevance), download the package and unzip the dlls in the plugins folder of Duality.
+* A v4 was being worked on, and is the one currently available in the master branch. It should be pretty stable and you can build it as described above. That said, no further work is scheduled to happen in the near and possibly far future.
+
+This said, I'm going to thank everyone who worked on this project. It was a blast while it lasted.
+
+SirePi
 
 ----------
 
