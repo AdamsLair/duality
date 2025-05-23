@@ -4,9 +4,10 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
+using Duality.Input;
 using Duality.Resources;
 using Duality.Plugins.Tilemaps;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 
 namespace Duality.Editor.Plugins.Tilemaps
@@ -21,6 +22,17 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private bool       isUserScrolling        = false;
 		private int        lastMouseX             = -1;
 		private int        lastMouseY             = -1;
+		private SelectionSide activeSelectionSide = SelectionSide.None;
+
+		private enum SelectionSide
+		{
+			None,
+			Right,
+			Left, 
+			Up, 
+			Down
+		}
+		
 
 		public event EventHandler SelectedAreaChanged = null;
 		public event EventHandler SelectedAreaEditingFinished = null;
@@ -76,6 +88,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 			get { return this.selectedTiles; }
 		}
 
+		internal void RaiseKeyDownEvent(KeyEventArgs e)
+		{
+			this.OnKeyDown(e);
+		}
+		internal void RaiseKeyUpEvent(KeyEventArgs e)
+		{
+			this.OnKeyUp(e);
+		}
 
 		protected override void OnTilesetChanged()
 		{
@@ -203,7 +223,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			if (e.Button == MouseButtons.Left && Control.ModifierKeys == Keys.Shift && !this.isUserScrolling)
+			if (e.Button == MouseButtons.Left && ModifierKeys == Keys.Shift && !this.isUserScrolling)
 			{
 				int tileIndex = this.PickTileIndexAt(e.X, e.Y);
 				if (tileIndex != -1)
@@ -333,6 +353,90 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.InvalidateTile(this.HoveredTileIndex, 5);
 			base.OnMouseLeave(e);
 		}
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			base.OnKeyDown(e);
+
+			if (Control.ModifierKeys == Keys.Shift)
+			{
+				switch (e.KeyCode)
+				{
+					case Keys.Up when this.activeSelectionSide == SelectionSide.Down:
+						this.ShrinkSelectedArea(0, -1);
+						break;
+					case Keys.Up:
+						this.ExpandSelectedArea(0, -1);
+						this.activeSelectionSide = SelectionSide.Up;
+						break;
+					case Keys.Down when this.activeSelectionSide == SelectionSide.Up:
+						this.ShrinkSelectedArea(0, 1);
+						break;
+					case Keys.Down:
+						this.ExpandSelectedArea(0, 1);
+						this.activeSelectionSide = SelectionSide.Down;
+						break;
+					case Keys.Left when this.activeSelectionSide == SelectionSide.Right:
+						this.ShrinkSelectedArea(-1, 0);
+						break;
+					case Keys.Left:
+						this.ExpandSelectedArea(-1, 0);
+						this.activeSelectionSide = SelectionSide.Left;
+						break;
+					case Keys.Right when this.activeSelectionSide == SelectionSide.Left:
+						this.ShrinkSelectedArea(1, 0);
+						break;
+					case Keys.Right:
+						this.ExpandSelectedArea(1, 0);
+						this.activeSelectionSide = SelectionSide.Right;
+						break;
+				}
+			}
+			else
+			{
+				if (e.KeyCode == Keys.Up)
+				{
+					this.TranslateSelectedArea(0, -1);
+				}
+				if (e.KeyCode == Keys.Down)
+				{
+					this.TranslateSelectedArea(0, 1);
+				}
+				if (e.KeyCode == Keys.Left)
+				{
+					this.TranslateSelectedArea(-1, 0);
+				}
+				if (e.KeyCode == Keys.Right)
+				{
+					this.TranslateSelectedArea(1, 0);
+				}
+				this.activeSelectionSide = SelectionSide.None;
+			}
+		}
+
+		protected override void OnKeyUp(KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.ShiftKey)
+			{
+				this.activeSelectionSide = SelectionSide.None;
+			}
+		}
+		protected override bool IsInputKey(Keys keyData)
+		{
+			switch (keyData)
+			{
+				case Keys.Right:
+				case Keys.Left:
+				case Keys.Up:
+				case Keys.Down:
+				case Keys.Shift:
+				case Keys.Shift | Keys.Right:
+				case Keys.Shift | Keys.Left:
+				case Keys.Shift | Keys.Up:
+				case Keys.Shift | Keys.Down:
+					return true;
+			}
+			return base.IsInputKey(keyData);
+		}
 
 		private void UpdateSelectedTiles()
 		{
@@ -344,7 +448,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// none to choose from. Keep the default-initialized ones we got above.
 			Tileset tileset = this.TargetTileset.Res;
 			if (tileset == null) return;
-
+			
 			// Determine a tile rect based on the current selection inside the Tileset.
 			Point selectedDisplayedPos = this.GetDisplayedTilePos(
 				this.selectedArea.X,
@@ -367,16 +471,87 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 			}
 		}
+		private void InitializeSelectedArea()
+		{
+			Rectangle rect = new Rectangle(0, 0, 1, 1);
+			this.SelectedArea = rect;
+			this.RaiseSelectedAreaEditingFinished();
+		}
 
 		private void RaiseSelectedAreaEditingFinished()
 		{
-			if (this.SelectedAreaEditingFinished != null)
-				this.SelectedAreaEditingFinished(this, EventArgs.Empty);
+			this.SelectedAreaEditingFinished?.Invoke(this, EventArgs.Empty);
 		}
 		private void RaiseSelectedAreaChanged()
 		{
-			if (this.SelectedAreaChanged != null)
-				this.SelectedAreaChanged(this, EventArgs.Empty);
+			this.SelectedAreaChanged?.Invoke(this, EventArgs.Empty);
+		}
+		private void TranslateSelectedArea(int offsetX, int offsetY)
+		{
+			if (this.selectedArea.IsEmpty)
+			{
+				this.InitializeSelectedArea();
+				return;
+			}
+
+			Rectangle prevSelectedArea = this.SelectedArea; 
+
+			int newX = MathF.Clamp(prevSelectedArea.X + offsetX, 0, this.DisplayedTileCount.X - prevSelectedArea.Width);
+			int newY = MathF.Clamp(prevSelectedArea.Y + offsetY, 0, this.DisplayedTileCount.Y - prevSelectedArea.Height);
+
+			this.SelectedArea = new Rectangle(newX, newY, prevSelectedArea.Width, prevSelectedArea.Height);
+			this.RaiseSelectedAreaEditingFinished();
+			this.Invalidate();
+		}
+		private void ExpandSelectedArea(int diffX, int diffY)
+		{
+			if (this.selectedArea.IsEmpty)
+			{
+				this.InitializeSelectedArea();
+				return;
+			}
+
+			Rectangle prevSelectedArea = this.SelectedArea;
+
+			int newX = MathF.Max(prevSelectedArea.X + MathF.Min(diffX, 0), 0);
+			int newY = MathF.Max(prevSelectedArea.Y + MathF.Min(diffY, 0), 0);
+
+			int newWidth = prevSelectedArea.Width + MathF.Max(diffX, 0);
+			newWidth = MathF.Min(newWidth, this.DisplayedTileCount.X - prevSelectedArea.X);
+			newWidth += prevSelectedArea.X - newX;
+
+			int newHeight = prevSelectedArea.Height + MathF.Max(diffY, 0);
+			newHeight = MathF.Min(newHeight, this.DisplayedTileCount.Y - prevSelectedArea.Y);
+			newHeight += prevSelectedArea.Y - newY;
+
+			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
+			this.RaiseSelectedAreaEditingFinished();
+			this.Invalidate();
+		}
+		private void ShrinkSelectedArea(int diffX, int diffY)
+		{
+			if (this.selectedArea.IsEmpty)
+			{
+				this.InitializeSelectedArea();
+				return;
+			}
+
+			Rectangle prevSelectedArea = this.SelectedArea;
+
+			int newX = MathF.Min(prevSelectedArea.X + MathF.Max(diffX, 0),
+				prevSelectedArea.X + prevSelectedArea.Width - 1);
+			int newY = MathF.Min(prevSelectedArea.Y + MathF.Max(diffY, 0),
+				prevSelectedArea.Y + prevSelectedArea.Height - 1);
+
+			int newWidth = MathF.Max(prevSelectedArea.Width + MathF.Min(diffX, 0), 1);
+			newWidth -= newX - prevSelectedArea.X;
+
+			int newHeight = MathF.Max(prevSelectedArea.Height + MathF.Min(diffY, 0), 1);
+			newHeight -= newY - prevSelectedArea.Y;
+
+			this.SelectedArea = new Rectangle(newX, newY, newWidth, newHeight);
+			this.RaiseSelectedAreaEditingFinished();
+			this.Invalidate();
 		}
 	}
 }
